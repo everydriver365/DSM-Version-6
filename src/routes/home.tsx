@@ -247,7 +247,7 @@ const TIER_COLORS: Record<keyof typeof TIER_THRESHOLDS, string> = {
   silver: "#9CA3AF",
   gold: "#D97706",
   platinum: "#6366F1",
-  elite: "#0F2044",
+  elite: "#0B1F3A",
 };
 function tierFromPoints(pts: number): keyof typeof TIER_THRESHOLDS {
   if (pts >= TIER_THRESHOLDS.elite) return "elite";
@@ -301,7 +301,7 @@ type NAItem = {
 const NA_CATEGORY_ORDER: NAItem['key'][] = ['certs_expired', 'cancellations', 'reschedules', 'birthday', 'certs_expiring', 'tests', 'jobs', 'calls', 'enq'];
 
 const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string; Icon: React.ComponentType<{ size?: number; color?: string }> }> = {
-  tests: { chipBg: '#E6F1FB', accent: '#185FA5', Icon: IconSteeringWheel },
+  tests: { chipBg: '#E6F1FB', accent: '#1877D6', Icon: IconSteeringWheel },
   jobs:  { chipBg: '#FBEFE1', accent: '#B5661E', Icon: IconBriefcase },
   calls: { chipBg: '#F0EBFF', accent: '#6B4FD6', Icon: IconPhone },
   enq:   { chipBg: '#EAF3DE', accent: '#2E9E5B', Icon: IconMessageCircle },
@@ -380,8 +380,8 @@ function NeedsAttentionSection({ items }: { items: NAItem[] }) {
   return (
     <div style={{ margin: '0 16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-        <div style={{ fontSize: 18, fontWeight: 700, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
-        <div style={{ background: '#FCEBEB', color: '#A32D2D', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 999, fontFamily: 'Inter, sans-serif' }}>
+        <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
+        <div style={{ background: '#FCEBEB', color: '#CC2229', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 999, fontFamily: 'Inter, sans-serif' }}>
           {active.length} urgent
         </div>
       </div>
@@ -547,7 +547,7 @@ function TodayLessonsTile({
           height: 36,
           borderRadius: 11,
           background: "#E6F1FB",
-          color: "#185FA5",
+          color: "#1877D6",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -558,7 +558,7 @@ function TodayLessonsTile({
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{ fontSize: 14, fontWeight: 500, color: "#0F2044", lineHeight: 1.3 }}>
+          <div style={{ fontSize: 14, fontWeight: 500, color: "#0B1F3A", lineHeight: 1.3 }}>
             Today's lessons
           </div>
           {onAddLesson && (
@@ -573,7 +573,7 @@ function TodayLessonsTile({
                 width: 22,
                 height: 22,
                 borderRadius: 6,
-                background: "#185FA5",
+                background: "#1877D6",
                 color: "#FFFFFF",
                 border: "none",
                 display: "flex",
@@ -633,7 +633,7 @@ function TodayLessonsTile({
           style={{
             fontSize: 16,
             fontWeight: 600,
-            color: "#0F2044",
+            color: "#0B1F3A",
             lineHeight: 1,
             fontVariantNumeric: "tabular-nums",
           }}
@@ -722,7 +722,7 @@ function SwipeableStatsCard({
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
-            color: "#185FA5",
+            color: "#1877D6",
           }}
         >
           {s.icon}
@@ -745,14 +745,14 @@ function SwipeableStatsCard({
                 justifyContent: "center",
                 fontSize: 20,
                 fontWeight: 600,
-                color: s.right.active ? "#185FA5" : "#B0BAC9",
+                color: s.right.active ? "#1877D6" : "#B0BAC9",
               }}
             >
               {s.right.value}
             </div>
           ) : (
             <>
-              <div style={{ fontSize: 20, fontWeight: 700, color: "#185FA5", lineHeight: 1 }}>{s.right.value}</div>
+              <div style={{ fontSize: 20, fontWeight: 700, color: "#1877D6", lineHeight: 1 }}>{s.right.value}</div>
               {s.right.label && <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 2 }}>{s.right.label}</div>}
             </>
           )}
@@ -776,7 +776,7 @@ function SwipeableStatsCard({
                   height: 6,
                   width: active ? 16 : 6,
                   borderRadius: active ? 4 : "50%",
-                  background: active ? "#185FA5" : "#D0D5DD",
+                  background: active ? "#1877D6" : "#D0D5DD",
                 }}
               />
             );
@@ -962,7 +962,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
       {/* SECTION HEADER */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 16, gap: 12 }}>
         <div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: "#0F2044", lineHeight: 1.2, fontFamily: "Inter, sans-serif" }}>
+          <div style={{ fontSize: 18, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.2, fontFamily: "Inter, sans-serif" }}>
             DSM Marketplace
           </div>
         </div>
@@ -976,7 +976,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
             padding: "6px 12px",
             fontSize: 11,
             fontWeight: 600,
-            color: "#0F2044",
+            color: "#0B1F3A",
             cursor: "pointer",
             whiteSpace: "nowrap",
             boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
@@ -1037,7 +1037,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                       style={{
                         width: "100%",
                         height: "100%",
-                        background: "#0F2044",
+                        background: "#0B1F3A",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -1053,7 +1053,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                       top: 8,
                       left: 8,
                       background: "#FFFFFF",
-                      color: "#0F2044",
+                      color: "#0B1F3A",
                       padding: "3px 8px",
                       borderRadius: 999,
                       fontSize: 9,
@@ -1072,7 +1072,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     style={{
                       width: "18%",
                       minWidth: 42,
-                      background: "#0F2044",
+                      background: "#0B1F3A",
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
@@ -1107,7 +1107,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
 
                   {/* Content */}
                   <div style={{ flex: 1, padding: "8px 10px 6px", display: "flex", flexDirection: "column", minWidth: 0, minHeight: 0 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: "#0F2044", lineHeight: 1.2, marginBottom: 2 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.2, marginBottom: 2 }}>
                       {tile.title}
                     </div>
                     <div
@@ -1129,7 +1129,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: "auto" }}>
                       {features.map((f, i) => (
                         <div key={i} style={{ display: "flex", alignItems: "center", gap: 3, minWidth: 0 }}>
-                          <f.icon size={10} color="#0F2044" strokeWidth={1.8} />
+                          <f.icon size={10} color="#0B1F3A" strokeWidth={1.8} />
                           <span
                             style={{
                               fontSize: 8.5,
@@ -1153,7 +1153,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         padding: 0,
                         fontSize: 10,
                         fontWeight: 600,
-                        color: "#0F2044",
+                        color: "#0B1F3A",
                         cursor: "pointer",
                         display: "flex",
                         alignItems: "center",
@@ -1265,7 +1265,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     return "other";
   };
   const typeColor = (t: ReturnType<typeof sessionType>) =>
-    t === "meet" ? "#185FA5" : t === "waiting" ? "#6B4FD6" : "#0F2044";
+    t === "meet" ? "#1877D6" : t === "waiting" ? "#6B4FD6" : "#0B1F3A";
   const typeIcon = (t: ReturnType<typeof sessionType>) => {
     if (t === "standards") return { Icon: IconClipboardCheck, color: "#3D7BE0" };
     if (t === "meet") return { Icon: IconSteeringWheel, color: "#FFFFFF" };
@@ -1330,7 +1330,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             aria-hidden
             style={{ width: 8, height: 8, borderRadius: "50%", background: "#E24B4A", flexShrink: 0 }}
           />
-          <h2 style={{ margin: 0, fontFamily: "Inter, sans-serif", fontSize: 18, fontWeight: 700, color: "#0F2044" }}>
+          <h2 style={{ margin: 0, fontFamily: "Inter, sans-serif", fontSize: 18, fontWeight: 700, color: "#0B1F3A" }}>
             DSM Live
           </h2>
         </div>
@@ -1339,7 +1339,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           onClick={() => navigate({ to: "/dsm-live" as never })}
           style={{
             background: "none", border: "none", padding: 0, cursor: "pointer",
-            color: "#185FA5", fontSize: 13, fontWeight: 500, fontFamily: POPPINS,
+            color: "#1877D6", fontSize: 13, fontWeight: 500, fontFamily: POPPINS,
           }}
         >
           View all →
@@ -1590,7 +1590,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
             cursor: 'pointer',
           }}
         >
-          <IconSearch size={16} color="#185FA5" />
+          <IconSearch size={16} color="#1877D6" />
         </button>
       </div>
 
@@ -1669,7 +1669,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
                   width: active ? 16 : 6,
                   height: 6,
                   borderRadius: active ? 4 : 999,
-                  background: active ? '#185FA5' : '#D0D5DD',
+                  background: active ? '#1877D6' : '#D0D5DD',
                   border: 'none',
                   padding: 0,
                   cursor: 'pointer',
@@ -2182,7 +2182,7 @@ function HomePage() {
           left: 0,
           right: 0,
           zIndex: 999,
-          background: "#0F2044",
+          background: "#0B1F3A",
           padding: "12px 16px calc(12px) 16px",
           paddingTop: "calc(12px + env(safe-area-inset-top, 0px))",
           transform: toastVisible ? "translateY(0)" : "translateY(-110%)",
@@ -3840,10 +3840,10 @@ function HomePage() {
       marginTop: 4, letterSpacing: 0.2,
     };
     const statValue: React.CSSProperties = {
-      fontSize: 28, fontWeight: 900, color: "#0F2044", letterSpacing: -0.5,
+      fontSize: 28, fontWeight: 900, color: "#0B1F3A", letterSpacing: -0.5,
     };
     const panelHeading: React.CSSProperties = {
-      fontSize: 16, fontWeight: 800, color: "#0F2044", marginBottom: 12,
+      fontSize: 16, fontWeight: 800, color: "#0B1F3A", marginBottom: 12,
     };
     const viewAllLink: React.CSSProperties = {
       fontSize: 13, fontWeight: 600, color: "#1877D6",
@@ -3855,7 +3855,7 @@ function HomePage() {
       gap: 6, padding: "14px 8px", borderRadius: 10,
       border: "0.5px solid #E2E6ED", background: "#F8FAFF",
       cursor: "pointer", fontFamily: "Inter, sans-serif",
-      fontSize: 12, fontWeight: 600, color: "#0F2044",
+      fontSize: 12, fontWeight: 600, color: "#0B1F3A",
     };
     return (
       <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: "calc(60px + env(safe-area-inset-top, 0px))" }}>
@@ -3873,7 +3873,7 @@ function HomePage() {
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
           {/* HEADER */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-            <h1 style={{ fontSize: 24, fontWeight: 900, color: "#0F2044", margin: 0, fontFamily: "Inter, sans-serif" }}>
+            <h1 style={{ fontSize: 24, fontWeight: 900, color: "#0B1F3A", margin: 0, fontFamily: "Inter, sans-serif" }}>
               Good morning, {firstName} 👋
             </h1>
             <div style={{ fontSize: 14, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>
@@ -3947,12 +3947,12 @@ function HomePage() {
                         <div style={{ height: 4, background: "linear-gradient(90deg, #00B5A5, #1877D6)" }} />
                         <div style={{ padding: 20 }}>
                           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-                            <div style={{ fontWeight: 900, fontSize: 18, color: "#0F2044" }}>📅 Free day today</div>
+                            <div style={{ fontWeight: 900, fontSize: 18, color: "#0B1F3A" }}>📅 Free day today</div>
                             <div style={{ fontSize: 13, color: "#9CA3AF" }}>{workingLabel}</div>
                           </div>
                           <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
                             {[
-                              { value: `${availableHours} hrs`, label: "Available", color: "#0F2044" },
+                              { value: `${availableHours} hrs`, label: "Available", color: "#0B1F3A" },
                               { value: `£${potential}`, label: "Potential", color: "#16A34A" },
                               { value: `${activePupilsCount}`, label: "Pupils", color: "#1877D6" },
                             ].map((s) => (
@@ -4000,7 +4000,7 @@ function HomePage() {
                           </div>
                           <div style={{ display: "flex", gap: 8 }}>
                             <button onClick={() => navigate({ to: "/gaps" })} style={{
-                              flex: 1, background: "#0F2044", color: "#FFFFFF",
+                              flex: 1, background: "#0B1F3A", color: "#FFFFFF",
                               padding: "12px 0", borderRadius: 12, fontWeight: 600, fontSize: 14,
                               border: "none", cursor: "pointer", fontFamily: "Inter, sans-serif",
                             }}>Fill My Slots →</button>
@@ -4032,8 +4032,8 @@ function HomePage() {
                             fontFamily: "Inter, sans-serif",
                           }}
                         >
-                          <span style={{ fontSize: 14, fontWeight: 700, color: "#0F2044" }}>{formatTime(l)}</span>
-                          <span style={{ fontSize: 14, fontWeight: 600, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{pupilName(l)}</span>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{formatTime(l)}</span>
+                          <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{pupilName(l)}</span>
                           <span style={{ fontSize: 12, color: "#6B7280" }}>{formatDuration(l.duration_minutes)}</span>
                           <span style={{
                             fontSize: 10, fontWeight: 700, textTransform: "uppercase",
@@ -4103,7 +4103,7 @@ function HomePage() {
                         }}
                       >
                         <div style={{ minWidth: 0 }}>
-                          <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</div>
+                          <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</div>
                           <div style={{ fontSize: 11, color: "#6B7280" }}>{p.type}</div>
                         </div>
                         <div style={{ fontSize: 14, fontWeight: 800, color: "#CC2229" }}>£{p.amount.toFixed(2)}</div>
@@ -4158,7 +4158,7 @@ function HomePage() {
                           <Bell size={14} color="#1877D6" />
                         </div>
                         <div style={{ minWidth: 0, flex: 1 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044", lineHeight: 1.3 }}>{n.title}</div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3 }}>{n.title}</div>
                           {n.body && (
                             <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
                               {n.body}
@@ -4191,7 +4191,7 @@ function HomePage() {
                         }}
                       >
                         <div style={{ minWidth: 0 }}>
-                          <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.name}</div>
+                          <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.name}</div>
                           <div style={{ fontSize: 12, color: "#6B7280" }}>
                             {new Date(t.test_date + "T00:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })}
                             {t.test_time ? ` · ${t.test_time.slice(0, 5)}` : ""}
@@ -4240,7 +4240,7 @@ function HomePage() {
   }
 
   return (
-    <div className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', background: '#0F2044', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
+    <div className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', background: '#0B1F3A', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
       {notifBanner}
       <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.carousel-hide-scrollbar::-webkit-scrollbar{display:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}@keyframes chipShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
       {/* TOP BAR */}
@@ -4401,7 +4401,7 @@ function HomePage() {
       {/* ============ NAVY HEADER BLOCK ============ */}
       <div
         style={{
-          backgroundColor: '#0F2044',
+          backgroundColor: '#0B1F3A',
           marginTop: 'calc(-1 * (60px + env(safe-area-inset-top, 0px)))',
           padding: 'calc(60px + env(safe-area-inset-top, 0px) + 16px) 16px 34px',
           display: 'flex',
@@ -4422,7 +4422,7 @@ function HomePage() {
           aria-label="Profile"
           style={{
             width: 34, height: 34, borderRadius: '50%',
-            background: '#185FA5', color: '#FFFFFF',
+            background: '#1877D6', color: '#FFFFFF',
             fontSize: 13, fontWeight: 600,
             border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', overflow: 'hidden', padding: 0, flexShrink: 0,
@@ -4439,9 +4439,9 @@ function HomePage() {
       {/* NOTE: naCalls (callbacks) and naJobs (open jobs) are not yet wired to a real table — showing 0 as placeholder. naEnquiries is derived from pendingSwapCount today. */}
       <div style={{ padding: '0 16px', marginTop: -22, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif' }}>
         {[
-          { label: 'Calls', value: String(naCalls), sub: 'Need callback', color: '#A32D2D', route: '/messages' },
+          { label: 'Calls', value: String(naCalls), sub: 'Need callback', color: '#CC2229', route: '/messages' },
           { label: "Jobs", value: String(naJobs), sub: 'Open', color: '#B5661E', route: '/waitlist' },
-          { label: "Enq's", value: String(naEnquiries), sub: 'New', color: '#185FA5', route: '/enquiries' },
+          { label: "Enq's", value: String(naEnquiries), sub: 'New', color: '#1877D6', route: '/enquiries' },
         ].map((s) => (
           <button
             key={s.label}
@@ -4454,7 +4454,7 @@ function HomePage() {
             }}
           >
             <div style={{ fontSize: 10, fontWeight: 700, color: s.color, textTransform: 'uppercase', letterSpacing: 0.3 }}>{s.label}</div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#0F2044', marginTop: 4, lineHeight: 1 }}>{s.value}</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#0B1F3A', marginTop: 4, lineHeight: 1 }}>{s.value}</div>
             <div style={{ fontSize: 10, color: '#8A93A3', marginTop: 4 }}>{s.sub}</div>
           </button>
         ))}
@@ -4462,11 +4462,11 @@ function HomePage() {
 
       {/* ============ NEXT LESSON LABEL ============ */}
       <div style={{ margin: '0 16px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: 'Inter, sans-serif' }}>
-        <span style={{ fontSize: 18, fontWeight: 700, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Next lesson</span>
+        <span style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Inter, sans-serif' }}>Next lesson</span>
         <button
           type="button"
           onClick={() => navigate({ to: '/schedule' })}
-          style={{ background: 'none', border: 'none', padding: 0, fontSize: 13, fontWeight: 600, color: '#185FA5', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: 0.5, fontFamily: 'Inter, sans-serif' }}
+          style={{ background: 'none', border: 'none', padding: 0, fontSize: 13, fontWeight: 600, color: '#1877D6', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: 0.5, fontFamily: 'Inter, sans-serif' }}
         >View schedule</button>
       </div>
 
@@ -4532,7 +4532,7 @@ function HomePage() {
                   onClick={(e) => { e.stopPropagation(); window.open(directionsUrl, '_blank'); }}
                   style={{
                     position: 'absolute', top: 10, left: 10,
-                    background: '#0F2044', color: '#FFFFFF',
+                    background: '#0B1F3A', color: '#FFFFFF',
                     border: 'none', borderRadius: 999,
                     padding: '6px 12px',
                     fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase',
@@ -4555,14 +4555,14 @@ function HomePage() {
                   }}
                 >
                   <div style={{
-                    background: '#FFFFFF', color: '#0F2044',
+                    background: '#FFFFFF', color: '#0B1F3A',
                     borderRadius: 999, padding: '4px 10px',
                     fontSize: 11, fontWeight: 700,
                     display: 'flex', alignItems: 'center', gap: 5,
                     boxShadow: '0 2px 6px rgba(0,0,0,0.12)',
                     whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%',
                   }}>
-                    <MapPin size={12} color="#185FA5" />
+                    <MapPin size={12} color="#1877D6" />
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{streetLabel}</span>
                   </div>
                   <div style={{
@@ -4582,7 +4582,7 @@ function HomePage() {
                   onClick={(e) => { e.stopPropagation(); window.open(mapsPlaceUrl, '_blank'); }}
                   style={{
                     position: 'absolute', bottom: 10, left: '50%', transform: 'translateX(-50%)',
-                    background: '#FFFFFF', color: '#0F2044',
+                    background: '#FFFFFF', color: '#0B1F3A',
                     border: 'none', borderRadius: 999,
                     padding: '6px 12px',
                     fontSize: 11, fontWeight: 700,
@@ -4620,8 +4620,8 @@ function HomePage() {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                <Clock size={13} color={isLate ? '#C23B3B' : '#185FA5'} />
-                <span style={{ fontSize: 12, fontWeight: 700, color: isLate ? '#C23B3B' : '#0F2044' }}>
+                <Clock size={13} color={isLate ? '#C23B3B' : '#1877D6'} />
+                <span style={{ fontSize: 12, fontWeight: 700, color: isLate ? '#C23B3B' : '#0B1F3A' }}>
                   {isLate ? `Late by ~${lateMin} min` : `ETA ${etaLabel}`}
                 </span>
                 <span style={{ fontSize: 11, color: '#5A6270', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -4658,8 +4658,8 @@ function HomePage() {
           const paidLabel = status === 'paid' ? 'Paid' : status === 'prepaid' ? 'Prepaid' : status === 'partial' ? 'Partial' : status === 'cancelled' ? 'Cancelled' : 'Due';
           const isPositive = status === 'paid' || status === 'prepaid';
           const pillBg = isPositive ? '#EAF3DE' : status === 'partial' ? '#FFF4E0' : status === 'cancelled' ? '#EEF2F7' : '#FDECEC';
-          const pillColor = isPositive ? '#3B6D11' : status === 'partial' ? '#8A5A00' : status === 'cancelled' ? '#5A6270' : '#A32D2D';
-          const amountColor = isPositive ? '#2E9E5B' : status === 'partial' ? '#8A5A00' : status === 'cancelled' ? '#5A6270' : '#A32D2D';
+          const pillColor = isPositive ? '#3B6D11' : status === 'partial' ? '#8A5A00' : status === 'cancelled' ? '#5A6270' : '#CC2229';
+          const amountColor = isPositive ? '#2E9E5B' : status === 'partial' ? '#8A5A00' : status === 'cancelled' ? '#5A6270' : '#CC2229';
           const postcode = upcoming.pupils?.postcode || upcoming.pickup_location || upcoming.pupils?.address || 'No pickup';
           return (
             <div
@@ -4669,7 +4669,7 @@ function HomePage() {
               {/* Date column */}
               <div style={{
                 width: 72, flexShrink: 0,
-                background: '#0F2044', borderRadius: 14,
+                background: '#0B1F3A', borderRadius: 14,
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 padding: '10px 0',
               }}>
@@ -4684,18 +4684,18 @@ function HomePage() {
 
               {/* Info column */}
               <div style={{ flex: 1, minWidth: 0, padding: '4px 0', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <div style={{ fontSize: 16, fontWeight: 700, color: '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {pupilName(upcoming)}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
-                  <span style={{ width: 16, height: 16, borderRadius: '50%', border: '1.5px solid #185FA5', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Clock size={9} color="#185FA5" />
+                  <span style={{ width: 16, height: 16, borderRadius: '50%', border: '1.5px solid #1877D6', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Clock size={9} color="#1877D6" />
                   </span>
-                  <span style={{ fontSize: 13, color: '#0F2044', fontWeight: 500 }}>{timeRange}</span>
+                  <span style={{ fontSize: 13, color: '#0B1F3A', fontWeight: 500 }}>{timeRange}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, minWidth: 0 }}>
-                  <span style={{ width: 16, height: 16, borderRadius: '50%', border: '1.5px solid #185FA5', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <MapPin size={9} color="#185FA5" />
+                  <span style={{ width: 16, height: 16, borderRadius: '50%', border: '1.5px solid #1877D6', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <MapPin size={9} color="#1877D6" />
                   </span>
                   <span style={{ fontSize: 12, color: '#5A6270', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{postcode}</span>
                 </div>
@@ -4734,7 +4734,7 @@ function HomePage() {
                 borderRadius: 999,
                 padding: '8px 0',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                fontSize: 12, fontWeight: 600, color: '#185FA5',
+                fontSize: 12, fontWeight: 600, color: '#1877D6',
                 cursor: 'pointer',
                 fontFamily: 'Inter, sans-serif',
               }}
@@ -4810,11 +4810,11 @@ function HomePage() {
               }}
             >
               <span style={{
-                background: '#E6F1FB', color: '#185FA5', fontSize: 11, fontWeight: 700,
+                background: '#E6F1FB', color: '#1877D6', fontSize: 11, fontWeight: 700,
                 padding: '4px 10px', borderRadius: 999, display: 'inline-flex',
                 alignItems: 'center', gap: 4, flexShrink: 0,
               }}>
-                <Car size={12} color="#185FA5" />
+                <Car size={12} color="#1877D6" />
                 {testsSorted.length} test{testsSorted.length === 1 ? '' : 's'}
               </span>
               <span style={{ fontSize: 12, color: '#5A6270', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -4831,12 +4831,12 @@ function HomePage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <AlertTriangle size={14} color="#D97706" />
-                <span style={{ fontSize: 18, fontWeight: 700, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Local issues</span>
+                <span style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Inter, sans-serif' }}>Local issues</span>
               </div>
               <button
                 type="button"
                 onClick={() => navigate({ to: '/community' as never })}
-                style={{ fontSize: 11, color: '#185FA5', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
+                style={{ fontSize: 11, color: '#1877D6', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
               >
                 See all →
               </button>
@@ -4846,9 +4846,9 @@ function HomePage() {
                 roadworks: { bg: '#FEF3C7', colour: '#D97706', Icon: Car },
                 road_closure: { bg: '#FEF3C7', colour: '#D97706', Icon: AlertTriangle },
                 heavy_traffic: { bg: '#FEF3C7', colour: '#D97706', Icon: Car },
-                hazard: { bg: '#FCEBEB', colour: '#A32D2D', Icon: AlertTriangle },
-                test_centre_busy: { bg: '#FCEBEB', colour: '#A32D2D', Icon: Building },
-                test_centre_delay: { bg: '#FCEBEB', colour: '#A32D2D', Icon: Clock },
+                hazard: { bg: '#FCEBEB', colour: '#CC2229', Icon: AlertTriangle },
+                test_centre_busy: { bg: '#FCEBEB', colour: '#CC2229', Icon: Building },
+                test_centre_delay: { bg: '#FCEBEB', colour: '#CC2229', Icon: Clock },
                 examiner_tip: { bg: '#F5F3FF', colour: '#6B4FD6', Icon: Info },
                 other: { bg: '#F3F4F6', colour: '#6B7280', Icon: Info },
               } as any)[alert.alert_type] || { bg: '#F3F4F6', colour: '#6B7280', Icon: Info };
@@ -4870,7 +4870,7 @@ function HomePage() {
                     <Icon size={14} color={typeConfig.colour} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: '#0F2044', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {alert.description}
                     </div>
                     <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 1 }}>
@@ -4884,7 +4884,7 @@ function HomePage() {
             {localAlerts.length > 2 && (
               <button
                 onClick={() => navigate({ to: '/community' as never })}
-                style={{ fontSize: 11, color: '#185FA5', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, padding: '4px 0' }}
+                style={{ fontSize: 11, color: '#1877D6', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, padding: '4px 0' }}
               >
                 +{localAlerts.length - 2} more local alerts →
               </button>
@@ -4910,7 +4910,7 @@ function HomePage() {
               <MessageSquare size={14} color="#6B4FD6" />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Inter, sans-serif' }}>
                 Local chat · {localRoom.area_name}
               </div>
               <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -4932,7 +4932,7 @@ function HomePage() {
         const PF = 'Inter, sans-serif';
         const BORDER = 'rgba(15,32,68,0.10)';
         const MUTED = '#64748B';
-        const NAVY = '#0F2044';
+        const NAVY = '#0B1F3A';
         const ACCENT = '#1877D6';
         const DANGER = '#C9302C';
         const AMBER_BG = '#FEF3C7';
@@ -5179,7 +5179,7 @@ function HomePage() {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 12, fontWeight: 700, color: '#D97706', textTransform: 'uppercase', letterSpacing: 0.5 }}>Slot freed</div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {pupilName} cancelled their lesson
                     </div>
                     <div style={{ fontSize: 12, color: '#92400E', marginTop: 1 }}>
@@ -5206,7 +5206,7 @@ function HomePage() {
 
             {/* 3. TIMELINE with TABS */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 18, fontWeight: 700, color: '#0F2044', fontFamily: "Inter, sans-serif", letterSpacing: -0.2 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: "Inter, sans-serif", letterSpacing: -0.2 }}>
                 {tab === 'today' ? "Today's timeline" : tab === 'tomorrow' ? `Tomorrow · ${tomorrowFormatted}` : 'Upcoming lessons'}
                 {tab === 'today' && (
                   <button
@@ -5220,7 +5220,7 @@ function HomePage() {
                       fontFamily: PF,
                       fontSize: 13,
                       fontWeight: 500,
-                      color: '#185FA5',
+                      color: '#1877D6',
                       cursor: 'pointer',
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -5237,7 +5237,7 @@ function HomePage() {
                     type="button"
                     onClick={() => navigate({ to: '/lessons/new' as never, search: { date: tomorrowISO } as any })}
                     style={{
-                      background: '#0F2044',
+                      background: '#0B1F3A',
                       border: 'none',
                       borderRadius: 8,
                       padding: '5px 10px',
@@ -5260,7 +5260,7 @@ function HomePage() {
                     type="button"
                     onClick={() => navigate({ to: '/lessons/new' as never })}
                     style={{
-                      background: '#0F2044',
+                      background: '#0B1F3A',
                       border: 'none',
                       borderRadius: 8,
                       padding: '5px 10px',
@@ -5281,7 +5281,7 @@ function HomePage() {
                 <button
                   type="button"
                   onClick={() => navigate({ to: '/schedule' as never })}
-                  style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 500, color: '#185FA5', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                  style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 500, color: '#1877D6', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
                 >
                   Full schedule
                   <IconArrowRight size={13} stroke={2} />
@@ -5306,7 +5306,7 @@ function HomePage() {
                       borderRadius: 9,
                       border: 'none',
                       background: active ? '#FFFFFF' : 'transparent',
-                      color: active ? '#0F2044' : '#8A93A3',
+                      color: active ? '#0B1F3A' : '#8A93A3',
                       fontFamily: PF,
                       fontSize: 14,
                       fontWeight: active ? 500 : 400,
@@ -5335,15 +5335,15 @@ function HomePage() {
                   const dayLabel = tab === 'today' ? 'today' : 'tomorrow';
                   return (
                     <div style={{ background: '#FFFFFF', borderRadius: 10, border: '1px solid rgba(15,32,68,0.08)', padding: '20px 18px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-                      <div style={{ width: 44, height: 44, borderRadius: 8, background: 'linear-gradient(135deg, #185FA5, #0F2044)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ width: 44, height: 44, borderRadius: 8, background: 'linear-gradient(135deg, #1877D6, #0B1F3A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <IconBolt size={22} color="#FFFFFF" stroke={2} />
                       </div>
-                      <div style={{ fontSize: 15, fontWeight: 600, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Your day is wide open</div>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontFamily: 'Inter, sans-serif' }}>Your day is wide open</div>
                       <div style={{ fontSize: 13, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>{hours} hours free {dayLabel} — fill a gap before it goes to waste.</div>
                       <button
                         type="button"
                         onClick={() => navigate({ to: '/gaps' })}
-                        style={{ marginTop: 4, width: '100%', background: '#0F2044', color: '#FFFFFF', border: 'none', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer' }}
+                        style={{ marginTop: 4, width: '100%', background: '#0B1F3A', color: '#FFFFFF', border: 'none', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer' }}
                       >
                         <IconBolt size={16} color="#FFFFFF" stroke={2} />
                         Open gap filler
@@ -5373,7 +5373,7 @@ function HomePage() {
                 <div style={{ fontFamily: PF }}>
                   {/* Card header */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
-                    <div style={{ fontSize: 16, fontWeight: 500, color: '#0F2044', letterSpacing: -0.2 }}>{headerLabel}</div>
+                    <div style={{ fontSize: 16, fontWeight: 500, color: '#0B1F3A', letterSpacing: -0.2 }}>{headerLabel}</div>
                     <div style={{ fontSize: 13, color: '#8A93A3', fontWeight: 400 }}>
                       {lessonRows.length} lesson{lessonRows.length === 1 ? '' : 's'}
                     </div>
@@ -5412,7 +5412,7 @@ function HomePage() {
                               height: 12,
                               borderRadius: '50%',
                               background: '#E6F1FB',
-                              border: '2px solid #185FA5',
+                              border: '2px solid #1877D6',
                               boxSizing: 'border-box',
                             }}
                           />
@@ -5432,10 +5432,10 @@ function HomePage() {
                             }}
                           >
                             <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ fontSize: 13, fontWeight: 500, color: '#0F2044', fontVariantNumeric: 'tabular-nums' }}>
+                              <div style={{ fontSize: 13, fontWeight: 500, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums' }}>
                                 {fmtT(gs)} – {fmtT(ge)}
                               </div>
-                              <div style={{ fontSize: 11, color: '#185FA5', marginTop: 2 }}>
+                              <div style={{ fontSize: 11, color: '#1877D6', marginTop: 2 }}>
                                 {formatMins(r.mins)} free · £{potential} potential
                               </div>
                             </div>
@@ -5443,7 +5443,7 @@ function HomePage() {
                               type="button"
                               onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
                               style={{
-                                background: '#185FA5',
+                                background: '#1877D6',
                                 color: '#FFFFFF',
                                 fontSize: 12,
                                 fontWeight: 500,
@@ -5484,7 +5484,7 @@ function HomePage() {
                       );
                     } else if (isPrepaidPupil) {
                       priceNode = (
-                        <span style={{ fontSize: 13, fontWeight: 500, color: '#185FA5' }}>Prepaid</span>
+                        <span style={{ fontSize: 13, fontWeight: 500, color: '#1877D6' }}>Prepaid</span>
                       );
                     } else if (isPaid) {
                       priceNode = (
@@ -5492,7 +5492,7 @@ function HomePage() {
                       );
                     } else if (amt > 0) {
                       priceNode = (
-                        <span style={{ fontSize: 13, fontWeight: 500, color: '#0F2044', fontVariantNumeric: 'tabular-nums' }}>
+                        <span style={{ fontSize: 13, fontWeight: 500, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums' }}>
                           £{amt.toFixed(0)}
                         </span>
                       );
@@ -5509,7 +5509,7 @@ function HomePage() {
                             width: 12,
                             height: 12,
                             borderRadius: '50%',
-                            background: '#0F2044',
+                            background: '#0B1F3A',
                           }}
                         />
                         <div
@@ -5534,7 +5534,7 @@ function HomePage() {
                             style={{
                               position: 'relative',
                               width: 36, height: 36, borderRadius: 999,
-                              background: '#0F2044', color: '#FFFFFF',
+                              background: '#0B1F3A', color: '#FFFFFF',
                               display: 'flex', alignItems: 'center', justifyContent: 'center',
                               fontSize: 12, fontWeight: 500, letterSpacing: 0.2,
                               flexShrink: 0,
@@ -5569,11 +5569,11 @@ function HomePage() {
                           </div>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             {tab === 'next' && (
-                              <div style={{ fontSize: 11, fontWeight: 500, color: '#185FA5', marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
+                              <div style={{ fontSize: 11, fontWeight: 500, color: '#1877D6', marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
                                 {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
                               </div>
                             )}
-                            <div style={{ fontSize: 14, fontWeight: 500, color: '#0F2044', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            <div style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                               {name}
                             </div>
                             <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
@@ -5601,10 +5601,10 @@ function HomePage() {
               const quickTiles: QuickTile[] = [
                 // Page 1 — Daily essentials (spec)
                 { label: 'Fill slots', sub: 'Gaps', route: '/gaps', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0, badge: freeSlotCount },
-                { label: 'Schedule', sub: 'View diary', route: null, icon: IconCalendar, iconStroke: '#185FA5', chipBg: '#E6F1FB', wsIndex: 1 },
+                { label: 'Schedule', sub: 'View diary', route: null, icon: IconCalendar, iconStroke: '#1877D6', chipBg: '#E6F1FB', wsIndex: 1 },
                 { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, iconStroke: '#6B4FA0', chipBg: '#EAE3F5' },
                 { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} owed` : 'All settled', route: '/payments', icon: IconCurrencyPound, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0, badge: outstanding > 0 ? Math.round(outstanding) : undefined },
-                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#185FA5', chipBg: '#E6F1FB', attention: unreadCount > 0 },
+                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#1877D6', chipBg: '#E6F1FB', attention: unreadCount > 0 },
                 { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'running-late' },
                 // Page 2 — Teaching
                 { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
@@ -5698,7 +5698,7 @@ function HomePage() {
                         width: 8,
                         height: 8,
                         borderRadius: 999,
-                        background: '#A32D2D',
+                        background: '#CC2229',
                       }} />
                     )}
                     <div style={{
@@ -5712,7 +5712,7 @@ function HomePage() {
                     }} className="qa-icon">
                       <Icon size={17} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={1.8} />
                     </div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: '#0F2044', lineHeight: 1.2, marginBottom: 4, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 'calc(100% - 20px)' }}>{tile.label}</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.2, marginBottom: 4, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 'calc(100% - 20px)' }}>{tile.label}</div>
                     <div style={{ fontSize: 12, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 'calc(100% - 20px)', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: tile.sub.includes('\n') ? 1.3 : 1.3 }}>{tile.sub}</div>
                     <span style={{
                       position: 'absolute',
@@ -5726,7 +5726,7 @@ function HomePage() {
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}>
-                      <ChevronRight size={16} color="#0F2044" strokeWidth={2.2} />
+                      <ChevronRight size={16} color="#0B1F3A" strokeWidth={2.2} />
                     </span>
                   </button>
                 );
@@ -5749,7 +5749,7 @@ function HomePage() {
                   `}</style>
                   <div style={{ background: '#F7F8FA', margin: '16px -16px 0', padding: '18px 16px 20px', borderRadius: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                      <div style={{ fontSize: 18, color: '#0F2044', fontWeight: 700, fontFamily: "Inter, sans-serif" }}>Quick Access</div>
+                      <div style={{ fontSize: 18, color: '#0B1F3A', fontWeight: 700, fontFamily: "Inter, sans-serif" }}>Quick Access</div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{ display: 'flex', gap: 4 }}>
                           {Array.from({ length: totalPages }).map((_, i) => (
@@ -5760,7 +5760,7 @@ function HomePage() {
                                 width: quickPage === i ? 16 : 5,
                                 height: 5,
                                 borderRadius: 3,
-                                background: quickPage === i ? '#0F2044' : '#D6DCE5',
+                                background: quickPage === i ? '#0B1F3A' : '#D6DCE5',
                                 transition: 'all 0.25s ease',
                                 cursor: 'pointer',
                               }}
@@ -5778,7 +5778,7 @@ function HomePage() {
                           }}
                           aria-label="Search quick access"
                         >
-                          <IconSearch size={15} color="#0F2044" />
+                          <IconSearch size={15} color="#0B1F3A" />
                         </button>
                       </div>
                     </div>
@@ -5822,7 +5822,7 @@ function HomePage() {
                         }}
                       >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                          <div style={{ fontSize: 16, fontWeight: 700, color: '#0F2044' }}>Search tools</div>
+                          <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Search tools</div>
                           <button
                             type="button"
                             onClick={() => setQuickSearchOpen(false)}
@@ -5855,7 +5855,7 @@ function HomePage() {
                               outline: 'none',
                               background: 'transparent',
                               fontSize: 14,
-                              color: '#0F2044',
+                              color: '#0B1F3A',
                               fontFamily: 'Inter, sans-serif',
                             }}
                           />
@@ -5889,7 +5889,7 @@ function HomePage() {
                           <div style={{ width: 36, height: 36, borderRadius: 8, background: '#FBE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <IconClock size={20} color="#C23B3B" strokeWidth={1.8} />
                           </div>
-                          <div style={{ fontSize: 16, fontWeight: 700, color: '#0F2044' }}>Running late</div>
+                          <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Running late</div>
                         </div>
                         <div style={{ fontSize: 13, color: '#5A6B85', marginBottom: 16 }}>
                           Notify today's pupils you're running late. This will send a heads-up message to each pupil with a lesson later today.
@@ -5898,7 +5898,7 @@ function HomePage() {
                           <button
                             type="button"
                             onClick={() => setRunningLateOpen(false)}
-                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0F2044', fontSize: 14, fontWeight: 600, fontFamily: 'Inter, sans-serif', cursor: 'pointer' }}
+                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: 14, fontWeight: 600, fontFamily: 'Inter, sans-serif', cursor: 'pointer' }}
                           >
                             Cancel
                           </button>
@@ -5943,8 +5943,8 @@ function HomePage() {
         <div style={{ padding: "0 16px", marginTop: 16, fontFamily: "Inter, sans-serif" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <MessageSquare size={18} color="#0F2044" />
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>Messages</div>
+              <MessageSquare size={18} color="#0B1F3A" />
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>Messages</div>
               <span style={{ background: "#CC2229", color: "#FFFFFF", fontSize: 12, borderRadius: 999, padding: "2px 8px", fontWeight: 600 }}>
                 {unreadMsgs.length}
               </span>
@@ -5991,7 +5991,7 @@ function HomePage() {
 
                 </div>
                 <div style={{ paddingLeft: 10, flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#0F2044" }}>{displayName}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A" }}>{displayName}</div>
                   <div style={{ fontSize: 12, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {m.body || ""}
                   </div>
@@ -6225,7 +6225,7 @@ function HomePage() {
             <div className="flex items-center justify-between px-4 mb-3">
               <div className="flex items-center gap-2">
                 <IconGift size={20} color="#6B4FD6" />
-                <div className="text-[16px] font-semibold" style={{ color: '#0F2044' }}>
+                <div className="text-[16px] font-semibold" style={{ color: '#0B1F3A' }}>
                   {birthdayToday.length === 1 ? 'Birthday today' : `${birthdayToday.length} birthdays today`}
                 </div>
               </div>
@@ -6250,7 +6250,7 @@ function HomePage() {
                       {initials}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-[14px] font-semibold truncate" style={{ color: '#0F2044' }}>{displayName}</div>
+                      <div className="text-[14px] font-semibold truncate" style={{ color: '#0B1F3A' }}>{displayName}</div>
                       {age !== null && (
                         <div className="text-[12px]" style={{ color: '#9CA3AF' }}>{age} today 🎂</div>
                       )}
@@ -6268,7 +6268,7 @@ function HomePage() {
                       type="button"
                       onClick={() => { setBirthdaySheetOpen(false); navigate({ to: '/messages/$pupilId' as never, params: { pupilId: p.id } as never }); }}
                       className="flex-1 rounded-xl py-2.5 px-4 text-[13px] font-semibold"
-                      style={{ background: '#0F2044', color: '#FFFFFF', border: 'none', cursor: 'pointer' }}
+                      style={{ background: '#0B1F3A', color: '#FFFFFF', border: 'none', cursor: 'pointer' }}
                     >
                       💬 Message
                     </button>
@@ -6368,7 +6368,7 @@ function HeroExpandedPanel({
     fontFamily: 'Inter, sans-serif',
     fontSize: 12,
     fontWeight: 500,
-    color: '#0F2044',
+    color: '#0B1F3A',
   };
   const pillLabel: React.CSSProperties = { fontSize: 12, fontWeight: 500 };
   const sectionLabel: React.CSSProperties = {
@@ -6391,7 +6391,7 @@ function HeroExpandedPanel({
           aria-label="Call"
           style={{ flex: 1, background: '#FFFFFF', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', borderRadius: 9, padding: '8px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }}
         >
-          <Phone size={14} color="#0F2044" />
+          <Phone size={14} color="#0B1F3A" />
         </button>
         <button
           type="button"
@@ -6399,7 +6399,7 @@ function HeroExpandedPanel({
           aria-label="Text"
           style={{ flex: 1, background: '#FFFFFF', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', borderRadius: 9, padding: '8px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }}
         >
-          <IconMessageCircle size={14} color="#0F2044" />
+          <IconMessageCircle size={14} color="#0B1F3A" />
         </button>
         <button
           type="button"
@@ -6408,7 +6408,7 @@ function HeroExpandedPanel({
             if (!q) { toast('No pickup set'); return; }
             window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(q)}`, '_blank');
           }}
-          style={{ flex: 3, background: '#185FA5', color: '#FFFFFF', borderRadius: 9, padding: '8px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600, fontFamily: 'Inter, sans-serif' }}
+          style={{ flex: 3, background: '#1877D6', color: '#FFFFFF', borderRadius: 9, padding: '8px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600, fontFamily: 'Inter, sans-serif' }}
         >
           <Navigation size={14} color="#FFFFFF" />
           Navigate
@@ -6420,7 +6420,7 @@ function HeroExpandedPanel({
           style={pillBase}
           onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
         >
-          <MapPin size={16} color="#0F2044" />
+          <MapPin size={16} color="#0B1F3A" />
           <span style={pillLabel}>Here</span>
         </button>
         <button
@@ -6430,11 +6430,11 @@ function HeroExpandedPanel({
           }}
           onClick={() => { setGoingActive(true); sendSms(`Hi ${firstName}, on the way!`); }}
         >
-          <Send size={16} color="#0F2044" />
+          <Send size={16} color="#0B1F3A" />
           <span style={pillLabel}>Going</span>
         </button>
         <button style={pillBase} onClick={onOpenLate}>
-          <Clock size={16} color="#0F2044" />
+          <Clock size={16} color="#0B1F3A" />
           <span style={pillLabel}>Late</span>
         </button>
       </div>
@@ -6445,12 +6445,12 @@ function HeroExpandedPanel({
           style={pillBase}
           onClick={onOpenLesson}
         >
-          <ClipboardList size={16} color="#0F2044" />
+          <ClipboardList size={16} color="#0B1F3A" />
           <span style={pillLabel}>Prep</span>
         </button>
         <button
           onClick={(e) => { e.stopPropagation(); onEol(); }}
-          style={{ ...pillBase, background: '#A32D2D', color: '#FFFFFF' }}
+          style={{ ...pillBase, background: '#CC2229', color: '#FFFFFF' }}
         >
           <CheckCircle2 size={16} color="#FFFFFF" />
           <span style={{ ...pillLabel, color: '#FFFFFF' }}>EOL</span>
@@ -6460,7 +6460,7 @@ function HeroExpandedPanel({
             sendSms(`Hi ${firstName}, I'm outside and ready when you are! 🚗`);
             toast("Marked as arrived");
           }}
-          style={{ ...pillBase, background: '#185FA5', color: '#FFFFFF' }}
+          style={{ ...pillBase, background: '#1877D6', color: '#FFFFFF' }}
         >
           <CheckCheck size={16} color="#FFFFFF" />
           <span style={{ ...pillLabel, color: '#FFFFFF' }}>Arrived</span>
@@ -6473,17 +6473,17 @@ function HeroExpandedPanel({
         <div style={{ background: '#FFFFFF', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Inter, sans-serif', fontSize: 13 }}>
           {pickupPostcode ? (
             <>
-              <MapPin size={14} color="#0F2044" />
-              <span style={{ color: '#0F2044', fontWeight: 600 }}>{pickupPostcode}</span>
+              <MapPin size={14} color="#0B1F3A" />
+              <span style={{ color: '#0B1F3A', fontWeight: 600 }}>{pickupPostcode}</span>
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickupPostcode)}`}
                 target="_blank"
                 rel="noreferrer"
-                style={{ color: '#185FA5', fontWeight: 600, marginLeft: 'auto' }}
+                style={{ color: '#1877D6', fontWeight: 600, marginLeft: 'auto' }}
               >Navigate</a>
               <button
                 onClick={() => { navigator.clipboard?.writeText(pickupPostcode); toast("Copied"); }}
-                style={{ background: 'none', border: 'none', color: '#185FA5', fontWeight: 600, fontFamily: 'Inter, sans-serif', fontSize: 13, cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#1877D6', fontWeight: 600, fontFamily: 'Inter, sans-serif', fontSize: 13, cursor: 'pointer' }}
               >Copy</button>
             </>
           ) : (
@@ -6501,7 +6501,7 @@ function HeroExpandedPanel({
         const amount = balance;
 
         let label: string | null = null;
-        let fg = '#0F2044';
+        let fg = '#0B1F3A';
         let bg = '#FFFFFF';
         let showActions = false;
 
@@ -6528,7 +6528,7 @@ function HeroExpandedPanel({
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button
                     onClick={() => sendSms(`Hi ${firstName}, just a quick reminder that £${amount.toFixed(2)} is outstanding on your lesson account. Thanks!`)}
-                    style={{ background: '#FFFFFF', color: '#0F2044', fontSize: 12, fontWeight: 500, padding: '8px 12px', borderRadius: 9, border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
+                    style={{ background: '#FFFFFF', color: '#0B1F3A', fontSize: 12, fontWeight: 500, padding: '8px 12px', borderRadius: 9, border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
                   >Chase</button>
                   <button
                     onClick={() => navigateTo('/payments')}
@@ -6547,7 +6547,7 @@ function HeroExpandedPanel({
         {prev ? (
           <div style={{ background: '#FFFFFF', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 14, fontFamily: 'Inter, sans-serif' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: '#0F2044' }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A' }}>
                 {new Date(prev.lesson_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
               </span>
               <span style={{ fontSize: 10, fontWeight: 500, padding: '3px 9px', borderRadius: 999, color: '#5A6270', background: '#E9EDF2', textTransform: 'capitalize' }}>{prev.status}</span>
@@ -7770,7 +7770,7 @@ function DiscoverSection() {
   const headerTitle = {
     fontSize: 18,
     fontWeight: 700,
-    color: "#0F2044",
+    color: "#0B1F3A",
     fontFamily: "Inter, sans-serif",
   } as const;
 
@@ -7780,7 +7780,7 @@ function DiscoverSection() {
     gap: 4,
     fontSize: 13,
     fontWeight: 600,
-    color: "#185FA5",
+    color: "#1877D6",
     background: "none",
     border: "none",
     padding: 0,
@@ -7796,8 +7796,8 @@ function DiscoverSection() {
     cursor: "pointer",
   };
 
-  const gradientLive = "linear-gradient(135deg, #1877D6 0%, #0F2044 100%)";
-  const gradientMarket = "linear-gradient(135deg, #6B4FD6 0%, #185FA5 100%)";
+  const gradientLive = "linear-gradient(135deg, #1877D6 0%, #0B1F3A 100%)";
+  const gradientMarket = "linear-gradient(135deg, #6B4FD6 0%, #1877D6 100%)";
 
   const truncate: React.CSSProperties = {
     overflow: "hidden",
@@ -7868,7 +7868,7 @@ function DiscoverSection() {
                     }}
                   >
                     {isToday && (
-                      <span style={{ position: 'absolute', top: 4, left: 4, background: '#A32D2D', color: '#FFFFFF', fontSize: 7, fontWeight: 700, padding: '2px 5px', borderRadius: 4, letterSpacing: 0.4 }}>
+                      <span style={{ position: 'absolute', top: 4, left: 4, background: '#CC2229', color: '#FFFFFF', fontSize: 7, fontWeight: 700, padding: '2px 5px', borderRadius: 4, letterSpacing: 0.4 }}>
                         LIVE
                       </span>
                     )}
@@ -7877,11 +7877,11 @@ function DiscoverSection() {
                     <div style={{ fontSize: 8, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.3 }}>
                       {formatDiscoverDay(s.session_date)} {formatDiscoverMonth(s.session_date)} · {formatDiscoverTime(s.session_time)}
                     </div>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: '#0F2044', lineHeight: 1.2, ...truncate, marginTop: 2 }}>{s.title}</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.2, ...truncate, marginTop: 2 }}>{s.title}</div>
                     <div style={{ fontSize: 9, fontWeight: 600, color: '#3B6D11', marginTop: 3 }}>Free</div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px', flexShrink: 0 }}>
-                    <span style={{ background: '#185FA5', color: '#FFFFFF', fontSize: 11, fontWeight: 600, padding: '6px 10px', borderRadius: 7 }}>Join</span>
+                    <span style={{ background: '#1877D6', color: '#FFFFFF', fontSize: 11, fontWeight: 600, padding: '6px 10px', borderRadius: 7 }}>Join</span>
                   </div>
                 </div>
               );
