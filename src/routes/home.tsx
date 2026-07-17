@@ -5619,21 +5619,28 @@ function HomePage() {
 
               return (
                 <>
-                  <div style={{ margin: '16px 16px 0' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.04em', color: '#0F2044', fontWeight: 700 }}>QUICK ACCESS</div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <style>{`
+                    .qa-card:active { transform: scale(0.975); box-shadow: 0 1px 2px rgba(15,32,68,0.06), 0 4px 12px -6px rgba(15,32,68,0.10) !important; }
+                    .qa-card:active .qa-icon { transform: scale(0.92); }
+                    @keyframes qaRipple { 0% { transform: scale(0); opacity: 0.35; } 100% { transform: scale(2.6); opacity: 0; } }
+                    .qa-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at center, rgba(15,32,68,0.18) 0%, transparent 60%); opacity: 0; pointer-events: none; }
+                    .qa-card:active::after { animation: qaRipple 0.5s ease-out; }
+                  `}</style>
+                  <div style={{ background: '#F7F8FA', margin: '16px 0 0', padding: '18px 16px 20px', borderRadius: 0 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                      <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#0F2044', fontWeight: 800 }}>Quick Access</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{ display: 'flex', gap: 4 }}>
                           {Array.from({ length: totalPages }).map((_, i) => (
                             <div
                               key={i}
                               onClick={() => setQuickPage(i)}
                               style={{
-                                width: quickPage === i ? 14 : 4,
-                                height: 4,
-                                borderRadius: 2,
-                                background: quickPage === i ? '#0F2044' : '#DCE2EA',
-                                transition: 'all 0.2s ease',
+                                width: quickPage === i ? 16 : 5,
+                                height: 5,
+                                borderRadius: 3,
+                                background: quickPage === i ? '#0F2044' : '#D6DCE5',
+                                transition: 'all 0.25s ease',
                                 cursor: 'pointer',
                               }}
                             />
@@ -5642,10 +5649,15 @@ function HomePage() {
                         <button
                           type="button"
                           onClick={() => { setQuickSearchQuery(''); setQuickSearchOpen(true); }}
-                          style={{ background: 'none', border: 'none', padding: 0, marginLeft: 8, cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                          style={{
+                            width: 32, height: 32, borderRadius: 999,
+                            background: '#FFFFFF', border: 'none', padding: 0, marginLeft: 4, cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            boxShadow: '0 1px 2px rgba(15,32,68,0.06), 0 4px 10px -4px rgba(15,32,68,0.10)',
+                          }}
                           aria-label="Search quick access"
                         >
-                          <IconSearch size={16} color="#8A93A3" />
+                          <IconSearch size={15} color="#0F2044" />
                         </button>
                       </div>
                     </div>
@@ -5657,11 +5669,12 @@ function HomePage() {
                         if (dx > 50 && quickPage < totalPages - 1) setQuickPage((p) => p + 1);
                         if (dx < -50 && quickPage > 0) setQuickPage((p) => p - 1);
                       }}
-                      style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}
+                      style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}
                     >
                       {currentTiles.map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
                     </div>
                   </div>
+
 
                   {quickSearchOpen && (
                     <div
