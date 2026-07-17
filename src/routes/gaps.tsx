@@ -204,7 +204,6 @@ interface Pupil {
   phone: string | null;
   postcode: string | null;
   calendar_colour: string | null;
-  last_lesson_date: string | null;
 }
 
 interface Availability {
