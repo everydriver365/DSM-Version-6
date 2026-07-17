@@ -428,6 +428,11 @@ function GapsPage() {
   const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([]);
   const [instructorName, setInstructorName] = useState("Your instructor");
 
+  const [pendingSendQueue, setPendingSendQueue] = useState<Array<{ pupil: Ranked["pupil"]; body: string }>>([]);
+  const [pendingSendIndex, setPendingSendIndex] = useState(0);
+  const [pendingConfirmed, setPendingConfirmed] = useState(0);
+  const [pendingSkipped, setPendingSkipped] = useState(0);
+
   const [offers, setOffers] = useState<OfferRow[]>([]);
   const [offersOpen, setOffersOpen] = useState(false);
   const [monthlyRevenue, setMonthlyRevenue] = useState<number>(0);
@@ -1226,43 +1231,91 @@ function GapsPage() {
   async function bulkMessageSelected() {
     if (selectedPupilIds.size === 0 || !ranked || !userId) return;
     const selected = ranked.filter((r) => selectedPupilIds.has(r.pupil.id));
-    let sent = 0;
-    let appOnly = 0;
-    for (let i = 0; i < selected.length; i++) {
-      const r = selected[i];
+
+    const withBodies = selected.map((r) => {
       const first = firstNameOf(r.pupil);
       const body = messageTemplate
         .replace(/\{name\}/g, first)
         .replace(/\{instructor_name\}/g, instructorName);
-      const phone = r.pupil.phone || "";
+      return { pupil: r.pupil, body };
+    });
 
+    // 1. Insert in-app chat_messages for everyone immediately.
+    let chatSent = 0;
+    let appOnly = 0;
+    for (const { pupil, body } of withBodies) {
       const { error: chatErr } = await supabase.from("chat_messages").insert({
         instructor_id: userId,
-        pupil_id: r.pupil.id,
+        pupil_id: pupil.id,
         sender_type: "instructor",
         sender_id: userId,
         body,
       });
-      if (chatErr) console.error("[gaps] chat_messages insert failed:", chatErr);
-
-      if (phone) {
-        const href = `sms:${phone}?body=${encodeURIComponent(body)}`;
-        window.location.href = href;
-        await new Promise((resolve) => setTimeout(resolve, 500));
+      if (chatErr) {
+        console.error("[gaps] chat_messages insert failed:", chatErr);
       } else {
-        appOnly++;
+        chatSent++;
+        if (!pupil.phone) {
+          appOnly++;
+          void logOffer(pupil.id, "message");
+        }
       }
-      void logOffer(r.pupil.id, "sms");
-      sent++;
     }
-    if (appOnly > 0) {
-      toast.success(`Message sent to ${sent} pupil${sent === 1 ? "" : "s"} (${appOnly} by app only — no phone number)`);
-    } else {
-      toast.success(`Message sent to ${sent} pupil${sent === 1 ? "" : "s"}`);
-    }
+
     setMessageSheetOpen(false);
-    setSelectedPupilIds(new Set());
+
+    // 2. Queue up pupils with a phone for instructor-paced SMS handoff.
+    const smsQueue = withBodies.filter((x) => !!x.pupil.phone);
+    if (smsQueue.length === 0) {
+      toast.success(
+        appOnly > 0
+          ? `In-app message sent to ${chatSent} pupil${chatSent === 1 ? "" : "s"} (no phone numbers).`
+          : `Message sent to ${chatSent} pupil${chatSent === 1 ? "" : "s"}.`,
+      );
+      setSelectedPupilIds(new Set());
+      return;
+    }
+
+    setPendingConfirmed(0);
+    setPendingSkipped(0);
+    setPendingSendIndex(0);
+    setPendingSendQueue(smsQueue);
+    const first = smsQueue[0];
+    window.location.href = `sms:${first.pupil.phone}?body=${encodeURIComponent(first.body)}`;
   }
+
+  function advancePendingSend(next: number, confirmed: number, skipped: number) {
+    if (next >= pendingSendQueue.length) {
+      toast.success(
+        `SMS: ${confirmed} confirmed sent, ${skipped} skipped.`,
+      );
+      setPendingSendQueue([]);
+      setPendingSendIndex(0);
+      setPendingConfirmed(0);
+      setPendingSkipped(0);
+      setSelectedPupilIds(new Set());
+      return;
+    }
+    setPendingSendIndex(next);
+    setPendingConfirmed(confirmed);
+    setPendingSkipped(skipped);
+    const item = pendingSendQueue[next];
+    window.location.href = `sms:${item.pupil.phone}?body=${encodeURIComponent(item.body)}`;
+  }
+
+  function handlePendingSent() {
+    const item = pendingSendQueue[pendingSendIndex];
+    if (!item) return;
+    void logOffer(item.pupil.id, "sms");
+    advancePendingSend(pendingSendIndex + 1, pendingConfirmed + 1, pendingSkipped);
+  }
+
+  function handlePendingSkip() {
+    const item = pendingSendQueue[pendingSendIndex];
+    if (!item) return;
+    advancePendingSend(pendingSendIndex + 1, pendingConfirmed, pendingSkipped + 1);
+  }
+
 
 
   function handleMessage(r: Ranked) {
@@ -2505,9 +2558,69 @@ function GapsPage() {
           </button>
         </div>
       </BottomSheet>
+
+      {pendingSendQueue.length > 0 && pendingSendIndex < pendingSendQueue.length && (
+        <div
+          style={{
+            position: "fixed",
+            left: 12,
+            right: 12,
+            bottom: 12,
+            zIndex: 80,
+            background: NAVY,
+            color: "#FFFFFF",
+            borderRadius: 14,
+            padding: "12px 14px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 600 }}>
+              Text opened for {firstNameOf(pendingSendQueue[pendingSendIndex].pupil)} — confirm once sent
+            </div>
+            <div style={{ fontSize: 11, opacity: 0.75, marginTop: 2 }}>
+              {pendingSendIndex + 1} of {pendingSendQueue.length}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handlePendingSkip}
+            style={{
+              background: "transparent",
+              color: "#FFFFFF",
+              border: "1px solid rgba(255,255,255,0.4)",
+              borderRadius: 999,
+              padding: "8px 12px",
+              fontSize: 12,
+              fontWeight: 600,
+            }}
+          >
+            Skip
+          </button>
+          <button
+            type="button"
+            onClick={handlePendingSent}
+            style={{
+              background: "#22C580",
+              color: "#FFFFFF",
+              border: "none",
+              borderRadius: 999,
+              padding: "8px 14px",
+              fontSize: 12,
+              fontWeight: 700,
+            }}
+          >
+            Sent ✓
+          </button>
+        </div>
+      )}
     </div>
   );
 }
+
 
 function SummaryStats({
   dayGroups,
