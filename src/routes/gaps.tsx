@@ -2119,10 +2119,8 @@ function GapsPage() {
                   return next;
                 });
               }}
-              onText={() => handleText(r)}
-              onMessage={() => handleMessage(r)}
-              onBook={() => handleBook(r)}
             />
+
           ))}
         </div>
       )}
