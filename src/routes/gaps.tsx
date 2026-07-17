@@ -1098,28 +1098,56 @@ function GapsPage() {
     }
   }
 
-  function handleText(r: Ranked) {
+  function buildTextBody(r: Ranked): string {
     const first = firstNameOf(r.pupil);
     const matches = r.matchedSlots.filter((m) => m.match);
-    const offerSlots =
-      matches.length > 0 ? matches : r.matchedSlots;
-    let body: string;
+    const offerSlots = matches.length > 0 ? matches : r.matchedSlots;
     if (offerSlots.length === 1) {
       const s = offerSlots[0];
-      body = `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
-    } else {
-      const lines = offerSlots
-        .map(
-          (s) =>
-            `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`,
-        )
-        .join("\n");
-      body = `Hi ${first}, I have ${offerSlots.length} lesson slots available — would any of these suit you?\n${lines}\nReply with which one(s) you'd like and I'll get you booked in!`;
+      return `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
     }
+    const lines = offerSlots
+      .map(
+        (s) =>
+          `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`,
+      )
+      .join("\n");
+    return `Hi ${first}, I have ${offerSlots.length} lesson slots available — would any of these suit you?\n${lines}\nReply with which one(s) you'd like and I'll get you booked in!`;
+  }
+
+  function handleText(r: Ranked) {
+    const body = buildTextBody(r);
     const phone = r.pupil.phone || "";
     const href = `sms:${phone}?body=${encodeURIComponent(body)}`;
     window.location.href = href;
     void logOffer(r.pupil.id, "sms");
+  }
+
+  async function bulkText() {
+    if (selectedPupilIds.size === 0 || !ranked) return;
+    const selected = ranked.filter((r) => selectedPupilIds.has(r.pupil.id));
+    let sent = 0;
+    let skipped = 0;
+    for (let i = 0; i < selected.length; i++) {
+      const r = selected[i];
+      const phone = r.pupil.phone || "";
+      if (!phone) {
+        skipped++;
+        continue;
+      }
+      const body = buildTextBody(r);
+      const href = `sms:${phone}?body=${encodeURIComponent(body)}`;
+      window.location.href = href;
+      void logOffer(r.pupil.id, "sms");
+      sent++;
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    if (skipped > 0) {
+      toast.success(`Messages sent to ${sent} pupil${sent === 1 ? "" : "s"} (${skipped} skipped — no phone number)`);
+    } else {
+      toast.success(`Messages sent to ${sent} pupil${sent === 1 ? "" : "s"}`);
+    }
+    setSelectedPupilIds(new Set());
   }
 
   function handleMessage(r: Ranked) {
