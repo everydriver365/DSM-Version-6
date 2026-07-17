@@ -151,10 +151,9 @@ Deno.serve(async (req) => {
   const { error: insertError } = await supabase.from("chat_messages").insert({
     pupil_id: matched.id,
     instructor_id: matched.instructor_id,
-    direction: "inbound",
-    channel: "sms",
+    sender_type: "pupil",
+    sender_id: matched.id,
     body,
-    external_id: messageSid || null,
   });
 
   if (insertError) {
