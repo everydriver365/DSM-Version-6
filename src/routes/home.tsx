@@ -4871,7 +4871,7 @@ function HomePage() {
               <MessageSquare size={14} color="#6B4FD6" />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#0F2044' }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>
                 Local chat · {localRoom.area_name}
               </div>
               <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
