@@ -4548,13 +4548,13 @@ function HomePage() {
                 />
               )}
 
-              {/* ROUTE pill — top-left */}
+              {/* ROUTE pill — top-right */}
               {upcoming && directionsUrl && (
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); window.open(directionsUrl, '_blank'); }}
                   style={{
-                    position: 'absolute', top: 10, left: 10,
+                    position: 'absolute', top: 10, right: 10,
                     background: '#0B1F3A', color: '#FFFFFF',
                     border: 'none', borderRadius: 999,
                     padding: '6px 12px',
