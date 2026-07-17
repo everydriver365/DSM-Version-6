@@ -2099,6 +2099,15 @@ function GapsPage() {
               r={r}
               dayOfWeekLabel={dayOfWeekLabel}
               multi={searchSlots.length > 1}
+              selected={selectedPupilIds.has(r.pupil.id)}
+              onToggleSelect={() => {
+                setSelectedPupilIds((prev) => {
+                  const next = new Set(prev);
+                  if (next.has(r.pupil.id)) next.delete(r.pupil.id);
+                  else next.add(r.pupil.id);
+                  return next;
+                });
+              }}
               onText={() => handleText(r)}
               onMessage={() => handleMessage(r)}
               onBook={() => handleBook(r)}
