@@ -380,7 +380,7 @@ function NeedsAttentionSection({ items }: { items: NAItem[] }) {
   return (
     <div style={{ margin: '0 16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
+        <div style={{ fontSize: 18, fontWeight: 700, color: '#0F2044', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
         <div style={{ background: '#FCEBEB', color: '#A32D2D', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 999, fontFamily: 'Inter, sans-serif' }}>
           {active.length} urgent
         </div>
