@@ -71,6 +71,7 @@ function BroadcastPage() {
   const [weekIds, setWeekIds] = useState<Set<string>>(new Set());
   const [owedIds, setOwedIds] = useState<Set<string>>(new Set());
   const [listening, setListening] = useState(false);
+  const [instructorId, setInstructorId] = useState<string | null>(null);
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
@@ -78,6 +79,7 @@ function BroadcastPage() {
       const { data: auth } = await supabase.auth.getUser();
       const uid = auth?.user?.id;
       if (!uid) return;
+      setInstructorId(uid);
 
       const { data: inst } = await supabase
         .from("instructors")
@@ -217,14 +219,13 @@ function BroadcastPage() {
 
     const sendSms = method === "sms" || method === "both";
     const sendEmail = method === "email" || method === "both";
+    const smsRows: { instructor_id: string | null; pupil_phone: string; message: string }[] = [];
 
     for (let i = 0; i < recipients.length; i++) {
       const p = recipients[i];
       const body = personalize(message, p.name);
       if (sendSms && p.phone) {
-        const url = `sms:${p.phone}?body=${encodeURIComponent(body)}`;
-        window.location.href = url;
-        await new Promise((r) => setTimeout(r, 500));
+        smsRows.push({ instructor_id: instructorId, pupil_phone: p.phone, message: body });
       }
       if (sendEmail && p.email) {
         const url = `mailto:${p.email}?subject=${encodeURIComponent("Message from your driving instructor")}&body=${encodeURIComponent(body)}`;
@@ -233,7 +234,12 @@ function BroadcastPage() {
       }
     }
 
-    toast.success(`Messages sent to ${recipients.length} pupil${recipients.length === 1 ? "" : "s"}`);
+    if (smsRows.length > 0) {
+      const { error } = await supabase.from("sms_queue").insert(smsRows);
+      if (error) console.error("[broadcast] sms_queue insert failed:", error);
+    }
+
+    toast.success(`Messages queued for ${recipients.length} pupil${recipients.length === 1 ? "" : "s"} — sending shortly`);
     setTimeout(() => navigate({ to: "/home" }), 600);
   };
 
