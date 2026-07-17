@@ -1165,7 +1165,7 @@ function GapsPage() {
     const slots = searchSlots.length ? searchSlots : selectedSlots;
     let when = "[date] at [time]";
     if (slots.length === 1) {
-      when = `${fmtDateLong(slots[0].date)} at ${fmtTimeHm(slots[0].time)}`;
+      when = `${fmtDateLong(slots[0].date)} at ${fmtTimeHm(slots[0].time)} (${slots[0].duration} min)`;
     } else if (slots.length > 1) {
       const lines = slots
         .map((s) => `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`)
