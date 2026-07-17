@@ -995,7 +995,7 @@ function GapsPage() {
 
       const scored: Ranked[] = pupils.map((p) => {
         const s = availMap.get(p.id) || null;
-        const last = lastLessonMap.get(p.id) || p.last_lesson_date || null;
+        const last = lastLessonMap.get(p.id) || null;
         const matched: SlotMatch[] = slotsToScore.map((sl) =>
           scoreSlot(p, s, last, sl, nowMs),
         );
