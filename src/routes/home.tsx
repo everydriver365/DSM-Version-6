@@ -1855,16 +1855,19 @@ function HomePage() {
 
         let query = supabase
           .from('local_alerts')
-          .select('id, alert_type, description, location_name, upvotes, expires_at, created_at, area, outcode')
+          .select('id, alert_type, description, location_name, upvotes, expires_at, created_at, area, outcode, dismissed_by')
           .eq('is_active', true)
           .gt('expires_at', new Date().toISOString())
           .order('upvotes', { ascending: false })
-          .limit(3);
+          .limit(10);
         if (outcode) query = query.eq('outcode', outcode);
         const { data, error } = await query;
         if (cancelled) return;
         if (error) { setLocalAlerts([]); return; }
-        setLocalAlerts(Array.isArray(data) ? data : []);
+        const filtered = (Array.isArray(data) ? data : []).filter(
+          (a: any) => !Array.isArray(a?.dismissed_by) || !a.dismissed_by.includes(userId)
+        );
+        setLocalAlerts(filtered.slice(0, 3));
 
         // Local chat room + latest message
         if (outcode) {
@@ -4881,6 +4884,28 @@ function HomePage() {
                     </div>
                   </div>
                   <ChevronRight size={12} color="#D1D5DB" />
+                  <button
+                    type="button"
+                    aria-label="Dismiss alert"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const dismissed = Array.isArray(alert.dismissed_by) ? alert.dismissed_by : [];
+                      setLocalAlerts((prev) => (prev ?? []).filter((a: any) => a.id !== alert.id));
+                      if (!userId) return;
+                      supabase
+                        .from('local_alerts')
+                        .update({ dismissed_by: [...dismissed, userId] })
+                        .eq('id', alert.id)
+                        .then(({ error }) => { if (error) console.error('[local_alerts dismiss]', error); });
+                    }}
+                    style={{
+                      width: 24, height: 24, borderRadius: 6, background: 'transparent',
+                      border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: 'pointer', flexShrink: 0, marginLeft: 2,
+                    }}
+                  >
+                    <X size={14} color="#9CA3AF" />
+                  </button>
                 </div>
               );
             })}
