@@ -1161,6 +1161,50 @@ function GapsPage() {
     void logOffer(r.pupil.id, "sms");
   }
 
+  function buildDefaultTemplate(): string {
+    const slots = searchSlots.length ? searchSlots : selectedSlots;
+    let when = "[date] at [time]";
+    if (slots.length === 1) {
+      when = `${fmtDateLong(slots[0].date)} at ${fmtTimeHm(slots[0].time)}`;
+    } else if (slots.length > 1) {
+      const lines = slots
+        .map((s) => `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`)
+        .join("\n");
+      return `Hi {name}, I have a few lesson slots available — would any of these work for you?\n${lines}\n{instructor_name}`;
+    }
+    return `Hi {name}, I have a lesson slot available on ${when} — would this work for you? {instructor_name}`;
+  }
+
+  function openMessageSheet() {
+    setMessageTemplate(buildDefaultTemplate());
+    setSelectedDiscountId(null);
+    setMessageSheetOpen(true);
+  }
+
+  function discountLineFor(dc: DiscountCode): string {
+    const value =
+      dc.type === "percentage" ? `${dc.value}% off` : `£${dc.value} off`;
+    return `Use code ${dc.code} for ${value} this lesson!`;
+  }
+
+  const DISCOUNT_MARKER = "Use code ";
+  function applyDiscountToTemplate(dcId: string | null) {
+    setSelectedDiscountId(dcId);
+    setMessageTemplate((prev) => {
+      // strip any existing discount line
+      const stripped = prev
+        .split("\n")
+        .filter((l) => !l.trimStart().startsWith(DISCOUNT_MARKER))
+        .join("\n")
+        .replace(/\n{3,}/g, "\n\n")
+        .trimEnd();
+      if (!dcId) return stripped;
+      const dc = discountCodes.find((d) => d.id === dcId);
+      if (!dc) return stripped;
+      return `${stripped}\n\n${discountLineFor(dc)}`;
+    });
+  }
+
   async function bulkMessageSelected() {
     if (selectedPupilIds.size === 0 || !ranked || !userId) return;
     const selected = ranked.filter((r) => selectedPupilIds.has(r.pupil.id));
@@ -1168,7 +1212,10 @@ function GapsPage() {
     let appOnly = 0;
     for (let i = 0; i < selected.length; i++) {
       const r = selected[i];
-      const body = buildTextBody(r);
+      const first = firstNameOf(r.pupil);
+      const body = messageTemplate
+        .replace(/\{name\}/g, first)
+        .replace(/\{instructor_name\}/g, instructorName);
       const phone = r.pupil.phone || "";
 
       const { error: chatErr } = await supabase.from("chat_messages").insert({
@@ -1195,6 +1242,7 @@ function GapsPage() {
     } else {
       toast.success(`Message sent to ${sent} pupil${sent === 1 ? "" : "s"}`);
     }
+    setMessageSheetOpen(false);
     setSelectedPupilIds(new Set());
   }
 
