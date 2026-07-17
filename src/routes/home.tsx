@@ -1330,7 +1330,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             aria-hidden
             style={{ width: 8, height: 8, borderRadius: "50%", background: "#E24B4A", flexShrink: 0 }}
           />
-          <h2 style={{ margin: 0, fontFamily: POPPINS, fontSize: 18, fontWeight: 500, color: "#0F2044" }}>
+          <h2 style={{ margin: 0, fontFamily: "Inter, sans-serif", fontSize: 18, fontWeight: 700, color: "#0F2044" }}>
             DSM Live
           </h2>
         </div>
