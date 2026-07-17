@@ -35,6 +35,52 @@ interface ChatMessage {
   deleted_at: string | null;
 }
 
+interface PendingOffer {
+  id: string;
+  instructor_id: string;
+  pupil_id: string;
+  slot_date: string;
+  slot_time: string;
+  duration_minutes: number;
+  status: string;
+  sent_via: string | null;
+  discount_code_id: string | null;
+  discount_type: string | null;
+  discount_value: number | null;
+  original_price: number | null;
+  discounted_price: number | null;
+  created_at: string;
+}
+
+function formatSlotWhen(slotDate: string, slotTime: string): string {
+  try {
+    const d = new Date(`${slotDate}T${slotTime}`);
+    const dateStr = d.toLocaleDateString("en-GB", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    });
+    const timeStr = slotTime.slice(0, 5);
+    return `${dateStr} at ${timeStr}`;
+  } catch {
+    return `${slotDate} at ${slotTime}`;
+  }
+}
+
+const ACCEPT_WORDS = ["yes", "yeah", "yep", "yup", "sure", "ok", "okay", "confirm", "sounds good"];
+function looksLikeAcceptance(body: string): boolean {
+  const t = body.trim().toLowerCase();
+  if (!t) return false;
+  for (const w of ACCEPT_WORDS) {
+    if (t === w) return true;
+    if (t.startsWith(w)) {
+      const nextChar = t.charAt(w.length);
+      if (nextChar === "" || /[\s.!?,]/.test(nextChar)) return true;
+    }
+  }
+  return false;
+}
+
 function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("en-GB", {
     hour: "2-digit",
