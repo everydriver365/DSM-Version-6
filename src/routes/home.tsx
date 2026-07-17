@@ -5655,6 +5655,17 @@ function HomePage() {
                 const Icon = tile.icon;
                 const subColor = tile.attention ? '#C23B3B' : '#8A93A3';
                 const subWeight = tile.attention ? 600 : 500;
+                const chipBorderMap: Record<string, string> = {
+                  '#FBEBD3': '#F0D9B5',
+                  '#E6F1FB': '#C7DDF0',
+                  '#EAE3F5': '#DACCEE',
+                  '#DDEFE1': '#B9DDC3',
+                  '#FBE2E2': '#F0C4C4',
+                  '#EFE7FB': '#DDD0F5',
+                  '#EEF2F7': '#D8DEE8',
+                  '#D8F1EE': '#C4E7E3',
+                };
+                const chipBorder = chipBorderMap[tile.chipBg] ?? 'rgba(15,32,68,0.12)';
                 return (
                   <button
                     key={key}
@@ -5664,11 +5675,10 @@ function HomePage() {
                     style={{
                       position: 'relative',
                       background: '#FFFFFF',
-                      border: 'none',
-                      borderRadius: 24,
+                      border: '1px solid #E2E6ED',
+                      borderRadius: 10,
                       padding: '18px 18px 16px',
                       minHeight: 128,
-                      boxShadow: '0 1px 2px rgba(15,32,68,0.04), 0 8px 24px -12px rgba(15,32,68,0.10)',
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'flex-start',
@@ -5680,38 +5690,27 @@ function HomePage() {
                       overflow: 'hidden',
                     }}
                   >
+                    {tile.attention && (
+                      <span style={{
+                        position: 'absolute',
+                        top: 10,
+                        right: 10,
+                        width: 8,
+                        height: 8,
+                        borderRadius: 999,
+                        background: '#A32D2D',
+                      }} />
+                    )}
                     <div style={{
-                      width: 46, height: 46, borderRadius: 14,
+                      width: 34, height: 34, borderRadius: 8,
                       background: tile.chipBg,
+                      border: `1px solid ${chipBorder}`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       marginBottom: 16,
                       position: 'relative',
                       transition: 'transform 0.15s ease',
                     }} className="qa-icon">
-                      <Icon size={22} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={1.8} />
-                      {(tile.badge ?? 0) > 0 && (
-                        <span style={{
-                          position: 'absolute',
-                          top: -6,
-                          right: -6,
-                          minWidth: 20,
-                          height: 20,
-                          padding: '0 6px',
-                          borderRadius: 999,
-                          background: '#FF3B30',
-                          color: '#FFFFFF',
-                          fontSize: 10,
-                          fontWeight: 700,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          boxShadow: '0 2px 6px rgba(255,59,48,0.35), 0 0 0 2px #FFFFFF',
-                          fontFamily: 'Inter, sans-serif',
-                          lineHeight: 1,
-                        }}>
-                          {tile.badge}
-                        </span>
-                      )}
+                      <Icon size={17} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={1.8} />
                     </div>
                     <div style={{ fontSize: 15, fontWeight: 700, color: '#0F2044', lineHeight: 1.2, marginBottom: 4, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 'calc(100% - 20px)' }}>{tile.label}</div>
                     <div style={{ fontSize: 12, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 'calc(100% - 20px)', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: tile.sub.includes('\n') ? 1.3 : 1.3 }}>{tile.sub}</div>
@@ -5726,7 +5725,6 @@ function HomePage() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      boxShadow: '0 1px 2px rgba(15,32,68,0.06), 0 4px 10px -4px rgba(15,32,68,0.10)',
                     }}>
                       <ChevronRight size={16} color="#0F2044" strokeWidth={2.2} />
                     </span>
