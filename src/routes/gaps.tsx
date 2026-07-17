@@ -2299,88 +2299,88 @@ function GapsPage() {
         )}
       </div>
 
-      {selectedSlots.length > 0 && (
-        <>
-          <div style={{ height: selectedPupilIds.size > 0 ? 168 : 108 }} />
-          {selectedPupilIds.size > 0 && (
-            <div
-              style={{
-                position: "fixed",
-                bottom: 148,
-                left: 0,
-                right: 0,
-                padding: "14px 20px",
-                background: "rgba(15,32,68,0.95)",
-                backdropFilter: "blur(8px)",
-                WebkitBackdropFilter: "blur(8px)",
-                borderTop: `1px solid ${NAVY}`,
-                zIndex: 50,
-              }}
-            >
-              <button
-                onClick={openMessageSheet}
-                style={{
-                  width: "100%",
-                  background: "#FFFFFF",
-                  color: NAVY,
-                  fontWeight: 700,
-                  fontSize: 15,
-                  borderRadius: 16,
-                  border: "none",
-                  padding: "14px 20px",
-                  cursor: "pointer",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                }}
-              >
-                Message {selectedPupilIds.size} selected →
-              </button>
-            </div>
-          )}
-          <div
+      {(selectedSlots.length > 0 || selectedPupilIds.size > 0) && (
+        <div style={{ height: selectedPupilIds.size > 0 ? 168 : 108 }} />
+      )}
+      {selectedPupilIds.size > 0 && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 148,
+            left: 0,
+            right: 0,
+            padding: "14px 20px",
+            background: "rgba(15,32,68,0.95)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            borderTop: `1px solid ${NAVY}`,
+            zIndex: 50,
+          }}
+        >
+          <button
+            onClick={openMessageSheet}
             style={{
-              position: "fixed",
-              bottom: 80,
-              left: 0,
-              right: 0,
+              width: "100%",
+              background: "#FFFFFF",
+              color: NAVY,
+              fontWeight: 700,
+              fontSize: 15,
+              borderRadius: 16,
+              border: "none",
               padding: "14px 20px",
-              background: "rgba(255,255,255,0.92)",
-              backdropFilter: "blur(8px)",
-              WebkitBackdropFilter: "blur(8px)",
-              borderTop: `1px solid ${BORDER}`,
-              zIndex: 50,
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
             }}
           >
-            <button
-              onClick={() => void findPupils()}
-              disabled={loading}
-              style={{
-                width: "100%",
-                background: BLUE_BRIGHT,
-                color: "#FFFFFF",
-                fontWeight: 700,
-                fontSize: 15,
-                borderRadius: 16,
-                border: "none",
-                padding: "14px 20px",
-                cursor: "pointer",
-                opacity: loading ? 0.6 : 1,
-                boxShadow:
-                  "0 8px 20px rgba(59, 130, 246, 0.28)",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}
-            >
-              {loading
-                ? "Finding…"
-                : `Find pupils for ${selectedSlots.length} slot${selectedSlots.length === 1 ? "" : "s"} →`}
-            </button>
-          </div>
-        </>
+            Message {selectedPupilIds.size} selected →
+          </button>
+        </div>
+      )}
+      {selectedSlots.length > 0 && ranked === null && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 80,
+            left: 0,
+            right: 0,
+            padding: "14px 20px",
+            background: "rgba(255,255,255,0.92)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            borderTop: `1px solid ${BORDER}`,
+            zIndex: 50,
+          }}
+        >
+          <button
+            onClick={() => void findPupils()}
+            disabled={loading}
+            style={{
+              width: "100%",
+              background: BLUE_BRIGHT,
+              color: "#FFFFFF",
+              fontWeight: 700,
+              fontSize: 15,
+              borderRadius: 16,
+              border: "none",
+              padding: "14px 20px",
+              cursor: "pointer",
+              opacity: loading ? 0.6 : 1,
+              boxShadow:
+                "0 8px 20px rgba(59, 130, 246, 0.28)",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+            }}
+          >
+            {loading
+              ? "Finding…"
+              : `Find pupils for ${selectedSlots.length} slot${selectedSlots.length === 1 ? "" : "s"} →`}
+          </button>
+        </div>
       )}
 
       <BottomSheet
