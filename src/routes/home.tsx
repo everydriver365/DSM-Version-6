@@ -4961,7 +4961,10 @@ function HomePage() {
         const nowT = new Date();
         const fmt24 = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 
-        type Row = { kind: 'lesson'; l: LessonRow } | { kind: 'gap'; start: Date; mins: number };
+        type Row =
+          | { kind: 'lesson'; l: LessonRow }
+          | { kind: 'gap'; start: Date; mins: number }
+          | { kind: 'calendar'; title: string; start: Date; end: Date };
         const rows: Row[] = [];
         for (let i = 0; i < sorted.length; i++) {
           const l = sorted[i];
@@ -4997,6 +5000,28 @@ function HomePage() {
             if (afterMins >= 60) rows.push({ kind: 'gap', start: lastEnd, mins: afterMins });
           }
         }
+
+        // Insert calendar blocks for today/tomorrow (not 'next' — blocksForDate isn't computed for arbitrary future dates).
+        if (tab === 'today' || tab === 'tomorrow') {
+          const baseDate = tab === 'today' ? todayStart : tomorrowStart;
+          const blocks = tab === 'today' ? todayBlocks : tomorrowBlocks;
+          for (const b of blocks) {
+            const s = new Date(baseDate);
+            s.setHours(0, 0, 0, 0);
+            s.setMinutes(b.start);
+            const e = new Date(baseDate);
+            e.setHours(0, 0, 0, 0);
+            e.setMinutes(b.end);
+            rows.push({ kind: 'calendar', title: b.title, start: s, end: e });
+          }
+        }
+
+        // Re-sort chronologically so lessons, gaps, and calendar events interleave in real time order.
+        rows.sort((a, b) => {
+          const at = a.kind === 'lesson' ? lessonDateTime(a.l).getTime() : a.start.getTime();
+          const bt = b.kind === 'lesson' ? lessonDateTime(b.l).getTime() : b.start.getTime();
+          return at - bt;
+        });
 
         const todayGapCount = rows.filter((r) => r.kind === 'gap').length;
 
