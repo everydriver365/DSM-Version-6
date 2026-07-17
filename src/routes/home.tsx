@@ -1151,7 +1151,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         </div>
                       ))}
                     </div>
-                    <div style={{ height: 1, background: "#E2E6ED", marginTop: 6, marginBottom: 6 }} />
                     <button
                       type="button"
                       style={{
