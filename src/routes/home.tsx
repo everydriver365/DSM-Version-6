@@ -4884,6 +4884,28 @@ function HomePage() {
                     </div>
                   </div>
                   <ChevronRight size={12} color="#D1D5DB" />
+                  <button
+                    type="button"
+                    aria-label="Dismiss alert"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const dismissed = Array.isArray(alert.dismissed_by) ? alert.dismissed_by : [];
+                      setLocalAlerts((prev) => (prev ?? []).filter((a: any) => a.id !== alert.id));
+                      if (!userId) return;
+                      supabase
+                        .from('local_alerts')
+                        .update({ dismissed_by: [...dismissed, userId] })
+                        .eq('id', alert.id)
+                        .then(({ error }) => { if (error) console.error('[local_alerts dismiss]', error); });
+                    }}
+                    style={{
+                      width: 24, height: 24, borderRadius: 6, background: 'transparent',
+                      border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: 'pointer', flexShrink: 0, marginLeft: 2,
+                    }}
+                  >
+                    <X size={14} color="#9CA3AF" />
+                  </button>
                 </div>
               );
             })}
