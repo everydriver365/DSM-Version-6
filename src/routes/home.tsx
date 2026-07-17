@@ -966,7 +966,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
             MARKETPLACE
           </div>
           <div style={{ fontSize: 20, fontWeight: 700, color: "#0F2044", lineHeight: 1.2 }}>
-            Featured Services
+            DSM Marketplace
           </div>
         </div>
         <button
