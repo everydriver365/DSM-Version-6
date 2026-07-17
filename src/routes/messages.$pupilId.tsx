@@ -182,6 +182,152 @@ function PupilThreadPage() {
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages]);
 
+  // Detect likely acceptance on the most recent pupil message and look up a pending offer.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!messages.length) {
+        if (!cancelled) setPendingOffer(null);
+        return;
+      }
+      const last = messages[messages.length - 1];
+      if (last.sender_type !== "pupil" || !looksLikeAcceptance(last.body ?? "")) {
+        if (!cancelled) setPendingOffer(null);
+        return;
+      }
+      const { data, error } = await supabase
+        .from("gap_filler_offers")
+        .select("*")
+        .eq("pupil_id", pupilId)
+        .eq("status", "sent")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) {
+        console.error("[pupil-thread] pending offer lookup failed:", error);
+        if (!cancelled) setPendingOffer(null);
+        return;
+      }
+      if (!cancelled) setPendingOffer((data as unknown as PendingOffer) ?? null);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [messages, pupilId]);
+
+  async function handleConfirmBook() {
+    if (!pendingOffer || !userId || booking) return;
+    setBooking(true);
+    try {
+      // a) Resolve pricing + optional discount validity
+      let amountDue: number | null = pendingOffer.original_price;
+      let discountInvalid = false;
+      let discountToIncrement: { id: string; uses_count: number | null } | null = null;
+
+      if (pendingOffer.discount_code_id) {
+        const { data: dc, error: dcErr } = await supabase
+          .from("discount_codes")
+          .select("*")
+          .eq("id", pendingOffer.discount_code_id)
+          .maybeSingle();
+        if (dcErr) {
+          console.error("[pupil-thread] discount fetch failed:", dcErr);
+          throw dcErr;
+        }
+        const now = Date.now();
+        const expired =
+          dc?.expires_at ? new Date(dc.expires_at as string).getTime() < now : false;
+        const overUsed =
+          dc?.max_uses != null && (dc.uses_count ?? 0) >= (dc.max_uses as number);
+        if (!dc || dc.active === false || expired || overUsed) {
+          discountInvalid = true;
+          amountDue = pendingOffer.original_price;
+        } else {
+          amountDue = pendingOffer.discounted_price ?? pendingOffer.original_price;
+          discountToIncrement = {
+            id: dc.id as string,
+            uses_count: (dc.uses_count as number | null) ?? 0,
+          };
+        }
+      }
+
+      // b) Insert lesson
+      const { error: lessonErr } = await supabase.from("lessons").insert({
+        instructor_id: userId,
+        pupil_id: pupilId,
+        lesson_date: pendingOffer.slot_date,
+        lesson_time: pendingOffer.slot_time,
+        duration_minutes: pendingOffer.duration_minutes,
+        status: "confirmed",
+        amount_due: amountDue,
+        payment_status: "unpaid",
+      });
+      if (lessonErr) {
+        console.error("[pupil-thread] lesson insert failed:", lessonErr);
+        throw lessonErr;
+      }
+
+      // Increment discount uses_count after successful lesson insert
+      if (discountToIncrement) {
+        const { error: incErr } = await supabase
+          .from("discount_codes")
+          .update({ uses_count: (discountToIncrement.uses_count ?? 0) + 1 })
+          .eq("id", discountToIncrement.id);
+        if (incErr) console.error("[pupil-thread] discount increment failed:", incErr);
+      }
+
+      // c) Update offer row
+      const { error: offerErr } = await supabase
+        .from("gap_filler_offers")
+        .update({ status: "accepted", accepted_at: new Date().toISOString() })
+        .eq("id", pendingOffer.id);
+      if (offerErr) {
+        console.error("[pupil-thread] offer update failed:", offerErr);
+        throw offerErr;
+      }
+
+      const when = formatSlotWhen(pendingOffer.slot_date, pendingOffer.slot_time);
+      const displayName = pupil?.name ?? pupil?.first_name ?? "Pupil";
+
+      // d) Instructor notification
+      const { error: notifErr } = await supabase.from("instructor_notifications").insert({
+        instructor_id: userId,
+        title: "Lesson booked!",
+        body: `${displayName} confirmed ${when}`,
+        type: "lesson",
+        read: false,
+      });
+      if (notifErr) console.error("[pupil-thread] notification insert failed:", notifErr);
+
+      // e) Confirmation chat message
+      const confirmationBody = `Great news — you're booked in for ${when}! See you then.`;
+      const { error: chatErr } = await supabase.from("chat_messages").insert({
+        instructor_id: userId,
+        pupil_id: pupilId,
+        sender_type: "instructor",
+        sender_id: userId,
+        body: confirmationBody,
+      });
+      if (chatErr) console.error("[pupil-thread] confirmation message insert failed:", chatErr);
+
+      // f) Success
+      if (discountInvalid) {
+        toast.success(
+          "Booked — note: the discount code was no longer valid, full price applied",
+        );
+      } else {
+        toast.success(`Lesson booked for ${when}`);
+      }
+      setPendingOffer(null);
+      setBooking(false);
+    } catch (err) {
+      console.error("[pupil-thread] confirm & book failed:", err);
+      toast.error("Something went wrong booking this lesson — please check and try again");
+      setBooking(false);
+    }
+  }
+
+
   async function handleSend() {
     const body = messageText.trim();
     if (!body || sending || !userId) return;
