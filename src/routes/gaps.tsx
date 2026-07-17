@@ -958,16 +958,14 @@ function GapsPage() {
   useEffect(() => {
     if (!userId) return;
     (async () => {
-      const { data: inst } = await supabase
+      const { data: inst, error: instErr } = await supabase
         .from("instructors")
-        .select("name, first_name, last_name")
+        .select("name")
         .eq("id", userId)
         .maybeSingle();
+      if (instErr) console.error("[gaps] instructor name fetch failed:", instErr);
       if (inst) {
-        const n =
-          (inst as any).name ||
-          `${(inst as any).first_name ?? ""} ${(inst as any).last_name ?? ""}`.trim();
-        setInstructorName(n || "Your instructor");
+        setInstructorName(inst.name || "Your instructor");
       }
       const { data: dcs, error: dcErr } = await supabase
         .from("discount_codes")
@@ -1194,16 +1192,18 @@ function GapsPage() {
 
   function buildDefaultTemplate(): string {
     const slots = searchSlots.length ? searchSlots : selectedSlots;
+    const cta = "Reply YES to confirm, or let me know if another time works better!";
     let when = "[date] at [time]";
     if (slots.length === 1) {
       when = `${fmtDateLong(slots[0].date)} at ${fmtTimeHm(slots[0].time)} (${slots[0].duration} min)`;
+      return `Hi {name}, I have a lesson slot available on ${when} — would this work for you? ${cta} {instructor_name}`;
     } else if (slots.length > 1) {
       const lines = slots
         .map((s) => `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`)
         .join("\n");
-      return `Hi {name}, I have a few lesson slots available — would any of these work for you?\n${lines}\n{instructor_name}`;
+      return `Hi {name}, I have a few lesson slots available — would any of these work for you?\n${lines}\n${cta} {instructor_name}`;
     }
-    return `Hi {name}, I have a lesson slot available on ${when} — would this work for you? {instructor_name}`;
+    return `Hi {name}, I have a lesson slot available on ${when} — would this work for you? ${cta} {instructor_name}`;
   }
 
   function openMessageSheet() {
