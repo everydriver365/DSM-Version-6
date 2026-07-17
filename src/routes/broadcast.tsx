@@ -79,6 +79,7 @@ function BroadcastPage() {
       const { data: auth } = await supabase.auth.getUser();
       const uid = auth?.user?.id;
       if (!uid) return;
+      setInstructorId(uid);
 
       const { data: inst } = await supabase
         .from("instructors")
