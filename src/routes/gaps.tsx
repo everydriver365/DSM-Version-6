@@ -2413,7 +2413,7 @@ function GapsPage() {
             left: 0,
             right: 0,
             padding: "14px 20px",
-            background: "rgba(15,32,68,0.95)",
+            background: "rgba(11,31,58,0.95)",
             backdropFilter: "blur(8px)",
             WebkitBackdropFilter: "blur(8px)",
             borderTop: `1px solid ${NAVY}`,

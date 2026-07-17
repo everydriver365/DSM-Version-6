@@ -1602,7 +1602,7 @@ function SchedulePage() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 4px 10px rgba(15,32,68,0.3)',
+          boxShadow: '0 4px 10px rgba(11,31,58,0.3)',
           zIndex: 50,
         }}
         aria-label="Add lesson"
@@ -1616,7 +1616,7 @@ function SchedulePage() {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(15,32,68,0.5)',
+            background: 'rgba(11,31,58,0.5)',
             zIndex: 100,
             display: 'flex',
             alignItems: 'flex-end',
