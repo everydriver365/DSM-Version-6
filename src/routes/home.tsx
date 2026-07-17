@@ -5689,7 +5689,7 @@ function HomePage() {
                   `}</style>
                   <div style={{ background: '#F7F8FA', margin: '16px -16px 0', padding: '18px 16px 20px', borderRadius: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                      <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#0F2044', fontWeight: 800 }}>Quick Access</div>
+                      <div style={{ fontSize: 18, color: '#0F2044', fontWeight: 700, fontFamily: "Inter, sans-serif" }}>Quick Access</div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{ display: 'flex', gap: 4 }}>
                           {Array.from({ length: totalPages }).map((_, i) => (
