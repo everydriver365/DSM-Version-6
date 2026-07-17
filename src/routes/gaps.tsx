@@ -408,6 +408,11 @@ function GapsPage() {
   const [ranked, setRanked] = useState<Ranked[] | null>(null);
   const [selectedPupilIds, setSelectedPupilIds] = useState<Set<string>>(new Set());
   const [searchSlots, setSearchSlots] = useState<SelectedSlot[]>([]);
+  const [messageSheetOpen, setMessageSheetOpen] = useState(false);
+  const [messageTemplate, setMessageTemplate] = useState("");
+  const [selectedDiscountId, setSelectedDiscountId] = useState<string | null>(null);
+  const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([]);
+  const [instructorName, setInstructorName] = useState("Your instructor");
 
   const [offers, setOffers] = useState<OfferRow[]>([]);
   const [offersOpen, setOffersOpen] = useState(false);
