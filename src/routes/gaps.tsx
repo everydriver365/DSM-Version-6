@@ -1293,7 +1293,11 @@ function GapsPage() {
       return { pupil: r.pupil, body };
     });
 
-    // 1. Insert in-app chat_messages for everyone immediately.
+    const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
+    const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
+    const discount = dc ? { type: dc.type as "percentage" | "fixed", value: Number(dc.value) } : undefined;
+
+    // 1. Insert in-app chat_messages for everyone immediately + log offers.
     for (const { pupil, body } of withBodies) {
       const { error: chatErr } = await supabase.from("chat_messages").insert({
         instructor_id: userId,
@@ -1304,6 +1308,9 @@ function GapsPage() {
       });
       if (chatErr) {
         console.error("[gaps] chat_messages insert failed:", chatErr);
+      }
+      for (const s of slotsForOffer) {
+        void logOffer(pupil.id, "message", { date: s.date, time: s.time, duration: s.duration }, discount);
       }
     }
 
