@@ -1021,11 +1021,10 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   display: "flex",
                   flexDirection: "column",
                   minWidth: 0,
-                  height: 300,
                 }}
               >
                 {/* Hero image */}
-                <div style={{ position: "relative", height: 120, overflow: "hidden", borderRadius: "12px 12px 0 0" }}>
+                <div style={{ position: "relative", height: 96, overflow: "hidden", borderRadius: "12px 12px 0 0" }}>
                   {img ? (
                     <img
                       src={img}
@@ -1152,7 +1151,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         </div>
                       ))}
                     </div>
-                    <div style={{ height: 1, background: "#E2E6ED", marginTop: 6, marginBottom: 6 }} />
                     <button
                       type="button"
                       style={{
