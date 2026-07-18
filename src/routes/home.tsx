@@ -994,8 +994,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     <div
       style={{
         margin: "0 -16px",
-        padding: "28px 0 28px",
-        background: "#F5F7FB",
+        padding: "20px 0 22px",
+        background: PAGE_BACKGROUND,
         fontFamily: "'Poppins', 'Inter', sans-serif",
       }}
     >
@@ -1026,14 +1026,14 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "0 22px",
-          marginBottom: 16,
+          padding: "0 16px",
+          marginBottom: 12,
           gap: 12,
         }}
       >
         <div
           style={{
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: 600,
             color: "#072B47",
             lineHeight: 1.2,
@@ -1050,8 +1050,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
             background: "#072B47",
             border: "none",
             borderRadius: 999,
-            padding: "9px 16px",
-            fontSize: 12,
+            padding: "8px 14px",
+            fontSize: 11,
             fontWeight: 600,
             color: "#FFFFFF",
             cursor: "pointer",
@@ -1087,11 +1087,11 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
             className="mkt-scroll"
             style={{
               display: "flex",
-              gap: 14,
+              gap: 12,
               overflowX: "auto",
               scrollSnapType: "x mandatory",
-              padding: "6px 22px 14px",
-              scrollPaddingLeft: 22,
+              padding: "4px 16px 12px",
+              scrollPaddingLeft: 16,
             }}
           >
             {cards.map((tile, idx) => {
@@ -1106,14 +1106,14 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   className="mkt-card"
                   onClick={() => openListing(tile.id)}
                   style={{
-                    flex: "0 0 82%",
+                    flex: "0 0 70%",
                     scrollSnapAlign: "start",
                     background: "#FFFFFF",
-                    borderRadius: 24,
+                    borderRadius: 20,
                     overflow: "hidden",
                     boxShadow: isActive
-                      ? "0 18px 40px -14px rgba(7, 43, 71, 0.22), 0 4px 10px rgba(7, 43, 71, 0.06)"
-                      : "0 8px 20px -10px rgba(7, 43, 71, 0.14), 0 2px 6px rgba(7, 43, 71, 0.05)",
+                      ? "0 14px 28px -10px rgba(7, 43, 71, 0.18), 0 4px 8px rgba(7, 43, 71, 0.05)"
+                      : "0 6px 14px -8px rgba(7, 43, 71, 0.12), 0 2px 4px rgba(7, 43, 71, 0.04)",
                     cursor: "pointer",
                     display: "flex",
                     flexDirection: "column",
@@ -1122,12 +1122,12 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     transformOrigin: "center center",
                   }}
                 >
-                  {/* Hero image 16:9 */}
+                  {/* Hero image 16:10 */}
                   <div
                     style={{
                       position: "relative",
                       width: "100%",
-                      aspectRatio: "16 / 9",
+                      aspectRatio: "16 / 10",
                       overflow: "hidden",
                       background: "#EAEEF5",
                     }}
@@ -1162,13 +1162,13 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     <span
                       style={{
                         position: "absolute",
-                        top: 14,
-                        left: 14,
+                        top: 12,
+                        left: 12,
                         background: "#2563EB",
                         color: "#FFFFFF",
-                        padding: "6px 12px",
+                        padding: "5px 10px",
                         borderRadius: 999,
-                        fontSize: 11,
+                        fontSize: 10,
                         fontWeight: 600,
                         letterSpacing: "0.02em",
                         boxShadow: "0 6px 14px rgba(37, 99, 235, 0.35)",
@@ -1182,7 +1182,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   {/* Body */}
                   <div
                     style={{
-                      padding: "16px 18px 16px",
+                      padding: "12px 12px 12px",
                       display: "flex",
                       flexDirection: "column",
                       minWidth: 0,
@@ -1190,11 +1190,11 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   >
                     <div
                       style={{
-                        fontSize: 17,
+                        fontSize: 16,
                         fontWeight: 600,
                         color: "#072B47",
                         lineHeight: 1.25,
-                        marginBottom: 4,
+                        marginBottom: 3,
                         letterSpacing: "-0.01em",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
@@ -1205,10 +1205,10 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     </div>
                     <div
                       style={{
-                        fontSize: 13,
+                        fontSize: 12,
                         color: "#6B7A90",
                         lineHeight: 1.35,
-                        marginBottom: 12,
+                        marginBottom: 10,
                         display: "-webkit-box",
                         WebkitLineClamp: 1,
                         WebkitBoxOrient: "vertical",
@@ -1223,7 +1223,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                       style={{
                         height: 1,
                         background: "rgba(7, 43, 71, 0.08)",
-                        marginBottom: 12,
+                        marginBottom: 10,
                       }}
                     />
                     <div
@@ -1239,11 +1239,11 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                           <span
                             key={i}
                             style={{
-                              fontSize: 11.5,
+                              fontSize: 11,
                               color: "#334A63",
                               fontWeight: 500,
                               background: "#EEF2F8",
-                              padding: "5px 10px",
+                              padding: "4px 8px",
                               borderRadius: 999,
                               whiteSpace: "nowrap",
                               fontFamily: "'Poppins', 'Inter', sans-serif",
@@ -1259,7 +1259,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                           background: "transparent",
                           border: 0,
                           padding: 0,
-                          fontSize: 13,
+                          fontSize: 12,
                           fontWeight: 600,
                           color: "#2563EB",
                           cursor: "pointer",
@@ -1284,7 +1284,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 6,
-                marginTop: 6,
+                marginTop: 4,
               }}
             >
               {cards.slice(0, Math.min(cards.length, 8)).map((_, i) => {
@@ -1293,8 +1293,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   <span
                     key={i}
                     style={{
-                      width: active ? 18 : 6,
-                      height: 6,
+                      width: active ? 16 : 5,
+                      height: 5,
                       borderRadius: 999,
                       background: active ? "#072B47" : "rgba(7, 43, 71, 0.2)",
                       transition: "all 250ms ease",
