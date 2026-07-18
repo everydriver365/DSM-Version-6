@@ -534,6 +534,58 @@ function SchedulePage() {
     };
   }, [rangeStart, rangeEnd]);
 
+  // Fetch all pupils + availability once for the lightweight per-gap preview.
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const [pupilsRes, availRes] = await Promise.all([
+        supabase
+          .from("pupils")
+          .select("id,name,first_name,last_name,phone,postcode,calendar_colour,custom_rate,custom_rate_90,custom_rate_120")
+          .eq("instructor_id", userId)
+          .eq("status", "active")
+          .is("deleted_at", null),
+        supabase
+          .from("pupil_ready_to_learn_settings")
+          .select("*")
+          .eq("instructor_id", userId),
+      ]);
+      if (pupilsRes.error) console.error("[schedule] pupils query failed:", pupilsRes.error);
+      if (availRes.error) console.error("[schedule] availability query failed:", availRes.error);
+      setAllPupils(pupilsRes.data ?? []);
+      setAllAvailability(availRes.data ?? []);
+    })();
+  }, [userId]);
+
+  function previewMatchForGap(gap: {
+    date: string;
+    dayName: string;
+    durationMin: number;
+  }): { count: number; topPupils: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> } {
+    if (!allPupils.length || !allAvailability.length) {
+      return { count: 0, topPupils: [] };
+    }
+    const availByPupil = new Map<string, any>();
+    for (const a of allAvailability) {
+      if (a.pupil_id) availByPupil.set(a.pupil_id, a);
+    }
+    const slotStart = new Date(`${gap.date}T12:00:00`).getTime();
+    const hoursUntilSlot = (slotStart - Date.now()) / 3600000;
+    const matched: any[] = [];
+    for (const p of allPupils) {
+      const s = availByPupil.get(p.id);
+      if (!s) continue;
+      const availDays: string[] = s.available_days || [];
+      if (!availDays.includes(gap.dayName)) continue;
+      const minDuration = s.preferred_duration_minutes ?? 60;
+      if (gap.durationMin < minDuration) continue;
+      const minNoticeHours = s.min_notice_hours ?? 24;
+      if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
+      matched.push(p);
+    }
+    return { count: matched.length, topPupils: matched.slice(0, 3) };
+  }
+
   const handleSync = useCallback(async () => {
     if (!userId) return;
     setSyncing(true);
