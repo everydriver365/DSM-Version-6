@@ -12,6 +12,7 @@ import {
   IconArrowRight,
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
+import { useMinGapMinutes } from "../lib/gapPrefs";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/schedule")({
