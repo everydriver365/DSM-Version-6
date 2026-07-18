@@ -5091,51 +5091,83 @@ function HomePage() {
         const rows: Row[] = [];
         const whStartStr = workingHours?.start_time ? String(workingHours.start_time) : '09:00';
         const whEndStr = workingHours?.end_time ? String(workingHours.end_time) : '18:00';
-        const [whSh, whSm] = whStartStr.split(':').map(Number);
-        const [whEh, whEm] = whEndStr.split(':').map(Number);
-        for (let i = 0; i < sorted.length; i++) {
-          const l = sorted[i];
-          rows.push({ kind: 'lesson', l });
-          const next = sorted[i + 1];
-          if (!next) continue;
-          // Skip cross-day gaps: overnight isn't "free time".
-          if (l.lesson_date !== next.lesson_date) continue;
-          const endThis = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
-          const afterBuf = (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) || 0;
-          const rawGapStart = new Date(endThis.getTime() + afterBuf * 60000);
-          const rawNextStart = lessonDateTime(next);
-          // Clamp to that day's working-hours window.
-          const dayWorkStart = new Date(rawGapStart);
-          dayWorkStart.setHours(whSh || 9, whSm || 0, 0, 0);
-          const dayWorkEnd = new Date(rawGapStart);
-          dayWorkEnd.setHours(whEh || 18, whEm || 0, 0, 0);
-          const gapStart = new Date(Math.max(rawGapStart.getTime(), dayWorkStart.getTime()));
-          const gapEnd = new Date(Math.min(rawNextStart.getTime(), dayWorkEnd.getTime()));
-          const mins = Math.round((gapEnd.getTime() - gapStart.getTime()) / 60000);
-          if (mins >= minGapMinutes) rows.push({ kind: 'gap', start: gapStart, mins });
-        }
-        // Before-first and after-last gaps against the working day (today only).
-        if (tab === 'today' && sorted.length > 0) {
-          const dayKeysArr = ['sun','mon','tue','wed','thu','fri','sat'] as const;
-          const todayDayKey = dayKeysArr[new Date().getDay()];
-          const worksToday = workingHours ? Boolean((workingHours as any)[todayDayKey]) : true;
-          if (worksToday) {
-            const startStr = workingHours?.start_time ? String(workingHours.start_time) : '09:00';
-            const endStr = workingHours?.end_time ? String(workingHours.end_time) : '18:00';
-            const [sh, sm] = startStr.split(':').map(Number);
-            const [eh, em] = endStr.split(':').map(Number);
-            const workStart = new Date(); workStart.setHours(sh || 9, sm || 0, 0, 0);
-            const workEnd = new Date(); workEnd.setHours(eh || 18, em || 0, 0, 0);
-            const firstL = sorted[0];
-            const firstStart = lessonDateTime(firstL);
-            const beforeMins = Math.round((firstStart.getTime() - workStart.getTime()) / 60000);
-            if (beforeMins >= minGapMinutes) rows.unshift({ kind: 'gap', start: workStart, mins: beforeMins });
-            const lastL = sorted[sorted.length - 1];
-            const lastEnd = new Date(lessonDateTime(lastL).getTime() + (lastL.duration_minutes ?? 60) * 60000);
-            const afterMins = Math.round((workEnd.getTime() - lastEnd.getTime()) / 60000);
-            if (afterMins >= minGapMinutes) rows.push({ kind: 'gap', start: lastEnd, mins: afterMins });
+
+        // Resolve per-day working hours for today/tomorrow from per_day_hours if present.
+        const resolveDayHours = (d: Date): { start: string; end: string } => {
+          const dayKeys = ['sun','mon','tue','wed','thu','fri','sat'] as const;
+          const dayKeyToName: Record<string, string> = {
+            sun: 'Sunday', mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday',
+            thu: 'Thursday', fri: 'Friday', sat: 'Saturday',
+          };
+          const name = dayKeyToName[dayKeys[d.getDay()]];
+          const perDay = (workingHours as Record<string, unknown> | null | undefined)?.per_day_hours as Record<string, { start?: string; end?: string; active?: boolean }> | null | undefined;
+          const cfg = perDay?.[name];
+          if (cfg?.active === false) return { start: whStartStr, end: whStartStr }; // zero-width window → no gaps
+          return { start: cfg?.start || whStartStr, end: cfg?.end || whEndStr };
+        };
+
+        if (tab === 'today' || tab === 'tomorrow') {
+          const baseDate = tab === 'today' ? todayStart : tomorrowStart;
+          const dateStr = tab === 'today' ? todayISO : tomorrowISO;
+          const isToday = tab === 'today';
+          const { start: dayStart, end: dayEnd } = resolveDayHours(baseDate);
+
+          // Emit lesson rows.
+          for (const l of sorted) rows.push({ kind: 'lesson', l });
+
+          // Compute gaps via the shared canonical implementation (subtracts calendar blocks correctly).
+          const computed = computeDayGaps({
+            dayLessons: sorted.map((l) => ({
+              lesson_time: l.lesson_time || '',
+              duration_minutes: l.duration_minutes ?? 60,
+              status: l.status,
+              bufferAfterMinutes: (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) ?? null,
+            })),
+            calendarBlocks: (calendarBlocks || []).map((b) => ({
+              start_datetime: b.start_datetime,
+              end_datetime: b.end_datetime,
+              title: b.title,
+            })),
+            recurringBlocks: [],
+            dayTimeOff: [],
+            dayStart,
+            dayEnd,
+            instructorBufferAfter,
+            dateStr,
+            isToday,
+            minGapMinutes,
+          });
+          for (const g of computed) {
+            const s = new Date(baseDate);
+            s.setHours(0, 0, 0, 0);
+            s.setMinutes(g.startMins);
+            rows.push({ kind: 'gap', start: s, mins: g.gapMins });
+          }
+        } else {
+          // 'next' tab: lesson-to-lesson only (calendar blocks not fetched for arbitrary future dates).
+          const [whSh, whSm] = whStartStr.split(':').map(Number);
+          const [whEh, whEm] = whEndStr.split(':').map(Number);
+          for (let i = 0; i < sorted.length; i++) {
+            const l = sorted[i];
+            rows.push({ kind: 'lesson', l });
+            const next = sorted[i + 1];
+            if (!next) continue;
+            if (l.lesson_date !== next.lesson_date) continue;
+            const endThis = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
+            const afterBuf = (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) || 0;
+            const rawGapStart = new Date(endThis.getTime() + afterBuf * 60000);
+            const rawNextStart = lessonDateTime(next);
+            const dayWorkStart = new Date(rawGapStart);
+            dayWorkStart.setHours(whSh || 9, whSm || 0, 0, 0);
+            const dayWorkEnd = new Date(rawGapStart);
+            dayWorkEnd.setHours(whEh || 18, whEm || 0, 0, 0);
+            const gapStart = new Date(Math.max(rawGapStart.getTime(), dayWorkStart.getTime()));
+            const gapEnd = new Date(Math.min(rawNextStart.getTime(), dayWorkEnd.getTime()));
+            const mins = Math.round((gapEnd.getTime() - gapStart.getTime()) / 60000);
+            if (mins >= minGapMinutes) rows.push({ kind: 'gap', start: gapStart, mins });
           }
         }
+
 
         // Insert calendar blocks for today/tomorrow (not 'next' — blocksForDate isn't computed for arbitrary future dates).
         if (tab === 'today' || tab === 'tomorrow') {
