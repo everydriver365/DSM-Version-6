@@ -3282,55 +3282,44 @@ function HomePage() {
 
   function computeFreeMinutes(
     dateLessons: LessonRow[],
-    dateBlocks: { start: number; end: number }[],
+    rawCalendarBlocks: Array<{ start_datetime: string; end_datetime: string; title: string | null }>,
+    dateStr: string,
+    isToday: boolean,
     startTimeStr: string,
     endTimeStr: string | null,
     bufferAfter: number,
     pupilBuf: Record<string, { before: number | null; after: number | null }>
   ) {
-    const startMins = timeToMins(startTimeStr);
-    const endMins = timeToMins(endTimeStr ?? "18:00");
-    const resolveAfter = (pid: string | null | undefined) =>
-      pid && pupilBuf[pid]?.after != null ? (pupilBuf[pid].after as number) : bufferAfter;
-    type Busy = { start: number; end: number };
-    const busy: Busy[] = [];
-    for (const l of dateLessons) {
-      const s = lessonDateTime(l);
-      const startM = s.getHours() * 60 + s.getMinutes();
-      const endM = startM + (l.duration_minutes ?? 60) + resolveAfter(l.pupil_id);
-      busy.push({ start: startM, end: endM });
-    }
-    for (const b of dateBlocks) busy.push({ start: b.start, end: b.end + bufferAfter });
-    busy.sort((a, b) => a.start - b.start);
-    const merged: Busy[] = [];
-    for (const iv of busy) {
-      const tail = merged[merged.length - 1];
-      if (tail && iv.start <= tail.end) {
-        tail.end = Math.max(tail.end, iv.end);
-      } else {
-        merged.push({ ...iv });
-      }
-    }
-    if (merged.length === 0) {
-      const span = Math.max(0, endMins - startMins);
-      return { count: Math.floor(span / minGapMinutes), totalMinutes: span };
-    }
-    let count = 0;
+    if (!endTimeStr) return { count: 0, totalMinutes: 0 };
+    const gaps = computeDayGaps({
+      dayLessons: dateLessons.map((l) => ({
+        lesson_time: l.lesson_time || "",
+        duration_minutes: l.duration_minutes ?? 60,
+        status: l.status,
+        bufferAfterMinutes: (l.pupil_id && typeof pupilBuf[l.pupil_id]?.after === "number" ? (pupilBuf[l.pupil_id].after as number) : null),
+      })),
+      calendarBlocks: (rawCalendarBlocks || []).map((b) => ({
+        start_datetime: b.start_datetime,
+        end_datetime: b.end_datetime,
+        title: b.title,
+      })),
+      recurringBlocks: [],
+      dayTimeOff: [],
+      dayStart: startTimeStr,
+      dayEnd: endTimeStr,
+      instructorBufferAfter: bufferAfter,
+      dateStr,
+      isToday,
+      minGapMinutes,
+    });
     let totalMinutes = 0;
-    const consider = (gap: number) => {
-      if (gap >= minGapMinutes) { count++; totalMinutes += gap; }
-    };
-    consider(merged[0].start - startMins);
-    for (let i = 0; i < merged.length - 1; i++) {
-      consider(merged[i + 1].start - merged[i].end);
-    }
-    consider(endMins - merged[merged.length - 1].end);
-    return { count, totalMinutes };
+    for (const g of gaps) totalMinutes += g.gapMins;
+    return { count: gaps.length, totalMinutes };
   }
 
   const startTimeStr = workingHours?.start_time ? String(workingHours.start_time) : "09:00";
   const { count: freeSlotCount, totalMinutes: totalFreeMinutesToday } = computeFreeMinutes(
-    todayLessons, todayBlocks, startTimeStr, todayEndTime, instructorBufferAfter, pupilBufferMap
+    todayLessons, calendarBlocks, todayISO, true, startTimeStr, todayEndTime, instructorBufferAfter, pupilBufferMap
   );
 
   const tomorrowEndTime = (() => {
@@ -3350,7 +3339,7 @@ function HomePage() {
   })();
 
   const { totalMinutes: totalFreeMinutesTomorrow } = computeFreeMinutes(
-    tomorrowLessons, tomorrowBlocks, startTimeStr, tomorrowEndTime, instructorBufferAfter, pupilBufferMap
+    tomorrowLessons, calendarBlocks, tomorrowISO, false, startTimeStr, tomorrowEndTime, instructorBufferAfter, pupilBufferMap
   );
 
 
