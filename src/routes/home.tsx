@@ -1491,6 +1491,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
               if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(featured.id); }
             }}
             style={{
+              width: "69%",
               background: "#FFFFFF",
               borderRadius: 16,
               overflow: "hidden",
