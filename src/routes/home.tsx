@@ -1593,8 +1593,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
               if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(secondary.id); }
             }}
             style={{
-              flex: "0 0 69%",
-              scrollSnapAlign: "start",
+              width: "69%",
               background: "#FFFFFF",
               borderRadius: 16,
               overflow: "hidden",
