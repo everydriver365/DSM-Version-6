@@ -1515,11 +1515,11 @@ function SchedulePage() {
 
                                   {isBlockRow ? (
                                     <>
-                                      <div style={{ width: 56, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                                        <div style={{ fontSize: 17, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                                      <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
+                                        <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
                                           {fmtTime(e.start)}
                                         </div>
-                                        <div style={{ fontSize: 12, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                                        <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
                                           {(() => {
                                             const durMin = Math.max(0, Math.round((e.end.getTime() - e.start.getTime()) / 60000));
                                             const h = Math.floor(durMin / 60);
@@ -1531,7 +1531,7 @@ function SchedulePage() {
                                       <div
                                         aria-hidden
                                         style={{
-                                          width: 4,
+                                          width: 3,
                                           borderRadius: 2,
                                           background: Date.now() >= e.end.getTime() ? '#34A853' : '#1877D6',
                                           flexShrink: 0,
@@ -1541,7 +1541,7 @@ function SchedulePage() {
                                       <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                                         <div
                                           style={{
-                                            fontSize: 15,
+                                            fontSize: 14,
                                             fontWeight: 600,
                                             color: '#0B1F3A',
                                             whiteSpace: 'nowrap',
@@ -1553,7 +1553,7 @@ function SchedulePage() {
                                         >
                                           {title}
                                         </div>
-                                        <div style={{ fontSize: 13, color: '#6B7280', marginTop: 4 }}>
+                                        <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>
                                           Google Calendar
                                         </div>
                                       </div>
