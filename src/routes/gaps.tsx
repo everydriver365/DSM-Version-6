@@ -3124,30 +3124,15 @@ function GapsPage() {
                       return nm.toLowerCase().includes(q);
                     });
 
-                    const dayName = DAYS[new Date(bookNowSlot.date + "T00:00:00").getDay()];
-                    const startMin = hmToMin(bookNowSlot.time);
-                    const durationMin = bookNowSlot.duration;
-                    const slotStart = new Date(`${bookNowSlot.date}T${bookNowSlot.time}:00`).getTime();
-                    const hoursUntilSlot = (slotStart - Date.now()) / 3600000;
-
-                    const availMap = new Map<string, Availability>();
-                    for (const a of allAvailability) {
-                      if (a.pupil_id) availMap.set(a.pupil_id, a);
-                    }
-
-                    const matchedIds = new Set<string>();
-                    for (const p of allPupils) {
-                      const s = availMap.get(p.id);
-                      if (!s) continue;
-                      const availDays = s.available_days || [];
-                      if (!availDays.includes(dayName)) continue;
-                      const minDuration = s.preferred_duration_minutes ?? 60;
-                      if (durationMin < minDuration) continue;
-                      if (!slotFitsPupilWindow(startMin, durationMin, s)) continue;
-                      const minNoticeHours = s.min_notice_hours ?? 24;
-                      if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
-                      matchedIds.add(p.id);
-                    }
+                    const matchResult = previewMatchForGap({
+                      date: bookNowSlot.date,
+                      dayName: DAYS[new Date(bookNowSlot.date + "T00:00:00").getDay()],
+                      startMin: hmToMin(bookNowSlot.time),
+                      durationMin: bookNowSlot.duration,
+                      allPupils,
+                      allAvailability,
+                    });
+                    const matchedIds = new Set(matchResult.allMatched.map((p) => p.id));
 
                     const matchedPupils = filtered.filter((p) => matchedIds.has(p.id));
                     const otherPupils = filtered.filter((p) => !matchedIds.has(p.id));
