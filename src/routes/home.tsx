@@ -3858,7 +3858,7 @@ function HomePage() {
     if (!allPupils.length || !allAvailability.length) {
       return { count: 0, topPupils: [] };
     }
-    const availByPupil = new Map<string, PupilReadySetting>();
+    const availByPupil = new (globalThis.Map)<string, PupilReadySetting>();
     for (const a of allAvailability) {
       if (a.pupil_id) availByPupil.set(a.pupil_id, a);
     }
