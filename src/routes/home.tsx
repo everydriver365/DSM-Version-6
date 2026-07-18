@@ -1092,6 +1092,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
               scrollSnapType: "x mandatory",
               padding: "4px 16px 12px",
               scrollPaddingLeft: 16,
+              scrollPaddingRight: 16,
             }}
           >
             {cards.map((tile, idx) => {
@@ -1103,28 +1104,30 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   className="mkt-card"
                   onClick={() => openListing(tile.id)}
                   style={{
-                    flex: "0 0 70%",
+                    flex: "0 0 46%",
                     scrollSnapAlign: "start",
                     background: "#FFFFFF",
                     borderRadius: 20,
                     overflow: "hidden",
                     boxShadow: isActive
-                      ? "0 14px 28px -10px rgba(7, 43, 71, 0.18), 0 4px 8px rgba(7, 43, 71, 0.05)"
-                      : "0 6px 14px -8px rgba(7, 43, 71, 0.12), 0 2px 4px rgba(7, 43, 71, 0.04)",
+                      ? "0 8px 16px -6px rgba(7, 43, 71, 0.14), 0 2px 4px rgba(7, 43, 71, 0.04)"
+                      : "0 4px 10px -6px rgba(7, 43, 71, 0.10), 0 1px 3px rgba(7, 43, 71, 0.03)",
                     cursor: "pointer",
                     display: "flex",
                     flexDirection: "column",
                     minWidth: 0,
+                    height: 148,
+                    maxHeight: 148,
                     transform: isActive ? "scale(1)" : "scale(0.96)",
                     transformOrigin: "center center",
                   }}
                 >
-                  {/* Hero image 16:10 */}
+                  {/* Hero image 16:7 */}
                   <div
                     style={{
                       position: "relative",
                       width: "100%",
-                      aspectRatio: "16 / 10",
+                      aspectRatio: "16 / 7",
                       overflow: "hidden",
                       background: "#EAEEF5",
                     }}
@@ -1161,50 +1164,46 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   {/* Body */}
                   <div
                     style={{
-                      padding: "12px 12px 12px",
+                      padding: "10px 10px 8px",
                       display: "flex",
                       flexDirection: "column",
                       minWidth: 0,
+                      flex: 1,
+                      justifyContent: "space-between",
                     }}
                   >
-                    <div
-                      style={{
-                        fontSize: 16,
-                        fontWeight: 600,
-                        color: "#072B47",
-                        lineHeight: 1.25,
-                        marginBottom: 3,
-                        letterSpacing: "-0.01em",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {tile.title}
+                    <div style={{ minWidth: 0 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#072B47",
+                          lineHeight: 1.2,
+                          marginBottom: 2,
+                          letterSpacing: "-0.01em",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {tile.title}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#6B7A90",
+                          lineHeight: 1.3,
+                          display: "-webkit-box",
+                          WebkitLineClamp: 1,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {tile.marketplace_categories?.name
+                          ? `${tile.marketplace_categories.name} for driving instructors`
+                          : "Premium service for driving instructors"}
+                      </div>
                     </div>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: "#6B7A90",
-                        lineHeight: 1.35,
-                        marginBottom: 10,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 1,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {tile.marketplace_categories?.name
-                        ? `${tile.marketplace_categories.name} for driving instructors`
-                        : "Premium service for driving instructors"}
-                    </div>
-                    <div
-                      style={{
-                        height: 1,
-                        background: "rgba(7, 43, 71, 0.08)",
-                        marginBottom: 10,
-                      }}
-                    />
                     <div
                       style={{
                         display: "flex",
