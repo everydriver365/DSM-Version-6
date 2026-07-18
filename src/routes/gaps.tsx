@@ -828,7 +828,7 @@ function GapsPage() {
             const effEnd = rawEnd;
             const clampedStart = Math.max(effStart, wsMin);
             const clampedEnd = Math.min(effEnd, weMin);
-            if (clampedEnd - clampedStart >= 60) {
+            if (clampedEnd - clampedStart >= minGap) {
               gaps.push({
                 start: clampedStart,
                 end: clampedEnd,
@@ -847,7 +847,7 @@ function GapsPage() {
           const tailStart = rawCursor + tailLeftReserve;
           const clampedTailStart = Math.max(tailStart, wsMin);
           const clampedTailEnd = weMin;
-          if (clampedTailEnd - clampedTailStart >= 60) {
+          if (clampedTailEnd - clampedTailStart >= minGap) {
             gaps.push({
               start: clampedTailStart,
               end: clampedTailEnd,
@@ -867,7 +867,7 @@ function GapsPage() {
               if (gStart >= g.end) continue; // slot fully in the past / too soon
             }
             const gapMinutes = g.end - gStart;
-            if (gapMinutes < 60) continue;
+            if (gapMinutes < minGap) continue;
             const possible = [60, 90, 120].filter((d) => d <= gapMinutes);
             if (!possible.length) continue;
             const slot: FreeSlot = {
