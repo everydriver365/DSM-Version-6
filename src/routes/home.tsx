@@ -1444,65 +1444,61 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       {/* Section header */}
       <div
         style={{
-          margin: "0 16px 14px",
+          margin: "0 16px 10px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           gap: 12,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
           <div
             aria-hidden
             style={{
-              width: 40, height: 40, borderRadius: 12, background: "#0B1F3A",
+              width: 28, height: 28, borderRadius: 8, background: "#0B1F3A",
               display: "inline-flex", alignItems: "center", justifyContent: "center",
               flexShrink: 0,
             }}
           >
-            <IconPlayerPlay size={18} stroke={2} color="#FFFFFF" />
+            <IconPlayerPlay size={13} stroke={2} color="#FFFFFF" />
           </div>
-          <div style={{ minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ position: "relative", width: 6, height: 6 }}>
-                <span
-                  aria-hidden
-                  style={{
-                    position: "absolute", inset: 0, borderRadius: "50%",
-                    background: "#E24B4A", animation: "dsmLivePulse 1.6s ease-out infinite",
-                  }}
-                />
-                <span
-                  aria-hidden
-                  style={{
-                    position: "absolute", inset: 0, borderRadius: "50%", background: "#E24B4A",
-                  }}
-                />
-              </span>
-              <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.18em", color: "#E24B4A", textTransform: "uppercase" }}>
-                Live now
-              </span>
-            </div>
-            <h2 style={{ margin: 0, fontFamily: POPPINS, fontSize: 20, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.15 }}>
-              DSM Live
-            </h2>
-          </div>
+          <h2 style={{ margin: 0, fontFamily: POPPINS, fontSize: 15, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.1 }}>
+            DSM Live
+          </h2>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, marginLeft: 2 }}>
+            <span style={{ position: "relative", width: 5, height: 5 }}>
+              <span
+                aria-hidden
+                style={{
+                  position: "absolute", inset: 0, borderRadius: "50%",
+                  background: "#E24B4A", animation: "dsmLivePulse 1.6s ease-out infinite",
+                }}
+              />
+              <span
+                aria-hidden
+                style={{ position: "absolute", inset: 0, borderRadius: "50%", background: "#E24B4A" }}
+              />
+            </span>
+            <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.16em", color: "#E24B4A", textTransform: "uppercase" }}>
+              Live
+            </span>
+          </span>
         </div>
         <button
           type="button"
           onClick={() => navigate({ to: "/dsm-live" as never })}
           style={{
             background: "none", border: "none", padding: 0, cursor: "pointer",
-            color: "#6B7A90", fontSize: 12, fontWeight: 600, fontFamily: POPPINS,
-            display: "inline-flex", alignItems: "center", gap: 4, flexShrink: 0,
+            color: "#6B7A90", fontSize: 11, fontWeight: 600, fontFamily: POPPINS,
+            display: "inline-flex", alignItems: "center", gap: 2, flexShrink: 0,
           }}
         >
           View all
-          <IconChevronRight size={14} stroke={2} />
+          <IconChevronRight size={12} stroke={2} />
         </button>
       </div>
 
-      <div style={{ margin: "0 16px", display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ margin: "0 16px", display: "flex", flexDirection: "column", gap: 8 }}>
         {/* Featured session card */}
         {featured && (
           <div
@@ -1514,15 +1510,17 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             }}
             style={{
               background: "#FFFFFF",
-              borderRadius: 30,
+              borderRadius: 18,
               overflow: "hidden",
-              boxShadow: "0 15px 40px -20px rgba(11,31,58,0.18)",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               cursor: "pointer",
               userSelect: "none",
               fontFamily: POPPINS,
+              display: "flex",
+              alignItems: "stretch",
             }}
           >
-            <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 9", background: "#0B1F3A" }}>
+            <div style={{ position: "relative", width: 96, flexShrink: 0, background: "#0B1F3A" }}>
               {featured.image_url ? (
                 <img
                   src={featured.image_url}
@@ -1533,82 +1531,62 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   {(() => {
                     const { Icon } = typeIcon(sessionType(featured.category));
-                    return <Icon size={44} stroke={1.5} color="#FFFFFF" />;
+                    return <Icon size={24} stroke={1.5} color="#FFFFFF" />;
                   })()}
                 </div>
               )}
               {featured.is_live && (
                 <div
                   style={{
-                    position: "absolute", top: 12, left: 12,
-                    display: "inline-flex", alignItems: "center", gap: 5,
-                    background: "#E24B4A", borderRadius: 20, padding: "4px 10px",
+                    position: "absolute", top: 6, left: 6,
+                    display: "inline-flex", alignItems: "center", gap: 3,
+                    background: "#E24B4A", borderRadius: 20, padding: "2px 6px",
                   }}
                 >
-                  <span aria-hidden style={{ width: 5, height: 5, borderRadius: "50%", background: "#FFFFFF" }} />
-                  <span style={{ fontSize: 9, fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                  <span aria-hidden style={{ width: 3, height: 3, borderRadius: "50%", background: "#FFFFFF" }} />
+                  <span style={{ fontSize: 7, fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", textTransform: "uppercase" }}>
                     Live
                   </span>
                 </div>
               )}
             </div>
-            <div style={{ padding: "18px 20px 20px" }}>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
-                <span style={{
-                  padding: "4px 10px", background: "#E8F0FC", color: "#1877D6",
-                  fontSize: 9, fontWeight: 700, borderRadius: 8, letterSpacing: "0.06em", textTransform: "uppercase",
-                }}>
-                  {categoryLabel(featured.category)}
-                </span>
-                <span style={{
-                  padding: "4px 10px", background: "#F1F4F9", color: "#6B7A90",
-                  fontSize: 9, fontWeight: 700, borderRadius: 8, letterSpacing: "0.06em", textTransform: "uppercase",
-                }}>
-                  {fmtDateTime(featured.session_date, featured.session_time)}
-                </span>
-              </div>
-              <h3 style={{
-                margin: 0, fontSize: 17, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3,
-                display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
-              }}>
-                {featured.title}
-              </h3>
-              <div style={{
-                display: "flex", alignItems: "center", justifyContent: "space-between",
-                gap: 12, marginTop: 16,
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                  <div
-                    aria-hidden
-                    style={{
-                      width: 32, height: 32, borderRadius: "50%", background: "#DCE4F0",
-                      display: "inline-flex", alignItems: "center", justifyContent: "center",
-                      color: "#0B1F3A", fontSize: 11, fontWeight: 700, flexShrink: 0,
-                    }}
-                  >
-                    {(featured.host_name || "?").trim().charAt(0).toUpperCase()}
-                  </div>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{
-                      fontSize: 12, fontWeight: 700, color: "#0B1F3A",
-                      overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                    }}>
-                      {featured.host_name || "DSM Host"}
-                    </div>
-                    <div style={{ fontSize: 10, color: "#B0BAC9" }}>Host</div>
-                  </div>
+            <div style={{ padding: "10px 12px", flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div>
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                  <span style={{
+                    padding: "2px 6px", background: "#E8F0FC", color: "#1877D6",
+                    fontSize: 8, fontWeight: 700, borderRadius: 5, letterSpacing: "0.05em", textTransform: "uppercase",
+                  }}>
+                    {categoryLabel(featured.category)}
+                  </span>
+                  <span style={{ fontSize: 9, fontWeight: 500, color: "#B0BAC9" }}>
+                    {fmtDateTime(featured.session_date, featured.session_time)}
+                  </span>
                 </div>
+                <h3 style={{
+                  margin: 0, fontSize: 12.5, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.25,
+                  display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
+                }}>
+                  {featured.title}
+                </h3>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 6 }}>
+                <span style={{
+                  fontSize: 10, fontWeight: 500, color: "#6B7A90",
+                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0,
+                }}>
+                  {featured.host_name || "DSM Host"}
+                </span>
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); open(featured.id); }}
                   style={{
-                    padding: "10px 18px", background: "#0B1F3A", color: "#FFFFFF",
-                    fontSize: 11, fontWeight: 700, fontFamily: POPPINS,
+                    padding: "5px 12px", background: "#0B1F3A", color: "#FFFFFF",
+                    fontSize: 10, fontWeight: 700, fontFamily: POPPINS,
                     border: "none", borderRadius: 999, cursor: "pointer", flexShrink: 0,
-                    letterSpacing: "0.02em",
                   }}
                 >
-                  Join now
+                  Join
                 </button>
               </div>
             </div>
@@ -1626,55 +1604,46 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             }}
             style={{
               background: "#FFFFFF",
-              borderRadius: 20,
-              padding: "16px 18px",
+              borderRadius: 14,
+              padding: "10px 12px",
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               cursor: "pointer",
               userSelect: "none",
               fontFamily: POPPINS,
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-              {secondary.is_live ? (
-                <span style={{
-                  padding: "3px 8px", background: "#FDECEC", color: "#E24B4A",
-                  fontSize: 9, fontWeight: 800, borderRadius: 6, letterSpacing: "0.1em", textTransform: "uppercase",
-                }}>
-                  Live
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
+                {secondary.is_live ? (
+                  <span style={{
+                    padding: "1px 6px", background: "#FDECEC", color: "#E24B4A",
+                    fontSize: 8, fontWeight: 800, borderRadius: 4, letterSpacing: "0.08em", textTransform: "uppercase",
+                  }}>
+                    Live
+                  </span>
+                ) : (
+                  <span style={{
+                    padding: "1px 6px", background: "#F1F4F9", color: "#6B7A90",
+                    fontSize: 8, fontWeight: 700, borderRadius: 4, letterSpacing: "0.05em", textTransform: "uppercase",
+                  }}>
+                    {categoryLabel(secondary.category)}
+                  </span>
+                )}
+                <span style={{ fontSize: 9, fontWeight: 500, color: "#B0BAC9" }}>
+                  {startsInLabel(secondary.session_date, secondary.session_time)}
                 </span>
-              ) : (
-                <span style={{
-                  padding: "3px 8px", background: "#F1F4F9", color: "#6B7A90",
-                  fontSize: 9, fontWeight: 700, borderRadius: 6, letterSpacing: "0.06em", textTransform: "uppercase",
-                }}>
-                  {categoryLabel(secondary.category)}
-                </span>
-              )}
-              <span style={{ fontSize: 10, fontWeight: 500, color: "#B0BAC9" }}>
-                {startsInLabel(secondary.session_date, secondary.session_time)}
-              </span>
-            </div>
-            <h4 style={{
-              margin: "0 0 12px", fontSize: 15, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.3,
-              display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
-            }}>
-              {secondary.title}
-            </h4>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div
-                aria-hidden
-                style={{
-                  width: 22, height: 22, borderRadius: "50%", background: "#DCE4F0",
-                  display: "inline-flex", alignItems: "center", justifyContent: "center",
-                  color: "#0B1F3A", fontSize: 9, fontWeight: 700,
-                }}
-              >
-                {(secondary.host_name || "?").trim().charAt(0).toUpperCase()}
               </div>
-              <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7A90" }}>
-                {secondary.host_name || "DSM Host"}
-              </span>
+              <div style={{
+                fontSize: 12, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.25,
+                overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+              }}>
+                {secondary.title}
+              </div>
             </div>
+            <IconChevronRight size={14} stroke={2} color="#B0BAC9" style={{ flexShrink: 0 }} />
           </div>
         )}
 
@@ -1693,51 +1662,40 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
               }
             }}
             style={{
-              position: "relative",
               background: "#0B1F3A",
-              borderRadius: 30,
-              padding: "24px 22px",
-              overflow: "hidden",
+              borderRadius: 14,
+              padding: "10px 12px",
               cursor: "pointer",
               userSelect: "none",
               fontFamily: POPPINS,
-              boxShadow: "0 15px 40px -20px rgba(11,31,58,0.4)",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
             }}
           >
             <div
               aria-hidden
               style={{
-                position: "absolute", top: -60, right: -60, width: 160, height: 160,
-                borderRadius: "50%", background: "rgba(24,119,214,0.25)",
-                filter: "blur(40px)", pointerEvents: "none",
+                width: 32, height: 32, borderRadius: 8,
+                background: "rgba(255,255,255,0.1)",
+                display: "inline-flex", alignItems: "center", justifyContent: "center",
+                flexShrink: 0,
               }}
-            />
-            <div style={{ position: "relative" }}>
-              <div
-                aria-hidden
-                style={{
-                  width: 40, height: 40, borderRadius: 12,
-                  background: "rgba(255,255,255,0.1)",
-                  display: "inline-flex", alignItems: "center", justifyContent: "center",
-                  marginBottom: 16,
-                }}
-              >
-                <IconUsers size={20} stroke={1.75} color="#FFFFFF" />
-              </div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: "#FFFFFF", marginBottom: 4 }}>
+            >
+              <IconUsers size={16} stroke={1.75} color="#FFFFFF" />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#FFFFFF" }}>
                 DSM Community
               </div>
-              <div style={{ fontSize: 12, color: "#8798B0", lineHeight: 1.5, marginBottom: 14 }}>
-                Latest episode: {latestPodcast.title}
-              </div>
-              <span style={{
-                display: "inline-flex", alignItems: "center", gap: 4,
-                fontSize: 11, fontWeight: 700, color: "#5FA8F5", letterSpacing: "0.02em",
+              <div style={{
+                fontSize: 10, color: "#8798B0", marginTop: 1,
+                overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
               }}>
-                Listen now
-                <IconChevronRight size={14} stroke={2.25} />
-              </span>
+                Latest: {latestPodcast.title}
+              </div>
             </div>
+            <IconChevronRight size={14} stroke={2} color="#5FA8F5" style={{ flexShrink: 0 }} />
           </div>
         )}
       </div>
