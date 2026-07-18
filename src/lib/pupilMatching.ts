@@ -48,10 +48,10 @@ export function previewMatchForGap<P extends PupilPreview>(params: {
   durationMin: number;
   allPupils: P[];
   allAvailability: Availability[];
-}): { count: number; topPupils: P[] } {
+}): { count: number; topPupils: P[]; allMatched: P[] } {
   const { date, dayName, startMin, durationMin, allPupils, allAvailability } = params;
   if (!allPupils.length || !allAvailability.length) {
-    return { count: 0, topPupils: [] };
+    return { count: 0, topPupils: [], allMatched: [] };
   }
   const availByPupil = new Map<string, Availability>();
   for (const a of allAvailability) {
@@ -73,5 +73,5 @@ export function previewMatchForGap<P extends PupilPreview>(params: {
     if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
     matched.push(p);
   }
-  return { count: matched.length, topPupils: matched.slice(0, 3) };
+  return { count: matched.length, topPupils: matched.slice(0, 3), allMatched: matched };
 }
