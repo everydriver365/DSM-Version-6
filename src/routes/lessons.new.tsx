@@ -89,7 +89,7 @@ function NewLessonPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
   const [pupils, setPupils] = useState<Pupil[]>([]);
-  const [pupilId, setPupilId] = useState("");
+  const [pupilId, setPupilId] = useState(search.pupilId || "");
   const [date, setDate] = useState(search.date || "");
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState(60);
