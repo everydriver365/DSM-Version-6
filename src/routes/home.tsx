@@ -1290,22 +1290,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     spaces_taken: number | null;
     duration_minutes: number | null;
   };
-  type PodcastTile = {
-    id: string;
-    episode_number: number | null;
-    title: string;
-    guest_name: string | null;
-    guest_title: string | null;
-    duration_minutes: number | null;
-    image_url: string | null;
-    spotify_url: string | null;
-    apple_url: string | null;
-    audio_url: string | null;
-    published_at: string | null;
-  };
-
   const [sessions, setSessions] = useState<LiveTile[]>([]);
-  const [podcasts, setPodcasts] = useState<PodcastTile[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -1320,14 +1305,6 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         );
         const data = (await res.json()) as LiveTile[];
         if (!cancelled && Array.isArray(data)) setSessions(data);
-      } catch { /* ignore */ }
-      try {
-        const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/dsm_podcasts?is_published=eq.true&deleted_at=is.null&order=episode_number.desc&limit=2&select=id,episode_number,title,guest_name,guest_title,duration_minutes,image_url,spotify_url,apple_url,audio_url,published_at`,
-          { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } },
-        );
-        const data = (await res.json()) as PodcastTile[];
-        if (!cancelled && Array.isArray(data)) setPodcasts(data);
       } catch { /* ignore */ }
     })();
     return () => { cancelled = true; };
@@ -1374,10 +1351,8 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     return ka.localeCompare(kb);
   }).slice(0, 12);
 
-  const latestPodcast = podcasts[0] ?? null;
-
-  // Empty state: no upcoming sessions AND no podcast → render nothing.
-  if (sortedSessions.length === 0 && !latestPodcast) return null;
+  // Empty state: no upcoming sessions → render nothing.
+  if (sortedSessions.length === 0) return null;
 
   const Thumbnail = ({ category, imageUrl }: { category: string | null; imageUrl: string | null }) => {
     const t = sessionType(category);
@@ -1656,91 +1631,6 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           </div>
         )}
 
-        {/* Community / podcast promo card — same shape & design as featured session */}
-        {latestPodcast && (
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={() =>
-              navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: latestPodcast.id } as never })
-            }
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: latestPodcast.id } as never });
-              }
-            }}
-            style={{
-              background: "#FFFFFF",
-              borderRadius: 16,
-              overflow: "hidden",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-              cursor: "pointer",
-              userSelect: "none",
-              fontFamily: POPPINS,
-              display: "flex",
-              alignItems: "stretch",
-            }}
-          >
-            <div style={{ position: "relative", width: 96, flexShrink: 0, background: "#0B1F3A" }}>
-              {latestPodcast.image_url ? (
-                <img
-                  src={latestPodcast.image_url}
-                  alt=""
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                />
-              ) : (
-                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <IconUsers size={28} stroke={1.5} color="#FFFFFF" />
-                </div>
-              )}
-            </div>
-            <div style={{ padding: "12px 14px", flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 8 }}>
-              <div>
-                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                  <span style={{
-                    padding: "3px 8px", background: "#E8F0FC", color: "#1877D6",
-                    fontSize: 11, fontWeight: 600, borderRadius: 999,
-                  }}>
-                    Community
-                  </span>
-                  <span style={{ fontSize: 11, fontWeight: 400, color: "#B0BAC9" }}>
-                    Episode {latestPodcast.episode_number ?? 1}
-                  </span>
-                </div>
-                <div style={{
-                  fontSize: 14, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3,
-                  display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
-                }}>
-                  {latestPodcast.title}
-                </div>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                <span style={{
-                  fontSize: 12, fontWeight: 400, color: "#64748B",
-                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0,
-                }}>
-                  {latestPodcast.guest_name || "DSM Community"}
-                </span>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: latestPodcast.id } as never });
-                  }}
-                  style={{
-                    padding: "8px 14px", background: "#072B47", color: "#FFFFFF",
-                    fontSize: 11, fontWeight: 600, fontFamily: POPPINS,
-                    border: "none", borderRadius: 999, cursor: "pointer", flexShrink: 0,
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  }}
-                >
-                  Listen
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
