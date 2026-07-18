@@ -228,6 +228,28 @@ interface PrevLessonRow {
   notes: string | null;
 }
 
+interface PreviewPupil {
+  id: string;
+  name: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  phone: string | null;
+  postcode: string | null;
+  calendar_colour: string | null;
+  custom_rate: number | null;
+  custom_rate_90: number | null;
+  custom_rate_120: number | null;
+}
+
+interface PupilReadySetting {
+  pupil_id: string;
+  instructor_id: string;
+  available_days: string[] | null;
+  preferred_duration_minutes: number | null;
+  min_notice_hours: number | null;
+  short_notice_opt_in: boolean | null;
+}
+
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 // Default weekly goals — should come from instructor settings
 // (instructors.weekly_lesson_goal / weekly_earnings_goal). We fall back to
