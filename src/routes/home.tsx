@@ -2386,10 +2386,29 @@ function HomePage() {
   const weekEnd = useMemo(() => addDays(weekStart, 7), [weekStart]);
 
   useEffect(() => {
+    let cancelled = false;
     (async () => {
-      const { data, error: authError } = await supabase.auth.getUser();
-      if (authError) console.error("[home] auth.getUser error", authError);
-      const u = data.user;
+      const authResult = await Promise.race([
+        supabase.auth
+          .getSession()
+          .then(({ data, error }: any) => ({
+            timedOut: false,
+            user: data.session?.user ?? null,
+            error,
+          }))
+          .catch((error: unknown) => ({ timedOut: false, user: null, error })),
+        new Promise<{ timedOut: true; user: null; error: null }>((resolve) => {
+          setTimeout(() => resolve({ timedOut: true, user: null, error: null }), 3500);
+        }),
+      ]);
+      if (cancelled) return;
+      if (authResult.timedOut) {
+        console.warn("[home] auth session lookup timed out; showing dashboard shell");
+        setAuthChecked(true);
+        return;
+      }
+      if (authResult.error) console.error("[home] auth.getSession error", authResult.error);
+      const u = authResult.user;
       if (!u) {
         console.warn("[home] no authenticated user");
         setAuthChecked(true);
@@ -2440,6 +2459,7 @@ function HomePage() {
       if (Number.isFinite(iba)) setInstructorBufferAfter(iba);
       setAuthChecked(true);
     })();
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
