@@ -1408,7 +1408,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   };
 
   return (
-    <div style={{ marginTop: 8, fontFamily: POPPINS }}>
+    <div style={{ margin: "8px -16px 0", padding: "0 16px", fontFamily: POPPINS }}>
       <style>{`
         @keyframes dsmLivePulse {
           0% { transform: scale(1); opacity: 0.75; }
