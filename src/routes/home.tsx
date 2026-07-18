@@ -5898,6 +5898,49 @@ function HomePage() {
                         background: '#CC2229',
                       }} />
                     )}
+                    {tile.graphic && (
+                      <div style={{ position: 'absolute', top: 14, right: 14, width: 72, height: 56, opacity: 0.95, pointerEvents: 'none' }}>
+                        {tile.graphic === 'timeline' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <text x="0" y="10" fontSize="7" fill="#8A93A3" fontFamily="Poppins, Inter, sans-serif">10</text>
+                            <rect x="14" y="4" width="54" height="7" rx="2" fill="#EEF2F7" />
+                            <text x="0" y="24" fontSize="7" fill="#8A93A3" fontFamily="Poppins, Inter, sans-serif">11</text>
+                            <rect x="14" y="18" width="54" height="7" rx="2" fill="#EEF2F7" />
+                            <text x="0" y="38" fontSize="7" fill="#B45309" fontFamily="Poppins, Inter, sans-serif" fontWeight="600">12</text>
+                            <rect x="14" y="32" width="54" height="9" rx="2" fill="#FBEBD3" stroke="#F0D9B5" strokeWidth="0.5" />
+                            <text x="0" y="52" fontSize="7" fill="#8A93A3" fontFamily="Poppins, Inter, sans-serif">13</text>
+                            <rect x="14" y="46" width="54" height="7" rx="2" fill="#EEF2F7" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'calendar' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <rect x="10" y="10" width="52" height="42" rx="4" fill="#FFFFFF" stroke="#C7DDF0" strokeWidth="1" />
+                            <rect x="10" y="10" width="52" height="10" rx="4" fill="#1877D6" />
+                            <rect x="10" y="16" width="52" height="4" fill="#1877D6" />
+                            <circle cx="20" cy="8" r="2" fill="#0B1F3A" />
+                            <circle cx="36" cy="8" r="2" fill="#0B1F3A" />
+                            <circle cx="52" cy="8" r="2" fill="#0B1F3A" />
+                            {[0,1,2,3].map((r) => [0,1,2,3,4].map((c) => (
+                              <circle key={`${r}-${c}`} cx={16 + c*10} cy={28 + r*6} r={(r===1 && c===2) ? 2.4 : 1.6} fill={(r===1 && c===2) ? '#1877D6' : '#C7DDF0'} />
+                            )))}
+                          </svg>
+                        )}
+                        {tile.graphic === 'donut' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <circle cx="46" cy="28" r="20" fill="none" stroke="#EAE3F5" strokeWidth="5" />
+                            <circle cx="46" cy="28" r="20" fill="none" stroke="#6B4FA0" strokeWidth="5" strokeLinecap="round" strokeDasharray="88 126" transform="rotate(-90 46 28)" />
+                            <text x="46" y="32" textAnchor="middle" fontSize="11" fontWeight="700" fill="#0B1F3A" fontFamily="Poppins, Inter, sans-serif">{activePupilsCount}</text>
+                          </svg>
+                        )}
+                        {tile.graphic === 'chart' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <path d="M2 44 L14 34 L26 38 L38 22 L50 26 L64 10" fill="none" stroke="#1E8E3E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M2 44 L14 34 L26 38 L38 22 L50 26 L64 10 L64 52 L2 52 Z" fill="#DDEFE1" opacity="0.6" />
+                            <circle cx="64" cy="10" r="2.5" fill="#1E8E3E" />
+                          </svg>
+                        )}
+                      </div>
+                    )}
                     <div style={{
                       width: 44, height: 44, borderRadius: 12,
                       background: tile.chipBg,
