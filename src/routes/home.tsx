@@ -1656,7 +1656,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           </div>
         )}
 
-        {/* Community / podcast promo card */}
+        {/* Community / podcast promo card — same shape & design as featured session */}
         {latestPodcast && (
           <div
             role="button"
@@ -1671,41 +1671,74 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
               }
             }}
             style={{
-              background: "#072B47",
+              background: "#FFFFFF",
               borderRadius: 16,
-              padding: "14px 16px",
+              overflow: "hidden",
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               cursor: "pointer",
               userSelect: "none",
               fontFamily: POPPINS,
               display: "flex",
-              alignItems: "center",
-              gap: 12,
+              alignItems: "stretch",
             }}
           >
-            <div
-              aria-hidden
-              style={{
-                width: 36, height: 36, borderRadius: 11,
-                background: "rgba(255,255,255,0.1)",
-                display: "inline-flex", alignItems: "center", justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <IconUsers size={18} stroke={1.75} color="#FFFFFF" />
+            <div style={{ position: "relative", width: 96, flexShrink: 0, background: "#0B1F3A" }}>
+              {latestPodcast.image_url ? (
+                <img
+                  src={latestPodcast.image_url}
+                  alt=""
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                />
+              ) : (
+                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <IconUsers size={28} stroke={1.5} color="#FFFFFF" />
+                </div>
+              )}
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#FFFFFF" }}>
-                DSM Community
+            <div style={{ padding: "12px 14px", flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 8 }}>
+              <div>
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                  <span style={{
+                    padding: "3px 8px", background: "#E8F0FC", color: "#1877D6",
+                    fontSize: 11, fontWeight: 600, borderRadius: 999,
+                  }}>
+                    Community
+                  </span>
+                  <span style={{ fontSize: 11, fontWeight: 400, color: "#B0BAC9" }}>
+                    Episode {latestPodcast.episode_number ?? 1}
+                  </span>
+                </div>
+                <div style={{
+                  fontSize: 14, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3,
+                  display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
+                }}>
+                  {latestPodcast.title}
+                </div>
               </div>
-              <div style={{
-                fontSize: 12, fontWeight: 400, color: "rgba(255,255,255,0.7)", marginTop: 1,
-                overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-              }}>
-                Latest: {latestPodcast.title}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                <span style={{
+                  fontSize: 12, fontWeight: 400, color: "#64748B",
+                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0,
+                }}>
+                  {latestPodcast.guest_name || "DSM Community"}
+                </span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: latestPodcast.id } as never });
+                  }}
+                  style={{
+                    padding: "8px 14px", background: "#072B47", color: "#FFFFFF",
+                    fontSize: 11, fontWeight: 600, fontFamily: POPPINS,
+                    border: "none", borderRadius: 999, cursor: "pointer", flexShrink: 0,
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                  }}
+                >
+                  Listen
+                </button>
               </div>
             </div>
-            <IconChevronRight size={16} stroke={2} color="#5FA8F5" style={{ flexShrink: 0 }} />
           </div>
         )}
       </div>
