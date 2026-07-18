@@ -5793,44 +5793,45 @@ function HomePage() {
             {/* 5. QUICK ACCESS (swipeable 3x2) */}
             {(() => {
               const unreadCount = unreadMsgs.length;
-              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late'; badge?: number; graphic?: 'timeline' | 'calendar' | 'donut' | 'chart' };
+              type GraphicKind = 'timeline' | 'calendar' | 'donut' | 'chart' | 'bubbles' | 'alarm' | 'book' | 'medal' | 'swap' | 'repeat' | 'checklist' | 'receipt' | 'grad' | 'map' | 'fuel' | 'car' | 'bars' | 'moon' | 'invoice' | 'trend' | 'gear' | 'clock2' | 'sync' | 'gift' | 'shield' | 'spark' | 'calc';
+              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late'; badge?: number; graphic?: GraphicKind };
               const quickTiles: QuickTile[] = [
                 // Page 1 — Daily essentials (spec)
                 { label: 'Fill slots', sub: 'Gaps', route: '/gaps', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0, badge: freeSlotCount, graphic: 'timeline' },
                 { label: 'Schedule', sub: 'View diary', route: null, icon: IconCalendar, iconStroke: '#1877D6', chipBg: '#E6F1FB', wsIndex: 1, graphic: 'calendar' },
                 { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, iconStroke: '#6B4FA0', chipBg: '#EAE3F5', graphic: 'donut' },
                 { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} owed` : 'All settled', route: '/payments', icon: IconCurrencyPound, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0, badge: outstanding > 0 ? Math.round(outstanding) : undefined, graphic: 'chart' },
-                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#1877D6', chipBg: '#E6F1FB', attention: unreadCount > 0 },
-                { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'running-late' },
+                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#1877D6', chipBg: '#E6F1FB', attention: unreadCount > 0, graphic: 'bubbles' },
+                { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'running-late', graphic: 'alarm' },
                 // Page 2 — Teaching
-                { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
-                { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: Award, iconStroke: '#7C3AED', chipBg: '#EFE7FB' },
-                { label: 'Test swap', sub: 'Swap requests', route: '/test-swaps', icon: ArrowLeftRight, iconStroke: '#7C3AED', chipBg: '#EFE7FB' },
-                { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: RefreshCw, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
-                { label: 'Syllabus', sub: 'Standards', route: '/standards', icon: GraduationCap, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
-                { label: 'Mock tests', sub: 'Practice', route: '/mock-tests', icon: ClipboardCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
+                { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'book' },
+                { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: Award, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'medal' },
+                { label: 'Test swap', sub: 'Swap requests', route: '/test-swaps', icon: ArrowLeftRight, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'swap' },
+                { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: RefreshCw, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'repeat' },
+                { label: 'Syllabus', sub: 'Standards', route: '/standards', icon: GraduationCap, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'grad' },
+                { label: 'Mock tests', sub: 'Practice', route: '/mock-tests', icon: ClipboardCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
                 // Page 3 — Business
-                { label: 'Expenses', sub: 'Track costs', route: '/expenses', icon: Receipt, iconStroke: '#C23B3B', chipBg: '#FBE2E2' },
-                { label: 'Certifications', sub: 'Licences', route: '/certifications', icon: Award, iconStroke: '#B45309', chipBg: '#FBEBD3' },
-                { label: 'CPD log', sub: 'Development', route: '/cpd', icon: GraduationCap, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
-                { label: 'Mileage', sub: 'Log miles', route: '/mileage', icon: MapPin, iconStroke: '#5A6B85', chipBg: '#EEF2F7' },
-                { label: 'Find fuel', sub: 'Nearby', route: '/fuel', icon: Fuel, iconStroke: '#B45309', chipBg: '#FBEBD3' },
-                { label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', icon: Car, iconStroke: '#5A6B85', chipBg: '#EEF2F7' },
+                { label: 'Expenses', sub: 'Track costs', route: '/expenses', icon: Receipt, iconStroke: '#C23B3B', chipBg: '#FBE2E2', graphic: 'receipt' },
+                { label: 'Certifications', sub: 'Licences', route: '/certifications', icon: Award, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'shield' },
+                { label: 'CPD log', sub: 'Development', route: '/cpd', icon: GraduationCap, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'bars' },
+                { label: 'Mileage', sub: 'Log miles', route: '/mileage', icon: MapPin, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'map' },
+                { label: 'Find fuel', sub: 'Nearby', route: '/fuel', icon: Fuel, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'fuel' },
+                { label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', icon: Car, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'car' },
                 // Page 4 — Reports
-                { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: BarChart3, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
-                { label: 'Tax report', sub: 'Self assessment', route: '/tax-report', icon: Calculator, iconStroke: '#B45309', chipBg: '#FBEBD3' },
-                { label: 'Weekly', sub: 'Week report', route: '/weekly-report', icon: CalendarIcon, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
-                { label: 'End of day', sub: 'Daily wrap', route: '/end-of-day', icon: Moon, iconStroke: '#7C3AED', chipBg: '#EFE7FB' },
-                { label: 'Invoices', sub: 'Billing', route: '/invoices', icon: FileText, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
-                { label: 'Forecast', sub: 'Earnings', route: '/earnings-forecast', icon: TrendingUp, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
+                { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: BarChart3, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'bars' },
+                { label: 'Tax report', sub: 'Self assessment', route: '/tax-report', icon: Calculator, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'calc' },
+                { label: 'Weekly', sub: 'Week report', route: '/weekly-report', icon: CalendarIcon, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'bars' },
+                { label: 'End of day', sub: 'Daily wrap', route: '/end-of-day', icon: Moon, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'moon' },
+                { label: 'Invoices', sub: 'Billing', route: '/invoices', icon: FileText, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'invoice' },
+                { label: 'Forecast', sub: 'Earnings', route: '/earnings-forecast', icon: TrendingUp, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'trend' },
                 // Page 5 — Admin
-                { label: 'Settings', sub: 'Account', route: '/settings', icon: SettingsIcon, iconStroke: '#5A6B85', chipBg: '#EEF2F7' },
-                { label: 'Availability', sub: 'Working hours', route: '/availability-settings', icon: Clock, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
-                { label: 'Coverage', sub: 'Service areas', route: '/coverage-areas', icon: MapPin, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
-                { label: 'Calendar', sub: 'Google sync', route: '/calendarsync', icon: CalendarIcon, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
-                { label: 'Referrals', sub: 'Rewards', route: '/referrals', icon: Gift, iconStroke: '#00B5A5', chipBg: '#D8F1EE' },
-                { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
-                { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: Zap, iconStroke: '#B45309', chipBg: '#FBEBD3' },
+                { label: 'Settings', sub: 'Account', route: '/settings', icon: SettingsIcon, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'gear' },
+                { label: 'Availability', sub: 'Working hours', route: '/availability-settings', icon: Clock, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'clock2' },
+                { label: 'Coverage', sub: 'Service areas', route: '/coverage-areas', icon: MapPin, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'map' },
+                { label: 'Calendar', sub: 'Google sync', route: '/calendarsync', icon: CalendarIcon, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'sync' },
+                { label: 'Referrals', sub: 'Rewards', route: '/referrals', icon: Gift, iconStroke: '#00B5A5', chipBg: '#D8F1EE', graphic: 'gift' },
+                { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
+                { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: Zap, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'spark' },
               ];
               const tilesPerPage = 4;
               const totalPages = Math.ceil(quickTiles.length / tilesPerPage);
