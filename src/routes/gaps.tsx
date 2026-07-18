@@ -398,13 +398,10 @@ function scoreSlot(
       if (availDays.includes(dayOfWeek)) score += 15;
       else score -= 30;
     }
-    const fromHour = parseInt((s.available_from || "08:00").split(":")[0], 10);
-    const untilHour = parseInt(
-      (s.available_until || "18:00").split(":")[0],
-      10,
-    );
-    if (slotHour >= fromHour && slotHour < untilHour) score += 10;
-    else score -= 20;
+    const slotStartMin = hmToMin(sl.time);
+    const fitsWindow = slotFitsPupilWindow(slotStartMin, sl.duration, s);
+    if (fitsWindow) score += 10;
+    else score -= 100;
 
     const hoursUntilSlot = Math.floor(
       (slotDateTime.getTime() - nowMs) / 3600000,
