@@ -356,6 +356,17 @@ function describeSlot(
   return { daysSince, dayMatch, shortNotice, shortNoticeOk, minNoticeHours };
 }
 
+function slotFitsPupilWindow(
+  startMin: number,
+  durationMin: number,
+  s: Availability | null,
+): boolean {
+  const fromMin = hmToMin(s?.available_from || "08:00");
+  const untilMin = hmToMin(s?.available_until || "18:00");
+  return startMin >= fromMin && startMin + durationMin <= untilMin;
+}
+
+
 function scoreSlot(
   p: Pupil,
   s: Availability | null,
@@ -365,7 +376,7 @@ function scoreSlot(
 ): SlotMatch {
   let score = 50;
   const dayOfWeek = DAYS[new Date(sl.date + "T00:00:00").getDay()];
-  const slotHour = parseInt(sl.time.split(":")[0], 10);
+  
   const slotDateTime = new Date(`${sl.date}T${sl.time}:00`);
 
   if (last) {
@@ -387,13 +398,10 @@ function scoreSlot(
       if (availDays.includes(dayOfWeek)) score += 15;
       else score -= 30;
     }
-    const fromHour = parseInt((s.available_from || "08:00").split(":")[0], 10);
-    const untilHour = parseInt(
-      (s.available_until || "18:00").split(":")[0],
-      10,
-    );
-    if (slotHour >= fromHour && slotHour < untilHour) score += 10;
-    else score -= 20;
+    const slotStartMin = hmToMin(sl.time);
+    const fitsWindow = slotFitsPupilWindow(slotStartMin, sl.duration, s);
+    if (fitsWindow) score += 10;
+    else score -= 100;
 
     const hoursUntilSlot = Math.floor(
       (slotDateTime.getTime() - nowMs) / 3600000,
@@ -1036,6 +1044,7 @@ function GapsPage() {
       if (!availDays.includes(dayOfWeek)) continue;
       const minDuration = s.preferred_duration_minutes ?? 60;
       if (gap.durationMin < minDuration) continue;
+      if (!slotFitsPupilWindow(gap.startMin, gap.durationMin, s)) continue;
       const minNoticeHours = s.min_notice_hours ?? 24;
       if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
       matched.push(p);
