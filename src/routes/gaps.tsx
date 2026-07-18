@@ -3081,12 +3081,14 @@ function GapsPage() {
 
       <BottomSheet
         open={bookNowSheetOpen}
-        onClose={() => {
+        onOpenChange={(v) => {
           if (bookNowSubmitting) return;
-          setBookNowSheetOpen(false);
-          setBookNowSelectedPupil(null);
-          setBookNowSearchQuery("");
-          setBookNowSlot(null);
+          setBookNowSheetOpen(v);
+          if (!v) {
+            setBookNowSelectedPupil(null);
+            setBookNowSearchQuery("");
+            setBookNowSlot(null);
+          }
         }}
         title="Book this slot"
       >
