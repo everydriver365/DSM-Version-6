@@ -25,6 +25,9 @@ export interface RecordPaymentInput {
   notes?: string | null;
   /** Current `pupils.account_balance` — passed in so we don't re-fetch. */
   currentAccountBalance?: number | null;
+  /** Optional ISO timestamp — used for paid_at and the audit row's created_at.
+   *  Defaults to now. Lets callers backdate a payment to a chosen date. */
+  createdAt?: string;
 }
 
 /** Extended input for the full payments page, where "record payment" can
