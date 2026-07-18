@@ -362,15 +362,8 @@ function describeSlot(
   return { daysSince, dayMatch, shortNotice, shortNoticeOk, minNoticeHours };
 }
 
-function slotFitsPupilWindow(
-  startMin: number,
-  durationMin: number,
-  s: Availability | null,
-): boolean {
-  const fromMin = hmToMin(s?.available_from || "08:00");
-  const untilMin = hmToMin(s?.available_until || "18:00");
-  return startMin >= fromMin && startMin + durationMin <= untilMin;
-}
+
+
 
 
 function scoreSlot(
