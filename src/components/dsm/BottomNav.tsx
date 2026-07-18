@@ -179,10 +179,9 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
     <nav
       className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-16 bg-white flex items-stretch z-50 pb-safe"
       style={{
-        borderTopWidth: "0.5px",
-        borderTopStyle: "solid",
-        borderTopColor: "#EEF2F7",
         fontFamily: "Inter, sans-serif",
+        borderRadius: "20px 20px 0 0",
+        boxShadow: "0 -2px 12px rgba(0,0,0,0.08)",
       }}
     >
       {useCustom ? (
