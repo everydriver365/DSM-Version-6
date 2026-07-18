@@ -2428,25 +2428,142 @@ function GapsPage() {
             </div>
           )}
 
-          {ranked.map((r, idx) => (
-            <PupilCard
-              key={r.pupil.id}
-              rank={idx + 1}
-              r={r}
-              dayOfWeekLabel={dayOfWeekLabel}
-              multi={searchSlots.length > 1}
-              selected={selectedPupilIds.has(r.pupil.id)}
-              onToggleSelect={() => {
-                setSelectedPupilIds((prev) => {
-                  const next = new Set(prev);
-                  if (next.has(r.pupil.id)) next.delete(r.pupil.id);
-                  else next.add(r.pupil.id);
-                  return next;
-                });
+          <div style={{ margin: "0 16px 10px" }}>
+            <input
+              type="text"
+              placeholder="Search pupils…"
+              value={pupilSearchQuery}
+              onChange={(e) => setPupilSearchQuery(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "12px 14px",
+                borderRadius: 10,
+                border: `1px solid ${BORDER}`,
+                fontSize: 14,
+                outline: "none",
+                ...FONT,
               }}
             />
+          </div>
 
-          ))}
+          {(() => {
+            const q = pupilSearchQuery.trim().toLowerCase();
+            const filteredRanked = q
+              ? ranked.filter((r) => {
+                  const p = r.pupil;
+                  const nm = (
+                    p.name ||
+                    [p.first_name, p.last_name].filter(Boolean).join(" ") ||
+                    ""
+                  ).toLowerCase();
+                  return nm.includes(q);
+                })
+              : ranked;
+
+            const toggle = (id: string) =>
+              setSelectedPupilIds((prev) => {
+                const next = new Set(prev);
+                if (next.has(id)) next.delete(id);
+                else next.add(id);
+                return next;
+              });
+
+            if (filteredRanked.length === 0) {
+              return (
+                <div
+                  style={{
+                    margin: "0 16px",
+                    padding: 16,
+                    textAlign: "center",
+                    color: MUTED,
+                    fontSize: 13,
+                  }}
+                >
+                  No pupils match "{pupilSearchQuery}"
+                </div>
+              );
+            }
+
+            return filteredRanked.map((r) => {
+              const name = fullNameOf(r.pupil);
+              const parts = name.trim().split(/\s+/);
+              const initials =
+                ((parts[0]?.[0] ?? "") +
+                  (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase() ||
+                "?";
+              const checked = selectedPupilIds.has(r.pupil.id);
+              return (
+                <div
+                  key={r.pupil.id}
+                  onClick={() => toggle(r.pupil.id)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "10px 16px",
+                    cursor: "pointer",
+                  }}
+                >
+                  <div
+                    aria-label={checked ? "Deselect" : "Select"}
+                    style={{
+                      width: 20,
+                      height: 20,
+                      borderRadius: 4,
+                      border: checked ? "none" : "1.5px solid #9CA3AF",
+                      background: checked ? "#1877D6" : "#FFFFFF",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {checked && (
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path
+                          d="M2 6.5L5 9.5L10 3"
+                          stroke="white"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <div
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 999,
+                      background: r.pupil.calendar_colour ?? "#6B7280",
+                      color: "#FFFFFF",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {initials}
+                  </div>
+                  <div
+                    style={{
+                      flex: 1,
+                      minWidth: 0,
+                      fontSize: 14,
+                      color: NAVY,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {name}
+                  </div>
+                </div>
+              );
+            });
+          })()}
         </div>
       )}
 
