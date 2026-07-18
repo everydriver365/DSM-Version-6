@@ -1485,7 +1485,9 @@ function SchedulePage() {
                                   width: 12,
                                   height: 12,
                                   borderRadius: "50%",
-                                  background: markerColor,
+                                  background: isBlockRow ? '#E6F1FB' : markerColor,
+                                  border: isBlockRow ? '2px solid #1877D6' : undefined,
+                                  boxSizing: 'border-box',
                                 }}
                               />
                               <div style={{ position: "relative", overflow: "hidden", borderRadius: 12 }}>
@@ -1499,8 +1501,8 @@ function SchedulePage() {
                                     boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                                     padding: "12px 14px",
                                     display: "flex",
-                                    alignItems: "center",
-                                    gap: 10,
+                                    alignItems: isBlockRow ? "stretch" : "center",
+                                    gap: isBlockRow ? 12 : 10,
                                     cursor: clickable ? "pointer" : "default",
                                     opacity: cancelled ? 0.55 : isDimmed ? 0.4 : 1,
                                     position: "relative",
@@ -1511,101 +1513,130 @@ function SchedulePage() {
                                   }}
                                 >
 
-                                  <span
-                                    aria-hidden
-                                    style={{
-                                      width: 8,
-                                      height: 8,
-                                      borderRadius: "50%",
-                                      background: markerColor,
-                                      flexShrink: 0,
-                                    }}
-                                  />
-                                  <div style={{ flex: 1, minWidth: 0 }}>
-                                    <div
-                                      style={{
-                                        fontSize: 14,
-                                        fontWeight: 500,
-                                        color: "#0B1F3A",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                        whiteSpace: "nowrap",
-                                        textDecoration: cancelled ? "line-through" : "none",
-                                      }}
-                                    >
-                                      {title}
-                                    </div>
-                                    {timeText ? (
-                                      <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
-                                        {timeText}
+                                  {isBlockRow ? (
+                                    <>
+                                      <div style={{ width: 56, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
+                                        <div style={{ fontSize: 17, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                                          {fmtTime(e.start)}
+                                        </div>
+                                        <div style={{ fontSize: 12, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                                          {(() => {
+                                            const durMin = Math.max(0, Math.round((e.end.getTime() - e.start.getTime()) / 60000));
+                                            const h = Math.floor(durMin / 60);
+                                            const m = durMin % 60;
+                                            return h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
+                                          })()}
+                                        </div>
                                       </div>
-                                    ) : null}
-                                  </div>
-                                  {isLessonRow && !moveMode && (
-                                    <button
-                                      type="button"
-                                      onClick={(ev) => {
-                                        ev.stopPropagation();
-                                        const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
-                                        setMovingLesson(lesson);
-                                        setMoveMode(true);
-                                        const firstName = (lesson as any).pupil?.first_name || (lesson as any).pupils?.first_name || 'this lesson';
-                                        toast.info('Select a new time slot for ' + firstName, { duration: 10000 });
-                                      }}
-                                      aria-label="Move lesson"
-                                      style={{
-                                        width: 28,
-                                        height: 28,
-                                        borderRadius: '50%',
-                                        background: '#EFF6FF',
-                                        border: '0.5px solid #BFDBFE',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        cursor: 'pointer',
-                                        flexShrink: 0,
-                                        marginLeft: 4,
-                                        padding: 0,
-                                      }}
-                                    >
-                                      <Move size={12} color="#1A52A0" />
-                                    </button>
-                                  )}
-                                  {isLessonRow && (
-                                    <span
-                                      style={{
-                                        fontSize: 9,
-                                        fontWeight: 700,
-                                        color: '#1A52A0',
-                                        background: '#E0F4FF',
-                                        borderRadius: 4,
-                                        padding: '1px 5px',
-                                        fontFamily: 'Inter, sans-serif',
-                                        flexShrink: 0,
-                                      }}
-                                    >
-                                      DSM
-                                    </span>
-                                  )}
-                                  {isBlockRow && (
-                                    <span
-                                      style={{
-                                        fontSize: 9,
-                                        fontWeight: 700,
-                                        color: '#6B7280',
-                                        background: '#F3F4F6',
-                                        borderRadius: 4,
-                                        padding: '1px 5px',
-                                        fontFamily: 'Inter, sans-serif',
-                                        flexShrink: 0,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 3,
-                                      }}
-                                    >
-                                      <Calendar size={8} color="#6B7280" />
-                                      Google
-                                    </span>
+                                      <div
+                                        aria-hidden
+                                        style={{
+                                          width: 4,
+                                          borderRadius: 2,
+                                          background: Date.now() >= e.end.getTime() ? '#34A853' : '#1877D6',
+                                          flexShrink: 0,
+                                          alignSelf: 'stretch',
+                                        }}
+                                      />
+                                      <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
+                                        <div
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: 600,
+                                            color: '#0B1F3A',
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            lineHeight: 1.3,
+                                          }}
+                                          title={title}
+                                        >
+                                          {title}
+                                        </div>
+                                        <div style={{ fontSize: 13, color: '#6B7280', marginTop: 4 }}>
+                                          Google Calendar
+                                        </div>
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span
+                                        aria-hidden
+                                        style={{
+                                          width: 8,
+                                          height: 8,
+                                          borderRadius: "50%",
+                                          background: markerColor,
+                                          flexShrink: 0,
+                                        }}
+                                      />
+                                      <div style={{ flex: 1, minWidth: 0 }}>
+                                        <div
+                                          style={{
+                                            fontSize: 14,
+                                            fontWeight: 500,
+                                            color: "#0B1F3A",
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                            whiteSpace: "nowrap",
+                                            textDecoration: cancelled ? "line-through" : "none",
+                                          }}
+                                        >
+                                          {title}
+                                        </div>
+                                        {timeText ? (
+                                          <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
+                                            {timeText}
+                                          </div>
+                                        ) : null}
+                                      </div>
+                                      {isLessonRow && !moveMode && (
+                                        <button
+                                          type="button"
+                                          onClick={(ev) => {
+                                            ev.stopPropagation();
+                                            const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                            setMovingLesson(lesson);
+                                            setMoveMode(true);
+                                            const firstName = (lesson as any).pupil?.first_name || (lesson as any).pupils?.first_name || 'this lesson';
+                                            toast.info('Select a new time slot for ' + firstName, { duration: 10000 });
+                                          }}
+                                          aria-label="Move lesson"
+                                          style={{
+                                            width: 28,
+                                            height: 28,
+                                            borderRadius: '50%',
+                                            background: '#EFF6FF',
+                                            border: '0.5px solid #BFDBFE',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            cursor: 'pointer',
+                                            flexShrink: 0,
+                                            marginLeft: 4,
+                                            padding: 0,
+                                          }}
+                                        >
+                                          <Move size={12} color="#1A52A0" />
+                                        </button>
+                                      )}
+                                      {isLessonRow && (
+                                        <span
+                                          style={{
+                                            fontSize: 9,
+                                            fontWeight: 700,
+                                            color: '#1A52A0',
+                                            background: '#E0F4FF',
+                                            borderRadius: 4,
+                                            padding: '1px 5px',
+                                            fontFamily: 'Inter, sans-serif',
+                                            flexShrink: 0,
+                                          }}
+                                        >
+                                          DSM
+                                        </span>
+                                      )}
+                                    </>
                                   )}
                                 </div>
 
