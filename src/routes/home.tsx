@@ -8,6 +8,7 @@ import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
 import { getLessonWeather, type LessonWeather } from "@/lib/lesson-weather.functions";
 import { getLessonDriveTime, type LessonDriveTime } from "@/lib/lesson-drive-time.functions";
+import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { Cloud as CloudIcon, CloudRain, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
 
 import {
