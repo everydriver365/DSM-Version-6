@@ -1156,7 +1156,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                           justifyContent: "center",
                         }}
                       >
-                        <Sparkles size={32} color="#FFFFFF" />
+                        <Sparkles size={48} color="#FFFFFF" />
                       </div>
                     )}
                   </div>
@@ -1164,7 +1164,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   {/* Body */}
                   <div
                     style={{
-                      padding: "10px 10px 8px",
+                      padding: "15px 15px 12px",
                       display: "flex",
                       flexDirection: "column",
                       minWidth: 0,
@@ -1175,7 +1175,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     <div style={{ minWidth: 0 }}>
                       <div
                         style={{
-                          fontSize: 14,
+                          fontSize: 18,
                           fontWeight: 600,
                           color: "#072B47",
                           lineHeight: 1.2,
@@ -1190,7 +1190,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
+                          fontSize: 14,
                           color: "#6B7A90",
                           lineHeight: 1.3,
                           display: "-webkit-box",
@@ -1219,7 +1219,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                           background: "transparent",
                           border: 0,
                           padding: 0,
-                          fontSize: 12,
+                          fontSize: 14,
                           fontWeight: 600,
                           color: "#2563EB",
                           cursor: "pointer",
