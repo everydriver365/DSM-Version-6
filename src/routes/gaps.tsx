@@ -444,6 +444,8 @@ function GapsPage() {
   const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
+  const [allPupils, setAllPupils] = useState<Pupil[]>([]);
+  const [allAvailability, setAllAvailability] = useState<Availability[]>([]);
 
   // ---- Pre-filter (arrived from a cancellation via /gaps?date=&time=&duration=) ----
   const [prefilter, setPrefilter] = useState<{ date: string; time: string; duration: number } | null>(null);
@@ -981,7 +983,67 @@ function GapsPage() {
     })();
   }, [userId]);
 
+  // Fetch all pupils + availability once for the lightweight per-gap preview.
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const [pupilsRes, availRes] = await Promise.all([
+        supabase
+          .from("pupils")
+          .select(
+            "id,name,first_name,last_name,phone,postcode,calendar_colour,custom_rate,custom_rate_90,custom_rate_120",
+          )
+          .eq("instructor_id", userId)
+          .eq("status", "active")
+          .is("deleted_at", null),
+        supabase
+          .from("pupil_ready_to_learn_settings")
+          .select("*")
+          .eq("instructor_id", userId),
+      ]);
+      if (pupilsRes.error) console.error("[gaps] pupils query failed:", pupilsRes.error);
+      if (availRes.error) console.error("[gaps] availability query failed:", availRes.error);
+      setAllPupils((pupilsRes.data ?? []) as Pupil[]);
+      setAllAvailability((availRes.data ?? []) as Availability[]);
+    })();
+  }, [userId]);
+
+  function previewMatchForGap(gap: {
+    date: string;
+    startMin: number;
+    endMin: number;
+    durationMin: number;
+  }): { count: number; topPupils: Pupil[] } {
+    if (!allPupils.length || !allAvailability.length) {
+      return { count: 0, topPupils: [] };
+    }
+    const availByPupil = new Map<string, Availability>();
+    for (const a of allAvailability) {
+      if (a.pupil_id) availByPupil.set(a.pupil_id, a);
+    }
+    const dayOfWeek = DAYS[new Date(gap.date + "T00:00:00").getDay()];
+    const slotStart = new Date(
+      `${gap.date}T${minToHm(gap.startMin)}:00`,
+    ).getTime();
+    const hoursUntilSlot = (slotStart - Date.now()) / 3600000;
+
+    const matched: Pupil[] = [];
+    for (const p of allPupils) {
+      const s = availByPupil.get(p.id);
+      if (!s) continue;
+      const availDays = s.available_days || [];
+      if (!availDays.includes(dayOfWeek)) continue;
+      const minDuration = s.preferred_duration_minutes ?? 60;
+      if (gap.durationMin < minDuration) continue;
+      const minNoticeHours = s.min_notice_hours ?? 24;
+      if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
+      matched.push(p);
+    }
+    return { count: matched.length, topPupils: matched.slice(0, 3) };
+  }
+
   async function findPupils(override?: SelectedSlot[]) {
+
     if (!userId) return;
     const slotsToScore = override && override.length ? override : selectedSlots;
     if (slotsToScore.length === 0) return;
@@ -1941,54 +2003,125 @@ function GapsPage() {
                         cursor: "pointer",
                       }}
                     >
-                      <div
-                        style={{
-                          width: 42,
-                          height: 42,
-                          borderRadius: 12,
-                          background: "linear-gradient(135deg, #1877D6, #0B1F3A)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          flexShrink: 0,
-                        }}
-                      >
-                        <Zap size={20} color="#FFFFFF" />
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div
-                          style={{
-                            color: "#0B1F3A",
-                            fontWeight: 600,
-                            fontSize: 15,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {fmtGap(slot.gapMinutes)} free
-                        </div>
-                        <div
-                          style={{
-                            color: "#8A93A3",
-                            fontSize: 12,
-                            marginTop: 1,
-                          }}
-                        >
-                          {minToHm(hmToMin(slot.startTime))} –{" "}
-                          {minToHm(hmToMin(slot.endTime))} · tap to fill
-                        </div>
-                      </div>
-                      <RefreshCw
-                        size={16}
-                        color="#C7CCD4"
-                        style={{ flexShrink: 0 }}
-                      />
-                      <ChevronRight
-                        size={16}
-                        color="#C7CCD4"
-                        style={{ flexShrink: 0 }}
-                      />
+                      {(() => {
+                        const startMin = hmToMin(slot.startTime);
+                        const endMin = hmToMin(slot.endTime);
+                        const preview = previewMatchForGap({
+                          date: slot.date,
+                          startMin,
+                          endMin,
+                          durationMin: slot.gapMinutes,
+                        });
+                        const hasMatches = preview.count > 0;
+                        return (
+                          <>
+                            {hasMatches ? (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  flexShrink: 0,
+                                  height: 42,
+                                }}
+                              >
+                                {preview.topPupils.map((p, i) => {
+                                  const nm =
+                                    p.name ||
+                                    [p.first_name, p.last_name]
+                                      .filter(Boolean)
+                                      .join(" ") ||
+                                    "?";
+                                  const initials = nm
+                                    .split(/\s+/)
+                                    .map((s) => s.charAt(0))
+                                    .join("")
+                                    .slice(0, 2)
+                                    .toUpperCase();
+                                  const isLast =
+                                    i === preview.topPupils.length - 1;
+                                  return (
+                                    <div
+                                      key={p.id}
+                                      style={{
+                                        width: 32,
+                                        height: 32,
+                                        borderRadius: 999,
+                                        background:
+                                          p.calendar_colour ?? "#6B7280",
+                                        border: "2px solid #FFFFFF",
+                                        color: "#FFFFFF",
+                                        fontSize: 11,
+                                        fontWeight: 700,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        marginRight: isLast ? 0 : -10,
+                                        flexShrink: 0,
+                                      }}
+                                    >
+                                      {initials}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <div
+                                style={{
+                                  width: 42,
+                                  height: 42,
+                                  borderRadius: 12,
+                                  background:
+                                    "linear-gradient(135deg, #1877D6, #0B1F3A)",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  flexShrink: 0,
+                                }}
+                              >
+                                <Zap size={20} color="#FFFFFF" />
+                              </div>
+                            )}
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div
+                                style={{
+                                  color: "#0B1F3A",
+                                  fontWeight: 600,
+                                  fontSize: 15,
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {hasMatches
+                                  ? `${preview.count} pupil${preview.count === 1 ? "" : "s"} may fit · ${fmtGap(slot.gapMinutes)} free`
+                                  : `${fmtGap(slot.gapMinutes)} free`}
+                              </div>
+                              <div
+                                style={{
+                                  color: "#8A93A3",
+                                  fontSize: 12,
+                                  marginTop: 1,
+                                }}
+                              >
+                                {minToHm(hmToMin(slot.startTime))} –{" "}
+                                {minToHm(hmToMin(slot.endTime))} · tap to fill
+                              </div>
+                            </div>
+                            {!hasMatches && (
+                              <RefreshCw
+                                size={16}
+                                color="#C7CCD4"
+                                style={{ flexShrink: 0 }}
+                              />
+                            )}
+                            <ChevronRight
+                              size={16}
+                              color="#C7CCD4"
+                              style={{ flexShrink: 0 }}
+                            />
+                          </>
+                        );
+                      })()}
                     </button>
 
                     {slot.gapReason && (
