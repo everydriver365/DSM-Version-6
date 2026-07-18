@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Plus, RefreshCw, Trash2, Calendar, Move, ArrowDown, Clock } from "lucide-react";
 import { toast } from "sonner";
+import { computeDayGaps } from "@/lib/gapDetection";
 import {
   IconSearch,
   IconPlus,
@@ -77,78 +78,47 @@ function detectGaps(
   bufferAfter: number,
   calendarBlocks: Array<{ start_datetime: string; end_datetime: string; is_all_day?: boolean | null }>,
   recurringBlocks: Array<{ day_of_week: string; start_time: string; end_time: string; is_active?: boolean }>,
-  timeOff: Array<{ start_date: string; end_date: string; all_day?: boolean | null }>,
+  timeOff: Array<{ start_date: string; end_date: string; all_day?: boolean | null; start_time?: string | null; end_time?: string | null }>,
   dateStr: string,
   hourlyRate: number,
   minGapMinutes: number,
 ): GapInfo[] {
-  const wsMin = timeToMins(workStart || "09:00");
-  const weMin = timeToMins(workEnd || "18:00");
-  const nowMins = new Date().getHours() * 60 + new Date().getMinutes();
+  const dayTimeOff = (timeOff || []).filter(
+    (t) => t.start_date <= dateStr && t.end_date >= dateStr,
+  );
   const isToday = dateStr === new Date().toISOString().split("T")[0];
-  const minStart = isToday ? Math.max(wsMin, nowMins + 30) : wsMin;
-
-  const dayTimeOff = (timeOff || []).filter((t) => t.start_date <= dateStr && t.end_date >= dateStr);
-  if (dayTimeOff.some((t) => t.all_day)) return [];
-
-  const busy: { start: number; end: number }[] = [];
-  for (const l of (lessons || []).filter((l) => !["cancelled"].includes(String(l.status || "")))) {
-    const lStart = timeToMins(l.lesson_time);
-    const pupilBufAfter = l.pupils?.buffer_after_minutes ?? bufferAfter;
-    // Buffer applies only AFTER each lesson; no buffer before the next.
-    busy.push({ start: lStart, end: lStart + (l.duration_minutes || 60) + pupilBufAfter });
-  }
-  const dayBlocks = (calendarBlocks || []).filter((b) => {
-    const s = b.start_datetime?.substring(0, 10);
-    const e = b.end_datetime?.substring(0, 10);
-    return s === dateStr || (s <= dateStr && e >= dateStr);
+  const computed = computeDayGaps({
+    dayLessons: (lessons || []).map((l) => ({
+      lesson_time: l.lesson_time,
+      duration_minutes: l.duration_minutes ?? null,
+      status: l.status ?? null,
+      bufferAfterMinutes: l.pupils?.buffer_after_minutes ?? null,
+    })),
+    calendarBlocks: (calendarBlocks || []).map((b) => ({
+      start_datetime: b.start_datetime,
+      end_datetime: b.end_datetime,
+    })),
+    recurringBlocks: recurringBlocks || [],
+    dayTimeOff: dayTimeOff.map((t) => ({
+      start_time: t.start_time ?? null,
+      end_time: t.end_time ?? null,
+      all_day: t.all_day ?? null,
+    })),
+    dayStart: workStart,
+    dayEnd: workEnd,
+    instructorBufferAfter: bufferAfter,
+    dateStr,
+    isToday,
+    minGapMinutes,
   });
-  for (const b of dayBlocks) {
-    const isAllDay = b.is_all_day || false;
-    busy.push({
-      start: isAllDay ? 0 : timeToMins(b.start_datetime?.substring(11, 16) || "00:00"),
-      end: isAllDay ? 1439 : timeToMins(b.end_datetime?.substring(11, 16) || "23:59"),
-    });
-  }
-  const dayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][
-    new Date(dateStr + "T12:00:00").getDay()
-  ];
-  const dayRecurring = (recurringBlocks || []).filter((b) => b.day_of_week === dayName && b.is_active !== false);
-  for (const b of dayRecurring) {
-    busy.push({ start: timeToMins(b.start_time), end: timeToMins(b.end_time) });
-  }
-
-  busy.sort((a, b) => a.start - b.start);
-  const merged: { start: number; end: number }[] = [];
-  for (const b of busy) {
-    if (merged.length && b.start <= merged[merged.length - 1].end) {
-      merged[merged.length - 1].end = Math.max(merged[merged.length - 1].end, b.end);
-    } else {
-      merged.push({ ...b });
-    }
-  }
-
-  const checkPoints = [
-    { start: minStart, end: merged[0]?.start ?? weMin },
-    ...merged.map((b, i) => ({ start: b.end, end: merged[i + 1]?.start ?? weMin })),
-  ];
-  const gaps: GapInfo[] = [];
-  for (const cp of checkPoints) {
-    const gapStart = Math.max(cp.start, minStart);
-    const gapEnd = Math.min(cp.end, weMin);
-    const gapMins = gapEnd - gapStart;
-    if (gapMins >= minGapMinutes) {
-      gaps.push({
-        startMins: gapStart,
-        endMins: gapEnd,
-        gapMins,
-        startTime: minsToTime(gapStart),
-        endTime: minsToTime(gapEnd),
-        potential: Math.round((gapMins / 60) * (hourlyRate || 40)),
-      });
-    }
-  }
-  return gaps;
+  return computed.map((g) => ({
+    startMins: g.startMins,
+    endMins: g.endMins,
+    gapMins: g.gapMins,
+    startTime: minsToTime(g.startMins),
+    endTime: minsToTime(g.endMins),
+    potential: Math.round((g.gapMins / 60) * (hourlyRate || 40)),
+  }));
 }
 
 
