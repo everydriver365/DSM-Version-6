@@ -1087,10 +1087,10 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
             className="mkt-scroll"
             style={{
               display: "flex",
-              gap: 12,
+              gap: 16,
               overflowX: "auto",
               scrollSnapType: "x mandatory",
-              padding: "4px 16px 12px",
+              padding: "6px 16px 18px",
               scrollPaddingLeft: 16,
               scrollPaddingRight: 16,
             }}
