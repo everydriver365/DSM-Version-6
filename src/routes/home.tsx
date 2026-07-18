@@ -5111,7 +5111,7 @@ function HomePage() {
           const gapStart = new Date(Math.max(rawGapStart.getTime(), dayWorkStart.getTime()));
           const gapEnd = new Date(Math.min(rawNextStart.getTime(), dayWorkEnd.getTime()));
           const mins = Math.round((gapEnd.getTime() - gapStart.getTime()) / 60000);
-          if (mins >= 60) rows.push({ kind: 'gap', start: gapStart, mins });
+          if (mins >= minGapMinutes) rows.push({ kind: 'gap', start: gapStart, mins });
         }
         // Before-first and after-last gaps against the working day (today only).
         if (tab === 'today' && sorted.length > 0) {
@@ -5128,11 +5128,11 @@ function HomePage() {
             const firstL = sorted[0];
             const firstStart = lessonDateTime(firstL);
             const beforeMins = Math.round((firstStart.getTime() - workStart.getTime()) / 60000);
-            if (beforeMins >= 60) rows.unshift({ kind: 'gap', start: workStart, mins: beforeMins });
+            if (beforeMins >= minGapMinutes) rows.unshift({ kind: 'gap', start: workStart, mins: beforeMins });
             const lastL = sorted[sorted.length - 1];
             const lastEnd = new Date(lessonDateTime(lastL).getTime() + (lastL.duration_minutes ?? 60) * 60000);
             const afterMins = Math.round((workEnd.getTime() - lastEnd.getTime()) / 60000);
-            if (afterMins >= 60) rows.push({ kind: 'gap', start: lastEnd, mins: afterMins });
+            if (afterMins >= minGapMinutes) rows.push({ kind: 'gap', start: lastEnd, mins: afterMins });
           }
         }
 
