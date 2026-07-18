@@ -1032,10 +1032,9 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           <div style={{ fontSize: 13, color: "#B0BAC9" }}>No featured services</div>
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {featured.map((tile, idx) => {
             const img = firstImageUrl(tile.image_urls);
-            const price = parsePrice(tile.price_display);
             const allFeatures = featuresFor(tile.marketplace_categories?.name, tile.title);
             const features = allFeatures.slice(0, 2);
             const badge = badgeFor(idx, tile.is_featured);
@@ -1045,13 +1044,11 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                 className="marketplace-card"
                 onClick={() => openListing(tile.id)}
                 style={{
-                  background: "rgba(255,255,255,0.85)",
-                  backdropFilter: "blur(10px)",
-                  WebkitBackdropFilter: "blur(10px)",
+                  background: "#FFFFFF",
                   border: "1px solid rgba(11, 31, 58, 0.08)",
-                  borderRadius: 28,
+                  borderRadius: 20,
                   overflow: "hidden",
-                  boxShadow: "0 4px 16px -4px rgba(11, 31, 58, 0.10), 0 1px 3px rgba(15,32,68,0.04)",
+                  boxShadow: "0 4px 16px -6px rgba(11, 31, 58, 0.12), 0 1px 3px rgba(15,32,68,0.04)",
                   cursor: "pointer",
                   display: "flex",
                   flexDirection: "column",
@@ -1059,7 +1056,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                 }}
               >
                 {/* Hero image */}
-                <div style={{ position: "relative", height: 96, overflow: "hidden", borderRadius: "28px 28px 0 0" }}>
+                <div style={{ position: "relative", height: 150, overflow: "hidden" }}>
                   {img ? (
                     <img
                       src={img}
@@ -1084,109 +1081,71 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         justifyContent: "center",
                       }}
                     >
-                      <Sparkles size={28} color="#FFFFFF" />
+                      <Sparkles size={32} color="#FFFFFF" />
                     </div>
                   )}
                   <span
-                    className="marketplace-badge-pulse"
                     style={{
                       position: "absolute",
-                      top: 10,
-                      left: 10,
-                      background: "#0B1F3A",
+                      top: 14,
+                      left: 14,
+                      background: "#1D5BE0",
                       color: "#FFFFFF",
-                      padding: "4px 10px 4px 8px",
+                      padding: "7px 14px 7px 12px",
                       borderRadius: 999,
-                      fontSize: 9.5,
+                      fontSize: 12,
                       fontWeight: 600,
-                      boxShadow: "0 4px 10px rgba(11, 31, 58, 0.35)",
+                      boxShadow: "0 6px 14px rgba(29, 91, 224, 0.35)",
                       display: "inline-flex",
                       alignItems: "center",
-                      gap: 4,
-                      letterSpacing: "0.02em",
+                      gap: 6,
+                      letterSpacing: "0.01em",
+                      fontFamily: "'Poppins', 'Inter', sans-serif",
                     }}
                   >
-                    <Sparkles size={9} color="#FFFFFF" strokeWidth={2.4} />
+                    <Crown size={12} color="#FFFFFF" strokeWidth={2.4} fill="#FFFFFF" />
                     {badge}
                   </span>
                 </div>
 
                 {/* Body */}
-                <div style={{ display: "flex", flexDirection: "row", flex: 1, minHeight: 0 }}>
-                  {/* Pricing panel */}
+                <div style={{ padding: "14px 16px 14px", display: "flex", flexDirection: "column", minWidth: 0 }}>
+                  <div style={{ fontSize: 17, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.25, marginBottom: 4, fontFamily: "'Poppins', 'Inter', sans-serif", letterSpacing: "-0.01em" }}>
+                    {tile.title}
+                  </div>
                   <div
                     style={{
-                      width: "22%",
-                      minWidth: 52,
-                      background: "#0B1F3A",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "10px 4px",
-                      gap: 3,
-                      margin: 8,
-                      borderRadius: 28,
-                      boxShadow: "0 6px 14px rgba(11, 31, 58, 0.28), inset 0 1px 0 rgba(255,255,255,0.18)",
+                      fontSize: 13,
+                      color: "#64748B",
+                      lineHeight: 1.35,
+                      marginBottom: 12,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 1,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
                     }}
                   >
-                    {price ? (
-                      <>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: "#FFFFFF", lineHeight: 1, textAlign: "center", fontFamily: "'Poppins', 'Inter', sans-serif" }}>
-                          {price.price}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: 8,
-                            fontWeight: 500,
-                            color: "rgba(255,255,255,0.9)",
-                            textAlign: "center",
-                            lineHeight: 1.2,
-                          }}
-                        >
-                          {price.period}
-                        </div>
-                      </>
-                    ) : (
-                      <div style={{ fontSize: 10, fontWeight: 700, color: "#FFFFFF", textAlign: "center" }}>
-                        Enquire
-                      </div>
-                    )}
+                    {tile.marketplace_categories?.name
+                      ? `${tile.marketplace_categories.name} for driving...`
+                      : "Premium service for driving instructors."}
                   </div>
-
-                  {/* Content */}
-                  <div style={{ flex: 1, padding: "10px 12px 10px 4px", display: "flex", flexDirection: "column", minWidth: 0, minHeight: 0 }}>
-                    <div style={{ fontSize: 12.5, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.25, marginBottom: 3, fontFamily: "'Poppins', 'Inter', sans-serif", letterSpacing: "-0.01em" }}>
-                      {tile.title}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 9,
-                        color: "#64748B",
-                        lineHeight: 1.35,
-                        marginBottom: 8,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 1,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {tile.marketplace_categories?.name
-                        ? `${tile.marketplace_categories.name} for driving instructors.`
-                        : "Premium service for driving instructors."}
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 5, marginBottom: "auto" }}>
+                  <div style={{ height: 1, background: "rgba(11,31,58,0.08)", marginBottom: 12 }} />
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: 1 }}>
                       {features.map((f, i) => (
-                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 5, minWidth: 0 }}>
-                          <f.icon size={10} color="#0B1F3A" strokeWidth={2} />
+                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+                          {i > 0 && (
+                            <span style={{ width: 1, height: 14, background: "rgba(11,31,58,0.15)", marginRight: 6 }} />
+                          )}
                           <span
                             style={{
-                              fontSize: 8.5,
-                              color: "#475569",
+                              fontSize: 13,
+                              color: "#0B1F3A",
                               fontWeight: 500,
                               whiteSpace: "nowrap",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
+                              fontFamily: "'Poppins', 'Inter', sans-serif",
                             }}
                           >
                             {f.label}
@@ -1200,16 +1159,15 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         background: "transparent",
                         border: 0,
                         padding: 0,
-                        fontSize: 10,
+                        fontSize: 13,
                         fontWeight: 600,
-                        color: "#0B1F3A",
+                        color: "#1D5BE0",
                         cursor: "pointer",
                         display: "flex",
                         alignItems: "center",
-                        gap: 3,
+                        gap: 5,
                         fontFamily: "'Poppins', 'Inter', sans-serif",
-                        alignSelf: "flex-end",
-                        marginTop: 6,
+                        whiteSpace: "nowrap",
                       }}
                     >
                       <span>View details</span>
