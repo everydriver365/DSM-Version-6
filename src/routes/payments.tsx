@@ -8,6 +8,7 @@ import { supabase } from "../lib/supabaseClient";
 import WorkspaceDots from "../components/dsm/WorkspaceDots";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
+import { recordPayment } from "@/lib/payments";
 
 export const Route = createFileRoute("/payments")({
   head: () => ({
