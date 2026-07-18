@@ -1351,10 +1351,8 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     return ka.localeCompare(kb);
   }).slice(0, 12);
 
-  const latestPodcast = podcasts[0] ?? null;
-
-  // Empty state: no upcoming sessions AND no podcast → render nothing.
-  if (sortedSessions.length === 0 && !latestPodcast) return null;
+  // Empty state: no upcoming sessions → render nothing.
+  if (sortedSessions.length === 0) return null;
 
   const Thumbnail = ({ category, imageUrl }: { category: string | null; imageUrl: string | null }) => {
     const t = sessionType(category);
