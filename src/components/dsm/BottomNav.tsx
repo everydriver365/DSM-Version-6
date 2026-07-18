@@ -135,7 +135,6 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
       let isActive = false;
       if (key === "home") isActive = active === "home" && (currentWs ?? 0) === 0;
       else if (key === "schedule") isActive = active === "schedule";
-      else if (key === "pupils") isActive = active === "pupils" || active?.startsWith("pupils") || false;
       else if (key === "messages") isActive = active === "messages";
       else if (key === "more") isActive = active === "more";
       const color = isActive ? activeColor : inactiveColor;
