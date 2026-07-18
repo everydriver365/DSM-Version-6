@@ -1195,6 +1195,7 @@ function SchedulePage() {
                           timeOff,
                           row.key,
                           hourlyRate,
+                          minGapMinutes,
                         )
                       : [];
                     const gapRows: GapRow[] = gaps.map((g, i) => ({
