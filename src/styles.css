@@ -64,7 +64,7 @@
 :root {
   --radius: 0.625rem;
   /* Checkfront palette: navy #0B1F3A, blue #1877D6, bg #F3F8FF */
-  --background: oklch(0.980 0.010 250);
+  --background: #DCE4F0;
   --foreground: oklch(0.200 0.050 258);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.200 0.050 258);
