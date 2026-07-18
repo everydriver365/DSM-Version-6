@@ -113,88 +113,8 @@ function methodBg(method: string | null | undefined, refund?: boolean) {
 }
 
 // ---------- exported helpers (kept for external callers) ----------
-export async function recordPayment(args: {
-  instructorId: string;
-  pupilId: string;
-  amount: number;
-  method: string;
-  notes?: string | null;
-  applyToOldestFirst?: boolean;
-  saveAsCredit?: boolean;
-  createdAt?: string;
-}) {
-  const { instructorId, pupilId, amount, method, notes, applyToOldestFirst = true, saveAsCredit = false, createdAt } = args;
-  const now = createdAt ?? new Date().toISOString();
+// recordPayment lives in @/lib/payments — imported above.
 
-  let remaining = Number(amount);
-
-  if (!saveAsCredit && applyToOldestFirst) {
-    const { data: unpaidLessons } = await supabase
-      .from("lessons")
-      .select("id, amount_due")
-      .eq("pupil_id", pupilId)
-      .eq("payment_status", "unpaid")
-      .is("deleted_at", null)
-      .order("lesson_date", { ascending: true });
-
-    for (const lesson of unpaidLessons ?? []) {
-      if (remaining <= 0) break;
-      const lessonCost = Number(lesson.amount_due ?? 0);
-      if (lessonCost <= 0) continue;
-      if (lessonCost <= remaining) {
-        await supabase.from("lessons").update({
-          payment_status: "paid",
-          payment_method: method,
-          paid_at: now,
-          paid_amount: lessonCost,
-          amount_due: 0,
-        }).eq("id", lesson.id);
-        remaining -= lessonCost;
-      } else {
-        await supabase.from("lessons").update({
-          payment_status: "partial",
-          payment_method: method,
-          paid_at: now,
-          paid_amount: remaining,
-          amount_due: lessonCost - remaining,
-        }).eq("id", lesson.id);
-        remaining = 0;
-      }
-    }
-  }
-
-  if (remaining > 0) {
-    const { data: pRow } = await supabase.from("pupils").select("account_balance").eq("id", pupilId).maybeSingle();
-    const current = Number((pRow as { account_balance?: number | null } | null)?.account_balance ?? 0);
-    await supabase.from("pupils").update({ account_balance: current + remaining }).eq("id", pupilId);
-  }
-
-  const { data: { session } } = await supabase.auth.getSession();
-  const token = session?.access_token;
-  if (!token) { console.error("[payments] no auth token for lesson_history insert"); return; }
-  const SUPABASE_URL = (supabase as any).supabaseUrl as string;
-  const SUPABASE_ANON_KEY = (supabase as any).supabaseKey as string;
-  const payload = {
-    instructor_id: instructorId,
-    pupil_id: pupilId,
-    lesson_cost: Number(amount),
-    payment_status: "paid",
-    payment_method: method,
-    created_at: now,
-    notes: notes || null,
-  };
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/lesson_history`, {
-    method: "POST",
-    headers: {
-      apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-      Prefer: "return=minimal",
-    },
-    body: JSON.stringify(payload),
-  });
-  if (!response.ok) console.error("[payments] lesson_history insert error", response.status, await response.text());
-}
 
 export async function deletePaymentRecord(historyId: string, token: string, _userId: string): Promise<boolean> {
   const SUPABASE_URL = (supabase as any).supabaseUrl as string;
