@@ -972,7 +972,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         }
         .marketplace-card:hover {
           transform: translateY(-4px);
-          box-shadow: 0 20px 40px -12px rgba(37, 99, 235, 0.18), 0 8px 16px -4px rgba(37, 99, 235, 0.08);
+          box-shadow: 0 20px 40px -12px rgba(11, 31, 58, 0.18), 0 8px 16px -4px rgba(11, 31, 58, 0.08);
         }
         .marketplace-card:hover .marketplace-hero-img {
           transform: scale(1.05);
@@ -991,7 +991,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           transition: box-shadow 0.25s ease, transform 0.25s ease;
         }
         .marketplace-view-all:hover {
-          box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35), 0 0 0 4px rgba(37, 99, 235, 0.12);
+          box-shadow: 0 8px 20px rgba(11, 31, 58, 0.35), 0 0 0 4px rgba(11, 31, 58, 0.12);
           transform: translateY(-1px);
         }
       `}</style>
@@ -1008,7 +1008,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           className="marketplace-view-all"
           onClick={() => navigate({ to: "/marketplace" as never })}
           style={{
-            background: "linear-gradient(135deg, #2563EB 0%, #1877D6 100%)",
+            background: "#0B1F3A",
             border: "none",
             borderRadius: 999,
             padding: "8px 16px",
@@ -1017,7 +1017,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
             color: "#FFFFFF",
             cursor: "pointer",
             whiteSpace: "nowrap",
-            boxShadow: "0 4px 12px rgba(37, 99, 235, 0.28), inset 0 1px 0 rgba(255,255,255,0.2)",
+            boxShadow: "0 4px 12px rgba(11, 31, 58, 0.28), inset 0 1px 0 rgba(255,255,255,0.2)",
             fontFamily: "'Poppins', 'Inter', sans-serif",
           }}
         >
@@ -1048,10 +1048,10 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   background: "rgba(255,255,255,0.85)",
                   backdropFilter: "blur(10px)",
                   WebkitBackdropFilter: "blur(10px)",
-                  border: "1px solid rgba(37, 99, 235, 0.08)",
+                  border: "1px solid rgba(11, 31, 58, 0.08)",
                   borderRadius: 28,
                   overflow: "hidden",
-                  boxShadow: "0 4px 16px -4px rgba(37, 99, 235, 0.10), 0 1px 3px rgba(15,32,68,0.04)",
+                  boxShadow: "0 4px 16px -4px rgba(11, 31, 58, 0.10), 0 1px 3px rgba(15,32,68,0.04)",
                   cursor: "pointer",
                   display: "flex",
                   flexDirection: "column",
@@ -1078,7 +1078,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                       style={{
                         width: "100%",
                         height: "100%",
-                        background: "linear-gradient(135deg, #2563EB 0%, #1877D6 100%)",
+                        background: "#0B1F3A",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -1093,13 +1093,13 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                       position: "absolute",
                       top: 10,
                       left: 10,
-                      background: "linear-gradient(135deg, #2563EB 0%, #1877D6 100%)",
+                      background: "#0B1F3A",
                       color: "#FFFFFF",
                       padding: "4px 10px 4px 8px",
                       borderRadius: 999,
                       fontSize: 9.5,
                       fontWeight: 600,
-                      boxShadow: "0 4px 10px rgba(37, 99, 235, 0.35)",
+                      boxShadow: "0 4px 10px rgba(11, 31, 58, 0.35)",
                       display: "inline-flex",
                       alignItems: "center",
                       gap: 4,
@@ -1118,7 +1118,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     style={{
                       width: "22%",
                       minWidth: 52,
-                      background: "linear-gradient(160deg, #2563EB 0%, #1877D6 55%, #0F5FB0 100%)",
+                      background: "#0B1F3A",
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
@@ -1126,8 +1126,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                       padding: "10px 4px",
                       gap: 3,
                       margin: 8,
-                      borderRadius: 20,
-                      boxShadow: "0 6px 14px rgba(37, 99, 235, 0.28), inset 0 1px 0 rgba(255,255,255,0.18)",
+                      boxShadow: "0 6px 14px rgba(11, 31, 58, 0.28), inset 0 1px 0 rgba(255,255,255,0.18)",
                     }}
                   >
                     {price ? (
@@ -1178,7 +1177,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     <div style={{ display: "flex", flexDirection: "column", gap: 5, marginBottom: "auto" }}>
                       {features.map((f, i) => (
                         <div key={i} style={{ display: "flex", alignItems: "center", gap: 5, minWidth: 0 }}>
-                          <f.icon size={10} color="#2563EB" strokeWidth={2} />
+                          <f.icon size={10} color="#0B1F3A" strokeWidth={2} />
                           <span
                             style={{
                               fontSize: 8.5,
@@ -1202,7 +1201,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         padding: 0,
                         fontSize: 10,
                         fontWeight: 600,
-                        color: "#2563EB",
+                        color: "#0B1F3A",
                         cursor: "pointer",
                         display: "flex",
                         alignItems: "center",
