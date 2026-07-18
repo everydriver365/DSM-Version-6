@@ -1991,12 +1991,14 @@ function GapsPage() {
                     >
                       {(() => {
                         const startMin = hmToMin(slot.startTime);
-                        const endMin = hmToMin(slot.endTime);
+                        const dayName = DAYS[new Date(slot.date + "T00:00:00").getDay()];
                         const preview = previewMatchForGap({
                           date: slot.date,
+                          dayName,
                           startMin,
-                          endMin,
                           durationMin: slot.gapMinutes,
+                          allPupils,
+                          allAvailability,
                         });
                         const hasMatches = preview.count > 0;
                         return (
