@@ -6582,7 +6582,7 @@ function HomePage() {
           <AlertTriangle size={20} color="white" />
         </button>
       )}
-    </div>
+    </PageLayout>
 
 
   );
