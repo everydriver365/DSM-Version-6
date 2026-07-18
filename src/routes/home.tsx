@@ -228,6 +228,28 @@ interface PrevLessonRow {
   notes: string | null;
 }
 
+interface PreviewPupil {
+  id: string;
+  name: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  phone: string | null;
+  postcode: string | null;
+  calendar_colour: string | null;
+  custom_rate: number | null;
+  custom_rate_90: number | null;
+  custom_rate_120: number | null;
+}
+
+interface PupilReadySetting {
+  pupil_id: string;
+  instructor_id: string;
+  available_days: string[] | null;
+  preferred_duration_minutes: number | null;
+  min_notice_hours: number | null;
+  short_notice_opt_in: boolean | null;
+}
+
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 // Default weekly goals — should come from instructor settings
 // (instructors.weekly_lesson_goal / weekly_earnings_goal). We fall back to
@@ -434,6 +456,9 @@ function ymd(d: Date) {
   const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
   return `${get("year")}-${get("month")}-${get("day")}`;
 }
+
+const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
 function lessonDateTime(l: LessonRow) {
   const t = (l.lesson_time ?? "00:00:00").slice(0, 8);
   const time = t.length === 5 ? `${t}:00` : t;
@@ -1700,6 +1725,8 @@ function HomePage() {
   const [firstName, setFirstName] = useState("there");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [allPupils, setAllPupils] = useState<PreviewPupil[]>([]);
+  const [allAvailability, setAllAvailability] = useState<PupilReadySetting[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
   const [allLessons, setAllLessons] = useState<any[]>([]);
@@ -2461,6 +2488,28 @@ function HomePage() {
     })();
     return () => { cancelled = true; };
   }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const [pupilsRes, availRes] = await Promise.all([
+        supabase
+          .from("pupils")
+          .select("id,name,first_name,last_name,phone,postcode,calendar_colour,custom_rate,custom_rate_90,custom_rate_120")
+          .eq("instructor_id", userId)
+          .eq("status", "active")
+          .is("deleted_at", null),
+        supabase
+          .from("pupil_ready_to_learn_settings")
+          .select("*")
+          .eq("instructor_id", userId),
+      ]);
+      if (pupilsRes.error) console.error("[home] pupils query failed:", pupilsRes.error);
+      if (availRes.error) console.error("[home] availability query failed:", availRes.error);
+      setAllPupils((pupilsRes.data ?? []) as PreviewPupil[]);
+      setAllAvailability((availRes.data ?? []) as PupilReadySetting[]);
+    })();
+  }, [userId]);
 
   useEffect(() => {
     if (!userId) return;
@@ -3800,6 +3849,40 @@ function HomePage() {
     { icon: <Globe size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My website", route: "/minisite" },
 
   ] as const;
+
+  function previewMatchForGap(gap: {
+    date: string;
+    dayName: string;
+    durationMin: number;
+  }): { count: number; topPupils: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> } {
+    if (!allPupils.length || !allAvailability.length) {
+      return { count: 0, topPupils: [] };
+    }
+    const availByPupil = new (globalThis.Map)<string, PupilReadySetting>();
+    for (const a of allAvailability) {
+      if (a.pupil_id) availByPupil.set(a.pupil_id, a);
+    }
+    const slotStart = new Date(`${gap.date}T00:00:00`).getTime();
+    const hoursUntilSlot = (slotStart - Date.now()) / 3600000;
+
+    const matched: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> = [];
+    for (const p of allPupils) {
+      const s = availByPupil.get(p.id);
+      if (!s) continue;
+      const availDays = s.available_days || [];
+      if (!availDays.includes(gap.dayName)) continue;
+      const minDuration = s.preferred_duration_minutes ?? 60;
+      if (gap.durationMin < minDuration) continue;
+      const minNoticeHours = s.min_notice_hours ?? 24;
+      if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
+      matched.push({
+        name: p.name,
+        first_name: p.first_name,
+        calendar_colour: p.calendar_colour,
+      });
+    }
+    return { count: matched.length, topPupils: matched.slice(0, 3) };
+  }
 
   if (!authChecked) {
     return (
@@ -5478,6 +5561,9 @@ function HomePage() {
                       const fmtT = (d: Date) => `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
                       const hourlyRate = 40;
                       const potential = Math.round((r.mins / 60) * hourlyRate);
+                      const gapDate = `${gs.getFullYear()}-${String(gs.getMonth() + 1).padStart(2, '0')}-${String(gs.getDate()).padStart(2, '0')}`;
+                      const dayName = DAY_NAMES[gs.getDay()];
+                      const preview = previewMatchForGap({ date: gapDate, dayName, durationMin: r.mins });
                       return (
                         <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: 16 }}>
                           <span
@@ -5513,6 +5599,44 @@ function HomePage() {
                               <div style={{ fontSize: 13, fontWeight: 500, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums' }}>
                                 {fmtT(gs)} – {fmtT(ge)}
                               </div>
+                              {preview.count > 0 && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
+                                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    {preview.topPupils.map((p, i) => {
+                                      const initials = (p.name ?? p.first_name ?? "P")
+                                        .split(/\s+/)
+                                        .map((s) => s.charAt(0))
+                                        .join("")
+                                        .slice(0, 2)
+                                        .toUpperCase();
+                                      return (
+                                        <div
+                                          key={i}
+                                          style={{
+                                            width: 22,
+                                            height: 22,
+                                            borderRadius: '50%',
+                                            background: p.calendar_colour ?? '#6B7280',
+                                            border: '2px solid #FFFFFF',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontSize: 9,
+                                            fontWeight: 600,
+                                            color: '#FFFFFF',
+                                            marginRight: i === preview.topPupils.length - 1 ? 0 : -7,
+                                          }}
+                                        >
+                                          {initials}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                  <div style={{ fontSize: 11, color: '#1877D6' }}>
+                                    {preview.count} pupil{preview.count === 1 ? "" : "s"} may fit
+                                  </div>
+                                </div>
+                              )}
                               <div style={{ fontSize: 11, color: '#1877D6', marginTop: 2 }}>
                                 {formatMins(r.mins)} free · £{potential} potential
                               </div>
