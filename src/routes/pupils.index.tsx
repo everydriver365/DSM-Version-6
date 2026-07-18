@@ -516,8 +516,9 @@ function PupilsIndexPage() {
                   prepaidHoursRaw: prepaid,
                 });
               };
-              const startLongPress = () => {
+              const startLongPress = (e: React.PointerEvent) => {
                 if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+                longPressStartRef.current = { x: e.clientX, y: e.clientY };
                 longPressTimerRef.current = setTimeout(() => {
                   suppressNextClickRef.current = true;
                   openSheet();
@@ -531,6 +532,15 @@ function PupilsIndexPage() {
                   clearTimeout(longPressTimerRef.current);
                   longPressTimerRef.current = null;
                 }
+                longPressStartRef.current = null;
+              };
+              const maybeCancelOnMove = (e: React.PointerEvent) => {
+                const start = longPressStartRef.current;
+                if (!start || !longPressTimerRef.current) return;
+                const dx = e.clientX - start.x;
+                const dy = e.clientY - start.y;
+                // 8px drift threshold — anything more likely means the user is scrolling, not holding.
+                if (dx * dx + dy * dy > 64) cancelLongPress();
               };
               return (
                 <div
@@ -553,6 +563,7 @@ function PupilsIndexPage() {
                     }
                   }}
                   onPointerDown={startLongPress}
+                  onPointerMove={maybeCancelOnMove}
                   onPointerUp={cancelLongPress}
                   onPointerLeave={cancelLongPress}
                   onPointerCancel={cancelLongPress}
