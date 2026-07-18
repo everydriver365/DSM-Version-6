@@ -1290,22 +1290,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     spaces_taken: number | null;
     duration_minutes: number | null;
   };
-  type PodcastTile = {
-    id: string;
-    episode_number: number | null;
-    title: string;
-    guest_name: string | null;
-    guest_title: string | null;
-    duration_minutes: number | null;
-    image_url: string | null;
-    spotify_url: string | null;
-    apple_url: string | null;
-    audio_url: string | null;
-    published_at: string | null;
-  };
-
   const [sessions, setSessions] = useState<LiveTile[]>([]);
-  const [podcasts, setPodcasts] = useState<PodcastTile[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -1320,14 +1305,6 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         );
         const data = (await res.json()) as LiveTile[];
         if (!cancelled && Array.isArray(data)) setSessions(data);
-      } catch { /* ignore */ }
-      try {
-        const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/dsm_podcasts?is_published=eq.true&deleted_at=is.null&order=episode_number.desc&limit=2&select=id,episode_number,title,guest_name,guest_title,duration_minutes,image_url,spotify_url,apple_url,audio_url,published_at`,
-          { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } },
-        );
-        const data = (await res.json()) as PodcastTile[];
-        if (!cancelled && Array.isArray(data)) setPodcasts(data);
       } catch { /* ignore */ }
     })();
     return () => { cancelled = true; };
