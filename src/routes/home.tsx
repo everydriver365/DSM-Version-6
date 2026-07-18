@@ -1577,7 +1577,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           </div>
         )}
 
-        {/* Secondary session card */}
+        {/* Secondary session card — same design as featured */}
         {secondary && (
           <div
             role="button"
@@ -1589,45 +1589,86 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             style={{
               background: "#FFFFFF",
               borderRadius: 16,
-              padding: "14px 16px",
+              overflow: "hidden",
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               cursor: "pointer",
               userSelect: "none",
               fontFamily: POPPINS,
               display: "flex",
-              alignItems: "center",
-              gap: 12,
+              alignItems: "stretch",
             }}
           >
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                {secondary.is_live ? (
-                  <span style={{
-                    padding: "3px 8px", background: "#FCEBEB", color: "#CC2229",
-                    fontSize: 11, fontWeight: 600, borderRadius: 999,
-                  }}>
+            <div style={{ position: "relative", width: 96, flexShrink: 0, background: "#0B1F3A" }}>
+              {secondary.image_url ? (
+                <img
+                  src={secondary.image_url}
+                  alt=""
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                />
+              ) : (
+                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  {(() => {
+                    const { Icon } = typeIcon(sessionType(secondary.category));
+                    return <Icon size={28} stroke={1.5} color="#FFFFFF" />;
+                  })()}
+                </div>
+              )}
+              {secondary.is_live && (
+                <div
+                  style={{
+                    position: "absolute", top: 8, left: 8,
+                    display: "inline-flex", alignItems: "center", gap: 4,
+                    background: "#CC2229", borderRadius: 999, padding: "3px 8px",
+                  }}
+                >
+                  <span aria-hidden style={{ width: 4, height: 4, borderRadius: "50%", background: "#FFFFFF" }} />
+                  <span style={{ fontSize: 9, fontWeight: 600, color: "#FFFFFF", letterSpacing: "0.08em", textTransform: "uppercase" }}>
                     Live
                   </span>
-                ) : (
+                </div>
+              )}
+            </div>
+            <div style={{ padding: "12px 14px", flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 8 }}>
+              <div>
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 4 }}>
                   <span style={{
-                    padding: "3px 8px", background: "#F1F4F9", color: "#64748B",
+                    padding: "3px 8px", background: "#E8F0FC", color: "#1877D6",
                     fontSize: 11, fontWeight: 600, borderRadius: 999,
                   }}>
                     {categoryLabel(secondary.category)}
                   </span>
-                )}
-                <span style={{ fontSize: 11, fontWeight: 400, color: "#B0BAC9" }}>
-                  {startsInLabel(secondary.session_date, secondary.session_time)}
-                </span>
+                  <span style={{ fontSize: 11, fontWeight: 400, color: "#B0BAC9" }}>
+                    {fmtDateTime(secondary.session_date, secondary.session_time)}
+                  </span>
+                </div>
+                <div style={{
+                  fontSize: 14, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3,
+                  display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
+                }}>
+                  {secondary.title}
+                </div>
               </div>
-              <div style={{
-                fontSize: 14, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3,
-                overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-              }}>
-                {secondary.title}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                <span style={{
+                  fontSize: 12, fontWeight: 400, color: "#64748B",
+                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0,
+                }}>
+                  {secondary.host_name || "DSM Host"}
+                </span>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); open(secondary.id); }}
+                  style={{
+                    padding: "8px 14px", background: "#072B47", color: "#FFFFFF",
+                    fontSize: 11, fontWeight: 600, fontFamily: POPPINS,
+                    border: "none", borderRadius: 999, cursor: "pointer", flexShrink: 0,
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                  }}
+                >
+                  Join
+                </button>
               </div>
             </div>
-            <IconChevronRight size={16} stroke={2} color="#B0BAC9" style={{ flexShrink: 0 }} />
           </div>
         )}
 
