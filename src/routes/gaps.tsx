@@ -425,6 +425,7 @@ function GapsPage() {
   const navigate = useNavigate();
   console.log("[gaps] component mounted");
   const [userId, setUserId] = useState<string | null>(null);
+  const minGapMinutes = useMinGapMinutes();
 
   const [slotDate, setSlotDate] = useState<string>(todayIso());
   const [slotTime, setSlotTime] = useState<string>("10:00");
