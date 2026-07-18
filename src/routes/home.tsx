@@ -5793,44 +5793,45 @@ function HomePage() {
             {/* 5. QUICK ACCESS (swipeable 3x2) */}
             {(() => {
               const unreadCount = unreadMsgs.length;
-              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late'; badge?: number; graphic?: 'timeline' | 'calendar' | 'donut' | 'chart' };
+              type GraphicKind = 'timeline' | 'calendar' | 'donut' | 'chart' | 'bubbles' | 'alarm' | 'book' | 'medal' | 'swap' | 'repeat' | 'checklist' | 'receipt' | 'grad' | 'map' | 'fuel' | 'car' | 'bars' | 'moon' | 'invoice' | 'trend' | 'gear' | 'clock2' | 'sync' | 'gift' | 'shield' | 'spark' | 'calc';
+              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late'; badge?: number; graphic?: GraphicKind };
               const quickTiles: QuickTile[] = [
                 // Page 1 — Daily essentials (spec)
                 { label: 'Fill slots', sub: 'Gaps', route: '/gaps', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0, badge: freeSlotCount, graphic: 'timeline' },
                 { label: 'Schedule', sub: 'View diary', route: null, icon: IconCalendar, iconStroke: '#1877D6', chipBg: '#E6F1FB', wsIndex: 1, graphic: 'calendar' },
                 { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, iconStroke: '#6B4FA0', chipBg: '#EAE3F5', graphic: 'donut' },
                 { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} owed` : 'All settled', route: '/payments', icon: IconCurrencyPound, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0, badge: outstanding > 0 ? Math.round(outstanding) : undefined, graphic: 'chart' },
-                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#1877D6', chipBg: '#E6F1FB', attention: unreadCount > 0 },
-                { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'running-late' },
+                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#1877D6', chipBg: '#E6F1FB', attention: unreadCount > 0, graphic: 'bubbles' },
+                { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'running-late', graphic: 'alarm' },
                 // Page 2 — Teaching
-                { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
-                { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: Award, iconStroke: '#7C3AED', chipBg: '#EFE7FB' },
-                { label: 'Test swap', sub: 'Swap requests', route: '/test-swaps', icon: ArrowLeftRight, iconStroke: '#7C3AED', chipBg: '#EFE7FB' },
-                { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: RefreshCw, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
-                { label: 'Syllabus', sub: 'Standards', route: '/standards', icon: GraduationCap, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
-                { label: 'Mock tests', sub: 'Practice', route: '/mock-tests', icon: ClipboardCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
+                { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'book' },
+                { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: Award, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'medal' },
+                { label: 'Test swap', sub: 'Swap requests', route: '/test-swaps', icon: ArrowLeftRight, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'swap' },
+                { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: RefreshCw, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'repeat' },
+                { label: 'Syllabus', sub: 'Standards', route: '/standards', icon: GraduationCap, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'grad' },
+                { label: 'Mock tests', sub: 'Practice', route: '/mock-tests', icon: ClipboardCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
                 // Page 3 — Business
-                { label: 'Expenses', sub: 'Track costs', route: '/expenses', icon: Receipt, iconStroke: '#C23B3B', chipBg: '#FBE2E2' },
-                { label: 'Certifications', sub: 'Licences', route: '/certifications', icon: Award, iconStroke: '#B45309', chipBg: '#FBEBD3' },
-                { label: 'CPD log', sub: 'Development', route: '/cpd', icon: GraduationCap, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
-                { label: 'Mileage', sub: 'Log miles', route: '/mileage', icon: MapPin, iconStroke: '#5A6B85', chipBg: '#EEF2F7' },
-                { label: 'Find fuel', sub: 'Nearby', route: '/fuel', icon: Fuel, iconStroke: '#B45309', chipBg: '#FBEBD3' },
-                { label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', icon: Car, iconStroke: '#5A6B85', chipBg: '#EEF2F7' },
+                { label: 'Expenses', sub: 'Track costs', route: '/expenses', icon: Receipt, iconStroke: '#C23B3B', chipBg: '#FBE2E2', graphic: 'receipt' },
+                { label: 'Certifications', sub: 'Licences', route: '/certifications', icon: Award, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'shield' },
+                { label: 'CPD log', sub: 'Development', route: '/cpd', icon: GraduationCap, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'bars' },
+                { label: 'Mileage', sub: 'Log miles', route: '/mileage', icon: MapPin, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'map' },
+                { label: 'Find fuel', sub: 'Nearby', route: '/fuel', icon: Fuel, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'fuel' },
+                { label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', icon: Car, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'car' },
                 // Page 4 — Reports
-                { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: BarChart3, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
-                { label: 'Tax report', sub: 'Self assessment', route: '/tax-report', icon: Calculator, iconStroke: '#B45309', chipBg: '#FBEBD3' },
-                { label: 'Weekly', sub: 'Week report', route: '/weekly-report', icon: CalendarIcon, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
-                { label: 'End of day', sub: 'Daily wrap', route: '/end-of-day', icon: Moon, iconStroke: '#7C3AED', chipBg: '#EFE7FB' },
-                { label: 'Invoices', sub: 'Billing', route: '/invoices', icon: FileText, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
-                { label: 'Forecast', sub: 'Earnings', route: '/earnings-forecast', icon: TrendingUp, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
+                { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: BarChart3, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'bars' },
+                { label: 'Tax report', sub: 'Self assessment', route: '/tax-report', icon: Calculator, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'calc' },
+                { label: 'Weekly', sub: 'Week report', route: '/weekly-report', icon: CalendarIcon, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'bars' },
+                { label: 'End of day', sub: 'Daily wrap', route: '/end-of-day', icon: Moon, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'moon' },
+                { label: 'Invoices', sub: 'Billing', route: '/invoices', icon: FileText, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'invoice' },
+                { label: 'Forecast', sub: 'Earnings', route: '/earnings-forecast', icon: TrendingUp, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'trend' },
                 // Page 5 — Admin
-                { label: 'Settings', sub: 'Account', route: '/settings', icon: SettingsIcon, iconStroke: '#5A6B85', chipBg: '#EEF2F7' },
-                { label: 'Availability', sub: 'Working hours', route: '/availability-settings', icon: Clock, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
-                { label: 'Coverage', sub: 'Service areas', route: '/coverage-areas', icon: MapPin, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
-                { label: 'Calendar', sub: 'Google sync', route: '/calendarsync', icon: CalendarIcon, iconStroke: '#1877D6', chipBg: '#E6F1FB' },
-                { label: 'Referrals', sub: 'Rewards', route: '/referrals', icon: Gift, iconStroke: '#00B5A5', chipBg: '#D8F1EE' },
-                { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1' },
-                { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: Zap, iconStroke: '#B45309', chipBg: '#FBEBD3' },
+                { label: 'Settings', sub: 'Account', route: '/settings', icon: SettingsIcon, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'gear' },
+                { label: 'Availability', sub: 'Working hours', route: '/availability-settings', icon: Clock, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'clock2' },
+                { label: 'Coverage', sub: 'Service areas', route: '/coverage-areas', icon: MapPin, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'map' },
+                { label: 'Calendar', sub: 'Google sync', route: '/calendarsync', icon: CalendarIcon, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'sync' },
+                { label: 'Referrals', sub: 'Rewards', route: '/referrals', icon: Gift, iconStroke: '#00B5A5', chipBg: '#D8F1EE', graphic: 'gift' },
+                { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
+                { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: Zap, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'spark' },
               ];
               const tilesPerPage = 4;
               const totalPages = Math.ceil(quickTiles.length / tilesPerPage);
@@ -5937,6 +5938,205 @@ function HomePage() {
                             <path d="M2 44 L14 34 L26 38 L38 22 L50 26 L64 10" fill="none" stroke="#1E8E3E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                             <path d="M2 44 L14 34 L26 38 L38 22 L50 26 L64 10 L64 52 L2 52 Z" fill="#DDEFE1" opacity="0.6" />
                             <circle cx="64" cy="10" r="2.5" fill="#1E8E3E" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'bubbles' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <rect x="8" y="8" width="44" height="20" rx="8" fill="#E6F1FB" stroke="#C7DDF0" />
+                            <circle cx="20" cy="18" r="2" fill="#1877D6" /><circle cx="30" cy="18" r="2" fill="#1877D6" /><circle cx="40" cy="18" r="2" fill="#1877D6" />
+                            <rect x="24" y="30" width="42" height="18" rx="8" fill="#1877D6" />
+                            <circle cx="36" cy="39" r="1.6" fill="#FFF" /><circle cx="45" cy="39" r="1.6" fill="#FFF" /><circle cx="54" cy="39" r="1.6" fill="#FFF" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'alarm' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <circle cx="40" cy="30" r="16" fill="#FFF" stroke="#C23B3B" strokeWidth="2" />
+                            <path d="M40 20 L40 30 L48 34" stroke="#C23B3B" strokeWidth="2" strokeLinecap="round" fill="none" />
+                            <path d="M24 16 L20 12 M56 16 L60 12" stroke="#C23B3B" strokeWidth="2" strokeLinecap="round" />
+                            <path d="M62 30 L68 30 M62 26 L68 24 M62 34 L68 36" stroke="#C23B3B" strokeWidth="1.5" strokeLinecap="round" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'book' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <path d="M10 12 L36 16 L36 50 L10 46 Z" fill="#E6F1FB" stroke="#1877D6" strokeWidth="1" />
+                            <path d="M62 12 L36 16 L36 50 L62 46 Z" fill="#FFF" stroke="#1877D6" strokeWidth="1" />
+                            <line x1="16" y1="22" x2="32" y2="24" stroke="#1877D6" strokeWidth="1" />
+                            <line x1="16" y1="28" x2="32" y2="30" stroke="#1877D6" strokeWidth="1" />
+                            <line x1="40" y1="24" x2="56" y2="22" stroke="#1877D6" strokeWidth="1" />
+                            <line x1="40" y1="30" x2="56" y2="28" stroke="#1877D6" strokeWidth="1" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'medal' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <path d="M28 4 L34 22 L28 22 Z" fill="#7C3AED" opacity="0.6" />
+                            <path d="M52 4 L46 22 L52 22 Z" fill="#7C3AED" opacity="0.6" />
+                            <circle cx="40" cy="34" r="14" fill="#EFE7FB" stroke="#7C3AED" strokeWidth="2" />
+                            <text x="40" y="39" textAnchor="middle" fontSize="12" fontWeight="700" fill="#7C3AED" fontFamily="Poppins, Inter, sans-serif">1</text>
+                          </svg>
+                        )}
+                        {tile.graphic === 'swap' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <path d="M8 20 L60 20 L54 14 M60 20 L54 26" stroke="#7C3AED" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M64 40 L12 40 L18 34 M12 40 L18 46" stroke="#7C3AED" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'repeat' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <path d="M20 28 A16 16 0 0 1 52 28" stroke="#1877D6" strokeWidth="2" fill="none" strokeLinecap="round" />
+                            <path d="M46 22 L52 28 L58 22" stroke="#1877D6" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M52 36 A16 16 0 0 1 20 36" stroke="#1877D6" strokeWidth="2" fill="none" strokeLinecap="round" />
+                            <path d="M26 42 L20 36 L14 42" stroke="#1877D6" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'checklist' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <rect x="10" y="6" width="52" height="44" rx="4" fill="#FFF" stroke="#B9DDC3" />
+                            {[0,1,2].map((i) => (
+                              <g key={i}>
+                                <rect x="16" y={14 + i*12} width="8" height="8" rx="2" fill="#DDEFE1" stroke="#16A34A" />
+                                <path d={`M17.5 ${18 + i*12} L19.5 ${20 + i*12} L23 ${16.5 + i*12}`} stroke="#16A34A" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                                <rect x="28" y={16 + i*12} width="26" height="4" rx="1" fill="#EEF2F7" />
+                              </g>
+                            ))}
+                          </svg>
+                        )}
+                        {tile.graphic === 'receipt' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <path d="M20 4 L52 4 L52 48 L48 44 L44 48 L40 44 L36 48 L32 44 L28 48 L24 44 L20 48 Z" fill="#FFF" stroke="#C23B3B" strokeWidth="1" />
+                            <line x1="26" y1="14" x2="46" y2="14" stroke="#FBE2E2" strokeWidth="2" />
+                            <line x1="26" y1="22" x2="46" y2="22" stroke="#FBE2E2" strokeWidth="2" />
+                            <line x1="26" y1="30" x2="40" y2="30" stroke="#FBE2E2" strokeWidth="2" />
+                            <text x="36" y="42" textAnchor="middle" fontSize="7" fontWeight="700" fill="#C23B3B" fontFamily="Poppins, Inter, sans-serif">£</text>
+                          </svg>
+                        )}
+                        {tile.graphic === 'grad' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <path d="M8 22 L40 12 L72 22 L40 32 Z" fill="#16A34A" opacity="0.85" />
+                            <path d="M20 26 L20 40 Q40 50 60 40 L60 26" stroke="#16A34A" strokeWidth="2" fill="none" />
+                            <line x1="66" y1="22" x2="66" y2="34" stroke="#16A34A" strokeWidth="2" strokeLinecap="round" />
+                            <circle cx="66" cy="36" r="2" fill="#16A34A" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'map' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <rect x="6" y="8" width="60" height="40" rx="4" fill="#EEF2F7" />
+                            <path d="M6 30 Q30 20 42 34 T66 32" stroke="#5A6B85" strokeWidth="1.5" fill="none" strokeDasharray="3 2" />
+                            <circle cx="20" cy="26" r="4" fill="#1877D6" />
+                            <circle cx="20" cy="26" r="1.5" fill="#FFF" />
+                            <path d="M50 32 L50 42" stroke="#C23B3B" strokeWidth="2" strokeLinecap="round" />
+                            <circle cx="50" cy="30" r="4" fill="#C23B3B" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'fuel' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <rect x="14" y="12" width="26" height="36" rx="3" fill="#FFF" stroke="#B45309" strokeWidth="1.5" />
+                            <rect x="18" y="18" width="18" height="10" rx="1" fill="#FBEBD3" />
+                            <path d="M40 20 L48 20 L48 40 Q48 44 52 44 Q56 44 56 40 L56 26 L52 22" stroke="#B45309" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'car' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <path d="M8 34 L14 22 Q16 18 20 18 L52 18 Q56 18 58 22 L64 34 L64 42 L8 42 Z" fill="#EEF2F7" stroke="#5A6B85" strokeWidth="1.5" />
+                            <rect x="18" y="24" width="14" height="8" rx="1" fill="#FFF" />
+                            <rect x="36" y="24" width="14" height="8" rx="1" fill="#FFF" />
+                            <circle cx="20" cy="44" r="4" fill="#0B1F3A" /><circle cx="52" cy="44" r="4" fill="#0B1F3A" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'bars' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <rect x="10" y="30" width="10" height="20" rx="2" fill="#1877D6" opacity="0.5" />
+                            <rect x="24" y="22" width="10" height="28" rx="2" fill="#1877D6" opacity="0.7" />
+                            <rect x="38" y="14" width="10" height="36" rx="2" fill="#1877D6" opacity="0.85" />
+                            <rect x="52" y="6" width="10" height="44" rx="2" fill="#1877D6" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'moon' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <path d="M50 8 A22 22 0 1 0 62 42 A16 16 0 0 1 50 8 Z" fill="#EFE7FB" stroke="#7C3AED" strokeWidth="1.5" />
+                            <circle cx="18" cy="14" r="1.5" fill="#7C3AED" />
+                            <circle cx="12" cy="26" r="1" fill="#7C3AED" />
+                            <circle cx="22" cy="36" r="1.2" fill="#7C3AED" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'invoice' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <rect x="14" y="4" width="44" height="50" rx="3" fill="#FFF" stroke="#C7DDF0" strokeWidth="1" />
+                            <rect x="20" y="12" width="24" height="4" rx="1" fill="#1877D6" />
+                            <line x1="20" y1="22" x2="52" y2="22" stroke="#EEF2F7" strokeWidth="1.5" />
+                            <line x1="20" y1="28" x2="52" y2="28" stroke="#EEF2F7" strokeWidth="1.5" />
+                            <line x1="20" y1="34" x2="44" y2="34" stroke="#EEF2F7" strokeWidth="1.5" />
+                            <rect x="20" y="42" width="20" height="6" rx="1" fill="#E6F1FB" />
+                            <text x="30" y="47" textAnchor="middle" fontSize="5" fontWeight="700" fill="#1877D6" fontFamily="Poppins, Inter, sans-serif">PAID</text>
+                          </svg>
+                        )}
+                        {tile.graphic === 'trend' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <path d="M4 46 L18 38 L30 42 L44 26 L58 30 L68 12" stroke="#16A34A" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M62 12 L68 12 L68 18" stroke="#16A34A" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                            <circle cx="18" cy="38" r="2" fill="#16A34A" />
+                            <circle cx="44" cy="26" r="2" fill="#16A34A" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'gear' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <g transform="translate(40 28)">
+                              <path d="M-2 -18 L2 -18 L3 -14 A14 14 0 0 1 8 -12 L11 -14 L14 -11 L12 -8 A14 14 0 0 1 14 -3 L18 -2 L18 2 L14 3 A14 14 0 0 1 12 8 L14 11 L11 14 L8 12 A14 14 0 0 1 3 14 L2 18 L-2 18 L-3 14 A14 14 0 0 1 -8 12 L-11 14 L-14 11 L-12 8 A14 14 0 0 1 -14 3 L-18 2 L-18 -2 L-14 -3 A14 14 0 0 1 -12 -8 L-14 -11 L-11 -14 L-8 -12 A14 14 0 0 1 -3 -14 Z" fill="#EEF2F7" stroke="#5A6B85" strokeWidth="1" />
+                              <circle r="5" fill="#FFF" stroke="#5A6B85" strokeWidth="1.5" />
+                            </g>
+                          </svg>
+                        )}
+                        {tile.graphic === 'clock2' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <circle cx="40" cy="28" r="20" fill="#FFF" stroke="#1877D6" strokeWidth="2" />
+                            <path d="M40 14 L40 28 L52 34" stroke="#1877D6" strokeWidth="2" strokeLinecap="round" fill="none" />
+                            {[0,1,2,3].map((i) => {
+                              const a = (i * Math.PI) / 2;
+                              const x1 = 40 + Math.cos(a) * 18, y1 = 28 + Math.sin(a) * 18;
+                              const x2 = 40 + Math.cos(a) * 20, y2 = 28 + Math.sin(a) * 20;
+                              return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#1877D6" strokeWidth="1.5" strokeLinecap="round" />;
+                            })}
+                          </svg>
+                        )}
+                        {tile.graphic === 'sync' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <rect x="18" y="10" width="36" height="36" rx="4" fill="#FFF" stroke="#C7DDF0" />
+                            <rect x="18" y="10" width="36" height="8" fill="#1877D6" />
+                            <path d="M28 30 A8 8 0 0 1 44 30" stroke="#16A34A" strokeWidth="2" fill="none" strokeLinecap="round" />
+                            <path d="M40 26 L44 30 L44 26" stroke="#16A34A" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M44 36 A8 8 0 0 1 28 36" stroke="#16A34A" strokeWidth="2" fill="none" strokeLinecap="round" />
+                            <path d="M32 40 L28 36 L28 40" stroke="#16A34A" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'gift' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <rect x="18" y="22" width="36" height="26" rx="3" fill="#D8F1EE" stroke="#00B5A5" />
+                            <rect x="18" y="18" width="36" height="8" rx="2" fill="#00B5A5" />
+                            <line x1="36" y1="18" x2="36" y2="48" stroke="#FFF" strokeWidth="2" />
+                            <path d="M36 18 Q28 12 26 8 Q22 4 30 8 Q34 12 36 18" fill="none" stroke="#00B5A5" strokeWidth="1.5" strokeLinecap="round" />
+                            <path d="M36 18 Q44 12 46 8 Q50 4 42 8 Q38 12 36 18" fill="none" stroke="#00B5A5" strokeWidth="1.5" strokeLinecap="round" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'shield' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <path d="M40 6 L58 12 L58 30 Q58 44 40 50 Q22 44 22 30 L22 12 Z" fill="#FBEBD3" stroke="#B45309" strokeWidth="1.5" />
+                            <path d="M32 28 L38 34 L48 22" stroke="#B45309" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'spark' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <path d="M42 4 L46 22 L64 26 L46 30 L42 48 L38 30 L20 26 L38 22 Z" fill="#FBEBD3" stroke="#B45309" strokeWidth="1.5" strokeLinejoin="round" />
+                            <circle cx="14" cy="14" r="2" fill="#B45309" />
+                            <circle cx="18" cy="44" r="1.5" fill="#B45309" />
+                          </svg>
+                        )}
+                        {tile.graphic === 'calc' && (
+                          <svg viewBox="0 0 72 56" width="72" height="56">
+                            <rect x="18" y="6" width="36" height="46" rx="4" fill="#FFF" stroke="#B45309" strokeWidth="1.5" />
+                            <rect x="22" y="10" width="28" height="10" rx="1" fill="#FBEBD3" />
+                            <text x="46" y="18" textAnchor="end" fontSize="7" fontWeight="700" fill="#B45309" fontFamily="Poppins, Inter, sans-serif">1,240</text>
+                            {[0,1,2].map((r) => [0,1,2].map((c) => (
+                              <circle key={`${r}-${c}`} cx={26 + c*10} cy={28 + r*8} r="2.4" fill="#FBEBD3" stroke="#B45309" strokeWidth="0.8" />
+                            )))}
                           </svg>
                         )}
                       </div>
