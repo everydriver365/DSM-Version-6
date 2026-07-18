@@ -1414,12 +1414,6 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           0% { transform: scale(1); opacity: 0.75; }
           75%, 100% { transform: scale(2.4); opacity: 0; }
         }
-        .dsm-live-scroll {
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-          -webkit-overflow-scrolling: touch;
-        }
-        .dsm-live-scroll::-webkit-scrollbar { display: none; }
       `}</style>
 
       {/* Section header — matches Marketplace: 18/600 #072B47 */}
@@ -1486,7 +1480,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         </button>
       </div>
 
-      <div className="dsm-live-scroll" style={{ display: "flex", gap: 16, overflowX: "auto", scrollSnapType: "x mandatory", scrollPaddingLeft: 16, scrollPaddingRight: 16, padding: "6px 0 18px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
         {/* Featured session card */}
         {featured && (
           <div
@@ -1497,8 +1491,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
               if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(featured.id); }
             }}
             style={{
-              flex: "0 0 69%",
-              scrollSnapAlign: "start",
+              width: "69%",
               background: "#FFFFFF",
               borderRadius: 16,
               overflow: "hidden",
@@ -1594,8 +1587,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
               if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(secondary.id); }
             }}
             style={{
-              flex: "0 0 69%",
-              scrollSnapAlign: "start",
+              width: "69%",
               background: "#FFFFFF",
               borderRadius: 16,
               overflow: "hidden",
