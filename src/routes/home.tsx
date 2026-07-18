@@ -4715,63 +4715,21 @@ function HomePage() {
 
       {/* ============ NEXT LESSON CARD ============ */}
       <div
-        onClick={() => { if (upcoming) setHeroExpanded((v) => !v); }}
         style={{
           margin: '0 16px 20px',
           background: '#FFFFFF',
-          borderRadius: 12,
-          border: '1px solid #E4E9F0',
+          borderRadius: 10,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
           overflow: 'hidden',
-          fontFamily: 'Poppins, Inter, sans-serif',
-          cursor: upcoming ? 'pointer' : 'default',
+          fontFamily: 'Inter, sans-serif',
         }}
       >
-        {/* Navy ribbon — status + date/countdown */}
-        {upcoming ? (() => {
-          const d = lessonDateTime(upcoming);
-          const msUntil = d.getTime() - Date.now();
-          const isToday = d.toDateString() === new Date().toDateString();
-          let ribbonText: string;
-          if (msUntil <= 0) {
-            ribbonText = 'IN PROGRESS';
-          } else if (isToday) {
-            const mins = Math.round(msUntil / 60000);
-            const hrs = Math.floor(mins / 60);
-            ribbonText = hrs >= 1 ? `TODAY · IN ${hrs}H ${mins % 60}M` : `TODAY · IN ${mins}M`;
-          } else {
-            ribbonText = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' }).toUpperCase();
-          }
-          return (
-            <div style={{
-              background: '#0B1F3A', color: '#FFFFFF',
-              padding: '8px 14px', fontSize: 11, fontWeight: 700,
-              letterSpacing: 0.6,
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            }}>
-              <span>{ribbonText}</span>
-              {/* Package progress ("14 / 20") omitted — no data source available; do not invent one. */}
-            </div>
-          );
-        })() : null}
-
-        {/* Details row */}
-        {upcoming ? (() => {
-          const d = lessonDateTime(upcoming);
-          const endD = new Date(d.getTime() + (upcoming.duration_minutes ?? 0) * 60000);
-          const fmt = (x: Date) => `${String(x.getHours()).padStart(2, '0')}:${String(x.getMinutes()).padStart(2, '0')}`;
-          const timeRange = `${fmt(d)} – ${fmt(endD)}`;
-          const dateLine = `${d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })} · ${timeRange}`;
-          const status = (upcoming.payment_status ?? 'unpaid').toLowerCase();
-          const amount = Number(upcoming.amount_due ?? 0);
-          const priceStr = `£${amount.toFixed(2)}`;
-          const paidLabel = status === 'paid' ? 'PAID' : status === 'prepaid' ? 'PREPAID' : status === 'partial' ? 'PARTIAL' : status === 'cancelled' ? 'CANCELLED' : 'DUE';
-          const isPositive = status === 'paid' || status === 'prepaid';
-          const pillBg = isPositive ? '#E7F5E1' : status === 'partial' ? '#FFF4E0' : status === 'cancelled' ? '#EEF2F7' : '#FDECEC';
-          const pillColor = isPositive ? '#2E7D32' : status === 'partial' ? '#8A5A00' : status === 'cancelled' ? '#5A6270' : '#CC2229';
-          const postcode = upcoming.pupils?.postcode || upcoming.pickup_location || upcoming.pupils?.address || 'No pickup';
-          const name = pupilName(upcoming);
-          const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map((s) => s[0]!.toUpperCase()).join('');
-          const mapQuery = [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ');
+        {/* Map hero */}
+        {(() => {
+          const mapQuery = upcoming
+            ? [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ')
+            : '';
+          const hasMap = !!mapQuery;
           const fallbackDirectionsUrl = mapQuery
             ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapQuery)}`
             : '';
@@ -4779,90 +4737,90 @@ function HomePage() {
           const mapsPlaceUrl = mapQuery
             ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
             : '';
+          const showRouteMap = !!driveData?.staticMapUrl && !routeImgError;
+          const streetLabel = upcoming?.pickup_location || upcoming?.pupils?.address || upcoming?.pupils?.postcode || '';
           return (
-            <div style={{ padding: 14 }}>
-              {/* Pupil header */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{
-                  width: 44, height: 44, borderRadius: '50%',
-                  background: '#EEF2F7', color: '#0B1F3A',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 15, fontWeight: 700, flexShrink: 0,
-                }}>
-                  {initials || '?'}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</div>
-                  {/* Transmission subtitle omitted — no transmission field on pupil/lesson schema. */}
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span style={{ fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>{priceStr}</span>
-                    <ChevronDown
-                      size={16}
-                      color="#8A93A3"
-                      style={{ transition: 'transform 0.2s', transform: heroExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                    />
-                  </div>
-                  <span style={{
-                    background: pillBg, color: pillColor,
-                    fontSize: 10, fontWeight: 700, letterSpacing: 0.5,
-                    padding: '3px 8px', borderRadius: 999,
-                  }}>{paidLabel}</span>
-                </div>
-              </div>
+            <div
+              style={{
+                position: 'relative',
+                height: 150,
+                borderRadius: '16px 16px 0 0',
+                background: '#E8EEF3',
+                overflow: 'hidden',
+              }}
+            >
+              {hasMap && showRouteMap && (
+                <img
+                  src={driveData.staticMapUrl!}
+                  alt="Route map"
+                  loading="lazy"
+                  onError={() => setRouteImgError(true)}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', border: 0, pointerEvents: 'none' }}
+                />
+              )}
+              {hasMap && !showRouteMap && (
+                <iframe
+                  title="Pickup map"
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=15&output=embed&maptype=roadmap`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0, pointerEvents: 'none' }}
+                />
+              )}
 
-              {/* Two bordered info fields */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 12 }}>
-                <div style={{ border: '1px solid #E4E9F0', borderRadius: 8, padding: '8px 10px' }}>
-                  <div style={{ fontSize: 10, fontWeight: 600, color: '#8A93A3', letterSpacing: 0.4, textTransform: 'uppercase' }}>Date &amp; time</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: '#0B1F3A', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{dateLine}</div>
-                </div>
-                <div style={{ border: '1px solid #E4E9F0', borderRadius: 8, padding: '8px 10px' }}>
-                  <div style={{ fontSize: 10, fontWeight: 600, color: '#8A93A3', letterSpacing: 0.4, textTransform: 'uppercase' }}>Pick-up</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: '#0B1F3A', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{postcode}</div>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+              {/* ROUTE pill — top-right */}
+              {upcoming && directionsUrl && (
                 <button
                   type="button"
-                  onClick={(e) => { e.stopPropagation(); if (mapsPlaceUrl) window.open(mapsPlaceUrl, '_blank'); }}
-                  disabled={!mapsPlaceUrl}
+                  onClick={(e) => { e.stopPropagation(); window.open(directionsUrl, '_blank'); }}
                   style={{
-                    flex: 1, background: '#FFFFFF', color: '#0B1F3A',
-                    border: '1px solid #E4E9F0', borderRadius: 8,
-                    padding: '10px 0', fontSize: 13, fontWeight: 600,
-                    cursor: mapsPlaceUrl ? 'pointer' : 'default',
-                    fontFamily: 'Poppins, Inter, sans-serif',
-                    opacity: mapsPlaceUrl ? 1 : 0.5,
-                  }}
-                >Open in Maps</button>
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); if (directionsUrl) window.open(directionsUrl, '_blank'); }}
-                  disabled={!directionsUrl}
-                  style={{
-                    flex: 1, background: '#1877D6', color: '#FFFFFF',
-                    border: 'none', borderRadius: 8,
-                    padding: '10px 0', fontSize: 13, fontWeight: 600,
-                    cursor: directionsUrl ? 'pointer' : 'default',
-                    fontFamily: 'Poppins, Inter, sans-serif',
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                    opacity: directionsUrl ? 1 : 0.5,
+                    position: 'absolute', top: 10, right: 10,
+                    background: '#0B1F3A', color: '#FFFFFF',
+                    border: 'none', borderRadius: 999,
+                    padding: '6px 12px',
+                    fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase',
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
                   }}
                 >
-                  <Navigation size={14} color="#FFFFFF" /> Route
+                  <Navigation size={13} color="#FFFFFF" /> Route
                 </button>
-              </div>
+              )}
+
+              {/* Location pin pill — upper middle */}
+              {streetLabel && (
+                <div
+                  style={{
+                    position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center',
+                    pointerEvents: 'none', maxWidth: '65%',
+                  }}
+                >
+                  <div style={{
+                    background: '#FFFFFF', color: '#0B1F3A',
+                    borderRadius: 999, padding: '4px 10px',
+                    fontSize: 11, fontWeight: 700,
+                    display: 'flex', alignItems: 'center', gap: 5,
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.12)',
+                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%',
+                  }}>
+                    <MapPin size={12} color="#1877D6" />
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{streetLabel}</span>
+                  </div>
+                  <div style={{
+                    width: 0, height: 0,
+                    borderLeft: '5px solid transparent',
+                    borderRight: '5px solid transparent',
+                    borderTop: '5px solid #FFFFFF',
+                    marginTop: -1,
+                  }} />
+                </div>
+              )}
+
             </div>
           );
-        })() : (
-          <div style={{ padding: '18px 14px', textAlign: 'center', color: '#8A93A3', fontSize: 13, fontFamily: 'Poppins, Inter, sans-serif' }}>
-            No upcoming lessons
-          </div>
-        )}
+        })()}
 
         {/* ETA banner (preserved) */}
         {upcoming && driveData ? (() => {
@@ -4879,14 +4837,14 @@ function HomePage() {
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
                 padding: '8px 14px',
-                background: isLate ? '#FFF4E0' : '#EAF4FF',
-                borderTop: '1px solid #E4E9F0',
-                fontFamily: 'Poppins, Inter, sans-serif',
+                background: isLate ? '#FEECEC' : '#EAF4FF',
+                borderBottom: '1px solid #EEF2F7',
+                fontFamily: 'Inter, sans-serif',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                <Clock size={13} color={isLate ? '#8A5A00' : '#1877D6'} />
-                <span style={{ fontSize: 12, fontWeight: 700, color: isLate ? '#8A5A00' : '#0B1F3A' }}>
+                <Clock size={13} color={isLate ? '#C23B3B' : '#1877D6'} />
+                <span style={{ fontSize: 12, fontWeight: 700, color: isLate ? '#C23B3B' : '#0B1F3A' }}>
                   {isLate ? `Late by ~${lateMin} min` : `ETA ${etaLabel}`}
                 </span>
                 <span style={{ fontSize: 11, color: '#5A6270', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -4898,9 +4856,9 @@ function HomePage() {
                   type="button"
                   onClick={(e) => { e.stopPropagation(); setLateOpen(true); }}
                   style={{
-                    background: '#CC2229', color: '#FFFFFF', border: 'none',
+                    background: '#C23B3B', color: '#FFFFFF', border: 'none',
                     fontSize: 11, fontWeight: 700, padding: '6px 10px', borderRadius: 999,
-                    cursor: 'pointer', fontFamily: 'Poppins, Inter, sans-serif', flexShrink: 0,
+                    cursor: 'pointer', fontFamily: 'Inter, sans-serif', flexShrink: 0,
                     display: 'flex', alignItems: 'center', gap: 4,
                   }}
                 >
@@ -4910,6 +4868,106 @@ function HomePage() {
             </div>
           );
         })() : null}
+
+        {/* Details row */}
+        {upcoming ? (() => {
+          const d = lessonDateTime(upcoming);
+          const endD = new Date(d.getTime() + (upcoming.duration_minutes ?? 0) * 60000);
+          const fmt = (x: Date) => `${String(x.getHours()).padStart(2, '0')}:${String(x.getMinutes()).padStart(2, '0')}`;
+          const timeRange = `${fmt(d)} – ${fmt(endD)}`;
+          const status = (upcoming.payment_status ?? 'unpaid').toLowerCase();
+          const amount = Number(upcoming.amount_due ?? 0);
+          const priceStr = `£${amount.toFixed(2)}`;
+          const paidLabel = status === 'paid' ? 'Paid' : status === 'prepaid' ? 'Prepaid' : status === 'partial' ? 'Partial' : status === 'cancelled' ? 'Cancelled' : 'Due';
+          const isPositive = status === 'paid' || status === 'prepaid';
+          const pillBg = isPositive ? '#EAF3DE' : status === 'partial' ? '#FFF4E0' : status === 'cancelled' ? '#EEF2F7' : '#FDECEC';
+          const pillColor = isPositive ? '#3B6D11' : status === 'partial' ? '#8A5A00' : status === 'cancelled' ? '#5A6270' : '#CC2229';
+          const amountColor = isPositive ? '#2E9E5B' : status === 'partial' ? '#8A5A00' : status === 'cancelled' ? '#5A6270' : '#CC2229';
+          const postcode = upcoming.pupils?.postcode || upcoming.pickup_location || upcoming.pupils?.address || 'No pickup';
+          return (
+            <div
+              onClick={() => navigate({ to: '/pupils/$id', params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any })}
+              style={{ display: 'flex', cursor: 'pointer', padding: 10, gap: 10, alignItems: 'stretch' }}
+            >
+              {/* Date column */}
+              <div style={{
+                width: 72, flexShrink: 0,
+                background: '#0B1F3A', borderRadius: 14,
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                padding: '10px 0',
+              }}>
+                <span style={{ fontSize: 10, fontWeight: 600, color: '#9AA6BC', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                  {d.toLocaleString('en-GB', { weekday: 'short' })}
+                </span>
+                <span style={{ fontSize: 28, fontWeight: 700, color: '#FFFFFF', lineHeight: 1, marginTop: 2 }}>{d.getDate()}</span>
+                <span style={{ fontSize: 10, fontWeight: 600, color: '#6FA8D6', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 2 }}>
+                  {d.toLocaleString('en-GB', { month: 'short' })}
+                </span>
+              </div>
+
+              {/* Info column */}
+              <div style={{ flex: 1, minWidth: 0, padding: '4px 0', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {pupilName(upcoming)}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
+                  <span style={{ width: 16, height: 16, borderRadius: '50%', border: '1.5px solid #1877D6', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Clock size={9} color="#1877D6" />
+                  </span>
+                  <span style={{ fontSize: 13, color: '#0B1F3A', fontWeight: 500 }}>{timeRange}</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, minWidth: 0 }}>
+                  <span style={{ width: 16, height: 16, borderRadius: '50%', border: '1.5px solid #1877D6', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <MapPin size={9} color="#1877D6" />
+                  </span>
+                  <span style={{ fontSize: 12, color: '#5A6270', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{postcode}</span>
+                </div>
+              </div>
+
+              {/* Price column */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center', flexShrink: 0 }}>
+                <div style={{ fontSize: 16, fontWeight: 700, color: amountColor, lineHeight: 1 }}>{priceStr}</div>
+                <span style={{
+                  marginTop: 6,
+                  background: pillBg, color: pillColor,
+                  fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase',
+                  padding: '3px 10px', borderRadius: 999,
+                }}>
+                  {paidLabel}
+                </span>
+              </div>
+            </div>
+          );
+        })() : (
+          <div style={{ padding: '18px 14px', textAlign: 'center', color: '#8A93A3', fontSize: 13, fontFamily: 'Inter, sans-serif' }}>
+            No upcoming lessons
+          </div>
+        )}
+
+        {/* Expand footer */}
+        {upcoming && (
+          <div style={{ padding: '0 10px 10px' }}>
+            <button
+              type="button"
+              onClick={() => setHeroExpanded((v) => !v)}
+              style={{
+                width: '100%',
+                background: '#EEF2F7',
+                border: 'none',
+                borderRadius: 999,
+                padding: '8px 0',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                fontSize: 12, fontWeight: 600, color: '#1877D6',
+                cursor: 'pointer',
+                fontFamily: 'Inter, sans-serif',
+              }}
+            >
+              {heroExpanded ? 'Hide details' : 'Tap for details'}
+              {heroExpanded ? <ChevronUp size={14} /> : <ChevronRight size={14} />}
+            </button>
+          </div>
+        )}
+
 
         {upcoming && heroExpanded && (
           <HeroExpandedPanel
