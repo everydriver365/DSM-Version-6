@@ -76,7 +76,7 @@ async function recordPaymentCore(
 
   const { data: u } = await supabase.auth.getUser();
   const instructorId = u?.user?.id ?? null;
-  const now = new Date().toISOString();
+  const now = input.createdAt ?? new Date().toISOString();
   const today = now.slice(0, 10);
 
   let remaining = amount;
