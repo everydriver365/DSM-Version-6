@@ -2222,42 +2222,6 @@ function GapsPage() {
                       </div>
                     )}
 
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setBookNowSlot({
-                          date: slot.date,
-                          time: slot.startTime,
-                          duration: slot.gapMinutes >= 60 ? 60 : slot.gapMinutes,
-                        });
-                        setBookNowSelectedPupil(null);
-                        setBookNowSearchQuery("");
-                        setBookNowSheetOpen(true);
-                      }}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 6,
-                        width: "calc(100% + 28px)",
-                        margin: "12px -14px -12px",
-                        background: "#FFFFFF",
-                        borderTop: "1px solid #E2E6ED",
-                        borderLeft: "none",
-                        borderRight: "none",
-                        borderBottom: "none",
-                        borderRadius: "0 0 16px 16px",
-                        color: "#1877D6",
-                        fontSize: 13,
-                        fontWeight: 600,
-                        padding: 11,
-                        cursor: "pointer",
-                        ...FONT,
-                      }}
-                    >
-                      <CalendarPlus size={14} />
-                      Book now
-                    </button>
                   </div>
                 );
               })}
