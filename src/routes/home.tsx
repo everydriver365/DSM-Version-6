@@ -5651,7 +5651,14 @@ function HomePage() {
                     }
                     if (r.kind === 'calendar') {
                       const cs = r.start;
+                      const ce = r.end;
                       const fmtT = (d: Date) => `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+                      const durMin = Math.max(0, Math.round((ce.getTime() - cs.getTime()) / 60000));
+                      const h = Math.floor(durMin / 60);
+                      const m = durMin % 60;
+                      const durLabel = h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
+                      const isPast = nowT >= ce;
+                      const barColor = isPast ? '#34A853' : '#1877D6';
                       return (
                         <div key={`cal-${idx}`} style={{ position: 'relative', marginBottom: 16 }}>
                           <span
@@ -5670,39 +5677,50 @@ function HomePage() {
                           />
                           <div
                             style={{
-                              background: '#F4F8FE',
-                              border: '1px solid #D6E6F8',
-                              borderRadius: 10,
-                              padding: '12px 14px',
+                              padding: '4px 2px',
                               display: 'flex',
-                              alignItems: 'center',
-                              gap: 10,
+                              alignItems: 'stretch',
+                              gap: 12,
                             }}
                           >
-                            <div
-                              style={{
-                                width: 34,
-                                height: 34,
-                                borderRadius: 8,
-                                background: '#E1ECFB',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexShrink: 0,
-                              }}
-                            >
-                              <IconCalendar size={16} color="#1877D6" strokeWidth={1.75} />
-                            </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums' }}>
-                                {fmtT(cs)} · {r.title}
+                            <div style={{ width: 56, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
+                              <div style={{ fontSize: 17, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                                {fmtT(cs)}
                               </div>
-                              <div style={{ fontSize: 11, color: '#1877D6', marginTop: 2 }}>
-                                From Google Calendar
+                              <div style={{ fontSize: 12, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                                {durLabel}
+                              </div>
+                            </div>
+                            <div
+                              aria-hidden
+                              style={{
+                                width: 4,
+                                borderRadius: 2,
+                                background: barColor,
+                                flexShrink: 0,
+                                alignSelf: 'stretch',
+                              }}
+                            />
+                            <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
+                              <div
+                                style={{
+                                  fontSize: 15,
+                                  fontWeight: 600,
+                                  color: '#0B1F3A',
+                                  whiteSpace: 'nowrap',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  lineHeight: 1.3,
+                                }}
+                                title={r.title}
+                              >
+                                {r.title}
+                              </div>
+                              <div style={{ fontSize: 13, color: '#6B7280', marginTop: 4 }}>
+                                Google Calendar
                               </div>
                             </div>
                           </div>
-
                         </div>
                       );
                     }
