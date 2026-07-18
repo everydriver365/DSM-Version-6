@@ -101,6 +101,10 @@ function PupilsIndexPage() {
   const [query, setQuery] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
+  const [sheetPupil, setSheetPupil] = useState<PupilQuickActionsPupil | null>(null);
+  const suppressNextClickRef = useRef(false);
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
