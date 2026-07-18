@@ -327,6 +327,8 @@ function SchedulePage() {
   const [movingLesson, setMovingLesson] = useState<any | null>(null);
   const [moveMode, setMoveMode] = useState(false);
   const [confirmMove, setConfirmMove] = useState<{ date: string; time: string } | null>(null);
+  const [allPupils, setAllPupils] = useState<any[]>([]);
+  const [allAvailability, setAllAvailability] = useState<any[]>([]);
 
   const handleMoveLesson = useCallback(async (newDate: string, newTime: string) => {
     if (!movingLesson) return;
