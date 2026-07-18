@@ -5529,19 +5529,8 @@ function HomePage() {
 
 
 
-                  {/* Timeline container with vertical connector */}
-                  <div style={{ position: 'relative', paddingLeft: 22 }}>
-                    <div
-                      aria-hidden
-                      style={{
-                        position: 'absolute',
-                        left: 6,
-                        top: 6,
-                        bottom: 6,
-                        width: 2,
-                        background: '#DDE4ED',
-                      }}
-                    />
+                  {/* Timeline container */}
+                  <div style={{ position: 'relative' }}>
                     {rows.map((r, idx) => {
                     if (r.kind === 'gap') {
                       const gs = r.start;
@@ -5554,20 +5543,6 @@ function HomePage() {
                       const preview = previewMatchForGap({ date: gapDate, dayName, durationMin: r.mins });
                       return (
                         <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: 16 }}>
-                          <span
-                            aria-hidden
-                            style={{
-                              position: 'absolute',
-                              left: -22,
-                              top: 4,
-                              width: 12,
-                              height: 12,
-                              borderRadius: '50%',
-                              background: '#E6F1FB',
-                              border: '2px solid #1877D6',
-                              boxSizing: 'border-box',
-                            }}
-                          />
                           <div
                             onClick={() => navigate({ to: '/gaps' as never })}
                             role="button"
@@ -5663,20 +5638,6 @@ function HomePage() {
                       const barColor = isPast ? '#34A853' : '#1877D6';
                       return (
                         <div key={`cal-${idx}`} style={{ position: 'relative', marginBottom: 16 }}>
-                          <span
-                            aria-hidden
-                            style={{
-                              position: 'absolute',
-                              left: -22,
-                              top: 4,
-                              width: 12,
-                              height: 12,
-                              borderRadius: '50%',
-                              background: '#E6F1FB',
-                              border: '2px solid #1877D6',
-                              boxSizing: 'border-box',
-                            }}
-                          />
                           <div
                             style={{
                               background: '#FFFFFF',
@@ -5768,18 +5729,6 @@ function HomePage() {
 
                     return (
                       <div key={l.id} style={{ position: 'relative', marginBottom: 16 }}>
-                        <span
-                          aria-hidden
-                          style={{
-                            position: 'absolute',
-                            left: -22,
-                            top: 4,
-                            width: 12,
-                            height: 12,
-                            borderRadius: '50%',
-                            background: '#0B1F3A',
-                          }}
-                        />
                         <div
                           onClick={() => navigate({ to: '/pupils/$id', params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any })}
                           role="button"
