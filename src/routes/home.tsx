@@ -1725,6 +1725,8 @@ function HomePage() {
   const [firstName, setFirstName] = useState("there");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [allPupils, setAllPupils] = useState<PreviewPupil[]>([]);
+  const [allAvailability, setAllAvailability] = useState<PupilReadySetting[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
   const [allLessons, setAllLessons] = useState<any[]>([]);
