@@ -961,7 +961,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
       style={{
         margin: "0 -16px",
         padding: "28px 16px 28px",
-        background: "linear-gradient(180deg, #FFFFFF 0%, #F4F8FE 100%)",
+        background: PAGE_BACKGROUND,
         fontFamily: "'Poppins', 'Inter', sans-serif",
       }}
     >
