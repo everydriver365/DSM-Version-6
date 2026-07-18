@@ -1,17 +1,22 @@
-## Goal
-Make the Home and Settings pages share the same light canvas (`#DCE4F0`) as the rest of the app on mobile.
+## Why the previous change didn't fully land
 
-## Changes
+`PageLayout` on Home and Settings does paint `#DCE4F0`, but inner wrappers inside Home paint their own near-white fills over it, so the canvas is never visible:
 
-**1. `src/routes/home.tsx` (root wrapper, around line 4314)**
-- Replace the hard-coded navy full-screen `<div style={{ ...background: '#0B1F3A' }}>` with `PageLayout` (import from `@/components/PageLayout`).
-- Keep the existing `position: fixed`, `100dvh`, flex-column, overflow, safe-area padding behaviour by passing them through `style` / `className` on `PageLayout` (its default background is `#DCE4F0`, which is what we want).
-- Leave every child untouched — the top bar, cards, timeline, drawer, etc. already have their own backgrounds and will now sit on the light canvas like other pages.
+- `src/routes/home.tsx` line ~4466: each horizontal swipe panel (Today / Tomorrow / etc.) sets `background: '#F7FAFC'` on a full-height scroll container — this covers the entire body area of Home.
+- `src/routes/home.tsx` line ~964: the marketplace section wrapper sets `background: '#F7F8FA'` with negative side margins, painting edge-to-edge.
 
-**2. `src/routes/settings.tsx`**
-- Remove the `<WorkspaceDots activeLabel="Settings" />` line (currently line 692) so the navy strip beneath the sticky top bar goes away. Also drop the now-unused `WorkspaceDots` import.
-- Nothing else changes: `PageLayout` already provides the `#DCE4F0` background, and the single sticky navy top bar stays as it is (matches other detail pages).
+Settings uses `PageLayout` directly and I did not find an equivalent full-body inner wrapper painting a different color. The perceived mismatch on Settings is almost certainly the same visual effect the user is describing on Home (cards on near-white vs. cards on the `#DCE4F0` canvas everywhere else).
 
-## Out of scope
-- No changes to `manifest.json` `theme_color` (the iOS status-bar tint is a separate PWA concern; ask if you want that adjusted too).
-- No visual changes to any card, header, or component internals — only the page-level canvas.
+## Change
+
+Only touch `src/routes/home.tsx`.
+
+1. Replace `background: '#F7FAFC'` on the swipe-panel container (~line 4466) with `background: PAGE_BACKGROUND` (already imported from `@/components/PageLayout`).
+2. Replace `background: '#F7F8FA'` on the marketplace section wrapper (~line 964) with `background: PAGE_BACKGROUND`.
+
+No changes to card fills, header, navy blocks, buttons, or logic. If, after this, Settings still visibly differs, I'll follow up with a targeted Settings-only pass — but based on the code read, Settings already sits on the correct canvas and just needed Home to stop covering it.
+
+## Verification
+
+- Screenshot Home at 440×807 via Playwright and confirm the canvas around cards matches other pages (`/pupils`, `/schedule`).
+- Screenshot Settings for comparison.

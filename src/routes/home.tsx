@@ -961,7 +961,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
       style={{
         margin: "0 -16px",
         padding: "24px 16px 24px",
-        background: "#F7F8FA",
+        background: PAGE_BACKGROUND,
         fontFamily: "Inter, sans-serif",
       }}
     >
@@ -4463,7 +4463,7 @@ function HomePage() {
             overflowY: 'auto',
             overflowX: 'hidden',
             flexShrink: 0,
-            background: '#F7FAFC',
+            background: PAGE_BACKGROUND,
             WebkitOverflowScrolling: 'touch',
             touchAction: 'pan-y',
             overscrollBehaviorX: 'none',
