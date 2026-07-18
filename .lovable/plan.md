@@ -1,31 +1,28 @@
-## Likely cause
+## Goal
 
-The avatar row is gated by `previewMatchForGap` in `src/routes/schedule.tsx`, which applies a **minimum-notice filter**:
+In `src/routes/gaps.tsx`, only surface pupils for a gap when the entire lesson fits inside **both** the instructor's working hours **and** the pupil's `available_from`–`available_until` window. Stop suggesting times outside those windows (e.g. late-evening / overnight slots).
 
-```
-const minNoticeHours = s.min_notice_hours ?? 24;
-if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
-```
+## Current behavior (verified in `src/routes/gaps.tsx`)
 
-`hoursUntilSlot` is computed from `new Date(`${gap.date}T12:00:00`)` (noon). So on any day where noon is less than 24 hours away — i.e. today and often tomorrow — every pupil whose settings don't opt in to short notice is filtered out, and the avatar row is suppressed even though gap cards render fine. Pupils with `min_notice_hours` = null default to 24, which most pupils probably have.
+- `previewMatchForGap` (line 1012) checks day-of-week, duration, and min-notice — it never reads `available_from` / `available_until`, so a pupil available 09:00–17:00 still appears on a 20:00 gap.
+- `scoreSlot` (line 359) reads the window but only at whole-hour granularity via `parseInt(...split(":")[0])`, and out-of-window slots only lose points — they are still returned in `matchedSlots` and can be offered.
+- Gap detection itself already clamps to `wsMin`/`weMin` (instructor working hours), so overnight gaps come from the pupil side, not the instructor side.
 
-Secondary factors that also silently drop pupils:
-- `preferred_duration_minutes ?? 60` — any gap shorter than 60 min never matches, even if a pupil would take a 45-min lesson.
-- `available_days` must contain the exact full day name ("Monday", etc.). If any pupil row stores lowercased or abbreviated day names, they'll never match.
+## Changes (only `src/routes/gaps.tsx`)
 
-Note: this is a hypothesis based on code inspection. Before changing behaviour I'd confirm by checking, on a day where avatars are missing, what `hoursUntilSlot`, each pupil's `min_notice_hours`, `short_notice_opt_in`, and `available_days` values are.
+1. **Add a shared helper** `slotFitsPupilWindow(startMin, durationMin, availability)`:
+   - Parse `available_from` / `available_until` as `HH:MM` → minutes (use existing `hmToMin`).
+   - Default window `08:00`–`18:00` when unset (matches current defaults).
+   - Return `true` only if `startMin >= fromMin` **and** `startMin + durationMin <= untilMin`.
+   - This closes the "overnight" case: a lesson that starts before `until` but runs past it is rejected.
 
-## Proposed fix (schedule.tsx only, matches gaps.tsx behaviour choice)
+2. **`previewMatchForGap`**: after the day/duration/notice checks, also require `slotFitsPupilWindow(gap.startMin, gap.durationMin, s)`. Pupils outside the window are excluded from the count and avatar preview.
 
-1. **Add a one-line debug log** in `previewMatchForGap` (temporary) that logs `{ date, dayName, durationMin, hoursUntilSlot, totalPupilsWithSettings, matched: matched.length }` so we can confirm the cause on the affected day, then remove after verification.
-2. **Use the gap's actual start time** for the notice calculation instead of noon: build `slotStart` from `gap.date` + the gap's `startTime` (already on the `GapRow`). Pass `startTime` into `previewMatchForGap` and parse `` `${gap.date}T${gap.startTime}:00` ``. This matches gaps.tsx's approach and avoids over-filtering morning slots.
-3. **Confirm behaviour with the user before loosening the filter further.** Options if they want more matches to appear:
-   - Keep min-notice strict (current behaviour) — accept that today/near-term days often show no avatars.
-   - Relax min-notice for the *preview only* (still enforced when actually offering), e.g. treat null as 0 rather than 24, or ignore it entirely in the preview.
-   - Relax the 60-min minimum duration when `preferred_duration_minutes` is null.
+3. **`scoreSlot` / matched-slot filtering**: use `slotFitsPupilWindow` on the actual `sl.time` + `sl.duration` (minute-accurate, not hour-rounded). When the slot falls outside the pupil's window, mark `match: false` so it's excluded from offers (the existing "This slot is outside your working hours — showing all available slots instead" fallback at line 1618 still handles the empty-matches case for instructor working hours; pupil-window misses simply produce no match for that pupil, consistent with today's behavior for day-of-week mismatches).
 
-Nothing else in the file changes; the avatar row markup, data fetching, and gap detection stay as-is.
+4. No changes to gap detection, DB queries, UI layout, or the message/recipients flow.
 
-## Question for you
+## Out of scope
 
-Do you want the preview to show avatars for **all future gaps regardless of notice window** (i.e. drop the 24h filter in the preview only), or keep the min-notice check and just fix the noon-vs-actual-time bug?
+- Instructor working-hours logic (already enforced during gap detection).
+- Schedule/home timeline gap previews — user asked specifically about the gap filler screen.
