@@ -3312,12 +3312,12 @@ function HomePage() {
     }
     if (merged.length === 0) {
       const span = Math.max(0, endMins - startMins);
-      return { count: Math.floor(span / 60), totalMinutes: span };
+      return { count: Math.floor(span / minGapMinutes), totalMinutes: span };
     }
     let count = 0;
     let totalMinutes = 0;
     const consider = (gap: number) => {
-      if (gap >= 60) { count++; totalMinutes += gap; }
+      if (gap >= minGapMinutes) { count++; totalMinutes += gap; }
     };
     consider(merged[0].start - startMins);
     for (let i = 0; i < merged.length - 1; i++) {
