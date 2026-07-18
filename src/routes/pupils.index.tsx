@@ -104,6 +104,7 @@ function PupilsIndexPage() {
   const [sheetPupil, setSheetPupil] = useState<PupilQuickActionsPupil | null>(null);
   const suppressNextClickRef = useRef(false);
   const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressStartRef = useRef<{ x: number; y: number } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
