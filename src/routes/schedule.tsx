@@ -1335,20 +1335,6 @@ function SchedulePage() {
                             const dur = Number(movingLesson?.duration_minutes) || 60;
                             return (
                               <div key={e.id} style={{ position: "relative", marginBottom: 8 }}>
-                                <span
-                                  aria-hidden
-                                  style={{
-                                    position: "absolute",
-                                    left: -22,
-                                    top: 4,
-                                    width: 12,
-                                    height: 12,
-                                    borderRadius: "50%",
-                                    background: "#86EFAC",
-                                    border: "2px solid #16A34A",
-                                    boxSizing: "border-box",
-                                  }}
-                                />
                                 <div
                                   onClick={() => setConfirmMove({ date: e.dateKey, time: e.time })}
                                   role="button"
