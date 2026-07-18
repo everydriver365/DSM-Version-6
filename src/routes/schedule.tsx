@@ -1221,18 +1221,7 @@ function SchedulePage() {
 
 
                     return (
-                      <div style={{ position: "relative", paddingLeft: 22 }}>
-                        <div
-                          aria-hidden
-                          style={{
-                            position: "absolute",
-                            left: 6,
-                            top: 6,
-                            bottom: 6,
-                            width: 2,
-                            background: "#DDE4ED",
-                          }}
-                        />
+                      <div>
                         {items.map((e) => {
                           if (e.kind === 'gap-row') {
                             const preview = previewMatchForGap({ date: row.key, dayName, startMin: e.startMins, durationMin: e.mins, allPupils, allAvailability });
