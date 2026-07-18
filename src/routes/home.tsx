@@ -195,10 +195,11 @@ export const Route = createFileRoute("/home")({
       { name: "description", content: "Your daily overview of lessons, pupils and earnings." },
     ],
   }),
-  validateSearch: (search: Record<string, unknown>) => {
+  validateSearch: (search: Record<string, unknown>): { ws?: number } => {
     const raw = search.ws;
     const n = typeof raw === "number" ? raw : typeof raw === "string" ? Number(raw) : NaN;
-    return { ws: Number.isFinite(n) ? Math.max(0, Math.min(7, Math.trunc(n))) : undefined };
+    if (!Number.isFinite(n)) return {};
+    return { ws: Math.max(0, Math.min(7, Math.trunc(n))) };
   },
   component: HomePage,
 });
