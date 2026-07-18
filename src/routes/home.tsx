@@ -1126,6 +1126,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                       padding: "10px 4px",
                       gap: 3,
                       margin: 8,
+                      borderRadius: 28,
                       boxShadow: "0 6px 14px rgba(11, 31, 58, 0.28), inset 0 1px 0 rgba(255,255,255,0.18)",
                     }}
                   >
