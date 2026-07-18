@@ -1485,7 +1485,9 @@ function SchedulePage() {
                                   width: 12,
                                   height: 12,
                                   borderRadius: "50%",
-                                  background: markerColor,
+                                  background: isBlockRow ? '#E6F1FB' : markerColor,
+                                  border: isBlockRow ? '2px solid #1877D6' : undefined,
+                                  boxSizing: 'border-box',
                                 }}
                               />
                               <div style={{ position: "relative", overflow: "hidden", borderRadius: 12 }}>
