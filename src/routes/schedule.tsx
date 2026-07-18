@@ -531,37 +531,8 @@ function SchedulePage() {
     })();
   }, [userId]);
 
-  function previewMatchForGap(gap: {
-    date: string;
-    dayName: string;
-    durationMin: number;
-    startTime?: string;
-  }): { count: number; topPupils: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> } {
-    if (!allPupils.length || !allAvailability.length) {
-      return { count: 0, topPupils: [] };
-    }
-    const availByPupil = new Map<string, any>();
-    for (const a of allAvailability) {
-      if (a.pupil_id) availByPupil.set(a.pupil_id, a);
-    }
-    const startHm = gap.startTime && /^\d{2}:\d{2}$/.test(gap.startTime) ? gap.startTime : "12:00";
-    const slotStart = new Date(`${gap.date}T${startHm}:00`).getTime();
-    const hoursUntilSlot = (slotStart - Date.now()) / 3600000;
-    const matched: any[] = [];
-    for (const p of allPupils) {
-      const s = availByPupil.get(p.id);
-      if (!s) continue;
-      const availDays: string[] = s.available_days || [];
-      if (!availDays.includes(gap.dayName)) continue;
-      const minDuration = s.preferred_duration_minutes ?? 60;
-      if (gap.durationMin < minDuration) continue;
-      // Preview only: exclude only past slots. The min-notice window is
-      // enforced when actually offering the slot, not in the avatar preview.
-      if (hoursUntilSlot < 0) continue;
-      matched.push(p);
-    }
-    return { count: matched.length, topPupils: matched.slice(0, 3) };
-  }
+
+
 
   const handleSync = useCallback(async () => {
     if (!userId) return;
