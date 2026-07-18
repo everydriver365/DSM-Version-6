@@ -5543,20 +5543,6 @@ function HomePage() {
                       const preview = previewMatchForGap({ date: gapDate, dayName, durationMin: r.mins });
                       return (
                         <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: 16 }}>
-                          <span
-                            aria-hidden
-                            style={{
-                              position: 'absolute',
-                              left: -22,
-                              top: 4,
-                              width: 12,
-                              height: 12,
-                              borderRadius: '50%',
-                              background: '#E6F1FB',
-                              border: '2px solid #1877D6',
-                              boxSizing: 'border-box',
-                            }}
-                          />
                           <div
                             onClick={() => navigate({ to: '/gaps' as never })}
                             role="button"
