@@ -954,70 +954,109 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     navigate({ to: "/marketplace/$listingId" as never, params: { listingId } as never });
   };
 
-  const featured = listings.slice(0, 2);
+  const cards = listings.slice(0, 8);
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const lastHapticIdx = useRef(0);
+
+  const onScroll = () => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const children = Array.from(el.children) as HTMLElement[];
+    if (children.length === 0) return;
+    const center = el.scrollLeft + el.clientWidth / 2;
+    let best = 0;
+    let bestDist = Number.POSITIVE_INFINITY;
+    children.forEach((c, i) => {
+      const mid = c.offsetLeft + c.offsetWidth / 2;
+      const d = Math.abs(mid - center);
+      if (d < bestDist) {
+        bestDist = d;
+        best = i;
+      }
+    });
+    if (best !== activeIdx) {
+      setActiveIdx(best);
+      if (best !== lastHapticIdx.current) {
+        lastHapticIdx.current = best;
+        try {
+          if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+            navigator.vibrate(8);
+          }
+        } catch {
+          // ignore
+        }
+      }
+    }
+  };
 
   return (
     <div
       style={{
         margin: "0 -16px",
-        padding: "28px 16px 28px",
-        background: PAGE_BACKGROUND,
+        padding: "28px 0 28px",
+        background: "#F5F7FB",
         fontFamily: "'Poppins', 'Inter', sans-serif",
       }}
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
-        .marketplace-card {
-          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        .mkt-scroll {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+          -webkit-overflow-scrolling: touch;
         }
-        .marketplace-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 20px 40px -12px rgba(11, 31, 58, 0.18), 0 8px 16px -4px rgba(11, 31, 58, 0.08);
+        .mkt-scroll::-webkit-scrollbar { display: none; }
+        .mkt-card {
+          transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+          will-change: transform;
         }
-        .marketplace-card:hover .marketplace-hero-img {
-          transform: scale(1.05);
-        }
-        .marketplace-card:hover .marketplace-cta {
-          transform: translateX(4px);
-        }
-        @keyframes marketplace-pulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.9; transform: scale(1.03); }
-        }
-        .marketplace-badge-pulse {
-          animation: marketplace-pulse 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        .marketplace-view-all {
+        .mkt-view-all {
           transition: box-shadow 0.25s ease, transform 0.25s ease;
         }
-        .marketplace-view-all:hover {
-          box-shadow: 0 8px 20px rgba(11, 31, 58, 0.35), 0 0 0 4px rgba(11, 31, 58, 0.12);
+        .mkt-view-all:hover {
           transform: translateY(-1px);
+          box-shadow: 0 8px 20px rgba(7, 43, 71, 0.35);
         }
       `}</style>
 
       {/* SECTION HEADER */}
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 18, gap: 12 }}>
-        <div>
-          <div style={{ fontSize: 19, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.2, fontFamily: "'Poppins', 'Inter', sans-serif", letterSpacing: "-0.01em" }}>
-            DSM Marketplace
-          </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "0 22px",
+          marginBottom: 16,
+          gap: 12,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 20,
+            fontWeight: 600,
+            color: "#072B47",
+            lineHeight: 1.2,
+            letterSpacing: "-0.01em",
+          }}
+        >
+          DSM Marketplace
         </div>
         <button
           type="button"
-          className="marketplace-view-all"
+          className="mkt-view-all"
           onClick={() => navigate({ to: "/marketplace" as never })}
           style={{
-            background: "#0B1F3A",
+            background: "#072B47",
             border: "none",
             borderRadius: 999,
-            padding: "8px 16px",
-            fontSize: 11.5,
+            padding: "9px 16px",
+            fontSize: 12,
             fontWeight: 600,
             color: "#FFFFFF",
             cursor: "pointer",
             whiteSpace: "nowrap",
-            boxShadow: "0 4px 12px rgba(11, 31, 58, 0.28), inset 0 1px 0 rgba(255,255,255,0.2)",
+            boxShadow: "0 6px 14px rgba(7, 43, 71, 0.25)",
             fontFamily: "'Poppins', 'Inter', sans-serif",
           }}
         >
@@ -1025,162 +1064,247 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         </button>
       </div>
 
-      {/* FEATURED CARDS */}
-      {featured.length === 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "36px 0", gap: 8 }}>
+      {/* CAROUSEL */}
+      {cards.length === 0 ? (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "36px 0",
+            gap: 8,
+          }}
+        >
           <Package size={32} color="#D0D5DD" />
           <div style={{ fontSize: 13, color: "#B0BAC9" }}>No featured services</div>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          {featured.map((tile, idx) => {
-            const img = firstImageUrl(tile.image_urls);
-            const allFeatures = featuresFor(tile.marketplace_categories?.name, tile.title);
-            const features = allFeatures.slice(0, 2);
-            const badge = badgeFor(idx, tile.is_featured);
-            return (
-              <div
-                key={tile.id}
-                className="marketplace-card"
-                onClick={() => openListing(tile.id)}
-                style={{
-                  background: "#FFFFFF",
-                  border: "1px solid rgba(11, 31, 58, 0.08)",
-                  borderRadius: 20,
-                  overflow: "hidden",
-                  boxShadow: "0 4px 16px -6px rgba(11, 31, 58, 0.12), 0 1px 3px rgba(15,32,68,0.04)",
-                  cursor: "pointer",
-                  display: "flex",
-                  flexDirection: "column",
-                  minWidth: 0,
-                }}
-              >
-                {/* Hero image */}
-                <div style={{ position: "relative", height: 150, overflow: "hidden" }}>
-                  {img ? (
-                    <img
-                      src={img}
-                      alt={tile.title}
-                      className="marketplace-hero-img"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        display: "block",
-                        transition: "transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)",
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        background: "#0B1F3A",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Sparkles size={32} color="#FFFFFF" />
-                    </div>
-                  )}
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: 14,
-                      left: 14,
-                      background: "#1D5BE0",
-                      color: "#FFFFFF",
-                      padding: "7px 14px 7px 12px",
-                      borderRadius: 999,
-                      fontSize: 12,
-                      fontWeight: 600,
-                      boxShadow: "0 6px 14px rgba(29, 91, 224, 0.35)",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 6,
-                      letterSpacing: "0.01em",
-                      fontFamily: "'Poppins', 'Inter', sans-serif",
-                    }}
-                  >
-                    <Crown size={12} color="#FFFFFF" strokeWidth={2.4} fill="#FFFFFF" />
-                    {badge}
-                  </span>
-                </div>
-
-                {/* Body */}
-                <div style={{ padding: "14px 16px 14px", display: "flex", flexDirection: "column", minWidth: 0 }}>
-                  <div style={{ fontSize: 17, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.25, marginBottom: 4, fontFamily: "'Poppins', 'Inter', sans-serif", letterSpacing: "-0.01em" }}>
-                    {tile.title}
-                  </div>
+        <>
+          <div
+            ref={scrollerRef}
+            onScroll={onScroll}
+            className="mkt-scroll"
+            style={{
+              display: "flex",
+              gap: 14,
+              overflowX: "auto",
+              scrollSnapType: "x mandatory",
+              padding: "6px 22px 14px",
+              scrollPaddingLeft: 22,
+            }}
+          >
+            {cards.map((tile, idx) => {
+              const img = firstImageUrl(tile.image_urls);
+              const allFeatures = featuresFor(tile.marketplace_categories?.name, tile.title);
+              const features = allFeatures.slice(0, 2);
+              const badge = badgeFor(idx, tile.is_featured);
+              const isActive = idx === activeIdx;
+              return (
+                <div
+                  key={tile.id}
+                  className="mkt-card"
+                  onClick={() => openListing(tile.id)}
+                  style={{
+                    flex: "0 0 82%",
+                    scrollSnapAlign: "start",
+                    background: "#FFFFFF",
+                    borderRadius: 24,
+                    overflow: "hidden",
+                    boxShadow: isActive
+                      ? "0 18px 40px -14px rgba(7, 43, 71, 0.22), 0 4px 10px rgba(7, 43, 71, 0.06)"
+                      : "0 8px 20px -10px rgba(7, 43, 71, 0.14), 0 2px 6px rgba(7, 43, 71, 0.05)",
+                    cursor: "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                    minWidth: 0,
+                    transform: isActive ? "scale(1)" : "scale(0.96)",
+                    transformOrigin: "center center",
+                  }}
+                >
+                  {/* Hero image 16:9 */}
                   <div
                     style={{
-                      fontSize: 13,
-                      color: "#64748B",
-                      lineHeight: 1.35,
-                      marginBottom: 12,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 1,
-                      WebkitBoxOrient: "vertical",
+                      position: "relative",
+                      width: "100%",
+                      aspectRatio: "16 / 9",
                       overflow: "hidden",
+                      background: "#EAEEF5",
                     }}
                   >
-                    {tile.marketplace_categories?.name
-                      ? `${tile.marketplace_categories.name} for driving...`
-                      : "Premium service for driving instructors."}
+                    {img ? (
+                      <img
+                        src={img}
+                        alt={tile.title}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          display: "block",
+                          transform: isActive ? "scale(1.04)" : "scale(1)",
+                          transition: "transform 500ms cubic-bezier(0.22, 1, 0.36, 1)",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          background: "#072B47",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Sparkles size={32} color="#FFFFFF" />
+                      </div>
+                    )}
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: 14,
+                        left: 14,
+                        background: "#2563EB",
+                        color: "#FFFFFF",
+                        padding: "6px 12px",
+                        borderRadius: 999,
+                        fontSize: 11,
+                        fontWeight: 600,
+                        letterSpacing: "0.02em",
+                        boxShadow: "0 6px 14px rgba(37, 99, 235, 0.35)",
+                        fontFamily: "'Poppins', 'Inter', sans-serif",
+                      }}
+                    >
+                      {badge}
+                    </span>
                   </div>
-                  <div style={{ height: 1, background: "rgba(11,31,58,0.08)", marginBottom: 12 }} />
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: 1 }}>
-                      {features.map((f, i) => (
-                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
-                          {i > 0 && (
-                            <span style={{ width: 1, height: 14, background: "rgba(11,31,58,0.15)", marginRight: 6 }} />
-                          )}
+
+                  {/* Body */}
+                  <div
+                    style={{
+                      padding: "16px 18px 16px",
+                      display: "flex",
+                      flexDirection: "column",
+                      minWidth: 0,
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: 17,
+                        fontWeight: 600,
+                        color: "#072B47",
+                        lineHeight: 1.25,
+                        marginBottom: 4,
+                        letterSpacing: "-0.01em",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {tile.title}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 13,
+                        color: "#6B7A90",
+                        lineHeight: 1.35,
+                        marginBottom: 12,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 1,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {tile.marketplace_categories?.name
+                        ? `${tile.marketplace_categories.name} for driving instructors`
+                        : "Premium service for driving instructors"}
+                    </div>
+                    <div
+                      style={{
+                        height: 1,
+                        background: "rgba(7, 43, 71, 0.08)",
+                        marginBottom: 12,
+                      }}
+                    />
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: 8,
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0, flex: 1, flexWrap: "wrap" }}>
+                        {features.map((f, i) => (
                           <span
+                            key={i}
                             style={{
-                              fontSize: 13,
-                              color: "#0B1F3A",
+                              fontSize: 11.5,
+                              color: "#334A63",
                               fontWeight: 500,
+                              background: "#EEF2F8",
+                              padding: "5px 10px",
+                              borderRadius: 999,
                               whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
                               fontFamily: "'Poppins', 'Inter', sans-serif",
                             }}
                           >
                             {f.label}
                           </span>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
+                      <button
+                        type="button"
+                        style={{
+                          background: "transparent",
+                          border: 0,
+                          padding: 0,
+                          fontSize: 13,
+                          fontWeight: 600,
+                          color: "#2563EB",
+                          cursor: "pointer",
+                          whiteSpace: "nowrap",
+                          fontFamily: "'Poppins', 'Inter', sans-serif",
+                        }}
+                      >
+                        View details →
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      style={{
-                        background: "transparent",
-                        border: 0,
-                        padding: 0,
-                        fontSize: 13,
-                        fontWeight: 600,
-                        color: "#1D5BE0",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 5,
-                        fontFamily: "'Poppins', 'Inter', sans-serif",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      <span>View details</span>
-                      <span className="marketplace-cta" style={{ display: "inline-flex", transition: "transform 0.3s ease" }}>
-                        →
-                      </span>
-                    </button>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+
+          {/* Page dots */}
+          {cards.length > 1 && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+                marginTop: 6,
+              }}
+            >
+              {cards.slice(0, Math.min(cards.length, 8)).map((_, i) => {
+                const active = i === activeIdx;
+                return (
+                  <span
+                    key={i}
+                    style={{
+                      width: active ? 18 : 6,
+                      height: 6,
+                      borderRadius: 999,
+                      background: active ? "#072B47" : "rgba(7, 43, 71, 0.2)",
+                      transition: "all 250ms ease",
+                    }}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
