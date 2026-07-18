@@ -3175,105 +3175,71 @@ function HomePage() {
   const todayBlocks = blocksForDate(todayISO);
   const tomorrowBlocks = blocksForDate(tomorrowISO);
 
-  const nextFreeSlot = (() => {
-    const isBeforeEnd = (d: Date, endTimeStr: string | null) => {
-      if (!endTimeStr) return true;
-      return d.getHours() * 60 + d.getMinutes() < timeToMins(endTimeStr);
-    };
-    const resolveAfter = (pupilId: string | null | undefined) => {
-      if (pupilId && pupilBufferMap[pupilId]?.after != null) {
-        return pupilBufferMap[pupilId].after as number;
-      }
-      return instructorBufferAfter;
-    };
-    // Earliest slot we're willing to surface today: 30 mins from now, rounded up to the next 15.
-    const nowMinPlusLead = (() => {
-      const n = new Date();
-      const raw = n.getHours() * 60 + n.getMinutes() + 30;
-      return Math.ceil(raw / 15) * 15;
-    })();
-    const clampToday = (d: Date) => {
-      const mins = d.getHours() * 60 + d.getMinutes();
-      if (mins >= nowMinPlusLead) return d;
-      const clamped = new Date(d);
-      clamped.setHours(Math.floor(nowMinPlusLead / 60), nowMinPlusLead % 60, 0, 0);
-      return clamped;
-    };
-    // Return the earliest minute ≥ candidate that isn't inside a calendar block.
-    // Bumps past any block whose interval contains the candidate; repeats until clear.
-    const bumpPastBlocks = (candidate: number, blocks: { start: number; end: number }[]) => {
-      let m = candidate;
-      let changed = true;
-      while (changed) {
-        changed = false;
-        for (const b of blocks) {
-          if (m >= b.start && m < b.end) {
-            m = b.end;
-            changed = true;
-          }
-        }
-      }
-      return m;
-    };
-    // True if a 60-min window starting at `mins` fits within `dayEndMins` without hitting a block.
-    const fitsHour = (mins: number, dayEndMins: number, blocks: { start: number; end: number }[]) => {
-      if (dayEndMins - mins < 60) return false;
-      for (const b of blocks) {
-        if (mins < b.end && mins + 60 > b.start) return false;
-      }
-      return true;
-    };
+  const startTimeStr = workingHours?.start_time ? String(workingHours.start_time) : "09:00";
+
+  const tomorrowEndTime = (() => {
+    if (!workingHours) return "18:00";
     const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
-    const workStartMins = timeToMins(
-      workingHours?.start_time ? String(workingHours.start_time) : "09:00"
-    );
-    const tomorrowWorks = workingHours
-      ? (workingHours as Record<string, unknown>)[dayKeys[tomorrowStart.getDay()]]
-      : false;
-    const tomorrowEndTime = tomorrowWorks && workingHours?.end_time
-      ? String(workingHours.end_time)
-      : null;
+    const dayKeyToName: Record<string, string> = {
+      sun: "Sunday", mon: "Monday", tue: "Tuesday", wed: "Wednesday",
+      thu: "Thursday", fri: "Friday", sat: "Saturday",
+    };
+    const key = dayKeys[tomorrowStart.getDay()];
+    const name = dayKeyToName[key];
+    const perDay = (workingHours as Record<string, unknown>).per_day_hours as Record<string, { start?: string; end?: string; active?: boolean }> | null | undefined;
+    const cfg = perDay?.[name];
+    const workingDaysArr = ((workingHours as Record<string, unknown>).working_days as string[] | null) ?? ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const active = cfg ? cfg.active === true : workingDaysArr.includes(name);
+    return active ? (cfg?.end || String((workingHours as Record<string, unknown>).end_time ?? "18:00")) : null;
+  })();
 
-    // Today: free slot after last lesson (or start of workday if none) — bumped past blocks.
-    const todayEndMins = timeToMins(todayEndTime ?? "23:59");
-    let todayCandidate: number | null = null;
-    if (todayLessons.length > 0) {
-      const last = todayLessons[todayLessons.length - 1];
-      const afterBuf = resolveAfter(last.pupil_id);
-      const end = clampToday(new Date(lessonDateTime(last).getTime() + ((last.duration_minutes ?? 60) + afterBuf) * 60000));
-      if (end < tomorrowStart && isBeforeEnd(end, todayEndTime)) {
-        todayCandidate = end.getHours() * 60 + end.getMinutes();
-      }
-    } else if (todayEndTime) {
-      todayCandidate = Math.max(workStartMins, nowMinPlusLead);
-    }
-    if (todayCandidate != null) {
-      let m = bumpPastBlocks(todayCandidate, todayBlocks);
-      // If bumped past nowMinPlusLead already accounted for; ensure we still respect it
-      if (m < nowMinPlusLead) m = nowMinPlusLead;
-      if (fitsHour(m, todayEndMins, todayBlocks)) {
-        return minsToTime(m);
-      }
+  const nextFreeSlot = (() => {
+    const mapLessons = (list: LessonRow[]) =>
+      list.map((l) => ({
+        lesson_time: l.lesson_time || "",
+        duration_minutes: l.duration_minutes ?? 60,
+        status: l.status,
+        bufferAfterMinutes:
+          l.pupil_id && typeof pupilBufferMap[l.pupil_id]?.after === "number"
+            ? (pupilBufferMap[l.pupil_id].after as number)
+            : null,
+      }));
+    const rawBlocks = (calendarBlocks || []).map((b) => ({
+      start_datetime: b.start_datetime,
+      end_datetime: b.end_datetime,
+      title: b.title,
+    }));
+
+    if (todayEndTime) {
+      const todayGaps = computeDayGaps({
+        dayLessons: mapLessons(todayLessons),
+        calendarBlocks: rawBlocks,
+        recurringBlocks: [],
+        dayTimeOff: [],
+        dayStart: startTimeStr,
+        dayEnd: todayEndTime,
+        instructorBufferAfter,
+        dateStr: todayISO,
+        isToday: true,
+        minGapMinutes: 60,
+      });
+      if (todayGaps.length > 0) return minsToTime(todayGaps[0].startMins);
     }
 
-    // No free slot today — check tomorrow
-    const tomorrowEndMins = timeToMins(tomorrowEndTime ?? "23:59");
-    let tomorrowCandidate: number | null = null;
-    if (tomorrowLessons.length > 0) {
-      const last = tomorrowLessons[tomorrowLessons.length - 1];
-      const afterBuf = resolveAfter(last.pupil_id);
-      const end = new Date(lessonDateTime(last).getTime() + ((last.duration_minutes ?? 60) + afterBuf) * 60000);
-      if (end < dayAfter && isBeforeEnd(end, tomorrowEndTime)) {
-        tomorrowCandidate = end.getHours() * 60 + end.getMinutes();
-      }
-    } else if (tomorrowEndTime) {
-      tomorrowCandidate = workStartMins;
-    }
-    if (tomorrowCandidate != null) {
-      const m = bumpPastBlocks(tomorrowCandidate, tomorrowBlocks);
-      if (fitsHour(m, tomorrowEndMins, tomorrowBlocks)) {
-        return minsToTime(m);
-      }
+    if (tomorrowEndTime) {
+      const tomorrowGaps = computeDayGaps({
+        dayLessons: mapLessons(tomorrowLessons),
+        calendarBlocks: rawBlocks,
+        recurringBlocks: [],
+        dayTimeOff: [],
+        dayStart: startTimeStr,
+        dayEnd: tomorrowEndTime,
+        instructorBufferAfter,
+        dateStr: tomorrowISO,
+        isToday: false,
+        minGapMinutes: 60,
+      });
+      if (tomorrowGaps.length > 0) return minsToTime(tomorrowGaps[0].startMins);
     }
 
     return null;
@@ -3317,26 +3283,9 @@ function HomePage() {
     return { count: gaps.length, totalMinutes };
   }
 
-  const startTimeStr = workingHours?.start_time ? String(workingHours.start_time) : "09:00";
   const { count: freeSlotCount, totalMinutes: totalFreeMinutesToday } = computeFreeMinutes(
     todayLessons, calendarBlocks, todayISO, true, startTimeStr, todayEndTime, instructorBufferAfter, pupilBufferMap
   );
-
-  const tomorrowEndTime = (() => {
-    if (!workingHours) return "18:00";
-    const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
-    const dayKeyToName: Record<string, string> = {
-      sun: "Sunday", mon: "Monday", tue: "Tuesday", wed: "Wednesday",
-      thu: "Thursday", fri: "Friday", sat: "Saturday",
-    };
-    const key = dayKeys[tomorrowStart.getDay()];
-    const name = dayKeyToName[key];
-    const perDay = (workingHours as Record<string, unknown>).per_day_hours as Record<string, { start?: string; end?: string; active?: boolean }> | null | undefined;
-    const cfg = perDay?.[name];
-    const workingDaysArr = ((workingHours as Record<string, unknown>).working_days as string[] | null) ?? ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-    const active = cfg ? cfg.active === true : workingDaysArr.includes(name);
-    return active ? (cfg?.end || String((workingHours as Record<string, unknown>).end_time ?? "18:00")) : null;
-  })();
 
   const { totalMinutes: totalFreeMinutesTomorrow } = computeFreeMinutes(
     tomorrowLessons, calendarBlocks, tomorrowISO, false, startTimeStr, tomorrowEndTime, instructorBufferAfter, pupilBufferMap
