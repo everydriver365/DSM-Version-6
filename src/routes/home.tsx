@@ -5871,26 +5871,27 @@ function HomePage() {
                     style={{
                       position: 'relative',
                       background: '#FFFFFF',
-                      border: '1px solid #E2E6ED',
-                      borderRadius: 10,
-                      padding: '18px 18px 16px',
-                      minHeight: 128,
+                      border: '1px solid #ECEFF3',
+                      borderRadius: 24,
+                      padding: '20px 20px 18px',
+                      minHeight: 148,
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'flex-start',
                       justifyContent: 'flex-start',
                       cursor: 'pointer',
                       textAlign: 'left',
-                      fontFamily: 'Inter, sans-serif',
+                      fontFamily: "Poppins, Inter, sans-serif",
                       transition: 'transform 0.15s ease, box-shadow 0.2s ease',
                       overflow: 'hidden',
+                      boxShadow: '0 2px 10px -4px rgba(11, 31, 58, 0.10)',
                     }}
                   >
                     {tile.attention && (
                       <span style={{
                         position: 'absolute',
-                        top: 10,
-                        right: 10,
+                        top: 12,
+                        right: 12,
                         width: 8,
                         height: 8,
                         borderRadius: 999,
@@ -5898,32 +5899,34 @@ function HomePage() {
                       }} />
                     )}
                     <div style={{
-                      width: 34, height: 34, borderRadius: 8,
+                      width: 44, height: 44, borderRadius: 12,
                       background: tile.chipBg,
                       border: `1px solid ${chipBorder}`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      marginBottom: 16,
+                      marginBottom: 18,
                       position: 'relative',
                       transition: 'transform 0.15s ease',
                     }} className="qa-icon">
-                      <Icon size={17} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={1.8} />
+                      <Icon size={22} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={1.8} />
                     </div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.2, marginBottom: 4, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 'calc(100% - 20px)' }}>{tile.label}</div>
-                    <div style={{ fontSize: 12, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 'calc(100% - 20px)', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: tile.sub.includes('\n') ? 1.3 : 1.3 }}>{tile.sub}</div>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', lineHeight: 1.25, marginBottom: 4, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 'calc(100% - 36px)', fontFamily: "Poppins, Inter, sans-serif" }}>{tile.label}</div>
+                    <div style={{ fontSize: 12, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 'calc(100% - 36px)', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: 1.3, fontFamily: "Poppins, Inter, sans-serif" }}>{tile.sub}</div>
                     <span style={{
                       position: 'absolute',
                       right: 14,
                       bottom: 14,
-                      width: 30,
-                      height: 30,
+                      width: 32,
+                      height: 32,
                       borderRadius: 999,
-                      background: '#F4F6FA',
+                      background: '#1877D6',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      boxShadow: '0 2px 6px -2px rgba(24, 119, 214, 0.5)',
                     }}>
-                      <ChevronRight size={16} color="#0B1F3A" strokeWidth={2.2} />
+                      <ChevronRight size={16} color="#FFFFFF" strokeWidth={2.4} />
                     </span>
+
                   </button>
                 );
               };
