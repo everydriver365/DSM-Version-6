@@ -3283,26 +3283,9 @@ function HomePage() {
     return { count: gaps.length, totalMinutes };
   }
 
-  const startTimeStr = workingHours?.start_time ? String(workingHours.start_time) : "09:00";
   const { count: freeSlotCount, totalMinutes: totalFreeMinutesToday } = computeFreeMinutes(
     todayLessons, calendarBlocks, todayISO, true, startTimeStr, todayEndTime, instructorBufferAfter, pupilBufferMap
   );
-
-  const tomorrowEndTime = (() => {
-    if (!workingHours) return "18:00";
-    const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
-    const dayKeyToName: Record<string, string> = {
-      sun: "Sunday", mon: "Monday", tue: "Tuesday", wed: "Wednesday",
-      thu: "Thursday", fri: "Friday", sat: "Saturday",
-    };
-    const key = dayKeys[tomorrowStart.getDay()];
-    const name = dayKeyToName[key];
-    const perDay = (workingHours as Record<string, unknown>).per_day_hours as Record<string, { start?: string; end?: string; active?: boolean }> | null | undefined;
-    const cfg = perDay?.[name];
-    const workingDaysArr = ((workingHours as Record<string, unknown>).working_days as string[] | null) ?? ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-    const active = cfg ? cfg.active === true : workingDaysArr.includes(name);
-    return active ? (cfg?.end || String((workingHours as Record<string, unknown>).end_time ?? "18:00")) : null;
-  })();
 
   const { totalMinutes: totalFreeMinutesTomorrow } = computeFreeMinutes(
     tomorrowLessons, calendarBlocks, tomorrowISO, false, startTimeStr, tomorrowEndTime, instructorBufferAfter, pupilBufferMap
