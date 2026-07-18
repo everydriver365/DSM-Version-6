@@ -688,6 +688,13 @@ function PupilsIndexPage() {
       >
         <Plus size={24} color="#FFFFFF" />
       </Link>
+
+      <PupilQuickActionsSheet
+        open={sheetPupil !== null}
+        pupil={sheetPupil}
+        onClose={() => setSheetPupil(null)}
+        onDirtyClose={() => setReloadKey((k) => k + 1)}
+      />
     </PageLayout>
   );
 }
