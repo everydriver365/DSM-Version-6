@@ -327,6 +327,8 @@ function SchedulePage() {
   const [movingLesson, setMovingLesson] = useState<any | null>(null);
   const [moveMode, setMoveMode] = useState(false);
   const [confirmMove, setConfirmMove] = useState<{ date: string; time: string } | null>(null);
+  const [allPupils, setAllPupils] = useState<any[]>([]);
+  const [allAvailability, setAllAvailability] = useState<any[]>([]);
 
   const handleMoveLesson = useCallback(async (newDate: string, newTime: string) => {
     if (!movingLesson) return;
@@ -531,6 +533,58 @@ function SchedulePage() {
       cancelled = true;
     };
   }, [rangeStart, rangeEnd]);
+
+  // Fetch all pupils + availability once for the lightweight per-gap preview.
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const [pupilsRes, availRes] = await Promise.all([
+        supabase
+          .from("pupils")
+          .select("id,name,first_name,last_name,phone,postcode,calendar_colour,custom_rate,custom_rate_90,custom_rate_120")
+          .eq("instructor_id", userId)
+          .eq("status", "active")
+          .is("deleted_at", null),
+        supabase
+          .from("pupil_ready_to_learn_settings")
+          .select("*")
+          .eq("instructor_id", userId),
+      ]);
+      if (pupilsRes.error) console.error("[schedule] pupils query failed:", pupilsRes.error);
+      if (availRes.error) console.error("[schedule] availability query failed:", availRes.error);
+      setAllPupils(pupilsRes.data ?? []);
+      setAllAvailability(availRes.data ?? []);
+    })();
+  }, [userId]);
+
+  function previewMatchForGap(gap: {
+    date: string;
+    dayName: string;
+    durationMin: number;
+  }): { count: number; topPupils: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> } {
+    if (!allPupils.length || !allAvailability.length) {
+      return { count: 0, topPupils: [] };
+    }
+    const availByPupil = new Map<string, any>();
+    for (const a of allAvailability) {
+      if (a.pupil_id) availByPupil.set(a.pupil_id, a);
+    }
+    const slotStart = new Date(`${gap.date}T12:00:00`).getTime();
+    const hoursUntilSlot = (slotStart - Date.now()) / 3600000;
+    const matched: any[] = [];
+    for (const p of allPupils) {
+      const s = availByPupil.get(p.id);
+      if (!s) continue;
+      const availDays: string[] = s.available_days || [];
+      if (!availDays.includes(gap.dayName)) continue;
+      const minDuration = s.preferred_duration_minutes ?? 60;
+      if (gap.durationMin < minDuration) continue;
+      const minNoticeHours = s.min_notice_hours ?? 24;
+      if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
+      matched.push(p);
+    }
+    return { count: matched.length, topPupils: matched.slice(0, 3) };
+  }
 
   const handleSync = useCallback(async () => {
     if (!userId) return;
@@ -1232,6 +1286,7 @@ function SchedulePage() {
                         />
                         {items.map((e) => {
                           if (e.kind === 'gap-row') {
+                            const preview = previewMatchForGap({ date: row.key, dayName, durationMin: e.mins });
                             return (
                               <div key={e.id} style={{ position: "relative", marginBottom: 16 }}>
                                 <span
@@ -1310,6 +1365,44 @@ function SchedulePage() {
                                     Fill
                                   </button>
                                 </div>
+                                {preview.count > 0 && (
+                                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6, paddingLeft: 4 }}>
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                      {preview.topPupils.map((p, idx) => {
+                                        const initials = (p.name ?? p.first_name ?? "P")
+                                          .split(/\s+/)
+                                          .map((s) => s.charAt(0))
+                                          .join("")
+                                          .slice(0, 2)
+                                          .toUpperCase();
+                                        return (
+                                          <div
+                                            key={idx}
+                                            style={{
+                                              width: 24,
+                                              height: 24,
+                                              borderRadius: "50%",
+                                              background: p.calendar_colour ?? "#6B7280",
+                                              border: "2px solid #FFFFFF",
+                                              marginRight: idx === preview.topPupils.length - 1 ? 0 : -8,
+                                              display: "flex",
+                                              alignItems: "center",
+                                              justifyContent: "center",
+                                              color: "#FFFFFF",
+                                              fontSize: 10,
+                                              fontWeight: 600,
+                                            }}
+                                          >
+                                            {initials}
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                    <div style={{ fontSize: 11, color: "#A7C8F0" }}>
+                                      {preview.count} pupil{preview.count === 1 ? "" : "s"} may fit
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             );
                           }
