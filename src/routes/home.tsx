@@ -1333,7 +1333,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     return () => { cancelled = true; };
   }, []);
 
-  const POPPINS = "Inter, sans-serif";
+  const POPPINS = "'Poppins', 'Inter', sans-serif";
 
   // "Tue 21 Jul · 10:10am" (sentence case)
   const fmtDateTime = (d: string, t: string) => {
