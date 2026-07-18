@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
+import { recordPayment, recordPaymentWithPackage } from "../lib/payments";
 import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/pupils/payments/$id")({
