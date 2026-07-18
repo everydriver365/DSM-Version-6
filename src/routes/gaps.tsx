@@ -459,6 +459,13 @@ function GapsPage() {
   const [allPupils, setAllPupils] = useState<Pupil[]>([]);
   const [allAvailability, setAllAvailability] = useState<Availability[]>([]);
 
+  // ---- Book now (fast direct booking, skips message flow) ----
+  const [bookNowSheetOpen, setBookNowSheetOpen] = useState(false);
+  const [bookNowSlot, setBookNowSlot] = useState<{ date: string; time: string; duration: number } | null>(null);
+  const [bookNowSearchQuery, setBookNowSearchQuery] = useState("");
+  const [bookNowSelectedPupil, setBookNowSelectedPupil] = useState<Pupil | null>(null);
+  const [bookNowSubmitting, setBookNowSubmitting] = useState(false);
+
   // ---- Pre-filter (arrived from a cancellation via /gaps?date=&time=&duration=) ----
   const [prefilter, setPrefilter] = useState<{ date: string; time: string; duration: number } | null>(null);
   const [prefilterFound, setPrefilterFound] = useState<boolean | null>(null);
