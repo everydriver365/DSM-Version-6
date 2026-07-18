@@ -5729,18 +5729,6 @@ function HomePage() {
 
                     return (
                       <div key={l.id} style={{ position: 'relative', marginBottom: 16 }}>
-                        <span
-                          aria-hidden
-                          style={{
-                            position: 'absolute',
-                            left: -22,
-                            top: 4,
-                            width: 12,
-                            height: 12,
-                            borderRadius: '50%',
-                            background: '#0B1F3A',
-                          }}
-                        />
                         <div
                           onClick={() => navigate({ to: '/pupils/$id', params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any })}
                           role="button"
