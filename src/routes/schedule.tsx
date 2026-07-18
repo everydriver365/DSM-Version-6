@@ -80,6 +80,7 @@ function detectGaps(
   timeOff: Array<{ start_date: string; end_date: string; all_day?: boolean | null }>,
   dateStr: string,
   hourlyRate: number,
+  minGapMinutes: number,
 ): GapInfo[] {
   const wsMin = timeToMins(workStart || "09:00");
   const weMin = timeToMins(workEnd || "18:00");
