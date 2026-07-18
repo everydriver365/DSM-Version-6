@@ -424,6 +424,7 @@ function GapsPage() {
   const [loading, setLoading] = useState(false);
   const [ranked, setRanked] = useState<Ranked[] | null>(null);
   const [selectedPupilIds, setSelectedPupilIds] = useState<Set<string>>(new Set());
+  const [recipientsSheetOpen, setRecipientsSheetOpen] = useState(false);
   const [searchSlots, setSearchSlots] = useState<SelectedSlot[]>([]);
   const [messageSheetOpen, setMessageSheetOpen] = useState(false);
   const [messageTemplate, setMessageTemplate] = useState("");
