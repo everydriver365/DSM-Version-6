@@ -3,6 +3,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { Plus, RefreshCw, Trash2, Calendar, Move, ArrowDown, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { computeDayGaps } from "@/lib/gapDetection";
+import { previewMatchForGap } from "@/lib/pupilMatching";
 import {
   IconSearch,
   IconPlus,
