@@ -925,7 +925,7 @@ function GapsPage() {
     return () => {
       cancelled = true;
     };
-  }, [userId, reloadKey]);
+  }, [userId, reloadKey, minGapMinutes]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data, error }) => {
