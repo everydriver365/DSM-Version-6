@@ -925,7 +925,7 @@ function CashBankTab({ pupils, userId, onDone }: { pupils: PupilLite[]; userId: 
     if (!amt || amt <= 0) return setError("Enter a valid amount");
     setSaving(true);
     const createdAt = new Date(date + "T" + new Date().toTimeString().slice(0,8)).toISOString();
-    await recordPayment({ instructorId: userId, pupilId, amount: amt, method, notes: notes || null, createdAt });
+    await recordPayment({ pupilId, amount: amt, method, notes: notes || null, createdAt, currentAccountBalance: pupils.find(p => p.id === pupilId)?.account_balance ?? 0 });
     toast.success("Payment recorded");
     setSaving(false);
     await onDone();
