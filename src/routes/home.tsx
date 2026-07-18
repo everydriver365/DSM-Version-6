@@ -1096,9 +1096,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           >
             {cards.map((tile, idx) => {
               const img = firstImageUrl(tile.image_urls);
-              const allFeatures = featuresFor(tile.marketplace_categories?.name, tile.title);
-              const features = allFeatures.slice(0, 2);
-              const badge = badgeFor(idx, tile.is_featured);
               const isActive = idx === activeIdx;
               return (
                 <div
@@ -1159,24 +1156,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         <Sparkles size={32} color="#FFFFFF" />
                       </div>
                     )}
-                    <span
-                      style={{
-                        position: "absolute",
-                        top: 12,
-                        left: 12,
-                        background: "#2563EB",
-                        color: "#FFFFFF",
-                        padding: "5px 10px",
-                        borderRadius: 999,
-                        fontSize: 10,
-                        fontWeight: 600,
-                        letterSpacing: "0.02em",
-                        boxShadow: "0 6px 14px rgba(37, 99, 235, 0.35)",
-                        fontFamily: "'Poppins', 'Inter', sans-serif",
-                      }}
-                    >
-                      {badge}
-                    </span>
                   </div>
 
                   {/* Body */}
