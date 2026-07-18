@@ -5561,6 +5561,9 @@ function HomePage() {
                       const fmtT = (d: Date) => `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
                       const hourlyRate = 40;
                       const potential = Math.round((r.mins / 60) * hourlyRate);
+                      const gapDate = `${gs.getFullYear()}-${String(gs.getMonth() + 1).padStart(2, '0')}-${String(gs.getDate()).padStart(2, '0')}`;
+                      const dayName = DAY_NAMES[gs.getDay()];
+                      const preview = previewMatchForGap({ date: gapDate, dayName, durationMin: r.mins });
                       return (
                         <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: 16 }}>
                           <span
@@ -5596,6 +5599,44 @@ function HomePage() {
                               <div style={{ fontSize: 13, fontWeight: 500, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums' }}>
                                 {fmtT(gs)} – {fmtT(ge)}
                               </div>
+                              {preview.count > 0 && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
+                                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    {preview.topPupils.map((p, i) => {
+                                      const initials = (p.name ?? p.first_name ?? "P")
+                                        .split(/\s+/)
+                                        .map((s) => s.charAt(0))
+                                        .join("")
+                                        .slice(0, 2)
+                                        .toUpperCase();
+                                      return (
+                                        <div
+                                          key={i}
+                                          style={{
+                                            width: 22,
+                                            height: 22,
+                                            borderRadius: '50%',
+                                            background: p.calendar_colour ?? '#6B7280',
+                                            border: '2px solid #FFFFFF',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontSize: 9,
+                                            fontWeight: 600,
+                                            color: '#FFFFFF',
+                                            marginRight: i === preview.topPupils.length - 1 ? 0 : -7,
+                                          }}
+                                        >
+                                          {initials}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                  <div style={{ fontSize: 11, color: '#1877D6' }}>
+                                    {preview.count} pupil{preview.count === 1 ? "" : "s"} may fit
+                                  </div>
+                                </div>
+                              )}
                               <div style={{ fontSize: 11, color: '#1877D6', marginTop: 2 }}>
                                 {formatMins(r.mins)} free · £{potential} potential
                               </div>
