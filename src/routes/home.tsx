@@ -1333,7 +1333,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     return () => { cancelled = true; };
   }, []);
 
-  const POPPINS = "Inter, sans-serif";
+  const POPPINS = "'Poppins', 'Inter', sans-serif";
 
   // "Tue 21 Jul · 10:10am" (sentence case)
   const fmtDateTime = (d: string, t: string) => {
@@ -1441,45 +1441,46 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         }
       `}</style>
 
-      {/* Section header */}
+      {/* Section header — matches Marketplace: 18/600 #072B47 */}
       <div
         style={{
-          margin: "0 16px 10px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          padding: "0 16px",
+          marginBottom: 12,
           gap: 12,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-          <div
-            aria-hidden
+          <h2
             style={{
-              width: 28, height: 28, borderRadius: 8, background: "#0B1F3A",
-              display: "inline-flex", alignItems: "center", justifyContent: "center",
-              flexShrink: 0,
+              margin: 0,
+              fontFamily: POPPINS,
+              fontSize: 18,
+              fontWeight: 600,
+              color: "#072B47",
+              lineHeight: 1.2,
+              letterSpacing: "-0.01em",
             }}
           >
-            <IconPlayerPlay size={13} stroke={2} color="#FFFFFF" />
-          </div>
-          <h2 style={{ margin: 0, fontFamily: POPPINS, fontSize: 15, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.1 }}>
             DSM Live
           </h2>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, marginLeft: 2 }}>
-            <span style={{ position: "relative", width: 5, height: 5 }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+            <span style={{ position: "relative", width: 6, height: 6 }}>
               <span
                 aria-hidden
                 style={{
                   position: "absolute", inset: 0, borderRadius: "50%",
-                  background: "#E24B4A", animation: "dsmLivePulse 1.6s ease-out infinite",
+                  background: "#CC2229", animation: "dsmLivePulse 1.6s ease-out infinite",
                 }}
               />
               <span
                 aria-hidden
-                style={{ position: "absolute", inset: 0, borderRadius: "50%", background: "#E24B4A" }}
+                style={{ position: "absolute", inset: 0, borderRadius: "50%", background: "#CC2229" }}
               />
             </span>
-            <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.16em", color: "#E24B4A", textTransform: "uppercase" }}>
+            <span style={{ fontSize: 11, fontWeight: 600, color: "#CC2229", letterSpacing: "0.06em", textTransform: "uppercase" }}>
               Live
             </span>
           </span>
@@ -1488,17 +1489,24 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           type="button"
           onClick={() => navigate({ to: "/dsm-live" as never })}
           style={{
-            background: "none", border: "none", padding: 0, cursor: "pointer",
-            color: "#6B7A90", fontSize: 11, fontWeight: 600, fontFamily: POPPINS,
-            display: "inline-flex", alignItems: "center", gap: 2, flexShrink: 0,
+            background: "#072B47",
+            border: "none",
+            borderRadius: 999,
+            padding: "8px 14px",
+            fontSize: 11,
+            fontWeight: 600,
+            color: "#FFFFFF",
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            fontFamily: POPPINS,
           }}
         >
           View all
-          <IconChevronRight size={12} stroke={2} />
         </button>
       </div>
 
-      <div style={{ margin: "0 16px", display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ padding: "0 16px", display: "flex", flexDirection: "column", gap: 10 }}>
         {/* Featured session card */}
         {featured && (
           <div
@@ -1510,7 +1518,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             }}
             style={{
               background: "#FFFFFF",
-              borderRadius: 18,
+              borderRadius: 16,
               overflow: "hidden",
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               cursor: "pointer",
@@ -1531,48 +1539,48 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   {(() => {
                     const { Icon } = typeIcon(sessionType(featured.category));
-                    return <Icon size={24} stroke={1.5} color="#FFFFFF" />;
+                    return <Icon size={28} stroke={1.5} color="#FFFFFF" />;
                   })()}
                 </div>
               )}
               {featured.is_live && (
                 <div
                   style={{
-                    position: "absolute", top: 6, left: 6,
-                    display: "inline-flex", alignItems: "center", gap: 3,
-                    background: "#E24B4A", borderRadius: 20, padding: "2px 6px",
+                    position: "absolute", top: 8, left: 8,
+                    display: "inline-flex", alignItems: "center", gap: 4,
+                    background: "#CC2229", borderRadius: 999, padding: "3px 8px",
                   }}
                 >
-                  <span aria-hidden style={{ width: 3, height: 3, borderRadius: "50%", background: "#FFFFFF" }} />
-                  <span style={{ fontSize: 7, fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                  <span aria-hidden style={{ width: 4, height: 4, borderRadius: "50%", background: "#FFFFFF" }} />
+                  <span style={{ fontSize: 9, fontWeight: 600, color: "#FFFFFF", letterSpacing: "0.08em", textTransform: "uppercase" }}>
                     Live
                   </span>
                 </div>
               )}
             </div>
-            <div style={{ padding: "10px 12px", flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <div style={{ padding: "12px 14px", flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 8 }}>
               <div>
-                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 4 }}>
                   <span style={{
-                    padding: "2px 6px", background: "#E8F0FC", color: "#1877D6",
-                    fontSize: 8, fontWeight: 700, borderRadius: 5, letterSpacing: "0.05em", textTransform: "uppercase",
+                    padding: "3px 8px", background: "#E8F0FC", color: "#1877D6",
+                    fontSize: 11, fontWeight: 600, borderRadius: 999,
                   }}>
                     {categoryLabel(featured.category)}
                   </span>
-                  <span style={{ fontSize: 9, fontWeight: 500, color: "#B0BAC9" }}>
+                  <span style={{ fontSize: 11, fontWeight: 400, color: "#B0BAC9" }}>
                     {fmtDateTime(featured.session_date, featured.session_time)}
                   </span>
                 </div>
-                <h3 style={{
-                  margin: 0, fontSize: 12.5, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.25,
+                <div style={{
+                  fontSize: 14, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3,
                   display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
                 }}>
                   {featured.title}
-                </h3>
+                </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 6 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                 <span style={{
-                  fontSize: 10, fontWeight: 500, color: "#6B7A90",
+                  fontSize: 12, fontWeight: 400, color: "#64748B",
                   overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0,
                 }}>
                   {featured.host_name || "DSM Host"}
@@ -1581,9 +1589,10 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                   type="button"
                   onClick={(e) => { e.stopPropagation(); open(featured.id); }}
                   style={{
-                    padding: "5px 12px", background: "#0B1F3A", color: "#FFFFFF",
-                    fontSize: 10, fontWeight: 700, fontFamily: POPPINS,
+                    padding: "8px 14px", background: "#072B47", color: "#FFFFFF",
+                    fontSize: 11, fontWeight: 600, fontFamily: POPPINS,
                     border: "none", borderRadius: 999, cursor: "pointer", flexShrink: 0,
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                   }}
                 >
                   Join
@@ -1604,46 +1613,46 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             }}
             style={{
               background: "#FFFFFF",
-              borderRadius: 14,
-              padding: "10px 12px",
+              borderRadius: 16,
+              padding: "14px 16px",
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               cursor: "pointer",
               userSelect: "none",
               fontFamily: POPPINS,
               display: "flex",
               alignItems: "center",
-              gap: 10,
+              gap: 12,
             }}
           >
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
                 {secondary.is_live ? (
                   <span style={{
-                    padding: "1px 6px", background: "#FDECEC", color: "#E24B4A",
-                    fontSize: 8, fontWeight: 800, borderRadius: 4, letterSpacing: "0.08em", textTransform: "uppercase",
+                    padding: "3px 8px", background: "#FCEBEB", color: "#CC2229",
+                    fontSize: 11, fontWeight: 600, borderRadius: 999,
                   }}>
                     Live
                   </span>
                 ) : (
                   <span style={{
-                    padding: "1px 6px", background: "#F1F4F9", color: "#6B7A90",
-                    fontSize: 8, fontWeight: 700, borderRadius: 4, letterSpacing: "0.05em", textTransform: "uppercase",
+                    padding: "3px 8px", background: "#F1F4F9", color: "#64748B",
+                    fontSize: 11, fontWeight: 600, borderRadius: 999,
                   }}>
                     {categoryLabel(secondary.category)}
                   </span>
                 )}
-                <span style={{ fontSize: 9, fontWeight: 500, color: "#B0BAC9" }}>
+                <span style={{ fontSize: 11, fontWeight: 400, color: "#B0BAC9" }}>
                   {startsInLabel(secondary.session_date, secondary.session_time)}
                 </span>
               </div>
               <div style={{
-                fontSize: 12, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.25,
+                fontSize: 14, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3,
                 overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
               }}>
                 {secondary.title}
               </div>
             </div>
-            <IconChevronRight size={14} stroke={2} color="#B0BAC9" style={{ flexShrink: 0 }} />
+            <IconChevronRight size={16} stroke={2} color="#B0BAC9" style={{ flexShrink: 0 }} />
           </div>
         )}
 
@@ -1662,40 +1671,41 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
               }
             }}
             style={{
-              background: "#0B1F3A",
-              borderRadius: 14,
-              padding: "10px 12px",
+              background: "#072B47",
+              borderRadius: 16,
+              padding: "14px 16px",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               cursor: "pointer",
               userSelect: "none",
               fontFamily: POPPINS,
               display: "flex",
               alignItems: "center",
-              gap: 10,
+              gap: 12,
             }}
           >
             <div
               aria-hidden
               style={{
-                width: 32, height: 32, borderRadius: 8,
+                width: 36, height: 36, borderRadius: 11,
                 background: "rgba(255,255,255,0.1)",
                 display: "inline-flex", alignItems: "center", justifyContent: "center",
                 flexShrink: 0,
               }}
             >
-              <IconUsers size={16} stroke={1.75} color="#FFFFFF" />
+              <IconUsers size={18} stroke={1.75} color="#FFFFFF" />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#FFFFFF" }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#FFFFFF" }}>
                 DSM Community
               </div>
               <div style={{
-                fontSize: 10, color: "#8798B0", marginTop: 1,
+                fontSize: 12, fontWeight: 400, color: "rgba(255,255,255,0.7)", marginTop: 1,
                 overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
               }}>
                 Latest: {latestPodcast.title}
               </div>
             </div>
-            <IconChevronRight size={14} stroke={2} color="#5FA8F5" style={{ flexShrink: 0 }} />
+            <IconChevronRight size={16} stroke={2} color="#5FA8F5" style={{ flexShrink: 0 }} />
           </div>
         )}
       </div>
