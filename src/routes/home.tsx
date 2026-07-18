@@ -456,6 +456,9 @@ function ymd(d: Date) {
   const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
   return `${get("year")}-${get("month")}-${get("day")}`;
 }
+
+const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
 function lessonDateTime(l: LessonRow) {
   const t = (l.lesson_time ?? "00:00:00").slice(0, 8);
   const time = t.length === 5 ? `${t}:00` : t;
