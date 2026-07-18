@@ -137,7 +137,7 @@ function detectGaps(
     const gapStart = Math.max(cp.start, minStart);
     const gapEnd = Math.min(cp.end, weMin);
     const gapMins = gapEnd - gapStart;
-    if (gapMins >= 60) {
+    if (gapMins >= minGapMinutes) {
       gaps.push({
         startMins: gapStart,
         endMins: gapEnd,
