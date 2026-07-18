@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState, type ComponentType, type ReactNode } from "react";
-import { Home, CalendarDays, Users, MessageCircle, LayoutGrid, Mic } from "lucide-react";
+import { Home, CalendarDays, MessageCircle, LayoutGrid, Mic } from "lucide-react";
 
 export type NavKey = "home" | "schedule" | "pupils" | "messages" | "more" | "settings" | "payments";
 
@@ -38,9 +38,10 @@ const defaultItems: {
 
   { key: "home", to: "/home", label: "Home", Icon: Home },
   { key: "schedule", to: "/schedule", label: "Schedule", Icon: CalendarDays },
-  { key: "pupils", to: "/pupils", label: "Pupils", Icon: Users },
   { key: "messages", to: "/messages", label: "Messages", Icon: MessageCircle },
   { key: "more", to: "/more", label: "More", Icon: LayoutGrid },
+
+
 
 ];
 
@@ -134,7 +135,6 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
       let isActive = false;
       if (key === "home") isActive = active === "home" && (currentWs ?? 0) === 0;
       else if (key === "schedule") isActive = active === "schedule";
-      else if (key === "pupils") isActive = active === "pupils" || active?.startsWith("pupils") || false;
       else if (key === "messages") isActive = active === "messages";
       else if (key === "more") isActive = active === "more";
       const color = isActive ? activeColor : inactiveColor;
