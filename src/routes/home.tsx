@@ -2492,6 +2492,28 @@ function HomePage() {
   useEffect(() => {
     if (!userId) return;
     (async () => {
+      const [pupilsRes, availRes] = await Promise.all([
+        supabase
+          .from("pupils")
+          .select("id,name,first_name,last_name,phone,postcode,calendar_colour,custom_rate,custom_rate_90,custom_rate_120")
+          .eq("instructor_id", userId)
+          .eq("status", "active")
+          .is("deleted_at", null),
+        supabase
+          .from("pupil_ready_to_learn_settings")
+          .select("*")
+          .eq("instructor_id", userId),
+      ]);
+      if (pupilsRes.error) console.error("[home] pupils query failed:", pupilsRes.error);
+      if (availRes.error) console.error("[home] availability query failed:", availRes.error);
+      setAllPupils((pupilsRes.data ?? []) as PreviewPupil[]);
+      setAllAvailability((availRes.data ?? []) as PupilReadySetting[]);
+    })();
+  }, [userId]);
+
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
       const todayYmd = ymd(todayStart);
       const yesterdayYmd = ymd(addDays(todayStart, -1));
       const in60Ymd = ymd(addDays(todayStart, 60));
