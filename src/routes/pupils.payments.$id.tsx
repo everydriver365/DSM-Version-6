@@ -157,100 +157,23 @@ function PupilPaymentsPage() {
     const hoursBought = Number(recHours) || 0;
     setRecSaving(true);
     try {
-      const { data: u } = await supabase.auth.getUser();
-      const instructorId = u?.user?.id ?? null;
-      const now = new Date().toISOString();
-      const today = now.slice(0, 10);
-      let remaining = amt;
-
-      // Apply to oldest unpaid lessons
-      const { data: unpaid } = await supabase
-        .from("lessons")
-        .select("id, amount_due")
-        .eq("pupil_id", id)
-        .eq("payment_status", "unpaid")
-        .is("deleted_at", null)
-        .order("lesson_date", { ascending: true });
-      for (const l of (unpaid ?? []) as { id: string; amount_due: number | null }[]) {
-        if (remaining <= 0) break;
-        const due = Number(l.amount_due ?? 0);
-        if (due <= 0) continue;
-        // NOTE: never write amount_due on payment — it's set at lesson
-        // creation and is the source of truth for lesson value.
-        if (due <= remaining) {
-          await supabase
-            .from("lessons")
-            .update({
-              payment_status: "paid",
-              payment_method: recMethod,
-              paid_at: now,
-              paid_amount: due,
-            })
-            .eq("id", l.id);
-          remaining -= due;
-        } else {
-          await supabase
-            .from("lessons")
-            .update({
-              payment_status: "partial",
-              payment_method: recMethod,
-              paid_at: now,
-              paid_amount: remaining,
-            })
-            .eq("id", l.id);
-          remaining = 0;
-        }
-      }
-
-
-      // Overpayment → account credit
-      if (remaining > 0) {
-        const cur = Number(accountBalance ?? 0);
-        await supabase.from("pupils").update({ account_balance: cur + remaining }).eq("id", id);
-      }
-
-      // Audit row
-      if (instructorId) {
-        const { error: hErr } = await supabase.from("lesson_history").insert({
-          instructor_id: instructorId,
-          pupil_id: id,
-          lesson_cost: amt,
-          payment_status: "paid",
-          payment_method: recMethod,
-          notes: recNotes.trim() || (hoursBought > 0 ? `${hoursBought}h package` : null),
-          created_at: now,
-        });
-        if (hErr) console.error("[pupil-payments] history insert", hErr);
-      }
-
-      // Legacy payments row
-      const { error: payErr } = await supabase.from("payments").insert({
-        instructor_id: instructorId,
-        pupil_id: id,
-        amount: amt,
-        payment_method: recMethod,
-        payment_date: today,
-        status: "completed",
-      });
-      if (payErr) console.error("[pupil-payments] payments insert", payErr);
-
-      // Increment pupil's bought lesson count / prepaid hours
       if (hoursBought > 0) {
-        const { data: pRow } = await supabase
-          .from("pupils")
-          .select("lesson_count, prepaid_hours")
-          .eq("id", id)
-          .maybeSingle();
-        const curLessons = Number((pRow as { lesson_count?: number | null } | null)?.lesson_count ?? 0);
-        const curPrepaid = Number((pRow as { prepaid_hours?: number | null } | null)?.prepaid_hours ?? 0);
-        const { error: puErr } = await supabase
-          .from("pupils")
-          .update({
-            lesson_count: curLessons + hoursBought,
-            prepaid_hours: curPrepaid + hoursBought,
-          })
-          .eq("id", id);
-        if (puErr) console.error("[pupil-payments] pupil hours update", puErr);
+        await recordPaymentWithPackage({
+          pupilId: id,
+          amount: amt,
+          method: recMethod,
+          notes: recNotes,
+          currentAccountBalance: accountBalance,
+          hoursBought,
+        });
+      } else {
+        await recordPayment({
+          pupilId: id,
+          amount: amt,
+          method: recMethod,
+          notes: recNotes,
+          currentAccountBalance: accountBalance,
+        });
       }
 
       toast.success("Payment recorded");
@@ -267,6 +190,7 @@ function PupilPaymentsPage() {
       setRecSaving(false);
     }
   }
+
 
   const reminderMessage =
     net > 0
