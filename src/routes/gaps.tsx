@@ -4,7 +4,7 @@ import {
   ArrowLeft,
   Zap,
   Calendar as CalendarIcon,
-  CalendarPlus,
+  
   Clock,
   Users,
   MessageSquare,
@@ -456,12 +456,9 @@ function GapsPage() {
   const [allPupils, setAllPupils] = useState<Pupil[]>([]);
   const [allAvailability, setAllAvailability] = useState<Availability[]>([]);
 
-  // ---- Book now (fast direct booking, skips message flow) ----
-  const [bookNowSheetOpen, setBookNowSheetOpen] = useState(false);
-  const [bookNowSlot, setBookNowSlot] = useState<{ date: string; time: string; duration: number } | null>(null);
-  const [bookNowSearchQuery, setBookNowSearchQuery] = useState("");
-  const [bookNowSelectedPupil, setBookNowSelectedPupil] = useState<Pupil | null>(null);
-  const [bookNowSubmitting, setBookNowSubmitting] = useState(false);
+  // ---- Direct booking (single slot + single pupil) ----
+  const [pupilSearchQuery, setPupilSearchQuery] = useState("");
+  const [directBookSubmitting, setDirectBookSubmitting] = useState(false);
 
   // ---- Pre-filter (arrived from a cancellation via /gaps?date=&time=&duration=) ----
   const [prefilter, setPrefilter] = useState<{ date: string; time: string; duration: number } | null>(null);
@@ -2225,42 +2222,6 @@ function GapsPage() {
                       </div>
                     )}
 
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setBookNowSlot({
-                          date: slot.date,
-                          time: slot.startTime,
-                          duration: slot.gapMinutes >= 60 ? 60 : slot.gapMinutes,
-                        });
-                        setBookNowSelectedPupil(null);
-                        setBookNowSearchQuery("");
-                        setBookNowSheetOpen(true);
-                      }}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 6,
-                        width: "calc(100% + 28px)",
-                        margin: "12px -14px -12px",
-                        background: "#FFFFFF",
-                        borderTop: "1px solid #E2E6ED",
-                        borderLeft: "none",
-                        borderRight: "none",
-                        borderBottom: "none",
-                        borderRadius: "0 0 16px 16px",
-                        color: "#1877D6",
-                        fontSize: 13,
-                        fontWeight: 600,
-                        padding: 11,
-                        cursor: "pointer",
-                        ...FONT,
-                      }}
-                    >
-                      <CalendarPlus size={14} />
-                      Book now
-                    </button>
                   </div>
                 );
               })}
@@ -2467,25 +2428,142 @@ function GapsPage() {
             </div>
           )}
 
-          {ranked.map((r, idx) => (
-            <PupilCard
-              key={r.pupil.id}
-              rank={idx + 1}
-              r={r}
-              dayOfWeekLabel={dayOfWeekLabel}
-              multi={searchSlots.length > 1}
-              selected={selectedPupilIds.has(r.pupil.id)}
-              onToggleSelect={() => {
-                setSelectedPupilIds((prev) => {
-                  const next = new Set(prev);
-                  if (next.has(r.pupil.id)) next.delete(r.pupil.id);
-                  else next.add(r.pupil.id);
-                  return next;
-                });
+          <div style={{ margin: "0 16px 10px" }}>
+            <input
+              type="text"
+              placeholder="Search pupils…"
+              value={pupilSearchQuery}
+              onChange={(e) => setPupilSearchQuery(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "12px 14px",
+                borderRadius: 10,
+                border: `1px solid ${BORDER}`,
+                fontSize: 14,
+                outline: "none",
+                ...FONT,
               }}
             />
+          </div>
 
-          ))}
+          {(() => {
+            const q = pupilSearchQuery.trim().toLowerCase();
+            const filteredRanked = q
+              ? ranked.filter((r) => {
+                  const p = r.pupil;
+                  const nm = (
+                    p.name ||
+                    [p.first_name, p.last_name].filter(Boolean).join(" ") ||
+                    ""
+                  ).toLowerCase();
+                  return nm.includes(q);
+                })
+              : ranked;
+
+            const toggle = (id: string) =>
+              setSelectedPupilIds((prev) => {
+                const next = new Set(prev);
+                if (next.has(id)) next.delete(id);
+                else next.add(id);
+                return next;
+              });
+
+            if (filteredRanked.length === 0) {
+              return (
+                <div
+                  style={{
+                    margin: "0 16px",
+                    padding: 16,
+                    textAlign: "center",
+                    color: MUTED,
+                    fontSize: 13,
+                  }}
+                >
+                  No pupils match "{pupilSearchQuery}"
+                </div>
+              );
+            }
+
+            return filteredRanked.map((r) => {
+              const name = fullNameOf(r.pupil);
+              const parts = name.trim().split(/\s+/);
+              const initials =
+                ((parts[0]?.[0] ?? "") +
+                  (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase() ||
+                "?";
+              const checked = selectedPupilIds.has(r.pupil.id);
+              return (
+                <div
+                  key={r.pupil.id}
+                  onClick={() => toggle(r.pupil.id)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "10px 16px",
+                    cursor: "pointer",
+                  }}
+                >
+                  <div
+                    aria-label={checked ? "Deselect" : "Select"}
+                    style={{
+                      width: 20,
+                      height: 20,
+                      borderRadius: 4,
+                      border: checked ? "none" : "1.5px solid #9CA3AF",
+                      background: checked ? "#1877D6" : "#FFFFFF",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {checked && (
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path
+                          d="M2 6.5L5 9.5L10 3"
+                          stroke="white"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <div
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 999,
+                      background: r.pupil.calendar_colour ?? "#6B7280",
+                      color: "#FFFFFF",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {initials}
+                  </div>
+                  <div
+                    style={{
+                      flex: 1,
+                      minWidth: 0,
+                      fontSize: 14,
+                      color: NAVY,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {name}
+                  </div>
+                </div>
+              );
+            });
+          })()}
         </div>
       )}
 
@@ -2595,26 +2673,99 @@ function GapsPage() {
             zIndex: 50,
           }}
         >
-          <button
-            onClick={openMessageSheet}
-            style={{
-              width: "100%",
-              background: "#FFFFFF",
-              color: NAVY,
-              fontWeight: 700,
-              fontSize: 15,
-              borderRadius: 16,
-              border: "none",
-              padding: "14px 20px",
-              cursor: "pointer",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-            }}
-          >
-            Message {selectedPupilIds.size} selected →
-          </button>
+          {selectedSlots.length === 1 && selectedPupilIds.size === 1 ? (
+            <div style={{ display: "flex", gap: 10 }}>
+              <button
+                onClick={openMessageSheet}
+                style={{
+                  flex: 1,
+                  background: "#FFFFFF",
+                  color: NAVY,
+                  fontWeight: 700,
+                  fontSize: 15,
+                  borderRadius: 16,
+                  border: "none",
+                  padding: "14px 20px",
+                  cursor: "pointer",
+                }}
+              >
+                Message
+              </button>
+              <button
+                disabled={directBookSubmitting}
+                onClick={async () => {
+                  if (!userId) return;
+                  const slot = selectedSlots[0];
+                  const pupilId = Array.from(selectedPupilIds)[0];
+                  const rankedRow = ranked?.find((r) => r.pupil.id === pupilId);
+                  const pupil = rankedRow?.pupil;
+                  if (!slot || !pupil) return;
+                  setDirectBookSubmitting(true);
+                  try {
+                    const amount = calcOriginalPrice(pupil, slot.duration);
+                    const { error } = await supabase.from("lessons").insert({
+                      instructor_id: userId,
+                      pupil_id: pupil.id,
+                      lesson_date: slot.date,
+                      lesson_time: slot.time,
+                      duration_minutes: slot.duration,
+                      status: "confirmed",
+                      amount_due: amount,
+                      payment_status: "unpaid",
+                    });
+                    if (error) throw error;
+                    const pupilName = fullNameOf(pupil);
+                    toast.success(
+                      `Booked ${pupilName} — ${fmtDateLong(slot.date)} at ${fmtTimeHm(slot.time)}`,
+                    );
+                    setSelectedPupilIds(new Set());
+                    setSelectedSlots([]);
+                    setReloadKey((k) => k + 1);
+                  } catch (err) {
+                    console.error("[gaps] direct book failed:", err);
+                    toast.error("Could not book lesson. Please try again.");
+                  } finally {
+                    setDirectBookSubmitting(false);
+                  }
+                }}
+                style={{
+                  flex: 1,
+                  background: BLUE_BRIGHT,
+                  color: "#FFFFFF",
+                  fontWeight: 700,
+                  fontSize: 15,
+                  borderRadius: 16,
+                  border: "none",
+                  padding: "14px 20px",
+                  cursor: directBookSubmitting ? "not-allowed" : "pointer",
+                  opacity: directBookSubmitting ? 0.6 : 1,
+                }}
+              >
+                {directBookSubmitting ? "Booking…" : "Book now"}
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={openMessageSheet}
+              style={{
+                width: "100%",
+                background: "#FFFFFF",
+                color: NAVY,
+                fontWeight: 700,
+                fontSize: 15,
+                borderRadius: 16,
+                border: "none",
+                padding: "14px 20px",
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+              }}
+            >
+              Message {selectedPupilIds.size} selected →
+            </button>
+          )}
         </div>
       )}
       {selectedSlots.length > 0 && ranked === null && (
@@ -3063,278 +3214,6 @@ function GapsPage() {
         })()}
       </BottomSheet>
 
-      <BottomSheet
-        open={bookNowSheetOpen}
-        onOpenChange={(v) => {
-          if (bookNowSubmitting) return;
-          setBookNowSheetOpen(v);
-          if (!v) {
-            setBookNowSelectedPupil(null);
-            setBookNowSearchQuery("");
-            setBookNowSlot(null);
-          }
-        }}
-        title="Book this slot"
-      >
-        {bookNowSlot && (
-          <div style={{ ...FONT, padding: "4px 4px 12px" }}>
-            <div
-              style={{
-                background: "#F7F8FA",
-                borderRadius: 12,
-                padding: "12px 14px",
-                marginBottom: 14,
-              }}
-            >
-              <div style={{ fontSize: 12, color: "#8A94A6", fontWeight: 500 }}>
-                {fmtDateLong(bookNowSlot.date)}
-              </div>
-              <div style={{ fontSize: 17, color: NAVY, fontWeight: 700, marginTop: 2 }}>
-                {fmtTimeHm(bookNowSlot.time)} · {bookNowSlot.duration} min
-              </div>
-            </div>
-
-            {!bookNowSelectedPupil ? (
-              <>
-                <input
-                  type="text"
-                  placeholder="Search pupils…"
-                  value={bookNowSearchQuery}
-                  onChange={(e) => setBookNowSearchQuery(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "12px 14px",
-                    borderRadius: 10,
-                    border: `1px solid ${BORDER}`,
-                    fontSize: 14,
-                    marginBottom: 10,
-                    outline: "none",
-                    ...FONT,
-                  }}
-                />
-                <div style={{ maxHeight: 360, overflowY: "auto" }}>
-                  {(() => {
-                    const filtered = allPupils.filter((p) => {
-                      const q = bookNowSearchQuery.trim().toLowerCase();
-                      if (!q) return true;
-                      const nm =
-                        p.name ||
-                        [p.first_name, p.last_name].filter(Boolean).join(" ") ||
-                        "";
-                      return nm.toLowerCase().includes(q);
-                    });
-
-                    const matchResult = previewMatchForGap({
-                      date: bookNowSlot.date,
-                      dayName: DAYS[new Date(bookNowSlot.date + "T00:00:00").getDay()],
-                      startMin: hmToMin(bookNowSlot.time),
-                      durationMin: bookNowSlot.duration,
-                      allPupils,
-                      allAvailability,
-                    });
-                    const matchedIds = new Set(matchResult.allMatched.map((p) => p.id));
-
-                    const matchedPupils = filtered.filter((p) => matchedIds.has(p.id));
-                    const otherPupils = filtered.filter((p) => !matchedIds.has(p.id));
-                    const showDivider = matchedPupils.length > 0 && otherPupils.length > 0;
-
-                    const renderRow = (p: Pupil) => {
-                      const nm =
-                        p.name ||
-                        [p.first_name, p.last_name].filter(Boolean).join(" ") ||
-                        "Unnamed";
-                      const initials = nm
-                        .split(/\s+/)
-                        .map((s) => s.charAt(0))
-                        .join("")
-                        .slice(0, 2)
-                        .toUpperCase();
-                      return (
-                        <button
-                          key={p.id}
-                          onClick={() => setBookNowSelectedPupil(p)}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 12,
-                            width: "100%",
-                            padding: "10px 8px",
-                            background: "transparent",
-                            border: "none",
-                            borderBottom: `1px solid ${BORDER}`,
-                            cursor: "pointer",
-                            textAlign: "left",
-                            ...FONT,
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: 36,
-                              height: 36,
-                              borderRadius: "50%",
-                              background: p.calendar_colour ?? "#6B7280",
-                              color: "#FFFFFF",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              fontSize: 13,
-                              fontWeight: 700,
-                              flexShrink: 0,
-                            }}
-                          >
-                            {initials}
-                          </div>
-                          <div style={{ fontSize: 15, color: NAVY, fontWeight: 500 }}>
-                            {nm}
-                          </div>
-                        </button>
-                      );
-                    };
-
-                    return (
-                      <>
-                        {matchedPupils.map(renderRow)}
-                        {showDivider && (
-                          <div
-                            style={{
-                              fontSize: 10,
-                              fontWeight: 700,
-                              color: "#9CA3AF",
-                              letterSpacing: "0.4px",
-                              padding: "8px 8px 4px",
-                            }}
-                          >
-                            OTHER PUPILS
-                          </div>
-                        )}
-                        {otherPupils.map(renderRow)}
-                        {allPupils.length === 0 && (
-                          <div style={{ padding: 16, textAlign: "center", color: MUTED, fontSize: 13 }}>
-                            No pupils found
-                          </div>
-                        )}
-                      </>
-                    );
-                  })()}
-                </div>
-              </>
-            ) : (
-              (() => {
-                const p = bookNowSelectedPupil;
-                const nm =
-                  p.name ||
-                  [p.first_name, p.last_name].filter(Boolean).join(" ") ||
-                  "Unnamed";
-                const price = calcOriginalPrice(p, bookNowSlot.duration);
-                return (
-                  <div>
-                    <div
-                      style={{
-                        background: "#FFFFFF",
-                        border: `1px solid ${BORDER}`,
-                        borderRadius: 12,
-                        padding: 14,
-                      }}
-                    >
-                      <div style={{ fontSize: 12, color: MUTED, fontWeight: 500 }}>Pupil</div>
-                      <div style={{ fontSize: 17, color: NAVY, fontWeight: 700, marginTop: 2 }}>
-                        {nm}
-                      </div>
-                      <div style={{ height: 12 }} />
-                      <div style={{ fontSize: 12, color: MUTED, fontWeight: 500 }}>When</div>
-                      <div style={{ fontSize: 15, color: NAVY, fontWeight: 600, marginTop: 2 }}>
-                        {fmtDateLong(bookNowSlot.date)} · {fmtTimeHm(bookNowSlot.time)} · {bookNowSlot.duration} min
-                      </div>
-                      <div style={{ height: 12 }} />
-                      <div style={{ fontSize: 12, color: MUTED, fontWeight: 500 }}>Price</div>
-                      <div style={{ fontSize: 17, color: NAVY, fontWeight: 700, marginTop: 2 }}>
-                        £{price.toFixed(2)}
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => setBookNowSelectedPupil(null)}
-                      style={{
-                        marginTop: 12,
-                        background: "transparent",
-                        border: "none",
-                        color: BLUE,
-                        fontSize: 13,
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        padding: 4,
-                        ...FONT,
-                      }}
-                    >
-                      ← Back to search
-                    </button>
-
-                    <button
-                      disabled={bookNowSubmitting}
-                      onClick={async () => {
-                        if (!userId || !bookNowSlot || !bookNowSelectedPupil) return;
-                        setBookNowSubmitting(true);
-                        try {
-                          const amount = calcOriginalPrice(
-                            bookNowSelectedPupil,
-                            bookNowSlot.duration,
-                          );
-                          const { error } = await supabase.from("lessons").insert({
-                            instructor_id: userId,
-                            pupil_id: bookNowSelectedPupil.id,
-                            lesson_date: bookNowSlot.date,
-                            lesson_time: bookNowSlot.time,
-                            duration_minutes: bookNowSlot.duration,
-                            status: "confirmed",
-                            amount_due: amount,
-                            payment_status: "unpaid",
-                          });
-                          if (error) throw error;
-                          const pupilName =
-                            bookNowSelectedPupil.name ||
-                            [bookNowSelectedPupil.first_name, bookNowSelectedPupil.last_name]
-                              .filter(Boolean)
-                              .join(" ") ||
-                            "Pupil";
-                          toast.success(
-                            `Booked ${pupilName} — ${fmtDateLong(bookNowSlot.date)} at ${fmtTimeHm(bookNowSlot.time)}`,
-                          );
-                          setBookNowSheetOpen(false);
-                          setBookNowSelectedPupil(null);
-                          setBookNowSearchQuery("");
-                          setBookNowSlot(null);
-                          setReloadKey((k) => k + 1);
-                        } catch (err) {
-                          console.error("[gaps] book now failed:", err);
-                          toast.error("Could not book lesson. Please try again.");
-                        } finally {
-                          setBookNowSubmitting(false);
-                        }
-                      }}
-                      style={{
-                        marginTop: 8,
-                        width: "100%",
-                        height: 48,
-                        borderRadius: 12,
-                        background: NAVY,
-                        color: "#FFFFFF",
-                        fontWeight: 600,
-                        fontSize: 15,
-                        border: "none",
-                        cursor: bookNowSubmitting ? "not-allowed" : "pointer",
-                        opacity: bookNowSubmitting ? 0.6 : 1,
-                        ...FONT,
-                      }}
-                    >
-                      {bookNowSubmitting ? "Booking…" : "Confirm booking"}
-                    </button>
-                  </div>
-                );
-              })()
-            )}
-          </div>
-        )}
-      </BottomSheet>
 
     </div>
   );
