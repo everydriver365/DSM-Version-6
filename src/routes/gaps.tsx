@@ -444,6 +444,8 @@ function GapsPage() {
   const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
+  const [allPupils, setAllPupils] = useState<Pupil[]>([]);
+  const [allAvailability, setAllAvailability] = useState<Availability[]>([]);
 
   // ---- Pre-filter (arrived from a cancellation via /gaps?date=&time=&duration=) ----
   const [prefilter, setPrefilter] = useState<{ date: string; time: string; duration: number } | null>(null);
