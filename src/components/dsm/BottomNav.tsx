@@ -38,9 +38,10 @@ const defaultItems: {
 
   { key: "home", to: "/home", label: "Home", Icon: Home },
   { key: "schedule", to: "/schedule", label: "Schedule", Icon: CalendarDays },
-  { key: "pupils", to: "/pupils", label: "Pupils", Icon: Users },
   { key: "messages", to: "/messages", label: "Messages", Icon: MessageCircle },
   { key: "more", to: "/more", label: "More", Icon: LayoutGrid },
+
+
 
 ];
 
