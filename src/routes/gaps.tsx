@@ -1301,7 +1301,10 @@ function GapsPage() {
   function openMessageSheet() {
     setMessageTemplate(buildDefaultTemplate());
     setSelectedDiscountId(null);
+    // Gap Filler: matched pupils are multi-select with nothing pre-selected.
+    setSelectedPupilIds(new Set());
     setMessageSheetOpen(true);
+    setRecipientsSheetOpen(true);
   }
 
   function discountLineFor(dc: DiscountCode): string {
