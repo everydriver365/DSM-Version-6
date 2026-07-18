@@ -45,6 +45,7 @@ export const Route = createFileRoute("/lessons/new")({
   }),
   validateSearch: (search: Record<string, unknown>) => ({
     date: typeof search.date === "string" ? search.date : "",
+    pupilId: typeof search.pupilId === "string" ? search.pupilId : "",
   }),
   component: NewLessonPage,
 });
