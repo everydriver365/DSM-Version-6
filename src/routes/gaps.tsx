@@ -15,7 +15,7 @@ import {
   Coffee,
   
 } from "lucide-react";
-import { ChevronRight, RefreshCw, Sparkles, XCircle, X as XIcon } from "lucide-react";
+import { Check, ChevronRight, RefreshCw, Sparkles, XCircle, X as XIcon } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
@@ -1945,9 +1945,9 @@ function GapsPage() {
                     data-slot-key={`${slot.date}-${slot.startTime}`}
                     className={isPrefilterMatch ? "gaps-prefilter-match" : undefined}
                     style={{
-                      background: "#FFFFFF",
+                      background: anySelected ? "#F0F6FC" : "#FFFFFF",
                       borderRadius: 16,
-                      border: "1px solid #DCEAF7",
+                      border: anySelected ? "2px solid #1877D6" : "1px solid #DCEAF7",
                       boxShadow: "0 4px 14px rgba(24,95,165,0.12)",
                       margin: "0 16px 18px",
                       padding: "12px 14px",
@@ -2095,12 +2095,29 @@ function GapsPage() {
                                 {minToHm(hmToMin(slot.endTime))} · tap to fill
                               </div>
                             </div>
-                            {!hasMatches && (
-                              <RefreshCw
-                                size={16}
-                                color="#C7CCD4"
-                                style={{ flexShrink: 0 }}
-                              />
+                            {anySelected ? (
+                              <div
+                                style={{
+                                  width: 16,
+                                  height: 16,
+                                  borderRadius: "50%",
+                                  background: "#1877D6",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  flexShrink: 0,
+                                }}
+                              >
+                                <Check size={10} color="#FFFFFF" strokeWidth={3} />
+                              </div>
+                            ) : (
+                              !hasMatches && (
+                                <RefreshCw
+                                  size={16}
+                                  color="#C7CCD4"
+                                  style={{ flexShrink: 0 }}
+                                />
+                              )
                             )}
                             <ChevronRight
                               size={16}
