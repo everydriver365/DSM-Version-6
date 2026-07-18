@@ -1,9 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronRight, Plus, Search, X, Megaphone, Users, CreditCard } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { EmptyState } from "../components/dsm/EmptyState";
 import { PageLayout } from "@/components/PageLayout";
+import {
+  PupilQuickActionsSheet,
+  type PupilQuickActionsPupil,
+} from "@/components/pupils/PupilQuickActionsSheet";
 
 export const Route = createFileRoute("/pupils/")({
   head: () => ({
@@ -97,6 +101,10 @@ function PupilsIndexPage() {
   const [query, setQuery] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
+  const [sheetPupil, setSheetPupil] = useState<PupilQuickActionsPupil | null>(null);
+  const suppressNextClickRef = useRef(false);
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
@@ -496,15 +504,66 @@ function PupilsIndexPage() {
               const avatarBg = avatarColor(p.id, p.name);
               const lp = lastPaymentMap[p.id];
               const lpDays = lp ? Math.max(0, Math.floor((Date.now() - new Date(lp.date).getTime()) / 86400000)) : null;
+              const openSheet = () => {
+                setSheetPupil({
+                  id: p.id,
+                  name: displayName(p.name),
+                  accountBalance: p.account_balance ?? 0,
+                  hoursRemaining,
+                  balanceOwed,
+                  lessons,
+                  prepaidHoursRaw: prepaid,
+                });
+              };
+              const startLongPress = () => {
+                if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+                longPressTimerRef.current = setTimeout(() => {
+                  suppressNextClickRef.current = true;
+                  openSheet();
+                  if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+                    try { (navigator as Navigator).vibrate?.(10); } catch { /* noop */ }
+                  }
+                }, 500);
+              };
+              const cancelLongPress = () => {
+                if (longPressTimerRef.current) {
+                  clearTimeout(longPressTimerRef.current);
+                  longPressTimerRef.current = null;
+                }
+              };
               return (
-                <Link
+                <div
                   key={p.id}
-                  to="/pupils/$id"
-                  params={{ id: p.id }}
-                  className="block"
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => {
+                    if (suppressNextClickRef.current) {
+                      suppressNextClickRef.current = false;
+                      e.preventDefault();
+                      e.stopPropagation();
+                      return;
+                    }
+                    navigate({ to: "/pupils/$id", params: { id: p.id } });
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      navigate({ to: "/pupils/$id", params: { id: p.id } });
+                    }
+                  }}
+                  onPointerDown={startLongPress}
+                  onPointerUp={cancelLongPress}
+                  onPointerLeave={cancelLongPress}
+                  onPointerCancel={cancelLongPress}
+                  onContextMenu={(e) => {
+                    // Prevent iOS/Android context menu on long-press; we handle it.
+                    e.preventDefault();
+                  }}
+                  className="block cursor-pointer select-none"
                   style={{
                     backgroundColor: hasBalance ? "#FFF5F5" : "#FFFFFF",
                     borderBottom: idx < filtered.length - 1 ? "0.5px solid #EEF2F7" : "none",
+                    WebkitTouchCallout: "none",
                   }}
                 >
                   <div
@@ -594,7 +653,7 @@ function PupilsIndexPage() {
                       <ChevronRight size={15} color="#B0BAC9" />
                     </div>
                   </div>
-                </Link>
+                </div>
               );
             })}
           </div>
@@ -629,6 +688,13 @@ function PupilsIndexPage() {
       >
         <Plus size={24} color="#FFFFFF" />
       </Link>
+
+      <PupilQuickActionsSheet
+        open={sheetPupil !== null}
+        pupil={sheetPupil}
+        onClose={() => setSheetPupil(null)}
+        onDirtyClose={() => setReloadKey((k) => k + 1)}
+      />
     </PageLayout>
   );
 }
