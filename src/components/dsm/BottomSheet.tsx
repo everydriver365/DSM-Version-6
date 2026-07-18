@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { X } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 interface Props {
