@@ -3339,7 +3339,7 @@ function HomePage() {
   })();
 
   const { totalMinutes: totalFreeMinutesTomorrow } = computeFreeMinutes(
-    tomorrowLessons, tomorrowBlocks, startTimeStr, tomorrowEndTime, instructorBufferAfter, pupilBufferMap
+    tomorrowLessons, calendarBlocks, tomorrowISO, false, startTimeStr, tomorrowEndTime, instructorBufferAfter, pupilBufferMap
   );
 
 
