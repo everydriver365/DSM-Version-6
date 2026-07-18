@@ -966,7 +966,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     if (children.length === 0) return;
     const center = el.scrollLeft + el.clientWidth / 2;
     let best = 0;
-    let bestDist = Infinity;
+    let bestDist = Number.POSITIVE_INFINITY;
     children.forEach((c, i) => {
       const mid = c.offsetLeft + c.offsetWidth / 2;
       const d = Math.abs(mid - center);
