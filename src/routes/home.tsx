@@ -5503,7 +5503,7 @@ function HomePage() {
 
               if (lessonRows.length === 0 && calendarRows.length === 0) {
                 const freeMinutes = tab === 'today' ? totalFreeMinutesToday : tab === 'tomorrow' ? totalFreeMinutesTomorrow : 0;
-                if ((tab === 'today' || tab === 'tomorrow') && freeMinutes >= 60) {
+                if ((tab === 'today' || tab === 'tomorrow') && freeMinutes >= minGapMinutes) {
                   const hours = Math.round(freeMinutes / 60);
                   const dayLabel = tab === 'today' ? 'today' : 'tomorrow';
                   return (
