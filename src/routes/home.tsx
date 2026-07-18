@@ -6510,9 +6510,6 @@ function HomePage() {
 
             <MarketplaceSection navigate={navigate} />
             <DsmLiveSection navigate={navigate} />
-            <DiscoverSection />
-
-
 
 
 
