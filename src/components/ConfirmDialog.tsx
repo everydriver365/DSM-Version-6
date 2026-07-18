@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+import { BottomSheet, PrimaryButton, GhostButton } from "@/components/dsm/BottomSheetV2";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -10,7 +9,15 @@ interface ConfirmDialogProps {
   cancelLabel?: string;
   onConfirm: () => void;
   onCancel: () => void;
+  /**
+   * Whether the confirm action is destructive. When true (default), the
+   * primary confirm renders in red and the cancel in the neutral ghost style.
+   * Auto-inferred from `confirmLabel` when omitted (Delete/Remove/Sign out/etc).
+   */
+  destructive?: boolean;
 }
+
+const DESTRUCTIVE_RE = /\b(delete|remove|discard|sign out|log out|cancel|clear|reset)\b/i;
 
 export function ConfirmDialog({
   open,
@@ -20,6 +27,7 @@ export function ConfirmDialog({
   cancelLabel = "Cancel",
   onConfirm,
   onCancel,
+  destructive,
 }: ConfirmDialogProps) {
   useEffect(() => {
     if (!open) return;
@@ -32,65 +40,39 @@ export function ConfirmDialog({
 
   if (!open) return null;
 
-  return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center px-6"
-      style={{ backgroundColor: "rgba(11,31,58,0.4)", ...POPPINS }}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="confirm-dialog-title"
-    >
-      <div
-        className="absolute inset-0"
-        aria-hidden
-        onClick={onCancel}
-      />
-      <div
-        className="relative w-full bg-white"
-        style={{
-          maxWidth: 340,
-          borderRadius: 16,
-          padding: 20,
-          boxShadow: "0 20px 40px rgba(11,31,58,0.18)",
-        }}
+  const isDestructive =
+    destructive ?? DESTRUCTIVE_RE.test(confirmLabel);
+
+  const footer = (
+    <>
+      <PrimaryButton
+        onClick={onConfirm}
+        color={isDestructive ? "#CC2229" : "#1877D6"}
       >
+        {confirmLabel}
+      </PrimaryButton>
+      <GhostButton
+        onClick={onCancel}
+        color="#0B1F3A"
+        bg="transparent"
+      >
+        {cancelLabel}
+      </GhostButton>
+    </>
+  );
+
+  return (
+    <BottomSheet title={title} onClose={onCancel} footer={footer}>
+      {message ? (
         <div
-          id="confirm-dialog-title"
-          className="text-[16px] font-semibold"
-          style={{ color: "#0B1F3A" }}
+          className="px-1 pt-1 pb-4 text-[14px] leading-relaxed"
+          style={{ color: "#4A5A73", fontFamily: "Poppins, sans-serif" }}
         >
-          {title}
+          {message}
         </div>
-        {message && (
-          <div className="text-[14px] mt-2" style={{ color: "#6B7280" }}>
-            {message}
-          </div>
-        )}
-        <div className="mt-5 flex gap-2">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="flex-1 h-11 rounded-lg text-[14px] font-medium"
-            style={{
-              backgroundColor: "transparent",
-              color: "#0B1F3A",
-              borderWidth: "0.5px",
-              borderStyle: "solid",
-              borderColor: "#EEF2F7",
-            }}
-          >
-            {cancelLabel}
-          </button>
-          <button
-            type="button"
-            onClick={onConfirm}
-            className="flex-1 h-11 rounded-lg text-[14px] font-semibold text-white"
-            style={{ backgroundColor: "#1877D6", border: "none" }}
-          >
-            {confirmLabel}
-          </button>
-        </div>
-      </div>
-    </div>
+      ) : (
+        <div className="pb-2" />
+      )}
+    </BottomSheet>
   );
 }
