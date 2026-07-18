@@ -2673,26 +2673,99 @@ function GapsPage() {
             zIndex: 50,
           }}
         >
-          <button
-            onClick={openMessageSheet}
-            style={{
-              width: "100%",
-              background: "#FFFFFF",
-              color: NAVY,
-              fontWeight: 700,
-              fontSize: 15,
-              borderRadius: 16,
-              border: "none",
-              padding: "14px 20px",
-              cursor: "pointer",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-            }}
-          >
-            Message {selectedPupilIds.size} selected →
-          </button>
+          {selectedSlots.length === 1 && selectedPupilIds.size === 1 ? (
+            <div style={{ display: "flex", gap: 10 }}>
+              <button
+                onClick={openMessageSheet}
+                style={{
+                  flex: 1,
+                  background: "#FFFFFF",
+                  color: NAVY,
+                  fontWeight: 700,
+                  fontSize: 15,
+                  borderRadius: 16,
+                  border: "none",
+                  padding: "14px 20px",
+                  cursor: "pointer",
+                }}
+              >
+                Message
+              </button>
+              <button
+                disabled={directBookSubmitting}
+                onClick={async () => {
+                  if (!userId) return;
+                  const slot = selectedSlots[0];
+                  const pupilId = Array.from(selectedPupilIds)[0];
+                  const rankedRow = ranked?.find((r) => r.pupil.id === pupilId);
+                  const pupil = rankedRow?.pupil;
+                  if (!slot || !pupil) return;
+                  setDirectBookSubmitting(true);
+                  try {
+                    const amount = calcOriginalPrice(pupil, slot.duration);
+                    const { error } = await supabase.from("lessons").insert({
+                      instructor_id: userId,
+                      pupil_id: pupil.id,
+                      lesson_date: slot.date,
+                      lesson_time: slot.time,
+                      duration_minutes: slot.duration,
+                      status: "confirmed",
+                      amount_due: amount,
+                      payment_status: "unpaid",
+                    });
+                    if (error) throw error;
+                    const pupilName = fullNameOf(pupil);
+                    toast.success(
+                      `Booked ${pupilName} — ${fmtDateLong(slot.date)} at ${fmtTimeHm(slot.time)}`,
+                    );
+                    setSelectedPupilIds(new Set());
+                    setSelectedSlots([]);
+                    setReloadKey((k) => k + 1);
+                  } catch (err) {
+                    console.error("[gaps] direct book failed:", err);
+                    toast.error("Could not book lesson. Please try again.");
+                  } finally {
+                    setDirectBookSubmitting(false);
+                  }
+                }}
+                style={{
+                  flex: 1,
+                  background: BLUE_BRIGHT,
+                  color: "#FFFFFF",
+                  fontWeight: 700,
+                  fontSize: 15,
+                  borderRadius: 16,
+                  border: "none",
+                  padding: "14px 20px",
+                  cursor: directBookSubmitting ? "not-allowed" : "pointer",
+                  opacity: directBookSubmitting ? 0.6 : 1,
+                }}
+              >
+                {directBookSubmitting ? "Booking…" : "Book now"}
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={openMessageSheet}
+              style={{
+                width: "100%",
+                background: "#FFFFFF",
+                color: NAVY,
+                fontWeight: 700,
+                fontSize: 15,
+                borderRadius: 16,
+                border: "none",
+                padding: "14px 20px",
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+              }}
+            >
+              Message {selectedPupilIds.size} selected →
+            </button>
+          )}
         </div>
       )}
       {selectedSlots.length > 0 && ranked === null && (
