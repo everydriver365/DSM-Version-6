@@ -833,7 +833,7 @@ function GapsPage() {
               gapReason = bufferAfterA > 0 ? `${bufferAfterA} min buffer` : "";
             }
             const effStart = rawCursor + leftReserve;
-            const effEnd = rawEnd;
+            const effEnd = hasPrevLesson ? rawEnd : rawEnd - l.bufAfter;
             const clampedStart = Math.max(effStart, wsMin);
             const clampedEnd = Math.min(effEnd, weMin);
             if (clampedEnd - clampedStart >= minGap) {

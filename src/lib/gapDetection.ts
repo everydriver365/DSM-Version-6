@@ -166,7 +166,7 @@ export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
   for (const l of busy) {
     const leftReserve = hasPrev && prev ? prev.bufAfter : 0;
     const effStart = rawCursor + leftReserve;
-    const effEnd = l.start;
+    const effEnd = hasPrev ? l.start : l.start - l.bufAfter;
     const clampedStart = Math.max(effStart, wsMin);
     const clampedEnd = Math.min(effEnd, weMin);
     if (clampedEnd - clampedStart >= minGap) {
