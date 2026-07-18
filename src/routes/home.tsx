@@ -5529,19 +5529,8 @@ function HomePage() {
 
 
 
-                  {/* Timeline container with vertical connector */}
-                  <div style={{ position: 'relative', paddingLeft: 22 }}>
-                    <div
-                      aria-hidden
-                      style={{
-                        position: 'absolute',
-                        left: 6,
-                        top: 6,
-                        bottom: 6,
-                        width: 2,
-                        background: '#DDE4ED',
-                      }}
-                    />
+                  {/* Timeline container */}
+                  <div style={{ position: 'relative' }}>
                     {rows.map((r, idx) => {
                     if (r.kind === 'gap') {
                       const gs = r.start;
