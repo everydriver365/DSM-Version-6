@@ -1221,37 +1221,12 @@ function SchedulePage() {
 
 
                     return (
-                      <div style={{ position: "relative", paddingLeft: 22 }}>
-                        <div
-                          aria-hidden
-                          style={{
-                            position: "absolute",
-                            left: 6,
-                            top: 6,
-                            bottom: 6,
-                            width: 2,
-                            background: "#DDE4ED",
-                          }}
-                        />
+                      <div>
                         {items.map((e) => {
                           if (e.kind === 'gap-row') {
                             const preview = previewMatchForGap({ date: row.key, dayName, startMin: e.startMins, durationMin: e.mins, allPupils, allAvailability });
                             return (
                               <div key={e.id} style={{ position: "relative", marginBottom: 16 }}>
-                                <span
-                                  aria-hidden
-                                  style={{
-                                    position: "absolute",
-                                    left: -22,
-                                    top: 4,
-                                    width: 12,
-                                    height: 12,
-                                    borderRadius: "50%",
-                                    background: "#E6F1FB",
-                                    border: "2px solid #1877D6",
-                                    boxSizing: "border-box",
-                                  }}
-                                />
                                 <div
                                   onClick={() => navigate({ to: '/gaps' as never })}
                                   role="button"
@@ -1360,20 +1335,6 @@ function SchedulePage() {
                             const dur = Number(movingLesson?.duration_minutes) || 60;
                             return (
                               <div key={e.id} style={{ position: "relative", marginBottom: 8 }}>
-                                <span
-                                  aria-hidden
-                                  style={{
-                                    position: "absolute",
-                                    left: -22,
-                                    top: 4,
-                                    width: 12,
-                                    height: 12,
-                                    borderRadius: "50%",
-                                    background: "#86EFAC",
-                                    border: "2px solid #16A34A",
-                                    boxSizing: "border-box",
-                                  }}
-                                />
                                 <div
                                   onClick={() => setConfirmMove({ date: e.dateKey, time: e.time })}
                                   role="button"
@@ -1476,20 +1437,6 @@ function SchedulePage() {
 
                           return (
                             <div key={e.id} style={{ position: "relative", marginBottom: 16 }}>
-                              <span
-                                aria-hidden
-                                style={{
-                                  position: "absolute",
-                                  left: -22,
-                                  top: 4,
-                                  width: 12,
-                                  height: 12,
-                                  borderRadius: "50%",
-                                  background: isBlockRow ? '#E6F1FB' : markerColor,
-                                  border: isBlockRow ? '2px solid #1877D6' : undefined,
-                                  boxSizing: 'border-box',
-                                }}
-                              />
                               <div style={{ position: "relative", overflow: "hidden", borderRadius: 12 }}>
                                 <div
                                   onClick={onCardClick}
@@ -1560,16 +1507,6 @@ function SchedulePage() {
                                     </>
                                   ) : (
                                     <>
-                                      <span
-                                        aria-hidden
-                                        style={{
-                                          width: 8,
-                                          height: 8,
-                                          borderRadius: "50%",
-                                          background: markerColor,
-                                          flexShrink: 0,
-                                        }}
-                                      />
                                       <div style={{ flex: 1, minWidth: 0 }}>
                                         <div
                                           style={{
