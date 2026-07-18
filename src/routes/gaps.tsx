@@ -1301,7 +1301,10 @@ function GapsPage() {
   function openMessageSheet() {
     setMessageTemplate(buildDefaultTemplate());
     setSelectedDiscountId(null);
+    // Gap Filler: matched pupils are multi-select with nothing pre-selected.
+    setSelectedPupilIds(new Set());
     setMessageSheetOpen(true);
+    setRecipientsSheetOpen(true);
   }
 
   function discountLineFor(dc: DiscountCode): string {
@@ -2976,20 +2979,21 @@ function GapsPage() {
             disabled={!messageTemplate.trim() || selectedPupilIds.size === 0}
             style={{
               width: "100%",
-              background: "#0B1F3A",
+              background: "#1877D6",
               color: "#FFFFFF",
-              fontWeight: 700,
-              fontSize: 15,
-              borderRadius: 14,
+              fontWeight: 600,
+              fontSize: 16,
+              borderRadius: 999,
               border: "none",
-              padding: "14px 20px",
+              padding: "16px 20px",
               cursor: "pointer",
               opacity:
-                !messageTemplate.trim() || selectedPupilIds.size === 0 ? 0.5 : 1,
+                !messageTemplate.trim() || selectedPupilIds.size === 0 ? 0.4 : 1,
             }}
           >
-            Send to {selectedPupilIds.size} pupil
-            {selectedPupilIds.size === 1 ? "" : "s"}
+            {selectedPupilIds.size === 0
+              ? "Select pupils to notify"
+              : `Notify ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}`}
           </button>
         </div>
       </BottomSheet>
