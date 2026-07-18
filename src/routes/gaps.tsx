@@ -4,7 +4,7 @@ import {
   ArrowLeft,
   Zap,
   Calendar as CalendarIcon,
-  CalendarPlus,
+  
   Clock,
   Users,
   MessageSquare,
