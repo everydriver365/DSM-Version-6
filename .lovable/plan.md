@@ -1,18 +1,17 @@
-## Problem
+## Goal
+Make the Home and Settings pages share the same light canvas (`#DCE4F0`) as the rest of the app on mobile.
 
-The timeline gap card shows `19:48 – 18:50` with `23h 2m free · £921 potential`. The end time is earlier than the start because the gap spans overnight between two lessons on different dates (visible on the "Next" tab, where `nextTabLessons` contains lessons across multiple future days). The between-lesson gap loop in `src/routes/home.tsx` around lines 5089–5100 computes `nextStart - endThis` with no same-day check and no working-hours clamp, so a lesson ending 19:48 on day N followed by one starting 18:50 on day N+1 becomes a single 23h "free" slot.
+## Changes
 
-## Fix (src/routes/home.tsx only)
+**1. `src/routes/home.tsx` (root wrapper, around line 4314)**
+- Replace the hard-coded navy full-screen `<div style={{ ...background: '#0B1F3A' }}>` with `PageLayout` (import from `@/components/PageLayout`).
+- Keep the existing `position: fixed`, `100dvh`, flex-column, overflow, safe-area padding behaviour by passing them through `style` / `className` on `PageLayout` (its default background is `#DCE4F0`, which is what we want).
+- Leave every child untouched — the top bar, cards, timeline, drawer, etc. already have their own backgrounds and will now sit on the light canvas like other pages.
 
-In the between-lesson gap loop (~5089–5100):
+**2. `src/routes/settings.tsx`**
+- Remove the `<WorkspaceDots activeLabel="Settings" />` line (currently line 692) so the navy strip beneath the sticky top bar goes away. Also drop the now-unused `WorkspaceDots` import.
+- Nothing else changes: `PageLayout` already provides the `#DCE4F0` background, and the single sticky navy top bar stays as it is (matches other detail pages).
 
-1. Skip the gap entirely when `l.lesson_date !== next.lesson_date` (no cross-day "free" slots).
-2. For same-day pairs, clamp `gapStart` and `nextStart` to that day's working-hours window (`workingHours.start_time` / `end_time`, defaults `09:00` / `18:00`) before computing `mins`. Only push when the clamped `mins >= 60`.
-
-Apply the same working-hours clamp to the today-only before-first and after-last tail gaps (5102–5122) for consistency — currently fine but worth guarding after the refactor.
-
-No other files, no logic changes elsewhere, no styling changes.
-
-## Verification
-
-Reload `/home`, switch to the "Next" tab: the `19:48 – 18:50 · 23h 2m free` card should disappear. Today/tomorrow tabs should render the same gap counts and durations as before.
+## Out of scope
+- No changes to `manifest.json` `theme_color` (the iOS status-bar tint is a separate PWA concern; ask if you want that adjusted too).
+- No visual changes to any card, header, or component internals — only the page-level canvas.

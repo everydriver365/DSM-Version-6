@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import WorkspaceDots from "../components/dsm/WorkspaceDots";
+
 
 import {
   User,
@@ -689,7 +689,7 @@ function SettingsPage() {
           <span className="text-[15px] text-white" style={POPPINS}>Settings</span>
         </div>
       </div>
-      <WorkspaceDots activeLabel="Settings" />
+      
 
 
       {/* Profile header */}
