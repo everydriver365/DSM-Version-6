@@ -13,7 +13,7 @@ import * as React from "react";
  *   for the small number of screens that intentionally use a different
  *   canvas color (e.g. auth screens on dark navy).
  */
-export const PAGE_BACKGROUND = "#EEF2F7";
+export const PAGE_BACKGROUND = "#DCE4F0";
 
 type PageLayoutProps = React.HTMLAttributes<HTMLDivElement> & {
   children: React.ReactNode;
