@@ -6161,13 +6161,13 @@ function HomePage() {
                       width: 32,
                       height: 32,
                       borderRadius: 999,
-                      background: '#1877D6',
+                      background: '#E5EAF1',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      boxShadow: '0 2px 6px -2px rgba(24, 119, 214, 0.5)',
+                      boxShadow: '0 1px 2px rgba(11, 31, 58, 0.06)',
                     }}>
-                      <ChevronRight size={16} color="#FFFFFF" strokeWidth={2.4} />
+                      <ChevronRight size={16} color="#0B1F3A" strokeWidth={2.4} />
                     </span>
 
                   </button>
