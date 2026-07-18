@@ -3296,7 +3296,7 @@ function HomePage() {
         lesson_time: l.lesson_time || "",
         duration_minutes: l.duration_minutes ?? 60,
         status: l.status,
-        bufferAfterMinutes: (l.pupil_id && pupilBuf[l.pupil_id]?.after) ?? null,
+        bufferAfterMinutes: (l.pupil_id && typeof pupilBuf[l.pupil_id]?.after === "number" ? (pupilBuf[l.pupil_id].after as number) : null),
       })),
       calendarBlocks: (rawCalendarBlocks || []).map((b) => ({
         start_datetime: b.start_datetime,
