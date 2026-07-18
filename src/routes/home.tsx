@@ -3850,6 +3850,40 @@ function HomePage() {
 
   ] as const;
 
+  function previewMatchForGap(gap: {
+    date: string;
+    dayName: string;
+    durationMin: number;
+  }): { count: number; topPupils: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> } {
+    if (!allPupils.length || !allAvailability.length) {
+      return { count: 0, topPupils: [] };
+    }
+    const availByPupil = new Map<string, PupilReadySetting>();
+    for (const a of allAvailability) {
+      if (a.pupil_id) availByPupil.set(a.pupil_id, a);
+    }
+    const slotStart = new Date(`${gap.date}T00:00:00`).getTime();
+    const hoursUntilSlot = (slotStart - Date.now()) / 3600000;
+
+    const matched: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> = [];
+    for (const p of allPupils) {
+      const s = availByPupil.get(p.id);
+      if (!s) continue;
+      const availDays = s.available_days || [];
+      if (!availDays.includes(gap.dayName)) continue;
+      const minDuration = s.preferred_duration_minutes ?? 60;
+      if (gap.durationMin < minDuration) continue;
+      const minNoticeHours = s.min_notice_hours ?? 24;
+      if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
+      matched.push({
+        name: p.name,
+        first_name: p.first_name,
+        calendar_colour: p.calendar_colour,
+      });
+    }
+    return { count: matched.length, topPupils: matched.slice(0, 3) };
+  }
+
   if (!authChecked) {
     return (
       <div
