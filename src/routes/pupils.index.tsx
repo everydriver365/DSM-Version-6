@@ -653,7 +653,7 @@ function PupilsIndexPage() {
                       <ChevronRight size={15} color="#B0BAC9" />
                     </div>
                   </div>
-                </Link>
+                </div>
               );
             })}
           </div>
