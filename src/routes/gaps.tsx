@@ -3113,8 +3113,8 @@ function GapsPage() {
                   }}
                 />
                 <div style={{ maxHeight: 360, overflowY: "auto" }}>
-                  {allPupils
-                    .filter((p) => {
+                  {(() => {
+                    const filtered = allPupils.filter((p) => {
                       const q = bookNowSearchQuery.trim().toLowerCase();
                       if (!q) return true;
                       const nm =
@@ -3122,8 +3122,38 @@ function GapsPage() {
                         [p.first_name, p.last_name].filter(Boolean).join(" ") ||
                         "";
                       return nm.toLowerCase().includes(q);
-                    })
-                    .map((p) => {
+                    });
+
+                    const dayName = DAYS[new Date(bookNowSlot.date + "T00:00:00").getDay()];
+                    const startMin = hmToMin(bookNowSlot.time);
+                    const durationMin = bookNowSlot.duration;
+                    const slotStart = new Date(`${bookNowSlot.date}T${bookNowSlot.time}:00`).getTime();
+                    const hoursUntilSlot = (slotStart - Date.now()) / 3600000;
+
+                    const availMap = new Map<string, Availability>();
+                    for (const a of allAvailability) {
+                      if (a.pupil_id) availMap.set(a.pupil_id, a);
+                    }
+
+                    const matchedIds = new Set<string>();
+                    for (const p of allPupils) {
+                      const s = availMap.get(p.id);
+                      if (!s) continue;
+                      const availDays = s.available_days || [];
+                      if (!availDays.includes(dayName)) continue;
+                      const minDuration = s.preferred_duration_minutes ?? 60;
+                      if (durationMin < minDuration) continue;
+                      if (!slotFitsPupilWindow(startMin, durationMin, s)) continue;
+                      const minNoticeHours = s.min_notice_hours ?? 24;
+                      if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
+                      matchedIds.add(p.id);
+                    }
+
+                    const matchedPupils = filtered.filter((p) => matchedIds.has(p.id));
+                    const otherPupils = filtered.filter((p) => !matchedIds.has(p.id));
+                    const showDivider = matchedPupils.length > 0 && otherPupils.length > 0;
+
+                    const renderRow = (p: Pupil) => {
                       const nm =
                         p.name ||
                         [p.first_name, p.last_name].filter(Boolean).join(" ") ||
@@ -3174,12 +3204,33 @@ function GapsPage() {
                           </div>
                         </button>
                       );
-                    })}
-                  {allPupils.length === 0 && (
-                    <div style={{ padding: 16, textAlign: "center", color: MUTED, fontSize: 13 }}>
-                      No pupils found
-                    </div>
-                  )}
+                    };
+
+                    return (
+                      <>
+                        {matchedPupils.map(renderRow)}
+                        {showDivider && (
+                          <div
+                            style={{
+                              fontSize: 10,
+                              fontWeight: 700,
+                              color: "#9CA3AF",
+                              letterSpacing: "0.4px",
+                              padding: "8px 8px 4px",
+                            }}
+                          >
+                            OTHER PUPILS
+                          </div>
+                        )}
+                        {otherPupils.map(renderRow)}
+                        {allPupils.length === 0 && (
+                          <div style={{ padding: 16, textAlign: "center", color: MUTED, fontSize: 13 }}>
+                            No pupils found
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
                 </div>
               </>
             ) : (
