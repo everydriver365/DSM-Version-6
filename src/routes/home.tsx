@@ -1480,7 +1480,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         </button>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "flex-start" }}>
+      <div className="dsm-live-scroll" style={{ display: "flex", gap: 16, overflowX: "auto", scrollSnapType: "x mandatory", scrollPaddingLeft: 16, scrollPaddingRight: 16, padding: "6px 0 18px" }}>
         {/* Featured session card */}
         {featured && (
           <div
