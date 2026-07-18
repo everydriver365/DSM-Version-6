@@ -17,6 +17,7 @@ import {
 import { ChevronRight, RefreshCw, Sparkles, XCircle, X as XIcon } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import { useMinGapMinutes } from "../lib/gapPrefs";
 import { BottomSheet } from "../components/dsm/BottomSheet";
 
 type DiscountCode = {
@@ -424,6 +425,7 @@ function GapsPage() {
   const navigate = useNavigate();
   console.log("[gaps] component mounted");
   const [userId, setUserId] = useState<string | null>(null);
+  const minGapMinutes = useMinGapMinutes();
 
   const [slotDate, setSlotDate] = useState<string>(todayIso());
   const [slotTime, setSlotTime] = useState<string>("10:00");
@@ -528,6 +530,7 @@ function GapsPage() {
   useEffect(() => {
     console.log("[gaps] slot-detection effect fired; userId =", userId);
     if (!userId) return;
+    const minGap = minGapMinutes;
     let cancelled = false;
     (async () => {
       setSlotsLoading(true);
@@ -825,7 +828,7 @@ function GapsPage() {
             const effEnd = rawEnd;
             const clampedStart = Math.max(effStart, wsMin);
             const clampedEnd = Math.min(effEnd, weMin);
-            if (clampedEnd - clampedStart >= 60) {
+            if (clampedEnd - clampedStart >= minGap) {
               gaps.push({
                 start: clampedStart,
                 end: clampedEnd,
@@ -844,7 +847,7 @@ function GapsPage() {
           const tailStart = rawCursor + tailLeftReserve;
           const clampedTailStart = Math.max(tailStart, wsMin);
           const clampedTailEnd = weMin;
-          if (clampedTailEnd - clampedTailStart >= 60) {
+          if (clampedTailEnd - clampedTailStart >= minGap) {
             gaps.push({
               start: clampedTailStart,
               end: clampedTailEnd,
@@ -864,7 +867,7 @@ function GapsPage() {
               if (gStart >= g.end) continue; // slot fully in the past / too soon
             }
             const gapMinutes = g.end - gStart;
-            if (gapMinutes < 60) continue;
+            if (gapMinutes < minGap) continue;
             const possible = [60, 90, 120].filter((d) => d <= gapMinutes);
             if (!possible.length) continue;
             const slot: FreeSlot = {
@@ -922,7 +925,7 @@ function GapsPage() {
     return () => {
       cancelled = true;
     };
-  }, [userId, reloadKey]);
+  }, [userId, reloadKey, minGapMinutes]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data, error }) => {

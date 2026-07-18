@@ -12,6 +12,7 @@ import {
   IconArrowRight,
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
+import { useMinGapMinutes } from "../lib/gapPrefs";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/schedule")({
@@ -79,6 +80,7 @@ function detectGaps(
   timeOff: Array<{ start_date: string; end_date: string; all_day?: boolean | null }>,
   dateStr: string,
   hourlyRate: number,
+  minGapMinutes: number,
 ): GapInfo[] {
   const wsMin = timeToMins(workStart || "09:00");
   const weMin = timeToMins(workEnd || "18:00");
@@ -135,7 +137,7 @@ function detectGaps(
     const gapStart = Math.max(cp.start, minStart);
     const gapEnd = Math.min(cp.end, weMin);
     const gapMins = gapEnd - gapStart;
-    if (gapMins >= 60) {
+    if (gapMins >= minGapMinutes) {
       gaps.push({
         startMins: gapStart,
         endMins: gapEnd,
@@ -318,6 +320,7 @@ function SchedulePage() {
   const [workingDaysList, setWorkingDaysList] = useState<string[]>(["Monday","Tuesday","Wednesday","Thursday","Friday"]);
   const [bufferAfter, setBufferAfter] = useState<number>(15);
   const [hourlyRate, setHourlyRate] = useState<number>(40);
+  const minGapMinutes = useMinGapMinutes();
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<string>(() => ymdLocal(today));
   const [instructor, setInstructor] = useState<{ external_calendar_url: string | null; calendar_last_synced: string | null } | null>(null);
@@ -1192,6 +1195,7 @@ function SchedulePage() {
                           timeOff,
                           row.key,
                           hourlyRate,
+                          minGapMinutes,
                         )
                       : [];
                     const gapRows: GapRow[] = gaps.map((g, i) => ({

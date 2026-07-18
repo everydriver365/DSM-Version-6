@@ -8,6 +8,7 @@ import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
 import { getLessonWeather, type LessonWeather } from "@/lib/lesson-weather.functions";
 import { getLessonDriveTime, type LessonDriveTime } from "@/lib/lesson-drive-time.functions";
+import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { Cloud as CloudIcon, CloudRain, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
 
 import {
@@ -1772,6 +1773,7 @@ function HomePage() {
   const [tab, setTab] = useState<TabKey>("today");
   const [authChecked, setAuthChecked] = useState(false);
   const [workingHours, setWorkingHours] = useState<any>(null);
+  const minGapMinutes = useMinGapMinutes();
   const [instructorBufferAfter, setInstructorBufferAfter] = useState<number>(15);
   const [pupilBufferMap, setPupilBufferMap] = useState<Record<string, { before: number | null; after: number | null }>>({});
   const [pupilAvailMap, setPupilAvailMap] = useState<Record<string, { available_days: string[] | null; available_from: string | null; available_until: string | null; min_notice_hours: number | null; short_notice_opt_in: boolean | null }>>({});
@@ -3310,12 +3312,12 @@ function HomePage() {
     }
     if (merged.length === 0) {
       const span = Math.max(0, endMins - startMins);
-      return { count: Math.floor(span / 60), totalMinutes: span };
+      return { count: Math.floor(span / minGapMinutes), totalMinutes: span };
     }
     let count = 0;
     let totalMinutes = 0;
     const consider = (gap: number) => {
-      if (gap >= 60) { count++; totalMinutes += gap; }
+      if (gap >= minGapMinutes) { count++; totalMinutes += gap; }
     };
     consider(merged[0].start - startMins);
     for (let i = 0; i < merged.length - 1; i++) {
@@ -5109,7 +5111,7 @@ function HomePage() {
           const gapStart = new Date(Math.max(rawGapStart.getTime(), dayWorkStart.getTime()));
           const gapEnd = new Date(Math.min(rawNextStart.getTime(), dayWorkEnd.getTime()));
           const mins = Math.round((gapEnd.getTime() - gapStart.getTime()) / 60000);
-          if (mins >= 60) rows.push({ kind: 'gap', start: gapStart, mins });
+          if (mins >= minGapMinutes) rows.push({ kind: 'gap', start: gapStart, mins });
         }
         // Before-first and after-last gaps against the working day (today only).
         if (tab === 'today' && sorted.length > 0) {
@@ -5126,11 +5128,11 @@ function HomePage() {
             const firstL = sorted[0];
             const firstStart = lessonDateTime(firstL);
             const beforeMins = Math.round((firstStart.getTime() - workStart.getTime()) / 60000);
-            if (beforeMins >= 60) rows.unshift({ kind: 'gap', start: workStart, mins: beforeMins });
+            if (beforeMins >= minGapMinutes) rows.unshift({ kind: 'gap', start: workStart, mins: beforeMins });
             const lastL = sorted[sorted.length - 1];
             const lastEnd = new Date(lessonDateTime(lastL).getTime() + (lastL.duration_minutes ?? 60) * 60000);
             const afterMins = Math.round((workEnd.getTime() - lastEnd.getTime()) / 60000);
-            if (afterMins >= 60) rows.push({ kind: 'gap', start: lastEnd, mins: afterMins });
+            if (afterMins >= minGapMinutes) rows.push({ kind: 'gap', start: lastEnd, mins: afterMins });
           }
         }
 
@@ -5501,7 +5503,7 @@ function HomePage() {
 
               if (lessonRows.length === 0 && calendarRows.length === 0) {
                 const freeMinutes = tab === 'today' ? totalFreeMinutesToday : tab === 'tomorrow' ? totalFreeMinutesTomorrow : 0;
-                if ((tab === 'today' || tab === 'tomorrow') && freeMinutes >= 60) {
+                if ((tab === 'today' || tab === 'tomorrow') && freeMinutes >= minGapMinutes) {
                   const hours = Math.round(freeMinutes / 60);
                   const dayLabel = tab === 'today' ? 'today' : 'tomorrow';
                   return (
