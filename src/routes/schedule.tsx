@@ -1235,7 +1235,7 @@ function SchedulePage() {
                         />
                         {items.map((e) => {
                           if (e.kind === 'gap-row') {
-                            const preview = previewMatchForGap({ date: row.key, dayName, durationMin: e.mins, startTime: e.startTime });
+                            const preview = previewMatchForGap({ date: row.key, dayName, startMin: e.startMins, durationMin: e.mins, allPupils, allAvailability });
                             return (
                               <div key={e.id} style={{ position: "relative", marginBottom: 16 }}>
                                 <span
