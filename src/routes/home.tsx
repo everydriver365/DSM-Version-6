@@ -1213,25 +1213,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         gap: 8,
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0, flex: 1, flexWrap: "wrap" }}>
-                        {features.map((f, i) => (
-                          <span
-                            key={i}
-                            style={{
-                              fontSize: 11,
-                              color: "#334A63",
-                              fontWeight: 500,
-                              background: "#EEF2F8",
-                              padding: "4px 8px",
-                              borderRadius: 999,
-                              whiteSpace: "nowrap",
-                              fontFamily: "'Poppins', 'Inter', sans-serif",
-                            }}
-                          >
-                            {f.label}
-                          </span>
-                        ))}
-                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0, flex: 1, flexWrap: "wrap" }} />
                       <button
                         type="button"
                         style={{
