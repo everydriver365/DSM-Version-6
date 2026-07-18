@@ -530,6 +530,7 @@ function GapsPage() {
   useEffect(() => {
     console.log("[gaps] slot-detection effect fired; userId =", userId);
     if (!userId) return;
+    const minGap = minGapMinutes;
     let cancelled = false;
     (async () => {
       setSlotsLoading(true);
