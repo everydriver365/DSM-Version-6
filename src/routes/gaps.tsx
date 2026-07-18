@@ -376,7 +376,7 @@ function scoreSlot(
 ): SlotMatch {
   let score = 50;
   const dayOfWeek = DAYS[new Date(sl.date + "T00:00:00").getDay()];
-  const slotHour = parseInt(sl.time.split(":")[0], 10);
+  
   const slotDateTime = new Date(`${sl.date}T${sl.time}:00`);
 
   if (last) {
