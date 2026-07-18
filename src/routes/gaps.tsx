@@ -1044,6 +1044,7 @@ function GapsPage() {
       if (!availDays.includes(dayOfWeek)) continue;
       const minDuration = s.preferred_duration_minutes ?? 60;
       if (gap.durationMin < minDuration) continue;
+      if (!slotFitsPupilWindow(gap.startMin, gap.durationMin, s)) continue;
       const minNoticeHours = s.min_notice_hours ?? 24;
       if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
       matched.push(p);
