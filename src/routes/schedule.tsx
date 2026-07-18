@@ -1341,6 +1341,44 @@ function SchedulePage() {
                                     <div style={{ fontSize: 11, color: "#A7C8F0", marginTop: 2 }}>
                                       {formatMins(e.mins)} free
                                     </div>
+                                    {preview.count > 0 && (
+                                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
+                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                          {preview.topPupils.map((p, idx) => {
+                                            const initials = (p.name ?? p.first_name ?? "P")
+                                              .split(/\s+/)
+                                              .map((s) => s.charAt(0))
+                                              .join("")
+                                              .slice(0, 2)
+                                              .toUpperCase();
+                                            return (
+                                              <div
+                                                key={idx}
+                                                style={{
+                                                  width: 24,
+                                                  height: 24,
+                                                  borderRadius: "50%",
+                                                  background: p.calendar_colour ?? "#6B7280",
+                                                  border: "2px solid #FFFFFF",
+                                                  marginRight: idx === preview.topPupils.length - 1 ? 0 : -8,
+                                                  display: "flex",
+                                                  alignItems: "center",
+                                                  justifyContent: "center",
+                                                  color: "#FFFFFF",
+                                                  fontSize: 10,
+                                                  fontWeight: 600,
+                                                }}
+                                              >
+                                                {initials}
+                                              </div>
+                                            );
+                                          })}
+                                        </div>
+                                        <div style={{ fontSize: 11, color: "#A7C8F0" }}>
+                                          {preview.count} pupil{preview.count === 1 ? "" : "s"} may fit
+                                        </div>
+                                      </div>
+                                    )}
                                   </div>
                                   <div style={{ fontSize: 14, fontWeight: 700, color: "#86EFAC", position: "relative", zIndex: 1 }}>
                                     £{e.potential}
@@ -1365,44 +1403,6 @@ function SchedulePage() {
                                     Fill
                                   </button>
                                 </div>
-                                {preview.count > 0 && (
-                                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6, paddingLeft: 4 }}>
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                      {preview.topPupils.map((p, idx) => {
-                                        const initials = (p.name ?? p.first_name ?? "P")
-                                          .split(/\s+/)
-                                          .map((s) => s.charAt(0))
-                                          .join("")
-                                          .slice(0, 2)
-                                          .toUpperCase();
-                                        return (
-                                          <div
-                                            key={idx}
-                                            style={{
-                                              width: 24,
-                                              height: 24,
-                                              borderRadius: "50%",
-                                              background: p.calendar_colour ?? "#6B7280",
-                                              border: "2px solid #FFFFFF",
-                                              marginRight: idx === preview.topPupils.length - 1 ? 0 : -8,
-                                              display: "flex",
-                                              alignItems: "center",
-                                              justifyContent: "center",
-                                              color: "#FFFFFF",
-                                              fontSize: 10,
-                                              fontWeight: 600,
-                                            }}
-                                          >
-                                            {initials}
-                                          </div>
-                                        );
-                                      })}
-                                    </div>
-                                    <div style={{ fontSize: 11, color: "#A7C8F0" }}>
-                                      {preview.count} pupil{preview.count === 1 ? "" : "s"} may fit
-                                    </div>
-                                  </div>
-                                )}
                               </div>
                             );
                           }
