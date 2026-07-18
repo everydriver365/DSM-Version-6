@@ -2627,7 +2627,83 @@ function GapsPage() {
         description={`Personalize your message before sending to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}.`}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <div>
+          {(() => {
+            const selectedList =
+              ranked?.filter((r) => selectedPupilIds.has(r.pupil.id)) ?? [];
+            const preview = selectedList.slice(0, 3);
+            return (
+              <button
+                type="button"
+                onClick={() => setRecipientsSheetOpen(true)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  width: "100%",
+                  background: "#F5F7FA",
+                  borderRadius: 10,
+                  padding: 12,
+                  border: "none",
+                  cursor: "pointer",
+                  textAlign: "left",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  {preview.length === 0 ? (
+                    <div
+                      style={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: 999,
+                        background: "#D5DDE8",
+                      }}
+                    />
+                  ) : (
+                    preview.map((r, i) => {
+                      const name = fullNameOf(r.pupil);
+                      const parts = name.trim().split(/\s+/);
+                      const init =
+                        ((parts[0]?.[0] ?? "") +
+                          (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase() ||
+                        "?";
+                      return (
+                        <div
+                          key={r.pupil.id}
+                          style={{
+                            width: 28,
+                            height: 28,
+                            borderRadius: 999,
+                            background: r.pupil.calendar_colour ?? "#6B7280",
+                            color: "#FFFFFF",
+                            fontSize: 11,
+                            fontWeight: 700,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            border: "2px solid #F5F7FA",
+                            marginLeft: i === 0 ? 0 : -8,
+                          }}
+                        >
+                          {init}
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+                    Sending to {selectedPupilIds.size} pupil
+                    {selectedPupilIds.size === 1 ? "" : "s"}
+                  </div>
+                  <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
+                    Tap to customise recipients
+                  </div>
+                </div>
+                <ChevronRight size={18} color="#6B7280" />
+              </button>
+            );
+          })()}
+
             <label
               style={{
                 display: "block",
