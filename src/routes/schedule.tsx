@@ -301,7 +301,7 @@ function SchedulePage() {
   const [movingLesson, setMovingLesson] = useState<any | null>(null);
   const [moveMode, setMoveMode] = useState(false);
   const [confirmMove, setConfirmMove] = useState<{ date: string; time: string } | null>(null);
-  const [allPupils, setAllPupils] = useState<any[]>([]);
+  const [allPupils, setAllPupils] = useState<Array<{ id: string; name: string | null; first_name: string | null; last_name?: string | null; calendar_colour: string | null }>>([]);
   const [allAvailability, setAllAvailability] = useState<any[]>([]);
 
   const handleMoveLesson = useCallback(async (newDate: string, newTime: string) => {
