@@ -1087,10 +1087,10 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
             className="mkt-scroll"
             style={{
               display: "flex",
-              gap: 12,
+              gap: 16,
               overflowX: "auto",
               scrollSnapType: "x mandatory",
-              padding: "4px 16px 12px",
+              padding: "6px 16px 18px",
               scrollPaddingLeft: 16,
               scrollPaddingRight: 16,
             }}
@@ -1104,20 +1104,20 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   className="mkt-card"
                   onClick={() => openListing(tile.id)}
                   style={{
-                    flex: "0 0 46%",
+                    flex: "0 0 69%",
                     scrollSnapAlign: "start",
                     background: "#FFFFFF",
-                    borderRadius: 20,
+                    borderRadius: 30,
                     overflow: "hidden",
                     boxShadow: isActive
-                      ? "0 8px 16px -6px rgba(7, 43, 71, 0.14), 0 2px 4px rgba(7, 43, 71, 0.04)"
-                      : "0 4px 10px -6px rgba(7, 43, 71, 0.10), 0 1px 3px rgba(7, 43, 71, 0.03)",
+                      ? "0 12px 24px -8px rgba(7, 43, 71, 0.14), 0 3px 6px rgba(7, 43, 71, 0.04)"
+                      : "0 6px 15px -8px rgba(7, 43, 71, 0.10), 0 2px 4px rgba(7, 43, 71, 0.03)",
                     cursor: "pointer",
                     display: "flex",
                     flexDirection: "column",
                     minWidth: 0,
-                    height: 148,
-                    maxHeight: 148,
+                    height: 222,
+                    maxHeight: 222,
                     transform: isActive ? "scale(1)" : "scale(0.96)",
                     transformOrigin: "center center",
                   }}
@@ -1156,7 +1156,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                           justifyContent: "center",
                         }}
                       >
-                        <Sparkles size={32} color="#FFFFFF" />
+                        <Sparkles size={48} color="#FFFFFF" />
                       </div>
                     )}
                   </div>
@@ -1164,7 +1164,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                   {/* Body */}
                   <div
                     style={{
-                      padding: "10px 10px 8px",
+                      padding: "15px 15px 12px",
                       display: "flex",
                       flexDirection: "column",
                       minWidth: 0,
@@ -1175,7 +1175,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     <div style={{ minWidth: 0 }}>
                       <div
                         style={{
-                          fontSize: 14,
+                          fontSize: 18,
                           fontWeight: 600,
                           color: "#072B47",
                           lineHeight: 1.2,
@@ -1190,7 +1190,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
+                          fontSize: 14,
                           color: "#6B7A90",
                           lineHeight: 1.3,
                           display: "-webkit-box",
@@ -1219,7 +1219,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                           background: "transparent",
                           border: 0,
                           padding: 0,
-                          fontSize: 12,
+                          fontSize: 14,
                           fontWeight: 600,
                           color: "#2563EB",
                           cursor: "pointer",
