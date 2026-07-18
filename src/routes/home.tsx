@@ -1414,6 +1414,12 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           0% { transform: scale(1); opacity: 0.75; }
           75%, 100% { transform: scale(2.4); opacity: 0; }
         }
+        .dsm-live-scroll {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+          -webkit-overflow-scrolling: touch;
+        }
+        .dsm-live-scroll::-webkit-scrollbar { display: none; }
       `}</style>
 
       {/* Section header — matches Marketplace: 18/600 #072B47 */}
