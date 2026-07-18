@@ -11,6 +11,7 @@ import { getLessonDriveTime, type LessonDriveTime } from "@/lib/lesson-drive-tim
 import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { Cloud as CloudIcon, CloudRain, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
+import { PageLayout } from "@/components/PageLayout";
 
 import {
   Phone,
