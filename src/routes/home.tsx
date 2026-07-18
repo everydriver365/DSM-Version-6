@@ -3319,7 +3319,7 @@ function HomePage() {
 
   const startTimeStr = workingHours?.start_time ? String(workingHours.start_time) : "09:00";
   const { count: freeSlotCount, totalMinutes: totalFreeMinutesToday } = computeFreeMinutes(
-    todayLessons, todayBlocks, startTimeStr, todayEndTime, instructorBufferAfter, pupilBufferMap
+    todayLessons, calendarBlocks, todayISO, true, startTimeStr, todayEndTime, instructorBufferAfter, pupilBufferMap
   );
 
   const tomorrowEndTime = (() => {
