@@ -983,7 +983,67 @@ function GapsPage() {
     })();
   }, [userId]);
 
+  // Fetch all pupils + availability once for the lightweight per-gap preview.
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const [pupilsRes, availRes] = await Promise.all([
+        supabase
+          .from("pupils")
+          .select(
+            "id,name,first_name,last_name,phone,postcode,calendar_colour,custom_rate,custom_rate_90,custom_rate_120",
+          )
+          .eq("instructor_id", userId)
+          .eq("status", "active")
+          .is("deleted_at", null),
+        supabase
+          .from("pupil_ready_to_learn_settings")
+          .select("*")
+          .eq("instructor_id", userId),
+      ]);
+      if (pupilsRes.error) console.error("[gaps] pupils query failed:", pupilsRes.error);
+      if (availRes.error) console.error("[gaps] availability query failed:", availRes.error);
+      setAllPupils((pupilsRes.data ?? []) as Pupil[]);
+      setAllAvailability((availRes.data ?? []) as Availability[]);
+    })();
+  }, [userId]);
+
+  function previewMatchForGap(gap: {
+    date: string;
+    startMin: number;
+    endMin: number;
+    durationMin: number;
+  }): { count: number; topPupils: Pupil[] } {
+    if (!allPupils.length || !allAvailability.length) {
+      return { count: 0, topPupils: [] };
+    }
+    const availByPupil = new Map<string, Availability>();
+    for (const a of allAvailability) {
+      if (a.pupil_id) availByPupil.set(a.pupil_id, a);
+    }
+    const dayOfWeek = DAYS[new Date(gap.date + "T00:00:00").getDay()];
+    const slotStart = new Date(
+      `${gap.date}T${minToHm(gap.startMin)}:00`,
+    ).getTime();
+    const hoursUntilSlot = (slotStart - Date.now()) / 3600000;
+
+    const matched: Pupil[] = [];
+    for (const p of allPupils) {
+      const s = availByPupil.get(p.id);
+      if (!s) continue;
+      const availDays = s.available_days || [];
+      if (!availDays.includes(dayOfWeek)) continue;
+      const minDuration = s.preferred_duration_minutes ?? 60;
+      if (gap.durationMin < minDuration) continue;
+      const minNoticeHours = s.min_notice_hours ?? 24;
+      if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
+      matched.push(p);
+    }
+    return { count: matched.length, topPupils: matched.slice(0, 3) };
+  }
+
   async function findPupils(override?: SelectedSlot[]) {
+
     if (!userId) return;
     const slotsToScore = override && override.length ? override : selectedSlots;
     if (slotsToScore.length === 0) return;
