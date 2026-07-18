@@ -20,6 +20,10 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
 import { BottomSheet } from "../components/dsm/BottomSheet";
+import {
+  slotFitsPupilWindow,
+  previewMatchForGap,
+} from "../lib/pupilMatching";
 
 type DiscountCode = {
   id: string;
