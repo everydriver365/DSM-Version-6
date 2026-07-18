@@ -4480,6 +4480,7 @@ function HomePage() {
           justifyContent: 'space-between',
           alignItems: 'center',
           fontFamily: 'Inter, sans-serif',
+          borderRadius: '0 0 24px 24px',
         }}
       >
         <div style={{ minWidth: 0 }}>
