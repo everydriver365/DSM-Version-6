@@ -1405,168 +1405,342 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     );
   };
 
+  const featured = sortedSessions[0] ?? null;
+  const secondary = sortedSessions[1] ?? null;
+
+  const categoryLabel = (c: string | null) => {
+    const t = sessionType(c);
+    if (t === "standards") return "Standards";
+    if (t === "meet") return "DSM Meet";
+    if (t === "waiting") return "Waiting Room";
+    return c || "Session";
+  };
+
+  const startsInLabel = (d: string, t: string) => {
+    try {
+      const when = new Date(`${d}T${(t || "00:00:00").slice(0, 8)}`).getTime();
+      const diff = when - Date.now();
+      if (diff <= 0) return "Starting now";
+      const mins = Math.round(diff / 60000);
+      if (mins < 60) return `Starts in ${mins}m`;
+      const hrs = Math.round(mins / 60);
+      if (hrs < 24) return `Starts in ${hrs}h`;
+      const days = Math.round(hrs / 24);
+      return `In ${days}d`;
+    } catch {
+      return fmtDateTime(d, t);
+    }
+  };
+
   return (
     <div style={{ marginTop: 8, fontFamily: POPPINS }}>
+      <style>{`
+        @keyframes dsmLivePulse {
+          0% { transform: scale(1); opacity: 0.75; }
+          75%, 100% { transform: scale(2.4); opacity: 0; }
+        }
+      `}</style>
+
       {/* Section header */}
       <div
         style={{
-          margin: "0 20px 12px",
+          margin: "0 16px 14px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           gap: 12,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-          <span
+        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+          <div
             aria-hidden
-            style={{ width: 8, height: 8, borderRadius: "50%", background: "#E24B4A", flexShrink: 0 }}
-          />
-          <h2 style={{ margin: 0, fontFamily: "Inter, sans-serif", fontSize: 18, fontWeight: 700, color: "#0B1F3A" }}>
-            DSM Live
-          </h2>
+            style={{
+              width: 40, height: 40, borderRadius: 12, background: "#0B1F3A",
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <IconPlayerPlay size={18} stroke={2} color="#FFFFFF" />
+          </div>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ position: "relative", width: 6, height: 6 }}>
+                <span
+                  aria-hidden
+                  style={{
+                    position: "absolute", inset: 0, borderRadius: "50%",
+                    background: "#E24B4A", animation: "dsmLivePulse 1.6s ease-out infinite",
+                  }}
+                />
+                <span
+                  aria-hidden
+                  style={{
+                    position: "absolute", inset: 0, borderRadius: "50%", background: "#E24B4A",
+                  }}
+                />
+              </span>
+              <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.18em", color: "#E24B4A", textTransform: "uppercase" }}>
+                Live now
+              </span>
+            </div>
+            <h2 style={{ margin: 0, fontFamily: POPPINS, fontSize: 20, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.15 }}>
+              DSM Live
+            </h2>
+          </div>
         </div>
         <button
           type="button"
           onClick={() => navigate({ to: "/dsm-live" as never })}
           style={{
             background: "none", border: "none", padding: 0, cursor: "pointer",
-            color: "#1877D6", fontSize: 13, fontWeight: 500, fontFamily: POPPINS,
+            color: "#6B7A90", fontSize: 12, fontWeight: 600, fontFamily: POPPINS,
+            display: "inline-flex", alignItems: "center", gap: 4, flexShrink: 0,
           }}
         >
-          View all →
+          View all
+          <IconChevronRight size={14} stroke={2} />
         </button>
       </div>
 
-      {sortedSessions.length > 0 ? (
-        <div
-          style={{
-            margin: "0 20px 10px",
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 10,
-          }}
-        >
-          {sortedSessions.map((s) => {
-            const isLive = s.is_live === true;
-            return (
-              <div
-                key={s.id}
-                role="button"
-                tabIndex={0}
-                onClick={() => open(s.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(s.id); }
-                }}
-                style={{
-                  background: "#FFFFFF",
-                  borderRadius: 16,
-                  overflow: "hidden",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  cursor: "pointer",
-                  userSelect: "none",
-                  fontFamily: POPPINS,
-                  position: "relative",
-                }}
-              >
-                <Thumbnail category={s.category} imageUrl={s.image_url} />
-                {isLive && (
-                  <div
-                    style={{
-                      position: "absolute", top: 8, left: 8,
-                      display: "inline-flex", alignItems: "center", gap: 3,
-                      background: "#E24B4A", borderRadius: 20,
-                      padding: "2px 8px",
-                    }}
-                  >
-                    <span
-                      aria-hidden
-                      style={{ width: 4, height: 4, borderRadius: "50%", background: "#FFFFFF" }}
-                    />
-                    <span style={{ fontSize: 9, fontWeight: 600, color: "#FFFFFF" }}>Live now</span>
-                  </div>
-                )}
-                <div style={{ padding: "10px 12px 12px" }}>
-                  <div
-                    style={{
-                      fontSize: 13, fontWeight: 500, color: "#12142B",
-                      marginBottom: 2,
-                      overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                    }}
-                  >
-                    {s.title}
-                  </div>
-                  <div style={{ fontSize: 11, color: "#B0BAC9" }}>
-                    {fmtDateTime(s.session_date, s.session_time)}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      ) : (
-        <div
-          style={{
-            margin: "0 20px 10px",
-            padding: "24px 12px",
-            textAlign: "center",
-            color: "#B0BAC9",
-            fontSize: 13,
-            fontFamily: POPPINS,
-          }}
-        >
-          No upcoming sessions
-        </div>
-      )}
-
-
-
-
-      {latestPodcast && (
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() =>
-            navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: latestPodcast.id } as never })
-          }
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: latestPodcast.id } as never });
-            }
-          }}
-          style={{
-            margin: "0 20px 4px",
-            background: "#F0EBFF",
-            borderRadius: 16,
-            padding: "14px 18px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            cursor: "pointer",
-            userSelect: "none",
-            fontFamily: POPPINS,
-          }}
-        >
+      <div style={{ margin: "0 16px", display: "flex", flexDirection: "column", gap: 12 }}>
+        {/* Featured session card */}
+        {featured && (
           <div
-            aria-hidden
+            role="button"
+            tabIndex={0}
+            onClick={() => open(featured.id)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(featured.id); }
+            }}
             style={{
-              width: 38, height: 38, borderRadius: 12, background: "#6B4FD6",
-              display: "inline-flex", alignItems: "center", justifyContent: "center",
-              flexShrink: 0,
+              background: "#FFFFFF",
+              borderRadius: 30,
+              overflow: "hidden",
+              boxShadow: "0 15px 40px -20px rgba(11,31,58,0.18)",
+              cursor: "pointer",
+              userSelect: "none",
+              fontFamily: POPPINS,
             }}
           >
-            <IconMicrophone size={20} stroke={1.75} color="#FFFFFF" />
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 14, fontWeight: 500, color: "#3C2580" }}>Podcast</div>
-            <div style={{ fontSize: 11, color: "#6B4FD6", marginTop: 1 }}>
-              Latest episodes for instructors
+            <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 9", background: "#0B1F3A" }}>
+              {featured.image_url ? (
+                <img
+                  src={featured.image_url}
+                  alt=""
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                />
+              ) : (
+                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  {(() => {
+                    const { Icon } = typeIcon(sessionType(featured.category));
+                    return <Icon size={44} stroke={1.5} color="#FFFFFF" />;
+                  })()}
+                </div>
+              )}
+              {featured.is_live && (
+                <div
+                  style={{
+                    position: "absolute", top: 12, left: 12,
+                    display: "inline-flex", alignItems: "center", gap: 5,
+                    background: "#E24B4A", borderRadius: 20, padding: "4px 10px",
+                  }}
+                >
+                  <span aria-hidden style={{ width: 5, height: 5, borderRadius: "50%", background: "#FFFFFF" }} />
+                  <span style={{ fontSize: 9, fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                    Live
+                  </span>
+                </div>
+              )}
+            </div>
+            <div style={{ padding: "18px 20px 20px" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
+                <span style={{
+                  padding: "4px 10px", background: "#E8F0FC", color: "#1877D6",
+                  fontSize: 9, fontWeight: 700, borderRadius: 8, letterSpacing: "0.06em", textTransform: "uppercase",
+                }}>
+                  {categoryLabel(featured.category)}
+                </span>
+                <span style={{
+                  padding: "4px 10px", background: "#F1F4F9", color: "#6B7A90",
+                  fontSize: 9, fontWeight: 700, borderRadius: 8, letterSpacing: "0.06em", textTransform: "uppercase",
+                }}>
+                  {fmtDateTime(featured.session_date, featured.session_time)}
+                </span>
+              </div>
+              <h3 style={{
+                margin: 0, fontSize: 17, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3,
+                display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
+              }}>
+                {featured.title}
+              </h3>
+              <div style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                gap: 12, marginTop: 16,
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                  <div
+                    aria-hidden
+                    style={{
+                      width: 32, height: 32, borderRadius: "50%", background: "#DCE4F0",
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                      color: "#0B1F3A", fontSize: 11, fontWeight: 700, flexShrink: 0,
+                    }}
+                  >
+                    {(featured.host_name || "?").trim().charAt(0).toUpperCase()}
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{
+                      fontSize: 12, fontWeight: 700, color: "#0B1F3A",
+                      overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                    }}>
+                      {featured.host_name || "DSM Host"}
+                    </div>
+                    <div style={{ fontSize: 10, color: "#B0BAC9" }}>Host</div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); open(featured.id); }}
+                  style={{
+                    padding: "10px 18px", background: "#0B1F3A", color: "#FFFFFF",
+                    fontSize: 11, fontWeight: 700, fontFamily: POPPINS,
+                    border: "none", borderRadius: 999, cursor: "pointer", flexShrink: 0,
+                    letterSpacing: "0.02em",
+                  }}
+                >
+                  Join now
+                </button>
+              </div>
             </div>
           </div>
-          <IconChevronRight size={17} stroke={1.75} color="#6B4FD6" style={{ flexShrink: 0 }} />
-        </div>
-      )}
+        )}
+
+        {/* Secondary session card */}
+        {secondary && (
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => open(secondary.id)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(secondary.id); }
+            }}
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 20,
+              padding: "16px 18px",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              cursor: "pointer",
+              userSelect: "none",
+              fontFamily: POPPINS,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              {secondary.is_live ? (
+                <span style={{
+                  padding: "3px 8px", background: "#FDECEC", color: "#E24B4A",
+                  fontSize: 9, fontWeight: 800, borderRadius: 6, letterSpacing: "0.1em", textTransform: "uppercase",
+                }}>
+                  Live
+                </span>
+              ) : (
+                <span style={{
+                  padding: "3px 8px", background: "#F1F4F9", color: "#6B7A90",
+                  fontSize: 9, fontWeight: 700, borderRadius: 6, letterSpacing: "0.06em", textTransform: "uppercase",
+                }}>
+                  {categoryLabel(secondary.category)}
+                </span>
+              )}
+              <span style={{ fontSize: 10, fontWeight: 500, color: "#B0BAC9" }}>
+                {startsInLabel(secondary.session_date, secondary.session_time)}
+              </span>
+            </div>
+            <h4 style={{
+              margin: "0 0 12px", fontSize: 15, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.3,
+              display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
+            }}>
+              {secondary.title}
+            </h4>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div
+                aria-hidden
+                style={{
+                  width: 22, height: 22, borderRadius: "50%", background: "#DCE4F0",
+                  display: "inline-flex", alignItems: "center", justifyContent: "center",
+                  color: "#0B1F3A", fontSize: 9, fontWeight: 700,
+                }}
+              >
+                {(secondary.host_name || "?").trim().charAt(0).toUpperCase()}
+              </div>
+              <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7A90" }}>
+                {secondary.host_name || "DSM Host"}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Community / podcast promo card */}
+        {latestPodcast && (
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() =>
+              navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: latestPodcast.id } as never })
+            }
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                navigate({ to: "/dsm-live/podcast/$podcastId" as never, params: { podcastId: latestPodcast.id } as never });
+              }
+            }}
+            style={{
+              position: "relative",
+              background: "#0B1F3A",
+              borderRadius: 30,
+              padding: "24px 22px",
+              overflow: "hidden",
+              cursor: "pointer",
+              userSelect: "none",
+              fontFamily: POPPINS,
+              boxShadow: "0 15px 40px -20px rgba(11,31,58,0.4)",
+            }}
+          >
+            <div
+              aria-hidden
+              style={{
+                position: "absolute", top: -60, right: -60, width: 160, height: 160,
+                borderRadius: "50%", background: "rgba(24,119,214,0.25)",
+                filter: "blur(40px)", pointerEvents: "none",
+              }}
+            />
+            <div style={{ position: "relative" }}>
+              <div
+                aria-hidden
+                style={{
+                  width: 40, height: 40, borderRadius: 12,
+                  background: "rgba(255,255,255,0.1)",
+                  display: "inline-flex", alignItems: "center", justifyContent: "center",
+                  marginBottom: 16,
+                }}
+              >
+                <IconUsers size={20} stroke={1.75} color="#FFFFFF" />
+              </div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "#FFFFFF", marginBottom: 4 }}>
+                DSM Community
+              </div>
+              <div style={{ fontSize: 12, color: "#8798B0", lineHeight: 1.5, marginBottom: 14 }}>
+                Latest episode: {latestPodcast.title}
+              </div>
+              <span style={{
+                display: "inline-flex", alignItems: "center", gap: 4,
+                fontSize: 11, fontWeight: 700, color: "#5FA8F5", letterSpacing: "0.02em",
+              }}>
+                Listen now
+                <IconChevronRight size={14} stroke={2.25} />
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
