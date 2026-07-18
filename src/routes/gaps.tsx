@@ -424,6 +424,7 @@ function GapsPage() {
   const [loading, setLoading] = useState(false);
   const [ranked, setRanked] = useState<Ranked[] | null>(null);
   const [selectedPupilIds, setSelectedPupilIds] = useState<Set<string>>(new Set());
+  const [recipientsSheetOpen, setRecipientsSheetOpen] = useState(false);
   const [searchSlots, setSearchSlots] = useState<SelectedSlot[]>([]);
   const [messageSheetOpen, setMessageSheetOpen] = useState(false);
   const [messageTemplate, setMessageTemplate] = useState("");
@@ -2626,6 +2627,83 @@ function GapsPage() {
         description={`Personalize your message before sending to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}.`}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {(() => {
+            const selectedList =
+              ranked?.filter((r) => selectedPupilIds.has(r.pupil.id)) ?? [];
+            const preview = selectedList.slice(0, 3);
+            return (
+              <button
+                type="button"
+                onClick={() => setRecipientsSheetOpen(true)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  width: "100%",
+                  background: "#F5F7FA",
+                  borderRadius: 10,
+                  padding: 12,
+                  border: "none",
+                  cursor: "pointer",
+                  textAlign: "left",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  {preview.length === 0 ? (
+                    <div
+                      style={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: 999,
+                        background: "#D5DDE8",
+                      }}
+                    />
+                  ) : (
+                    preview.map((r, i) => {
+                      const name = fullNameOf(r.pupil);
+                      const parts = name.trim().split(/\s+/);
+                      const init =
+                        ((parts[0]?.[0] ?? "") +
+                          (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase() ||
+                        "?";
+                      return (
+                        <div
+                          key={r.pupil.id}
+                          style={{
+                            width: 28,
+                            height: 28,
+                            borderRadius: 999,
+                            background: r.pupil.calendar_colour ?? "#6B7280",
+                            color: "#FFFFFF",
+                            fontSize: 11,
+                            fontWeight: 700,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            border: "2px solid #F5F7FA",
+                            marginLeft: i === 0 ? 0 : -8,
+                          }}
+                        >
+                          {init}
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+                    Sending to {selectedPupilIds.size} pupil
+                    {selectedPupilIds.size === 1 ? "" : "s"}
+                  </div>
+                  <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
+                    Tap to customise recipients
+                  </div>
+                </div>
+                <ChevronRight size={18} color="#6B7280" />
+              </button>
+            );
+          })()}
+
           <div>
             <label
               style={{
@@ -2722,6 +2800,226 @@ function GapsPage() {
             {selectedPupilIds.size === 1 ? "" : "s"}
           </button>
         </div>
+      </BottomSheet>
+
+      <BottomSheet
+        open={recipientsSheetOpen}
+        onOpenChange={setRecipientsSheetOpen}
+        title="Recipients"
+        description={`${selectedPupilIds.size} selected`}
+      >
+        {(() => {
+          const list = ranked ?? [];
+          const withPhone = list.filter((r) => !!(r.pupil.phone && r.pupil.phone.trim()));
+          const withoutPhone = list.filter((r) => !(r.pupil.phone && r.pupil.phone.trim()));
+          const allSelected =
+            list.length > 0 && list.every((r) => selectedPupilIds.has(r.pupil.id));
+          const toggle = (id: string) =>
+            setSelectedPupilIds((prev) => {
+              const next = new Set(prev);
+              if (next.has(id)) next.delete(id);
+              else next.add(id);
+              return next;
+            });
+          const renderRow = (r: Ranked, hasPhone: boolean) => {
+            const name = fullNameOf(r.pupil);
+            const parts = name.trim().split(/\s+/);
+            const init =
+              ((parts[0]?.[0] ?? "") +
+                (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase() ||
+              "?";
+            const checked = selectedPupilIds.has(r.pupil.id);
+            return (
+              <div
+                key={r.pupil.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "10px 4px",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => toggle(r.pupil.id)}
+                  aria-label={checked ? "Deselect" : "Select"}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 4,
+                    border: checked ? "none" : "1.5px solid #9CA3AF",
+                    background: checked ? "#1877D6" : "#FFFFFF",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 0,
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                >
+                  {checked && (
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path
+                        d="M2 6.5L5 9.5L10 3"
+                        stroke="white"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                </button>
+                <div
+                  onClick={() => toggle(r.pupil.id)}
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 999,
+                    background: r.pupil.calendar_colour ?? "#6B7280",
+                    color: "#FFFFFF",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    cursor: "pointer",
+                  }}
+                >
+                  {init}
+                </div>
+                <div
+                  onClick={() => toggle(r.pupil.id)}
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    fontSize: 14,
+                    color: hasPhone ? "#0B1F3A" : "#9CA3AF",
+                    cursor: "pointer",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {name}
+                </div>
+                {hasPhone ? (
+                  <div style={{ fontSize: 13, color: "#6B7280", flexShrink: 0 }}>
+                    {r.pupil.phone}
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setRecipientsSheetOpen(false);
+                      setMessageSheetOpen(false);
+                      navigate({ to: "/pupils/$id", params: { id: r.pupil.id } });
+                    }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#1877D6",
+                      fontWeight: 600,
+                      fontSize: 13,
+                      cursor: "pointer",
+                      padding: 0,
+                      flexShrink: 0,
+                    }}
+                  >
+                    Add number
+                  </button>
+                )}
+              </div>
+            );
+          };
+          return (
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: 12,
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSelectedPupilIds(new Set(list.map((r) => r.pupil.id)))
+                  }
+                  disabled={allSelected}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#1877D6",
+                    fontWeight: 600,
+                    fontSize: 13,
+                    cursor: "pointer",
+                    padding: 0,
+                    opacity: allSelected ? 0.4 : 1,
+                  }}
+                >
+                  Select all
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedPupilIds(new Set())}
+                  disabled={selectedPupilIds.size === 0}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#1877D6",
+                    fontWeight: 600,
+                    fontSize: 13,
+                    cursor: "pointer",
+                    padding: 0,
+                    opacity: selectedPupilIds.size === 0 ? 0.4 : 1,
+                  }}
+                >
+                  Clear
+                </button>
+              </div>
+
+              {withPhone.map((r) => renderRow(r, true))}
+
+              {withoutPhone.length > 0 && (
+                <>
+                  <div
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      color: "#9CA3AF",
+                      letterSpacing: 0.4,
+                      marginTop: 12,
+                      padding: "0 4px",
+                    }}
+                  >
+                    NO PHONE NUMBER ON FILE
+                  </div>
+                  {withoutPhone.map((r) => renderRow(r, false))}
+                </>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setRecipientsSheetOpen(false)}
+                style={{
+                  marginTop: 12,
+                  width: "100%",
+                  background: "#0B1F3A",
+                  color: "#FFFFFF",
+                  fontWeight: 700,
+                  fontSize: 15,
+                  borderRadius: 14,
+                  border: "none",
+                  padding: "14px 20px",
+                  cursor: "pointer",
+                }}
+              >
+                Done
+              </button>
+            </div>
+          );
+        })()}
       </BottomSheet>
 
     </div>
