@@ -1,28 +1,18 @@
-## Goal
+## Problem
 
-In `src/routes/gaps.tsx`, only surface pupils for a gap when the entire lesson fits inside **both** the instructor's working hours **and** the pupil's `available_from`–`available_until` window. Stop suggesting times outside those windows (e.g. late-evening / overnight slots).
+The timeline gap card shows `19:48 – 18:50` with `23h 2m free · £921 potential`. The end time is earlier than the start because the gap spans overnight between two lessons on different dates (visible on the "Next" tab, where `nextTabLessons` contains lessons across multiple future days). The between-lesson gap loop in `src/routes/home.tsx` around lines 5089–5100 computes `nextStart - endThis` with no same-day check and no working-hours clamp, so a lesson ending 19:48 on day N followed by one starting 18:50 on day N+1 becomes a single 23h "free" slot.
 
-## Current behavior (verified in `src/routes/gaps.tsx`)
+## Fix (src/routes/home.tsx only)
 
-- `previewMatchForGap` (line 1012) checks day-of-week, duration, and min-notice — it never reads `available_from` / `available_until`, so a pupil available 09:00–17:00 still appears on a 20:00 gap.
-- `scoreSlot` (line 359) reads the window but only at whole-hour granularity via `parseInt(...split(":")[0])`, and out-of-window slots only lose points — they are still returned in `matchedSlots` and can be offered.
-- Gap detection itself already clamps to `wsMin`/`weMin` (instructor working hours), so overnight gaps come from the pupil side, not the instructor side.
+In the between-lesson gap loop (~5089–5100):
 
-## Changes (only `src/routes/gaps.tsx`)
+1. Skip the gap entirely when `l.lesson_date !== next.lesson_date` (no cross-day "free" slots).
+2. For same-day pairs, clamp `gapStart` and `nextStart` to that day's working-hours window (`workingHours.start_time` / `end_time`, defaults `09:00` / `18:00`) before computing `mins`. Only push when the clamped `mins >= 60`.
 
-1. **Add a shared helper** `slotFitsPupilWindow(startMin, durationMin, availability)`:
-   - Parse `available_from` / `available_until` as `HH:MM` → minutes (use existing `hmToMin`).
-   - Default window `08:00`–`18:00` when unset (matches current defaults).
-   - Return `true` only if `startMin >= fromMin` **and** `startMin + durationMin <= untilMin`.
-   - This closes the "overnight" case: a lesson that starts before `until` but runs past it is rejected.
+Apply the same working-hours clamp to the today-only before-first and after-last tail gaps (5102–5122) for consistency — currently fine but worth guarding after the refactor.
 
-2. **`previewMatchForGap`**: after the day/duration/notice checks, also require `slotFitsPupilWindow(gap.startMin, gap.durationMin, s)`. Pupils outside the window are excluded from the count and avatar preview.
+No other files, no logic changes elsewhere, no styling changes.
 
-3. **`scoreSlot` / matched-slot filtering**: use `slotFitsPupilWindow` on the actual `sl.time` + `sl.duration` (minute-accurate, not hour-rounded). When the slot falls outside the pupil's window, mark `match: false` so it's excluded from offers (the existing "This slot is outside your working hours — showing all available slots instead" fallback at line 1618 still handles the empty-matches case for instructor working hours; pupil-window misses simply produce no match for that pupil, consistent with today's behavior for day-of-week mismatches).
+## Verification
 
-4. No changes to gap detection, DB queries, UI layout, or the message/recipients flow.
-
-## Out of scope
-
-- Instructor working-hours logic (already enforced during gap detection).
-- Schedule/home timeline gap previews — user asked specifically about the gap filler screen.
+Reload `/home`, switch to the "Next" tab: the `19:48 – 18:50 · 23h 2m free` card should disappear. Today/tomorrow tabs should render the same gap counts and durations as before.

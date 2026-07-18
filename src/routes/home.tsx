@@ -5086,16 +5086,29 @@ function HomePage() {
           | { kind: 'gap'; start: Date; mins: number }
           | { kind: 'calendar'; title: string; start: Date; end: Date };
         const rows: Row[] = [];
+        const whStartStr = workingHours?.start_time ? String(workingHours.start_time) : '09:00';
+        const whEndStr = workingHours?.end_time ? String(workingHours.end_time) : '18:00';
+        const [whSh, whSm] = whStartStr.split(':').map(Number);
+        const [whEh, whEm] = whEndStr.split(':').map(Number);
         for (let i = 0; i < sorted.length; i++) {
           const l = sorted[i];
           rows.push({ kind: 'lesson', l });
           const next = sorted[i + 1];
           if (!next) continue;
+          // Skip cross-day gaps: overnight isn't "free time".
+          if (l.lesson_date !== next.lesson_date) continue;
           const endThis = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
           const afterBuf = (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) || 0;
-          const gapStart = new Date(endThis.getTime() + afterBuf * 60000);
-          const nextStart = lessonDateTime(next);
-          const mins = Math.round((nextStart.getTime() - gapStart.getTime()) / 60000);
+          const rawGapStart = new Date(endThis.getTime() + afterBuf * 60000);
+          const rawNextStart = lessonDateTime(next);
+          // Clamp to that day's working-hours window.
+          const dayWorkStart = new Date(rawGapStart);
+          dayWorkStart.setHours(whSh || 9, whSm || 0, 0, 0);
+          const dayWorkEnd = new Date(rawGapStart);
+          dayWorkEnd.setHours(whEh || 18, whEm || 0, 0, 0);
+          const gapStart = new Date(Math.max(rawGapStart.getTime(), dayWorkStart.getTime()));
+          const gapEnd = new Date(Math.min(rawNextStart.getTime(), dayWorkEnd.getTime()));
+          const mins = Math.round((gapEnd.getTime() - gapStart.getTime()) / 60000);
           if (mins >= 60) rows.push({ kind: 'gap', start: gapStart, mins });
         }
         // Before-first and after-last gaps against the working day (today only).
