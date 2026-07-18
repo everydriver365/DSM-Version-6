@@ -5677,24 +5677,27 @@ function HomePage() {
                           />
                           <div
                             style={{
-                              padding: '4px 2px',
+                              background: '#FFFFFF',
+                              borderRadius: 12,
+                              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                              padding: '12px 14px',
                               display: 'flex',
                               alignItems: 'stretch',
                               gap: 12,
                             }}
                           >
-                            <div style={{ width: 56, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                              <div style={{ fontSize: 17, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                            <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
+                              <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
                                 {fmtT(cs)}
                               </div>
-                              <div style={{ fontSize: 12, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                              <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
                                 {durLabel}
                               </div>
                             </div>
                             <div
                               aria-hidden
                               style={{
-                                width: 4,
+                                width: 3,
                                 borderRadius: 2,
                                 background: barColor,
                                 flexShrink: 0,
@@ -5704,7 +5707,7 @@ function HomePage() {
                             <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                               <div
                                 style={{
-                                  fontSize: 15,
+                                  fontSize: 14,
                                   fontWeight: 600,
                                   color: '#0B1F3A',
                                   whiteSpace: 'nowrap',
@@ -5716,7 +5719,7 @@ function HomePage() {
                               >
                                 {r.title}
                               </div>
-                              <div style={{ fontSize: 13, color: '#6B7280', marginTop: 4 }}>
+                              <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>
                                 Google Calendar
                               </div>
                             </div>
