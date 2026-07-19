@@ -5745,7 +5745,59 @@ function HomePage() {
                     </div>
                   </div>
 
-
+                  {moveModeHome && movingLessonHome && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: 12,
+                        background: '#0B1F3A',
+                        color: '#FFFFFF',
+                        borderRadius: 12,
+                        padding: '10px 14px',
+                        marginBottom: 12,
+                        fontFamily: PF,
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+                        <div
+                          style={{
+                            width: 28,
+                            height: 28,
+                            borderRadius: '50%',
+                            background: '#1877D6',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0,
+                          }}
+                        >
+                          <Move size={14} color="#FFFFFF" />
+                        </div>
+                        <div style={{ fontSize: 13, fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          Moving: {(movingLessonHome.pupils as any)?.name?.split(' ')[0] || 'lesson'}'s {movingLessonHome.duration_minutes} min lesson
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => { setMovingLessonHome(null); setMoveModeHome(false); setConfirmMoveHome(null); }}
+                        style={{
+                          background: 'transparent',
+                          border: '1px solid rgba(255,255,255,0.3)',
+                          color: '#FFFFFF',
+                          borderRadius: 8,
+                          padding: '4px 10px',
+                          fontSize: 12,
+                          fontWeight: 500,
+                          cursor: 'pointer',
+                          flexShrink: 0,
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
 
                   {/* Timeline container */}
                   <div style={{ position: 'relative' }}>
