@@ -328,6 +328,7 @@ function ProfilePage() {
   const [vehicleMake, setVehicleMake] = useState("");
   const [vehicleModel, setVehicleModel] = useState("");
   const [vehicleReg, setVehicleReg] = useState("");
+  const [vehicleYear, setVehicleYear] = useState("");
   const [transmission, setTransmission] = useState("Manual");
   const [dualControls, setDualControls] = useState(false);
   const [insuranceExpiry, setInsuranceExpiry] = useState("");
@@ -367,7 +368,7 @@ function ProfilePage() {
       const { data: inst, error: instErr } = await supabase
         .from("instructors")
         .select(
-          "name, phone, bio, car_make, car_model, profile_image_url, address, home_postcode, city, lat, lng, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, service_areas, vehicle_make, vehicle_model, vehicle_reg, dual_controls, insurance_expiry, vehicle_photo_url, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
+          "name, phone, bio, car_make, car_model, profile_image_url, address, home_postcode, city, lat, lng, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, service_areas, vehicle_make, vehicle_model, vehicle_reg, vehicle_year, dual_controls, insurance_expiry, vehicle_photo_url, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
         )
         .eq("id", user.id)
         .maybeSingle();
@@ -405,6 +406,7 @@ function ProfilePage() {
         setDbsUrl(inst.dbs_document_url ?? null);
         setServiceAreas(Array.isArray(inst.service_areas) ? inst.service_areas : []);
         setVehicleReg(inst.vehicle_reg ?? "");
+        setVehicleYear(inst.vehicle_year != null ? String(inst.vehicle_year) : "");
         setDualControls(Boolean(inst.dual_controls));
         setInsuranceExpiry(inst.insurance_expiry ?? "");
         setVehiclePhotoUrl(inst.vehicle_photo_url ?? null);
@@ -448,6 +450,8 @@ function ProfilePage() {
       vehicle_make: vehicleMake.trim() || null,
       vehicle_model: vehicleModel.trim() || null,
       vehicle_reg: vehicleReg.trim() || null,
+      transmission: transmission || null,
+      vehicle_year: vehicleYear.trim() ? Number(vehicleYear.trim()) : null,
       dual_controls: dualControls,
       insurance_expiry: insuranceExpiry || null,
       vehicle_photo_url: vehiclePhotoUrl,
@@ -1035,6 +1039,7 @@ function ProfilePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <TextField label="Make" value={vehicleMake} onChange={setVehicleMake} placeholder="Vauxhall" />
             <TextField label="Model" value={vehicleModel} onChange={setVehicleModel} placeholder="Corsa" />
+            <TextField label="Year" value={vehicleYear} onChange={setVehicleYear} placeholder="2022" type="number" inputMode="numeric" />
             <TextField label="Registration" value={vehicleReg} onChange={setVehicleReg} placeholder="AB12 CDE" />
             <SelectField
               label="Transmission"
