@@ -144,9 +144,9 @@ export default function InstructorTopBar({
         <IconBtn
           ariaLabel="Voice commands"
           onClick={onMicPress}
-          style={{ background: "rgba(255,255,255,0.22)" }}
+          style={{ background: "#1877D6", width: 36, height: 36 }}
         >
-          <Mic size={17} strokeWidth={1.8} color="#ffffff" />
+          <Mic size={19} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
       </div>
 
