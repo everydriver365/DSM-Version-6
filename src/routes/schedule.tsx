@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Plus, RefreshCw, Trash2, Calendar, Move, ArrowDown, Clock } from "lucide-react";
+import { Plus, RefreshCw, Trash2, Calendar, Move, ArrowDown, Clock, MoreVertical } from "lucide-react";
 import { toast } from "sonner";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
@@ -1604,23 +1604,52 @@ function SchedulePage() {
                                           <Move size={12} color="#1A52A0" />
                                         </button>
                                       )}
-                                      {isLessonRow && (
-                                        <span
-                                          style={{
-                                            fontSize: 9,
-                                            fontWeight: 700,
-                                            color: '#1A52A0',
-                                            background: '#E0F4FF',
-                                            borderRadius: 4,
-                                            padding: '1px 5px',
-                                            fontFamily: 'Inter, sans-serif',
-                                            flexShrink: 0,
-                                          }}
-                                        >
-                                          DSM
-                                        </span>
-                                      )}
-                                    </>
+                                       {isLessonRow && (
+                                         <span
+                                           style={{
+                                             fontSize: 9,
+                                             fontWeight: 700,
+                                             color: '#1A52A0',
+                                             background: '#E0F4FF',
+                                             borderRadius: 4,
+                                             padding: '1px 5px',
+                                             fontFamily: 'Inter, sans-serif',
+                                             flexShrink: 0,
+                                           }}
+                                         >
+                                           DSM
+                                         </span>
+                                       )}
+                                       {isLessonRow && (
+                                         <button
+                                           type="button"
+                                           onClick={(ev) => {
+                                             ev.stopPropagation();
+                                             navigate({
+                                               to: "/lessons/$id" as never,
+                                               params: { id: (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id } as never,
+                                             });
+                                           }}
+                                           aria-label="More lesson options"
+                                           style={{
+                                             width: 28,
+                                             height: 28,
+                                             borderRadius: '50%',
+                                             background: '#F8F9FB',
+                                             border: '0.5px solid #E5E7EB',
+                                             display: 'flex',
+                                             alignItems: 'center',
+                                             justifyContent: 'center',
+                                             cursor: 'pointer',
+                                             flexShrink: 0,
+                                             marginLeft: 4,
+                                             padding: 0,
+                                           }}
+                                         >
+                                           <MoreVertical size={14} color="#6B7280" />
+                                         </button>
+                                       )}
+                                     </>
                                   )}
                                 </div>
 
