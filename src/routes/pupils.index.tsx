@@ -35,6 +35,7 @@ interface Pupil {
   lead_source: string | null;
   status: string | null;
   profile_image_url: string | null;
+  calendar_colour: string | null;
 }
 
 
