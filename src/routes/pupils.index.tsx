@@ -565,6 +565,7 @@ function PupilsIndexPage() {
                     className="flex items-center"
                     style={{ gap: 12, padding: "13px 16px" }}
                   >
+                    <PupilAvatar pupil={p} size={40} />
                     <div
                       style={{
                         width: 3,
@@ -574,7 +575,6 @@ function PupilsIndexPage() {
                         flexShrink: 0,
                       }}
                     />
-                    <PupilAvatar pupil={p} size={40} />
 
                     <div className="min-w-0 flex-1 flex flex-col">
                       <div
