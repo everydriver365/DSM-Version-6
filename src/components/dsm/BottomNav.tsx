@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState, type ComponentType, type ReactNode } from "react";
-import { Home, CalendarDays, Users, MessageCircle, LayoutGrid, Mic } from "lucide-react";
+import { Home, CalendarDays, Users, MessageCircle, LayoutGrid } from "lucide-react";
 
 export type NavKey = "home" | "schedule" | "pupils" | "messages" | "more" | "settings" | "payments";
 
@@ -24,8 +24,6 @@ interface Props {
   activeWs?: number;
   /** Called when a tab with a `ws` mapping is tapped. */
   onSelectWs?: (index: number) => void;
-  /** Called when the raised microphone button is pressed. */
-  onMicPress?: () => void;
 }
 
 const defaultItems: {
@@ -42,7 +40,7 @@ const defaultItems: {
   { key: "more", to: "/more", label: "More", Icon: LayoutGrid },
 ];
 
-export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5", inactiveColor = "#8A93A3", activeWs, onSelectWs, onMicPress }: Props) {
+export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5", inactiveColor = "#8A93A3", activeWs, onSelectWs }: Props) {
   const useCustom = Array.isArray(items) && items.length > 0;
   // Track workspace changes broadcast by the home carousel so BottomNav stays
   // in sync without prop drilling (see home.tsx `dsm-workspace-change` event).
@@ -57,37 +55,6 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
     return () => window.removeEventListener('dsm-workspace-change', handler as EventListener);
   }, []);
   const currentWs = listenerWs;
-
-  const micSlot = (
-    <button
-      key="mic"
-      type="button"
-      onClick={onMicPress}
-      aria-label="Voice commands"
-      className="flex flex-1 items-center justify-center"
-      style={{
-        marginTop: -20,
-        background: "none",
-        border: "none",
-        padding: 0,
-        cursor: "pointer",
-        zIndex: 10,
-      }}
-    >
-      <span
-        className="flex items-center justify-center rounded-full"
-        style={{
-          width: 56,
-          height: 56,
-          backgroundColor: "#0B1F3A",
-          border: "4px solid #FFFFFF",
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.18)",
-        }}
-      >
-        <Mic size={24} color="#FFFFFF" />
-      </span>
-    </button>
-  );
 
   const renderCustomItems = (list: BottomNavItem[], offset: number) =>
     list.map((it, i) => {
@@ -112,7 +79,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
           <span className="text-[9px] whitespace-nowrap" style={{ color }}>{it.label}</span>
         </>
       );
-      const cls = "flex flex-1 flex-col items-center justify-center gap-1 select-none relative";
+      const cls = "flex flex-col items-center justify-center gap-1 select-none relative";
       if (it.to && !it.onClick && typeof it.ws !== 'number') {
         return (
           <Link key={it.key} to={it.to} className={cls} style={{ color }}>
@@ -158,7 +125,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
           </span>
         </>
       );
-      const cls = "flex flex-1 flex-col items-center justify-center gap-1 select-none relative";
+      const cls = "flex flex-col items-center justify-center gap-1 select-none relative";
       if (to) {
         return (
           <Link key={key} to={to} className={cls} style={{ color }}>
@@ -179,26 +146,16 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
       );
     });
 
-  const renderCustomRow = () => {
-    const rendered = renderCustomItems(items!, 0);
-    return [...rendered.slice(0, 2), micSlot, ...rendered.slice(2)];
-  };
-
-  const renderDefaultRow = () => {
-    const rendered = renderDefaultItems(defaultItems, 0);
-    return [...rendered.slice(0, 2), micSlot, ...rendered.slice(2)];
-  };
-
   return (
     <nav
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-16 bg-white flex items-stretch justify-between z-50 pb-safe"
+      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-16 bg-white flex items-center justify-around z-50 pb-safe"
       style={{
         fontFamily: "Inter, sans-serif",
         borderRadius: "20px 20px 0 0",
         boxShadow: "0 -2px 12px rgba(0,0,0,0.08)",
       }}
     >
-      {useCustom ? renderCustomRow() : renderDefaultRow()}
+      {useCustom ? renderCustomItems(items!, 0) : renderDefaultItems(defaultItems, 0)}
     </nav>
   );
 }
