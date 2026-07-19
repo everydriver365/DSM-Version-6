@@ -1069,6 +1069,15 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     return { Icon: Sparkles, chipBg: "#ECEFF3", chipBorder: "#D8DEE8", iconColor: "#5A6B85" };
   };
 
+  const firstImageUrl = (tile: ListingTile): string | undefined => {
+    if (tile.image_urls) {
+      const urls = Array.isArray(tile.image_urls) ? tile.image_urls : [tile.image_urls];
+      const url = urls[0];
+      if (url && typeof url === "string" && url.trim()) return url;
+    }
+    return tile.marketplace_suppliers?.logo_url ?? undefined;
+  };
+
   return (
     <div
       style={{
