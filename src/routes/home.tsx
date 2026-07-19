@@ -131,8 +131,6 @@ import {
   IconSpeakerphone,
   IconChartBar,
   IconSteeringWheel,
-  IconClipboardCheck,
-  IconArmchair,
   IconMicrophone,
   IconBriefcase,
   IconCircleCheck,
