@@ -506,7 +506,7 @@ export function PupilQuickActionsSheet({
         onConfirm={doMarkInactive}
         onCancel={() => setConfirmInactive(false)}
       />
-    </>
+    </div>
   );
 }
 
