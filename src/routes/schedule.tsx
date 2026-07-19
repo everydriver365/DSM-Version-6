@@ -1561,13 +1561,20 @@ function SchedulePage() {
                                         >
                                           {title}
                                         </div>
-                                        {timeText ? (
-                                          <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
-                                            {timeText}
-                                          </div>
-                                        ) : null}
-                                      </div>
-                                      {isLessonRow && !moveMode && (
+                                         {timeText ? (
+                                           <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
+                                             {timeText}
+                                           </div>
+                                         ) : null}
+                                       </div>
+                                       {isLessonRow && (
+                                         <PupilAvatar
+                                           pupil={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil : null}
+                                           pupilId={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil_id ?? null : null}
+                                           size={36}
+                                         />
+                                       )}
+                                       {isLessonRow && !moveMode && (
                                         <button
                                           type="button"
                                           onClick={(ev) => {
