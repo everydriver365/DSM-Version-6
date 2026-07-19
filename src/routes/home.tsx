@@ -4819,15 +4819,6 @@ function HomePage() {
                   />
                 )}
 
-                {/* NEXT LESSON pill — top-left */}
-                <div style={{
-                  position: 'absolute', top: 10, left: 10,
-                  background: isLate ? '#C23B3B' : '#1877D6', color: '#FFFFFF',
-                  borderRadius: 999, padding: '4px 10px',
-                  fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase',
-                  fontFamily: 'Inter, sans-serif',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-                }}>Next Lesson</div>
 
                 {/* ROUTE pill — top-right */}
                 {upcoming && directionsUrl && (
