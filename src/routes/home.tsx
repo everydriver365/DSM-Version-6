@@ -89,7 +89,6 @@ import {
   Activity,
   CheckCircle2,
   Sparkles,
-  ShieldCheck,
 
   Laptop,
   Package,
