@@ -5938,6 +5938,7 @@ function HomePage() {
                             )}
                            <div
                              style={{
+                               position: 'relative',
                                display: 'flex',
                                flexDirection: 'column',
                                alignItems: 'center',
@@ -5967,9 +5968,10 @@ function HomePage() {
                              </div>
                              <button
                                type="button"
+                               data-home-lesson-actions-trigger
                                onClick={(e) => {
                                  e.stopPropagation();
-                                 navigate({ to: '/lessons/$id' as never, params: { id: l.id } as never });
+                                 setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l));
                                }}
                                aria-label="More lesson options"
                                style={{
@@ -5987,6 +5989,59 @@ function HomePage() {
                              >
                                <MoreHorizontal size={14} color="#6B7280" />
                              </button>
+                             {actionsOpenForLesson?.id === l.id && (
+                               <div
+                                 data-home-lesson-actions-popover
+                                 onClick={(ev) => ev.stopPropagation()}
+                                 style={{
+                                   position: 'absolute',
+                                   top: 72,
+                                   right: 0,
+                                   minWidth: 140,
+                                   background: '#FFFFFF',
+                                   border: '1px solid #E5E7EB',
+                                   borderRadius: 10,
+                                   boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                                   zIndex: 40,
+                                   overflow: 'hidden',
+                                 }}
+                               >
+                                 <button
+                                   type="button"
+                                   style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                                   onClick={(ev) => {
+                                     ev.stopPropagation();
+                                     setActionsOpenForLesson(null);
+                                     setCancelSheetForLesson(l);
+                                   }}
+                                 >
+                                   Cancel
+                                 </button>
+                                 <button
+                                   type="button"
+                                   style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#CC2229' }}
+                                   onClick={(ev) => {
+                                     ev.stopPropagation();
+                                     setActionsOpenForLesson(null);
+                                     setDeleteSheetForLesson(l);
+                                   }}
+                                 >
+                                   Delete
+                                 </button>
+                                 <button
+                                   type="button"
+                                   style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                                   onClick={(ev) => {
+                                     ev.stopPropagation();
+                                     setActionsOpenForLesson(null);
+                                     navigate({ to: '/lessons/reschedule/$id' as never, params: { id: l.id } as never });
+                                   }}
+                                 >
+                                   Reschedule
+                                 </button>
+                               </div>
+                             )}
+                           </div>
                            </div>
                          </div>
                        </div>
