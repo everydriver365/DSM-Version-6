@@ -3144,7 +3144,6 @@ function HomePage() {
   const chipCacheRef = useRef<Record<string, { weather: LessonWeather; drive: LessonDriveTime; expires: number }>>({});
 
   useEffect(() => {
-    setRouteImgError(false);
     console.log("[home] chip-effect fired. upcoming.id:", upcoming?.id, "pupil:", upcoming?.pupils?.name, "postcode:", upcoming?.pupils?.postcode, "address:", upcoming?.pupils?.address, "pickup:", upcoming?.pickup_location);
     if (!upcoming?.id) {
       setWeatherData(null);
