@@ -56,6 +56,7 @@ export default function InstructorTopBar({
   onLiveTrack,
   onBell,
   onMenu,
+  onMicPress,
   onProfile,
   onBack,
   pageTitle,
