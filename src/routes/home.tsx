@@ -3165,7 +3165,8 @@ function HomePage() {
     const cacheKey = upcoming.id;
     const cached = chipCacheRef.current[cacheKey];
     const nowMs = Date.now();
-    if (cached && cached.expires > nowMs) {
+    const cachedHasRequiredData = Boolean(cached?.weather || !postcode) && Boolean(cached?.drive || !destination);
+    if (cached && cached.expires > nowMs && cachedHasRequiredData) {
       setWeatherData(cached.weather);
       setDriveData(cached.drive);
       return;
@@ -3258,6 +3259,12 @@ function HomePage() {
   useEffect(() => {
     if (!upcoming?.id) return;
     if (weatherLoading || driveLoading) return;
+    const destination = [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode]
+      .filter(Boolean)
+      .join(", ");
+    const postcode = upcoming.pupils?.postcode ?? null;
+    const hasRequiredData = Boolean(weatherData || !postcode) && Boolean(driveData || !destination);
+    if (!hasRequiredData) return;
     chipCacheRef.current[upcoming.id] = {
       weather: weatherData,
       drive: driveData,
