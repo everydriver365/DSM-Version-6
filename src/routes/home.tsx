@@ -101,6 +101,7 @@ import {
   Smartphone,
   Headphones,
   Infinity,
+  MoreVertical,
 } from "lucide-react";
 import {
   IconCurrencyPound,
