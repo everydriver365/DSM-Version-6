@@ -1634,19 +1634,19 @@ function SchedulePage() {
                                                <div
                                                  data-lesson-actions-popover
                                                  onClick={(ev) => ev.stopPropagation()}
-                                                 style={{
-                                                   position: 'absolute',
-                                                   top: 44,
-                                                   right: 0,
-                                                   minWidth: 140,
-                                                   background: '#FFFFFF',
-                                                   border: '1px solid #E5E7EB',
-                                                   borderRadius: 10,
-                                                   boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-                                                   zIndex: 40,
-                                                   overflow: 'hidden',
-                                                   ...POPPINS,
-                                                 }}
+                                                  style={{
+                                                    position: 'absolute',
+                                                    top: 44,
+                                                    right: 0,
+                                                    minWidth: 140,
+                                                    background: '#FFFFFF',
+                                                    border: '1px solid #E5E7EB',
+                                                    borderRadius: 10,
+                                                    boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                                                    zIndex: 60,
+                                                    overflow: 'hidden',
+                                                    ...POPPINS,
+                                                  }}
                                                >
                                                  {(() => {
                                                    const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
