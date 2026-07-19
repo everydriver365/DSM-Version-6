@@ -3166,9 +3166,16 @@ function HomePage() {
 
     // Weather — kick off immediately (no geolocation needed).
     setWeatherLoading(true);
+    console.log("[home] fetching weather for", postcode ?? destination);
     fetchWeather({ data: { postcode: postcode ?? destination } })
-      .then((w) => { if (!cancelled) setWeatherData(w); })
-      .catch(() => { if (!cancelled) setWeatherData(null); })
+      .then((w) => {
+        console.log("[home] weather result:", w);
+        if (!cancelled) setWeatherData(w);
+      })
+      .catch((err) => {
+        console.error("[home] weather fetch failed:", err);
+        if (!cancelled) setWeatherData(null);
+      })
       .finally(() => { if (!cancelled) setWeatherLoading(false); });
 
     // Drive time — needs instructor geolocation; hide chip if not available.
@@ -3178,6 +3185,7 @@ function HomePage() {
         (pos) => {
           if (cancelled) return;
           setInstructorLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+          console.log("[home] fetching drive time from", pos.coords.latitude, pos.coords.longitude, "to", destination);
           fetchDriveTime({
             data: {
               originLat: pos.coords.latitude,
@@ -3185,8 +3193,14 @@ function HomePage() {
               destination,
             },
           })
-            .then((d) => { if (!cancelled) setDriveData(d); })
-            .catch(() => { if (!cancelled) setDriveData(null); })
+            .then((d) => {
+              console.log("[home] drive time result:", d);
+              if (!cancelled) setDriveData(d);
+            })
+            .catch((err) => {
+              console.error("[home] drive time fetch failed:", err);
+              if (!cancelled) setDriveData(null);
+            })
             .finally(() => {
               if (cancelled) return;
               setDriveLoading(false);
