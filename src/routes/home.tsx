@@ -1170,6 +1170,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                 icon={<Icon size={22} color={iconColor} strokeWidth={1.8} />}
                 chipBg={chipBg}
                 chipBorder={chipBorder}
+                image={firstImageUrl(tile)}
                 onClick={() => openListing(tile.id)}
               />
             );
