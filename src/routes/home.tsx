@@ -5040,8 +5040,8 @@ function HomePage() {
             <div style={{ padding: '0 10px 8px', display: 'flex', gap: 8 }}>
               <button
                 type="button"
-
                 onClick={(e) => {
+
                   e.stopPropagation();
                   navigate({ to: '/messages/$pupilId', params: { pupilId: upcoming.pupil_id } as any });
                 }}
