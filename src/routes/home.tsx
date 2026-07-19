@@ -5135,12 +5135,29 @@ function HomePage() {
               {[5, 10, 15, 20].map((m) => (
                 <button
                   key={m}
-                  onClick={() => {
-                    const phone = upcoming?.pupils?.phone;
+                  onClick={async () => {
+                    const phone = upcoming?.pupils?.phone ?? null;
+                    const pupilIdVal = upcoming?.pupil_id ?? null;
                     const first = (upcoming?.pupils?.name ?? 'there').split(/\s+/)[0];
-                    if (!phone) { toast('No phone number'); setLateOpen(false); return; }
-                    const body = encodeURIComponent(`Hi ${first}, running ${m} mins late, sorry!`);
-                    window.location.href = `sms:${phone}?&body=${body}`;
+                    if (!userId || !pupilIdVal) { toast('Unable to send'); setLateOpen(false); return; }
+                    const body = `Hi ${first}, running ${m} mins late, sorry!`;
+                    try {
+                      if (phone) {
+                        const { error: smsErr } = await supabase.from('sms_queue').insert({
+                          instructor_id: userId, pupil_phone: phone, message: body,
+                        });
+                        if (smsErr) console.error('[home] sms_queue insert failed', smsErr);
+                      }
+                      const { error: chatErr } = await supabase.from('chat_messages').insert({
+                        instructor_id: userId, pupil_id: pupilIdVal,
+                        sender_type: 'instructor', sender_id: userId, body,
+                      });
+                      if (chatErr) throw chatErr;
+                      toast.success(`Sent "running ${m}m late"`);
+                    } catch (err) {
+                      console.error('[home] late notify failed', err);
+                      toast.error('Could not send message');
+                    }
                     setLateOpen(false);
                   }}
                   style={{ height: 44, borderRadius: 10, border: '1px solid #e3e6ec', background: '#fff', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}
