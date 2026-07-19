@@ -17,6 +17,8 @@ import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
 import { PupilAvatar } from "@/components/PupilAvatar";
+import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
+import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
