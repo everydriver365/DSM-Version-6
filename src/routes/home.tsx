@@ -6006,112 +6006,115 @@ function HomePage() {
                                 {priceNode}
                               </div>
                             )}
-                           <div
-                             style={{
-                               position: 'relative',
-                               display: 'flex',
-                               flexDirection: 'column',
-                               alignItems: 'center',
-                               gap: 4,
-                               flexShrink: 0,
-                               marginLeft: 4,
-                             }}
-                           >
-                             <div aria-hidden style={{ position: 'relative' }}>
-                               {isLive && (
-                                 <span
-                                   aria-label="Live"
-                                   style={{
-                                     position: 'absolute',
-                                     top: 0,
-                                     right: 0,
-                                     width: 8,
-                                     height: 8,
-                                     borderRadius: 999,
-                                     backgroundColor: '#DC2626',
-                                     boxShadow: '0 0 0 2px #FFFFFF',
-                                     zIndex: 1,
-                                   }}
-                                 />
-                               )}
-                               <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={36} />
-                             </div>
-                             <button
-                               type="button"
-                               data-home-lesson-actions-trigger
-                               onClick={(e) => {
-                                 e.stopPropagation();
-                                 setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l));
-                               }}
-                               aria-label="More lesson options"
-                               style={{
-                                 width: 28,
-                                 height: 28,
-                                 borderRadius: '50%',
-                                 background: '#F8F9FB',
-                                 border: '0.5px solid #E5E7EB',
-                                 display: 'flex',
-                                 alignItems: 'center',
-                                 justifyContent: 'center',
-                                 cursor: 'pointer',
-                                 padding: 0,
-                               }}
-                             >
-                               <MoreHorizontal size={14} color="#6B7280" />
-                             </button>
-                             {actionsOpenForLesson?.id === l.id && (
-                               <div
-                                 data-home-lesson-actions-popover
-                                 onClick={(ev) => ev.stopPropagation()}
-                                 style={{
-                                   position: 'absolute',
-                                   top: 72,
-                                   right: 0,
-                                   minWidth: 140,
-                                   background: '#FFFFFF',
-                                   border: '1px solid #E5E7EB',
-                                   borderRadius: 10,
-                                   boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-                                   zIndex: 40,
-                                   overflow: 'hidden',
-                                 }}
-                               >
-                                 <button
-                                   type="button"
-                                   style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
-                                   onClick={(ev) => {
-                                     ev.stopPropagation();
-                                     setActionsOpenForLesson(null);
-                                     setCancelSheetForLesson(l);
-                                   }}
-                                 >
-                                   Cancel
-                                 </button>
-                                 <button
-                                   type="button"
-                                   style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#CC2229' }}
-                                   onClick={(ev) => {
-                                     ev.stopPropagation();
-                                     setActionsOpenForLesson(null);
-                                     setDeleteSheetForLesson(l);
-                                   }}
-                                 >
-                                   Delete
-                                 </button>
-                                 <button
-                                   type="button"
-                                   style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
-                                   onClick={(ev) => {
-                                     ev.stopPropagation();
-                                     setActionsOpenForLesson(null);
-                                     navigate({ to: '/lessons/reschedule/$id' as never, params: { id: l.id } as never });
-                                   }}
-                                 >
-                                   Reschedule
-                                 </button>
-                               </div>
-                             )}
-                           </div>
+                            <div
+                              style={{
+                                position: 'relative',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: 6,
+                                flexShrink: 0,
+                                marginLeft: 4,
+                              }}
+                            >
+                              <div aria-hidden style={{ position: 'relative' }}>
+                                {isLive && (
+                                  <span
+                                    aria-label="Live"
+                                    style={{
+                                      position: 'absolute',
+                                      top: 0,
+                                      right: 0,
+                                      width: 8,
+                                      height: 8,
+                                      borderRadius: 999,
+                                      backgroundColor: '#DC2626',
+                                      boxShadow: '0 0 0 2px #FFFFFF',
+                                      zIndex: 1,
+                                    }}
+                                  />
+                                )}
+                                <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={36} />
+                              </div>
+                              <button
+                                type="button"
+                                data-home-lesson-actions-trigger
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l));
+                                }}
+                                aria-label="More lesson options"
+                                style={{
+                                  width: 28,
+                                  height: 28,
+                                  borderRadius: '50%',
+                                  background: '#F8F9FB',
+                                  border: '0.5px solid #E5E7EB',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  cursor: 'pointer',
+                                  padding: 0,
+                                }}
+                              >
+                                <MoreHorizontal size={14} color="#6B7280" />
+                              </button>
+                              {actionsOpenForLesson?.id === l.id && (
+                                <div
+                                  data-home-lesson-actions-popover
+                                  onClick={(ev) => ev.stopPropagation()}
+                                  style={{
+                                    position: 'absolute',
+                                    top: 44,
+                                    right: 0,
+                                    minWidth: 140,
+                                    background: '#FFFFFF',
+                                    border: '1px solid #E5E7EB',
+                                    borderRadius: 10,
+                                    boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                                    zIndex: 40,
+                                    overflow: 'hidden',
+                                  }}
+                                >
+                                  <button
+                                    type="button"
+                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                                    onClick={(ev) => {
+                                      ev.stopPropagation();
+                                      setActionsOpenForLesson(null);
+                                      setMovingLessonHome(l);
+                                      setMoveModeHome(true);
+                                      const firstName = (l.pupils as any)?.name?.split(' ')[0] || 'this lesson';
+                                      toast.info('Select a new time slot for ' + firstName, { duration: 10000 });
+                                    }}
+                                  >
+                                    Move
+                                  </button>
+                                  <button
+                                    type="button"
+                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                                    onClick={(ev) => {
+                                      ev.stopPropagation();
+                                      setActionsOpenForLesson(null);
+                                      setCancelSheetForLesson(l);
+                                    }}
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    type="button"
+                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#CC2229' }}
+                                    onClick={(ev) => {
+                                      ev.stopPropagation();
+                                      setActionsOpenForLesson(null);
+                                      setDeleteSheetForLesson(l);
+                                    }}
+                                  >
+                                    Delete
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                          </div>
                        </div>
                      );
