@@ -1524,21 +1524,17 @@ function SchedulePage() {
                                               })()}
                                             </div>
                                           </div>
-                                          <PupilAvatar
-                                            pupil={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil : null}
-                                            pupilId={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil_id ?? null : null}
-                                          />
-                                          <div
-                                            aria-hidden
-                                            style={{
-                                              width: 3,
-                                              borderRadius: 2,
-                                              background: markerColor,
-                                              flexShrink: 0,
-                                              alignSelf: 'stretch',
-                                            }}
-                                          />
-                                        </>
+                                           <div
+                                             aria-hidden
+                                             style={{
+                                               width: 3,
+                                               borderRadius: 2,
+                                               background: markerColor,
+                                               flexShrink: 0,
+                                               alignSelf: 'stretch',
+                                             }}
+                                           />
+                                         </>
                                       ) : (
                                         <div
                                           aria-hidden
