@@ -4993,21 +4993,33 @@ function HomePage() {
               <div
                 style={{
                   position: 'relative',
-                  height: 105,
-                  background: '#E8EEF3',
                   overflow: 'hidden',
                   boxShadow: isLate ? 'inset 0 0 0 3px #C23B3B' : undefined,
                 }}
               >
+                {driveData ? (
+                  <NextLessonMap
+                    originLat={driveData.originLat}
+                    originLng={driveData.originLng}
+                    destLat={driveData.destLat}
+                    destLng={driveData.destLng}
+                    encodedPolyline={driveData.encodedPolyline}
+                    directionsUrl={driveData.directionsUrl}
+                    height={160}
+                    isLate={isLate}
+                  />
+                ) : (
+                  <div style={{ height: 105, background: '#E8EEF3' }} />
+                )}
                 {/* Gradient time caption */}
                 {lessonTimeText && (
                   <div style={{
                     position: 'absolute', left: 0, right: 0, bottom: 0,
                     background: 'linear-gradient(0deg, rgba(11,31,58,0.88), rgba(11,31,58,0))',
-
                     padding: '16px 14px 10px',
                     color: '#FFFFFF', fontWeight: 700, fontSize: 17,
                     fontFamily: 'Inter, sans-serif',
+                    pointerEvents: 'none',
                   }}>{lessonTimeText}</div>
                 )}
               </div>
