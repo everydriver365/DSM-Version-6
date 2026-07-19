@@ -8,6 +8,7 @@ import {
   PupilQuickActionsSheet,
   type PupilQuickActionsPupil,
 } from "@/components/pupils/PupilQuickActionsSheet";
+import { PupilAvatar } from "@/components/PupilAvatar";
 
 export const Route = createFileRoute("/pupils/")({
   head: () => ({
@@ -34,29 +35,12 @@ interface Pupil {
   lead_source: string | null;
   status: string | null;
   profile_image_url: string | null;
+  calendar_colour: string | null;
 }
 
 
 type StatusKey = "active" | "passed" | "archived";
 
-function initials(name: string) {
-  const parts = name.trim().split(/\s+/);
-  const a = parts[0]?.[0] ?? "";
-  const b = parts.length > 1 ? parts[parts.length - 1][0] : "";
-  return (a + b).toUpperCase() || "?";
-}
-
-const AVATAR_PALETTE = ["#1877D6", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#CC2229", "#854F0B", "#185F8A"];
-// Explicit per-pupil colour overrides (takes precedence over hash).
-const PUPIL_COLOR_OVERRIDES: Record<string, string> = {};
-// Match Joseph Thorne by name-normalised key (id-agnostic override handled in avatarColor via name)
-function avatarColor(id: string, name?: string) {
-  if (name && /joseph/i.test(name) && /thorne/i.test(name)) return "#3B6D11";
-  if (PUPIL_COLOR_OVERRIDES[id]) return PUPIL_COLOR_OVERRIDES[id];
-  let h = 0;
-  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
-  return AVATAR_PALETTE[h % AVATAR_PALETTE.length];
-}
 function displayName(n: string | null | undefined) {
   return (n ?? "").replace(/\s*\.\s*$/, "").trim();
 }
@@ -165,7 +149,7 @@ function PupilsIndexPage() {
       }
       let q = supabase
         .from("pupils")
-        .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120, profile_image_url, photo_url")
+        .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120, profile_image_url, photo_url, calendar_colour")
         .eq("instructor_id", uid)
         .order("name", { ascending: true, nullsFirst: false });
 
@@ -502,7 +486,6 @@ function PupilsIndexPage() {
               const hoursRemaining = prepaid - hoursUsed;
               const hasHoursLeft = prepaid > 0 && hoursRemaining > 0;
               const hasBalance = balanceOwed > 0;
-              const avatarBg = avatarColor(p.id, p.name);
               const lp = lastPaymentMap[p.id];
               const lpDays = lp ? Math.max(0, Math.floor((Date.now() - new Date(lp.date).getTime()) / 86400000)) : null;
               const openSheet = () => {
@@ -582,29 +565,7 @@ function PupilsIndexPage() {
                     className="flex items-center"
                     style={{ gap: 12, padding: "13px 16px" }}
                   >
-                    <div
-                      className="flex items-center justify-center shrink-0 overflow-hidden"
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: "50%",
-                        backgroundColor: avatarBg,
-                        color: "#FFFFFF",
-                        fontSize: 13,
-                        fontWeight: 600,
-                        ...POPPINS,
-                      }}
-                    >
-                      {p.profile_image_url ? (
-                        <img
-                          src={p.profile_image_url}
-                          alt=""
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        />
-                      ) : (
-                        initials(displayName(p.name))
-                      )}
-                    </div>
+                    <PupilAvatar pupil={p} size={40} />
 
                     <div className="min-w-0 flex-1 flex flex-col">
                       <div
