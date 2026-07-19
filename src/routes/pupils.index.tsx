@@ -565,6 +565,15 @@ function PupilsIndexPage() {
                     className="flex items-center"
                     style={{ gap: 12, padding: "13px 16px" }}
                   >
+                    <div
+                      style={{
+                        width: 3,
+                        alignSelf: "stretch",
+                        borderRadius: 3,
+                        backgroundColor: pupilColour(p.id, p.calendar_colour, p.name),
+                        flexShrink: 0,
+                      }}
+                    />
                     <PupilAvatar pupil={p} size={40} />
 
                     <div className="min-w-0 flex-1 flex flex-col">
