@@ -5064,7 +5064,7 @@ function HomePage() {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6, flex: 1, minWidth: 0 }}>
                     <div style={{ textAlign: 'center' }}>
                       <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.1 }}>
-                        {driveData ? `${driveData.durationMinutes}m` : '—'}
+                        {driveData ? (driveData.durationMinutes >= 60 ? `${Math.floor(driveData.durationMinutes / 60)}h ${driveData.durationMinutes % 60}m` : `${driveData.durationMinutes} min`) : '—'}
                       </div>
                       <div style={{ fontSize: 9, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 2 }}>Drive</div>
                     </div>
