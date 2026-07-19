@@ -1989,6 +1989,7 @@ function HomePage() {
   const [localRoom, setLocalRoom] = useState<{ id: string; area_name: string } | null>(null);
   const [localChatLatest, setLocalChatLatest] = useState<{ message: string; created_at: string; instructors: { name: string | null } | null } | null>(null);
   const [instructorArea, setInstructorArea] = useState<string>('your area');
+  const [instructorHomePostcode, setInstructorHomePostcode] = useState<string | null>(null);
   const [pupilsTab, setPupilsTab] = useState<'current' | 'passed' | 'cancelled' | 'inactive'>('current');
   const [allPupilsList, setAllPupilsList] = useState<Array<{
     id: string;
@@ -2051,9 +2052,13 @@ function HomePage() {
           .select('home_postcode, city')
           .eq('id', userId)
           .maybeSingle();
-        const outcode = (instructor as any)?.home_postcode?.substring(0, 4)?.trim()?.toUpperCase() ?? null;
+        const homePostcode = ((instructor as any)?.home_postcode ?? '').trim() || null;
+        const outcode = homePostcode?.substring(0, 4)?.trim()?.toUpperCase() ?? null;
         const area = (instructor as any)?.city || outcode || 'your area';
-        if (!cancelled) setInstructorArea(area);
+        if (!cancelled) {
+          setInstructorArea(area);
+          setInstructorHomePostcode(homePostcode);
+        }
 
         let query = supabase
           .from('local_alerts')
@@ -3182,50 +3187,72 @@ function HomePage() {
       })
       .finally(() => { if (!cancelled) setWeatherLoading(false); });
 
-    // Drive time — needs instructor geolocation; hide chip if not available.
-    if (destination && typeof navigator !== "undefined" && navigator.geolocation) {
+    // Drive time — try geolocation first, fall back to instructor home postcode.
+    const fallbackToHomePostcode = () => {
+      if (cancelled) return;
+      if (!destination) { setDriveData(null); setDriveLoading(false); return; }
+      if (!instructorHomePostcode) {
+        console.warn("[home] no geolocation and no home_postcode — skipping drive-time fetch");
+        setDriveData(null);
+        setDriveLoading(false);
+        return;
+      }
+      console.log("[home] fetching drive time via home postcode", instructorHomePostcode, "to", destination);
+      fetchDriveTime({
+        data: { originPostcode: instructorHomePostcode, destination },
+      })
+        .then((d) => {
+          console.log("[home] drive time result (postcode fallback):", d);
+          if (!cancelled) setDriveData(d);
+        })
+        .catch((err) => {
+          console.error("[home] drive time fetch failed (postcode fallback):", err);
+          if (!cancelled) setDriveData(null);
+        })
+        .finally(() => { if (!cancelled) setDriveLoading(false); });
+    };
+
+    if (destination) {
       setDriveLoading(true);
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          if (cancelled) return;
-          setInstructorLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-          console.log("[home] fetching drive time from", pos.coords.latitude, pos.coords.longitude, "to", destination);
-          fetchDriveTime({
-            data: {
-              originLat: pos.coords.latitude,
-              originLon: pos.coords.longitude,
-              destination,
-            },
-          })
-            .then((d) => {
-              console.log("[home] drive time result:", d);
-              if (!cancelled) setDriveData(d);
+      if (typeof navigator !== "undefined" && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            if (cancelled) return;
+            setInstructorLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+            console.log("[home] fetching drive time from", pos.coords.latitude, pos.coords.longitude, "to", destination);
+            fetchDriveTime({
+              data: {
+                originLat: pos.coords.latitude,
+                originLon: pos.coords.longitude,
+                destination,
+              },
             })
-            .catch((err) => {
-              console.error("[home] drive time fetch failed:", err);
-              if (!cancelled) setDriveData(null);
-            })
-            .finally(() => {
-              if (cancelled) return;
-              setDriveLoading(false);
-              // Cache both once drive resolves (weather may still be pending; cache on next tick handled below)
-              chipCacheRef.current[cacheKey] = {
-                weather: weatherData,
-                drive: driveData,
-                expires: Date.now() + 5 * 60 * 1000,
-              };
-            });
-        },
-        () => { if (!cancelled) { setDriveData(null); setDriveLoading(false); setInstructorLocation(null); } },
-        { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 },
-      );
+              .then((d) => {
+                console.log("[home] drive time result:", d);
+                if (!cancelled) setDriveData(d);
+              })
+              .catch((err) => {
+                console.error("[home] drive time fetch failed:", err);
+                if (!cancelled) setDriveData(null);
+              })
+              .finally(() => { if (!cancelled) setDriveLoading(false); });
+          },
+          (err) => {
+            console.warn("[home] geolocation unavailable, falling back to home postcode:", err?.code, err?.message);
+            fallbackToHomePostcode();
+          },
+          { enableHighAccuracy: false, timeout: 4000, maximumAge: 60000 },
+        );
+      } else {
+        fallbackToHomePostcode();
+      }
     } else {
       setDriveData(null);
     }
 
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [upcoming?.id]);
+  }, [upcoming?.id, instructorHomePostcode]);
 
   // Cache the resolved pair whenever both settle
   useEffect(() => {
