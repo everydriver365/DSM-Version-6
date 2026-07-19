@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import React from "react";
-import { Fragment, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -101,6 +101,7 @@ import {
   Headphones,
   Infinity,
   MoreHorizontal,
+  Move,
 } from "lucide-react";
 import {
   IconCurrencyPound,
@@ -158,6 +159,7 @@ import { PAGE_BACKGROUND } from "@/components/PageLayout";
 import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
@@ -1729,6 +1731,9 @@ function HomePage() {
   const [cancelSheetForLesson, setCancelSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSheetForLesson, setDeleteSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSubmittingHome, setDeleteSubmittingHome] = useState(false);
+  const [movingLessonHome, setMovingLessonHome] = useState<LessonRow | null>(null);
+  const [moveModeHome, setMoveModeHome] = useState(false);
+  const [confirmMoveHome, setConfirmMoveHome] = useState<{ date: string; time: string } | null>(null);
   useEffect(() => {
     if (!actionsOpenForLesson) return;
     const onDoc = (ev: MouseEvent) => {
@@ -1740,6 +1745,72 @@ function HomePage() {
     document.addEventListener('mousedown', onDoc);
     return () => document.removeEventListener('mousedown', onDoc);
   }, [actionsOpenForLesson]);
+  const handleMoveLessonHome = useCallback(async (newDate: string, newTime: string) => {
+    if (!movingLessonHome) return;
+    const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const timeVal = newTime.length === 5 ? `${newTime}:00` : newTime;
+      const res = await fetch(
+        SUPABASE_URL + '/rest/v1/lessons?id=eq.' + movingLessonHome.id,
+        {
+          method: 'PATCH',
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            Prefer: 'return=minimal',
+          },
+          body: JSON.stringify({
+            lesson_date: newDate,
+            lesson_time: timeVal,
+            updated_at: new Date().toISOString(),
+          }),
+        },
+      );
+      if (!res.ok) throw new Error('Failed to move lesson');
+
+      const firstName = (movingLessonHome.pupils as any)?.name?.split(' ')[0] || 'Your pupil';
+      if (userId) {
+        await supabase.from('instructor_notifications').insert({
+          instructor_id: userId,
+          type: 'lesson_rescheduled',
+          title: 'Lesson rescheduled',
+          body: firstName + "'s lesson moved from " + movingLessonHome.lesson_time +
+            ' to ' + timeVal + ' on ' + newDate,
+          lesson_id: movingLessonHome.id,
+        });
+        await supabase.from('chat_messages').insert({
+          instructor_id: userId,
+          pupil_id: movingLessonHome.pupil_id,
+          sender_type: 'instructor',
+          body: 'Hi, I have rescheduled your lesson from ' +
+            movingLessonHome.lesson_date + ' at ' + movingLessonHome.lesson_time +
+            ' to ' + newDate + ' at ' + timeVal +
+            '. Please let me know if this works for you.',
+        });
+      }
+
+      setLessons((prev) =>
+        prev.map((l) =>
+          l.id === movingLessonHome.id
+            ? { ...l, lesson_date: newDate, lesson_time: timeVal }
+            : l,
+        ),
+      );
+
+      setMovingLessonHome(null);
+      setMoveModeHome(false);
+      setConfirmMoveHome(null);
+      toast.success('Lesson moved to ' + newDate + ' at ' + newTime);
+    } catch (err) {
+      console.error('[home] move error', err);
+      toast.error('Failed to move lesson');
+    }
+  }, [movingLessonHome, userId]);
   const [allLessons, setAllLessons] = useState<any[]>([]);
   const [expandedLessonId, setExpandedLessonId] = useState<string | null>(null);
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
@@ -5675,7 +5746,59 @@ function HomePage() {
                     </div>
                   </div>
 
-
+                  {moveModeHome && movingLessonHome && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: 12,
+                        background: '#0B1F3A',
+                        color: '#FFFFFF',
+                        borderRadius: 12,
+                        padding: '10px 14px',
+                        marginBottom: 12,
+                        fontFamily: PF,
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+                        <div
+                          style={{
+                            width: 28,
+                            height: 28,
+                            borderRadius: '50%',
+                            background: '#1877D6',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0,
+                          }}
+                        >
+                          <Move size={14} color="#FFFFFF" />
+                        </div>
+                        <div style={{ fontSize: 13, fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          Moving: {(movingLessonHome.pupils as any)?.name?.split(' ')[0] || 'lesson'}'s {movingLessonHome.duration_minutes} min lesson
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => { setMovingLessonHome(null); setMoveModeHome(false); setConfirmMoveHome(null); }}
+                        style={{
+                          background: 'transparent',
+                          border: '1px solid rgba(255,255,255,0.3)',
+                          color: '#FFFFFF',
+                          borderRadius: 8,
+                          padding: '4px 10px',
+                          fontSize: 12,
+                          fontWeight: 500,
+                          cursor: 'pointer',
+                          flexShrink: 0,
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
 
                   {/* Timeline container */}
                   <div style={{ position: 'relative' }}>
@@ -5689,14 +5812,21 @@ function HomePage() {
                       const gapDate = `${gs.getFullYear()}-${String(gs.getMonth() + 1).padStart(2, '0')}-${String(gs.getDate()).padStart(2, '0')}`;
                       const dayName = DAY_NAMES[gs.getDay()];
                       const preview = previewMatchForGap({ date: gapDate, dayName, durationMin: r.mins });
+                      const gapStartTime = fmtT(gs);
                       return (
                         <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: 16 }}>
                           <div
-                            onClick={() => navigate({ to: '/gaps' as never })}
+                            onClick={() => {
+                              if (moveModeHome && movingLessonHome) {
+                                setConfirmMoveHome({ date: gapDate, time: gapStartTime });
+                              } else {
+                                navigate({ to: '/gaps' as never });
+                              }
+                            }}
                             role="button"
                             tabIndex={0}
                             style={{
-                              background: '#FFFFFF',
+                              background: moveModeHome ? '#F4F8FE' : '#FFFFFF',
                               borderRadius: 10,
                               boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                               padding: '12px 14px',
@@ -5704,6 +5834,7 @@ function HomePage() {
                               alignItems: 'center',
                               gap: 10,
                               cursor: 'pointer',
+                              border: moveModeHome ? '1.5px dashed #1877D6' : 'none',
                             }}
                           >
                             <div style={{ flex: 1, minWidth: 0 }}>
@@ -5752,23 +5883,43 @@ function HomePage() {
                                 {formatMins(r.mins)} free · £{potential} potential
                               </div>
                             </div>
-                            <button
-                              type="button"
-                              onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
-                              style={{
-                                background: '#1877D6',
-                                color: '#FFFFFF',
-                                fontSize: 12,
-                                fontWeight: 500,
-                                padding: '8px 12px',
-                                borderRadius: 9,
-                                border: 'none',
-                                cursor: 'pointer',
-                                fontFamily: PF,
-                              }}
-                            >
-                              Fill
-                            </button>
+                            {moveModeHome ? (
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); setConfirmMoveHome({ date: gapDate, time: gapStartTime }); }}
+                                style={{
+                                  background: '#0B1F3A',
+                                  color: '#FFFFFF',
+                                  fontSize: 12,
+                                  fontWeight: 500,
+                                  padding: '8px 12px',
+                                  borderRadius: 9,
+                                  border: 'none',
+                                  cursor: 'pointer',
+                                  fontFamily: PF,
+                                }}
+                              >
+                                Move here
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
+                                style={{
+                                  background: '#1877D6',
+                                  color: '#FFFFFF',
+                                  fontSize: 12,
+                                  fontWeight: 500,
+                                  padding: '8px 12px',
+                                  borderRadius: 9,
+                                  border: 'none',
+                                  cursor: 'pointer',
+                                  fontFamily: PF,
+                                }}
+                              >
+                                Fill
+                              </button>
+                            )}
                           </div>
                         </div>
                       );
@@ -5936,112 +6087,115 @@ function HomePage() {
                                 {priceNode}
                               </div>
                             )}
-                           <div
-                             style={{
-                               position: 'relative',
-                               display: 'flex',
-                               flexDirection: 'column',
-                               alignItems: 'center',
-                               gap: 4,
-                               flexShrink: 0,
-                               marginLeft: 4,
-                             }}
-                           >
-                             <div aria-hidden style={{ position: 'relative' }}>
-                               {isLive && (
-                                 <span
-                                   aria-label="Live"
-                                   style={{
-                                     position: 'absolute',
-                                     top: 0,
-                                     right: 0,
-                                     width: 8,
-                                     height: 8,
-                                     borderRadius: 999,
-                                     backgroundColor: '#DC2626',
-                                     boxShadow: '0 0 0 2px #FFFFFF',
-                                     zIndex: 1,
-                                   }}
-                                 />
-                               )}
-                               <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={36} />
-                             </div>
-                             <button
-                               type="button"
-                               data-home-lesson-actions-trigger
-                               onClick={(e) => {
-                                 e.stopPropagation();
-                                 setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l));
-                               }}
-                               aria-label="More lesson options"
-                               style={{
-                                 width: 28,
-                                 height: 28,
-                                 borderRadius: '50%',
-                                 background: '#F8F9FB',
-                                 border: '0.5px solid #E5E7EB',
-                                 display: 'flex',
-                                 alignItems: 'center',
-                                 justifyContent: 'center',
-                                 cursor: 'pointer',
-                                 padding: 0,
-                               }}
-                             >
-                               <MoreHorizontal size={14} color="#6B7280" />
-                             </button>
-                             {actionsOpenForLesson?.id === l.id && (
-                               <div
-                                 data-home-lesson-actions-popover
-                                 onClick={(ev) => ev.stopPropagation()}
-                                 style={{
-                                   position: 'absolute',
-                                   top: 72,
-                                   right: 0,
-                                   minWidth: 140,
-                                   background: '#FFFFFF',
-                                   border: '1px solid #E5E7EB',
-                                   borderRadius: 10,
-                                   boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-                                   zIndex: 40,
-                                   overflow: 'hidden',
-                                 }}
-                               >
-                                 <button
-                                   type="button"
-                                   style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
-                                   onClick={(ev) => {
-                                     ev.stopPropagation();
-                                     setActionsOpenForLesson(null);
-                                     setCancelSheetForLesson(l);
-                                   }}
-                                 >
-                                   Cancel
-                                 </button>
-                                 <button
-                                   type="button"
-                                   style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#CC2229' }}
-                                   onClick={(ev) => {
-                                     ev.stopPropagation();
-                                     setActionsOpenForLesson(null);
-                                     setDeleteSheetForLesson(l);
-                                   }}
-                                 >
-                                   Delete
-                                 </button>
-                                 <button
-                                   type="button"
-                                   style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
-                                   onClick={(ev) => {
-                                     ev.stopPropagation();
-                                     setActionsOpenForLesson(null);
-                                     navigate({ to: '/lessons/reschedule/$id' as never, params: { id: l.id } as never });
-                                   }}
-                                 >
-                                   Reschedule
-                                 </button>
-                               </div>
-                             )}
-                           </div>
+                            <div
+                              style={{
+                                position: 'relative',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: 6,
+                                flexShrink: 0,
+                                marginLeft: 4,
+                              }}
+                            >
+                              <div aria-hidden style={{ position: 'relative' }}>
+                                {isLive && (
+                                  <span
+                                    aria-label="Live"
+                                    style={{
+                                      position: 'absolute',
+                                      top: 0,
+                                      right: 0,
+                                      width: 8,
+                                      height: 8,
+                                      borderRadius: 999,
+                                      backgroundColor: '#DC2626',
+                                      boxShadow: '0 0 0 2px #FFFFFF',
+                                      zIndex: 1,
+                                    }}
+                                  />
+                                )}
+                                <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={36} />
+                              </div>
+                              <button
+                                type="button"
+                                data-home-lesson-actions-trigger
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l));
+                                }}
+                                aria-label="More lesson options"
+                                style={{
+                                  width: 28,
+                                  height: 28,
+                                  borderRadius: '50%',
+                                  background: '#F8F9FB',
+                                  border: '0.5px solid #E5E7EB',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  cursor: 'pointer',
+                                  padding: 0,
+                                }}
+                              >
+                                <MoreHorizontal size={14} color="#6B7280" />
+                              </button>
+                              {actionsOpenForLesson?.id === l.id && (
+                                <div
+                                  data-home-lesson-actions-popover
+                                  onClick={(ev) => ev.stopPropagation()}
+                                  style={{
+                                    position: 'absolute',
+                                    top: 44,
+                                    right: 0,
+                                    minWidth: 140,
+                                    background: '#FFFFFF',
+                                    border: '1px solid #E5E7EB',
+                                    borderRadius: 10,
+                                    boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                                    zIndex: 40,
+                                    overflow: 'hidden',
+                                  }}
+                                >
+                                  <button
+                                    type="button"
+                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                                    onClick={(ev) => {
+                                      ev.stopPropagation();
+                                      setActionsOpenForLesson(null);
+                                      setMovingLessonHome(l);
+                                      setMoveModeHome(true);
+                                      const firstName = (l.pupils as any)?.name?.split(' ')[0] || 'this lesson';
+                                      toast.info('Select a new time slot for ' + firstName, { duration: 10000 });
+                                    }}
+                                  >
+                                    Move
+                                  </button>
+                                  <button
+                                    type="button"
+                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                                    onClick={(ev) => {
+                                      ev.stopPropagation();
+                                      setActionsOpenForLesson(null);
+                                      setCancelSheetForLesson(l);
+                                    }}
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    type="button"
+                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#CC2229' }}
+                                    onClick={(ev) => {
+                                      ev.stopPropagation();
+                                      setActionsOpenForLesson(null);
+                                      setDeleteSheetForLesson(l);
+                                    }}
+                                  >
+                                    Delete
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                          </div>
                        </div>
                      );
@@ -6793,6 +6947,24 @@ function HomePage() {
         />
       )}
 
+      <ConfirmDialog
+        open={!!confirmMoveHome}
+        title="Move lesson?"
+        description={
+          confirmMoveHome && movingLessonHome
+            ? `Move ${(movingLessonHome.pupils as any)?.name || 'this lesson'} from ${movingLessonHome.lesson_date} at ${movingLessonHome.lesson_time} to ${confirmMoveHome.date} at ${confirmMoveHome.time}?`
+            : ''
+        }
+        confirmText="Move"
+        cancelText="Cancel"
+        variant="default"
+        onCancel={() => setConfirmMoveHome(null)}
+        onConfirm={() => {
+          if (!confirmMoveHome) return;
+          handleMoveLessonHome(confirmMoveHome.date, confirmMoveHome.time);
+          setConfirmMoveHome(null);
+        }}
+      />
 
       <OutstandingBreakdownModal
         open={outstandingOpen}
