@@ -64,11 +64,9 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
       type="button"
       onClick={onMicPress}
       aria-label="Voice commands"
+      className="flex items-center justify-center"
       style={{
-        position: "absolute",
-        left: "50%",
-        transform: "translateX(-50%)",
-        top: -20,
+        marginTop: -20,
         background: "none",
         border: "none",
         padding: 0,
@@ -181,6 +179,16 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
       );
     });
 
+  const renderCustomRow = () => {
+    const rendered = renderCustomItems(items!, 0);
+    return [...rendered.slice(0, 2), micSlot, ...rendered.slice(2)];
+  };
+
+  const renderDefaultRow = () => {
+    const rendered = renderDefaultItems(defaultItems, 0);
+    return [...rendered.slice(0, 2), micSlot, ...rendered.slice(2)];
+  };
+
   return (
     <nav
       className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-16 bg-white flex items-stretch justify-around z-50 pb-safe"
@@ -190,8 +198,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
         boxShadow: "0 -2px 12px rgba(0,0,0,0.08)",
       }}
     >
-      {useCustom ? renderCustomItems(items!, 0) : renderDefaultItems(defaultItems, 0)}
-      {micSlot}
+      {useCustom ? renderCustomRow() : renderDefaultRow()}
     </nav>
   );
 }
