@@ -6172,7 +6172,6 @@ function HomePage() {
                     const dueUnpaid = amt > 0 && !isPaid;
                     const name = pupilName(l);
                     const timeLabel = `${String(start.getHours()).padStart(2, '0')}:${String(start.getMinutes()).padStart(2, '0')}`;
-                    const initials = initialsOf(name);
 
                     let priceNode: React.ReactNode = null;
                     if (isLive) {
