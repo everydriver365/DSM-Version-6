@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Plus, RefreshCw, Trash2, Calendar, Move, ArrowDown, Clock, MoreVertical } from "lucide-react";
+import { Plus, RefreshCw, Trash2, Calendar, Move, ArrowDown, Clock, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
@@ -1596,25 +1596,20 @@ function SchedulePage() {
                                            <Move size={12} color="#1A52A0" />
                                          </button>
                                        )}
-                                         {isLessonRow && (
-                                           <span
-                                             style={{
-                                               fontSize: 9,
-                                               fontWeight: 500,
-                                               color: '#6B7280',
-                                               background: '#F8F9FB',
-                                               border: '0.5px solid #E5E7EB',
-                                               borderRadius: 10,
-                                               padding: '2px 7px',
-                                               fontFamily: 'Inter, sans-serif',
-                                               flexShrink: 0,
-                                               letterSpacing: 0.3,
-                                               textTransform: 'uppercase',
-                                             }}
-                                           >
-                                             DSM
-                                           </span>
-                                         )}
+                                          {isLessonRow && (
+                                            <span
+                                              style={{
+                                                fontSize: 10,
+                                                fontWeight: 500,
+                                                color: '#6B7280',
+                                                fontFamily: 'Inter, sans-serif',
+                                                flexShrink: 0,
+                                                letterSpacing: 0.2,
+                                              }}
+                                            >
+                                              DSM
+                                            </span>
+                                          )}
                                         {isLessonRow && (
                                           <div
                                             style={{
@@ -1654,7 +1649,7 @@ function SchedulePage() {
                                                 padding: 0,
                                               }}
                                             >
-                                              <MoreVertical size={14} color="#6B7280" />
+                                              <MoreHorizontal size={14} color="#6B7280" />
                                             </button>
                                           </div>
                                         )}
