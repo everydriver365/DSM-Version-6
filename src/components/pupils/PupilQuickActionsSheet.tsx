@@ -268,7 +268,12 @@ export function PupilQuickActionsSheet({
   if (!open || !pupil) return null;
 
   return (
-    <>
+    <div
+      className="fixed inset-0 z-[100]"
+      style={{ fontFamily: font }}
+      role="dialog"
+      aria-modal="true"
+    >
       <BottomSheet
         title={pupil.name}
         subtitle="Quick actions"
