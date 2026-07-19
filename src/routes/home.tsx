@@ -159,6 +159,7 @@ import { PAGE_BACKGROUND } from "@/components/PageLayout";
 import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
+import { ChangeTimeSheet } from "@/components/lessons/ChangeTimeSheet";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -1731,6 +1732,8 @@ function HomePage() {
   const [cancelSheetForLesson, setCancelSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSheetForLesson, setDeleteSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSubmittingHome, setDeleteSubmittingHome] = useState(false);
+  const [changeTimeSheetForLesson, setChangeTimeSheetForLesson] = useState<LessonRow | null>(null);
+  const [changeTimeSubmittingHome, setChangeTimeSubmittingHome] = useState(false);
   const [movingLessonHome, setMovingLessonHome] = useState<LessonRow | null>(null);
   const [moveModeHome, setMoveModeHome] = useState(false);
   const [confirmMoveHome, setConfirmMoveHome] = useState<{ date: string; time: string } | null>(null);
@@ -6180,6 +6183,17 @@ function HomePage() {
                                     onClick={(ev) => {
                                       ev.stopPropagation();
                                       setActionsOpenForLesson(null);
+                                      setChangeTimeSheetForLesson(l);
+                                    }}
+                                  >
+                                    Change time
+                                  </button>
+                                  <button
+                                    type="button"
+                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                                    onClick={(ev) => {
+                                      ev.stopPropagation();
+                                      setActionsOpenForLesson(null);
                                       setCancelSheetForLesson(l);
                                     }}
                                   >
@@ -6945,6 +6959,35 @@ function HomePage() {
               toast.error(err?.message || "Failed to delete lesson");
             } finally {
               setDeleteSubmittingHome(false);
+            }
+          }}
+        />
+      )}
+
+      {changeTimeSheetForLesson && (
+        <ChangeTimeSheet
+          open={true}
+          submitting={changeTimeSubmittingHome}
+          currentTime={(changeTimeSheetForLesson.lesson_time ?? "").slice(0, 5)}
+          onClose={() => { if (!changeTimeSubmittingHome) setChangeTimeSheetForLesson(null); }}
+          onConfirm={async (newTime: string) => {
+            const lesson = changeTimeSheetForLesson;
+            if (!lesson) return;
+            setChangeTimeSubmittingHome(true);
+            try {
+              const timeVal = newTime.length === 5 ? `${newTime}:00` : newTime;
+              const { error } = await supabase
+                .from("lessons")
+                .update({ lesson_time: timeVal })
+                .eq("id", lesson.id);
+              if (error) throw error;
+              setLessons((prev) => (prev ?? []).map((l) => l.id === lesson.id ? { ...l, lesson_time: timeVal } : l));
+              toast.success("Lesson time updated");
+              setChangeTimeSheetForLesson(null);
+            } catch (err: any) {
+              toast.error(err?.message || "Failed to update lesson time");
+            } finally {
+              setChangeTimeSubmittingHome(false);
             }
           }}
         />
