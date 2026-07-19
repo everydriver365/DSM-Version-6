@@ -307,10 +307,7 @@ function AlertsTab({
     setAlerts((prev) => prev.map((a) => a.id === alert.id
       ? { ...a, upvotes: newUpvotes, upvoted_by: newUpvotedBy, expires_at: newExpires }
       : a));
-    const { error } = await supabase
-      .from("local_alerts")
-      .update({ upvotes: newUpvotes, upvoted_by: newUpvotedBy, expires_at: newExpires })
-      .eq("id", alert.id);
+    const { error } = await supabase.rpc("upvote_local_alert", { p_alert_id: alert.id });
     if (error) {
       toast.error("Couldn't confirm — try again");
       load();
