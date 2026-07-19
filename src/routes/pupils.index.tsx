@@ -653,6 +653,7 @@ function PupilsIndexPage() {
                           justifyContent: "center",
                           cursor: "pointer",
                           padding: 0,
+                          zIndex: 60,
                         }}
                       >
                         <MoreHorizontal size={14} color="#6B7280" />
