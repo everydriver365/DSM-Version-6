@@ -4972,24 +4972,8 @@ function HomePage() {
           return (
             <div
               onClick={() => navigate({ to: '/pupils/$id', params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any })}
-              style={{ display: 'flex', cursor: 'pointer', padding: 10, gap: 10, alignItems: 'stretch' }}
+              style={{ display: 'flex', cursor: 'pointer', padding: 10, gap: 10, alignItems: 'center' }}
             >
-              {/* Date column */}
-              <div style={{
-                width: 72, flexShrink: 0,
-                background: '#0B1F3A', borderRadius: 14,
-                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                padding: '10px 0',
-              }}>
-                <span style={{ fontSize: 10, fontWeight: 600, color: '#9AA6BC', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                  {d.toLocaleString('en-GB', { weekday: 'short' })}
-                </span>
-                <span style={{ fontSize: 28, fontWeight: 700, color: '#FFFFFF', lineHeight: 1, marginTop: 2 }}>{d.getDate()}</span>
-                <span style={{ fontSize: 10, fontWeight: 600, color: '#6FA8D6', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 2 }}>
-                  {d.toLocaleString('en-GB', { month: 'short' })}
-                </span>
-              </div>
-
               {/* Info column */}
               <div style={{ flex: 1, minWidth: 0, padding: '4px 0', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                 <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
