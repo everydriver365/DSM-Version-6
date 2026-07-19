@@ -3187,43 +3187,65 @@ function HomePage() {
       })
       .finally(() => { if (!cancelled) setWeatherLoading(false); });
 
-    // Drive time — needs instructor geolocation; hide chip if not available.
-    if (destination && typeof navigator !== "undefined" && navigator.geolocation) {
+    // Drive time — try geolocation first, fall back to instructor home postcode.
+    const fallbackToHomePostcode = () => {
+      if (cancelled) return;
+      if (!destination) { setDriveData(null); setDriveLoading(false); return; }
+      if (!instructorHomePostcode) {
+        console.warn("[home] no geolocation and no home_postcode — skipping drive-time fetch");
+        setDriveData(null);
+        setDriveLoading(false);
+        return;
+      }
+      console.log("[home] fetching drive time via home postcode", instructorHomePostcode, "to", destination);
+      fetchDriveTime({
+        data: { originPostcode: instructorHomePostcode, destination },
+      })
+        .then((d) => {
+          console.log("[home] drive time result (postcode fallback):", d);
+          if (!cancelled) setDriveData(d);
+        })
+        .catch((err) => {
+          console.error("[home] drive time fetch failed (postcode fallback):", err);
+          if (!cancelled) setDriveData(null);
+        })
+        .finally(() => { if (!cancelled) setDriveLoading(false); });
+    };
+
+    if (destination) {
       setDriveLoading(true);
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          if (cancelled) return;
-          setInstructorLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-          console.log("[home] fetching drive time from", pos.coords.latitude, pos.coords.longitude, "to", destination);
-          fetchDriveTime({
-            data: {
-              originLat: pos.coords.latitude,
-              originLon: pos.coords.longitude,
-              destination,
-            },
-          })
-            .then((d) => {
-              console.log("[home] drive time result:", d);
-              if (!cancelled) setDriveData(d);
+      if (typeof navigator !== "undefined" && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            if (cancelled) return;
+            setInstructorLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+            console.log("[home] fetching drive time from", pos.coords.latitude, pos.coords.longitude, "to", destination);
+            fetchDriveTime({
+              data: {
+                originLat: pos.coords.latitude,
+                originLon: pos.coords.longitude,
+                destination,
+              },
             })
-            .catch((err) => {
-              console.error("[home] drive time fetch failed:", err);
-              if (!cancelled) setDriveData(null);
-            })
-            .finally(() => {
-              if (cancelled) return;
-              setDriveLoading(false);
-              // Cache both once drive resolves (weather may still be pending; cache on next tick handled below)
-              chipCacheRef.current[cacheKey] = {
-                weather: weatherData,
-                drive: driveData,
-                expires: Date.now() + 5 * 60 * 1000,
-              };
-            });
-        },
-        () => { if (!cancelled) { setDriveData(null); setDriveLoading(false); setInstructorLocation(null); } },
-        { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 },
-      );
+              .then((d) => {
+                console.log("[home] drive time result:", d);
+                if (!cancelled) setDriveData(d);
+              })
+              .catch((err) => {
+                console.error("[home] drive time fetch failed:", err);
+                if (!cancelled) setDriveData(null);
+              })
+              .finally(() => { if (!cancelled) setDriveLoading(false); });
+          },
+          (err) => {
+            console.warn("[home] geolocation unavailable, falling back to home postcode:", err?.code, err?.message);
+            fallbackToHomePostcode();
+          },
+          { enableHighAccuracy: false, timeout: 4000, maximumAge: 60000 },
+        );
+      } else {
+        fallbackToHomePostcode();
+      }
     } else {
       setDriveData(null);
     }
