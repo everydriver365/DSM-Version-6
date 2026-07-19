@@ -1847,6 +1847,133 @@ type QaTile = {
   chipBg: string;
   badge?: React.ReactNode;
 };
+function TileCard({
+  title,
+  subtitle,
+  icon,
+  chipBg,
+  chipBorder,
+  attention,
+  onClick,
+}: {
+  title: string;
+  subtitle: string;
+  icon: React.ReactNode;
+  chipBg: string;
+  chipBorder?: string;
+  attention?: boolean;
+  onClick: () => void;
+}) {
+  const resolvedBorder = chipBorder ?? "rgba(15,32,68,0.12)";
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="cf-tap qa-card"
+      style={{
+        position: "relative",
+        background: "#FFFFFF",
+        border: "1px solid #ECEFF3",
+        borderRadius: 24,
+        padding: "20px 20px 18px",
+        minHeight: 148,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
+        cursor: "pointer",
+        textAlign: "left",
+        fontFamily: "Poppins, Inter, sans-serif",
+        transition: "transform 0.15s ease, box-shadow 0.2s ease",
+        overflow: "hidden",
+        boxShadow: "0 2px 10px -4px rgba(11, 31, 58, 0.10)",
+        width: "100%",
+      }}
+    >
+      {attention && (
+        <span
+          style={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            width: 8,
+            height: 8,
+            borderRadius: 999,
+            background: "#CC2229",
+          }}
+        />
+      )}
+      <div
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: 12,
+          background: chipBg,
+          border: `1px solid ${resolvedBorder}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 18,
+          position: "relative",
+          transition: "transform 0.15s ease",
+        }}
+        className="qa-icon"
+      >
+        {icon}
+      </div>
+      <div
+        style={{
+          fontSize: 15,
+          fontWeight: 600,
+          color: "#0B1F3A",
+          lineHeight: 1.25,
+          marginBottom: 4,
+          letterSpacing: "-0.01em",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          maxWidth: "calc(100% - 36px)",
+          fontFamily: "Poppins, Inter, sans-serif",
+        }}
+      >
+        {title}
+      </div>
+      <div
+        style={{
+          fontSize: 12,
+          fontWeight: 500,
+          color: "#8A93A3",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          maxWidth: "calc(100% - 36px)",
+          whiteSpace: subtitle.includes("\n") ? "pre-line" : "nowrap",
+          lineHeight: 1.3,
+          fontFamily: "Poppins, Inter, sans-serif",
+        }}
+      >
+        {subtitle}
+      </div>
+      <span
+        style={{
+          position: "absolute",
+          right: 14,
+          bottom: 14,
+          width: 32,
+          height: 32,
+          borderRadius: 999,
+          background: "#E5EAF1",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: "0 1px 2px rgba(11, 31, 58, 0.06)",
+        }}
+      >
+        <ChevronRight size={16} color="#0B1F3A" strokeWidth={2.4} />
+      </span>
+    </button>
+  );
+}
+
 
 function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
   const PF = "Inter, sans-serif";
