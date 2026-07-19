@@ -8,6 +8,7 @@ import {
   PupilQuickActionsSheet,
   type PupilQuickActionsPupil,
 } from "@/components/pupils/PupilQuickActionsSheet";
+import { PupilAvatar } from "@/components/PupilAvatar";
 
 export const Route = createFileRoute("/pupils/")({
   head: () => ({
