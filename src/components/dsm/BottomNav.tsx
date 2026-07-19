@@ -63,11 +63,20 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
       key="mic"
       type="button"
       onClick={onMicPress}
-      className="flex-1 flex flex-col items-center justify-center relative select-none"
-      style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
+      aria-label="Voice commands"
+      style={{
+        position: "absolute",
+        left: "50%",
+        transform: "translateX(-50%)",
+        top: -20,
+        background: "none",
+        border: "none",
+        padding: 0,
+        cursor: "pointer",
+        zIndex: 10,
+      }}
     >
       <span
-        aria-label="Voice commands"
         className="flex items-center justify-center rounded-full"
         style={{
           width: 56,
@@ -75,7 +84,6 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
           backgroundColor: "#0B1F3A",
           border: "4px solid #FFFFFF",
           boxShadow: "0 2px 8px rgba(0, 0, 0, 0.18)",
-          marginTop: -20,
         }}
       >
         <Mic size={24} color="#FFFFFF" />
@@ -106,7 +114,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
           <span className="text-[9px] whitespace-nowrap" style={{ color }}>{it.label}</span>
         </>
       );
-      const cls = "flex-1 flex flex-col items-center justify-center gap-1 select-none relative";
+      const cls = "flex flex-col items-center justify-center gap-1 select-none relative";
       if (it.to && !it.onClick && typeof it.ws !== 'number') {
         return (
           <Link key={it.key} to={it.to} className={cls} style={{ color }}>
@@ -152,7 +160,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
           </span>
         </>
       );
-      const cls = "flex-1 flex flex-col items-center justify-center gap-1 select-none relative";
+      const cls = "flex flex-col items-center justify-center gap-1 select-none relative";
       if (to) {
         return (
           <Link key={key} to={to} className={cls} style={{ color }}>
@@ -175,26 +183,15 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
 
   return (
     <nav
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-16 bg-white flex items-stretch z-50 pb-safe"
+      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-16 bg-white flex items-stretch justify-around z-50 pb-safe"
       style={{
         fontFamily: "Inter, sans-serif",
         borderRadius: "20px 20px 0 0",
         boxShadow: "0 -2px 12px rgba(0,0,0,0.08)",
       }}
     >
-      {useCustom ? (
-        <>
-          {renderCustomItems(items!.slice(0, 2), 0)}
-          {micSlot}
-          {renderCustomItems(items!.slice(2), 3)}
-        </>
-      ) : (
-        <>
-          {renderDefaultItems(defaultItems.slice(0, 2), 0)}
-          {micSlot}
-          {renderDefaultItems(defaultItems.slice(2), 3)}
-        </>
-      )}
+      {useCustom ? renderCustomItems(items!, 0) : renderDefaultItems(defaultItems, 0)}
+      {micSlot}
     </nav>
   );
 }
