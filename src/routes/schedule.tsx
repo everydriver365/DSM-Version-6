@@ -17,6 +17,8 @@ import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
 import { PupilAvatar } from "@/components/PupilAvatar";
+import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
+import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
@@ -305,6 +307,23 @@ function SchedulePage() {
   const [confirmMove, setConfirmMove] = useState<{ date: string; time: string } | null>(null);
   const [allPupils, setAllPupils] = useState<Array<{ id: string; name: string | null; first_name: string | null; last_name?: string | null; calendar_colour: string | null }>>([]);
   const [allAvailability, setAllAvailability] = useState<any[]>([]);
+  const [actionsOpenFor, setActionsOpenFor] = useState<Lesson | null>(null);
+  const [cancelSheetFor, setCancelSheetFor] = useState<Lesson | null>(null);
+  const [deleteSheetFor, setDeleteSheetFor] = useState<Lesson | null>(null);
+  const [deleteSubmitting, setDeleteSubmitting] = useState(false);
+
+  // Close popover on outside click
+  useEffect(() => {
+    if (!actionsOpenFor) return;
+    const onDoc = (ev: MouseEvent) => {
+      const target = ev.target as HTMLElement | null;
+      if (target && target.closest('[data-lesson-actions-popover]')) return;
+      if (target && target.closest('[data-lesson-actions-trigger]')) return;
+      setActionsOpenFor(null);
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, [actionsOpenFor]);
 
   const handleMoveLesson = useCallback(async (newDate: string, newTime: string) => {
     if (!movingLesson) return;
@@ -1619,6 +1638,7 @@ function SchedulePage() {
                                               gap: 4,
                                               flexShrink: 0,
                                               marginLeft: 4,
+                                              position: 'relative',
                                             }}
                                           >
                                             <PupilAvatar
@@ -1628,12 +1648,11 @@ function SchedulePage() {
                                             />
                                             <button
                                               type="button"
+                                              data-lesson-actions-trigger
                                               onClick={(ev) => {
                                                 ev.stopPropagation();
-                                                navigate({
-                                                  to: "/lessons/$id" as never,
-                                                  params: { id: (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id } as never,
-                                                });
+                                                const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                                setActionsOpenFor((cur) => (cur?.id === lesson.id ? null : lesson));
                                               }}
                                               aria-label="More lesson options"
                                               style={{
@@ -1651,6 +1670,80 @@ function SchedulePage() {
                                             >
                                               <MoreHorizontal size={14} color="#6B7280" />
                                             </button>
+                                            {actionsOpenFor?.id === (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id && (
+                                              <div
+                                                data-lesson-actions-popover
+                                                onClick={(ev) => ev.stopPropagation()}
+                                                style={{
+                                                  position: 'absolute',
+                                                  top: 72,
+                                                  right: 0,
+                                                  minWidth: 140,
+                                                  background: '#FFFFFF',
+                                                  border: '1px solid #E5E7EB',
+                                                  borderRadius: 10,
+                                                  boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                                                  zIndex: 40,
+                                                  overflow: 'hidden',
+                                                  ...POPPINS,
+                                                }}
+                                              >
+                                                {(() => {
+                                                  const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                                  const itemStyle: React.CSSProperties = {
+                                                    display: 'block',
+                                                    width: '100%',
+                                                    textAlign: 'left',
+                                                    padding: '10px 14px',
+                                                    fontSize: 13,
+                                                    background: 'transparent',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                    color: '#111827',
+                                                  };
+                                                  return (
+                                                    <>
+                                                      <button
+                                                        type="button"
+                                                        style={itemStyle}
+                                                        onClick={(ev) => {
+                                                          ev.stopPropagation();
+                                                          setActionsOpenFor(null);
+                                                          setCancelSheetFor(lesson);
+                                                        }}
+                                                      >
+                                                        Cancel
+                                                      </button>
+                                                      <button
+                                                        type="button"
+                                                        style={{ ...itemStyle, color: '#CC2229' }}
+                                                        onClick={(ev) => {
+                                                          ev.stopPropagation();
+                                                          setActionsOpenFor(null);
+                                                          setDeleteSheetFor(lesson);
+                                                        }}
+                                                      >
+                                                        Delete
+                                                      </button>
+                                                      <button
+                                                        type="button"
+                                                        style={itemStyle}
+                                                        onClick={(ev) => {
+                                                          ev.stopPropagation();
+                                                          setActionsOpenFor(null);
+                                                          navigate({
+                                                            to: "/lessons/reschedule/$id" as never,
+                                                            params: { id: lesson.id } as never,
+                                                          });
+                                                        }}
+                                                      >
+                                                        Reschedule
+                                                      </button>
+                                                    </>
+                                                  );
+                                                })()}
+                                              </div>
+                                            )}
                                           </div>
                                         )}
                                      </>
@@ -1674,6 +1767,56 @@ function SchedulePage() {
         </div>
 
       </div>
+
+      {cancelSheetFor && (
+        <CancelLessonSheet
+          open={true}
+          onClose={() => setCancelSheetFor(null)}
+          pupilName={pupilDisplayName(cancelSheetFor.pupil)}
+          pupilId={cancelSheetFor.pupil_id ?? ""}
+          lessonId={cancelSheetFor.id}
+          lessonDate={cancelSheetFor.lesson_date}
+          lessonTime={cancelSheetFor.lesson_time}
+          paymentStatus={(cancelSheetFor as any).payment_status ?? null}
+          amountDue={Number((cancelSheetFor as any).amount_due ?? 0)}
+          when={`${cancelSheetFor.lesson_date} at ${(cancelSheetFor.lesson_time ?? "").slice(0, 5)}`}
+          onCancelled={() => {
+            const id = cancelSheetFor.id;
+            setLessons((prev) => (prev ?? []).map((l) => l.id === id ? { ...l, status: "cancelled" } : l));
+            toast.success("Lesson cancelled");
+            setCancelSheetFor(null);
+          }}
+        />
+      )}
+
+      {deleteSheetFor && (
+        <DeleteLessonSheet
+          open={true}
+          submitting={deleteSubmitting}
+          onClose={() => { if (!deleteSubmitting) setDeleteSheetFor(null); }}
+          onConfirm={async (reason: string) => {
+            const lesson = deleteSheetFor;
+            if (!lesson) return;
+            setDeleteSubmitting(true);
+            try {
+              const { error } = await supabase
+                .from("lessons")
+                .update({ deleted_at: new Date().toISOString(), deletion_reason: reason })
+                .eq("id", lesson.id);
+              if (error) throw error;
+              setLessons((prev) => (prev ?? []).filter((l) => l.id !== lesson.id));
+              toast.success("Lesson deleted");
+              setDeleteSheetFor(null);
+            } catch (err: any) {
+              toast.error(err?.message || "Failed to delete lesson");
+            } finally {
+              setDeleteSubmitting(false);
+            }
+          }}
+        />
+      )}
+
+
 
 
       <button
