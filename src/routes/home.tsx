@@ -4811,8 +4811,8 @@ function HomePage() {
             lessonTimeText = `${fmt(d)} – ${fmt(endD)}`;
           }
 
-
           // Pupil display
+
           const pupilFullName = upcoming?.pupils?.name ?? '';
           const pupilFirstName = pupilFullName.split(/\s+/)[0] || 'there';
           const pupilInitials = (pupilFullName
