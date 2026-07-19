@@ -1725,6 +1725,10 @@ function HomePage() {
   const [allAvailability, setAllAvailability] = useState<PupilReadySetting[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
+  const [actionsOpenForLesson, setActionsOpenForLesson] = useState<LessonRow | null>(null);
+  const [cancelSheetForLesson, setCancelSheetForLesson] = useState<LessonRow | null>(null);
+  const [deleteSheetForLesson, setDeleteSheetForLesson] = useState<LessonRow | null>(null);
+  const [deleteSubmittingHome, setDeleteSubmittingHome] = useState(false);
   const [allLessons, setAllLessons] = useState<any[]>([]);
   const [expandedLessonId, setExpandedLessonId] = useState<string | null>(null);
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
