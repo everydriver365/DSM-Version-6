@@ -565,29 +565,7 @@ function PupilsIndexPage() {
                     className="flex items-center"
                     style={{ gap: 12, padding: "13px 16px" }}
                   >
-                    <div
-                      className="flex items-center justify-center shrink-0 overflow-hidden"
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: "50%",
-                        backgroundColor: avatarBg,
-                        color: "#FFFFFF",
-                        fontSize: 13,
-                        fontWeight: 600,
-                        ...POPPINS,
-                      }}
-                    >
-                      {p.profile_image_url ? (
-                        <img
-                          src={p.profile_image_url}
-                          alt=""
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        />
-                      ) : (
-                        initials(displayName(p.name))
-                      )}
-                    </div>
+                    <PupilAvatar pupil={p} size={40} />
 
                     <div className="min-w-0 flex-1 flex flex-col">
                       <div
