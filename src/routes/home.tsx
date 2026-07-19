@@ -3138,14 +3138,12 @@ function HomePage() {
   const [weatherData, setWeatherData] = useState<LessonWeather>(null);
   const [driveData, setDriveData] = useState<LessonDriveTime>(null);
   const [instructorLocation, setInstructorLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [routeImgError, setRouteImgError] = useState(false);
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [driveLoading, setDriveLoading] = useState(false);
   // client-side dedupe: keyed by lesson id, expires after 5 min
   const chipCacheRef = useRef<Record<string, { weather: LessonWeather; drive: LessonDriveTime; expires: number }>>({});
 
   useEffect(() => {
-    setRouteImgError(false);
     console.log("[home] chip-effect fired. upcoming.id:", upcoming?.id, "pupil:", upcoming?.pupils?.name, "postcode:", upcoming?.pupils?.postcode, "address:", upcoming?.pupils?.address, "pickup:", upcoming?.pickup_location);
     if (!upcoming?.id) {
       setWeatherData(null);
@@ -4778,11 +4776,6 @@ function HomePage() {
       >
         {/* Map hero + late banner + stats + reasons */}
         {(() => {
-          const mapQuery = upcoming
-            ? [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ')
-            : '';
-          const hasMap = !!mapQuery;
-          const showRouteMap = !!driveData?.staticMapUrl && !routeImgError;
 
           // ETA calculation
           let etaLabel: string | null = null;
@@ -4851,25 +4844,6 @@ function HomePage() {
                   boxShadow: isLate ? 'inset 0 0 0 3px #C23B3B' : undefined,
                 }}
               >
-                {hasMap && showRouteMap && (
-                  <img
-                    src={driveData!.staticMapUrl!}
-                    alt="Route map"
-                    loading="lazy"
-                    onError={() => setRouteImgError(true)}
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', border: 0, pointerEvents: 'none' }}
-                  />
-                )}
-                {hasMap && !showRouteMap && (
-                  <iframe
-                    title="Pickup map"
-                    src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=15&output=embed&maptype=roadmap`}
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0, pointerEvents: 'none' }}
-                  />
-                )}
-
                 {/* Date pill — above the time caption */}
                 {lessonDateText && (
                   <div style={{
