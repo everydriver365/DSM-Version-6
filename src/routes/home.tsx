@@ -4782,10 +4782,6 @@ function HomePage() {
             ? [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ')
             : '';
           const hasMap = !!mapQuery;
-          const fallbackDirectionsUrl = mapQuery
-            ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapQuery)}`
-            : '';
-          const directionsUrl = driveData?.directionsUrl || fallbackDirectionsUrl;
           const showRouteMap = !!driveData?.staticMapUrl && !routeImgError;
 
           // ETA calculation
