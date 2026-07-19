@@ -4813,15 +4813,18 @@ function HomePage() {
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 12, fontWeight: 700, flexShrink: 0,
                   }}>{pupilInitials}</div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6, flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6, flex: 1, minWidth: 0 }}>
                     <div style={{ textAlign: 'center' }}>
                       <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.1 }}>
                         {driveData ? (driveData.durationMinutes >= 60 ? `${Math.floor(driveData.durationMinutes / 60)}h ${driveData.durationMinutes % 60}m` : `${driveData.durationMinutes} min`) : '—'}
                       </div>
-                      <div style={{ fontSize: 11, fontWeight: 600, color: '#1877D6', lineHeight: 1.1, marginTop: 2 }}>
-                        {driveData?.distanceText ?? ''}
-                      </div>
                       <div style={{ fontSize: 9, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 2 }}>Drive</div>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.1 }}>
+                        {driveData?.distanceText ?? '—'}
+                      </div>
+                      <div style={{ fontSize: 9, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 2 }}>Distance</div>
                     </div>
                     <div style={{ textAlign: 'center' }}>
                       <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.1 }}>
