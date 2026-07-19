@@ -1729,6 +1729,17 @@ function HomePage() {
   const [cancelSheetForLesson, setCancelSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSheetForLesson, setDeleteSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSubmittingHome, setDeleteSubmittingHome] = useState(false);
+  useEffect(() => {
+    if (!actionsOpenForLesson) return;
+    const onDoc = (ev: MouseEvent) => {
+      const target = ev.target as HTMLElement | null;
+      if (target && target.closest('[data-home-lesson-actions-popover]')) return;
+      if (target && target.closest('[data-home-lesson-actions-trigger]')) return;
+      setActionsOpenForLesson(null);
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, [actionsOpenForLesson]);
   const [allLessons, setAllLessons] = useState<any[]>([]);
   const [expandedLessonId, setExpandedLessonId] = useState<string | null>(null);
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
