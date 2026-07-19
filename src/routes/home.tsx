@@ -4794,13 +4794,11 @@ function HomePage() {
           }
 
           // Date + time caption
-          let lessonDateText = '';
           let lessonTimeText = '';
           if (upcoming) {
             const d = lessonDateTime(upcoming);
             const endD = new Date(d.getTime() + (upcoming.duration_minutes ?? 0) * 60000);
             const fmt = (x: Date) => `${String(x.getHours()).padStart(2,'0')}:${String(x.getMinutes()).padStart(2,'0')}`;
-            lessonDateText = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
             lessonTimeText = `${fmt(d)} – ${fmt(endD)}`;
           }
 
@@ -4844,22 +4842,6 @@ function HomePage() {
                   boxShadow: isLate ? 'inset 0 0 0 3px #C23B3B' : undefined,
                 }}
               >
-                {/* Date pill — above the time caption */}
-                {lessonDateText && (
-                  <div style={{
-                    position: 'absolute', top: 10, left: 10, zIndex: 2,
-                    background: 'rgba(255,255,255,0.92)', color: '#0B1F3A',
-                    borderRadius: 999, padding: '5px 10px',
-                    display: 'flex', alignItems: 'center', gap: 5,
-                    fontSize: 12, fontWeight: 700,
-                    fontFamily: 'Inter, sans-serif',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-                  }}>
-                    <Calendar size={13} color="#1877D6" />
-                    {lessonDateText}
-                  </div>
-                )}
-
                 {/* Gradient time caption */}
                 {lessonTimeText && (
                   <div style={{
@@ -4973,6 +4955,7 @@ function HomePage() {
           const endD = new Date(d.getTime() + (upcoming.duration_minutes ?? 0) * 60000);
           const fmt = (x: Date) => `${String(x.getHours()).padStart(2, '0')}:${String(x.getMinutes()).padStart(2, '0')}`;
           const timeRange = `${fmt(d)} – ${fmt(endD)}`;
+          const dateText = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
           const status = (upcoming.payment_status ?? 'unpaid').toLowerCase();
           const amount = Number(upcoming.amount_due ?? 0);
           const priceStr = `£${amount.toFixed(2)}`;
@@ -4992,7 +4975,15 @@ function HomePage() {
                 <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {pupilName(upcoming)}
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
+                {dateText && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
+                    <span style={{ width: 16, height: 16, borderRadius: '50%', border: '1.5px solid #1877D6', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <Calendar size={9} color="#1877D6" />
+                    </span>
+                    <span style={{ fontSize: 13, color: '#0B1F3A', fontWeight: 500 }}>{dateText}</span>
+                  </div>
+                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
                   <span style={{ width: 16, height: 16, borderRadius: '50%', border: '1.5px solid #1877D6', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <Clock size={9} color="#1877D6" />
                   </span>
