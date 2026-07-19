@@ -4976,7 +4976,15 @@ function HomePage() {
                 <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {pupilName(upcoming)}
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
+                {lessonDateText && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
+                    <span style={{ width: 16, height: 16, borderRadius: '50%', border: '1.5px solid #1877D6', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <Calendar size={9} color="#1877D6" />
+                    </span>
+                    <span style={{ fontSize: 13, color: '#0B1F3A', fontWeight: 500 }}>{lessonDateText}</span>
+                  </div>
+                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
                   <span style={{ width: 16, height: 16, borderRadius: '50%', border: '1.5px solid #1877D6', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <Clock size={9} color="#1877D6" />
                   </span>
