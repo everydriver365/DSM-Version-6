@@ -41,24 +41,6 @@ interface Pupil {
 
 type StatusKey = "active" | "passed" | "archived";
 
-function initials(name: string) {
-  const parts = name.trim().split(/\s+/);
-  const a = parts[0]?.[0] ?? "";
-  const b = parts.length > 1 ? parts[parts.length - 1][0] : "";
-  return (a + b).toUpperCase() || "?";
-}
-
-const AVATAR_PALETTE = ["#1877D6", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#CC2229", "#854F0B", "#185F8A"];
-// Explicit per-pupil colour overrides (takes precedence over hash).
-const PUPIL_COLOR_OVERRIDES: Record<string, string> = {};
-// Match Joseph Thorne by name-normalised key (id-agnostic override handled in avatarColor via name)
-function avatarColor(id: string, name?: string) {
-  if (name && /joseph/i.test(name) && /thorne/i.test(name)) return "#3B6D11";
-  if (PUPIL_COLOR_OVERRIDES[id]) return PUPIL_COLOR_OVERRIDES[id];
-  let h = 0;
-  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
-  return AVATAR_PALETTE[h % AVATAR_PALETTE.length];
-}
 function displayName(n: string | null | undefined) {
   return (n ?? "").replace(/\s*\.\s*$/, "").trim();
 }
