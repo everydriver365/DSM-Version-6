@@ -1037,76 +1037,12 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     };
   }, []);
 
-  const firstImageUrl = (raw: ListingTile["image_urls"]): string | null => {
-    const arr = Array.isArray(raw)
-      ? raw
-      : typeof raw === "string"
-      ? (() => {
-          try {
-            return JSON.parse(raw) as string[];
-          } catch {
-            return [];
-          }
-        })()
-      : [];
-    return arr[0] ?? null;
-  };
-
   const parsePrice = (priceDisplay: string | null | undefined): { price: string; period: string } | null => {
     if (!priceDisplay) return null;
     const match = priceDisplay.match(/^£?([\d,]+(?:\.\d{2})?)\s*(.*)$/i);
     if (!match) return { price: priceDisplay, period: "" };
     const period = match[2].trim().toLowerCase();
     return { price: `£${match[1]}`, period: period || "one-off" };
-  };
-
-  const featuresFor = (categoryName: string | null | undefined, title: string) => {
-    const c = (categoryName ?? "").toLowerCase();
-    const t = title.toLowerCase();
-    if (c.includes("website") || t.includes("website") || t.includes("site") || c.includes("technology")) {
-      return [
-        { icon: Globe, label: "SEO Optimised" },
-        { icon: Zap, label: "Instant Setup" },
-        { icon: ShieldCheck, label: "SSL Included" },
-        { icon: Smartphone, label: "Mobile Friendly" },
-      ];
-    }
-    if (c.includes("insurance") || t.includes("insurance")) {
-      return [
-        { icon: ShieldCheck, label: "Instant Cover" },
-        { icon: Headphones, label: "UK Support" },
-        { icon: FileCheck, label: "ADI Approved" },
-        { icon: Zap, label: "Quick Quote" },
-      ];
-    }
-    if (c.includes("vehicle") || c.includes("car") || t.includes("vehicle") || t.includes("car") || c.includes("equipment")) {
-      return [
-        { icon: Car, label: "ADI Ready" },
-        { icon: ShieldCheck, label: "Insured" },
-        { icon: CheckCircle2, label: "Serviced" },
-        { icon: Zap, label: "Fast Delivery" },
-      ];
-    }
-    if (c.includes("business") || c.includes("booking") || t.includes("booking") || t.includes("crm")) {
-      return [
-        { icon: BarChart2, label: "Analytics" },
-        { icon: Headphones, label: "UK Support" },
-        { icon: Infinity, label: "Unlimited Bookings" },
-        { icon: Smartphone, label: "Mobile Friendly" },
-      ];
-    }
-    return [
-      { icon: BarChart2, label: "Analytics" },
-      { icon: Headphones, label: "UK Support" },
-      { icon: CalendarCheck, label: "Instant Setup" },
-      { icon: ShieldCheck, label: "SSL Included" },
-    ];
-  };
-
-  const badgeFor = (index: number, isFeatured: boolean | null): string => {
-    if (isFeatured) return "Featured";
-    if (index === 1) return "Best Seller";
-    return "New";
   };
 
   const openListing = (listingId: string) => {
