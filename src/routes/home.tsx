@@ -5811,9 +5811,8 @@ function HomePage() {
                       const gapDate = `${gs.getFullYear()}-${String(gs.getMonth() + 1).padStart(2, '0')}-${String(gs.getDate()).padStart(2, '0')}`;
                       const dayName = DAY_NAMES[gs.getDay()];
                       const preview = previewMatchForGap({ date: gapDate, dayName, durationMin: r.mins });
+                      const gapStartTime = fmtT(gs);
                       return (
-                        const gapStartTime = fmtT(gs);
-                        return (
                         <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: 16 }}>
                           <div
                             onClick={() => {
