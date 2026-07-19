@@ -4957,6 +4957,7 @@ function HomePage() {
           const endD = new Date(d.getTime() + (upcoming.duration_minutes ?? 0) * 60000);
           const fmt = (x: Date) => `${String(x.getHours()).padStart(2, '0')}:${String(x.getMinutes()).padStart(2, '0')}`;
           const timeRange = `${fmt(d)} – ${fmt(endD)}`;
+          const dateText = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
           const status = (upcoming.payment_status ?? 'unpaid').toLowerCase();
           const amount = Number(upcoming.amount_due ?? 0);
           const priceStr = `£${amount.toFixed(2)}`;
