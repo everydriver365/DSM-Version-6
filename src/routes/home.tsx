@@ -5041,8 +5041,8 @@ function HomePage() {
               <button
                 type="button"
                 onClick={(e) => {
-
                   e.stopPropagation();
+
                   navigate({ to: '/messages/$pupilId', params: { pupilId: upcoming.pupil_id } as any });
                 }}
                 style={{
