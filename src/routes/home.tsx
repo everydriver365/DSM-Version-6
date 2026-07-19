@@ -101,7 +101,7 @@ import {
   Smartphone,
   Headphones,
   Infinity,
-  MoreVertical,
+  MoreHorizontal,
 } from "lucide-react";
 import {
   IconCurrencyPound,
@@ -6245,57 +6245,70 @@ function HomePage() {
                                  {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
                                </div>
                              )}
-                             <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
+                             <div style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
                                {name}
                              </div>
-                             <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>
+                             <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
                                {dur} mins
                              </div>
                            </div>
-                           <div aria-hidden style={{ position: 'relative' }}>
-                             {isLive && (
-                               <span
-                                 aria-label="Live"
-                                 style={{
-                                   position: 'absolute',
-                                   top: 0,
-                                   right: 0,
-                                   width: 8,
-                                   height: 8,
-                                   borderRadius: 999,
-                                   backgroundColor: '#DC2626',
-                                   boxShadow: '0 0 0 2px #FFFFFF',
-                                   zIndex: 1,
-                                 }}
-                               />
-                             )}
-                            <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={36} />
-                            </div>
-                            {priceNode}
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                navigate({ to: '/lessons/$id' as never, params: { id: l.id } as never });
-                              }}
-                              aria-label="More lesson options"
-                              style={{
-                                width: 28,
-                                height: 28,
-                                borderRadius: '50%',
-                                background: '#F8F9FB',
-                                border: '0.5px solid #E5E7EB',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                cursor: 'pointer',
-                                flexShrink: 0,
-                                marginLeft: 4,
-                                padding: 0,
-                              }}
-                            >
-                              <MoreVertical size={14} color="#6B7280" />
-                            </button>
+                            {priceNode && (
+                              <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                                {priceNode}
+                              </div>
+                            )}
+                           <div
+                             style={{
+                               display: 'flex',
+                               flexDirection: 'column',
+                               alignItems: 'center',
+                               gap: 4,
+                               flexShrink: 0,
+                               marginLeft: 4,
+                             }}
+                           >
+                             <div aria-hidden style={{ position: 'relative' }}>
+                               {isLive && (
+                                 <span
+                                   aria-label="Live"
+                                   style={{
+                                     position: 'absolute',
+                                     top: 0,
+                                     right: 0,
+                                     width: 8,
+                                     height: 8,
+                                     borderRadius: 999,
+                                     backgroundColor: '#DC2626',
+                                     boxShadow: '0 0 0 2px #FFFFFF',
+                                     zIndex: 1,
+                                   }}
+                                 />
+                               )}
+                               <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={36} />
+                             </div>
+                             <button
+                               type="button"
+                               onClick={(e) => {
+                                 e.stopPropagation();
+                                 navigate({ to: '/lessons/$id' as never, params: { id: l.id } as never });
+                               }}
+                               aria-label="More lesson options"
+                               style={{
+                                 width: 28,
+                                 height: 28,
+                                 borderRadius: '50%',
+                                 background: '#F8F9FB',
+                                 border: '0.5px solid #E5E7EB',
+                                 display: 'flex',
+                                 alignItems: 'center',
+                                 justifyContent: 'center',
+                                 cursor: 'pointer',
+                                 padding: 0,
+                               }}
+                             >
+                               <MoreHorizontal size={14} color="#6B7280" />
+                             </button>
+                           </div>
                          </div>
                        </div>
                     );
