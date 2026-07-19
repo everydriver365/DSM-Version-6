@@ -1430,7 +1430,7 @@ function TileCard({
               inset: 0,
               width: "100%",
               height: "100%",
-              objectFit: "cover",
+              objectFit: "contain",
               objectPosition: "center",
               display: "block",
             }}
@@ -8836,7 +8836,8 @@ function DiscoverSection() {
                     style={{
                       width: 56,
                       height: 56,
-                      background: s.image_url ? `url(${s.image_url}) center/cover` : gradientLive,
+                      background: s.image_url ? `url(${s.image_url}) center/contain` : gradientLive,
+                      backgroundColor: "#EEF1F6",
                       position: 'relative',
                       flexShrink: 0,
                     }}
