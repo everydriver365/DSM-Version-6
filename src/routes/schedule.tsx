@@ -1604,22 +1604,25 @@ function SchedulePage() {
                                           <Move size={12} color="#1A52A0" />
                                         </button>
                                       )}
-                                       {isLessonRow && (
-                                         <span
-                                           style={{
-                                             fontSize: 9,
-                                             fontWeight: 700,
-                                             color: '#1A52A0',
-                                             background: '#E0F4FF',
-                                             borderRadius: 4,
-                                             padding: '1px 5px',
-                                             fontFamily: 'Inter, sans-serif',
-                                             flexShrink: 0,
-                                           }}
-                                         >
-                                           DSM
-                                         </span>
-                                       )}
+                                        {isLessonRow && (
+                                          <span
+                                            style={{
+                                              fontSize: 9,
+                                              fontWeight: 500,
+                                              color: '#6B7280',
+                                              background: '#F8F9FB',
+                                              border: '0.5px solid #E5E7EB',
+                                              borderRadius: 10,
+                                              padding: '2px 7px',
+                                              fontFamily: 'Inter, sans-serif',
+                                              flexShrink: 0,
+                                              letterSpacing: 0.3,
+                                              textTransform: 'uppercase',
+                                            }}
+                                          >
+                                            DSM
+                                          </span>
+                                        )}
                                        {isLessonRow && (
                                          <button
                                            type="button"
