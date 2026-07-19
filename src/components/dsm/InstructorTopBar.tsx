@@ -36,13 +36,15 @@ function IconBtn({
   ariaLabel,
   onClick,
   children,
+  style,
 }: {
   ariaLabel: string;
   onClick: () => void;
   children: React.ReactNode;
+  style?: React.CSSProperties;
 }) {
   return (
-    <button type="button" aria-label={ariaLabel} onClick={onClick} style={ICON_BTN}>
+    <button type="button" aria-label={ariaLabel} onClick={onClick} style={{ ...ICON_BTN, ...style }}>
       {children}
     </button>
   );
