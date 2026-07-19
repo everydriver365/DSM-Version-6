@@ -613,17 +613,41 @@ function PupilsIndexPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center shrink-0" style={{ gap: 2 }}>
-                      <span
+                    <div className="flex items-center shrink-0" style={{ gap: 8 }}>
+                      <div className="flex items-center" style={{ gap: 2 }}>
+                        <span
+                          style={{
+                            fontSize: 12,
+                            color: lessons > 0 ? "#8A94A6" : "#B0BAC9",
+                            ...POPPINS,
+                          }}
+                        >
+                          {lessons} {lessons === 1 ? "lesson" : "lessons"}
+                        </span>
+                        <ChevronRight size={15} color="#B0BAC9" />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openSheet();
+                        }}
+                        aria-label={`Quick actions for ${displayName(p.name)}`}
                         style={{
-                          fontSize: 12,
-                          color: lessons > 0 ? "#8A94A6" : "#B0BAC9",
-                          ...POPPINS,
+                          width: 28,
+                          height: 28,
+                          borderRadius: "50%",
+                          background: "#F8F9FB",
+                          border: "0.5px solid #E5E7EB",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                          padding: 0,
                         }}
                       >
-                        {lessons} {lessons === 1 ? "lesson" : "lessons"}
-                      </span>
-                      <ChevronRight size={15} color="#B0BAC9" />
+                        <MoreHorizontal size={14} color="#6B7280" />
+                      </button>
                     </div>
                   </div>
                 </div>
