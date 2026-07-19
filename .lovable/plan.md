@@ -1,33 +1,22 @@
-## Add an interactive Google Map to the Next Lesson tile
+Add a circular pupil avatar to the left of each lesson tile on /schedule, using the same initials + calendar_colour pattern already used in the next-lesson card on /home.
 
-Only touch `src/routes/home.tsx`.
+## What will change
 
-### What we'll build
-Replace the plain grey hero area with a real interactive Google Maps JS map showing the driving route from the instructor's current location (or home postcode fallback) to the pupil's pickup, rendered with the same route data we already fetch via `getLessonDriveTime`. Tapping the map opens the existing `directionsUrl` in Google Maps.
+1. **src/routes/schedule.tsx**
+   - Add a small `PupilAvatar` helper inside the file (or inline) that renders:
+     - A circular `div` (e.g. 32 × 32 px, borderRadius 50%).
+     - Background colour from `pupilColour(lesson.pupil_id, lesson.pupil?.calendar_colour, pupilName)`.
+     - White initials derived from `first_name`/`last_name`/`name`, or a single-letter fallback.
+   - Insert the avatar as the first element in the non-block lesson row (the `!isBlockRow` branch starting at line 1508), so the layout becomes: `[avatar] [name + time] [move button] [DSM tag]`.
+   - Adjust the row flex gap/padding to keep the existing 12 px card padding and avoid text feeling cramped.
+   - For cancelled lessons, keep the avatar opacity consistent with the rest of the row (it already inherits the parent opacity).
 
-### Implementation
+## What will NOT change
 
-1. **Load Maps JS once.** Reuse the same script-loader pattern already used in `src/components/dsm/AddressLookup.tsx` (idempotent `<script>` inject with `SCRIPT_ID`), but include `loading=async` and no `libraries=places` (not needed here). Key comes from `import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY`.
+- No data fetching changes — the schedule query already selects `pupil.pupils!inner(id, name, first_name, last_name, calendar_colour, …)` which is enough for an initials avatar.
+- No changes to block rows, gap rows, calendar rows, or move-mode behaviour.
+- No new files or dependencies.
 
-2. **New `NextLessonMap` sub-component** inside `home.tsx`:
-   - Props: `originLat`, `originLng`, `destination` (string), `encodedPolyline` (optional — we already return `routes.polyline.encodedPolyline` from the server fn; expose it via `LessonDriveTime` type), `directionsUrl`.
-   - On mount: ensure script loaded, create `google.maps.Map` on a ref'd div with `disableDefaultUI: true`, `gestureHandling: "none"`, `clickableIcons: false`, `keyboardShortcuts: false`, no `mapId`.
-   - Add a green `google.maps.Marker` at origin and red at destination (geocode destination client-side via `Geocoder` if we don't have lat/lng — but we can also add `routes.legs.endLocation` to the server payload to skip geocoding).
-   - Draw the route: decode `encodedPolyline` using `google.maps.geometry.encoding.decodePath` (requires `&libraries=geometry` in the script URL) and render as a `google.maps.Polyline` with `#1877D6`, weight 4.
-   - Fit bounds to the polyline.
-   - Wrap in a clickable div that `window.open(directionsUrl)` on tap.
+## Result
 
-3. **Expose polyline + endLocation from the server.** `LessonDriveTime` in `src/lib/lesson-drive-time.server.ts` already computes `staticMapUrl` from `route.polyline.encodedPolyline` and `leg.endLocation` — surface those two as fields on the returned object (`encodedPolyline`, `destLat`, `destLng`). This is a tiny additive change and required for the map. *(Exception to the "only home.tsx" scope — flagged here explicitly.)*
-
-4. **Wire it into the hero.** In the next-lesson tile hero (currently the grey box with date pill), render `<NextLessonMap …/>` at 160px height when `driveData` is present; keep the existing grey placeholder as fallback while loading or when `driveData` is null.
-
-5. **Keep the date pill + time caption overlays** on top of the map with a subtle gradient scrim for legibility (same gradient pattern already in the file).
-
-### Files
-- `src/routes/home.tsx` — add `NextLessonMap`, script loader, wire into hero.
-- `src/lib/lesson-drive-time.server.ts` — add `encodedPolyline`, `destLat`, `destLng` to the returned object (additive only).
-
-### Notes
-- Uses the referrer-restricted browser key already in `.env` — safe to embed.
-- No `mapId`, no `AdvancedMarkerElement` (per Google Maps knowledge).
-- Static map URL stays as-is for fallback / other consumers.
+Each lesson tile in the schedule agenda will show the pupil's initials in their assigned colour circle next to the name, matching the avatar style used elsewhere in the app.
