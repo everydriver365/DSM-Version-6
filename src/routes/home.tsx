@@ -101,6 +101,7 @@ import {
   Smartphone,
   Headphones,
   Infinity,
+  MoreVertical,
 } from "lucide-react";
 import {
   IconCurrencyPound,
@@ -6268,11 +6269,35 @@ function HomePage() {
                                  }}
                                />
                              )}
-                             <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={36} />
-                           </div>
-                           {priceNode}
-                        </div>
-                      </div>
+                            <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={36} />
+                            </div>
+                            {priceNode}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate({ to: '/lessons/$id' as never, params: { id: l.id } as never });
+                              }}
+                              aria-label="More lesson options"
+                              style={{
+                                width: 28,
+                                height: 28,
+                                borderRadius: '50%',
+                                background: '#F8F9FB',
+                                border: '0.5px solid #E5E7EB',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                                flexShrink: 0,
+                                marginLeft: 4,
+                                padding: 0,
+                              }}
+                            >
+                              <MoreVertical size={14} color="#6B7280" />
+                            </button>
+                         </div>
+                       </div>
                     );
 
                   })}
