@@ -1318,7 +1318,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
-        {sortedSessions.slice(0, 4).map((session) => (
+        {sortedSessions.slice(0, 2).map((session) => (
           <TileCard
             key={session.id}
             title={session.title}
