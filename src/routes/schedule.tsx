@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Plus, RefreshCw, Trash2, Calendar, Move, ArrowDown, Clock } from "lucide-react";
+import { Plus, RefreshCw, Trash2, Calendar, Move, ArrowDown, Clock, MoreVertical } from "lucide-react";
 import { toast } from "sonner";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
