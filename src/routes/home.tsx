@@ -189,6 +189,163 @@ async function handleSyncGoogleClick() {
 }
 
 
+// -------------------- Next Lesson Google Map --------------------
+const GMAPS_SCRIPT_ID = "google-maps-js-script";
+const GMAPS_BROWSER_KEY = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined;
+
+type GMapsWindow = Window & { google?: any };
+
+function loadGoogleMapsJs(): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+  const w = window as GMapsWindow;
+  if (w.google?.maps?.geometry) return Promise.resolve();
+  const existing = document.getElementById(GMAPS_SCRIPT_ID) as HTMLScriptElement | null;
+  if (existing) {
+    return new Promise((resolve) => {
+      const iv = setInterval(() => {
+        if ((window as GMapsWindow).google?.maps?.geometry) {
+          clearInterval(iv);
+          resolve();
+        }
+      }, 150);
+    });
+  }
+  return new Promise((resolve, reject) => {
+    if (!GMAPS_BROWSER_KEY) { reject(new Error("Missing Google Maps browser key")); return; }
+    const s = document.createElement("script");
+    s.id = GMAPS_SCRIPT_ID;
+    s.async = true;
+    s.defer = true;
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${GMAPS_BROWSER_KEY}&libraries=geometry&loading=async`;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Failed to load Google Maps JS"));
+    document.head.appendChild(s);
+  });
+}
+
+function NextLessonMap({
+  originLat,
+  originLng,
+  destLat,
+  destLng,
+  encodedPolyline,
+  directionsUrl,
+  height = 160,
+  isLate = false,
+}: {
+  originLat: number;
+  originLng: number;
+  destLat: number | null;
+  destLng: number | null;
+  encodedPolyline: string | null;
+  directionsUrl: string;
+  height?: number;
+  isLate?: boolean;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [ready, setReady] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadGoogleMapsJs()
+      .then(() => { if (!cancelled) setReady(true); })
+      .catch((e) => { if (!cancelled) setError(e?.message ?? "Map failed to load"); });
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (!ready || !ref.current) return;
+    const g = (window as GMapsWindow).google;
+    if (!g?.maps) return;
+
+    const map = new g.maps.Map(ref.current, {
+      center: { lat: originLat, lng: originLng },
+      zoom: 12,
+      disableDefaultUI: true,
+      gestureHandling: "none",
+      keyboardShortcuts: false,
+      clickableIcons: false,
+      styles: [
+        { featureType: "poi", stylers: [{ visibility: "off" }] },
+        { featureType: "transit", stylers: [{ visibility: "off" }] },
+      ],
+    });
+
+    new g.maps.Marker({
+      position: { lat: originLat, lng: originLng },
+      map,
+      icon: {
+        path: g.maps.SymbolPath.CIRCLE,
+        scale: 7,
+        fillColor: "#22C55E",
+        fillOpacity: 1,
+        strokeColor: "#FFFFFF",
+        strokeWeight: 2,
+      },
+    });
+
+    if (destLat != null && destLng != null) {
+      new g.maps.Marker({
+        position: { lat: destLat, lng: destLng },
+        map,
+        icon: {
+          path: g.maps.SymbolPath.CIRCLE,
+          scale: 7,
+          fillColor: "#CC2229",
+          fillOpacity: 1,
+          strokeColor: "#FFFFFF",
+          strokeWeight: 2,
+        },
+      });
+    }
+
+    if (encodedPolyline && g.maps.geometry?.encoding) {
+      const path = g.maps.geometry.encoding.decodePath(encodedPolyline);
+      new g.maps.Polyline({
+        path,
+        map,
+        strokeColor: "#1877D6",
+        strokeOpacity: 0.95,
+        strokeWeight: 4,
+      });
+      const bounds = new g.maps.LatLngBounds();
+      path.forEach((p: any) => bounds.extend(p));
+      map.fitBounds(bounds, { top: 30, right: 30, bottom: 30, left: 30 });
+    } else if (destLat != null && destLng != null) {
+      const bounds = new g.maps.LatLngBounds();
+      bounds.extend({ lat: originLat, lng: originLng });
+      bounds.extend({ lat: destLat, lng: destLng });
+      map.fitBounds(bounds, { top: 30, right: 30, bottom: 30, left: 30 });
+    }
+  }, [ready, originLat, originLng, destLat, destLng, encodedPolyline]);
+
+  return (
+    <div
+      onClick={() => window.open(directionsUrl, '_blank')}
+      style={{
+        position: 'relative',
+        height,
+        background: '#E8EEF3',
+        overflow: 'hidden',
+        cursor: 'pointer',
+        boxShadow: isLate ? 'inset 0 0 0 3px #C23B3B' : undefined,
+      }}
+    >
+      <div ref={ref} style={{ position: 'absolute', inset: 0 }} />
+      {!ready && !error && (
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#6B7280' }}>
+          Loading map…
+        </div>
+      )}
+      {error && (
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#6B7280' }}>
+          Map unavailable
+        </div>
+      )}
+    </div>
+  );
+}
 
 
 export const Route = createFileRoute("/home")({
@@ -4836,21 +4993,33 @@ function HomePage() {
               <div
                 style={{
                   position: 'relative',
-                  height: 105,
-                  background: '#E8EEF3',
                   overflow: 'hidden',
                   boxShadow: isLate ? 'inset 0 0 0 3px #C23B3B' : undefined,
                 }}
               >
+                {driveData ? (
+                  <NextLessonMap
+                    originLat={driveData.originLat}
+                    originLng={driveData.originLng}
+                    destLat={driveData.destLat}
+                    destLng={driveData.destLng}
+                    encodedPolyline={driveData.encodedPolyline}
+                    directionsUrl={driveData.directionsUrl}
+                    height={160}
+                    isLate={isLate}
+                  />
+                ) : (
+                  <div style={{ height: 105, background: '#E8EEF3' }} />
+                )}
                 {/* Gradient time caption */}
                 {lessonTimeText && (
                   <div style={{
                     position: 'absolute', left: 0, right: 0, bottom: 0,
                     background: 'linear-gradient(0deg, rgba(11,31,58,0.88), rgba(11,31,58,0))',
-
                     padding: '16px 14px 10px',
                     color: '#FFFFFF', fontWeight: 700, fontSize: 17,
                     fontFamily: 'Inter, sans-serif',
+                    pointerEvents: 'none',
                   }}>{lessonTimeText}</div>
                 )}
               </div>

@@ -9,6 +9,9 @@ export type LessonDriveTime = {
   staticMapUrl: string | null;
   routeSummary: string | null;
   distanceText: string | null;
+  encodedPolyline: string | null;
+  destLat: number | null;
+  destLng: number | null;
 } | null;
 
 type LessonDriveTimeInput = {
@@ -193,6 +196,9 @@ export async function fetchLessonDriveTime({
       staticMapUrl,
       routeSummary: (route.description as string | undefined) || null,
       distanceText: typeof distanceMeters === "number" ? formatDistance(distanceMeters) : null,
+      encodedPolyline: polyline ?? null,
+      destLat: end?.latitude ?? null,
+      destLng: end?.longitude ?? null,
     };
 
     CACHE.set(cacheKey, { value, expires: now + TTL_MS });
