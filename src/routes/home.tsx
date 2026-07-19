@@ -1730,6 +1730,9 @@ function HomePage() {
   const [cancelSheetForLesson, setCancelSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSheetForLesson, setDeleteSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSubmittingHome, setDeleteSubmittingHome] = useState(false);
+  const [movingLessonHome, setMovingLessonHome] = useState<LessonRow | null>(null);
+  const [moveModeHome, setMoveModeHome] = useState(false);
+  const [confirmMoveHome, setConfirmMoveHome] = useState<{ date: string; time: string } | null>(null);
   useEffect(() => {
     if (!actionsOpenForLesson) return;
     const onDoc = (ev: MouseEvent) => {
@@ -1741,6 +1744,72 @@ function HomePage() {
     document.addEventListener('mousedown', onDoc);
     return () => document.removeEventListener('mousedown', onDoc);
   }, [actionsOpenForLesson]);
+  const handleMoveLessonHome = useCallback(async (newDate: string, newTime: string) => {
+    if (!movingLessonHome) return;
+    const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const timeVal = newTime.length === 5 ? `${newTime}:00` : newTime;
+      const res = await fetch(
+        SUPABASE_URL + '/rest/v1/lessons?id=eq.' + movingLessonHome.id,
+        {
+          method: 'PATCH',
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            Prefer: 'return=minimal',
+          },
+          body: JSON.stringify({
+            lesson_date: newDate,
+            lesson_time: timeVal,
+            updated_at: new Date().toISOString(),
+          }),
+        },
+      );
+      if (!res.ok) throw new Error('Failed to move lesson');
+
+      const firstName = (movingLessonHome.pupils as any)?.name?.split(' ')[0] || 'Your pupil';
+      if (userId) {
+        await supabase.from('instructor_notifications').insert({
+          instructor_id: userId,
+          type: 'lesson_rescheduled',
+          title: 'Lesson rescheduled',
+          body: firstName + "'s lesson moved from " + movingLessonHome.lesson_time +
+            ' to ' + timeVal + ' on ' + newDate,
+          lesson_id: movingLessonHome.id,
+        });
+        await supabase.from('chat_messages').insert({
+          instructor_id: userId,
+          pupil_id: movingLessonHome.pupil_id,
+          sender_type: 'instructor',
+          body: 'Hi, I have rescheduled your lesson from ' +
+            movingLessonHome.lesson_date + ' at ' + movingLessonHome.lesson_time +
+            ' to ' + newDate + ' at ' + timeVal +
+            '. Please let me know if this works for you.',
+        });
+      }
+
+      setLessons((prev) =>
+        prev.map((l) =>
+          l.id === movingLessonHome.id
+            ? { ...l, lesson_date: newDate, lesson_time: timeVal }
+            : l,
+        ),
+      );
+
+      setMovingLessonHome(null);
+      setMoveModeHome(false);
+      setConfirmMoveHome(null);
+      toast.success('Lesson moved to ' + newDate + ' at ' + newTime);
+    } catch (err) {
+      console.error('[home] move error', err);
+      toast.error('Failed to move lesson');
+    }
+  }, [movingLessonHome, userId]);
   const [allLessons, setAllLessons] = useState<any[]>([]);
   const [expandedLessonId, setExpandedLessonId] = useState<string | null>(null);
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
