@@ -5029,6 +5029,63 @@ function HomePage() {
           </div>
         )}
 
+        {/* Footer actions — Navigate wide, Text + Call compact */}
+        {upcoming && (() => {
+          const q = [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ');
+          const phone = upcoming.pupils?.phone ?? null;
+          return (
+            <div style={{ padding: '0 10px 8px', display: 'flex', gap: 8 }}>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!q) { toast('No pickup set'); return; }
+                  window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(q)}`, '_blank');
+                }}
+                style={{
+                  flex: 3, background: '#FFFFFF', color: '#1877D6',
+                  border: '1px solid #1877D6', borderRadius: 10, padding: '9px 0',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                  fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                }}
+              >
+                <Navigation size={14} color="#1877D6" /> Navigate
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate({ to: '/messages/$pupilId', params: { pupilId: upcoming.pupil_id } as any });
+                }}
+                style={{
+                  flex: 1, background: '#EAF3FB', color: '#1877D6',
+                  border: 'none', borderRadius: 10, padding: '9px 0',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                  fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                }}
+              >
+                <MessageSquare size={13} color="#1877D6" /> Text
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!phone) { toast('No phone number'); return; }
+                  window.location.href = `tel:${phone}`;
+                }}
+                style={{
+                  flex: 1, background: '#EAF3FB', color: '#1877D6',
+                  border: 'none', borderRadius: 10, padding: '9px 0',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                  fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                }}
+              >
+                <Phone size={13} color="#1877D6" /> Call
+              </button>
+            </div>
+          );
+        })()}
+
         {/* Expand footer */}
         {upcoming && (
           <div style={{ padding: '0 10px 10px' }}>
