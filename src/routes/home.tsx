@@ -3138,7 +3138,6 @@ function HomePage() {
   const [weatherData, setWeatherData] = useState<LessonWeather>(null);
   const [driveData, setDriveData] = useState<LessonDriveTime>(null);
   const [instructorLocation, setInstructorLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [routeImgError, setRouteImgError] = useState(false);
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [driveLoading, setDriveLoading] = useState(false);
   // client-side dedupe: keyed by lesson id, expires after 5 min
@@ -4778,11 +4777,6 @@ function HomePage() {
       >
         {/* Map hero + late banner + stats + reasons */}
         {(() => {
-          const mapQuery = upcoming
-            ? [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ')
-            : '';
-          const hasMap = !!mapQuery;
-          const showRouteMap = !!driveData?.staticMapUrl && !routeImgError;
 
           // ETA calculation
           let etaLabel: string | null = null;
