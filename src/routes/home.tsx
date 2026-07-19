@@ -4872,25 +4872,6 @@ function HomePage() {
                 )}
 
 
-                {/* ROUTE pill — top-right */}
-                {upcoming && directionsUrl && (
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); window.open(directionsUrl, '_blank'); }}
-                    style={{
-                      position: 'absolute', top: 10, right: 10,
-                      background: '#0B1F3A', color: '#FFFFFF',
-                      border: 'none', borderRadius: 999,
-                      padding: '6px 12px',
-                      fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase',
-                      display: 'flex', alignItems: 'center', gap: 6,
-                      cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-                    }}
-                  >
-                    <Navigation size={13} color="#FFFFFF" /> Route
-                  </button>
-                )}
 
                 {/* Gradient time caption */}
                 {lessonTimeText && (
