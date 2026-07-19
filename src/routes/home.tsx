@@ -1385,6 +1385,7 @@ function TileCard({
   chipBg,
   chipBorder,
   attention,
+  image,
   onClick,
 }: {
   title: string;
@@ -1393,6 +1394,7 @@ function TileCard({
   chipBg: string;
   chipBorder?: string;
   attention?: boolean;
+  image?: string;
   onClick: () => void;
 }) {
   const resolvedBorder = chipBorder ?? "rgba(15,32,68,0.12)";
@@ -1406,8 +1408,8 @@ function TileCard({
         background: "#FFFFFF",
         border: "1px solid #ECEFF3",
         borderRadius: 24,
-        padding: "20px 20px 18px",
-        minHeight: 148,
+        padding: image ? "0 0 18px" : "20px 20px 18px",
+        minHeight: image ? 182 : 148,
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
@@ -1431,6 +1433,22 @@ function TileCard({
             height: 8,
             borderRadius: 999,
             background: "#CC2229",
+            zIndex: 2,
+          }}
+        />
+      )}
+      {image && (
+        <div
+          style={{
+            width: "100%",
+            height: 70,
+            flexShrink: 0,
+            background: `url(${image}) center/cover no-repeat`,
+            borderTopLeftRadius: 24,
+            borderTopRightRadius: 24,
+            marginBottom: 14,
+            position: "relative",
+            overflow: "hidden",
           }}
         />
       )}
@@ -1445,6 +1463,7 @@ function TileCard({
           alignItems: "center",
           justifyContent: "center",
           marginBottom: 18,
+          marginLeft: 20,
           position: "relative",
           transition: "transform 0.15s ease",
         }}
@@ -1463,7 +1482,8 @@ function TileCard({
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
-          maxWidth: "calc(100% - 36px)",
+          maxWidth: "calc(100% - 56px)",
+          marginLeft: 20,
           fontFamily: "Poppins, Inter, sans-serif",
         }}
       >
@@ -1476,7 +1496,8 @@ function TileCard({
           color: "#8A93A3",
           overflow: "hidden",
           textOverflow: "ellipsis",
-          maxWidth: "calc(100% - 36px)",
+          maxWidth: "calc(100% - 56px)",
+          marginLeft: 20,
           whiteSpace: subtitle.includes("\n") ? "pre-line" : "nowrap",
           lineHeight: 1.3,
           fontFamily: "Poppins, Inter, sans-serif",
