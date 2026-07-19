@@ -156,6 +156,8 @@ import {
 } from "../lib/pushNotifications";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
 import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
+import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
+import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
@@ -1723,6 +1725,21 @@ function HomePage() {
   const [allAvailability, setAllAvailability] = useState<PupilReadySetting[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
+  const [actionsOpenForLesson, setActionsOpenForLesson] = useState<LessonRow | null>(null);
+  const [cancelSheetForLesson, setCancelSheetForLesson] = useState<LessonRow | null>(null);
+  const [deleteSheetForLesson, setDeleteSheetForLesson] = useState<LessonRow | null>(null);
+  const [deleteSubmittingHome, setDeleteSubmittingHome] = useState(false);
+  useEffect(() => {
+    if (!actionsOpenForLesson) return;
+    const onDoc = (ev: MouseEvent) => {
+      const target = ev.target as HTMLElement | null;
+      if (target && target.closest('[data-home-lesson-actions-popover]')) return;
+      if (target && target.closest('[data-home-lesson-actions-trigger]')) return;
+      setActionsOpenForLesson(null);
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, [actionsOpenForLesson]);
   const [allLessons, setAllLessons] = useState<any[]>([]);
   const [expandedLessonId, setExpandedLessonId] = useState<string | null>(null);
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
@@ -5921,6 +5938,7 @@ function HomePage() {
                             )}
                            <div
                              style={{
+                               position: 'relative',
                                display: 'flex',
                                flexDirection: 'column',
                                alignItems: 'center',
@@ -5950,9 +5968,10 @@ function HomePage() {
                              </div>
                              <button
                                type="button"
+                               data-home-lesson-actions-trigger
                                onClick={(e) => {
                                  e.stopPropagation();
-                                 navigate({ to: '/lessons/$id' as never, params: { id: l.id } as never });
+                                 setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l));
                                }}
                                aria-label="More lesson options"
                                style={{
@@ -5970,10 +5989,62 @@ function HomePage() {
                              >
                                <MoreHorizontal size={14} color="#6B7280" />
                              </button>
+                             {actionsOpenForLesson?.id === l.id && (
+                               <div
+                                 data-home-lesson-actions-popover
+                                 onClick={(ev) => ev.stopPropagation()}
+                                 style={{
+                                   position: 'absolute',
+                                   top: 72,
+                                   right: 0,
+                                   minWidth: 140,
+                                   background: '#FFFFFF',
+                                   border: '1px solid #E5E7EB',
+                                   borderRadius: 10,
+                                   boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                                   zIndex: 40,
+                                   overflow: 'hidden',
+                                 }}
+                               >
+                                 <button
+                                   type="button"
+                                   style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                                   onClick={(ev) => {
+                                     ev.stopPropagation();
+                                     setActionsOpenForLesson(null);
+                                     setCancelSheetForLesson(l);
+                                   }}
+                                 >
+                                   Cancel
+                                 </button>
+                                 <button
+                                   type="button"
+                                   style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#CC2229' }}
+                                   onClick={(ev) => {
+                                     ev.stopPropagation();
+                                     setActionsOpenForLesson(null);
+                                     setDeleteSheetForLesson(l);
+                                   }}
+                                 >
+                                   Delete
+                                 </button>
+                                 <button
+                                   type="button"
+                                   style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                                   onClick={(ev) => {
+                                     ev.stopPropagation();
+                                     setActionsOpenForLesson(null);
+                                     navigate({ to: '/lessons/reschedule/$id' as never, params: { id: l.id } as never });
+                                   }}
+                                 >
+                                   Reschedule
+                                 </button>
+                               </div>
+                             )}
                            </div>
                          </div>
                        </div>
-                    );
+                     );
 
                   })}
                   </div>
@@ -6673,6 +6744,55 @@ function HomePage() {
           }}
         />
       )}
+
+      {cancelSheetForLesson && (
+        <CancelLessonSheet
+          open={true}
+          onClose={() => setCancelSheetForLesson(null)}
+          pupilName={pupilName(cancelSheetForLesson)}
+          pupilId={cancelSheetForLesson.pupil_id ?? ""}
+          lessonId={cancelSheetForLesson.id}
+          lessonDate={cancelSheetForLesson.lesson_date}
+          lessonTime={cancelSheetForLesson.lesson_time}
+          paymentStatus={(cancelSheetForLesson as any).payment_status ?? null}
+          amountDue={Number((cancelSheetForLesson as any).amount_due ?? 0)}
+          when={`${cancelSheetForLesson.lesson_date} at ${(cancelSheetForLesson.lesson_time ?? "").slice(0, 5)}`}
+          onCancelled={() => {
+            const id = cancelSheetForLesson.id;
+            setLessons((prev) => (prev ?? []).map((l) => l.id === id ? { ...l, status: "cancelled" } : l));
+            toast.success("Lesson cancelled");
+            setCancelSheetForLesson(null);
+          }}
+        />
+      )}
+
+      {deleteSheetForLesson && (
+        <DeleteLessonSheet
+          open={true}
+          submitting={deleteSubmittingHome}
+          onClose={() => { if (!deleteSubmittingHome) setDeleteSheetForLesson(null); }}
+          onConfirm={async (reason: string) => {
+            const lesson = deleteSheetForLesson;
+            if (!lesson) return;
+            setDeleteSubmittingHome(true);
+            try {
+              const { error } = await supabase
+                .from("lessons")
+                .update({ deleted_at: new Date().toISOString(), deletion_reason: reason })
+                .eq("id", lesson.id);
+              if (error) throw error;
+              setLessons((prev) => (prev ?? []).filter((l) => l.id !== lesson.id));
+              toast.success("Lesson deleted");
+              setDeleteSheetForLesson(null);
+            } catch (err: any) {
+              toast.error(err?.message || "Failed to delete lesson");
+            } finally {
+              setDeleteSubmittingHome(false);
+            }
+          }}
+        />
+      )}
+
 
       <OutstandingBreakdownModal
         open={outstandingOpen}
