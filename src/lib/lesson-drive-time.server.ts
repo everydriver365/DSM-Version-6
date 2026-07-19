@@ -9,6 +9,9 @@ export type LessonDriveTime = {
   staticMapUrl: string | null;
   routeSummary: string | null;
   distanceText: string | null;
+  encodedPolyline: string | null;
+  destLat: number | null;
+  destLng: number | null;
 } | null;
 
 type LessonDriveTimeInput = {
