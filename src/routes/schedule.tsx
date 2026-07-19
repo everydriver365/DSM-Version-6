@@ -307,6 +307,23 @@ function SchedulePage() {
   const [confirmMove, setConfirmMove] = useState<{ date: string; time: string } | null>(null);
   const [allPupils, setAllPupils] = useState<Array<{ id: string; name: string | null; first_name: string | null; last_name?: string | null; calendar_colour: string | null }>>([]);
   const [allAvailability, setAllAvailability] = useState<any[]>([]);
+  const [actionsOpenFor, setActionsOpenFor] = useState<Lesson | null>(null);
+  const [cancelSheetFor, setCancelSheetFor] = useState<Lesson | null>(null);
+  const [deleteSheetFor, setDeleteSheetFor] = useState<Lesson | null>(null);
+  const [deleteSubmitting, setDeleteSubmitting] = useState(false);
+
+  // Close popover on outside click
+  useEffect(() => {
+    if (!actionsOpenFor) return;
+    const onDoc = (ev: MouseEvent) => {
+      const target = ev.target as HTMLElement | null;
+      if (target && target.closest('[data-lesson-actions-popover]')) return;
+      if (target && target.closest('[data-lesson-actions-trigger]')) return;
+      setActionsOpenFor(null);
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, [actionsOpenFor]);
 
   const handleMoveLesson = useCallback(async (newDate: string, newTime: string) => {
     if (!movingLesson) return;
