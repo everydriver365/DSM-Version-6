@@ -11,6 +11,7 @@ export type InstructorTopBarProps = {
   onLiveTrack: () => void;
   onBell: () => void;
   onMenu: () => void;
+  onMicPress: () => void;
   onProfile?: () => void;
   onBack?: () => void;
   pageTitle?: string;
