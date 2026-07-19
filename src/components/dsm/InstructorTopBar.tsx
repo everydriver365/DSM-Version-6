@@ -1,5 +1,5 @@
 import React from "react";
-import { ChevronRight, ChevronLeft, Bell } from "lucide-react";
+import { ChevronRight, ChevronLeft, Bell, Mic } from "lucide-react";
 import { PhoneIcon, CarIcon, MenuIcon, PoundIcon } from "@/components/icons/DrivingIcons";
 import { useNavigate } from "@tanstack/react-router";
 
