@@ -1989,6 +1989,7 @@ function HomePage() {
   const [localRoom, setLocalRoom] = useState<{ id: string; area_name: string } | null>(null);
   const [localChatLatest, setLocalChatLatest] = useState<{ message: string; created_at: string; instructors: { name: string | null } | null } | null>(null);
   const [instructorArea, setInstructorArea] = useState<string>('your area');
+  const [instructorHomePostcode, setInstructorHomePostcode] = useState<string | null>(null);
   const [pupilsTab, setPupilsTab] = useState<'current' | 'passed' | 'cancelled' | 'inactive'>('current');
   const [allPupilsList, setAllPupilsList] = useState<Array<{
     id: string;
