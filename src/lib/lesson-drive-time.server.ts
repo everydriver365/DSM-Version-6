@@ -166,7 +166,13 @@ export async function fetchLessonDriveTime({
           `&path=enc:${encodeURIComponent(polyline)}` +
           `&markers=color:green%7Clabel:S%7C${start.latitude},${start.longitude}` +
           `&markers=color:red%7Clabel:E%7C${end.latitude},${end.longitude}` +
-          visibleParam
+          visibleParam +
+          `&style=feature:water|color:0x1877D6` +
+          `&style=feature:landscape|color:0xF5F0E8` +
+          `&style=feature:road|element:geometry|color:0xFFFFFF` +
+          `&style=feature:road|element:labels|visibility:simplified` +
+          `&style=feature:poi|visibility:off` +
+          `&style=feature:transit|visibility:off`
         : null;
 
     const directionsUrl =
