@@ -6220,57 +6220,57 @@ function HomePage() {
                             boxSizing: 'border-box',
                           }}
                         >
-                          <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                            <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
-                              {timeLabel}
-                            </div>
-                            <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
-                              {durLabel}
-                            </div>
-                          </div>
-                          <div aria-hidden style={{ position: 'relative' }}>
-                            {isLive && (
-                              <span
-                                aria-label="Live"
-                                style={{
-                                  position: 'absolute',
-                                  top: 0,
-                                  right: 0,
-                                  width: 8,
-                                  height: 8,
-                                  borderRadius: 999,
-                                  backgroundColor: '#DC2626',
-                                  boxShadow: '0 0 0 2px #FFFFFF',
-                                  zIndex: 1,
-                                }}
-                              />
-                            )}
-                            <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={36} />
-                          </div>
-                          <div
-                            aria-hidden
-                            style={{
-                              width: 3,
-                              borderRadius: 2,
-                              background: calColour,
-                              flexShrink: 0,
-                              alignSelf: 'stretch',
-                            }}
-                          />
-                          <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
-                            {tab === 'next' && (
-                              <div style={{ fontSize: 11, fontWeight: 500, color: '#1877D6', marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
-                                {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
-                              </div>
-                            )}
-                            <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
-                              {name}
-                            </div>
-                            <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>
-                              {dur} mins
-                            </div>
-                          </div>
-                          {priceNode}
+                           <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
+                             <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                               {timeLabel}
+                             </div>
+                             <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                               {durLabel}
+                             </div>
+                           </div>
+                           <div
+                             aria-hidden
+                             style={{
+                               width: 3,
+                               borderRadius: 2,
+                               background: calColour,
+                               flexShrink: 0,
+                               alignSelf: 'stretch',
+                             }}
+                           />
+                           <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
+                             {tab === 'next' && (
+                               <div style={{ fontSize: 11, fontWeight: 500, color: '#1877D6', marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
+                                 {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
+                               </div>
+                             )}
+                             <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
+                               {name}
+                             </div>
+                             <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>
+                               {dur} mins
+                             </div>
+                           </div>
+                           <div aria-hidden style={{ position: 'relative' }}>
+                             {isLive && (
+                               <span
+                                 aria-label="Live"
+                                 style={{
+                                   position: 'absolute',
+                                   top: 0,
+                                   right: 0,
+                                   width: 8,
+                                   height: 8,
+                                   borderRadius: 999,
+                                   backgroundColor: '#DC2626',
+                                   boxShadow: '0 0 0 2px #FFFFFF',
+                                   zIndex: 1,
+                                 }}
+                               />
+                             )}
+                             <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={36} />
+                           </div>
+                           {priceNode}
                         </div>
                       </div>
                     );
