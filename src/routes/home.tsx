@@ -1298,8 +1298,6 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     if (c.includes("waiting")) return "waiting";
     return "other";
   };
-  const typeColor = (t: ReturnType<typeof sessionType>) =>
-    t === "meet" ? "#1877D6" : t === "waiting" ? "#6B4FD6" : "#0B1F3A";
   const typeIcon = (t: ReturnType<typeof sessionType>) => {
     if (t === "standards") return { Icon: IconClipboardCheck, color: "#3D7BE0" };
     if (t === "meet") return { Icon: IconSteeringWheel, color: "#FFFFFF" };
