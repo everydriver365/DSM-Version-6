@@ -1358,8 +1358,8 @@ function TileCard({
 }: {
   title: string;
   subtitle: string;
-  icon: React.ReactNode;
-  chipBg: string;
+  icon?: React.ReactNode;
+  chipBg?: string;
   chipBorder?: string;
   attention?: boolean;
   image?: string;
