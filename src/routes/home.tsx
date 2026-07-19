@@ -6252,7 +6252,11 @@ function HomePage() {
                                {dur} mins
                              </div>
                            </div>
-                           {priceNode}
+                            {priceNode && (
+                              <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                                {priceNode}
+                              </div>
+                            )}
                            <div
                              style={{
                                display: 'flex',
