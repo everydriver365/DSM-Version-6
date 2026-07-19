@@ -157,6 +157,7 @@ import {
   isSupported as notificationsSupported,
 } from "../lib/pushNotifications";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
+import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
@@ -6171,7 +6172,6 @@ function HomePage() {
                     const dueUnpaid = amt > 0 && !isPaid;
                     const name = pupilName(l);
                     const timeLabel = `${String(start.getHours()).padStart(2, '0')}:${String(start.getMinutes()).padStart(2, '0')}`;
-                    const initials = initialsOf(name);
 
                     let priceNode: React.ReactNode = null;
                     if (isLive) {
@@ -6194,7 +6194,7 @@ function HomePage() {
                       );
                     }
 
-                    const calColour = (l.pupils as any)?.calendar_colour ?? '#0B1F3A';
+                    const calColour = pupilColour(l.pupil_id, (l.pupils as any)?.calendar_colour ?? null, name);
                     const durLabel = (() => {
                       const h = Math.floor(dur / 60);
                       const m = dur % 60;
@@ -6228,18 +6228,7 @@ function HomePage() {
                               {durLabel}
                             </div>
                           </div>
-                          <div
-                            aria-hidden
-                            style={{
-                              position: 'relative',
-                              width: 36, height: 36, borderRadius: 999,
-                              background: calColour, color: '#FFFFFF',
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              fontSize: 12, fontWeight: 500, letterSpacing: 0.2,
-                              flexShrink: 0,
-                              overflow: 'hidden',
-                            }}
-                          >
+                          <div aria-hidden style={{ position: 'relative' }}>
                             {isLive && (
                               <span
                                 aria-label="Live"
@@ -6256,15 +6245,7 @@ function HomePage() {
                                 }}
                               />
                             )}
-                            {(l.pupils?.profile_image_url ?? (l.pupils as any)?.photo_url) ? (
-                              <img
-                                src={l.pupils?.profile_image_url ?? (l.pupils as any)?.photo_url}
-                                alt=""
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                              />
-                            ) : (
-                              initials
-                            )}
+                            <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={36} />
                           </div>
                           <div
                             aria-hidden
