@@ -4458,6 +4458,7 @@ function HomePage() {
         onLiveTrack={() => navigate({ to: "/live" })}
         onBell={() => navigate({ to: "/notifications" })}
         onMenu={() => navigate({ to: "/settings" })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
         statusDot={
           <span
             className="rounded-full"
