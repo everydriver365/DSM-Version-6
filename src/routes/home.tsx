@@ -2052,9 +2052,13 @@ function HomePage() {
           .select('home_postcode, city')
           .eq('id', userId)
           .maybeSingle();
-        const outcode = (instructor as any)?.home_postcode?.substring(0, 4)?.trim()?.toUpperCase() ?? null;
+        const homePostcode = ((instructor as any)?.home_postcode ?? '').trim() || null;
+        const outcode = homePostcode?.substring(0, 4)?.trim()?.toUpperCase() ?? null;
         const area = (instructor as any)?.city || outcode || 'your area';
-        if (!cancelled) setInstructorArea(area);
+        if (!cancelled) {
+          setInstructorArea(area);
+          setInstructorHomePostcode(homePostcode);
+        }
 
         let query = supabase
           .from('local_alerts')
