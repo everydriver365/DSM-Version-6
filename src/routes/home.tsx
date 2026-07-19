@@ -1113,40 +1113,24 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     navigate({ to: "/marketplace/$listingId" as never, params: { listingId } as never });
   };
 
-  const cards = listings.slice(0, 8);
-  const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const [activeIdx, setActiveIdx] = useState(0);
-  const lastHapticIdx = useRef(0);
+  const cards = listings.slice(0, 4);
 
-  const onScroll = () => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const children = Array.from(el.children) as HTMLElement[];
-    if (children.length === 0) return;
-    const center = el.scrollLeft + el.clientWidth / 2;
-    let best = 0;
-    let bestDist = Number.POSITIVE_INFINITY;
-    children.forEach((c, i) => {
-      const mid = c.offsetLeft + c.offsetWidth / 2;
-      const d = Math.abs(mid - center);
-      if (d < bestDist) {
-        bestDist = d;
-        best = i;
-      }
-    });
-    if (best !== activeIdx) {
-      setActiveIdx(best);
-      if (best !== lastHapticIdx.current) {
-        lastHapticIdx.current = best;
-        try {
-          if (typeof navigator !== "undefined" && "vibrate" in navigator) {
-            navigator.vibrate(8);
-          }
-        } catch {
-          // ignore
-        }
-      }
+  const listingStyle = (tile: ListingTile) => {
+    const c = (tile.marketplace_categories?.name ?? "").toLowerCase();
+    const t = tile.title.toLowerCase();
+    if (c.includes("website") || t.includes("website") || t.includes("site") || c.includes("technology")) {
+      return { Icon: Globe, chipBg: "#E6F1FB", chipBorder: "#C7DDF0", iconColor: "#1877D6" };
     }
+    if (c.includes("insurance") || t.includes("insurance")) {
+      return { Icon: ShieldCheck, chipBg: "#FBEBD3", chipBorder: "#F0D9B5", iconColor: "#B45309" };
+    }
+    if (c.includes("vehicle") || c.includes("car") || t.includes("vehicle") || t.includes("car") || c.includes("equipment")) {
+      return { Icon: Car, chipBg: "#EEF2F7", chipBorder: "#D8DEE8", iconColor: "#0B1F3A" };
+    }
+    if (c.includes("business") || c.includes("booking") || t.includes("booking") || t.includes("crm")) {
+      return { Icon: BarChart2, chipBg: "#E6F1FB", chipBorder: "#C7DDF0", iconColor: "#1877D6" };
+    }
+    return { Icon: Sparkles, chipBg: "#ECEFF3", chipBorder: "#D8DEE8", iconColor: "#5A6B85" };
   };
 
   return (
@@ -1160,16 +1144,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
-        .mkt-scroll {
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-          -webkit-overflow-scrolling: touch;
-        }
-        .mkt-scroll::-webkit-scrollbar { display: none; }
-        .mkt-card {
-          transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
-          will-change: transform;
-        }
         .mkt-view-all {
           transition: box-shadow 0.25s ease, transform 0.25s ease;
         }
@@ -1223,7 +1197,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         </button>
       </div>
 
-      {/* CAROUSEL */}
       {cards.length === 0 ? (
         <div
           style={{
@@ -1239,191 +1212,24 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           <div style={{ fontSize: 13, color: "#B0BAC9" }}>No featured services</div>
         </div>
       ) : (
-        <>
-          <div
-            ref={scrollerRef}
-            onScroll={onScroll}
-            className="mkt-scroll"
-            style={{
-              display: "flex",
-              gap: 16,
-              overflowX: "auto",
-              scrollSnapType: "x mandatory",
-              padding: "6px 16px 18px",
-              scrollPaddingLeft: 16,
-              scrollPaddingRight: 16,
-            }}
-          >
-            {cards.map((tile, idx) => {
-              const img = firstImageUrl(tile.image_urls);
-              const isActive = idx === activeIdx;
-              return (
-                <div
-                  key={tile.id}
-                  className="mkt-card"
-                  onClick={() => openListing(tile.id)}
-                  style={{
-                    flex: "0 0 69%",
-                    scrollSnapAlign: "start",
-                    background: "#FFFFFF",
-                    borderRadius: 30,
-                    overflow: "hidden",
-                    boxShadow: isActive
-                      ? "0 12px 24px -8px rgba(7, 43, 71, 0.14), 0 3px 6px rgba(7, 43, 71, 0.04)"
-                      : "0 6px 15px -8px rgba(7, 43, 71, 0.10), 0 2px 4px rgba(7, 43, 71, 0.03)",
-                    cursor: "pointer",
-                    display: "flex",
-                    flexDirection: "column",
-                    minWidth: 0,
-                    height: 222,
-                    maxHeight: 222,
-                    transform: isActive ? "scale(1)" : "scale(0.96)",
-                    transformOrigin: "center center",
-                  }}
-                >
-                  {/* Hero image 16:7 */}
-                  <div
-                    style={{
-                      position: "relative",
-                      width: "100%",
-                      aspectRatio: "16 / 7",
-                      overflow: "hidden",
-                      background: "#EAEEF5",
-                    }}
-                  >
-                    {img ? (
-                      <img
-                        src={img}
-                        alt={tile.title}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          display: "block",
-                          transform: isActive ? "scale(1.04)" : "scale(1)",
-                          transition: "transform 500ms cubic-bezier(0.22, 1, 0.36, 1)",
-                        }}
-                      />
-                    ) : (
-                      <div
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          background: "#072B47",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Sparkles size={48} color="#FFFFFF" />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Body */}
-                  <div
-                    style={{
-                      padding: "15px 15px 12px",
-                      display: "flex",
-                      flexDirection: "column",
-                      minWidth: 0,
-                      flex: 1,
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div style={{ minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontSize: 18,
-                          fontWeight: 600,
-                          color: "#072B47",
-                          lineHeight: 1.2,
-                          marginBottom: 2,
-                          letterSpacing: "-0.01em",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {tile.title}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 14,
-                          color: "#6B7A90",
-                          lineHeight: 1.3,
-                          display: "-webkit-box",
-                          WebkitLineClamp: 1,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {tile.marketplace_categories?.name
-                          ? `${tile.marketplace_categories.name} for driving instructors`
-                          : "Premium service for driving instructors"}
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: 8,
-                      }}
-                    >
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0, flex: 1, flexWrap: "wrap" }} />
-                      <button
-                        type="button"
-                        style={{
-                          background: "transparent",
-                          border: 0,
-                          padding: 0,
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#2563EB",
-                          cursor: "pointer",
-                          whiteSpace: "nowrap",
-                          fontFamily: "'Poppins', 'Inter', sans-serif",
-                        }}
-                      >
-                        View details →
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Page dots */}
-          {cards.length > 1 && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 6,
-                marginTop: 4,
-              }}
-            >
-              {cards.slice(0, Math.min(cards.length, 8)).map((_, i) => {
-                const active = i === activeIdx;
-                return (
-                  <span
-                    key={i}
-                    style={{
-                      width: active ? 16 : 5,
-                      height: 5,
-                      borderRadius: 999,
-                      background: active ? "#072B47" : "rgba(7, 43, 71, 0.2)",
-                      transition: "all 250ms ease",
-                    }}
-                  />
-                );
-              })}
-            </div>
-          )}
-        </>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12, padding: "0 16px" }}>
+          {cards.map((tile) => {
+            const { Icon, chipBg, chipBorder, iconColor } = listingStyle(tile);
+            const price = parsePrice(tile.price_display);
+            const subtitle = price ? `${price.price} ${price.period}` : (tile.marketplace_categories?.name ?? "Premium service");
+            return (
+              <TileCard
+                key={tile.id}
+                title={tile.title}
+                subtitle={subtitle}
+                icon={<Icon size={22} color={iconColor} strokeWidth={1.8} />}
+                chipBg={chipBg}
+                chipBorder={chipBorder}
+                onClick={() => openListing(tile.id)}
+              />
+            );
+          })}
+        </div>
       )}
     </div>
   );
