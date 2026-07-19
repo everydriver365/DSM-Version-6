@@ -6229,18 +6229,7 @@ function HomePage() {
                               {durLabel}
                             </div>
                           </div>
-                          <div
-                            aria-hidden
-                            style={{
-                              position: 'relative',
-                              width: 36, height: 36, borderRadius: 999,
-                              background: calColour, color: '#FFFFFF',
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              fontSize: 12, fontWeight: 500, letterSpacing: 0.2,
-                              flexShrink: 0,
-                              overflow: 'hidden',
-                            }}
-                          >
+                          <div aria-hidden style={{ position: 'relative' }}>
                             {isLive && (
                               <span
                                 aria-label="Live"
@@ -6257,15 +6246,7 @@ function HomePage() {
                                 }}
                               />
                             )}
-                            {(l.pupils?.profile_image_url ?? (l.pupils as any)?.photo_url) ? (
-                              <img
-                                src={l.pupils?.profile_image_url ?? (l.pupils as any)?.photo_url}
-                                alt=""
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                              />
-                            ) : (
-                              initials
-                            )}
+                            <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={36} />
                           </div>
                           <div
                             aria-hidden
