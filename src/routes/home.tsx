@@ -5812,13 +5812,21 @@ function HomePage() {
                       const dayName = DAY_NAMES[gs.getDay()];
                       const preview = previewMatchForGap({ date: gapDate, dayName, durationMin: r.mins });
                       return (
+                        const gapStartTime = fmtT(gs);
+                        return (
                         <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: 16 }}>
                           <div
-                            onClick={() => navigate({ to: '/gaps' as never })}
+                            onClick={() => {
+                              if (moveModeHome && movingLessonHome) {
+                                setConfirmMoveHome({ date: gapDate, time: gapStartTime });
+                              } else {
+                                navigate({ to: '/gaps' as never });
+                              }
+                            }}
                             role="button"
                             tabIndex={0}
                             style={{
-                              background: '#FFFFFF',
+                              background: moveModeHome ? '#F4F8FE' : '#FFFFFF',
                               borderRadius: 10,
                               boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                               padding: '12px 14px',
@@ -5826,6 +5834,7 @@ function HomePage() {
                               alignItems: 'center',
                               gap: 10,
                               cursor: 'pointer',
+                              border: moveModeHome ? '1.5px dashed #1877D6' : 'none',
                             }}
                           >
                             <div style={{ flex: 1, minWidth: 0 }}>
@@ -5874,23 +5883,43 @@ function HomePage() {
                                 {formatMins(r.mins)} free · £{potential} potential
                               </div>
                             </div>
-                            <button
-                              type="button"
-                              onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
-                              style={{
-                                background: '#1877D6',
-                                color: '#FFFFFF',
-                                fontSize: 12,
-                                fontWeight: 500,
-                                padding: '8px 12px',
-                                borderRadius: 9,
-                                border: 'none',
-                                cursor: 'pointer',
-                                fontFamily: PF,
-                              }}
-                            >
-                              Fill
-                            </button>
+                            {moveModeHome ? (
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); setConfirmMoveHome({ date: gapDate, time: gapStartTime }); }}
+                                style={{
+                                  background: '#0B1F3A',
+                                  color: '#FFFFFF',
+                                  fontSize: 12,
+                                  fontWeight: 500,
+                                  padding: '8px 12px',
+                                  borderRadius: 9,
+                                  border: 'none',
+                                  cursor: 'pointer',
+                                  fontFamily: PF,
+                                }}
+                              >
+                                Move here
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
+                                style={{
+                                  background: '#1877D6',
+                                  color: '#FFFFFF',
+                                  fontSize: 12,
+                                  fontWeight: 500,
+                                  padding: '8px 12px',
+                                  borderRadius: 9,
+                                  border: 'none',
+                                  cursor: 'pointer',
+                                  fontFamily: PF,
+                                }}
+                              >
+                                Fill
+                              </button>
+                            )}
                           </div>
                         </div>
                       );
