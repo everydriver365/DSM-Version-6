@@ -6745,6 +6745,55 @@ function HomePage() {
         />
       )}
 
+      {cancelSheetForLesson && (
+        <CancelLessonSheet
+          open={true}
+          onClose={() => setCancelSheetForLesson(null)}
+          pupilName={pupilName(cancelSheetForLesson)}
+          pupilId={cancelSheetForLesson.pupil_id ?? ""}
+          lessonId={cancelSheetForLesson.id}
+          lessonDate={cancelSheetForLesson.lesson_date}
+          lessonTime={cancelSheetForLesson.lesson_time}
+          paymentStatus={(cancelSheetForLesson as any).payment_status ?? null}
+          amountDue={Number((cancelSheetForLesson as any).amount_due ?? 0)}
+          when={`${cancelSheetForLesson.lesson_date} at ${(cancelSheetForLesson.lesson_time ?? "").slice(0, 5)}`}
+          onCancelled={() => {
+            const id = cancelSheetForLesson.id;
+            setLessons((prev) => (prev ?? []).map((l) => l.id === id ? { ...l, status: "cancelled" } : l));
+            toast.success("Lesson cancelled");
+            setCancelSheetForLesson(null);
+          }}
+        />
+      )}
+
+      {deleteSheetForLesson && (
+        <DeleteLessonSheet
+          open={true}
+          submitting={deleteSubmittingHome}
+          onClose={() => { if (!deleteSubmittingHome) setDeleteSheetForLesson(null); }}
+          onConfirm={async (reason: string) => {
+            const lesson = deleteSheetForLesson;
+            if (!lesson) return;
+            setDeleteSubmittingHome(true);
+            try {
+              const { error } = await supabase
+                .from("lessons")
+                .update({ deleted_at: new Date().toISOString(), deletion_reason: reason })
+                .eq("id", lesson.id);
+              if (error) throw error;
+              setLessons((prev) => (prev ?? []).filter((l) => l.id !== lesson.id));
+              toast.success("Lesson deleted");
+              setDeleteSheetForLesson(null);
+            } catch (err: any) {
+              toast.error(err?.message || "Failed to delete lesson");
+            } finally {
+              setDeleteSubmittingHome(false);
+            }
+          }}
+        />
+      )}
+
+
       <OutstandingBreakdownModal
         open={outstandingOpen}
         onClose={() => setOutstandingOpen(false)}
