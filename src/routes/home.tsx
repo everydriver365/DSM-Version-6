@@ -4794,13 +4794,11 @@ function HomePage() {
           }
 
           // Date + time caption
-          let lessonDateText = '';
           let lessonTimeText = '';
           if (upcoming) {
             const d = lessonDateTime(upcoming);
             const endD = new Date(d.getTime() + (upcoming.duration_minutes ?? 0) * 60000);
             const fmt = (x: Date) => `${String(x.getHours()).padStart(2,'0')}:${String(x.getMinutes()).padStart(2,'0')}`;
-            lessonDateText = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
             lessonTimeText = `${fmt(d)} – ${fmt(endD)}`;
           }
 
