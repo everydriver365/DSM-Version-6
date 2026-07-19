@@ -157,42 +157,6 @@ function pupilColour(
   return PUPIL_PALETTE[hashString(pupilId) % PUPIL_PALETTE.length];
 }
 
-function getInitials(p: Pupil | null): string {
-  if (!p) return "?";
-  if (p.name) {
-    const parts = p.name.trim().split(/\s+/);
-    if (parts.length > 1) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-    return parts[0]?.slice(0, 2).toUpperCase() ?? "?";
-  }
-  const first = p.first_name?.trim()[0] ?? "";
-  const last = p.last_name?.trim()[0] ?? "";
-  return (first + last).toUpperCase() || (p.first_name?.slice(0, 2).toUpperCase() ?? "?");
-}
-
-function PupilAvatar({ pupil, pupilId }: { pupil: Pupil | null; pupilId?: string | null }) {
-  const name = pupilDisplayName(pupil);
-  const colour = pupilColour(pupilId ?? null, pupil?.calendar_colour ?? null, name);
-  return (
-    <div
-      style={{
-        width: 32,
-        height: 32,
-        borderRadius: "50%",
-        background: colour,
-        color: "#FFFFFF",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: 12,
-        fontWeight: 700,
-        flexShrink: 0,
-        fontFamily: "Inter, sans-serif",
-      }}
-    >
-      {getInitials(pupil)}
-    </div>
-  );
-}
 
 
 interface Pupil {
