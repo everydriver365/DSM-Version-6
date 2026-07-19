@@ -6194,7 +6194,7 @@ function HomePage() {
                       );
                     }
 
-                    const calColour = l.pupils?.calendar_colour ?? (l.pupils as any)?.calendar_colour ?? '#0B1F3A';
+                    const calColour = (l.pupils as any)?.calendar_colour ?? '#0B1F3A';
                     const durLabel = (() => {
                       const h = Math.floor(dur / 60);
                       const m = dur % 60;
