@@ -3141,6 +3141,7 @@ function HomePage() {
 
   useEffect(() => {
     setRouteImgError(false);
+    console.log("[home] chip-effect fired. upcoming.id:", upcoming?.id, "pupil:", upcoming?.pupils?.name, "postcode:", upcoming?.pupils?.postcode, "address:", upcoming?.pupils?.address, "pickup:", upcoming?.pickup_location);
     if (!upcoming?.id) {
       setWeatherData(null);
       setDriveData(null);
@@ -3151,7 +3152,10 @@ function HomePage() {
       .filter(Boolean)
       .join(", ");
     const postcode = upcoming.pupils?.postcode ?? null;
-    if (!destination && !postcode) return;
+    if (!destination && !postcode) {
+      console.warn("[home] no destination or postcode on upcoming lesson — skipping weather/drive fetch");
+      return;
+    }
 
     const cacheKey = upcoming.id;
     const cached = chipCacheRef.current[cacheKey];
