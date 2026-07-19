@@ -4073,6 +4073,7 @@ function HomePage() {
           onLiveTrack={() => navigate({ to: "/live" })}
           onBell={() => navigate({ to: "/notifications" })}
           onMenu={() => navigate({ to: "/settings" })}
+          onMicPress={() => toast.info("Voice commands coming soon!")}
         />
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
           {/* HEADER */}
@@ -4457,6 +4458,7 @@ function HomePage() {
         onLiveTrack={() => navigate({ to: "/live" })}
         onBell={() => navigate({ to: "/notifications" })}
         onMenu={() => navigate({ to: "/settings" })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
         statusDot={
           <span
             className="rounded-full"

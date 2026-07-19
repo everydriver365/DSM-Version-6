@@ -1,5 +1,5 @@
 import React from "react";
-import { ChevronRight, ChevronLeft, Bell } from "lucide-react";
+import { ChevronRight, ChevronLeft, Bell, Mic } from "lucide-react";
 import { PhoneIcon, CarIcon, MenuIcon, PoundIcon } from "@/components/icons/DrivingIcons";
 import { useNavigate } from "@tanstack/react-router";
 
@@ -11,6 +11,7 @@ export type InstructorTopBarProps = {
   onLiveTrack: () => void;
   onBell: () => void;
   onMenu: () => void;
+  onMicPress: () => void;
   onProfile?: () => void;
   onBack?: () => void;
   pageTitle?: string;
@@ -35,13 +36,15 @@ function IconBtn({
   ariaLabel,
   onClick,
   children,
+  style,
 }: {
   ariaLabel: string;
   onClick: () => void;
   children: React.ReactNode;
+  style?: React.CSSProperties;
 }) {
   return (
-    <button type="button" aria-label={ariaLabel} onClick={onClick} style={ICON_BTN}>
+    <button type="button" aria-label={ariaLabel} onClick={onClick} style={{ ...ICON_BTN, ...style }}>
       {children}
     </button>
   );
@@ -55,6 +58,7 @@ export default function InstructorTopBar({
   onLiveTrack,
   onBell,
   onMenu,
+  onMicPress,
   onProfile,
   onBack,
   pageTitle,
@@ -134,6 +138,17 @@ export default function InstructorTopBar({
           {statusDot}
         </button>
       )}
+
+      {/* MIC CENTER */}
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <IconBtn
+          ariaLabel="Voice commands"
+          onClick={onMicPress}
+          style={{ background: "rgba(255,255,255,0.22)" }}
+        >
+          <Mic size={17} strokeWidth={1.8} color="#ffffff" />
+        </IconBtn>
+      </div>
 
       {/* RIGHT */}
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
