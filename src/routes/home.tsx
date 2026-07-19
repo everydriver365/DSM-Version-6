@@ -5033,15 +5033,14 @@ function HomePage() {
           </div>
         )}
 
-        {/* Footer actions — Navigate wide, Text + Call compact */}
+        {/* Footer actions — Text + Call */}
         {upcoming && (() => {
-          const q = [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ');
           const phone = upcoming.pupils?.phone ?? null;
           return (
             <div style={{ padding: '0 10px 8px', display: 'flex', gap: 8 }}>
               <button
-
                 type="button"
+
                 onClick={(e) => {
                   e.stopPropagation();
                   navigate({ to: '/messages/$pupilId', params: { pupilId: upcoming.pupil_id } as any });
