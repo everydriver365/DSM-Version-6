@@ -4810,7 +4810,7 @@ function HomePage() {
             const d = lessonDateTime(upcoming);
             const endD = new Date(d.getTime() + (upcoming.duration_minutes ?? 0) * 60000);
             const fmt = (x: Date) => `${String(x.getHours()).padStart(2,'0')}:${String(x.getMinutes()).padStart(2,'0')}`;
-            lessonTimeText = `${fmt(d)} – ${fmt(endD)}`;
+            lessonTimeText = `${d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })} · ${fmt(d)} – ${fmt(endD)}`;
           }
 
           // Pupil display
@@ -4932,6 +4932,7 @@ function HomePage() {
                 <div style={{
                   display: 'flex', alignItems: 'center', gap: 10,
                   padding: '10px 14px', borderBottom: '1px solid #EEF2F7',
+                  background: '#F8F9FB',
                   fontFamily: 'Inter, sans-serif',
                 }}>
                   <div style={{
