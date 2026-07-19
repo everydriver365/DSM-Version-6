@@ -4844,22 +4844,6 @@ function HomePage() {
                   boxShadow: isLate ? 'inset 0 0 0 3px #C23B3B' : undefined,
                 }}
               >
-                {/* Date pill — above the time caption */}
-                {lessonDateText && (
-                  <div style={{
-                    position: 'absolute', top: 10, left: 10, zIndex: 2,
-                    background: 'rgba(255,255,255,0.92)', color: '#0B1F3A',
-                    borderRadius: 999, padding: '5px 10px',
-                    display: 'flex', alignItems: 'center', gap: 5,
-                    fontSize: 12, fontWeight: 700,
-                    fontFamily: 'Inter, sans-serif',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-                  }}>
-                    <Calendar size={13} color="#1877D6" />
-                    {lessonDateText}
-                  </div>
-                )}
-
                 {/* Gradient time caption */}
                 {lessonTimeText && (
                   <div style={{
