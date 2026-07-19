@@ -1037,21 +1037,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     };
   }, []);
 
-  const firstImageUrl = (raw: ListingTile["image_urls"]): string | null => {
-    const arr = Array.isArray(raw)
-      ? raw
-      : typeof raw === "string"
-      ? (() => {
-          try {
-            return JSON.parse(raw) as string[];
-          } catch {
-            return [];
-          }
-        })()
-      : [];
-    return arr[0] ?? null;
-  };
-
   const parsePrice = (priceDisplay: string | null | undefined): { price: string; period: string } | null => {
     if (!priceDisplay) return null;
     const match = priceDisplay.match(/^£?([\d,]+(?:\.\d{2})?)\s*(.*)$/i);
@@ -1060,93 +1045,28 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     return { price: `£${match[1]}`, period: period || "one-off" };
   };
 
-  const featuresFor = (categoryName: string | null | undefined, title: string) => {
-    const c = (categoryName ?? "").toLowerCase();
-    const t = title.toLowerCase();
-    if (c.includes("website") || t.includes("website") || t.includes("site") || c.includes("technology")) {
-      return [
-        { icon: Globe, label: "SEO Optimised" },
-        { icon: Zap, label: "Instant Setup" },
-        { icon: ShieldCheck, label: "SSL Included" },
-        { icon: Smartphone, label: "Mobile Friendly" },
-      ];
-    }
-    if (c.includes("insurance") || t.includes("insurance")) {
-      return [
-        { icon: ShieldCheck, label: "Instant Cover" },
-        { icon: Headphones, label: "UK Support" },
-        { icon: FileCheck, label: "ADI Approved" },
-        { icon: Zap, label: "Quick Quote" },
-      ];
-    }
-    if (c.includes("vehicle") || c.includes("car") || t.includes("vehicle") || t.includes("car") || c.includes("equipment")) {
-      return [
-        { icon: Car, label: "ADI Ready" },
-        { icon: ShieldCheck, label: "Insured" },
-        { icon: CheckCircle2, label: "Serviced" },
-        { icon: Zap, label: "Fast Delivery" },
-      ];
-    }
-    if (c.includes("business") || c.includes("booking") || t.includes("booking") || t.includes("crm")) {
-      return [
-        { icon: BarChart2, label: "Analytics" },
-        { icon: Headphones, label: "UK Support" },
-        { icon: Infinity, label: "Unlimited Bookings" },
-        { icon: Smartphone, label: "Mobile Friendly" },
-      ];
-    }
-    return [
-      { icon: BarChart2, label: "Analytics" },
-      { icon: Headphones, label: "UK Support" },
-      { icon: CalendarCheck, label: "Instant Setup" },
-      { icon: ShieldCheck, label: "SSL Included" },
-    ];
-  };
-
-  const badgeFor = (index: number, isFeatured: boolean | null): string => {
-    if (isFeatured) return "Featured";
-    if (index === 1) return "Best Seller";
-    return "New";
-  };
-
   const openListing = (listingId: string) => {
     navigate({ to: "/marketplace/$listingId" as never, params: { listingId } as never });
   };
 
-  const cards = listings.slice(0, 8);
-  const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const [activeIdx, setActiveIdx] = useState(0);
-  const lastHapticIdx = useRef(0);
+  const cards = listings.slice(0, 4);
 
-  const onScroll = () => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const children = Array.from(el.children) as HTMLElement[];
-    if (children.length === 0) return;
-    const center = el.scrollLeft + el.clientWidth / 2;
-    let best = 0;
-    let bestDist = Number.POSITIVE_INFINITY;
-    children.forEach((c, i) => {
-      const mid = c.offsetLeft + c.offsetWidth / 2;
-      const d = Math.abs(mid - center);
-      if (d < bestDist) {
-        bestDist = d;
-        best = i;
-      }
-    });
-    if (best !== activeIdx) {
-      setActiveIdx(best);
-      if (best !== lastHapticIdx.current) {
-        lastHapticIdx.current = best;
-        try {
-          if (typeof navigator !== "undefined" && "vibrate" in navigator) {
-            navigator.vibrate(8);
-          }
-        } catch {
-          // ignore
-        }
-      }
+  const listingStyle = (tile: ListingTile) => {
+    const c = (tile.marketplace_categories?.name ?? "").toLowerCase();
+    const t = tile.title.toLowerCase();
+    if (c.includes("website") || t.includes("website") || t.includes("site") || c.includes("technology")) {
+      return { Icon: Globe, chipBg: "#E6F1FB", chipBorder: "#C7DDF0", iconColor: "#1877D6" };
     }
+    if (c.includes("insurance") || t.includes("insurance")) {
+      return { Icon: ShieldCheck, chipBg: "#FBEBD3", chipBorder: "#F0D9B5", iconColor: "#B45309" };
+    }
+    if (c.includes("vehicle") || c.includes("car") || t.includes("vehicle") || t.includes("car") || c.includes("equipment")) {
+      return { Icon: Car, chipBg: "#EEF2F7", chipBorder: "#D8DEE8", iconColor: "#0B1F3A" };
+    }
+    if (c.includes("business") || c.includes("booking") || t.includes("booking") || t.includes("crm")) {
+      return { Icon: BarChart2, chipBg: "#E6F1FB", chipBorder: "#C7DDF0", iconColor: "#1877D6" };
+    }
+    return { Icon: Sparkles, chipBg: "#ECEFF3", chipBorder: "#D8DEE8", iconColor: "#5A6B85" };
   };
 
   return (
@@ -1160,16 +1080,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
-        .mkt-scroll {
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-          -webkit-overflow-scrolling: touch;
-        }
-        .mkt-scroll::-webkit-scrollbar { display: none; }
-        .mkt-card {
-          transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
-          will-change: transform;
-        }
         .mkt-view-all {
           transition: box-shadow 0.25s ease, transform 0.25s ease;
         }
@@ -1223,7 +1133,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         </button>
       </div>
 
-      {/* CAROUSEL */}
       {cards.length === 0 ? (
         <div
           style={{
@@ -1239,191 +1148,24 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           <div style={{ fontSize: 13, color: "#B0BAC9" }}>No featured services</div>
         </div>
       ) : (
-        <>
-          <div
-            ref={scrollerRef}
-            onScroll={onScroll}
-            className="mkt-scroll"
-            style={{
-              display: "flex",
-              gap: 16,
-              overflowX: "auto",
-              scrollSnapType: "x mandatory",
-              padding: "6px 16px 18px",
-              scrollPaddingLeft: 16,
-              scrollPaddingRight: 16,
-            }}
-          >
-            {cards.map((tile, idx) => {
-              const img = firstImageUrl(tile.image_urls);
-              const isActive = idx === activeIdx;
-              return (
-                <div
-                  key={tile.id}
-                  className="mkt-card"
-                  onClick={() => openListing(tile.id)}
-                  style={{
-                    flex: "0 0 69%",
-                    scrollSnapAlign: "start",
-                    background: "#FFFFFF",
-                    borderRadius: 30,
-                    overflow: "hidden",
-                    boxShadow: isActive
-                      ? "0 12px 24px -8px rgba(7, 43, 71, 0.14), 0 3px 6px rgba(7, 43, 71, 0.04)"
-                      : "0 6px 15px -8px rgba(7, 43, 71, 0.10), 0 2px 4px rgba(7, 43, 71, 0.03)",
-                    cursor: "pointer",
-                    display: "flex",
-                    flexDirection: "column",
-                    minWidth: 0,
-                    height: 222,
-                    maxHeight: 222,
-                    transform: isActive ? "scale(1)" : "scale(0.96)",
-                    transformOrigin: "center center",
-                  }}
-                >
-                  {/* Hero image 16:7 */}
-                  <div
-                    style={{
-                      position: "relative",
-                      width: "100%",
-                      aspectRatio: "16 / 7",
-                      overflow: "hidden",
-                      background: "#EAEEF5",
-                    }}
-                  >
-                    {img ? (
-                      <img
-                        src={img}
-                        alt={tile.title}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          display: "block",
-                          transform: isActive ? "scale(1.04)" : "scale(1)",
-                          transition: "transform 500ms cubic-bezier(0.22, 1, 0.36, 1)",
-                        }}
-                      />
-                    ) : (
-                      <div
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          background: "#072B47",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Sparkles size={48} color="#FFFFFF" />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Body */}
-                  <div
-                    style={{
-                      padding: "15px 15px 12px",
-                      display: "flex",
-                      flexDirection: "column",
-                      minWidth: 0,
-                      flex: 1,
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div style={{ minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontSize: 18,
-                          fontWeight: 600,
-                          color: "#072B47",
-                          lineHeight: 1.2,
-                          marginBottom: 2,
-                          letterSpacing: "-0.01em",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {tile.title}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 14,
-                          color: "#6B7A90",
-                          lineHeight: 1.3,
-                          display: "-webkit-box",
-                          WebkitLineClamp: 1,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {tile.marketplace_categories?.name
-                          ? `${tile.marketplace_categories.name} for driving instructors`
-                          : "Premium service for driving instructors"}
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: 8,
-                      }}
-                    >
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0, flex: 1, flexWrap: "wrap" }} />
-                      <button
-                        type="button"
-                        style={{
-                          background: "transparent",
-                          border: 0,
-                          padding: 0,
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#2563EB",
-                          cursor: "pointer",
-                          whiteSpace: "nowrap",
-                          fontFamily: "'Poppins', 'Inter', sans-serif",
-                        }}
-                      >
-                        View details →
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Page dots */}
-          {cards.length > 1 && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 6,
-                marginTop: 4,
-              }}
-            >
-              {cards.slice(0, Math.min(cards.length, 8)).map((_, i) => {
-                const active = i === activeIdx;
-                return (
-                  <span
-                    key={i}
-                    style={{
-                      width: active ? 16 : 5,
-                      height: 5,
-                      borderRadius: 999,
-                      background: active ? "#072B47" : "rgba(7, 43, 71, 0.2)",
-                      transition: "all 250ms ease",
-                    }}
-                  />
-                );
-              })}
-            </div>
-          )}
-        </>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12, padding: "0 16px" }}>
+          {cards.map((tile) => {
+            const { Icon, chipBg, chipBorder, iconColor } = listingStyle(tile);
+            const price = parsePrice(tile.price_display);
+            const subtitle = price ? `${price.price} ${price.period}` : (tile.marketplace_categories?.name ?? "Premium service");
+            return (
+              <TileCard
+                key={tile.id}
+                title={tile.title}
+                subtitle={subtitle}
+                icon={<Icon size={22} color={iconColor} strokeWidth={1.8} />}
+                chipBg={chipBg}
+                chipBorder={chipBorder}
+                onClick={() => openListing(tile.id)}
+              />
+            );
+          })}
+        </div>
       )}
     </div>
   );
@@ -1492,8 +1234,6 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     if (c.includes("waiting")) return "waiting";
     return "other";
   };
-  const typeColor = (t: ReturnType<typeof sessionType>) =>
-    t === "meet" ? "#1877D6" : t === "waiting" ? "#6B4FD6" : "#0B1F3A";
   const typeIcon = (t: ReturnType<typeof sessionType>) => {
     if (t === "standards") return { Icon: IconClipboardCheck, color: "#3D7BE0" };
     if (t === "meet") return { Icon: IconSteeringWheel, color: "#FFFFFF" };
@@ -1513,42 +1253,6 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   // Empty state: no upcoming sessions → render nothing.
   if (sortedSessions.length === 0) return null;
 
-  const Thumbnail = ({ category, imageUrl }: { category: string | null; imageUrl: string | null }) => {
-    const t = sessionType(category);
-    const { Icon, color } = typeIcon(t);
-    const bg = typeColor(t);
-    return (
-      <div
-        style={{
-          height: 80, background: bg, position: "relative",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          overflow: "hidden",
-        }}
-      >
-        {/* Placeholder: replace with session hero image when available */}
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt=""
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-          />
-        ) : (
-          <Icon size={32} stroke={1.5} color={color} />
-        )}
-      </div>
-    );
-  };
-
-  const featured = sortedSessions[0] ?? null;
-  const secondary = sortedSessions[1] ?? null;
-
-  const categoryLabel = (c: string | null) => {
-    const t = sessionType(c);
-    if (t === "standards") return "Standards";
-    if (t === "meet") return "DSM Meet";
-    if (t === "waiting") return "Waiting Room";
-    return c || "Session";
-  };
 
   const startsInLabel = (d: string, t: string) => {
     try {
@@ -1639,199 +1343,26 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         </button>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
-        {/* Featured session card */}
-        {featured && (
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={() => open(featured.id)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(featured.id); }
-            }}
-            style={{
-              width: "69%",
-              background: "#FFFFFF",
-              borderRadius: 16,
-              overflow: "hidden",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-              cursor: "pointer",
-              userSelect: "none",
-              fontFamily: POPPINS,
-              display: "flex",
-              alignItems: "stretch",
-            }}
-          >
-            <div style={{ position: "relative", width: 96, flexShrink: 0, background: "#0B1F3A" }}>
-              {featured.image_url ? (
-                <img
-                  src={featured.image_url}
-                  alt=""
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                />
-              ) : (
-                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  {(() => {
-                    const { Icon } = typeIcon(sessionType(featured.category));
-                    return <Icon size={28} stroke={1.5} color="#FFFFFF" />;
-                  })()}
-                </div>
-              )}
-              {featured.is_live && (
-                <div
-                  style={{
-                    position: "absolute", top: 8, left: 8,
-                    display: "inline-flex", alignItems: "center", gap: 4,
-                    background: "#CC2229", borderRadius: 999, padding: "3px 8px",
-                  }}
-                >
-                  <span aria-hidden style={{ width: 4, height: 4, borderRadius: "50%", background: "#FFFFFF" }} />
-                  <span style={{ fontSize: 9, fontWeight: 600, color: "#FFFFFF", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                    Live
-                  </span>
-                </div>
-              )}
-            </div>
-            <div style={{ padding: "12px 14px", flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 8 }}>
-              <div>
-                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                  <span style={{
-                    padding: "3px 8px", background: "#E8F0FC", color: "#1877D6",
-                    fontSize: 11, fontWeight: 600, borderRadius: 999,
-                  }}>
-                    {categoryLabel(featured.category)}
-                  </span>
-                  <span style={{ fontSize: 11, fontWeight: 400, color: "#B0BAC9" }}>
-                    {fmtDateTime(featured.session_date, featured.session_time)}
-                  </span>
-                </div>
-                <div style={{
-                  fontSize: 14, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3,
-                  display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
-                }}>
-                  {featured.title}
-                </div>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                <span style={{
-                  fontSize: 12, fontWeight: 400, color: "#64748B",
-                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0,
-                }}>
-                  {featured.host_name || "DSM Host"}
-                </span>
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); open(featured.id); }}
-                  style={{
-                    padding: "8px 14px", background: "#072B47", color: "#FFFFFF",
-                    fontSize: 11, fontWeight: 600, fontFamily: POPPINS,
-                    border: "none", borderRadius: 999, cursor: "pointer", flexShrink: 0,
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  }}
-                >
-                  Join
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Secondary session card — same design as featured */}
-        {secondary && (
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={() => open(secondary.id)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(secondary.id); }
-            }}
-            style={{
-              width: "69%",
-              background: "#FFFFFF",
-              borderRadius: 16,
-              overflow: "hidden",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-              cursor: "pointer",
-              userSelect: "none",
-              fontFamily: POPPINS,
-              display: "flex",
-              alignItems: "stretch",
-            }}
-          >
-            <div style={{ position: "relative", width: 96, flexShrink: 0, background: "#0B1F3A" }}>
-              {secondary.image_url ? (
-                <img
-                  src={secondary.image_url}
-                  alt=""
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                />
-              ) : (
-                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  {(() => {
-                    const { Icon } = typeIcon(sessionType(secondary.category));
-                    return <Icon size={28} stroke={1.5} color="#FFFFFF" />;
-                  })()}
-                </div>
-              )}
-              {secondary.is_live && (
-                <div
-                  style={{
-                    position: "absolute", top: 8, left: 8,
-                    display: "inline-flex", alignItems: "center", gap: 4,
-                    background: "#CC2229", borderRadius: 999, padding: "3px 8px",
-                  }}
-                >
-                  <span aria-hidden style={{ width: 4, height: 4, borderRadius: "50%", background: "#FFFFFF" }} />
-                  <span style={{ fontSize: 9, fontWeight: 600, color: "#FFFFFF", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                    Live
-                  </span>
-                </div>
-              )}
-            </div>
-            <div style={{ padding: "12px 14px", flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 8 }}>
-              <div>
-                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                  <span style={{
-                    padding: "3px 8px", background: "#E8F0FC", color: "#1877D6",
-                    fontSize: 11, fontWeight: 600, borderRadius: 999,
-                  }}>
-                    {categoryLabel(secondary.category)}
-                  </span>
-                  <span style={{ fontSize: 11, fontWeight: 400, color: "#B0BAC9" }}>
-                    {fmtDateTime(secondary.session_date, secondary.session_time)}
-                  </span>
-                </div>
-                <div style={{
-                  fontSize: 14, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3,
-                  display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
-                }}>
-                  {secondary.title}
-                </div>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                <span style={{
-                  fontSize: 12, fontWeight: 400, color: "#64748B",
-                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0,
-                }}>
-                  {secondary.host_name || "DSM Host"}
-                </span>
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); open(secondary.id); }}
-                  style={{
-                    padding: "8px 14px", background: "#072B47", color: "#FFFFFF",
-                    fontSize: 11, fontWeight: 600, fontFamily: POPPINS,
-                    border: "none", borderRadius: 999, cursor: "pointer", flexShrink: 0,
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  }}
-                >
-                  Join
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
+        {sortedSessions.slice(0, 4).map((session) => {
+          const t = sessionType(session.category);
+          const { Icon } = typeIcon(t);
+          const chipBg = t === "meet" ? "#E8F0FC" : t === "waiting" ? "#EFE7FB" : t === "standards" ? "#E6F1FB" : "#EEF2F7";
+          const chipBorder = t === "meet" ? "#C7DDF0" : t === "waiting" ? "#DDD0F5" : t === "standards" ? "#C7DDF0" : "#D8DEE8";
+          const iconColor = t === "meet" ? "#1877D6" : t === "waiting" ? "#6B4FD6" : t === "standards" ? "#3D7BE0" : "#0B1F3A";
+          return (
+            <TileCard
+              key={session.id}
+              title={session.title}
+              subtitle={startsInLabel(session.session_date, session.session_time)}
+              icon={<Icon size={22} stroke={1.8} color={iconColor} />}
+              chipBg={chipBg}
+              chipBorder={chipBorder}
+              attention={!!session.is_live}
+              onClick={() => open(session.id)}
+            />
+          );
+        })}
       </div>
     </div>
   );
@@ -1847,6 +1378,133 @@ type QaTile = {
   chipBg: string;
   badge?: React.ReactNode;
 };
+function TileCard({
+  title,
+  subtitle,
+  icon,
+  chipBg,
+  chipBorder,
+  attention,
+  onClick,
+}: {
+  title: string;
+  subtitle: string;
+  icon: React.ReactNode;
+  chipBg: string;
+  chipBorder?: string;
+  attention?: boolean;
+  onClick: () => void;
+}) {
+  const resolvedBorder = chipBorder ?? "rgba(15,32,68,0.12)";
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="cf-tap qa-card"
+      style={{
+        position: "relative",
+        background: "#FFFFFF",
+        border: "1px solid #ECEFF3",
+        borderRadius: 24,
+        padding: "20px 20px 18px",
+        minHeight: 148,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
+        cursor: "pointer",
+        textAlign: "left",
+        fontFamily: "Poppins, Inter, sans-serif",
+        transition: "transform 0.15s ease, box-shadow 0.2s ease",
+        overflow: "hidden",
+        boxShadow: "0 2px 10px -4px rgba(11, 31, 58, 0.10)",
+        width: "100%",
+      }}
+    >
+      {attention && (
+        <span
+          style={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            width: 8,
+            height: 8,
+            borderRadius: 999,
+            background: "#CC2229",
+          }}
+        />
+      )}
+      <div
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: 12,
+          background: chipBg,
+          border: `1px solid ${resolvedBorder}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 18,
+          position: "relative",
+          transition: "transform 0.15s ease",
+        }}
+        className="qa-icon"
+      >
+        {icon}
+      </div>
+      <div
+        style={{
+          fontSize: 15,
+          fontWeight: 600,
+          color: "#0B1F3A",
+          lineHeight: 1.25,
+          marginBottom: 4,
+          letterSpacing: "-0.01em",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          maxWidth: "calc(100% - 36px)",
+          fontFamily: "Poppins, Inter, sans-serif",
+        }}
+      >
+        {title}
+      </div>
+      <div
+        style={{
+          fontSize: 12,
+          fontWeight: 500,
+          color: "#8A93A3",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          maxWidth: "calc(100% - 36px)",
+          whiteSpace: subtitle.includes("\n") ? "pre-line" : "nowrap",
+          lineHeight: 1.3,
+          fontFamily: "Poppins, Inter, sans-serif",
+        }}
+      >
+        {subtitle}
+      </div>
+      <span
+        style={{
+          position: "absolute",
+          right: 14,
+          bottom: 14,
+          width: 32,
+          height: 32,
+          borderRadius: 999,
+          background: "#E5EAF1",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: "0 1px 2px rgba(11, 31, 58, 0.06)",
+        }}
+      >
+        <ChevronRight size={16} color="#0B1F3A" strokeWidth={2.4} />
+      </span>
+    </button>
+  );
+}
+
 
 function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
   const PF = "Inter, sans-serif";
