@@ -1420,7 +1420,7 @@ function TileCard({
         border: "1px solid #ECEFF3",
         borderRadius: 24,
         padding: image ? "0 0 18px" : "20px 20px 18px",
-        minHeight: image ? 182 : 148,
+        minHeight: image ? 204 : 148,
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
