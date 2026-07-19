@@ -4851,25 +4851,6 @@ function HomePage() {
                   boxShadow: isLate ? 'inset 0 0 0 3px #C23B3B' : undefined,
                 }}
               >
-                {hasMap && showRouteMap && (
-                  <img
-                    src={driveData!.staticMapUrl!}
-                    alt="Route map"
-                    loading="lazy"
-                    onError={() => setRouteImgError(true)}
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', border: 0, pointerEvents: 'none' }}
-                  />
-                )}
-                {hasMap && !showRouteMap && (
-                  <iframe
-                    title="Pickup map"
-                    src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=15&output=embed&maptype=roadmap`}
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0, pointerEvents: 'none' }}
-                  />
-                )}
-
                 {/* Date pill — above the time caption */}
                 {lessonDateText && (
                   <div style={{
