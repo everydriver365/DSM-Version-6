@@ -1319,42 +1319,6 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   // Empty state: no upcoming sessions → render nothing.
   if (sortedSessions.length === 0) return null;
 
-  const Thumbnail = ({ category, imageUrl }: { category: string | null; imageUrl: string | null }) => {
-    const t = sessionType(category);
-    const { Icon, color } = typeIcon(t);
-    const bg = typeColor(t);
-    return (
-      <div
-        style={{
-          height: 80, background: bg, position: "relative",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          overflow: "hidden",
-        }}
-      >
-        {/* Placeholder: replace with session hero image when available */}
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt=""
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-          />
-        ) : (
-          <Icon size={32} stroke={1.5} color={color} />
-        )}
-      </div>
-    );
-  };
-
-  const featured = sortedSessions[0] ?? null;
-  const secondary = sortedSessions[1] ?? null;
-
-  const categoryLabel = (c: string | null) => {
-    const t = sessionType(c);
-    if (t === "standards") return "Standards";
-    if (t === "meet") return "DSM Meet";
-    if (t === "waiting") return "Waiting Room";
-    return c || "Session";
-  };
 
   const startsInLabel = (d: string, t: string) => {
     try {
