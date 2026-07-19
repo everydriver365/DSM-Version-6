@@ -1420,7 +1420,7 @@ function TileCard({
         border: "1px solid #ECEFF3",
         borderRadius: 24,
         padding: image ? "0 0 18px" : "20px 20px 18px",
-        minHeight: image ? 204 : 148,
+        minHeight: image ? 0 : 148,
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
@@ -1452,16 +1452,31 @@ function TileCard({
         <div
           style={{
             width: "100%",
-            height: 70,
+            aspectRatio: "16 / 9",
             flexShrink: 0,
-            background: `url(${image}) center/cover no-repeat`,
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
             marginBottom: 14,
             position: "relative",
             overflow: "hidden",
+            background: "#EEF1F6",
           }}
-        />
+        >
+          <img
+            src={image}
+            alt=""
+            loading="lazy"
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center",
+              display: "block",
+            }}
+          />
+        </div>
       )}
       <div
         style={{
