@@ -4724,7 +4724,7 @@ function HomePage() {
           fontFamily: 'Inter, sans-serif',
         }}
       >
-        {/* Map hero */}
+        {/* Map hero + late banner + stats + reasons */}
         {(() => {
           const mapQuery = upcoming
             ? [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ')
@@ -4734,140 +4734,225 @@ function HomePage() {
             ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapQuery)}`
             : '';
           const directionsUrl = driveData?.directionsUrl || fallbackDirectionsUrl;
-          const mapsPlaceUrl = mapQuery
-            ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
-            : '';
           const showRouteMap = !!driveData?.staticMapUrl && !routeImgError;
-          const streetLabel = upcoming?.pickup_location || upcoming?.pupils?.address || upcoming?.pupils?.postcode || '';
+
+          // ETA calculation
+          let etaLabel: string | null = null;
+          let lateMin = 0;
+          let isLate = false;
+          if (upcoming && driveData) {
+            const startD = lessonDateTime(upcoming);
+            const nowMs = Date.now();
+            const msUntilStart = startD.getTime() - nowMs;
+            if (msUntilStart > 0 && msUntilStart <= 12 * 60 * 60 * 1000) {
+              const etaMs = nowMs + driveData.durationMinutes * 60000;
+              lateMin = Math.round((etaMs - startD.getTime()) / 60000);
+              etaLabel = new Date(etaMs).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+              isLate = lateMin >= 2;
+            }
+          }
+
+          // Time caption
+          let lessonTimeText = '';
+          if (upcoming) {
+            const d = lessonDateTime(upcoming);
+            const endD = new Date(d.getTime() + (upcoming.duration_minutes ?? 0) * 60000);
+            const fmt = (x: Date) => `${String(x.getHours()).padStart(2,'0')}:${String(x.getMinutes()).padStart(2,'0')}`;
+            lessonTimeText = `${fmt(d)} – ${fmt(endD)}`;
+          }
+
+          // Pupil display
+          const pupilFullName = upcoming?.pupils?.name ?? '';
+          const pupilFirstName = pupilFullName.split(/\s+/)[0] || 'there';
+          const pupilInitials = (pupilFullName
+            .split(/\s+/).map((s) => s.charAt(0)).filter(Boolean).slice(0, 2).join('') || 'P').toUpperCase();
+          const pupilIdKey = upcoming?.pupil_id ?? '';
+          const pupilCalColour = (pupilIdKey && pupilInfoMap[pupilIdKey]?.calendar_colour) || '#1877D6';
+
+          // Adverse weather match
+          const adverseKeywords = ['rain','snow','ice','storm','fog','wind','hail'];
+          const weatherCondition = weatherData?.condition ?? '';
+          const isAdverseWeather = !!weatherCondition &&
+            adverseKeywords.some((k) => weatherCondition.toLowerCase().includes(k));
+
+          // Community alert matched to pupil outcode
+          const pupilPostcode = (upcoming?.pupils?.postcode ?? '').trim();
+          const pupilOutcode = pupilPostcode.includes(' ')
+            ? pupilPostcode.split(' ')[0].toUpperCase()
+            : pupilPostcode.slice(0, Math.max(0, pupilPostcode.length - 3)).toUpperCase();
+          const matchedAlert = pupilOutcode && Array.isArray(localAlerts)
+            ? localAlerts.find((a: any) => a && a.is_active !== false &&
+                String(a.outcode ?? '').toUpperCase() === pupilOutcode)
+            : null;
+
+          const showTraffic = !!driveData &&
+            (driveData.trafficLabel === 'Moderate traffic' || driveData.trafficLabel === 'Heavy traffic');
+          const anyReason = isLate && (showTraffic || isAdverseWeather || !!matchedAlert);
+
           return (
-            <div
-              style={{
-                position: 'relative',
-                height: 150,
-                borderRadius: '16px 16px 0 0',
-                background: '#E8EEF3',
-                overflow: 'hidden',
-              }}
-            >
-              {hasMap && showRouteMap && (
-                <img
-                  src={driveData.staticMapUrl!}
-                  alt="Route map"
-                  loading="lazy"
-                  onError={() => setRouteImgError(true)}
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', border: 0, pointerEvents: 'none' }}
-                />
-              )}
-              {hasMap && !showRouteMap && (
-                <iframe
-                  title="Pickup map"
-                  src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=15&output=embed&maptype=roadmap`}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0, pointerEvents: 'none' }}
-                />
-              )}
+            <>
+              <div
+                style={{
+                  position: 'relative',
+                  height: 105,
+                  background: '#E8EEF3',
+                  overflow: 'hidden',
+                  boxShadow: isLate ? 'inset 0 0 0 3px #C23B3B' : undefined,
+                }}
+              >
+                {hasMap && showRouteMap && (
+                  <img
+                    src={driveData!.staticMapUrl!}
+                    alt="Route map"
+                    loading="lazy"
+                    onError={() => setRouteImgError(true)}
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', border: 0, pointerEvents: 'none' }}
+                  />
+                )}
+                {hasMap && !showRouteMap && (
+                  <iframe
+                    title="Pickup map"
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=15&output=embed&maptype=roadmap`}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0, pointerEvents: 'none' }}
+                  />
+                )}
 
-              {/* ROUTE pill — top-right */}
-              {upcoming && directionsUrl && (
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); window.open(directionsUrl, '_blank'); }}
-                  style={{
-                    position: 'absolute', top: 10, right: 10,
-                    background: '#0B1F3A', color: '#FFFFFF',
-                    border: 'none', borderRadius: 999,
-                    padding: '6px 12px',
-                    fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase',
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-                    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-                  }}
-                >
-                  <Navigation size={13} color="#FFFFFF" /> Route
-                </button>
-              )}
+                {/* NEXT LESSON pill — top-left */}
+                <div style={{
+                  position: 'absolute', top: 10, left: 10,
+                  background: isLate ? '#C23B3B' : '#1877D6', color: '#FFFFFF',
+                  borderRadius: 999, padding: '4px 10px',
+                  fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase',
+                  fontFamily: 'Inter, sans-serif',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                }}>Next Lesson</div>
 
-              {/* Location pin pill — upper middle */}
-              {streetLabel && (
-                <div
-                  style={{
-                    position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)',
-                    display: 'flex', flexDirection: 'column', alignItems: 'center',
-                    pointerEvents: 'none', maxWidth: '65%',
-                  }}
-                >
+                {/* ROUTE pill — top-right */}
+                {upcoming && directionsUrl && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); window.open(directionsUrl, '_blank'); }}
+                    style={{
+                      position: 'absolute', top: 10, right: 10,
+                      background: '#0B1F3A', color: '#FFFFFF',
+                      border: 'none', borderRadius: 999,
+                      padding: '6px 12px',
+                      fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase',
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                    }}
+                  >
+                    <Navigation size={13} color="#FFFFFF" /> Route
+                  </button>
+                )}
+
+                {/* Gradient time caption */}
+                {lessonTimeText && (
                   <div style={{
-                    background: '#FFFFFF', color: '#0B1F3A',
-                    borderRadius: 999, padding: '4px 10px',
-                    fontSize: 11, fontWeight: 700,
-                    display: 'flex', alignItems: 'center', gap: 5,
-                    boxShadow: '0 2px 6px rgba(0,0,0,0.12)',
-                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%',
-                  }}>
-                    <MapPin size={12} color="#1877D6" />
-                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{streetLabel}</span>
-                  </div>
-                  <div style={{
-                    width: 0, height: 0,
-                    borderLeft: '5px solid transparent',
-                    borderRight: '5px solid transparent',
-                    borderTop: '5px solid #FFFFFF',
-                    marginTop: -1,
-                  }} />
+                    position: 'absolute', left: 0, right: 0, bottom: 0,
+                    background: 'linear-gradient(0deg, rgba(11,31,58,0.88), rgba(11,31,58,0))',
+                    padding: '16px 14px 10px',
+                    color: '#FFFFFF', fontWeight: 700, fontSize: 17,
+                    fontFamily: 'Inter, sans-serif',
+                  }}>{lessonTimeText}</div>
+                )}
+              </div>
+
+              {/* Notify late banner */}
+              {isLate && upcoming && (
+                <div style={{
+                  background: '#FEECEC', padding: '10px 14px',
+                  borderBottom: '1px solid #F5D5D5',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
+                  fontFamily: 'Inter, sans-serif',
+                }}>
+                  <span style={{ fontSize: 12, color: '#7A1F1F', fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    Arriving ~{etaLabel} — let {pupilFirstName} know?
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setLateOpen(true); }}
+                    style={{
+                      background: '#C23B3B', color: '#FFFFFF', border: 'none',
+                      fontSize: 11, fontWeight: 700, padding: '6px 12px', borderRadius: 999,
+                      cursor: 'pointer', flexShrink: 0, fontFamily: 'Inter, sans-serif',
+                    }}
+                  >Notify pupil</button>
                 </div>
               )}
 
-            </div>
+              {/* Stats row — pupil avatar + drive / distance / weather / ETA */}
+              {upcoming && (
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  padding: '10px 14px', borderBottom: '1px solid #EEF2F7',
+                  fontFamily: 'Inter, sans-serif',
+                }}>
+                  <div style={{
+                    width: 36, height: 36, borderRadius: '50%',
+                    background: pupilCalColour, color: '#FFFFFF',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 12, fontWeight: 700, flexShrink: 0,
+                  }}>{pupilInitials}</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6, flex: 1, minWidth: 0 }}>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.1 }}>
+                        {driveData ? `${driveData.durationMinutes}m` : '—'}
+                      </div>
+                      <div style={{ fontSize: 9, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 2 }}>Drive</div>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.1 }}>
+                        {driveData?.distanceText ?? '—'}
+                      </div>
+                      <div style={{ fontSize: 9, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 2 }}>Dist</div>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.1 }}>
+                        {weatherData ? `${weatherData.tempC}°` : '—'}
+                      </div>
+                      <div style={{ fontSize: 9, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {weatherCondition || 'Weather'}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: isLate ? '#C23B3B' : '#0B1F3A', lineHeight: 1.1 }}>
+                        {etaLabel ?? '—'}
+                      </div>
+                      <div style={{ fontSize: 9, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 2 }}>ETA</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Reasons row (only when late and at least one true) */}
+              {anyReason && (
+                <div style={{
+                  padding: '8px 14px', borderBottom: '1px solid #EEF2F7',
+                  display: 'flex', flexDirection: 'column', gap: 4,
+                  fontFamily: 'Inter, sans-serif', fontSize: 12, color: '#5A6270',
+                }}>
+                  {showTraffic && driveData && (
+                    <div>🚦 {driveData.trafficLabel} on your route
+                      {driveData.normalDurationMinutes && driveData.durationMinutes
+                        ? ` (${driveData.normalDurationMinutes}m → ${driveData.durationMinutes}m)`
+                        : ''}
+                    </div>
+                  )}
+                  {isAdverseWeather && (
+                    <div>⛅ {weatherCondition}</div>
+                  )}
+                  {matchedAlert && (
+                    <div style={{ color: '#B45309' }}>⚠️ {(matchedAlert as any).description}</div>
+                  )}
+                </div>
+              )}
+            </>
           );
         })()}
-
-        {/* ETA banner (preserved) */}
-        {upcoming && driveData ? (() => {
-          const startD = lessonDateTime(upcoming);
-          const nowMs = Date.now();
-          const msUntilStart = startD.getTime() - nowMs;
-          if (msUntilStart <= 0 || msUntilStart > 12 * 60 * 60 * 1000) return null;
-          const etaMs = nowMs + driveData.durationMinutes * 60000;
-          const lateMin = Math.round((etaMs - startD.getTime()) / 60000);
-          const etaLabel = new Date(etaMs).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-          const isLate = lateMin >= 2;
-          return (
-            <div
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
-                padding: '8px 14px',
-                background: isLate ? '#FEECEC' : '#EAF4FF',
-                borderBottom: '1px solid #EEF2F7',
-                fontFamily: 'Inter, sans-serif',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                <Clock size={13} color={isLate ? '#C23B3B' : '#1877D6'} />
-                <span style={{ fontSize: 12, fontWeight: 700, color: isLate ? '#C23B3B' : '#0B1F3A' }}>
-                  {isLate ? `Late by ~${lateMin} min` : `ETA ${etaLabel}`}
-                </span>
-                <span style={{ fontSize: 11, color: '#5A6270', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {isLate ? `arriving ${etaLabel}` : `on time`}
-                </span>
-              </div>
-              {isLate && (
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); setLateOpen(true); }}
-                  style={{
-                    background: '#C23B3B', color: '#FFFFFF', border: 'none',
-                    fontSize: 11, fontWeight: 700, padding: '6px 10px', borderRadius: 999,
-                    cursor: 'pointer', fontFamily: 'Inter, sans-serif', flexShrink: 0,
-                    display: 'flex', alignItems: 'center', gap: 4,
-                  }}
-                >
-                  <MessageSquare size={11} /> Send "Running late"
-                </button>
-              )}
-            </div>
-          );
-        })() : null}
 
         {/* Details row */}
         {upcoming ? (() => {
