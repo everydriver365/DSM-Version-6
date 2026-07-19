@@ -1638,6 +1638,7 @@ function SchedulePage() {
                                               gap: 4,
                                               flexShrink: 0,
                                               marginLeft: 4,
+                                              position: 'relative',
                                             }}
                                           >
                                             <PupilAvatar
@@ -1647,12 +1648,11 @@ function SchedulePage() {
                                             />
                                             <button
                                               type="button"
+                                              data-lesson-actions-trigger
                                               onClick={(ev) => {
                                                 ev.stopPropagation();
-                                                navigate({
-                                                  to: "/lessons/$id" as never,
-                                                  params: { id: (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id } as never,
-                                                });
+                                                const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                                setActionsOpenFor((cur) => (cur?.id === lesson.id ? null : lesson));
                                               }}
                                               aria-label="More lesson options"
                                               style={{
@@ -1670,6 +1670,80 @@ function SchedulePage() {
                                             >
                                               <MoreHorizontal size={14} color="#6B7280" />
                                             </button>
+                                            {actionsOpenFor?.id === (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id && (
+                                              <div
+                                                data-lesson-actions-popover
+                                                onClick={(ev) => ev.stopPropagation()}
+                                                style={{
+                                                  position: 'absolute',
+                                                  top: 72,
+                                                  right: 0,
+                                                  minWidth: 140,
+                                                  background: '#FFFFFF',
+                                                  border: '1px solid #E5E7EB',
+                                                  borderRadius: 10,
+                                                  boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                                                  zIndex: 40,
+                                                  overflow: 'hidden',
+                                                  ...POPPINS,
+                                                }}
+                                              >
+                                                {(() => {
+                                                  const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                                  const itemStyle: React.CSSProperties = {
+                                                    display: 'block',
+                                                    width: '100%',
+                                                    textAlign: 'left',
+                                                    padding: '10px 14px',
+                                                    fontSize: 13,
+                                                    background: 'transparent',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                    color: '#111827',
+                                                  };
+                                                  return (
+                                                    <>
+                                                      <button
+                                                        type="button"
+                                                        style={itemStyle}
+                                                        onClick={(ev) => {
+                                                          ev.stopPropagation();
+                                                          setActionsOpenFor(null);
+                                                          setCancelSheetFor(lesson);
+                                                        }}
+                                                      >
+                                                        Cancel
+                                                      </button>
+                                                      <button
+                                                        type="button"
+                                                        style={{ ...itemStyle, color: '#CC2229' }}
+                                                        onClick={(ev) => {
+                                                          ev.stopPropagation();
+                                                          setActionsOpenFor(null);
+                                                          setDeleteSheetFor(lesson);
+                                                        }}
+                                                      >
+                                                        Delete
+                                                      </button>
+                                                      <button
+                                                        type="button"
+                                                        style={itemStyle}
+                                                        onClick={(ev) => {
+                                                          ev.stopPropagation();
+                                                          setActionsOpenFor(null);
+                                                          navigate({
+                                                            to: "/lessons/reschedule/$id" as never,
+                                                            params: { id: lesson.id } as never,
+                                                          });
+                                                        }}
+                                                      >
+                                                        Reschedule
+                                                      </button>
+                                                    </>
+                                                  );
+                                                })()}
+                                              </div>
+                                            )}
                                           </div>
                                         )}
                                      </>
