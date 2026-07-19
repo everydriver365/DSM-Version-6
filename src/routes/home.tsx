@@ -1435,25 +1435,27 @@ function TileCard({
           />
         </div>
       )}
-      <div
-        style={{
-          width: 44,
-          height: 44,
-          borderRadius: 12,
-          background: chipBg,
-          border: `1px solid ${resolvedBorder}`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: 18,
-          marginLeft: 20,
-          position: "relative",
-          transition: "transform 0.15s ease",
-        }}
-        className="qa-icon"
-      >
-        {icon}
-      </div>
+      {icon && (
+        <div
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 12,
+            background: chipBg,
+            border: `1px solid ${resolvedBorder}`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 18,
+            marginLeft: 20,
+            position: "relative",
+            transition: "transform 0.15s ease",
+          }}
+          className="qa-icon"
+        >
+          {icon}
+        </div>
+      )}
       <div
         style={{
           fontSize: 15,
@@ -1461,6 +1463,7 @@ function TileCard({
           color: "#0B1F3A",
           lineHeight: 1.25,
           marginBottom: 4,
+          marginTop: !icon && !image ? 62 : 0,
           letterSpacing: "-0.01em",
           overflow: "hidden",
           textOverflow: "ellipsis",
