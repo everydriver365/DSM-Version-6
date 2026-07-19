@@ -47,22 +47,6 @@ async function toastWithSync(message: string) {
 }
 
 
-const CANCEL_REASONS = [
-  "Pupil cancelled",
-  "Pupil no-show",
-  "Instructor cancelled",
-  "Weather",
-  "Vehicle issue",
-  "Other",
-] as const;
-
-const DELETE_REASONS = [
-  "Booked in error",
-  "Duplicate entry",
-  "Test/demo lesson",
-  "Other",
-] as const;
-
 export const Route = createFileRoute("/lessons/$id")({
   head: () => ({
     meta: [{ title: "Lesson — DSM by EveryDriver" }],
