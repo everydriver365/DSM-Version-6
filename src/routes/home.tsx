@@ -4782,10 +4782,6 @@ function HomePage() {
             ? [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ')
             : '';
           const hasMap = !!mapQuery;
-          const fallbackDirectionsUrl = mapQuery
-            ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapQuery)}`
-            : '';
-          const directionsUrl = driveData?.directionsUrl || fallbackDirectionsUrl;
           const showRouteMap = !!driveData?.staticMapUrl && !routeImgError;
 
           // ETA calculation
@@ -4871,30 +4867,10 @@ function HomePage() {
                   />
                 )}
 
-
-                {/* ROUTE pill — top-right */}
-                {upcoming && directionsUrl && (
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); window.open(directionsUrl, '_blank'); }}
-                    style={{
-                      position: 'absolute', top: 10, right: 10,
-                      background: '#0B1F3A', color: '#FFFFFF',
-                      border: 'none', borderRadius: 999,
-                      padding: '6px 12px',
-                      fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase',
-                      display: 'flex', alignItems: 'center', gap: 6,
-                      cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-                    }}
-                  >
-                    <Navigation size={13} color="#FFFFFF" /> Route
-                  </button>
-                )}
-
                 {/* Gradient time caption */}
                 {lessonTimeText && (
                   <div style={{
+
                     position: 'absolute', left: 0, right: 0, bottom: 0,
                     background: 'linear-gradient(0deg, rgba(11,31,58,0.88), rgba(11,31,58,0))',
                     padding: '16px 14px 10px',
@@ -5057,9 +5033,8 @@ function HomePage() {
           </div>
         )}
 
-        {/* Footer actions — Navigate wide, Text + Call compact */}
+        {/* Footer actions — Text + Call */}
         {upcoming && (() => {
-          const q = [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ');
           const phone = upcoming.pupils?.phone ?? null;
           return (
             <div style={{ padding: '0 10px 8px', display: 'flex', gap: 8 }}>
@@ -5067,22 +5042,7 @@ function HomePage() {
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (!q) { toast('No pickup set'); return; }
-                  window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(q)}`, '_blank');
-                }}
-                style={{
-                  flex: 3, background: '#FFFFFF', color: '#1877D6',
-                  border: '1px solid #1877D6', borderRadius: 10, padding: '9px 0',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                  fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-                }}
-              >
-                <Navigation size={14} color="#1877D6" /> Navigate
-              </button>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
+
                   navigate({ to: '/messages/$pupilId', params: { pupilId: upcoming.pupil_id } as any });
                 }}
                 style={{
