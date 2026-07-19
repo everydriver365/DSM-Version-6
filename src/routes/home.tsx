@@ -4800,16 +4800,19 @@ function HomePage() {
             }
           }
 
-          // Time caption
+          // Date + time caption
+          let lessonDateText = '';
           let lessonTimeText = '';
           if (upcoming) {
             const d = lessonDateTime(upcoming);
             const endD = new Date(d.getTime() + (upcoming.duration_minutes ?? 0) * 60000);
             const fmt = (x: Date) => `${String(x.getHours()).padStart(2,'0')}:${String(x.getMinutes()).padStart(2,'0')}`;
-            lessonTimeText = `${d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })} · ${fmt(d)} – ${fmt(endD)}`;
+            lessonDateText = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+            lessonTimeText = `${fmt(d)} – ${fmt(endD)}`;
           }
 
           // Pupil display
+
           const pupilFullName = upcoming?.pupils?.name ?? '';
           const pupilFirstName = pupilFullName.split(/\s+/)[0] || 'there';
           const pupilInitials = (pupilFullName
@@ -4867,12 +4870,28 @@ function HomePage() {
                   />
                 )}
 
+                {/* Date pill — above the time caption */}
+                {lessonDateText && (
+                  <div style={{
+                    position: 'absolute', top: 10, left: 10, zIndex: 2,
+                    background: 'rgba(255,255,255,0.92)', color: '#0B1F3A',
+                    borderRadius: 999, padding: '5px 10px',
+                    display: 'flex', alignItems: 'center', gap: 5,
+                    fontSize: 12, fontWeight: 700,
+                    fontFamily: 'Inter, sans-serif',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                  }}>
+                    <Calendar size={13} color="#1877D6" />
+                    {lessonDateText}
+                  </div>
+                )}
+
                 {/* Gradient time caption */}
                 {lessonTimeText && (
                   <div style={{
-
                     position: 'absolute', left: 0, right: 0, bottom: 0,
                     background: 'linear-gradient(0deg, rgba(11,31,58,0.88), rgba(11,31,58,0))',
+
                     padding: '16px 14px 10px',
                     color: '#FFFFFF', fontWeight: 700, fontSize: 17,
                     fontFamily: 'Inter, sans-serif',
