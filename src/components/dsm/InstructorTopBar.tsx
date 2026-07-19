@@ -137,6 +137,13 @@ export default function InstructorTopBar({
         </button>
       )}
 
+      {/* MIC CENTER */}
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <IconBtn ariaLabel="Voice commands" onClick={onMicPress}>
+          <Mic size={17} strokeWidth={1.8} color="#ffffff" />
+        </IconBtn>
+      </div>
+
       {/* RIGHT */}
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <IconBtn ariaLabel="Phone" onClick={onPhone}>
