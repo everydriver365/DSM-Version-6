@@ -1956,7 +1956,8 @@ function PupilDetailPage() {
               </div>
             );
           }
-          const start = new Date(`${focus.lesson_date}T${focus.lesson_time || "00:00"}:00`);
+          const timePart = (focus.lesson_time || "00:00").slice(0, 5);
+          const start = new Date(`${focus.lesson_date}T${timePart}:00`);
           const end = new Date(start.getTime() + (focus.duration_minutes ?? 60) * 60000);
           const now = new Date();
           const isLive = now >= start && now < end;
