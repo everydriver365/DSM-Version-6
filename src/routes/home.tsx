@@ -1051,23 +1051,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
 
   const cards = listings.slice(0, 4);
 
-  const listingStyle = (tile: ListingTile) => {
-    const c = (tile.marketplace_categories?.name ?? "").toLowerCase();
-    const t = tile.title.toLowerCase();
-    if (c.includes("website") || t.includes("website") || t.includes("site") || c.includes("technology")) {
-      return { Icon: Globe, chipBg: "#E6F1FB", chipBorder: "#C7DDF0", iconColor: "#1877D6" };
-    }
-    if (c.includes("insurance") || t.includes("insurance")) {
-      return { Icon: ShieldCheck, chipBg: "#FBEBD3", chipBorder: "#F0D9B5", iconColor: "#B45309" };
-    }
-    if (c.includes("vehicle") || c.includes("car") || t.includes("vehicle") || t.includes("car") || c.includes("equipment")) {
-      return { Icon: Car, chipBg: "#EEF2F7", chipBorder: "#D8DEE8", iconColor: "#0B1F3A" };
-    }
-    if (c.includes("business") || c.includes("booking") || t.includes("booking") || t.includes("crm")) {
-      return { Icon: BarChart2, chipBg: "#E6F1FB", chipBorder: "#C7DDF0", iconColor: "#1877D6" };
-    }
-    return { Icon: Sparkles, chipBg: "#ECEFF3", chipBorder: "#D8DEE8", iconColor: "#5A6B85" };
-  };
+  // (icons removed from marketplace tiles; images are the primary visual)
 
   const firstImageUrl = (tile: ListingTile): string | undefined => {
     if (tile.image_urls) {
@@ -1159,7 +1143,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12, padding: "0 16px" }}>
           {cards.map((tile) => {
-            const { Icon, chipBg, chipBorder, iconColor } = listingStyle(tile);
             const price = parsePrice(tile.price_display);
             const subtitle = price ? `${price.price} ${price.period}` : (tile.marketplace_categories?.name ?? "Premium service");
             return (
@@ -1167,9 +1150,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                 key={tile.id}
                 title={tile.title}
                 subtitle={subtitle}
-                icon={<Icon size={22} color={iconColor} strokeWidth={1.8} />}
-                chipBg={chipBg}
-                chipBorder={chipBorder}
                 image={firstImageUrl(tile)}
                 onClick={() => openListing(tile.id)}
               />
@@ -1236,20 +1216,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     }
   };
 
-  // Session-type → colour + icon mapping.
-  const sessionType = (category: string | null): "standards" | "meet" | "waiting" | "other" => {
-    const c = (category ?? "").toLowerCase();
-    if (c.includes("standards")) return "standards";
-    if (c.includes("meet") || c.includes("dsm")) return "meet";
-    if (c.includes("waiting")) return "waiting";
-    return "other";
-  };
-  const typeIcon = (t: ReturnType<typeof sessionType>) => {
-    if (t === "standards") return { Icon: IconClipboardCheck, color: "#3D7BE0" };
-    if (t === "meet") return { Icon: IconSteeringWheel, color: "#FFFFFF" };
-    if (t === "waiting") return { Icon: IconArmchair, color: "#FFFFFF" };
-    return { Icon: IconCalendar, color: "#FFFFFF" };
-  };
+  // (icons removed from DSM Live tiles; session image is the primary visual)
   const open = (id: string) =>
     navigate({ to: "/dsm-live/$sessionId" as never, params: { sessionId: id } as never });
 
@@ -1354,26 +1321,16 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
-        {sortedSessions.slice(0, 4).map((session) => {
-          const t = sessionType(session.category);
-          const { Icon } = typeIcon(t);
-          const chipBg = t === "meet" ? "#E8F0FC" : t === "waiting" ? "#EFE7FB" : t === "standards" ? "#E6F1FB" : "#EEF2F7";
-          const chipBorder = t === "meet" ? "#C7DDF0" : t === "waiting" ? "#DDD0F5" : t === "standards" ? "#C7DDF0" : "#D8DEE8";
-          const iconColor = t === "meet" ? "#1877D6" : t === "waiting" ? "#6B4FD6" : t === "standards" ? "#3D7BE0" : "#0B1F3A";
-          return (
-            <TileCard
-              key={session.id}
-              title={session.title}
-              subtitle={startsInLabel(session.session_date, session.session_time)}
-              icon={<Icon size={22} stroke={1.8} color={iconColor} />}
-              chipBg={chipBg}
-              chipBorder={chipBorder}
-              attention={!!session.is_live}
-              image={session.image_url ?? undefined}
-              onClick={() => open(session.id)}
-            />
-          );
-        })}
+        {sortedSessions.slice(0, 4).map((session) => (
+          <TileCard
+            key={session.id}
+            title={session.title}
+            subtitle={startsInLabel(session.session_date, session.session_time)}
+            attention={!!session.is_live}
+            image={session.image_url ?? undefined}
+            onClick={() => open(session.id)}
+          />
+        ))}
       </div>
     </div>
   );
