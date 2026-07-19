@@ -28,7 +28,7 @@ export function PageLayout({
   return (
     <div
       {...rest}
-      className={`min-h-screen ${className ?? ""}`.trim()}
+      className={`min-h-dvh ${className ?? ""}`.trim()}
       style={{ backgroundColor: PAGE_BACKGROUND, ...style }}
     >
       {children}
