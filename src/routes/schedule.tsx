@@ -19,6 +19,7 @@ import { PAGE_BACKGROUND } from "@/components/PageLayout";
 import { PupilAvatar } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
+import { ChangeTimeSheet } from "@/components/lessons/ChangeTimeSheet";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
@@ -311,6 +312,8 @@ function SchedulePage() {
   const [cancelSheetFor, setCancelSheetFor] = useState<Lesson | null>(null);
   const [deleteSheetFor, setDeleteSheetFor] = useState<Lesson | null>(null);
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
+  const [changeTimeSheetFor, setChangeTimeSheetFor] = useState<Lesson | null>(null);
+  const [changeTimeSubmitting, setChangeTimeSubmitting] = useState(false);
 
   // Close popover on outside click
   useEffect(() => {
@@ -1674,28 +1677,39 @@ function SchedulePage() {
                                                        >
                                                          Move
                                                        </button>
-                                                       <button
-                                                         type="button"
-                                                         style={itemStyle}
-                                                         onClick={(ev) => {
-                                                           ev.stopPropagation();
-                                                           setActionsOpenFor(null);
-                                                           setCancelSheetFor(lesson);
-                                                         }}
-                                                       >
-                                                         Cancel
-                                                       </button>
-                                                       <button
-                                                         type="button"
-                                                         style={{ ...itemStyle, color: '#CC2229' }}
-                                                         onClick={(ev) => {
-                                                           ev.stopPropagation();
-                                                           setActionsOpenFor(null);
-                                                           setDeleteSheetFor(lesson);
-                                                         }}
-                                                       >
-                                                         Delete
-                                                       </button>
+                                                        <button
+                                                          type="button"
+                                                          style={itemStyle}
+                                                          onClick={(ev) => {
+                                                            ev.stopPropagation();
+                                                            setActionsOpenFor(null);
+                                                            setChangeTimeSheetFor(lesson);
+                                                          }}
+                                                        >
+                                                          Change time
+                                                        </button>
+                                                        <button
+                                                          type="button"
+                                                          style={itemStyle}
+                                                          onClick={(ev) => {
+                                                            ev.stopPropagation();
+                                                            setActionsOpenFor(null);
+                                                            setCancelSheetFor(lesson);
+                                                          }}
+                                                        >
+                                                          Cancel
+                                                        </button>
+                                                        <button
+                                                          type="button"
+                                                          style={{ ...itemStyle, color: '#CC2229' }}
+                                                          onClick={(ev) => {
+                                                            ev.stopPropagation();
+                                                            setActionsOpenFor(null);
+                                                            setDeleteSheetFor(lesson);
+                                                          }}
+                                                        >
+                                                          Delete
+                                                        </button>
                                                      </>
                                                    );
                                                  })()}
@@ -1768,6 +1782,35 @@ function SchedulePage() {
               toast.error(err?.message || "Failed to delete lesson");
             } finally {
               setDeleteSubmitting(false);
+            }
+          }}
+        />
+      )}
+
+      {changeTimeSheetFor && (
+        <ChangeTimeSheet
+          open={true}
+          submitting={changeTimeSubmitting}
+          currentTime={(changeTimeSheetFor.lesson_time ?? "").slice(0, 5)}
+          onClose={() => { if (!changeTimeSubmitting) setChangeTimeSheetFor(null); }}
+          onConfirm={async (newTime: string) => {
+            const lesson = changeTimeSheetFor;
+            if (!lesson) return;
+            setChangeTimeSubmitting(true);
+            try {
+              const timeVal = newTime.length === 5 ? `${newTime}:00` : newTime;
+              const { error } = await supabase
+                .from("lessons")
+                .update({ lesson_time: timeVal })
+                .eq("id", lesson.id);
+              if (error) throw error;
+              setLessons((prev) => (prev ?? []).map((l) => l.id === lesson.id ? { ...l, lesson_time: timeVal } : l));
+              toast.success("Lesson time updated");
+              setChangeTimeSheetFor(null);
+            } catch (err: any) {
+              toast.error(err?.message || "Failed to update lesson time");
+            } finally {
+              setChangeTimeSubmitting(false);
             }
           }}
         />
