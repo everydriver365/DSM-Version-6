@@ -6194,6 +6194,13 @@ function HomePage() {
                       );
                     }
 
+                    const calColour = (l.pupils as any)?.calendar_colour ?? '#0B1F3A';
+                    const durLabel = (() => {
+                      const h = Math.floor(dur / 60);
+                      const m = dur % 60;
+                      return h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
+                    })();
+
                     return (
                       <div key={l.id} style={{ position: 'relative', marginBottom: 16 }}>
                         <div
@@ -6203,22 +6210,30 @@ function HomePage() {
                           style={{
                             padding: '12px 14px',
                             display: 'flex',
-                            alignItems: 'center',
-                            gap: 10,
+                            alignItems: 'stretch',
+                            gap: 12,
                             cursor: 'pointer',
                             background: '#FFFFFF',
                             border: 'none',
-                            borderRadius: 10,
+                            borderRadius: 12,
                             boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                             boxSizing: 'border-box',
                           }}
                         >
+                          <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
+                            <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                              {timeLabel}
+                            </div>
+                            <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                              {durLabel}
+                            </div>
+                          </div>
                           <div
                             aria-hidden
                             style={{
                               position: 'relative',
                               width: 36, height: 36, borderRadius: 999,
-                              background: '#0B1F3A', color: '#FFFFFF',
+                              background: calColour, color: '#FFFFFF',
                               display: 'flex', alignItems: 'center', justifyContent: 'center',
                               fontSize: 12, fontWeight: 500, letterSpacing: 0.2,
                               flexShrink: 0,
@@ -6251,17 +6266,27 @@ function HomePage() {
                               initials
                             )}
                           </div>
-                          <div style={{ flex: 1, minWidth: 0 }}>
+                          <div
+                            aria-hidden
+                            style={{
+                              width: 3,
+                              borderRadius: 2,
+                              background: calColour,
+                              flexShrink: 0,
+                              alignSelf: 'stretch',
+                            }}
+                          />
+                          <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                             {tab === 'next' && (
                               <div style={{ fontSize: 11, fontWeight: 500, color: '#1877D6', marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
                                 {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
                               </div>
                             )}
-                            <div style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
                               {name}
                             </div>
-                            <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
-                              {timeLabel} · {dur} mins
+                            <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>
+                              {dur} mins
                             </div>
                           </div>
                           {priceNode}

@@ -1485,8 +1485,8 @@ function SchedulePage() {
                                     boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                                     padding: "12px 14px",
                                     display: "flex",
-                                    alignItems: isBlockRow ? "stretch" : "center",
-                                    gap: isBlockRow ? 12 : 10,
+                                    alignItems: (isBlockRow || isLessonRow) ? "stretch" : "center",
+                                    gap: (isBlockRow || isLessonRow) ? 12 : 10,
                                     cursor: clickable ? "pointer" : "default",
                                     opacity: cancelled ? 0.55 : isDimmed ? 0.4 : 1,
                                     position: "relative",
@@ -1544,13 +1544,49 @@ function SchedulePage() {
                                     </>
                                   ) : (
                                     <>
-                                      {isLessonRow && (
-                                        <PupilAvatar
-                                          pupil={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil : null}
-                                          pupilId={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil_id ?? null : null}
+                                      {isLessonRow ? (
+                                        <>
+                                          <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
+                                            <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                                              {fmtTime(e.start)}
+                                            </div>
+                                            <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                                              {(() => {
+                                                const durMin = Math.max(0, Math.round((e.end.getTime() - e.start.getTime()) / 60000));
+                                                const h = Math.floor(durMin / 60);
+                                                const m = durMin % 60;
+                                                return h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
+                                              })()}
+                                            </div>
+                                          </div>
+                                          <PupilAvatar
+                                            pupil={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil : null}
+                                            pupilId={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil_id ?? null : null}
+                                          />
+                                          <div
+                                            aria-hidden
+                                            style={{
+                                              width: 3,
+                                              borderRadius: 2,
+                                              background: markerColor,
+                                              flexShrink: 0,
+                                              alignSelf: 'stretch',
+                                            }}
+                                          />
+                                        </>
+                                      ) : (
+                                        <div
+                                          aria-hidden
+                                          style={{
+                                            width: 3,
+                                            borderRadius: 2,
+                                            background: markerColor,
+                                            flexShrink: 0,
+                                            alignSelf: 'stretch',
+                                          }}
                                         />
                                       )}
-                                      <div style={{ flex: 1, minWidth: 0 }}>
+                                      <div style={{ flex: 1, minWidth: 0, paddingTop: isLessonRow ? 2 : 0 }}>
                                         <div
                                           style={{
                                             fontSize: 14,
