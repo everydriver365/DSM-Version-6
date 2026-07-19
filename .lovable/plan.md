@@ -1,22 +1,25 @@
-Add a circular pupil avatar to the left of each lesson tile on /schedule, using the same initials + calendar_colour pattern already used in the next-lesson card on /home.
+## Problem
 
-## What will change
+On the pupil record, the Next Lesson card's date reads "Invalid Date". Root cause is in `src/routes/pupils.$id.tsx` line 1959:
 
-1. **src/routes/schedule.tsx**
-   - Add a small `PupilAvatar` helper inside the file (or inline) that renders:
-     - A circular `div` (e.g. 32 × 32 px, borderRadius 50%).
-     - Background colour from `pupilColour(lesson.pupil_id, lesson.pupil?.calendar_colour, pupilName)`.
-     - White initials derived from `first_name`/`last_name`/`name`, or a single-letter fallback.
-   - Insert the avatar as the first element in the non-block lesson row (the `!isBlockRow` branch starting at line 1508), so the layout becomes: `[avatar] [name + time] [move button] [DSM tag]`.
-   - Adjust the row flex gap/padding to keep the existing 12 px card padding and avoid text feeling cramped.
-   - For cancelled lessons, keep the avatar opacity consistent with the rest of the row (it already inherits the parent opacity).
+```ts
+const start = new Date(`${focus.lesson_date}T${focus.lesson_time || "00:00"}:00`);
+```
 
-## What will NOT change
+Postgres `time` columns come back as `"HH:MM:SS"`. When `lesson_time` is `"19:00:00"`, the template appends an extra `:00`, producing `"2026-…T19:00:00:00"`, which is not a valid ISO string, so `start` is `Invalid Date`. The time text still shows correctly because `formatTime()` slices to 5 chars.
 
-- No data fetching changes — the schedule query already selects `pupil.pupils!inner(id, name, first_name, last_name, calendar_colour, …)` which is enough for an initials avatar.
-- No changes to block rows, gap rows, calendar rows, or move-mode behaviour.
-- No new files or dependencies.
+## Fix
 
-## Result
+Normalise the time to `HH:MM` before concatenation, so both `"19:00"` and `"19:00:00"` values work:
 
-Each lesson tile in the schedule agenda will show the pupil's initials in their assigned colour circle next to the name, matching the avatar style used elsewhere in the app.
+```ts
+const timePart = (focus.lesson_time || "00:00").slice(0, 5);
+const start = new Date(`${focus.lesson_date}T${timePart}:00`);
+```
+
+Also apply the same normalisation to the other two `new Date(...)` constructions in this file that use `lesson_date + lesson_time` (around lines 2216 and 2330, feeding the past/upcoming lesson lists) so those rows can't hit the same bug.
+
+## Scope
+
+- Only touch `src/routes/pupils.$id.tsx`.
+- No schema, styling, or behaviour changes beyond fixing the date parse.
