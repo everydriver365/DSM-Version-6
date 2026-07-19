@@ -1369,6 +1369,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
               chipBg={chipBg}
               chipBorder={chipBorder}
               attention={!!session.is_live}
+              image={session.image_url ?? undefined}
               onClick={() => open(session.id)}
             />
           );
