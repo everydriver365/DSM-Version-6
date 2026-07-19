@@ -6950,14 +6950,14 @@ function HomePage() {
       <ConfirmDialog
         open={!!confirmMoveHome}
         title="Move lesson?"
-        description={
+        message={
           confirmMoveHome && movingLessonHome
             ? `Move ${(movingLessonHome.pupils as any)?.name || 'this lesson'} from ${movingLessonHome.lesson_date} at ${movingLessonHome.lesson_time} to ${confirmMoveHome.date} at ${confirmMoveHome.time}?`
             : ''
         }
-        confirmText="Move"
-        cancelText="Cancel"
-        variant="default"
+        confirmLabel="Move"
+        cancelLabel="Cancel"
+        destructive={false}
         onCancel={() => setConfirmMoveHome(null)}
         onConfirm={() => {
           if (!confirmMoveHome) return;
