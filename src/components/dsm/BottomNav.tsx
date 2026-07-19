@@ -64,7 +64,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
       type="button"
       onClick={onMicPress}
       aria-label="Voice commands"
-      className="flex items-center justify-center"
+      className="flex flex-1 items-center justify-center"
       style={{
         marginTop: -20,
         background: "none",
@@ -112,7 +112,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
           <span className="text-[9px] whitespace-nowrap" style={{ color }}>{it.label}</span>
         </>
       );
-      const cls = "flex flex-col items-center justify-center gap-1 select-none relative";
+      const cls = "flex flex-1 flex-col items-center justify-center gap-1 select-none relative";
       if (it.to && !it.onClick && typeof it.ws !== 'number') {
         return (
           <Link key={it.key} to={it.to} className={cls} style={{ color }}>
@@ -158,7 +158,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
           </span>
         </>
       );
-      const cls = "flex flex-col items-center justify-center gap-1 select-none relative";
+      const cls = "flex flex-1 flex-col items-center justify-center gap-1 select-none relative";
       if (to) {
         return (
           <Link key={key} to={to} className={cls} style={{ color }}>
@@ -191,7 +191,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
 
   return (
     <nav
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-16 bg-white flex items-stretch justify-around z-50 pb-safe"
+      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-16 bg-white flex items-stretch justify-between z-50 pb-safe"
       style={{
         fontFamily: "Inter, sans-serif",
         borderRadius: "20px 20px 0 0",
