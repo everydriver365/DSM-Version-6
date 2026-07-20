@@ -1028,6 +1028,128 @@ function LivePage() {
           </div>
         </div>
       )}
+
+      {/* PUPIL PICKER SHEET — manual tracking against a specific pupil */}
+      {pupilPickerOpen && (
+        <div
+          className="fixed inset-0 z-[1100] flex items-end justify-center"
+          style={POPPINS}
+        >
+          <div
+            className="absolute inset-0"
+            style={{ background: "rgba(0,0,0,0.4)" }}
+            onClick={() => {
+              setPupilPickerOpen(false);
+              setPupilSearchQuery("");
+            }}
+          />
+          <div
+            className="relative w-full max-w-md flex flex-col"
+            style={{
+              background: "#fff",
+              borderRadius: "16px 16px 0 0",
+              maxHeight: "80vh",
+              paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
+            }}
+          >
+            <div className="flex justify-center pt-3 pb-1">
+              <div style={{ width: 40, height: 5, borderRadius: 3, background: "#C7CDD6" }} />
+            </div>
+            <div className="flex items-center justify-between px-5 pt-2 pb-3">
+              <div style={{ fontSize: 17, fontWeight: 700, color: "#0B1F3A" }}>
+                Select pupil
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setPupilPickerOpen(false);
+                  setPupilSearchQuery("");
+                }}
+                className="p-1 rounded-full active:bg-black/5"
+                aria-label="Close"
+              >
+                <X size={20} color="#8A93A3" />
+              </button>
+            </div>
+            <div className="px-4 pb-3">
+              <div
+                className="flex items-center gap-2"
+                style={{
+                  background: "#F3F4F6",
+                  borderRadius: 10,
+                  padding: "10px 12px",
+                }}
+              >
+                <Search size={16} color="#6B7280" />
+                <input
+                  type="text"
+                  value={pupilSearchQuery}
+                  onChange={(e) => setPupilSearchQuery(e.target.value)}
+                  placeholder="Search pupils"
+                  autoFocus
+                  style={{
+                    border: "none",
+                    background: "transparent",
+                    outline: "none",
+                    flex: 1,
+                    fontSize: 16,
+                    color: "#0B1F3A",
+                  }}
+                />
+              </div>
+            </div>
+            <div className="overflow-y-auto px-2 pb-4" style={{ flex: 1 }}>
+              {(() => {
+                const q = pupilSearchQuery.trim().toLowerCase();
+                const filtered = allPupils
+                  .map((p) => ({
+                    p,
+                    display:
+                      p.name ||
+                      `${p.first_name ?? ""} ${p.last_name ?? ""}`.trim() ||
+                      "Unnamed",
+                  }))
+                  .filter(({ display }) => !q || display.toLowerCase().includes(q))
+                  .sort((a, b) => a.display.localeCompare(b.display));
+                if (filtered.length === 0) {
+                  return (
+                    <div
+                      style={{
+                        padding: "24px 16px",
+                        textAlign: "center",
+                        color: "#6B7280",
+                        fontSize: 14,
+                      }}
+                    >
+                      No pupils found
+                    </div>
+                  );
+                }
+                return filtered.map(({ p, display }) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => {
+                      setPupilPickerOpen(false);
+                      setPupilSearchQuery("");
+                      setActivePupilId(p.id);
+                      setTrackingPupilName(display);
+                      startTracking(null, p.id);
+                    }}
+                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl active:bg-black/5"
+                    style={{ background: "transparent", border: "none", textAlign: "left" }}
+                  >
+                    <PupilAvatar pupil={p} pupilId={p.id} size={36} />
+                    <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A" }}>
+                      {display}
+                    </div>
+                  </button>
+                ));
+              })()}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
