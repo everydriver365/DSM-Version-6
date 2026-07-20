@@ -306,6 +306,7 @@ export function AddressLookup({
           setSelectedLng(lng);
           setInputValue(formatted);
           setConfirmed(true);
+          setJustSelected(true);
 
           onAddressFound({
             postcode: pc,
