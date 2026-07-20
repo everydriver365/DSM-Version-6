@@ -4586,43 +4586,63 @@ function HomePage() {
             paddingBottom: 10,
           }}
         >
-      {/* ============ NAVY HEADER BLOCK ============ */}
-      <div
-        style={{
-          backgroundColor: '#0B1F3A',
-          marginTop: 'calc(-1 * (60px + env(safe-area-inset-top, 0px)))',
-          padding: 'calc(60px + env(safe-area-inset-top, 0px) + 16px) 16px 34px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          fontFamily: 'Inter, sans-serif',
-          borderRadius: '0 0 24px 24px',
-        }}
-      >
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 18, fontWeight: 600, color: '#FFFFFF', lineHeight: 1.2 }}>Dashboard</div>
-          <div style={{ fontSize: 13, color: '#9AA6BC', marginTop: 4 }}>
-            Welcome back, {firstName || 'there'} 👋
+      {/* ============ WELCOME HEADER ============ */}
+      {(() => {
+        const nameForInitials = (instructorFullName || firstName || "").trim();
+        const parts = nameForInitials.split(/\s+/).filter(Boolean);
+        const initials = (
+          parts.length >= 2
+            ? parts[0][0] + parts[parts.length - 1][0]
+            : (parts[0] ?? "I").slice(0, 1)
+        ).toUpperCase();
+        return (
+          <div
+            style={{
+              backgroundColor: '#0B1F3A',
+              marginTop: 'calc(-1 * (60px + env(safe-area-inset-top, 0px)))',
+              padding: 'calc(60px + env(safe-area-inset-top, 0px) + 20px) 16px 34px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              fontFamily: 'Poppins, sans-serif',
+              borderRadius: '0 0 24px 24px',
+            }}
+          >
+            <div
+              aria-hidden
+              style={{
+                width: 42,
+                height: 42,
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #1877D6 0%, #0B1F3A 100%)',
+                color: '#FFFFFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 16,
+                fontWeight: 700,
+                flexShrink: 0,
+                fontFamily: 'Poppins, sans-serif',
+              }}
+            >
+              {initials}
+            </div>
+            <h1
+              style={{
+                margin: 0,
+                fontSize: 24,
+                fontWeight: 700,
+                color: '#FFFFFF',
+                lineHeight: 1.2,
+                fontFamily: 'Poppins, sans-serif',
+              }}
+            >
+              Welcome, {firstName || 'there'}
+            </h1>
           </div>
-        </div>
-        <button
-          type="button"
-          onClick={() => navigate({ to: '/profile' })}
-          aria-label="Profile"
-          style={{
-            width: 34, height: 34, borderRadius: '50%',
-            background: '#1877D6', color: '#FFFFFF',
-            fontSize: 13, fontWeight: 600,
-            border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', overflow: 'hidden', padding: 0, flexShrink: 0,
-            fontFamily: 'Inter, sans-serif',
-          }}
-        >
-          {avatarUrl
-            ? <img src={avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            : (firstName?.[0] ?? 'I').toUpperCase()}
-        </button>
-      </div>
+        );
+      })()}
+
 
       {/* ============ OVERLAPPING STAT TILES ============ */}
       {/* NOTE: naCalls (callbacks) and naJobs (open jobs) are not yet wired to a real table — showing 0 as placeholder. naEnquiries is derived from pendingSwapCount today. */}
