@@ -614,41 +614,39 @@ export function AddressLookup({
                 {city ? ` · ${city}` : ""}
               </div>
             )}
-            {justSelected && (
-              <div style={{ marginTop: 8 }}>
-                <label
-                  style={{ fontSize: 11, color: "#6B7280", ...POPPINS }}
-                >
-                  House / flat number or name (optional)
-                </label>
-                <input
-                  type="text"
-                  value={doorNumber}
-                  onChange={(e) => setDoorNumber(e.target.value)}
-                  onBlur={(e) => commitDoorNumber(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      commitDoorNumber((e.target as HTMLInputElement).value);
-                      (e.target as HTMLInputElement).blur();
-                    }
-                  }}
-                  placeholder="e.g. 42 or Flat 3"
-                  style={{
-                    width: "100%",
-                    height: 40,
-                    padding: "0 12px",
-                    marginTop: 4,
-                    border: "0.5px solid #EEF2F7",
-                    borderRadius: 8,
-                    fontSize: 16,
-                    background: "#fff",
-                    color: "#0B1F3A",
-                    ...POPPINS,
-                  }}
-                />
-              </div>
-            )}
+            <div style={{ marginTop: 8 }}>
+              <label
+                style={{ fontSize: 11, color: "#6B7280", ...POPPINS }}
+              >
+                House / flat number or name (optional)
+              </label>
+              <input
+                type="text"
+                value={doorNumber}
+                onChange={(e) => setDoorNumber(e.target.value)}
+                onBlur={(e) => commitDoorNumber(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    commitDoorNumber((e.target as HTMLInputElement).value);
+                    (e.target as HTMLInputElement).blur();
+                  }
+                }}
+                placeholder="e.g. 42 or Flat 3"
+                style={{
+                  width: "100%",
+                  height: 40,
+                  padding: "0 12px",
+                  marginTop: 4,
+                  border: "0.5px solid #EEF2F7",
+                  borderRadius: 8,
+                  fontSize: 16,
+                  background: "#fff",
+                  color: "#0B1F3A",
+                  ...POPPINS,
+                }}
+              />
+            </div>
             <button
               type="button"
               onClick={reset}
