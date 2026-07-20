@@ -16,7 +16,12 @@ const BLUE = "#1877D6";
 const GREY = "#6B7280";
 
 const TRANSMISSIONS = ["manual", "automatic", "either"] as const;
-const TIMINGS = ["morning", "afternoon", "evening", "weekend", "flexible"] as const;
+const TIMINGS = [
+  { value: "morning", label: "Mornings" },
+  { value: "afternoon", label: "Afternoons" },
+  { value: "evening", label: "Evenings" },
+  { value: "weekend", label: "Weekends" },
+];
 const WEEKDAYS = [
   { value: "Monday", short: "Mon" },
   { value: "Tuesday", short: "Tue" },
