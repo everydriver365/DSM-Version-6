@@ -109,6 +109,7 @@ export default function InstructorTopBar({
         justifyContent: "space-between",
         gap: 8,
         boxShadow: "inset 0 -1px 0 rgba(255,255,255,0.04)",
+        borderRadius: "0 0 36px 36px",
       }}
     >
       {/* LEFT — mic alone (or back button on subpages) */}
