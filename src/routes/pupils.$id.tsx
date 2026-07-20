@@ -2446,11 +2446,11 @@ function PupilDetailPage() {
               </button>
             </div>
             {addressEditing ? (
-              <AddressEditor
+              <AddressLookup
                 initialAddress={pupil.address ?? ""}
                 initialPostcode={pupil.postcode ?? ""}
-                inputRef={addressInputRef}
-                onSave={saveAddressManual}
+                showSearchButton
+                onAddressFound={saveAddressFromLookup}
               />
             ) : (
               <div className="text-[13px]" style={{ color: pupil.address ? "#0B1F3A" : "#9CA3AF", ...POPPINS }}>
