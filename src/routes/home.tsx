@@ -4607,7 +4607,7 @@ function HomePage() {
             onClick={() => navigate({ to: s.route as never })}
             style={{
               flex: 1, background: '#FFFFFF', borderRadius: 10,
-              boxShadow: '0 6px 16px rgba(11,31,58,0.18)', padding: '20px 12px 14px', minWidth: 0,
+              boxShadow: '0 6px 16px rgba(11,31,58,0.18)', padding: '15px 12px 9px', minWidth: 0,
               border: 'none', textAlign: 'left', cursor: 'pointer', fontFamily: 'Inter, sans-serif',
             }}
           >
