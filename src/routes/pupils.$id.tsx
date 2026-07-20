@@ -531,7 +531,6 @@ function PupilDetailPage() {
 
   const [practicalCentrePickerOpen, setPracticalCentrePickerOpen] = useState(false);
   const [practicalCentreSearch, setPracticalCentreSearch] = useState("");
-  const addressInputRef = useRef<HTMLInputElement>(null);
   const focusedLessonCardRef = useRef<HTMLDivElement>(null);
   const pastCollapsedInit = useRef(false);
 
