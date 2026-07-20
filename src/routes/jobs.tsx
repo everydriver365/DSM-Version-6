@@ -249,11 +249,25 @@ function JobsPage() {
       ) : (
         <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
           {jobs.map((job) => {
-            const match = computeMatch(job, prefs);
+            const hoursDays = computeHoursDaysMatch(job, prefs);
+            const distanceMi = distanceToCoverage(job, coverage);
+            const inRadius = withinAnyCoverage(job, coverage);
+            const hasCoords = job.centre_lat != null && job.centre_lng != null;
+            const distanceKnown = hasCoords && coverage.length > 0;
+            // Combine hours/days match with radius.
+            let level: MatchLevel;
+            if (!distanceKnown) {
+              level = hoursDays; // fall back to hours/days only when we can't compute distance
+            } else {
+              const hoursDaysGood = hoursDays === "good";
+              if (hoursDaysGood && inRadius) level = "good";
+              else if (hoursDaysGood || inRadius) level = "possible";
+              else level = "none";
+            }
             const badge =
-              match === "good"
+              level === "good"
                 ? { label: "Good match", color: GREEN, bg: "#E5F5EC" }
-                : match === "possible"
+                : level === "possible"
                 ? { label: "Possible match", color: AMBER, bg: "#FDF2E4" }
                 : null;
             return (
@@ -276,6 +290,7 @@ function JobsPage() {
                     <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>
                       {[
                         job.postcode_area,
+                        distanceMi != null ? `${distanceMi.toFixed(1)} mi away` : null,
                         job.transmission,
                         job.course_hours ? `${job.course_hours} hrs` : null,
                         job.preferred_timing?.join(", "),
