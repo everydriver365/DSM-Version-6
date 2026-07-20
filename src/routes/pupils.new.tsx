@@ -54,60 +54,6 @@ function NewPupilPage() {
     form?: string;
   }>({});
   const [saving, setSaving] = useState(false);
-  const addressInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    loadGoogleMaps()
-      .then(() => {
-        if (cancelled) return;
-        const input = addressInputRef.current;
-        const g = (window as unknown as {
-          google?: {
-            maps?: {
-              places?: {
-                Autocomplete: new (
-                  el: HTMLInputElement,
-                  opts: Record<string, unknown>,
-                ) => {
-                  addListener: (e: string, cb: () => void) => void;
-                  getPlace: () => {
-                    formatted_address?: string;
-                    address_components?: Array<{
-                      long_name: string;
-                      short_name: string;
-                      types: string[];
-                    }>;
-                  };
-                };
-              };
-            };
-          };
-        }).google;
-        if (!input || !g?.maps?.places) return;
-        const ac = new g.maps.places.Autocomplete(input, {
-          componentRestrictions: { country: "gb" },
-          types: ["address"],
-          fields: ["formatted_address", "address_components"],
-        });
-        ac.addListener("place_changed", () => {
-          const place = ac.getPlace();
-          const formatted = place.formatted_address ?? "";
-          const pc =
-            place.address_components?.find((c) =>
-              c.types.includes("postal_code"),
-            )?.long_name ?? "";
-          if (formatted) setAddress(() => formatted);
-          if (pc) setPostcode(() => pc);
-        });
-      })
-      .catch(() => {
-        // silently ignore — manual entry still works
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   async function handleSave() {
     const next: typeof errors = {};
