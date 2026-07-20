@@ -2562,6 +2562,32 @@ function MonthStrip({
           >
             Today
           </button>
+          <button
+            type="button"
+            onClick={onToggleLegend}
+            aria-label="Toggle legend"
+            aria-expanded={legendOpen}
+            style={{
+              width: 18,
+              height: 18,
+              borderRadius: "50%",
+              border: "1.5px solid #C7CCD4",
+              background: "transparent",
+              color: "#9CA3AF",
+              fontSize: 11,
+              fontWeight: 600,
+              fontStyle: "italic",
+              lineHeight: 1,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              padding: 0,
+              ...POPPINS,
+            }}
+          >
+            i
+          </button>
         </div>
         <button
           type="button"
