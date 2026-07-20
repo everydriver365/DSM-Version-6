@@ -105,11 +105,11 @@ export default function InstructorTopBar({
   return (
     <div
       style={{
-        position: "fixed",
+        position: sticky ? "fixed" : "relative",
         top: 0,
         left: 0,
         right: 0,
-        zIndex: 40,
+        zIndex: sticky ? 40 : undefined,
         background: "#0B1F3A",
         padding: "calc(env(safe-area-inset-top, 0px) + 10px) 14px 0",
         borderRadius: hasHero ? "0 0 32px 32px" : "0 0 24px 24px",
