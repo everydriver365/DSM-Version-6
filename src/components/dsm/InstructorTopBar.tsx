@@ -96,6 +96,7 @@ export default function InstructorTopBar({
   firstName,
   heroTitle,
   heroSubtitle,
+  sticky = true,
 }: InstructorTopBarProps) {
   const navigate = useNavigate();
   const isSubpage = typeof onBack === "function";
