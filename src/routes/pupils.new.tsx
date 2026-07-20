@@ -215,31 +215,19 @@ function NewPupilPage() {
             </p>
           </div>
 
-          <Input
-            ref={addressInputRef}
-            label="Home address"
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            maxLength={255}
-            autoComplete="off"
-            placeholder="Start typing an address…"
+          <AddressLookup
+            initialPostcode={postcode}
+            initialAddress={address}
+            onAddressFound={({ postcode: pc, address: addr }) => {
+              setPostcode(pc);
+              setAddress(addr);
+            }}
           />
-          <div>
-            <Input
-              label="Postcode"
-              type="text"
-              value={postcode}
-              onChange={(e) => setPostcode(e.target.value)}
-              maxLength={10}
-              autoComplete="postal-code"
-            />
-            {errors.postcode && (
-              <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
-                {errors.postcode}
-              </p>
-            )}
-          </div>
+          {errors.postcode && (
+            <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
+              {errors.postcode}
+            </p>
+          )}
           <div className="flex flex-col gap-1">
             <label
               className="text-[13px] font-medium text-[#0B1F3A]"
