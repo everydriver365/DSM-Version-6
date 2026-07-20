@@ -4093,62 +4093,6 @@ function PupilRatesAndColour({
   );
 }
 
-function AddressEditor({
-  initialAddress,
-  initialPostcode,
-  inputRef,
-  onSave,
-}: {
-  initialAddress: string;
-  initialPostcode: string;
-  inputRef: React.RefObject<HTMLInputElement | null>;
-  onSave: (address: string, postcode: string) => void | Promise<void>;
-}) {
-  const [addr, setAddr] = useState(initialAddress);
-  const [pc, setPc] = useState(initialPostcode);
-  return (
-    <div className="flex flex-col gap-2">
-      <input
-        ref={inputRef}
-        type="text"
-        placeholder="Start typing address..."
-        value={addr}
-        onChange={(e) => setAddr(e.target.value)}
-        autoComplete="off"
-        style={{
-          width: "100%",
-          height: 40,
-          padding: "0 12px",
-          borderRadius: 8,
-          border: "0.5px solid #E2E6ED",
-          fontSize: 14,
-          outline: "none",
-          ...POPPINS,
-        }}
-      />
-      <input
-        type="text"
-        placeholder="Postcode"
-        value={pc}
-        onChange={(e) => setPc(e.target.value)}
-        style={{
-          width: "100%",
-          height: 40,
-          padding: "0 12px",
-          borderRadius: 8,
-          border: "0.5px solid #E2E6ED",
-          fontSize: 14,
-          outline: "none",
-          ...POPPINS,
-        }}
-      />
-      <div className="flex justify-end">
-        <Button variant="primary" onClick={() => onSave(addr, pc)}>Save</Button>
-      </div>
-    </div>
-  );
-}
-
 const PUPIL_LEAD_SOURCES = [
   "Referral",
   "EveryDriver",
