@@ -5828,10 +5828,11 @@ function HomePage() {
                             role="button"
                             tabIndex={0}
                             style={{
+                              position: 'relative',
                               background: moveModeHome ? '#F4F8FE' : '#FFFFFF',
                               borderRadius: 10,
                               boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-                              padding: '12px 14px',
+                              padding: '20px 14px 12px',
                               display: 'flex',
                               alignItems: 'center',
                               gap: 10,
@@ -5839,6 +5840,22 @@ function HomePage() {
                               border: moveModeHome ? '1.5px dashed #1877D6' : 'none',
                             }}
                           >
+                            <div
+                              style={{
+                                position: 'absolute',
+                                top: -8,
+                                left: 16,
+                                background: '#B5661E',
+                                color: '#FFFFFF',
+                                fontSize: 9,
+                                fontWeight: 700,
+                                padding: '3px 9px',
+                                borderRadius: 999,
+                                letterSpacing: 0.3,
+                              }}
+                            >
+                              OPPORTUNITY
+                            </div>
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={{ fontSize: 13, fontWeight: 500, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums' }}>
                                 {fmtT(gs)} – {fmtT(ge)}
@@ -5876,12 +5893,12 @@ function HomePage() {
                                       );
                                     })}
                                   </div>
-                                  <div style={{ fontSize: 11, color: '#1877D6' }}>
+                                  <div style={{ fontSize: 11, color: '#0B1F3A' }}>
                                     {preview.count} pupil{preview.count === 1 ? "" : "s"} may fit
                                   </div>
                                 </div>
                               )}
-                              <div style={{ fontSize: 11, color: '#1877D6', marginTop: 2 }}>
+                              <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 2 }}>
                                 {formatMins(r.mins)} free · £{potential} potential
                               </div>
                             </div>
