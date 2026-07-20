@@ -133,7 +133,6 @@ export default function InstructorTopBar({
               {(firstName?.charAt(0) ?? "I").toUpperCase()}
             </div>
           )}
-          <ChevronRight size={16} strokeWidth={1.8} color="rgba(255,255,255,0.7)" />
           {statusDot}
         </button>
       )}

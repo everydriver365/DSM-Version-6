@@ -4459,12 +4459,6 @@ function HomePage() {
         onBell={() => navigate({ to: "/notifications" })}
         onMenu={() => navigate({ to: "/settings" })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
-        statusDot={
-          <span
-            className="rounded-full"
-            style={{ width: 8, height: 8, backgroundColor: "#1877D6", marginLeft: 4 }}
-          />
-        }
       />
 
       <PushPermissionCard />
