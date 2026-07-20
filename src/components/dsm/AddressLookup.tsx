@@ -130,8 +130,12 @@ export function AddressLookup({
   );
   const [inputValue, setInputValue] = useState<string>(initialAddress);
   const [selectedAddress, setSelectedAddress] = useState<string>(initialAddress);
+  const [baseAddress, setBaseAddress] = useState<string>(initialAddress);
+  const [doorNumber, setDoorNumber] = useState<string>("");
   const [postcode, setPostcode] = useState<string>(initialPostcode);
   const [city, setCity] = useState<string>(initialCity);
+  const [selectedLat, setSelectedLat] = useState<number | null>(null);
+  const [selectedLng, setSelectedLng] = useState<number | null>(null);
   const [confirmed, setConfirmed] = useState<boolean>(!!initialAddress);
   const [loading, setLoading] = useState<boolean>(false);
   const [suggestions, setSuggestions] = useState<Prediction[]>([]);
@@ -293,8 +297,12 @@ export function AddressLookup({
           const derivedCity = town || county || "";
 
           setSelectedAddress(formatted);
+          setBaseAddress(formatted);
+          setDoorNumber("");
           setPostcode(pc);
           setCity(derivedCity);
+          setSelectedLat(lat);
+          setSelectedLng(lng);
           setInputValue(formatted);
           setConfirmed(true);
 
@@ -314,14 +322,31 @@ export function AddressLookup({
   function reset() {
     setConfirmed(false);
     setSelectedAddress("");
+    setBaseAddress("");
+    setDoorNumber("");
     setPostcode("");
     setCity("");
+    setSelectedLat(null);
+    setSelectedLng(null);
     setInputValue("");
     setError(null);
     setSuggestions([]);
     setShowSuggestions(false);
     setNoResults(false);
     if (inputRef.current) inputRef.current.value = "";
+  }
+
+  function commitDoorNumber(next: string) {
+    const trimmed = next.trim();
+    const combined = trimmed ? `${trimmed} ${baseAddress}` : baseAddress;
+    setSelectedAddress(combined);
+    onAddressFound({
+      postcode,
+      address: combined,
+      city,
+      lat: selectedLat,
+      lng: selectedLng,
+    });
   }
 
   const inputBorderColor = error ? "#1877D6" : "#EEF2F7";
@@ -578,6 +603,34 @@ export function AddressLookup({
                 {city ? ` · ${city}` : ""}
               </div>
             )}
+            <div style={{ marginTop: 8 }}>
+              <label
+                style={{ fontSize: 11, color: "#6B7280", ...POPPINS }}
+              >
+                House / flat number or name (optional)
+              </label>
+              <input
+                type="text"
+                value={doorNumber}
+                onChange={(e) => {
+                  setDoorNumber(e.target.value);
+                  commitDoorNumber(e.target.value);
+                }}
+                placeholder="e.g. 42 or Flat 3"
+                style={{
+                  width: "100%",
+                  height: 40,
+                  padding: "0 12px",
+                  marginTop: 4,
+                  border: "0.5px solid #EEF2F7",
+                  borderRadius: 8,
+                  fontSize: 16,
+                  background: "#fff",
+                  color: "#0B1F3A",
+                  ...POPPINS,
+                }}
+              />
+            </div>
             <button
               type="button"
               onClick={reset}
