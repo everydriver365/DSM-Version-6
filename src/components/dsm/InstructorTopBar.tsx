@@ -252,14 +252,6 @@ export default function InstructorTopBar({
               </div>
             )}
           </div>
-          <img
-            src={iconMarkAsset.url}
-            alt=""
-            aria-hidden
-            width={56}
-            height={56}
-            style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
-          />
         </div>
       )}
     </div>
