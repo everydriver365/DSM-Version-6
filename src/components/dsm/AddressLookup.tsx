@@ -297,8 +297,12 @@ export function AddressLookup({
           const derivedCity = town || county || "";
 
           setSelectedAddress(formatted);
+          setBaseAddress(formatted);
+          setDoorNumber("");
           setPostcode(pc);
           setCity(derivedCity);
+          setSelectedLat(lat);
+          setSelectedLng(lng);
           setInputValue(formatted);
           setConfirmed(true);
 
