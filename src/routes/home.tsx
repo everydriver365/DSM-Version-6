@@ -4482,16 +4482,19 @@ function HomePage() {
   );
 
   return (
-    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
+    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: 'calc(46px + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
       {notifBanner}
       <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.carousel-hide-scrollbar::-webkit-scrollbar{display:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}@keyframes chipShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
       {/* TOP BAR */}
-      <InstructorTopBar
-        unreadMessages={unreadMsgs.length}
-        unreadNotifications={notifCount}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-        profileAvatar={profileAvatar}
-      />
+      <div className="home-header-wrap">
+        <style>{`.home-header-wrap > div { border-radius: 0 0 24px 24px !important; padding-bottom: 0 !important; }`}</style>
+        <InstructorTopBar
+          unreadMessages={unreadMsgs.length}
+          unreadNotifications={notifCount}
+          onMicPress={() => toast.info("Voice commands coming soon!")}
+          profileAvatar={profileAvatar}
+        />
+      </div>
 
       <PushPermissionCard />
 
