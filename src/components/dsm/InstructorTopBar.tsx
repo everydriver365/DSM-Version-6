@@ -1,5 +1,5 @@
 import React from "react";
-import { ChevronRight, ChevronLeft, Bell, Mic } from "lucide-react";
+import { ChevronLeft, Bell, Mic } from "lucide-react";
 import { PhoneIcon, CarIcon, MenuIcon, PoundIcon } from "@/components/icons/DrivingIcons";
 import { useNavigate } from "@tanstack/react-router";
 
@@ -15,7 +15,6 @@ export type InstructorTopBarProps = {
   onProfile?: () => void;
   onBack?: () => void;
   pageTitle?: string;
-  statusDot?: React.ReactNode;
 };
 
 const ICON_BTN: React.CSSProperties = {
@@ -62,7 +61,6 @@ export default function InstructorTopBar({
   onProfile,
   onBack,
   pageTitle,
-  statusDot,
 }: InstructorTopBarProps) {
   const isSubpage = typeof onBack === "function";
   const navigate = useNavigate();
@@ -130,12 +128,10 @@ export default function InstructorTopBar({
                 fontWeight: 700,
               }}
             >
-              {(firstName?.charAt(0) ?? "I").toUpperCase()}
-            </div>
-          )}
-          <ChevronRight size={16} strokeWidth={1.8} color="rgba(255,255,255,0.7)" />
-          {statusDot}
-        </button>
+            {(firstName?.charAt(0) ?? "I").toUpperCase()}
+          </div>
+        )}
+      </button>
       )}
 
       {/* MIC CENTER */}
