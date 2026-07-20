@@ -343,7 +343,7 @@ export function AddressLookup({
     setSuggestions([]);
     setShowSuggestions(false);
     setNoResults(false);
-    setJustSelected(false);
+    
     if (inputRef.current) inputRef.current.value = "";
   }
 
