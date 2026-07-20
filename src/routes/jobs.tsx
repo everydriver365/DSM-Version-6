@@ -216,7 +216,7 @@ function JobsPage() {
                         job.postcode_area,
                         job.transmission,
                         job.course_hours ? `${job.course_hours} hrs` : null,
-                        job.preferred_timing,
+                        job.preferred_timing?.join(", "),
                       ].filter(Boolean).join(" · ")}
                     </div>
                   </div>
@@ -331,7 +331,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
               {job.pupil_name || "Job enquiry"}
             </div>
             <div style={{ fontSize: 11, color: GREY }}>
-              {[job.postcode_area, job.preferred_timing].filter(Boolean).join(" · ")}
+              {[job.postcode_area, job.preferred_timing?.join(", ")].filter(Boolean).join(" · ")}
             </div>
           </div>
           <button onClick={onClose} style={{ padding: 6, background: "transparent", border: "none", cursor: "pointer" }}>
