@@ -203,22 +203,35 @@ export function AddressLookup({
         {
           input: inputValue,
           componentRestrictions: { country: "gb" },
-          types: ["address"],
         },
         (predictions, status) => {
           setLoading(false);
-          if (status === "ZERO_RESULTS" || !predictions?.length) {
+          if (status === "OK" && predictions && predictions.length > 0) {
+            setSuggestions(predictions);
+            setNoResults(false);
+            setError(null);
+            setShowSuggestions(true);
+          } else if (status === "ZERO_RESULTS") {
             setSuggestions([]);
             setNoResults(true);
+            setError(null);
             setShowSuggestions(true);
           } else {
-            setSuggestions(predictions || []);
+            console.error(
+              "[address-lookup] getPlacePredictions failed:",
+              status,
+              "input:",
+              inputValue,
+            );
+            setSuggestions([]);
             setNoResults(false);
-            setShowSuggestions(true);
+            setShowSuggestions(false);
+            setError(`Address lookup failed (${status}). Please try again.`);
           }
         },
       );
     }, 300);
+
 
     return () => clearTimeout(timer);
   }, [inputValue, placesLoaded, confirmed]);
@@ -238,9 +251,16 @@ export function AddressLookup({
         (place, status) => {
           setLoading(false);
           if (!place || status !== "OK") {
-            setError("Could not fetch address details. Please try again.");
+            console.error(
+              "[address-lookup] getDetails failed:",
+              status,
+              "placeId:",
+              prediction.place_id,
+            );
+            setError(`Could not fetch address details (${status}).`);
             return;
           }
+
 
           let streetNumber = "";
           let streetName = "";
