@@ -4438,48 +4438,6 @@ function HomePage() {
     );
   }
 
-  const profileInitials = (() => {
-    const name = (instructorFullName || firstName || "").trim();
-    const parts = name.split(/\s+/).filter(Boolean);
-    return (
-      parts.length >= 2
-        ? parts[0][0] + parts[parts.length - 1][0]
-        : (parts[0] ?? "I").slice(0, 1)
-    ).toUpperCase();
-  })();
-
-  const profileAvatar = (
-    <button
-      type="button"
-      aria-label="Profile"
-      onClick={() => navigate({ to: "/profile" })}
-      style={{
-        width: 36,
-        height: 36,
-        borderRadius: "50%",
-        background: "linear-gradient(135deg, #1877D6 0%, #0B1F3A 100%)",
-        border: "none",
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        cursor: "pointer",
-        position: "relative",
-        padding: 0,
-        flexShrink: 0,
-        overflow: "hidden",
-        color: "#FFFFFF",
-        fontSize: 12,
-        fontWeight: 700,
-        fontFamily: "Poppins, sans-serif",
-      }}
-    >
-      {avatarUrl ? (
-        <img src={avatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-      ) : (
-        profileInitials
-      )}
-    </button>
-  );
 
   return (
     <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: 'calc(46px + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
