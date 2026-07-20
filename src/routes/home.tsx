@@ -4593,7 +4593,7 @@ function HomePage() {
 
       {/* ============ STAT TILES ============ */}
       {/* NOTE: naCalls (callbacks) and naJobs (open jobs) are not yet wired to a real table — showing 0 as placeholder. naEnquiries is derived from pendingSwapCount today. */}
-      <div style={{ padding: '0 16px', marginTop: -16, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif', position: 'relative', zIndex: 50 }}>
+      <div style={{ padding: '0 16px', marginTop: -40, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif', position: 'relative', zIndex: 50 }}>
 
         {[
           { label: 'Calls', value: String(naCalls), sub: 'Need callback', color: '#CC2229', route: '/messages' },
@@ -4606,7 +4606,7 @@ function HomePage() {
             onClick={() => navigate({ to: s.route as never })}
             style={{
               flex: 1, background: '#FFFFFF', borderRadius: 10,
-              boxShadow: '0 4px 14px rgba(11,31,58,0.12)', padding: 12, minWidth: 0,
+              boxShadow: '0 6px 16px rgba(11,31,58,0.18)', padding: '20px 12px 14px', minWidth: 0,
               border: 'none', textAlign: 'left', cursor: 'pointer', fontFamily: 'Inter, sans-serif',
             }}
           >
