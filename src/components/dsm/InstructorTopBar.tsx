@@ -1,5 +1,5 @@
 import React from "react";
-import { ChevronLeft, ChevronRight, Bell, Headphones } from "lucide-react";
+import { ChevronLeft, ChevronRight, Bell, Headphones, Mic, MessageCircle } from "lucide-react";
 import { CarIcon, MenuIcon, PoundIcon } from "@/components/icons/DrivingIcons";
 import { useNavigate } from "@tanstack/react-router";
 import iconMarkAsset from "../../assets/dsm-icon-white.png.asset.json";
@@ -88,7 +88,9 @@ function Badge({ count, color }: { count: number; color: string }) {
 
 export default function InstructorTopBar({
   unreadNotifications = 0,
+  unreadMessages = 0,
   onBack,
+  onMicPress = () => {},
   pageTitle,
   firstName,
   heroTitle,
