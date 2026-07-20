@@ -299,6 +299,7 @@ function SchedulePage() {
   const [hourlyRate, setHourlyRate] = useState<number>(40);
   const minGapMinutes = useMinGapMinutes();
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
+  const [legendOpen, setLegendOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>(() => ymdLocal(today));
   const [instructor, setInstructor] = useState<{ external_calendar_url: string | null; calendar_last_synced: string | null } | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
@@ -829,18 +830,54 @@ function SchedulePage() {
     navigate({ to: "/lessons/$id" as never, params: { id } as never });
   };
 
-  // Colour dots per date, one per unique pupil, capped at 3.
+  // Colour dots per date by entry TYPE (matches legend): blue=DSM lesson,
+  // grey=Google Calendar block, orange=free slot 60+ min. Up to 3 dots.
   const dotsByDay = useMemo(() => {
     const map = new Map<string, string[]>();
-    for (const l of lessons ?? []) {
-      const key = l.lesson_date.substring(0, 10);
-      const arr = map.get(key) ?? [];
-      const colour = pupilColour(l.pupil_id ?? null, l.pupil?.calendar_colour ?? null, pupilDisplayName(l.pupil));
-      if (!arr.includes(colour) && arr.length < 3) arr.push(colour);
-      map.set(key, arr);
+    const keys = new Set<string>();
+    for (const l of lessons ?? []) keys.add(l.lesson_date.substring(0, 10));
+    for (const b of calendarBlocks) {
+      if (b.start_datetime) keys.add(b.start_datetime.substring(0, 10));
+    }
+    for (const key of keys) {
+      const dayLessons = (lessons ?? []).filter(
+        (l) => l.lesson_date.substring(0, 10) === key &&
+          String(l.status || "").toLowerCase() !== "cancelled",
+      );
+      const dayBlocks = calendarBlocks.filter(
+        (b) => (b.start_datetime || "").substring(0, 10) === key,
+      );
+      const dayName = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
+        new Date(key + "T12:00:00").getDay()
+      ];
+      const isDayActive = workingDaysList.includes(dayName);
+      const gaps = isDayActive
+        ? detectGaps(
+            dayLessons.map((l) => ({
+              status: l.status,
+              lesson_time: l.lesson_time,
+              duration_minutes: l.duration_minutes,
+              pupils: null,
+            })),
+            workStart,
+            workEnd,
+            bufferAfter,
+            calendarBlocks,
+            recurringBlocks,
+            timeOff,
+            key,
+            hourlyRate,
+            minGapMinutes,
+          )
+        : [];
+      const dots: string[] = [];
+      if (dayLessons.length > 0) dots.push("#1877D6");
+      if (dayBlocks.length > 0) dots.push("#8A93A3");
+      if (gaps.length > 0) dots.push("#B5661E");
+      if (dots.length > 0) map.set(key, dots);
     }
     return map;
-  }, [lessons]);
+  }, [lessons, calendarBlocks, recurringBlocks, timeOff, workingDaysList, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
 
   const scrollToDate = useCallback(
     (key: string) => {
@@ -1015,22 +1052,26 @@ function SchedulePage() {
           setViewMonth(d);
           scrollToDate(ymdLocal(today));
         }}
+        legendOpen={legendOpen}
+        onToggleLegend={() => setLegendOpen((v) => !v)}
       />
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px 4px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#1A52A0' }} />
-          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>DSM lesson</span>
+      {legendOpen && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px 4px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ width: 8, height: 8, borderRadius: 2, background: '#1A52A0' }} />
+            <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>DSM lesson</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ width: 8, height: 8, borderRadius: 2, background: '#9CA3AF' }} />
+            <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>Google Calendar</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ width: 8, height: 8, borderRadius: 2, background: '#D97706' }} />
+            <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>Free slot</span>
+          </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#9CA3AF' }} />
-          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>Google Calendar</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#D97706' }} />
-          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>Free slot</span>
-        </div>
-      </div>
+      )}
 
 
       <div
@@ -2428,6 +2469,8 @@ function MonthStrip({
   onNextMonth,
   onSelectDate,
   onToday,
+  legendOpen,
+  onToggleLegend,
 }: {
   viewMonth: Date;
   selectedDate: string;
@@ -2437,6 +2480,8 @@ function MonthStrip({
   onNextMonth: () => void;
   onSelectDate: (key: string) => void;
   onToday: () => void;
+  legendOpen: boolean;
+  onToggleLegend: () => void;
 }) {
   const scroller = useRef<HTMLDivElement | null>(null);
 
@@ -2483,7 +2528,7 @@ function MonthStrip({
       style={{
         background: "#FFFFFF",
         borderBottom: "0.5px solid #E2E6ED",
-        padding: "12px 16px",
+        padding: "8px 16px",
         position: "sticky",
         top: 0,
         zIndex: 10,
@@ -2516,6 +2561,32 @@ function MonthStrip({
             }}
           >
             Today
+          </button>
+          <button
+            type="button"
+            onClick={onToggleLegend}
+            aria-label="Toggle legend"
+            aria-expanded={legendOpen}
+            style={{
+              width: 18,
+              height: 18,
+              borderRadius: "50%",
+              border: "1.5px solid #C7CCD4",
+              background: "transparent",
+              color: "#9CA3AF",
+              fontSize: 11,
+              fontWeight: 600,
+              fontStyle: "italic",
+              lineHeight: 1,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              padding: 0,
+              ...POPPINS,
+            }}
+          >
+            i
           </button>
         </div>
         <button
@@ -2554,7 +2625,7 @@ function MonthStrip({
               onClick={() => onSelectDate(key)}
               style={{
                 flex: "0 0 calc(100% / 7)",
-                padding: "4px 2px",
+                padding: "2px 2px",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
