@@ -266,26 +266,34 @@ function LivePage() {
     let limit: number | null = null;
     let road: string | null = null;
     try {
-      const r = await fetch(
-        `https://roads.googleapis.com/v1/speedLimits?path=${lat},${lng}&units=MPH&key=${GOOGLE_MAPS_KEY}`,
+      // TomTom Snap to Roads API. Their docs primarily show multi-point
+      // routes; to be safe we pass the same coordinate twice as a 2-point
+      // "route" so speedLimits reliably populates for a single location.
+      // measurementSystem=imperial → speed limits returned in mph.
+      const pt = `${lng},${lat}`;
+      const points = `${pt}:${pt}`;
+      const fields = encodeURIComponent(
+        "{route{properties{speedLimits{value,unit},address{roadName}}}}",
       );
+      const url = `https://api.tomtom.com/snapToRoads/1?key=${TOMTOM_API_KEY}&points=${points}&fields=${fields}&measurementSystem=imperial`;
+      const r = await fetch(url);
       const j = await r.json();
-      const sl = j?.speedLimits?.[0]?.speedLimit;
-      if (typeof sl === "number") limit = sl;
+      const props = j?.route?.[0]?.properties;
+      const sl = props?.speedLimits?.[0]?.value;
+      const unit = props?.speedLimits?.[0]?.unit;
+      if (typeof sl === "number") {
+        // imperial requested → expect mph; convert if API returns km/h.
+        limit =
+          unit && String(unit).toLowerCase().startsWith("k")
+            ? Math.round(sl / 1.609)
+            : Math.round(sl);
+      }
+      const roadName = props?.address?.roadName;
+      if (roadName) road = roadName;
     } catch (e) {
       console.warn("[live] speed limit fetch failed", e);
     }
-    try {
-      const r2 = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAPS_KEY}`,
-      );
-      const j2 = await r2.json();
-      const comps = j2?.results?.[0]?.address_components ?? [];
-      const routeComp = comps.find((c: any) => c.types?.includes("route"));
-      if (routeComp?.long_name) road = routeComp.long_name;
-    } catch (e) {
-      console.warn("[live] geocode failed", e);
-    }
+
 
     if (limit != null) {
       setSpeedLimit(limit);
