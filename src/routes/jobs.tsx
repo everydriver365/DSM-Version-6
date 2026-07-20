@@ -30,9 +30,17 @@ interface JobOffer {
   preferred_days: string[] | null;
   offered_rate: number | null;
   postcode_area: string | null;
+  centre_lat: number | null;
+  centre_lng: number | null;
   status: string;
   created_at: string;
   notes?: string | null;
+}
+
+interface CoverageArea {
+  centre_lat: number;
+  centre_lng: number;
+  radius_miles: number;
 }
 
 interface JobMessage {
