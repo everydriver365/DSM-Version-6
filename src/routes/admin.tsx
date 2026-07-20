@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
-import { ChevronLeft, Star, Users, BookOpen, Settings, FileText, ShoppingBag, Video, Mic } from "lucide-react";
+import { ChevronLeft, Star, Users, BookOpen, Settings, FileText, ShoppingBag, Video, Mic, Briefcase } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
 export const Route = createFileRoute("/admin")({
@@ -216,6 +216,11 @@ function AdminHub() {
             icon={<ShoppingBag size={18} />}
             label="Marketplace listings"
             onClick={() => navigate({ to: "/admin/listings" as never })}
+          />
+          <AdminSectionTile
+            icon={<Briefcase size={18} />}
+            label="Job offers"
+            onClick={() => navigate({ to: "/admin/job-offers" as never })}
           />
           <AdminSectionTile
             icon={<Video size={18} />}
