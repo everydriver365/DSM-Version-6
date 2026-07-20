@@ -1729,6 +1729,7 @@ function HomePage() {
   const [allAvailability, setAllAvailability] = useState<PupilReadySetting[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
+  const [autoTrackLessons, setAutoTrackLessons] = useState<boolean>(false);
   const [actionsOpenForLesson, setActionsOpenForLesson] = useState<LessonRow | null>(null);
   const [cancelSheetForLesson, setCancelSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSheetForLesson, setDeleteSheetForLesson] = useState<LessonRow | null>(null);
@@ -3044,6 +3045,39 @@ function HomePage() {
 
 
   const upcoming = nextLesson ?? lessons.find((l) => lessonDateTime(l) >= now && l.status !== "cancelled") ?? null;
+
+  // Fetch instructor auto-track preference
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("instructor_reminder_preferences")
+        .select("auto_track_lessons")
+        .eq("instructor_id", userId)
+        .maybeSingle();
+      if (cancelled) return;
+      if (error) {
+        console.warn("[home] auto_track_lessons fetch failed", error);
+        return;
+      }
+      if (data && typeof data.auto_track_lessons === "boolean") {
+        setAutoTrackLessons(data.auto_track_lessons);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
+
+  // In-progress lesson (now is between start and start+duration)
+  const currentLesson = useMemo(() => {
+    const nowMs = now.getTime();
+    return lessons.find((l) => {
+      if (l.status === "cancelled") return false;
+      const start = lessonDateTime(l).getTime();
+      const dur = (l.duration_minutes ?? 60) * 60000;
+      return nowMs >= start && nowMs < start + dur;
+    }) ?? null;
+  }, [lessons, now]);
 
   // ── Next Lesson traffic + weather chips ───────────────────────────────────
   const fetchWeather = useServerFn(getLessonWeather);
@@ -4683,6 +4717,34 @@ function HomePage() {
           fontFamily: 'Inter, sans-serif',
         }}
       >
+        {autoTrackLessons && currentLesson && (
+          <button
+            type="button"
+            onClick={() => navigate({ to: '/live' })}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              width: '100%',
+              padding: '12px 16px',
+              background: '#1877D6',
+              color: '#FFFFFF',
+              border: 'none',
+              fontSize: 14,
+              fontWeight: 700,
+              fontFamily: 'Inter, sans-serif',
+              cursor: 'pointer',
+              letterSpacing: 0.2,
+            }}
+          >
+            <span style={{
+              width: 8, height: 8, borderRadius: 999,
+              background: '#FFFFFF', boxShadow: '0 0 0 3px rgba(255,255,255,0.35)',
+            }} />
+            Start tracking — {currentLesson.pupils?.name ?? 'lesson in progress'}
+          </button>
+        )}
         {/* Map hero + late banner + stats + reasons */}
         {(() => {
 
