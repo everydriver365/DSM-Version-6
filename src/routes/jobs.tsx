@@ -26,7 +26,7 @@ interface JobOffer {
   pupil_name: string | null;
   transmission: string | null;
   course_hours: number | null;
-  preferred_timing: string | null;
+  preferred_timing: string[] | null;
   preferred_days: string[] | null;
   offered_rate: number | null;
   postcode_area: string | null;
@@ -63,16 +63,18 @@ function computeMatch(job: JobOffer, prefs: InstructorPrefs | null): MatchLevel 
   const jobDays = (job.preferred_days ?? []).map(normalizeDay);
   const daysOverlap = jobDays.length === 0 ? null : jobDays.some((d) => workDays.has(d));
 
-  const timing = (job.preferred_timing ?? "").toLowerCase();
+  const timings = (job.preferred_timing ?? []).map((t) => t.toLowerCase());
   const [sh] = prefs.working_hours_start.split(":").map(Number);
   const [eh] = prefs.working_hours_end.split(":").map(Number);
   let timingOk: boolean | null = null;
-  if (timing) {
-    if (timing.includes("evening")) timingOk = eh >= 17;
-    else if (timing.includes("morning")) timingOk = sh <= 10;
-    else if (timing.includes("afternoon")) timingOk = sh <= 14 && eh >= 15;
-    else if (timing.includes("weekend")) timingOk = workDays.has("sat") || workDays.has("sun");
-    else timingOk = true;
+  if (timings.length > 0) {
+    timingOk = timings.some((timing) => {
+      if (timing.includes("evening")) return eh >= 17;
+      if (timing.includes("morning")) return sh <= 10;
+      if (timing.includes("afternoon")) return sh <= 14 && eh >= 15;
+      if (timing.includes("weekend")) return workDays.has("sat") || workDays.has("sun");
+      return true;
+    });
   }
 
   const conds = [daysOverlap, timingOk].filter((c) => c !== null) as boolean[];
@@ -214,7 +216,7 @@ function JobsPage() {
                         job.postcode_area,
                         job.transmission,
                         job.course_hours ? `${job.course_hours} hrs` : null,
-                        job.preferred_timing,
+                        job.preferred_timing?.join(", "),
                       ].filter(Boolean).join(" · ")}
                     </div>
                   </div>
@@ -329,7 +331,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
               {job.pupil_name || "Job enquiry"}
             </div>
             <div style={{ fontSize: 11, color: GREY }}>
-              {[job.postcode_area, job.preferred_timing].filter(Boolean).join(" · ")}
+              {[job.postcode_area, job.preferred_timing?.join(", ")].filter(Boolean).join(" · ")}
             </div>
           </div>
           <button onClick={onClose} style={{ padding: 6, background: "transparent", border: "none", cursor: "pointer" }}>
