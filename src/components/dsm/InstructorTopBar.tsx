@@ -13,6 +13,7 @@ export type InstructorTopBarProps = {
   firstName?: string;
   heroTitle?: string;
   heroSubtitle?: string;
+  sticky?: boolean;
   // Legacy props (accepted but unused)
   avatarUrl?: string | null;
   unreadCount?: number;
