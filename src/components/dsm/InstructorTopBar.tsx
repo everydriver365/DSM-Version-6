@@ -2,6 +2,7 @@ import React from "react";
 import { ChevronLeft, Mic, MessageCircle, Bell, LifeBuoy } from "lucide-react";
 import { CarIcon, MenuIcon, PoundIcon } from "@/components/icons/DrivingIcons";
 import { useNavigate } from "@tanstack/react-router";
+import dsmLogoAsset from "../../assets/dsm-logo.png.asset.json";
 
 export type InstructorTopBarProps = {
   onMicPress: () => void;
