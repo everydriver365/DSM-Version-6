@@ -1751,21 +1751,10 @@ function SchedulePage() {
                                             onClick={(ev) => {
                                               ev.stopPropagation();
                                               setActionsOpenFor(null);
-                                              setChangeTimeSheetFor(lesson);
+                                              setChangeDateTimeSheetFor(lesson);
                                             }}
                                           >
-                                            Change time
-                                          </button>
-                                          <button
-                                            type="button"
-                                            style={itemStyle}
-                                            onClick={(ev) => {
-                                              ev.stopPropagation();
-                                              setActionsOpenFor(null);
-                                              setChangeDateSheetFor(lesson);
-                                            }}
-                                          >
-                                            Change date
+                                            Change date & time
                                           </button>
                                           <button
                                             type="button"
