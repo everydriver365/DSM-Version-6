@@ -3179,7 +3179,7 @@ function PupilDetailPage() {
                   type="text"
                   value={editDraft.first_name}
                   onChange={(e) => setEditDraft((d) => ({ ...d, first_name: e.target.value }))}
-                  className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                  className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
                   style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
                 />
               </label>
@@ -3189,7 +3189,7 @@ function PupilDetailPage() {
                   type="text"
                   value={editDraft.last_name}
                   onChange={(e) => setEditDraft((d) => ({ ...d, last_name: e.target.value }))}
-                  className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                  className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
                   style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
                 />
               </label>
@@ -3200,7 +3200,7 @@ function PupilDetailPage() {
                 type="tel"
                 value={editDraft.phone}
                 onChange={(e) => setEditDraft((d) => ({ ...d, phone: e.target.value }))}
-                className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
                 style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
               />
             </label>
@@ -3210,7 +3210,7 @@ function PupilDetailPage() {
                 type="email"
                 value={editDraft.email}
                 onChange={(e) => setEditDraft((d) => ({ ...d, email: e.target.value }))}
-                className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
                 style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
               />
             </label>
@@ -3220,7 +3220,7 @@ function PupilDetailPage() {
                 type="date"
                 value={editDraft.date_of_birth}
                 onChange={(e) => setEditDraft((d) => ({ ...d, date_of_birth: e.target.value }))}
-                className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
                 style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
               />
               {editDraft.date_of_birth && (
@@ -3237,7 +3237,7 @@ function PupilDetailPage() {
               <select
                 value={editDraft.status}
                 onChange={(e) => setEditDraft((d) => ({ ...d, status: e.target.value }))}
-                className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
                 style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
               >
                 <option value="active">Active</option>
@@ -3258,7 +3258,7 @@ function PupilDetailPage() {
                   step="0.5"
                   value={editDraft.prepaid_hours}
                   onChange={(e) => setEditDraft((d) => ({ ...d, prepaid_hours: e.target.value }))}
-                  className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                  className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
                   style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
                 />
               </label>
@@ -3270,7 +3270,7 @@ function PupilDetailPage() {
                   step="0.01"
                   value={editDraft.prepaid_amount_paid}
                   onChange={(e) => setEditDraft((d) => ({ ...d, prepaid_amount_paid: e.target.value }))}
-                  className="mt-1 h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
+                  className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
                   style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
                 />
               </label>
@@ -3285,7 +3285,7 @@ function PupilDetailPage() {
                   placeholder={instructorRate != null ? String(instructorRate) : "—"}
                   value={editDraft.custom_rate}
                   onChange={(e) => setEditDraft((d) => ({ ...d, custom_rate: e.target.value }))}
-                  className="mt-1 h-10 w-full rounded-lg px-2 text-[14px] text-[#0B1F3A] bg-white"
+                  className="mt-1 h-10 w-full rounded-lg px-2 text-[16px] text-[#0B1F3A] bg-white"
                   style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
                 />
               </label>
@@ -3297,7 +3297,7 @@ function PupilDetailPage() {
                   step="0.01"
                   value={editDraft.custom_rate_90}
                   onChange={(e) => setEditDraft((d) => ({ ...d, custom_rate_90: e.target.value }))}
-                  className="mt-1 h-10 w-full rounded-lg px-2 text-[14px] text-[#0B1F3A] bg-white"
+                  className="mt-1 h-10 w-full rounded-lg px-2 text-[16px] text-[#0B1F3A] bg-white"
                   style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
                 />
               </label>
@@ -3309,7 +3309,7 @@ function PupilDetailPage() {
                   step="0.01"
                   value={editDraft.custom_rate_120}
                   onChange={(e) => setEditDraft((d) => ({ ...d, custom_rate_120: e.target.value }))}
-                  className="mt-1 h-10 w-full rounded-lg px-2 text-[14px] text-[#0B1F3A] bg-white"
+                  className="mt-1 h-10 w-full rounded-lg px-2 text-[16px] text-[#0B1F3A] bg-white"
                   style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
                 />
               </label>
