@@ -4,6 +4,7 @@ import { ChevronLeft, Plus, X, Send, Search } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
+import { AddressLookup } from "@/components/dsm/AddressLookup";
 
 export const Route = createFileRoute("/admin/job-offers")({
   component: AdminJobOffers,
