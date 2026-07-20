@@ -218,6 +218,11 @@ function AdminHub() {
             onClick={() => navigate({ to: "/admin/listings" as never })}
           />
           <AdminSectionTile
+            icon={<Briefcase size={18} />}
+            label="Job offers"
+            onClick={() => navigate({ to: "/admin/job-offers" as never })}
+          />
+          <AdminSectionTile
             icon={<Video size={18} />}
             label="DSM Live"
             onClick={() => navigate({ to: "/admin/dsm-live" as never })}
