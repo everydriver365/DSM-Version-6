@@ -4438,6 +4438,49 @@ function HomePage() {
     );
   }
 
+  const profileInitials = (() => {
+    const name = (instructorFullName || firstName || "").trim();
+    const parts = name.split(/\s+/).filter(Boolean);
+    return (
+      parts.length >= 2
+        ? parts[0][0] + parts[parts.length - 1][0]
+        : (parts[0] ?? "I").slice(0, 1)
+    ).toUpperCase();
+  })();
+
+  const profileAvatar = (
+    <button
+      type="button"
+      aria-label="Profile"
+      onClick={() => navigate({ to: "/profile" })}
+      style={{
+        width: 36,
+        height: 36,
+        borderRadius: "50%",
+        background: "linear-gradient(135deg, #1877D6 0%, #0B1F3A 100%)",
+        border: "none",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+        position: "relative",
+        padding: 0,
+        flexShrink: 0,
+        overflow: "hidden",
+        color: "#FFFFFF",
+        fontSize: 12,
+        fontWeight: 700,
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
+      {avatarUrl ? (
+        <img src={avatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      ) : (
+        profileInitials
+      )}
+    </button>
+  );
+
   return (
     <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
       {notifBanner}
@@ -4447,6 +4490,7 @@ function HomePage() {
         unreadMessages={unreadMsgs.length}
         unreadNotifications={notifCount}
         onMicPress={() => toast.info("Voice commands coming soon!")}
+        profileAvatar={profileAvatar}
       />
 
       <PushPermissionCard />
@@ -4586,67 +4630,11 @@ function HomePage() {
             paddingBottom: 10,
           }}
         >
-      {/* ============ WELCOME HEADER ============ */}
-      {(() => {
-        const nameForInitials = (instructorFullName || firstName || "").trim();
-        const parts = nameForInitials.split(/\s+/).filter(Boolean);
-        const initials = (
-          parts.length >= 2
-            ? parts[0][0] + parts[parts.length - 1][0]
-            : (parts[0] ?? "I").slice(0, 1)
-        ).toUpperCase();
-        return (
-          <div
-            style={{
-              backgroundColor: '#0B1F3A',
-              marginTop: 'calc(-1 * (60px + env(safe-area-inset-top, 0px)))',
-              padding: 'calc(60px + env(safe-area-inset-top, 0px) + 20px) 16px 34px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 12,
-              fontFamily: 'Poppins, sans-serif',
-              borderRadius: '0 0 24px 24px',
-            }}
-          >
-            <div
-              aria-hidden
-              style={{
-                width: 42,
-                height: 42,
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #1877D6 0%, #0B1F3A 100%)',
-                color: '#FFFFFF',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 16,
-                fontWeight: 700,
-                flexShrink: 0,
-                fontFamily: 'Poppins, sans-serif',
-              }}
-            >
-              {initials}
-            </div>
-            <h1
-              style={{
-                margin: 0,
-                fontSize: 24,
-                fontWeight: 700,
-                color: '#FFFFFF',
-                lineHeight: 1.2,
-                fontFamily: 'Poppins, sans-serif',
-              }}
-            >
-              Welcome, {firstName || 'there'}
-            </h1>
-          </div>
-        );
-      })()}
 
 
-      {/* ============ OVERLAPPING STAT TILES ============ */}
+      {/* ============ STAT TILES ============ */}
       {/* NOTE: naCalls (callbacks) and naJobs (open jobs) are not yet wired to a real table — showing 0 as placeholder. naEnquiries is derived from pendingSwapCount today. */}
-      <div style={{ padding: '0 16px', marginTop: -22, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif' }}>
+      <div style={{ padding: '0 16px', marginTop: 12, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif' }}>
         {[
           { label: 'Calls', value: String(naCalls), sub: 'Need callback', color: '#CC2229', route: '/messages' },
           { label: "Jobs", value: String(naJobs), sub: 'Open', color: '#B5661E', route: '/waitlist' },

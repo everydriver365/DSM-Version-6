@@ -9,6 +9,7 @@ export type InstructorTopBarProps = {
   unreadNotifications?: number;
   onBack?: () => void;
   pageTitle?: string;
+  profileAvatar?: React.ReactNode;
   // Legacy props (accepted but unused by new design)
   firstName?: string;
   avatarUrl?: string | null;
@@ -89,6 +90,7 @@ export default function InstructorTopBar({
   unreadNotifications = 0,
   onBack,
   pageTitle,
+  profileAvatar,
 }: InstructorTopBarProps) {
   const navigate = useNavigate();
   const isSubpage = typeof onBack === "function";
@@ -131,13 +133,16 @@ export default function InstructorTopBar({
           </span>
         </div>
       ) : (
-        <IconBtn
-          ariaLabel="Voice commands"
-          onClick={onMicPress}
-          style={{ background: "#CC2229" }}
-        >
-          <Mic size={19} strokeWidth={2} color="#ffffff" />
-        </IconBtn>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {profileAvatar}
+          <IconBtn
+            ariaLabel="Voice commands"
+            onClick={onMicPress}
+            style={{ background: "#CC2229" }}
+          >
+            <Mic size={19} strokeWidth={2} color="#ffffff" />
+          </IconBtn>
+        </div>
       )}
 
       {/* RIGHT — icon group */}
