@@ -1534,7 +1534,7 @@ function SchedulePage() {
                                       {isLessonRow ? (
                                         <>
                                           <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                                            <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                                            <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: cancelled ? 'line-through' : 'none', opacity: cancelled ? 0.55 : 1 }}>
                                               {fmtTime(e.start)}
                                             </div>
                                             <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
@@ -1570,24 +1570,34 @@ function SchedulePage() {
                                         />
                                       )}
                                       <div style={{ flex: 1, minWidth: 0, paddingTop: isLessonRow ? 2 : 0 }}>
-                                        <div
-                                          style={{
-                                            fontSize: 14,
-                                            fontWeight: 500,
-                                            color: "#0B1F3A",
-                                            overflow: "hidden",
-                                            textOverflow: "ellipsis",
-                                            whiteSpace: "nowrap",
-                                            textDecoration: cancelled ? "line-through" : "none",
-                                          }}
-                                        >
-                                          {title}
-                                        </div>
-                                         {timeText ? (
-                                           <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
-                                             {timeText}
-                                           </div>
-                                         ) : null}
+                                         <div
+                                           style={{
+                                             fontSize: 14,
+                                             fontWeight: 500,
+                                             color: "#0B1F3A",
+                                             overflow: "hidden",
+                                             textOverflow: "ellipsis",
+                                             whiteSpace: "nowrap",
+                                             textDecoration: cancelled ? "line-through" : "none",
+                                             opacity: cancelled ? 0.55 : 1,
+                                           }}
+                                         >
+                                           {title}
+                                         </div>
+                                          {(cancelled || timeText) ? (
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                                              {cancelled ? (
+                                                <span style={{ fontSize: 10, fontWeight: 700, color: '#9CA3AF', background: '#F3F4F6', padding: '2px 8px', borderRadius: 999 }}>
+                                                  Cancelled
+                                                </span>
+                                              ) : null}
+                                              {timeText ? (
+                                                <span style={{ fontSize: 11, color: "#8A93A3", fontVariantNumeric: "tabular-nums" }}>
+                                                  {timeText}
+                                                </span>
+                                              ) : null}
+                                            </div>
+                                          ) : null}
                                        </div>
                                          {isLessonRow && (
                                            <div

@@ -6011,6 +6011,7 @@ function HomePage() {
                     const isPrepaidPupil = Number((l.pupils as any)?.prepaid_hours ?? 0) > 0;
                     const isPaid = payStatus === 'paid' || payStatus === 'prepaid' || isPrepaidPupil;
                     const dueUnpaid = amt > 0 && !isPaid;
+                    const isCancelled = l.status === 'cancelled';
                     const name = pupilName(l);
                     const timeLabel = `${String(start.getHours()).padStart(2, '0')}:${String(start.getMinutes()).padStart(2, '0')}`;
 
@@ -6062,9 +6063,9 @@ function HomePage() {
                           }}
                         >
                            <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                             <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
-                               {timeLabel}
-                             </div>
+                              <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none', opacity: isCancelled ? 0.55 : 1 }}>
+                                {timeLabel}
+                              </div>
                              <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
                                {durLabel}
                              </div>
@@ -6085,12 +6086,19 @@ function HomePage() {
                                  {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
                                </div>
                              )}
-                             <div style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
-                               {name}
-                             </div>
-                             <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
-                               {dur} mins
-                             </div>
+                              <div style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none', opacity: isCancelled ? 0.55 : 1 }}>
+                                {name}
+                              </div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                                {isCancelled ? (
+                                  <span style={{ fontSize: 10, fontWeight: 700, color: '#9CA3AF', background: '#F3F4F6', padding: '2px 8px', borderRadius: 999 }}>
+                                    Cancelled
+                                  </span>
+                                ) : null}
+                                <span style={{ fontSize: 11, color: '#8A93A3', fontVariantNumeric: 'tabular-nums' }}>
+                                  {dur} mins
+                                </span>
+                              </div>
                            </div>
                             {priceNode && (
                               <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
