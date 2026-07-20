@@ -4630,62 +4630,6 @@ function HomePage() {
             paddingBottom: 10,
           }}
         >
-      {/* ============ WELCOME HEADER ============ */}
-      {(() => {
-        const nameForInitials = (instructorFullName || firstName || "").trim();
-        const parts = nameForInitials.split(/\s+/).filter(Boolean);
-        const initials = (
-          parts.length >= 2
-            ? parts[0][0] + parts[parts.length - 1][0]
-            : (parts[0] ?? "I").slice(0, 1)
-        ).toUpperCase();
-        return (
-          <div
-            style={{
-              backgroundColor: '#0B1F3A',
-              marginTop: 'calc(-1 * (60px + env(safe-area-inset-top, 0px)))',
-              padding: 'calc(60px + env(safe-area-inset-top, 0px) + 20px) 16px 34px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 12,
-              fontFamily: 'Poppins, sans-serif',
-              borderRadius: '0 0 24px 24px',
-            }}
-          >
-            <div
-              aria-hidden
-              style={{
-                width: 42,
-                height: 42,
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #1877D6 0%, #0B1F3A 100%)',
-                color: '#FFFFFF',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 16,
-                fontWeight: 700,
-                flexShrink: 0,
-                fontFamily: 'Poppins, sans-serif',
-              }}
-            >
-              {initials}
-            </div>
-            <h1
-              style={{
-                margin: 0,
-                fontSize: 24,
-                fontWeight: 700,
-                color: '#FFFFFF',
-                lineHeight: 1.2,
-                fontFamily: 'Poppins, sans-serif',
-              }}
-            >
-              Welcome, {firstName || 'there'}
-            </h1>
-          </div>
-        );
-      })()}
 
 
       {/* ============ OVERLAPPING STAT TILES ============ */}
