@@ -135,7 +135,7 @@ export default function InstructorTopBar({
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <IconBtn ariaLabel="Home" onClick={() => navigate({ to: "/home" })} style={{ background: "transparent" }}>
             <img
-              src={dsmLogoAsset.url}
+              src={iconMarkAsset.url}
               alt="DSM"
               width={36}
               height={36}
