@@ -636,25 +636,24 @@ function AdminJobOffers() {
                 </div>
               </FieldLabel>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                <FieldLabel label="Preferred start date">
-                  <input
-                    type="date"
-                    value={form.preferred_start_date ?? ""}
-                    onChange={(e) => setForm({ ...form, preferred_start_date: e.target.value })}
-                    style={inputStyle()}
-                  />
-                </FieldLabel>
-                <FieldLabel label="Postcode area">
-                  <AddressLookup
-                    initialPostcode={form.postcode_area ?? undefined}
-                    onAddressFound={({ postcode }) => {
-                      const outcode = postcode.trim().split(" ")[0].toUpperCase();
-                      setForm((f) => ({ ...f, postcode_area: outcode }));
-                    }}
-                  />
-                </FieldLabel>
-              </div>
+              <FieldLabel label="Postcode area">
+                <AddressLookup
+                  initialPostcode={form.postcode_area ?? undefined}
+                  onAddressFound={({ postcode }) => {
+                    const outcode = postcode.trim().split(" ")[0].toUpperCase();
+                    setForm((f) => ({ ...f, postcode_area: outcode }));
+                  }}
+                />
+              </FieldLabel>
+
+              <FieldLabel label="Preferred start date">
+                <input
+                  type="date"
+                  value={form.preferred_start_date ?? ""}
+                  onChange={(e) => setForm({ ...form, preferred_start_date: e.target.value })}
+                  style={inputStyle()}
+                />
+              </FieldLabel>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 <FieldLabel label="Offered rate (£/hr)">
