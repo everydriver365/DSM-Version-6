@@ -1220,7 +1220,9 @@ function PupilDetailPage() {
                       Lessons bought
                     </p>
                     <p className="text-[32px] font-bold leading-none mt-1" style={POPPINS}>
-                      {confirmedLessonCount + (pupil?.lesson_count_adjustment ?? 0)}
+                      {Number(pupil?.prepaid_hours ?? 0) % 1 === 0
+                        ? Number(pupil?.prepaid_hours ?? 0).toFixed(0)
+                        : Number(pupil?.prepaid_hours ?? 0).toFixed(1)}
                     </p>
                   </button>
                 </div>
