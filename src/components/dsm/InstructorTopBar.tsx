@@ -129,6 +129,9 @@ export default function InstructorTopBar({
         <IconBtn ariaLabel="Phone" onClick={onPhone}>
           <PhoneIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
+        <IconBtn ariaLabel="Messages" onClick={() => navigate({ to: "/messages" })}>
+          <MessagesIcon size={17} strokeWidth={1.8} color="#ffffff" />
+        </IconBtn>
         <IconBtn ariaLabel="Live track" onClick={onLiveTrack}>
           <CarIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
