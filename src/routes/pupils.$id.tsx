@@ -349,8 +349,12 @@ function PupilDetailPage() {
     last_name: string;
     phone: string;
     email: string;
+    address: string;
+    postcode: string;
     date_of_birth: string;
     status: string;
+    lead_source: string;
+    lead_source_detail: string;
     prepaid_hours: string;
     prepaid_amount_paid: string;
     custom_rate: string;
@@ -361,8 +365,12 @@ function PupilDetailPage() {
     last_name: "",
     phone: "",
     email: "",
+    address: "",
+    postcode: "",
     date_of_birth: "",
     status: "active",
+    lead_source: "",
+    lead_source_detail: "",
     prepaid_hours: "",
     prepaid_amount_paid: "",
     custom_rate: "",
@@ -379,9 +387,12 @@ function PupilDetailPage() {
       last_name: pupil.last_name ?? "",
       phone: pupil.phone ?? "",
       email: pupil.email ?? "",
+      address: pupil.address ?? "",
+      postcode: pupil.postcode ?? "",
       date_of_birth: pupil.date_of_birth ?? "",
-
       status: (pupil.status ?? "active") || "active",
+      lead_source: pupil.lead_source ?? "",
+      lead_source_detail: pupil.lead_source_detail ?? "",
       prepaid_hours: pupil.prepaid_hours != null ? String(pupil.prepaid_hours) : "",
       prepaid_amount_paid: pupil.prepaid_amount_paid != null ? String(pupil.prepaid_amount_paid) : "",
       custom_rate: pupil.custom_rate != null ? String(pupil.custom_rate) : "",
