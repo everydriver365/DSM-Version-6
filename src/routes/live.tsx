@@ -114,6 +114,19 @@ function LivePage() {
   const [lessonsLoaded, setLessonsLoaded] = useState(false);
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [activePupilId, setActivePupilId] = useState<string | null>(null);
+  const [trackingPupilName, setTrackingPupilName] = useState<string | null>(null);
+
+  interface PickerPupil {
+    id: string;
+    name: string | null;
+    first_name: string | null;
+    last_name: string | null;
+    calendar_colour: string | null;
+  }
+  const [allPupils, setAllPupils] = useState<PickerPupil[]>([]);
+  const [pupilPickerOpen, setPupilPickerOpen] = useState(false);
+  const [pupilSearchQuery, setPupilSearchQuery] = useState("");
+
   const activeLesson = useMemo(
     () => lessons.find((l) => l.id === activeLessonId) ?? null,
     [lessons, activeLessonId],
