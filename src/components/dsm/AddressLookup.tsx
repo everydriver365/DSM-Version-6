@@ -4,7 +4,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Check, Loader2, MapPin, X } from "lucide-react";
+import { Check, Loader2, MapPin, Search, X } from "lucide-react";
 
 const POPPINS = { fontFamily: "Poppins, system-ui, sans-serif" } as const;
 
@@ -29,6 +29,7 @@ interface Props {
   initialCity?: string;
   onAddressFound: (r: AddressLookupResult) => void;
   disabled?: boolean;
+  showSearchButton?: boolean;
 }
 
 type Prediction = {
@@ -117,6 +118,7 @@ export function AddressLookup({
   initialCity = "",
   onAddressFound,
   disabled = false,
+  showSearchButton = false,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -136,6 +138,7 @@ export function AddressLookup({
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const [noResults, setNoResults] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [searchKey, setSearchKey] = useState<number>(0);
 
   console.log("[address-lookup] rendered, initial:", {
     initialPostcode,
@@ -238,7 +241,7 @@ export function AddressLookup({
 
 
     return () => clearTimeout(timer);
-  }, [inputValue, placesLoaded, confirmed]);
+  }, [inputValue, placesLoaded, confirmed, searchKey]);
 
   const handleSelect = useCallback(
     (prediction: Prediction) => {
@@ -375,6 +378,35 @@ export function AddressLookup({
               <Loader2 size={18} color="#1877D6" className="animate-spin" />
             </div>
           )}
+        </div>
+      )}
+
+      {showSearchButton && !confirmed && !loading && inputValue.length >= 3 && (
+        <div className="flex justify-end" style={{ marginTop: 6 }}>
+          <button
+            type="button"
+            onClick={() => {
+              setError(null);
+              setSearchKey((k) => k + 1);
+            }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "6px 12px",
+              borderRadius: 8,
+              border: "0.5px solid #E2E6ED",
+              background: "#fff",
+              color: "#1877D6",
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: "pointer",
+              ...POPPINS,
+            }}
+          >
+            <Search size={14} color="#1877D6" />
+            Search now
+          </button>
         </div>
       )}
 

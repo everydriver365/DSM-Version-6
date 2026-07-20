@@ -531,7 +531,6 @@ function PupilDetailPage() {
 
   const [practicalCentrePickerOpen, setPracticalCentrePickerOpen] = useState(false);
   const [practicalCentreSearch, setPracticalCentreSearch] = useState("");
-  const addressInputRef = useRef<HTMLInputElement>(null);
   const focusedLessonCardRef = useRef<HTMLDivElement>(null);
   const pastCollapsedInit = useRef(false);
 
@@ -557,96 +556,49 @@ function PupilDetailPage() {
     loadGoogleMapsPlaces().catch((e) => console.error("[pupil] preload Google Maps failed", e));
   }, []);
 
-  // Bind Google Places Autocomplete to the address input when editing
-  useEffect(() => {
-    if (!addressEditing) return;
-    let cancelled = false;
-    loadGoogleMapsPlaces()
-      .then(() => {
-        if (cancelled) return;
-        const input = addressInputRef.current;
-        const g = (window as any).google;
-        if (!input) {
-          console.warn("[pupil] address input ref not attached");
-          return;
-        }
-        if (!g?.maps?.places) {
-          console.warn("[pupil] Google Places library not available — check API key / referrer / billing");
-          toast.error("Address autocomplete unavailable — you can still type manually");
-          return;
-        }
-        console.log("[pupil] binding autocomplete to address input");
-        const ac = new g.maps.places.Autocomplete(input, {
-          componentRestrictions: { country: "gb" },
-          types: ["address"],
-          fields: ["formatted_address", "address_components", "geometry"],
-        });
-        ac.addListener("place_changed", async () => {
-          const place = ac.getPlace();
-          console.log("[pupil] place_changed", place);
-          const formatted: string = place.formatted_address ?? "";
-          const comps: any[] = place.address_components ?? [];
-          const pc = comps.find((c: any) => c.types.includes("postal_code"))?.long_name ?? "";
-          const town =
-            comps.find((c: any) => c.types.includes("postal_town"))?.long_name ??
-            comps.find((c: any) => c.types.includes("locality"))?.long_name ??
-            "";
-          const lat = place.geometry?.location?.lat?.();
-          const lng = place.geometry?.location?.lng?.();
-          const basePatch: Record<string, unknown> = {};
-          if (formatted) basePatch.address = formatted;
-          if (pc) basePatch.postcode = pc;
-          // Include town only if we have a value; column may not exist — handled with fallback
-          const patchWithTown = town ? { ...basePatch, town } : basePatch;
-          const patchWithGeo =
-            typeof lat === "number" && typeof lng === "number"
-              ? { ...patchWithTown, lat, lng }
-              : patchWithTown;
-          let { error } = await supabase.from("pupils").update(patchWithGeo).eq("id", id);
-          if (error) {
-            // Retry without possibly-missing columns (town, lat, lng)
-            const retry = await supabase.from("pupils").update(basePatch).eq("id", id);
-            error = retry.error as any;
-          }
-          if (error) {
-            console.error("[pupil] address save error", error);
-            toast.error("Failed to save address");
-            return;
-          }
-          setPupil((p) =>
-            p
-              ? {
-                  ...p,
-                  address: formatted || p.address,
-                  postcode: pc || p.postcode,
-                  lat: typeof lat === "number" ? lat : p.lat,
-                  lng: typeof lng === "number" ? lng : p.lng,
-                }
-              : p,
-          );
-          setAddressEditing(false);
-          toast.success("Address updated");
-        });
-      })
-      .catch(() => {
-        // silent — user can still type manually and press Save
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [addressEditing, id]);
-
-  async function saveAddressManual(nextAddress: string, nextPostcode: string) {
-    const patch: Record<string, unknown> = {
-      address: nextAddress.trim() || null,
-      postcode: nextPostcode.trim() || null,
-    };
-    const { error } = await supabase.from("pupils").update(patch).eq("id", id);
+  async function saveAddressFromLookup({
+    address,
+    postcode,
+    city,
+    lat,
+    lng,
+  }: {
+    address: string;
+    postcode: string;
+    city: string;
+    lat: number | null;
+    lng: number | null;
+  }) {
+    const basePatch: Record<string, unknown> = {};
+    if (address) basePatch.address = address;
+    if (postcode) basePatch.postcode = postcode.toUpperCase();
+    const patchWithCity = city ? { ...basePatch, city } : basePatch;
+    const patchWithGeo =
+      typeof lat === "number" && typeof lng === "number"
+        ? { ...patchWithCity, lat, lng }
+        : patchWithCity;
+    let { error } = await supabase.from("pupils").update(patchWithGeo).eq("id", id);
     if (error) {
+      // Retry without possibly-missing columns (city, lat, lng)
+      const retry = await supabase.from("pupils").update(basePatch).eq("id", id);
+      error = retry.error as any;
+    }
+    if (error) {
+      console.error("[pupil] address save error", error);
       toast.error("Failed to save address");
       return;
     }
-    setPupil((p) => (p ? { ...p, ...(patch as any) } : p));
+    setPupil((p) =>
+      p
+        ? {
+            ...p,
+            address: address || p.address,
+            postcode: postcode ? postcode.toUpperCase() : p.postcode,
+            lat: typeof lat === "number" ? lat : p.lat,
+            lng: typeof lng === "number" ? lng : p.lng,
+          }
+        : p,
+    );
     setAddressEditing(false);
     toast.success("Address updated");
   }
@@ -2494,11 +2446,11 @@ function PupilDetailPage() {
               </button>
             </div>
             {addressEditing ? (
-              <AddressEditor
+              <AddressLookup
                 initialAddress={pupil.address ?? ""}
                 initialPostcode={pupil.postcode ?? ""}
-                inputRef={addressInputRef}
-                onSave={saveAddressManual}
+                showSearchButton
+                onAddressFound={saveAddressFromLookup}
               />
             ) : (
               <div className="text-[13px]" style={{ color: pupil.address ? "#0B1F3A" : "#9CA3AF", ...POPPINS }}>
@@ -4138,62 +4090,6 @@ function PupilRatesAndColour({
         </div>
       </div>
     </>
-  );
-}
-
-function AddressEditor({
-  initialAddress,
-  initialPostcode,
-  inputRef,
-  onSave,
-}: {
-  initialAddress: string;
-  initialPostcode: string;
-  inputRef: React.RefObject<HTMLInputElement | null>;
-  onSave: (address: string, postcode: string) => void | Promise<void>;
-}) {
-  const [addr, setAddr] = useState(initialAddress);
-  const [pc, setPc] = useState(initialPostcode);
-  return (
-    <div className="flex flex-col gap-2">
-      <input
-        ref={inputRef}
-        type="text"
-        placeholder="Start typing address..."
-        value={addr}
-        onChange={(e) => setAddr(e.target.value)}
-        autoComplete="off"
-        style={{
-          width: "100%",
-          height: 40,
-          padding: "0 12px",
-          borderRadius: 8,
-          border: "0.5px solid #E2E6ED",
-          fontSize: 14,
-          outline: "none",
-          ...POPPINS,
-        }}
-      />
-      <input
-        type="text"
-        placeholder="Postcode"
-        value={pc}
-        onChange={(e) => setPc(e.target.value)}
-        style={{
-          width: "100%",
-          height: 40,
-          padding: "0 12px",
-          borderRadius: 8,
-          border: "0.5px solid #E2E6ED",
-          fontSize: 14,
-          outline: "none",
-          ...POPPINS,
-        }}
-      />
-      <div className="flex justify-end">
-        <Button variant="primary" onClick={() => onSave(addr, pc)}>Save</Button>
-      </div>
-    </div>
   );
 }
 
