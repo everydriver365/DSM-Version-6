@@ -130,7 +130,9 @@ interface Pupil {
   lat: number | null;
   lng: number | null;
   date_of_birth: string | null;
+  lesson_count_adjustment: number | null;
 }
+
 
 
 interface Lesson {
