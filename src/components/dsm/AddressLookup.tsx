@@ -29,6 +29,7 @@ interface Props {
   initialCity?: string;
   onAddressFound: (r: AddressLookupResult) => void;
   disabled?: boolean;
+  showSearchButton?: boolean;
 }
 
 type Prediction = {
