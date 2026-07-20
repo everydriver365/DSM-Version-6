@@ -4,7 +4,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Check, Loader2, MapPin, X } from "lucide-react";
+import { Check, Loader2, MapPin, Search, X } from "lucide-react";
 
 const POPPINS = { fontFamily: "Poppins, system-ui, sans-serif" } as const;
 
