@@ -4595,7 +4595,7 @@ function HomePage() {
 
       {/* ============ STAT TILES ============ */}
       {/* NOTE: naCalls (callbacks) and naJobs (open jobs) are not yet wired to a real table — showing 0 as placeholder. naEnquiries is derived from pendingSwapCount today. */}
-      <div style={{ padding: '0 16px', marginTop: -40, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif', position: 'relative', zIndex: 50 }}>
+      <div style={{ position: 'fixed', top: 'calc(128px + env(safe-area-inset-top, 0px))', left: 0, right: 0, padding: '0 16px', display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif', zIndex: 45 }}>
 
         {[
           { label: 'Calls', value: String(naCalls), sub: 'Need callback', color: '#CC2229', route: '/messages' },
@@ -4618,6 +4618,7 @@ function HomePage() {
           </button>
         ))}
       </div>
+
 
       {/* ============ NEXT LESSON LABEL ============ */}
       <div style={{ margin: '0 16px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: 'Inter, sans-serif' }}>
