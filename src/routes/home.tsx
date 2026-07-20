@@ -4596,7 +4596,7 @@ function HomePage() {
 
       {/* ============ STAT TILES ============ */}
       {/* NOTE: naCalls (callbacks) and naJobs (open jobs) are not yet wired to a real table — showing 0 as placeholder. naEnquiries is derived from pendingSwapCount today. */}
-      <div style={{ padding: '0 16px', marginTop: -34, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif' }}>
+      <div style={{ padding: '0 16px', marginTop: 0, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif' }}>
 
         {[
           { label: 'Calls', value: String(naCalls), sub: 'Need callback', color: '#CC2229', route: '/messages' },
