@@ -612,9 +612,14 @@ export function AddressLookup({
               <input
                 type="text"
                 value={doorNumber}
-                onChange={(e) => {
-                  setDoorNumber(e.target.value);
-                  commitDoorNumber(e.target.value);
+                onChange={(e) => setDoorNumber(e.target.value)}
+                onBlur={(e) => commitDoorNumber(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    commitDoorNumber((e.target as HTMLInputElement).value);
+                    (e.target as HTMLInputElement).blur();
+                  }
                 }}
                 placeholder="e.g. 42 or Flat 3"
                 style={{
