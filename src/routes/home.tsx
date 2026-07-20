@@ -159,8 +159,7 @@ import { PAGE_BACKGROUND } from "@/components/PageLayout";
 import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
-import { ChangeTimeSheet } from "@/components/lessons/ChangeTimeSheet";
-import { ChangeDateSheet } from "@/components/lessons/ChangeDateSheet";
+import { ChangeDateTimeSheet } from "@/components/lessons/ChangeDateTimeSheet";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -1734,10 +1733,8 @@ function HomePage() {
   const [cancelSheetForLesson, setCancelSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSheetForLesson, setDeleteSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSubmittingHome, setDeleteSubmittingHome] = useState(false);
-  const [changeTimeSheetForLesson, setChangeTimeSheetForLesson] = useState<LessonRow | null>(null);
-  const [changeTimeSubmittingHome, setChangeTimeSubmittingHome] = useState(false);
-  const [changeDateSheetForLesson, setChangeDateSheetForLesson] = useState<LessonRow | null>(null);
-  const [changeDateSubmittingHome, setChangeDateSubmittingHome] = useState(false);
+  const [changeDateTimeSheetForLesson, setChangeDateTimeSheetForLesson] = useState<LessonRow | null>(null);
+  const [changeDateTimeSubmittingHome, setChangeDateTimeSubmittingHome] = useState(false);
   const [movingLessonHome, setMovingLessonHome] = useState<LessonRow | null>(null);
   const [moveModeHome, setMoveModeHome] = useState(false);
   const [confirmMoveHome, setConfirmMoveHome] = useState<{ date: string; time: string } | null>(null);
@@ -6223,21 +6220,10 @@ function HomePage() {
                                     onClick={(ev) => {
                                       ev.stopPropagation();
                                       setActionsOpenForLesson(null);
-                                      setChangeTimeSheetForLesson(l);
+                                      setChangeDateTimeSheetForLesson(l);
                                     }}
                                   >
-                                    Change time
-                                  </button>
-                                  <button
-                                    type="button"
-                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
-                                    onClick={(ev) => {
-                                      ev.stopPropagation();
-                                      setActionsOpenForLesson(null);
-                                      setChangeDateSheetForLesson(l);
-                                    }}
-                                  >
-                                    Change date
+                                    Change date & time
                                   </button>
                                   <button
                                     type="button"
@@ -7015,58 +7001,35 @@ function HomePage() {
         />
       )}
 
-      {changeTimeSheetForLesson && (
-        <ChangeTimeSheet
+      {changeDateTimeSheetForLesson && (
+        <ChangeDateTimeSheet
           open={true}
-          submitting={changeTimeSubmittingHome}
-          currentTime={(changeTimeSheetForLesson.lesson_time ?? "").slice(0, 5)}
-          onClose={() => { if (!changeTimeSubmittingHome) setChangeTimeSheetForLesson(null); }}
-          onConfirm={async (newTime: string) => {
-            const lesson = changeTimeSheetForLesson;
+          submitting={changeDateTimeSubmittingHome}
+          currentDate={(changeDateTimeSheetForLesson.lesson_date ?? "").slice(0, 10)}
+          currentTime={(changeDateTimeSheetForLesson.lesson_time ?? "").slice(0, 5)}
+          onClose={() => { if (!changeDateTimeSubmittingHome) setChangeDateTimeSheetForLesson(null); }}
+          onConfirm={async (newDate: string, newTime: string) => {
+            const lesson = changeDateTimeSheetForLesson;
             if (!lesson) return;
-            setChangeTimeSubmittingHome(true);
+            setChangeDateTimeSubmittingHome(true);
             try {
               const timeVal = newTime.length === 5 ? `${newTime}:00` : newTime;
               const { error } = await supabase
                 .from("lessons")
-                .update({ lesson_time: timeVal })
+                .update({ lesson_date: newDate, lesson_time: timeVal })
                 .eq("id", lesson.id);
               if (error) throw error;
-              setLessons((prev) => (prev ?? []).map((l) => l.id === lesson.id ? { ...l, lesson_time: timeVal } : l));
-              toast.success("Lesson time updated");
-              setChangeTimeSheetForLesson(null);
+              setLessons((prev) =>
+                (prev ?? []).map((l) =>
+                  l.id === lesson.id ? { ...l, lesson_date: newDate, lesson_time: timeVal } : l
+                )
+              );
+              toast.success("Lesson updated");
+              setChangeDateTimeSheetForLesson(null);
             } catch (err: any) {
-              toast.error(err?.message || "Failed to update lesson time");
+              toast.error(err?.message || "Failed to update lesson");
             } finally {
-              setChangeTimeSubmittingHome(false);
-            }
-          }}
-        />
-      )}
-
-      {changeDateSheetForLesson && (
-        <ChangeDateSheet
-          open={true}
-          submitting={changeDateSubmittingHome}
-          currentDate={(changeDateSheetForLesson.lesson_date ?? "").slice(0, 10)}
-          onClose={() => { if (!changeDateSubmittingHome) setChangeDateSheetForLesson(null); }}
-          onConfirm={async (newDate: string) => {
-            const lesson = changeDateSheetForLesson;
-            if (!lesson) return;
-            setChangeDateSubmittingHome(true);
-            try {
-              const { error } = await supabase
-                .from("lessons")
-                .update({ lesson_date: newDate })
-                .eq("id", lesson.id);
-              if (error) throw error;
-              setLessons((prev) => (prev ?? []).map((l) => l.id === lesson.id ? { ...l, lesson_date: newDate } : l));
-              toast.success("Lesson date updated");
-              setChangeDateSheetForLesson(null);
-            } catch (err: any) {
-              toast.error(err?.message || "Failed to update lesson date");
-            } finally {
-              setChangeDateSubmittingHome(false);
+              setChangeDateTimeSubmittingHome(false);
             }
           }}
         />
