@@ -4065,14 +4065,8 @@ function HomePage() {
       <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: "calc(60px + env(safe-area-inset-top, 0px))" }}>
         {notifBanner}
         <InstructorTopBar
-          firstName={firstName}
-          avatarUrl={avatarUrl}
-          unreadCount={notifCount}
-          onProfile={() => navigate({ to: "/profile" })}
-          onPhone={() => navigate({ to: "/enquiries" })}
-          onLiveTrack={() => navigate({ to: "/live" })}
-          onBell={() => navigate({ to: "/notifications" })}
-          onMenu={() => navigate({ to: "/settings" })}
+          unreadMessages={unreadMsgs.length}
+          unreadNotifications={notifCount}
           onMicPress={() => toast.info("Voice commands coming soon!")}
         />
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
