@@ -342,6 +342,11 @@ function PupilDetailPage() {
   const [savingEmail, setSavingEmail] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [pupilSeries, setPupilSeries] = useState<Array<{ id: string; day_of_week: string; lesson_time: string; duration_minutes: number; frequency: string }> | null>(null);
+  const [adjSheetOpen, setAdjSheetOpen] = useState(false);
+  const [adjValue, setAdjValue] = useState<string>("0");
+  const [adjNote, setAdjNote] = useState<string>("");
+  const [adjSaving, setAdjSaving] = useState(false);
+
   const [editSheetOpen, setEditSheetOpen] = useState(false);
   const [editSaving, setEditSaving] = useState(false);
   const [prepaidEditing, setPrepaidEditing] = useState(false);
