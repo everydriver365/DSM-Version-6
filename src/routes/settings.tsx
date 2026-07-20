@@ -162,6 +162,7 @@ function SettingsPage() {
   const [paymentReminderEnabled, setPaymentReminderEnabled] = useState<boolean>(true);
   const [paymentChaseMax, setPaymentChaseMax] = useState<number>(3); // 0 = unlimited
   const [morningBriefing, setMorningBriefing] = useState<boolean>(false);
+  const [autoTrackLessons, setAutoTrackLessons] = useState<boolean>(false);
 
   // === Section: Deposit / Payment options / Tax & expenses / Referral (instructors table) ===
   const [depositEnabled, setDepositEnabled] = useState<boolean>(false);
@@ -408,7 +409,7 @@ function SettingsPage() {
       // Load reminder preferences
       const { data: prefs } = await supabase
         .from("instructor_reminder_preferences")
-        .select("no_show_charge_percent, cancellation_tiers, auto_charge_no_show, reminder_enabled, reminder_hours_before, payment_reminder_enabled, payment_chase_max_reminders, morning_briefing")
+        .select("no_show_charge_percent, cancellation_tiers, auto_charge_no_show, reminder_enabled, reminder_hours_before, payment_reminder_enabled, payment_chase_max_reminders, morning_briefing, auto_track_lessons")
         .eq("instructor_id", user.id)
         .maybeSingle();
       if (prefs) {
@@ -428,6 +429,7 @@ function SettingsPage() {
         if (typeof p.payment_reminder_enabled === "boolean") setPaymentReminderEnabled(p.payment_reminder_enabled);
         if (typeof p.payment_chase_max_reminders === "number") setPaymentChaseMax(p.payment_chase_max_reminders);
         if (typeof p.morning_briefing === "boolean") setMorningBriefing(p.morning_briefing);
+        if (typeof p.auto_track_lessons === "boolean") setAutoTrackLessons(p.auto_track_lessons);
       }
 
       // Load extended instructor fields (deposit/payment/tax/referral)
