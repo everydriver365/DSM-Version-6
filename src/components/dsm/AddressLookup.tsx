@@ -203,6 +203,7 @@ export function AddressLookup({
         {
           input: inputValue,
           componentRestrictions: { country: "gb" },
+          types: ["geocode"],
         },
         (predictions, status) => {
           setLoading(false);
