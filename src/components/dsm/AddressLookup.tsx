@@ -8,8 +8,11 @@ import { Check, Loader2, MapPin, X } from "lucide-react";
 
 const POPPINS = { fontFamily: "Poppins, system-ui, sans-serif" } as const;
 
-// Same key + script id as used elsewhere in the app (see src/routes/pupils.new.tsx)
-const GOOGLE_MAPS_KEY = "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
+// Prefer the Lovable-managed browser key (referrer-restricted to *.lovable.app / *.lovableproject.com);
+// fall back to the legacy hardcoded key if the connector env var is missing at build time.
+const GOOGLE_MAPS_KEY =
+  (import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined)
+  || "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
 const SCRIPT_ID = "google-maps-places-script";
 
 export interface AddressLookupResult {
