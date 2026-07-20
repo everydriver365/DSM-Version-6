@@ -202,13 +202,13 @@ export default function InstructorTopBar({
             <div
               style={{
                 color: "#ffffff",
-                fontSize: 28,
+                fontSize: 24,
                 fontWeight: 700,
                 lineHeight: 1.1,
                 fontFamily: "Poppins, sans-serif",
               }}
             >
-              {heroTitle}
+              Welcome{firstName ? `, ${firstName}` : ""}
             </div>
             {heroSubtitle && (
               <div
