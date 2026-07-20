@@ -2,6 +2,7 @@ import React from "react";
 import { ChevronLeft, Mic, MessageCircle, Bell, LifeBuoy } from "lucide-react";
 import { CarIcon, MenuIcon, PoundIcon } from "@/components/icons/DrivingIcons";
 import { useNavigate } from "@tanstack/react-router";
+import dsmLogoAsset from "../../assets/dsm-logo.png.asset.json";
 
 export type InstructorTopBarProps = {
   onMicPress: () => void;
@@ -9,7 +10,6 @@ export type InstructorTopBarProps = {
   unreadNotifications?: number;
   onBack?: () => void;
   pageTitle?: string;
-  profileAvatar?: React.ReactNode;
   // Legacy props (accepted but unused by new design)
   firstName?: string;
   avatarUrl?: string | null;
@@ -90,7 +90,6 @@ export default function InstructorTopBar({
   unreadNotifications = 0,
   onBack,
   pageTitle,
-  profileAvatar,
 }: InstructorTopBarProps) {
   const navigate = useNavigate();
   const isSubpage = typeof onBack === "function";
@@ -134,7 +133,15 @@ export default function InstructorTopBar({
         </div>
       ) : (
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {profileAvatar}
+          <IconBtn ariaLabel="Home" onClick={() => navigate({ to: "/home" })} style={{ background: "transparent" }}>
+            <img
+              src={dsmLogoAsset.url}
+              alt="DSM"
+              width={36}
+              height={36}
+              style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover" }}
+            />
+          </IconBtn>
           <IconBtn
             ariaLabel="Voice commands"
             onClick={onMicPress}
