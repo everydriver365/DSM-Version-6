@@ -4449,7 +4449,7 @@ function HomePage() {
           unreadMessages={unreadMsgs.length}
           unreadNotifications={notifCount}
           firstName={firstName}
-          heroTitle="Dashboard"
+          heroTitle="Welcome"
         />
       </div>
 
