@@ -5140,24 +5140,27 @@ function HomePage() {
             <div
               onClick={() => navigate({ to: '/tests' as never })}
               style={{
-                margin: '0 16px 12px', background: '#FFFFFF', borderRadius: 10,
-                boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '10px 14px',
-                display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer',
+                margin: '0 16px 12px', background: '#FFFFFF', borderRadius: 12,
+                boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '14px 16px',
+                display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
                 fontFamily: 'Inter, sans-serif',
               }}
             >
-              <span style={{
-                background: '#E6F1FB', color: '#1877D6', fontSize: 11, fontWeight: 700,
-                padding: '4px 10px', borderRadius: 999, display: 'inline-flex',
-                alignItems: 'center', gap: 4, flexShrink: 0,
+              <div style={{
+                width: 36, height: 36, borderRadius: 10, background: '#E6F1FB',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}>
-                <Car size={12} color="#1877D6" />
-                {testsSorted.length} test{testsSorted.length === 1 ? '' : 's'}
-              </span>
-              <span style={{ fontSize: 12, color: '#5A6270', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                Next: {next.name}, {fmtShortDate(next.test_date)}
-              </span>
-              <ChevronRight size={14} color="#C7CCD4" />
+                <Car size={18} color="#1877D6" />
+              </div>
+              <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <span style={{ fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>
+                  {testsSorted.length} upcoming test{testsSorted.length === 1 ? '' : 's'}
+                </span>
+                <span style={{ fontSize: 12, color: '#6B7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  Next: {next.name} — {fmtShortDate(next.test_date)}
+                </span>
+              </div>
+              <ChevronRight size={16} color="#C7CCD4" style={{ flexShrink: 0 }} />
             </div>
           );
         })()}
