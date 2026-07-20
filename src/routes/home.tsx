@@ -2150,6 +2150,17 @@ function HomePage() {
       setPendingSwapCount(swapCount);
       setSwapRequests(swapRows);
 
+      // Open job offers count (best-effort — table may not exist yet)
+      try {
+        const { count: jobsCount } = await supabase
+          .from("job_offers")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "open");
+        setOpenJobsCount(jobsCount ?? 0);
+      } catch {
+        setOpenJobsCount(0);
+      }
+
       // Upcoming tests list for the bottom sheet and the alert strip
       const now = new Date();
       const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
