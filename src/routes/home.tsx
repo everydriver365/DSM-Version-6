@@ -4050,7 +4050,7 @@ function HomePage() {
   })();
 
   // Needs Attention counts
-  const naJobs: number = 0; // TODO: wire enquiries/new course_bookings
+  const naJobs: number = openJobsCount;
   const naTests = (upcomingTests ?? []).filter((p) => {
     if (!p.test_date) return false;
     const days = Math.floor((new Date(p.test_date).getTime() - new Date().getTime()) / 86400000);
