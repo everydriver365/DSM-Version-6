@@ -5857,7 +5857,7 @@ function HomePage() {
                                 letterSpacing: 0.3,
                               }}
                             >
-                              OPPORTUNITY
+                              FILL THIS GAP
                             </div>
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={{ fontSize: 13, fontWeight: 500, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums' }}>
