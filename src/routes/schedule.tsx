@@ -1587,7 +1587,7 @@ function SchedulePage() {
                                           {(cancelled || timeText) ? (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
                                               {cancelled ? (
-                                                <span style={{ fontSize: 10, fontWeight: 700, color: '#9CA3AF', background: '#F3F4F6', padding: '2px 8px', borderRadius: 999 }}>
+                                                <span style={{ fontSize: 10, fontWeight: 700, color: '#CC2229', background: '#FEF2F2', padding: '2px 8px', borderRadius: 999 }}>
                                                   Cancelled
                                                 </span>
                                               ) : null}
