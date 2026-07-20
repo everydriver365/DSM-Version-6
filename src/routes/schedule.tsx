@@ -19,8 +19,7 @@ import { PAGE_BACKGROUND } from "@/components/PageLayout";
 import { PupilAvatar } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
-import { ChangeTimeSheet } from "@/components/lessons/ChangeTimeSheet";
-import { ChangeDateSheet } from "@/components/lessons/ChangeDateSheet";
+import { ChangeDateTimeSheet } from "@/components/lessons/ChangeDateTimeSheet";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
