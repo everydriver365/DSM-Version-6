@@ -4444,21 +4444,9 @@ function HomePage() {
       <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.carousel-hide-scrollbar::-webkit-scrollbar{display:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}@keyframes chipShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
       {/* TOP BAR */}
       <InstructorTopBar
-        firstName={firstName}
-        avatarUrl={avatarUrl}
-        unreadCount={notifCount}
-        onProfile={() => navigate({ to: "/profile" })}
-        onPhone={() => navigate({ to: "/enquiries" })}
-        onLiveTrack={() => navigate({ to: "/live" })}
-        onBell={() => navigate({ to: "/notifications" })}
-        onMenu={() => navigate({ to: "/settings" })}
+        unreadMessages={unreadMsgs.length}
+        unreadNotifications={notifCount}
         onMicPress={() => toast.info("Voice commands coming soon!")}
-        statusDot={
-          <span
-            className="rounded-full"
-            style={{ width: 8, height: 8, backgroundColor: "#1877D6", marginLeft: 4 }}
-          />
-        }
       />
 
       <PushPermissionCard />
