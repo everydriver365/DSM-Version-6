@@ -2625,7 +2625,7 @@ function MonthStrip({
               onClick={() => onSelectDate(key)}
               style={{
                 flex: "0 0 calc(100% / 7)",
-                padding: "4px 2px",
+                padding: "2px 2px",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
