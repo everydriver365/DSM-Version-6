@@ -151,6 +151,19 @@ function JobsPage() {
       });
     }
 
+    const { data: covData } = await supabase
+      .from("instructor_coverage_areas")
+      .select("centre_lat, centre_lng, radius_miles")
+      .eq("instructor_id", id);
+    const cov: CoverageArea[] = ((covData ?? []) as any[])
+      .filter((c) => c.centre_lat != null && c.centre_lng != null && c.radius_miles != null)
+      .map((c) => ({
+        centre_lat: Number(c.centre_lat),
+        centre_lng: Number(c.centre_lng),
+        radius_miles: Number(c.radius_miles),
+      }));
+    setCoverage(cov);
+
     const { data, error } = await supabase
       .from("job_offers")
       .select("*")
@@ -160,7 +173,16 @@ function JobsPage() {
       setJobs([]);
       return;
     }
-    setJobs((data ?? []) as JobOffer[]);
+    const all = (data ?? []) as JobOffer[];
+    // Filter out jobs with coords beyond every coverage radius; keep null-coord jobs unfiltered.
+    const filtered = all.filter((job) => {
+      if (job.centre_lat == null || job.centre_lng == null) return true;
+      if (cov.length === 0) return true;
+      return cov.some(
+        (c) => haversineMiles(c.centre_lat, c.centre_lng, job.centre_lat!, job.centre_lng!) <= c.radius_miles,
+      );
+    });
+    setJobs(filtered);
   };
 
   useEffect(() => { load(); }, []);
