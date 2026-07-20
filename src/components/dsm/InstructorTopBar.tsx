@@ -10,7 +10,6 @@ export type InstructorTopBarProps = {
   unreadNotifications?: number;
   onBack?: () => void;
   pageTitle?: string;
-  
   // Legacy props (accepted but unused by new design)
   firstName?: string;
   avatarUrl?: string | null;
