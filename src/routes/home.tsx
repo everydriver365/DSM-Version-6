@@ -4947,7 +4947,7 @@ function HomePage() {
           const pillBg = isPositive ? '#EAF3DE' : status === 'partial' ? '#FFF4E0' : status === 'cancelled' ? '#EEF2F7' : '#FDECEC';
           const pillColor = isPositive ? '#3B6D11' : status === 'partial' ? '#8A5A00' : status === 'cancelled' ? '#5A6270' : '#CC2229';
           const amountColor = isPositive ? '#2E9E5B' : status === 'partial' ? '#8A5A00' : status === 'cancelled' ? '#5A6270' : '#CC2229';
-          const postcode = upcoming.pupils?.postcode || upcoming.pickup_location || upcoming.pupils?.address || 'No pickup';
+          const postcode = upcoming.pickup_location || upcoming.pupils?.address || upcoming.pupils?.postcode || 'No pickup';
           return (
             <div
               onClick={() => navigate({ to: '/pupils/$id', params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any })}
