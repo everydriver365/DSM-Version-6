@@ -16,7 +16,12 @@ const BLUE = "#1877D6";
 const GREY = "#6B7280";
 
 const TRANSMISSIONS = ["manual", "automatic", "either"] as const;
-const TIMINGS = ["morning", "afternoon", "evening", "weekend", "flexible"] as const;
+const TIMINGS = [
+  { value: "morning", label: "Mornings" },
+  { value: "afternoon", label: "Afternoons" },
+  { value: "evening", label: "Evenings" },
+  { value: "weekend", label: "Weekends" },
+];
 const WEEKDAYS = [
   { value: "Monday", short: "Mon" },
   { value: "Tuesday", short: "Tue" },
@@ -34,7 +39,7 @@ type JobOffer = {
   pupil_email: string | null;
   transmission: string | null;
   course_hours: number | null;
-  preferred_timing: string | null;
+  preferred_timing: string[] | null;
   preferred_days: string[] | null;
   preferred_start_date: string | null;
   postcode_area: string | null;
@@ -75,7 +80,7 @@ function emptyForm(): Partial<JobOffer> {
     pupil_email: "",
     transmission: "manual",
     course_hours: 10,
-    preferred_timing: "flexible",
+    preferred_timing: [],
     preferred_days: [],
     preferred_start_date: "",
     postcode_area: "",
@@ -219,6 +224,15 @@ function AdminJobOffers() {
     });
   };
 
+  const toggleTiming = (timing: string) => {
+    setForm((f) => {
+      const cur = new Set(f.preferred_timing ?? []);
+      if (cur.has(timing)) cur.delete(timing);
+      else cur.add(timing);
+      return { ...f, preferred_timing: Array.from(cur) };
+    });
+  };
+
   const save = async () => {
     if (!uid) return;
     if (!form.pupil_name?.trim()) {
@@ -232,7 +246,7 @@ function AdminJobOffers() {
       pupil_email: form.pupil_email?.trim() || null,
       transmission: form.transmission || null,
       course_hours: form.course_hours ?? null,
-      preferred_timing: form.preferred_timing || null,
+      preferred_timing: form.preferred_timing?.length ? form.preferred_timing : null,
       preferred_days: form.preferred_days?.length ? form.preferred_days : null,
       preferred_start_date: form.preferred_start_date || null,
       postcode_area: form.postcode_area?.trim() || null,
@@ -357,7 +371,7 @@ function AdminJobOffers() {
                         o.postcode_area,
                         o.transmission,
                         o.course_hours ? `${o.course_hours} hrs` : null,
-                        o.preferred_timing,
+                        o.preferred_timing?.join(", "),
                       ].filter(Boolean).join(" · ")}
                     </div>
                     <div style={{ fontSize: 12, color: GREY, marginTop: 4 }}>
@@ -575,15 +589,27 @@ function AdminJobOffers() {
               </div>
 
               <FieldLabel label="Preferred timing">
-                <select
-                  value={form.preferred_timing ?? ""}
-                  onChange={(e) => setForm({ ...form, preferred_timing: e.target.value })}
-                  style={inputStyle()}
-                >
-                  {TIMINGS.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {TIMINGS.map((t) => {
+                    const active = (form.preferred_timing ?? []).includes(t.value);
+                    return (
+                      <button
+                        key={t.value}
+                        type="button"
+                        onClick={() => toggleTiming(t.value)}
+                        style={{
+                          padding: "6px 12px", borderRadius: 999,
+                          border: `1px solid ${active ? BLUE : "#D1D5DB"}`,
+                          background: active ? BLUE : "#fff",
+                          color: active ? "#fff" : NAVY,
+                          fontSize: 12, fontWeight: 600, cursor: "pointer",
+                        }}
+                      >
+                        {t.label}
+                      </button>
+                    );
+                  })}
+                </div>
               </FieldLabel>
 
               <FieldLabel label="Preferred days">
@@ -780,7 +806,7 @@ function AdminJobThread({
               {job.pupil_name || "Job enquiry"}
             </div>
             <div style={{ fontSize: 11, color: GREY }}>
-              {[job.postcode_area, job.preferred_timing, `status: ${job.status}`].filter(Boolean).join(" · ")}
+              {[job.postcode_area, job.preferred_timing?.join(", "), `status: ${job.status}`].filter(Boolean).join(" · ")}
             </div>
           </div>
           <button onClick={onClose} style={{ padding: 6, background: "transparent", border: "none", cursor: "pointer" }}>
