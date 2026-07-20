@@ -20,6 +20,7 @@ import { PupilAvatar } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { ChangeTimeSheet } from "@/components/lessons/ChangeTimeSheet";
+import { ChangeDateSheet } from "@/components/lessons/ChangeDateSheet";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
@@ -314,6 +315,8 @@ function SchedulePage() {
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
   const [changeTimeSheetFor, setChangeTimeSheetFor] = useState<Lesson | null>(null);
   const [changeTimeSubmitting, setChangeTimeSubmitting] = useState(false);
+  const [changeDateSheetFor, setChangeDateSheetFor] = useState<Lesson | null>(null);
+  const [changeDateSubmitting, setChangeDateSubmitting] = useState(false);
 
   // Close popover on outside click
   useEffect(() => {
@@ -1696,18 +1699,29 @@ function SchedulePage() {
                                                        >
                                                          Move
                                                        </button>
-                                                        <button
-                                                          type="button"
-                                                          style={itemStyle}
-                                                          onClick={(ev) => {
-                                                            ev.stopPropagation();
-                                                            setActionsOpenFor(null);
-                                                            setChangeTimeSheetFor(lesson);
-                                                          }}
-                                                        >
-                                                          Change time
-                                                        </button>
-                                                        <button
+                                                         <button
+                                                           type="button"
+                                                           style={itemStyle}
+                                                           onClick={(ev) => {
+                                                             ev.stopPropagation();
+                                                             setActionsOpenFor(null);
+                                                             setChangeTimeSheetFor(lesson);
+                                                           }}
+                                                         >
+                                                           Change time
+                                                         </button>
+                                                         <button
+                                                           type="button"
+                                                           style={itemStyle}
+                                                           onClick={(ev) => {
+                                                             ev.stopPropagation();
+                                                             setActionsOpenFor(null);
+                                                             setChangeDateSheetFor(lesson);
+                                                           }}
+                                                         >
+                                                           Change date
+                                                         </button>
+                                                         <button
                                                           type="button"
                                                           style={itemStyle}
                                                           onClick={(ev) => {
@@ -1830,6 +1844,34 @@ function SchedulePage() {
               toast.error(err?.message || "Failed to update lesson time");
             } finally {
               setChangeTimeSubmitting(false);
+            }
+          }}
+        />
+      )}
+
+      {changeDateSheetFor && (
+        <ChangeDateSheet
+          open={true}
+          submitting={changeDateSubmitting}
+          currentDate={(changeDateSheetFor.lesson_date ?? "").slice(0, 10)}
+          onClose={() => { if (!changeDateSubmitting) setChangeDateSheetFor(null); }}
+          onConfirm={async (newDate: string) => {
+            const lesson = changeDateSheetFor;
+            if (!lesson) return;
+            setChangeDateSubmitting(true);
+            try {
+              const { error } = await supabase
+                .from("lessons")
+                .update({ lesson_date: newDate })
+                .eq("id", lesson.id);
+              if (error) throw error;
+              setLessons((prev) => (prev ?? []).map((l) => l.id === lesson.id ? { ...l, lesson_date: newDate } : l));
+              toast.success("Lesson date updated");
+              setChangeDateSheetFor(null);
+            } catch (err: any) {
+              toast.error(err?.message || "Failed to update lesson date");
+            } finally {
+              setChangeDateSubmitting(false);
             }
           }}
         />
