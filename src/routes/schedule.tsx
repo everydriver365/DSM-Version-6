@@ -1052,22 +1052,26 @@ function SchedulePage() {
           setViewMonth(d);
           scrollToDate(ymdLocal(today));
         }}
+        legendOpen={legendOpen}
+        onToggleLegend={() => setLegendOpen((v) => !v)}
       />
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px 4px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#1A52A0' }} />
-          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>DSM lesson</span>
+      {legendOpen && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px 4px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ width: 8, height: 8, borderRadius: 2, background: '#1A52A0' }} />
+            <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>DSM lesson</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ width: 8, height: 8, borderRadius: 2, background: '#9CA3AF' }} />
+            <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>Google Calendar</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ width: 8, height: 8, borderRadius: 2, background: '#D97706' }} />
+            <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>Free slot</span>
+          </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#9CA3AF' }} />
-          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>Google Calendar</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#D97706' }} />
-          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>Free slot</span>
-        </div>
-      </div>
+      )}
 
 
       <div
