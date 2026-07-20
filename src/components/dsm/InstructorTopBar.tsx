@@ -2,7 +2,7 @@ import React from "react";
 import { ChevronLeft, Mic, MessageCircle, Bell, LifeBuoy } from "lucide-react";
 import { CarIcon, MenuIcon, PoundIcon } from "@/components/icons/DrivingIcons";
 import { useNavigate } from "@tanstack/react-router";
-import dsmLogoAsset from "../../assets/dsm-logo.png.asset.json";
+import iconMarkAsset from "../../assets/icon-192.png.asset.json";
 
 export type InstructorTopBarProps = {
   onMicPress: () => void;
@@ -135,7 +135,7 @@ export default function InstructorTopBar({
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <IconBtn ariaLabel="Home" onClick={() => navigate({ to: "/home" })} style={{ background: "transparent" }}>
             <img
-              src={dsmLogoAsset.url}
+              src={iconMarkAsset.url}
               alt="DSM"
               width={36}
               height={36}
