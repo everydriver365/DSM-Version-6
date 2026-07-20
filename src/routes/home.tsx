@@ -6057,55 +6057,55 @@ function HomePage() {
                             opacity: isCancelled ? 0.75 : 1,
                           }}
                         >
-                           <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                             <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none', textDecorationColor: isCancelled ? '#CC2229' : undefined }}>
-                               {timeLabel}
-                             </div>
-                             {isCancelled ? (
-                               <span style={{
-                                 marginTop: 6,
-                                 display: 'inline-block',
-                                 fontSize: 9,
-                                 fontWeight: 700,
-                                 letterSpacing: 0.4,
-                                 textTransform: 'uppercase',
-                                 color: '#FFFFFF',
-                                 background: '#CC2229',
-                                 padding: '2px 6px',
-                                 borderRadius: 999,
-                                 lineHeight: 1.2,
-                               }}>
-                                 Cancelled
-                               </span>
-                             ) : (
-                               <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
-                                 {durLabel}
-                               </div>
-                             )}
-                           </div>
-                           <div
-                             aria-hidden
-                             style={{
-                               width: 3,
-                               borderRadius: 2,
-                               background: isCancelled ? '#9CA3AF' : calColour,
-                               flexShrink: 0,
-                               alignSelf: 'stretch',
-                             }}
-                           />
-                           <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
-                             {tab === 'next' && (
-                               <div style={{ fontSize: 11, fontWeight: 500, color: '#1877D6', marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
-                                 {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
-                               </div>
-                             )}
-                             <div style={{ fontSize: 14, fontWeight: 500, color: isCancelled ? '#6B7280' : '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none', textDecorationColor: isCancelled ? '#CC2229' : undefined, textDecorationThickness: isCancelled ? 2 : undefined }}>
-                               {name}
-                             </div>
-                             <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 2, fontVariantNumeric: 'tabular-nums', textDecoration: isCancelled ? 'line-through' : 'none' }}>
-                               {dur} mins
-                             </div>
-                           </div>
+                            <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
+                              <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none', textDecorationColor: isCancelled ? '#CC2229' : undefined }}>
+                                {timeLabel}
+                              </div>
+                              <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                                {durLabel}
+                              </div>
+                            </div>
+                            <div
+                              aria-hidden
+                              style={{
+                                width: 3,
+                                borderRadius: 2,
+                                background: isCancelled ? '#9CA3AF' : calColour,
+                                flexShrink: 0,
+                                alignSelf: 'stretch',
+                              }}
+                            />
+                            <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
+                              {tab === 'next' && (
+                                <div style={{ fontSize: 11, fontWeight: 500, color: '#1877D6', marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
+                                  {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
+                                </div>
+                              )}
+                              <div style={{ fontSize: 14, fontWeight: 500, color: isCancelled ? '#6B7280' : '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none', textDecorationColor: isCancelled ? '#CC2229' : undefined, textDecorationThickness: isCancelled ? 2 : undefined }}>
+                                {name}
+                              </div>
+                              {isCancelled ? (
+                                <span style={{
+                                  display: 'inline-block',
+                                  marginTop: 4,
+                                  fontSize: 9,
+                                  fontWeight: 700,
+                                  letterSpacing: 0.4,
+                                  textTransform: 'uppercase',
+                                  color: '#FFFFFF',
+                                  background: '#CC2229',
+                                  padding: '2px 6px',
+                                  borderRadius: 999,
+                                  lineHeight: 1.2,
+                                }}>
+                                  Cancelled
+                                </span>
+                              ) : (
+                                <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
+                                  {dur} mins
+                                </div>
+                              )}
+                            </div>
                             {priceNode && (
                               <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                                 {priceNode}
