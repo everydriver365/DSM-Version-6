@@ -126,6 +126,7 @@ import { Route as CoursesIdRouteImport } from './routes/courses.$id'
 import { Route as BookingsIdRouteImport } from './routes/bookings.$id'
 import { Route as AdminPodcastsRouteImport } from './routes/admin.podcasts'
 import { Route as AdminListingsRouteImport } from './routes/admin.listings'
+import { Route as AdminJobOffersRouteImport } from './routes/admin.job-offers'
 import { Route as AdminFeaturedRouteImport } from './routes/admin.featured'
 import { Route as AdminDsmLiveRouteImport } from './routes/admin.dsm-live'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
@@ -728,6 +729,11 @@ const AdminListingsRoute = AdminListingsRouteImport.update({
   path: '/listings',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminJobOffersRoute = AdminJobOffersRouteImport.update({
+  id: '/job-offers',
+  path: '/job-offers',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminFeaturedRoute = AdminFeaturedRouteImport.update({
   id: '/featured',
   path: '/featured',
@@ -909,6 +915,7 @@ export interface FileRoutesByFullPath {
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/dsm-live': typeof AdminDsmLiveRoute
   '/admin/featured': typeof AdminFeaturedRoute
+  '/admin/job-offers': typeof AdminJobOffersRoute
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/bookings/$id': typeof BookingsIdRoute
@@ -1041,6 +1048,7 @@ export interface FileRoutesByTo {
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/dsm-live': typeof AdminDsmLiveRoute
   '/admin/featured': typeof AdminFeaturedRoute
+  '/admin/job-offers': typeof AdminJobOffersRoute
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/bookings/$id': typeof BookingsIdRoute
@@ -1178,6 +1186,7 @@ export interface FileRoutesById {
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/dsm-live': typeof AdminDsmLiveRoute
   '/admin/featured': typeof AdminFeaturedRoute
+  '/admin/job-offers': typeof AdminJobOffersRoute
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/bookings/$id': typeof BookingsIdRoute
@@ -1315,6 +1324,7 @@ export interface FileRouteTypes {
     | '/admin/applications'
     | '/admin/dsm-live'
     | '/admin/featured'
+    | '/admin/job-offers'
     | '/admin/listings'
     | '/admin/podcasts'
     | '/bookings/$id'
@@ -1447,6 +1457,7 @@ export interface FileRouteTypes {
     | '/admin/applications'
     | '/admin/dsm-live'
     | '/admin/featured'
+    | '/admin/job-offers'
     | '/admin/listings'
     | '/admin/podcasts'
     | '/bookings/$id'
@@ -1583,6 +1594,7 @@ export interface FileRouteTypes {
     | '/admin/applications'
     | '/admin/dsm-live'
     | '/admin/featured'
+    | '/admin/job-offers'
     | '/admin/listings'
     | '/admin/podcasts'
     | '/bookings/$id'
@@ -2565,6 +2577,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminListingsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/job-offers': {
+      id: '/admin/job-offers'
+      path: '/job-offers'
+      fullPath: '/admin/job-offers'
+      preLoaderRoute: typeof AdminJobOffersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/featured': {
       id: '/admin/featured'
       path: '/featured'
@@ -2711,6 +2730,7 @@ interface AdminRouteChildren {
   AdminApplicationsRoute: typeof AdminApplicationsRoute
   AdminDsmLiveRoute: typeof AdminDsmLiveRoute
   AdminFeaturedRoute: typeof AdminFeaturedRoute
+  AdminJobOffersRoute: typeof AdminJobOffersRoute
   AdminListingsRoute: typeof AdminListingsRoute
   AdminPodcastsRoute: typeof AdminPodcastsRoute
 }
@@ -2719,6 +2739,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminApplicationsRoute: AdminApplicationsRoute,
   AdminDsmLiveRoute: AdminDsmLiveRoute,
   AdminFeaturedRoute: AdminFeaturedRoute,
+  AdminJobOffersRoute: AdminJobOffersRoute,
   AdminListingsRoute: AdminListingsRoute,
   AdminPodcastsRoute: AdminPodcastsRoute,
 }
