@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
 import { ArrowLeft, Award, BarChart3, BookOpen, Calendar, Camera, Car, ChevronDown, ChevronRight, ClipboardCheck, ClipboardList, Clock, CreditCard, ExternalLink, Flag, Heart, History, Loader2, Mail, MapPin, MessageSquare, Palette, Pencil, Phone, Plus, PoundSterling, RefreshCw, Search, Send, Trash2, Trophy, X, Check } from "lucide-react";
+import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -348,8 +349,12 @@ function PupilDetailPage() {
     last_name: string;
     phone: string;
     email: string;
+    address: string;
+    postcode: string;
     date_of_birth: string;
     status: string;
+    lead_source: string;
+    lead_source_detail: string;
     prepaid_hours: string;
     prepaid_amount_paid: string;
     custom_rate: string;
@@ -360,8 +365,12 @@ function PupilDetailPage() {
     last_name: "",
     phone: "",
     email: "",
+    address: "",
+    postcode: "",
     date_of_birth: "",
     status: "active",
+    lead_source: "",
+    lead_source_detail: "",
     prepaid_hours: "",
     prepaid_amount_paid: "",
     custom_rate: "",
@@ -378,9 +387,12 @@ function PupilDetailPage() {
       last_name: pupil.last_name ?? "",
       phone: pupil.phone ?? "",
       email: pupil.email ?? "",
+      address: pupil.address ?? "",
+      postcode: pupil.postcode ?? "",
       date_of_birth: pupil.date_of_birth ?? "",
-
       status: (pupil.status ?? "active") || "active",
+      lead_source: pupil.lead_source ?? "",
+      lead_source_detail: pupil.lead_source_detail ?? "",
       prepaid_hours: pupil.prepaid_hours != null ? String(pupil.prepaid_hours) : "",
       prepaid_amount_paid: pupil.prepaid_amount_paid != null ? String(pupil.prepaid_amount_paid) : "",
       custom_rate: pupil.custom_rate != null ? String(pupil.custom_rate) : "",
@@ -408,9 +420,12 @@ function PupilDetailPage() {
       name: [first, last].filter(Boolean).join(" ") || pupil.name,
       phone: editDraft.phone.trim() || null,
       email: editDraft.email.trim() || null,
+      address: editDraft.address?.trim() || null,
+      postcode: editDraft.postcode?.trim().toUpperCase() || null,
       date_of_birth: editDraft.date_of_birth || null,
-
       status: editDraft.status || "active",
+      lead_source: editDraft.lead_source || null,
+      lead_source_detail: editDraft.lead_source_detail?.trim() || null,
       prepaid_hours: numOrNull(editDraft.prepaid_hours) ?? 0,
       prepaid_amount_paid: numOrNull(editDraft.prepaid_amount_paid) ?? 0,
       custom_rate: numOrNull(editDraft.custom_rate),
@@ -3214,6 +3229,15 @@ function PupilDetailPage() {
                 style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
               />
             </label>
+            <div className="mb-4">
+              <AddressLookup
+                initialPostcode={editDraft.postcode}
+                initialAddress={editDraft.address}
+                onAddressFound={({ postcode, address }) => {
+                  setEditDraft((d) => ({ ...d, postcode, address }));
+                }}
+              />
+            </div>
             <label className="block text-[12px] text-[#6B7280] mb-4">
               Date of birth <span className="text-[11px] text-[#9CA3AF]">(optional)</span>
               <input
@@ -3246,6 +3270,40 @@ function PupilDetailPage() {
                 <option value="cancelled">Cancelled</option>
               </select>
             </label>
+
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-[#6B7280] mb-2">Lead source</div>
+            <label className="text-[12px] text-[#6B7280] block mb-4">
+              How did they find you?
+              <select
+                value={editDraft.lead_source}
+                onChange={(e) => setEditDraft((d) => ({ ...d, lead_source: e.target.value, lead_source_detail: "" }))}
+                className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+              >
+                <option value="">Select source</option>
+                <option value="Referral">Referral</option>
+                <option value="EveryDriver">EveryDriver</option>
+                <option value="National Intensive">National Intensive</option>
+                <option value="Online">Online</option>
+                <option value="Walk-in / Local">Walk-in / Local</option>
+                <option value="Social media">Social media</option>
+                <option value="Driving school">Driving school</option>
+                <option value="Returning pupil">Returning pupil</option>
+                <option value="Other">Other</option>
+              </select>
+            </label>
+            {(editDraft.lead_source === "Referral" || editDraft.lead_source === "Other") && (
+              <label className="text-[12px] text-[#6B7280] block mb-4">
+                {editDraft.lead_source === "Referral" ? "Who referred them?" : "Please specify"}
+                <input
+                  type="text"
+                  value={editDraft.lead_source_detail}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, lead_source_detail: e.target.value }))}
+                  className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                />
+              </label>
+            )}
 
             <div className="text-[11px] font-semibold uppercase tracking-wide text-[#6B7280] mb-2">Payment details</div>
 
