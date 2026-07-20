@@ -692,7 +692,8 @@ function TodayLessonsTile({
 }) {
   const total = todayLessons.length;
   const upcoming = todayLessons.filter((l) =>
-    ["confirmed", "pending", "in_progress"].includes(l.status),
+    ["confirmed", "pending", "in_progress"].includes(l.status) &&
+    l.status !== "cancelled",
   ).length;
   const completed = todayLessons.filter((l) => l.status === "completed").length;
   const subtitle =
@@ -3045,7 +3046,7 @@ function HomePage() {
   }, [nextLesson, notifPermission]);
 
 
-  const upcoming = nextLesson ?? lessons.find((l) => lessonDateTime(l) >= now) ?? null;
+  const upcoming = nextLesson ?? lessons.find((l) => lessonDateTime(l) >= now && l.status !== "cancelled") ?? null;
 
   // ── Next Lesson traffic + weather chips ───────────────────────────────────
   const fetchWeather = useServerFn(getLessonWeather);
@@ -3258,7 +3259,7 @@ function HomePage() {
   const tomorrowLessons = (allLessons ?? []).filter(
     (l: any) => l.lesson_date === tomorrowISO && l.deleted_at == null,
   ) as unknown as LessonRow[];
-  const nextLessons = lessons.filter((l) => lessonDateTime(l) >= now);
+  const nextLessons = lessons.filter((l) => lessonDateTime(l) >= now && l.status !== "cancelled");
   const nextTabLessons = nextLessons.slice(0, 5);
 
   const weekLessons = lessons.filter((l) => {
@@ -5362,7 +5363,7 @@ function HomePage() {
           const e = new Date(s.getTime() + (l.duration_minutes ?? 60) * 60000);
           return nowT >= s && nowT < e;
         });
-        const nextLesson = sorted.find((l) => lessonDateTime(l) > nowT);
+        const nextLesson = sorted.find((l) => lessonDateTime(l) > nowT && l.status !== "cancelled");
         const owedPupil = (() => {
           const top = outstandingBreakdown[0];
           if (top && top.amount > 0) {
