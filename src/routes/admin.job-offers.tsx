@@ -39,7 +39,7 @@ type JobOffer = {
   pupil_email: string | null;
   transmission: string | null;
   course_hours: number | null;
-  preferred_timing: string | null;
+  preferred_timing: string[] | null;
   preferred_days: string[] | null;
   preferred_start_date: string | null;
   postcode_area: string | null;
@@ -80,7 +80,7 @@ function emptyForm(): Partial<JobOffer> {
     pupil_email: "",
     transmission: "manual",
     course_hours: 10,
-    preferred_timing: "flexible",
+    preferred_timing: [],
     preferred_days: [],
     preferred_start_date: "",
     postcode_area: "",
