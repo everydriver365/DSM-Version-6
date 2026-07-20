@@ -1849,58 +1849,35 @@ function SchedulePage() {
         />
       )}
 
-      {changeTimeSheetFor && (
-        <ChangeTimeSheet
+      {changeDateTimeSheetFor && (
+        <ChangeDateTimeSheet
           open={true}
-          submitting={changeTimeSubmitting}
-          currentTime={(changeTimeSheetFor.lesson_time ?? "").slice(0, 5)}
-          onClose={() => { if (!changeTimeSubmitting) setChangeTimeSheetFor(null); }}
-          onConfirm={async (newTime: string) => {
-            const lesson = changeTimeSheetFor;
+          submitting={changeDateTimeSubmitting}
+          currentDate={(changeDateTimeSheetFor.lesson_date ?? "").slice(0, 10)}
+          currentTime={(changeDateTimeSheetFor.lesson_time ?? "").slice(0, 5)}
+          onClose={() => { if (!changeDateTimeSubmitting) setChangeDateTimeSheetFor(null); }}
+          onConfirm={async (newDate: string, newTime: string) => {
+            const lesson = changeDateTimeSheetFor;
             if (!lesson) return;
-            setChangeTimeSubmitting(true);
+            setChangeDateTimeSubmitting(true);
             try {
               const timeVal = newTime.length === 5 ? `${newTime}:00` : newTime;
               const { error } = await supabase
                 .from("lessons")
-                .update({ lesson_time: timeVal })
+                .update({ lesson_date: newDate, lesson_time: timeVal })
                 .eq("id", lesson.id);
               if (error) throw error;
-              setLessons((prev) => (prev ?? []).map((l) => l.id === lesson.id ? { ...l, lesson_time: timeVal } : l));
-              toast.success("Lesson time updated");
-              setChangeTimeSheetFor(null);
+              setLessons((prev) =>
+                (prev ?? []).map((l) =>
+                  l.id === lesson.id ? { ...l, lesson_date: newDate, lesson_time: timeVal } : l,
+                ),
+              );
+              toast.success("Lesson updated");
+              setChangeDateTimeSheetFor(null);
             } catch (err: any) {
-              toast.error(err?.message || "Failed to update lesson time");
+              toast.error(err?.message || "Failed to update lesson");
             } finally {
-              setChangeTimeSubmitting(false);
-            }
-          }}
-        />
-      )}
-
-      {changeDateSheetFor && (
-        <ChangeDateSheet
-          open={true}
-          submitting={changeDateSubmitting}
-          currentDate={(changeDateSheetFor.lesson_date ?? "").slice(0, 10)}
-          onClose={() => { if (!changeDateSubmitting) setChangeDateSheetFor(null); }}
-          onConfirm={async (newDate: string) => {
-            const lesson = changeDateSheetFor;
-            if (!lesson) return;
-            setChangeDateSubmitting(true);
-            try {
-              const { error } = await supabase
-                .from("lessons")
-                .update({ lesson_date: newDate })
-                .eq("id", lesson.id);
-              if (error) throw error;
-              setLessons((prev) => (prev ?? []).map((l) => l.id === lesson.id ? { ...l, lesson_date: newDate } : l));
-              toast.success("Lesson date updated");
-              setChangeDateSheetFor(null);
-            } catch (err: any) {
-              toast.error(err?.message || "Failed to update lesson date");
-            } finally {
-              setChangeDateSubmitting(false);
+              setChangeDateTimeSubmitting(false);
             }
           }}
         />
