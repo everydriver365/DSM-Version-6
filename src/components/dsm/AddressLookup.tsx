@@ -322,14 +322,31 @@ export function AddressLookup({
   function reset() {
     setConfirmed(false);
     setSelectedAddress("");
+    setBaseAddress("");
+    setDoorNumber("");
     setPostcode("");
     setCity("");
+    setSelectedLat(null);
+    setSelectedLng(null);
     setInputValue("");
     setError(null);
     setSuggestions([]);
     setShowSuggestions(false);
     setNoResults(false);
     if (inputRef.current) inputRef.current.value = "";
+  }
+
+  function commitDoorNumber(next: string) {
+    const trimmed = next.trim();
+    const combined = trimmed ? `${trimmed} ${baseAddress}` : baseAddress;
+    setSelectedAddress(combined);
+    onAddressFound({
+      postcode,
+      address: combined,
+      city,
+      lat: selectedLat,
+      lng: selectedLng,
+    });
   }
 
   const inputBorderColor = error ? "#1877D6" : "#EEF2F7";
