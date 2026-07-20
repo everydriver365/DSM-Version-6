@@ -241,7 +241,7 @@ export function AddressLookup({
 
 
     return () => clearTimeout(timer);
-  }, [inputValue, placesLoaded, confirmed]);
+  }, [inputValue, placesLoaded, confirmed, searchKey]);
 
   const handleSelect = useCallback(
     (prediction: Prediction) => {
