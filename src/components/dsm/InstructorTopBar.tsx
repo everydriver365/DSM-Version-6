@@ -133,7 +133,6 @@ export default function InstructorTopBar({
               {(firstName?.charAt(0) ?? "I").toUpperCase()}
             </div>
           )}
-          <span style={{ color: "#ffffff", fontSize: 15 }}>{firstName}</span>
           <ChevronRight size={16} strokeWidth={1.8} color="rgba(255,255,255,0.7)" />
           {statusDot}
         </button>
