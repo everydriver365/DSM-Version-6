@@ -3066,6 +3066,145 @@ function PupilDetailPage() {
         onCancel={() => setRemoveOpen(false)}
       />
 
+      {adjSheetOpen && pupil && (() => {
+        const currentAdj = pupil.lesson_count_adjustment ?? 0;
+        const newAdj = Number.isFinite(parseInt(adjValue, 10)) ? parseInt(adjValue, 10) : 0;
+        const delta = newAdj - currentAdj;
+        const rate = pupil.custom_rate ?? instructorRate ?? 0;
+        const deltaHours = delta * 1; // 60 min per lesson
+        const currentTotal = confirmedLessonCount + currentAdj;
+        const newTotal = confirmedLessonCount + newAdj;
+        const sign = delta > 0 ? "+" : "";
+        const previewLabel =
+          delta === 0
+            ? "No change"
+            : `${sign}${delta} lesson${Math.abs(delta) === 1 ? "" : "s"} = ${sign}${deltaHours.toFixed(1)} prepaid hour${Math.abs(deltaHours) === 1 ? "" : "s"}${rate ? ` (≈ £${(Math.abs(deltaHours) * rate).toFixed(2)} at £${rate}/hr)` : ""}`;
+
+        async function saveAdjustment() {
+          if (!pupil) return;
+          if (!Number.isFinite(newAdj)) {
+            toast.error("Enter a valid whole number");
+            return;
+          }
+          setAdjSaving(true);
+          const nextPrepaid = Number(pupil.prepaid_hours ?? 0) + deltaHours;
+          const patch = {
+            lesson_count_adjustment: newAdj,
+            prepaid_hours: Math.round(nextPrepaid * 100) / 100,
+          };
+          const { error } = await supabase.from("pupils").update(patch).eq("id", pupil.id);
+          setAdjSaving(false);
+          if (error) {
+            console.error("[pupil] adjust lessons error", error);
+            toast.error("Failed to save adjustment");
+            return;
+          }
+          if (adjNote.trim()) {
+            console.log("[pupil] lessons adjustment note:", adjNote.trim(), "delta:", delta);
+          }
+          setPupil((p) => (p ? { ...p, ...patch } : p));
+          toast.success("Lessons adjusted");
+          setAdjSheetOpen(false);
+        }
+
+        return (
+          <BottomSheetV2
+            title="Adjust lessons bought"
+            subtitle={pupil.name}
+            onClose={() => (adjSaving ? null : setAdjSheetOpen(false))}
+            footer={
+              <button
+                type="button"
+                disabled={adjSaving}
+                onClick={saveAdjustment}
+                className="w-full h-12 rounded-xl text-[15px] font-semibold text-white"
+                style={{
+                  background: adjSaving ? "#7BA6DA" : "#1877D6",
+                  ...POPPINS,
+                }}
+              >
+                {adjSaving ? "Saving…" : "Save"}
+              </button>
+            }
+          >
+            <div className="space-y-4 pb-2" style={POPPINS}>
+              <div
+                className="rounded-xl px-4 py-3 flex items-center justify-between"
+                style={{ background: "#fff", border: "1px solid #E3E7ED" }}
+              >
+                <div>
+                  <div className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "#8A93A3" }}>
+                    Current total
+                  </div>
+                  <div className="text-[22px] font-bold" style={{ color: "#0B1F3A" }}>
+                    {currentTotal}
+                  </div>
+                </div>
+                <ChevronRight size={18} color="#8A93A3" />
+                <div className="text-right">
+                  <div className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "#8A93A3" }}>
+                    New total
+                  </div>
+                  <div className="text-[22px] font-bold" style={{ color: "#1877D6" }}>
+                    {newTotal}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[12px] font-medium mb-1" style={{ color: "#6B7280", ...POPPINS }}>
+                  Adjustment (+/-)
+                </label>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  step="1"
+                  value={adjValue}
+                  onChange={(e) => setAdjValue(e.target.value)}
+                  className="w-full h-11 px-3 rounded-lg text-[16px]"
+                  style={{
+                    background: "#fff",
+                    border: "1px solid #E3E7ED",
+                    color: "#0B1F3A",
+                    ...POPPINS,
+                  }}
+                />
+                <div className="text-[12px] mt-2" style={{ color: delta === 0 ? "#8A93A3" : "#1877D6", ...POPPINS }}>
+                  {previewLabel}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[12px] font-medium mb-1" style={{ color: "#6B7280", ...POPPINS }}>
+                  Reason / note (optional)
+                </label>
+                <textarea
+                  value={adjNote}
+                  onChange={(e) => setAdjNote(e.target.value)}
+                  rows={3}
+                  placeholder="e.g. carried over from previous instructor"
+                  className="w-full px-3 py-2 rounded-lg text-[16px] resize-none"
+                  style={{
+                    background: "#fff",
+                    border: "1px solid #E3E7ED",
+                    color: "#0B1F3A",
+                    ...POPPINS,
+                  }}
+                />
+              </div>
+
+              <div
+                className="text-[11px] leading-snug rounded-lg px-3 py-2"
+                style={{ background: "#F4F8FE", color: "#1A52A0", ...POPPINS }}
+              >
+                Saves the adjustment and applies the same change to prepaid hours ({(Number(pupil.prepaid_hours ?? 0)).toFixed(1)}h → {(Number(pupil.prepaid_hours ?? 0) + deltaHours).toFixed(1)}h).
+              </div>
+            </div>
+          </BottomSheetV2>
+        );
+      })()}
+
+
       {certOpen && (
         <div className="fixed inset-0 z-[60] flex flex-col justify-end">
           <div className="absolute inset-0 bg-black/40" onClick={() => setCertOpen(false)} />
