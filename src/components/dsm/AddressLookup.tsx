@@ -381,6 +381,35 @@ export function AddressLookup({
         </div>
       )}
 
+      {showSearchButton && !confirmed && !loading && inputValue.length >= 3 && (
+        <div className="flex justify-end" style={{ marginTop: 6 }}>
+          <button
+            type="button"
+            onClick={() => {
+              setError(null);
+              setSearchKey((k) => k + 1);
+            }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "6px 12px",
+              borderRadius: 8,
+              border: "0.5px solid #E2E6ED",
+              background: "#fff",
+              color: "#1877D6",
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: "pointer",
+              ...POPPINS,
+            }}
+          >
+            <Search size={14} color="#1877D6" />
+            Search now
+          </button>
+        </div>
+      )}
+
       {!confirmed && showSuggestions && (
         <div
           style={{
