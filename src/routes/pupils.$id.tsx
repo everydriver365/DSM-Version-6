@@ -1222,6 +1222,14 @@ function PupilDetailPage() {
                     <p className="text-[32px] font-bold leading-none mt-1" style={POPPINS}>
                       {confirmedLessonCount + (pupil?.lesson_count_adjustment ?? 0)}
                     </p>
+                    {Number(pupil?.prepaid_hours ?? 0) > 0 && (
+                      <p
+                        className="text-[11px] font-semibold mt-1"
+                        style={{ color: "rgba(255,255,255,0.7)", ...POPPINS }}
+                      >
+                        {Number(pupil?.prepaid_hours ?? 0).toFixed(1)} hrs purchased
+                      </p>
+                    )}
                   </button>
                 </div>
 
