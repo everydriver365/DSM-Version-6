@@ -1,5 +1,5 @@
 import React from "react";
-import { ChevronLeft, ChevronRight, Bell, Headphones } from "lucide-react";
+import { ChevronLeft, ChevronRight, Bell, Headphones, Mic, MessageCircle } from "lucide-react";
 import { CarIcon, MenuIcon, PoundIcon } from "@/components/icons/DrivingIcons";
 import { useNavigate } from "@tanstack/react-router";
 import iconMarkAsset from "../../assets/dsm-icon-white.png.asset.json";
@@ -88,7 +88,9 @@ function Badge({ count, color }: { count: number; color: string }) {
 
 export default function InstructorTopBar({
   unreadNotifications = 0,
+  unreadMessages = 0,
   onBack,
+  onMicPress = () => {},
   pageTitle,
   firstName,
   heroTitle,
@@ -142,32 +144,41 @@ export default function InstructorTopBar({
             </span>
           </div>
         ) : (
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/profile" as never })}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              background: "transparent",
-              border: "none",
-              padding: 0,
-              cursor: "pointer",
-              minWidth: 0,
-            }}
-          >
-            <img
-              src={iconMarkAsset.url}
-              alt="DSM"
-              width={40}
-              height={40}
-              style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
-            />
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <button
+              type="button"
+              onClick={() => navigate({ to: "/profile" as never })}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                background: "transparent",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                minWidth: 0,
+              }}
+            >
+              <img
+                src={iconMarkAsset.url}
+                alt="DSM"
+                width={40}
+                height={40}
+                style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+              />
+            </button>
+            <IconBtn ariaLabel="Voice commands" onClick={onMicPress} style={{ background: "#CC2229" }}>
+              <Mic size={19} strokeWidth={2} color="#ffffff" />
+            </IconBtn>
+          </div>
         )}
 
         {/* RIGHT — icon group */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <IconBtn ariaLabel="Messages" onClick={() => navigate({ to: "/messages" as never })}>
+            <MessageCircle size={18} strokeWidth={2} color="#ffffff" />
+            <Badge count={unreadMessages} color="#1877D6" />
+          </IconBtn>
           <IconBtn ariaLabel="Support" onClick={() => navigate({ to: "/help" as never })}>
             <Headphones size={18} strokeWidth={2} color="#ffffff" />
           </IconBtn>
