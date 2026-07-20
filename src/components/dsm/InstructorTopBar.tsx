@@ -111,7 +111,7 @@ export default function InstructorTopBar({
             <img
               src={dsmLogoWhite.url}
               alt="DSM"
-              style={{ height: 32, width: "auto", objectFit: "contain", display: "block" }}
+              style={{ height: 38, width: "auto", objectFit: "contain", display: "block" }}
             />
           </button>
           <IconBtn
