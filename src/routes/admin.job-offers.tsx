@@ -371,7 +371,7 @@ function AdminJobOffers() {
                         o.postcode_area,
                         o.transmission,
                         o.course_hours ? `${o.course_hours} hrs` : null,
-                        o.preferred_timing,
+                        o.preferred_timing?.join(", "),
                       ].filter(Boolean).join(" · ")}
                     </div>
                     <div style={{ fontSize: 12, color: GREY, marginTop: 4 }}>
@@ -806,7 +806,7 @@ function AdminJobThread({
               {job.pupil_name || "Job enquiry"}
             </div>
             <div style={{ fontSize: 11, color: GREY }}>
-              {[job.postcode_area, job.preferred_timing, `status: ${job.status}`].filter(Boolean).join(" · ")}
+              {[job.postcode_area, job.preferred_timing?.join(", "), `status: ${job.status}`].filter(Boolean).join(" · ")}
             </div>
           </div>
           <button onClick={onClose} style={{ padding: 6, background: "transparent", border: "none", cursor: "pointer" }}>
