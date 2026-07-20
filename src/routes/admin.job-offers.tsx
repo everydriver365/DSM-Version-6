@@ -43,6 +43,8 @@ type JobOffer = {
   preferred_days: string[] | null;
   preferred_start_date: string | null;
   postcode_area: string | null;
+  centre_lat: number | null;
+  centre_lng: number | null;
   offered_rate: number | null;
   expires_at: string | null;
   status: string;
@@ -84,6 +86,8 @@ function emptyForm(): Partial<JobOffer> {
     preferred_days: [],
     preferred_start_date: "",
     postcode_area: "",
+    centre_lat: null,
+    centre_lng: null,
     offered_rate: 0,
     expires_at: "",
     enquiry_id: null,
@@ -250,6 +254,8 @@ function AdminJobOffers() {
       preferred_days: form.preferred_days?.length ? form.preferred_days : null,
       preferred_start_date: form.preferred_start_date || null,
       postcode_area: form.postcode_area?.trim() || null,
+      centre_lat: form.centre_lat ?? null,
+      centre_lng: form.centre_lng ?? null,
       offered_rate: form.offered_rate ?? null,
       expires_at: form.expires_at ? new Date(form.expires_at).toISOString() : null,
       enquiry_id: form.enquiry_id ?? null,
@@ -639,9 +645,9 @@ function AdminJobOffers() {
               <FieldLabel label="Postcode area">
                 <AddressLookup
                   initialPostcode={form.postcode_area ?? undefined}
-                  onAddressFound={({ postcode }) => {
+                  onAddressFound={({ postcode, lat, lng }) => {
                     const outcode = postcode.trim().split(" ")[0].toUpperCase();
-                    setForm((f) => ({ ...f, postcode_area: outcode }));
+                    setForm((f) => ({ ...f, postcode_area: outcode, centre_lat: lat, centre_lng: lng }));
                   }}
                 />
               </FieldLabel>
