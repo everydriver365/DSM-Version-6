@@ -175,6 +175,10 @@ export default function InstructorTopBar({
 
         {/* RIGHT — icon group */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <IconBtn ariaLabel="Messages" onClick={() => navigate({ to: "/messages" as never })}>
+            <MessageCircle size={18} strokeWidth={2} color="#ffffff" />
+            <Badge count={unreadMessages} color="#1877D6" />
+          </IconBtn>
           <IconBtn ariaLabel="Support" onClick={() => navigate({ to: "/help" as never })}>
             <Headphones size={18} strokeWidth={2} color="#ffffff" />
           </IconBtn>
