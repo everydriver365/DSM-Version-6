@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
 import { ArrowLeft, Award, BarChart3, BookOpen, Calendar, Camera, Car, ChevronDown, ChevronRight, ClipboardCheck, ClipboardList, Clock, CreditCard, ExternalLink, Flag, Heart, History, Loader2, Mail, MapPin, MessageSquare, Palette, Pencil, Phone, Plus, PoundSterling, RefreshCw, Search, Send, Trash2, Trophy, X, Check } from "lucide-react";
+import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -408,9 +409,12 @@ function PupilDetailPage() {
       name: [first, last].filter(Boolean).join(" ") || pupil.name,
       phone: editDraft.phone.trim() || null,
       email: editDraft.email.trim() || null,
+      address: editDraft.address?.trim() || null,
+      postcode: editDraft.postcode?.trim().toUpperCase() || null,
       date_of_birth: editDraft.date_of_birth || null,
-
       status: editDraft.status || "active",
+      lead_source: editDraft.lead_source || null,
+      lead_source_detail: editDraft.lead_source_detail?.trim() || null,
       prepaid_hours: numOrNull(editDraft.prepaid_hours) ?? 0,
       prepaid_amount_paid: numOrNull(editDraft.prepaid_amount_paid) ?? 0,
       custom_rate: numOrNull(editDraft.custom_rate),
