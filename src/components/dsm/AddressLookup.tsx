@@ -321,7 +321,7 @@ export function AddressLookup({
             placeholder={
               placesLoaded ? "Start typing your address…" : "Loading address lookup…"
             }
-            disabled={disabled || !placesLoaded || loading}
+            disabled={disabled || !placesLoaded}
             autoComplete="new-password"
             style={{
               width: "100%",
