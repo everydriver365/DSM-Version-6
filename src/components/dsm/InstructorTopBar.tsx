@@ -144,28 +144,33 @@ export default function InstructorTopBar({
             </span>
           </div>
         ) : (
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/profile" as never })}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              background: "transparent",
-              border: "none",
-              padding: 0,
-              cursor: "pointer",
-              minWidth: 0,
-            }}
-          >
-            <img
-              src={iconMarkAsset.url}
-              alt="DSM"
-              width={40}
-              height={40}
-              style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
-            />
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <button
+              type="button"
+              onClick={() => navigate({ to: "/profile" as never })}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                background: "transparent",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                minWidth: 0,
+              }}
+            >
+              <img
+                src={iconMarkAsset.url}
+                alt="DSM"
+                width={40}
+                height={40}
+                style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+              />
+            </button>
+            <IconBtn ariaLabel="Voice commands" onClick={onMicPress} style={{ background: "#CC2229" }}>
+              <Mic size={19} strokeWidth={2} color="#ffffff" />
+            </IconBtn>
+          </div>
         )}
 
         {/* RIGHT — icon group */}
