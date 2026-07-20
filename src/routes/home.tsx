@@ -4440,18 +4440,9 @@ function HomePage() {
 
 
   return (
-    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: 'calc(240px + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
+    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: 0, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
       {notifBanner}
       <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.carousel-hide-scrollbar::-webkit-scrollbar{display:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}@keyframes chipShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
-      {/* TOP BAR */}
-      <div className="home-header-wrap">
-        <InstructorTopBar
-          unreadMessages={unreadMsgs.length}
-          unreadNotifications={notifCount}
-          firstName={firstName}
-          heroTitle="Welcome"
-        />
-      </div>
 
 
       <PushPermissionCard />
@@ -4592,9 +4583,20 @@ function HomePage() {
           }}
         >
 
+      {/* TOP BAR */}
+      <div className="home-header-wrap">
+        <InstructorTopBar
+          unreadMessages={unreadMsgs.length}
+          unreadNotifications={notifCount}
+          firstName={firstName}
+          heroTitle="Welcome"
+          sticky={false}
+        />
+      </div>
+
       {/* ============ STAT TILES ============ */}
       {/* NOTE: naCalls (callbacks) and naJobs (open jobs) are not yet wired to a real table — showing 0 as placeholder. naEnquiries is derived from pendingSwapCount today. */}
-      <div style={{ position: 'fixed', top: 'calc(118px + env(safe-area-inset-top, 0px))', left: 0, right: 0, padding: '0 16px', display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif', zIndex: 45 }}>
+      <div style={{ padding: '12px 16px 0', display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif' }}>
 
         {[
           { label: 'Calls', value: String(naCalls), sub: 'Need callback', color: '#CC2229', route: '/messages' },
