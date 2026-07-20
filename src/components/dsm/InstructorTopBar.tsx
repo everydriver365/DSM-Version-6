@@ -163,21 +163,6 @@ export default function InstructorTopBar({
               height={40}
               style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
             />
-            <span
-              style={{
-                color: "#ffffff",
-                fontSize: 17,
-                fontWeight: 600,
-                fontFamily: "Poppins, sans-serif",
-                marginLeft: 4,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                maxWidth: 120,
-              }}
-            >
-              {firstName && firstName !== "there" ? firstName : ""}
-            </span>
             <ChevronRight size={16} strokeWidth={2.5} color="rgba(255,255,255,0.55)" />
             <span
               aria-hidden
