@@ -842,7 +842,7 @@ function LivePage() {
               Tracking
             </div>
             <div style={{ marginTop: 4, fontSize: 15, fontWeight: 700, color: "#0B1F3A" }}>
-              Manual journey
+              {trackingPupilName ?? "Manual journey"}
             </div>
           </div>
         ) : (
