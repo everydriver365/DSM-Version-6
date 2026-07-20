@@ -4065,8 +4065,14 @@ function HomePage() {
       <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: "calc(60px + env(safe-area-inset-top, 0px))" }}>
         {notifBanner}
         <InstructorTopBar
-          unreadMessages={unreadMsgs.length}
-          unreadNotifications={notifCount}
+          firstName={firstName}
+          avatarUrl={avatarUrl}
+          unreadCount={notifCount}
+          onProfile={() => navigate({ to: "/profile" })}
+          onPhone={() => navigate({ to: "/enquiries" })}
+          onLiveTrack={() => navigate({ to: "/live" })}
+          onBell={() => navigate({ to: "/notifications" })}
+          onMenu={() => navigate({ to: "/settings" })}
           onMicPress={() => toast.info("Voice commands coming soon!")}
         />
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
@@ -4438,12 +4444,28 @@ function HomePage() {
     );
   }
 
-
   return (
-    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: 0, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
+    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
       {notifBanner}
       <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.carousel-hide-scrollbar::-webkit-scrollbar{display:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}@keyframes chipShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
-
+      {/* TOP BAR */}
+      <InstructorTopBar
+        firstName={firstName}
+        avatarUrl={avatarUrl}
+        unreadCount={notifCount}
+        onProfile={() => navigate({ to: "/profile" })}
+        onPhone={() => navigate({ to: "/enquiries" })}
+        onLiveTrack={() => navigate({ to: "/live" })}
+        onBell={() => navigate({ to: "/notifications" })}
+        onMenu={() => navigate({ to: "/settings" })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+        statusDot={
+          <span
+            className="rounded-full"
+            style={{ width: 8, height: 8, backgroundColor: "#1877D6", marginLeft: 4 }}
+          />
+        }
+      />
 
       <PushPermissionCard />
 
@@ -4582,22 +4604,47 @@ function HomePage() {
             paddingBottom: 10,
           }}
         >
-
-      {/* TOP BAR */}
-      <div className="home-header-wrap">
-        <InstructorTopBar
-          unreadMessages={unreadMsgs.length}
-          unreadNotifications={notifCount}
-          firstName={firstName}
-          heroTitle="Welcome"
-          sticky={false}
-        />
+      {/* ============ NAVY HEADER BLOCK ============ */}
+      <div
+        style={{
+          backgroundColor: '#0B1F3A',
+          marginTop: 'calc(-1 * (60px + env(safe-area-inset-top, 0px)))',
+          padding: 'calc(60px + env(safe-area-inset-top, 0px) + 16px) 16px 34px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          fontFamily: 'Inter, sans-serif',
+          borderRadius: '0 0 24px 24px',
+        }}
+      >
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: 18, fontWeight: 600, color: '#FFFFFF', lineHeight: 1.2 }}>Dashboard</div>
+          <div style={{ fontSize: 13, color: '#9AA6BC', marginTop: 4 }}>
+            Welcome back, {firstName || 'there'} 👋
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => navigate({ to: '/profile' })}
+          aria-label="Profile"
+          style={{
+            width: 34, height: 34, borderRadius: '50%',
+            background: '#1877D6', color: '#FFFFFF',
+            fontSize: 13, fontWeight: 600,
+            border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', overflow: 'hidden', padding: 0, flexShrink: 0,
+            fontFamily: 'Inter, sans-serif',
+          }}
+        >
+          {avatarUrl
+            ? <img src={avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            : (firstName?.[0] ?? 'I').toUpperCase()}
+        </button>
       </div>
 
-      {/* ============ STAT TILES ============ */}
+      {/* ============ OVERLAPPING STAT TILES ============ */}
       {/* NOTE: naCalls (callbacks) and naJobs (open jobs) are not yet wired to a real table — showing 0 as placeholder. naEnquiries is derived from pendingSwapCount today. */}
-      <div style={{ padding: '12px 16px 0', display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif' }}>
-
+      <div style={{ padding: '0 16px', marginTop: -22, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif' }}>
         {[
           { label: 'Calls', value: String(naCalls), sub: 'Need callback', color: '#CC2229', route: '/messages' },
           { label: "Jobs", value: String(naJobs), sub: 'Open', color: '#B5661E', route: '/waitlist' },
@@ -4609,17 +4656,16 @@ function HomePage() {
             onClick={() => navigate({ to: s.route as never })}
             style={{
               flex: 1, background: '#FFFFFF', borderRadius: 10,
-              boxShadow: '0 6px 16px rgba(11,31,58,0.18)', padding: '6px 12px 4px', minWidth: 0,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 12, minWidth: 0,
               border: 'none', textAlign: 'left', cursor: 'pointer', fontFamily: 'Inter, sans-serif',
             }}
           >
             <div style={{ fontSize: 10, fontWeight: 700, color: s.color, textTransform: 'uppercase', letterSpacing: 0.3 }}>{s.label}</div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', marginTop: 2, lineHeight: 1 }}>{s.value}</div>
-            <div style={{ fontSize: 10, color: '#8A93A3', marginTop: 2 }}>{s.sub}</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#0B1F3A', marginTop: 4, lineHeight: 1 }}>{s.value}</div>
+            <div style={{ fontSize: 10, color: '#8A93A3', marginTop: 4 }}>{s.sub}</div>
           </button>
         ))}
       </div>
-
 
       {/* ============ NEXT LESSON LABEL ============ */}
       <div style={{ margin: '0 16px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: 'Inter, sans-serif' }}>
@@ -5963,7 +6009,6 @@ function HomePage() {
                     const isPrepaidPupil = Number((l.pupils as any)?.prepaid_hours ?? 0) > 0;
                     const isPaid = payStatus === 'paid' || payStatus === 'prepaid' || isPrepaidPupil;
                     const dueUnpaid = amt > 0 && !isPaid;
-                    const isCancelled = l.status === 'cancelled';
                     const name = pupilName(l);
                     const timeLabel = `${String(start.getHours()).padStart(2, '0')}:${String(start.getMinutes()).padStart(2, '0')}`;
 
@@ -6015,9 +6060,9 @@ function HomePage() {
                           }}
                         >
                            <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                              <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none', opacity: isCancelled ? 0.55 : 1 }}>
-                                {timeLabel}
-                              </div>
+                             <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                               {timeLabel}
+                             </div>
                              <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
                                {durLabel}
                              </div>
@@ -6038,19 +6083,12 @@ function HomePage() {
                                  {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
                                </div>
                              )}
-                              <div style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none', opacity: isCancelled ? 0.55 : 1 }}>
-                                {name}
-                              </div>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                                {isCancelled ? (
-                                  <span style={{ fontSize: 10, fontWeight: 700, color: '#CC2229', background: '#FEF2F2', padding: '2px 8px', borderRadius: 999 }}>
-                                    Cancelled
-                                  </span>
-                                ) : null}
-                                <span style={{ fontSize: 11, color: '#8A93A3', fontVariantNumeric: 'tabular-nums' }}>
-                                  {dur} mins
-                                </span>
-                              </div>
+                             <div style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
+                               {name}
+                             </div>
+                             <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
+                               {dur} mins
+                             </div>
                            </div>
                             {priceNode && (
                               <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
