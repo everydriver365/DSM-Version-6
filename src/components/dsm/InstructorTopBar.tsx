@@ -2,6 +2,7 @@ import React from "react";
 import { ChevronLeft, Bell, Mic } from "lucide-react";
 import { PhoneIcon, CarIcon, MenuIcon, PoundIcon } from "@/components/icons/DrivingIcons";
 import { useNavigate } from "@tanstack/react-router";
+import dsmLogoWhite from "@/assets/dsm-logo-white.png.asset.json";
 
 export type InstructorTopBarProps = {
   firstName: string;
