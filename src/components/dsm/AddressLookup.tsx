@@ -130,8 +130,12 @@ export function AddressLookup({
   );
   const [inputValue, setInputValue] = useState<string>(initialAddress);
   const [selectedAddress, setSelectedAddress] = useState<string>(initialAddress);
+  const [baseAddress, setBaseAddress] = useState<string>(initialAddress);
+  const [doorNumber, setDoorNumber] = useState<string>("");
   const [postcode, setPostcode] = useState<string>(initialPostcode);
   const [city, setCity] = useState<string>(initialCity);
+  const [selectedLat, setSelectedLat] = useState<number | null>(null);
+  const [selectedLng, setSelectedLng] = useState<number | null>(null);
   const [confirmed, setConfirmed] = useState<boolean>(!!initialAddress);
   const [loading, setLoading] = useState<boolean>(false);
   const [suggestions, setSuggestions] = useState<Prediction[]>([]);
