@@ -65,7 +65,38 @@ function normalizeDay(d: string): string {
   return s;
 }
 
-function computeMatch(job: JobOffer, prefs: InstructorPrefs | null): MatchLevel {
+function haversineMiles(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 3958.7613; // Earth radius in miles
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.min(1, Math.sqrt(a)));
+}
+
+// Returns min distance in miles from any coverage centre, or null if no coverage.
+function distanceToCoverage(job: JobOffer, coverage: CoverageArea[]): number | null {
+  if (job.centre_lat == null || job.centre_lng == null) return null;
+  if (coverage.length === 0) return null;
+  let best = Infinity;
+  for (const c of coverage) {
+    const d = haversineMiles(c.centre_lat, c.centre_lng, job.centre_lat, job.centre_lng);
+    if (d < best) best = d;
+  }
+  return best;
+}
+
+function withinAnyCoverage(job: JobOffer, coverage: CoverageArea[]): boolean {
+  if (job.centre_lat == null || job.centre_lng == null) return false;
+  return coverage.some((c) => {
+    const d = haversineMiles(c.centre_lat, c.centre_lng, job.centre_lat!, job.centre_lng!);
+    return d <= c.radius_miles;
+  });
+}
+
+function computeHoursDaysMatch(job: JobOffer, prefs: InstructorPrefs | null): MatchLevel {
   if (!prefs) return "none";
   const workDays = new Set((prefs.working_days ?? []).map(normalizeDay));
   const jobDays = (job.preferred_days ?? []).map(normalizeDay);
@@ -96,6 +127,7 @@ function JobsPage() {
   const [uid, setUid] = useState<string | null>(null);
   const [jobs, setJobs] = useState<JobOffer[] | null>(null);
   const [prefs, setPrefs] = useState<InstructorPrefs | null>(null);
+  const [coverage, setCoverage] = useState<CoverageArea[]>([]);
   const [threadJob, setThreadJob] = useState<JobOffer | null>(null);
 
   const load = async () => {
