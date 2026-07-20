@@ -224,6 +224,15 @@ function AdminJobOffers() {
     });
   };
 
+  const toggleTiming = (timing: string) => {
+    setForm((f) => {
+      const cur = new Set(f.preferred_timing ?? []);
+      if (cur.has(timing)) cur.delete(timing);
+      else cur.add(timing);
+      return { ...f, preferred_timing: Array.from(cur) };
+    });
+  };
+
   const save = async () => {
     if (!uid) return;
     if (!form.pupil_name?.trim()) {
@@ -237,7 +246,7 @@ function AdminJobOffers() {
       pupil_email: form.pupil_email?.trim() || null,
       transmission: form.transmission || null,
       course_hours: form.course_hours ?? null,
-      preferred_timing: form.preferred_timing || null,
+      preferred_timing: form.preferred_timing?.length ? form.preferred_timing : null,
       preferred_days: form.preferred_days?.length ? form.preferred_days : null,
       preferred_start_date: form.preferred_start_date || null,
       postcode_area: form.postcode_area?.trim() || null,
