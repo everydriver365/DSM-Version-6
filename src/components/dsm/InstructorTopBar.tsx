@@ -213,7 +213,7 @@ export default function InstructorTopBar({
             <div
               style={{
                 color: "#ffffff",
-                fontSize: 24,
+                fontSize: 22,
                 fontWeight: 700,
                 lineHeight: 1.1,
                 fontFamily: "Poppins, sans-serif",
