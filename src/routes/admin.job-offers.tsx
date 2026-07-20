@@ -620,11 +620,12 @@ function AdminJobOffers() {
                   />
                 </FieldLabel>
                 <FieldLabel label="Postcode area">
-                  <input
-                    value={form.postcode_area ?? ""}
-                    onChange={(e) => setForm({ ...form, postcode_area: e.target.value })}
-                    placeholder="e.g. SW1"
-                    style={inputStyle()}
+                  <AddressLookup
+                    initialPostcode={form.postcode_area}
+                    onAddressFound={({ postcode }) => {
+                      const outcode = postcode.trim().split(" ")[0].toUpperCase();
+                      setForm((f) => ({ ...f, postcode_area: outcode }));
+                    }}
                   />
                 </FieldLabel>
               </div>
