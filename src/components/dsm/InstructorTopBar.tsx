@@ -94,25 +94,34 @@ export default function InstructorTopBar({
           </span>
         </div>
       ) : (
-        <button
-          type="button"
-          aria-label="Open profile"
-          onClick={onProfile}
-          style={{
-            background: "none",
-            border: "none",
-            padding: 0,
-            cursor: onProfile ? "pointer" : "default",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <img
-            src={dsmLogoWhite.url}
-            alt="DSM"
-            style={{ height: 32, width: "auto", objectFit: "contain", display: "block" }}
-          />
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button
+            type="button"
+            aria-label="Open profile"
+            onClick={onProfile}
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: onProfile ? "pointer" : "default",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <img
+              src={dsmLogoWhite.url}
+              alt="DSM"
+              style={{ height: 32, width: "auto", objectFit: "contain", display: "block" }}
+            />
+          </button>
+          <IconBtn
+            ariaLabel="Voice commands"
+            onClick={onMicPress}
+            style={{ background: "#1877D6", width: 36, height: 36 }}
+          >
+            <Mic size={19} strokeWidth={1.8} color="#ffffff" />
+          </IconBtn>
+        </div>
       )}
 
       {/* MIC CENTER */}
