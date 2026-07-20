@@ -1251,6 +1251,25 @@ function SchedulePage() {
                             const preview = previewMatchForGap({ date: row.key, dayName, startMin: e.startMins, durationMin: e.mins, allPupils, allAvailability });
                             return (
                               <div key={e.id} style={{ position: "relative", marginBottom: 16 }}>
+                                {preview.count > 0 && (
+                                  <div
+                                    style={{
+                                      position: "absolute",
+                                      top: -8,
+                                      left: 14,
+                                      background: "#B5661E",
+                                      color: "#FFFFFF",
+                                      fontSize: 9,
+                                      fontWeight: 700,
+                                      padding: "3px 9px",
+                                      borderRadius: 999,
+                                      letterSpacing: 0.3,
+                                      zIndex: 2,
+                                    }}
+                                  >
+                                    OPPORTUNITY
+                                  </div>
+                                )}
                                 <div
                                   onClick={() => navigate({ to: '/gaps' as never })}
                                   role="button"
@@ -1269,25 +1288,6 @@ function SchedulePage() {
                                     ...POPPINS,
                                   }}
                                 >
-                                  {preview.count > 0 && (
-                                    <div
-                                      style={{
-                                        position: "absolute",
-                                        top: -8,
-                                        left: 14,
-                                        background: "#B5661E",
-                                        color: "#FFFFFF",
-                                        fontSize: 9,
-                                        fontWeight: 700,
-                                        padding: "3px 9px",
-                                        borderRadius: 999,
-                                        letterSpacing: 0.3,
-                                        zIndex: 2,
-                                      }}
-                                    >
-                                      OPPORTUNITY
-                                    </div>
-                                  )}
                                   <div
                                     aria-hidden
                                     style={{
