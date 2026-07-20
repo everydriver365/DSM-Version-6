@@ -1878,6 +1878,7 @@ function HomePage() {
     test_centre: string | null;
   }>>([]);
   const [pendingSwapCount, setPendingSwapCount] = useState(0);
+  const [openJobsCount, setOpenJobsCount] = useState(0);
   const [swapRequests, setSwapRequests] = useState<Array<{ id: string; name: string; test_centre: string | null; current_test_date: string | null; current_test_time: string | null; status: string; created_at: string }>>([]);
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
   const [recentCancellations, setRecentCancellations] = useState<Array<{ id: string; pupil_first_name: string | null }>>([]);
