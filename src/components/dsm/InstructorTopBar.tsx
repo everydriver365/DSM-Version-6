@@ -90,6 +90,7 @@ export default function InstructorTopBar({
   unreadNotifications = 0,
   onBack,
   pageTitle,
+  profileAvatar,
 }: InstructorTopBarProps) {
   const navigate = useNavigate();
   const isSubpage = typeof onBack === "function";
