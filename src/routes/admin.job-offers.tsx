@@ -589,15 +589,27 @@ function AdminJobOffers() {
               </div>
 
               <FieldLabel label="Preferred timing">
-                <select
-                  value={form.preferred_timing ?? ""}
-                  onChange={(e) => setForm({ ...form, preferred_timing: e.target.value })}
-                  style={inputStyle()}
-                >
-                  {TIMINGS.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {TIMINGS.map((t) => {
+                    const active = (form.preferred_timing ?? []).includes(t.value);
+                    return (
+                      <button
+                        key={t.value}
+                        type="button"
+                        onClick={() => toggleTiming(t.value)}
+                        style={{
+                          padding: "6px 12px", borderRadius: 999,
+                          border: `1px solid ${active ? BLUE : "#D1D5DB"}`,
+                          background: active ? BLUE : "#fff",
+                          color: active ? "#fff" : NAVY,
+                          fontSize: 12, fontWeight: 600, cursor: "pointer",
+                        }}
+                      >
+                        {t.label}
+                      </button>
+                    );
+                  })}
+                </div>
               </FieldLabel>
 
               <FieldLabel label="Preferred days">
