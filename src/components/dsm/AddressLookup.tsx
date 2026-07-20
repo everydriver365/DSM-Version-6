@@ -251,9 +251,16 @@ export function AddressLookup({
         (place, status) => {
           setLoading(false);
           if (!place || status !== "OK") {
-            setError("Could not fetch address details. Please try again.");
+            console.error(
+              "[address-lookup] getDetails failed:",
+              status,
+              "placeId:",
+              prediction.place_id,
+            );
+            setError(`Could not fetch address details (${status}).`);
             return;
           }
+
 
           let streetNumber = "";
           let streetName = "";
