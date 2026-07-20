@@ -4490,6 +4490,7 @@ function HomePage() {
         unreadMessages={unreadMsgs.length}
         unreadNotifications={notifCount}
         onMicPress={() => toast.info("Voice commands coming soon!")}
+        profileAvatar={profileAvatar}
       />
 
       <PushPermissionCard />
