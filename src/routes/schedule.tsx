@@ -1260,7 +1260,7 @@ function SchedulePage() {
                                     background: "#1A52A0",
                                     borderRadius: 12,
                                     boxShadow: "0 4px 16px rgba(26, 82, 160, 0.28), 0 1px 3px rgba(0,0,0,0.1)",
-                                    padding: "12px 14px",
+                                    padding: "20px 14px 12px",
                                     display: "flex",
                                     alignItems: "center",
                                     gap: 10,
@@ -1269,6 +1269,25 @@ function SchedulePage() {
                                     ...POPPINS,
                                   }}
                                 >
+                                  {preview.count > 0 && (
+                                    <div
+                                      style={{
+                                        position: "absolute",
+                                        top: -8,
+                                        left: 14,
+                                        background: "#B5661E",
+                                        color: "#FFFFFF",
+                                        fontSize: 9,
+                                        fontWeight: 700,
+                                        padding: "3px 9px",
+                                        borderRadius: 999,
+                                        letterSpacing: 0.3,
+                                        zIndex: 2,
+                                      }}
+                                    >
+                                      OPPORTUNITY
+                                    </div>
+                                  )}
                                   <div
                                     aria-hidden
                                     style={{
