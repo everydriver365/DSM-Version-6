@@ -829,18 +829,54 @@ function SchedulePage() {
     navigate({ to: "/lessons/$id" as never, params: { id } as never });
   };
 
-  // Colour dots per date, one per unique pupil, capped at 3.
+  // Colour dots per date by entry TYPE (matches legend): blue=DSM lesson,
+  // grey=Google Calendar block, orange=free slot 60+ min. Up to 3 dots.
   const dotsByDay = useMemo(() => {
     const map = new Map<string, string[]>();
-    for (const l of lessons ?? []) {
-      const key = l.lesson_date.substring(0, 10);
-      const arr = map.get(key) ?? [];
-      const colour = pupilColour(l.pupil_id ?? null, l.pupil?.calendar_colour ?? null, pupilDisplayName(l.pupil));
-      if (!arr.includes(colour) && arr.length < 3) arr.push(colour);
-      map.set(key, arr);
+    const keys = new Set<string>();
+    for (const l of lessons ?? []) keys.add(l.lesson_date.substring(0, 10));
+    for (const b of calendarBlocks) {
+      if (b.start_datetime) keys.add(b.start_datetime.substring(0, 10));
+    }
+    for (const key of keys) {
+      const dayLessons = (lessons ?? []).filter(
+        (l) => l.lesson_date.substring(0, 10) === key &&
+          String(l.status || "").toLowerCase() !== "cancelled",
+      );
+      const dayBlocks = calendarBlocks.filter(
+        (b) => (b.start_datetime || "").substring(0, 10) === key,
+      );
+      const dayName = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
+        new Date(key + "T12:00:00").getDay()
+      ];
+      const isDayActive = workingDaysList.includes(dayName);
+      const gaps = isDayActive
+        ? detectGaps(
+            dayLessons.map((l) => ({
+              status: l.status,
+              lesson_time: l.lesson_time,
+              duration_minutes: l.duration_minutes,
+              pupils: null,
+            })),
+            workStart,
+            workEnd,
+            bufferAfter,
+            calendarBlocks,
+            recurringBlocks,
+            timeOff,
+            key,
+            hourlyRate,
+            minGapMinutes,
+          )
+        : [];
+      const dots: string[] = [];
+      if (dayLessons.length > 0) dots.push("#1877D6");
+      if (dayBlocks.length > 0) dots.push("#8A93A3");
+      if (gaps.length > 0) dots.push("#B5661E");
+      if (dots.length > 0) map.set(key, dots);
     }
     return map;
-  }, [lessons]);
+  }, [lessons, calendarBlocks, recurringBlocks, timeOff, workingDaysList, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
 
   const scrollToDate = useCallback(
     (key: string) => {
