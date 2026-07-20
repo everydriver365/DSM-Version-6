@@ -30,9 +30,17 @@ interface JobOffer {
   preferred_days: string[] | null;
   offered_rate: number | null;
   postcode_area: string | null;
+  centre_lat: number | null;
+  centre_lng: number | null;
   status: string;
   created_at: string;
   notes?: string | null;
+}
+
+interface CoverageArea {
+  centre_lat: number;
+  centre_lng: number;
+  radius_miles: number;
 }
 
 interface JobMessage {
@@ -57,7 +65,38 @@ function normalizeDay(d: string): string {
   return s;
 }
 
-function computeMatch(job: JobOffer, prefs: InstructorPrefs | null): MatchLevel {
+function haversineMiles(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 3958.7613; // Earth radius in miles
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.min(1, Math.sqrt(a)));
+}
+
+// Returns min distance in miles from any coverage centre, or null if no coverage.
+function distanceToCoverage(job: JobOffer, coverage: CoverageArea[]): number | null {
+  if (job.centre_lat == null || job.centre_lng == null) return null;
+  if (coverage.length === 0) return null;
+  let best = Infinity;
+  for (const c of coverage) {
+    const d = haversineMiles(c.centre_lat, c.centre_lng, job.centre_lat, job.centre_lng);
+    if (d < best) best = d;
+  }
+  return best;
+}
+
+function withinAnyCoverage(job: JobOffer, coverage: CoverageArea[]): boolean {
+  if (job.centre_lat == null || job.centre_lng == null) return false;
+  return coverage.some((c) => {
+    const d = haversineMiles(c.centre_lat, c.centre_lng, job.centre_lat!, job.centre_lng!);
+    return d <= c.radius_miles;
+  });
+}
+
+function computeHoursDaysMatch(job: JobOffer, prefs: InstructorPrefs | null): MatchLevel {
   if (!prefs) return "none";
   const workDays = new Set((prefs.working_days ?? []).map(normalizeDay));
   const jobDays = (job.preferred_days ?? []).map(normalizeDay);
@@ -88,6 +127,7 @@ function JobsPage() {
   const [uid, setUid] = useState<string | null>(null);
   const [jobs, setJobs] = useState<JobOffer[] | null>(null);
   const [prefs, setPrefs] = useState<InstructorPrefs | null>(null);
+  const [coverage, setCoverage] = useState<CoverageArea[]>([]);
   const [threadJob, setThreadJob] = useState<JobOffer | null>(null);
 
   const load = async () => {
@@ -111,6 +151,19 @@ function JobsPage() {
       });
     }
 
+    const { data: covData } = await supabase
+      .from("instructor_coverage_areas")
+      .select("centre_lat, centre_lng, radius_miles")
+      .eq("instructor_id", id);
+    const cov: CoverageArea[] = ((covData ?? []) as any[])
+      .filter((c) => c.centre_lat != null && c.centre_lng != null && c.radius_miles != null)
+      .map((c) => ({
+        centre_lat: Number(c.centre_lat),
+        centre_lng: Number(c.centre_lng),
+        radius_miles: Number(c.radius_miles),
+      }));
+    setCoverage(cov);
+
     const { data, error } = await supabase
       .from("job_offers")
       .select("*")
@@ -120,7 +173,16 @@ function JobsPage() {
       setJobs([]);
       return;
     }
-    setJobs((data ?? []) as JobOffer[]);
+    const all = (data ?? []) as JobOffer[];
+    // Filter out jobs with coords beyond every coverage radius; keep null-coord jobs unfiltered.
+    const filtered = all.filter((job) => {
+      if (job.centre_lat == null || job.centre_lng == null) return true;
+      if (cov.length === 0) return true;
+      return cov.some(
+        (c) => haversineMiles(c.centre_lat, c.centre_lng, job.centre_lat!, job.centre_lng!) <= c.radius_miles,
+      );
+    });
+    setJobs(filtered);
   };
 
   useEffect(() => { load(); }, []);
@@ -187,11 +249,25 @@ function JobsPage() {
       ) : (
         <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
           {jobs.map((job) => {
-            const match = computeMatch(job, prefs);
+            const hoursDays = computeHoursDaysMatch(job, prefs);
+            const distanceMi = distanceToCoverage(job, coverage);
+            const inRadius = withinAnyCoverage(job, coverage);
+            const hasCoords = job.centre_lat != null && job.centre_lng != null;
+            const distanceKnown = hasCoords && coverage.length > 0;
+            // Combine hours/days match with radius.
+            let level: MatchLevel;
+            if (!distanceKnown) {
+              level = hoursDays; // fall back to hours/days only when we can't compute distance
+            } else {
+              const hoursDaysGood = hoursDays === "good";
+              if (hoursDaysGood && inRadius) level = "good";
+              else if (hoursDaysGood || inRadius) level = "possible";
+              else level = "none";
+            }
             const badge =
-              match === "good"
+              level === "good"
                 ? { label: "Good match", color: GREEN, bg: "#E5F5EC" }
-                : match === "possible"
+                : level === "possible"
                 ? { label: "Possible match", color: AMBER, bg: "#FDF2E4" }
                 : null;
             return (
@@ -214,6 +290,7 @@ function JobsPage() {
                     <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>
                       {[
                         job.postcode_area,
+                        distanceMi != null ? `${distanceMi.toFixed(1)} mi away` : null,
                         job.transmission,
                         job.course_hours ? `${job.course_hours} hrs` : null,
                         job.preferred_timing?.join(", "),
