@@ -4591,8 +4591,8 @@ function HomePage() {
           }}
         >
 
-      {/* DECORATIVE NAVY CURVE BEHIND STAT TILES */}
-      <div style={{ background: '#0B1F3A', borderRadius: '0 0 32px 32px', height: 10, width: '100%', flexShrink: 0 }} />
+      {/* DECORATIVE NAVY CURVE BEHIND STAT TILES — removed, kept as 0-height spacer */}
+      <div style={{ height: 0, width: '100%', flexShrink: 0 }} />
 
       {/* ============ STAT TILES ============ */}
       {/* NOTE: naCalls (callbacks) and naJobs (open jobs) are not yet wired to a real table — showing 0 as placeholder. naEnquiries is derived from pendingSwapCount today. */}
