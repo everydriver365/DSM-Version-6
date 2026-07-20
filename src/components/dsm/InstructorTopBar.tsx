@@ -2,6 +2,7 @@ import React from "react";
 import { ChevronLeft, Bell, Mic } from "lucide-react";
 import { PhoneIcon, CarIcon, MenuIcon, PoundIcon } from "@/components/icons/DrivingIcons";
 import { useNavigate } from "@tanstack/react-router";
+import dsmLogoWhite from "@/assets/dsm-logo-white.png.asset.json";
 
 export type InstructorTopBarProps = {
   firstName: string;
@@ -104,34 +105,14 @@ export default function InstructorTopBar({
             cursor: onProfile ? "pointer" : "default",
             display: "flex",
             alignItems: "center",
-            gap: 8,
           }}
         >
-          {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt={`${firstName} profile`}
-              style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }}
-            />
-          ) : (
-            <div
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.2)",
-                color: "#ffffff",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 13,
-                fontWeight: 700,
-              }}
-            >
-            {(firstName?.charAt(0) ?? "I").toUpperCase()}
-          </div>
-        )}
-      </button>
+          <img
+            src={dsmLogoWhite.url}
+            alt="DSM"
+            style={{ height: 32, width: "auto", objectFit: "contain", display: "block" }}
+          />
+        </button>
       )}
 
       {/* MIC CENTER */}
