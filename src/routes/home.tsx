@@ -4450,7 +4450,6 @@ function HomePage() {
           unreadNotifications={notifCount}
           firstName={firstName}
           heroTitle="Dashboard"
-          heroSubtitle={`Welcome back, ${firstName && firstName !== 'there' ? firstName : 'friend'} 👋`}
         />
       </div>
 
