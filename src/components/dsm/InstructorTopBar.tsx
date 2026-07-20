@@ -163,19 +163,6 @@ export default function InstructorTopBar({
               height={40}
               style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
             />
-            <ChevronRight size={16} strokeWidth={2.5} color="rgba(255,255,255,0.55)" />
-            <span
-              aria-hidden
-              style={{
-                width: 9,
-                height: 9,
-                borderRadius: "50%",
-                background: "#1877D6",
-                marginLeft: 4,
-                boxShadow: "0 0 0 2px rgba(24,119,214,0.25)",
-                flexShrink: 0,
-              }}
-            />
           </button>
         )}
 
