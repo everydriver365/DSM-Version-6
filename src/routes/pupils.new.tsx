@@ -1,14 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
+import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 
 type NewPupilSearch = { name?: string; phone?: string };
 
-const GOOGLE_MAPS_KEY = "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
 const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
 
 export const Route = createFileRoute("/pupils/new")({
@@ -27,31 +27,6 @@ function splitName(full: string): [string, string] {
   if (parts.length === 0) return ["", ""];
   if (parts.length === 1) return [parts[0], ""];
   return [parts[0], parts.slice(1).join(" ")];
-}
-
-function loadGoogleMaps(): Promise<void> {
-  if (typeof window === "undefined") return Promise.resolve();
-  const w = window as unknown as { google?: { maps?: { places?: unknown } } };
-  if (w.google?.maps?.places) return Promise.resolve();
-  const existing = document.getElementById(
-    "google-maps-places-script",
-  ) as HTMLScriptElement | null;
-  if (existing) {
-    return new Promise((resolve) => {
-      existing.addEventListener("load", () => resolve());
-      if (w.google?.maps?.places) resolve();
-    });
-  }
-  return new Promise((resolve, reject) => {
-    const s = document.createElement("script");
-    s.id = "google-maps-places-script";
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&libraries=places&loading=async`;
-    s.async = true;
-    s.defer = true;
-    s.onload = () => resolve();
-    s.onerror = () => reject(new Error("Failed to load Google Maps"));
-    document.head.appendChild(s);
-  });
 }
 
 function NewPupilPage() {
@@ -79,60 +54,6 @@ function NewPupilPage() {
     form?: string;
   }>({});
   const [saving, setSaving] = useState(false);
-  const addressInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    loadGoogleMaps()
-      .then(() => {
-        if (cancelled) return;
-        const input = addressInputRef.current;
-        const g = (window as unknown as {
-          google?: {
-            maps?: {
-              places?: {
-                Autocomplete: new (
-                  el: HTMLInputElement,
-                  opts: Record<string, unknown>,
-                ) => {
-                  addListener: (e: string, cb: () => void) => void;
-                  getPlace: () => {
-                    formatted_address?: string;
-                    address_components?: Array<{
-                      long_name: string;
-                      short_name: string;
-                      types: string[];
-                    }>;
-                  };
-                };
-              };
-            };
-          };
-        }).google;
-        if (!input || !g?.maps?.places) return;
-        const ac = new g.maps.places.Autocomplete(input, {
-          componentRestrictions: { country: "gb" },
-          types: ["address"],
-          fields: ["formatted_address", "address_components"],
-        });
-        ac.addListener("place_changed", () => {
-          const place = ac.getPlace();
-          const formatted = place.formatted_address ?? "";
-          const pc =
-            place.address_components?.find((c) =>
-              c.types.includes("postal_code"),
-            )?.long_name ?? "";
-          if (formatted) setAddress(() => formatted);
-          if (pc) setPostcode(() => pc);
-        });
-      })
-      .catch(() => {
-        // silently ignore — manual entry still works
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   async function handleSave() {
     const next: typeof errors = {};
@@ -294,31 +215,19 @@ function NewPupilPage() {
             </p>
           </div>
 
-          <Input
-            ref={addressInputRef}
-            label="Home address"
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            maxLength={255}
-            autoComplete="off"
-            placeholder="Start typing an address…"
+          <AddressLookup
+            initialPostcode={postcode}
+            initialAddress={address}
+            onAddressFound={({ postcode: pc, address: addr }) => {
+              setPostcode(pc);
+              setAddress(addr);
+            }}
           />
-          <div>
-            <Input
-              label="Postcode"
-              type="text"
-              value={postcode}
-              onChange={(e) => setPostcode(e.target.value)}
-              maxLength={10}
-              autoComplete="postal-code"
-            />
-            {errors.postcode && (
-              <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
-                {errors.postcode}
-              </p>
-            )}
-          </div>
+          {errors.postcode && (
+            <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
+              {errors.postcode}
+            </p>
+          )}
           <div className="flex flex-col gap-1">
             <label
               className="text-[13px] font-medium text-[#0B1F3A]"
