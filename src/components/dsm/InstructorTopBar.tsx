@@ -1,17 +1,19 @@
 import React from "react";
-import { ChevronLeft, Mic, MessageCircle, Bell, LifeBuoy } from "lucide-react";
+import { ChevronLeft, ChevronRight, Bell, Headphones } from "lucide-react";
 import { CarIcon, MenuIcon, PoundIcon } from "@/components/icons/DrivingIcons";
 import { useNavigate } from "@tanstack/react-router";
 import iconMarkAsset from "../../assets/dsm-icon-white.png.asset.json";
 
 export type InstructorTopBarProps = {
-  onMicPress: () => void;
+  onMicPress?: () => void;
   unreadMessages?: number;
   unreadNotifications?: number;
   onBack?: () => void;
   pageTitle?: string;
-  // Legacy props (accepted but unused by new design)
   firstName?: string;
+  heroTitle?: string;
+  heroSubtitle?: string;
+  // Legacy props (accepted but unused)
   avatarUrl?: string | null;
   unreadCount?: number;
   onPhone?: () => void;
@@ -23,10 +25,10 @@ export type InstructorTopBarProps = {
 };
 
 const ICON_BTN: React.CSSProperties = {
-  width: 36,
-  height: 36,
+  width: 40,
+  height: 40,
   borderRadius: "50%",
-  background: "rgba(255,255,255,0.08)",
+  background: "rgba(255,255,255,0.06)",
   border: "none",
   display: "inline-flex",
   alignItems: "center",
@@ -85,14 +87,16 @@ function Badge({ count, color }: { count: number; color: string }) {
 }
 
 export default function InstructorTopBar({
-  onMicPress,
-  unreadMessages = 0,
   unreadNotifications = 0,
   onBack,
   pageTitle,
+  firstName,
+  heroTitle,
+  heroSubtitle,
 }: InstructorTopBarProps) {
   const navigate = useNavigate();
   const isSubpage = typeof onBack === "function";
+  const hasHero = !!heroTitle;
 
   return (
     <div
@@ -103,92 +107,161 @@ export default function InstructorTopBar({
         right: 0,
         zIndex: 40,
         background: "#0B1F3A",
-        padding: "calc(env(safe-area-inset-top, 0px) + 10px) 12px 12px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 8,
-        boxShadow: "inset 0 -1px 0 rgba(255,255,255,0.04)",
-        borderRadius: "0 0 36px 36px",
+        padding: "calc(env(safe-area-inset-top, 0px) + 10px) 14px 0",
+        borderRadius: hasHero ? "0 0 32px 32px" : "0 0 24px 24px",
       }}
     >
-      {/* LEFT — mic alone (or back button on subpages) */}
-      {isSubpage ? (
-        <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-          <IconBtn ariaLabel="Back" onClick={onBack!}>
-            <ChevronLeft size={18} strokeWidth={2} color="#ffffff" />
-          </IconBtn>
-          <span
+      {/* ICON ROW */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 8,
+          paddingBottom: 12,
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
+        {isSubpage ? (
+          <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+            <IconBtn ariaLabel="Back" onClick={onBack!}>
+              <ChevronLeft size={18} strokeWidth={2} color="#ffffff" />
+            </IconBtn>
+            <span
+              style={{
+                color: "#ffffff",
+                fontSize: 16,
+                fontWeight: 600,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              {pageTitle ?? ""}
+            </span>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/profile" as never })}
             style={{
-              color: "#ffffff",
-              fontSize: 16,
-              fontWeight: 600,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              fontFamily: "Poppins, sans-serif",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              background: "transparent",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+              minWidth: 0,
             }}
           >
-            {pageTitle ?? ""}
-          </span>
-        </div>
-      ) : (
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <IconBtn ariaLabel="Home" onClick={() => navigate({ to: "/home" })} style={{ background: "transparent" }}>
             <img
               src={iconMarkAsset.url}
               alt="DSM"
-              width={36}
-              height={36}
-              style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover" }}
+              width={40}
+              height={40}
+              style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
             />
+            <span
+              style={{
+                color: "#ffffff",
+                fontSize: 17,
+                fontWeight: 600,
+                fontFamily: "Poppins, sans-serif",
+                marginLeft: 4,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                maxWidth: 120,
+              }}
+            >
+              {firstName && firstName !== "there" ? firstName : ""}
+            </span>
+            <ChevronRight size={16} strokeWidth={2.5} color="rgba(255,255,255,0.55)" />
+            <span
+              aria-hidden
+              style={{
+                width: 9,
+                height: 9,
+                borderRadius: "50%",
+                background: "#1877D6",
+                marginLeft: 4,
+                boxShadow: "0 0 0 2px rgba(24,119,214,0.25)",
+                flexShrink: 0,
+              }}
+            />
+          </button>
+        )}
+
+        {/* RIGHT — icon group */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <IconBtn ariaLabel="Support" onClick={() => navigate({ to: "/help" as never })}>
+            <Headphones size={18} strokeWidth={2} color="#ffffff" />
           </IconBtn>
-          <IconBtn
-            ariaLabel="Voice commands"
-            onClick={onMicPress}
-            style={{ background: "#CC2229" }}
-          >
-            <Mic size={19} strokeWidth={2} color="#ffffff" />
+          <IconBtn ariaLabel="Vehicle" onClick={() => navigate({ to: "/vehicle" as never })}>
+            <CarIcon size={18} strokeWidth={2} color="#ffffff" />
+          </IconBtn>
+          <IconBtn ariaLabel="Take payment" onClick={() => navigate({ to: "/take-payment" as never })}>
+            <PoundIcon size={18} strokeWidth={2} color="#ffffff" />
+          </IconBtn>
+          <IconBtn ariaLabel="Notifications" onClick={() => navigate({ to: "/notifications" as never })}>
+            <Bell size={18} strokeWidth={2} color="#ffffff" />
+            <Badge count={unreadNotifications} color="#CC2229" />
+          </IconBtn>
+          <IconBtn ariaLabel="More" onClick={() => navigate({ to: "/settings" as never })}>
+            <MenuIcon size={18} strokeWidth={2} color="#ffffff" />
           </IconBtn>
         </div>
-      )}
-
-      {/* RIGHT — icon group */}
-      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <IconBtn ariaLabel="Messages" onClick={() => navigate({ to: "/messages" })}>
-          <MessageCircle size={18} strokeWidth={2} color="#ffffff" />
-          <Badge count={unreadMessages} color="#1877D6" />
-        </IconBtn>
-        <IconBtn ariaLabel="Notifications" onClick={() => navigate({ to: "/notifications" as never })}>
-          <Bell size={18} strokeWidth={2} color="#ffffff" />
-          <Badge count={unreadNotifications} color="#CC2229" />
-        </IconBtn>
-
-        {/* Divider */}
-        <span
-          aria-hidden
-          style={{
-            width: 1,
-            height: 20,
-            background: "rgba(255,255,255,0.15)",
-            margin: "0 2px",
-            flexShrink: 0,
-          }}
-        />
-
-        <IconBtn ariaLabel="Support" onClick={() => navigate({ to: "/help" as never })}>
-          <LifeBuoy size={18} strokeWidth={2} color="#ffffff" />
-        </IconBtn>
-        <IconBtn ariaLabel="Vehicle" onClick={() => navigate({ to: "/vehicle" as never })}>
-          <CarIcon size={18} strokeWidth={2} color="#ffffff" />
-        </IconBtn>
-        <IconBtn ariaLabel="Take payment" onClick={() => navigate({ to: "/take-payment" as never })}>
-          <PoundIcon size={18} strokeWidth={2} color="#ffffff" />
-        </IconBtn>
-        <IconBtn ariaLabel="More" onClick={() => navigate({ to: "/settings" as never })}>
-          <MenuIcon size={18} strokeWidth={2} color="#ffffff" />
-        </IconBtn>
       </div>
+
+      {/* HERO ROW (Dashboard title + subtitle + logo) */}
+      {hasHero && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+            padding: "18px 2px 24px",
+          }}
+        >
+          <div style={{ minWidth: 0 }}>
+            <div
+              style={{
+                color: "#ffffff",
+                fontSize: 28,
+                fontWeight: 700,
+                lineHeight: 1.1,
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              {heroTitle}
+            </div>
+            {heroSubtitle && (
+              <div
+                style={{
+                  color: "rgba(255,255,255,0.6)",
+                  fontSize: 15,
+                  fontWeight: 400,
+                  marginTop: 6,
+                  fontFamily: "Inter, sans-serif",
+                }}
+              >
+                {heroSubtitle}
+              </div>
+            )}
+          </div>
+          <img
+            src={iconMarkAsset.url}
+            alt=""
+            aria-hidden
+            width={56}
+            height={56}
+            style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+          />
+        </div>
+      )}
     </div>
   );
 }
