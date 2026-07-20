@@ -9,6 +9,7 @@ export type InstructorTopBarProps = {
   unreadNotifications?: number;
   onBack?: () => void;
   pageTitle?: string;
+  profileAvatar?: React.ReactNode;
   // Legacy props (accepted but unused by new design)
   firstName?: string;
   avatarUrl?: string | null;
