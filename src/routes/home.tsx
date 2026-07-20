@@ -4607,13 +4607,13 @@ function HomePage() {
             onClick={() => navigate({ to: s.route as never })}
             style={{
               flex: 1, background: '#FFFFFF', borderRadius: 10,
-              boxShadow: '0 6px 16px rgba(11,31,58,0.18)', padding: '15px 12px 9px', minWidth: 0,
+              boxShadow: '0 6px 16px rgba(11,31,58,0.18)', padding: '6px 12px 4px', minWidth: 0,
               border: 'none', textAlign: 'left', cursor: 'pointer', fontFamily: 'Inter, sans-serif',
             }}
           >
             <div style={{ fontSize: 10, fontWeight: 700, color: s.color, textTransform: 'uppercase', letterSpacing: 0.3 }}>{s.label}</div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#0B1F3A', marginTop: 4, lineHeight: 1 }}>{s.value}</div>
-            <div style={{ fontSize: 10, color: '#8A93A3', marginTop: 4 }}>{s.sub}</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', marginTop: 2, lineHeight: 1 }}>{s.value}</div>
+            <div style={{ fontSize: 10, color: '#8A93A3', marginTop: 2 }}>{s.sub}</div>
           </button>
         ))}
       </div>
