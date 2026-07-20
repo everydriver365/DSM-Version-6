@@ -143,6 +143,7 @@ export function AddressLookup({
   const [noResults, setNoResults] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [searchKey, setSearchKey] = useState<number>(0);
+  const [justSelected, setJustSelected] = useState<boolean>(false);
 
   console.log("[address-lookup] rendered, initial:", {
     initialPostcode,
