@@ -206,7 +206,7 @@ export default function InstructorTopBar({
             alignItems: "center",
             justifyContent: "space-between",
             gap: 12,
-            padding: "18px 2px 24px",
+            padding: "13px 2px 24px",
           }}
         >
           <div style={{ minWidth: 0 }}>
