@@ -128,10 +128,20 @@ export function AddressLookup({
   const [placesLoaded, setPlacesLoaded] = useState<boolean>(
     typeof window !== "undefined" && !!(window as GWindow).google?.maps?.places,
   );
+  // Split a saved address like "12 Fallow Fld, Winchester SO22 4LY, UK"
+  // into { door: "12", rest: "Fallow Fld, Winchester SO22 4LY, UK" } so the
+  // door number can be edited without stacking on re-open.
+  const splitLeadingDoor = (addr: string): { door: string; rest: string } => {
+    const m = addr.match(/^\s*(\d+[A-Za-z]?)\s+(.+)$/);
+    if (m) return { door: m[1], rest: m[2] };
+    return { door: "", rest: addr };
+  };
+  const initialSplit = splitLeadingDoor(initialAddress);
+
   const [inputValue, setInputValue] = useState<string>(initialAddress);
   const [selectedAddress, setSelectedAddress] = useState<string>(initialAddress);
-  const [baseAddress, setBaseAddress] = useState<string>(initialAddress);
-  const [doorNumber, setDoorNumber] = useState<string>("");
+  const [baseAddress, setBaseAddress] = useState<string>(initialSplit.rest);
+  const [doorNumber, setDoorNumber] = useState<string>(initialSplit.door);
   const [postcode, setPostcode] = useState<string>(initialPostcode);
   const [city, setCity] = useState<string>(initialCity);
   const [selectedLat, setSelectedLat] = useState<number | null>(null);
@@ -143,7 +153,6 @@ export function AddressLookup({
   const [noResults, setNoResults] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [searchKey, setSearchKey] = useState<number>(0);
-  const [justSelected, setJustSelected] = useState<boolean>(false);
 
   console.log("[address-lookup] rendered, initial:", {
     initialPostcode,
@@ -306,7 +315,6 @@ export function AddressLookup({
           setSelectedLng(lng);
           setInputValue(formatted);
           setConfirmed(true);
-          setJustSelected(true);
 
           onAddressFound({
             postcode: pc,
@@ -335,7 +343,7 @@ export function AddressLookup({
     setSuggestions([]);
     setShowSuggestions(false);
     setNoResults(false);
-    setJustSelected(false);
+    
     if (inputRef.current) inputRef.current.value = "";
   }
 
@@ -606,41 +614,39 @@ export function AddressLookup({
                 {city ? ` · ${city}` : ""}
               </div>
             )}
-            {justSelected && (
-              <div style={{ marginTop: 8 }}>
-                <label
-                  style={{ fontSize: 11, color: "#6B7280", ...POPPINS }}
-                >
-                  House / flat number or name (optional)
-                </label>
-                <input
-                  type="text"
-                  value={doorNumber}
-                  onChange={(e) => setDoorNumber(e.target.value)}
-                  onBlur={(e) => commitDoorNumber(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      commitDoorNumber((e.target as HTMLInputElement).value);
-                      (e.target as HTMLInputElement).blur();
-                    }
-                  }}
-                  placeholder="e.g. 42 or Flat 3"
-                  style={{
-                    width: "100%",
-                    height: 40,
-                    padding: "0 12px",
-                    marginTop: 4,
-                    border: "0.5px solid #EEF2F7",
-                    borderRadius: 8,
-                    fontSize: 16,
-                    background: "#fff",
-                    color: "#0B1F3A",
-                    ...POPPINS,
-                  }}
-                />
-              </div>
-            )}
+            <div style={{ marginTop: 8 }}>
+              <label
+                style={{ fontSize: 11, color: "#6B7280", ...POPPINS }}
+              >
+                House / flat number or name (optional)
+              </label>
+              <input
+                type="text"
+                value={doorNumber}
+                onChange={(e) => setDoorNumber(e.target.value)}
+                onBlur={(e) => commitDoorNumber(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    commitDoorNumber((e.target as HTMLInputElement).value);
+                    (e.target as HTMLInputElement).blur();
+                  }
+                }}
+                placeholder="e.g. 42 or Flat 3"
+                style={{
+                  width: "100%",
+                  height: 40,
+                  padding: "0 12px",
+                  marginTop: 4,
+                  border: "0.5px solid #EEF2F7",
+                  borderRadius: 8,
+                  fontSize: 16,
+                  background: "#fff",
+                  color: "#0B1F3A",
+                  ...POPPINS,
+                }}
+              />
+            </div>
             <button
               type="button"
               onClick={reset}
