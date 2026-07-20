@@ -134,7 +134,15 @@ export default function InstructorTopBar({
         </div>
       ) : (
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {profileAvatar}
+          <IconBtn ariaLabel="Home" onClick={() => navigate({ to: "/home" })} style={{ background: "transparent" }}>
+            <img
+              src={dsmLogoAsset.url}
+              alt="DSM"
+              width={36}
+              height={36}
+              style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover" }}
+            />
+          </IconBtn>
           <IconBtn
             ariaLabel="Voice commands"
             onClick={onMicPress}
