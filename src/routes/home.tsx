@@ -2150,15 +2150,15 @@ function HomePage() {
       setSwapRequests(swapRows);
 
       // Upcoming tests list for the bottom sheet and the alert strip
-      const todayStr = new Date().toISOString().split("T")[0];
+      const now = new Date();
+      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
       const { data: testRows } = await supabase
         .from("pupils")
         .select("id, name, first_name, test_date, test_time, test_centre")
         .eq("instructor_id", user.id)
         .not("test_date", "is", null)
         .gte("test_date", todayStr)
-        .order("test_date", { ascending: true })
-        .limit(10);
+        .order("test_date", { ascending: true });
       setUpcomingTests(
         (testRows ?? []).map((p: any) => ({
           id: p.id,
