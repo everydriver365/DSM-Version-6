@@ -641,7 +641,6 @@ export function AddressLookup({
                 />
               </div>
             )}
-            </div>
             <button
               type="button"
               onClick={reset}
