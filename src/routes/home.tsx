@@ -1878,6 +1878,7 @@ function HomePage() {
     test_centre: string | null;
   }>>([]);
   const [pendingSwapCount, setPendingSwapCount] = useState(0);
+  const [openJobsCount, setOpenJobsCount] = useState(0);
   const [swapRequests, setSwapRequests] = useState<Array<{ id: string; name: string; test_centre: string | null; current_test_date: string | null; current_test_time: string | null; status: string; created_at: string }>>([]);
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
   const [recentCancellations, setRecentCancellations] = useState<Array<{ id: string; pupil_first_name: string | null }>>([]);
@@ -2148,6 +2149,17 @@ function HomePage() {
       }
       setPendingSwapCount(swapCount);
       setSwapRequests(swapRows);
+
+      // Open job offers count (best-effort — table may not exist yet)
+      try {
+        const { count: jobsCount } = await supabase
+          .from("job_offers")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "open");
+        setOpenJobsCount(jobsCount ?? 0);
+      } catch {
+        setOpenJobsCount(0);
+      }
 
       // Upcoming tests list for the bottom sheet and the alert strip
       const now = new Date();
@@ -4038,7 +4050,7 @@ function HomePage() {
   })();
 
   // Needs Attention counts
-  const naJobs: number = 0; // TODO: wire enquiries/new course_bookings
+  const naJobs: number = openJobsCount;
   const naTests = (upcomingTests ?? []).filter((p) => {
     if (!p.test_date) return false;
     const days = Math.floor((new Date(p.test_date).getTime() - new Date().getTime()) / 86400000);
@@ -4676,7 +4688,7 @@ function HomePage() {
       <div style={{ padding: '0 16px', marginTop: -22, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif' }}>
         {[
           { label: 'Calls', value: String(naCalls), sub: 'Need callback', color: '#CC2229', route: '/messages' },
-          { label: "Jobs", value: String(naJobs), sub: 'Open', color: '#B5661E', route: '/waitlist' },
+          { label: "Jobs", value: String(naJobs), sub: 'Open', color: '#B5661E', route: '/jobs' },
           { label: "Enq's", value: String(naEnquiries), sub: 'New', color: '#1877D6', route: '/enquiries' },
         ].map((s) => (
           <button

@@ -63,6 +63,7 @@ import { Route as LocationsRouteImport } from './routes/locations'
 import { Route as LivesessionRouteImport } from './routes/livesession'
 import { Route as LiveRouteImport } from './routes/live'
 import { Route as LessonSeriesRouteImport } from './routes/lesson-series'
+import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as IntakeQuestionsRouteImport } from './routes/intake-questions'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as HelpRouteImport } from './routes/help'
@@ -411,6 +412,11 @@ const LiveRoute = LiveRouteImport.update({
 const LessonSeriesRoute = LessonSeriesRouteImport.update({
   id: '/lesson-series',
   path: '/lesson-series',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsRoute = JobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IntakeQuestionsRoute = IntakeQuestionsRouteImport.update({
@@ -840,6 +846,7 @@ export interface FileRoutesByFullPath {
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/intake-questions': typeof IntakeQuestionsRoute
+  '/jobs': typeof JobsRoute
   '/lesson-series': typeof LessonSeriesRoute
   '/live': typeof LiveRoute
   '/livesession': typeof LivesessionRoute
@@ -973,6 +980,7 @@ export interface FileRoutesByTo {
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/intake-questions': typeof IntakeQuestionsRoute
+  '/jobs': typeof JobsRoute
   '/lesson-series': typeof LessonSeriesRoute
   '/live': typeof LiveRoute
   '/livesession': typeof LivesessionRoute
@@ -1107,6 +1115,7 @@ export interface FileRoutesById {
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/intake-questions': typeof IntakeQuestionsRoute
+  '/jobs': typeof JobsRoute
   '/lesson-series': typeof LessonSeriesRoute
   '/live': typeof LiveRoute
   '/livesession': typeof LivesessionRoute
@@ -1243,6 +1252,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/home'
     | '/intake-questions'
+    | '/jobs'
     | '/lesson-series'
     | '/live'
     | '/livesession'
@@ -1376,6 +1386,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/home'
     | '/intake-questions'
+    | '/jobs'
     | '/lesson-series'
     | '/live'
     | '/livesession'
@@ -1509,6 +1520,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/home'
     | '/intake-questions'
+    | '/jobs'
     | '/lesson-series'
     | '/live'
     | '/livesession'
@@ -1645,6 +1657,7 @@ export interface RootRouteChildren {
   HelpRoute: typeof HelpRoute
   HomeRoute: typeof HomeRoute
   IntakeQuestionsRoute: typeof IntakeQuestionsRoute
+  JobsRoute: typeof JobsRoute
   LessonSeriesRoute: typeof LessonSeriesRoute
   LiveRoute: typeof LiveRoute
   LivesessionRoute: typeof LivesessionRoute
@@ -2109,6 +2122,13 @@ declare module '@tanstack/react-router' {
       path: '/lesson-series'
       fullPath: '/lesson-series'
       preLoaderRoute: typeof LessonSeriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs': {
+      id: '/jobs'
+      path: '/jobs'
+      fullPath: '/jobs'
+      preLoaderRoute: typeof JobsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/intake-questions': {
@@ -2780,6 +2800,7 @@ const rootRouteChildren: RootRouteChildren = {
   HelpRoute: HelpRoute,
   HomeRoute: HomeRoute,
   IntakeQuestionsRoute: IntakeQuestionsRoute,
+  JobsRoute: JobsRoute,
   LessonSeriesRoute: LessonSeriesRoute,
   LiveRoute: LiveRoute,
   LivesessionRoute: LivesessionRoute,
