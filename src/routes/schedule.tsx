@@ -2528,7 +2528,7 @@ function MonthStrip({
       style={{
         background: "#FFFFFF",
         borderBottom: "0.5px solid #E2E6ED",
-        padding: "12px 16px",
+        padding: "8px 16px",
         position: "sticky",
         top: 0,
         zIndex: 10,
