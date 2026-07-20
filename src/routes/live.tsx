@@ -755,6 +755,24 @@ function LivePage() {
           </button>
           <button
             type="button"
+            onClick={() => setPupilPickerOpen(true)}
+            style={{
+              width: "100%",
+              height: 46,
+              borderRadius: 10,
+              background: "#fff",
+              border: "1.5px solid #1877D6",
+              color: "#1877D6",
+              fontSize: 15,
+              fontWeight: 700,
+              cursor: "pointer",
+              marginBottom: 8,
+            }}
+          >
+            Select pupil
+          </button>
+          <button
+            type="button"
             onClick={() => navigate({ to: "/home" })}
             style={{
               width: "100%",
