@@ -1185,22 +1185,46 @@ function PupilDetailPage() {
                     </span>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
-                  className="text-right text-white shrink-0 cursor-pointer pt-1"
-                  style={{ background: "none", border: "none", padding: 0 }}
-                >
-                  <p
-                    className="text-[10px] font-semibold uppercase tracking-widest"
-                    style={{ color: "rgba(255,255,255,0.6)", ...POPPINS }}
+                <div className="relative shrink-0 pt-1">
+                  <button
+                    type="button"
+                    aria-label="Edit lessons bought"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setAdjValue(String(pupil?.lesson_count_adjustment ?? 0));
+                      setAdjNote("");
+                      setAdjSheetOpen(true);
+                    }}
+                    className="absolute -top-1 -right-1 flex items-center justify-center rounded-full"
+                    style={{
+                      width: 22,
+                      height: 22,
+                      background: "rgba(255,255,255,0.18)",
+                      border: "1px solid rgba(255,255,255,0.35)",
+                      color: "#fff",
+                      zIndex: 2,
+                    }}
                   >
-                    Lessons bought
-                  </p>
-                  <p className="text-[32px] font-bold leading-none mt-1" style={POPPINS}>
-                    {confirmedLessonCount}
-                  </p>
-                </button>
+                    <Pencil size={11} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
+                    className="text-right text-white cursor-pointer"
+                    style={{ background: "none", border: "none", padding: 0 }}
+                  >
+                    <p
+                      className="text-[10px] font-semibold uppercase tracking-widest"
+                      style={{ color: "rgba(255,255,255,0.6)", ...POPPINS }}
+                    >
+                      Lessons bought
+                    </p>
+                    <p className="text-[32px] font-bold leading-none mt-1" style={POPPINS}>
+                      {confirmedLessonCount + (pupil?.lesson_count_adjustment ?? 0)}
+                    </p>
+                  </button>
+                </div>
+
               </div>
             </div>
 
