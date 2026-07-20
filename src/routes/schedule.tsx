@@ -2469,6 +2469,8 @@ function MonthStrip({
   onNextMonth,
   onSelectDate,
   onToday,
+  legendOpen,
+  onToggleLegend,
 }: {
   viewMonth: Date;
   selectedDate: string;
@@ -2478,6 +2480,8 @@ function MonthStrip({
   onNextMonth: () => void;
   onSelectDate: (key: string) => void;
   onToday: () => void;
+  legendOpen: boolean;
+  onToggleLegend: () => void;
 }) {
   const scroller = useRef<HTMLDivElement | null>(null);
 
