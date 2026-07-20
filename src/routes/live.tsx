@@ -12,6 +12,7 @@ export const Route = createFileRoute("/live")({
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 const GOOGLE_MAPS_KEY = "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
+const TOMTOM_API_KEY = "YOUR_TOMTOM_KEY_HERE";
 
 interface LessonRow {
   id: string;
