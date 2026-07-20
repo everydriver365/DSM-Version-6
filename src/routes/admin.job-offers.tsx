@@ -621,7 +621,7 @@ function AdminJobOffers() {
                 </FieldLabel>
                 <FieldLabel label="Postcode area">
                   <AddressLookup
-                    initialPostcode={form.postcode_area}
+                    initialPostcode={form.postcode_area ?? undefined}
                     onAddressFound={({ postcode }) => {
                       const outcode = postcode.trim().split(" ")[0].toUpperCase();
                       setForm((f) => ({ ...f, postcode_area: outcode }));
