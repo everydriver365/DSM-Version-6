@@ -152,14 +152,6 @@ function LivePage() {
           zoom: 15,
           disableDefaultUI: true,
           gestureHandling: "greedy",
-          styles: [
-            { featureType: "water", elementType: "geometry", stylers: [{ color: "#1877D6" }] },
-            { featureType: "landscape", elementType: "geometry", stylers: [{ color: "#F5F0E8" }] },
-            { featureType: "road", elementType: "geometry", stylers: [{ color: "#FFFFFF" }] },
-            { featureType: "road", elementType: "labels", stylers: [{ visibility: "simplified" }] },
-            { featureType: "poi", stylers: [{ visibility: "off" }] },
-            { featureType: "transit", stylers: [{ visibility: "off" }] },
-          ],
         });
         mapInstanceRef.current = map;
         polylineRef.current = new google.maps.Polyline({
