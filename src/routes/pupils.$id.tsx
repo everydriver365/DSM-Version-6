@@ -3229,6 +3229,15 @@ function PupilDetailPage() {
                 style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
               />
             </label>
+            <div className="mb-4">
+              <AddressLookup
+                initialPostcode={editDraft.postcode}
+                initialAddress={editDraft.address}
+                onAddressFound={({ postcode, address }) => {
+                  setEditDraft((d) => ({ ...d, postcode, address }));
+                }}
+              />
+            </div>
             <label className="block text-[12px] text-[#6B7280] mb-4">
               Date of birth <span className="text-[11px] text-[#9CA3AF]">(optional)</span>
               <input
@@ -3261,6 +3270,40 @@ function PupilDetailPage() {
                 <option value="cancelled">Cancelled</option>
               </select>
             </label>
+
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-[#6B7280] mb-2">Lead source</div>
+            <label className="text-[12px] text-[#6B7280] block mb-4">
+              How did they find you?
+              <select
+                value={editDraft.lead_source}
+                onChange={(e) => setEditDraft((d) => ({ ...d, lead_source: e.target.value, lead_source_detail: "" }))}
+                className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+              >
+                <option value="">Select source</option>
+                <option value="Referral">Referral</option>
+                <option value="EveryDriver">EveryDriver</option>
+                <option value="National Intensive">National Intensive</option>
+                <option value="Online">Online</option>
+                <option value="Walk-in / Local">Walk-in / Local</option>
+                <option value="Social media">Social media</option>
+                <option value="Driving school">Driving school</option>
+                <option value="Returning pupil">Returning pupil</option>
+                <option value="Other">Other</option>
+              </select>
+            </label>
+            {(editDraft.lead_source === "Referral" || editDraft.lead_source === "Other") && (
+              <label className="text-[12px] text-[#6B7280] block mb-4">
+                {editDraft.lead_source === "Referral" ? "Who referred them?" : "Please specify"}
+                <input
+                  type="text"
+                  value={editDraft.lead_source_detail}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, lead_source_detail: e.target.value }))}
+                  className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                />
+              </label>
+            )}
 
             <div className="text-[11px] font-semibold uppercase tracking-wide text-[#6B7280] mb-2">Payment details</div>
 
