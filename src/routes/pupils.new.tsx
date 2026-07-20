@@ -3,12 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
+import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 
 type NewPupilSearch = { name?: string; phone?: string };
 
-const GOOGLE_MAPS_KEY = "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
 const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
 
 export const Route = createFileRoute("/pupils/new")({
@@ -27,31 +27,6 @@ function splitName(full: string): [string, string] {
   if (parts.length === 0) return ["", ""];
   if (parts.length === 1) return [parts[0], ""];
   return [parts[0], parts.slice(1).join(" ")];
-}
-
-function loadGoogleMaps(): Promise<void> {
-  if (typeof window === "undefined") return Promise.resolve();
-  const w = window as unknown as { google?: { maps?: { places?: unknown } } };
-  if (w.google?.maps?.places) return Promise.resolve();
-  const existing = document.getElementById(
-    "google-maps-places-script",
-  ) as HTMLScriptElement | null;
-  if (existing) {
-    return new Promise((resolve) => {
-      existing.addEventListener("load", () => resolve());
-      if (w.google?.maps?.places) resolve();
-    });
-  }
-  return new Promise((resolve, reject) => {
-    const s = document.createElement("script");
-    s.id = "google-maps-places-script";
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&libraries=places&loading=async`;
-    s.async = true;
-    s.defer = true;
-    s.onload = () => resolve();
-    s.onerror = () => reject(new Error("Failed to load Google Maps"));
-    document.head.appendChild(s);
-  });
 }
 
 function NewPupilPage() {

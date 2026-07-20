@@ -1,26 +1,72 @@
-The inline address editor on the pupil profile page currently has two plain text fields (Address + Postcode) with no search feedback. The user wants both auto-suggest and a visible "Search now" action when a postcode is entered.
+File changed: src/routes/pupils.new.tsx only.
 
-Plan
-----
-1. Replace the inline `AddressEditor` in `src/routes/pupils.$id.tsx` with the existing `AddressLookup` component.
-   - This gives live address/postcode autocomplete, loading states, "no results", and error states.
-2. Wire `AddressLookup.onAddressFound` to save the selected address, postcode, city, lat, and lng to Supabase and update the local `pupil` state.
-3. Add a "Search now" affordance inside (or next to) the `AddressLookup` input.
-   - Visible once the user has typed 3+ characters.
-   - Re-triggers the prediction lookup and opens the suggestion dropdown.
-   - Keeps the existing 300 ms debounced auto-suggest as the user types.
-4. Remove the old `AddressEditor` component and the unused Google Places autocomplete binding `useEffect` that was attached to the inline address input.
+Current inline implementation to remove
+-------------------------------------
+1. The `GOOGLE_MAPS_KEY` constant and the `loadGoogleMaps()` helper (lines 11-55).
+2. The `addressInputRef` state (line 82) and the `useEffect` that binds Google Places `Autocomplete` to it (lines 84-135).
+3. The two separate form inputs currently rendered at lines 297-321:
 
-Technical details
------------------
-- File changed: `src/routes/pupils.$id.tsx` only.
-- Reuse `AddressLookup` from `src/components/dsm/AddressLookup.tsx` to keep UX consistent with the Edit pupil sheet.
-- Supabase save path: `supabase.from("pupils").update({ address, postcode, city?, lat?, lng? }).eq("id", id)`.
-- Keep the existing `setAddressEditing(false)` and `toast.success("Address updated")` behavior after a selection.
-- Preserve the fallback that retries without optional columns (`town`, `lat`, `lng`) if the first update fails.
+```tsx
+<Input
+  ref={addressInputRef}
+  label="Home address"
+  type="text"
+  value={address}
+  onChange={(e) => setAddress(e.target.value)}
+  maxLength={255}
+  autoComplete="off"
+  placeholder="Start typing an address…"
+/>
+<div>
+  <Input
+    label="Postcode"
+    type="text"
+    value={postcode}
+    onChange={(e) => setPostcode(e.target.value)}
+    maxLength={10}
+    autoComplete="postal-code"
+  />
+  {errors.postcode && (
+    <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
+      {errors.postcode}
+    </p>
+  )}
+</div>
+```
 
-Out of scope
-------------
-- No changes to the Edit pupil sheet (`AddressLookup` is already used there).
-- No schema changes.
-- No changes to `AddressLookup.tsx` itself unless a small slot/button prop is needed to expose the "Search now" trigger.
+Replacement
+-----------
+Import the shared component at the top of the file:
+
+```tsx
+import { AddressLookup } from "@/components/dsm/AddressLookup";
+```
+
+Replace the removed inputs with a single `AddressLookup` instance, keeping the postcode validation error block in the same place:
+
+```tsx
+<AddressLookup
+  initialPostcode={postcode}
+  initialAddress={address}
+  onAddressFound={({ postcode: pc, address: addr }) => {
+    setPostcode(pc);
+    setAddress(addr);
+  }}
+/>
+{errors.postcode && (
+  <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
+    {errors.postcode}
+  </p>
+)}
+```
+
+What stays unchanged
+--------------------
+- The `UK_POSTCODE_RE` check and the `handleSave` validation for `postcode`.
+- The form fields for name, phone, date of birth, lead source, lead source detail, and block booking.
+- The `insert` payload and Supabase save logic.
+- The `PageLayout` and navigation wiring.
+
+Rationale
+---------
+`AddressLookup` already handles browser key resolution, loading/error/no-results states, postcode-first search, house-number prefix editing, and a “Search now” affordance. Replacing the duplicate inline wiring in `pupils.new.tsx` removes a second independently-drifting copy of the same Google Places logic and makes the Add-pupil address UX consistent with profile, settings, coverage areas, and the pupil edit sheet.
