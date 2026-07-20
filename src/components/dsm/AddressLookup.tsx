@@ -118,6 +118,7 @@ export function AddressLookup({
   initialCity = "",
   onAddressFound,
   disabled = false,
+  showSearchButton = false,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
