@@ -4717,6 +4717,34 @@ function HomePage() {
           fontFamily: 'Inter, sans-serif',
         }}
       >
+        {autoTrackLessons && currentLesson && (
+          <button
+            type="button"
+            onClick={() => navigate({ to: '/live' })}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              width: '100%',
+              padding: '12px 16px',
+              background: '#1877D6',
+              color: '#FFFFFF',
+              border: 'none',
+              fontSize: 14,
+              fontWeight: 700,
+              fontFamily: 'Inter, sans-serif',
+              cursor: 'pointer',
+              letterSpacing: 0.2,
+            }}
+          >
+            <span style={{
+              width: 8, height: 8, borderRadius: 999,
+              background: '#FFFFFF', boxShadow: '0 0 0 3px rgba(255,255,255,0.35)',
+            }} />
+            Start tracking — {currentLesson.pupils?.name ?? 'lesson in progress'}
+          </button>
+        )}
         {/* Map hero + late banner + stats + reasons */}
         {(() => {
 
