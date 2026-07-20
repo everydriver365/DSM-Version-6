@@ -162,6 +162,7 @@ function SettingsPage() {
   const [paymentReminderEnabled, setPaymentReminderEnabled] = useState<boolean>(true);
   const [paymentChaseMax, setPaymentChaseMax] = useState<number>(3); // 0 = unlimited
   const [morningBriefing, setMorningBriefing] = useState<boolean>(false);
+  const [autoTrackLessons, setAutoTrackLessons] = useState<boolean>(false);
 
   // === Section: Deposit / Payment options / Tax & expenses / Referral (instructors table) ===
   const [depositEnabled, setDepositEnabled] = useState<boolean>(false);
@@ -408,7 +409,7 @@ function SettingsPage() {
       // Load reminder preferences
       const { data: prefs } = await supabase
         .from("instructor_reminder_preferences")
-        .select("no_show_charge_percent, cancellation_tiers, auto_charge_no_show, reminder_enabled, reminder_hours_before, payment_reminder_enabled, payment_chase_max_reminders, morning_briefing")
+        .select("no_show_charge_percent, cancellation_tiers, auto_charge_no_show, reminder_enabled, reminder_hours_before, payment_reminder_enabled, payment_chase_max_reminders, morning_briefing, auto_track_lessons")
         .eq("instructor_id", user.id)
         .maybeSingle();
       if (prefs) {
@@ -428,6 +429,7 @@ function SettingsPage() {
         if (typeof p.payment_reminder_enabled === "boolean") setPaymentReminderEnabled(p.payment_reminder_enabled);
         if (typeof p.payment_chase_max_reminders === "number") setPaymentChaseMax(p.payment_chase_max_reminders);
         if (typeof p.morning_briefing === "boolean") setMorningBriefing(p.morning_briefing);
+        if (typeof p.auto_track_lessons === "boolean") setAutoTrackLessons(p.auto_track_lessons);
       }
 
       // Load extended instructor fields (deposit/payment/tax/referral)
@@ -1904,7 +1906,14 @@ function SettingsPage() {
                 </div>
                 <ToggleSwitch checked={morningBriefing} onChange={setMorningBriefing} />
               </div>
-              <SaveRow onClick={() => saveReminderPrefs({ reminder_enabled: reminderEnabled, reminder_hours_before: reminderHoursBefore, payment_reminder_enabled: paymentReminderEnabled, payment_chase_max_reminders: paymentChaseMax, morning_briefing: morningBriefing })} />
+              <div className="flex items-start gap-3 pt-2">
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Auto-track lessons</div>
+                  <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>Show a one-tap prompt to start GPS tracking when a lesson begins</div>
+                </div>
+                <ToggleSwitch checked={autoTrackLessons} onChange={setAutoTrackLessons} />
+              </div>
+              <SaveRow onClick={() => saveReminderPrefs({ reminder_enabled: reminderEnabled, reminder_hours_before: reminderHoursBefore, payment_reminder_enabled: paymentReminderEnabled, payment_chase_max_reminders: paymentChaseMax, morning_briefing: morningBriefing, auto_track_lessons: autoTrackLessons })} />
             </div>
           )}
         </SectionCard>
