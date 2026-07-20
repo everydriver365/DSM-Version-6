@@ -133,13 +133,16 @@ export default function InstructorTopBar({
           </span>
         </div>
       ) : (
-        <IconBtn
-          ariaLabel="Voice commands"
-          onClick={onMicPress}
-          style={{ background: "#CC2229" }}
-        >
-          <Mic size={19} strokeWidth={2} color="#ffffff" />
-        </IconBtn>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {profileAvatar}
+          <IconBtn
+            ariaLabel="Voice commands"
+            onClick={onMicPress}
+            style={{ background: "#CC2229" }}
+          >
+            <Mic size={19} strokeWidth={2} color="#ffffff" />
+          </IconBtn>
+        </div>
       )}
 
       {/* RIGHT — icon group */}
