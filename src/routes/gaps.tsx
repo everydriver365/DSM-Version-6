@@ -63,7 +63,7 @@ const DAYS = [
   "Friday",
   "Saturday",
 ];
-const GAP_FILLER_FUTURE_DAYS = 180;
+const GAP_FILLER_FUTURE_DAYS = 14;
 
 interface FreeSlot {
   date: string;
