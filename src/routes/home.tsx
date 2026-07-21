@@ -6307,7 +6307,7 @@ function HomePage() {
                       const preview = previewMatchForGap({ date: gapDate, dayName, durationMin: r.mins });
                       const gapStartTime = fmtT(gs);
                       return (
-                        <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 16 }}>
+                        <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 8 }}>
                           <div
                             onClick={() => {
                               if (moveModeHome && movingLessonHome) {
@@ -6447,7 +6447,7 @@ function HomePage() {
                       const isPast = nowT >= ce;
                       const barColor = isPast ? '#34A853' : '#1877D6';
                       return (
-                        <div key={`cal-${idx}`} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 16 }}>
+                        <div key={`cal-${idx}`} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 8 }}>
                           <div
                             style={{
                               background: '#E4E9F1',
