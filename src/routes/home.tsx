@@ -1379,7 +1379,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
 
   const liveScrollRef = useRef<HTMLDivElement | null>(null);
   const [liveActiveIdx, setLiveActiveIdx] = useState(0);
-  const LIVE_CARD_W = 240;
+  const LIVE_CARD_W = 172;
   const LIVE_GAP = 12;
   const onLiveScroll = () => {
     const el = liveScrollRef.current;
