@@ -1348,9 +1348,9 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     return "zoom";
   };
   const FORMAT_META: Record<FormatKey, { label: string; expectation: string; bg: string; fg: string; icon: React.ReactNode }> = {
-    zoom: { label: "Zoom", expectation: "camera on", bg: "#E5EFFA", fg: "#1877D6", icon: <Video size={12} color="#1877D6" strokeWidth={2.4} /> },
-    webinar: { label: "Webinar", expectation: "listen & chat", bg: "#F1E9FA", fg: "#7A3FC0", icon: <Radio size={12} color="#7A3FC0" strokeWidth={2.4} /> },
-    podcast: { label: "Podcast", expectation: "on-demand", bg: "#E7F5EE", fg: "#1E8E5A", icon: <Mic size={12} color="#1E8E5A" strokeWidth={2.4} /> },
+    zoom: { label: "Zoom", expectation: "camera on", bg: "#1877D6", fg: "#FFFFFF", icon: <Video size={12} color="#FFFFFF" strokeWidth={2.4} /> },
+    webinar: { label: "Webinar", expectation: "listen & chat", bg: "#7A3FC0", fg: "#FFFFFF", icon: <Radio size={12} color="#FFFFFF" strokeWidth={2.4} /> },
+    podcast: { label: "Podcast", expectation: "on-demand", bg: "#1E8E5A", fg: "#FFFFFF", icon: <Mic size={12} color="#FFFFFF" strokeWidth={2.4} /> },
   };
 
   const startMs = (d: string, t: string) => {
