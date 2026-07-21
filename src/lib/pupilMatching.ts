@@ -48,8 +48,9 @@ export function previewMatchForGap<P extends PupilPreview>(params: {
   durationMin: number;
   allPupils: P[];
   allAvailability: Availability[];
+  unavailability?: { pupil_id: string; start_date: string; end_date: string }[];
 }): { count: number; topPupils: P[]; allMatched: P[] } {
-  const { date, dayName, startMin, durationMin, allPupils, allAvailability } = params;
+  const { date, dayName, startMin, durationMin, allPupils, allAvailability, unavailability } = params;
   if (!allPupils.length || !allAvailability.length) {
     return { count: 0, topPupils: [], allMatched: [] };
   }
@@ -57,11 +58,22 @@ export function previewMatchForGap<P extends PupilPreview>(params: {
   for (const a of allAvailability) {
     if (a.pupil_id) availByPupil.set(a.pupil_id, a);
   }
+
+  const unavailablePupilIds = new Set<string>();
+  if (unavailability?.length) {
+    for (const u of unavailability) {
+      if (u.start_date <= date && date <= u.end_date) {
+        unavailablePupilIds.add(u.pupil_id);
+      }
+    }
+  }
+
   const slotStart = new Date(`${date}T${minToHm(startMin)}:00`).getTime();
   const hoursUntilSlot = (slotStart - Date.now()) / 3600000;
 
   const matched: P[] = [];
   for (const p of allPupils) {
+    if (unavailablePupilIds.has(p.id)) continue;
     const s = availByPupil.get(p.id);
     if (!s) continue;
     const availDays = s.available_days || [];
