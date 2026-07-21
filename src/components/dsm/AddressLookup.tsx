@@ -354,8 +354,10 @@ export function AddressLookup({
     setSuggestions([]);
     setShowSuggestions(false);
     setNoResults(false);
-    
+    const lib = placesLibRef.current;
+    if (lib) sessionTokenRef.current = new lib.AutocompleteSessionToken();
     if (inputRef.current) inputRef.current.value = "";
+
   }
 
   function commitDoorNumber(next: string) {
