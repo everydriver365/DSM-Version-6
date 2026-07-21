@@ -1561,7 +1561,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 scrollSnapAlign: "start",
                 display: "flex",
                 flexDirection: "column",
-                minHeight: 148,
+                minHeight: 168,
               }}
             >
               {/* Header strip */}
