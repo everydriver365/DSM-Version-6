@@ -1,72 +1,22 @@
-File changed: src/routes/pupils.new.tsx only.
+## What's happening
 
-Current inline implementation to remove
--------------------------------------
-1. The `GOOGLE_MAPS_KEY` constant and the `loadGoogleMaps()` helper (lines 11-55).
-2. The `addressInputRef` state (line 82) and the `useEffect` that binds Google Places `Autocomplete` to it (lines 84-135).
-3. The two separate form inputs currently rendered at lines 297-321:
+On `/schedule`, the agenda row list is built from `orderedDayKeys = [...entriesByDay.keys()]`, then only today is force-included via `orderedDayKeysWithToday`. `entriesByDay` is keyed by dates that have a lesson or a Google Calendar block. Any day that has neither is **not in the rows array at all** — so the per-row gap detection never runs for it, and no "FILL THIS GAP" tile appears.
 
-```tsx
-<Input
-  ref={addressInputRef}
-  label="Home address"
-  type="text"
-  value={address}
-  onChange={(e) => setAddress(e.target.value)}
-  maxLength={255}
-  autoComplete="off"
-  placeholder="Start typing an address…"
-/>
-<div>
-  <Input
-    label="Postcode"
-    type="text"
-    value={postcode}
-    onChange={(e) => setPostcode(e.target.value)}
-    maxLength={10}
-    autoComplete="postal-code"
-  />
-  {errors.postcode && (
-    <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
-      {errors.postcode}
-    </p>
-  )}
-</div>
-```
+That's why today shows a gap tile (force-added) and other days may or may not (only if they happen to have an event). If a day's Google event is all-day, the day is in `entriesByDay` but `computeDayGaps` sees a 00:00–23:59 busy block and returns no gaps — worth flagging separately.
 
-Replacement
------------
-Import the shared component at the top of the file:
+## Fix — only touch `src/routes/schedule.tsx`
 
-```tsx
-import { AddressLookup } from "@/components/dsm/AddressLookup";
-```
+1. Add a memo `workingDayKeysInRange` that walks from `rangeStart` to `rangeEnd` (already fetched) and yields `ymdLocal(date)` for each day whose weekday name is active in `perDayHours` (or in `workingDaysList` when `perDayHours` is null). Skip past days (`key < todayKey`) so the agenda still starts at today.
+2. Replace the current `orderedDayKeysWithToday` merge with a union of `orderedDayKeys ∪ workingDayKeysInRange ∪ [todayKey]`, deduped and sorted. Feed this into the existing `rows` memo — no changes to the row renderer, gap detection, or `/gaps`.
+3. Leave the empty-state branch (`row.entries.length === 0 && isToday`) as-is; on other empty working days the else branch already runs `detectGaps` and renders gap rows.
 
-Replace the removed inputs with a single `AddressLookup` instance, keeping the postcode validation error block in the same place:
+## Optional secondary tweak (call out, don't fix unless asked)
 
-```tsx
-<AddressLookup
-  initialPostcode={postcode}
-  initialAddress={address}
-  onAddressFound={({ postcode: pc, address: addr }) => {
-    setPostcode(pc);
-    setAddress(addr);
-  }}
-/>
-{errors.postcode && (
-  <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
-    {errors.postcode}
-  </p>
-)}
-```
+If a day is fully covered by an all-day Google Calendar block, `computeDayGaps` returns zero gaps by design. That's separate from the row-omission bug and can be addressed later if you want all-day events treated as "informational" rather than blocking.
 
-What stays unchanged
---------------------
-- The `UK_POSTCODE_RE` check and the `handleSave` validation for `postcode`.
-- The form fields for name, phone, date of birth, lead source, lead source detail, and block booking.
-- The `insert` payload and Supabase save logic.
-- The `PageLayout` and navigation wiring.
+## Verification
 
-Rationale
----------
-`AddressLookup` already handles browser key resolution, loading/error/no-results states, postcode-first search, house-number prefix editing, and a “Search now” affordance. Replacing the duplicate inline wiring in `pupils.new.tsx` removes a second independently-drifting copy of the same Google Places logic and makes the Add-pupil address UX consistent with profile, settings, coverage areas, and the pupil edit sheet.
+- Days with no lessons and no Google events but active working hours now render a day row with the gap tile.
+- Days with lessons/events keep their current behavior (lessons + interleaved gaps).
+- Non-working days (day off in `perDayHours`) don't add empty rows.
+- `/gaps` and gap-detection logic are untouched.
