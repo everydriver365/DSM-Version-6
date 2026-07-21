@@ -82,6 +82,7 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
   const [whatsNewResolved, setWhatsNewResolved] = useState<"pending" | "dismissed" | "later" | "none">(
     "pending",
   );
+  const pendingWhatsNewMode = useRef<"dismissed" | "later" | null>(null);
 
   // Evaluate both conditions once.
   useEffect(() => {
