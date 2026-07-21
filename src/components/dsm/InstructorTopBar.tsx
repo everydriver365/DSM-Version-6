@@ -1,6 +1,7 @@
 import React from "react";
-import { ChevronLeft, Bell, Mic } from "lucide-react";
-import { PhoneIcon, CarIcon, MenuIcon, PoundIcon, MessagesIcon } from "@/components/icons/DrivingIcons";
+import { ChevronLeft, Bell, Mic, Car } from "lucide-react";
+import { PhoneIcon, MenuIcon, PoundIcon, MessagesIcon } from "@/components/icons/DrivingIcons";
+
 import { useNavigate } from "@tanstack/react-router";
 import dsmLogoWhite from "@/assets/dsm-logo-white.png.asset.json";
 
@@ -125,7 +126,7 @@ export default function InstructorTopBar({
       )}
 
       {/* RIGHT */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flex: 1, marginLeft: 16 }}>
         <IconBtn ariaLabel="Phone" onClick={onPhone}>
           <PhoneIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
@@ -133,11 +134,12 @@ export default function InstructorTopBar({
           <MessagesIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
         <IconBtn ariaLabel="Live track" onClick={onLiveTrack}>
-          <CarIcon size={17} strokeWidth={1.8} color="#ffffff" />
+          <Car size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
         <IconBtn ariaLabel="Take payment" onClick={() => navigate({ to: "/take-payment" })}>
           <PoundIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
+
         <button
           type="button"
           aria-label="Notifications"
