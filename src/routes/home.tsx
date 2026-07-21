@@ -1368,8 +1368,18 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
 
   if (sortedSessions.length === 0) return null;
 
-  const visible = sortedSessions.slice(0, 2);
-  const hasMore = sortedSessions.length > visible.length;
+  const visible = sortedSessions;
+  const hasMore = sortedSessions.length > 2;
+
+  const liveScrollRef = useRef<HTMLDivElement | null>(null);
+  const [liveActiveIdx, setLiveActiveIdx] = useState(0);
+  const LIVE_CARD_W = 240;
+  const LIVE_GAP = 12;
+  const onLiveScroll = () => {
+    const el = liveScrollRef.current;
+    if (!el) return;
+    setLiveActiveIdx(Math.round(el.scrollLeft / (LIVE_CARD_W + LIVE_GAP)));
+  };
 
   const fmtTime = (ms: number) => {
     const d = new Date(ms);
@@ -1405,7 +1415,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   };
 
   return (
-    <div style={{ margin: "8px -16px 0", padding: "0 16px", fontFamily: POPPINS }}>
+    <div style={{ marginTop: 8, fontFamily: POPPINS }}>
       <style>{`
         @keyframes dsmLivePulse {
           0% { box-shadow: 0 0 0 0 rgba(204,34,41,0.55); }
@@ -1414,7 +1424,10 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         @media (prefers-reduced-motion: reduce) {
           .dsm-live-dot { animation: none !important; }
         }
+        .dsm-live-scroll::-webkit-scrollbar { display: none; }
+        .dsm-live-scroll { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
+
 
       {/* Section header */}
       <div
@@ -1462,7 +1475,20 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         )}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
+      <div
+        ref={liveScrollRef}
+        onScroll={onLiveScroll}
+        className="dsm-live-scroll"
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: LIVE_GAP,
+          overflowX: "auto",
+          overflowY: "hidden",
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
         {visible.map((session) => {
           const fmt = detectFormat(session.category, session.title);
           const meta = FORMAT_META[fmt];
@@ -1502,7 +1528,9 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                   ? "0 3px 14px rgba(204,34,41,0.18)"
                   : "0 1px 3px rgba(0,0,0,0.06)",
                 fontFamily: POPPINS,
-                width: "100%",
+                flex: "0 0 auto",
+                width: LIVE_CARD_W,
+                scrollSnapAlign: "start",
                 display: "flex",
                 flexDirection: "column",
                 minHeight: 148,
@@ -1662,6 +1690,26 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           );
         })}
       </div>
+
+      {visible.length > 1 && (
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, marginTop: 14 }}>
+          {visible.map((s, i) => {
+            const active = i === liveActiveIdx;
+            return (
+              <span
+                key={s.id}
+                style={{
+                  height: 6,
+                  width: active ? 16 : 6,
+                  borderRadius: 999,
+                  background: active ? "#1877D6" : "#C7D1DE",
+                  transition: "width 0.2s ease, background 0.2s ease",
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
