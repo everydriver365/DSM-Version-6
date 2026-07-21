@@ -6204,7 +6204,7 @@ function HomePage() {
               };
 
               return (
-                <div style={{ fontFamily: PF }}>
+                <div style={{ fontFamily: PF, background: '#EDF1F7', borderRadius: 16, padding: 14 }}>
                   {/* Card header */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
                     <div style={{ fontSize: 16, fontWeight: 500, color: '#0B1F3A', letterSpacing: -0.2 }}>{headerLabel}</div>
@@ -6283,7 +6283,7 @@ function HomePage() {
                       const preview = previewMatchForGap({ date: gapDate, dayName, durationMin: r.mins });
                       const gapStartTime = fmtT(gs);
                       return (
-                        <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: 16 }}>
+                        <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 16 }}>
                           <div
                             onClick={() => {
                               if (moveModeHome && movingLessonHome) {
@@ -6422,12 +6422,12 @@ function HomePage() {
                       const isPast = nowT >= ce;
                       const barColor = isPast ? '#34A853' : '#1877D6';
                       return (
-                        <div key={`cal-${idx}`} style={{ position: 'relative', marginBottom: 16 }}>
+                        <div key={`cal-${idx}`} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 16 }}>
                           <div
                             style={{
-                              background: '#FFFFFF',
+                              background: '#E4E9F1',
                               borderRadius: 12,
-                              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                              boxShadow: 'none',
                               padding: '12px 14px',
                               display: 'flex',
                               alignItems: 'stretch',
@@ -6456,8 +6456,8 @@ function HomePage() {
                               <div
                                 style={{
                                   fontSize: 14,
-                                  fontWeight: 600,
-                                  color: '#0B1F3A',
+                                  fontWeight: 500,
+                                  color: '#6B7280',
                                   whiteSpace: 'nowrap',
                                   overflow: 'hidden',
                                   textOverflow: 'ellipsis',
@@ -6467,7 +6467,7 @@ function HomePage() {
                               >
                                 {r.title}
                               </div>
-                              <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>
+                              <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 4 }}>
                                 Google Calendar
                               </div>
                             </div>
@@ -6522,7 +6522,7 @@ function HomePage() {
                     })();
 
                     return (
-                      <div key={l.id} style={{ position: 'relative', marginBottom: 16 }}>
+                      <div key={l.id} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 16 }}>
                         <div
                           onClick={() => navigate({ to: '/pupils/$id', params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any })}
                           role="button"
