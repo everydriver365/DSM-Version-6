@@ -3728,6 +3728,13 @@ function HomePage() {
         const localDateStr = `${sd.getFullYear()}-${String(sd.getMonth() + 1).padStart(2, '0')}-${String(sd.getDate()).padStart(2, '0')}`;
         const localStartTime = `${String(sd.getHours()).padStart(2, '0')}:${String(sd.getMinutes()).padStart(2, '0')}`;
         const localEndTime = `${String(ed.getHours()).padStart(2, '0')}:${String(ed.getMinutes()).padStart(2, '0')}`;
+        const durationMins = Math.max(0, Math.round((ed.getTime() - sd.getTime()) / 60000));
+        const startsAtBoundary = localStartTime === '00:00' || localStartTime === '01:00';
+        const endsAtBoundary = localEndTime === '00:00' || localEndTime === '01:00' || localEndTime === '23:59';
+        const isAllDay =
+          (localStartTime === '00:00' && (localEndTime === '00:00' || localEndTime === '23:59')) ||
+          (durationMins >= 20 * 60 && startsAtBoundary && endsAtBoundary);
+        if (isAllDay) return null;
         return {
           localDate: localDateStr,
           start: timeToMins(localStartTime),
