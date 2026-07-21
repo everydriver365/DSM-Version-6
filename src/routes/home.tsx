@@ -6592,7 +6592,7 @@ function HomePage() {
                                   {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
                                 </div>
                               )}
-                              <div style={{ fontSize: 14, fontWeight: 500, color: isCancelled ? '#6B7280' : '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none', textDecorationColor: isCancelled ? '#CC2229' : undefined, textDecorationThickness: isCancelled ? 2 : undefined }}>
+                              <div style={{ fontSize: 14, fontWeight: 500, color: isCancelled ? '#6B7280' : '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
                                 {name}
                               </div>
                               {isCancelled ? (
