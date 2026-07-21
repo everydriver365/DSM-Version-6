@@ -2601,35 +2601,22 @@ function GapsPage() {
         <div
           style={{
             position: "fixed",
-            bottom: 148,
-            left: 0,
-            right: 0,
-            padding: "14px 20px",
-            background: "rgba(11,31,58,0.95)",
-            backdropFilter: "blur(8px)",
-            WebkitBackdropFilter: "blur(8px)",
-            borderTop: `1px solid ${NAVY}`,
+            right: 16,
+            bottom: 80,
+            width: "70%",
+            background: NAVY,
+            borderRadius: 20,
+            padding: 12,
+            boxShadow: "0 8px 24px rgba(11,31,58,0.3)",
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
             zIndex: 50,
+            boxSizing: "border-box",
           }}
         >
           {selectedSlots.length === 1 && selectedPupilIds.size === 1 ? (
-            <div style={{ display: "flex", gap: 10 }}>
-              <button
-                onClick={openMessageSheet}
-                style={{
-                  flex: 1,
-                  background: "#FFFFFF",
-                  color: NAVY,
-                  fontWeight: 700,
-                  fontSize: 15,
-                  borderRadius: 16,
-                  border: "none",
-                  padding: "14px 20px",
-                  cursor: "pointer",
-                }}
-              >
-                Message
-              </button>
+            <>
               <button
                 disabled={directBookSubmitting}
                 onClick={async () => {
@@ -2668,21 +2655,37 @@ function GapsPage() {
                   }
                 }}
                 style={{
-                  flex: 1,
+                  width: "100%",
                   background: BLUE_BRIGHT,
                   color: "#FFFFFF",
                   fontWeight: 700,
                   fontSize: 15,
-                  borderRadius: 16,
+                  borderRadius: 12,
                   border: "none",
-                  padding: "14px 20px",
+                  height: 44,
                   cursor: directBookSubmitting ? "not-allowed" : "pointer",
                   opacity: directBookSubmitting ? 0.6 : 1,
                 }}
               >
                 {directBookSubmitting ? "Booking…" : "Book now"}
               </button>
-            </div>
+              <button
+                onClick={openMessageSheet}
+                style={{
+                  width: "100%",
+                  background: "rgba(255,255,255,0.12)",
+                  color: "#FFFFFF",
+                  fontWeight: 700,
+                  fontSize: 15,
+                  borderRadius: 12,
+                  border: "none",
+                  height: 44,
+                  cursor: "pointer",
+                }}
+              >
+                Message
+              </button>
+            </>
           ) : (
             <button
               onClick={openMessageSheet}
