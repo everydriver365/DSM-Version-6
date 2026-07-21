@@ -878,7 +878,7 @@ function SchedulePage() {
       const dayStart = dayConfig?.start || workStart;
       const dayEnd = dayConfig?.end || workEnd;
       const isDayActive = dayConfig
-        ? dayiëntConfig.active === true
+        ? dayConfig.active === true
         : workingDaysList.includes(dayName);
       const gaps = isDayActive
         ? detectGaps(
