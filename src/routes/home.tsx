@@ -1248,7 +1248,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     max_spaces: number | null;
     spaces_taken: number | null;
     duration_minutes: number | null;
-    join_url: string | null;
+    join_url?: string | null;
   };
   const [sessions, setSessions] = useState<LiveTile[]>([]);
 
