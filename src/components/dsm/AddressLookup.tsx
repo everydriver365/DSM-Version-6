@@ -41,59 +41,69 @@ type Prediction = {
   };
 };
 
-// Minimal typing for the google.maps.places surface we use
-type GAutocompleteService = {
-  getPlacePredictions: (
-    request: {
-      input: string;
-      componentRestrictions?: { country: string | string[] };
-      types?: string[];
-    },
-    callback: (predictions: Prediction[] | null, status: string) => void,
-  ) => void;
+// Places API (New) surface — minimal typings for what we use
+type NewAddressComponent = {
+  componentType?: string;
+  types?: string[];
+  longText?: string;
+  shortText?: string;
 };
 
-type GPlace = {
-  formatted_address?: string;
-  address_components?: Array<{
-    long_name: string;
-    short_name: string;
-    types: string[];
-  }>;
-  geometry?: {
-    location?: {
-      lat: () => number;
-      lng: () => number;
-    };
-  };
+type NewPlace = {
+  formattedAddress?: string;
+  addressComponents?: NewAddressComponent[];
+  location?: { lat: () => number; lng: () => number };
+  fetchFields: (req: { fields: string[] }) => Promise<unknown>;
 };
 
-type GPlacesService = {
-  getDetails: (
-    request: { placeId: string; fields: string[] },
-    callback: (place: GPlace | null, status: string) => void,
-  ) => void;
+type PlacePrediction = {
+  placeId: string;
+  text?: { text?: string } | string;
+  mainText?: { text?: string } | string;
+  secondaryText?: { text?: string } | string;
+  toPlace: () => NewPlace;
+};
+
+type NewSuggestion = { placePrediction?: PlacePrediction };
+
+type AutocompleteSuggestionCtor = {
+  fetchAutocompleteSuggestions: (req: {
+    input: string;
+    sessionToken?: unknown;
+    includedRegionCodes?: string[];
+  }) => Promise<{ suggestions: NewSuggestion[] }>;
+};
+
+type AutocompleteSessionTokenCtor = new () => unknown;
+
+type PlacesLib = {
+  AutocompleteSuggestion: AutocompleteSuggestionCtor;
+  AutocompleteSessionToken: AutocompleteSessionTokenCtor;
 };
 
 type GWindow = Window & {
   google?: {
     maps?: {
-      places?: {
-        AutocompleteService: new () => GAutocompleteService;
-        PlacesService: new (div: HTMLDivElement) => GPlacesService;
-      };
+      places?: unknown;
+      importLibrary?: (name: string) => Promise<unknown>;
     };
   };
 };
 
-function loadPlacesScript(): Promise<void> {
+function readText(v: { text?: string } | string | undefined): string {
+  if (!v) return "";
+  if (typeof v === "string") return v;
+  return v.text ?? "";
+}
+
+function loadMapsScript(): Promise<void> {
   const w = window as GWindow;
-  if (w.google?.maps?.places) return Promise.resolve();
+  if (w.google?.maps?.importLibrary) return Promise.resolve();
   const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
   if (existing) {
     return new Promise((resolve) => {
       const iv = setInterval(() => {
-        if ((window as GWindow).google?.maps?.places) {
+        if ((window as GWindow).google?.maps?.importLibrary) {
           clearInterval(iv);
           resolve();
         }
@@ -105,7 +115,7 @@ function loadPlacesScript(): Promise<void> {
     s.id = SCRIPT_ID;
     s.async = true;
     s.defer = true;
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&libraries=places&loading=async`;
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&v=weekly&loading=async`;
     s.onload = () => resolve();
     s.onerror = () => reject(new Error("Failed to load Google Maps script"));
     document.head.appendChild(s);
@@ -122,12 +132,11 @@ export function AddressLookup({
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const serviceRef = useRef<GAutocompleteService | null>(null);
-  const placesServiceRef = useRef<GPlacesService | null>(null);
+  const placesLibRef = useRef<PlacesLib | null>(null);
+  const sessionTokenRef = useRef<unknown>(null);
+  const suggestionsRef = useRef<Map<string, PlacePrediction>>(new Map());
 
-  const [placesLoaded, setPlacesLoaded] = useState<boolean>(
-    typeof window !== "undefined" && !!(window as GWindow).google?.maps?.places,
-  );
+  const [placesLoaded, setPlacesLoaded] = useState<boolean>(false);
   // Split a saved address like "12 Fallow Fld, Winchester SO22 4LY, UK"
   // into { door: "12", rest: "Fallow Fld, Winchester SO22 4LY, UK" } so the
   // door number can be edited without stacking on re-open.
@@ -154,40 +163,30 @@ export function AddressLookup({
   const [error, setError] = useState<string | null>(null);
   const [searchKey, setSearchKey] = useState<number>(0);
 
-  console.log("[address-lookup] rendered, initial:", {
-    initialPostcode,
-    initialAddress,
-    initialCity,
-  });
-
-  // Load the Google Maps Places script (idempotent — reuses existing tag)
+  // Load Google Maps + Places (New) library
   useEffect(() => {
     let cancelled = false;
-    loadPlacesScript()
-      .then(() => {
-        if (!cancelled) {
-          console.log("[address-lookup] google places ready");
-          setPlacesLoaded(true);
-        }
-      })
-      .catch((e) => {
-        console.error("[address-lookup] script load error:", e);
+    (async () => {
+      try {
+        await loadMapsScript();
+        const g = (window as GWindow).google;
+        if (!g?.maps?.importLibrary) throw new Error("importLibrary unavailable");
+        const lib = (await g.maps.importLibrary("places")) as PlacesLib;
+        if (cancelled) return;
+        placesLibRef.current = lib;
+        sessionTokenRef.current = new lib.AutocompleteSessionToken();
+        console.log("[address-lookup] Places (New) ready");
+        setPlacesLoaded(true);
+      } catch (e) {
+        console.error("[address-lookup] load error:", e);
         if (!cancelled) setError("Could not load address lookup");
-      });
+      }
+    })();
     return () => {
       cancelled = true;
     };
   }, []);
 
-  // Initialise services once the script is loaded
-  useEffect(() => {
-    if (!placesLoaded) return;
-    const g = (window as GWindow).google;
-    if (!g?.maps?.places) return;
-    serviceRef.current = new g.maps.places.AutocompleteService();
-    const serviceNode = document.createElement("div");
-    placesServiceRef.current = new g.maps.places.PlacesService(serviceNode);
-  }, [placesLoaded]);
 
   // Close suggestions when clicking outside
   useEffect(() => {
