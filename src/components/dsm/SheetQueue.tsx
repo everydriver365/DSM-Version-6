@@ -156,9 +156,15 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
   if (active === "whatsNew") {
     const resolve = (mode: "dismissed" | "later") => {
       if (mode === "dismissed") setLastSeenVersion(userId, APP_VERSION);
+      // Unmount What's new first. Wait two animation frames so React has
+      // fully committed the unmount (backdrop + sheet removed from the DOM)
+      // before we allow the next sheet in the queue to mount. WhatsNewSheet
+      // has no exit animation, so no fixed timeout is needed — this is
+      // deterministic rather than a 300ms guess.
       setActive("none");
-      // Brief pause before allowing catch-up to appear, per spec.
-      window.setTimeout(() => setWhatsNewResolved(mode), 300);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setWhatsNewResolved(mode));
+      });
     };
     return (
       <WhatsNewSheet
