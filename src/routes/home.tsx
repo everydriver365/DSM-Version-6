@@ -1086,7 +1086,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
   return (
     <div
       style={{
-        margin: "0 -16px",
         padding: "20px 0 22px",
         background: PAGE_BACKGROUND,
         fontFamily: POPPINS_MKT,
@@ -1098,6 +1097,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         .mkt-view-all:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(7, 43, 71, 0.35); }
         .mkt-card { transition: transform 0.15s ease, box-shadow 0.2s ease; }
         .mkt-card:active { transform: scale(0.98); }
+        .mkt-scroll::-webkit-scrollbar { display: none; }
+        .mkt-scroll { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
 
       {/* SECTION HEADER */}
