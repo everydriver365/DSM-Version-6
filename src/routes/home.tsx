@@ -12,8 +12,7 @@ import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { Cloud as CloudIcon, CloudRain, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
 import { PageLayout } from "@/components/PageLayout";
-import { WhatsNewController } from "@/components/dsm/WhatsNewSheet";
-import { DailyCatchUpController } from "@/components/dsm/DailyCatchUpSheet";
+import { SheetQueueController } from "@/components/dsm/SheetQueue";
 
 import {
   Phone,
