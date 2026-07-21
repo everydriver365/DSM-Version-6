@@ -1462,13 +1462,11 @@ function GapsPage() {
         overflow: "hidden",
       }}
     >
-      {/* Header — light */}
+      {/* Header — navy top layer */}
       <div
         style={{
-          background: "#FFFFFF",
-          padding: "16px 16px 20px",
-          borderRadius: "0 0 24px 24px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+          background: "#0B1F3A",
+          padding: "14px 16px",
         }}
       >
         <div
@@ -1476,7 +1474,6 @@ function GapsPage() {
             display: "flex",
             alignItems: "center",
             gap: 12,
-            marginBottom: 16,
           }}
         >
           <button
@@ -1486,49 +1483,42 @@ function GapsPage() {
               width: 34,
               height: 34,
               borderRadius: 10,
-              background: "#F3F4F6",
+              background: "rgba(255,255,255,0.12)",
               border: "none",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              color: "#0B1F3A",
+              color: "#FFFFFF",
               flexShrink: 0,
             }}
           >
             <ArrowLeft size={17} />
           </button>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <h1
-              style={{
-                ...FONT,
-                color: "#0B1F3A",
-                fontSize: 18,
-                fontWeight: 600,
-                margin: 0,
-                lineHeight: 1.2,
-              }}
-            >
-              Fill My Slots
-            </h1>
-            <div
-              style={{
-                color: "#6B7280",
-                fontSize: 12,
-                marginTop: 1,
-              }}
-            >
-              Available gaps in the next 14 days
-            </div>
-          </div>
+          <h1
+            style={{
+              ...FONT,
+              color: "#FFFFFF",
+              fontSize: 18,
+              fontWeight: 600,
+              margin: 0,
+              lineHeight: 1.2,
+            }}
+          >
+            Fill My Slots
+          </h1>
         </div>
+      </div>
 
-        <div
-          style={{
-            display: "flex",
-            gap: 8,
-          }}
-        >
+      {/* Header — white stats layer */}
+      <div
+        style={{
+          background: "#FFFFFF",
+          padding: "12px 16px",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+        }}
+      >
+        <div style={{ display: "flex", gap: 8 }}>
           {[
             { label: "SLOTS", value: String(freeSlots.length), color: "#0B1F3A" },
             { label: "DAYS", value: String(daysWithGaps), color: "#0B1F3A" },
