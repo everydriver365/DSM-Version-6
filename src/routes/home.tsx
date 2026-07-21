@@ -1475,7 +1475,20 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         )}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
+      <div
+        ref={liveScrollRef}
+        onScroll={onLiveScroll}
+        className="dsm-live-scroll"
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: LIVE_GAP,
+          overflowX: "auto",
+          overflowY: "hidden",
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
         {visible.map((session) => {
           const fmt = detectFormat(session.category, session.title);
           const meta = FORMAT_META[fmt];
