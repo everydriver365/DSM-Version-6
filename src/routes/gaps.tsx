@@ -960,6 +960,7 @@ function GapsPage() {
         .from("gap_filler_offers")
         .select("*, pupils(name, first_name)")
         .eq("instructor_id", userId)
+        .is("dismissed_at", null)
         .order("created_at", { ascending: false })
         .limit(10);
       setOffers((offerRows ?? []) as OfferRow[]);
@@ -2554,11 +2555,50 @@ function GapsPage() {
               {offers.length}
             </span>
           </span>
-          {offersOpen ? (
-            <ChevronUp size={18} color={MUTED} />
-          ) : (
-            <ChevronDown size={18} color={MUTED} />
-          )}
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            {offersOpen && offers.length > 0 && (
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!userId) return;
+                  if (
+                    !window.confirm(
+                      "Hide all recent offers? You can still find them in your full history.",
+                    )
+                  ) {
+                    return;
+                  }
+                  const { error } = await supabase
+                    .from("gap_filler_offers")
+                    .update({ dismissed_at: new Date().toISOString() })
+                    .eq("instructor_id", userId)
+                    .is("dismissed_at", null);
+                  if (error) {
+                    console.error("[gaps] dismiss all offers failed:", error);
+                    toast.error("Could not hide offers");
+                    return;
+                  }
+                  setOffers([]);
+                  setOffersOpen(false);
+                }}
+                style={{
+                  fontSize: 12,
+                  color: MUTED,
+                  background: "transparent",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                }}
+              >
+                Clear all
+              </button>
+            )}
+            {offersOpen ? (
+              <ChevronUp size={18} color={MUTED} />
+            ) : (
+              <ChevronDown size={18} color={MUTED} />
+            )}
+          </div>
         </button>
         {offersOpen && (
           <div style={{ marginTop: 10 }}>
