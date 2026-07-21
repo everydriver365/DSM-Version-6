@@ -63,6 +63,7 @@ const DAYS = [
   "Friday",
   "Saturday",
 ];
+const GAP_FILLER_FUTURE_DAYS = 180;
 
 interface FreeSlot {
   date: string;
@@ -547,7 +548,7 @@ function GapsPage() {
       try {
         const today = new Date();
         const startIso = todayIso();
-        const endIso = addDaysIso(today, 14);
+        const endIso = addDaysIso(today, GAP_FILLER_FUTURE_DAYS);
         console.log("[gaps] today ISO:", startIso, "date range:", startIso, "→", endIso);
         const { data: { session: dbgSession } } = await supabase.auth.getSession();
         console.log("[gaps] auth session user:", dbgSession?.user?.id);
@@ -695,7 +696,7 @@ function GapsPage() {
         const groups: DayGroup[] = [];
         const perDayHours = instr.per_day_hours ?? null;
         console.log("[gaps] per_day_hours:", perDayHours);
-        for (let i = 0; i < 14; i++) {
+        for (let i = 0; i <= GAP_FILLER_FUTURE_DAYS; i++) {
           const dt = new Date(today);
           dt.setDate(dt.getDate() + i);
           const dayName = DAYS[dt.getDay()];
