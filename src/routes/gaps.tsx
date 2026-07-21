@@ -2185,6 +2185,7 @@ function GapsPage() {
           <SummaryStats
             dayGroups={dayGroups}
             hourlyRate={hourlyRate}
+            freeSlots={freeSlots}
           />
         )}
 
@@ -3183,9 +3184,11 @@ function GapsPage() {
 function SummaryStats({
   dayGroups,
   hourlyRate,
+  freeSlots,
 }: {
   dayGroups: DayGroup[];
   hourlyRate: number;
+  freeSlots: FreeSlot[];
 }) {
   const workDays = dayGroups.filter((d) => d.isWorkDay);
   if (!workDays.length) return null;
@@ -3195,7 +3198,7 @@ function SummaryStats({
   const mostFree = workDays.reduce((a, b) =>
     b.totalFreeMinutes > a.totalFreeMinutes ? b : a,
   );
-  const totalFreeMins = workDays.reduce((s, d) => s + d.totalFreeMinutes, 0);
+  const totalFreeMins = freeSlots.reduce((s, slot) => s + (slot.gapMinutes ?? 0), 0);
   const totalFreeHours = totalFreeMins / 60;
   const potential = hourlyRate > 0 ? totalFreeHours * hourlyRate : 0;
 
