@@ -1486,20 +1486,19 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             type="button"
             onClick={() => navigate({ to: "/dsm-live" as never })}
             style={{
-              background: "#072B47",
+              background: "transparent",
               border: "none",
-              borderRadius: 999,
-              padding: "8px 14px",
-              fontSize: 11,
+              padding: "4px 2px",
+              fontSize: 13,
               fontWeight: 600,
-              color: "#FFFFFF",
+              color: "#1877D6",
               cursor: "pointer",
               whiteSpace: "nowrap",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               fontFamily: POPPINS,
+              letterSpacing: "-0.01em",
             }}
           >
-            View all
+            See all →
           </button>
         )}
       </div>
