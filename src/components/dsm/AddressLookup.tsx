@@ -205,7 +205,8 @@ export function AddressLookup({
   // Fetch predictions as the user types
   useEffect(() => {
     setError(null);
-    if (!placesLoaded || !serviceRef.current || confirmed || inputValue.length < 3) {
+    const lib = placesLibRef.current;
+    if (!placesLoaded || !lib || confirmed || inputValue.length < 3) {
       setSuggestions([]);
       setShowSuggestions(false);
       setNoResults(false);
@@ -217,116 +218,127 @@ export function AddressLookup({
     setNoResults(false);
     setShowSuggestions(false);
 
-    const timer = setTimeout(() => {
-      serviceRef.current?.getPlacePredictions(
-        {
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      try {
+        const { suggestions: raw } = await lib.AutocompleteSuggestion.fetchAutocompleteSuggestions({
           input: inputValue,
-          componentRestrictions: { country: "gb" },
-          types: ["geocode"],
-        },
-        (predictions, status) => {
-          setLoading(false);
-          if (status === "OK" && predictions && predictions.length > 0) {
-            setSuggestions(predictions);
-            setNoResults(false);
-            setError(null);
-            setShowSuggestions(true);
-          } else if (status === "ZERO_RESULTS") {
-            setSuggestions([]);
-            setNoResults(true);
-            setError(null);
-            setShowSuggestions(true);
-          } else {
-            console.error(
-              "[address-lookup] getPlacePredictions failed:",
-              status,
-              "input:",
-              inputValue,
-            );
-            setSuggestions([]);
-            setNoResults(false);
-            setShowSuggestions(false);
-            setError(`Address lookup failed (${status}). Please try again.`);
-          }
-        },
-      );
+          sessionToken: sessionTokenRef.current ?? undefined,
+          includedRegionCodes: ["gb"],
+        });
+        if (cancelled) return;
+        setLoading(false);
+
+        const preds: Prediction[] = [];
+        const map = new Map<string, PlacePrediction>();
+        for (const s of raw) {
+          const p = s.placePrediction;
+          if (!p) continue;
+          const description = readText(p.text);
+          const mainText = readText(p.mainText) || description;
+          const secondaryText = readText(p.secondaryText);
+          preds.push({
+            place_id: p.placeId,
+            description,
+            structured_formatting: { main_text: mainText, secondary_text: secondaryText },
+          });
+          map.set(p.placeId, p);
+        }
+        suggestionsRef.current = map;
+
+        if (preds.length > 0) {
+          setSuggestions(preds);
+          setNoResults(false);
+          setError(null);
+          setShowSuggestions(true);
+        } else {
+          setSuggestions([]);
+          setNoResults(true);
+          setError(null);
+          setShowSuggestions(true);
+        }
+      } catch (err) {
+        if (cancelled) return;
+        console.error("[address-lookup] fetchAutocompleteSuggestions failed:", err, "input:", inputValue);
+        setLoading(false);
+        setSuggestions([]);
+        setNoResults(false);
+        setShowSuggestions(false);
+        setError("Address lookup failed. Please try again.");
+      }
     }, 300);
 
-
-    return () => clearTimeout(timer);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
   }, [inputValue, placesLoaded, confirmed, searchKey]);
 
   const handleSelect = useCallback(
-    (prediction: Prediction) => {
-      if (!placesServiceRef.current) return;
+    async (prediction: Prediction) => {
+      const lib = placesLibRef.current;
+      const pred = suggestionsRef.current.get(prediction.place_id);
+      if (!lib || !pred) return;
       setLoading(true);
       setShowSuggestions(false);
       setError(null);
 
-      placesServiceRef.current.getDetails(
-        {
-          placeId: prediction.place_id,
-          fields: ["formatted_address", "address_components", "geometry"],
-        },
-        (place, status) => {
-          setLoading(false);
-          if (!place || status !== "OK") {
-            console.error(
-              "[address-lookup] getDetails failed:",
-              status,
-              "placeId:",
-              prediction.place_id,
-            );
-            setError(`Could not fetch address details (${status}).`);
-            return;
-          }
+      try {
+        const place = pred.toPlace();
+        await place.fetchFields({ fields: ["formattedAddress", "addressComponents", "location"] });
+        setLoading(false);
 
+        let streetNumber = "";
+        let streetName = "";
+        let town = "";
+        let county = "";
+        let pc = "";
 
-          let streetNumber = "";
-          let streetName = "";
-          let town = "";
-          let county = "";
-          let pc = "";
+        for (const comp of place.addressComponents || []) {
+          const type = comp.componentType || comp.types?.[0] || "";
+          const long = comp.longText || comp.shortText || "";
+          if (type === "street_number") streetNumber = long;
+          else if (type === "route") streetName = long;
+          else if (type === "postal_town" || type === "locality") town = long;
+          else if (type === "administrative_area_level_2") county = long;
+          else if (type === "postal_code") pc = long;
+        }
 
-          for (const comp of place.address_components || []) {
-            const type = comp.types[0];
-            if (type === "street_number") streetNumber = comp.long_name;
-            else if (type === "route") streetName = comp.long_name;
-            else if (type === "postal_town" || type === "locality")
-              town = comp.long_name;
-            else if (type === "administrative_area_level_2")
-              county = comp.long_name;
-            else if (type === "postal_code") pc = comp.long_name;
-          }
+        const line1 = [streetNumber, streetName].filter(Boolean).join(" ");
+        const formatted = place.formattedAddress || line1 || "";
+        const lat = place.location?.lat() ?? null;
+        const lng = place.location?.lng() ?? null;
+        const derivedCity = town || county || "";
 
-          const line1 = [streetNumber, streetName].filter(Boolean).join(" ");
-          const formatted = place.formatted_address || line1 || "";
-          const lat = place.geometry?.location?.lat() ?? null;
-          const lng = place.geometry?.location?.lng() ?? null;
-          const derivedCity = town || county || "";
+        setSelectedAddress(formatted);
+        setBaseAddress(formatted);
+        setDoorNumber("");
+        setPostcode(pc);
+        setCity(derivedCity);
+        setSelectedLat(lat);
+        setSelectedLng(lng);
+        setInputValue(formatted);
+        setConfirmed(true);
 
-          setSelectedAddress(formatted);
-          setBaseAddress(formatted);
-          setDoorNumber("");
-          setPostcode(pc);
-          setCity(derivedCity);
-          setSelectedLat(lat);
-          setSelectedLng(lng);
-          setInputValue(formatted);
-          setConfirmed(true);
+        // A new session starts after each successful selection
+        sessionTokenRef.current = new lib.AutocompleteSessionToken();
 
-          onAddressFound({
-            postcode: pc,
-            address: formatted,
-            city: derivedCity,
-            lat,
-            lng,
-          });
-        },
-      );
+        onAddressFound({
+          postcode: pc,
+          address: formatted,
+          city: derivedCity,
+          lat,
+          lng,
+        });
+      } catch (err) {
+        console.error("[address-lookup] fetchFields failed:", err, "placeId:", prediction.place_id);
+        setLoading(false);
+        setError("Could not fetch address details.");
+      }
     },
     [onAddressFound],
   );
+
 
   function reset() {
     setConfirmed(false);
