@@ -69,21 +69,33 @@ export function DailyCatchUpSheet({
           <div style={{ width: 40, height: 5, borderRadius: 999, background: "#C7CDD6" }} />
         </div>
 
-        <div
-          style={{
-            fontSize: 11,
-            fontWeight: 700,
-            color: BLUE,
-            textTransform: "uppercase",
-            letterSpacing: "0.08em",
-            marginBottom: 4,
-          }}
-        >
-          Since yesterday
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+          <div>
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: BLUE,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                marginBottom: 4,
+              }}
+            >
+              Since yesterday
+            </div>
+            <h2 style={{ fontSize: 19, fontWeight: 700, color: NAVY, margin: 0 }}>
+              {title}
+            </h2>
+          </div>
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={onDismiss}
+            style={{ width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}
+          >
+            <X size={18} color="#6B7280" />
+          </button>
         </div>
-        <h2 style={{ fontSize: 19, fontWeight: 700, color: NAVY, margin: 0, marginBottom: 14 }}>
-          {title}
-        </h2>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 18 }}>
           {rows.map((r) => (
