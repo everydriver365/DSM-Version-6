@@ -102,6 +102,11 @@ import {
   Infinity,
   MoreHorizontal,
   Move,
+  Camera,
+  Video,
+  Radio,
+  Shield,
+  Mic,
 } from "lucide-react";
 import {
   IconCurrencyPound,
@@ -1052,17 +1057,18 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     navigate({ to: "/marketplace/$listingId" as never, params: { listingId } as never });
   };
 
-  const cards = listings.slice(0, 4);
+  const cards = listings.slice(0, 2);
+  const hasMore = listings.length > cards.length;
 
-  // (icons removed from marketplace tiles; images are the primary visual)
+  const POPPINS_MKT = "'Poppins', 'Inter', sans-serif";
 
-  const firstImageUrl = (tile: ListingTile): string | undefined => {
-    if (tile.image_urls) {
-      const urls = Array.isArray(tile.image_urls) ? tile.image_urls : [tile.image_urls];
-      const url = urls[0];
-      if (url && typeof url === "string" && url.trim()) return url;
-    }
-    return tile.marketplace_suppliers?.logo_url ?? undefined;
+  const iconForCategory = (name: string | null | undefined, title: string): React.ReactNode => {
+    const s = `${name ?? ""} ${title ?? ""}`.toLowerCase();
+    if (/website|site|web|landing|page/.test(s)) return <Laptop size={44} color="#FFFFFF" strokeWidth={1.5} />;
+    if (/domain|url|hosting/.test(s)) return <Globe size={44} color="#FFFFFF" strokeWidth={1.5} />;
+    if (/dash\s?cam|camera|video/.test(s)) return <Camera size={44} color="#FFFFFF" strokeWidth={1.5} />;
+    if (/tracker|gps|locat/.test(s)) return <Shield size={44} color="#FFFFFF" strokeWidth={1.5} />;
+    return <Package size={44} color="#FFFFFF" strokeWidth={1.5} />;
   };
 
   return (
@@ -1071,18 +1077,15 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         margin: "0 -16px",
         padding: "20px 0 22px",
         background: PAGE_BACKGROUND,
-        fontFamily: "'Poppins', 'Inter', sans-serif",
+        fontFamily: POPPINS_MKT,
       }}
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
-        .mkt-view-all {
-          transition: box-shadow 0.25s ease, transform 0.25s ease;
-        }
-        .mkt-view-all:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 8px 20px rgba(7, 43, 71, 0.35);
-        }
+        .mkt-view-all { transition: box-shadow 0.25s ease, transform 0.25s ease; }
+        .mkt-view-all:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(7, 43, 71, 0.35); }
+        .mkt-card { transition: transform 0.15s ease, box-shadow 0.2s ease; }
+        .mkt-card:active { transform: scale(0.98); }
       `}</style>
 
       {/* SECTION HEADER */}
@@ -1096,50 +1099,35 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           gap: 12,
         }}
       >
-        <div
-          style={{
-            fontSize: 18,
-            fontWeight: 600,
-            color: "#072B47",
-            lineHeight: 1.2,
-            letterSpacing: "-0.01em",
-          }}
-        >
+        <div style={{ fontSize: 18, fontWeight: 600, color: "#072B47", lineHeight: 1.2, letterSpacing: "-0.01em" }}>
           DSM Marketplace
         </div>
-        <button
-          type="button"
-          className="mkt-view-all"
-          onClick={() => navigate({ to: "/marketplace" as never })}
-          style={{
-            background: "#072B47",
-            border: "none",
-            borderRadius: 999,
-            padding: "8px 14px",
-            fontSize: 11,
-            fontWeight: 600,
-            color: "#FFFFFF",
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-            boxShadow: "0 6px 14px rgba(7, 43, 71, 0.25)",
-            fontFamily: "'Poppins', 'Inter', sans-serif",
-          }}
-        >
-          View all services
-        </button>
+        {hasMore && (
+          <button
+            type="button"
+            className="mkt-view-all"
+            onClick={() => navigate({ to: "/marketplace" as never })}
+            style={{
+              background: "#072B47",
+              border: "none",
+              borderRadius: 999,
+              padding: "8px 14px",
+              fontSize: 11,
+              fontWeight: 600,
+              color: "#FFFFFF",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              fontFamily: POPPINS_MKT,
+            }}
+          >
+            View all services
+          </button>
+        )}
       </div>
 
       {cards.length === 0 ? (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "36px 0",
-            gap: 8,
-          }}
-        >
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "36px 0", gap: 8 }}>
           <Package size={32} color="#D0D5DD" />
           <div style={{ fontSize: 13, color: "#B0BAC9" }}>No featured services</div>
         </div>
@@ -1147,15 +1135,91 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12, padding: "0 16px" }}>
           {cards.map((tile) => {
             const price = parsePrice(tile.price_display);
-            const subtitle = price ? `${price.price} ${price.period}` : (tile.marketplace_categories?.name ?? "Premium service");
+            const hasPrice = !!price && !!price.price;
             return (
-              <TileCard
+              <button
                 key={tile.id}
-                title={tile.title}
-                subtitle={subtitle}
-                image={firstImageUrl(tile)}
+                type="button"
                 onClick={() => openListing(tile.id)}
-              />
+                className="mkt-card"
+                style={{
+                  position: "relative",
+                  background: "#FFFFFF",
+                  border: "1px solid #ECEFF3",
+                  borderRadius: 20,
+                  padding: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "stretch",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  overflow: "hidden",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                  fontFamily: POPPINS_MKT,
+                  width: "100%",
+                }}
+              >
+                {/* Icon panel */}
+                <div
+                  style={{
+                    width: "100%",
+                    aspectRatio: "16 / 9",
+                    background: "linear-gradient(135deg, #1877D6 0%, #0F2044 100%)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {iconForCategory(tile.marketplace_categories?.name, tile.title)}
+                </div>
+
+                {/* Body */}
+                <div style={{ padding: "12px 14px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: "#0F2044",
+                      lineHeight: 1.25,
+                      letterSpacing: "-0.01em",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      wordBreak: "break-word",
+                      minHeight: "2.5em",
+                    }}
+                  >
+                    {tile.title}
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                    {hasPrice ? (
+                      <div style={{ fontSize: 12.5, color: "#5A6B85", fontWeight: 500, lineHeight: 1.2 }}>
+                        <span style={{ color: "#0F2044", fontWeight: 600 }}>{price!.price}</span>{" "}
+                        <span style={{ color: "#8592A6" }}>{price!.period}</span>
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: 12, color: "#B8802C", fontStyle: "italic", fontWeight: 500, lineHeight: 1.2 }}>
+                        Price coming soon
+                      </div>
+                    )}
+                    <span
+                      style={{
+                        width: 26,
+                        height: 26,
+                        borderRadius: 999,
+                        background: "#EEF2F7",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <ChevronRight size={14} color="#0F2044" strokeWidth={2.4} />
+                    </span>
+                  </div>
+                </div>
+              </button>
             );
           })}
         </div>
@@ -1228,11 +1292,13 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     const ka = `${a.session_date}T${(a.session_time || "00:00:00").slice(0, 8)}`;
     const kb = `${b.session_date}T${(b.session_time || "00:00:00").slice(0, 8)}`;
     return ka.localeCompare(kb);
-  }).slice(0, 12);
+  });
 
   // Empty state: no upcoming sessions → render nothing.
   if (sortedSessions.length === 0) return null;
 
+  const visible = sortedSessions.slice(0, 2);
+  const hasMore = sortedSessions.length > visible.length;
 
   const startsInLabel = (d: string, t: string) => {
     try {
@@ -1248,6 +1314,27 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     } catch {
       return fmtDateTime(d, t);
     }
+  };
+
+  const isSoon = (d: string, t: string) => {
+    try {
+      const when = new Date(`${d}T${(t || "00:00:00").slice(0, 8)}`).getTime();
+      const diff = when - Date.now();
+      return diff > 0 && diff <= 24 * 60 * 60 * 1000;
+    } catch { return false; }
+  };
+
+  type FormatKey = "zoom" | "webinar" | "podcast";
+  const detectFormat = (category: string | null, title: string): FormatKey => {
+    const s = `${category ?? ""} ${title ?? ""}`.toLowerCase();
+    if (/podcast/.test(s)) return "podcast";
+    if (/webinar/.test(s)) return "webinar";
+    return "zoom";
+  };
+  const FORMAT_META: Record<FormatKey, { label: string; expectation: string; bg: string; fg: string; icon: React.ReactNode }> = {
+    zoom: { label: "Zoom", expectation: "camera on", bg: "#E5EFFA", fg: "#1877D6", icon: <Video size={14} color="#1877D6" strokeWidth={2} /> },
+    webinar: { label: "Webinar", expectation: "listen & chat", bg: "#F1E9FA", fg: "#7A3FC0", icon: <Radio size={14} color="#7A3FC0" strokeWidth={2} /> },
+    podcast: { label: "Podcast", expectation: "listen anytime", bg: "#E7F5EE", fg: "#1E8E5A", icon: <Mic size={14} color="#1E8E5A" strokeWidth={2} /> },
   };
 
   return (
@@ -1302,38 +1389,140 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
             </span>
           </span>
         </div>
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/dsm-live" as never })}
-          style={{
-            background: "#072B47",
-            border: "none",
-            borderRadius: 999,
-            padding: "8px 14px",
-            fontSize: 11,
-            fontWeight: 600,
-            color: "#FFFFFF",
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-            fontFamily: POPPINS,
-          }}
-        >
-          View all
-        </button>
+        {hasMore && (
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/dsm-live" as never })}
+            style={{
+              background: "#072B47",
+              border: "none",
+              borderRadius: 999,
+              padding: "8px 14px",
+              fontSize: 11,
+              fontWeight: 600,
+              color: "#FFFFFF",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              fontFamily: POPPINS,
+            }}
+          >
+            View all
+          </button>
+        )}
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
-        {sortedSessions.slice(0, 2).map((session) => (
-          <TileCard
-            key={session.id}
-            title={session.title}
-            subtitle={startsInLabel(session.session_date, session.session_time)}
-            attention={!!session.is_live}
-            image={session.image_url ?? undefined}
-            onClick={() => open(session.id)}
-          />
-        ))}
+        {visible.map((session) => {
+          const live = !!session.is_live;
+          const soon = !live && isSoon(session.session_date, session.session_time);
+          const pillBg = live ? "#CC2229" : soon ? "#FDF3E3" : "#E5EFFA";
+          const pillFg = live ? "#FFFFFF" : soon ? "#B8802C" : "#1877D6";
+          const pillLabel = live ? "Live now" : startsInLabel(session.session_date, session.session_time);
+          const fmt = detectFormat(session.category, session.title);
+          const meta = FORMAT_META[fmt];
+          return (
+            <button
+              key={session.id}
+              type="button"
+              onClick={() => open(session.id)}
+              style={{
+                position: "relative",
+                background: "#FFFFFF",
+                border: live ? "1px solid rgba(204,34,41,0.35)" : "1px solid #ECEFF3",
+                borderRadius: 20,
+                padding: "12px 14px 14px 16px",
+                textAlign: "left",
+                cursor: "pointer",
+                overflow: "hidden",
+                boxShadow: live ? "0 1px 3px rgba(204,34,41,0.15)" : "0 1px 3px rgba(0,0,0,0.06)",
+                fontFamily: POPPINS,
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+                minHeight: 140,
+              }}
+            >
+              {/* Left accent bar */}
+              <span
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 3,
+                  background: live ? "#CC2229" : "#1877D6",
+                }}
+              />
+
+              {/* Format badge (top-right) */}
+              <span
+                style={{
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  width: 26,
+                  height: 26,
+                  borderRadius: 8,
+                  background: meta.bg,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                aria-label={meta.label}
+              >
+                {meta.icon}
+              </span>
+
+              {/* Status pill */}
+              <span
+                style={{
+                  alignSelf: "flex-start",
+                  background: pillBg,
+                  color: pillFg,
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                  padding: "3px 8px",
+                  borderRadius: 999,
+                  maxWidth: "calc(100% - 36px)",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {pillLabel}
+              </span>
+
+              {/* Title */}
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#0F2044",
+                  lineHeight: 1.25,
+                  letterSpacing: "-0.01em",
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                  wordBreak: "break-word",
+                  paddingRight: 4,
+                }}
+              >
+                {session.title}
+              </div>
+
+              {/* Format + expectation caption */}
+              <div style={{ fontSize: 11.5, color: "#8592A6", lineHeight: 1.3, marginTop: "auto" }}>
+                {meta.label} · {meta.expectation}
+              </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
