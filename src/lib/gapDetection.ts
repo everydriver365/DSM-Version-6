@@ -122,8 +122,17 @@ export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
     if (!overlaps) continue;
     const startTime = localTimeStr(b.start_datetime) || "00:00";
     const endTime = localTimeStr(b.end_datetime) || "23:59";
+    const startMs = new Date(b.start_datetime).getTime();
+    const endMs = new Date(b.end_datetime).getTime();
+    const durationMins = Number.isFinite(startMs) && Number.isFinite(endMs)
+      ? Math.max(0, Math.round((endMs - startMs) / 60000))
+      : 0;
+    const startsAtBoundary = startTime === "00:00" || startTime === "01:00";
+    const endsAtBoundary = endTime === "00:00" || endTime === "01:00" || endTime === "23:59";
     const isAllDay =
-      startTime === "00:00" && (endTime === "00:00" || endTime === "23:59");
+      (startTime === "00:00" && (endTime === "00:00" || endTime === "23:59")) ||
+      (durationMins >= 20 * 60 && startsAtBoundary && endsAtBoundary);
+    if (isAllDay) continue;
     const spansIntoDay = startDate < dateStr;
     const spansOutOfDay = endDate > dateStr;
     busy.push({
