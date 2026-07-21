@@ -102,6 +102,11 @@ import {
   Infinity,
   MoreHorizontal,
   Move,
+  Camera,
+  Video,
+  Radio,
+  Shield,
+  Mic,
 } from "lucide-react";
 import {
   IconCurrencyPound,
