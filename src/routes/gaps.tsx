@@ -451,6 +451,13 @@ function GapsPage() {
   const [selectedSlots, setSelectedSlots] = useState<SelectedSlot[]>([]);
   const [manualMode, setManualMode] = useState(false);
   const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
+  const [selectedDateIso, setSelectedDateIso] = useState<string | null>(null);
+  useEffect(() => {
+    if (selectedDateIso) return;
+    if (dayGroups.length === 0) return;
+    const first = dayGroups.find((g) => g.slots.length > 0);
+    setSelectedDateIso(first?.iso ?? dayGroups[0]?.iso ?? todayIso());
+  }, [dayGroups, selectedDateIso]);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
   const [allPupils, setAllPupils] = useState<Pupil[]>([]);
@@ -1455,11 +1462,13 @@ function GapsPage() {
         overflow: "hidden",
       }}
     >
-      {/* Header — dark navy */}
+      {/* Header — light */}
       <div
         style={{
-          background: NAVY,
+          background: "#FFFFFF",
           padding: "16px 16px 20px",
+          borderRadius: "0 0 24px 24px",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         }}
       >
         <div
@@ -1477,13 +1486,13 @@ function GapsPage() {
               width: 34,
               height: 34,
               borderRadius: 10,
-              background: "rgba(255,255,255,0.1)",
+              background: "#F3F4F6",
               border: "none",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              color: "#FFFFFF",
+              color: "#0B1F3A",
               flexShrink: 0,
             }}
           >
@@ -1493,7 +1502,7 @@ function GapsPage() {
             <h1
               style={{
                 ...FONT,
-                color: "#FFFFFF",
+                color: "#0B1F3A",
                 fontSize: 18,
                 fontWeight: 600,
                 margin: 0,
@@ -1504,7 +1513,7 @@ function GapsPage() {
             </h1>
             <div
               style={{
-                color: "#9AA7C4",
+                color: "#6B7280",
                 fontSize: 12,
                 marginTop: 1,
               }}
@@ -1521,19 +1530,19 @@ function GapsPage() {
           }}
         >
           {[
-            { label: "SLOTS", value: String(freeSlots.length), color: "#FFFFFF" },
-            { label: "DAYS", value: String(daysWithGaps), color: "#FFFFFF" },
+            { label: "SLOTS", value: String(freeSlots.length), color: "#0B1F3A" },
+            { label: "DAYS", value: String(daysWithGaps), color: "#0B1F3A" },
             {
               label: "POTENTIAL",
               value: potentialValue,
-              color: hourlyRate > 0 ? "#2E9E5B" : "#9AA7C4",
+              color: hourlyRate > 0 ? "#2E9E5B" : "#0B1F3A",
             },
           ].map((s) => (
             <div
               key={s.label}
               style={{
                 flex: 1,
-                background: "rgba(255,255,255,0.08)",
+                background: "#F3F8FF",
                 borderRadius: 14,
                 padding: "12px 14px",
               }}
@@ -1542,7 +1551,7 @@ function GapsPage() {
                 style={{
                   fontSize: 10,
                   fontWeight: 500,
-                  color: "#9AA7C4",
+                  color: "#6B87A8",
                   letterSpacing: "0.03em",
                   marginBottom: 6,
                 }}
@@ -1625,37 +1634,7 @@ function GapsPage() {
         </div>
       )}
 
-      {/* Ranking info card */}
-      <div
-        style={{
-          background: "#FFFFFF",
-          borderRadius: 14,
-          padding: "14px 16px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-          margin: "14px 16px 20px",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-        }}
-      >
-        <div
-          style={{
-            width: 36,
-            height: 36,
-            borderRadius: 10,
-            background: "#E6F1FB",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
-          <Zap size={18} color="#1877D6" />
-        </div>
-        <div style={{ fontSize: 13, color: "#5A6270", lineHeight: 1.5 }}>
-          We rank pupils by availability, preferences and time since last lesson.
-        </div>
-      </div>
+      <div style={{ height: 20 }} />
 
       {/* Section header */}
       <div
