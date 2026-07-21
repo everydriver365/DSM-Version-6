@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Briefcase, MessageSquare, Mail, CalendarCheck, CalendarX } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
