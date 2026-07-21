@@ -1069,8 +1069,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     navigate({ to: "/marketplace/$listingId" as never, params: { listingId } as never });
   };
 
-  const cards = listings.slice(0, 2);
-  const hasMore = listings.length > cards.length;
+  const cards = listings;
+  const hasMore = listings.length > 0;
 
   const POPPINS_MKT = "'Poppins', 'Inter', sans-serif";
 
