@@ -743,12 +743,38 @@ function SchedulePage() {
 
   const todayKey = ymdLocal(today);
 
+  // Every active working day in the fetched range must appear as a row,
+  // even with no lessons or calendar blocks, so per-row gap detection can
+  // render "FILL THIS GAP" tiles on otherwise-empty days.
+  const workingDayKeysInRange = useMemo(() => {
+    const DAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const out: string[] = [];
+    const cursor = new Date(rangeStart);
+    cursor.setHours(0, 0, 0, 0);
+    const end = new Date(rangeEnd);
+    end.setHours(0, 0, 0, 0);
+    while (cursor.getTime() <= end.getTime()) {
+      const key = ymdLocal(cursor);
+      if (key >= todayKey) {
+        const dayName = DAY_NAMES[cursor.getDay()];
+        const dayConfig = perDayHours?.[dayName];
+        const isActive = dayConfig
+          ? dayConfig.active === true
+          : workingDaysList.includes(dayName);
+        if (isActive) out.push(key);
+      }
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return out;
+  }, [rangeStart, rangeEnd, todayKey, perDayHours, workingDaysList]);
+
   // Fix 4: ensure today always appears in the agenda, even with no lessons.
   const orderedDayKeysWithToday = useMemo(() => {
-    if (orderedDayKeys.includes(todayKey)) return orderedDayKeys;
-    const merged = [...orderedDayKeys, todayKey].sort();
-    return merged;
-  }, [orderedDayKeys, todayKey]);
+    const set = new Set<string>(orderedDayKeys);
+    for (const k of workingDayKeysInRange) set.add(k);
+    set.add(todayKey);
+    return [...set].sort();
+  }, [orderedDayKeys, workingDayKeysInRange, todayKey]);
 
   // Insert "Week of ..." labels above the first day of each new week.
   type Row =
