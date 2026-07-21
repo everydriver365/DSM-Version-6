@@ -126,7 +126,7 @@ export default function InstructorTopBar({
       )}
 
       {/* RIGHT */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flex: 1, marginLeft: 16 }}>
         <IconBtn ariaLabel="Phone" onClick={onPhone}>
           <PhoneIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
