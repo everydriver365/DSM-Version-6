@@ -2690,9 +2690,14 @@ function GapsPage() {
                   border: "none",
                   height: 44,
                   cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
                 }}
               >
-                Message
+                <Send size={18} />
+                Send message
               </button>
             </>
           ) : (
