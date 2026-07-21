@@ -13,7 +13,7 @@ import {
   ChevronUp,
   AlertTriangle,
   Coffee,
-  
+  Send,
 } from "lucide-react";
 import { Check, ChevronRight, RefreshCw, Sparkles, XCircle, X as XIcon } from "lucide-react";
 import { toast } from "sonner";

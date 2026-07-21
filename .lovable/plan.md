@@ -1,15 +1,14 @@
-## Answer
+Plan: Make the Gap Filler message action discoverable and clearly labeled.
 
-Yes — the Home "Teaching today" timeline already uses the shared `computeDayGaps` from `src/lib/gapDetection.ts` (home.tsx line 5745), so the same all-day-event fix applies. Any gaps that would previously be swallowed by a multi-day/all-day Google Calendar event (e.g. "Summer holiday") will now appear as `FILL THIS GAP` rows on today's timeline too.
+Background: The current `/gaps` action bar shows a button labeled "Message" (or "Message {n} selected →") after pupils are selected. There is also a "Send to {n} pupils" button inside the compose sheet. The user reports no visible "Send message" button on the main screen, suggesting the action-bar label is not obvious enough.
 
-One small cosmetic follow-up is optional:
+Scope: Only `src/routes/gaps.tsx`.
 
-## Optional cleanup
+Changes:
+1. In the fixed bottom action bar, replace the "Message" / "Message {n} selected →" label with a primary button labeled **"Send message"**.
+2. Add a `Send` icon from `lucide-react` to the button to make the action visually clear.
+3. For the single-slot + single-pupil case, keep "Book now" as the primary blue button and make the secondary "Send message" button white-outlined, matching the existing two-button layout.
+4. For multi-pupil / multi-slot cases, use a single "Send message" button.
+5. Do not change the compose sheet content, recipient expansion, or the backdrop behavior.
 
-In `src/routes/home.tsx`, `blocksForDate` (line 3722) does not filter out all-day events, so an all-day holiday still renders as a full "calendar" row inside today's timeline. It no longer blocks gaps, but it looks noisy.
-
-Proposed change (home.tsx only):
-- Extend `blocksForDate` to compute the same `isAllDay` check used in `gapDetection.ts` (start/end at 00:00/01:00/23:59 boundary OR duration ≥ 20h) and drop those blocks before returning.
-- Result: all-day events are hidden from the today/tomorrow timeline rows on Home, matching the gap-detector's behaviour and matching what `gaps.tsx` already does.
-
-Want me to apply this cleanup, or leave the all-day event visible on the timeline?
+No other files touched.
