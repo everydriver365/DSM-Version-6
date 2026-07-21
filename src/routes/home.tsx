@@ -6553,19 +6553,19 @@ function HomePage() {
                           role="button"
                           tabIndex={0}
                           style={{
-                            padding: '12px 10px',
+                            padding: '12px 14px',
                             display: 'flex',
                             alignItems: 'stretch',
                             gap: 12,
                             cursor: 'pointer',
-                            background: 'transparent',
-                            border: 'none',
-                            borderTop: idx === 0 ? 'none' : '1px solid rgba(11,31,58,0.06)',
-                            borderRadius: 0,
+                            background: '#F7F9FC',
+                            border: '1px solid rgba(11,31,58,0.05)',
+                            borderRadius: 14,
                             boxShadow: 'none',
                             boxSizing: 'border-box',
                             opacity: isCancelled ? 0.55 : 1,
                           }}
+
 
                         >
                             <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
