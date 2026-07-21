@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
 import { BottomSheet } from "../components/dsm/BottomSheet";
+import { BottomSheet as BottomSheetV2 } from "../components/dsm/BottomSheetV2";
 import {
   slotFitsPupilWindow,
   previewMatchForGap,
