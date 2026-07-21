@@ -1024,7 +1024,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     (async () => {
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,image_urls,is_featured,marketplace_categories(name),marketplace_suppliers(name,logo_url)&order=is_featured.desc,created_at.desc&limit=6`,
+          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,image_urls,is_featured,marketplace_categories(name),marketplace_suppliers(name,logo_url)&order=is_featured.desc,created_at.desc`,
           {
             headers: {
               apikey: SUPABASE_ANON_KEY,
@@ -1044,6 +1044,18 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
       cancelled = true;
     };
   }, []);
+
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const CARD_W = 172;
+  const GAP = 12;
+
+  const onScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const idx = Math.round(el.scrollLeft / (CARD_W + GAP));
+    setActiveIdx(idx);
+  };
 
   const parsePrice = (priceDisplay: string | null | undefined): { price: string; period: string } | null => {
     if (!priceDisplay) return null;
