@@ -1,22 +1,24 @@
-## What's happening
+## Plan
 
-On `/schedule`, the agenda row list is built from `orderedDayKeys = [...entriesByDay.keys()]`, then only today is force-included via `orderedDayKeysWithToday`. `entriesByDay` is keyed by dates that have a lesson or a Google Calendar block. Any day that has neither is **not in the rows array at all** — so the per-row gap detection never runs for it, and no "FILL THIS GAP" tile appears.
+Fix the schedule so future days with gaps are easy to access and don’t appear to be missing.
 
-That's why today shows a gap tile (force-added) and other days may or may not (only if they happen to have an event). If a day's Google event is all-day, the day is in `entriesByDay` but `computeDayGaps` sees a 00:00–23:59 busy block and returns no gaps — worth flagging separately.
+1. **Keep the existing agenda generation**
+   - The agenda is already rendering future dates in the current preview, including 180 future days.
+   - Keep the active-working-day rows so gap detection can run on future days even when there are no lessons.
 
-## Fix — only touch `src/routes/schedule.tsx`
+2. **Fix date-strip navigation**
+   - Update the date tap handler so when you tap a future date in the calendar strip, it scrolls to that exact rendered day.
+   - The current fallback still searches only `orderedDayKeys` (entry-backed dates), so dates added purely for gap detection can be ignored.
+   - Change it to search the final rendered agenda key list instead.
 
-1. Add a memo `workingDayKeysInRange` that walks from `rangeStart` to `rangeEnd` (already fetched) and yields `ymdLocal(date)` for each day whose weekday name is active in `perDayHours` (or in `workingDaysList` when `perDayHours` is null). Skip past days (`key < todayKey`) so the agenda still starts at today.
-2. Replace the current `orderedDayKeysWithToday` merge with a union of `orderedDayKeys ∪ workingDayKeysInRange ∪ [todayKey]`, deduped and sorted. Feed this into the existing `rows` memo — no changes to the row renderer, gap detection, or `/gaps`.
-3. Leave the empty-state branch (`row.entries.length === 0 && isToday`) as-is; on other empty working days the else branch already runs `detectGaps` and renders gap rows.
+3. **Make future months show useful indicators**
+   - Pass the existing `dotsByDay` map into `MonthStrip`.
+   - Replace the current lesson-only dot with type dots, so future gap days and Google Calendar days are visible in the strip.
 
-## Optional secondary tweak (call out, don't fix unless asked)
+4. **Keep the change scoped**
+   - Only touch `src/routes/schedule.tsx`.
+   - No backend/database changes.
 
-If a day is fully covered by an all-day Google Calendar block, `computeDayGaps` returns zero gaps by design. That's separate from the row-omission bug and can be addressed later if you want all-day events treated as "informational" rather than blocking.
+## Expected result
 
-## Verification
-
-- Days with no lessons and no Google events but active working hours now render a day row with the gap tile.
-- Days with lessons/events keep their current behavior (lessons + interleaved gaps).
-- Non-working days (day off in `perDayHours`) don't add empty rows.
-- `/gaps` and gap-detection logic are untouched.
+Future days will be reachable from the calendar strip, and the strip will indicate future days with Google events, DSM lessons, and fillable gaps instead of making it look like only today/past dates exist.
