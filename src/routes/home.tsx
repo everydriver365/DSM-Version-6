@@ -1547,14 +1547,14 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                 position: "relative",
                 background: "#FFFFFF",
                 border: live ? "1.5px solid #CC2229" : "1px solid #ECEFF3",
-                borderRadius: 14,
+                borderRadius: 16,
                 padding: 0,
                 textAlign: "left",
                 cursor: "pointer",
                 overflow: "hidden",
                 boxShadow: live
-                  ? "0 3px 14px rgba(204,34,41,0.18)"
-                  : "0 1px 3px rgba(0,0,0,0.06)",
+                  ? "0 4px 16px rgba(204,34,41,0.14)"
+                  : "0 1px 2px rgba(11,31,58,0.05)",
                 fontFamily: POPPINS,
                 flex: "0 0 auto",
                 width: LIVE_CARD_W,
