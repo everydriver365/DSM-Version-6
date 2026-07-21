@@ -1528,7 +1528,9 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
                   ? "0 3px 14px rgba(204,34,41,0.18)"
                   : "0 1px 3px rgba(0,0,0,0.06)",
                 fontFamily: POPPINS,
-                width: "100%",
+                flex: "0 0 auto",
+                width: LIVE_CARD_W,
+                scrollSnapAlign: "start",
                 display: "flex",
                 flexDirection: "column",
                 minHeight: 148,
