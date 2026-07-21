@@ -1048,8 +1048,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [activeIdx, setActiveIdx] = useState(0);
-  const CARD_W = 172;
-  const GAP = 12;
+  const CARD_W = 200;
+  const GAP = 14;
 
   const onScroll = () => {
     const el = scrollRef.current;
