@@ -2915,24 +2915,24 @@ function GapsPage() {
           <button
             type="button"
             onClick={() => void bulkMessageSelected()}
-            disabled={!messageTemplate.trim() || selectedPupilIds.size === 0}
+            disabled={selectedPupilIds.size === 0}
             style={{
               width: "100%",
-              background: "#1877D6",
+              height: 48,
+              borderRadius: 12,
+              background: BLUE_BRIGHT,
               color: "#FFFFFF",
-              fontWeight: 600,
-              fontSize: 16,
-              borderRadius: 999,
+              fontWeight: 700,
+              fontSize: 15,
               border: "none",
-              padding: "16px 20px",
+              marginTop: 8,
               cursor: "pointer",
-              opacity:
-                !messageTemplate.trim() || selectedPupilIds.size === 0 ? 0.4 : 1,
+              opacity: selectedPupilIds.size === 0 ? 0.5 : 1,
             }}
           >
             {selectedPupilIds.size === 0
-              ? "Select pupils to notify"
-              : `Notify ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}`}
+              ? "Select pupils to send"
+              : `Send to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}`}
           </button>
         </div>
       </BottomSheet>
