@@ -1057,17 +1057,18 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     navigate({ to: "/marketplace/$listingId" as never, params: { listingId } as never });
   };
 
-  const cards = listings.slice(0, 4);
+  const cards = listings.slice(0, 2);
+  const hasMore = listings.length > cards.length;
 
-  // (icons removed from marketplace tiles; images are the primary visual)
+  const POPPINS_MKT = "'Poppins', 'Inter', sans-serif";
 
-  const firstImageUrl = (tile: ListingTile): string | undefined => {
-    if (tile.image_urls) {
-      const urls = Array.isArray(tile.image_urls) ? tile.image_urls : [tile.image_urls];
-      const url = urls[0];
-      if (url && typeof url === "string" && url.trim()) return url;
-    }
-    return tile.marketplace_suppliers?.logo_url ?? undefined;
+  const iconForCategory = (name: string | null | undefined, title: string): React.ReactNode => {
+    const s = `${name ?? ""} ${title ?? ""}`.toLowerCase();
+    if (/website|site|web|landing|page/.test(s)) return <Laptop size={44} color="#FFFFFF" strokeWidth={1.5} />;
+    if (/domain|url|hosting/.test(s)) return <Globe size={44} color="#FFFFFF" strokeWidth={1.5} />;
+    if (/dash\s?cam|camera|video/.test(s)) return <Camera size={44} color="#FFFFFF" strokeWidth={1.5} />;
+    if (/tracker|gps|locat/.test(s)) return <Shield size={44} color="#FFFFFF" strokeWidth={1.5} />;
+    return <Package size={44} color="#FFFFFF" strokeWidth={1.5} />;
   };
 
   return (
@@ -1076,18 +1077,15 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         margin: "0 -16px",
         padding: "20px 0 22px",
         background: PAGE_BACKGROUND,
-        fontFamily: "'Poppins', 'Inter', sans-serif",
+        fontFamily: POPPINS_MKT,
       }}
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
-        .mkt-view-all {
-          transition: box-shadow 0.25s ease, transform 0.25s ease;
-        }
-        .mkt-view-all:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 8px 20px rgba(7, 43, 71, 0.35);
-        }
+        .mkt-view-all { transition: box-shadow 0.25s ease, transform 0.25s ease; }
+        .mkt-view-all:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(7, 43, 71, 0.35); }
+        .mkt-card { transition: transform 0.15s ease, box-shadow 0.2s ease; }
+        .mkt-card:active { transform: scale(0.98); }
       `}</style>
 
       {/* SECTION HEADER */}
@@ -1101,50 +1099,35 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           gap: 12,
         }}
       >
-        <div
-          style={{
-            fontSize: 18,
-            fontWeight: 600,
-            color: "#072B47",
-            lineHeight: 1.2,
-            letterSpacing: "-0.01em",
-          }}
-        >
+        <div style={{ fontSize: 18, fontWeight: 600, color: "#072B47", lineHeight: 1.2, letterSpacing: "-0.01em" }}>
           DSM Marketplace
         </div>
-        <button
-          type="button"
-          className="mkt-view-all"
-          onClick={() => navigate({ to: "/marketplace" as never })}
-          style={{
-            background: "#072B47",
-            border: "none",
-            borderRadius: 999,
-            padding: "8px 14px",
-            fontSize: 11,
-            fontWeight: 600,
-            color: "#FFFFFF",
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-            boxShadow: "0 6px 14px rgba(7, 43, 71, 0.25)",
-            fontFamily: "'Poppins', 'Inter', sans-serif",
-          }}
-        >
-          View all services
-        </button>
+        {hasMore && (
+          <button
+            type="button"
+            className="mkt-view-all"
+            onClick={() => navigate({ to: "/marketplace" as never })}
+            style={{
+              background: "#072B47",
+              border: "none",
+              borderRadius: 999,
+              padding: "8px 14px",
+              fontSize: 11,
+              fontWeight: 600,
+              color: "#FFFFFF",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              fontFamily: POPPINS_MKT,
+            }}
+          >
+            View all services
+          </button>
+        )}
       </div>
 
       {cards.length === 0 ? (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "36px 0",
-            gap: 8,
-          }}
-        >
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "36px 0", gap: 8 }}>
           <Package size={32} color="#D0D5DD" />
           <div style={{ fontSize: 13, color: "#B0BAC9" }}>No featured services</div>
         </div>
@@ -1152,15 +1135,91 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12, padding: "0 16px" }}>
           {cards.map((tile) => {
             const price = parsePrice(tile.price_display);
-            const subtitle = price ? `${price.price} ${price.period}` : (tile.marketplace_categories?.name ?? "Premium service");
+            const hasPrice = !!price && !!price.price;
             return (
-              <TileCard
+              <button
                 key={tile.id}
-                title={tile.title}
-                subtitle={subtitle}
-                image={firstImageUrl(tile)}
+                type="button"
                 onClick={() => openListing(tile.id)}
-              />
+                className="mkt-card"
+                style={{
+                  position: "relative",
+                  background: "#FFFFFF",
+                  border: "1px solid #ECEFF3",
+                  borderRadius: 20,
+                  padding: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "stretch",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  overflow: "hidden",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                  fontFamily: POPPINS_MKT,
+                  width: "100%",
+                }}
+              >
+                {/* Icon panel */}
+                <div
+                  style={{
+                    width: "100%",
+                    aspectRatio: "16 / 9",
+                    background: "linear-gradient(135deg, #1877D6 0%, #0F2044 100%)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {iconForCategory(tile.marketplace_categories?.name, tile.title)}
+                </div>
+
+                {/* Body */}
+                <div style={{ padding: "12px 14px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: "#0F2044",
+                      lineHeight: 1.25,
+                      letterSpacing: "-0.01em",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      wordBreak: "break-word",
+                      minHeight: "2.5em",
+                    }}
+                  >
+                    {tile.title}
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                    {hasPrice ? (
+                      <div style={{ fontSize: 12.5, color: "#5A6B85", fontWeight: 500, lineHeight: 1.2 }}>
+                        <span style={{ color: "#0F2044", fontWeight: 600 }}>{price!.price}</span>{" "}
+                        <span style={{ color: "#8592A6" }}>{price!.period}</span>
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: 12, color: "#B8802C", fontStyle: "italic", fontWeight: 500, lineHeight: 1.2 }}>
+                        Price coming soon
+                      </div>
+                    )}
+                    <span
+                      style={{
+                        width: 26,
+                        height: 26,
+                        borderRadius: 999,
+                        background: "#EEF2F7",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <ChevronRight size={14} color="#0F2044" strokeWidth={2.4} />
+                    </span>
+                  </div>
+                </div>
+              </button>
             );
           })}
         </div>
