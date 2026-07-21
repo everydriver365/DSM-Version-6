@@ -1427,14 +1427,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         .dsm-live-scroll::-webkit-scrollbar { display: none; }
         .dsm-live-scroll { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
-        @keyframes dsmLivePulse {
-          0% { box-shadow: 0 0 0 0 rgba(204,34,41,0.55); }
-          75%, 100% { box-shadow: 0 0 0 6px rgba(204,34,41,0); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .dsm-live-dot { animation: none !important; }
-        }
-      `}</style>
+
 
       {/* Section header */}
       <div
