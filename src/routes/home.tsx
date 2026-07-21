@@ -6204,7 +6204,7 @@ function HomePage() {
               };
 
               return (
-                <div style={{ fontFamily: PF }}>
+                <div style={{ fontFamily: PF, background: '#EDF1F7', borderRadius: 16, padding: 14 }}>
                   {/* Card header */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
                     <div style={{ fontSize: 16, fontWeight: 500, color: '#0B1F3A', letterSpacing: -0.2 }}>{headerLabel}</div>
