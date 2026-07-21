@@ -4,8 +4,12 @@ import {
   Search, X, BookOpen, RefreshCw, Clock, Award, ArrowLeftRight, GraduationCap,
   ClipboardCheck, FileText, Receipt, Fuel, Car, MapPin, Settings, Calendar,
   Gift, FileCheck, Zap, ClipboardList, AlertTriangle, BarChart3, Calculator,
-  Moon, TrendingUp, Activity, Radio, ShoppingBag, Users,
+  Moon, TrendingUp, Activity, Radio, ShoppingBag, Users, GraduationCap as GraduationCapIcon,
+  ChevronRight, PlayCircle,
 } from "lucide-react";
+
+// Toggle to false when Learn is no longer "new" — hides the NEW badge only.
+const LEARN_IS_NEW = true;
 
 export const Route = createFileRoute("/more")({
   head: () => ({
