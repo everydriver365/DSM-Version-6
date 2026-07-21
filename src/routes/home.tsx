@@ -6422,12 +6422,12 @@ function HomePage() {
                       const isPast = nowT >= ce;
                       const barColor = isPast ? '#34A853' : '#1877D6';
                       return (
-                        <div key={`cal-${idx}`} style={{ position: 'relative', marginBottom: 16 }}>
+                        <div key={`cal-${idx}`} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 16 }}>
                           <div
                             style={{
-                              background: '#FFFFFF',
+                              background: '#E4E9F1',
                               borderRadius: 12,
-                              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                              boxShadow: 'none',
                               padding: '12px 14px',
                               display: 'flex',
                               alignItems: 'stretch',
