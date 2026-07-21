@@ -6144,7 +6144,7 @@ function HomePage() {
               </div>
             </div>
 
-            <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 4, background: '#E9EDF2', borderRadius: 12, marginBottom: 10 }}>
+            <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 3, background: '#E9EDF2', borderRadius: 999, marginBottom: 12 }}>
               {(['today', 'tomorrow', 'next'] as const).map((t) => {
                 const active = tab === t;
                 const label = t === 'today' ? 'Today' : t === 'tomorrow' ? 'Tomorrow' : 'Next';
@@ -6157,18 +6157,19 @@ function HomePage() {
                     onClick={() => setTab(t)}
                     style={{
                       flex: 1,
-                      padding: '9px 0',
-                      borderRadius: 9,
+                      padding: '8px 0',
+                      borderRadius: 999,
                       border: 'none',
                       background: active ? '#FFFFFF' : 'transparent',
                       color: active ? '#0B1F3A' : '#8A93A3',
                       fontFamily: PF,
                       fontSize: 14,
-                      fontWeight: active ? 500 : 400,
+                      fontWeight: active ? 700 : 500,
                       cursor: 'pointer',
-                      boxShadow: active ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
-                      transition: 'background 120ms ease',
+                      boxShadow: active ? '0 1px 2px rgba(11,31,58,0.10), 0 1px 3px rgba(11,31,58,0.06)' : 'none',
+                      transition: 'background 120ms ease, color 120ms ease',
                       textAlign: 'center',
+                      letterSpacing: -0.1,
                     }}
                   >
                     {label}
@@ -6176,6 +6177,7 @@ function HomePage() {
                 );
               })}
             </div>
+
 
 
             {(() => {
@@ -6226,7 +6228,7 @@ function HomePage() {
               };
 
               return (
-                <div style={{ fontFamily: PF, background: '#EDF1F7', borderRadius: 16, padding: 14 }}>
+                <div style={{ fontFamily: PF, background: '#FFFFFF', borderRadius: 20, padding: 16, boxShadow: '0 1px 3px rgba(11,31,58,0.06), 0 4px 12px rgba(11,31,58,0.04)', border: '1px solid rgba(11,31,58,0.05)' }}>
                   {/* Card header */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
                     <div style={{ fontSize: 16, fontWeight: 500, color: '#0B1F3A', letterSpacing: -0.2 }}>{headerLabel}</div>
@@ -6305,7 +6307,7 @@ function HomePage() {
                       const preview = previewMatchForGap({ date: gapDate, dayName, durationMin: r.mins });
                       const gapStartTime = fmtT(gs);
                       return (
-                        <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 16 }}>
+                        <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 8 }}>
                           <div
                             onClick={() => {
                               if (moveModeHome && movingLessonHome) {
@@ -6318,16 +6320,17 @@ function HomePage() {
                             tabIndex={0}
                             style={{
                               position: 'relative',
-                              background: moveModeHome ? '#F4F8FE' : '#FFFFFF',
-                              borderRadius: 10,
-                              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                              background: moveModeHome ? '#F4F8FE' : '#FBFCFE',
+                              borderRadius: 12,
+                              boxShadow: 'none',
                               padding: '20px 14px 12px',
                               display: 'flex',
                               alignItems: 'center',
                               gap: 10,
                               cursor: 'pointer',
-                              border: moveModeHome ? '1.5px dashed #1877D6' : 'none',
+                              border: moveModeHome ? '1.5px dashed #1877D6' : '1px dashed rgba(181,102,30,0.35)',
                             }}
+
                           >
                             <div
                               style={{
@@ -6444,7 +6447,7 @@ function HomePage() {
                       const isPast = nowT >= ce;
                       const barColor = isPast ? '#34A853' : '#1877D6';
                       return (
-                        <div key={`cal-${idx}`} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 16 }}>
+                        <div key={`cal-${idx}`} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 8 }}>
                           <div
                             style={{
                               background: '#E4E9F1',
@@ -6544,7 +6547,7 @@ function HomePage() {
                     })();
 
                     return (
-                      <div key={l.id} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 16 }}>
+                      <div key={l.id} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 8 }}>
                         <div
                           onClick={() => navigate({ to: '/pupils/$id', params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any })}
                           role="button"
@@ -6555,16 +6558,18 @@ function HomePage() {
                             alignItems: 'stretch',
                             gap: 12,
                             cursor: 'pointer',
-                            background: '#FFFFFF',
-                            border: 'none',
-                            borderRadius: 12,
-                            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                            background: '#F7F9FC',
+                            border: '1px solid rgba(11,31,58,0.05)',
+                            borderRadius: 14,
+                            boxShadow: 'none',
                             boxSizing: 'border-box',
-                            opacity: isCancelled ? 0.75 : 1,
+                            opacity: isCancelled ? 0.55 : 1,
                           }}
+
+
                         >
                             <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                              <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none', textDecorationColor: isCancelled ? '#CC2229' : undefined }}>
+                              <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
                                 {timeLabel}
                               </div>
                               <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
@@ -6587,7 +6592,7 @@ function HomePage() {
                                   {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
                                 </div>
                               )}
-                              <div style={{ fontSize: 14, fontWeight: 500, color: isCancelled ? '#6B7280' : '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none', textDecorationColor: isCancelled ? '#CC2229' : undefined, textDecorationThickness: isCancelled ? 2 : undefined }}>
+                              <div style={{ fontSize: 14, fontWeight: 500, color: isCancelled ? '#6B7280' : '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
                                 {name}
                               </div>
                               {isCancelled ? (
