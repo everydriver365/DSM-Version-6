@@ -1415,8 +1415,18 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   };
 
   return (
-    <div style={{ margin: "8px -16px 0", padding: "0 16px", fontFamily: POPPINS }}>
+    <div style={{ marginTop: 8, fontFamily: POPPINS }}>
       <style>{`
+        @keyframes dsmLivePulse {
+          0% { box-shadow: 0 0 0 0 rgba(204,34,41,0.55); }
+          75%, 100% { box-shadow: 0 0 0 6px rgba(204,34,41,0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .dsm-live-dot { animation: none !important; }
+        }
+        .dsm-live-scroll::-webkit-scrollbar { display: none; }
+        .dsm-live-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
         @keyframes dsmLivePulse {
           0% { box-shadow: 0 0 0 0 rgba(204,34,41,0.55); }
           75%, 100% { box-shadow: 0 0 0 6px rgba(204,34,41,0); }
