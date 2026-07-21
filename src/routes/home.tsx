@@ -1236,6 +1236,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
   type LiveTile = {
     id: string;
     title: string;
+    description: string | null;
     host_name: string | null;
     category: string | null;
     session_date: string;
@@ -1247,6 +1248,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     max_spaces: number | null;
     spaces_taken: number | null;
     duration_minutes: number | null;
+    join_url: string | null;
   };
   const [sessions, setSessions] = useState<LiveTile[]>([]);
 
@@ -1258,7 +1260,7 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&status=eq.upcoming&order=session_date.asc&limit=12&select=id,title,host_name,category,session_date,session_time,price_display,price_amount,image_url,is_live,max_spaces,spaces_taken,duration_minutes`,
+          `${SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&status=eq.upcoming&order=session_date.asc&limit=12&select=id,title,description,host_name,category,session_date,session_time,price_display,price_amount,image_url,is_live,max_spaces,spaces_taken,duration_minutes,join_url`,
           { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } },
         );
         const data = (await res.json()) as LiveTile[];
@@ -1270,60 +1272,6 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
 
   const POPPINS = "'Poppins', 'Inter', sans-serif";
 
-  // "Tue 21 Jul · 10:10am" (sentence case)
-  const fmtDateTime = (d: string, t: string) => {
-    try {
-      const date = new Date(`${d}T${(t || "00:00:00").slice(0, 8)}`);
-      const dateStr = date.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
-      let timeStr = date.toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true });
-      timeStr = timeStr.replace(/\s?(AM|PM|am|pm)$/i, (m) => m.trim().toLowerCase());
-      return `${dateStr} · ${timeStr}`;
-    } catch {
-      return `${d} · ${t}`;
-    }
-  };
-
-  // (icons removed from DSM Live tiles; session image is the primary visual)
-  const open = (id: string) =>
-    navigate({ to: "/dsm-live/$sessionId" as never, params: { sessionId: id } as never });
-
-  // Sort chronologically ascending (fetch is already ordered, but sort defensively).
-  const sortedSessions = [...sessions].sort((a, b) => {
-    const ka = `${a.session_date}T${(a.session_time || "00:00:00").slice(0, 8)}`;
-    const kb = `${b.session_date}T${(b.session_time || "00:00:00").slice(0, 8)}`;
-    return ka.localeCompare(kb);
-  });
-
-  // Empty state: no upcoming sessions → render nothing.
-  if (sortedSessions.length === 0) return null;
-
-  const visible = sortedSessions.slice(0, 2);
-  const hasMore = sortedSessions.length > visible.length;
-
-  const startsInLabel = (d: string, t: string) => {
-    try {
-      const when = new Date(`${d}T${(t || "00:00:00").slice(0, 8)}`).getTime();
-      const diff = when - Date.now();
-      if (diff <= 0) return "Starting now";
-      const mins = Math.round(diff / 60000);
-      if (mins < 60) return `Starts in ${mins}m`;
-      const hrs = Math.round(mins / 60);
-      if (hrs < 24) return `Starts in ${hrs}h`;
-      const days = Math.round(hrs / 24);
-      return `In ${days}d`;
-    } catch {
-      return fmtDateTime(d, t);
-    }
-  };
-
-  const isSoon = (d: string, t: string) => {
-    try {
-      const when = new Date(`${d}T${(t || "00:00:00").slice(0, 8)}`).getTime();
-      const diff = when - Date.now();
-      return diff > 0 && diff <= 24 * 60 * 60 * 1000;
-    } catch { return false; }
-  };
-
   type FormatKey = "zoom" | "webinar" | "podcast";
   const detectFormat = (category: string | null, title: string): FormatKey => {
     const s = `${category ?? ""} ${title ?? ""}`.toLowerCase();
@@ -1332,21 +1280,86 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
     return "zoom";
   };
   const FORMAT_META: Record<FormatKey, { label: string; expectation: string; bg: string; fg: string; icon: React.ReactNode }> = {
-    zoom: { label: "Zoom", expectation: "camera on", bg: "#E5EFFA", fg: "#1877D6", icon: <Video size={14} color="#1877D6" strokeWidth={2} /> },
-    webinar: { label: "Webinar", expectation: "listen & chat", bg: "#F1E9FA", fg: "#7A3FC0", icon: <Radio size={14} color="#7A3FC0" strokeWidth={2} /> },
-    podcast: { label: "Podcast", expectation: "listen anytime", bg: "#E7F5EE", fg: "#1E8E5A", icon: <Mic size={14} color="#1E8E5A" strokeWidth={2} /> },
+    zoom: { label: "Zoom", expectation: "camera on", bg: "#E5EFFA", fg: "#1877D6", icon: <Video size={12} color="#1877D6" strokeWidth={2.4} /> },
+    webinar: { label: "Webinar", expectation: "listen & chat", bg: "#F1E9FA", fg: "#7A3FC0", icon: <Radio size={12} color="#7A3FC0" strokeWidth={2.4} /> },
+    podcast: { label: "Podcast", expectation: "on-demand", bg: "#E7F5EE", fg: "#1E8E5A", icon: <Mic size={12} color="#1E8E5A" strokeWidth={2.4} /> },
+  };
+
+  const startMs = (d: string, t: string) => {
+    try { return new Date(`${d}T${(t || "00:00:00").slice(0, 8)}`).getTime(); }
+    catch { return 0; }
+  };
+  const isLiveNow = (s: LiveTile) => {
+    if (s.is_live) return true;
+    const start = startMs(s.session_date, s.session_time);
+    if (!start) return false;
+    const end = start + (s.duration_minutes ?? 60) * 60000;
+    const now = Date.now();
+    return now >= start && now < end;
+  };
+
+  const open = (id: string) =>
+    navigate({ to: "/dsm-live/$sessionId" as never, params: { sessionId: id } as never });
+
+  // Sort: live first, then chronologically ascending.
+  const sortedSessions = [...sessions].sort((a, b) => {
+    const la = isLiveNow(a) ? 1 : 0;
+    const lb = isLiveNow(b) ? 1 : 0;
+    if (la !== lb) return lb - la;
+    return startMs(a.session_date, a.session_time) - startMs(b.session_date, b.session_time);
+  });
+
+  if (sortedSessions.length === 0) return null;
+
+  const visible = sortedSessions.slice(0, 2);
+  const hasMore = sortedSessions.length > visible.length;
+
+  const fmtTime = (ms: number) => {
+    const d = new Date(ms);
+    return d.toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true })
+      .replace(/\s?(AM|PM|am|pm)$/i, (m) => m.trim().toLowerCase());
+  };
+  const fmtAbsolute = (d: string, t: string) => {
+    const ms = startMs(d, t);
+    if (!ms) return `${d} · ${t}`;
+    const date = new Date(ms);
+    const today = new Date();
+    const tomorrow = new Date(); tomorrow.setDate(today.getDate() + 1);
+    const sameDay = (a: Date, b: Date) =>
+      a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+    const dayLabel = sameDay(date, today)
+      ? "Today"
+      : sameDay(date, tomorrow)
+        ? "Tomorrow"
+        : date.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+    return `${dayLabel}, ${fmtTime(ms)}`;
+  };
+  const relativeTag = (d: string, t: string) => {
+    const ms = startMs(d, t);
+    if (!ms) return "";
+    const diff = ms - Date.now();
+    if (diff <= 0) return "now";
+    const mins = Math.round(diff / 60000);
+    if (mins < 60) return `${mins}m`;
+    const hrs = Math.round(mins / 60);
+    if (hrs < 24) return `${hrs}h`;
+    const days = Math.round(hrs / 24);
+    return `${days}d`;
   };
 
   return (
     <div style={{ margin: "8px -16px 0", padding: "0 16px", fontFamily: POPPINS }}>
       <style>{`
         @keyframes dsmLivePulse {
-          0% { transform: scale(1); opacity: 0.75; }
-          75%, 100% { transform: scale(2.4); opacity: 0; }
+          0% { box-shadow: 0 0 0 0 rgba(204,34,41,0.55); }
+          75%, 100% { box-shadow: 0 0 0 6px rgba(204,34,41,0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .dsm-live-dot { animation: none !important; }
         }
       `}</style>
 
-      {/* Section header — matches Marketplace: 18/600 #072B47 */}
+      {/* Section header */}
       <div
         style={{
           display: "flex",
@@ -1356,39 +1369,19 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           gap: 12,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-          <h2
-            style={{
-              margin: 0,
-              fontFamily: POPPINS,
-              fontSize: 18,
-              fontWeight: 600,
-              color: "#072B47",
-              lineHeight: 1.2,
-              letterSpacing: "-0.01em",
-            }}
-          >
-            DSM Live
-          </h2>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-            <span style={{ position: "relative", width: 6, height: 6 }}>
-              <span
-                aria-hidden
-                style={{
-                  position: "absolute", inset: 0, borderRadius: "50%",
-                  background: "#CC2229", animation: "dsmLivePulse 1.6s ease-out infinite",
-                }}
-              />
-              <span
-                aria-hidden
-                style={{ position: "absolute", inset: 0, borderRadius: "50%", background: "#CC2229" }}
-              />
-            </span>
-            <span style={{ fontSize: 11, fontWeight: 600, color: "#CC2229", letterSpacing: "0.06em", textTransform: "uppercase" }}>
-              Live
-            </span>
-          </span>
-        </div>
+        <h2
+          style={{
+            margin: 0,
+            fontFamily: POPPINS,
+            fontSize: 18,
+            fontWeight: 600,
+            color: "#072B47",
+            lineHeight: 1.2,
+            letterSpacing: "-0.01em",
+          }}
+        >
+          DSM Live
+        </h2>
         {hasMore && (
           <button
             type="button"
@@ -1414,111 +1407,199 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
         {visible.map((session) => {
-          const live = !!session.is_live;
-          const soon = !live && isSoon(session.session_date, session.session_time);
-          const pillBg = live ? "#CC2229" : soon ? "#FDF3E3" : "#E5EFFA";
-          const pillFg = live ? "#FFFFFF" : soon ? "#B8802C" : "#1877D6";
-          const pillLabel = live ? "Live now" : startsInLabel(session.session_date, session.session_time);
           const fmt = detectFormat(session.category, session.title);
           const meta = FORMAT_META[fmt];
+          const live = isLiveNow(session);
+          const soon = !live && (() => {
+            const diff = startMs(session.session_date, session.session_time) - Date.now();
+            return diff > 0 && diff <= 24 * 60 * 60 * 1000;
+          })();
+          const headerBg = live ? "#FBE6E7" : meta.bg;
+          const headerFg = live ? "#CC2229" : meta.fg;
+          const headerLabel = live ? "Live now" : meta.label;
+          const relTag = relativeTag(session.session_date, session.session_time);
+
+          const handleClick = () => {
+            if (live && session.join_url) {
+              window.open(session.join_url, "_blank", "noopener,noreferrer");
+              return;
+            }
+            open(session.id);
+          };
+
           return (
             <button
               key={session.id}
               type="button"
-              onClick={() => open(session.id)}
+              onClick={handleClick}
               style={{
                 position: "relative",
                 background: "#FFFFFF",
-                border: live ? "1px solid rgba(204,34,41,0.35)" : "1px solid #ECEFF3",
-                borderRadius: 20,
-                padding: "12px 14px 14px 16px",
+                border: live ? "1.5px solid #CC2229" : "1px solid #ECEFF3",
+                borderRadius: 14,
+                padding: 0,
                 textAlign: "left",
                 cursor: "pointer",
                 overflow: "hidden",
-                boxShadow: live ? "0 1px 3px rgba(204,34,41,0.15)" : "0 1px 3px rgba(0,0,0,0.06)",
+                boxShadow: live
+                  ? "0 3px 14px rgba(204,34,41,0.18)"
+                  : "0 1px 3px rgba(0,0,0,0.06)",
                 fontFamily: POPPINS,
                 width: "100%",
                 display: "flex",
                 flexDirection: "column",
-                gap: 8,
-                minHeight: 140,
+                minHeight: 148,
               }}
             >
-              {/* Left accent bar */}
-              <span
-                aria-hidden
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: 3,
-                  background: live ? "#CC2229" : "#1877D6",
-                }}
-              />
-
-              {/* Format badge (top-right) */}
-              <span
-                style={{
-                  position: "absolute",
-                  top: 10,
-                  right: 10,
-                  width: 26,
-                  height: 26,
-                  borderRadius: 8,
-                  background: meta.bg,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                aria-label={meta.label}
-              >
-                {meta.icon}
-              </span>
-
-              {/* Status pill */}
-              <span
-                style={{
-                  alignSelf: "flex-start",
-                  background: pillBg,
-                  color: pillFg,
-                  fontSize: 10.5,
-                  fontWeight: 700,
-                  letterSpacing: "0.04em",
-                  textTransform: "uppercase",
-                  padding: "3px 8px",
-                  borderRadius: 999,
-                  maxWidth: "calc(100% - 36px)",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {pillLabel}
-              </span>
-
-              {/* Title */}
+              {/* Header strip */}
               <div
                 style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "#0F2044",
-                  lineHeight: 1.25,
-                  letterSpacing: "-0.01em",
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                  wordBreak: "break-word",
-                  paddingRight: 4,
+                  background: headerBg,
+                  color: headerFg,
+                  padding: "6px 10px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
                 }}
               >
-                {session.title}
+                {live ? (
+                  <span
+                    className="dsm-live-dot"
+                    aria-hidden
+                    style={{
+                      width: 7,
+                      height: 7,
+                      borderRadius: "50%",
+                      background: "#CC2229",
+                      animation: "dsmLivePulse 1.6s ease-out infinite",
+                      display: "inline-block",
+                    }}
+                  />
+                ) : (
+                  meta.icon
+                )}
+                <span>{headerLabel}</span>
               </div>
 
-              {/* Format + expectation caption */}
-              <div style={{ fontSize: 11.5, color: "#8592A6", lineHeight: 1.3, marginTop: "auto" }}>
-                {meta.label} · {meta.expectation}
+              {/* Body */}
+              <div
+                style={{
+                  padding: "10px 12px 12px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 6,
+                  flex: 1,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 15.5,
+                    fontWeight: 700,
+                    color: "#0F2044",
+                    lineHeight: 1.25,
+                    letterSpacing: "-0.01em",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {session.title}
+                </div>
+
+                {session.description && (
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: "#6B7A90",
+                      lineHeight: 1.35,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 1,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {session.description}
+                  </div>
+                )}
+
+                <div style={{ marginTop: "auto", paddingTop: 4 }}>
+                  {live ? (
+                    <div
+                      style={{
+                        fontSize: 11.5,
+                        fontWeight: 600,
+                        color: "#6B7A90",
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      Started {fmtTime(startMs(session.session_date, session.session_time))} · {meta.label} · {meta.expectation}
+                    </div>
+                  ) : fmt === "podcast" ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        fontSize: 11.5,
+                        fontWeight: 600,
+                        color: "#6B7A90",
+                      }}
+                    >
+                      <Mic size={12} color="#8592A6" strokeWidth={2} />
+                      <span>Listen anytime</span>
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        fontSize: 11.5,
+                        fontWeight: 600,
+                        color: "#6B7A90",
+                      }}
+                    >
+                      <Calendar size={12} color="#8592A6" strokeWidth={2} />
+                      <span style={{ flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {fmtAbsolute(session.session_date, session.session_time)}
+                      </span>
+                      {relTag && (
+                        <span
+                          style={{
+                            fontSize: 10.5,
+                            fontWeight: 700,
+                            color: soon ? "#B8802C" : "#8592A6",
+                          }}
+                        >
+                          {relTag}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {live && (
+                  <div
+                    style={{
+                      marginTop: 10,
+                      background: "#CC2229",
+                      color: "#FFFFFF",
+                      fontSize: 12.5,
+                      fontWeight: 700,
+                      textAlign: "center",
+                      padding: "9px 12px",
+                      borderRadius: 8,
+                    }}
+                  >
+                    Join now
+                  </div>
+                )}
               </div>
             </button>
           );
