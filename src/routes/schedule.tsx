@@ -862,6 +862,7 @@ function SchedulePage() {
     for (const b of calendarBlocks) {
       if (b.start_datetime) keys.add(b.start_datetime.substring(0, 10));
     }
+    for (const key of workingDayKeysInRange) keys.add(key);
     for (const key of keys) {
       const dayLessons = (lessons ?? []).filter(
         (l) => l.lesson_date.substring(0, 10) === key &&
@@ -873,7 +874,12 @@ function SchedulePage() {
       const dayName = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
         new Date(key + "T12:00:00").getDay()
       ];
-      const isDayActive = workingDaysList.includes(dayName);
+      const dayConfig = perDayHours?.[dayName];
+      const dayStart = dayConfig?.start || workStart;
+      const dayEnd = dayConfig?.end || workEnd;
+      const isDayActive = dayConfig
+        ? dayiëntConfig.active === true
+        : workingDaysList.includes(dayName);
       const gaps = isDayActive
         ? detectGaps(
             dayLessons.map((l) => ({
@@ -882,8 +888,8 @@ function SchedulePage() {
               duration_minutes: l.duration_minutes,
               pupils: null,
             })),
-            workStart,
-            workEnd,
+            dayStart,
+            dayEnd,
             bufferAfter,
             calendarBlocks,
             recurringBlocks,
@@ -900,14 +906,14 @@ function SchedulePage() {
       if (dots.length > 0) map.set(key, dots);
     }
     return map;
-  }, [lessons, calendarBlocks, recurringBlocks, timeOff, workingDaysList, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
+  }, [lessons, calendarBlocks, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
 
   const scrollToDate = useCallback(
     (key: string) => {
       // If that date has no entries, jump to the nearest future day that does.
       let targetKey = key;
       if (!dayRefs.current.has(targetKey)) {
-        const found = orderedDayKeys.find((k) => k >= key);
+        const found = orderedDayKeysWithToday.find((k) => k >= key);
         if (!found) return;
         targetKey = found;
       }
@@ -924,7 +930,7 @@ function SchedulePage() {
         suppressScrollUpdate.current = false;
       }, 450);
     },
-    [orderedDayKeys],
+    [orderedDayKeysWithToday],
   );
 
   // ── Chrome ────────────────────────────────────────────────────────────
@@ -1054,7 +1060,7 @@ function SchedulePage() {
         viewMonth={viewMonth}
         selectedDate={selectedDate}
         todayKey={ymdLocal(today)}
-        lessons={lessons ?? []}
+        dotsByDay={dotsByDay}
         onPrevMonth={() => {
           const d = new Date(viewMonth);
           d.setMonth(d.getMonth() - 1);
@@ -2455,7 +2461,7 @@ function MonthStrip({
   viewMonth,
   selectedDate,
   todayKey,
-  lessons,
+  dotsByDay,
   onPrevMonth,
   onNextMonth,
   onSelectDate,
@@ -2466,7 +2472,7 @@ function MonthStrip({
   viewMonth: Date;
   selectedDate: string;
   todayKey: string;
-  lessons: Lesson[];
+  dotsByDay: Map<string, string[]>;
   onPrevMonth: () => void;
   onNextMonth: () => void;
   onSelectDate: (key: string) => void;
@@ -2485,15 +2491,6 @@ function MonthStrip({
     }
     return out;
   }, [viewMonth]);
-
-  const lessonDates = useMemo(() => {
-    const s = new Set<string>();
-    for (const l of lessons) {
-      if ((l.status || "") === "cancelled") continue;
-      s.add(l.lesson_date.substring(0, 10));
-    }
-    return s;
-  }, [lessons]);
 
   const monthLabel = viewMonth.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
   const dayLetters = ["M", "T", "W", "T", "F", "S", "S"];
@@ -2605,7 +2602,7 @@ function MonthStrip({
           const key = ymdLocal(d);
           const isToday = key === todayKey;
           const isSelected = key === selectedDate;
-          const hasLessons = lessonDates.has(key);
+          const dots = dotsByDay.get(key) ?? [];
           const dow = (d.getDay() + 6) % 7; // Mon=0
           const numBg = isToday ? "#0B1F3A" : isSelected ? "#1A52A0" : "transparent";
           const numColor = isToday || isSelected ? "#FFFFFF" : "#0B1F3A";
@@ -2649,12 +2646,25 @@ function MonthStrip({
               <span
                 aria-hidden
                 style={{
-                  width: 4,
                   height: 4,
-                  borderRadius: "50%",
-                  background: hasLessons ? "#1A52A0" : "transparent",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 2,
                 }}
-              />
+              >
+                {dots.slice(0, 3).map((colour, idx) => (
+                  <span
+                    key={`${key}-dot-${idx}`}
+                    style={{
+                      width: 4,
+                      height: 4,
+                      borderRadius: "50%",
+                      background: colour,
+                    }}
+                  />
+                ))}
+              </span>
             </button>
           );
         })}
