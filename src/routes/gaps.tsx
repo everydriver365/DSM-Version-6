@@ -2293,23 +2293,19 @@ function GapsPage() {
       )}
 
       {ranked !== null && (
-        <div style={{ marginTop: 16 }}>
-          <div style={{ margin: "0 16px 8px" }}>
-            <div style={{ fontWeight: 700, color: NAVY, fontSize: 16 }}>
-              {ranked.length} pupil{ranked.length === 1 ? "" : "s"} ranked for{" "}
-              {searchSlots.length} slot{searchSlots.length === 1 ? "" : "s"}
-            </div>
-            <div style={{ color: MUTED, fontSize: 13 }}>
-              {searchSlots.length === 1
-                ? `${fmtDateLong(searchSlots[0].date)} at ${fmtTimeHm(searchSlots[0].time)} · ${searchSlots[0].duration} min`
-                : `Across ${new Set(searchSlots.map((s) => s.date)).size} day${new Set(searchSlots.map((s) => s.date)).size === 1 ? "" : "s"}`}
-            </div>
-          </div>
-
+        <BottomSheetV2
+          title={`${ranked.length} pupil${ranked.length === 1 ? "" : "s"} ranked for ${searchSlots.length} slot${searchSlots.length === 1 ? "" : "s"}`}
+          subtitle={
+            searchSlots.length === 1
+              ? `${fmtDateLong(searchSlots[0].date)} at ${fmtTimeHm(searchSlots[0].time)} · ${searchSlots[0].duration} min`
+              : `Across ${new Set(searchSlots.map((s) => s.date)).size} day${new Set(searchSlots.map((s) => s.date)).size === 1 ? "" : "s"}`
+          }
+          onClose={() => setRanked(null)}
+        >
           {ranked.length === 0 && (
             <div
               style={{
-                margin: "0 16px",
+                margin: "0 0 12px",
                 padding: 24,
                 textAlign: "center",
                 border: `0.5px solid ${BORDER}`,
@@ -2330,7 +2326,7 @@ function GapsPage() {
           {noGoodMatches && (
             <div
               style={{
-                margin: "0 16px 12px",
+                margin: "0 0 12px",
                 padding: 16,
                 background: "#FEF3C7",
                 border: "1px solid #FCD34D",
@@ -2372,7 +2368,7 @@ function GapsPage() {
             </div>
           )}
 
-          <div style={{ margin: "0 16px 10px" }}>
+          <div style={{ margin: "0 0 10px" }}>
             <input
               type="text"
               placeholder="Search pupils…"
@@ -2416,7 +2412,6 @@ function GapsPage() {
               return (
                 <div
                   style={{
-                    margin: "0 16px",
                     padding: 16,
                     textAlign: "center",
                     color: MUTED,
@@ -2444,7 +2439,7 @@ function GapsPage() {
                     display: "flex",
                     alignItems: "center",
                     gap: 12,
-                    padding: "10px 16px",
+                    padding: "10px 0",
                     cursor: "pointer",
                   }}
                 >
@@ -2508,7 +2503,7 @@ function GapsPage() {
               );
             });
           })()}
-        </div>
+        </BottomSheetV2>
       )}
 
       <div style={{ margin: "16px 16px 40px" }}>
