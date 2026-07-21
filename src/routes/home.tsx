@@ -1107,7 +1107,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "0 16px",
           marginBottom: 12,
           gap: 12,
         }}
