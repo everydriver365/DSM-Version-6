@@ -1690,6 +1690,26 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
           );
         })}
       </div>
+
+      {visible.length > 1 && (
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, marginTop: 14 }}>
+          {visible.map((s, i) => {
+            const active = i === liveActiveIdx;
+            return (
+              <span
+                key={s.id}
+                style={{
+                  height: 6,
+                  width: active ? 16 : 6,
+                  borderRadius: 999,
+                  background: active ? "#1877D6" : "#C7D1DE",
+                  transition: "width 0.2s ease, background 0.2s ease",
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
