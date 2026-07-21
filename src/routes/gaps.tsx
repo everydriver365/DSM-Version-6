@@ -1442,7 +1442,7 @@ function GapsPage() {
       : "";
 
   // NOTE: Potential earnings requires hourlyRate from profile — if 0/absent we render "—" per spec.
-  const totalFreeMinsAll = dayGroups.reduce((s, d) => s + d.totalFreeMinutes, 0);
+  const totalFreeMinsAll = freeSlots.reduce((s, slot) => s + (slot.gapMinutes ?? 0), 0);
   const potentialValue =
     hourlyRate > 0
       ? `£${Math.round((totalFreeMinsAll / 60) * hourlyRate).toLocaleString()}`
