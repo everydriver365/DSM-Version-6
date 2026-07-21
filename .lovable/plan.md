@@ -1,16 +1,15 @@
-## Plan
+## Answer
 
-1. **Update the Fill My Slots date window**
-   - In `src/routes/gaps.tsx`, expand the gap-detection loop from the current 14-day window to match the schedule’s future-facing range.
-   - Use a named constant for the range so it is obvious and easy to adjust.
+Yes — the Home "Teaching today" timeline already uses the shared `computeDayGaps` from `src/lib/gapDetection.ts` (home.tsx line 5745), so the same all-day-event fix applies. Any gaps that would previously be swallowed by a multi-day/all-day Google Calendar event (e.g. "Summer holiday") will now appear as `FILL THIS GAP` rows on today's timeline too.
 
-2. **Ensure all future working days are represented**
-   - Keep creating `dayGroups` for every active working day in the range, including days with no lessons.
-   - Preserve the current selected-date strip and selected-day-only content model.
+One small cosmetic follow-up is optional:
 
-3. **Keep existing gap rules intact**
-   - Do not change the minimum 60-minute rule.
-   - Do not change buffer handling, calendar blocks, recurring blocks, lunch, time off, pupil matching, or booking/message flows.
+## Optional cleanup
 
-4. **Verify behavior**
-   - Confirm the Fill My Slots page date strip includes future dates beyond today and that selecting them shows their available gaps or the manual-add empty state.
+In `src/routes/home.tsx`, `blocksForDate` (line 3722) does not filter out all-day events, so an all-day holiday still renders as a full "calendar" row inside today's timeline. It no longer blocks gaps, but it looks noisy.
+
+Proposed change (home.tsx only):
+- Extend `blocksForDate` to compute the same `isAllDay` check used in `gapDetection.ts` (start/end at 00:00/01:00/23:59 boundary OR duration ≥ 20h) and drop those blocks before returning.
+- Result: all-day events are hidden from the today/tomorrow timeline rows on Home, matching the gap-detector's behaviour and matching what `gaps.tsx` already does.
+
+Want me to apply this cleanup, or leave the all-day event visible on the timeline?
