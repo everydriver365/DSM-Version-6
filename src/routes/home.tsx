@@ -1368,8 +1368,18 @@ function DsmLiveSection({ navigate }: { navigate: ReturnType<typeof useNavigate>
 
   if (sortedSessions.length === 0) return null;
 
-  const visible = sortedSessions.slice(0, 2);
-  const hasMore = sortedSessions.length > visible.length;
+  const visible = sortedSessions;
+  const hasMore = sortedSessions.length > 2;
+
+  const liveScrollRef = useRef<HTMLDivElement | null>(null);
+  const [liveActiveIdx, setLiveActiveIdx] = useState(0);
+  const LIVE_CARD_W = 240;
+  const LIVE_GAP = 12;
+  const onLiveScroll = () => {
+    const el = liveScrollRef.current;
+    if (!el) return;
+    setLiveActiveIdx(Math.round(el.scrollLeft / (LIVE_CARD_W + LIVE_GAP)));
+  };
 
   const fmtTime = (ms: number) => {
     const d = new Date(ms);
