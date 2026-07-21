@@ -6457,7 +6457,7 @@ function HomePage() {
                                 style={{
                                   fontSize: 14,
                                   fontWeight: 500,
-                                  color: '#6B7280',
+                                  color: '#4B5563',
                                   whiteSpace: 'nowrap',
                                   overflow: 'hidden',
                                   textOverflow: 'ellipsis',
@@ -6467,7 +6467,7 @@ function HomePage() {
                               >
                                 {r.title}
                               </div>
-                              <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 4 }}>
+                              <div style={{ fontSize: 12, color: '#8A93A3', marginTop: 4 }}>
                                 Google Calendar
                               </div>
                             </div>
