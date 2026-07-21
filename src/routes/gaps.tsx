@@ -2600,7 +2600,8 @@ function GapsPage() {
         <div
           style={{
             position: "fixed",
-            right: 16,
+            left: "50%",
+            transform: "translateX(-50%)",
             bottom: 80,
             width: "70%",
             background: NAVY,
