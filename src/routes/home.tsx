@@ -6547,7 +6547,7 @@ function HomePage() {
                     })();
 
                     return (
-                      <div key={l.id} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 16 }}>
+                      <div key={l.id} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 8 }}>
                         <div
                           onClick={() => navigate({ to: '/pupils/$id', params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any })}
                           role="button"
