@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Briefcase, MessageSquare, Mail, CalendarCheck, CalendarX } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
@@ -82,6 +82,7 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
   const [whatsNewResolved, setWhatsNewResolved] = useState<"pending" | "dismissed" | "later" | "none">(
     "pending",
   );
+  const pendingWhatsNewMode = useRef<"dismissed" | "later" | null>(null);
 
   // Evaluate both conditions once.
   useEffect(() => {
@@ -154,23 +155,28 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
   if (!userId) return null;
 
   if (active === "whatsNew") {
-    const resolve = (mode: "dismissed" | "later") => {
-      if (mode === "dismissed") setLastSeenVersion(userId, APP_VERSION);
-      // Unmount What's new first. Wait two animation frames so React has
-      // fully committed the unmount (backdrop + sheet removed from the DOM)
-      // before we allow the next sheet in the queue to mount. WhatsNewSheet
-      // has no exit animation, so no fixed timeout is needed — this is
-      // deterministic rather than a 300ms guess.
+    const handleDismiss = () => {
+      setLastSeenVersion(userId, APP_VERSION);
+      // Trigger unmount now. The resolved state flips only after WhatsNewSheet
+      // reports it is fully closed (see onFullyClosed), so DailyCatchUpSheet
+      // can never mount while the What's new backdrop is still in the DOM.
       setActive("none");
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => setWhatsNewResolved(mode));
-      });
+      pendingWhatsNewMode.current = "dismissed";
+    };
+    const handleLater = () => {
+      setActive("none");
+      pendingWhatsNewMode.current = "later";
     };
     return (
       <WhatsNewSheet
         items={whatsNewItems}
-        onDismiss={() => resolve("dismissed")}
-        onLater={() => resolve("later")}
+        onDismiss={handleDismiss}
+        onLater={handleLater}
+        onFullyClosed={() => {
+          const mode = pendingWhatsNewMode.current;
+          pendingWhatsNewMode.current = null;
+          if (mode) setWhatsNewResolved(mode);
+        }}
       />
     );
   }

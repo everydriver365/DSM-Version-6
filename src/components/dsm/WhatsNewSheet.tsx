@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Play } from "lucide-react";
 import {
   APP_VERSION,
@@ -50,11 +50,27 @@ export function WhatsNewSheet({
   items,
   onDismiss,
   onLater,
+  onFullyClosed,
 }: {
   items: WhatsNewItem[];
   onDismiss: () => void;
   onLater: () => void;
+  /**
+   * Fired once the sheet has been fully removed from the DOM. Currently the
+   * sheet has no exit animation, so this fires from the unmount cleanup. If
+   * an exit animation is added later, call this after it completes instead.
+   */
+  onFullyClosed?: () => void;
 }) {
+  const onFullyClosedRef = useRef(onFullyClosed);
+  onFullyClosedRef.current = onFullyClosed;
+  useEffect(() => {
+    return () => {
+      // Cleanup runs after React has committed the unmount — the backdrop
+      // and sheet root are gone from the DOM at this point.
+      onFullyClosedRef.current?.();
+    };
+  }, []);
   return (
     <div
       style={{
