@@ -4065,6 +4065,9 @@ function PupilRatesAndColour({
       {/* Ready to Learn */}
       <ReadyToLearnCard pupilId={pupil.id} />
 
+      {/* Unavailable periods */}
+      <UnavailablePeriodsCard pupilId={pupil.id} />
+
       {/* Calendar colour */}
       <div style={EXTRAS_CARD}>
         <div className="flex items-center gap-2 mb-3">
@@ -4413,6 +4416,175 @@ interface RTLSettings {
   short_notice_opt_in: boolean | null;
   preferred_duration_minutes: number | null;
   max_lessons_per_week: number | null;
+}
+
+type UnavailPeriod = {
+  id: string;
+  start_date: string;
+  end_date: string;
+  reason: string | null;
+};
+
+const UNAVAIL_REASONS = ["Holiday", "Exams", "Other"];
+
+function fmtShortDate(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+
+function UnavailablePeriodsCard({ pupilId }: { pupilId: string }) {
+  const [rows, setRows] = useState<UnavailPeriod[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
+  const [reason, setReason] = useState<string>("Holiday");
+  const [saving, setSaving] = useState(false);
+
+  async function load() {
+    const { data, error } = await supabase
+      .from("pupil_unavailability")
+      .select("id, start_date, end_date, reason")
+      .eq("pupil_id", pupilId)
+      .order("start_date", { ascending: true });
+    if (error) {
+      console.error("[unavailability] load error", error);
+      setLoaded(true);
+      return;
+    }
+    setRows((data ?? []) as UnavailPeriod[]);
+    setLoaded(true);
+  }
+
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pupilId]);
+
+  async function remove(id: string) {
+    const prev = rows;
+    setRows((r) => r.filter((x) => x.id !== id));
+    const { error } = await supabase.from("pupil_unavailability").delete().eq("id", id);
+    if (error) {
+      console.error("[unavailability] delete error", error);
+      toast.error("Failed to delete");
+      setRows(prev);
+    }
+  }
+
+  async function save() {
+    if (!start || !end) {
+      toast.error("Pick start and end dates");
+      return;
+    }
+    if (end < start) {
+      toast.error("End must be on or after start");
+      return;
+    }
+    setSaving(true);
+    const { data: userData } = await supabase.auth.getUser();
+    const instructorId = userData.user?.id ?? null;
+    const { error } = await supabase.from("pupil_unavailability").insert({
+      pupil_id: pupilId,
+      instructor_id: instructorId,
+      start_date: start,
+      end_date: end,
+      reason: reason || null,
+    });
+    setSaving(false);
+    if (error) {
+      console.error("[unavailability] insert error", error);
+      toast.error("Failed to save");
+      return;
+    }
+    setOpen(false);
+    setStart("");
+    setEnd("");
+    setReason("Holiday");
+    await load();
+    toast.success("Period added");
+  }
+
+  const inputStyle: React.CSSProperties = {
+    width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
+    border: "0.5px solid #E2E6ED", fontSize: 16, outline: "none", ...POPPINS,
+  };
+
+  return (
+    <div style={EXTRAS_CARD}>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <Calendar size={18} color="#1877D6" />
+          <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Unavailable periods</span>
+        </div>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="text-[12px] font-semibold flex items-center gap-1"
+          style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+        >
+          <Plus size={12} /> Add period
+        </button>
+      </div>
+
+      {!loaded ? (
+        <div className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>Loading…</div>
+      ) : rows.length === 0 ? (
+        <div className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>None</div>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {rows.map((r) => (
+            <div
+              key={r.id}
+              className="flex items-center justify-between rounded-lg px-3 py-2"
+              style={{ background: "#F5F7FB", ...POPPINS }}
+            >
+              <div className="text-[13px]" style={{ color: "#0B1F3A" }}>
+                <span style={{ fontWeight: 600 }}>{r.reason || "Unavailable"}</span>
+                <span style={{ color: "#6B7280" }}> — {fmtShortDate(r.start_date)} to {fmtShortDate(r.end_date)}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => remove(r.id)}
+                aria-label="Delete period"
+                style={{ background: "none", border: "none", padding: 4, cursor: "pointer", color: "#6B7280" }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {open && (
+        <BottomSheetV2 title="Add unavailable period" onClose={() => setOpen(false)}>
+          <div className="flex flex-col gap-3 p-4">
+            <div>
+              <div className="text-[12px] mb-1" style={{ color: "#6B7280", ...POPPINS }}>Start date</div>
+              <input type="date" value={start} onChange={(e) => setStart(e.target.value)} style={inputStyle} />
+            </div>
+            <div>
+              <div className="text-[12px] mb-1" style={{ color: "#6B7280", ...POPPINS }}>End date</div>
+              <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} style={inputStyle} />
+            </div>
+            <div>
+              <div className="text-[12px] mb-1" style={{ color: "#6B7280", ...POPPINS }}>Reason</div>
+              <select value={reason} onChange={(e) => setReason(e.target.value)} style={inputStyle}>
+                {UNAVAIL_REASONS.map((r) => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+              <Button variant="primary" onClick={save} disabled={saving}>{saving ? "Saving…" : "Save"}</Button>
+            </div>
+          </div>
+        </BottomSheetV2>
+      )}
+    </div>
+  );
 }
 
 function fmtTimeLabel(t: string | null): string {
