@@ -1179,7 +1179,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     textAlign: "left",
                     cursor: "pointer",
                     overflow: "hidden",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                    boxShadow: "0 1px 2px rgba(11,31,58,0.05)",
                     fontFamily: POPPINS_MKT,
                     flex: "0 0 auto",
                     width: CARD_W,
@@ -1193,8 +1193,9 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     return (
                       <div
                         style={{
+                          position: "relative",
                           width: "100%",
-                          aspectRatio: "16 / 9",
+                          aspectRatio: "4 / 3",
                           background: heroUrl
                             ? `#0F2044 url(${heroUrl}) center/cover no-repeat`
                             : "linear-gradient(135deg, #1877D6 0%, #0F2044 100%)",
@@ -1204,13 +1205,32 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         }}
                       >
                         {!heroUrl && iconForCategory(tile.marketplace_categories?.name, tile.title)}
+                        {tile.is_featured && (
+                          <span
+                            style={{
+                              position: "absolute",
+                              top: 10,
+                              left: 10,
+                              background: "rgba(255,255,255,0.95)",
+                              color: "#0F2044",
+                              fontSize: 9.5,
+                              fontWeight: 700,
+                              letterSpacing: "0.08em",
+                              padding: "3px 7px",
+                              borderRadius: 6,
+                              textTransform: "uppercase",
+                            }}
+                          >
+                            Popular
+                          </span>
+                        )}
                       </div>
                     );
                   })()}
 
 
                   {/* Body */}
-                  <div style={{ padding: "12px 14px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
+                  <div style={{ padding: "12px 14px 14px", display: "flex", flexDirection: "column", gap: 4 }}>
                     <div
                       style={{
                         fontSize: 14,
@@ -1219,40 +1239,40 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         lineHeight: 1.25,
                         letterSpacing: "-0.01em",
                         display: "-webkit-box",
-                        WebkitLineClamp: 2,
+                        WebkitLineClamp: 1,
                         WebkitBoxOrient: "vertical",
                         overflow: "hidden",
                         wordBreak: "break-word",
-                        minHeight: "2.5em",
                       }}
                     >
                       {tile.title}
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                    {tile.marketplace_suppliers?.name && (
+                      <div
+                        style={{
+                          fontSize: 11.5,
+                          color: "#8592A6",
+                          fontWeight: 500,
+                          lineHeight: 1.3,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {tile.marketplace_suppliers.name}
+                      </div>
+                    )}
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 4 }}>
                       {hasPrice ? (
-                        <div style={{ fontSize: 12.5, color: "#5A6B85", fontWeight: 500, lineHeight: 1.2 }}>
-                          <span style={{ color: "#0F2044", fontWeight: 600 }}>{price!.price}</span>{" "}
-                          <span style={{ color: "#8592A6" }}>{price!.period}</span>
+                        <div style={{ fontSize: 13, color: "#5A6B85", fontWeight: 500, lineHeight: 1.2 }}>
+                          <span style={{ color: "#0F2044", fontWeight: 700, fontSize: 14 }}>{price!.price}</span>{" "}
+                          <span style={{ color: "#8592A6", fontWeight: 400 }}>{price!.period}</span>
                         </div>
                       ) : (
                         <div style={{ fontSize: 12, color: "#B8802C", fontStyle: "italic", fontWeight: 500, lineHeight: 1.2 }}>
                           Coming soon
                         </div>
                       )}
-                      <span
-                        style={{
-                          width: 26,
-                          height: 26,
-                          borderRadius: 999,
-                          background: "#EEF2F7",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          flexShrink: 0,
-                        }}
-                      >
-                        <ChevronRight size={14} color="#0F2044" strokeWidth={2.4} />
-                      </span>
                     </div>
                   </div>
                 </button>
