@@ -6228,7 +6228,7 @@ function HomePage() {
               };
 
               return (
-                <div style={{ fontFamily: PF, background: '#EDF1F7', borderRadius: 16, padding: 14 }}>
+                <div style={{ fontFamily: PF, background: '#FFFFFF', borderRadius: 20, padding: 16, boxShadow: '0 1px 3px rgba(11,31,58,0.06), 0 4px 12px rgba(11,31,58,0.04)', border: '1px solid rgba(11,31,58,0.05)' }}>
                   {/* Card header */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
                     <div style={{ fontSize: 16, fontWeight: 500, color: '#0B1F3A', letterSpacing: -0.2 }}>{headerLabel}</div>
