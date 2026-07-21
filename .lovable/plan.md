@@ -1,24 +1,16 @@
 ## Plan
 
-Fix the schedule so future days with gaps are easy to access and don’t appear to be missing.
+1. **Update the Fill My Slots date window**
+   - In `src/routes/gaps.tsx`, expand the gap-detection loop from the current 14-day window to match the schedule’s future-facing range.
+   - Use a named constant for the range so it is obvious and easy to adjust.
 
-1. **Keep the existing agenda generation**
-   - The agenda is already rendering future dates in the current preview, including 180 future days.
-   - Keep the active-working-day rows so gap detection can run on future days even when there are no lessons.
+2. **Ensure all future working days are represented**
+   - Keep creating `dayGroups` for every active working day in the range, including days with no lessons.
+   - Preserve the current selected-date strip and selected-day-only content model.
 
-2. **Fix date-strip navigation**
-   - Update the date tap handler so when you tap a future date in the calendar strip, it scrolls to that exact rendered day.
-   - The current fallback still searches only `orderedDayKeys` (entry-backed dates), so dates added purely for gap detection can be ignored.
-   - Change it to search the final rendered agenda key list instead.
+3. **Keep existing gap rules intact**
+   - Do not change the minimum 60-minute rule.
+   - Do not change buffer handling, calendar blocks, recurring blocks, lunch, time off, pupil matching, or booking/message flows.
 
-3. **Make future months show useful indicators**
-   - Pass the existing `dotsByDay` map into `MonthStrip`.
-   - Replace the current lesson-only dot with type dots, so future gap days and Google Calendar days are visible in the strip.
-
-4. **Keep the change scoped**
-   - Only touch `src/routes/schedule.tsx`.
-   - No backend/database changes.
-
-## Expected result
-
-Future days will be reachable from the calendar strip, and the strip will indicate future days with Google events, DSM lessons, and fillable gaps instead of making it look like only today/past dates exist.
+4. **Verify behavior**
+   - Confirm the Fill My Slots page date strip includes future dates beyond today and that selecting them shows their available gaps or the manual-add empty state.
