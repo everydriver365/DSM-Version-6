@@ -1187,19 +1187,28 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                     scrollSnapAlign: "start",
                   }}
                 >
-                  {/* Icon panel */}
-                  <div
-                    style={{
-                      width: "100%",
-                      aspectRatio: "16 / 9",
-                      background: "linear-gradient(135deg, #1877D6 0%, #0F2044 100%)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {iconForCategory(tile.marketplace_categories?.name, tile.title)}
-                  </div>
+                  {/* Hero image or icon panel */}
+                  {(() => {
+                    const imgs = tile.image_urls;
+                    const heroUrl = Array.isArray(imgs) ? imgs[0] : (typeof imgs === "string" ? imgs : null);
+                    return (
+                      <div
+                        style={{
+                          width: "100%",
+                          aspectRatio: "16 / 9",
+                          background: heroUrl
+                            ? `#0F2044 url(${heroUrl}) center/cover no-repeat`
+                            : "linear-gradient(135deg, #1877D6 0%, #0F2044 100%)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {!heroUrl && iconForCategory(tile.marketplace_categories?.name, tile.title)}
+                      </div>
+                    );
+                  })()}
+
 
                   {/* Body */}
                   <div style={{ padding: "12px 14px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
