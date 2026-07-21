@@ -1,6 +1,7 @@
 import React from "react";
-import { ChevronLeft, Bell, Mic } from "lucide-react";
-import { PhoneIcon, CarIcon, MenuIcon, PoundIcon, MessagesIcon } from "@/components/icons/DrivingIcons";
+import { ChevronLeft, Bell, Mic, Car } from "lucide-react";
+import { PhoneIcon, MenuIcon, PoundIcon, MessagesIcon } from "@/components/icons/DrivingIcons";
+
 import { useNavigate } from "@tanstack/react-router";
 import dsmLogoWhite from "@/assets/dsm-logo-white.png.asset.json";
 
