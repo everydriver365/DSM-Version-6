@@ -13,6 +13,7 @@ import { computeDayGaps } from "@/lib/gapDetection";
 import { Cloud as CloudIcon, CloudRain, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
 import { PageLayout } from "@/components/PageLayout";
 import { WhatsNewController } from "@/components/dsm/WhatsNewSheet";
+import { DailyCatchUpController } from "@/components/dsm/DailyCatchUpSheet";
 
 import {
   Phone,
@@ -4881,6 +4882,7 @@ function HomePage() {
     <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
       {notifBanner}
       <WhatsNewController userId={userId} />
+      <DailyCatchUpController userId={userId} />
       <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.carousel-hide-scrollbar::-webkit-scrollbar{display:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}@keyframes chipShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
       {/* TOP BAR */}
       <InstructorTopBar

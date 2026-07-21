@@ -16,6 +16,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
 import { supabase } from "../lib/supabaseClient";
+import { EventToastController, emitLiveEvent, type LiveEventKind } from "../components/dsm/EventToast";
 
 
 
@@ -241,7 +242,8 @@ function RootComponent() {
     };
   }, []);
 
-  // Show a browser notification for every new instructor_notifications row.
+  // Route every new instructor_notifications row through the shared event bus.
+  // Foreground → in-app toast; background → native push (via SW).
   useEffect(() => {
     if (!userId) return;
     const channel = supabase
@@ -255,26 +257,22 @@ function RootComponent() {
           filter: `instructor_id=eq.${userId}`,
         },
         async (payload: any) => {
-          console.log("[push] new notification received:", payload.new);
-          if (
-            typeof Notification !== "undefined" &&
-            Notification.permission === "granted" &&
-            "serviceWorker" in navigator
-          ) {
-            try {
-              const registration = await navigator.serviceWorker.ready;
-              const n: any = payload.new;
-              registration.showNotification(n.title || "DSM", {
-                body: n.body || "",
-                icon: icon192.url,
-                badge: icon192.url,
-                tag: n.type || "dsm-notification",
-                data: { url: getNotificationUrl(n) },
-              });
-            } catch (err) {
-              console.warn("[push] showNotification failed:", err);
-            }
-          }
+          const n: any = payload.new ?? {};
+          const url = getNotificationUrl(n);
+          const kind: LiveEventKind = (() => {
+            const t = String(n.type || "").toLowerCase();
+            if (t.includes("job")) return "job";
+            if (t.includes("enquir")) return "enquiry";
+            if (t.includes("booking") || t.includes("lesson")) return "booking";
+            if (t.includes("call")) return "call";
+            return "message";
+          })();
+          const text = n.title
+            ? n.body
+              ? `${n.title}: ${n.body}`
+              : String(n.title)
+            : String(n.body || "New activity");
+          emitLiveEvent({ kind, text, url });
         },
       )
       .subscribe();
@@ -348,6 +346,7 @@ function RootComponent() {
       </div>
       {!hideNav && <BottomNav active={active} />}
       <CommandPalette />
+      <EventToastController />
     </QueryClientProvider>
   );
 }
