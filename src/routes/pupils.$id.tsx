@@ -4065,6 +4065,9 @@ function PupilRatesAndColour({
       {/* Ready to Learn */}
       <ReadyToLearnCard pupilId={pupil.id} />
 
+      {/* Unavailable periods */}
+      <UnavailablePeriodsCard pupilId={pupil.id} />
+
       {/* Calendar colour */}
       <div style={EXTRAS_CARD}>
         <div className="flex items-center gap-2 mb-3">
