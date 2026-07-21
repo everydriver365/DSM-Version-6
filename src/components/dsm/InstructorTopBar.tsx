@@ -134,11 +134,12 @@ export default function InstructorTopBar({
           <MessagesIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
         <IconBtn ariaLabel="Live track" onClick={onLiveTrack}>
-          <CarIcon size={17} strokeWidth={1.8} color="#ffffff" />
+          <Car size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
         <IconBtn ariaLabel="Take payment" onClick={() => navigate({ to: "/take-payment" })}>
           <PoundIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
+
         <button
           type="button"
           aria-label="Notifications"
