@@ -6553,18 +6553,20 @@ function HomePage() {
                           role="button"
                           tabIndex={0}
                           style={{
-                            padding: '12px 14px',
+                            padding: '12px 10px',
                             display: 'flex',
                             alignItems: 'stretch',
                             gap: 12,
                             cursor: 'pointer',
-                            background: '#FFFFFF',
+                            background: 'transparent',
                             border: 'none',
-                            borderRadius: 12,
-                            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                            borderTop: idx === 0 ? 'none' : '1px solid rgba(11,31,58,0.06)',
+                            borderRadius: 0,
+                            boxShadow: 'none',
                             boxSizing: 'border-box',
-                            opacity: isCancelled ? 0.75 : 1,
+                            opacity: isCancelled ? 0.55 : 1,
                           }}
+
                         >
                             <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
                               <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none', textDecorationColor: isCancelled ? '#CC2229' : undefined }}>
