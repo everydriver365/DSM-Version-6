@@ -1310,7 +1310,6 @@ function GapsPage() {
     setMessageTemplate(buildDefaultTemplate());
     setSelectedDiscountId(null);
     setMessageSheetOpen(true);
-    setRecipientsSheetOpen(true);
   }
 
   function discountLineFor(dc: DiscountCode): string {
