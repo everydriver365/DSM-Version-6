@@ -254,22 +254,18 @@ function JobsPage() {
             const inRadius = withinAnyCoverage(job, coverage);
             const hasCoords = job.centre_lat != null && job.centre_lng != null;
             const distanceKnown = hasCoords && coverage.length > 0;
-            // Combine hours/days match with radius.
-            let level: MatchLevel;
+            const hoursDaysGood = hoursDays === "good";
+
+            let badge: { label: string; color: string; bg: string } | null = null;
             if (!distanceKnown) {
-              level = hoursDays; // fall back to hours/days only when we can't compute distance
+              if (hoursDaysGood) badge = { label: "Good schedule", color: GREEN, bg: "#E5F5EC" };
+              else if (hoursDays === "possible") badge = { label: "Possible schedule fit", color: AMBER, bg: "#FDF2E4" };
             } else {
-              const hoursDaysGood = hoursDays === "good";
-              if (hoursDaysGood && inRadius) level = "good";
-              else if (hoursDaysGood || inRadius) level = "possible";
-              else level = "none";
+              const distText = `${distanceMi!.toFixed(1)} mi`;
+              if (hoursDaysGood && inRadius) badge = { label: `Good match · ${distText}`, color: GREEN, bg: "#E5F5EC" };
+              else if (hoursDaysGood) badge = { label: `Fits schedule · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
+              else if (inRadius) badge = { label: `Nearby · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
             }
-            const badge =
-              level === "good"
-                ? { label: "Good match", color: GREEN, bg: "#E5F5EC" }
-                : level === "possible"
-                ? { label: "Possible match", color: AMBER, bg: "#FDF2E4" }
-                : null;
             return (
               <div
                 key={job.id}
