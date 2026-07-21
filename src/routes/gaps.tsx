@@ -2719,7 +2719,8 @@ function GapsPage() {
                 gap: 8,
               }}
             >
-              Message {selectedPupilIds.size} selected →
+              <Send size={18} />
+              Send message
             </button>
           )}
         </div>
