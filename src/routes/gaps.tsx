@@ -451,6 +451,13 @@ function GapsPage() {
   const [selectedSlots, setSelectedSlots] = useState<SelectedSlot[]>([]);
   const [manualMode, setManualMode] = useState(false);
   const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
+  const [selectedDateIso, setSelectedDateIso] = useState<string | null>(null);
+  useEffect(() => {
+    if (selectedDateIso) return;
+    if (dayGroups.length === 0) return;
+    const first = dayGroups.find((g) => g.slots.length > 0);
+    setSelectedDateIso(first?.iso ?? dayGroups[0]?.iso ?? todayIso());
+  }, [dayGroups, selectedDateIso]);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
   const [allPupils, setAllPupils] = useState<Pupil[]>([]);
@@ -1455,11 +1462,13 @@ function GapsPage() {
         overflow: "hidden",
       }}
     >
-      {/* Header — dark navy */}
+      {/* Header — light */}
       <div
         style={{
-          background: NAVY,
+          background: "#FFFFFF",
           padding: "16px 16px 20px",
+          borderRadius: "0 0 24px 24px",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         }}
       >
         <div
@@ -1477,13 +1486,13 @@ function GapsPage() {
               width: 34,
               height: 34,
               borderRadius: 10,
-              background: "rgba(255,255,255,0.1)",
+              background: "#F3F4F6",
               border: "none",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              color: "#FFFFFF",
+              color: "#0B1F3A",
               flexShrink: 0,
             }}
           >
@@ -1493,7 +1502,7 @@ function GapsPage() {
             <h1
               style={{
                 ...FONT,
-                color: "#FFFFFF",
+                color: "#0B1F3A",
                 fontSize: 18,
                 fontWeight: 600,
                 margin: 0,
@@ -1504,7 +1513,7 @@ function GapsPage() {
             </h1>
             <div
               style={{
-                color: "#9AA7C4",
+                color: "#6B7280",
                 fontSize: 12,
                 marginTop: 1,
               }}
@@ -1521,19 +1530,19 @@ function GapsPage() {
           }}
         >
           {[
-            { label: "SLOTS", value: String(freeSlots.length), color: "#FFFFFF" },
-            { label: "DAYS", value: String(daysWithGaps), color: "#FFFFFF" },
+            { label: "SLOTS", value: String(freeSlots.length), color: "#0B1F3A" },
+            { label: "DAYS", value: String(daysWithGaps), color: "#0B1F3A" },
             {
               label: "POTENTIAL",
               value: potentialValue,
-              color: hourlyRate > 0 ? "#2E9E5B" : "#9AA7C4",
+              color: hourlyRate > 0 ? "#2E9E5B" : "#0B1F3A",
             },
           ].map((s) => (
             <div
               key={s.label}
               style={{
                 flex: 1,
-                background: "rgba(255,255,255,0.08)",
+                background: "#F3F8FF",
                 borderRadius: 14,
                 padding: "12px 14px",
               }}
@@ -1542,7 +1551,7 @@ function GapsPage() {
                 style={{
                   fontSize: 10,
                   fontWeight: 500,
-                  color: "#9AA7C4",
+                  color: "#6B87A8",
                   letterSpacing: "0.03em",
                   marginBottom: 6,
                 }}
@@ -1625,37 +1634,7 @@ function GapsPage() {
         </div>
       )}
 
-      {/* Ranking info card */}
-      <div
-        style={{
-          background: "#FFFFFF",
-          borderRadius: 14,
-          padding: "14px 16px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-          margin: "14px 16px 20px",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-        }}
-      >
-        <div
-          style={{
-            width: 36,
-            height: 36,
-            borderRadius: 10,
-            background: "#E6F1FB",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
-          <Zap size={18} color="#1877D6" />
-        </div>
-        <div style={{ fontSize: 13, color: "#5A6270", lineHeight: 1.5 }}>
-          We rank pupils by availability, preferences and time since last lesson.
-        </div>
-      </div>
+      <div style={{ height: 20 }} />
 
       {/* Section header */}
       <div
@@ -1761,476 +1740,449 @@ function GapsPage() {
           </div>
         )}
 
-        {dayGroups.map((g) => {
-          const shortLabel = new Date(g.iso + "T00:00:00").toLocaleDateString(
-            "en-GB",
-            { weekday: "short", day: "numeric", month: "short" },
-          );
-          const hasGaps = g.slots.length > 0;
-
-          return (
-            <div key={g.iso} style={{ marginBottom: 14 }}>
-              {hasGaps ? (
-                <div
+        {/* Horizontal date strip */}
+        {dayGroups.length > 0 && (
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              overflowX: "auto",
+              padding: "0 16px 14px",
+              scrollbarWidth: "none",
+            }}
+          >
+            {dayGroups.map((g) => {
+              const d = new Date(g.iso + "T00:00:00");
+              const dow = d.toLocaleDateString("en-GB", { weekday: "short" });
+              const dom = d.getDate();
+              const hasSlots = g.slots.length > 0;
+              const isSelected = selectedDateIso === g.iso;
+              return (
+                <button
+                  key={g.iso}
+                  onClick={() => setSelectedDateIso(g.iso)}
                   style={{
+                    flex: "0 0 auto",
+                    width: 44,
+                    background: isSelected ? "#1877D6" : "#FFFFFF",
+                    color: isSelected ? "#FFFFFF" : "#0B1F3A",
+                    border: "none",
+                    borderRadius: 12,
+                    padding: "8px 0 6px",
                     display: "flex",
+                    flexDirection: "column",
                     alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "0 16px",
-                    marginBottom: 8,
+                    gap: 2,
+                    cursor: "pointer",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                    position: "relative",
                   }}
                 >
                   <span
                     style={{
-                      display: "inline-flex",
+                      fontSize: 10,
+                      fontWeight: 500,
+                      letterSpacing: "0.04em",
+                      textTransform: "uppercase",
+                      color: isSelected ? "rgba(255,255,255,0.85)" : "#8A93A3",
+                    }}
+                  >
+                    {dow}
+                  </span>
+                  <span style={{ fontSize: 16, fontWeight: 600, lineHeight: 1.1 }}>
+                    {dom}
+                  </span>
+                  <span
+                    style={{
+                      width: 5,
+                      height: 5,
+                      borderRadius: 999,
+                      marginTop: 2,
+                      background: hasSlots
+                        ? isSelected
+                          ? "#FFFFFF"
+                          : "#1877D6"
+                        : "transparent",
+                    }}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Selected date content */}
+        {dayGroups
+          .filter((g) => g.iso === selectedDateIso)
+          .map((g) => {
+            const hasGaps = g.slots.length > 0;
+            return (
+              <div key={g.iso} style={{ marginBottom: 14 }}>
+                {g.lunch && (
+                  <div
+                    style={{
+                      background: "#F9FAFB",
+                      borderRadius: 10,
+                      padding: "8px 12px",
+                      margin: "0 16px 10px",
+                      display: "flex",
                       alignItems: "center",
                       gap: 8,
                     }}
                   >
+                    <Coffee size={14} color="#9CA3AF" />
+                    <span style={{ fontSize: 13, color: "#6B7280" }}>
+                      Lunch break
+                    </span>
                     <span
                       style={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: 999,
-                        background: "#1877D6",
-                        display: "inline-block",
-                      }}
-                    />
-                    <span
-                      style={{
-                        fontSize: 14,
-                        fontWeight: 600,
-                        color: "#0B1F3A",
+                        fontSize: 12,
+                        color: "#9CA3AF",
+                        marginLeft: "auto",
                       }}
                     >
-                      {shortLabel}
+                      {g.lunch.start} – {g.lunch.end}
                     </span>
-                  </span>
-                  <button
-                    onClick={() => {
-                      setManualMode(true);
-                      setSlotDate(g.iso);
-                      setSelectedSlots([]);
-                    }}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 4,
-                      background: "#E6F1FB",
-                      border: "none",
-                      borderRadius: 999,
-                      padding: "6px 12px",
-                      fontSize: 12,
-                      fontWeight: 500,
-                      color: "#1877D6",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <Plus size={12} /> Add
-                  </button>
-                </div>
-              ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "4px 4px 4px 0",
-                    margin: "0 16px 8px",
-                  }}
-                >
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 7,
-                    }}
-                  >
-                    <span
-                      style={{
-                        width: 7,
-                        height: 7,
-                        borderRadius: 999,
-                        background: "#C7CCD4",
-                        display: "inline-block",
-                      }}
-                    />
-                    <span
-                      style={{
-                        fontSize: 13,
-                        fontWeight: 500,
-                        color: "#8A93A3",
-                      }}
-                    >
-                      {shortLabel}
-                    </span>
-                    <span style={{ fontSize: 12, color: "#C7CCD4" }}>
-                      · {g.isWorkDay ? "no free slots" : "day off"}
-                    </span>
-                  </span>
-                  <button
-                    onClick={() => {
-                      setManualMode(true);
-                      setSlotDate(g.iso);
-                      setSelectedSlots([]);
-                    }}
-                    style={{
-                      background: "transparent",
-                      border: "none",
-                      padding: 0,
-                      fontSize: 12,
-                      fontWeight: 500,
-                      color: "#1877D6",
-                      cursor: "pointer",
-                    }}
-                  >
-                    + Add
-                  </button>
-                </div>
-              )}
+                  </div>
+                )}
 
-              {g.lunch && (
-                <div
-                  style={{
-                    background: "#F9FAFB",
-                    borderRadius: 10,
-                    padding: "8px 12px",
-                    margin: "0 16px 10px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                  }}
-                >
-                  <Coffee size={14} color="#9CA3AF" />
-                  <span style={{ fontSize: 13, color: "#6B7280" }}>
-                    Lunch break
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 12,
-                      color: "#9CA3AF",
-                      marginLeft: "auto",
-                    }}
-                  >
-                    {g.lunch.start} – {g.lunch.end}
-                  </span>
-                </div>
-              )}
-
-              {g.slots.map((slot) => {
-                const anySelected = slot.possibleDurations.some((d) =>
-                  selectedSlots.some(
-                    (s) =>
-                      slotKey(s) ===
-                      slotKey({
-                        date: slot.date,
-                        time: slot.startTime,
-                        duration: d,
-                      }),
-                  ),
-                );
-                const default60Key = slotKey({
-                  date: slot.date,
-                  time: slot.startTime,
-                  duration: 60,
-                });
-                const isPrefilterMatch =
-                  !!prefilter &&
-                  prefilterFound === true &&
-                  slot.date === prefilter.date &&
-                  slot.startTime === prefilter.time;
-                return (
-                  <div
-                    key={`gap-${slot.startTime}`}
-                    data-slot-key={`${slot.date}-${slot.startTime}`}
-                    className={isPrefilterMatch ? "gaps-prefilter-match" : undefined}
-                    style={{
-                      background: anySelected ? "#F0F6FC" : "#FFFFFF",
-                      borderRadius: 16,
-                      border: anySelected ? "2px solid #1877D6" : "1px solid #DCEAF7",
-                      boxShadow: "0 4px 14px rgba(24,95,165,0.12)",
-                      margin: "0 16px 18px",
-                      padding: "12px 14px",
-                    }}
-                  >
+                {!hasGaps && (
+                  <div style={{ padding: "8px 16px 4px" }}>
                     <button
                       onClick={() => {
-                        setSelectedSlots((prev) => {
-                          const exists = prev.some(
-                            (s) => slotKey(s) === default60Key,
-                          );
-                          if (exists)
-                            return prev.filter(
-                              (s) =>
-                                !(
-                                  s.date === slot.date &&
-                                  s.time === slot.startTime
-                                ),
-                            );
-                          return [
-                            ...prev,
-                            {
-                              date: slot.date,
-                              time: slot.startTime,
-                              duration: 60,
-                            },
-                          ];
-                        });
+                        setManualMode(true);
+                        setSlotDate(g.iso);
+                        setSelectedSlots([]);
                       }}
                       style={{
-                        width: "100%",
-                        textAlign: "left",
                         background: "transparent",
                         border: "none",
                         padding: 0,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 12,
+                        fontSize: 14,
+                        fontWeight: 500,
+                        color: "#1877D6",
                         cursor: "pointer",
                       }}
                     >
-                      {(() => {
-                        const startMin = hmToMin(slot.startTime);
-                        const dayName = DAYS[new Date(slot.date + "T00:00:00").getDay()];
-                        const preview = previewMatchForGap({
-                          date: slot.date,
-                          dayName,
-                          startMin,
-                          durationMin: slot.gapMinutes,
-                          allPupils,
-                          allAvailability,
-                        });
-                        const hasMatches = preview.count > 0;
-                        return (
-                          <>
-                            {hasMatches ? (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  flexShrink: 0,
-                                  height: 42,
-                                }}
-                              >
-                                {preview.topPupils.map((p, i) => {
-                                  const nm =
-                                    p.name ||
-                                    [p.first_name, p.last_name]
-                                      .filter(Boolean)
-                                      .join(" ") ||
-                                    "?";
-                                  const initials = nm
-                                    .split(/\s+/)
-                                    .map((s) => s.charAt(0))
-                                    .join("")
-                                    .slice(0, 2)
-                                    .toUpperCase();
-                                  const isLast =
-                                    i === preview.topPupils.length - 1;
-                                  return (
-                                    <div
-                                      key={p.id}
-                                      style={{
-                                        width: 32,
-                                        height: 32,
-                                        borderRadius: 999,
-                                        background:
-                                          p.calendar_colour ?? "#6B7280",
-                                        border: "2px solid #FFFFFF",
-                                        color: "#FFFFFF",
-                                        fontSize: 11,
-                                        fontWeight: 700,
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        marginRight: isLast ? 0 : -10,
-                                        flexShrink: 0,
-                                      }}
-                                    >
-                                      {initials}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            ) : (
-                              <div
-                                style={{
-                                  width: 42,
-                                  height: 42,
-                                  borderRadius: 12,
-                                  background:
-                                    "linear-gradient(135deg, #1877D6, #0B1F3A)",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  flexShrink: 0,
-                                }}
-                              >
-                                <Zap size={20} color="#FFFFFF" />
-                              </div>
-                            )}
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div
-                                style={{
-                                  color: "#0B1F3A",
-                                  fontWeight: 600,
-                                  fontSize: 15,
-                                  overflow: "hidden",
-                                  textOverflow: "ellipsis",
-                                  whiteSpace: "nowrap",
-                                }}
-                              >
-                                {hasMatches
-                                  ? `${preview.count} pupil${preview.count === 1 ? "" : "s"} may fit · ${fmtGap(slot.gapMinutes)} free`
-                                  : `${fmtGap(slot.gapMinutes)} free`}
-                              </div>
-                              <div
-                                style={{
-                                  color: "#8A93A3",
-                                  fontSize: 12,
-                                  marginTop: 1,
-                                }}
-                              >
-                                {minToHm(hmToMin(slot.startTime))} –{" "}
-                                {minToHm(hmToMin(slot.endTime))} · tap to fill
-                              </div>
-                            </div>
-                            {anySelected ? (
-                              <div
-                                style={{
-                                  width: 16,
-                                  height: 16,
-                                  borderRadius: "50%",
-                                  background: "#1877D6",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  flexShrink: 0,
-                                }}
-                              >
-                                <Check size={10} color="#FFFFFF" strokeWidth={3} />
-                              </div>
-                            ) : (
-                              !hasMatches && (
-                                <RefreshCw
-                                  size={16}
-                                  color="#C7CCD4"
-                                  style={{ flexShrink: 0 }}
-                                />
-                              )
-                            )}
-                            <ChevronRight
-                              size={16}
-                              color="#C7CCD4"
-                              style={{ flexShrink: 0 }}
-                            />
-                          </>
-                        );
-                      })()}
+                      + Add a slot manually
                     </button>
+                  </div>
+                )}
 
-                    {slot.gapReason && (
-                      <div
+                {g.slots.map((slot) => {
+                  const anySelected = slot.possibleDurations.some((d) =>
+                    selectedSlots.some(
+                      (s) =>
+                        slotKey(s) ===
+                        slotKey({
+                          date: slot.date,
+                          time: slot.startTime,
+                          duration: d,
+                        }),
+                    ),
+                  );
+                  const default60Key = slotKey({
+                    date: slot.date,
+                    time: slot.startTime,
+                    duration: 60,
+                  });
+                  const isPrefilterMatch =
+                    !!prefilter &&
+                    prefilterFound === true &&
+                    slot.date === prefilter.date &&
+                    slot.startTime === prefilter.time;
+                  return (
+                    <div
+                      key={`gap-${slot.startTime}`}
+                      data-slot-key={`${slot.date}-${slot.startTime}`}
+                      className={isPrefilterMatch ? "gaps-prefilter-match" : undefined}
+                      style={{
+                        background: anySelected ? "#F0F6FC" : "#FFFFFF",
+                        borderRadius: 16,
+                        border: anySelected ? "2px solid #1877D6" : "1px solid #DCEAF7",
+                        boxShadow: "0 4px 14px rgba(24,95,165,0.12)",
+                        margin: "0 16px 18px",
+                        padding: "12px 14px",
+                      }}
+                    >
+                      <button
+                        onClick={() => {
+                          setSelectedSlots((prev) => {
+                            const exists = prev.some(
+                              (s) => slotKey(s) === default60Key,
+                            );
+                            if (exists)
+                              return prev.filter(
+                                (s) =>
+                                  !(
+                                    s.date === slot.date &&
+                                    s.time === slot.startTime
+                                  ),
+                              );
+                            return [
+                              ...prev,
+                              {
+                                date: slot.date,
+                                time: slot.startTime,
+                                duration: 60,
+                              },
+                            ];
+                          });
+                        }}
                         style={{
-                          background: "#E6F1FB",
-                          borderRadius: 10,
-                          padding: "10px 14px",
-                          marginTop: 10,
+                          width: "100%",
+                          textAlign: "left",
+                          background: "transparent",
+                          border: "none",
+                          padding: 0,
                           display: "flex",
                           alignItems: "center",
-                          gap: 8,
+                          gap: 12,
+                          cursor: "pointer",
                         }}
                       >
-                        <Clock size={14} color="#1877D6" />
-                        <span
+                        {(() => {
+                          const startMin = hmToMin(slot.startTime);
+                          const dayName = DAYS[new Date(slot.date + "T00:00:00").getDay()];
+                          const preview = previewMatchForGap({
+                            date: slot.date,
+                            dayName,
+                            startMin,
+                            durationMin: slot.gapMinutes,
+                            allPupils,
+                            allAvailability,
+                          });
+                          const hasMatches = preview.count > 0;
+                          return (
+                            <>
+                              {hasMatches ? (
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    flexShrink: 0,
+                                    height: 42,
+                                  }}
+                                >
+                                  {preview.topPupils.map((p, i) => {
+                                    const nm =
+                                      p.name ||
+                                      [p.first_name, p.last_name]
+                                        .filter(Boolean)
+                                        .join(" ") ||
+                                      "?";
+                                    const initials = nm
+                                      .split(/\s+/)
+                                      .map((s) => s.charAt(0))
+                                      .join("")
+                                      .slice(0, 2)
+                                      .toUpperCase();
+                                    const isLast =
+                                      i === preview.topPupils.length - 1;
+                                    return (
+                                      <div
+                                        key={p.id}
+                                        style={{
+                                          width: 32,
+                                          height: 32,
+                                          borderRadius: 999,
+                                          background:
+                                            p.calendar_colour ?? "#6B7280",
+                                          border: "2px solid #FFFFFF",
+                                          color: "#FFFFFF",
+                                          fontSize: 11,
+                                          fontWeight: 700,
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
+                                          marginRight: isLast ? 0 : -10,
+                                          flexShrink: 0,
+                                        }}
+                                      >
+                                        {initials}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              ) : (
+                                <div
+                                  style={{
+                                    width: 42,
+                                    height: 42,
+                                    borderRadius: 12,
+                                    background:
+                                      "linear-gradient(135deg, #1877D6, #0B1F3A)",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    flexShrink: 0,
+                                  }}
+                                >
+                                  <Zap size={20} color="#FFFFFF" />
+                                </div>
+                              )}
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div
+                                  style={{
+                                    color: "#0B1F3A",
+                                    fontWeight: 600,
+                                    fontSize: 15,
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  {hasMatches
+                                    ? `${preview.count} pupil${preview.count === 1 ? "" : "s"} may fit · ${fmtGap(slot.gapMinutes)} free`
+                                    : `${fmtGap(slot.gapMinutes)} free`}
+                                </div>
+                                <div
+                                  style={{
+                                    color: "#8A93A3",
+                                    fontSize: 12,
+                                    marginTop: 1,
+                                  }}
+                                >
+                                  {minToHm(hmToMin(slot.startTime))} –{" "}
+                                  {minToHm(hmToMin(slot.endTime))} · tap to fill
+                                </div>
+                              </div>
+                              {anySelected ? (
+                                <div
+                                  style={{
+                                    width: 16,
+                                    height: 16,
+                                    borderRadius: "50%",
+                                    background: "#1877D6",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    flexShrink: 0,
+                                  }}
+                                >
+                                  <Check size={10} color="#FFFFFF" strokeWidth={3} />
+                                </div>
+                              ) : (
+                                !hasMatches && (
+                                  <RefreshCw
+                                    size={16}
+                                    color="#C7CCD4"
+                                    style={{ flexShrink: 0 }}
+                                  />
+                                )
+                              )}
+                              <ChevronRight
+                                size={16}
+                                color="#C7CCD4"
+                                style={{ flexShrink: 0 }}
+                              />
+                            </>
+                          );
+                        })()}
+                      </button>
+
+                      {slot.gapReason && (
+                        <div
                           style={{
-                            fontSize: 13,
-                            color: "#1877D6",
-                            fontWeight: 500,
+                            background: "#E6F1FB",
+                            borderRadius: 10,
+                            padding: "10px 14px",
+                            marginTop: 10,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
                           }}
                         >
-                          {slot.gapReason}
-                        </span>
-                        {slot.fromPostcode && slot.toPostcode && (
+                          <Clock size={14} color="#1877D6" />
                           <span
                             style={{
-                              fontSize: 12,
-                              color: "#8A93A3",
-                              marginLeft: "auto",
+                              fontSize: 13,
+                              color: "#1877D6",
+                              fontWeight: 500,
                             }}
                           >
-                            {slot.fromPostcode} → {slot.toPostcode}
+                            {slot.gapReason}
                           </span>
-                        )}
-                      </div>
-                    )}
-
-                    {anySelected && slot.possibleDurations.length > 1 && (
-                      <div
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: 6,
-                          paddingTop: 10,
-                        }}
-                      >
-                        {slot.possibleDurations.map((d) => {
-                          const key = slotKey({
-                            date: slot.date,
-                            time: slot.startTime,
-                            duration: d,
-                          });
-                          const isSelected = selectedSlots.some(
-                            (s) => slotKey(s) === key,
-                          );
-                          return (
-                            <button
-                              key={d}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedSlots((prev) => {
-                                  const filtered = prev.filter(
-                                    (s) =>
-                                      !(
-                                        s.date === slot.date &&
-                                        s.time === slot.startTime
-                                      ),
-                                  );
-                                  if (isSelected) return filtered;
-                                  return [
-                                    ...filtered,
-                                    {
-                                      date: slot.date,
-                                      time: slot.startTime,
-                                      duration: d,
-                                    },
-                                  ];
-                                });
-                              }}
+                          {slot.fromPostcode && slot.toPostcode && (
+                            <span
                               style={{
-                                background: isSelected ? "#1877D6" : "#FFFFFF",
-                                color: isSelected ? "#FFFFFF" : "#8A94A6",
-                                border: `1px solid ${isSelected ? "#1877D6" : "#EEF2F7"}`,
-                                borderRadius: 999,
-                                padding: "4px 10px",
-                                fontSize: 11,
-                                fontWeight: 500,
-                                cursor: "pointer",
+                                fontSize: 12,
+                                color: "#8A93A3",
+                                marginLeft: "auto",
                               }}
                             >
-                              {d} MIN
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
+                              {slot.fromPostcode} → {slot.toPostcode}
+                            </span>
+                          )}
+                        </div>
+                      )}
 
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
+                      {anySelected && slot.possibleDurations.length > 1 && (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 6,
+                            paddingTop: 10,
+                          }}
+                        >
+                          {slot.possibleDurations.map((d) => {
+                            const key = slotKey({
+                              date: slot.date,
+                              time: slot.startTime,
+                              duration: d,
+                            });
+                            const isSelected = selectedSlots.some(
+                              (s) => slotKey(s) === key,
+                            );
+                            return (
+                              <button
+                                key={d}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedSlots((prev) => {
+                                    const filtered = prev.filter(
+                                      (s) =>
+                                        !(
+                                          s.date === slot.date &&
+                                          s.time === slot.startTime
+                                        ),
+                                    );
+                                    if (isSelected) return filtered;
+                                    return [
+                                      ...filtered,
+                                      {
+                                        date: slot.date,
+                                        time: slot.startTime,
+                                        duration: d,
+                                      },
+                                    ];
+                                  });
+                                }}
+                                style={{
+                                  background: isSelected ? "#1877D6" : "#FFFFFF",
+                                  color: isSelected ? "#FFFFFF" : "#8A94A6",
+                                  border: `1px solid ${isSelected ? "#1877D6" : "#EEF2F7"}`,
+                                  borderRadius: 999,
+                                  padding: "4px 10px",
+                                  fontSize: 11,
+                                  fontWeight: 500,
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {d} MIN
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
 
         {!slotsLoading && dayGroups.length > 0 && (
           <SummaryStats
