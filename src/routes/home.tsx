@@ -1118,23 +1118,21 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         {hasMore && (
           <button
             type="button"
-            className="mkt-view-all"
             onClick={() => navigate({ to: "/marketplace" as never })}
             style={{
-              background: "#072B47",
+              background: "transparent",
               border: "none",
-              borderRadius: 999,
-              padding: "8px 14px",
-              fontSize: 11,
+              padding: "4px 2px",
+              fontSize: 13,
               fontWeight: 600,
-              color: "#FFFFFF",
+              color: "#1877D6",
               cursor: "pointer",
               whiteSpace: "nowrap",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               fontFamily: POPPINS_MKT,
+              letterSpacing: "-0.01em",
             }}
           >
-            View all services
+            See all →
           </button>
         )}
       </div>
