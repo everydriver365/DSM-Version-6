@@ -4557,30 +4557,32 @@ function UnavailablePeriodsCard({ pupilId }: { pupilId: string }) {
         </div>
       )}
 
-      <BottomSheetV2 open={open} onClose={() => setOpen(false)} title="Add unavailable period">
-        <div className="flex flex-col gap-3 p-4">
-          <div>
-            <div className="text-[12px] mb-1" style={{ color: "#6B7280", ...POPPINS }}>Start date</div>
-            <input type="date" value={start} onChange={(e) => setStart(e.target.value)} style={inputStyle} />
+      {open && (
+        <BottomSheetV2 title="Add unavailable period" onClose={() => setOpen(false)}>
+          <div className="flex flex-col gap-3 p-4">
+            <div>
+              <div className="text-[12px] mb-1" style={{ color: "#6B7280", ...POPPINS }}>Start date</div>
+              <input type="date" value={start} onChange={(e) => setStart(e.target.value)} style={inputStyle} />
+            </div>
+            <div>
+              <div className="text-[12px] mb-1" style={{ color: "#6B7280", ...POPPINS }}>End date</div>
+              <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} style={inputStyle} />
+            </div>
+            <div>
+              <div className="text-[12px] mb-1" style={{ color: "#6B7280", ...POPPINS }}>Reason</div>
+              <select value={reason} onChange={(e) => setReason(e.target.value)} style={inputStyle}>
+                {UNAVAIL_REASONS.map((r) => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+              <Button variant="primary" onClick={save} disabled={saving}>{saving ? "Saving…" : "Save"}</Button>
+            </div>
           </div>
-          <div>
-            <div className="text-[12px] mb-1" style={{ color: "#6B7280", ...POPPINS }}>End date</div>
-            <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} style={inputStyle} />
-          </div>
-          <div>
-            <div className="text-[12px] mb-1" style={{ color: "#6B7280", ...POPPINS }}>Reason</div>
-            <select value={reason} onChange={(e) => setReason(e.target.value)} style={inputStyle}>
-              {UNAVAIL_REASONS.map((r) => (
-                <option key={r} value={r}>{r}</option>
-              ))}
-            </select>
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button variant="primary" onClick={save} disabled={saving}>{saving ? "Saving…" : "Save"}</Button>
-          </div>
-        </div>
-      </BottomSheetV2>
+        </BottomSheetV2>
+      )}
     </div>
   );
 }
