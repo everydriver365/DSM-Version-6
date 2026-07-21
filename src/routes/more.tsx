@@ -4,8 +4,12 @@ import {
   Search, X, BookOpen, RefreshCw, Clock, Award, ArrowLeftRight, GraduationCap,
   ClipboardCheck, FileText, Receipt, Fuel, Car, MapPin, Settings, Calendar,
   Gift, FileCheck, Zap, ClipboardList, AlertTriangle, BarChart3, Calculator,
-  Moon, TrendingUp, Activity, Radio, ShoppingBag, Users,
+  Moon, TrendingUp, Activity, Radio, ShoppingBag, Users, GraduationCap as GraduationCapIcon,
+  ChevronRight, PlayCircle,
 } from "lucide-react";
+
+// Toggle to false when Learn is no longer "new" — hides the NEW badge only.
+const LEARN_IS_NEW = true;
 
 export const Route = createFileRoute("/more")({
   head: () => ({
@@ -175,11 +179,73 @@ function MorePage() {
         )
       ) : (
         // Grouped view
-        GROUP_ORDER.map((group) => {
+        GROUP_ORDER.map((group, groupIdx) => {
           const items = filtered.filter((t) => t.group === group);
           if (items.length === 0) return null;
           return (
             <div key={group}>
+              {groupIdx === 0 && (
+                <div style={{ margin: '16px 16px 0' }}>
+                  <button
+                    type="button"
+                    onClick={() => go('/learn')}
+                    style={{
+                      width: '100%',
+                      background: 'white',
+                      border: 'none',
+                      borderRadius: 14,
+                      padding: '12px 14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      fontFamily: 'Inter, sans-serif',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 34,
+                        height: 34,
+                        borderRadius: 10,
+                        background: '#0F2044',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <PlayCircle size={18} color="white" />
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044' }}>Learn</div>
+                        {LEARN_IS_NEW && (
+                          <span
+                            style={{
+                              fontSize: 9.5,
+                              fontWeight: 700,
+                              color: 'white',
+                              background: '#1877D6',
+                              padding: '2px 6px',
+                              borderRadius: 999,
+                              letterSpacing: '0.06em',
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            New
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: 12, color: '#6B7A90', marginTop: 1 }}>
+                        Quick guides and how-to videos
+                      </div>
+                    </div>
+                    <ChevronRight size={18} color="#8592A6" />
+                  </button>
+                </div>
+              )}
               <div
                 style={{
                   fontSize: 10,
