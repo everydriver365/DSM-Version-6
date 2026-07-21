@@ -1024,7 +1024,7 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     (async () => {
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,image_urls,is_featured,marketplace_categories(name),marketplace_suppliers(name,logo_url)&order=is_featured.desc,created_at.desc&limit=6`,
+          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,image_urls,is_featured,marketplace_categories(name),marketplace_suppliers(name,logo_url)&order=is_featured.desc,created_at.desc`,
           {
             headers: {
               apikey: SUPABASE_ANON_KEY,
@@ -1045,6 +1045,18 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     };
   }, []);
 
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const CARD_W = 172;
+  const GAP = 12;
+
+  const onScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const idx = Math.round(el.scrollLeft / (CARD_W + GAP));
+    setActiveIdx(idx);
+  };
+
   const parsePrice = (priceDisplay: string | null | undefined): { price: string; period: string } | null => {
     if (!priceDisplay) return null;
     const match = priceDisplay.match(/^£?([\d,]+(?:\.\d{2})?)\s*(.*)$/i);
@@ -1057,8 +1069,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
     navigate({ to: "/marketplace/$listingId" as never, params: { listingId } as never });
   };
 
-  const cards = listings.slice(0, 2);
-  const hasMore = listings.length > cards.length;
+  const cards = listings;
+  const hasMore = listings.length > 0;
 
   const POPPINS_MKT = "'Poppins', 'Inter', sans-serif";
 
@@ -1074,7 +1086,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
   return (
     <div
       style={{
-        margin: "0 -16px",
         padding: "20px 0 22px",
         background: PAGE_BACKGROUND,
         fontFamily: POPPINS_MKT,
@@ -1086,6 +1097,8 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
         .mkt-view-all:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(7, 43, 71, 0.35); }
         .mkt-card { transition: transform 0.15s ease, box-shadow 0.2s ease; }
         .mkt-card:active { transform: scale(0.98); }
+        .mkt-scroll::-webkit-scrollbar { display: none; }
+        .mkt-scroll { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
 
       {/* SECTION HEADER */}
@@ -1094,7 +1107,6 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "0 16px",
           marginBottom: 12,
           gap: 12,
         }}
@@ -1132,97 +1144,142 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
           <div style={{ fontSize: 13, color: "#B0BAC9" }}>No featured services</div>
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12, padding: "0 16px" }}>
-          {cards.map((tile) => {
-            const price = parsePrice(tile.price_display);
-            const hasPrice = !!price && !!price.price;
-            return (
-              <button
-                key={tile.id}
-                type="button"
-                onClick={() => openListing(tile.id)}
-                className="mkt-card"
-                style={{
-                  position: "relative",
-                  background: "#FFFFFF",
-                  border: "1px solid #ECEFF3",
-                  borderRadius: 20,
-                  padding: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "stretch",
-                  textAlign: "left",
-                  cursor: "pointer",
-                  overflow: "hidden",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  fontFamily: POPPINS_MKT,
-                  width: "100%",
-                }}
-              >
-                {/* Icon panel */}
-                <div
+        <>
+          <div
+            ref={scrollRef}
+            onScroll={onScroll}
+            className="mkt-scroll"
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: GAP,
+              overflowX: "auto",
+              overflowY: "hidden",
+              scrollSnapType: "x mandatory",
+              WebkitOverflowScrolling: "touch",
+            }}
+          >
+            {cards.map((tile) => {
+              const price = parsePrice(tile.price_display);
+              const hasPrice = !!price && !!price.price && /\d/.test(price.price);
+              return (
+                <button
+                  key={tile.id}
+                  type="button"
+                  onClick={() => openListing(tile.id)}
+                  className="mkt-card"
                   style={{
-                    width: "100%",
-                    aspectRatio: "16 / 9",
-                    background: "linear-gradient(135deg, #1877D6 0%, #0F2044 100%)",
+                    position: "relative",
+                    background: "#FFFFFF",
+                    border: "1px solid #ECEFF3",
+                    borderRadius: 20,
+                    padding: 0,
                     display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    flexDirection: "column",
+                    alignItems: "stretch",
+                    textAlign: "left",
+                    cursor: "pointer",
+                    overflow: "hidden",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                    fontFamily: POPPINS_MKT,
+                    flex: "0 0 auto",
+                    width: CARD_W,
+                    scrollSnapAlign: "start",
                   }}
                 >
-                  {iconForCategory(tile.marketplace_categories?.name, tile.title)}
-                </div>
-
-                {/* Body */}
-                <div style={{ padding: "12px 14px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
+                  {/* Icon panel */}
                   <div
                     style={{
-                      fontSize: 14,
-                      fontWeight: 600,
-                      color: "#0F2044",
-                      lineHeight: 1.25,
-                      letterSpacing: "-0.01em",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                      wordBreak: "break-word",
-                      minHeight: "2.5em",
+                      width: "100%",
+                      aspectRatio: "16 / 9",
+                      background: "linear-gradient(135deg, #1877D6 0%, #0F2044 100%)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
-                    {tile.title}
+                    {iconForCategory(tile.marketplace_categories?.name, tile.title)}
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                    {hasPrice ? (
-                      <div style={{ fontSize: 12.5, color: "#5A6B85", fontWeight: 500, lineHeight: 1.2 }}>
-                        <span style={{ color: "#0F2044", fontWeight: 600 }}>{price!.price}</span>{" "}
-                        <span style={{ color: "#8592A6" }}>{price!.period}</span>
-                      </div>
-                    ) : (
-                      <div style={{ fontSize: 12, color: "#B8802C", fontStyle: "italic", fontWeight: 500, lineHeight: 1.2 }}>
-                        Price coming soon
-                      </div>
-                    )}
-                    <span
+
+                  {/* Body */}
+                  <div style={{ padding: "12px 14px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
+                    <div
                       style={{
-                        width: 26,
-                        height: 26,
-                        borderRadius: 999,
-                        background: "#EEF2F7",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: "#0F2044",
+                        lineHeight: 1.25,
+                        letterSpacing: "-0.01em",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        wordBreak: "break-word",
+                        minHeight: "2.5em",
                       }}
                     >
-                      <ChevronRight size={14} color="#0F2044" strokeWidth={2.4} />
-                    </span>
+                      {tile.title}
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                      {hasPrice ? (
+                        <div style={{ fontSize: 12.5, color: "#5A6B85", fontWeight: 500, lineHeight: 1.2 }}>
+                          <span style={{ color: "#0F2044", fontWeight: 600 }}>{price!.price}</span>{" "}
+                          <span style={{ color: "#8592A6" }}>{price!.period}</span>
+                        </div>
+                      ) : (
+                        <div style={{ fontSize: 12, color: "#B8802C", fontStyle: "italic", fontWeight: 500, lineHeight: 1.2 }}>
+                          Coming soon
+                        </div>
+                      )}
+                      <span
+                        style={{
+                          width: 26,
+                          height: 26,
+                          borderRadius: 999,
+                          background: "#EEF2F7",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <ChevronRight size={14} color="#0F2044" strokeWidth={2.4} />
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {cards.length > 1 && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 6,
+                marginTop: 14,
+              }}
+            >
+              {cards.map((c, i) => {
+                const active = i === activeIdx;
+                return (
+                  <span
+                    key={c.id}
+                    style={{
+                      height: 6,
+                      width: active ? 16 : 6,
+                      borderRadius: 999,
+                      background: active ? "#1877D6" : "#C7D1DE",
+                      transition: "width 0.2s ease, background 0.2s ease",
+                    }}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
