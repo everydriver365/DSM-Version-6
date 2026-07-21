@@ -6320,16 +6320,17 @@ function HomePage() {
                             tabIndex={0}
                             style={{
                               position: 'relative',
-                              background: moveModeHome ? '#F4F8FE' : '#FFFFFF',
-                              borderRadius: 10,
-                              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                              background: moveModeHome ? '#F4F8FE' : '#FBFCFE',
+                              borderRadius: 12,
+                              boxShadow: 'none',
                               padding: '20px 14px 12px',
                               display: 'flex',
                               alignItems: 'center',
                               gap: 10,
                               cursor: 'pointer',
-                              border: moveModeHome ? '1.5px dashed #1877D6' : 'none',
+                              border: moveModeHome ? '1.5px dashed #1877D6' : '1px dashed rgba(181,102,30,0.35)',
                             }}
+
                           >
                             <div
                               style={{
