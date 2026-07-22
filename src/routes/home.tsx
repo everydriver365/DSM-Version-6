@@ -7599,66 +7599,36 @@ function HeroExpandedPanel({
   };
 
   const pillBase: React.CSSProperties = {
-    background: '#FFFFFF',
+    background: '#F2F2F7',
     border: 'none',
-    borderRadius: 12,
-    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-    padding: '10px 0',
+    borderRadius: 9,
+    padding: '8px 4px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 4,
+    gap: 3,
     cursor: 'pointer',
     fontFamily: 'Inter, sans-serif',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 500,
     color: '#0B1F3A',
   };
-  const pillLabel: React.CSSProperties = { fontSize: 12, fontWeight: 500 };
+  const pillLabel: React.CSSProperties = { fontSize: 11, fontWeight: 500 };
   const sectionLabel: React.CSSProperties = {
     fontSize: 11,
-    fontWeight: 500,
-    color: '#8A93A3',
+    fontWeight: 600,
+    color: '#8E8E93',
     textTransform: 'uppercase',
-    letterSpacing: 0.4,
-    marginBottom: 8,
+    letterSpacing: 0.2,
+    marginBottom: 6,
     fontFamily: 'Inter, sans-serif',
   };
 
   return (
     <div style={{ background: '#F3F8FF', borderRadius: '0 0 16px 16px', padding: 12 }}>
-      {/* Row 0 — Call / Text / Navigate actions */}
-      <div style={{ margin: '-12px -12px 12px', padding: '12px 14px', background: '#FAFBFC', borderTop: '1px solid #EEF2F7', borderBottom: '1px solid #EEF2F7', display: 'flex', gap: 8 }}>
-        <button
-          type="button"
-          onClick={() => { if (phone) window.location.href = `tel:${phone}`; else toast('No phone number'); }}
-          aria-label="Call"
-          style={{ flex: 1, background: '#FFFFFF', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', borderRadius: 9, padding: '8px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }}
-        >
-          <Phone size={14} color="#0B1F3A" />
-        </button>
-        <button
-          type="button"
-          onClick={() => sendSms(`Hi ${firstName}, `)}
-          aria-label="Text"
-          style={{ flex: 1, background: '#FFFFFF', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', borderRadius: 9, padding: '8px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }}
-        >
-          <IconMessageCircle size={14} color="#0B1F3A" />
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            const q = [lesson.pickup_location, lesson.pupils?.address, lesson.pupils?.postcode].filter(Boolean).join(', ');
-            if (!q) { toast('No pickup set'); return; }
-            window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(q)}`, '_blank');
-          }}
-          style={{ flex: 3, background: '#1877D6', color: '#FFFFFF', borderRadius: 9, padding: '8px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600, fontFamily: 'Inter, sans-serif' }}
-        >
-          <Navigation size={14} color="#FFFFFF" />
-          Navigate
-        </button>
-      </div>
+      {/* Quick Actions */}
+      <div style={sectionLabel}>Quick Actions</div>
       {/* Row 1 — status pills */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
         <button
@@ -7671,7 +7641,7 @@ function HeroExpandedPanel({
         <button
           style={{
             ...pillBase,
-            background: goingActive ? '#FFF8E8' : '#FFFFFF',
+            background: goingActive ? '#FFF8E8' : '#F2F2F7',
           }}
           onClick={() => { setGoingActive(true); sendSms(`Hi ${firstName}, on the way!`); }}
         >
@@ -7695,27 +7665,27 @@ function HeroExpandedPanel({
         </button>
         <button
           onClick={(e) => { e.stopPropagation(); onEol(); }}
-          style={{ ...pillBase, background: '#CC2229', color: '#FFFFFF' }}
+          style={{ ...pillBase, background: '#FDEDEE', color: '#CC2229' }}
         >
-          <CheckCircle2 size={16} color="#FFFFFF" />
-          <span style={{ ...pillLabel, color: '#FFFFFF' }}>EOL</span>
+          <CheckCircle2 size={16} color="#CC2229" />
+          <span style={{ ...pillLabel, color: '#CC2229' }}>EOL</span>
         </button>
         <button
           onClick={() => {
             sendSms(`Hi ${firstName}, I'm outside and ready when you are! 🚗`);
             toast("Marked as arrived");
           }}
-          style={{ ...pillBase, background: '#1877D6', color: '#FFFFFF' }}
+          style={{ ...pillBase, background: '#EAF2FC', color: '#1877D6' }}
         >
-          <CheckCheck size={16} color="#FFFFFF" />
-          <span style={{ ...pillLabel, color: '#FFFFFF' }}>Arrived</span>
+          <CheckCheck size={16} color="#1877D6" />
+          <span style={{ ...pillLabel, color: '#1877D6' }}>Arrived</span>
         </button>
       </div>
 
       {/* Pickup */}
-      <div style={{ marginTop: 16 }}>
-        <div style={sectionLabel}>PICKUP</div>
-        <div style={{ background: '#FFFFFF', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Inter, sans-serif', fontSize: 13 }}>
+      <div style={{ marginTop: 14 }}>
+        <div style={sectionLabel}>Pickup</div>
+        <div style={{ background: '#F2F2F7', borderRadius: 9, padding: '9px 12px', display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Inter, sans-serif', fontSize: 13 }}>
           {pickupPostcode ? (
             <>
               <MapPin size={14} color="#0B1F3A" />
@@ -7724,11 +7694,11 @@ function HeroExpandedPanel({
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickupPostcode)}`}
                 target="_blank"
                 rel="noreferrer"
-                style={{ color: '#1877D6', fontWeight: 600, marginLeft: 'auto' }}
+                style={{ color: '#1877D6', fontWeight: 600, marginLeft: 'auto', fontSize: 12 }}
               >Navigate</a>
               <button
                 onClick={() => { navigator.clipboard?.writeText(pickupPostcode); toast("Copied"); }}
-                style={{ background: 'none', border: 'none', color: '#1877D6', fontWeight: 600, fontFamily: 'Inter, sans-serif', fontSize: 13, cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#1877D6', fontWeight: 600, fontFamily: 'Inter, sans-serif', fontSize: 12, cursor: 'pointer' }}
               >Copy</button>
             </>
           ) : (
@@ -7747,37 +7717,37 @@ function HeroExpandedPanel({
 
         let label: string | null = null;
         let fg = '#0B1F3A';
-        let bg = '#FFFFFF';
+        let bg = '#FEF7E8';
         let showActions = false;
 
         if (status === 'paid') {
-          label = 'Paid ✓'; fg = '#1F6B2E'; bg = '#E6F4EA';
+          label = 'Paid ✓'; fg = '#1F6B2E';
         } else if (status === 'prepaid') {
-          label = 'Prepaid ✓'; fg = '#1F6B2E'; bg = '#E6F4EA';
+          label = 'Prepaid ✓'; fg = '#1F6B2E';
         } else if (status === 'cancelled') {
           label = 'Cancelled'; fg = '#5A6270'; bg = '#E9EDF2';
         } else if (status === 'partial') {
-          label = `£${amount.toFixed(2)} remaining`; fg = '#8A5A00'; bg = '#FFF3D6'; showActions = true;
+          label = `£${amount.toFixed(2)} remaining`; fg = '#8A5A00'; showActions = true;
         } else if (status === 'unpaid' && amount > 0) {
-          label = `£${amount.toFixed(2)} due`; fg = '#8A5A00'; bg = '#FFF3D6'; showActions = true;
+          label = `£${amount.toFixed(2)} due`; fg = '#8A5A00'; showActions = true;
         }
 
         if (!label) return null;
 
         return (
-          <div style={{ marginTop: 16 }}>
-            <div style={sectionLabel}>ACCOUNT</div>
-            <div style={{ background: bg, borderRadius: 12, padding: 14, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, fontFamily: 'Inter, sans-serif' }}>
-              <span style={{ fontSize: 15, fontWeight: 600, color: fg }}>{label}</span>
+          <div style={{ marginTop: 14 }}>
+            <div style={sectionLabel}>Account</div>
+            <div style={{ background: bg, borderRadius: 9, padding: '11px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, fontFamily: 'Inter, sans-serif' }}>
+              <span style={{ fontSize: 14, fontWeight: 600, color: fg }}>{label}</span>
               {showActions && (
-                <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ display: 'flex', gap: 6 }}>
                   <button
                     onClick={() => sendSms(`Hi ${firstName}, just a quick reminder that £${amount.toFixed(2)} is outstanding on your lesson account. Thanks!`)}
-                    style={{ background: '#FFFFFF', color: '#0B1F3A', fontSize: 12, fontWeight: 500, padding: '8px 12px', borderRadius: 9, border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
+                    style={{ background: '#FFFFFF', color: '#0B1F3A', fontSize: 11, fontWeight: 500, padding: '0 10px', height: 26, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
                   >Chase</button>
                   <button
                     onClick={() => navigateTo('/payments')}
-                    style={{ background: '#3B6D11', color: '#FFFFFF', fontSize: 12, fontWeight: 500, padding: '8px 12px', borderRadius: 9, border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
+                    style={{ background: '#3B6D11', color: '#FFFFFF', fontSize: 11, fontWeight: 500, padding: '0 10px', height: 26, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
                   >Mark paid</button>
                 </div>
               )}
@@ -7787,24 +7757,24 @@ function HeroExpandedPanel({
       })()}
 
       {/* Last lesson */}
-      <div style={{ marginTop: 16 }}>
-        <div style={sectionLabel}>LAST LESSON</div>
+      <div style={{ marginTop: 14 }}>
+        <div style={sectionLabel}>Last Lesson</div>
         {prev ? (
-          <div style={{ background: '#FFFFFF', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 14, fontFamily: 'Inter, sans-serif' }}>
+          <div style={{ background: '#F2F2F7', borderRadius: 9, padding: '10px 12px', fontFamily: 'Inter, sans-serif' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A' }}>
+              <span style={{ fontSize: 12, fontWeight: 600, color: '#0B1F3A' }}>
                 {new Date(prev.lesson_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
               </span>
-              <span style={{ fontSize: 10, fontWeight: 500, padding: '3px 9px', borderRadius: 999, color: '#5A6270', background: '#E9EDF2', textTransform: 'capitalize' }}>{prev.status}</span>
+              <span style={{ fontSize: 9, fontWeight: 500, padding: '2px 8px', borderRadius: 999, color: '#5A6270', background: '#E9EDF2', textTransform: 'capitalize' }}>{prev.status}</span>
             </div>
             {prev.notes && (
-              <div style={{ marginTop: 6, color: '#5A6270', fontSize: 13, lineHeight: 1.5 }}>
+              <div style={{ marginTop: 5, color: '#5A6270', fontSize: 11, lineHeight: 1.4 }}>
                 {prev.notes}
               </div>
             )}
           </div>
         ) : (
-          <div style={{ background: '#FFFFFF', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 14, color: '#8A93A3', fontFamily: 'Inter, sans-serif', fontSize: 13 }}>No previous lesson</div>
+          <div style={{ background: '#F2F2F7', borderRadius: 9, padding: '10px 12px', color: '#8A93A3', fontFamily: 'Inter, sans-serif', fontSize: 12 }}>No previous lesson</div>
         )}
       </div>
     </div>
