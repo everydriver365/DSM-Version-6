@@ -109,6 +109,7 @@ import {
   Shield,
   ShieldAlert,
   Mic,
+  Pencil,
 } from "lucide-react";
 import {
   IconCurrencyPound,
@@ -7733,8 +7734,8 @@ function HeroExpandedPanel({
         </button>
       </div>
 
-      {/* Row 2 — Prep / EOL / Arrived */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 8 }}>
+      {/* Row 2 — Prep / EOL / Arrived / Edit */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 8, marginTop: 8 }}>
         <button
           style={pillBase}
           onClick={onOpenLesson}
@@ -7758,6 +7759,14 @@ function HeroExpandedPanel({
         >
           <CheckCheck size={16} color="#1877D6" />
           <span style={{ ...pillLabel, color: '#1877D6' }}>Arrived</span>
+        </button>
+        <button
+          type="button"
+          style={pillBase}
+          onClick={() => navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } })}
+        >
+          <Pencil size={16} color="#0B1F3A" />
+          <span style={pillLabel}>Edit</span>
         </button>
       </div>
 
