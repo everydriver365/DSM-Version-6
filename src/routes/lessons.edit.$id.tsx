@@ -68,6 +68,7 @@ function EditLessonPage() {
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState(60);
   const [status, setStatus] = useState("confirmed");
+  const [pickupLocation, setPickupLocation] = useState("");
   const [notes, setNotes] = useState("");
 
   useEffect(() => {
