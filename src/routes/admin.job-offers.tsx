@@ -31,6 +31,7 @@ const WEEKDAYS = [
   { value: "Saturday", short: "Sat" },
   { value: "Sunday", short: "Sun" },
 ];
+const PAYMENT_METHODS = ["Deposit", "Paid in full", "Klarna", "Clearpay", "None"] as const;
 
 type JobOffer = {
   id: string;
