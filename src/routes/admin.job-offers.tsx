@@ -31,6 +31,7 @@ const WEEKDAYS = [
   { value: "Saturday", short: "Sat" },
   { value: "Sunday", short: "Sun" },
 ];
+const PAYMENT_METHODS = ["Deposit", "Paid in full", "Klarna", "Clearpay", "None"] as const;
 
 type JobOffer = {
   id: string;
@@ -46,6 +47,9 @@ type JobOffer = {
   centre_lat: number | null;
   centre_lng: number | null;
   offered_rate: number | null;
+  amount_paid: number | null;
+  payment_method: string | null;
+  special_requirements: string | null;
   expires_at: string | null;
   status: string;
   created_at: string;
@@ -89,6 +93,9 @@ function emptyForm(): Partial<JobOffer> {
     centre_lat: null,
     centre_lng: null,
     offered_rate: 0,
+    amount_paid: null,
+    payment_method: "None",
+    special_requirements: "",
     expires_at: "",
     enquiry_id: null,
   };
@@ -257,6 +264,9 @@ function AdminJobOffers() {
       centre_lat: form.centre_lat ?? null,
       centre_lng: form.centre_lng ?? null,
       offered_rate: form.offered_rate ?? null,
+      amount_paid: form.amount_paid ?? null,
+      payment_method: form.payment_method || null,
+      special_requirements: form.special_requirements?.trim() || null,
       expires_at: form.expires_at ? new Date(form.expires_at).toISOString() : null,
       enquiry_id: form.enquiry_id ?? null,
       created_by: uid,
@@ -680,6 +690,39 @@ function AdminJobOffers() {
                   />
                 </FieldLabel>
               </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                <FieldLabel label="Amount paid">
+                  <input
+                    type="number"
+                    step="0.01"
+                    min={0}
+                    value={form.amount_paid ?? ""}
+                    onChange={(e) => setForm({ ...form, amount_paid: e.target.value ? Number(e.target.value) : null })}
+                    style={inputStyle()}
+                  />
+                </FieldLabel>
+                <FieldLabel label="Payment method">
+                  <select
+                    value={form.payment_method ?? "None"}
+                    onChange={(e) => setForm({ ...form, payment_method: e.target.value })}
+                    style={inputStyle()}
+                  >
+                    {PAYMENT_METHODS.map((m) => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
+                  </select>
+                </FieldLabel>
+              </div>
+
+              <FieldLabel label="Special requirements">
+                <input
+                  value={form.special_requirements ?? ""}
+                  onChange={(e) => setForm({ ...form, special_requirements: e.target.value })}
+                  placeholder="e.g. Pickup from school, nervous driver, has own car"
+                  style={inputStyle()}
+                />
+              </FieldLabel>
 
               <button
                 type="button"
