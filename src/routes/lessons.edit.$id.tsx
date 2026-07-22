@@ -68,6 +68,7 @@ function EditLessonPage() {
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState(60);
   const [status, setStatus] = useState("confirmed");
+  const [pickupLocation, setPickupLocation] = useState("");
   const [notes, setNotes] = useState("");
 
   useEffect(() => {
@@ -89,7 +90,7 @@ function EditLessonPage() {
           .order("name", { ascending: true, nullsFirst: false }),
         supabase
           .from("lessons")
-          .select("pupil_id, lesson_date, lesson_time, duration_minutes, status, notes")
+          .select("pupil_id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_location")
           .eq("id", id)
           .is("deleted_at", null)
           .maybeSingle(),
@@ -124,12 +125,14 @@ function EditLessonPage() {
           duration_minutes: number | null;
           status: string;
           notes: string | null;
+          pickup_location: string | null;
         };
         setPupilId(l.pupil_id);
         setDate(l.lesson_date);
         setTime((l.lesson_time ?? "").slice(0, 5));
         setDuration(l.duration_minutes ?? 60);
         setStatus(l.status ?? "confirmed");
+        setPickupLocation(l.pickup_location ?? "");
         setNotes(l.notes ?? "");
       }
       setLoading(false);
@@ -148,6 +151,7 @@ function EditLessonPage() {
         lesson_time: `${time}:00`,
         duration_minutes: duration,
         status,
+        pickup_location: pickupLocation.trim() || null,
         notes: notes.trim() || null,
       })
       .eq("id", id);
@@ -267,6 +271,19 @@ function EditLessonPage() {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <FieldLabel htmlFor="pickupLocation">Pickup location</FieldLabel>
+            <input
+              id="pickupLocation"
+              type="text"
+              value={pickupLocation}
+              onChange={(e) => setPickupLocation(e.target.value)}
+              placeholder="Enter pickup location"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
+              style={fieldBorder}
+            />
           </div>
 
           <div>
