@@ -5476,7 +5476,7 @@ function HomePage() {
 
         {/* Expand footer */}
         {upcoming && (
-          <div style={{ padding: '0 10px 10px' }}>
+          <div style={{ padding: '0 10px 8px' }}>
             <button
               type="button"
               onClick={() => setHeroExpanded((v) => !v)}
@@ -5485,15 +5485,15 @@ function HomePage() {
                 background: '#EEF2F7',
                 border: 'none',
                 borderRadius: 999,
-                padding: '8px 0',
+                padding: '6px 0',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                fontSize: 12, fontWeight: 600, color: '#1877D6',
+                fontSize: 11, fontWeight: 600, color: '#1877D6',
                 cursor: 'pointer',
                 fontFamily: 'Inter, sans-serif',
               }}
             >
               {heroExpanded ? 'Hide details' : 'Tap for details'}
-              {heroExpanded ? <ChevronUp size={14} /> : <ChevronRight size={14} />}
+              {heroExpanded ? <ChevronUp size={13} /> : <ChevronRight size={13} />}
             </button>
           </div>
         )}
