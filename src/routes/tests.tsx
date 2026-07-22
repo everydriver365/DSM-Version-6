@@ -535,10 +535,12 @@ function SheetShell({
   title,
   onClose,
   children,
+  footer,
 }: {
   title: string;
   onClose: () => void;
   children: React.ReactNode;
+  footer?: React.ReactNode;
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center" style={POPPINS}>
@@ -549,16 +551,14 @@ function SheetShell({
         aria-hidden
       />
       <div
-        className="relative w-full bg-white"
+        className="relative w-full bg-white flex flex-col"
         style={{
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
           maxHeight: "92vh",
-          overflowY: "auto",
-          paddingBottom: 24,
         }}
       >
-        <div className="flex items-center justify-between px-4 pt-4">
+        <div className="flex items-center justify-between px-4 pt-4 shrink-0">
           <span className="text-[11px] font-semibold tracking-wider" style={{ color: "#6B7280" }}>
             {title}
           </span>
@@ -572,7 +572,25 @@ function SheetShell({
             <X size={18} color="#6B7280" />
           </button>
         </div>
-        <div className="px-4 pt-2">{children}</div>
+        <div className="px-4 pt-2 pb-4 overflow-y-auto" style={{ flex: 1, minHeight: 0 }}>
+          {children}
+        </div>
+        {footer && (
+          <div
+            className="shrink-0"
+            style={{
+              position: "sticky",
+              bottom: 0,
+              background: "#FFFFFF",
+              borderTop: "1px solid #EEF2F7",
+              padding: 16,
+              zIndex: 10,
+              paddingBottom: "calc(16px + env(safe-area-inset-bottom))",
+            }}
+          >
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );
