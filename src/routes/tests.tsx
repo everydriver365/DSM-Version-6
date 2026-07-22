@@ -458,6 +458,78 @@ function AddTestSheet({
   );
 }
 
+interface ExaminerPair {
+  first: string;
+  surname: string;
+}
+
+function ExaminerNameInput({
+  label,
+  value,
+  onChange,
+  suggestions,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  suggestions: string[];
+}) {
+  const [open, setOpen] = useState(false);
+  const q = value.trim().toLowerCase();
+  const filtered = q
+    ? suggestions.filter((s) => s.toLowerCase().includes(q) && s.toLowerCase() !== q).slice(0, 6)
+    : [];
+  return (
+    <div style={{ position: "relative" }}>
+      <Input
+        label={label}
+        value={value}
+        onChange={(e) => {
+          onChange(e.target.value);
+          setOpen(true);
+        }}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        autoComplete="off"
+      />
+      {open && filtered.length > 0 && (
+        <div
+          style={{
+            position: "absolute",
+            top: "100%",
+            left: 0,
+            right: 0,
+            marginTop: 4,
+            background: "#FFFFFF",
+            border: "1px solid #EEF2F7",
+            borderRadius: 8,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+            zIndex: 20,
+            maxHeight: 180,
+            overflowY: "auto",
+          }}
+        >
+          {filtered.map((s) => (
+            <button
+              key={s}
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                onChange(s);
+                setOpen(false);
+              }}
+              className="w-full text-left px-3 py-2 text-[14px]"
+              style={{ color: "#0B1F3A", ...POPPINS }}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function LogResultSheet({
   test,
   onClose,
@@ -468,39 +540,137 @@ function LogResultSheet({
   onSaved: () => void;
 }) {
   const [result, setResult] = useState<"Pass" | "Fail">("Pass");
-  const [faults, setFaults] = useState("0");
+  const [examinerFirst, setExaminerFirst] = useState("");
+  const [examinerSurname, setExaminerSurname] = useState("");
+  const [minorFaults, setMinorFaults] = useState("0");
+  const [seriousFaults, setSeriousFaults] = useState("0");
+  const [dangerousFaults, setDangerousFaults] = useState("0");
+  const [tookAction, setTookAction] = useState(false);
+  const [sendReview, setSendReview] = useState(true);
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
+  const [pairs, setPairs] = useState<ExaminerPair[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      const uid = userData.user?.id;
+      if (!uid) return;
+      const { data } = await supabase
+        .from("pupils")
+        .select("examiner_first_name, examiner_surname")
+        .eq("instructor_id", uid)
+        .not("examiner_first_name", "is", null);
+      const seen = new Set<string>();
+      const out: ExaminerPair[] = [];
+      for (const row of (data ?? []) as { examiner_first_name: string | null; examiner_surname: string | null }[]) {
+        const f = (row.examiner_first_name ?? "").trim();
+        const s = (row.examiner_surname ?? "").trim();
+        const key = `${f}|${s}`.toLowerCase();
+        if (!f || seen.has(key)) continue;
+        seen.add(key);
+        out.push({ first: f, surname: s });
+      }
+      setPairs(out);
+    })();
+  }, []);
+
+  const firstSuggestions = Array.from(new Set(pairs.map((p) => p.first).filter(Boolean)));
+  const surnameSuggestions = Array.from(
+    new Set(
+      pairs
+        .filter((p) => !examinerFirst || p.first.toLowerCase() === examinerFirst.trim().toLowerCase())
+        .map((p) => p.surname)
+        .filter(Boolean),
+    ),
+  );
 
   async function save() {
     if (saving) return;
     setSaving(true);
+    const minor = parseInt(minorFaults, 10) || 0;
+    const serious = parseInt(seriousFaults, 10) || 0;
+    const dangerous = parseInt(dangerousFaults, 10) || 0;
+    const totalFaults = minor + serious + dangerous;
+
     const { error } = await supabase
       .from("driving_tests")
       .update({
         result,
-        faults: parseInt(faults, 10) || 0,
+        faults: totalFaults,
         result_notes: notes || null,
         result_logged_at: new Date().toISOString(),
       })
       .eq("id", test.id);
-    setSaving(false);
     if (error) {
+      setSaving(false);
       console.error("[tests] result update error", error);
       toast.error("Couldn't save result");
       return;
     }
-    toast.success("Result logged");
+
+    const { error: pupilErr } = await supabase
+      .from("pupils")
+      .update({
+        examiner_first_name: examinerFirst.trim() || null,
+        examiner_surname: examinerSurname.trim() || null,
+        minor_faults: minor,
+        serious_faults: serious,
+        dangerous_faults: dangerous,
+        examiner_took_action: tookAction,
+        test_status: result === "Pass" ? "passed" : "failed",
+      })
+      .eq("id", test.pupil_id);
+    if (pupilErr) console.error("[tests] pupil update error", pupilErr);
+
+    if (result === "Pass" && sendReview) {
+      const { data: userData } = await supabase.auth.getUser();
+      const uid = userData.user?.id;
+      const { data: pupilRow } = await supabase
+        .from("pupils")
+        .select("phone, name")
+        .eq("id", test.pupil_id)
+        .maybeSingle();
+      const phone = (pupilRow as { phone: string | null } | null)?.phone ?? null;
+      const pupilName = (pupilRow as { name: string | null } | null)?.name ?? test.pupils?.name ?? "";
+      const firstName = pupilName.split(/\s+/)[0] || "there";
+      const message = `Hi ${firstName}, huge congrats on passing your driving test! 🎉 If you have a moment, it would mean the world if you left a quick Google review — thank you!`;
+      if (phone && uid) {
+        const { error: smsErr } = await supabase.from("sms_queue").insert({
+          instructor_id: uid,
+          pupil_phone: phone,
+          message,
+        });
+        if (smsErr) console.error("[tests] sms_queue insert failed", smsErr);
+      }
+      if (uid) {
+        const { error: chatErr } = await supabase.from("chat_messages").insert({
+          instructor_id: uid,
+          pupil_id: test.pupil_id,
+          direction: "outbound",
+          body: message,
+        });
+        if (chatErr) console.error("[tests] chat_messages insert failed", chatErr);
+      }
+    }
+
+    setSaving(false);
+    toast.success(
+      result === "Pass" && sendReview ? "Result logged · review request queued" : "Result logged",
+    );
     onSaved();
   }
+
+  const numInputStyle = {
+    borderWidth: "0.5px",
+    borderStyle: "solid",
+    borderColor: "#EEF2F7",
+  } as const;
 
   return (
     <SheetShell title="LOG RESULT" onClose={onClose}>
       <div className="flex flex-col" style={{ gap: 12 }}>
-        <div
-          className="rounded-[12px] p-3"
-          style={{ backgroundColor: "#F3F4F6" }}
-        >
+        <div className="rounded-[12px] p-3" style={{ backgroundColor: "#F3F4F6" }}>
           <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A" }}>
             {test.pupils?.name ?? "Pupil"}
           </div>
@@ -515,7 +685,7 @@ function LogResultSheet({
           <div className="grid grid-cols-2" style={{ gap: 8 }}>
             {(["Pass", "Fail"] as const).map((r) => {
               const active = result === r;
-              const color = r === "Pass" ? "#1877D6" : "#1877D6";
+              const color = "#1877D6";
               return (
                 <button
                   key={r}
@@ -538,14 +708,64 @@ function LogResultSheet({
           </div>
         </div>
 
-        <Input
-          label="Faults"
-          type="number"
-          inputMode="numeric"
-          min={0}
-          value={faults}
-          onChange={(e) => setFaults(e.target.value)}
+        <div className="grid grid-cols-2" style={{ gap: 8 }}>
+          <ExaminerNameInput
+            label="Examiner first name"
+            value={examinerFirst}
+            onChange={setExaminerFirst}
+            suggestions={firstSuggestions}
+          />
+          <ExaminerNameInput
+            label="Examiner surname"
+            value={examinerSurname}
+            onChange={setExaminerSurname}
+            suggestions={surnameSuggestions}
+          />
+        </div>
+
+        <div className="grid grid-cols-3" style={{ gap: 8 }}>
+          <Input
+            label="Minors"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            value={minorFaults}
+            onChange={(e) => setMinorFaults(e.target.value)}
+            style={numInputStyle}
+          />
+          <Input
+            label="Serious"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            value={seriousFaults}
+            onChange={(e) => setSeriousFaults(e.target.value)}
+            style={numInputStyle}
+          />
+          <Input
+            label="Dangerous"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            value={dangerousFaults}
+            onChange={(e) => setDangerousFaults(e.target.value)}
+            style={numInputStyle}
+          />
+        </div>
+
+        <ToggleRow
+          label="Did the examiner take physical control of the vehicle?"
+          value={tookAction}
+          onChange={setTookAction}
         />
+
+        {result === "Pass" && (
+          <ToggleRow
+            label="Send Google review request to pupil"
+            value={sendReview}
+            onChange={setSendReview}
+          />
+        )}
 
         <div>
           <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">Notes</label>
@@ -573,5 +793,58 @@ function LogResultSheet({
         </div>
       </div>
     </SheetShell>
+  );
+}
+
+function ToggleRow({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(!value)}
+      className="w-full flex items-center justify-between p-3"
+      style={{
+        borderRadius: 10,
+        border: "0.5px solid #EEF2F7",
+        background: "#FFFFFF",
+        textAlign: "left",
+      }}
+    >
+      <span className="text-[13px] pr-3" style={{ color: "#0B1F3A", ...POPPINS }}>
+        {label}
+      </span>
+      <span
+        style={{
+          width: 40,
+          height: 24,
+          borderRadius: 999,
+          background: value ? "#1877D6" : "#D1D5DB",
+          position: "relative",
+          flexShrink: 0,
+          transition: "background 0.15s",
+        }}
+      >
+        <span
+          style={{
+            position: "absolute",
+            top: 2,
+            left: value ? 18 : 2,
+            width: 20,
+            height: 20,
+            borderRadius: 999,
+            background: "#FFFFFF",
+            transition: "left 0.15s",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+          }}
+        />
+      </span>
+    </button>
   );
 }
