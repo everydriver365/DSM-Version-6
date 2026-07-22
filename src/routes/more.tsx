@@ -37,7 +37,7 @@ const allTools: Tool[] = [
   { icon: BookOpen, colour: '#1A52A0', label: 'EOL Wizard', sub: 'End of lesson', route: '/eol', group: 'Teaching' },
   { icon: RefreshCw, colour: '#1A52A0', label: 'Recurring lessons', sub: 'Weekly series', route: '/lesson-series', group: 'Teaching' },
   { icon: Clock, colour: '#CC2229', label: 'Running late', sub: 'Alert pupils', route: '/running-late', group: 'Teaching' },
-  { icon: Award, colour: '#7C3AED', label: 'Log test result', sub: 'Pass or fail', route: '/driving-test', group: 'Teaching' },
+  { icon: Award, colour: '#7C3AED', label: 'Log test result', sub: 'Pass or fail', route: '/tests', group: 'Teaching' },
   { icon: ArrowLeftRight, colour: '#7C3AED', label: 'Test swap', sub: 'Swap requests', route: '/test-swaps', group: 'Teaching' },
   { icon: GraduationCap, colour: '#16A34A', label: 'Syllabus', sub: 'Standards check', route: '/standards', group: 'Teaching' },
   { icon: ClipboardCheck, colour: '#16A34A', label: 'Mock tests', sub: 'Practice tests', route: '/mock-tests', group: 'Teaching' },
