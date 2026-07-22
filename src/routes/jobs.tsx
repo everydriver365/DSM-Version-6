@@ -410,17 +410,32 @@ function JobsPage() {
                   onClick={() => setDetailJob(job)}
                   style={{
                     background: "#FFFFFF",
-                    borderLeft: "4px solid #1E8E3E",
-                    borderRadius: "6px 14px 14px 6px",
+                    borderRadius: 14,
                     boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                     overflow: "hidden",
                     cursor: "pointer",
                   }}
                 >
-                  <div style={{ padding: 16 }}>
-                    <div style={{ fontSize: 11, color: GREY, marginBottom: 6 }}>
-                      Posted {relTime(job.created_at)}
+                  <div
+                    style={{
+                      background: GREEN,
+                      padding: "10px 16px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#FFFFFF" }}>
+                      JOB OFFER · Posted {relTime(job.created_at)}
                     </div>
+                    {worth != null && (
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#FFFFFF" }}>
+                        £{worth.toFixed(2)}
+                      </div>
+                    )}
+                  </div>
+
+                  <div style={{ padding: 16 }}>
                     <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>
                       {job.pupil_name || "New pupil"} · {job.postcode_area}
                     </div>
@@ -434,72 +449,68 @@ function JobsPage() {
                       ].filter(Boolean).join(" · ")}
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                        {badge ? (
-                          <div style={{
-                            fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.3,
-                            color: badge.color, background: badge.bg, padding: "4px 8px", borderRadius: 999, whiteSpace: "nowrap",
-                          }}>
-                            {badge.label}
-                          </div>
-                        ) : null}
-                        {worth != null && (
-                          <div style={{ fontSize: 18, fontWeight: 700, color: GREEN }}>
-                            £{worth.toFixed(2)}
-                          </div>
-                        )}
+                    {badge && (
+                      <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+                        <div style={{
+                          fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.3,
+                          color: badge.color, background: badge.bg, padding: "4px 8px", borderRadius: 999, whiteSpace: "nowrap",
+                        }}>
+                          {badge.label}
+                        </div>
                       </div>
-                      <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-                        <button
-                          type="button"
-                          onClick={async (e) => {
-                            e.stopPropagation();
-                            if (!uid) return;
-                            await supabase
-                              .from("job_offers")
-                              .update({ declined_by: [...(job.declined_by ?? []), uid] })
+                    )}
+
+                    <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                      <button
+                        type="button"
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (!uid) return;
+                          await supabase
+                            .from("job_offers")
+                            .update({ declined_by: [...(job.declined_by ?? []), uid] })
                             .eq("id", job.id);
-                            setJobs((prev) => (prev ?? []).filter((j) => j.id !== job.id));
-                          }}
-                          style={{
-                            background: "#F3F4F6",
-                            color: NAVY,
-                            height: 42,
-                            borderRadius: 10,
-                            padding: "0 12px",
-                            border: "none",
-                            fontSize: 13,
-                            fontWeight: 600,
-                            cursor: "pointer",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          Decline
-                        </button>
-                        <button
-                          type="button"
-                          onClick={(e) => { e.stopPropagation(); setDetailJob(job); }}
-                          style={{
-                            background: NAVY,
-                            color: "#FFF",
-                            height: 42,
-                            borderRadius: 10,
-                            padding: "0 12px",
-                            border: "none",
-                            fontSize: 13,
-                            fontWeight: 600,
-                            cursor: "pointer",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          More details
-                        </button>
-                      </div>
+                          setJobs((prev) => (prev ?? []).filter((j) => j.id !== job.id));
+                        }}
+                        style={{
+                          background: "#F3F4F6",
+                          color: NAVY,
+                          height: 42,
+                          borderRadius: 10,
+                          padding: "0 12px",
+                          border: "none",
+                          fontSize: 13,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        Decline
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setDetailJob(job); }}
+                        style={{
+                          background: NAVY,
+                          color: "#FFF",
+                          height: 42,
+                          borderRadius: 10,
+                          padding: "0 12px",
+                          border: "none",
+                          fontSize: 13,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                          whiteSpace: "nowrap",
+                          flex: 1,
+                        }}
+                      >
+                        More details
+                      </button>
                     </div>
                   </div>
                 </div>
               );
+
             })}
           </div>
         )
