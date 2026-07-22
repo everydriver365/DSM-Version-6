@@ -7650,6 +7650,7 @@ function HeroExpandedPanel({
   onOpenLesson: () => void;
   onEol: () => void;
 }) {
+  const navigate = useNavigate();
   const phone = lesson.pupils?.phone ?? null;
   const firstName = (lesson.pupils?.name ?? "there").split(/\s+/)[0];
   const balance = Number(lesson.amount_due ?? 0);
