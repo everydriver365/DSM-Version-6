@@ -463,7 +463,18 @@ function AdminJobOffers() {
                   </span>
                 </div>
 
-                <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+                  <button
+                    type="button"
+                    onClick={() => openEdit(o)}
+                    style={{
+                      background: "#fff", color: BLUE, border: `1px solid ${BLUE}`,
+                      borderRadius: 8, padding: "8px 12px", fontSize: 13, fontWeight: 600,
+                      cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6,
+                    }}
+                  >
+                    <Pencil size={14} /> Edit
+                  </button>
                   {o.status === "claimed" && (
                     <button
                       type="button"
