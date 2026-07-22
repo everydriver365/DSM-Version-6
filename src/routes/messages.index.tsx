@@ -1183,16 +1183,14 @@ function AdminJobInbox(props: {
           </div>
         ) : (
           threads.map((t) => {
-            const bg = avatarColor(t.job_offer_id);
-            const name = t.pupil_name || "Job enquiry";
+            const instructorName = t.last_sender_instructor_name || "Instructor";
+            const pupil = t.pupil_name || "Job enquiry";
+            const area = t.postcode_area || "";
             return (
               <div
                 key={t.job_offer_id}
                 onClick={() => onOpen(t.job_offer_id)}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
                   padding: "14px 16px",
                   cursor: "pointer",
                   background: "#FFFFFF",
@@ -1203,73 +1201,90 @@ function AdminJobInbox(props: {
               >
                 <div
                   style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: "50%",
-                    background: bg,
-                    color: "#FFFFFF",
                     display: "flex",
+                    justifyContent: "space-between",
                     alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
+                    gap: 8,
+                    marginBottom: 6,
                   }}
                 >
-                  <Briefcase size={18} />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
                   <div
                     style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: 3,
-                      gap: 8,
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: 15,
-                        fontWeight: 500,
-                        color: "#0B1F3A",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        minWidth: 0,
-                        flex: 1,
-                      }}
-                    >
-                      {name}
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-                      <span style={{ fontSize: 12, color: "#8A93A3" }}>
-                        {timeAgo(t.last_created_at)}
-                      </span>
-                      {t.unread && (
-                        <span
-                          aria-label="unread"
-                          style={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: "50%",
-                            background: "#1877D6",
-                          }}
-                        />
-                      )}
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      color: t.unread ? "#0B1F3A" : "#5A6270",
-                      fontWeight: t.unread ? 500 : 400,
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: "#0B1F3A",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
+                      minWidth: 0,
+                      flex: 1,
                     }}
                   >
-                    {t.last_sender_type === "admin" ? "You: " : t.last_sender_type === "instructor" ? "Instructor: " : ""}
-                    {t.last_message}
+                    {instructorName}{" "}
+                    <span style={{ fontWeight: 400, color: "#8A93A3", fontSize: 12 }}>
+                      (instructor)
+                    </span>
                   </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+                    <span style={{ fontSize: 12, color: "#8A93A3" }}>
+                      {timeAgo(t.last_created_at)}
+                    </span>
+                    {t.unread && (
+                      <span
+                        aria-label="unread"
+                        style={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: "50%",
+                          background: "#CC2229",
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+                <div style={{ marginBottom: 6 }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      background: "#E6F0FB",
+                      color: "#1877D6",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      letterSpacing: 0.4,
+                      padding: "2px 8px",
+                      borderRadius: 999,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    Job offer
+                  </span>
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: "#0B1F3A",
+                    marginBottom: 3,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Re: {pupil}
+                  {area ? ` · ${area}` : ""}
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    color: t.unread ? "#0B1F3A" : "#5A6270",
+                    fontWeight: t.unread ? 500 : 400,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {t.last_sender_type === "admin" ? "You: " : ""}
+                  {t.last_message}
                 </div>
               </div>
             );
