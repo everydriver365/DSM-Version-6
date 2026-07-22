@@ -470,13 +470,17 @@ function AddTestSheet({
   async function save() {
     if (!pupilId || !date || saving) return;
     setSaving(true);
-    const { error } = await supabase.from("driving_tests").insert({
-      instructor_id: userId,
-      pupil_id: pupilId,
-      test_date: date,
-      test_time: time || null,
-      test_centre: centre || null,
-    });
+    const { error } = await supabase
+      .from("pupils")
+      .update({
+        test_date: date,
+        test_time: time || null,
+        test_centre: centre || null,
+        test_status: null,
+      })
+      .eq("id", pupilId)
+      .eq("instructor_id", userId);
+
     setSaving(false);
     if (error) {
       console.error("[tests] insert error", error);
