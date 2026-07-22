@@ -41,6 +41,7 @@ interface JobOffer {
   special_requirements?: string | null;
   pupil_phone?: string | null;
   pupil_email?: string | null;
+  contact_released?: boolean | null;
 }
 
 function relTime(iso: string): string {
