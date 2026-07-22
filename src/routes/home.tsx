@@ -5132,7 +5132,7 @@ function HomePage() {
       {/* ============ NEXT LESSON CARD ============ */}
       <div
         style={{
-          margin: '0 16px 20px',
+          margin: '0 16px 16px',
           background: '#FFFFFF',
           borderRadius: 10,
           boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
@@ -5150,11 +5150,11 @@ function HomePage() {
               justifyContent: 'center',
               gap: 8,
               width: '100%',
-              padding: '12px 16px',
+              padding: '10px 14px',
               background: '#1877D6',
               color: '#FFFFFF',
               border: 'none',
-              fontSize: 14,
+              fontSize: 13,
               fontWeight: 700,
               fontFamily: 'Inter, sans-serif',
               cursor: 'pointer',
@@ -5162,8 +5162,8 @@ function HomePage() {
             }}
           >
             <span style={{
-              width: 8, height: 8, borderRadius: 999,
-              background: '#FFFFFF', boxShadow: '0 0 0 3px rgba(255,255,255,0.35)',
+              width: 7, height: 7, borderRadius: 999,
+              background: '#FFFFFF', boxShadow: '0 0 0 2px rgba(255,255,255,0.35)',
             }} />
             Start tracking — {currentLesson.pupils?.name ?? 'lesson in progress'}
           </button>
