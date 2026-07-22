@@ -673,23 +673,8 @@ function LogResultSheet({
     const minor = parseInt(minorFaults, 10) || 0;
     const serious = parseInt(seriousFaults, 10) || 0;
     const dangerous = parseInt(dangerousFaults, 10) || 0;
-    const totalFaults = minor + serious + dangerous;
+    void notes; // reserved for future pupil-side notes field; not yet on schema
 
-    const { error } = await supabase
-      .from("driving_tests")
-      .update({
-        result,
-        faults: totalFaults,
-        result_notes: notes || null,
-        result_logged_at: new Date().toISOString(),
-      })
-      .eq("id", test.id);
-    if (error) {
-      setSaving(false);
-      console.error("[tests] result update error", error);
-      toast.error("Couldn't save result");
-      return;
-    }
 
     const { error: pupilErr } = await supabase
       .from("pupils")
