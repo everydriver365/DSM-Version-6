@@ -79,9 +79,12 @@ interface JobMessage {
 interface JobThreadRow {
   job_offer_id: string;
   pupil_name: string | null;
+  postcode_area: string | null;
   last_message: string;
   last_created_at: string;
   last_sender_type: string;
+  last_sender_id: string | null;
+  last_sender_instructor_name: string | null;
   unread: boolean;
 }
 
@@ -311,7 +314,7 @@ function MessagesIndexPage() {
     setAdminLoading(true);
     const { data: msgs, error } = await supabase
       .from("job_offer_messages")
-      .select("id, job_offer_id, sender_type, message, created_at, read_by_admin")
+      .select("id, job_offer_id, sender_type, sender_id, message, created_at, read_by_admin")
       .order("created_at", { ascending: false })
       .limit(500);
     if (error) {
@@ -324,9 +327,12 @@ function MessagesIndexPage() {
       grouped.set(m.job_offer_id, {
         job_offer_id: m.job_offer_id,
         pupil_name: null,
+        postcode_area: null,
         last_message: m.message,
         last_created_at: m.created_at,
         last_sender_type: m.sender_type,
+        last_sender_id: m.sender_id,
+        last_sender_instructor_name: null,
         unread: m.sender_type === "instructor" && !m.read_by_admin,
       });
     }
@@ -334,11 +340,35 @@ function MessagesIndexPage() {
     if (ids.length) {
       const { data: jobs } = await supabase
         .from("job_offers")
-        .select("id, pupil_name")
+        .select("id, pupil_name, postcode_area")
         .in("id", ids);
-      for (const j of (jobs || []) as { id: string; pupil_name: string | null }[]) {
+      for (const j of (jobs || []) as { id: string; pupil_name: string | null; postcode_area: string | null }[]) {
         const row = grouped.get(j.id);
-        if (row) row.pupil_name = j.pupil_name;
+        if (row) {
+          row.pupil_name = j.pupil_name;
+          row.postcode_area = j.postcode_area;
+        }
+      }
+      const instructorIds = Array.from(
+        new Set(
+          Array.from(grouped.values())
+            .filter((r) => r.last_sender_type === "instructor" && r.last_sender_id)
+            .map((r) => r.last_sender_id as string),
+        ),
+      );
+      if (instructorIds.length) {
+        const { data: instructors } = await supabase
+          .from("instructors")
+          .select("id, name")
+          .in("id", instructorIds);
+        const iMap = new Map(
+          ((instructors || []) as { id: string; name: string | null }[]).map((i) => [i.id, i.name]),
+        );
+        for (const row of grouped.values()) {
+          if (row.last_sender_id) {
+            row.last_sender_instructor_name = iMap.get(row.last_sender_id) ?? null;
+          }
+        }
       }
     }
     const list = Array.from(grouped.values()).sort(
@@ -362,14 +392,25 @@ function MessagesIndexPage() {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "job_offer_messages", filter: "sender_type=eq.instructor" },
         async (payload) => {
-          const row = payload.new as { job_offer_id: string };
-          const { data: job } = await supabase
-            .from("job_offers")
-            .select("pupil_name")
-            .eq("id", row.job_offer_id)
-            .maybeSingle();
+          const row = payload.new as { job_offer_id: string; sender_id: string | null };
+          const [{ data: job }, { data: instructor }] = await Promise.all([
+            supabase
+              .from("job_offers")
+              .select("pupil_name")
+              .eq("id", row.job_offer_id)
+              .maybeSingle(),
+            row.sender_id
+              ? supabase
+                  .from("instructors")
+                  .select("name")
+                  .eq("id", row.sender_id)
+                  .maybeSingle()
+              : Promise.resolve({ data: null }),
+          ]);
           const pupilName = (job as { pupil_name: string | null } | null)?.pupil_name ?? "pupil";
-          toast(`New message from ${pupilName} re: job offer`);
+          const instructorName =
+            (instructor as { name: string | null } | null)?.name ?? "Instructor";
+          toast(`New message from ${instructorName} re: ${pupilName}`);
           if (activeTab === "admin") loadAdminThreads();
         },
       )
@@ -774,7 +815,18 @@ function MessagesIndexPage() {
           loading={adminLoading}
           query={adminQuery}
           setQuery={setAdminQuery}
-          onOpen={(id) => setOpenThreadJobId(id)}
+          onOpen={async (id) => {
+            await supabase
+              .from("job_offer_messages")
+              .update({ read_by_admin: true })
+              .eq("job_offer_id", id)
+              .eq("sender_type", "instructor")
+              .eq("read_by_admin", false);
+            setAdminThreads((prev) =>
+              prev.map((t) => (t.job_offer_id === id ? { ...t, unread: false } : t)),
+            );
+            setOpenThreadJobId(id);
+          }}
         />
       )}
 
@@ -1131,16 +1183,14 @@ function AdminJobInbox(props: {
           </div>
         ) : (
           threads.map((t) => {
-            const bg = avatarColor(t.job_offer_id);
-            const name = t.pupil_name || "Job enquiry";
+            const instructorName = t.last_sender_instructor_name || "Instructor";
+            const pupil = t.pupil_name || "Job enquiry";
+            const area = t.postcode_area || "";
             return (
               <div
                 key={t.job_offer_id}
                 onClick={() => onOpen(t.job_offer_id)}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
                   padding: "14px 16px",
                   cursor: "pointer",
                   background: "#FFFFFF",
@@ -1151,73 +1201,90 @@ function AdminJobInbox(props: {
               >
                 <div
                   style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: "50%",
-                    background: bg,
-                    color: "#FFFFFF",
                     display: "flex",
+                    justifyContent: "space-between",
                     alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
+                    gap: 8,
+                    marginBottom: 6,
                   }}
                 >
-                  <Briefcase size={18} />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
                   <div
                     style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: 3,
-                      gap: 8,
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: 15,
-                        fontWeight: 500,
-                        color: "#0B1F3A",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        minWidth: 0,
-                        flex: 1,
-                      }}
-                    >
-                      {name}
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-                      <span style={{ fontSize: 12, color: "#8A93A3" }}>
-                        {timeAgo(t.last_created_at)}
-                      </span>
-                      {t.unread && (
-                        <span
-                          aria-label="unread"
-                          style={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: "50%",
-                            background: "#1877D6",
-                          }}
-                        />
-                      )}
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      color: t.unread ? "#0B1F3A" : "#5A6270",
-                      fontWeight: t.unread ? 500 : 400,
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: "#0B1F3A",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
+                      minWidth: 0,
+                      flex: 1,
                     }}
                   >
-                    {t.last_sender_type === "admin" ? "You: " : t.last_sender_type === "instructor" ? "Instructor: " : ""}
-                    {t.last_message}
+                    {instructorName}{" "}
+                    <span style={{ fontWeight: 400, color: "#8A93A3", fontSize: 12 }}>
+                      (instructor)
+                    </span>
                   </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+                    <span style={{ fontSize: 12, color: "#8A93A3" }}>
+                      {timeAgo(t.last_created_at)}
+                    </span>
+                    {t.unread && (
+                      <span
+                        aria-label="unread"
+                        style={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: "50%",
+                          background: "#CC2229",
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+                <div style={{ marginBottom: 6 }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      background: "#E6F0FB",
+                      color: "#1877D6",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      letterSpacing: 0.4,
+                      padding: "2px 8px",
+                      borderRadius: 999,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    Job offer
+                  </span>
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: "#0B1F3A",
+                    marginBottom: 3,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Re: {pupil}
+                  {area ? ` · ${area}` : ""}
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    color: t.unread ? "#0B1F3A" : "#5A6270",
+                    fontWeight: t.unread ? 500 : 400,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {t.last_sender_type === "admin" ? "You: " : ""}
+                  {t.last_message}
                 </div>
               </div>
             );
