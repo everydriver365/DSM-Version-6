@@ -489,7 +489,7 @@ function SchedulePage() {
         const [instrRow, recRes, offRes] = await Promise.all([
           supabase
             .from("instructors")
-            .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,external_calendar_url,calendar_last_synced")
+            .select("name,working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,external_calendar_url,calendar_last_synced")
             .eq("id", uid)
             .maybeSingle(),
           fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${uid}&is_active=eq.true`, { headers }),
