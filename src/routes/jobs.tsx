@@ -227,8 +227,41 @@ function JobsPage() {
     }
     if (!data || data.length === 0) {
       toast("Someone else already claimed this job");
-    } else {
-      toast.success("Job claimed!");
+      load();
+      return;
+    }
+
+    // Create a Ryft payment link and text it to the pupil.
+    try {
+      const amountPence = Math.round((job.course_hours ?? 0) * (job.offered_rate ?? 0) * 100);
+      const { data: paymentData, error: payError } = await supabase.functions.invoke("create-ryft-payment", {
+        body: {
+          amount: amountPence,
+          currency: "GBP",
+          metadata: { jobOfferId: job.id, pupil_email: job.pupil_email, pupil_name: job.pupil_name },
+        },
+      });
+      if (payError || !paymentData?.paymentUrl) {
+        toast.error("Job claimed, but payment link failed");
+        load();
+        return;
+      }
+      const paymentUrl = paymentData.paymentUrl as string;
+      const pupilName = job.pupil_name || "there";
+
+      if (job.pupil_phone) {
+        const message = `Hi ${pupilName}, thanks for your interest! To confirm your driving course, please complete payment here: ${paymentUrl}`;
+        await supabase.from("sms_queue").insert({
+          instructor_id: uid,
+          pupil_phone: job.pupil_phone,
+          message,
+        });
+        toast.success(`Job claimed! Payment link sent to ${pupilName}.`);
+      } else {
+        toast.success("Job claimed! No pupil phone on file — share the payment link manually.");
+      }
+    } catch {
+      toast.error("Job claimed, but sending payment link failed");
     }
     load();
   };
