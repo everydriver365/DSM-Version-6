@@ -890,6 +890,7 @@ function ChatTab({
   instructorOutcode: string | null;
 }) {
   const [room, setRoom] = useState<ChatRoom | null>(null);
+  const [noRoom, setNoRoom] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const listRef = useRef<HTMLDivElement | null>(null);
@@ -909,20 +910,18 @@ function ChatTab({
       const outcode = scope === "uk" ? "UK" : instructorOutcode!;
       const areaName = scope === "uk" ? "All UK ADIs" : instructorArea;
 
-      let { data: roomRow } = await supabase
+      const { data: roomRow } = await supabase
         .from("local_chat_rooms")
         .select("*")
         .eq("outcode", outcode)
         .maybeSingle();
+      if (cancelled) return;
       if (!roomRow) {
-        const { data: created } = await supabase
-          .from("local_chat_rooms")
-          .insert({ area_name: areaName, outcode, instructor_count: 1 })
-          .select()
-          .maybeSingle();
-        roomRow = created;
+        setNoRoom(true);
+        setRoom(null);
+        return;
       }
-      if (cancelled || !roomRow) return;
+      setNoRoom(false);
       setRoom(roomRow as ChatRoom);
 
       const { data: msgs } = await supabase
