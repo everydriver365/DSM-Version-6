@@ -467,7 +467,7 @@ function JobsPage() {
                             color: NAVY,
                             height: 42,
                             borderRadius: 10,
-                            padding: "0 16px",
+                            padding: "0 12px",
                             border: "none",
                             fontSize: 13,
                             fontWeight: 600,
