@@ -5284,52 +5284,48 @@ function HomePage() {
                 </div>
               )}
 
-              {/* Stats row — pupil avatar + drive / distance / weather / ETA */}
-              {upcoming && (
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: 10,
-                  padding: '10px 14px', borderBottom: '1px solid #EEF2F7',
-                  background: '#F8F9FB',
-                  fontFamily: 'Inter, sans-serif',
-                }}>
+              {/* Header row — avatar + NEXT LESSON label / name / subtitle + status pill */}
+              {upcoming && (() => {
+                const hStatus = (upcoming.payment_status ?? 'unpaid').toLowerCase();
+                const hLabel = hStatus === 'paid' ? 'Paid' : hStatus === 'prepaid' ? 'Prepaid' : hStatus === 'partial' ? 'Partial' : hStatus === 'cancelled' ? 'Cancelled' : 'Due';
+                const hPositive = hStatus === 'paid' || hStatus === 'prepaid';
+                const hPillBg = hPositive ? '#E7F4E8' : hStatus === 'partial' ? '#FFF4E0' : hStatus === 'cancelled' ? '#EEF2F7' : '#FDECEC';
+                const hPillFg = hPositive ? '#2F7A3A' : hStatus === 'partial' ? '#8A5A00' : hStatus === 'cancelled' ? '#5A6270' : '#CC2229';
+                return (
                   <div style={{
-                    width: 36, height: 36, borderRadius: '50%',
-                    background: pupilCalColour, color: '#FFFFFF',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 12, fontWeight: 700, flexShrink: 0,
-                    marginTop: -22, border: '3px solid #FFFFFF',
-                    position: 'relative', zIndex: 2,
-                  }}>{pupilInitials}</div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6, flex: 1, minWidth: 0 }}>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.1 }}>
-                        {driveData ? (driveData.durationMinutes >= 60 ? `${Math.floor(driveData.durationMinutes / 60)}h ${driveData.durationMinutes % 60}m` : `${driveData.durationMinutes} min`) : '—'}
+                    display: 'flex', alignItems: 'center', gap: 14,
+                    padding: '10px 16px 14px',
+                    fontFamily: 'Inter, sans-serif',
+                  }}>
+                    <div style={{
+                      width: 64, height: 64, borderRadius: '50%',
+                      background: pupilCalColour, color: '#FFFFFF',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 22, fontWeight: 700, flexShrink: 0,
+                      marginTop: -32, border: '4px solid #FFFFFF',
+                      position: 'relative', zIndex: 2,
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                    }}>{pupilInitials}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: '#1877D6', letterSpacing: 1, textTransform: 'uppercase' }}>
+                        Next Lesson
                       </div>
-                      <div style={{ fontSize: 9, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 2 }}>Drive</div>
-                    </div>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.1 }}>
-                        {driveData?.distanceText ?? '—'}
+                      <div style={{ fontSize: 22, fontWeight: 800, color: '#0B1F3A', lineHeight: 1.15, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {pupilFullName || 'Pupil'}
                       </div>
-                      <div style={{ fontSize: 9, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 2 }}>Distance</div>
-                    </div>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.1 }}>
-                        {weatherData ? `${weatherData.tempC}°` : '—'}
-                      </div>
-                      <div style={{ fontSize: 9, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {weatherCondition || 'Weather'}
+                      <div style={{ fontSize: 14, color: '#8A93A3', marginTop: 2 }}>
+                        Lesson
                       </div>
                     </div>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: isLate ? '#C23B3B' : '#0B1F3A', lineHeight: 1.1 }}>
-                        {etaLabel ?? '—'}
-                      </div>
-                      <div style={{ fontSize: 9, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 2 }}>ETA</div>
-                    </div>
+                    <span style={{
+                      background: hPillBg, color: hPillFg,
+                      fontSize: 13, fontWeight: 600,
+                      padding: '7px 16px', borderRadius: 999,
+                      flexShrink: 0,
+                    }}>{hLabel}</span>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Reasons row (only when late and at least one true) */}
               {anyReason && (
