@@ -1116,13 +1116,13 @@ function ChatTab({
         <button
           type="button"
           onClick={send}
-          disabled={!newMessage.trim() || !room}
+          disabled={noRoom || !newMessage.trim() || !room}
           aria-label="Send"
           style={{
             width: 36, height: 36, borderRadius: "50%", border: "none",
-            background: newMessage.trim() && room ? "#0F2044" : "#E5E7EB",
+            background: !noRoom && newMessage.trim() && room ? "#0F2044" : "#E5E7EB",
             color: "white", display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: newMessage.trim() && room ? "pointer" : "not-allowed", flexShrink: 0,
+            cursor: !noRoom && newMessage.trim() && room ? "pointer" : "not-allowed", flexShrink: 0,
           }}
         >
           <Send size={16} />
