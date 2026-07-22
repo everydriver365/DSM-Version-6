@@ -5302,9 +5302,11 @@ function HomePage() {
                       <div style={{ fontSize: 18, fontWeight: 800, color: '#0B1F3A', lineHeight: 1.15, marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {pupilFullName || 'Pupil'}
                       </div>
-                      <div style={{ fontSize: 12, color: '#8A93A3', marginTop: 1 }}>
-                        Lesson
-                      </div>
+                      {Number(upcoming?.amount_due ?? 0) > 0 && (
+                        <div style={{ fontSize: 12, color: '#CC2229', marginTop: 1, fontWeight: 600 }}>
+                          £{Number(upcoming.amount_due).toFixed(0)} due
+                        </div>
+                      )}
                     </div>
                     <span style={{
                       background: hPillBg, color: hPillFg,
