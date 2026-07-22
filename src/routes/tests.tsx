@@ -1281,3 +1281,45 @@ function ToggleRow({
     </button>
   );
 }
+
+function ChoiceRow<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: { value: T; label: string }[];
+  value: T;
+  onChange: (v: T) => void;
+}) {
+  return (
+    <div>
+      <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">{label}</label>
+      <div className="grid grid-cols-2" style={{ gap: 8 }}>
+        {options.map((opt) => {
+          const active = value === opt.value;
+          const color = "#1877D6";
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => onChange(opt.value)}
+              className="inline-flex items-center justify-center text-[14px] font-medium"
+              style={{
+                height: 44,
+                borderRadius: 8,
+                backgroundColor: active ? color : "transparent",
+                color: active ? "#FFFFFF" : color,
+                border: `1px solid ${color}`,
+                ...POPPINS,
+              }}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
