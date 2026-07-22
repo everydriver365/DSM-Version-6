@@ -7302,8 +7302,9 @@ function HomePage() {
           submitting={changeDateTimeSubmittingHome}
           currentDate={(changeDateTimeSheetForLesson.lesson_date ?? "").slice(0, 10)}
           currentTime={(changeDateTimeSheetForLesson.lesson_time ?? "").slice(0, 5)}
+          currentDuration={changeDateTimeSheetForLesson.duration_minutes ?? 60}
           onClose={() => { if (!changeDateTimeSubmittingHome) setChangeDateTimeSheetForLesson(null); }}
-          onConfirm={async (newDate: string, newTime: string) => {
+          onConfirm={async (newDate: string, newTime: string, newDurationMinutes: number) => {
             const lesson = changeDateTimeSheetForLesson;
             if (!lesson) return;
             setChangeDateTimeSubmittingHome(true);
@@ -7311,12 +7312,14 @@ function HomePage() {
               const timeVal = newTime.length === 5 ? `${newTime}:00` : newTime;
               const { error } = await supabase
                 .from("lessons")
-                .update({ lesson_date: newDate, lesson_time: timeVal })
+                .update({ lesson_date: newDate, lesson_time: timeVal, duration_minutes: newDurationMinutes })
                 .eq("id", lesson.id);
               if (error) throw error;
               setLessons((prev) =>
                 (prev ?? []).map((l) =>
-                  l.id === lesson.id ? { ...l, lesson_date: newDate, lesson_time: timeVal } : l
+                  l.id === lesson.id
+                    ? { ...l, lesson_date: newDate, lesson_time: timeVal, duration_minutes: newDurationMinutes }
+                    : l
                 )
               );
               toast.success("Lesson updated");

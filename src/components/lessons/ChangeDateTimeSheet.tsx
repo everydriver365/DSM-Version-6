@@ -3,11 +3,14 @@ import { X } from "lucide-react";
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
+const DURATION_HOURS = [1, 1.5, 2, 2.5, 3, 4];
+
 export function ChangeDateTimeSheet({
   open,
   submitting,
   currentDate,
   currentTime,
+  currentDuration,
   onClose,
   onConfirm,
 }: {
@@ -15,22 +18,29 @@ export function ChangeDateTimeSheet({
   submitting: boolean;
   currentDate: string; // "YYYY-MM-DD"
   currentTime: string; // "HH:MM"
+  currentDuration: number; // minutes
   onClose: () => void;
-  onConfirm: (newDate: string, newTime: string) => void;
+  onConfirm: (newDate: string, newTime: string, newDurationMinutes: number) => void;
 }) {
   const [newDate, setNewDate] = useState<string>(currentDate);
   const [newTime, setNewTime] = useState<string>(currentTime);
+  const [newDuration, setNewDuration] = useState<number>(currentDuration);
 
   useEffect(() => {
     if (open) {
       setNewDate(currentDate);
       setNewTime(currentTime);
+      setNewDuration(currentDuration);
     }
-  }, [open, currentDate, currentTime]);
+  }, [open, currentDate, currentTime, currentDuration]);
 
   if (!open) return null;
 
-  const hasChanged = newDate !== currentDate || newTime !== currentTime;
+  const hasChanged =
+    newDate !== currentDate ||
+    newTime !== currentTime ||
+    newDuration !== currentDuration;
+
   const canSubmit = !submitting && hasChanged && newDate.length > 0 && newTime.length > 0;
 
   const inputStyle = {
@@ -76,7 +86,7 @@ export function ChangeDateTimeSheet({
       >
         <div className="flex items-center justify-between px-4 pt-4">
           <span className="text-[11px] font-semibold tracking-wider" style={{ color: "#6B7280" }}>
-            CHANGE DATE & TIME
+            CHANGE DATE, TIME & DURATION
           </span>
           <button
             type="button"
@@ -112,12 +122,45 @@ export function ChangeDateTimeSheet({
               style={inputStyle}
             />
           </label>
+
+          <div>
+            <span style={labelStyle}>Duration</span>
+            <div
+              role="radiogroup"
+              aria-label="Lesson duration"
+              className="grid grid-cols-6 gap-2 mt-1"
+            >
+              {DURATION_HOURS.map((h) => {
+                const minutes = h * 60;
+                const selected = newDuration === minutes;
+                return (
+                  <button
+                    key={h}
+                    type="button"
+                    role="radio"
+                    aria-checked={selected}
+                    onClick={() => setNewDuration(minutes)}
+                    className="rounded-[12px] text-[14px] font-medium transition-colors"
+                    style={{
+                      padding: "14px 2px",
+                      fontFamily: "Inter, sans-serif",
+                      background: selected ? "#185FA5" : "#F3F8FF",
+                      color: selected ? "#FFFFFF" : "#0B1F3A",
+                      border: selected ? "none" : "1px solid #EEF2F7",
+                    }}
+                  >
+                    {h}h
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         <div className="px-4 mt-6 flex flex-col gap-2">
           <button
             type="button"
-            onClick={() => onConfirm(newDate, newTime)}
+            onClick={() => onConfirm(newDate, newTime, newDuration)}
             disabled={!canSubmit}
             className="inline-flex items-center justify-center text-[14px] font-semibold text-white disabled:opacity-50"
             style={{ height: 44, borderRadius: 8, backgroundColor: "#1877D6", ...POPPINS }}
