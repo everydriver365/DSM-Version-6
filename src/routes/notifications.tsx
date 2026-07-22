@@ -243,7 +243,9 @@ function NotificationsPage() {
                       tabIndex={0}
                       onClick={() => {
                         markRead(n.id);
-                        if (n.type === "booking" || n.reference_type === "course_booking") {
+                        if (n.reference_type === "job_offer" && n.reference_id) {
+                          navigate({ to: "/messages", search: { jobOfferId: n.reference_id } as never });
+                        } else if (n.type === "booking" || n.reference_type === "course_booking") {
                           if (n.reference_id) {
                             navigate({ to: "/bookings/$id", params: { id: n.reference_id } });
                           } else {

@@ -10,6 +10,9 @@ import { useAdminGate } from "./admin";
 
 
 export const Route = createFileRoute("/messages/")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    jobOfferId: typeof search.jobOfferId === "string" ? search.jobOfferId : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Messages — DSM by EveryDriver" },
@@ -133,9 +136,25 @@ function formatDateSeparator(iso: string) {
 
 function MessagesIndexPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<"pupils" | "local" | "admin">("pupils");
+  const { jobOfferId: jobOfferIdParam } = Route.useSearch();
+  const [activeTab, setActiveTab] = useState<"pupils" | "local" | "admin">(
+    jobOfferIdParam ? "admin" : "pupils",
+  );
   const adminStatus = useAdminGate();
   const isAdmin = adminStatus === "allowed";
+  useEffect(() => {
+    if (!jobOfferIdParam || !isAdmin) return;
+    setActiveTab("admin");
+    setOpenThreadJobId(jobOfferIdParam);
+    supabase
+      .from("job_offer_messages")
+      .update({ read_by_admin: true })
+      .eq("job_offer_id", jobOfferIdParam)
+      .eq("sender_type", "instructor")
+      .eq("read_by_admin", false)
+      .then(() => {});
+    navigate({ to: "/messages", search: {}, replace: true });
+  }, [jobOfferIdParam, isAdmin]);
   const [adminThreads, setAdminThreads] = useState<JobThreadRow[]>([]);
   const [adminLoading, setAdminLoading] = useState(false);
   const [openThreadJobId, setOpenThreadJobId] = useState<string | null>(null);
