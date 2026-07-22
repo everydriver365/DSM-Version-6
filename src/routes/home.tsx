@@ -5318,9 +5318,6 @@ function HomePage() {
                       boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
                     }}>{pupilInitials}</div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: '#1877D6', letterSpacing: 0.8, textTransform: 'uppercase' }}>
-                        Next Lesson
-                      </div>
                       <div style={{ fontSize: 18, fontWeight: 800, color: '#0B1F3A', lineHeight: 1.15, marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {pupilFullName || 'Pupil'}
                       </div>
