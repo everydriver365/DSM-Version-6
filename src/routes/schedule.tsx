@@ -20,6 +20,7 @@ import { PupilAvatar } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { ChangeDateTimeSheet } from "@/components/lessons/ChangeDateTimeSheet";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
@@ -300,7 +301,7 @@ function SchedulePage() {
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
   const [legendOpen, setLegendOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>(() => ymdLocal(today));
-  const [instructor, setInstructor] = useState<{ external_calendar_url: string | null; calendar_last_synced: string | null } | null>(null);
+  const [instructor, setInstructor] = useState<{ name: string | null; external_calendar_url: string | null; calendar_last_synced: string | null } | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
@@ -488,7 +489,7 @@ function SchedulePage() {
         const [instrRow, recRes, offRes] = await Promise.all([
           supabase
             .from("instructors")
-            .select("working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,external_calendar_url,calendar_last_synced")
+            .select("name,working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,external_calendar_url,calendar_last_synced")
             .eq("id", uid)
             .maybeSingle(),
           fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${uid}&is_active=eq.true`, { headers }),
@@ -496,6 +497,7 @@ function SchedulePage() {
         ]);
         if (cancelled) return;
         const i = (instrRow.data ?? {}) as {
+          name?: string | null;
           working_hours_start?: string | null;
           working_hours_end?: string | null;
           working_days?: string[] | null;
@@ -512,6 +514,7 @@ function SchedulePage() {
         if (i.lesson_buffer_after != null) setBufferAfter(Number(i.lesson_buffer_after));
         if (i.hourly_rate != null) setHourlyRate(Number(i.hourly_rate) || 40);
         setInstructor({
+          name: i.name ?? null,
           external_calendar_url: i.external_calendar_url ?? null,
           calendar_last_synced: i.calendar_last_synced ?? null,
         });
@@ -946,72 +949,61 @@ function SchedulePage() {
         ...POPPINS,
       }}
     >
-      <div style={{ background: "#0B1F3A", paddingTop: "env(safe-area-inset-top, 0px)" }}>
+      <InstructorTopBar
+        firstName={instructor?.name ?? ""}
+        pageTitle="Schedule"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      {instructor?.external_calendar_url && (
         <div
           style={{
+            background: "#FFFFFF",
+            padding: "8px 16px",
             display: "flex",
+            justifyContent: "flex-end",
             alignItems: "center",
-            gap: 8,
-            padding: "10px 16px 6px",
-            color: "#FFFFFF",
+            borderBottom: "1px solid #EEF2F7",
+            gap: 10,
           }}
         >
           <button
-            type="button"
-            aria-label="Back"
-            onClick={() => navigate({ to: "/home" as never })}
+            onClick={handleSync}
+            disabled={syncing}
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: 10,
-              border: 0,
-              background: "rgba(255,255,255,0.10)",
-              color: "#FFFFFF",
-              display: "inline-flex",
+              background: "#F3F8FF",
+              border: "1px solid #EEF2F7",
+              borderRadius: 8,
+              padding: "6px 10px",
+              cursor: syncing ? "not-allowed" : "pointer",
+              display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
+              gap: 5,
+              color: "#1877D6",
             }}
           >
-            <IconArrowLeft size={20} stroke={2} />
+            <RefreshCw
+              size={14}
+              color="#1877D6"
+              style={{ animation: syncing ? "spin 1s linear infinite" : "none" }}
+            />
+            <span style={{ fontSize: 11, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>
+              {syncing ? "Syncing..." : "Sync"}
+            </span>
           </button>
-          <div style={{ fontSize: 16, fontWeight: 600, ...POPPINS }}>Schedule</div>
-          {instructor?.external_calendar_url && (
-            <div style={{ marginLeft: "auto", display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <button
-                onClick={handleSync}
-                disabled={syncing}
-                style={{
-                  background: "rgba(255,255,255,0.1)",
-                  border: "none",
-                  borderRadius: 8,
-                  padding: "6px 10px",
-                  cursor: syncing ? "not-allowed" : "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 5,
-                  color: "white",
-                }}
-              >
-                <RefreshCw
-                  size={14}
-                  color="white"
-                  style={{ animation: syncing ? "spin 1s linear infinite" : "none" }}
-                />
-                <span style={{ fontSize: 11, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>
-                  {syncing ? "Syncing..." : "Sync"}
-                </span>
-              </button>
-              {lastSynced && (
-                <div style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", textAlign: "center", marginTop: 1 }}>
-                  Synced {formatRelativeSync(lastSynced)}
-                </div>
-              )}
+          {lastSynced && (
+            <div style={{ fontSize: 9, color: "#6B7280", textAlign: "right" }}>
+              Synced {formatRelativeSync(lastSynced)}
             </div>
           )}
-          <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
         </div>
-      </div>
+      )}
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
 
       {moveMode && movingLesson && (
         <div
