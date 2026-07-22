@@ -39,6 +39,8 @@ interface DrivingTest {
   serious_faults: number | null;
   dangerous_faults: number | null;
   examiner_took_action: boolean | null;
+  test_vehicle_owner: "instructor" | "own_car" | null;
+  test_transmission: "manual" | "automatic" | null;
   // Derived/compat fields used by the existing TestCard UI:
   result: "Pass" | "Fail" | null;
   faults: number | null;
