@@ -79,9 +79,12 @@ interface JobMessage {
 interface JobThreadRow {
   job_offer_id: string;
   pupil_name: string | null;
+  postcode_area: string | null;
   last_message: string;
   last_created_at: string;
   last_sender_type: string;
+  last_sender_id: string | null;
+  last_sender_instructor_name: string | null;
   unread: boolean;
 }
 
