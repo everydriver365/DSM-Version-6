@@ -7650,6 +7650,7 @@ function HeroExpandedPanel({
   onOpenLesson: () => void;
   onEol: () => void;
 }) {
+  const navigate = useNavigate();
   const phone = lesson.pupils?.phone ?? null;
   const firstName = (lesson.pupils?.name ?? "there").split(/\s+/)[0];
   const balance = Number(lesson.amount_due ?? 0);
@@ -7839,6 +7840,27 @@ function HeroExpandedPanel({
           <div style={{ background: '#F2F2F7', borderRadius: 9, padding: '10px 12px', color: '#8A93A3', fontFamily: 'Inter, sans-serif', fontSize: 12 }}>No previous lesson</div>
         )}
       </div>
+
+      {/* Full pupil profile link */}
+      <button
+        type="button"
+        onClick={() => navigate({ to: '/pupils/$id', params: { id: lesson.pupil_id }, search: { lessonId: lesson.id } })}
+        style={{
+          marginTop: 14,
+          width: '100%',
+          textAlign: 'center',
+          background: 'none',
+          border: 'none',
+          color: '#1877D6',
+          fontFamily: 'Inter, sans-serif',
+          fontSize: 12,
+          fontWeight: 600,
+          cursor: 'pointer',
+          padding: 0,
+        }}
+      >
+        View full pupil profile →
+      </button>
     </div>
   );
 }
