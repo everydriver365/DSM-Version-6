@@ -879,6 +879,26 @@ function JobDetailSheet({
               </div>
             )
           )}
+
+          <button
+            onClick={onOpenThread}
+            style={{
+              marginTop: 12,
+              width: "100%",
+              background: "#F3F8FF",
+              color: BLUE,
+              border: "1px solid #CCE0FA",
+              borderRadius: 10,
+              padding: "12px 16px",
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: "pointer",
+              textAlign: "center",
+              ...POPPINS,
+            }}
+          >
+            Message admin
+          </button>
         </div>
 
         <div style={{
