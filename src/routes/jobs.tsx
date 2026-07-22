@@ -34,6 +34,7 @@ interface JobOffer {
   centre_lng: number | null;
   status: string;
   created_at: string;
+  updated_at?: string | null;
   notes?: string | null;
   preferred_start_date?: string | null;
   amount_paid?: number | null;
@@ -43,6 +44,8 @@ interface JobOffer {
   pupil_email?: string | null;
   contact_released?: boolean | null;
   declined_by?: string[] | null;
+  claimed_by?: string | null;
+  claimed_at?: string | null;
 }
 
 function relTime(iso: string): string {
