@@ -177,7 +177,7 @@ export function ChangeDateTimeSheet({
               borderRadius: 8,
               backgroundColor: "transparent",
               color: "#0B1F3A",
-              ...Poppins,
+              ...POPPINS,
             }}
           >
             Cancel
