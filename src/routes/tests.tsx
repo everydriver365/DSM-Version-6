@@ -23,18 +23,74 @@ interface Pupil {
   name: string;
 }
 
+type TestStatus = "passed" | "failed" | "abandoned" | "cancelled" | null;
+
 interface DrivingTest {
-  id: string;
-  pupil_id: string;
+  id: string; // pupil id (pupils is the single source of truth)
+  pupil_id: string; // same as id, kept for existing TestCard/LogResultSheet code
   test_date: string;
   test_time: string | null;
   test_centre: string | null;
-  result: string | null;
+  test_examiner: string | null;
+  test_status: TestStatus;
+  examiner_first_name: string | null;
+  examiner_surname: string | null;
+  minor_faults: number | null;
+  serious_faults: number | null;
+  dangerous_faults: number | null;
+  examiner_took_action: boolean | null;
+  // Derived/compat fields used by the existing TestCard UI:
+  result: "Pass" | "Fail" | null;
   faults: number | null;
   result_notes: string | null;
   result_logged_at: string | null;
   pupils: { id: string; name: string } | null;
 }
+
+interface PupilTestRow {
+  id: string;
+  name: string;
+  test_date: string;
+  test_time: string | null;
+  test_centre: string | null;
+  test_examiner: string | null;
+  test_status: string | null;
+  examiner_first_name: string | null;
+  examiner_surname: string | null;
+  minor_faults: number | null;
+  serious_faults: number | null;
+  dangerous_faults: number | null;
+  examiner_took_action: boolean | null;
+}
+
+function mapPupilRowToTest(row: PupilTestRow): DrivingTest {
+  const status = (row.test_status ?? null) as TestStatus;
+  const totalFaults =
+    (row.minor_faults ?? 0) + (row.serious_faults ?? 0) + (row.dangerous_faults ?? 0);
+  const hasAnyFault =
+    row.minor_faults != null || row.serious_faults != null || row.dangerous_faults != null;
+  return {
+    id: row.id,
+    pupil_id: row.id,
+    test_date: row.test_date,
+    test_time: row.test_time,
+    test_centre: row.test_centre,
+    test_examiner: row.test_examiner,
+    test_status: status,
+    examiner_first_name: row.examiner_first_name,
+    examiner_surname: row.examiner_surname,
+    minor_faults: row.minor_faults,
+    serious_faults: row.serious_faults,
+    dangerous_faults: row.dangerous_faults,
+    examiner_took_action: row.examiner_took_action,
+    result: status === "passed" ? "Pass" : status === "failed" ? "Fail" : null,
+    faults: hasAnyFault ? totalFaults : null,
+    result_notes: null,
+    result_logged_at: null,
+    pupils: { id: row.id, name: row.name },
+  };
+}
+
 
 function todayYmd() {
   const parts = new Intl.DateTimeFormat("en-GB", {
@@ -87,15 +143,18 @@ function TestsPage() {
 
   async function loadTests(uid: string) {
     const { data, error } = await supabase
-      .from("driving_tests")
+      .from("pupils")
       .select(
-        "id, pupil_id, test_date, test_time, test_centre, result, faults, result_notes, result_logged_at, pupils(id, name)",
+        "id, name, test_date, test_time, test_centre, test_examiner, test_status, examiner_first_name, examiner_surname, minor_faults, serious_faults, dangerous_faults, examiner_took_action",
       )
       .eq("instructor_id", uid)
+      .is("deleted_at", null)
+      .not("test_date", "is", null)
       .order("test_date", { ascending: true });
     if (error) console.error("[tests] fetch error", error);
-    setTests((data ?? []) as unknown as DrivingTest[]);
+    setTests(((data ?? []) as PupilTestRow[]).map(mapPupilRowToTest));
   }
+
 
   async function loadPupils(uid: string) {
     const { data, error } = await supabase
@@ -115,8 +174,32 @@ function TestsPage() {
   }, [userId]);
 
   const today = todayYmd();
-  const upcoming = tests.filter((t) => t.test_date >= today);
-  const past = tests.filter((t) => t.test_date < today).reverse();
+  // Terminal statuses are grouped by status regardless of date.
+  const passed = tests.filter((t) => t.test_status === "passed");
+  const failed = tests.filter((t) => t.test_status === "failed");
+  const abandoned = tests.filter((t) => t.test_status === "abandoned");
+  const cancelled = tests.filter((t) => t.test_status === "cancelled");
+  const openTests = tests.filter(
+    (t) => t.test_status == null || t.test_status === ("upcoming" as unknown as TestStatus),
+  );
+  const upcoming = openTests.filter((t) => t.test_date >= today);
+  const needsResult = openTests.filter((t) => t.test_date < today).reverse();
+
+  const sections: {
+    key: string;
+    title: string;
+    items: DrivingTest[];
+    showDaysBadge?: boolean;
+    pastProminent?: boolean;
+    emptyText: string;
+  }[] = [
+    { key: "upcoming", title: "UPCOMING TESTS", items: upcoming, showDaysBadge: true, emptyText: "No upcoming tests" },
+    { key: "needs", title: "NEEDS A RESULT", items: needsResult, showDaysBadge: true, emptyText: "No tests waiting for a result" },
+    { key: "passed", title: "PASSED", items: passed, pastProminent: true, emptyText: "No passes yet" },
+    { key: "failed", title: "FAILED", items: failed, pastProminent: true, emptyText: "No fails logged" },
+    { key: "abandoned", title: "ABANDONED", items: abandoned, pastProminent: true, emptyText: "No abandoned tests" },
+    { key: "cancelled", title: "CANCELLED", items: cancelled, pastProminent: true, emptyText: "No cancelled tests" },
+  ];
 
   return (
     <PageLayout className="pb-8" style={POPPINS}>
@@ -149,33 +232,28 @@ function TestsPage() {
       </div>
 
       <div className="px-4">
-        <SectionHeader>UPCOMING TESTS</SectionHeader>
-        {upcoming.length === 0 ? (
-          <EmptyState text="No upcoming tests" />
-        ) : (
-          <div className="flex flex-col" style={{ gap: 8 }}>
-            {upcoming.map((t) => (
-              <TestCard
-                key={t.id}
-                test={t}
-                showDaysBadge
-                onLogResult={() => setResultFor(t)}
-              />
-            ))}
+        {sections.map((section) => (
+          <div key={section.key}>
+            <SectionHeader>{section.title}</SectionHeader>
+            {section.items.length === 0 ? (
+              <EmptyState text={section.emptyText} />
+            ) : (
+              <div className="flex flex-col" style={{ gap: 8 }}>
+                {section.items.map((t) => (
+                  <TestCard
+                    key={`${section.key}-${t.id}`}
+                    test={t}
+                    showDaysBadge={section.showDaysBadge}
+                    pastProminent={section.pastProminent}
+                    onLogResult={section.showDaysBadge ? () => setResultFor(t) : undefined}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        )}
-
-        <SectionHeader>PAST TESTS</SectionHeader>
-        {past.length === 0 ? (
-          <EmptyState text="No past tests" />
-        ) : (
-          <div className="flex flex-col" style={{ gap: 8 }}>
-            {past.map((t) => (
-              <TestCard key={t.id} test={t} pastProminent />
-            ))}
-          </div>
-        )}
+        ))}
       </div>
+
 
       {addOpen && userId && (
         <AddTestSheet
@@ -392,13 +470,17 @@ function AddTestSheet({
   async function save() {
     if (!pupilId || !date || saving) return;
     setSaving(true);
-    const { error } = await supabase.from("driving_tests").insert({
-      instructor_id: userId,
-      pupil_id: pupilId,
-      test_date: date,
-      test_time: time || null,
-      test_centre: centre || null,
-    });
+    const { error } = await supabase
+      .from("pupils")
+      .update({
+        test_date: date,
+        test_time: time || null,
+        test_centre: centre || null,
+        test_status: null,
+      })
+      .eq("id", pupilId)
+      .eq("instructor_id", userId);
+
     setSaving(false);
     if (error) {
       console.error("[tests] insert error", error);
@@ -591,23 +673,8 @@ function LogResultSheet({
     const minor = parseInt(minorFaults, 10) || 0;
     const serious = parseInt(seriousFaults, 10) || 0;
     const dangerous = parseInt(dangerousFaults, 10) || 0;
-    const totalFaults = minor + serious + dangerous;
+    void notes; // reserved for future pupil-side notes field; not yet on schema
 
-    const { error } = await supabase
-      .from("driving_tests")
-      .update({
-        result,
-        faults: totalFaults,
-        result_notes: notes || null,
-        result_logged_at: new Date().toISOString(),
-      })
-      .eq("id", test.id);
-    if (error) {
-      setSaving(false);
-      console.error("[tests] result update error", error);
-      toast.error("Couldn't save result");
-      return;
-    }
 
     const { error: pupilErr } = await supabase
       .from("pupils")
