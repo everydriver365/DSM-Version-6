@@ -274,6 +274,19 @@ function EditLessonPage() {
           </div>
 
           <div>
+            <FieldLabel htmlFor="pickupLocation">Pickup location</FieldLabel>
+            <input
+              id="pickupLocation"
+              type="text"
+              value={pickupLocation}
+              onChange={(e) => setPickupLocation(e.target.value)}
+              placeholder="Enter pickup location"
+              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
+              style={fieldBorder}
+            />
+          </div>
+
+          <div>
             <FieldLabel htmlFor="notes">Notes</FieldLabel>
             <textarea
               id="notes"
