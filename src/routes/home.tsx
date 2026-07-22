@@ -5277,7 +5277,6 @@ function HomePage() {
               {upcoming && (() => {
                 const hStatus = (upcoming.payment_status ?? 'unpaid').toLowerCase();
                 const hAmountDue = Number(upcoming.amount_due ?? 0);
-                const hIsPositive = hStatus === 'paid' || hStatus === 'prepaid';
                 const hLabel = hAmountDue > 0
                   ? `£${hAmountDue.toFixed(0)} due`
                   : hStatus === 'prepaid'
