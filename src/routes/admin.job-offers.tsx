@@ -101,6 +101,11 @@ function emptyForm(): Partial<JobOffer> {
     amount_paid: null,
     payment_method: "None",
     special_requirements: "",
+    test_booked: false,
+    test_date: "",
+    test_time: "",
+    test_centre: "",
+    wants_swap_list: false,
     expires_at: "",
     enquiry_id: null,
   };
