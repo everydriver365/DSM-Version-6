@@ -611,7 +611,46 @@ function AddTestSheet({
   const [date, setDate] = useState(todayYmd());
   const [time, setTime] = useState("");
   const [centre, setCentre] = useState("");
+  const [examinerFirst, setExaminerFirst] = useState("");
+  const [examinerSurname, setExaminerSurname] = useState("");
   const [saving, setSaving] = useState(false);
+  const [centreSuggestions, setCentreSuggestions] = useState<string[]>([]);
+  const [pairs, setPairs] = useState<ExaminerPair[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("pupils")
+        .select("test_centre, examiner_first_name, examiner_surname")
+        .eq("instructor_id", userId);
+      const centres = new Set<string>();
+      const seen = new Set<string>();
+      const out: ExaminerPair[] = [];
+      for (const row of (data ?? []) as { test_centre: string | null; examiner_first_name: string | null; examiner_surname: string | null }[]) {
+        const c = (row.test_centre ?? "").trim();
+        if (c) centres.add(c);
+        const f = (row.examiner_first_name ?? "").trim();
+        const s = (row.examiner_surname ?? "").trim();
+        const key = `${f}|${s}`.toLowerCase();
+        if (f && !seen.has(key)) {
+          seen.add(key);
+          out.push({ first: f, surname: s });
+        }
+      }
+      setCentreSuggestions(Array.from(centres).sort());
+      setPairs(out);
+    })();
+  }, [userId]);
+
+  const firstSuggestions = Array.from(new Set(pairs.map((p) => p.first).filter(Boolean)));
+  const surnameSuggestions = Array.from(
+    new Set(
+      pairs
+        .filter((p) => !examinerFirst || p.first.toLowerCase() === examinerFirst.trim().toLowerCase())
+        .map((p) => p.surname)
+        .filter(Boolean),
+    ),
+  );
 
   async function save() {
     if (!pupilId || !date || saving) return;
@@ -622,6 +661,8 @@ function AddTestSheet({
         test_date: date,
         test_time: time || null,
         test_centre: centre || null,
+        examiner_first_name: examinerFirst.trim() || null,
+        examiner_surname: examinerSurname.trim() || null,
         test_status: null,
       })
       .eq("id", pupilId)
@@ -647,7 +688,18 @@ function AddTestSheet({
   }
 
   return (
-    <SheetShell title="ADD TEST" onClose={onClose}>
+    <SheetShell
+      title="ADD TEST"
+      onClose={onClose}
+      footer={
+        <div className="grid grid-cols-2" style={{ gap: 8 }}>
+          <Button variant="ghost" onClick={onClose} type="button">Cancel</Button>
+          <Button onClick={save} disabled={!pupilId || !date || saving} type="button">
+            {saving ? "Saving…" : "Save"}
+          </Button>
+        </div>
+      }
+    >
       <div className="flex flex-col" style={{ gap: 12 }}>
         <div>
           <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">Pupil</label>
@@ -673,13 +725,26 @@ function AddTestSheet({
 
         <Input label="Test date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
         <Input label="Test time" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
-        <Input label="Test centre" value={centre} onChange={(e) => setCentre(e.target.value)} placeholder="e.g. Mill Hill" />
+        <ExaminerNameInput
+          label="Test centre"
+          value={centre}
+          onChange={setCentre}
+          suggestions={centreSuggestions}
+        />
 
-        <div className="mt-2 grid grid-cols-2" style={{ gap: 8 }}>
-          <Button variant="ghost" onClick={onClose} type="button">Cancel</Button>
-          <Button onClick={save} disabled={!pupilId || !date || saving} type="button">
-            {saving ? "Saving…" : "Save"}
-          </Button>
+        <div className="grid grid-cols-2" style={{ gap: 8 }}>
+          <ExaminerNameInput
+            label="Examiner first name"
+            value={examinerFirst}
+            onChange={setExaminerFirst}
+            suggestions={firstSuggestions}
+          />
+          <ExaminerNameInput
+            label="Examiner surname"
+            value={examinerSurname}
+            onChange={setExaminerSurname}
+            suggestions={surnameSuggestions}
+          />
         </div>
       </div>
     </SheetShell>
