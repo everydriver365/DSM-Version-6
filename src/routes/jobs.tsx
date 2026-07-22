@@ -381,23 +381,42 @@ function JobsPage() {
                         {badge.label}
                       </div>
                     ) : <div />}
-                    <button
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); setDetailJob(job); }}
-                      style={{
-                        background: NAVY,
-                        color: "#FFF",
-                        height: 42,
-                        borderRadius: 10,
-                        padding: "0 18px",
-                        border: "none",
-                        fontSize: 13,
-                        fontWeight: 600,
-                        cursor: "pointer",
-                      }}
-                    >
-                      More details
-                    </button>
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setDeclinedIds((prev) => new Set(prev).add(job.id)); }}
+                        style={{
+                          background: "#F3F4F6",
+                          color: NAVY,
+                          height: 42,
+                          borderRadius: 10,
+                          padding: "0 16px",
+                          border: "none",
+                          fontSize: 13,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                        }}
+                      >
+                        Decline
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setDetailJob(job); }}
+                        style={{
+                          background: NAVY,
+                          color: "#FFF",
+                          height: 42,
+                          borderRadius: 10,
+                          padding: "0 16px",
+                          border: "none",
+                          fontSize: 13,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                        }}
+                      >
+                        More details
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
