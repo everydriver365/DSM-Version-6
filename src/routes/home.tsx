@@ -5132,7 +5132,7 @@ function HomePage() {
       {/* ============ NEXT LESSON CARD ============ */}
       <div
         style={{
-          margin: '0 16px 20px',
+          margin: '0 16px 16px',
           background: '#FFFFFF',
           borderRadius: 10,
           boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
@@ -5150,11 +5150,11 @@ function HomePage() {
               justifyContent: 'center',
               gap: 8,
               width: '100%',
-              padding: '12px 16px',
+              padding: '10px 14px',
               background: '#1877D6',
               color: '#FFFFFF',
               border: 'none',
-              fontSize: 14,
+              fontSize: 13,
               fontWeight: 700,
               fontFamily: 'Inter, sans-serif',
               cursor: 'pointer',
@@ -5162,8 +5162,8 @@ function HomePage() {
             }}
           >
             <span style={{
-              width: 8, height: 8, borderRadius: 999,
-              background: '#FFFFFF', boxShadow: '0 0 0 3px rgba(255,255,255,0.35)',
+              width: 7, height: 7, borderRadius: 999,
+              background: '#FFFFFF', boxShadow: '0 0 0 2px rgba(255,255,255,0.35)',
             }} />
             Start tracking — {currentLesson.pupils?.name ?? 'lesson in progress'}
           </button>
@@ -5242,19 +5242,19 @@ function HomePage() {
                     destLng={driveData.destLng}
                     encodedPolyline={driveData.encodedPolyline}
                     directionsUrl={driveData.directionsUrl}
-                    height={160}
+                    height={120}
                     isLate={isLate}
                   />
                 ) : (
-                  <div style={{ height: 105, background: '#E8EEF3' }} />
+                  <div style={{ height: 85, background: '#E8EEF3' }} />
                 )}
                 {/* Gradient time caption */}
                 {lessonTimeText && (
                   <div style={{
                     position: 'absolute', left: 0, right: 0, bottom: 0,
                     background: 'linear-gradient(0deg, rgba(11,31,58,0.88), rgba(11,31,58,0))',
-                    padding: '16px 14px 10px',
-                    color: '#FFFFFF', fontWeight: 700, fontSize: 17,
+                    padding: '10px 12px 8px',
+                    color: '#FFFFFF', fontWeight: 700, fontSize: 14,
                     fontFamily: 'Inter, sans-serif',
                     pointerEvents: 'none',
                   }}>{lessonTimeText}</div>
@@ -5264,12 +5264,12 @@ function HomePage() {
               {/* Notify late banner */}
               {isLate && upcoming && (
                 <div style={{
-                  background: '#FEECEC', padding: '10px 14px',
+                  background: '#FEECEC', padding: '8px 12px',
                   borderBottom: '1px solid #F5D5D5',
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
                   fontFamily: 'Inter, sans-serif',
                 }}>
-                  <span style={{ fontSize: 12, color: '#7A1F1F', fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <span style={{ fontSize: 11, color: '#7A1F1F', fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     Arriving ~{etaLabel} — let {pupilFirstName} know?
                   </span>
                   <button
@@ -5277,7 +5277,7 @@ function HomePage() {
                     onClick={(e) => { e.stopPropagation(); setLateOpen(true); }}
                     style={{
                       background: '#C23B3B', color: '#FFFFFF', border: 'none',
-                      fontSize: 11, fontWeight: 700, padding: '6px 12px', borderRadius: 999,
+                      fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 999,
                       cursor: 'pointer', flexShrink: 0, fontFamily: 'Inter, sans-serif',
                     }}
                   >Notify pupil</button>
@@ -5293,34 +5293,34 @@ function HomePage() {
                 const hPillFg = hPositive ? '#2F7A3A' : hStatus === 'partial' ? '#8A5A00' : hStatus === 'cancelled' ? '#5A6270' : '#CC2229';
                 return (
                   <div style={{
-                    display: 'flex', alignItems: 'center', gap: 14,
-                    padding: '10px 16px 14px',
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '8px 14px 10px',
                     fontFamily: 'Inter, sans-serif',
                   }}>
                     <div style={{
-                      width: 64, height: 64, borderRadius: '50%',
+                      width: 52, height: 52, borderRadius: '50%',
                       background: pupilCalColour, color: '#FFFFFF',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 22, fontWeight: 700, flexShrink: 0,
-                      marginTop: -32, border: '4px solid #FFFFFF',
+                      fontSize: 17, fontWeight: 700, flexShrink: 0,
+                      marginTop: -26, border: '3px solid #FFFFFF',
                       position: 'relative', zIndex: 2,
                       boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
                     }}>{pupilInitials}</div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: '#1877D6', letterSpacing: 1, textTransform: 'uppercase' }}>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: '#1877D6', letterSpacing: 0.8, textTransform: 'uppercase' }}>
                         Next Lesson
                       </div>
-                      <div style={{ fontSize: 22, fontWeight: 800, color: '#0B1F3A', lineHeight: 1.15, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <div style={{ fontSize: 18, fontWeight: 800, color: '#0B1F3A', lineHeight: 1.15, marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {pupilFullName || 'Pupil'}
                       </div>
-                      <div style={{ fontSize: 14, color: '#8A93A3', marginTop: 2 }}>
+                      <div style={{ fontSize: 12, color: '#8A93A3', marginTop: 1 }}>
                         Lesson
                       </div>
                     </div>
                     <span style={{
                       background: hPillBg, color: hPillFg,
-                      fontSize: 13, fontWeight: 600,
-                      padding: '7px 16px', borderRadius: 999,
+                      fontSize: 11, fontWeight: 600,
+                      padding: '5px 12px', borderRadius: 999,
                       flexShrink: 0,
                     }}>{hLabel}</span>
                   </div>
@@ -5330,9 +5330,9 @@ function HomePage() {
               {/* Reasons row (only when late and at least one true) */}
               {anyReason && (
                 <div style={{
-                  padding: '8px 14px', borderBottom: '1px solid #EEF2F7',
-                  display: 'flex', flexDirection: 'column', gap: 4,
-                  fontFamily: 'Inter, sans-serif', fontSize: 12, color: '#5A6270',
+                  padding: '6px 12px', borderBottom: '1px solid #EEF2F7',
+                  display: 'flex', flexDirection: 'column', gap: 3,
+                  fontFamily: 'Inter, sans-serif', fontSize: 11, color: '#5A6270',
                 }}>
                   {showTraffic && driveData && (
                     <div>🚦 {driveData.trafficLabel} on your route
@@ -5374,32 +5374,32 @@ function HomePage() {
             }
           }
           const StatCol = ({ emoji, label, value }: { emoji: string; label: string; value: string }) => (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, minWidth: 0 }}>
-              <div style={{ fontSize: 22, lineHeight: 1 }}>{emoji}</div>
-              <div style={{ fontSize: 10, fontWeight: 600, color: '#8A93A3', letterSpacing: 0.6, textTransform: 'uppercase' }}>{label}</div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>{value}</div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, minWidth: 0 }}>
+              <div style={{ fontSize: 18, lineHeight: 1 }}>{emoji}</div>
+              <div style={{ fontSize: 9, fontWeight: 600, color: '#8A93A3', letterSpacing: 0.6, textTransform: 'uppercase' }}>{label}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A' }}>{value}</div>
             </div>
           );
           return (
             <div
               onClick={() => navigate({ to: '/pupils/$id', params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any })}
-              style={{ cursor: 'pointer', padding: '0 16px 14px', fontFamily: 'Inter, sans-serif' }}
+              style={{ cursor: 'pointer', padding: '0 14px 12px', fontFamily: 'Inter, sans-serif' }}
             >
               {/* Pickup card */}
               <div style={{
-                display: 'flex', alignItems: 'flex-start', gap: 10,
-                background: '#EEF3FB', borderRadius: 12, padding: '12px 14px',
+                display: 'flex', alignItems: 'flex-start', gap: 8,
+                background: '#EEF3FB', borderRadius: 10, padding: '10px 12px',
               }}>
-                <div style={{ fontSize: 18, lineHeight: 1, marginTop: 2 }}>📍</div>
+                <div style={{ fontSize: 16, lineHeight: 1, marginTop: 2 }}>📍</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: '#5A6270', letterSpacing: 0.8, textTransform: 'uppercase' }}>Pick up</div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: '#0B1F3A', marginTop: 2, wordBreak: 'break-word' }}>{pickup}</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: '#5A6270', letterSpacing: 0.8, textTransform: 'uppercase' }}>Pick up</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', marginTop: 1, wordBreak: 'break-word' }}>{pickup}</div>
                 </div>
               </div>
               {/* Stats grid */}
               <div style={{
-                marginTop: 16,
-                display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8,
+                marginTop: 10,
+                display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6,
               }}>
                 <StatCol emoji="📅" label="Date" value={dateShort} />
                 <StatCol emoji="🕐" label="Time" value={startText} />
@@ -5409,7 +5409,7 @@ function HomePage() {
             </div>
           );
         })() : (
-          <div style={{ padding: '18px 14px', textAlign: 'center', color: '#8A93A3', fontSize: 13, fontFamily: 'Inter, sans-serif' }}>
+          <div style={{ padding: '14px 12px', textAlign: 'center', color: '#8A93A3', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
             No upcoming lessons
           </div>
         )}
@@ -5429,24 +5429,24 @@ function HomePage() {
           };
           const secondaryBtn: React.CSSProperties = {
             flex: 1, background: '#FFFFFF', color: '#0B1F3A',
-            border: '1px solid #E3E8F0', borderRadius: 12, padding: '13px 0',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+            border: '1px solid #E3E8F0', borderRadius: 10, padding: '10px 0',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
           };
           return (
-            <div style={{ padding: '0 16px 16px', display: 'flex', gap: 10 }}>
+            <div style={{ padding: '0 14px 12px', display: 'flex', gap: 8 }}>
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); openMaps(); }}
                 style={{
                   flex: 1, background: '#1877D6', color: '#FFFFFF',
-                  border: 'none', borderRadius: 12, padding: '13px 0',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                  fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                  border: 'none', borderRadius: 10, padding: '10px 0',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                  fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
                   boxShadow: '0 1px 3px rgba(24,119,214,0.3)',
                 }}
               >
-                <span style={{ fontSize: 15 }}>▶</span> Navigate
+                <span style={{ fontSize: 13 }}>▶</span> Navigate
               </button>
               <button
                 type="button"
@@ -5456,7 +5456,7 @@ function HomePage() {
                 }}
                 style={secondaryBtn}
               >
-                <span style={{ fontSize: 15 }}>💬</span> Text
+                <span style={{ fontSize: 13 }}>💬</span> Text
               </button>
               <button
                 type="button"
@@ -5467,7 +5467,7 @@ function HomePage() {
                 }}
                 style={secondaryBtn}
               >
-                <span style={{ fontSize: 15 }}>📞</span> Call
+                <span style={{ fontSize: 13 }}>📞</span> Call
               </button>
             </div>
           );
@@ -5476,7 +5476,7 @@ function HomePage() {
 
         {/* Expand footer */}
         {upcoming && (
-          <div style={{ padding: '0 10px 10px' }}>
+          <div style={{ padding: '0 10px 8px' }}>
             <button
               type="button"
               onClick={() => setHeroExpanded((v) => !v)}
@@ -5485,15 +5485,15 @@ function HomePage() {
                 background: '#EEF2F7',
                 border: 'none',
                 borderRadius: 999,
-                padding: '8px 0',
+                padding: '6px 0',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                fontSize: 12, fontWeight: 600, color: '#1877D6',
+                fontSize: 11, fontWeight: 600, color: '#1877D6',
                 cursor: 'pointer',
                 fontFamily: 'Inter, sans-serif',
               }}
             >
               {heroExpanded ? 'Hide details' : 'Tap for details'}
-              {heroExpanded ? <ChevronUp size={14} /> : <ChevronRight size={14} />}
+              {heroExpanded ? <ChevronUp size={13} /> : <ChevronRight size={13} />}
             </button>
           </div>
         )}
