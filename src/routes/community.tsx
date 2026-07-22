@@ -1105,10 +1105,12 @@ function ChatTab({
               send();
             }
           }}
-          placeholder={`Message ${areaLabel} ADIs...`}
+          disabled={noRoom || !room}
+          placeholder={noRoom ? "No room available yet" : `Message ${areaLabel} ADIs...`}
           style={{
             flex: 1, background: "#F7FAFC", border: "0.5px solid #E2E6ED",
             borderRadius: 20, padding: "10px 14px", fontSize: 13, outline: "none",
+            opacity: noRoom || !room ? 0.6 : 1,
           }}
         />
         <button
