@@ -130,7 +130,14 @@ function formatDateSeparator(iso: string) {
 
 function MessagesIndexPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<"pupils" | "local">("pupils");
+  const [activeTab, setActiveTab] = useState<"pupils" | "local" | "admin">("pupils");
+  const adminStatus = useAdminGate();
+  const isAdmin = adminStatus === "allowed";
+  const [adminThreads, setAdminThreads] = useState<JobThreadRow[]>([]);
+  const [adminLoading, setAdminLoading] = useState(false);
+  const [openThreadJobId, setOpenThreadJobId] = useState<string | null>(null);
+  const [adminQuery, setAdminQuery] = useState("");
+
   const [loading, setLoading] = useState(true);
   const [convos, setConvos] = useState<Conversation[]>([]);
   const [query, setQuery] = useState("");
