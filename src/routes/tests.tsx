@@ -233,6 +233,7 @@ function TestsPage() {
       </div>
 
       <div className="px-4">
+        {dvsaMetrics && <DvsaRiskCard metrics={dvsaMetrics} />}
         {sections.map((section) => (
           <div key={section.key}>
             <SectionHeader>{section.title}</SectionHeader>
