@@ -5558,6 +5558,12 @@ function HomePage() {
             .sort((a, b) => a.test_date.localeCompare(b.test_date));
           if (testsSorted.length === 0) return null;
           const next = testsSorted[0];
+          const deterministicColor = (seed: string) => {
+            const colors = ['#1877D6', '#7A3FC0', '#1E8E5A', '#D97706', '#CC2229', '#0B1F3A', '#0D9F9F', '#B5661E'];
+            let sum = 0;
+            for (let i = 0; i < seed.length; i++) sum += seed.charCodeAt(i);
+            return colors[sum % colors.length];
+          };
           return (
             <div
               onClick={() => navigate({ to: '/tests' as never })}
@@ -5581,6 +5587,62 @@ function HomePage() {
                 <span style={{ fontSize: 12, color: '#6B7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   Next: {next.name} — {fmtShortDate(next.test_date)}
                 </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, marginLeft: 8 }}>
+                {testsSorted.slice(0, 3).map((t, i) => {
+                  const initials = t.name
+                    .split(/\s+/)
+                    .map((s) => s.charAt(0))
+                    .join('')
+                    .slice(0, 2)
+                    .toUpperCase();
+                  const bg = pupilInfoMap[t.id]?.calendar_colour ?? deterministicColor(t.id + t.name);
+                  return (
+                    <div
+                      key={t.id}
+                      style={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: '50%',
+                        background: bg,
+                        border: '2px solid #FFFFFF',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: 9,
+                        fontWeight: 600,
+                        color: '#FFFFFF',
+                        marginLeft: i === 0 ? 0 : -7,
+                        zIndex: i,
+                        position: 'relative',
+                      }}
+                    >
+                      {initials}
+                    </div>
+                  );
+                })}
+                {testsSorted.length > 3 && (
+                  <div
+                    style={{
+                      width: 24,
+                      height: 24,
+                      borderRadius: '50%',
+                      background: '#F3F4F6',
+                      border: '2px solid #FFFFFF',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: 9,
+                      fontWeight: 600,
+                      color: '#8A93A3',
+                      marginLeft: -7,
+                      zIndex: 3,
+                      position: 'relative',
+                    }}
+                  >
+                    +{testsSorted.length - 3}
+                  </div>
+                )}
               </div>
               <ChevronRight size={16} color="#C7CCD4" style={{ flexShrink: 0 }} />
             </div>
