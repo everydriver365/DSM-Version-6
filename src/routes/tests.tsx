@@ -946,7 +946,18 @@ function LogResultSheet({
   } as const;
 
   return (
-    <SheetShell title="LOG RESULT" onClose={onClose}>
+    <SheetShell
+      title="LOG RESULT"
+      onClose={onClose}
+      footer={
+        <div className="grid grid-cols-2" style={{ gap: 8 }}>
+          <Button variant="ghost" onClick={onClose} type="button">Cancel</Button>
+          <Button onClick={save} disabled={saving} type="button">
+            {saving ? "Saving…" : "Save"}
+          </Button>
+        </div>
+      }
+    >
       <div className="flex flex-col" style={{ gap: 12 }}>
         <div className="rounded-[12px] p-3" style={{ backgroundColor: "#F3F4F6" }}>
           <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A" }}>
@@ -1061,13 +1072,6 @@ function LogResultSheet({
               ...POPPINS,
             }}
           />
-        </div>
-
-        <div className="mt-2 grid grid-cols-2" style={{ gap: 8 }}>
-          <Button variant="ghost" onClick={onClose} type="button">Cancel</Button>
-          <Button onClick={save} disabled={saving} type="button">
-            {saving ? "Saving…" : "Save"}
-          </Button>
         </div>
       </div>
     </SheetShell>
