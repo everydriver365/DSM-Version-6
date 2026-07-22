@@ -2284,6 +2284,7 @@ function HomePage() {
   }>>([]);
   const [pendingSwapCount, setPendingSwapCount] = useState(0);
   const [openJobsCount, setOpenJobsCount] = useState(0);
+  const [claimedAwaitingPaymentCount, setClaimedAwaitingPaymentCount] = useState(0);
   const [swapRequests, setSwapRequests] = useState<Array<{ id: string; name: string; test_centre: string | null; current_test_date: string | null; current_test_time: string | null; status: string; created_at: string }>>([]);
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
   const [recentCancellations, setRecentCancellations] = useState<Array<{ id: string; pupil_first_name: string | null }>>([]);
@@ -2564,6 +2565,16 @@ function HomePage() {
         setOpenJobsCount(jobsCount ?? 0);
       } catch {
         setOpenJobsCount(0);
+      }
+      try {
+        const { count: claimedCount } = await supabase
+          .from("job_offers")
+          .select("id", { count: "exact", head: true })
+          .eq("claimed_by", user.id)
+          .eq("contact_released", false);
+        setClaimedAwaitingPaymentCount(claimedCount ?? 0);
+      } catch {
+        setClaimedAwaitingPaymentCount(0);
       }
 
       // Upcoming tests list for the bottom sheet and the alert strip
@@ -5116,8 +5127,12 @@ function HomePage() {
             }}
           >
             <div style={{ fontSize: 10, fontWeight: 700, color: s.color, textTransform: 'uppercase', letterSpacing: 0.3 }}>{s.label}</div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#0B1F3A', marginTop: 4, lineHeight: 1 }}>{s.value}</div>
-            <div style={{ fontSize: 10, color: '#8A93A3', marginTop: 4 }}>{s.sub}</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: s.label === 'Jobs' ? '#1E8E3E' : '#0B1F3A', marginTop: 4, lineHeight: 1 }}>{s.value}</div>
+            {s.label === 'Jobs' && claimedAwaitingPaymentCount > 0 ? (
+              <div style={{ fontSize: 10, color: '#1877D6', marginTop: 4 }}>{claimedAwaitingPaymentCount} claimed</div>
+            ) : s.label === 'Jobs' ? null : (
+              <div style={{ fontSize: 10, color: '#8A93A3', marginTop: 4 }}>{s.sub}</div>
+            )}
           </button>
         ))}
       </div>
