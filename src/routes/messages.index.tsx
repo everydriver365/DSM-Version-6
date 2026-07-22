@@ -815,7 +815,18 @@ function MessagesIndexPage() {
           loading={adminLoading}
           query={adminQuery}
           setQuery={setAdminQuery}
-          onOpen={(id) => setOpenThreadJobId(id)}
+          onOpen={async (id) => {
+            await supabase
+              .from("job_offer_messages")
+              .update({ read_by_admin: true })
+              .eq("job_offer_id", id)
+              .eq("sender_type", "instructor")
+              .eq("read_by_admin", false);
+            setAdminThreads((prev) =>
+              prev.map((t) => (t.job_offer_id === id ? { ...t, unread: false } : t)),
+            );
+            setOpenThreadJobId(id);
+          }}
         />
       )}
 
