@@ -450,7 +450,7 @@ function JobsPage() {
                           </div>
                         )}
                       </div>
-                      <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+                      <div style={{ display: "flex", gap: 8 }}>
                         <button
                           type="button"
                           onClick={async (e) => {
@@ -467,12 +467,11 @@ function JobsPage() {
                             color: NAVY,
                             height: 42,
                             borderRadius: 10,
-                            padding: "0 12px",
+                            padding: "0 16px",
                             border: "none",
                             fontSize: 13,
                             fontWeight: 600,
                             cursor: "pointer",
-                            whiteSpace: "nowrap",
                           }}
                         >
                           Decline
@@ -485,12 +484,11 @@ function JobsPage() {
                             color: "#FFF",
                             height: 42,
                             borderRadius: 10,
-                            padding: "0 12px",
+                            padding: "0 16px",
                             border: "none",
                             fontSize: 13,
                             fontWeight: 600,
                             cursor: "pointer",
-                            whiteSpace: "nowrap",
                           }}
                         >
                           More details
