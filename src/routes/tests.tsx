@@ -757,6 +757,7 @@ function AddTestSheet({
   const [saving, setSaving] = useState(false);
   const [centreSuggestions, setCentreSuggestions] = useState<string[]>([]);
   const [pairs, setPairs] = useState<ExaminerPair[]>([]);
+  const [showDl25, setShowDl25] = useState(false);
 
   useEffect(() => {
     (async () => {
