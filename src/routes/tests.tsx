@@ -1118,33 +1118,35 @@ function LogResultSheet({
           </div>
         </div>
 
-        <div>
-          <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">Result</label>
-          <div className="grid grid-cols-2" style={{ gap: 8 }}>
-            {(["Pass", "Fail"] as const).map((r) => {
-              const active = result === r;
-              const color = "#1877D6";
-              return (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => setResult(r)}
-                  className="inline-flex items-center justify-center text-[14px] font-medium"
-                  style={{
-                    height: 44,
-                    borderRadius: 8,
-                    backgroundColor: active ? color : "transparent",
-                    color: active ? "#FFFFFF" : color,
-                    border: `1px solid ${color}`,
-                    ...POPPINS,
-                  }}
-                >
-                  {r}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <ChoiceRow
+          label="Result"
+          options={[
+            { value: "Pass", label: "Pass" },
+            { value: "Fail", label: "Fail" },
+          ]}
+          value={result}
+          onChange={setResult}
+        />
+
+        <ChoiceRow
+          label="Vehicle used"
+          options={[
+            { value: "instructor", label: "Instructor's car" },
+            { value: "own_car", label: "Their own car" },
+          ]}
+          value={vehicleOwner}
+          onChange={setVehicleOwner}
+        />
+
+        <ChoiceRow
+          label="Transmission"
+          options={[
+            { value: "manual", label: "Manual" },
+            { value: "automatic", label: "Automatic" },
+          ]}
+          value={transmission}
+          onChange={setTransmission}
+        />
 
         <div className="grid grid-cols-2" style={{ gap: 8 }}>
           <ExaminerNameInput
