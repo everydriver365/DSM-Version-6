@@ -90,7 +90,7 @@ function EditLessonPage() {
           .order("name", { ascending: true, nullsFirst: false }),
         supabase
           .from("lessons")
-          .select("pupil_id, lesson_date, lesson_time, duration_minutes, status, notes")
+          .select("pupil_id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_location")
           .eq("id", id)
           .is("deleted_at", null)
           .maybeSingle(),
