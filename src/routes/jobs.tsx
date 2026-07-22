@@ -151,6 +151,8 @@ function computeHoursDaysMatch(job: JobOffer, prefs: InstructorPrefs | null): Ma
 function JobsPage() {
   const [uid, setUid] = useState<string | null>(null);
   const [jobs, setJobs] = useState<JobOffer[] | null>(null);
+  const [claimedJobs, setClaimedJobs] = useState<JobOffer[] | null>(null);
+  const [activeTab, setActiveTab] = useState<"open" | "claimed">("open");
   const [prefs, setPrefs] = useState<InstructorPrefs | null>(null);
   const [coverage, setCoverage] = useState<CoverageArea[]>([]);
   const [threadJob, setThreadJob] = useState<JobOffer | null>(null);
@@ -162,6 +164,7 @@ function JobsPage() {
     setUid(id);
     if (!id) {
       setJobs([]);
+      setClaimedJobs([]);
       return;
     }
     const { data: instr } = await supabase
@@ -190,6 +193,7 @@ function JobsPage() {
       }));
     setCoverage(cov);
 
+    // Open jobs
     const { data, error } = await supabase
       .from("job_offers")
       .select("*")
@@ -197,20 +201,32 @@ function JobsPage() {
       .order("created_at", { ascending: false });
     if (error) {
       setJobs([]);
-      return;
+    } else {
+      const all = (data ?? []) as JobOffer[];
+      // Filter out jobs with coords beyond every coverage radius; keep null-coord jobs unfiltered.
+      const filtered = all.filter((job) => {
+        if (job.centre_lat == null || job.centre_lng == null) return true;
+        if (cov.length === 0) return true;
+        return cov.some(
+          (c) => haversineMiles(c.centre_lat, c.centre_lng, job.centre_lat!, job.centre_lng!) <= c.radius_miles,
+        );
+      });
+      // Filter out jobs already declined by this instructor.
+      const filtered2 = filtered.filter((job) => !(job.declined_by ?? []).includes(id));
+      setJobs(filtered2);
     }
-    const all = (data ?? []) as JobOffer[];
-    // Filter out jobs with coords beyond every coverage radius; keep null-coord jobs unfiltered.
-    const filtered = all.filter((job) => {
-      if (job.centre_lat == null || job.centre_lng == null) return true;
-      if (cov.length === 0) return true;
-      return cov.some(
-        (c) => haversineMiles(c.centre_lat, c.centre_lng, job.centre_lat!, job.centre_lng!) <= c.radius_miles,
-      );
-    });
-    // Filter out jobs already declined by this instructor.
-    const filtered2 = filtered.filter((job) => !(job.declined_by ?? []).includes(id));
-    setJobs(filtered2);
+
+    // Claimed jobs
+    const { data: claimed, error: claimedError } = await supabase
+      .from("job_offers")
+      .select("*")
+      .eq("claimed_by", id)
+      .order("claimed_at", { ascending: false });
+    if (claimedError) {
+      setClaimedJobs([]);
+    } else {
+      setClaimedJobs((claimed ?? []) as JobOffer[]);
+    }
   };
 
   useEffect(() => { load(); }, []);
