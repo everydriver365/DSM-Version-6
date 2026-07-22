@@ -315,6 +315,11 @@ function AdminJobOffers() {
       amount_paid: form.amount_paid ?? null,
       payment_method: form.payment_method || null,
       special_requirements: form.special_requirements?.trim() || null,
+      test_booked: !!form.test_booked,
+      test_date: form.test_booked ? (form.test_date || null) : null,
+      test_time: form.test_booked ? (form.test_time || null) : null,
+      test_centre: form.test_booked ? (form.test_centre?.trim() || null) : null,
+      wants_swap_list: !!form.wants_swap_list,
       expires_at: form.expires_at ? new Date(form.expires_at).toISOString() : null,
       enquiry_id: form.enquiry_id ?? null,
     };
