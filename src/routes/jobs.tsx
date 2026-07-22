@@ -42,6 +42,7 @@ interface JobOffer {
   pupil_phone?: string | null;
   pupil_email?: string | null;
   contact_released?: boolean | null;
+  declined_by?: string[] | null;
 }
 
 function relTime(iso: string): string {
@@ -151,7 +152,6 @@ function JobsPage() {
   const [coverage, setCoverage] = useState<CoverageArea[]>([]);
   const [threadJob, setThreadJob] = useState<JobOffer | null>(null);
   const [detailJob, setDetailJob] = useState<JobOffer | null>(null);
-  const [declinedIds, setDeclinedIds] = useState<Set<string>>(new Set());
 
   const load = async () => {
     const { data: auth } = await supabase.auth.getUser();
@@ -205,7 +205,9 @@ function JobsPage() {
         (c) => haversineMiles(c.centre_lat, c.centre_lng, job.centre_lat!, job.centre_lng!) <= c.radius_miles,
       );
     });
-    setJobs(filtered);
+    // Filter out jobs already declined by this instructor.
+    const filtered2 = filtered.filter((job) => !(job.declined_by ?? []).includes(id));
+    setJobs(filtered2);
   };
 
   useEffect(() => { load(); }, []);
@@ -304,7 +306,7 @@ function JobsPage() {
         </div>
       ) : (
         <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
-          {jobs.filter((j) => !declinedIds.has(j.id)).map((job) => {
+          {jobs.map((job) => {
             const hoursDays = computeHoursDaysMatch(job, prefs);
             const distanceMi = distanceToCoverage(job, coverage);
             const inRadius = withinAnyCoverage(job, coverage);
@@ -384,7 +386,15 @@ function JobsPage() {
                     <div style={{ display: "flex", gap: 8 }}>
                       <button
                         type="button"
-                        onClick={(e) => { e.stopPropagation(); setDeclinedIds((prev) => new Set(prev).add(job.id)); }}
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (!uid) return;
+                          await supabase
+                            .from("job_offers")
+                            .update({ declined_by: [...(job.declined_by ?? []), uid] })
+                            .eq("id", job.id);
+                          setJobs((prev) => (prev ?? []).filter((j) => j.id !== job.id));
+                        }}
                         style={{
                           background: "#F3F4F6",
                           color: NAVY,
@@ -430,8 +440,13 @@ function JobsPage() {
           job={detailJob}
           onClose={() => setDetailJob(null)}
           onAccept={() => { accept(detailJob); setDetailJob(null); }}
-          onDecline={() => {
-            setDeclinedIds((prev) => new Set(prev).add(detailJob.id));
+          onDecline={async () => {
+            if (!uid) return;
+            await supabase
+              .from("job_offers")
+              .update({ declined_by: [...(detailJob.declined_by ?? []), uid] })
+              .eq("id", detailJob.id);
+            setJobs((prev) => (prev ?? []).filter((j) => j.id !== detailJob.id));
             setDetailJob(null);
           }}
         />
