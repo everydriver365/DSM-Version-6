@@ -174,8 +174,32 @@ function TestsPage() {
   }, [userId]);
 
   const today = todayYmd();
-  const upcoming = tests.filter((t) => t.test_date >= today);
-  const past = tests.filter((t) => t.test_date < today).reverse();
+  // Terminal statuses are grouped by status regardless of date.
+  const passed = tests.filter((t) => t.test_status === "passed");
+  const failed = tests.filter((t) => t.test_status === "failed");
+  const abandoned = tests.filter((t) => t.test_status === "abandoned");
+  const cancelled = tests.filter((t) => t.test_status === "cancelled");
+  const openTests = tests.filter(
+    (t) => t.test_status == null || t.test_status === ("upcoming" as unknown as TestStatus),
+  );
+  const upcoming = openTests.filter((t) => t.test_date >= today);
+  const needsResult = openTests.filter((t) => t.test_date < today).reverse();
+
+  const sections: {
+    key: string;
+    title: string;
+    items: DrivingTest[];
+    showDaysBadge?: boolean;
+    pastProminent?: boolean;
+    emptyText: string;
+  }[] = [
+    { key: "upcoming", title: "UPCOMING TESTS", items: upcoming, showDaysBadge: true, emptyText: "No upcoming tests" },
+    { key: "needs", title: "NEEDS A RESULT", items: needsResult, showDaysBadge: true, emptyText: "No tests waiting for a result" },
+    { key: "passed", title: "PASSED", items: passed, pastProminent: true, emptyText: "No passes yet" },
+    { key: "failed", title: "FAILED", items: failed, pastProminent: true, emptyText: "No fails logged" },
+    { key: "abandoned", title: "ABANDONED", items: abandoned, pastProminent: true, emptyText: "No abandoned tests" },
+    { key: "cancelled", title: "CANCELLED", items: cancelled, pastProminent: true, emptyText: "No cancelled tests" },
+  ];
 
   return (
     <PageLayout className="pb-8" style={POPPINS}>
@@ -208,33 +232,28 @@ function TestsPage() {
       </div>
 
       <div className="px-4">
-        <SectionHeader>UPCOMING TESTS</SectionHeader>
-        {upcoming.length === 0 ? (
-          <EmptyState text="No upcoming tests" />
-        ) : (
-          <div className="flex flex-col" style={{ gap: 8 }}>
-            {upcoming.map((t) => (
-              <TestCard
-                key={t.id}
-                test={t}
-                showDaysBadge
-                onLogResult={() => setResultFor(t)}
-              />
-            ))}
+        {sections.map((section) => (
+          <div key={section.key}>
+            <SectionHeader>{section.title}</SectionHeader>
+            {section.items.length === 0 ? (
+              <EmptyState text={section.emptyText} />
+            ) : (
+              <div className="flex flex-col" style={{ gap: 8 }}>
+                {section.items.map((t) => (
+                  <TestCard
+                    key={`${section.key}-${t.id}`}
+                    test={t}
+                    showDaysBadge={section.showDaysBadge}
+                    pastProminent={section.pastProminent}
+                    onLogResult={section.showDaysBadge ? () => setResultFor(t) : undefined}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        )}
-
-        <SectionHeader>PAST TESTS</SectionHeader>
-        {past.length === 0 ? (
-          <EmptyState text="No past tests" />
-        ) : (
-          <div className="flex flex-col" style={{ gap: 8 }}>
-            {past.map((t) => (
-              <TestCard key={t.id} test={t} pastProminent />
-            ))}
-          </div>
-        )}
+        ))}
       </div>
+
 
       {addOpen && userId && (
         <AddTestSheet
