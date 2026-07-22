@@ -143,15 +143,18 @@ function TestsPage() {
 
   async function loadTests(uid: string) {
     const { data, error } = await supabase
-      .from("driving_tests")
+      .from("pupils")
       .select(
-        "id, pupil_id, test_date, test_time, test_centre, result, faults, result_notes, result_logged_at, pupils(id, name)",
+        "id, name, test_date, test_time, test_centre, test_examiner, test_status, examiner_first_name, examiner_surname, minor_faults, serious_faults, dangerous_faults, examiner_took_action",
       )
       .eq("instructor_id", uid)
+      .is("deleted_at", null)
+      .not("test_date", "is", null)
       .order("test_date", { ascending: true });
     if (error) console.error("[tests] fetch error", error);
-    setTests((data ?? []) as unknown as DrivingTest[]);
+    setTests(((data ?? []) as PupilTestRow[]).map(mapPupilRowToTest));
   }
+
 
   async function loadPupils(uid: string) {
     const { data, error } = await supabase
