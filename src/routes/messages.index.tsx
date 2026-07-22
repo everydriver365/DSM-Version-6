@@ -314,7 +314,7 @@ function MessagesIndexPage() {
     setAdminLoading(true);
     const { data: msgs, error } = await supabase
       .from("job_offer_messages")
-      .select("id, job_offer_id, sender_type, message, created_at, read_by_admin")
+      .select("id, job_offer_id, sender_type, sender_id, message, created_at, read_by_admin")
       .order("created_at", { ascending: false })
       .limit(500);
     if (error) {
@@ -327,9 +327,12 @@ function MessagesIndexPage() {
       grouped.set(m.job_offer_id, {
         job_offer_id: m.job_offer_id,
         pupil_name: null,
+        postcode_area: null,
         last_message: m.message,
         last_created_at: m.created_at,
         last_sender_type: m.sender_type,
+        last_sender_id: m.sender_id,
+        last_sender_instructor_name: null,
         unread: m.sender_type === "instructor" && !m.read_by_admin,
       });
     }
@@ -337,11 +340,35 @@ function MessagesIndexPage() {
     if (ids.length) {
       const { data: jobs } = await supabase
         .from("job_offers")
-        .select("id, pupil_name")
+        .select("id, pupil_name, postcode_area")
         .in("id", ids);
-      for (const j of (jobs || []) as { id: string; pupil_name: string | null }[]) {
+      for (const j of (jobs || []) as { id: string; pupil_name: string | null; postcode_area: string | null }[]) {
         const row = grouped.get(j.id);
-        if (row) row.pupil_name = j.pupil_name;
+        if (row) {
+          row.pupil_name = j.pupil_name;
+          row.postcode_area = j.postcode_area;
+        }
+      }
+      const instructorIds = Array.from(
+        new Set(
+          Array.from(grouped.values())
+            .filter((r) => r.last_sender_type === "instructor" && r.last_sender_id)
+            .map((r) => r.last_sender_id as string),
+        ),
+      );
+      if (instructorIds.length) {
+        const { data: instructors } = await supabase
+          .from("instructors")
+          .select("id, name")
+          .in("id", instructorIds);
+        const iMap = new Map(
+          ((instructors || []) as { id: string; name: string | null }[]).map((i) => [i.id, i.name]),
+        );
+        for (const row of grouped.values()) {
+          if (row.last_sender_id) {
+            row.last_sender_instructor_name = iMap.get(row.last_sender_id) ?? null;
+          }
+        }
       }
     }
     const list = Array.from(grouped.values()).sort(
