@@ -5297,6 +5297,8 @@ function HomePage() {
                     background: pupilCalColour, color: '#FFFFFF',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 12, fontWeight: 700, flexShrink: 0,
+                    marginTop: -22, border: '3px solid #FFFFFF',
+                    position: 'relative', zIndex: 2,
                   }}>{pupilInitials}</div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6, flex: 1, minWidth: 0 }}>
                     <div style={{ textAlign: 'center' }}>
