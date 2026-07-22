@@ -235,6 +235,7 @@ function TestsPage() {
 
       <div className="px-4">
         {dvsaMetrics && <DvsaRiskCard metrics={dvsaMetrics} />}
+        {examinerStats.length > 0 && <ExaminerStatsCard stats={examinerStats} />}
         {sections.map((section) => (
           <div key={section.key}>
             <SectionHeader>{section.title}</SectionHeader>
