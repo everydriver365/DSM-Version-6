@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Plus, X, Send, Search } from "lucide-react";
+import { ChevronLeft, Plus, X, Send, Search, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
@@ -111,6 +111,20 @@ function statusBadge(status: string) {
   return map[status] ?? { bg: "#F3F4F6", color: "#6B7280", label: status.toUpperCase() };
 }
 
+function toDateInputValue(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function toDatetimeLocalValue(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 function AdminJobOffers() {
   const navigate = useNavigate();
   const gate = useAdminGate();
@@ -121,6 +135,7 @@ function AdminJobOffers() {
   const [loading, setLoading] = useState(true);
   const [showSheet, setShowSheet] = useState(false);
   const [form, setForm] = useState<Partial<JobOffer>>(emptyForm());
+  const [editingOffer, setEditingOffer] = useState<JobOffer | null>(null);
   const [saving, setSaving] = useState(false);
   const [threadJob, setThreadJob] = useState<JobOffer | null>(null);
 
@@ -204,6 +219,29 @@ function AdminJobOffers() {
     setLinkedEnquiry(null);
     setEnquiryQuery("");
     setEnquiryResults([]);
+    setEditingOffer(null);
+    setShowSheet(true);
+  };
+
+  const openEdit = async (offer: JobOffer) => {
+    setForm({
+      ...offer,
+      preferred_start_date: toDateInputValue(offer.preferred_start_date),
+      expires_at: toDatetimeLocalValue(offer.expires_at),
+    });
+    setEnquiryQuery("");
+    setEnquiryResults([]);
+    if (offer.enquiry_id) {
+      const { data } = await supabase
+        .from("enquiries")
+        .select("*")
+        .eq("id", offer.enquiry_id)
+        .single();
+      setLinkedEnquiry((data as Enquiry | null) ?? null);
+    } else {
+      setLinkedEnquiry(null);
+    }
+    setEditingOffer(offer);
     setShowSheet(true);
   };
 
@@ -269,17 +307,31 @@ function AdminJobOffers() {
       special_requirements: form.special_requirements?.trim() || null,
       expires_at: form.expires_at ? new Date(form.expires_at).toISOString() : null,
       enquiry_id: form.enquiry_id ?? null,
-      created_by: uid,
-      status: "open",
     };
-    const { error } = await supabase.from("job_offers").insert(payload);
-    setSaving(false);
-    if (error) {
-      toast.error(error.message || "Failed to create job offer");
-      return;
+    if (editingOffer) {
+      const { error } = await supabase
+        .from("job_offers")
+        .update(payload)
+        .eq("id", editingOffer.id);
+      setSaving(false);
+      if (error) {
+        toast.error(error.message || "Failed to update job offer");
+        return;
+      }
+      toast.success("Job offer updated");
+    } else {
+      payload.created_by = uid;
+      payload.status = "open";
+      const { error } = await supabase.from("job_offers").insert(payload);
+      setSaving(false);
+      if (error) {
+        toast.error(error.message || "Failed to create job offer");
+        return;
+      }
+      toast.success("Job offer created");
     }
-    toast.success("Job offer created");
     setShowSheet(false);
+    setEditingOffer(null);
     load();
   };
 
@@ -411,7 +463,18 @@ function AdminJobOffers() {
                   </span>
                 </div>
 
-                <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+                  <button
+                    type="button"
+                    onClick={() => openEdit(o)}
+                    style={{
+                      background: "#fff", color: BLUE, border: `1px solid ${BLUE}`,
+                      borderRadius: 8, padding: "8px 12px", fontSize: 13, fontWeight: 600,
+                      cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6,
+                    }}
+                  >
+                    <Pencil size={14} /> Edit
+                  </button>
                   {o.status === "claimed" && (
                     <button
                       type="button"
@@ -480,10 +543,10 @@ function AdminJobOffers() {
               }}
             >
               <div style={{ flex: 1, fontSize: 16, fontWeight: 700, color: NAVY }}>
-                New job offer
+                {editingOffer ? "Edit job offer" : "New job offer"}
               </div>
               <button
-                onClick={() => setShowSheet(false)}
+                onClick={() => { setShowSheet(false); setEditingOffer(null); }}
                 style={{ padding: 6, background: "transparent", border: "none", cursor: "pointer" }}
               >
                 <X size={20} color={GREY} />
@@ -734,7 +797,7 @@ function AdminJobOffers() {
                   opacity: saving ? 0.6 : 1, marginTop: 6,
                 }}
               >
-                {saving ? "Saving…" : "Create job offer"}
+                {saving ? "Saving…" : editingOffer ? "Save changes" : "Create job offer"}
               </button>
             </div>
           </div>
