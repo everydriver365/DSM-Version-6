@@ -802,6 +802,82 @@ function AdminJobOffers() {
                 />
               </FieldLabel>
 
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", border: "1px solid #EEF2F7", borderRadius: 10, background: "#fff" }}>
+                <div style={{ fontSize: 14, color: "#0B1F3A", fontWeight: 500 }}>Test already booked?</div>
+                <label style={{ position: "relative", display: "inline-block", width: 44, height: 26 }}>
+                  <input
+                    type="checkbox"
+                    checked={!!form.test_booked}
+                    onChange={(e) => setForm({ ...form, test_booked: e.target.checked })}
+                    style={{ opacity: 0, width: 0, height: 0 }}
+                  />
+                  <span style={{
+                    position: "absolute", cursor: "pointer", inset: 0,
+                    background: form.test_booked ? BLUE : "#CBD5E1",
+                    borderRadius: 999, transition: "0.2s",
+                  }}>
+                    <span style={{
+                      position: "absolute", height: 20, width: 20, left: form.test_booked ? 21 : 3, top: 3,
+                      background: "#fff", borderRadius: "50%", transition: "0.2s",
+                    }} />
+                  </span>
+                </label>
+              </div>
+
+              {form.test_booked && (
+                <>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                    <FieldLabel label="Test date">
+                      <input
+                        type="date"
+                        value={form.test_date ?? ""}
+                        onChange={(e) => setForm({ ...form, test_date: e.target.value })}
+                        style={inputStyle()}
+                      />
+                    </FieldLabel>
+                    <FieldLabel label="Test time">
+                      <input
+                        type="time"
+                        value={form.test_time ?? ""}
+                        onChange={(e) => setForm({ ...form, test_time: e.target.value })}
+                        style={inputStyle()}
+                      />
+                    </FieldLabel>
+                  </div>
+                  <FieldLabel label="Test centre">
+                    <input
+                      value={form.test_centre ?? ""}
+                      onChange={(e) => setForm({ ...form, test_centre: e.target.value })}
+                      placeholder="e.g. Winchester Test Centre"
+                      style={inputStyle()}
+                    />
+                  </FieldLabel>
+                </>
+              )}
+
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", border: "1px solid #EEF2F7", borderRadius: 10, background: "#fff" }}>
+                <div style={{ fontSize: 14, color: "#0B1F3A", fontWeight: 500 }}>Wants to join the swap list?</div>
+                <label style={{ position: "relative", display: "inline-block", width: 44, height: 26 }}>
+                  <input
+                    type="checkbox"
+                    checked={!!form.wants_swap_list}
+                    onChange={(e) => setForm({ ...form, wants_swap_list: e.target.checked })}
+                    style={{ opacity: 0, width: 0, height: 0 }}
+                  />
+                  <span style={{
+                    position: "absolute", cursor: "pointer", inset: 0,
+                    background: form.wants_swap_list ? BLUE : "#CBD5E1",
+                    borderRadius: 999, transition: "0.2s",
+                  }}>
+                    <span style={{
+                      position: "absolute", height: 20, width: 20, left: form.wants_swap_list ? 21 : 3, top: 3,
+                      background: "#fff", borderRadius: "50%", transition: "0.2s",
+                    }} />
+                  </span>
+                </label>
+              </div>
+
+
               <button
                 type="button"
                 onClick={save}
