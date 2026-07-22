@@ -410,32 +410,17 @@ function JobsPage() {
                   onClick={() => setDetailJob(job)}
                   style={{
                     background: "#FFFFFF",
-                    borderRadius: 14,
+                    borderLeft: "4px solid #1E8E3E",
+                    borderRadius: "6px 14px 14px 6px",
                     boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                     overflow: "hidden",
                     cursor: "pointer",
                   }}
                 >
-                  <div
-                    style={{
-                      background: BLUE,
-                      padding: "10px 16px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "#FFFFFF" }}>
-                      JOB OFFER · Posted {relTime(job.created_at)}
-                    </div>
-                    {worth != null && (
-                      <div style={{ fontSize: 16, fontWeight: 700, color: "#FFFFFF" }}>
-                        £{worth.toFixed(2)}
-                      </div>
-                    )}
-                  </div>
-
                   <div style={{ padding: 16 }}>
+                    <div style={{ fontSize: 11, color: GREY, marginBottom: 6 }}>
+                      Posted {relTime(job.created_at)}
+                    </div>
                     <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>
                       {job.pupil_name || "New pupil"} · {job.postcode_area}
                     </div>
@@ -450,14 +435,21 @@ function JobsPage() {
                     </div>
 
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12 }}>
-                      {badge ? (
-                        <div style={{
-                          fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.3,
-                          color: badge.color, background: badge.bg, padding: "4px 8px", borderRadius: 999, whiteSpace: "nowrap",
-                        }}>
-                          {badge.label}
-                        </div>
-                      ) : <div />}
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        {badge ? (
+                          <div style={{
+                            fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.3,
+                            color: badge.color, background: badge.bg, padding: "4px 8px", borderRadius: 999, whiteSpace: "nowrap",
+                          }}>
+                            {badge.label}
+                          </div>
+                        ) : null}
+                        {worth != null && (
+                          <div style={{ fontSize: 18, fontWeight: 700, color: GREEN }}>
+                            £{worth.toFixed(2)}
+                          </div>
+                        )}
+                      </div>
                       <div style={{ display: "flex", gap: 8 }}>
                         <button
                           type="button"
@@ -467,7 +459,7 @@ function JobsPage() {
                             await supabase
                               .from("job_offers")
                               .update({ declined_by: [...(job.declined_by ?? []), uid] })
-                              .eq("id", job.id);
+                            .eq("id", job.id);
                             setJobs((prev) => (prev ?? []).filter((j) => j.id !== job.id));
                           }}
                           style={{
