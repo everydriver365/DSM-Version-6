@@ -46,6 +46,12 @@ interface JobOffer {
   declined_by?: string[] | null;
   claimed_by?: string | null;
   claimed_at?: string | null;
+  paid_at?: string | null;
+  test_booked?: boolean | null;
+  test_date?: string | null;
+  test_time?: string | null;
+  test_centre?: string | null;
+  wants_swap_list?: boolean | null;
 }
 
 function relTime(iso: string): string {
