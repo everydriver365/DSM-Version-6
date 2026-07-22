@@ -830,66 +830,96 @@ function AddTestSheet({
   }
 
   return (
-    <SheetShell
-      title="ADD TEST"
-      onClose={onClose}
-      footer={
-        <div className="grid grid-cols-2" style={{ gap: 8 }}>
-          <Button variant="ghost" onClick={onClose} type="button">Cancel</Button>
-          <Button onClick={save} disabled={!pupilId || !date || saving} type="button">
-            {saving ? "Saving…" : "Save"}
-          </Button>
-        </div>
-      }
-    >
-      <div className="flex flex-col" style={{ gap: 12 }}>
-        <div>
-          <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">Pupil</label>
-          <select
-            value={pupilId}
-            onChange={(e) => setPupilId(e.target.value)}
-            className="w-full px-3 bg-white"
+    <>
+      <SheetShell
+        title="ADD TEST"
+        onClose={onClose}
+        footer={
+          <div className="grid grid-cols-2" style={{ gap: 8 }}>
+            <Button variant="ghost" onClick={onClose} type="button">Cancel</Button>
+            <Button onClick={save} disabled={!pupilId || !date || saving} type="button">
+              {saving ? "Saving…" : "Save"}
+            </Button>
+          </div>
+        }
+      >
+        <div className="flex flex-col" style={{ gap: 12 }}>
+          <div>
+            <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">Pupil</label>
+            <select
+              value={pupilId}
+              onChange={(e) => setPupilId(e.target.value)}
+              className="w-full px-3 bg-white"
+              style={{
+                height: 44,
+                borderRadius: 8,
+                border: "0.5px solid #EEF2F7",
+                color: "#0B1F3A",
+                fontSize: 14,
+                ...POPPINS,
+              }}
+            >
+              <option value="" disabled>Select a pupil</option>
+              {pupils.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <Input label="Test date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          <Input label="Test time" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+          <ExaminerNameInput
+            label="Test centre"
+            value={centre}
+            onChange={setCentre}
+            suggestions={centreSuggestions}
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowDl25(true)}
+            disabled={!pupilId || !date}
+            className="w-full flex items-center justify-center text-[13px] font-semibold"
             style={{
               height: 44,
-              borderRadius: 8,
-              border: "0.5px solid #EEF2F7",
-              color: "#0B1F3A",
-              fontSize: 14,
+              borderRadius: 10,
+              border: "1px dashed #1877D6",
+              color: "#1877D6",
+              background: "#F4F8FE",
+              opacity: !pupilId || !date ? 0.5 : 1,
               ...POPPINS,
             }}
           >
-            <option value="" disabled>Select a pupil</option>
-            {pupils.map((p) => (
-              <option key={p.id} value={p.id}>{p.name}</option>
-            ))}
-          </select>
-        </div>
+            Fill in DL25 form
+          </button>
 
-        <Input label="Test date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-        <Input label="Test time" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
-        <ExaminerNameInput
-          label="Test centre"
-          value={centre}
-          onChange={setCentre}
-          suggestions={centreSuggestions}
+          <div className="grid grid-cols-2" style={{ gap: 8 }}>
+            <ExaminerNameInput
+              label="Examiner first name"
+              value={examinerFirst}
+              onChange={setExaminerFirst}
+              suggestions={firstSuggestions}
+            />
+            <ExaminerNameInput
+              label="Examiner surname"
+              value={examinerSurname}
+              onChange={setExaminerSurname}
+              suggestions={surnameSuggestions}
+            />
+          </div>
+        </div>
+      </SheetShell>
+      {showDl25 && (
+        <DL25Sheet
+          pupilId={pupilId}
+          testDate={date}
+          onClose={() => setShowDl25(false)}
+          onSaved={() => {
+            setShowDl25(false);
+          }}
         />
-
-        <div className="grid grid-cols-2" style={{ gap: 8 }}>
-          <ExaminerNameInput
-            label="Examiner first name"
-            value={examinerFirst}
-            onChange={setExaminerFirst}
-            suggestions={firstSuggestions}
-          />
-          <ExaminerNameInput
-            label="Examiner surname"
-            value={examinerSurname}
-            onChange={setExaminerSurname}
-            suggestions={surnameSuggestions}
-          />
-        </div>
-      </div>
-    </SheetShell>
+      )}
+    </>
   );
 }
 
