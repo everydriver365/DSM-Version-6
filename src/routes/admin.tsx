@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
-import { ChevronLeft, Star, Users, BookOpen, Settings, FileText, ShoppingBag, Video, Mic, Briefcase } from "lucide-react";
+import { ChevronLeft, Star, Users, BookOpen, Settings, FileText, ShoppingBag, Video, Mic, Briefcase, MessageCircle } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
 export const Route = createFileRoute("/admin")({
@@ -132,11 +132,152 @@ function AdminSectionTile({
   );
 }
 
+type ChatRoom = {
+  id: string;
+  area_name: string;
+  outcode: string;
+  instructor_count: number;
+};
+
+function ChatRoomsSection() {
+  const [areaName, setAreaName] = useState("");
+  const [outcode, setOutcode] = useState("");
+  const [rooms, setRooms] = useState<ChatRoom[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchRooms();
+  }, []);
+
+  async function fetchRooms() {
+    const { data, error } = await supabase
+      .from("local_chat_rooms")
+      .select("id, area_name, outcode, instructor_count")
+      .order("area_name", { ascending: true });
+    if (error) {
+      console.error("[admin] fetch rooms error", error);
+      return;
+    }
+    setRooms((data as ChatRoom[]) || []);
+  }
+
+  async function handleCreate(e: React.FormEvent) {
+    e.preventDefault();
+    if (!areaName.trim() || !outcode.trim()) return;
+    setLoading(true);
+    setError(null);
+    const { error } = await supabase.from("local_chat_rooms").insert({
+      area_name: areaName.trim(),
+      outcode: outcode.trim().toUpperCase(),
+      instructor_count: 0,
+    });
+    setLoading(false);
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    setAreaName("");
+    setOutcode("");
+    await fetchRooms();
+  }
+
+  return (
+    <div id="chat-rooms" style={{ padding: "24px 16px" }}>
+      <div style={{ fontSize: 18, fontWeight: 600, color: "#0B1F3A", marginBottom: 16 }}>
+        Chat rooms
+      </div>
+      <form onSubmit={handleCreate} style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
+        <input
+          type="text"
+          placeholder="Area name (e.g. Southampton)"
+          value={areaName}
+          onChange={(e) => setAreaName(e.target.value)}
+          style={{
+            height: 44,
+            borderRadius: 10,
+            border: "1px solid #EEF2F7",
+            padding: "0 12px",
+            fontSize: 15,
+            fontFamily: "Inter, sans-serif",
+          }}
+        />
+        <input
+          type="text"
+          placeholder="Outcode (e.g. SO, PO)"
+          value={outcode}
+          onChange={(e) => setOutcode(e.target.value.toUpperCase())}
+          style={{
+            height: 44,
+            borderRadius: 10,
+            border: "1px solid #EEF2F7",
+            padding: "0 12px",
+            fontSize: 15,
+            fontFamily: "Inter, sans-serif",
+          }}
+        />
+        <button
+          type="submit"
+          disabled={loading || !areaName.trim() || !outcode.trim()}
+          style={{
+            height: 44,
+            borderRadius: 10,
+            background: "#1877D6",
+            color: "#fff",
+            border: "none",
+            fontWeight: 600,
+            cursor: "pointer",
+            opacity: loading || !areaName.trim() || !outcode.trim() ? 0.6 : 1,
+          }}
+        >
+          {loading ? "Creating…" : "Create room"}
+        </button>
+        {error && <div style={{ color: "#CC2229", fontSize: 13 }}>{error}</div>}
+      </form>
+
+      <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", marginBottom: 12 }}>
+        Existing rooms
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {rooms.length === 0 ? (
+          <div style={{ color: "#6B7280", fontSize: 14 }}>No rooms yet.</div>
+        ) : (
+          rooms.map((room) => (
+            <div
+              key={room.id}
+              style={{
+                padding: 12,
+                borderRadius: 10,
+                background: "#F8FAFC",
+                border: "1px solid #EEF2F7",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div>
+                <div style={{ fontWeight: 600, color: "#0B1F3A", fontSize: 14 }}>{room.area_name}</div>
+                <div style={{ color: "#6B7280", fontSize: 12, marginTop: 2 }}>Outcode: {room.outcode}</div>
+              </div>
+              <div style={{ color: "#6B7280", fontSize: 12 }}>{room.instructor_count ?? 0} instructors</div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
 function AdminHub() {
   const navigate = useNavigate();
   const status = useAdminGate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isChildRoute = pathname !== "/admin" && pathname !== "/admin/";
+  const chatRoomsRef = useRef<HTMLDivElement>(null);
+
+  const scrollToChatRooms = () => {
+    chatRoomsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   // Child routes (e.g. /admin/featured) have their own admin gate and layout;
   // render the Outlet unconditionally so they mount instead of the hub.
@@ -247,6 +388,14 @@ function AdminHub() {
             label="Platform settings"
             onClick={() => navigate({ to: "/settings" as never })}
           />
+          <AdminSectionTile
+            icon={<MessageCircle size={18} />}
+            label="Chat rooms"
+            onClick={scrollToChatRooms}
+          />
+        </div>
+        <div ref={chatRoomsRef}>
+          <ChatRoomsSection />
         </div>
       </div>
     </div>
