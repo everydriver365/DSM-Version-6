@@ -1,10 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, PoundSterling } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import { AddressLookup } from "@/components/dsm/AddressLookup";
+import { recordPayment } from "@/lib/payments";
 
 export const Route = createFileRoute("/lessons/edit/$id")({
   head: () => ({
@@ -55,6 +57,27 @@ function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.Re
   );
 }
 
+type PayStatus = "paid" | "unpaid" | "prepaid" | "partial" | "cancelled" | string;
+
+function PaymentStatusBadge({ status }: { status: PayStatus }) {
+  const map: Record<string, { bg: string; fg: string; label: string }> = {
+    paid: { bg: "#E7F8EF", fg: "#067647", label: "Paid" },
+    unpaid: { bg: "#FDECEE", fg: "#CC2229", label: "Unpaid" },
+    prepaid: { bg: "#EAF3FB", fg: "#1877D6", label: "Prepaid" },
+    partial: { bg: "#FEF3E6", fg: "#B5661E", label: "Partial" },
+    cancelled: { bg: "#F1F3F7", fg: "#6B7280", label: "Cancelled" },
+  };
+  const s = map[status] ?? { bg: "#F1F3F7", fg: "#6B7280", label: status || "—" };
+  return (
+    <span
+      className="inline-flex items-center px-2 h-6 rounded-full text-[12px] font-semibold"
+      style={{ backgroundColor: s.bg, color: s.fg, fontFamily: "Inter, sans-serif" }}
+    >
+      {s.label}
+    </span>
+  );
+}
+
 function EditLessonPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
@@ -69,7 +92,19 @@ function EditLessonPage() {
   const [duration, setDuration] = useState(60);
   const [status, setStatus] = useState("confirmed");
   const [pickupLocation, setPickupLocation] = useState("");
+  const [pickupAddress, setPickupAddress] = useState("");
+  const [pickupPostcode, setPickupPostcode] = useState("");
   const [notes, setNotes] = useState("");
+
+  // Payment display + inline form
+  const [paymentStatus, setPaymentStatus] = useState<PayStatus>("unpaid");
+  const [amountDue, setAmountDue] = useState<number | null>(null);
+  const [accountBalance, setAccountBalance] = useState<number>(0);
+  const [payOpen, setPayOpen] = useState(false);
+  const [payAmount, setPayAmount] = useState("");
+  const [payMethod, setPayMethod] = useState("cash");
+  const [payNotes, setPayNotes] = useState("");
+  const [savingPayment, setSavingPayment] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -90,7 +125,7 @@ function EditLessonPage() {
           .order("name", { ascending: true, nullsFirst: false }),
         supabase
           .from("lessons")
-          .select("pupil_id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_location")
+          .select("pupil_id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_location, payment_status, amount_due")
           .eq("id", id)
           .is("deleted_at", null)
           .maybeSingle(),
@@ -126,6 +161,8 @@ function EditLessonPage() {
           status: string;
           notes: string | null;
           pickup_location: string | null;
+          payment_status: string | null;
+          amount_due: number | null;
         };
         setPupilId(l.pupil_id);
         setDate(l.lesson_date);
@@ -133,11 +170,85 @@ function EditLessonPage() {
         setDuration(l.duration_minutes ?? 60);
         setStatus(l.status ?? "confirmed");
         setPickupLocation(l.pickup_location ?? "");
+        setPickupAddress(l.pickup_location ?? "");
+        setPickupPostcode("");
         setNotes(l.notes ?? "");
+        setPaymentStatus((l.payment_status as PayStatus) ?? "unpaid");
+        setAmountDue(l.amount_due != null ? Number(l.amount_due) : null);
+
+        // Fetch pupil account_balance for recordPayment reconciliation.
+        if (l.pupil_id) {
+          const { data: pRow } = await supabase
+            .from("pupils")
+            .select("account_balance")
+            .eq("id", l.pupil_id)
+            .maybeSingle();
+          setAccountBalance(
+            Number((pRow as { account_balance?: number | null } | null)?.account_balance ?? 0),
+          );
+        }
       }
       setLoading(false);
     })();
   }, [id]);
+
+  async function refreshPayment(pupil: string) {
+    const [{ data: lRow }, { data: pRow }] = await Promise.all([
+      supabase
+        .from("lessons")
+        .select("payment_status, amount_due")
+        .eq("id", id)
+        .maybeSingle(),
+      supabase
+        .from("pupils")
+        .select("account_balance")
+        .eq("id", pupil)
+        .maybeSingle(),
+    ]);
+    if (lRow) {
+      const r = lRow as { payment_status: string | null; amount_due: number | null };
+      setPaymentStatus((r.payment_status as PayStatus) ?? "unpaid");
+      setAmountDue(r.amount_due != null ? Number(r.amount_due) : null);
+    }
+    if (pRow) {
+      setAccountBalance(
+        Number((pRow as { account_balance?: number | null } | null)?.account_balance ?? 0),
+      );
+    }
+  }
+
+  async function submitPayment() {
+    if (!pupilId) {
+      toast.error("No pupil");
+      return;
+    }
+    const amt = Number(payAmount);
+    if (!amt || amt <= 0) {
+      toast.error("Enter an amount");
+      return;
+    }
+    setSavingPayment(true);
+    try {
+      await recordPayment({
+        pupilId,
+        amount: amt,
+        method: payMethod,
+        notes: payNotes.trim() || null,
+        currentAccountBalance: accountBalance,
+      });
+      toast.success("Payment recorded");
+      setPayAmount("");
+      setPayNotes("");
+      setPayMethod("cash");
+      setPayOpen(false);
+      await refreshPayment(pupilId);
+    } catch (e) {
+      console.error("[edit-lesson] payment failed", e);
+      toast.error("Couldn't record payment");
+    } finally {
+      setSavingPayment(false);
+    }
+  }
 
   async function handleSave() {
     if (saving) return;
@@ -275,15 +386,102 @@ function EditLessonPage() {
 
           <div>
             <FieldLabel htmlFor="pickupLocation">Pickup location</FieldLabel>
-            <input
-              id="pickupLocation"
-              type="text"
-              value={pickupLocation}
-              onChange={(e) => setPickupLocation(e.target.value)}
-              placeholder="Enter pickup location"
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-              style={fieldBorder}
+            <AddressLookup
+              initialAddress={pickupAddress}
+              initialPostcode={pickupPostcode}
+              onAddressFound={({ address, postcode }) => {
+                setPickupAddress(address);
+                setPickupPostcode(postcode);
+                const combined = [address, postcode].filter(Boolean).join(", ");
+                setPickupLocation(combined);
+              }}
             />
+          </div>
+
+          {/* Payment status + Log payment */}
+          <div>
+            <FieldLabel htmlFor="paymentStatus">Payment status</FieldLabel>
+            <div
+              className="h-11 w-full rounded-lg px-3 bg-white flex items-center justify-between"
+              style={fieldBorder}
+            >
+              <div className="flex items-center gap-2">
+                <PaymentStatusBadge status={paymentStatus} />
+                {amountDue != null && (
+                  <span className="text-[12px] text-[#6B7280]">
+                    £{amountDue.toFixed(2)} due
+                  </span>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setPayOpen((v) => !v)}
+                className="text-[13px] font-semibold"
+                style={{ color: "#1877D6" }}
+              >
+                {payOpen ? "Cancel" : "Log payment"}
+              </button>
+            </div>
+
+            {payOpen && (
+              <div
+                className="mt-2 rounded-lg bg-white p-3 flex flex-col gap-2"
+                style={fieldBorder}
+              >
+                <div className="flex gap-2">
+                  <div
+                    className="flex items-center rounded-lg px-3 flex-1"
+                    style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
+                  >
+                    <PoundSterling size={16} color="#8A93A3" />
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      value={payAmount}
+                      onChange={(e) => setPayAmount(e.target.value)}
+                      placeholder="Amount"
+                      className="w-full py-2 px-2 text-[14px] focus:outline-none bg-transparent text-[#0B1F3A]"
+                    />
+                  </div>
+                  <select
+                    value={payMethod}
+                    onChange={(e) => setPayMethod(e.target.value)}
+                    className="rounded-lg px-3 py-2 text-[14px] focus:outline-none text-[#0B1F3A]"
+                    style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
+                  >
+                    <option value="cash">Cash</option>
+                    <option value="bank_transfer">Bank</option>
+                    <option value="card">Card</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <textarea
+                  value={payNotes}
+                  onChange={(e) => setPayNotes(e.target.value)}
+                  placeholder="Notes (optional)"
+                  rows={2}
+                  className="w-full px-3 py-2 rounded-lg text-[14px] resize-none focus:outline-none text-[#0B1F3A]"
+                  style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
+                />
+                <button
+                  type="button"
+                  disabled={savingPayment || !payAmount || Number(payAmount) <= 0}
+                  onClick={submitPayment}
+                  className="h-10 rounded-lg text-white text-[14px] font-semibold"
+                  style={{
+                    backgroundColor: "#1877D6",
+                    opacity:
+                      savingPayment || !payAmount || Number(payAmount) <= 0 ? 0.5 : 1,
+                  }}
+                >
+                  {savingPayment
+                    ? "Recording…"
+                    : !payAmount || Number(payAmount) <= 0
+                      ? "Enter amount"
+                      : `Record £${Number(payAmount).toFixed(2)}`}
+                </button>
+              </div>
+            )}
           </div>
 
           <div>
