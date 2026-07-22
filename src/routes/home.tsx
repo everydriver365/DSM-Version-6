@@ -5330,9 +5330,9 @@ function HomePage() {
               {/* Reasons row (only when late and at least one true) */}
               {anyReason && (
                 <div style={{
-                  padding: '8px 14px', borderBottom: '1px solid #EEF2F7',
-                  display: 'flex', flexDirection: 'column', gap: 4,
-                  fontFamily: 'Inter, sans-serif', fontSize: 12, color: '#5A6270',
+                  padding: '6px 12px', borderBottom: '1px solid #EEF2F7',
+                  display: 'flex', flexDirection: 'column', gap: 3,
+                  fontFamily: 'Inter, sans-serif', fontSize: 11, color: '#5A6270',
                 }}>
                   {showTraffic && driveData && (
                     <div>🚦 {driveData.trafficLabel} on your route
@@ -5374,32 +5374,32 @@ function HomePage() {
             }
           }
           const StatCol = ({ emoji, label, value }: { emoji: string; label: string; value: string }) => (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, minWidth: 0 }}>
-              <div style={{ fontSize: 22, lineHeight: 1 }}>{emoji}</div>
-              <div style={{ fontSize: 10, fontWeight: 600, color: '#8A93A3', letterSpacing: 0.6, textTransform: 'uppercase' }}>{label}</div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>{value}</div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, minWidth: 0 }}>
+              <div style={{ fontSize: 18, lineHeight: 1 }}>{emoji}</div>
+              <div style={{ fontSize: 9, fontWeight: 600, color: '#8A93A3', letterSpacing: 0.6, textTransform: 'uppercase' }}>{label}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A' }}>{value}</div>
             </div>
           );
           return (
             <div
               onClick={() => navigate({ to: '/pupils/$id', params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any })}
-              style={{ cursor: 'pointer', padding: '0 16px 14px', fontFamily: 'Inter, sans-serif' }}
+              style={{ cursor: 'pointer', padding: '0 14px 12px', fontFamily: 'Inter, sans-serif' }}
             >
               {/* Pickup card */}
               <div style={{
-                display: 'flex', alignItems: 'flex-start', gap: 10,
-                background: '#EEF3FB', borderRadius: 12, padding: '12px 14px',
+                display: 'flex', alignItems: 'flex-start', gap: 8,
+                background: '#EEF3FB', borderRadius: 10, padding: '10px 12px',
               }}>
-                <div style={{ fontSize: 18, lineHeight: 1, marginTop: 2 }}>📍</div>
+                <div style={{ fontSize: 16, lineHeight: 1, marginTop: 2 }}>📍</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: '#5A6270', letterSpacing: 0.8, textTransform: 'uppercase' }}>Pick up</div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: '#0B1F3A', marginTop: 2, wordBreak: 'break-word' }}>{pickup}</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: '#5A6270', letterSpacing: 0.8, textTransform: 'uppercase' }}>Pick up</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', marginTop: 1, wordBreak: 'break-word' }}>{pickup}</div>
                 </div>
               </div>
               {/* Stats grid */}
               <div style={{
-                marginTop: 16,
-                display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8,
+                marginTop: 10,
+                display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6,
               }}>
                 <StatCol emoji="📅" label="Date" value={dateShort} />
                 <StatCol emoji="🕐" label="Time" value={startText} />
@@ -5409,7 +5409,7 @@ function HomePage() {
             </div>
           );
         })() : (
-          <div style={{ padding: '18px 14px', textAlign: 'center', color: '#8A93A3', fontSize: 13, fontFamily: 'Inter, sans-serif' }}>
+          <div style={{ padding: '14px 12px', textAlign: 'center', color: '#8A93A3', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
             No upcoming lessons
           </div>
         )}
@@ -5429,24 +5429,24 @@ function HomePage() {
           };
           const secondaryBtn: React.CSSProperties = {
             flex: 1, background: '#FFFFFF', color: '#0B1F3A',
-            border: '1px solid #E3E8F0', borderRadius: 12, padding: '13px 0',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+            border: '1px solid #E3E8F0', borderRadius: 10, padding: '10px 0',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
           };
           return (
-            <div style={{ padding: '0 16px 16px', display: 'flex', gap: 10 }}>
+            <div style={{ padding: '0 14px 12px', display: 'flex', gap: 8 }}>
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); openMaps(); }}
                 style={{
                   flex: 1, background: '#1877D6', color: '#FFFFFF',
-                  border: 'none', borderRadius: 12, padding: '13px 0',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                  fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                  border: 'none', borderRadius: 10, padding: '10px 0',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                  fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
                   boxShadow: '0 1px 3px rgba(24,119,214,0.3)',
                 }}
               >
-                <span style={{ fontSize: 15 }}>▶</span> Navigate
+                <span style={{ fontSize: 13 }}>▶</span> Navigate
               </button>
               <button
                 type="button"
@@ -5456,7 +5456,7 @@ function HomePage() {
                 }}
                 style={secondaryBtn}
               >
-                <span style={{ fontSize: 15 }}>💬</span> Text
+                <span style={{ fontSize: 13 }}>💬</span> Text
               </button>
               <button
                 type="button"
@@ -5467,7 +5467,7 @@ function HomePage() {
                 }}
                 style={secondaryBtn}
               >
-                <span style={{ fontSize: 15 }}>📞</span> Call
+                <span style={{ fontSize: 13 }}>📞</span> Call
               </button>
             </div>
           );
