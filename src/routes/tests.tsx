@@ -185,6 +185,7 @@ function TestsPage() {
   const upcoming = openTests.filter((t) => t.test_date >= today);
   const needsResult = openTests.filter((t) => t.test_date < today).reverse();
   const dvsaMetrics = computeDvsaRiskMetrics(tests);
+  const examinerStats = computeExaminerStats(tests);
 
   const sections: {
     key: string;
