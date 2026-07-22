@@ -23,18 +23,74 @@ interface Pupil {
   name: string;
 }
 
+type TestStatus = "passed" | "failed" | "abandoned" | "cancelled" | null;
+
 interface DrivingTest {
-  id: string;
-  pupil_id: string;
+  id: string; // pupil id (pupils is the single source of truth)
+  pupil_id: string; // same as id, kept for existing TestCard/LogResultSheet code
   test_date: string;
   test_time: string | null;
   test_centre: string | null;
-  result: string | null;
+  test_examiner: string | null;
+  test_status: TestStatus;
+  examiner_first_name: string | null;
+  examiner_surname: string | null;
+  minor_faults: number | null;
+  serious_faults: number | null;
+  dangerous_faults: number | null;
+  examiner_took_action: boolean | null;
+  // Derived/compat fields used by the existing TestCard UI:
+  result: "Pass" | "Fail" | null;
   faults: number | null;
   result_notes: string | null;
   result_logged_at: string | null;
   pupils: { id: string; name: string } | null;
 }
+
+interface PupilTestRow {
+  id: string;
+  name: string;
+  test_date: string;
+  test_time: string | null;
+  test_centre: string | null;
+  test_examiner: string | null;
+  test_status: string | null;
+  examiner_first_name: string | null;
+  examiner_surname: string | null;
+  minor_faults: number | null;
+  serious_faults: number | null;
+  dangerous_faults: number | null;
+  examiner_took_action: boolean | null;
+}
+
+function mapPupilRowToTest(row: PupilTestRow): DrivingTest {
+  const status = (row.test_status ?? null) as TestStatus;
+  const totalFaults =
+    (row.minor_faults ?? 0) + (row.serious_faults ?? 0) + (row.dangerous_faults ?? 0);
+  const hasAnyFault =
+    row.minor_faults != null || row.serious_faults != null || row.dangerous_faults != null;
+  return {
+    id: row.id,
+    pupil_id: row.id,
+    test_date: row.test_date,
+    test_time: row.test_time,
+    test_centre: row.test_centre,
+    test_examiner: row.test_examiner,
+    test_status: status,
+    examiner_first_name: row.examiner_first_name,
+    examiner_surname: row.examiner_surname,
+    minor_faults: row.minor_faults,
+    serious_faults: row.serious_faults,
+    dangerous_faults: row.dangerous_faults,
+    examiner_took_action: row.examiner_took_action,
+    result: status === "passed" ? "Pass" : status === "failed" ? "Fail" : null,
+    faults: hasAnyFault ? totalFaults : null,
+    result_notes: null,
+    result_logged_at: null,
+    pupils: { id: row.id, name: row.name },
+  };
+}
+
 
 function todayYmd() {
   const parts = new Intl.DateTimeFormat("en-GB", {
