@@ -497,6 +497,7 @@ function SchedulePage() {
         ]);
         if (cancelled) return;
         const i = (instrRow.data ?? {}) as {
+          name?: string | null;
           working_hours_start?: string | null;
           working_hours_end?: string | null;
           working_days?: string[] | null;
