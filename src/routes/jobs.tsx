@@ -434,7 +434,7 @@ function JobsPage() {
                       ].filter(Boolean).join(" · ")}
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12 }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                         {badge ? (
                           <div style={{
@@ -450,7 +450,7 @@ function JobsPage() {
                           </div>
                         )}
                       </div>
-                      <div style={{ display: "flex", gap: 8 }}>
+                      <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
                         <button
                           type="button"
                           onClick={async (e) => {
@@ -472,6 +472,7 @@ function JobsPage() {
                             fontSize: 13,
                             fontWeight: 600,
                             cursor: "pointer",
+                            whiteSpace: "nowrap",
                           }}
                         >
                           Decline
@@ -489,6 +490,7 @@ function JobsPage() {
                             fontSize: 13,
                             fontWeight: 600,
                             cursor: "pointer",
+                            whiteSpace: "nowrap",
                           }}
                         >
                           More details
