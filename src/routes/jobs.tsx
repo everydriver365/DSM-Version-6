@@ -41,6 +41,7 @@ interface JobOffer {
   special_requirements?: string | null;
   pupil_phone?: string | null;
   pupil_email?: string | null;
+  contact_released?: boolean | null;
 }
 
 function relTime(iso: string): string {
@@ -226,8 +227,41 @@ function JobsPage() {
     }
     if (!data || data.length === 0) {
       toast("Someone else already claimed this job");
-    } else {
-      toast.success("Job claimed!");
+      load();
+      return;
+    }
+
+    // Create a Ryft payment link and text it to the pupil.
+    try {
+      const amountPence = Math.round((job.course_hours ?? 0) * (job.offered_rate ?? 0) * 100);
+      const { data: paymentData, error: payError } = await supabase.functions.invoke("create-ryft-payment", {
+        body: {
+          amount: amountPence,
+          currency: "GBP",
+          metadata: { jobOfferId: job.id, pupil_email: job.pupil_email, pupil_name: job.pupil_name },
+        },
+      });
+      if (payError || !paymentData?.paymentUrl) {
+        toast.error("Job claimed, but payment link failed");
+        load();
+        return;
+      }
+      const paymentUrl = paymentData.paymentUrl as string;
+      const pupilName = job.pupil_name || "there";
+
+      if (job.pupil_phone) {
+        const message = `Hi ${pupilName}, thanks for your interest! To confirm your driving course, please complete payment here: ${paymentUrl}`;
+        await supabase.from("sms_queue").insert({
+          instructor_id: uid,
+          pupil_phone: job.pupil_phone,
+          message,
+        });
+        toast.success(`Job claimed! Payment link sent to ${pupilName}.`);
+      } else {
+        toast.success("Job claimed! No pupil phone on file — share the payment link manually.");
+      }
+    } catch {
+      toast.error("Job claimed, but sending payment link failed");
     }
     load();
   };
@@ -607,8 +641,18 @@ function JobDetailSheet({
           {job.special_requirements && (
             <Row label="Special requirements" value={job.special_requirements} />
           )}
-          {job.pupil_phone && <Row label="Phone" value={job.pupil_phone} />}
-          {job.pupil_email && <Row label="Email" value={job.pupil_email} />}
+          {job.contact_released ? (
+            <>
+              {job.pupil_phone && <Row label="Phone" value={job.pupil_phone} />}
+              {job.pupil_email && <Row label="Email" value={job.pupil_email} />}
+            </>
+          ) : (
+            (job.pupil_phone || job.pupil_email) && (
+              <div style={{ padding: "12px 0", fontSize: 12, color: GREY, fontStyle: "italic" }}>
+                Contact details available once payment is received
+              </div>
+            )
+          )}
         </div>
 
         <div style={{
