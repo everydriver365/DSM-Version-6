@@ -125,12 +125,14 @@ function EditLessonPage() {
           duration_minutes: number | null;
           status: string;
           notes: string | null;
+          pickup_location: string | null;
         };
         setPupilId(l.pupil_id);
         setDate(l.lesson_date);
         setTime((l.lesson_time ?? "").slice(0, 5));
         setDuration(l.duration_minutes ?? 60);
         setStatus(l.status ?? "confirmed");
+        setPickupLocation(l.pickup_location ?? "");
         setNotes(l.notes ?? "");
       }
       setLoading(false);
