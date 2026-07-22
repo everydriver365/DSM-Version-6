@@ -301,167 +301,326 @@ function JobsPage() {
     <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: "#DCE4F0" }}>
       {/* Header */}
       <div
-        className="sticky top-0 z-30 flex items-center"
-        style={{
-          backgroundColor: NAVY,
-          paddingTop: "calc(12px + env(safe-area-inset-top, 0px))",
-          paddingBottom: 12,
-          paddingLeft: 12,
-          paddingRight: 12,
-          gap: 8,
-        }}
+        className="sticky top-0 z-30"
+        style={{ backgroundColor: NAVY }}
       >
-        <Link to="/home" className="p-1 -ml-1">
-          <ArrowLeft size={22} color="#FFFFFF" />
-        </Link>
-        <div className="text-[16px] font-semibold text-white" style={POPPINS}>
-          Jobs
+        <div
+          className="flex items-center"
+          style={{
+            paddingTop: "calc(12px + env(safe-area-inset-top, 0px))",
+            paddingBottom: 12,
+            paddingLeft: 12,
+            paddingRight: 12,
+            gap: 8,
+          }}
+        >
+          <Link to="/home" className="p-1 -ml-1">
+            <ArrowLeft size={22} color="#FFFFFF" />
+          </Link>
+          <div className="text-[16px] font-semibold text-white" style={POPPINS}>
+            Jobs
+          </div>
+          <div className="ml-auto text-[12px] text-white/70" style={POPPINS}>
+            {activeTab === "open" ? `${jobs?.length ?? 0} open` : `${claimedJobs?.length ?? 0} claimed`}
+          </div>
         </div>
-        <div className="ml-auto text-[12px] text-white/70" style={POPPINS}>
-          {jobs?.length ?? 0} open
+
+        {/* Tabs */}
+        <div
+          style={{
+            display: "flex",
+            background: "#FFFFFF",
+            padding: "4px 12px 0",
+            gap: 16,
+            borderBottom: "1px solid #E5E7EB",
+          }}
+        >
+          {(["open", "claimed"] as const).map((tab) => {
+            const active = activeTab === tab;
+            return (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setActiveTab(tab)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  borderBottom: `2px solid ${active ? BLUE : "transparent"}`,
+                  padding: "10px 4px",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: active ? BLUE : GREY,
+                  cursor: "pointer",
+                  textTransform: "capitalize",
+                }}
+              >
+                {tab}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* List */}
-      {jobs === null ? (
-        <div className="p-8 text-center text-[13px]" style={{ color: GREY, ...POPPINS }}>Loading…</div>
-      ) : jobs.length === 0 ? (
-        <div className="p-10 text-center" style={POPPINS}>
-          <Briefcase size={36} color="#9CA3AF" style={{ margin: "0 auto 12px" }} />
-          <div className="text-[14px] font-semibold text-[#0B1F3A]">No open jobs right now</div>
-          <div className="text-[12px] mt-1" style={{ color: GREY }}>
-            Check back later — new pupil enquiries appear here.
+      {activeTab === "open" ? (
+        jobs === null ? (
+          <div className="p-8 text-center text-[13px]" style={{ color: GREY, ...POPPINS }}>Loading…</div>
+        ) : jobs.length === 0 ? (
+          <div className="p-10 text-center" style={POPPINS}>
+            <Briefcase size={36} color="#9CA3AF" style={{ margin: "0 auto 12px" }} />
+            <div className="text-[14px] font-semibold text-[#0B1F3A]">No open jobs right now</div>
+            <div className="text-[12px] mt-1" style={{ color: GREY }}>
+              Check back later — new pupil enquiries appear here.
+            </div>
           </div>
-        </div>
-      ) : (
-        <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
-          {jobs.map((job) => {
-            const hoursDays = computeHoursDaysMatch(job, prefs);
-            const distanceMi = distanceToCoverage(job, coverage);
-            const inRadius = withinAnyCoverage(job, coverage);
-            const hasCoords = job.centre_lat != null && job.centre_lng != null;
-            const distanceKnown = hasCoords && coverage.length > 0;
-            const hoursDaysGood = hoursDays === "good";
+        ) : (
+          <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+            {jobs.map((job) => {
+              const hoursDays = computeHoursDaysMatch(job, prefs);
+              const distanceMi = distanceToCoverage(job, coverage);
+              const inRadius = withinAnyCoverage(job, coverage);
+              const hasCoords = job.centre_lat != null && job.centre_lng != null;
+              const distanceKnown = hasCoords && coverage.length > 0;
+              const hoursDaysGood = hoursDays === "good";
 
-            let badge: { label: string; color: string; bg: string } | null = null;
-            if (!distanceKnown) {
-              if (hoursDaysGood) badge = { label: "Good schedule", color: GREEN, bg: "#E5F5EC" };
-              else if (hoursDays === "possible") badge = { label: "Possible schedule fit", color: AMBER, bg: "#FDF2E4" };
-            } else {
-              const distText = `${distanceMi!.toFixed(1)} mi`;
-              if (hoursDaysGood && inRadius) badge = { label: `Good match · ${distText}`, color: GREEN, bg: "#E5F5EC" };
-              else if (hoursDaysGood) badge = { label: `Fits schedule · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
-              else if (inRadius) badge = { label: `Nearby · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
-            }
+              let badge: { label: string; color: string; bg: string } | null = null;
+              if (!distanceKnown) {
+                if (hoursDaysGood) badge = { label: "Good schedule", color: GREEN, bg: "#E5F5EC" };
+                else if (hoursDays === "possible") badge = { label: "Possible schedule fit", color: AMBER, bg: "#FDF2E4" };
+              } else {
+                const distText = `${distanceMi!.toFixed(1)} mi`;
+                if (hoursDaysGood && inRadius) badge = { label: `Good match · ${distText}`, color: GREEN, bg: "#E5F5EC" };
+                else if (hoursDaysGood) badge = { label: `Fits schedule · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
+                else if (inRadius) badge = { label: `Nearby · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
+              }
 
-            const worth = job.course_hours != null && job.offered_rate != null
-              ? Number(job.course_hours) * Number(job.offered_rate)
-              : null;
+              const worth = job.course_hours != null && job.offered_rate != null
+                ? Number(job.course_hours) * Number(job.offered_rate)
+                : null;
 
-            return (
-              <div
-                key={job.id}
-                onClick={() => setDetailJob(job)}
-                style={{
-                  background: "#FFFFFF",
-                  borderRadius: 14,
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  overflow: "hidden",
-                  cursor: "pointer",
-                }}
-              >
+              return (
                 <div
+                  key={job.id}
+                  onClick={() => setDetailJob(job)}
                   style={{
-                    background: BLUE,
-                    padding: "10px 16px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+                    background: "#FFFFFF",
+                    borderRadius: 14,
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                    overflow: "hidden",
+                    cursor: "pointer",
                   }}
                 >
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#FFFFFF" }}>
-                    JOB OFFER · Posted {relTime(job.created_at)}
-                  </div>
-                  {worth != null && (
-                    <div style={{ fontSize: 16, fontWeight: 700, color: "#FFFFFF" }}>
-                      £{worth.toFixed(2)}
+                  <div
+                    style={{
+                      background: BLUE,
+                      padding: "10px 16px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#FFFFFF" }}>
+                      JOB OFFER · Posted {relTime(job.created_at)}
                     </div>
-                  )}
-                </div>
-
-                <div style={{ padding: 16 }}>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>
-                    {job.pupil_name || "New pupil"} · {job.postcode_area}
-                  </div>
-                  <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>
-                    {[
-                      job.transmission,
-                      job.course_hours ? `${job.course_hours} hrs` : null,
-                      job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : null,
-                      distanceMi != null ? `${distanceMi.toFixed(1)} mi away` : null,
-                      job.preferred_timing?.join(", "),
-                    ].filter(Boolean).join(" · ")}
-                  </div>
-
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12 }}>
-                    {badge ? (
-                      <div style={{
-                        fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.3,
-                        color: badge.color, background: badge.bg, padding: "4px 8px", borderRadius: 999, whiteSpace: "nowrap",
-                      }}>
-                        {badge.label}
+                    {worth != null && (
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#FFFFFF" }}>
+                        £{worth.toFixed(2)}
                       </div>
-                    ) : <div />}
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <button
-                        type="button"
-                        onClick={async (e) => {
-                          e.stopPropagation();
-                          if (!uid) return;
-                          await supabase
-                            .from("job_offers")
-                            .update({ declined_by: [...(job.declined_by ?? []), uid] })
-                            .eq("id", job.id);
-                          setJobs((prev) => (prev ?? []).filter((j) => j.id !== job.id));
-                        }}
-                        style={{
-                          background: "#F3F4F6",
-                          color: NAVY,
-                          height: 42,
-                          borderRadius: 10,
-                          padding: "0 16px",
-                          border: "none",
-                          fontSize: 13,
-                          fontWeight: 600,
-                          cursor: "pointer",
-                        }}
-                      >
-                        Decline
-                      </button>
-                      <button
-                        type="button"
-                        onClick={(e) => { e.stopPropagation(); setDetailJob(job); }}
-                        style={{
-                          background: NAVY,
-                          color: "#FFF",
-                          height: 42,
-                          borderRadius: 10,
-                          padding: "0 16px",
-                          border: "none",
-                          fontSize: 13,
-                          fontWeight: 600,
-                          cursor: "pointer",
-                        }}
-                      >
-                        More details
-                      </button>
+                    )}
+                  </div>
+
+                  <div style={{ padding: 16 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>
+                      {job.pupil_name || "New pupil"} · {job.postcode_area}
+                    </div>
+                    <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>
+                      {[
+                        job.transmission,
+                        job.course_hours ? `${job.course_hours} hrs` : null,
+                        job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : null,
+                        distanceMi != null ? `${distanceMi.toFixed(1)} mi away` : null,
+                        job.preferred_timing?.join(", "),
+                      ].filter(Boolean).join(" · ")}
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12 }}>
+                      {badge ? (
+                        <div style={{
+                          fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.3,
+                          color: badge.color, background: badge.bg, padding: "4px 8px", borderRadius: 999, whiteSpace: "nowrap",
+                        }}>
+                          {badge.label}
+                        </div>
+                      ) : <div />}
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <button
+                          type="button"
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            if (!uid) return;
+                            await supabase
+                              .from("job_offers")
+                              .update({ declined_by: [...(job.declined_by ?? []), uid] })
+                              .eq("id", job.id);
+                            setJobs((prev) => (prev ?? []).filter((j) => j.id !== job.id));
+                          }}
+                          style={{
+                            background: "#F3F4F6",
+                            color: NAVY,
+                            height: 42,
+                            borderRadius: 10,
+                            padding: "0 16px",
+                            border: "none",
+                            fontSize: 13,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                          }}
+                        >
+                          Decline
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setDetailJob(job); }}
+                          style={{
+                            background: NAVY,
+                            color: "#FFF",
+                            height: 42,
+                            borderRadius: 10,
+                            padding: "0 16px",
+                            border: "none",
+                            fontSize: 13,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                          }}
+                        >
+                          More details
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )
+      ) : (
+        claimedJobs === null ? (
+          <div className="p-8 text-center text-[13px]" style={{ color: GREY, ...POPPINS }}>Loading…</div>
+        ) : claimedJobs.length === 0 ? (
+          <div className="p-10 text-center" style={POPPINS}>
+            <Briefcase size={36} color="#9CA3AF" style={{ margin: "0 auto 12px" }} />
+            <div className="text-[14px] font-semibold text-[#0B1F3A]">No claimed jobs yet</div>
+            <div className="text-[12px] mt-1" style={{ color: GREY }}>
+              Jobs you accept will appear here.
+            </div>
+          </div>
+        ) : (
+          <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+            {claimedJobs.map((job) => {
+              const worth = job.course_hours != null && job.offered_rate != null
+                ? Number(job.course_hours) * Number(job.offered_rate)
+                : null;
+
+              let statusBadge: { label: string; color: string; bg: string };
+              if (job.status === "cancelled") {
+                statusBadge = { label: "Cancelled", color: "#CC2229", bg: "#FDE7E9" };
+              } else if (job.contact_released) {
+                statusBadge = { label: "Paid", color: GREEN, bg: "#E5F5EC" };
+              } else {
+                statusBadge = { label: "Awaiting payment", color: AMBER, bg: "#FDF2E4" };
+              }
+
+              const updatedAfterClaimed =
+                job.status !== "cancelled" &&
+                job.updated_at &&
+                job.claimed_at &&
+                new Date(job.updated_at) > new Date(job.claimed_at);
+
+              return (
+                <div
+                  key={job.id}
+                  style={{
+                    background: "#FFFFFF",
+                    borderRadius: 14,
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      background: GREEN,
+                      padding: "10px 16px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#FFFFFF" }}>
+                      CLAIMED JOB · Claimed {job.claimed_at ? relTime(job.claimed_at) : "—"}
+                    </div>
+                    {worth != null && (
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#FFFFFF" }}>
+                        £{worth.toFixed(2)}
+                      </div>
+                    )}
+                  </div>
+
+                  <div style={{ padding: 16 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>
+                      {job.pupil_name || "New pupil"} · {job.postcode_area}
+                    </div>
+                    <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>
+                      {[
+                        job.transmission,
+                        job.course_hours ? `${job.course_hours} hrs` : null,
+                        job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : null,
+                        job.preferred_timing?.join(", "),
+                      ].filter(Boolean).join(" · ")}
+                    </div>
+
+                    <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+                      <div
+                        style={{
+                          fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.3,
+                          color: statusBadge.color, background: statusBadge.bg,
+                          padding: "4px 8px", borderRadius: 999, whiteSpace: "nowrap",
+                        }}
+                      >
+                        {statusBadge.label}
+                      </div>
+                      {updatedAfterClaimed && (
+                        <div
+                          style={{
+                            fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.3,
+                            color: BLUE, background: "#E5F0FC",
+                            padding: "4px 8px", borderRadius: 999, whiteSpace: "nowrap",
+                          }}
+                        >
+                          Updated
+                        </div>
+                      )}
+                    </div>
+
+                    {job.contact_released && (job.pupil_phone || job.pupil_email) && (
+                      <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 4 }}>
+                        {job.pupil_phone && (
+                          <div style={{ fontSize: 13, color: NAVY, fontWeight: 600 }}>
+                            {job.pupil_phone}
+                          </div>
+                        )}
+                        {job.pupil_email && (
+                          <div style={{ fontSize: 13, color: NAVY, fontWeight: 600 }}>
+                            {job.pupil_email}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )
       )}
 
       {detailJob && (
