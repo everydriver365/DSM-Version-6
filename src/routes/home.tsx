@@ -5248,17 +5248,6 @@ function HomePage() {
                 ) : (
                   <div style={{ height: 85, background: '#E8EEF3' }} />
                 )}
-                {/* Gradient time caption */}
-                {lessonTimeText && (
-                  <div style={{
-                    position: 'absolute', left: 0, right: 0, bottom: 0,
-                    background: 'linear-gradient(0deg, rgba(11,31,58,0.88), rgba(11,31,58,0))',
-                    padding: '10px 12px 8px',
-                    color: '#FFFFFF', fontWeight: 700, fontSize: 14,
-                    fontFamily: 'Inter, sans-serif',
-                    pointerEvents: 'none',
-                  }}>{lessonTimeText}</div>
-                )}
               </div>
 
               {/* Notify late banner */}
