@@ -5373,9 +5373,8 @@ function HomePage() {
               etaText = new Date(etaMs).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
             }
           }
-          const StatCol = ({ emoji, label, value }: { emoji: string; label: string; value: string }) => (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, minWidth: 0 }}>
-              <div style={{ fontSize: 18, lineHeight: 1 }}>{emoji}</div>
+          const StatCol = ({ label, value }: { label: string; value: string }) => (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, minWidth: 0 }}>
               <div style={{ fontSize: 9, fontWeight: 600, color: '#8A93A3', letterSpacing: 0.6, textTransform: 'uppercase' }}>{label}</div>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A' }}>{value}</div>
             </div>
@@ -5401,10 +5400,10 @@ function HomePage() {
                 marginTop: 10,
                 display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6,
               }}>
-                <StatCol emoji="📅" label="Date" value={dateShort} />
-                <StatCol emoji="🕐" label="Time" value={startText} />
-                <StatCol emoji="⏱️" label="Duration" value={durText} />
-                <StatCol emoji="🧭" label="ETA" value={etaText} />
+                <StatCol label="Date" value={dateShort} />
+                <StatCol label="Time" value={startText} />
+                <StatCol label="Duration" value={durText} />
+                <StatCol label="ETA" value={etaText} />
               </div>
             </div>
           );
