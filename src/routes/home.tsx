@@ -5248,17 +5248,6 @@ function HomePage() {
                 ) : (
                   <div style={{ height: 85, background: '#E8EEF3' }} />
                 )}
-                {/* Gradient time caption */}
-                {lessonTimeText && (
-                  <div style={{
-                    position: 'absolute', left: 0, right: 0, bottom: 0,
-                    background: 'linear-gradient(0deg, rgba(11,31,58,0.88), rgba(11,31,58,0))',
-                    padding: '10px 12px 8px',
-                    color: '#FFFFFF', fontWeight: 700, fontSize: 14,
-                    fontFamily: 'Inter, sans-serif',
-                    pointerEvents: 'none',
-                  }}>{lessonTimeText}</div>
-                )}
               </div>
 
               {/* Notify late banner */}
@@ -5313,9 +5302,11 @@ function HomePage() {
                       <div style={{ fontSize: 18, fontWeight: 800, color: '#0B1F3A', lineHeight: 1.15, marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {pupilFullName || 'Pupil'}
                       </div>
-                      <div style={{ fontSize: 12, color: '#8A93A3', marginTop: 1 }}>
-                        Lesson
-                      </div>
+                      {Number(upcoming?.amount_due ?? 0) > 0 && (
+                        <div style={{ fontSize: 12, color: '#CC2229', marginTop: 1, fontWeight: 600 }}>
+                          £{Number(upcoming.amount_due).toFixed(0)} due
+                        </div>
+                      )}
                     </div>
                     <span style={{
                       background: hPillBg, color: hPillFg,
