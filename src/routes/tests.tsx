@@ -720,7 +720,7 @@ function SheetShell({
               borderTop: "1px solid #EEF2F7",
               padding: 16,
               zIndex: 10,
-              paddingBottom: "calc(16px + env(safe-area-inset-bottom))",
+              paddingBottom: "calc(16px + env(safe-area-inset-bottom) + 64px)",
             }}
           >
             {footer}
