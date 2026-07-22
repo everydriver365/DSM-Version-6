@@ -46,6 +46,12 @@ interface JobOffer {
   declined_by?: string[] | null;
   claimed_by?: string | null;
   claimed_at?: string | null;
+  paid_at?: string | null;
+  test_booked?: boolean | null;
+  test_date?: string | null;
+  test_time?: string | null;
+  test_centre?: string | null;
+  wants_swap_list?: boolean | null;
 }
 
 function relTime(iso: string): string {
@@ -795,6 +801,50 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
   );
 }
 
+function HistoryTimeline({ job }: { job: JobOffer }) {
+  const entries: { label: string; time: string | null | undefined }[] = [
+    { label: "Job created", time: job.created_at },
+    { label: "Claimed by you", time: job.claimed_at },
+    { label: "Payment received", time: job.paid_at },
+  ];
+
+  if (job.status === "cancelled") {
+    entries.push({ label: "Cancelled", time: job.updated_at });
+  }
+
+  const visible = entries
+    .filter((e) => !!e.time)
+    .map((e) => ({ ...e, time: e.time! }))
+    .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+
+  if (visible.length === 0) return null;
+
+  const fmt = (iso: string) => {
+    const d = new Date(iso);
+    return `${d.toLocaleDateString(undefined, { day: "numeric", month: "short" })} · ${d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`;
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+      {visible.map((e, idx) => {
+        const last = idx === visible.length - 1;
+        return (
+          <div key={e.label + e.time} style={{ display: "flex", gap: 10 }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 10 }}>
+              <div style={{ width: 8, height: 8, borderRadius: 999, background: BLUE, marginTop: 5 }} />
+              {!last && <div style={{ width: 2, flex: 1, background: "#E5E7EB", marginTop: 4 }} />}
+            </div>
+            <div style={{ flex: 1, paddingBottom: last ? 0 : 12 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: NAVY }}>{e.label}</div>
+              <div style={{ fontSize: 11, color: GREY, marginTop: 1 }}>{fmt(e.time)}</div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function JobDetailSheet({
   job,
   onClose,
@@ -882,10 +932,44 @@ function JobDetailSheet({
             )
           )}
 
+          {job.test_booked && (
+            <div style={{ marginTop: 16, padding: 12, background: "#F3F8FF", borderRadius: 10, border: "1px solid #CCE0FA" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: BLUE, textTransform: "uppercase", letterSpacing: 0.3, marginBottom: 6 }}>
+                Test booked
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                {job.test_date && (
+                  <div style={{ fontSize: 13, color: NAVY, fontWeight: 600 }}>
+                    {new Date(job.test_date).toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" })}
+                  </div>
+                )}
+                {job.test_time && (
+                  <div style={{ fontSize: 13, color: GREY }}>{job.test_time}</div>
+                )}
+                {job.test_centre && (
+                  <div style={{ fontSize: 13, color: GREY }}>{job.test_centre}</div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {job.wants_swap_list && (
+            <div style={{ marginTop: 12, fontSize: 12, color: GREY, fontStyle: "italic" }}>
+              Pupil wants to join the swap list.
+            </div>
+          )}
+
+          <div style={{ marginTop: 20 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: NAVY, textTransform: "uppercase", letterSpacing: 0.3, marginBottom: 10 }}>
+              History
+            </div>
+            <HistoryTimeline job={job} />
+          </div>
+
           <button
             onClick={onOpenThread}
             style={{
-              marginTop: 12,
+              marginTop: 20,
               width: "100%",
               background: "#F3F8FF",
               color: BLUE,
