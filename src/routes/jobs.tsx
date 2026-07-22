@@ -434,7 +434,7 @@ function JobsPage() {
                       ].filter(Boolean).join(" · ")}
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                         {badge ? (
                           <div style={{
