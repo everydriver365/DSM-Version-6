@@ -678,7 +678,7 @@ function SheetShell({
   footer?: React.ReactNode;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center" style={POPPINS}>
+    <div className="fixed inset-0 z-[70] flex items-end justify-center" style={POPPINS}>
       <div
         className="absolute inset-0"
         style={{ backgroundColor: "rgba(11,31,58,0.5)" }}
