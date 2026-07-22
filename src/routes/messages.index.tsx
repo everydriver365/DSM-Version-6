@@ -727,7 +727,7 @@ function MessagesIndexPage() {
             )}
           </div>
         </>
-      ) : (
+      ) : activeTab === "local" ? (
         <LocalChatView
           areaName={areaName}
           room={room}
@@ -742,9 +742,29 @@ function MessagesIndexPage() {
           messagesEndRef={messagesEndRef}
           scrollBoxRef={scrollBoxRef}
         />
+      ) : (
+        <AdminJobInbox
+          threads={filteredAdmin}
+          loading={adminLoading}
+          query={adminQuery}
+          setQuery={setAdminQuery}
+          onOpen={(id) => setOpenThreadJobId(id)}
+        />
+      )}
+
+      {openThreadJobId && (
+        <AdminJobThreadSheet
+          jobId={openThreadJobId}
+          uid={userId}
+          onClose={() => {
+            setOpenThreadJobId(null);
+            loadAdminThreads();
+          }}
+        />
       )}
 
       <BottomNav active="messages" />
+
     </PageLayout>
   );
 }
