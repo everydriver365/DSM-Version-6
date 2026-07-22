@@ -974,6 +974,12 @@ function LogResultSheet({
   onSaved: () => void;
 }) {
   const [result, setResult] = useState<"Pass" | "Fail">("Pass");
+  const [vehicleOwner, setVehicleOwner] = useState<"instructor" | "own_car">(
+    test.test_vehicle_owner ?? "instructor",
+  );
+  const [transmission, setTransmission] = useState<"manual" | "automatic">(
+    test.test_transmission ?? "manual",
+  );
   const [examinerFirst, setExaminerFirst] = useState("");
   const [examinerSurname, setExaminerSurname] = useState("");
   const [minorFaults, setMinorFaults] = useState("0");
