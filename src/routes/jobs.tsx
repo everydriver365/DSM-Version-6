@@ -270,7 +270,7 @@ function JobsPage() {
         </div>
       ) : (
         <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
-          {jobs.map((job) => {
+          {jobs.filter((j) => !declinedIds.has(j.id)).map((job) => {
             const hoursDays = computeHoursDaysMatch(job, prefs);
             const distanceMi = distanceToCoverage(job, coverage);
             const inRadius = withinAnyCoverage(job, coverage);
@@ -288,10 +288,15 @@ function JobsPage() {
               else if (hoursDaysGood) badge = { label: `Fits schedule · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
               else if (inRadius) badge = { label: `Nearby · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
             }
+
+            const worth = job.course_hours != null && job.offered_rate != null
+              ? Number(job.course_hours) * Number(job.offered_rate)
+              : null;
+
             return (
               <div
                 key={job.id}
-                onClick={() => setThreadJob(job)}
+                onClick={() => setDetailJob(job)}
                 style={{
                   background: "#FFFFFF",
                   borderRadius: 12,
@@ -300,20 +305,9 @@ function JobsPage() {
                   cursor: "pointer",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>
-                      {job.pupil_name || "New pupil"}
-                    </div>
-                    <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>
-                      {[
-                        job.postcode_area,
-                        distanceMi != null ? `${distanceMi.toFixed(1)} mi away` : null,
-                        job.transmission,
-                        job.course_hours ? `${job.course_hours} hrs` : null,
-                        job.preferred_timing?.join(", "),
-                      ].filter(Boolean).join(" · ")}
-                    </div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 8 }}>
+                  <div style={{ fontSize: 11, color: GREY, fontWeight: 500 }}>
+                    Posted {relTime(job.created_at)}
                   </div>
                   {badge && (
                     <div style={{
@@ -325,19 +319,50 @@ function JobsPage() {
                   )}
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12, gap: 8 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>
+                  {job.pupil_name || "New pupil"}
+                </div>
+                <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>
+                  {[
+                    job.postcode_area,
+                    distanceMi != null ? `${distanceMi.toFixed(1)} mi away` : null,
+                    job.transmission,
+                    job.course_hours ? `${job.course_hours} hrs` : null,
+                    job.preferred_timing?.join(", "),
+                  ].filter(Boolean).join(" · ")}
+                </div>
+
+                <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
                   <div style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>
                     {job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : "Rate TBC"}
                   </div>
+                  {worth != null && (
+                    <div style={{ fontSize: 12, color: GREEN, fontWeight: 600 }}>
+                      Worth £{worth.toFixed(2)}
+                    </div>
+                  )}
+                </div>
+
+                <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
                   <button
                     type="button"
-                    onClick={(e) => { e.stopPropagation(); accept(job); }}
+                    onClick={(e) => { e.stopPropagation(); setDeclinedIds((prev) => new Set(prev).add(job.id)); }}
                     style={{
-                      background: BLUE, color: "#FFF", border: "none", borderRadius: 8,
-                      padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer",
+                      flex: 1, background: "#F3F4F6", color: NAVY, border: "none", borderRadius: 8,
+                      padding: "10px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer",
                     }}
                   >
-                    Accept
+                    Decline
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setDetailJob(job); }}
+                    style={{
+                      flex: 1, background: BLUE, color: "#FFF", border: "none", borderRadius: 8,
+                      padding: "10px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer",
+                    }}
+                  >
+                    More details
                   </button>
                 </div>
               </div>
@@ -345,6 +370,19 @@ function JobsPage() {
           })}
         </div>
       )}
+
+      {detailJob && (
+        <JobDetailSheet
+          job={detailJob}
+          onClose={() => setDetailJob(null)}
+          onAccept={() => { accept(detailJob); setDetailJob(null); }}
+          onDecline={() => {
+            setDeclinedIds((prev) => new Set(prev).add(detailJob.id));
+            setDetailJob(null);
+          }}
+        />
+      )}
+
 
       {threadJob && (
         <JobThread
