@@ -307,17 +307,31 @@ function AdminJobOffers() {
       special_requirements: form.special_requirements?.trim() || null,
       expires_at: form.expires_at ? new Date(form.expires_at).toISOString() : null,
       enquiry_id: form.enquiry_id ?? null,
-      created_by: uid,
-      status: "open",
     };
-    const { error } = await supabase.from("job_offers").insert(payload);
-    setSaving(false);
-    if (error) {
-      toast.error(error.message || "Failed to create job offer");
-      return;
+    if (editingOffer) {
+      const { error } = await supabase
+        .from("job_offers")
+        .update(payload)
+        .eq("id", editingOffer.id);
+      setSaving(false);
+      if (error) {
+        toast.error(error.message || "Failed to update job offer");
+        return;
+      }
+      toast.success("Job offer updated");
+    } else {
+      payload.created_by = uid;
+      payload.status = "open";
+      const { error } = await supabase.from("job_offers").insert(payload);
+      setSaving(false);
+      if (error) {
+        toast.error(error.message || "Failed to create job offer");
+        return;
+      }
+      toast.success("Job offer created");
     }
-    toast.success("Job offer created");
     setShowSheet(false);
+    setEditingOffer(null);
     load();
   };
 
