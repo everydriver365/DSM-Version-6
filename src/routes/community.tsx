@@ -1004,7 +1004,17 @@ function ChatTab({
         ref={listRef}
         style={{ flex: 1, overflowY: "auto", padding: 16, display: "flex", flexDirection: "column" }}
       >
-        {messages.length === 0 ? (
+        {noRoom ? (
+          <div style={{ marginTop: 60, textAlign: "center", padding: "0 24px" }}>
+            <MessageSquare size={40} color="#D1D5DB" style={{ margin: "0 auto 12px" }} />
+            <div style={{ fontWeight: 600, color: "#6B7280" }}>
+              No chat room yet for your area
+            </div>
+            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4, lineHeight: 1.5 }}>
+              Check back soon, or contact support.
+            </div>
+          </div>
+        ) : messages.length === 0 ? (
           <div style={{ marginTop: 40, textAlign: "center" }}>
             <div style={{ fontWeight: 600, color: "#6B7280" }}>Be the first to chat in {areaLabel}!</div>
             <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>
