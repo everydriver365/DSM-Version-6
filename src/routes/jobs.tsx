@@ -696,11 +696,28 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
       sender_id: uid,
       message: text,
     });
-    setSending(false);
     if (error) {
+      setSending(false);
       toast.error("Message failed to send");
       return;
     }
+
+    const { data: adminRows } = await supabase.from("admin_users").select("user_id");
+    if (adminRows && adminRows.length > 0) {
+      const pupilName = job.pupil_name || "Job enquiry";
+      const notifications = adminRows.map((admin) => ({
+        instructor_id: admin.user_id,
+        title: "New message",
+        body: `${pupilName} — job offer message`,
+        type: "job_offer_message",
+        read: false,
+        reference_id: job.id,
+        reference_type: "job_offer",
+      }));
+      await supabase.from("instructor_notifications").insert(notifications);
+    }
+
+    setSending(false);
     setDraft("");
     loadMessages();
   };
