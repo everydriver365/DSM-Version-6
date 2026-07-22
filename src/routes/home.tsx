@@ -5355,7 +5355,7 @@ function HomePage() {
           const durText = dur >= 60
             ? (dur % 60 === 0 ? `${dur / 60} hr` : `${Math.floor(dur / 60)}h ${dur % 60}m`)
             : `${dur} min`;
-          const pickup = upcoming.pickup_location || upcoming.pupils?.address || upcoming.pupils?.postcode || 'No pickup';
+          const pickup = upcoming.pickup_location || [upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ') || 'No pickup';
           let etaText = '—';
           if (driveData) {
             const nowMs = Date.now();
@@ -5408,7 +5408,7 @@ function HomePage() {
         {/* Footer actions — Navigate + Text + Call */}
         {upcoming && (() => {
           const phone = upcoming.pupils?.phone ?? null;
-          const pickup = upcoming.pickup_location || upcoming.pupils?.address || upcoming.pupils?.postcode || '';
+          const pickup = upcoming.pickup_location || [upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ') || '';
           const openMaps = () => {
             if (driveData?.directionsUrl) {
               window.open(driveData.directionsUrl, '_blank');
