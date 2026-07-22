@@ -293,6 +293,132 @@ function EmptyState({ text }: { text: string }) {
   );
 }
 
+function computeDvsaRiskMetrics(tests: DrivingTest[]) {
+  const today = todayYmd();
+  const d = new Date(`${today}T00:00:00`);
+  d.setFullYear(d.getFullYear() - 1);
+  const twelveMonthsAgo = d.toISOString().slice(0, 10);
+
+  const completed = tests.filter(
+    (t) =>
+      t.test_date >= twelveMonthsAgo &&
+      t.test_date <= today &&
+      ["passed", "failed", "abandoned"].includes(t.test_status ?? ""),
+  );
+
+  const totalTests = completed.length;
+  if (totalTests === 0) return null;
+
+  const sumMinor = completed.reduce((acc, t) => acc + (t.minor_faults ?? 0), 0);
+  const sumSerious = completed.reduce((acc, t) => acc + (t.serious_faults ?? 0), 0);
+  const interventions = completed.filter((t) => t.examiner_took_action === true).length;
+  const passes = completed.filter((t) => t.test_status === "passed").length;
+
+  const avgMinorFaults = sumMinor / totalTests;
+  const avgSeriousFaults = sumSerious / totalTests;
+  const interventionRate = (interventions / totalTests) * 100;
+  const passRate = (passes / totalTests) * 100;
+
+  const triggers = {
+    avgMinorFaults: avgMinorFaults >= 6,
+    avgSeriousFaults: avgSeriousFaults >= 0.55,
+    interventionRate: interventionRate >= 10,
+    passRate: passRate <= 55,
+  };
+
+  const triggerCount = Object.values(triggers).filter(Boolean).length;
+
+  return {
+    totalTests,
+    avgMinorFaults,
+    avgSeriousFaults,
+    interventionRate,
+    passRate,
+    triggerCount,
+    triggers,
+  };
+}
+
+function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof computeDvsaRiskMetrics>> }) {
+  const bannerBg =
+    metrics.triggerCount >= 3 ? "#FEE2E2" : metrics.triggerCount === 2 ? "#FEF3C7" : "#F3F4F6";
+  const bannerColor =
+    metrics.triggerCount >= 3 ? "#991B1B" : metrics.triggerCount === 2 ? "#92400E" : "#4B5563";
+
+  return (
+    <div className="mb-4" style={{ borderRadius: 12, background: "#FFFFFF", border: "0.5px solid #EEF2F7", overflow: "hidden" }}>
+      <div className="px-3 py-3" style={{ background: "#0B1F3A" }}>
+        <div className="text-[13px] font-semibold text-white" style={POPPINS}>DVSA Standards Check risk</div>
+        <div className="text-[11px] text-white/80 mt-0.5" style={POPPINS}>Last 12 months · completed tests only</div>
+      </div>
+      <div className="px-3">
+        <DvsaMetricRow
+          label="Avg minor faults"
+          value={metrics.avgMinorFaults}
+          valueSuffix=""
+          threshold="6+"
+          triggered={metrics.triggers.avgMinorFaults}
+          decimals={1}
+        />
+        <DvsaMetricRow
+          label="Avg serious faults"
+          value={metrics.avgSeriousFaults}
+          valueSuffix=""
+          threshold="0.55+"
+          triggered={metrics.triggers.avgSeriousFaults}
+          decimals={2}
+        />
+        <DvsaMetricRow
+          label="Intervention rate"
+          value={metrics.interventionRate}
+          valueSuffix="%"
+          threshold="10%+"
+          triggered={metrics.triggers.interventionRate}
+          decimals={0}
+        />
+        <DvsaMetricRow
+          label="Pass rate"
+          value={metrics.passRate}
+          valueSuffix="%"
+          threshold="≤55%"
+          triggered={metrics.triggers.passRate}
+          decimals={0}
+        />
+      </div>
+      <div className="px-3 py-3 text-[12px] font-medium" style={{ background: bannerBg, color: bannerColor, ...POPPINS }}>
+        {metrics.triggerCount} of 4 triggers met — DVSA typically requests a check at 3 or more. Based on {metrics.totalTests} completed tests.
+      </div>
+    </div>
+  );
+}
+
+function DvsaMetricRow({
+  label,
+  value,
+  valueSuffix,
+  threshold,
+  triggered,
+  decimals,
+}: {
+  label: string;
+  value: number;
+  valueSuffix: string;
+  threshold: string;
+  triggered: boolean;
+  decimals: number;
+}) {
+  const formatted = Number.isFinite(value) ? value.toFixed(decimals) : "0";
+  return (
+    <div className="flex items-center justify-between py-2" style={{ borderBottom: "0.5px solid #EEF2F7" }}>
+      <span className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>{label}</span>
+      <span className="text-[13px] font-semibold" style={{ color: triggered ? "#CC2229" : "#1E8E5A", ...POPPINS }}>
+        {formatted}{valueSuffix} (trigger: {threshold})
+      </span>
+    </div>
+  );
+}
+
+
 function TestCard({
   test,
   showDaysBadge,
