@@ -5425,11 +5425,33 @@ function HomePage() {
           </div>
         )}
 
-        {/* Footer actions — Text + Call */}
+        {/* Footer actions — Navigate + Text + Call */}
         {upcoming && (() => {
           const phone = upcoming.pupils?.phone ?? null;
+          const pickup = upcoming.pickup_location || upcoming.pupils?.address || upcoming.pupils?.postcode || '';
+          const openMaps = () => {
+            if (driveData?.directionsUrl) {
+              window.open(driveData.directionsUrl, '_blank');
+            } else if (pickup) {
+              window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickup)}`, '_blank');
+            } else {
+              toast('No pickup location');
+            }
+          };
           return (
             <div style={{ padding: '0 10px 8px', display: 'flex', gap: 8 }}>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); openMaps(); }}
+                style={{
+                  flex: '0 0 33%', background: '#1877D6', color: '#FFFFFF',
+                  border: 'none', borderRadius: 10, padding: '9px 0',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                  fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                }}
+              >
+                <Navigation size={13} color="#FFFFFF" /> Navigate
+              </button>
               <button
                 type="button"
                 onClick={(e) => {
