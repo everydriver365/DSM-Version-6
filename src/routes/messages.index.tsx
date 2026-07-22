@@ -10,6 +10,9 @@ import { useAdminGate } from "./admin";
 
 
 export const Route = createFileRoute("/messages/")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    jobOfferId: typeof search.jobOfferId === "string" ? search.jobOfferId : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Messages — DSM by EveryDriver" },
