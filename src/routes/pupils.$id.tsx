@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
-import { ArrowLeft, Award, BarChart3, BookOpen, Calendar, Camera, Car, ChevronDown, ChevronRight, ClipboardCheck, ClipboardList, Clock, CreditCard, ExternalLink, Flag, Heart, History, Loader2, Mail, MapPin, MessageSquare, Palette, Pencil, Phone, Plus, PoundSterling, RefreshCw, Search, Send, Trash2, Trophy, X, Check } from "lucide-react";
+import { ArrowLeft, Award, BarChart3, BookOpen, Calendar, Camera, Car, ChevronDown, ChevronRight, ClipboardCheck, ClipboardList, Clock, CreditCard, ExternalLink, Flag, Heart, History, Loader2, Mail, MapPin, MessageSquare, MoreHorizontal, Palette, Pencil, Phone, Plus, PoundSterling, RefreshCw, Search, Send, Trash2, Trophy, X, Check } from "lucide-react";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
@@ -10,6 +10,9 @@ import { Button } from "../components/dsm/Button";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 import { BottomSheet as BottomSheetV2 } from "../components/dsm/BottomSheetV2";
+import { ChangeDateTimeSheet } from "../components/lessons/ChangeDateTimeSheet";
+import { CancelLessonSheet } from "../components/lessons/CancelLessonSheet";
+import { DeleteLessonSheet } from "../components/lessons/DeleteLessonSheet";
 
 import { resolveHourlyRate } from "../lib/pricing/resolveRate";
 import { deletePaymentRecord } from "./payments";
@@ -353,6 +356,12 @@ function PupilDetailPage() {
   const [prepaidHoursDraft, setPrepaidHoursDraft] = useState("");
   const [accountBalDraft, setAccountBalDraft] = useState("");
   const [prepaidSaving, setPrepaidSaving] = useState(false);
+  const [actionsOpenFor, setActionsOpenFor] = useState<Lesson | null>(null);
+  const [changeDateTimeSheetFor, setChangeDateTimeSheetFor] = useState<Lesson | null>(null);
+  const [changeDateTimeSubmitting, setChangeDateTimeSubmitting] = useState(false);
+  const [cancelSheetFor, setCancelSheetFor] = useState<Lesson | null>(null);
+  const [deleteSheetFor, setDeleteSheetFor] = useState<Lesson | null>(null);
+  const [deleteSubmitting, setDeleteSubmitting] = useState(false);
   const [editDraft, setEditDraft] = useState<{
     first_name: string;
     last_name: string;
@@ -2205,10 +2214,10 @@ function PupilDetailPage() {
                     </div>
                   )}
                   <div
-                    onClick={() => navigate({ to: "/pupils/$id", params: { id }, search: { lessonId: l.id } })}
+                    onClick={() => { setActionsOpenFor(null); navigate({ to: "/pupils/$id", params: { id }, search: { lessonId: l.id } }); }}
                     style={{
                       width: "100%", display: "flex", alignItems: "center", gap: 12,
-                      padding: "12px 16px", cursor: "pointer",
+                      padding: "12px 16px", cursor: "pointer", position: "relative",
                       borderTop: idx === 0 || showGap ? "none" : "0.5px solid rgba(11,31,58,0.10)",
                       ...POPPINS,
                     }}
@@ -2233,7 +2242,47 @@ function PupilDetailPage() {
                     ) : past && l.status !== "cancelled" && !l.eol_completed ? (
                       <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>EOL</span>
                     ) : null}
-                    <ChevronRight size={18} color="#64748B" />
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setActionsOpenFor(actionsOpenFor?.id === l.id ? null : l); }}
+                      className="p-1 rounded-full"
+                      style={{ lineHeight: 0, color: "#64748B", flexShrink: 0 }}
+                    >
+                      <MoreHorizontal size={18} />
+                    </button>
+                    {actionsOpenFor?.id === l.id && (
+                      <div
+                        data-lesson-actions-popover
+                        className="flex flex-col bg-white"
+                        style={{
+                          position: "absolute", zIndex: 60, top: 46, right: 14,
+                          borderRadius: 12, border: "0.5px solid #E2E6ED",
+                          boxShadow: "0 10px 25px rgba(0,0,0,0.12)", overflow: "hidden", minWidth: 180,
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <button
+                          className="text-left px-4 py-3 text-[14px]"
+                          style={{ color: "#0B1F3A", ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
+                          onClick={(e) => { e.stopPropagation(); setChangeDateTimeSheetFor(l); setActionsOpenFor(null); }}
+                        >
+                          Change date & time
+                        </button>
+                        <button
+                          className="text-left px-4 py-3 text-[14px]"
+                          style={{ color: "#0B1F3A", ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
+                          onClick={(e) => { e.stopPropagation(); setCancelSheetFor(l); setActionsOpenFor(null); }}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          className="text-left px-4 py-3 text-[14px]"
+                          style={{ color: "#CC2229", ...POPPINS }}
+                          onClick={(e) => { e.stopPropagation(); setDeleteSheetFor(l); setActionsOpenFor(null); }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </Fragment>
               );
@@ -2319,10 +2368,10 @@ function PupilDetailPage() {
                           </div>
                         )}
                         <div
-                          onClick={() => navigate({ to: "/pupils/$id", params: { id }, search: { lessonId: l.id } })}
+                          onClick={() => { setActionsOpenFor(null); navigate({ to: "/pupils/$id", params: { id }, search: { lessonId: l.id } }); }}
                           style={{
                             width: "100%", display: "flex", alignItems: "center", gap: 12,
-                            padding: "12px 16px", cursor: "pointer",
+                            padding: "12px 16px", cursor: "pointer", position: "relative",
                             borderTop: idx === 0 || showGap ? "none" : "0.5px solid rgba(11,31,58,0.10)",
                             ...POPPINS,
                           }}
@@ -2343,7 +2392,47 @@ function PupilDetailPage() {
                           ) : isPaid ? (
                             <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Paid ✓</span>
                           ) : null}
-                          <ChevronRight size={18} color="#64748B" />
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setActionsOpenFor(actionsOpenFor?.id === l.id ? null : l); }}
+                            className="p-1 rounded-full"
+                            style={{ lineHeight: 0, color: "#64748B", flexShrink: 0 }}
+                          >
+                            <MoreHorizontal size={18} />
+                          </button>
+                          {actionsOpenFor?.id === l.id && (
+                            <div
+                              data-lesson-actions-popover
+                              className="flex flex-col bg-white"
+                              style={{
+                                position: "absolute", zIndex: 60, top: 46, right: 14,
+                                borderRadius: 12, border: "0.5px solid #E2E6ED",
+                                boxShadow: "0 10px 25px rgba(0,0,0,0.12)", overflow: "hidden", minWidth: 180,
+                              }}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <button
+                                className="text-left px-4 py-3 text-[14px]"
+                                style={{ color: "#0B1F3A", ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
+                                onClick={(e) => { e.stopPropagation(); setChangeDateTimeSheetFor(l); setActionsOpenFor(null); }}
+                              >
+                                Change date & time
+                              </button>
+                              <button
+                                className="text-left px-4 py-3 text-[14px]"
+                                style={{ color: "#0B1F3A", ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
+                                onClick={(e) => { e.stopPropagation(); setCancelSheetFor(l); setActionsOpenFor(null); }}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                className="text-left px-4 py-3 text-[14px]"
+                                style={{ color: "#CC2229", ...POPPINS }}
+                                onClick={(e) => { e.stopPropagation(); setDeleteSheetFor(l); setActionsOpenFor(null); }}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </Fragment>
                     );
@@ -3523,6 +3612,89 @@ function PupilDetailPage() {
         </div>
       )}
 
+
+      {changeDateTimeSheetFor && (
+        <ChangeDateTimeSheet
+          open={true}
+          submitting={changeDateTimeSubmitting}
+          currentDate={(changeDateTimeSheetFor.lesson_date ?? "").slice(0, 10)}
+          currentTime={(changeDateTimeSheetFor.lesson_time ?? "").slice(0, 5)}
+          currentDuration={changeDateTimeSheetFor.duration_minutes ?? 60}
+          onClose={() => { if (!changeDateTimeSubmitting) setChangeDateTimeSheetFor(null); }}
+          onConfirm={async (newDate: string, newTime: string, newDurationMinutes: number) => {
+            const lesson = changeDateTimeSheetFor;
+            if (!lesson) return;
+            setChangeDateTimeSubmitting(true);
+            try {
+              const timeVal = newTime.length === 5 ? `${newTime}:00` : newTime;
+              const { error } = await supabase
+                .from("lessons")
+                .update({ lesson_date: newDate, lesson_time: timeVal, duration_minutes: newDurationMinutes })
+                .eq("id", lesson.id);
+              if (error) throw error;
+              const patch = { lesson_date: newDate, lesson_time: timeVal, duration_minutes: newDurationMinutes };
+              setLessons((prev) => (prev ?? []).map((l) => (l.id === lesson.id ? { ...l, ...patch } : l)));
+              setPastLessons((prev) => (prev ?? []).map((l) => (l.id === lesson.id ? { ...l, ...patch } : l)));
+              toast.success("Lesson updated");
+              setChangeDateTimeSheetFor(null);
+            } catch (err: any) {
+              toast.error(err?.message || "Failed to update lesson");
+            } finally {
+              setChangeDateTimeSubmitting(false);
+            }
+          }}
+        />
+      )}
+
+      {cancelSheetFor && (
+        <CancelLessonSheet
+          open={true}
+          onClose={() => setCancelSheetFor(null)}
+          pupilName={pupil?.name ?? ""}
+          pupilId={pupil?.id ?? ""}
+          lessonId={cancelSheetFor.id}
+          lessonDate={cancelSheetFor.lesson_date}
+          lessonTime={cancelSheetFor.lesson_time}
+          paymentStatus={(cancelSheetFor as any).payment_status ?? null}
+          amountDue={Number((cancelSheetFor as any).amount_due ?? 0)}
+          when={`${cancelSheetFor.lesson_date} at ${(cancelSheetFor.lesson_time ?? "").slice(0, 5)}`}
+          onCancelled={() => {
+            const id = cancelSheetFor.id;
+            setLessons((prev) => (prev ?? []).map((l) => (l.id === id ? { ...l, status: "cancelled" } : l)));
+            setPastLessons((prev) => (prev ?? []).map((l) => (l.id === id ? { ...l, status: "cancelled" } : l)));
+            toast.success("Lesson cancelled");
+            setCancelSheetFor(null);
+          }}
+        />
+      )}
+
+      {deleteSheetFor && (
+        <DeleteLessonSheet
+          open={true}
+          submitting={deleteSubmitting}
+          onClose={() => { if (!deleteSubmitting) setDeleteSheetFor(null); }}
+          onConfirm={async (reason: string) => {
+            const lesson = deleteSheetFor;
+            if (!lesson) return;
+            setDeleteSubmitting(true);
+            try {
+              const { error } = await supabase
+                .from("lessons")
+                .update({ deleted_at: new Date().toISOString(), deletion_reason: reason })
+                .eq("id", lesson.id);
+              if (error) throw error;
+              setLessons((prev) => (prev ?? []).filter((l) => l.id !== lesson.id));
+              setPastLessons((prev) => (prev ?? []).filter((l) => l.id !== lesson.id));
+              toast.success("Lesson deleted");
+              setDeleteSheetFor(null);
+            } catch (err: any) {
+              toast.error(err?.message || "Failed to delete lesson");
+            } finally {
+              setDeleteSubmitting(false);
+            }
+          }}
+        />
+      )}
 
       <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
       </div>
