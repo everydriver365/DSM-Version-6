@@ -185,6 +185,7 @@ function TestsPage() {
   const upcoming = openTests.filter((t) => t.test_date >= today);
   const needsResult = openTests.filter((t) => t.test_date < today).reverse();
   const dvsaMetrics = computeDvsaRiskMetrics(tests);
+  const examinerStats = computeExaminerStats(tests);
 
   const sections: {
     key: string;
@@ -234,6 +235,7 @@ function TestsPage() {
 
       <div className="px-4">
         {dvsaMetrics && <DvsaRiskCard metrics={dvsaMetrics} />}
+        {examinerStats.length > 0 && <ExaminerStatsCard stats={examinerStats} />}
         {sections.map((section) => (
           <div key={section.key}>
             <SectionHeader>{section.title}</SectionHeader>
@@ -528,6 +530,139 @@ function TestCard({
         </div>
       </div>
     </Card>
+  );
+}
+
+interface ExaminerStat {
+  key: string;
+  name: string;
+  tests: DrivingTest[];
+  total: number;
+  passes: number;
+  passRate: number;
+  avgMinor: number;
+  avgSerious: number;
+  interventions: number;
+}
+
+function computeExaminerStats(tests: DrivingTest[]): ExaminerStat[] {
+  const completed = tests.filter((t) =>
+    ["passed", "failed", "abandoned"].includes(t.test_status ?? ""),
+  );
+  const groups = new Map<string, ExaminerStat>();
+  for (const t of completed) {
+    const first = (t.examiner_first_name ?? "").trim();
+    const surname = (t.examiner_surname ?? "").trim();
+    if (!first && !surname) continue;
+    const key = `${first}|${surname}`.toLowerCase();
+    const name = [first, surname].filter(Boolean).join(" ");
+    let g = groups.get(key);
+    if (!g) {
+      g = {
+        key,
+        name,
+        tests: [],
+        total: 0,
+        passes: 0,
+        passRate: 0,
+        avgMinor: 0,
+        avgSerious: 0,
+        interventions: 0,
+      };
+      groups.set(key, g);
+    }
+    g.tests.push(t);
+  }
+  const out: ExaminerStat[] = [];
+  for (const g of groups.values()) {
+    const total = g.tests.length;
+    const passes = g.tests.filter((t) => t.test_status === "passed").length;
+    const sumMinor = g.tests.reduce((a, t) => a + (t.minor_faults ?? 0), 0);
+    const sumSerious = g.tests.reduce((a, t) => a + (t.serious_faults ?? 0), 0);
+    const interventions = g.tests.filter((t) => t.examiner_took_action === true).length;
+    out.push({
+      ...g,
+      total,
+      passes,
+      passRate: (passes / total) * 100,
+      avgMinor: sumMinor / total,
+      avgSerious: sumSerious / total,
+      interventions,
+      tests: [...g.tests].sort((a, b) => (a.test_date < b.test_date ? 1 : -1)),
+    });
+  }
+  return out.sort((a, b) => b.total - a.total);
+}
+
+function ExaminerStatsCard({ stats }: { stats: ExaminerStat[] }) {
+  const [openKey, setOpenKey] = useState<string | null>(null);
+  return (
+    <div className="mb-4" style={{ borderRadius: 12, background: "#FFFFFF", border: "0.5px solid #EEF2F7", overflow: "hidden" }}>
+      <div className="px-3 py-3" style={{ background: "#0B1F3A" }}>
+        <div className="text-[13px] font-semibold text-white" style={POPPINS}>Examiner stats</div>
+        <div className="text-[11px] text-white/80 mt-0.5" style={POPPINS}>Completed tests grouped by examiner</div>
+      </div>
+      <div>
+        {stats.map((s) => {
+          const open = openKey === s.key;
+          return (
+            <div key={s.key} style={{ borderBottom: "0.5px solid #EEF2F7" }}>
+              <button
+                type="button"
+                onClick={() => setOpenKey(open ? null : s.key)}
+                className="w-full text-left px-3 py-3"
+                style={POPPINS}
+              >
+                <div className="flex items-center justify-between" style={{ gap: 8 }}>
+                  <span className="text-[13px] font-semibold" style={{ color: "#0B1F3A" }}>{s.name}</span>
+                  <span className="text-[11px] font-medium" style={{ color: "#1877D6", backgroundColor: "#EEF4FB", padding: "2px 8px", borderRadius: 999 }}>
+                    {s.total} test{s.total === 1 ? "" : "s"}
+                  </span>
+                </div>
+                <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>
+                  {s.passRate.toFixed(0)}% pass · avg {s.avgMinor.toFixed(1)} min / {s.avgSerious.toFixed(2)} ser · {s.interventions} intervention{s.interventions === 1 ? "" : "s"}
+                </div>
+              </button>
+              {open && (
+                <div className="px-3 pb-3 flex flex-col" style={{ gap: 6 }}>
+                  {s.tests.map((t) => {
+                    const label =
+                      t.test_status === "passed" ? "Pass" :
+                      t.test_status === "failed" ? "Fail" :
+                      t.test_status === "abandoned" ? "Abandoned" : "—";
+                    const color =
+                      t.test_status === "passed" ? "#1E8E5A" :
+                      t.test_status === "failed" ? "#CC2229" : "#6B7280";
+                    return (
+                      <div
+                        key={t.id}
+                        className="flex items-center justify-between px-2 py-2"
+                        style={{ background: "#F9FAFB", borderRadius: 8, ...POPPINS }}
+                      >
+                        <div className="min-w-0">
+                          <div className="text-[12px] font-medium truncate" style={{ color: "#0B1F3A" }}>
+                            {t.pupils?.name ?? "Pupil"}
+                          </div>
+                          <div className="text-[11px]" style={{ color: "#6B7280" }}>
+                            {formatDateLong(t.test_date)}
+                            {t.test_centre ? ` · ${t.test_centre}` : ""}
+                            {" · "}{t.minor_faults ?? 0}m / {t.serious_faults ?? 0}s
+                            {t.examiner_took_action ? " · intervention" : ""}
+                          </div>
+                        </div>
+                        <span className="text-[11px] font-semibold shrink-0" style={{ color }}>
+                          {label}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
