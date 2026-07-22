@@ -151,7 +151,7 @@ function TestsPage() {
     const { data, error } = await supabase
       .from("pupils")
       .select(
-        "id, name, test_date, test_time, test_centre, test_examiner, test_status, examiner_first_name, examiner_surname, minor_faults, serious_faults, dangerous_faults, examiner_took_action",
+        "id, name, test_date, test_time, test_centre, test_examiner, test_status, examiner_first_name, examiner_surname, minor_faults, serious_faults, dangerous_faults, examiner_took_action, test_vehicle_owner, test_transmission",
       )
       .eq("instructor_id", uid)
       .is("deleted_at", null)
