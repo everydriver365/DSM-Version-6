@@ -306,6 +306,69 @@ function MessagesIndexPage() {
     setLastSeen(now);
   }, [activeTab, room, localMessages.length]);
 
+  // Load admin job-thread inbox
+  const loadAdminThreads = async () => {
+    setAdminLoading(true);
+    const { data: msgs, error } = await supabase
+      .from("job_offer_messages")
+      .select("id, job_offer_id, sender_type, message, created_at, read_by_admin")
+      .order("created_at", { ascending: false })
+      .limit(500);
+    if (error) {
+      setAdminLoading(false);
+      return;
+    }
+    const grouped = new Map<string, JobThreadRow>();
+    for (const m of (msgs || []) as JobMessage[]) {
+      if (grouped.has(m.job_offer_id)) continue;
+      grouped.set(m.job_offer_id, {
+        job_offer_id: m.job_offer_id,
+        pupil_name: null,
+        last_message: m.message,
+        last_created_at: m.created_at,
+        last_sender_type: m.sender_type,
+        unread: m.sender_type === "instructor" && !m.read_by_admin,
+      });
+    }
+    const ids = Array.from(grouped.keys());
+    if (ids.length) {
+      const { data: jobs } = await supabase
+        .from("job_offers")
+        .select("id, pupil_name")
+        .in("id", ids);
+      for (const j of (jobs || []) as { id: string; pupil_name: string | null }[]) {
+        const row = grouped.get(j.id);
+        if (row) row.pupil_name = j.pupil_name;
+      }
+    }
+    const list = Array.from(grouped.values()).sort(
+      (a, b) => new Date(b.last_created_at).getTime() - new Date(a.last_created_at).getTime(),
+    );
+    setAdminThreads(list);
+    setAdminLoading(false);
+  };
+
+  useEffect(() => {
+    if (activeTab !== "admin" || !isAdmin) return;
+    loadAdminThreads();
+  }, [activeTab, isAdmin]);
+
+  const filteredAdmin = useMemo(() => {
+    const q = adminQuery.trim().toLowerCase();
+    if (!q) return adminThreads;
+    return adminThreads.filter(
+      (t) =>
+        (t.pupil_name || "").toLowerCase().includes(q) ||
+        t.last_message.toLowerCase().includes(q),
+    );
+  }, [adminThreads, adminQuery]);
+
+  const unreadAdmin = useMemo(
+    () => adminThreads.filter((t) => t.unread).length,
+    [adminThreads],
+  );
+
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return convos;
