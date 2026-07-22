@@ -87,6 +87,8 @@ function mapPupilRowToTest(row: PupilTestRow): DrivingTest {
     serious_faults: row.serious_faults,
     dangerous_faults: row.dangerous_faults,
     examiner_took_action: row.examiner_took_action,
+    test_vehicle_owner: row.test_vehicle_owner,
+    test_transmission: row.test_transmission,
     result: status === "passed" ? "Pass" : status === "failed" ? "Fail" : null,
     faults: hasAnyFault ? totalFaults : null,
     result_notes: null,
