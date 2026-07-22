@@ -242,6 +242,24 @@ function RootComponent() {
     };
   }, []);
 
+  // Check if current user is an admin (informational only, no redirects).
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    if (!userId) return;
+    let mounted = true;
+    supabase
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", userId)
+      .limit(1)
+      .then(({ data }: any) => {
+        if (mounted) setIsAdmin(!!data?.length);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [userId]);
+
   // Route every new instructor_notifications row through the shared event bus.
   // Foreground → in-app toast; background → native push (via SW).
   useEffect(() => {
@@ -281,6 +299,48 @@ function RootComponent() {
       supabase.removeChannel(channel);
     };
   }, [userId]);
+
+  // Admin-only realtime subscription for new job-offer messages from instructors.
+  useEffect(() => {
+    if (!isAdmin) return;
+    const channel = supabase
+      .channel("admin-job-offer-messages")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "job_offer_messages",
+          filter: "sender_type=eq.instructor",
+        },
+        async (payload: any) => {
+          const m: any = payload.new ?? {};
+          let instructorName = "Instructor";
+          let pupilName = "job offer";
+          try {
+            const [{ data: senderData }, { data: jobData }] = await Promise.all([
+              supabase.from("instructors").select("name").eq("id", m.sender_id).limit(1),
+              supabase.from("job_offers").select("pupil_name").eq("id", m.job_offer_id).limit(1),
+            ]);
+            instructorName = senderData?.[0]?.name || instructorName;
+            pupilName = jobData?.[0]?.pupil_name || pupilName;
+          } catch (e) {
+            console.warn("[admin-job-msg] lookup failed", e);
+          }
+          emitLiveEvent({
+            kind: "message",
+            text: `New message from ${instructorName} re: ${pupilName}`,
+            url: "/messages",
+          });
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isAdmin]);
+
 
   // Silent background sync of external calendar on app load.
   useEffect(() => {
