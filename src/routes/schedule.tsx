@@ -1769,6 +1769,17 @@ function SchedulePage() {
                                             onClick={(ev) => {
                                               ev.stopPropagation();
                                               setActionsOpenFor(null);
+                                              navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } });
+                                            }}
+                                          >
+                                            Edit lesson
+                                          </button>
+                                          <button
+                                            type="button"
+                                            style={itemStyle}
+                                            onClick={(ev) => {
+                                              ev.stopPropagation();
+                                              setActionsOpenFor(null);
                                               setMovingLesson(lesson);
                                               setMoveMode(true);
                                               const firstName = (lesson as any).pupil?.first_name || (lesson as any).pupils?.first_name || 'this lesson';
