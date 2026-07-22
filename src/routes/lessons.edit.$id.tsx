@@ -151,6 +151,7 @@ function EditLessonPage() {
         lesson_time: `${time}:00`,
         duration_minutes: duration,
         status,
+        pickup_location: pickupLocation.trim() || null,
         notes: notes.trim() || null,
       })
       .eq("id", id);
