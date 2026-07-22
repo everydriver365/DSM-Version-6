@@ -5127,8 +5127,12 @@ function HomePage() {
             }}
           >
             <div style={{ fontSize: 10, fontWeight: 700, color: s.color, textTransform: 'uppercase', letterSpacing: 0.3 }}>{s.label}</div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#0B1F3A', marginTop: 4, lineHeight: 1 }}>{s.value}</div>
-            <div style={{ fontSize: 10, color: '#8A93A3', marginTop: 4 }}>{s.sub}</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: s.label === 'Jobs' ? '#1E8E3E' : '#0B1F3A', marginTop: 4, lineHeight: 1 }}>{s.value}</div>
+            {s.label === 'Jobs' && claimedAwaitingPaymentCount > 0 ? (
+              <div style={{ fontSize: 10, color: '#1877D6', marginTop: 4 }}>{claimedAwaitingPaymentCount} claimed</div>
+            ) : s.label === 'Jobs' ? null : (
+              <div style={{ fontSize: 10, color: '#8A93A3', marginTop: 4 }}>{s.sub}</div>
+            )}
           </button>
         ))}
       </div>
