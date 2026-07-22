@@ -93,6 +93,9 @@ function emptyForm(): Partial<JobOffer> {
     centre_lat: null,
     centre_lng: null,
     offered_rate: 0,
+    amount_paid: null,
+    payment_method: "None",
+    special_requirements: "",
     expires_at: "",
     enquiry_id: null,
   };
