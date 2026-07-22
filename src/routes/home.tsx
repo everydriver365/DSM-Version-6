@@ -5242,19 +5242,19 @@ function HomePage() {
                     destLng={driveData.destLng}
                     encodedPolyline={driveData.encodedPolyline}
                     directionsUrl={driveData.directionsUrl}
-                    height={160}
+                    height={120}
                     isLate={isLate}
                   />
                 ) : (
-                  <div style={{ height: 105, background: '#E8EEF3' }} />
+                  <div style={{ height: 85, background: '#E8EEF3' }} />
                 )}
                 {/* Gradient time caption */}
                 {lessonTimeText && (
                   <div style={{
                     position: 'absolute', left: 0, right: 0, bottom: 0,
                     background: 'linear-gradient(0deg, rgba(11,31,58,0.88), rgba(11,31,58,0))',
-                    padding: '16px 14px 10px',
-                    color: '#FFFFFF', fontWeight: 700, fontSize: 17,
+                    padding: '10px 12px 8px',
+                    color: '#FFFFFF', fontWeight: 700, fontSize: 14,
                     fontFamily: 'Inter, sans-serif',
                     pointerEvents: 'none',
                   }}>{lessonTimeText}</div>
@@ -5264,12 +5264,12 @@ function HomePage() {
               {/* Notify late banner */}
               {isLate && upcoming && (
                 <div style={{
-                  background: '#FEECEC', padding: '10px 14px',
+                  background: '#FEECEC', padding: '8px 12px',
                   borderBottom: '1px solid #F5D5D5',
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
                   fontFamily: 'Inter, sans-serif',
                 }}>
-                  <span style={{ fontSize: 12, color: '#7A1F1F', fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <span style={{ fontSize: 11, color: '#7A1F1F', fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     Arriving ~{etaLabel} — let {pupilFirstName} know?
                   </span>
                   <button
@@ -5277,7 +5277,7 @@ function HomePage() {
                     onClick={(e) => { e.stopPropagation(); setLateOpen(true); }}
                     style={{
                       background: '#C23B3B', color: '#FFFFFF', border: 'none',
-                      fontSize: 11, fontWeight: 700, padding: '6px 12px', borderRadius: 999,
+                      fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 999,
                       cursor: 'pointer', flexShrink: 0, fontFamily: 'Inter, sans-serif',
                     }}
                   >Notify pupil</button>
@@ -5293,34 +5293,34 @@ function HomePage() {
                 const hPillFg = hPositive ? '#2F7A3A' : hStatus === 'partial' ? '#8A5A00' : hStatus === 'cancelled' ? '#5A6270' : '#CC2229';
                 return (
                   <div style={{
-                    display: 'flex', alignItems: 'center', gap: 14,
-                    padding: '10px 16px 14px',
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '8px 14px 10px',
                     fontFamily: 'Inter, sans-serif',
                   }}>
                     <div style={{
-                      width: 64, height: 64, borderRadius: '50%',
+                      width: 52, height: 52, borderRadius: '50%',
                       background: pupilCalColour, color: '#FFFFFF',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 22, fontWeight: 700, flexShrink: 0,
-                      marginTop: -32, border: '4px solid #FFFFFF',
+                      fontSize: 17, fontWeight: 700, flexShrink: 0,
+                      marginTop: -26, border: '3px solid #FFFFFF',
                       position: 'relative', zIndex: 2,
                       boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
                     }}>{pupilInitials}</div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: '#1877D6', letterSpacing: 1, textTransform: 'uppercase' }}>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: '#1877D6', letterSpacing: 0.8, textTransform: 'uppercase' }}>
                         Next Lesson
                       </div>
-                      <div style={{ fontSize: 22, fontWeight: 800, color: '#0B1F3A', lineHeight: 1.15, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <div style={{ fontSize: 18, fontWeight: 800, color: '#0B1F3A', lineHeight: 1.15, marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {pupilFullName || 'Pupil'}
                       </div>
-                      <div style={{ fontSize: 14, color: '#8A93A3', marginTop: 2 }}>
+                      <div style={{ fontSize: 12, color: '#8A93A3', marginTop: 1 }}>
                         Lesson
                       </div>
                     </div>
                     <span style={{
                       background: hPillBg, color: hPillFg,
-                      fontSize: 13, fontWeight: 600,
-                      padding: '7px 16px', borderRadius: 999,
+                      fontSize: 11, fontWeight: 600,
+                      padding: '5px 12px', borderRadius: 999,
                       flexShrink: 0,
                     }}>{hLabel}</span>
                   </div>
