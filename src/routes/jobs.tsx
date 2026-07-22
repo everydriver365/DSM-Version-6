@@ -149,6 +149,8 @@ function JobsPage() {
   const [prefs, setPrefs] = useState<InstructorPrefs | null>(null);
   const [coverage, setCoverage] = useState<CoverageArea[]>([]);
   const [threadJob, setThreadJob] = useState<JobOffer | null>(null);
+  const [detailJob, setDetailJob] = useState<JobOffer | null>(null);
+  const [declinedIds, setDeclinedIds] = useState<Set<string>>(new Set());
 
   const load = async () => {
     const { data: auth } = await supabase.auth.getUser();
