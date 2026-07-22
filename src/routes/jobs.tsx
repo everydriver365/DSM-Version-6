@@ -534,3 +534,108 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
     </div>
   );
 }
+
+function JobDetailSheet({
+  job,
+  onClose,
+  onAccept,
+  onDecline,
+}: {
+  job: JobOffer;
+  onClose: () => void;
+  onAccept: () => void;
+  onDecline: () => void;
+}) {
+  const worth = job.course_hours != null && job.offered_rate != null
+    ? Number(job.course_hours) * Number(job.offered_rate)
+    : null;
+  const amountPaid = job.amount_paid != null ? Number(job.amount_paid) : 0;
+
+  const Row = ({ label, value }: { label: string; value: React.ReactNode }) => (
+    <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "10px 0", borderBottom: "1px solid #F1F3F7" }}>
+      <div style={{ fontSize: 12, color: GREY, fontWeight: 500 }}>{label}</div>
+      <div style={{ fontSize: 13, color: NAVY, fontWeight: 600, textAlign: "right", maxWidth: "60%", wordBreak: "break-word" }}>{value}</div>
+    </div>
+  );
+
+  return (
+    <div
+      style={{
+        position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 100,
+        display: "flex", flexDirection: "column", justifyContent: "flex-end",
+      }}
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "#FFFFFF", borderTopLeftRadius: 16, borderTopRightRadius: 16,
+          maxHeight: "90vh", display: "flex", flexDirection: "column", ...POPPINS,
+        }}
+      >
+        <div style={{
+          display: "flex", alignItems: "center", padding: "14px 16px",
+          borderBottom: "1px solid #E5E7EB",
+        }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>
+              {job.pupil_name || "New pupil"}
+            </div>
+            <div style={{ fontSize: 11, color: GREY, marginTop: 2 }}>
+              Posted {relTime(job.created_at)}
+            </div>
+          </div>
+          <button onClick={onClose} style={{ padding: 6, background: "transparent", border: "none", cursor: "pointer" }}>
+            <X size={20} color={GREY} />
+          </button>
+        </div>
+
+        <div style={{ flex: 1, overflowY: "auto", padding: "8px 16px 16px" }}>
+          <Row label="Area" value={job.postcode_area || "—"} />
+          <Row label="Transmission" value={job.transmission || "—"} />
+          <Row label="Course hours" value={job.course_hours != null ? `${job.course_hours} hrs` : "—"} />
+          <Row label="Preferred timing" value={job.preferred_timing?.length ? job.preferred_timing.join(", ") : "—"} />
+          <Row label="Preferred start" value={job.preferred_start_date ? new Date(job.preferred_start_date).toLocaleDateString() : "—"} />
+          <Row label="Rate" value={job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : "Rate TBC"} />
+          <Row label="Worth" value={worth != null ? <span style={{ color: GREEN }}>£{worth.toFixed(2)}</span> : "—"} />
+          {amountPaid > 0 && (
+            <>
+              <Row label="Amount paid" value={`£${amountPaid.toFixed(2)}`} />
+              <Row label="Payment method" value={job.payment_method || "—"} />
+            </>
+          )}
+          {job.special_requirements && (
+            <Row label="Special requirements" value={job.special_requirements} />
+          )}
+          {job.pupil_phone && <Row label="Phone" value={job.pupil_phone} />}
+          {job.pupil_email && <Row label="Email" value={job.pupil_email} />}
+        </div>
+
+        <div style={{
+          display: "flex", gap: 8, padding: 12, borderTop: "1px solid #E5E7EB",
+          paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
+        }}>
+          <button
+            onClick={onDecline}
+            style={{
+              flex: 1, background: "#F3F4F6", color: NAVY, border: "none", borderRadius: 10,
+              padding: "12px 16px", fontSize: 14, fontWeight: 600, cursor: "pointer",
+            }}
+          >
+            Decline
+          </button>
+          <button
+            onClick={onAccept}
+            style={{
+              flex: 1, background: BLUE, color: "#FFF", border: "none", borderRadius: 10,
+              padding: "12px 16px", fontSize: 14, fontWeight: 700, cursor: "pointer",
+            }}
+          >
+            Accept
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
