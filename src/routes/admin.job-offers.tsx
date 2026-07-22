@@ -532,10 +532,10 @@ function AdminJobOffers() {
               }}
             >
               <div style={{ flex: 1, fontSize: 16, fontWeight: 700, color: NAVY }}>
-                New job offer
+                {editingOffer ? "Edit job offer" : "New job offer"}
               </div>
               <button
-                onClick={() => setShowSheet(false)}
+                onClick={() => { setShowSheet(false); setEditingOffer(null); }}
                 style={{ padding: 6, background: "transparent", border: "none", cursor: "pointer" }}
               >
                 <X size={20} color={GREY} />
