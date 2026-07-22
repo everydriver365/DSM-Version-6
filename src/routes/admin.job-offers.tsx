@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Plus, X, Send, Search } from "lucide-react";
+import { ChevronLeft, Plus, X, Send, Search, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
@@ -121,6 +121,7 @@ function AdminJobOffers() {
   const [loading, setLoading] = useState(true);
   const [showSheet, setShowSheet] = useState(false);
   const [form, setForm] = useState<Partial<JobOffer>>(emptyForm());
+  const [editingOffer, setEditingOffer] = useState<JobOffer | null>(null);
   const [saving, setSaving] = useState(false);
   const [threadJob, setThreadJob] = useState<JobOffer | null>(null);
 
