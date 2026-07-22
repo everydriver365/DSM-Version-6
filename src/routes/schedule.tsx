@@ -514,6 +514,7 @@ function SchedulePage() {
         if (i.lesson_buffer_after != null) setBufferAfter(Number(i.lesson_buffer_after));
         if (i.hourly_rate != null) setHourlyRate(Number(i.hourly_rate) || 40);
         setInstructor({
+          name: i.name ?? null,
           external_calendar_url: i.external_calendar_url ?? null,
           calendar_last_synced: i.calendar_last_synced ?? null,
         });
