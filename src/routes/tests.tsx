@@ -990,6 +990,7 @@ function LogResultSheet({
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
   const [pairs, setPairs] = useState<ExaminerPair[]>([]);
+  const [showDl25, setShowDl25] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -1095,6 +1096,7 @@ function LogResultSheet({
   } as const;
 
   return (
+    <>
     <SheetShell
       title="LOG RESULT"
       onClose={onClose}
@@ -1224,8 +1226,38 @@ function LogResultSheet({
             }}
           />
         </div>
+
+        <button
+          type="button"
+          onClick={() => setShowDl25(true)}
+          className="w-full flex items-center justify-center text-[13px] font-semibold"
+          style={{
+            height: 44,
+            borderRadius: 10,
+            border: "1px dashed #1877D6",
+            color: "#1877D6",
+            background: "#F4F8FE",
+            ...POPPINS,
+          }}
+        >
+          Fill in DL25 form
+        </button>
       </div>
     </SheetShell>
+    {showDl25 && (
+      <DL25Sheet
+        pupilId={test.pupil_id}
+        testDate={test.test_date}
+        onClose={() => setShowDl25(false)}
+        onSaved={(totals) => {
+          setMinorFaults(String(totals.minor));
+          setSeriousFaults(String(totals.serious));
+          setDangerousFaults(String(totals.dangerous));
+          setShowDl25(false);
+        }}
+      />
+    )}
+    </>
   );
 }
 
@@ -1316,6 +1348,402 @@ function ChoiceRow<T extends string>({
               }}
             >
               {opt.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ============ DL25 Sheet ============
+
+type DL25Mark = null | "fault" | "serious" | "dangerous";
+type FaultMarks = Record<string, DL25Mark>;
+
+type DL25Node =
+  | { kind: "standalone"; key: string; label: string; faultOnly?: boolean }
+  | { kind: "group"; slug: string; title: string; items: Array<{ key: string; label: string }> }
+  | { kind: "manoeuvres" };
+
+const DL25_MANOEUVRE_OPTIONS: Array<{ value: string; label: string }> = [
+  { value: "reverse_right", label: "Reverse / Right" },
+  { value: "reverse_park_road", label: "Reverse park (road)" },
+  { value: "reverse_park_car_park", label: "Reverse park (car park)" },
+  { value: "forward_park", label: "Forward park" },
+];
+
+const DL25_SCHEMA: DL25Node[] = [
+  { kind: "standalone", key: "eyesight_test", label: "Eyesight test", faultOnly: true },
+  {
+    kind: "group",
+    slug: "control",
+    title: "Control",
+    items: [
+      { key: "clutch", label: "Clutch" },
+      { key: "gears", label: "Gears" },
+      { key: "footbrake", label: "Footbrake" },
+      { key: "parking_brake", label: "Parking brake" },
+      { key: "steering", label: "Steering" },
+      { key: "precautions", label: "Precautions" },
+      { key: "ancillary_controls", label: "Ancillary controls" },
+      { key: "accelerator", label: "Accelerator" },
+    ],
+  },
+  {
+    kind: "group",
+    slug: "move_off",
+    title: "Move off",
+    items: [
+      { key: "safety", label: "Safety" },
+      { key: "control", label: "Control" },
+    ],
+  },
+  {
+    kind: "group",
+    slug: "use_of_mirrors",
+    title: "Use of mirrors",
+    items: [
+      { key: "signalling", label: "Signalling" },
+      { key: "change_direction", label: "Change direction" },
+      { key: "change_speed", label: "Change speed" },
+    ],
+  },
+  {
+    kind: "group",
+    slug: "signals",
+    title: "Signals",
+    items: [
+      { key: "necessary", label: "Necessary" },
+      { key: "correctly", label: "Correctly" },
+      { key: "timed", label: "Timed" },
+    ],
+  },
+  {
+    kind: "group",
+    slug: "junctions",
+    title: "Junctions",
+    items: [
+      { key: "approach_speed", label: "Approach speed" },
+      { key: "observation", label: "Observation" },
+      { key: "turning_right", label: "Turning right" },
+      { key: "turning_left", label: "Turning left" },
+      { key: "cutting_corners", label: "Cutting corners" },
+    ],
+  },
+  {
+    kind: "group",
+    slug: "judgement",
+    title: "Judgement",
+    items: [
+      { key: "overtaking", label: "Overtaking" },
+      { key: "meeting", label: "Meeting" },
+      { key: "crossing", label: "Crossing" },
+    ],
+  },
+  { kind: "standalone", key: "clearance", label: "Clearance" },
+  { kind: "standalone", key: "following_distance", label: "Following distance" },
+  { kind: "standalone", key: "use_of_speed", label: "Use of speed" },
+  {
+    kind: "group",
+    slug: "positioning",
+    title: "Positioning",
+    items: [
+      { key: "lane_discipline", label: "Lane discipline" },
+      { key: "normal_driving", label: "Normal driving" },
+    ],
+  },
+  { kind: "standalone", key: "pedestrian_crossings", label: "Pedestrian crossings" },
+  { kind: "standalone", key: "position_normal_stop", label: "Position / normal stop" },
+  { kind: "standalone", key: "awareness_planning", label: "Awareness / planning" },
+  {
+    kind: "group",
+    slug: "progress",
+    title: "Progress",
+    items: [
+      { key: "appropriate_speed", label: "Appropriate speed" },
+      { key: "undue_hesitation", label: "Undue hesitation" },
+    ],
+  },
+  {
+    kind: "group",
+    slug: "response_to_signs_signals",
+    title: "Response to signs / signals",
+    items: [
+      { key: "traffic_signs", label: "Traffic signs" },
+      { key: "road_markings", label: "Road markings" },
+      { key: "traffic_lights", label: "Traffic lights" },
+      { key: "traffic_controllers", label: "Traffic controllers" },
+      { key: "other_road_users", label: "Other road users" },
+    ],
+  },
+  {
+    kind: "group",
+    slug: "controlled_stop",
+    title: "Controlled stop",
+    items: [{ key: "controlled_stop", label: "Controlled stop" }],
+  },
+  {
+    kind: "group",
+    slug: "show_me_tell_me",
+    title: "Show me / Tell me",
+    items: [{ key: "questions", label: "Show me / Tell me question(s)" }],
+  },
+  { kind: "manoeuvres" },
+];
+
+function dl25AllKeys(manoeuvreSlug: string): string[] {
+  const keys: string[] = [];
+  for (const node of DL25_SCHEMA) {
+    if (node.kind === "standalone") keys.push(node.key);
+    else if (node.kind === "group") {
+      for (const it of node.items) keys.push(`${node.slug}_${it.key}`);
+    } else {
+      keys.push(`manoeuvres_${manoeuvreSlug}_control`);
+      keys.push(`manoeuvres_${manoeuvreSlug}_observation`);
+    }
+  }
+  return keys;
+}
+
+function DL25Sheet({
+  pupilId,
+  testDate,
+  onClose,
+  onSaved,
+}: {
+  pupilId: string;
+  testDate: string;
+  onClose: () => void;
+  onSaved: (totals: { minor: number; serious: number; dangerous: number }) => void;
+}) {
+  const [manoeuvre, setManoeuvre] = useState<string>(DL25_MANOEUVRE_OPTIONS[0].value);
+  const [marks, setMarks] = useState<FaultMarks>({});
+  const [saving, setSaving] = useState(false);
+
+  function setMark(key: string, mark: DL25Mark) {
+    setMarks((m) => {
+      const next = { ...m };
+      if (mark === null) delete next[key];
+      else next[key] = mark;
+      return next;
+    });
+  }
+
+  function totals() {
+    let minor = 0, serious = 0, dangerous = 0;
+    for (const v of Object.values(marks)) {
+      if (v === "fault") minor++;
+      else if (v === "serious") serious++;
+      else if (v === "dangerous") dangerous++;
+    }
+    return { minor, serious, dangerous };
+  }
+
+  async function save() {
+    if (saving) return;
+    setSaving(true);
+    const t = totals();
+    // Ensure all schema keys exist in stored blob (nulls filled in)
+    const allKeys = dl25AllKeys(manoeuvre);
+    const fullMarks: FaultMarks = {};
+    for (const k of allKeys) fullMarks[k] = marks[k] ?? null;
+    fullMarks["manoeuvres_selected"] = null;
+    const payload: Record<string, unknown> = {
+      pupil_id: pupilId,
+      test_date: testDate,
+      fault_marks: { ...fullMarks, manoeuvres_selected: manoeuvre },
+    };
+    const { error: insertErr } = await supabase.from("dl25_reports").insert(payload);
+    if (insertErr) console.error("[dl25] insert error", insertErr);
+
+    const { error: pupilErr } = await supabase
+      .from("pupils")
+      .update({
+        minor_faults: t.minor,
+        serious_faults: t.serious,
+        dangerous_faults: t.dangerous,
+      })
+      .eq("id", pupilId);
+    if (pupilErr) console.error("[dl25] pupil update error", pupilErr);
+
+    setSaving(false);
+    if (insertErr) {
+      toast.error("Couldn't save DL25");
+      return;
+    }
+    toast.success("DL25 saved");
+    onSaved(t);
+  }
+
+  const t = totals();
+
+  return (
+    <SheetShell
+      title="DL25 REPORT"
+      onClose={onClose}
+      footer={
+        <div className="flex flex-col" style={{ gap: 8 }}>
+          <div className="flex items-center justify-between text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+            <span>Totals</span>
+            <span>
+              <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{t.minor}</span> minor ·{" "}
+              <span style={{ color: "#B5661E", fontWeight: 600 }}>{t.serious}</span> serious ·{" "}
+              <span style={{ color: "#CC2229", fontWeight: 600 }}>{t.dangerous}</span> dangerous
+            </span>
+          </div>
+          <div className="grid grid-cols-2" style={{ gap: 8 }}>
+            <Button variant="ghost" onClick={onClose} type="button">Cancel</Button>
+            <Button onClick={save} disabled={saving} type="button">
+              {saving ? "Saving…" : "Save DL25"}
+            </Button>
+          </div>
+        </div>
+      }
+    >
+      <div className="flex flex-col" style={{ gap: 16 }}>
+        {DL25_SCHEMA.map((node, idx) => {
+          if (node.kind === "standalone") {
+            return (
+              <DL25ItemRow
+                key={node.key}
+                label={node.label}
+                value={marks[node.key] ?? null}
+                onChange={(m) => setMark(node.key, m)}
+                faultOnly={node.faultOnly}
+              />
+            );
+          }
+          if (node.kind === "group") {
+            return (
+              <div key={node.slug}>
+                <div
+                  className="text-[11px] font-semibold tracking-wider mb-2"
+                  style={{ color: "#6B7280" }}
+                >
+                  {node.title.toUpperCase()}
+                </div>
+                <div className="flex flex-col" style={{ gap: 6 }}>
+                  {node.items.map((it) => {
+                    const k = `${node.slug}_${it.key}`;
+                    return (
+                      <DL25ItemRow
+                        key={k}
+                        label={it.label}
+                        value={marks[k] ?? null}
+                        onChange={(m) => setMark(k, m)}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          }
+          // manoeuvres
+          return (
+            <div key={`man-${idx}`}>
+              <div
+                className="text-[11px] font-semibold tracking-wider mb-2"
+                style={{ color: "#6B7280" }}
+              >
+                MANOEUVRES
+              </div>
+              <div className="mb-2">
+                <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">
+                  Manoeuvre used
+                </label>
+                <select
+                  value={manoeuvre}
+                  onChange={(e) => setManoeuvre(e.target.value)}
+                  className="w-full px-3 bg-white"
+                  style={{
+                    height: 44,
+                    borderRadius: 8,
+                    border: "0.5px solid #EEF2F7",
+                    color: "#0B1F3A",
+                    fontSize: 14,
+                    ...POPPINS,
+                  }}
+                >
+                  {DL25_MANOEUVRE_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col" style={{ gap: 6 }}>
+                {(["control", "observation"] as const).map((sub) => {
+                  const k = `manoeuvres_${manoeuvre}_${sub}`;
+                  return (
+                    <DL25ItemRow
+                      key={k}
+                      label={sub === "control" ? "Control" : "Observation"}
+                      value={marks[k] ?? null}
+                      onChange={(m) => setMark(k, m)}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </SheetShell>
+  );
+}
+
+function DL25ItemRow({
+  label,
+  value,
+  onChange,
+  faultOnly,
+}: {
+  label: string;
+  value: DL25Mark;
+  onChange: (m: DL25Mark) => void;
+  faultOnly?: boolean;
+}) {
+  const opts: Array<{ v: DL25Mark; l: string; c: string }> = [
+    { v: null, l: "OK", c: "#6B7280" },
+    { v: "fault", l: "Fault", c: "#B5661E" },
+  ];
+  if (!faultOnly) {
+    opts.push({ v: "serious", l: "S", c: "#CC2229" });
+    opts.push({ v: "dangerous", l: "D", c: "#7A1218" });
+  }
+  return (
+    <div
+      className="flex items-center justify-between"
+      style={{
+        padding: "8px 10px",
+        borderRadius: 10,
+        border: "0.5px solid #EEF2F7",
+        background: "#FFFFFF",
+      }}
+    >
+      <span className="text-[13px] pr-2" style={{ color: "#0B1F3A", ...POPPINS }}>
+        {label}
+      </span>
+      <div className="flex" style={{ gap: 4 }}>
+        {opts.map((o) => {
+          const active = value === o.v;
+          return (
+            <button
+              key={o.l}
+              type="button"
+              onClick={() => onChange(o.v)}
+              className="text-[12px] font-semibold"
+              style={{
+                minWidth: 40,
+                height: 30,
+                padding: "0 8px",
+                borderRadius: 8,
+                border: `1px solid ${active ? o.c : "#E5E7EB"}`,
+                background: active ? o.c : "#FFFFFF",
+                color: active ? "#FFFFFF" : o.c,
+                ...POPPINS,
+              }}
+            >
+              {o.l}
             </button>
           );
         })}
