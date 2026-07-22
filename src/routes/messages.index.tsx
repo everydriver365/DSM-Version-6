@@ -353,6 +353,32 @@ function MessagesIndexPage() {
     loadAdminThreads();
   }, [activeTab, isAdmin]);
 
+  // Admin-only realtime toast for new instructor messages on job offers
+  useEffect(() => {
+    if (!isAdmin) return;
+    const channel = supabase
+      .channel("admin_job_offer_messages")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "job_offer_messages", filter: "sender_type=eq.instructor" },
+        async (payload) => {
+          const row = payload.new as { job_offer_id: string };
+          const { data: job } = await supabase
+            .from("job_offers")
+            .select("pupil_name")
+            .eq("id", row.job_offer_id)
+            .maybeSingle();
+          const pupilName = (job as { pupil_name: string | null } | null)?.pupil_name ?? "pupil";
+          toast(`New message from ${pupilName} re: job offer`);
+          if (activeTab === "admin") loadAdminThreads();
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isAdmin, activeTab]);
+
   const filteredAdmin = useMemo(() => {
     const q = adminQuery.trim().toLowerCase();
     if (!q) return adminThreads;
