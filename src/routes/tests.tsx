@@ -990,6 +990,7 @@ function LogResultSheet({
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
   const [pairs, setPairs] = useState<ExaminerPair[]>([]);
+  const [showDl25, setShowDl25] = useState(false);
 
   useEffect(() => {
     (async () => {
