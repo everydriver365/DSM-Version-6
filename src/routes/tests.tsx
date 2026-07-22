@@ -1096,6 +1096,7 @@ function LogResultSheet({
   } as const;
 
   return (
+    <>
     <SheetShell
       title="LOG RESULT"
       onClose={onClose}
