@@ -109,6 +109,7 @@ import {
   Shield,
   ShieldAlert,
   Mic,
+  Pencil,
 } from "lucide-react";
 import {
   IconCurrencyPound,
