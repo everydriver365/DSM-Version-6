@@ -39,6 +39,8 @@ interface DrivingTest {
   serious_faults: number | null;
   dangerous_faults: number | null;
   examiner_took_action: boolean | null;
+  test_vehicle_owner: "instructor" | "own_car" | null;
+  test_transmission: "manual" | "automatic" | null;
   // Derived/compat fields used by the existing TestCard UI:
   result: "Pass" | "Fail" | null;
   faults: number | null;
@@ -61,6 +63,8 @@ interface PupilTestRow {
   serious_faults: number | null;
   dangerous_faults: number | null;
   examiner_took_action: boolean | null;
+  test_vehicle_owner: "instructor" | "own_car" | null;
+  test_transmission: "manual" | "automatic" | null;
 }
 
 function mapPupilRowToTest(row: PupilTestRow): DrivingTest {
@@ -83,6 +87,8 @@ function mapPupilRowToTest(row: PupilTestRow): DrivingTest {
     serious_faults: row.serious_faults,
     dangerous_faults: row.dangerous_faults,
     examiner_took_action: row.examiner_took_action,
+    test_vehicle_owner: row.test_vehicle_owner,
+    test_transmission: row.test_transmission,
     result: status === "passed" ? "Pass" : status === "failed" ? "Fail" : null,
     faults: hasAnyFault ? totalFaults : null,
     result_notes: null,
@@ -145,7 +151,7 @@ function TestsPage() {
     const { data, error } = await supabase
       .from("pupils")
       .select(
-        "id, name, test_date, test_time, test_centre, test_examiner, test_status, examiner_first_name, examiner_surname, minor_faults, serious_faults, dangerous_faults, examiner_took_action",
+        "id, name, test_date, test_time, test_centre, test_examiner, test_status, examiner_first_name, examiner_surname, minor_faults, serious_faults, dangerous_faults, examiner_took_action, test_vehicle_owner, test_transmission",
       )
       .eq("instructor_id", uid)
       .is("deleted_at", null)
@@ -968,6 +974,12 @@ function LogResultSheet({
   onSaved: () => void;
 }) {
   const [result, setResult] = useState<"Pass" | "Fail">("Pass");
+  const [vehicleOwner, setVehicleOwner] = useState<"instructor" | "own_car">(
+    test.test_vehicle_owner ?? "instructor",
+  );
+  const [transmission, setTransmission] = useState<"manual" | "automatic">(
+    test.test_transmission ?? "manual",
+  );
   const [examinerFirst, setExaminerFirst] = useState("");
   const [examinerSurname, setExaminerSurname] = useState("");
   const [minorFaults, setMinorFaults] = useState("0");
@@ -1032,6 +1044,8 @@ function LogResultSheet({
         dangerous_faults: dangerous,
         examiner_took_action: tookAction,
         test_status: result === "Pass" ? "passed" : "failed",
+        test_vehicle_owner: vehicleOwner,
+        test_transmission: transmission,
       })
       .eq("id", test.pupil_id);
     if (pupilErr) console.error("[tests] pupil update error", pupilErr);
@@ -1104,33 +1118,35 @@ function LogResultSheet({
           </div>
         </div>
 
-        <div>
-          <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">Result</label>
-          <div className="grid grid-cols-2" style={{ gap: 8 }}>
-            {(["Pass", "Fail"] as const).map((r) => {
-              const active = result === r;
-              const color = "#1877D6";
-              return (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => setResult(r)}
-                  className="inline-flex items-center justify-center text-[14px] font-medium"
-                  style={{
-                    height: 44,
-                    borderRadius: 8,
-                    backgroundColor: active ? color : "transparent",
-                    color: active ? "#FFFFFF" : color,
-                    border: `1px solid ${color}`,
-                    ...POPPINS,
-                  }}
-                >
-                  {r}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <ChoiceRow
+          label="Result"
+          options={[
+            { value: "Pass", label: "Pass" },
+            { value: "Fail", label: "Fail" },
+          ]}
+          value={result}
+          onChange={setResult}
+        />
+
+        <ChoiceRow
+          label="Vehicle used"
+          options={[
+            { value: "instructor", label: "Instructor's car" },
+            { value: "own_car", label: "Their own car" },
+          ]}
+          value={vehicleOwner}
+          onChange={setVehicleOwner}
+        />
+
+        <ChoiceRow
+          label="Transmission"
+          options={[
+            { value: "manual", label: "Manual" },
+            { value: "automatic", label: "Automatic" },
+          ]}
+          value={transmission}
+          onChange={setTransmission}
+        />
 
         <div className="grid grid-cols-2" style={{ gap: 8 }}>
           <ExaminerNameInput
@@ -1263,5 +1279,47 @@ function ToggleRow({
         />
       </span>
     </button>
+  );
+}
+
+function ChoiceRow<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: { value: T; label: string }[];
+  value: T;
+  onChange: (v: T) => void;
+}) {
+  return (
+    <div>
+      <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">{label}</label>
+      <div className="grid grid-cols-2" style={{ gap: 8 }}>
+        {options.map((opt) => {
+          const active = value === opt.value;
+          const color = "#1877D6";
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => onChange(opt.value)}
+              className="inline-flex items-center justify-center text-[14px] font-medium"
+              style={{
+                height: 44,
+                borderRadius: 8,
+                backgroundColor: active ? color : "transparent",
+                color: active ? "#FFFFFF" : color,
+                border: `1px solid ${color}`,
+                ...POPPINS,
+              }}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }
