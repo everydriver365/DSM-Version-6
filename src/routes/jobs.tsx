@@ -637,6 +637,7 @@ function JobsPage() {
             setJobs((prev) => (prev ?? []).filter((j) => j.id !== detailJob.id));
             setDetailJob(null);
           }}
+          onOpenThread={() => { setThreadJob(detailJob); setDetailJob(null); }}
         />
       )}
 
@@ -797,11 +798,13 @@ function JobDetailSheet({
   onClose,
   onAccept,
   onDecline,
+  onOpenThread,
 }: {
   job: JobOffer;
   onClose: () => void;
   onAccept: () => void;
   onDecline: () => void;
+  onOpenThread: () => void;
 }) {
   const worth = job.course_hours != null && job.offered_rate != null
     ? Number(job.course_hours) * Number(job.offered_rate)
@@ -876,6 +879,26 @@ function JobDetailSheet({
               </div>
             )
           )}
+
+          <button
+            onClick={onOpenThread}
+            style={{
+              marginTop: 12,
+              width: "100%",
+              background: "#F3F8FF",
+              color: BLUE,
+              border: "1px solid #CCE0FA",
+              borderRadius: 10,
+              padding: "12px 16px",
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: "pointer",
+              textAlign: "center",
+              ...POPPINS,
+            }}
+          >
+            Message admin
+          </button>
         </div>
 
         <div style={{
