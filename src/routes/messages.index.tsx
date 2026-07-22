@@ -66,6 +66,26 @@ interface LocalMessage {
   instructors?: { name: string | null; profile_image_url: string | null } | null;
 }
 
+interface JobMessage {
+  id: string;
+  job_offer_id: string;
+  sender_type: string;
+  sender_id: string | null;
+  message: string;
+  created_at: string;
+  read_by_admin?: boolean | null;
+}
+
+interface JobThreadRow {
+  job_offer_id: string;
+  pupil_name: string | null;
+  last_message: string;
+  last_created_at: string;
+  last_sender_type: string;
+  unread: boolean;
+}
+
+
 function timeAgo(iso: string) {
   const d = new Date(iso).getTime();
   const diff = Date.now() - d;
