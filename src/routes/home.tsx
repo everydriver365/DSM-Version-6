@@ -2566,6 +2566,16 @@ function HomePage() {
       } catch {
         setOpenJobsCount(0);
       }
+      try {
+        const { count: claimedCount } = await supabase
+          .from("job_offers")
+          .select("id", { count: "exact", head: true })
+          .eq("claimed_by", user.id)
+          .eq("contact_released", false);
+        setClaimedAwaitingPaymentCount(claimedCount ?? 0);
+      } catch {
+        setClaimedAwaitingPaymentCount(0);
+      }
 
       // Upcoming tests list for the bottom sheet and the alert strip
       const now = new Date();
