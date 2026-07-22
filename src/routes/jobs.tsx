@@ -641,8 +641,18 @@ function JobDetailSheet({
           {job.special_requirements && (
             <Row label="Special requirements" value={job.special_requirements} />
           )}
-          {job.pupil_phone && <Row label="Phone" value={job.pupil_phone} />}
-          {job.pupil_email && <Row label="Email" value={job.pupil_email} />}
+          {job.contact_released ? (
+            <>
+              {job.pupil_phone && <Row label="Phone" value={job.pupil_phone} />}
+              {job.pupil_email && <Row label="Email" value={job.pupil_email} />}
+            </>
+          ) : (
+            (job.pupil_phone || job.pupil_email) && (
+              <div style={{ padding: "12px 0", fontSize: 12, color: GREY, fontStyle: "italic" }}>
+                Contact details available once payment is received
+              </div>
+            )
+          )}
         </div>
 
         <div style={{
