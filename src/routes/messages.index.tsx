@@ -411,14 +411,14 @@ function MessagesIndexPage() {
           const instructorName =
             (instructor as { name: string | null } | null)?.name ?? "Instructor";
           toast(`New message from ${instructorName} re: ${pupilName}`);
-          if (activeTab === "admin") loadAdminThreads();
+          loadAdminThreads();
         },
       )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [isAdmin, activeTab]);
+  }, [isAdmin]);
 
   const filteredAdmin = useMemo(() => {
     const q = adminQuery.trim().toLowerCase();
