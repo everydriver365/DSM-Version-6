@@ -107,6 +107,7 @@ import {
   Video,
   Radio,
   Shield,
+  ShieldAlert,
   Mic,
 } from "lucide-react";
 import {
@@ -4329,6 +4330,7 @@ function HomePage() {
     { icon: <BarChart2 size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Reports", route: "/reports" },
     { icon: <TrendingUp size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Performance", route: "/performance" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Tests", route: "/tests" },
+    { icon: <ShieldAlert size={20} color="#FFFFFF" />, bg: "#B5661E", label: "DVSA risk", route: "/tests" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Test day", route: "/testday" },
     { icon: <Trophy size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Rewards", route: "/rewards" },
     { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
