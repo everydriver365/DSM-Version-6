@@ -333,71 +333,72 @@ function JobsPage() {
                 onClick={() => setDetailJob(job)}
                 style={{
                   background: "#FFFFFF",
-                  borderRadius: 12,
+                  borderRadius: 14,
                   boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  padding: 14,
+                  overflow: "hidden",
                   cursor: "pointer",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 8 }}>
-                  <div style={{ fontSize: 11, color: GREY, fontWeight: 500 }}>
-                    Posted {relTime(job.created_at)}
-                  </div>
-                  {badge && (
-                    <div style={{
-                      fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.3,
-                      color: badge.color, background: badge.bg, padding: "4px 8px", borderRadius: 999, whiteSpace: "nowrap",
-                    }}>
-                      {badge.label}
-                    </div>
-                  )}
-                </div>
-
-                <div style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>
-                  {job.pupil_name || "New pupil"}
-                </div>
-                <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>
-                  {[
-                    job.postcode_area,
-                    distanceMi != null ? `${distanceMi.toFixed(1)} mi away` : null,
-                    job.transmission,
-                    job.course_hours ? `${job.course_hours} hrs` : null,
-                    job.preferred_timing?.join(", "),
-                  ].filter(Boolean).join(" · ")}
-                </div>
-
-                <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>
-                    {job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : "Rate TBC"}
+                <div
+                  style={{
+                    background: BLUE,
+                    padding: "10px 16px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#FFFFFF" }}>
+                    JOB OFFER · Posted {relTime(job.created_at)}
                   </div>
                   {worth != null && (
-                    <div style={{ fontSize: 12, color: GREEN, fontWeight: 600 }}>
-                      Worth £{worth.toFixed(2)}
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#FFFFFF" }}>
+                      £{worth.toFixed(2)}
                     </div>
                   )}
                 </div>
 
-                <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); setDeclinedIds((prev) => new Set(prev).add(job.id)); }}
-                    style={{
-                      flex: 1, background: "#F3F4F6", color: NAVY, border: "none", borderRadius: 8,
-                      padding: "10px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer",
-                    }}
-                  >
-                    Decline
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); setDetailJob(job); }}
-                    style={{
-                      flex: 1, background: BLUE, color: "#FFF", border: "none", borderRadius: 8,
-                      padding: "10px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer",
-                    }}
-                  >
-                    More details
-                  </button>
+                <div style={{ padding: 16 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>
+                    {job.pupil_name || "New pupil"} · {job.postcode_area}
+                  </div>
+                  <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>
+                    {[
+                      job.transmission,
+                      job.course_hours ? `${job.course_hours} hrs` : null,
+                      job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : null,
+                      distanceMi != null ? `${distanceMi.toFixed(1)} mi away` : null,
+                      job.preferred_timing?.join(", "),
+                    ].filter(Boolean).join(" · ")}
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12 }}>
+                    {badge ? (
+                      <div style={{
+                        fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.3,
+                        color: badge.color, background: badge.bg, padding: "4px 8px", borderRadius: 999, whiteSpace: "nowrap",
+                      }}>
+                        {badge.label}
+                      </div>
+                    ) : <div />}
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); setDetailJob(job); }}
+                      style={{
+                        background: NAVY,
+                        color: "#FFF",
+                        height: 42,
+                        borderRadius: 10,
+                        padding: "0 18px",
+                        border: "none",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                      }}
+                    >
+                      More details
+                    </button>
+                  </div>
                 </div>
               </div>
             );
