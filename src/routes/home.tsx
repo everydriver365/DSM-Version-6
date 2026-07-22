@@ -6762,6 +6762,17 @@ function HomePage() {
                                     onClick={(ev) => {
                                       ev.stopPropagation();
                                       setActionsOpenForLesson(null);
+                                      navigate({ to: '/lessons/edit/$id', params: { id: l.id } });
+                                    }}
+                                  >
+                                    Edit lesson
+                                  </button>
+                                  <button
+                                    type="button"
+                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                                    onClick={(ev) => {
+                                      ev.stopPropagation();
+                                      setActionsOpenForLesson(null);
                                       setMovingLessonHome(l);
                                       setMoveModeHome(true);
                                       const firstName = (l.pupils as any)?.name?.split(' ')[0] || 'this lesson';
