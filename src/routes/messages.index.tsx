@@ -1,10 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, MessageCircle, Search, Edit3, Send, Flag } from "lucide-react";
+import { ArrowLeft, MessageCircle, Search, Edit3, Send, Flag, X, Briefcase } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import BottomNav from "../components/dsm/BottomNav";
 import { PageLayout } from "@/components/PageLayout";
+import { useAdminGate } from "./admin";
+
 
 
 export const Route = createFileRoute("/messages/")({
