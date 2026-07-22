@@ -497,9 +497,11 @@ function MessagesIndexPage() {
           zIndex: 9,
         }}
       >
-        {(["pupils", "local"] as const).map((tab) => {
+        {((["pupils", "local", ...(isAdmin ? ["admin"] : [])] as const) as ("pupils" | "local" | "admin")[]).map((tab) => {
           const active = activeTab === tab;
-          const label = tab === "pupils" ? "Pupils" : "Local chat";
+          const label = tab === "pupils" ? "Pupils" : tab === "local" ? "Local chat" : "Admin";
+          const badge =
+            tab === "local" ? unreadLocal : tab === "admin" ? unreadAdmin : 0;
           return (
             <button
               key={tab}
@@ -523,7 +525,7 @@ function MessagesIndexPage() {
               }}
             >
               {label}
-              {tab === "local" && unreadLocal > 0 && (
+              {badge > 0 && (
                 <span
                   style={{
                     background: "#CC2229",
@@ -536,12 +538,13 @@ function MessagesIndexPage() {
                     lineHeight: 1,
                   }}
                 >
-                  {unreadLocal}
+                  {badge}
                 </span>
               )}
             </button>
           );
         })}
+
       </div>
 
       {activeTab === "pupils" ? (
