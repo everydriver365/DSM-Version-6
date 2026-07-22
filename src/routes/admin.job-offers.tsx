@@ -161,11 +161,11 @@ function AdminJobOffers() {
     if (claimedIds.length) {
       const { data: instr } = await supabase
         .from("instructors")
-        .select("id, full_name")
+        .select("id, name")
         .in("id", claimedIds);
       const map: Record<string, string> = {};
       (instr ?? []).forEach((i: any) => {
-        map[i.id] = i.full_name ?? i.id;
+        map[i.id] = i.name ?? i.id;
       });
       setInstructorNames(map);
     }
