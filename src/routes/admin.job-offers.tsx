@@ -691,6 +691,39 @@ function AdminJobOffers() {
                 </FieldLabel>
               </div>
 
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                <FieldLabel label="Amount paid">
+                  <input
+                    type="number"
+                    step="0.01"
+                    min={0}
+                    value={form.amount_paid ?? ""}
+                    onChange={(e) => setForm({ ...form, amount_paid: e.target.value ? Number(e.target.value) : null })}
+                    style={inputStyle()}
+                  />
+                </FieldLabel>
+                <FieldLabel label="Payment method">
+                  <select
+                    value={form.payment_method ?? "None"}
+                    onChange={(e) => setForm({ ...form, payment_method: e.target.value })}
+                    style={inputStyle()}
+                  >
+                    {PAYMENT_METHODS.map((m) => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
+                  </select>
+                </FieldLabel>
+              </div>
+
+              <FieldLabel label="Special requirements">
+                <input
+                  value={form.special_requirements ?? ""}
+                  onChange={(e) => setForm({ ...form, special_requirements: e.target.value })}
+                  placeholder="e.g. Pickup from school, nervous driver, has own car"
+                  style={inputStyle()}
+                />
+              </FieldLabel>
+
               <button
                 type="button"
                 onClick={save}
