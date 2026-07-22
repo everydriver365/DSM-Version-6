@@ -1226,8 +1226,38 @@ function LogResultSheet({
             }}
           />
         </div>
+
+        <button
+          type="button"
+          onClick={() => setShowDl25(true)}
+          className="w-full flex items-center justify-center text-[13px] font-semibold"
+          style={{
+            height: 44,
+            borderRadius: 10,
+            border: "1px dashed #1877D6",
+            color: "#1877D6",
+            background: "#F4F8FE",
+            ...POPPINS,
+          }}
+        >
+          Fill in DL25 form
+        </button>
       </div>
     </SheetShell>
+    {showDl25 && (
+      <DL25Sheet
+        pupilId={test.pupil_id}
+        testDate={test.test_date}
+        onClose={() => setShowDl25(false)}
+        onSaved={(totals) => {
+          setMinorFaults(String(totals.minor));
+          setSeriousFaults(String(totals.serious));
+          setDangerousFaults(String(totals.dangerous));
+          setShowDl25(false);
+        }}
+      />
+    )}
+    </>
   );
 }
 
