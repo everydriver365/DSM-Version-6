@@ -1029,3 +1029,413 @@ function LocalChatView(props: {
     </div>
   );
 }
+
+function AdminJobInbox(props: {
+  threads: JobThreadRow[];
+  loading: boolean;
+  query: string;
+  setQuery: (v: string) => void;
+  onOpen: (jobId: string) => void;
+}) {
+  const { threads, loading, query, setQuery, onOpen } = props;
+  return (
+    <>
+      <div style={{ padding: "16px 16px 0" }}>
+        <div
+          style={{
+            background: "#FFFFFF",
+            borderRadius: 12,
+            padding: "12px 16px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            marginBottom: 16,
+          }}
+        >
+          <Search size={18} color="#8A93A3" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search job threads"
+            style={{
+              fontSize: 14,
+              border: 0,
+              background: "transparent",
+              outline: "none",
+              flex: 1,
+              width: "100%",
+              ...FONT,
+              color: "#0B1F3A",
+            }}
+          />
+        </div>
+      </div>
+      <div style={{ padding: "0 16px" }}>
+        {loading ? (
+          <div
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 14,
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              padding: 24,
+              textAlign: "center",
+              color: "#8A93A3",
+              fontSize: 13,
+            }}
+          >
+            Loading…
+          </div>
+        ) : threads.length === 0 ? (
+          <div
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 14,
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "56px 24px",
+              gap: 6,
+            }}
+          >
+            <Briefcase size={40} color="#D0D5DD" />
+            <div style={{ fontSize: 14, color: "#8A93A3" }}>No job conversations</div>
+          </div>
+        ) : (
+          threads.map((t) => {
+            const bg = avatarColor(t.job_offer_id);
+            const name = t.pupil_name || "Job enquiry";
+            return (
+              <div
+                key={t.job_offer_id}
+                onClick={() => onOpen(t.job_offer_id)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "14px 16px",
+                  cursor: "pointer",
+                  background: "#FFFFFF",
+                  borderRadius: 14,
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                  marginBottom: 10,
+                }}
+              >
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: "50%",
+                    background: bg,
+                    color: "#FFFFFF",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <Briefcase size={18} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: 3,
+                      gap: 8,
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 500,
+                        color: "#0B1F3A",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        minWidth: 0,
+                        flex: 1,
+                      }}
+                    >
+                      {name}
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+                      <span style={{ fontSize: 12, color: "#8A93A3" }}>
+                        {timeAgo(t.last_created_at)}
+                      </span>
+                      {t.unread && (
+                        <span
+                          aria-label="unread"
+                          style={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: "50%",
+                            background: "#1877D6",
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      color: t.unread ? "#0B1F3A" : "#5A6270",
+                      fontWeight: t.unread ? 500 : 400,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {t.last_sender_type === "admin" ? "You: " : t.last_sender_type === "instructor" ? "Instructor: " : ""}
+                    {t.last_message}
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+    </>
+  );
+}
+
+function AdminJobThreadSheet({
+  jobId,
+  uid,
+  onClose,
+}: {
+  jobId: string;
+  uid: string | null;
+  onClose: () => void;
+}) {
+  const [messages, setMessages] = useState<JobMessage[] | null>(null);
+  const [jobLabel, setJobLabel] = useState<string>("");
+  const [draft, setDraft] = useState("");
+  const [sending, setSending] = useState(false);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  const loadMessages = async () => {
+    const { data } = await supabase
+      .from("job_offer_messages")
+      .select("*")
+      .eq("job_offer_id", jobId)
+      .order("created_at", { ascending: true });
+    setMessages((data ?? []) as JobMessage[]);
+    setTimeout(() => {
+      scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
+    }, 50);
+  };
+
+  useEffect(() => {
+    (async () => {
+      const { data: job } = await supabase
+        .from("job_offers")
+        .select("pupil_name, postcode_area, status")
+        .eq("id", jobId)
+        .maybeSingle();
+      if (job) {
+        setJobLabel(
+          [job.pupil_name || "Job enquiry", job.postcode_area, job.status]
+            .filter(Boolean)
+            .join(" · "),
+        );
+      }
+      await loadMessages();
+      // Mark instructor-sent messages as read by admin
+      await supabase
+        .from("job_offer_messages")
+        .update({ read_by_admin: true })
+        .eq("job_offer_id", jobId)
+        .eq("sender_type", "instructor")
+        .eq("read_by_admin", false);
+    })();
+  }, [jobId]);
+
+  const send = async () => {
+    const text = draft.trim();
+    if (!text || !uid || sending) return;
+    setSending(true);
+    const { error } = await supabase.from("job_offer_messages").insert({
+      job_offer_id: jobId,
+      sender_type: "admin",
+      sender_id: uid,
+      message: text,
+      read_by_admin: true,
+    });
+    setSending(false);
+    if (error) {
+      toast.error("Message failed to send");
+      return;
+    }
+    setDraft("");
+    loadMessages();
+  };
+
+  const fmtTime = (iso: string) =>
+    new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.4)",
+        zIndex: 100,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-end",
+      }}
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "#F3F8FF",
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+          maxHeight: "85vh",
+          display: "flex",
+          flexDirection: "column",
+          ...FONT,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "14px 16px",
+            borderBottom: "1px solid #E5E7EB",
+            background: "#fff",
+            borderTopLeftRadius: 16,
+            borderTopRightRadius: 16,
+          }}
+        >
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A" }}>Job thread</div>
+            <div style={{ fontSize: 11, color: "#8A93A3" }}>{jobLabel || "…"}</div>
+          </div>
+          <button
+            onClick={onClose}
+            style={{ padding: 6, background: "transparent", border: "none", cursor: "pointer" }}
+            aria-label="Close"
+          >
+            <X size={20} color="#8A93A3" />
+          </button>
+        </div>
+        <div
+          ref={scrollRef}
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            padding: 16,
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+          }}
+        >
+          {messages === null ? (
+            <div style={{ color: "#8A93A3", fontSize: 13, textAlign: "center", padding: 20 }}>
+              Loading…
+            </div>
+          ) : messages.length === 0 ? (
+            <div style={{ color: "#8A93A3", fontSize: 13, textAlign: "center", padding: 20 }}>
+              No messages yet.
+            </div>
+          ) : (
+            messages.map((m) => {
+              const mine = m.sender_type === "admin";
+              const bg = mine ? "#1877D6" : m.sender_type === "instructor" ? "#fff" : "#FEF3C7";
+              const color = mine ? "#fff" : "#0B1F3A";
+              return (
+                <div
+                  key={m.id}
+                  style={{ display: "flex", justifyContent: mine ? "flex-end" : "flex-start" }}
+                >
+                  <div
+                    style={{
+                      maxWidth: "78%",
+                      background: bg,
+                      color,
+                      borderRadius: 14,
+                      padding: "8px 12px",
+                      fontSize: 14,
+                      boxShadow: mine ? "none" : "0 1px 2px rgba(0,0,0,0.05)",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: 10,
+                        opacity: 0.7,
+                        marginBottom: 2,
+                        textTransform: "uppercase",
+                        letterSpacing: 0.3,
+                      }}
+                    >
+                      {m.sender_type}
+                    </div>
+                    <div style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{m.message}</div>
+                    <div style={{ fontSize: 10, opacity: 0.7, marginTop: 2, textAlign: "right" }}>
+                      {fmtTime(m.created_at)}
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            padding: 12,
+            borderTop: "1px solid #E5E7EB",
+            background: "#fff",
+            paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
+          }}
+        >
+          <input
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") send();
+            }}
+            placeholder="Reply as admin…"
+            style={{
+              flex: 1,
+              background: "#F3F4F6",
+              border: "none",
+              borderRadius: 20,
+              padding: "10px 14px",
+              fontSize: 16,
+              outline: "none",
+              ...FONT,
+            }}
+          />
+          <button
+            onClick={send}
+            disabled={!draft.trim() || sending}
+            style={{
+              background: "#1877D6",
+              color: "#fff",
+              border: "none",
+              borderRadius: 20,
+              width: 40,
+              height: 40,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: draft.trim() ? "pointer" : "not-allowed",
+              opacity: draft.trim() ? 1 : 0.5,
+            }}
+          >
+            <Send size={16} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
