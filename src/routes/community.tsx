@@ -890,6 +890,7 @@ function ChatTab({
   instructorOutcode: string | null;
 }) {
   const [room, setRoom] = useState<ChatRoom | null>(null);
+  const [noRoom, setNoRoom] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const listRef = useRef<HTMLDivElement | null>(null);
@@ -909,20 +910,18 @@ function ChatTab({
       const outcode = scope === "uk" ? "UK" : instructorOutcode!;
       const areaName = scope === "uk" ? "All UK ADIs" : instructorArea;
 
-      let { data: roomRow } = await supabase
+      const { data: roomRow } = await supabase
         .from("local_chat_rooms")
         .select("*")
         .eq("outcode", outcode)
         .maybeSingle();
+      if (cancelled) return;
       if (!roomRow) {
-        const { data: created } = await supabase
-          .from("local_chat_rooms")
-          .insert({ area_name: areaName, outcode, instructor_count: 1 })
-          .select()
-          .maybeSingle();
-        roomRow = created;
+        setNoRoom(true);
+        setRoom(null);
+        return;
       }
-      if (cancelled || !roomRow) return;
+      setNoRoom(false);
       setRoom(roomRow as ChatRoom);
 
       const { data: msgs } = await supabase
@@ -1005,7 +1004,17 @@ function ChatTab({
         ref={listRef}
         style={{ flex: 1, overflowY: "auto", padding: 16, display: "flex", flexDirection: "column" }}
       >
-        {messages.length === 0 ? (
+        {noRoom ? (
+          <div style={{ marginTop: 60, textAlign: "center", padding: "0 24px" }}>
+            <MessageSquare size={40} color="#D1D5DB" style={{ margin: "0 auto 12px" }} />
+            <div style={{ fontWeight: 600, color: "#6B7280" }}>
+              No chat room yet for your area
+            </div>
+            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4, lineHeight: 1.5 }}>
+              Check back soon, or contact support.
+            </div>
+          </div>
+        ) : messages.length === 0 ? (
           <div style={{ marginTop: 40, textAlign: "center" }}>
             <div style={{ fontWeight: 600, color: "#6B7280" }}>Be the first to chat in {areaLabel}!</div>
             <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>
@@ -1096,22 +1105,24 @@ function ChatTab({
               send();
             }
           }}
-          placeholder={`Message ${areaLabel} ADIs...`}
+          disabled={noRoom || !room}
+          placeholder={noRoom ? "No room available yet" : `Message ${areaLabel} ADIs...`}
           style={{
             flex: 1, background: "#F7FAFC", border: "0.5px solid #E2E6ED",
             borderRadius: 20, padding: "10px 14px", fontSize: 13, outline: "none",
+            opacity: noRoom || !room ? 0.6 : 1,
           }}
         />
         <button
           type="button"
           onClick={send}
-          disabled={!newMessage.trim() || !room}
+          disabled={noRoom || !newMessage.trim() || !room}
           aria-label="Send"
           style={{
             width: 36, height: 36, borderRadius: "50%", border: "none",
-            background: newMessage.trim() && room ? "#0F2044" : "#E5E7EB",
+            background: !noRoom && newMessage.trim() && room ? "#0F2044" : "#E5E7EB",
             color: "white", display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: newMessage.trim() && room ? "pointer" : "not-allowed", flexShrink: 0,
+            cursor: !noRoom && newMessage.trim() && room ? "pointer" : "not-allowed", flexShrink: 0,
           }}
         >
           <Send size={16} />
