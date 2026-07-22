@@ -637,6 +637,7 @@ function JobsPage() {
             setJobs((prev) => (prev ?? []).filter((j) => j.id !== detailJob.id));
             setDetailJob(null);
           }}
+          onOpenThread={() => { setThreadJob(detailJob); setDetailJob(null); }}
         />
       )}
 
@@ -797,11 +798,13 @@ function JobDetailSheet({
   onClose,
   onAccept,
   onDecline,
+  onOpenThread,
 }: {
   job: JobOffer;
   onClose: () => void;
   onAccept: () => void;
   onDecline: () => void;
+  onOpenThread: () => void;
 }) {
   const worth = job.course_hours != null && job.offered_rate != null
     ? Number(job.course_hours) * Number(job.offered_rate)
