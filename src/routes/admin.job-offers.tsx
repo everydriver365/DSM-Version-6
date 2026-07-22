@@ -47,6 +47,9 @@ type JobOffer = {
   centre_lat: number | null;
   centre_lng: number | null;
   offered_rate: number | null;
+  amount_paid: number | null;
+  payment_method: string | null;
+  special_requirements: string | null;
   expires_at: string | null;
   status: string;
   created_at: string;
