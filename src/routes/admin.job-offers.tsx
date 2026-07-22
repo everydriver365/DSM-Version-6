@@ -205,6 +205,29 @@ function AdminJobOffers() {
     setLinkedEnquiry(null);
     setEnquiryQuery("");
     setEnquiryResults([]);
+    setEditingOffer(null);
+    setShowSheet(true);
+  };
+
+  const openEdit = async (offer: JobOffer) => {
+    setForm({
+      ...offer,
+      preferred_start_date: toDateInputValue(offer.preferred_start_date),
+      expires_at: toDatetimeLocalValue(offer.expires_at),
+    });
+    setEnquiryQuery("");
+    setEnquiryResults([]);
+    if (offer.enquiry_id) {
+      const { data } = await supabase
+        .from("enquiries")
+        .select("*")
+        .eq("id", offer.enquiry_id)
+        .single();
+      setLinkedEnquiry((data as Enquiry | null) ?? null);
+    } else {
+      setLinkedEnquiry(null);
+    }
+    setEditingOffer(offer);
     setShowSheet(true);
   };
 
