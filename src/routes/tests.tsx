@@ -1044,6 +1044,8 @@ function LogResultSheet({
         dangerous_faults: dangerous,
         examiner_took_action: tookAction,
         test_status: result === "Pass" ? "passed" : "failed",
+        test_vehicle_owner: vehicleOwner,
+        test_transmission: transmission,
       })
       .eq("id", test.pupil_id);
     if (pupilErr) console.error("[tests] pupil update error", pupilErr);
