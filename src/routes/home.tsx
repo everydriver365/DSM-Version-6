@@ -5284,52 +5284,48 @@ function HomePage() {
                 </div>
               )}
 
-              {/* Stats row — pupil avatar + drive / distance / weather / ETA */}
-              {upcoming && (
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: 10,
-                  padding: '10px 14px', borderBottom: '1px solid #EEF2F7',
-                  background: '#F8F9FB',
-                  fontFamily: 'Inter, sans-serif',
-                }}>
+              {/* Header row — avatar + NEXT LESSON label / name / subtitle + status pill */}
+              {upcoming && (() => {
+                const hStatus = (upcoming.payment_status ?? 'unpaid').toLowerCase();
+                const hLabel = hStatus === 'paid' ? 'Paid' : hStatus === 'prepaid' ? 'Prepaid' : hStatus === 'partial' ? 'Partial' : hStatus === 'cancelled' ? 'Cancelled' : 'Due';
+                const hPositive = hStatus === 'paid' || hStatus === 'prepaid';
+                const hPillBg = hPositive ? '#E7F4E8' : hStatus === 'partial' ? '#FFF4E0' : hStatus === 'cancelled' ? '#EEF2F7' : '#FDECEC';
+                const hPillFg = hPositive ? '#2F7A3A' : hStatus === 'partial' ? '#8A5A00' : hStatus === 'cancelled' ? '#5A6270' : '#CC2229';
+                return (
                   <div style={{
-                    width: 36, height: 36, borderRadius: '50%',
-                    background: pupilCalColour, color: '#FFFFFF',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 12, fontWeight: 700, flexShrink: 0,
-                    marginTop: -22, border: '3px solid #FFFFFF',
-                    position: 'relative', zIndex: 2,
-                  }}>{pupilInitials}</div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6, flex: 1, minWidth: 0 }}>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.1 }}>
-                        {driveData ? (driveData.durationMinutes >= 60 ? `${Math.floor(driveData.durationMinutes / 60)}h ${driveData.durationMinutes % 60}m` : `${driveData.durationMinutes} min`) : '—'}
+                    display: 'flex', alignItems: 'center', gap: 14,
+                    padding: '10px 16px 14px',
+                    fontFamily: 'Inter, sans-serif',
+                  }}>
+                    <div style={{
+                      width: 64, height: 64, borderRadius: '50%',
+                      background: pupilCalColour, color: '#FFFFFF',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 22, fontWeight: 700, flexShrink: 0,
+                      marginTop: -32, border: '4px solid #FFFFFF',
+                      position: 'relative', zIndex: 2,
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                    }}>{pupilInitials}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: '#1877D6', letterSpacing: 1, textTransform: 'uppercase' }}>
+                        Next Lesson
                       </div>
-                      <div style={{ fontSize: 9, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 2 }}>Drive</div>
-                    </div>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.1 }}>
-                        {driveData?.distanceText ?? '—'}
+                      <div style={{ fontSize: 22, fontWeight: 800, color: '#0B1F3A', lineHeight: 1.15, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {pupilFullName || 'Pupil'}
                       </div>
-                      <div style={{ fontSize: 9, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 2 }}>Distance</div>
-                    </div>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.1 }}>
-                        {weatherData ? `${weatherData.tempC}°` : '—'}
-                      </div>
-                      <div style={{ fontSize: 9, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {weatherCondition || 'Weather'}
+                      <div style={{ fontSize: 14, color: '#8A93A3', marginTop: 2 }}>
+                        Lesson
                       </div>
                     </div>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: isLate ? '#C23B3B' : '#0B1F3A', lineHeight: 1.1 }}>
-                        {etaLabel ?? '—'}
-                      </div>
-                      <div style={{ fontSize: 9, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 2 }}>ETA</div>
-                    </div>
+                    <span style={{
+                      background: hPillBg, color: hPillFg,
+                      fontSize: 13, fontWeight: 600,
+                      padding: '7px 16px', borderRadius: 999,
+                      flexShrink: 0,
+                    }}>{hLabel}</span>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Reasons row (only when late and at least one true) */}
               {anyReason && (
@@ -5357,65 +5353,58 @@ function HomePage() {
           );
         })()}
 
-        {/* Details row */}
+        {/* Pickup + stats */}
         {upcoming ? (() => {
           const d = lessonDateTime(upcoming);
-          const endD = new Date(d.getTime() + (upcoming.duration_minutes ?? 0) * 60000);
           const fmt = (x: Date) => `${String(x.getHours()).padStart(2, '0')}:${String(x.getMinutes()).padStart(2, '0')}`;
-          const timeRange = `${fmt(d)} – ${fmt(endD)}`;
-          const dateText = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
-          const status = (upcoming.payment_status ?? 'unpaid').toLowerCase();
-          const amount = Number(upcoming.amount_due ?? 0);
-          const priceStr = `£${amount.toFixed(2)}`;
-          const paidLabel = status === 'paid' ? 'Paid' : status === 'prepaid' ? 'Prepaid' : status === 'partial' ? 'Partial' : status === 'cancelled' ? 'Cancelled' : 'Due';
-          const isPositive = status === 'paid' || status === 'prepaid';
-          const pillBg = isPositive ? '#EAF3DE' : status === 'partial' ? '#FFF4E0' : status === 'cancelled' ? '#EEF2F7' : '#FDECEC';
-          const pillColor = isPositive ? '#3B6D11' : status === 'partial' ? '#8A5A00' : status === 'cancelled' ? '#5A6270' : '#CC2229';
-          const amountColor = isPositive ? '#2E9E5B' : status === 'partial' ? '#8A5A00' : status === 'cancelled' ? '#5A6270' : '#CC2229';
-          const postcode = upcoming.pickup_location || upcoming.pupils?.address || upcoming.pupils?.postcode || 'No pickup';
+          const startText = fmt(d);
+          const dateShort = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric' });
+          const dur = upcoming.duration_minutes ?? 0;
+          const durText = dur >= 60
+            ? (dur % 60 === 0 ? `${dur / 60} hr` : `${Math.floor(dur / 60)}h ${dur % 60}m`)
+            : `${dur} min`;
+          const pickup = upcoming.pickup_location || upcoming.pupils?.address || upcoming.pupils?.postcode || 'No pickup';
+          let etaText = '—';
+          if (driveData) {
+            const nowMs = Date.now();
+            const msUntilStart = d.getTime() - nowMs;
+            if (msUntilStart > 0 && msUntilStart <= 12 * 60 * 60 * 1000) {
+              const etaMs = nowMs + driveData.durationMinutes * 60000;
+              etaText = new Date(etaMs).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+            }
+          }
+          const StatCol = ({ emoji, label, value }: { emoji: string; label: string; value: string }) => (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, minWidth: 0 }}>
+              <div style={{ fontSize: 22, lineHeight: 1 }}>{emoji}</div>
+              <div style={{ fontSize: 10, fontWeight: 600, color: '#8A93A3', letterSpacing: 0.6, textTransform: 'uppercase' }}>{label}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>{value}</div>
+            </div>
+          );
           return (
             <div
               onClick={() => navigate({ to: '/pupils/$id', params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any })}
-              style={{ display: 'flex', cursor: 'pointer', padding: 10, gap: 10, alignItems: 'center' }}
+              style={{ cursor: 'pointer', padding: '0 16px 14px', fontFamily: 'Inter, sans-serif' }}
             >
-              {/* Info column */}
-              <div style={{ flex: 1, minWidth: 0, padding: '4px 0', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {pupilName(upcoming)}
-                </div>
-                {dateText && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
-                    <span style={{ width: 16, height: 16, borderRadius: '50%', border: '1.5px solid #1877D6', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <Calendar size={9} color="#1877D6" />
-                    </span>
-                    <span style={{ fontSize: 13, color: '#0B1F3A', fontWeight: 500 }}>{dateText}</span>
-                  </div>
-                )}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
-                  <span style={{ width: 16, height: 16, borderRadius: '50%', border: '1.5px solid #1877D6', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Clock size={9} color="#1877D6" />
-                  </span>
-                  <span style={{ fontSize: 13, color: '#0B1F3A', fontWeight: 500 }}>{timeRange}</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, minWidth: 0 }}>
-                  <span style={{ width: 16, height: 16, borderRadius: '50%', border: '1.5px solid #1877D6', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <MapPin size={9} color="#1877D6" />
-                  </span>
-                  <span style={{ fontSize: 12, color: '#5A6270', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{postcode}</span>
+              {/* Pickup card */}
+              <div style={{
+                display: 'flex', alignItems: 'flex-start', gap: 10,
+                background: '#EEF3FB', borderRadius: 12, padding: '12px 14px',
+              }}>
+                <div style={{ fontSize: 18, lineHeight: 1, marginTop: 2 }}>📍</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#5A6270', letterSpacing: 0.8, textTransform: 'uppercase' }}>Pick up</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#0B1F3A', marginTop: 2, wordBreak: 'break-word' }}>{pickup}</div>
                 </div>
               </div>
-
-              {/* Price column */}
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center', flexShrink: 0 }}>
-                <div style={{ fontSize: 16, fontWeight: 700, color: amountColor, lineHeight: 1 }}>{priceStr}</div>
-                <span style={{
-                  marginTop: 6,
-                  background: pillBg, color: pillColor,
-                  fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase',
-                  padding: '3px 10px', borderRadius: 999,
-                }}>
-                  {paidLabel}
-                </span>
+              {/* Stats grid */}
+              <div style={{
+                marginTop: 16,
+                display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8,
+              }}>
+                <StatCol emoji="📅" label="Date" value={dateShort} />
+                <StatCol emoji="🕐" label="Time" value={startText} />
+                <StatCol emoji="⏱️" label="Duration" value={durText} />
+                <StatCol emoji="🧭" label="ETA" value={etaText} />
               </div>
             </div>
           );
@@ -5438,35 +5427,36 @@ function HomePage() {
               toast('No pickup location');
             }
           };
+          const secondaryBtn: React.CSSProperties = {
+            flex: 1, background: '#FFFFFF', color: '#0B1F3A',
+            border: '1px solid #E3E8F0', borderRadius: 12, padding: '13px 0',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+          };
           return (
-            <div style={{ padding: '0 10px 8px', display: 'flex', gap: 8 }}>
+            <div style={{ padding: '0 16px 16px', display: 'flex', gap: 10 }}>
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); openMaps(); }}
                 style={{
-                  flex: '0 0 33%', background: '#1877D6', color: '#FFFFFF',
-                  border: 'none', borderRadius: 10, padding: '9px 0',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-                  fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                  flex: 1, background: '#1877D6', color: '#FFFFFF',
+                  border: 'none', borderRadius: 12, padding: '13px 0',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                  fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                  boxShadow: '0 1px 3px rgba(24,119,214,0.3)',
                 }}
               >
-                <Navigation size={13} color="#FFFFFF" /> Navigate
+                <span style={{ fontSize: 15 }}>▶</span> Navigate
               </button>
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-
                   navigate({ to: '/messages/$pupilId', params: { pupilId: upcoming.pupil_id } as any });
                 }}
-                style={{
-                  flex: 1, background: '#EAF3FB', color: '#1877D6',
-                  border: 'none', borderRadius: 10, padding: '9px 0',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-                  fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-                }}
+                style={secondaryBtn}
               >
-                <MessageSquare size={13} color="#1877D6" /> Text
+                <span style={{ fontSize: 15 }}>💬</span> Text
               </button>
               <button
                 type="button"
@@ -5475,18 +5465,14 @@ function HomePage() {
                   if (!phone) { toast('No phone number'); return; }
                   window.location.href = `tel:${phone}`;
                 }}
-                style={{
-                  flex: 1, background: '#EAF3FB', color: '#1877D6',
-                  border: 'none', borderRadius: 10, padding: '9px 0',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-                  fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-                }}
+                style={secondaryBtn}
               >
-                <Phone size={13} color="#1877D6" /> Call
+                <span style={{ fontSize: 15 }}>📞</span> Call
               </button>
             </div>
           );
         })()}
+
 
         {/* Expand footer */}
         {upcoming && (
