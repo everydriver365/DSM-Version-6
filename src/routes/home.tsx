@@ -5276,10 +5276,15 @@ function HomePage() {
               {/* Header row — avatar + NEXT LESSON label / name / subtitle + status pill */}
               {upcoming && (() => {
                 const hStatus = (upcoming.payment_status ?? 'unpaid').toLowerCase();
-                const hLabel = hStatus === 'paid' ? 'Paid' : hStatus === 'prepaid' ? 'Prepaid' : hStatus === 'partial' ? 'Partial' : hStatus === 'cancelled' ? 'Cancelled' : 'Due';
-                const hPositive = hStatus === 'paid' || hStatus === 'prepaid';
-                const hPillBg = hPositive ? '#E7F4E8' : hStatus === 'partial' ? '#FFF4E0' : hStatus === 'cancelled' ? '#EEF2F7' : '#FDECEC';
-                const hPillFg = hPositive ? '#2F7A3A' : hStatus === 'partial' ? '#8A5A00' : hStatus === 'cancelled' ? '#5A6270' : '#CC2229';
+                const hAmountDue = Number(upcoming.amount_due ?? 0);
+                const hIsPositive = hStatus === 'paid' || hStatus === 'prepaid';
+                const hLabel = hAmountDue > 0
+                  ? `£${hAmountDue.toFixed(0)} due`
+                  : hStatus === 'prepaid'
+                    ? 'Prepaid'
+                    : 'Paid';
+                const hPillBg = hAmountDue > 0 ? '#FDECEC' : '#E7F4E8';
+                const hPillFg = hAmountDue > 0 ? '#CC2229' : '#2F7A3A';
                 return (
                   <div style={{
                     display: 'flex', alignItems: 'center', gap: 12,
