@@ -392,14 +392,25 @@ function MessagesIndexPage() {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "job_offer_messages", filter: "sender_type=eq.instructor" },
         async (payload) => {
-          const row = payload.new as { job_offer_id: string };
-          const { data: job } = await supabase
-            .from("job_offers")
-            .select("pupil_name")
-            .eq("id", row.job_offer_id)
-            .maybeSingle();
+          const row = payload.new as { job_offer_id: string; sender_id: string | null };
+          const [{ data: job }, { data: instructor }] = await Promise.all([
+            supabase
+              .from("job_offers")
+              .select("pupil_name")
+              .eq("id", row.job_offer_id)
+              .maybeSingle(),
+            row.sender_id
+              ? supabase
+                  .from("instructors")
+                  .select("name")
+                  .eq("id", row.sender_id)
+                  .maybeSingle()
+              : Promise.resolve({ data: null }),
+          ]);
           const pupilName = (job as { pupil_name: string | null } | null)?.pupil_name ?? "pupil";
-          toast(`New message from ${pupilName} re: job offer`);
+          const instructorName =
+            (instructor as { name: string | null } | null)?.name ?? "Instructor";
+          toast(`New message from ${instructorName} re: ${pupilName}`);
           if (activeTab === "admin") loadAdminThreads();
         },
       )
