@@ -786,7 +786,7 @@ function AdminJobOffers() {
                   opacity: saving ? 0.6 : 1, marginTop: 6,
                 }}
               >
-                {saving ? "Saving…" : "Create job offer"}
+                {saving ? "Saving…" : editingOffer ? "Save changes" : "Create job offer"}
               </button>
             </div>
           </div>
