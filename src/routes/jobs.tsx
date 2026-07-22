@@ -235,7 +235,17 @@ function JobsPage() {
 
     // Create a Ryft payment link and text it to the pupil.
     try {
-      const amountPence = Math.round((job.course_hours ?? 0) * (job.offered_rate ?? 0) * 100);
+      const worth = (job.course_hours ?? 0) * (job.offered_rate ?? 0);
+      const alreadyPaid = job.amount_paid != null ? Number(job.amount_paid) : 0;
+      const outstanding = Math.max(0, worth - alreadyPaid);
+      const amountPence = Math.round(outstanding * 100);
+
+      if (amountPence < 3) {
+        toast.success("Job claimed! No outstanding balance — no payment link needed.");
+        load();
+        return;
+      }
+
       const { data: paymentData, error: payError } = await supabase.functions.invoke("create-ryft-payment", {
         body: {
           amount: amountPence,
