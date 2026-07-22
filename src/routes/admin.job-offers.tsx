@@ -50,6 +50,11 @@ type JobOffer = {
   amount_paid: number | null;
   payment_method: string | null;
   special_requirements: string | null;
+  test_booked: boolean | null;
+  test_date: string | null;
+  test_time: string | null;
+  test_centre: string | null;
+  wants_swap_list: boolean | null;
   expires_at: string | null;
   status: string;
   created_at: string;
