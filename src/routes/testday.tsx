@@ -127,9 +127,9 @@ function TestDayPage() {
       setTest(t);
 
       if (t) {
-        setResult((t.result as "Pass" | "Fail" | null) ?? null);
-        setFaults(t.faults != null ? String(t.faults) : "");
-        setNotes(t.result_notes ?? "");
+        setResult((t.test_status as "Pass" | "Fail" | null) ?? null);
+        setFaults(t.minor_faults != null ? String(t.minor_faults) : "");
+        setNotes("");
 
         // Lesson same day for this pupil
         const { data: lessons } = await supabase
