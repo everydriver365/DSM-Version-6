@@ -73,13 +73,13 @@ function OutstandingPage() {
       const ago30d = ymd(new Date(today.getTime() - 30 * 86400000));
 
       const [debtRes, testRes, enqRes, docRes, certRes, todoRes, pupilRes] = await Promise.all([
+        supabase.from("lessons")
+          .select("pupil_id, amount_due, pupils(name, phone)")
+          .eq("instructor_id", uid).eq("payment_status", "unpaid")
+          .neq("status", "cancelled").gt("amount_due", 0).is("deleted_at", null),
         supabase.from("pupils")
-          .select("id, name, phone, balance_owed")
-          .eq("instructor_id", uid).is("deleted_at", null)
-          .gt("balance_owed", 0).order("balance_owed", { ascending: false }),
-        supabase.from("driving_tests")
-          .select("id, test_date, test_centre, pupils(name)")
-          .eq("instructor_id", uid)
+          .select("id, name, test_date, test_centre")
+          .eq("instructor_id", uid).not("test_date", "is", null)
           .gte("test_date", todayYmd).lte("test_date", in7)
           .order("test_date", { ascending: true }),
         supabase.from("enquiries")
