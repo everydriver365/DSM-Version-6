@@ -37,14 +37,16 @@ const CHECKLIST_ITEMS = [
 
 interface DrivingTest {
   id: string;
-  pupil_id: string;
+  name: string;
   test_date: string;
   test_time: string | null;
   test_centre: string | null;
-  result: string | null;
-  faults: number | null;
-  result_notes: string | null;
-  pupils: { id: string; name: string } | null;
+  test_status: string | null;
+  examiner_first_name: string | null;
+  examiner_surname: string | null;
+  minor_faults: number | null;
+  serious_faults: number | null;
+  dangerous_faults: number | null;
 }
 
 interface LessonRow {
