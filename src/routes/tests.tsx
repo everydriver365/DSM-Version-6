@@ -1542,14 +1542,16 @@ function dl25AllKeys(manoeuvreSlug: string): string[] {
   return keys;
 }
 
-function DL25Sheet({
+export function DL25Sheet({
   pupilId,
   testDate,
+  mode = "real",
   onClose,
   onSaved,
 }: {
   pupilId: string;
   testDate: string;
+  mode?: "real" | "mock";
   onClose: () => void;
   onSaved: (totals: { minor: number; serious: number; dangerous: number }) => void;
 }) {
@@ -1585,31 +1587,63 @@ function DL25Sheet({
     const fullMarks: FaultMarks = {};
     for (const k of allKeys) fullMarks[k] = marks[k] ?? null;
     fullMarks["manoeuvres_selected"] = null;
-    const payload: Record<string, unknown> = {
-      pupil_id: pupilId,
-      test_date: testDate,
-      fault_marks: { ...fullMarks, manoeuvres_selected: manoeuvre },
-    };
-    const { error: insertErr } = await supabase.from("dl25_reports").insert(payload);
-    if (insertErr) console.error("[dl25] insert error", insertErr);
+    const fault_marks = { ...fullMarks, manoeuvres_selected: manoeuvre };
 
-    const { error: pupilErr } = await supabase
-      .from("pupils")
-      .update({
+    if (mode === "real") {
+      const payload: Record<string, unknown> = {
+        pupil_id: pupilId,
+        test_date: testDate,
+        fault_marks,
+      };
+      const { error: insertErr } = await supabase.from("dl25_reports").insert(payload);
+      if (insertErr) console.error("[dl25] insert error", insertErr);
+
+      const { error: pupilErr } = await supabase
+        .from("pupils")
+        .update({
+          minor_faults: t.minor,
+          serious_faults: t.serious,
+          dangerous_faults: t.dangerous,
+        })
+        .eq("id", pupilId);
+      if (pupilErr) console.error("[dl25] pupil update error", pupilErr);
+
+      setSaving(false);
+      if (insertErr) {
+        toast.error("Couldn't save DL25");
+        return;
+      }
+      toast.success("DL25 saved");
+      onSaved(t);
+    } else {
+      const { data: userData } = await supabase.auth.getUser();
+      const instructor_id = userData.user?.id;
+      if (!instructor_id) {
+        setSaving(false);
+        toast.error("Not signed in");
+        return;
+      }
+
+      const { error } = await supabase.from("mock_test_results").insert({
+        pupil_id: pupilId,
+        instructor_id,
+        test_date: testDate,
+        result: null,
+        fault_marks,
         minor_faults: t.minor,
         serious_faults: t.serious,
         dangerous_faults: t.dangerous,
-      })
-      .eq("id", pupilId);
-    if (pupilErr) console.error("[dl25] pupil update error", pupilErr);
+      });
+      if (error) console.error("[mock-test] insert error", error);
 
-    setSaving(false);
-    if (insertErr) {
-      toast.error("Couldn't save DL25");
-      return;
+      setSaving(false);
+      if (error) {
+        toast.error("Couldn't save mock test");
+        return;
+      }
+      toast.success("Mock test saved");
+      onSaved(t);
     }
-    toast.success("DL25 saved");
-    onSaved(t);
   }
 
   const t = totals();
