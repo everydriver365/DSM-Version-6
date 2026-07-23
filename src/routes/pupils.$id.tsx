@@ -3165,7 +3165,9 @@ function PupilDetailPage() {
           onUpdated={(patch) => setPupil((p) => (p ? { ...p, ...patch } : p))}
         />
       )}
+        </>)}
       <ConfirmDialog
+
         open={removeOpen}
         title={`Remove ${pupil?.name ?? "pupil"}?`}
         message={`${pupil?.name ?? "They"} will be marked inactive and hidden from all lists.`}
