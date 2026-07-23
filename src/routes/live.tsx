@@ -1035,6 +1035,24 @@ function LivePage() {
             Export as PDF
           </button>
           <button
+            onClick={() => exportReportPdf(r, true)}
+            style={{
+              marginTop: 10,
+              width: "100%",
+              padding: "14px 16px",
+              borderRadius: 10,
+              border: "1px solid #1877D6",
+              backgroundColor: "#1877D6",
+              color: "#fff",
+              fontSize: 15,
+              fontWeight: 700,
+              cursor: "pointer",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            }}
+          >
+            Export as PDF (detailed)
+          </button>
+          <button
             onClick={finishReport}
             style={{
               marginTop: 10,
