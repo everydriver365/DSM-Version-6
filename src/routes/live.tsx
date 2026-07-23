@@ -298,8 +298,10 @@ function LivePage() {
       const r = await fetch(url);
       const j = await r.json();
       const props = j?.route?.[0]?.properties;
-      const sl = props?.speedLimits?.[0]?.value;
-      const unit = props?.speedLimits?.[0]?.unit;
+      // TomTom returns speedLimits as either an object {value,unit} or an array of them.
+      const slRaw = Array.isArray(props?.speedLimits) ? props?.speedLimits?.[0] : props?.speedLimits;
+      const sl = slRaw?.value;
+      const unit = slRaw?.unit;
       if (typeof sl === "number") {
         // imperial requested → expect mph; convert if API returns km/h.
         limit =
