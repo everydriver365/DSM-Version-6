@@ -1228,74 +1228,114 @@ function PupilDetailPage() {
                   </label>
                 </div>
 
-                {/* Balance + Practical test tiles */}
+                {/* 3-up hero stat row: Balance | Hours remaining | Days to test */}
                 {(() => {
                   const outstanding = liveOwed ?? 0;
                   const credit = Number(pupil.account_balance ?? 0);
                   const net = outstanding - credit;
-                  const balanceColor = net > 0 ? "#EF4444" : net < 0 ? "#22C55E" : "#FFFFFF";
+                  const balanceColor = net > 0 ? "#CC2229" : net < 0 ? "#16A34A" : "#0B1F3A";
                   const balanceValue =
                     net > 0
                       ? `£${net.toFixed(2)}`
                       : net < 0
                         ? `£${Math.abs(net).toFixed(2)}`
                         : "All paid";
-                  const testValue = pupil.test_date ? formatTestDate(pupil.test_date) : "No test";
-                  const testSub = pupil.test_date
-                    ? [
-                        pupil.test_time ? formatTime(pupil.test_time) : null,
-                        centreInfo?.name || pupil.test_centre || null,
-                      ]
-                        .filter(Boolean)
-                        .join(" · ") || undefined
-                    : undefined;
+                  const hoursRemaining = Math.max(
+                    0,
+                    Number(pupil.prepaid_hours ?? 0) - hoursCompleted,
+                  );
+                  const hoursValue = hoursRemaining.toFixed(1);
+                  const today = ymd(new Date());
+                  let testValue = "Not booked";
+                  let testColor = "#6B7280";
+                  if (pupil.test_date) {
+                    const d = daysBetween(today, pupil.test_date);
+                    if (d === 0) {
+                      testValue = "Today";
+                      testColor = "#1877D6";
+                    } else if (d === 1) {
+                      testValue = "Tomorrow";
+                      testColor = "#1877D6";
+                    } else if (d < 0) {
+                      testValue = "Passed?";
+                      testColor = "#6B7280";
+                    } else {
+                      testValue = `${d} days`;
+                      testColor = "#0B1F3A";
+                    }
+                  }
                   return (
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-3 gap-2">
                       <button
                         type="button"
-                        onClick={() => navigate({ to: "/pupils/payments/$id", params: { id } })}
-                        className="text-left rounded-xl p-4"
-                        style={{ backgroundColor: "#0B1F3A" }}
+                        onClick={() => setActiveTab("payments")}
+                        className="text-left rounded-xl p-3 border active:scale-[0.98] transition-transform"
+                        style={{
+                          backgroundColor: "#FFFFFF",
+                          borderColor: "#E2E6ED",
+                          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                        }}
                       >
                         <p
                           className="text-[10px] font-bold uppercase tracking-widest"
-                          style={{ color: "rgba(255,255,255,0.5)", ...POPPINS }}
+                          style={{ color: "#6B7280", ...POPPINS }}
                         >
-                          Account balance
+                          Balance
                         </p>
                         <p
-                          className="text-[20px] font-bold mt-1"
+                          className="text-[18px] font-bold mt-1 leading-tight truncate"
                           style={{ color: balanceColor, ...POPPINS }}
                         >
                           {balanceValue}
                         </p>
                       </button>
                       <div
-                        className="rounded-xl p-4 border"
-                        style={{ backgroundColor: "#F9FAFB", borderColor: "#F1F5F9" }}
+                        className="rounded-xl p-3 border"
+                        style={{
+                          backgroundColor: "#FFFFFF",
+                          borderColor: "#E2E6ED",
+                          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                        }}
                       >
                         <p
-                          className="text-[10px] text-slate-400 font-bold uppercase tracking-widest"
-                          style={POPPINS}
+                          className="text-[10px] font-bold uppercase tracking-widest"
+                          style={{ color: "#6B7280", ...POPPINS }}
                         >
-                          Practical test
+                          Hours remaining
                         </p>
                         <p
-                          className="text-[14px] font-semibold text-[#0B1F3A] mt-1 leading-tight"
-                          style={POPPINS}
+                          className="text-[18px] font-bold mt-1 leading-tight truncate"
+                          style={{ color: "#0B1F3A", ...POPPINS }}
+                        >
+                          {hoursValue}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveTab("profile");
+                          setPracticalEditing(true);
+                        }}
+                        className="text-left rounded-xl p-3 border active:scale-[0.98] transition-transform"
+                        style={{
+                          backgroundColor: "#FFFFFF",
+                          borderColor: "#E2E6ED",
+                          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                        }}
+                      >
+                        <p
+                          className="text-[10px] font-bold uppercase tracking-widest"
+                          style={{ color: "#6B7280", ...POPPINS }}
+                        >
+                          Days to test
+                        </p>
+                        <p
+                          className="text-[18px] font-bold mt-1 leading-tight truncate"
+                          style={{ color: testColor, ...POPPINS }}
                         >
                           {testValue}
                         </p>
-                        {testSub && (
-                          <p
-                            className="text-[11px] text-slate-500 truncate mt-0.5"
-                            style={POPPINS}
-                            title={testSub}
-                          >
-                            {testSub}
-                          </p>
-                        )}
-                      </div>
+                      </button>
                     </div>
                   );
                 })()}
