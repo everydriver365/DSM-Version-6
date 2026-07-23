@@ -119,6 +119,26 @@ function LivePage() {
   const [activePupilId, setActivePupilId] = useState<string | null>(null);
   const [trackingPupilName, setTrackingPupilName] = useState<string | null>(null);
 
+  interface ReportSegment {
+    road_name: string;
+    distance_miles: number;
+    speed_limit_mph: number | null;
+    max_speed_mph: number;
+    avg_speed_mph: number;
+    exceeded: boolean;
+  }
+  interface ReportData {
+    pupilName: string;
+    totalDistanceMiles: number;
+    totalDurationSec: number;
+    overallMaxSpeed: number;
+    overspeedCount: number;
+    segments: ReportSegment[];
+    lessonId: string | null;
+  }
+  const [showReport, setShowReport] = useState(false);
+  const [reportData, setReportData] = useState<ReportData | null>(null);
+
   interface PickerPupil {
     id: string;
     name: string | null;
