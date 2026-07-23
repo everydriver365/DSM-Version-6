@@ -6672,6 +6672,27 @@ function HomePage() {
                               <div style={{ fontSize: 14, fontWeight: 500, color: isCancelled ? '#6B7280' : '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
                                 {name}
                               </div>
+                              {!isCancelled && priceNode && (
+                                <span style={{
+                                  display: 'inline-block',
+                                  marginTop: 3,
+                                  fontSize: 11,
+                                  fontWeight: 700,
+                                  padding: '2px 9px',
+                                  borderRadius: 999,
+                                  ...(isLive ? {
+                                    background: '#E6F1FB', color: '#1877D6',
+                                  } : isPrepaidPupil || isPaid ? {
+                                    background: '#E7F5EE', color: '#1E8E3E',
+                                  } : dueUnpaid ? {
+                                    background: '#FCEBEB', color: '#CC2229',
+                                  } : {
+                                    background: '#E7F5EE', color: '#1E8E3E',
+                                  }),
+                                }}>
+                                  {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
+                                </span>
+                              )}
                               {isCancelled ? (
                                 <span style={{
                                   display: 'inline-block',
