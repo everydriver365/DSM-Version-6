@@ -687,45 +687,8 @@ function LivePage() {
 
     // Build report by grouping consecutive points sharing road_name
     const pts = coordsRef.current;
-    const segments: ReportSegment[] = [];
-    let group: Coord[] = [];
-    const flush = () => {
-      if (group.length === 0) return;
-      let dKm = 0;
-      for (let i = 1; i < group.length; i++) {
-        dKm += haversineKm(group[i - 1], { lat: group[i].lat, lng: group[i].lng });
-      }
-      const speeds = group.map((p) => p.speed_mph).filter((s) => s > 0);
-      const max = speeds.length ? Math.max(...speeds) : 0;
-      const avg = speeds.length ? speeds.reduce((a, b) => a + b, 0) / speeds.length : 0;
-      const limit = group.find((p) => p.speed_limit_mph != null)?.speed_limit_mph ?? null;
-      const exceeded = limit != null && group.some((p) => p.speed_mph > limit);
-      segments.push({
-        road_name: group[0].road_name ?? "Unknown road",
-        distance_miles: dKm * 0.621371,
-        speed_limit_mph: limit,
-        max_speed_mph: max,
-        avg_speed_mph: avg,
-        exceeded,
-        points: group.map((p) => ({
-          timestamp: p.timestamp,
-          speed_mph: p.speed_mph,
-          over: limit != null && p.speed_mph > limit,
-        })),
-      });
-    };
-    for (const p of pts) {
-      if (group.length === 0 || (group[group.length - 1].road_name ?? null) === (p.road_name ?? null)) {
-        group.push(p);
-      } else {
-        flush();
-        group = [p];
-      }
-    }
-    flush();
+    const { segments, overallMaxSpeed: overallMax } = buildTripReport(pts);
 
-    const allSpeeds = pts.map((p) => p.speed_mph).filter((s) => s > 0);
-    const overallMax = allSpeeds.length ? Math.max(...allSpeeds) : 0;
     const pupilName =
       trackingPupilName ??
       activeLesson?.pupils?.name ??
