@@ -127,6 +127,7 @@ import { Route as DrivingTestPupilIdRouteImport } from './routes/driving-test.$p
 import { Route as CoursesNewRouteImport } from './routes/courses.new'
 import { Route as CoursesIdRouteImport } from './routes/courses.$id'
 import { Route as BookingsIdRouteImport } from './routes/bookings.$id'
+import { Route as AdminTermsRouteImport } from './routes/admin.terms'
 import { Route as AdminPodcastsRouteImport } from './routes/admin.podcasts'
 import { Route as AdminListingsRouteImport } from './routes/admin.listings'
 import { Route as AdminJobOffersRouteImport } from './routes/admin.job-offers'
@@ -737,6 +738,11 @@ const BookingsIdRoute = BookingsIdRouteImport.update({
   path: '/bookings/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminTermsRoute = AdminTermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPodcastsRoute = AdminPodcastsRouteImport.update({
   id: '/podcasts',
   path: '/podcasts',
@@ -939,6 +945,7 @@ export interface FileRoutesByFullPath {
   '/admin/job-offers': typeof AdminJobOffersRoute
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
+  '/admin/terms': typeof AdminTermsRoute
   '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
@@ -1075,6 +1082,7 @@ export interface FileRoutesByTo {
   '/admin/job-offers': typeof AdminJobOffersRoute
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
+  '/admin/terms': typeof AdminTermsRoute
   '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
@@ -1216,6 +1224,7 @@ export interface FileRoutesById {
   '/admin/job-offers': typeof AdminJobOffersRoute
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
+  '/admin/terms': typeof AdminTermsRoute
   '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
@@ -1357,6 +1366,7 @@ export interface FileRouteTypes {
     | '/admin/job-offers'
     | '/admin/listings'
     | '/admin/podcasts'
+    | '/admin/terms'
     | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
@@ -1493,6 +1503,7 @@ export interface FileRouteTypes {
     | '/admin/job-offers'
     | '/admin/listings'
     | '/admin/podcasts'
+    | '/admin/terms'
     | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
@@ -1633,6 +1644,7 @@ export interface FileRouteTypes {
     | '/admin/job-offers'
     | '/admin/listings'
     | '/admin/podcasts'
+    | '/admin/terms'
     | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
@@ -2623,6 +2635,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookingsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/terms': {
+      id: '/admin/terms'
+      path: '/terms'
+      fullPath: '/admin/terms'
+      preLoaderRoute: typeof AdminTermsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/podcasts': {
       id: '/admin/podcasts'
       path: '/podcasts'
@@ -2793,6 +2812,7 @@ interface AdminRouteChildren {
   AdminJobOffersRoute: typeof AdminJobOffersRoute
   AdminListingsRoute: typeof AdminListingsRoute
   AdminPodcastsRoute: typeof AdminPodcastsRoute
+  AdminTermsRoute: typeof AdminTermsRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -2802,6 +2822,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminJobOffersRoute: AdminJobOffersRoute,
   AdminListingsRoute: AdminListingsRoute,
   AdminPodcastsRoute: AdminPodcastsRoute,
+  AdminTermsRoute: AdminTermsRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
