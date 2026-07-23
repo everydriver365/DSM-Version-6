@@ -2131,8 +2131,8 @@ function PupilDetailPage() {
           )}
         </div>
 
+        {(viewingReport || reportLoading) && (
         <BottomSheetV2
-          open={!!viewingReport || reportLoading}
           onClose={() => setViewingReport(null)}
           title="Lesson track"
         >
