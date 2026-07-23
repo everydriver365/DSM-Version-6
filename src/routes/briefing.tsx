@@ -143,7 +143,7 @@ function BriefingPage() {
 
       const [
         { data: lessonRows },
-        { data: pupilRows },
+        { data: unpaidLessonRows },
         { data: testRows },
         { data: enqRows },
         { data: docRows },
@@ -154,10 +154,12 @@ function BriefingPage() {
           .eq("instructor_id", uid).is("deleted_at", null)
           .neq("status", "cancelled").eq("lesson_date", today)
           .order("lesson_time", { ascending: true }),
-        supabase.from("pupils").select("id", { count: "exact", head: false })
-          .eq("instructor_id", uid).is("deleted_at", null).gt("balance_owed", 0),
-        supabase.from("driving_tests").select("id")
-          .eq("instructor_id", uid).gte("test_date", today).lte("test_date", in7),
+        supabase.from("lessons").select("pupil_id, amount_due")
+          .eq("instructor_id", uid).eq("payment_status", "unpaid")
+          .neq("status", "cancelled").gt("amount_due", 0).is("deleted_at", null),
+        supabase.from("pupils").select("id")
+          .eq("instructor_id", uid).not("test_date", "is", null)
+          .gte("test_date", today).lte("test_date", in7),
         supabase.from("enquiries").select("id")
           .eq("instructor_id", uid).eq("status", "new"),
         supabase.from("documents").select("id")
@@ -169,7 +171,7 @@ function BriefingPage() {
       ]);
 
       setLessons((lessonRows ?? []) as unknown as LessonRow[]);
-      setOutstandingCount((pupilRows ?? []).length);
+      setOutstandingCount(new Set((unpaidLessonRows ?? []).map((r: any) => r.pupil_id)).size);
       setUpcomingTests((testRows ?? []).length);
       setNewEnquiries((enqRows ?? []).length);
       setExpiringDocs((docRows ?? []).length);
