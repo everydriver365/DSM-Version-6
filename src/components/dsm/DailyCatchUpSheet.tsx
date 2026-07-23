@@ -61,7 +61,8 @@ export function DailyCatchUpSheet({
           background: "white",
           borderTopLeftRadius: 22,
           borderTopRightRadius: 22,
-          padding: "10px 20px 24px",
+          padding: "10px 20px 0",
+          paddingBottom: "calc(16px + env(safe-area-inset-bottom, 0px) + 64px)",
           boxShadow: "0 -4px 24px rgba(0,0,0,0.15)",
         }}
       >
