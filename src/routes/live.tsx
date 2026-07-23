@@ -126,6 +126,7 @@ function LivePage() {
     max_speed_mph: number;
     avg_speed_mph: number;
     exceeded: boolean;
+    points: { timestamp: number; speed_mph: number; over: boolean }[];
   }
   interface ReportData {
     pupilName: string;
@@ -138,6 +139,7 @@ function LivePage() {
   }
   const [showReport, setShowReport] = useState(false);
   const [reportData, setReportData] = useState<ReportData | null>(null);
+  const [expandedSegments, setExpandedSegments] = useState<Set<number>>(new Set());
 
   interface PickerPupil {
     id: string;
@@ -579,6 +581,11 @@ function LivePage() {
         max_speed_mph: max,
         avg_speed_mph: avg,
         exceeded,
+        points: group.map((p) => ({
+          timestamp: p.timestamp,
+          speed_mph: p.speed_mph,
+          over: limit != null && p.speed_mph > limit,
+        })),
       });
     };
     for (const p of pts) {
@@ -779,26 +786,50 @@ function LivePage() {
                 No segments recorded.
               </div>
             )}
-            {r.segments.map((seg, i) => (
-              <div key={i} style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB", borderRadius: 10, padding: 12, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                  <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {seg.road_name}
+            {r.segments.map((seg, i) => {
+              const isOpen = expandedSegments.has(i);
+              return (
+              <div key={i} style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.06)", overflow: "hidden" }}>
+                <button
+                  onClick={() => setExpandedSegments((prev) => { const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n; })}
+                  style={{ width: "100%", background: "transparent", border: "none", padding: 12, textAlign: "left", cursor: "pointer" }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {seg.road_name}
+                    </div>
+                    {seg.exceeded && (
+                      <span style={{ fontSize: 11, fontWeight: 700, color: "#fff", backgroundColor: "#CC2229", padding: "3px 8px", borderRadius: 999 }}>
+                        Exceeded
+                      </span>
+                    )}
+                    <span style={{ fontSize: 12, color: "#6B7280", marginLeft: 4 }}>{isOpen ? "▲" : "▼"}</span>
                   </div>
-                  {seg.exceeded && (
-                    <span style={{ fontSize: 11, fontWeight: 700, color: "#fff", backgroundColor: "#CC2229", padding: "3px 8px", borderRadius: 999 }}>
-                      Exceeded
-                    </span>
-                  )}
-                </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 8, fontSize: 12, color: "#374151" }}>
-                  <span><b style={{ color: "#0B1F3A" }}>{seg.distance_miles.toFixed(2)} mi</b></span>
-                  <span>Limit: <b style={{ color: "#0B1F3A" }}>{seg.speed_limit_mph != null ? `${seg.speed_limit_mph} mph` : "Not available"}</b></span>
-                  <span>Avg: <b style={{ color: "#0B1F3A" }}>{Math.round(seg.avg_speed_mph)} mph</b></span>
-                  <span>Max: <b style={{ color: seg.exceeded ? "#CC2229" : "#0B1F3A" }}>{Math.round(seg.max_speed_mph)} mph</b></span>
-                </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 8, fontSize: 12, color: "#374151" }}>
+                    <span><b style={{ color: "#0B1F3A" }}>{seg.distance_miles.toFixed(2)} mi</b></span>
+                    <span>Limit: <b style={{ color: "#0B1F3A" }}>{seg.speed_limit_mph != null ? `${seg.speed_limit_mph} mph` : "Not available"}</b></span>
+                    <span>Avg: <b style={{ color: "#0B1F3A" }}>{Math.round(seg.avg_speed_mph)} mph</b></span>
+                    <span>Max: <b style={{ color: seg.exceeded ? "#CC2229" : "#0B1F3A" }}>{Math.round(seg.max_speed_mph)} mph</b></span>
+                    <span style={{ color: "#6B7280" }}>{seg.points.length} pts</span>
+                  </div>
+                </button>
+                {isOpen && (
+                  <div style={{ borderTop: "1px solid #E5E7EB", backgroundColor: "#F9FAFB", maxHeight: 260, overflowY: "auto" }}>
+                    {seg.points.length === 0 ? (
+                      <div style={{ padding: 12, fontSize: 12, color: "#6B7280", textAlign: "center" }}>No points</div>
+                    ) : (
+                      seg.points.map((pt, j) => (
+                        <div key={j} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", borderTop: j === 0 ? "none" : "1px solid #F1F5F9", fontSize: 12, fontVariantNumeric: "tabular-nums" }}>
+                          <span style={{ color: "#374151" }}>{new Date(pt.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}</span>
+                          <span style={{ fontWeight: 600, color: pt.over ? "#CC2229" : "#0B1F3A" }}>{Math.round(pt.speed_mph)} mph</span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
               </div>
-            ))}
+              );
+            })}
           </div>
 
           <button
