@@ -95,7 +95,8 @@ function MockTestsPage() {
       .eq("instructor_id", uid)
       .order("test_date", { ascending: false });
     if (error) console.error("[mock-tests] results fetch error", error);
-    setResults((data ?? []) as MockTestResult[]);
+        setResults((data ?? []) as unknown as MockTestResult[]);
+
   }
 
   useEffect(() => {
