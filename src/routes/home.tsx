@@ -6694,12 +6694,6 @@ function HomePage() {
                                 </div>
                               )}
                             </div>
-                            {priceNode && (
-                              <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-                                {priceNode}
-                              </div>
-                            )}
-
                             <div
                               style={{
                                 position: 'relative',
