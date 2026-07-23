@@ -79,6 +79,7 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
   const [whatsNewItems, setWhatsNewItems] = useState<WhatsNewItem[]>([]);
   const [catchUpRows, setCatchUpRows] = useState<Row[]>([]);
   const [catchUpReady, setCatchUpReady] = useState(false);
+  const [catchUpHandled, setCatchUpHandled] = useState(false);
   const [whatsNewResolved, setWhatsNewResolved] = useState<"pending" | "dismissed" | "later" | "none">(
     "pending",
   );
@@ -146,11 +147,12 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
     if (
       (whatsNewResolved === "dismissed" || whatsNewResolved === "none") &&
       catchUpReady &&
-      catchUpRows.length > 0
+      catchUpRows.length > 0 &&
+      !catchUpHandled
     ) {
       setActive("catchUp");
     }
-  }, [userId, active, whatsNewResolved, whatsNewItems.length, catchUpReady, catchUpRows.length]);
+  }, [userId, active, whatsNewResolved, whatsNewItems.length, catchUpReady, catchUpRows.length, catchUpHandled]);
 
   if (!userId) return null;
 
@@ -189,8 +191,12 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
       <DailyCatchUpSheet
         rows={catchUpRows}
         title={title}
-        onDismiss={() => setActive("none")}
+        onDismiss={() => {
+          setCatchUpHandled(true);
+          setActive("none");
+        }}
         onRowClick={(to) => {
+          setCatchUpHandled(true);
           setActive("none");
           navigate({ to });
         }}
