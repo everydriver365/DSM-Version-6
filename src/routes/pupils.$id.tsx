@@ -461,6 +461,9 @@ function PupilDetailPage() {
       custom_rate: numOrNull(editDraft.custom_rate),
       custom_rate_90: numOrNull(editDraft.custom_rate_90),
       custom_rate_120: numOrNull(editDraft.custom_rate_120),
+      test_date: editDraft.test_date || null,
+      test_time: editDraft.test_time || null,
+      theory_pass: editDraft.theory_pass,
     };
 
     const { error } = await supabase.from("pupils").update(patch).eq("id", pupil.id);
