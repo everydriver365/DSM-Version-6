@@ -2228,6 +2228,7 @@ function PupilDetailPage() {
             </div>
           ) : null}
         </BottomSheetV2>
+        )}
 
 
         </>)}
