@@ -580,6 +580,11 @@ function LivePage() {
         max_speed_mph: max,
         avg_speed_mph: avg,
         exceeded,
+        points: group.map((p) => ({
+          timestamp: p.timestamp,
+          speed_mph: p.speed_mph,
+          over: limit != null && p.speed_mph > limit,
+        })),
       });
     };
     for (const p of pts) {
