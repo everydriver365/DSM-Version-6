@@ -3876,123 +3876,124 @@ function PupilExtras({
 
   return (
     <>
-      {/* Emergency contact */}
-      <div style={EXTRAS_CARD}>
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <Heart size={18} color="#CC2229" />
-            <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Emergency contact</span>
+      {/* Emergency contact + Driving licence */}
+      <div className="flex flex-wrap gap-3 mt-3">
+        <div className="flex-1 min-w-[160px]" style={{ ...EXTRAS_CARD, marginTop: 0 }}>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Heart size={18} color="#CC2229" />
+              <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Emergency contact</span>
+            </div>
+            {!editEmg && (
+              <button type="button" onClick={() => setEditEmg(true)} className="text-[12px] font-semibold" style={{ color: "#1877D6", ...POPPINS }}>
+                {pupil.emergency_contact_name ? "Edit" : "Add"}
+              </button>
+            )}
           </div>
-          {!editEmg && (
-            <button type="button" onClick={() => setEditEmg(true)} className="text-[12px] font-semibold" style={{ color: "#1877D6", ...POPPINS }}>
-              {pupil.emergency_contact_name ? "Edit" : "Add"}
-            </button>
+          {!editEmg ? (
+            pupil.emergency_contact_name ? (
+              <div>
+                <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>{pupil.emergency_contact_name}</div>
+                <div className="flex items-center gap-2 mt-1">
+                  <a href={`tel:${pupil.emergency_contact_phone ?? ""}`} className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
+                    {pupil.emergency_contact_phone}
+                  </a>
+                  {pupil.emergency_contact_relation && (
+                    <span className="text-[11px] px-2 py-0.5 rounded-full" style={{ background: "#EEF2F7", color: "#0B1F3A", ...POPPINS }}>
+                      {pupil.emergency_contact_relation}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>No emergency contact set</div>
+            )
+          ) : (
+            <div className="flex flex-col gap-2">
+              <input style={EXTRAS_INPUT} placeholder="Name" value={emgName} onChange={(e) => setEmgName(e.target.value)} />
+              <input style={EXTRAS_INPUT} placeholder="Phone" type="tel" value={emgPhone} onChange={(e) => setEmgPhone(e.target.value)} />
+              <select style={EXTRAS_INPUT} value={emgRel} onChange={(e) => setEmgRel(e.target.value)}>
+                {RELATIONS.map((r) => <option key={r} value={r}>{r}</option>)}
+              </select>
+              <div className="flex gap-2 mt-1">
+                <button type="button" onClick={saveEmg} disabled={savingEmg} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
+                  {savingEmg ? "Saving…" : "Save"}
+                </button>
+                <button type="button" onClick={() => setEditEmg(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
+                  Cancel
+                </button>
+              </div>
+            </div>
           )}
         </div>
-        {!editEmg ? (
-          pupil.emergency_contact_name ? (
+
+        <div className="flex-1 min-w-[160px]" style={{ ...EXTRAS_CARD, marginTop: 0 }}>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <CreditCard size={18} color="#1877D6" />
+              <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Driving licence</span>
+            </div>
+            {!editLic && (
+              <button type="button" onClick={() => setEditLic(true)} className="text-[12px] font-semibold" style={{ color: "#1877D6", ...POPPINS }}>
+                {pupil.driving_licence_number ? "Edit" : "Add"}
+              </button>
+            )}
+          </div>
+          {!editLic ? (
             <div>
-              <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>{pupil.emergency_contact_name}</div>
-              <div className="flex items-center gap-2 mt-1">
-                <a href={`tel:${pupil.emergency_contact_phone ?? ""}`} className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
-                  {pupil.emergency_contact_phone}
-                </a>
-                {pupil.emergency_contact_relation && (
-                  <span className="text-[11px] px-2 py-0.5 rounded-full" style={{ background: "#EEF2F7", color: "#0B1F3A", ...POPPINS }}>
-                    {pupil.emergency_contact_relation}
-                  </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="text-[14px] font-semibold tracking-wider" style={{ color: "#0B1F3A", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+                  {pupil.driving_licence_number ? pupil.driving_licence_number.toUpperCase().replace(/(.{5})(.{6})(.{5})/, "$1 $2 $3") : "Not set"}
+                </div>
+                {pupil.driving_licence_number && (
+                  pupil.driving_licence_checked ? (
+                    <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: "#DCFCE7", color: "#166534", ...POPPINS }}>
+                      Verified ✓
+                    </span>
+                  ) : (
+                    <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: "#FEF3C7", color: "#92400E", ...POPPINS }}>
+                      Unverified
+                    </span>
+                  )
                 )}
               </div>
+              <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={!!pupil.driving_licence_checked}
+                  onChange={(e) => toggleLicenceChecked(e.target.checked)}
+                  disabled={savingChecked}
+                  className="w-4 h-4"
+                  style={{ accentColor: "#1A52A0" }}
+                />
+                <span className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                  Licence checked and verified ✓
+                </span>
+              </label>
+              <button
+                type="button"
+                onClick={() => setRequestSheetOpen(true)}
+                className="mt-3 flex items-center gap-1.5 text-[13px] font-semibold"
+                style={{ color: "#1A52A0", ...POPPINS }}
+              >
+                Request DVLA check code
+                <ExternalLink size={14} />
+              </button>
             </div>
           ) : (
-            <div className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>No emergency contact set</div>
-          )
-        ) : (
-          <div className="flex flex-col gap-2">
-            <input style={EXTRAS_INPUT} placeholder="Name" value={emgName} onChange={(e) => setEmgName(e.target.value)} />
-            <input style={EXTRAS_INPUT} placeholder="Phone" type="tel" value={emgPhone} onChange={(e) => setEmgPhone(e.target.value)} />
-            <select style={EXTRAS_INPUT} value={emgRel} onChange={(e) => setEmgRel(e.target.value)}>
-              {RELATIONS.map((r) => <option key={r} value={r}>{r}</option>)}
-            </select>
-            <div className="flex gap-2 mt-1">
-              <button type="button" onClick={saveEmg} disabled={savingEmg} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
-                {savingEmg ? "Saving…" : "Save"}
-              </button>
-              <button type="button" onClick={() => setEditEmg(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
-                Cancel
-              </button>
+            <div className="flex flex-col gap-2">
+              <input style={EXTRAS_INPUT} placeholder="e.g. MORGA657054SM9IJ" value={licence} onChange={(e) => setLicence(e.target.value.toUpperCase())} maxLength={20} />
+              <div className="flex gap-2 mt-1">
+                <button type="button" onClick={saveLic} disabled={savingLic} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
+                  {savingLic ? "Saving…" : "Save"}
+                </button>
+                <button type="button" onClick={() => setEditLic(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
+                  Cancel
+                </button>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
-
-      {/* Driving licence */}
-      <div style={EXTRAS_CARD}>
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <CreditCard size={18} color="#1877D6" />
-            <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Driving licence</span>
-          </div>
-          {!editLic && (
-            <button type="button" onClick={() => setEditLic(true)} className="text-[12px] font-semibold" style={{ color: "#1877D6", ...POPPINS }}>
-              {pupil.driving_licence_number ? "Edit" : "Add"}
-            </button>
           )}
         </div>
-        {!editLic ? (
-          <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <div className="text-[14px] font-semibold tracking-wider" style={{ color: "#0B1F3A", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-                {pupil.driving_licence_number ? pupil.driving_licence_number.toUpperCase().replace(/(.{5})(.{6})(.{5})/, "$1 $2 $3") : "Not set"}
-              </div>
-              {pupil.driving_licence_number && (
-                pupil.driving_licence_checked ? (
-                  <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: "#DCFCE7", color: "#166534", ...POPPINS }}>
-                    Verified ✓
-                  </span>
-                ) : (
-                  <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: "#FEF3C7", color: "#92400E", ...POPPINS }}>
-                    Unverified
-                  </span>
-                )
-              )}
-            </div>
-            <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={!!pupil.driving_licence_checked}
-                onChange={(e) => toggleLicenceChecked(e.target.checked)}
-                disabled={savingChecked}
-                className="w-4 h-4"
-                style={{ accentColor: "#1A52A0" }}
-              />
-              <span className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
-                Licence checked and verified ✓
-              </span>
-            </label>
-            <button
-              type="button"
-              onClick={() => setRequestSheetOpen(true)}
-              className="mt-3 flex items-center gap-1.5 text-[13px] font-semibold"
-              style={{ color: "#1A52A0", ...POPPINS }}
-            >
-              Request DVLA check code
-              <ExternalLink size={14} />
-            </button>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-2">
-            <input style={EXTRAS_INPUT} placeholder="e.g. MORGA657054SM9IJ" value={licence} onChange={(e) => setLicence(e.target.value.toUpperCase())} maxLength={20} />
-            <div className="flex gap-2 mt-1">
-              <button type="button" onClick={saveLic} disabled={savingLic} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
-                {savingLic ? "Saving…" : "Save"}
-              </button>
-              <button type="button" onClick={() => setEditLic(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
       </div>
       {requestSheetOpen && (
         <div
