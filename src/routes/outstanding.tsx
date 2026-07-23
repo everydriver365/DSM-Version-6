@@ -111,11 +111,32 @@ function OutstandingPage() {
       if (certRes.error) console.error("[outstanding] certs", certRes.error);
       if (todoRes.error) console.error("[outstanding] todos", todoRes.error);
 
-      setDebts((debtRes.data ?? []) as PupilDebt[]);
-      setTests(((testRes.data ?? []) as unknown as Array<{ id: string; test_date: string; test_centre: string | null; pupils: { name: string } | { name: string }[] | null }>).map((t) => {
-        const p = Array.isArray(t.pupils) ? t.pupils[0] : t.pupils;
-        return { id: t.id, test_date: t.test_date, test_centre: t.test_centre, pupil_name: p?.name ?? null };
-      }));
+      const amountByPupil = new Map<string, { name: string; phone: string | null; amount: number }>();
+      (debtRes.data ?? []).forEach((l: any) => {
+        const p = Array.isArray(l.pupils) ? l.pupils[0] : l.pupils;
+        const existing = amountByPupil.get(l.pupil_id);
+        if (existing) {
+          existing.amount += Number(l.amount_due || 0);
+        } else {
+          amountByPupil.set(l.pupil_id, {
+            name: p?.name ?? "Pupil",
+            phone: p?.phone ?? null,
+            amount: Number(l.amount_due || 0),
+          });
+        }
+      });
+      setDebts(
+        [...amountByPupil.entries()]
+          .filter(([_, d]) => d.amount > 0)
+          .map(([id, d]) => ({ id, name: d.name, phone: d.phone, balance_owed: d.amount }))
+          .sort((a, b) => b.balance_owed - a.balance_owed)
+      );
+      setTests(((testRes.data ?? []) as any[]).map((t) => ({
+        id: t.id,
+        test_date: t.test_date,
+        test_centre: t.test_centre,
+        pupil_name: t.name ?? null,
+      })) as TestRow[]);
       setEnquiries((enqRes.data ?? []) as EnquiryRow[]);
       setDocs((docRes.data ?? []) as DocRow[]);
       setCerts((certRes.data ?? []) as CertRow[]);
