@@ -126,6 +126,7 @@ function LivePage() {
     max_speed_mph: number;
     avg_speed_mph: number;
     exceeded: boolean;
+    points: { timestamp: number; speed_mph: number; over: boolean }[];
   }
   interface ReportData {
     pupilName: string;
