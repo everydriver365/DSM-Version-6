@@ -139,6 +139,7 @@ import { Route as MarketingHowItWorksRouteImport } from './routes/_marketing.how
 import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
 import { Route as MarketingContactRouteImport } from './routes/_marketing.contact'
 import { Route as MarketingAboutRouteImport } from './routes/_marketing.about'
+import { Route as TermsSignPupilIdRouteImport } from './routes/terms.sign.$pupilId'
 import { Route as PupilsSyllabusIdRouteImport } from './routes/pupils.syllabus.$id'
 import { Route as PupilsProgressIdRouteImport } from './routes/pupils.progress.$id'
 import { Route as PupilsPaymentsIdRouteImport } from './routes/pupils.payments.$id'
@@ -798,6 +799,11 @@ const MarketingAboutRoute = MarketingAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => MarketingRoute,
 } as any)
+const TermsSignPupilIdRoute = TermsSignPupilIdRouteImport.update({
+  id: '/sign/$pupilId',
+  path: '/sign/$pupilId',
+  getParentRoute: () => TermsRoute,
+} as any)
 const PupilsSyllabusIdRoute = PupilsSyllabusIdRouteImport.update({
   id: '/pupils/syllabus/$id',
   path: '/pupils/syllabus/$id',
@@ -924,7 +930,7 @@ export interface FileRoutesByFullPath {
   '/take-payment': typeof TakePaymentRoute
   '/tax': typeof TaxRoute
   '/tax-report': typeof TaxReportRoute
-  '/terms': typeof TermsRoute
+  '/terms': typeof TermsRouteWithChildren
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
@@ -983,6 +989,7 @@ export interface FileRoutesByFullPath {
   '/pupils/payments/$id': typeof PupilsPaymentsIdRoute
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
   '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
+  '/terms/sign/$pupilId': typeof TermsSignPupilIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -1061,7 +1068,7 @@ export interface FileRoutesByTo {
   '/take-payment': typeof TakePaymentRoute
   '/tax': typeof TaxRoute
   '/tax-report': typeof TaxReportRoute
-  '/terms': typeof TermsRoute
+  '/terms': typeof TermsRouteWithChildren
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
@@ -1120,6 +1127,7 @@ export interface FileRoutesByTo {
   '/pupils/payments/$id': typeof PupilsPaymentsIdRoute
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
   '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
+  '/terms/sign/$pupilId': typeof TermsSignPupilIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -1203,7 +1211,7 @@ export interface FileRoutesById {
   '/take-payment': typeof TakePaymentRoute
   '/tax': typeof TaxRoute
   '/tax-report': typeof TaxReportRoute
-  '/terms': typeof TermsRoute
+  '/terms': typeof TermsRouteWithChildren
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
@@ -1262,6 +1270,7 @@ export interface FileRoutesById {
   '/pupils/payments/$id': typeof PupilsPaymentsIdRoute
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
   '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
+  '/terms/sign/$pupilId': typeof TermsSignPupilIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -1404,6 +1413,7 @@ export interface FileRouteTypes {
     | '/pupils/payments/$id'
     | '/pupils/progress/$id'
     | '/pupils/syllabus/$id'
+    | '/terms/sign/$pupilId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1541,6 +1551,7 @@ export interface FileRouteTypes {
     | '/pupils/payments/$id'
     | '/pupils/progress/$id'
     | '/pupils/syllabus/$id'
+    | '/terms/sign/$pupilId'
   id:
     | '__root__'
     | '/'
@@ -1682,6 +1693,7 @@ export interface FileRouteTypes {
     | '/pupils/payments/$id'
     | '/pupils/progress/$id'
     | '/pupils/syllabus/$id'
+    | '/terms/sign/$pupilId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1765,7 +1777,7 @@ export interface RootRouteChildren {
   TakePaymentRoute: typeof TakePaymentRoute
   TaxRoute: typeof TaxRoute
   TaxReportRoute: typeof TaxReportRoute
-  TermsRoute: typeof TermsRoute
+  TermsRoute: typeof TermsRouteWithChildren
   TestdayRoute: typeof TestdayRoute
   TestsRoute: typeof TestsRoute
   TodosRoute: typeof TodosRoute
@@ -2719,6 +2731,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketingAboutRouteImport
       parentRoute: typeof MarketingRoute
     }
+    '/terms/sign/$pupilId': {
+      id: '/terms/sign/$pupilId'
+      path: '/sign/$pupilId'
+      fullPath: '/terms/sign/$pupilId'
+      preLoaderRoute: typeof TermsSignPupilIdRouteImport
+      parentRoute: typeof TermsRoute
+    }
     '/pupils/syllabus/$id': {
       id: '/pupils/syllabus/$id'
       path: '/pupils/syllabus/$id'
@@ -2869,6 +2888,16 @@ const QuotesRouteChildren: QuotesRouteChildren = {
 const QuotesRouteWithChildren =
   QuotesRoute._addFileChildren(QuotesRouteChildren)
 
+interface TermsRouteChildren {
+  TermsSignPupilIdRoute: typeof TermsSignPupilIdRoute
+}
+
+const TermsRouteChildren: TermsRouteChildren = {
+  TermsSignPupilIdRoute: TermsSignPupilIdRoute,
+}
+
+const TermsRouteWithChildren = TermsRoute._addFileChildren(TermsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MarketingRoute: MarketingRouteWithChildren,
@@ -2950,7 +2979,7 @@ const rootRouteChildren: RootRouteChildren = {
   TakePaymentRoute: TakePaymentRoute,
   TaxRoute: TaxRoute,
   TaxReportRoute: TaxReportRoute,
-  TermsRoute: TermsRoute,
+  TermsRoute: TermsRouteWithChildren,
   TestdayRoute: TestdayRoute,
   TestsRoute: TestsRoute,
   TodosRoute: TodosRoute,
