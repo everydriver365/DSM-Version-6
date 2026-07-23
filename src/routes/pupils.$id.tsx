@@ -383,7 +383,6 @@ function PupilDetailPage() {
     custom_rate_120: string;
     test_date: string;
     test_time: string;
-    theory_pass: boolean;
   }>({
     first_name: "",
     last_name: "",
@@ -402,7 +401,6 @@ function PupilDetailPage() {
     custom_rate_120: "",
     test_date: "",
     test_time: "",
-    theory_pass: false,
   });
 
 
@@ -427,7 +425,6 @@ function PupilDetailPage() {
       custom_rate_120: pupil.custom_rate_120 != null ? String(pupil.custom_rate_120) : "",
       test_date: pupil.test_date ?? "",
       test_time: pupil.test_time ? pupil.test_time.slice(0, 5) : "",
-      theory_pass: Boolean(pupil.theory_pass),
     });
     setEditSheetOpen(true);
   };
@@ -463,7 +460,6 @@ function PupilDetailPage() {
       custom_rate_120: numOrNull(editDraft.custom_rate_120),
       test_date: editDraft.test_date || null,
       test_time: editDraft.test_time || null,
-      theory_pass: editDraft.theory_pass,
     };
 
     const { error } = await supabase.from("pupils").update(patch).eq("id", pupil.id);
@@ -3454,26 +3450,6 @@ function PupilDetailPage() {
                   onChange={(e) => setEditDraft((d) => ({ ...d, test_time: e.target.value }))}
                   className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
                   style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
-                />
-              </label>
-            </div>
-
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-[12px] text-[#6B7280]">Theory test passed</span>
-              <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                <input
-                  type="checkbox"
-                  checked={editDraft.theory_pass}
-                  onChange={(e) => setEditDraft((d) => ({ ...d, theory_pass: e.target.checked }))}
-                  className="sr-only peer"
-                />
-                <div
-                  className="w-11 h-6 rounded-full transition-colors"
-                  style={{ backgroundColor: editDraft.theory_pass ? "#16A34A" : "#CBD5E1" }}
-                />
-                <div
-                  className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
-                  style={{ transform: editDraft.theory_pass ? "translateX(20px)" : "translateX(0)" }}
                 />
               </label>
             </div>
