@@ -1542,14 +1542,16 @@ function dl25AllKeys(manoeuvreSlug: string): string[] {
   return keys;
 }
 
-function DL25Sheet({
+export function DL25Sheet({
   pupilId,
   testDate,
+  mode = "real",
   onClose,
   onSaved,
 }: {
   pupilId: string;
   testDate: string;
+  mode?: "real" | "mock";
   onClose: () => void;
   onSaved: (totals: { minor: number; serious: number; dangerous: number }) => void;
 }) {
