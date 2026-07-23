@@ -1911,23 +1911,297 @@ function PupilDetailPage() {
           ))}
         </div>
 
-        {activeTab === "lessons" && (
-          <div
-            className="mt-3 text-center"
-            style={{
-              background: "#FFFFFF",
-              borderRadius: 16,
-              border: "0.5px solid #E2E6ED",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-              padding: "32px 16px",
-              color: "#6B7280",
-              fontSize: 14,
-              ...POPPINS,
-            }}
-          >
-            Coming in next update
+        {activeTab === "lessons" && (<>
+        <SectionHeader>UPCOMING LESSONS</SectionHeader>
+
+        {lessons === null ? null : lessons.length === 0 ? (
+          <div className="flex items-center justify-center py-12">
+            <p className="text-[14px] text-[#6B7280]" style={POPPINS}>
+              No upcoming lessons
+            </p>
+          </div>
+        ) : (
+          <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid rgba(11,31,58,0.10)" }}>
+            {lessons.map((l, idx) => {
+              const d = new Date(`${l.lesson_date}T00:00:00`);
+              const prev = idx > 0 ? lessons[idx - 1] : null;
+              const gapDays = prev ? daysBetween(prev.lesson_date, l.lesson_date) : 0;
+              const live = isLessonLive(l);
+              const past = isLessonPast(l);
+              const stored = Number(l.amount_due ?? 0);
+              const computed = resolveHourlyRate({
+                pupilCustomRate: pupil?.custom_rate ?? null,
+                pupilCustomRate90: pupil?.custom_rate_90 ?? null,
+                pupilCustomRate120: pupil?.custom_rate_120 ?? null,
+                pupilPostcode: pupil?.postcode ?? null,
+                instructorDefaultRate: instructorRate ?? null,
+                postcodeRates,
+                durationMinutes: Number(l.duration_minutes) || 60,
+              });
+              const price = computed > 0 ? computed : stored;
+              const isPaid = l.payment_status === "paid";
+              const unpaid = !isPaid && price > 0;
+              const showGap = gapDays > 7;
+              const colour = pupil?.calendar_colour || "#1A52A0";
+              const initials = (pupil?.name ?? "P").split(/\s+/).map((s) => s.charAt(0)).join("").slice(0, 2).toUpperCase();
+
+              return (
+                <Fragment key={l.id}>
+                  {showGap && (
+                    <div className="flex items-center justify-center py-3" style={{ borderTop: idx === 0 ? "none" : "0.5px solid rgba(11,31,58,0.10)" }}>
+                      <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                        {gapDays} day{gapDays > 1 ? "s" : ""} gap
+                      </span>
+                    </div>
+                  )}
+                  <div
+                    onClick={() => { setActionsOpenFor(null); navigate({ to: "/pupils/$id", params: { id }, search: { lessonId: l.id } }); }}
+                    style={{
+                      width: "100%", display: "flex", alignItems: "center", gap: 12,
+                      padding: "12px 16px", cursor: "pointer", position: "relative",
+                      borderTop: idx === 0 || showGap ? "none" : "0.5px solid rgba(11,31,58,0.10)",
+                      ...POPPINS,
+                    }}
+                  >
+                    <div style={{ width: 40, height: 40, borderRadius: 999, background: colour, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, letterSpacing: 0.2, flexShrink: 0 }}>
+                      {initials}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
+                        {formatDateShort(d)}
+                      </div>
+                      <div style={{ fontSize: 12, color: "#64748B", marginTop: 2, fontVariantNumeric: "tabular-nums", ...POPPINS }}>
+                        {formatTime(l.lesson_time)} · {l.duration_minutes ?? 60} mins
+                      </div>
+                    </div>
+                    {live ? (
+                      <span style={{ background: "#DBEAFE", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Live</span>
+                    ) : unpaid && past ? (
+                      <span style={{ background: "#FDECC8", color: "#8A5A00", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>£{price.toFixed(0)}</span>
+                    ) : isPaid ? (
+                      <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Paid ✓</span>
+                    ) : past && l.status !== "cancelled" && !l.eol_completed ? (
+                      <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>EOL</span>
+                    ) : null}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setActionsOpenFor(actionsOpenFor?.id === l.id ? null : l); }}
+                      className="p-1 rounded-full"
+                      style={{ lineHeight: 0, color: "#64748B", flexShrink: 0 }}
+                    >
+                      <MoreHorizontal size={18} />
+                    </button>
+                    {actionsOpenFor?.id === l.id && (
+                      <div
+                        data-lesson-actions-popover
+                        className="flex flex-col bg-white"
+                        style={{
+                          position: "absolute", zIndex: 60, top: 46, right: 14,
+                          borderRadius: 12, border: "0.5px solid #E2E6ED",
+                          boxShadow: "0 10px 25px rgba(0,0,0,0.12)", overflow: "hidden", minWidth: 180,
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <button
+                          className="text-left px-4 py-3 text-[14px]"
+                          style={{ color: "#0B1F3A", ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
+                          onClick={(e) => { e.stopPropagation(); setChangeDateTimeSheetFor(l); setActionsOpenFor(null); }}
+                        >
+                          Change date & time
+                        </button>
+                        <button
+                          className="text-left px-4 py-3 text-[14px]"
+                          style={{ color: "#0B1F3A", ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
+                          onClick={(e) => { e.stopPropagation(); setCancelSheetFor(l); setActionsOpenFor(null); }}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          className="text-left px-4 py-3 text-[14px]"
+                          style={{ color: "#CC2229", ...POPPINS }}
+                          onClick={(e) => { e.stopPropagation(); setDeleteSheetFor(l); setActionsOpenFor(null); }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </Fragment>
+              );
+            })}
           </div>
         )}
+
+
+        <div style={{ background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 12, padding: 0, overflow: "hidden", margin: "12px 0 0 0" }}>
+          <div style={{ padding: "14px 16px", borderBottom: "0.5px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div className="flex items-center gap-2">
+              <RefreshCw size={14} color="#1A52A0" />
+              <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Recurring lessons</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => navigate({ to: "/lesson-series" as never, search: { pupilId: id } as never })}
+              style={{ fontSize: 12, color: "#1A52A0", fontWeight: 600, ...POPPINS }}
+            >
+              + Add series
+            </button>
+          </div>
+          {pupilSeries === null ? null : pupilSeries.length === 0 ? (
+            <div style={{ padding: "14px 16px", fontSize: 12, color: "#9CA3AF", ...POPPINS }}>No recurring lessons set up</div>
+          ) : (
+            pupilSeries.map((s, idx) => (
+              <div
+                key={s.id}
+                onClick={() => navigate({ to: "/lesson-series" as never })}
+                style={{
+                  padding: "12px 16px",
+                  borderTop: idx === 0 ? "none" : "0.5px solid #F3F4F6",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  cursor: "pointer",
+                  ...POPPINS,
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: "#0B1F3A" }}>
+                    {s.day_of_week} at {(s.lesson_time || "").slice(0, 5)}
+                  </div>
+                  <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, textTransform: "capitalize" }}>
+                    {s.frequency} · {s.duration_minutes} mins
+                  </div>
+                </div>
+                <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 999 }}>Active</span>
+              </div>
+            ))
+          )}
+        </div>
+
+        <SectionHeader>LAST LESSONS</SectionHeader>
+        {pastLessons === null ? null : pastLessons.length === 0 ? (
+          <div className="flex items-center justify-center py-8">
+            <p className="text-[14px] text-[#6B7280]" style={POPPINS}>
+              No past lessons
+            </p>
+          </div>
+        ) : (
+          <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid rgba(11,31,58,0.10)" }}>
+            {(() => {
+              const visible = pastExpanded ? pastLessons : pastLessons.slice(0, 5);
+              const colour = pupil?.calendar_colour || "#1A52A0";
+              const initials = (pupil?.name ?? "P").split(/\s+/).map((s) => s.charAt(0)).join("").slice(0, 2).toUpperCase();
+              return (
+                <>
+                  {visible.map((l, idx) => {
+                    const d = new Date(`${l.lesson_date}T00:00:00`);
+                    const isPaid = l.payment_status === "paid";
+                    const isCancelled = l.status === "cancelled";
+                    const prev = idx > 0 ? visible[idx - 1] : null;
+                    const gapDays = prev ? daysBetween(l.lesson_date, prev.lesson_date) : 0;
+                    const showGap = gapDays > 7;
+                    return (
+                      <Fragment key={l.id}>
+                        {showGap && (
+                          <div className="flex items-center justify-center py-3" style={{ borderTop: idx === 0 ? "none" : "0.5px solid rgba(11,31,58,0.10)" }}>
+                            <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                              {gapDays} day{gapDays > 1 ? "s" : ""} gap
+                            </span>
+                          </div>
+                        )}
+                        <div
+                          onClick={() => { setActionsOpenFor(null); navigate({ to: "/pupils/$id", params: { id }, search: { lessonId: l.id } }); }}
+                          style={{
+                            width: "100%", display: "flex", alignItems: "center", gap: 12,
+                            padding: "12px 16px", cursor: "pointer", position: "relative",
+                            borderTop: idx === 0 || showGap ? "none" : "0.5px solid rgba(11,31,58,0.10)",
+                            ...POPPINS,
+                          }}
+                        >
+                          <div style={{ width: 40, height: 40, borderRadius: 999, background: isCancelled ? "#E5E7EB" : colour, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, letterSpacing: 0.2, flexShrink: 0 }}>
+                            {initials}
+                          </div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 15, fontWeight: 600, color: isCancelled ? "#64748B" : "#0B1F3A", textDecoration: isCancelled ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
+                              {formatDateShort(d)}
+                            </div>
+                            <div style={{ fontSize: 12, color: "#64748B", marginTop: 2, fontVariantNumeric: "tabular-nums", ...POPPINS }}>
+                              {formatTime(l.lesson_time)} · {l.duration_minutes ?? 60} mins
+                            </div>
+                          </div>
+                          {isCancelled ? (
+                            <span style={{ background: "#FDECEA", color: "#B42318", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Cancelled</span>
+                          ) : isPaid ? (
+                            <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Paid ✓</span>
+                          ) : null}
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setActionsOpenFor(actionsOpenFor?.id === l.id ? null : l); }}
+                            className="p-1 rounded-full"
+                            style={{ lineHeight: 0, color: "#64748B", flexShrink: 0 }}
+                          >
+                            <MoreHorizontal size={18} />
+                          </button>
+                          {actionsOpenFor?.id === l.id && (
+                            <div
+                              data-lesson-actions-popover
+                              className="flex flex-col bg-white"
+                              style={{
+                                position: "absolute", zIndex: 60, top: 46, right: 14,
+                                borderRadius: 12, border: "0.5px solid #E2E6ED",
+                                boxShadow: "0 10px 25px rgba(0,0,0,0.12)", overflow: "hidden", minWidth: 180,
+                              }}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <button
+                                className="text-left px-4 py-3 text-[14px]"
+                                style={{ color: "#0B1F3A", ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
+                                onClick={(e) => { e.stopPropagation(); setChangeDateTimeSheetFor(l); setActionsOpenFor(null); }}
+                              >
+                                Change date & time
+                              </button>
+                              <button
+                                className="text-left px-4 py-3 text-[14px]"
+                                style={{ color: "#0B1F3A", ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
+                                onClick={(e) => { e.stopPropagation(); setCancelSheetFor(l); setActionsOpenFor(null); }}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                className="text-left px-4 py-3 text-[14px]"
+                                style={{ color: "#CC2229", ...POPPINS }}
+                                onClick={(e) => { e.stopPropagation(); setDeleteSheetFor(l); setActionsOpenFor(null); }}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </Fragment>
+                    );
+                  })}
+                  {pastLessons.length > 5 && (
+                    <button
+                      type="button"
+                      onClick={() => setPastExpanded((v) => !v)}
+                      className="w-full flex items-center justify-center gap-1 py-3 text-[12px] font-medium text-[#1877D6] active:opacity-70"
+                      style={{ borderTop: "0.5px solid rgba(11,31,58,0.10)", background: "none", border: "none", ...POPPINS }}
+                    >
+                      {pastExpanded
+                        ? "Show less"
+                        : `Show ${pastLessons.length - 5} more`}
+                      <ChevronDown
+                        size={14}
+                        color="#1877D6"
+                        style={{ transform: pastExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
+                      />
+                    </button>
+                  )}
+                </>
+              );
+            })()}
+          </div>
+        )}
+        </>)}
+
 
         {activeTab === "payments" && (
           <div
