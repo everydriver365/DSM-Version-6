@@ -166,6 +166,18 @@ interface MockTestResult {
   dangerous_faults: number | null;
 }
 
+interface LessonRoute {
+  id: string;
+  pupil_id: string;
+  started_at: string;
+  duration_minutes: number | null;
+  distance_miles: number | null;
+  max_speed_mph: number | null;
+  overspeed_events: { id: string }[] | null;
+}
+
+
+
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/);
@@ -364,6 +376,8 @@ function PupilDetailPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "lessons" | "payments" | "profile">("overview");
   const [moreOpen, setMoreOpen] = useState(false);
   const [mockTests, setMockTests] = useState<MockTestResult[]>([]);
+  const [lessonRoutes, setLessonRoutes] = useState<LessonRoute[]>([]);
+
 
 
 
@@ -528,10 +542,22 @@ function PupilDetailPage() {
         if (cancelled) return;
         setMockTests((data ?? []) as MockTestResult[]);
       });
+    supabase
+      .from("lesson_routes")
+      .select("id, pupil_id, started_at, duration_minutes, distance_miles, max_speed_mph, overspeed_events(id)")
+      .eq("pupil_id", id)
+      .order("started_at", { ascending: false })
+      .limit(10)
+      .then(({ data }) => {
+        if (cancelled) return;
+        setLessonRoutes((data ?? []) as LessonRoute[]);
+      });
+
     return () => {
       cancelled = true;
     };
   }, [userId, id]);
+
 
 
   useEffect(() => {
@@ -1951,7 +1977,64 @@ function PupilDetailPage() {
             })()}
           </div>
         )}
+
+        <SectionHeader>LESSON TRACKS</SectionHeader>
+        <div style={{ background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 12, padding: 0, overflow: "hidden" }}>
+          <div style={{ padding: "14px 16px", borderBottom: "0.5px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div className="flex items-center gap-2">
+              <MapPin size={14} color="#1A52A0" />
+              <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Lesson tracks</span>
+            </div>
+            <span
+              className="text-[11px] font-semibold text-white"
+              style={{ backgroundColor: "#1877D6", padding: "2px 8px", borderRadius: 999, ...POPPINS }}
+            >
+              {lessonRoutes.length}
+            </span>
+          </div>
+          {lessonRoutes.length === 0 ? (
+            <div style={{ padding: "14px 16px", fontSize: 12, color: "#9CA3AF", ...POPPINS }}>No tracked lessons yet</div>
+          ) : (
+            lessonRoutes.map((r, idx) => {
+              const date = r.started_at ? new Date(r.started_at).toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }) : "—";
+              const duration = r.duration_minutes ? `${r.duration_minutes} min` : "—";
+              const distance = r.distance_miles != null ? `${r.distance_miles.toFixed(1)} mi` : "—";
+              const maxSpeed = r.max_speed_mph != null ? `${Math.round(r.max_speed_mph)} mph` : "—";
+              const overspeeds = (r.overspeed_events ?? []).length;
+              return (
+
+                <div
+                  key={r.id}
+                  style={{
+                    padding: "12px 16px",
+                    borderTop: idx === 0 ? "none" : "0.5px solid #F3F4F6",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    ...POPPINS,
+                  }}
+                >
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: "#0B1F3A" }}>{date}</div>
+                    <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+                      {duration} · {distance} · {maxSpeed}
+                    </div>
+                  </div>
+                  {overspeeds > 0 ? (
+                    <span
+                      className="text-[11px] font-semibold"
+                      style={{ backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 8px", borderRadius: 999, ...POPPINS }}
+                    >
+                      {overspeeds} overspeed
+                    </span>
+                  ) : null}
+                </div>
+              );
+            })
+          )}
+        </div>
         </>)}
+
 
 
         {activeTab === "payments" && (
