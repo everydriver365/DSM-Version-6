@@ -579,7 +579,7 @@ function LivePage() {
           className="flex items-center justify-center"
           style={{ width: 52, height: 52, background: "transparent", border: "none", cursor: "pointer" }}
         >
-          <ChevronLeft size={24} color="#ffffff" />
+          <X size={24} color="#ffffff" />
         </button>
         <div className="flex-1 text-center text-white font-semibold" style={{ fontSize: 16 }}>
           Live tracking
