@@ -37,14 +37,16 @@ const CHECKLIST_ITEMS = [
 
 interface DrivingTest {
   id: string;
-  pupil_id: string;
+  name: string;
   test_date: string;
   test_time: string | null;
   test_centre: string | null;
-  result: string | null;
-  faults: number | null;
-  result_notes: string | null;
-  pupils: { id: string; name: string } | null;
+  test_status: string | null;
+  examiner_first_name: string | null;
+  examiner_surname: string | null;
+  minor_faults: number | null;
+  serious_faults: number | null;
+  dangerous_faults: number | null;
 }
 
 interface LessonRow {
@@ -111,11 +113,12 @@ function TestDayPage() {
       setLoading(true);
       const today = todayYmd();
       const { data, error } = await supabase
-        .from("driving_tests")
+        .from("pupils")
         .select(
-          "id, pupil_id, test_date, test_time, test_centre, result, faults, result_notes, pupils(id, name)",
+          "id, name, test_date, test_time, test_centre, test_status, examiner_first_name, examiner_surname, minor_faults, serious_faults, dangerous_faults",
         )
         .eq("instructor_id", userId)
+        .not("test_date", "is", null)
         .gte("test_date", today)
         .order("test_date", { ascending: true })
         .limit(1);
@@ -124,16 +127,16 @@ function TestDayPage() {
       setTest(t);
 
       if (t) {
-        setResult((t.result as "Pass" | "Fail" | null) ?? null);
-        setFaults(t.faults != null ? String(t.faults) : "");
-        setNotes(t.result_notes ?? "");
+        setResult((t.test_status as "Pass" | "Fail" | null) ?? null);
+        setFaults(t.minor_faults != null ? String(t.minor_faults) : "");
+        setNotes("");
 
         // Lesson same day for this pupil
         const { data: lessons } = await supabase
           .from("lessons")
           .select("id, lesson_date, duration_minutes")
           .eq("instructor_id", userId)
-          .eq("pupil_id", t.pupil_id)
+          .eq("pupil_id", t.id)
           .gte("lesson_date", `${t.test_date}T00:00:00`)
           .lt("lesson_date", `${t.test_date}T23:59:59`)
           .order("lesson_date", { ascending: true })
@@ -201,12 +204,10 @@ function TestDayPage() {
     setSaving(true);
     const faultsNum = faults.trim() === "" ? null : Number(faults);
     const { error } = await supabase
-      .from("driving_tests")
+      .from("pupils")
       .update({
-        result,
-        faults: faultsNum,
-        result_notes: notes || null,
-        result_logged_at: new Date().toISOString(),
+        test_status: result,
+        minor_faults: faultsNum,
       })
       .eq("id", test.id);
     setSaving(false);
@@ -216,7 +217,7 @@ function TestDayPage() {
       return;
     }
     toast.success("Result saved");
-    setTest({ ...test, result, faults: faultsNum, result_notes: notes || null });
+    setTest({ ...test, test_status: result, minor_faults: faultsNum });
   }
 
   return (
@@ -277,7 +278,7 @@ function TestDayPage() {
               Next test
             </div>
             <div className="text-[22px] font-bold leading-tight mt-1">
-              {test.pupils?.name ?? "Unknown pupil"}
+              {test.name ?? "Unknown pupil"}
             </div>
             <div className="text-[18px] font-bold mt-1">
               {formatDateLong(test.test_date)}
