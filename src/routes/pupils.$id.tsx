@@ -544,7 +544,7 @@ function PupilDetailPage() {
       });
     supabase
       .from("lesson_routes")
-      .select("id, pupil_id, started_at, duration_minutes, distance_miles, max_speed_mph, overspeed_count")
+      .select("id, pupil_id, started_at, duration_minutes, distance_miles, max_speed_mph, overspeed_events(id)")
       .eq("pupil_id", id)
       .order("started_at", { ascending: false })
       .limit(10)
@@ -552,6 +552,7 @@ function PupilDetailPage() {
         if (cancelled) return;
         setLessonRoutes((data ?? []) as LessonRoute[]);
       });
+
     return () => {
       cancelled = true;
     };
