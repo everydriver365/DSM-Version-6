@@ -162,7 +162,8 @@ function MockTestsPage() {
         ) : (
           <div className="flex flex-col" style={{ gap: 8 }}>
             {results.map((r) => {
-              const name = r.pupils?.name ?? "Unknown pupil";
+              const name = r.pupils?.[0]?.name ?? "Unknown pupil";
+
               const total = (r.minor_faults ?? 0) + (r.serious_faults ?? 0) + (r.dangerous_faults ?? 0);
               const result = r.result ?? "Result not set";
               const resultColor =
