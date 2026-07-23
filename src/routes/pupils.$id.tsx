@@ -1535,163 +1535,6 @@ function PupilDetailPage() {
         <div className="px-4">
         {pupil && (
           <>
-            {/* Prepaid balance card */}
-            <div
-              className="mt-3"
-              style={{
-                backgroundColor: "#FFFFFF",
-                border: "0.5px solid #E2E6ED",
-                borderRadius: 16,
-                padding: 16,
-              }}
-            >
-              <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
-                <div className="flex items-center gap-2">
-                  <PoundSterling size={16} color="#16A34A" />
-                  <span className="font-semibold text-[14px]" style={{ color: "#0B1F3A", ...POPPINS }}>
-                    Prepaid balance
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  aria-label={prepaidEditing ? "Cancel edit" : "Edit prepaid balance"}
-                  onClick={() => {
-                    if (prepaidEditing) {
-                      setPrepaidEditing(false);
-                    } else {
-                      setPrepaidHoursDraft(pupil.prepaid_hours != null ? String(pupil.prepaid_hours) : "");
-                      setAccountBalDraft(pupil.account_balance != null ? String(pupil.account_balance) : "");
-                      setPrepaidEditing(true);
-                    }
-                  }}
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: 999,
-                    background: "#F3F4F6",
-                    color: "#6B7280",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {prepaidEditing ? <X size={14} /> : <Pencil size={14} />}
-                </button>
-              </div>
-
-              {!prepaidEditing ? (
-                <div className="flex">
-                  <div className="flex-1 text-center">
-                    <div className="font-black" style={{ fontSize: 28, color: "#16A34A", ...POPPINS, lineHeight: 1.1 }}>
-                      {Number(pupil.prepaid_hours ?? 0)}
-                    </div>
-                    <div className="text-xs" style={{ color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
-                      Hours purchased
-                    </div>
-                  </div>
-                  <div className="flex-1 text-center" style={{ borderLeft: "0.5px solid #F3F4F6" }}>
-                    <div className="font-black" style={{ fontSize: 28, color: "#1A52A0", ...POPPINS, lineHeight: 1.1 }}>
-                      £{Number(pupil.account_balance ?? 0)}
-                    </div>
-                    <div className="text-xs" style={{ color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
-                      Account credit
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-[12px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>
-                      Hours purchased
-                    </label>
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      step="0.5"
-                      min="0"
-                      value={prepaidHoursDraft}
-                      onChange={(e) => setPrepaidHoursDraft(e.target.value)}
-                      className="w-full mt-1"
-                      style={{
-                        height: 40,
-                        padding: "0 12px",
-                        borderRadius: 10,
-                        border: "0.5px solid #E2E6ED",
-                        background: "#FFFFFF",
-                        color: "#0B1F3A",
-                        ...POPPINS,
-                      }}
-                    />
-                    <div className="text-[11px]" style={{ color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
-                      Total hours this pupil has paid for upfront
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-[12px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>
-                      Account credit £
-                    </label>
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      step="0.01"
-                      value={accountBalDraft}
-                      onChange={(e) => setAccountBalDraft(e.target.value)}
-                      className="w-full mt-1"
-                      style={{
-                        height: 40,
-                        padding: "0 12px",
-                        borderRadius: 10,
-                        border: "0.5px solid #E2E6ED",
-                        background: "#FFFFFF",
-                        color: "#0B1F3A",
-                        ...POPPINS,
-                      }}
-                    />
-                    <div className="text-[11px]" style={{ color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
-                      Credit balance from overpayments or advance payments
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    disabled={prepaidSaving}
-                    onClick={async () => {
-                      if (!pupil) return;
-                      setPrepaidSaving(true);
-                      const toNum = (v: string) => {
-                        const t = v.trim();
-                        if (t === "") return 0;
-                        const n = Number(t);
-                        return Number.isFinite(n) ? n : 0;
-                      };
-                      const patch = {
-                        prepaid_hours: toNum(prepaidHoursDraft),
-                        account_balance: toNum(accountBalDraft),
-                      };
-                      const { error } = await supabase.from("pupils").update(patch).eq("id", pupil.id);
-                      setPrepaidSaving(false);
-                      if (error) {
-                        toast.error("Failed to save — please try again");
-                        return;
-                      }
-                      setPupil({ ...pupil, ...patch });
-                      setPrepaidEditing(false);
-                      toast.success("✓ Prepaid balance updated");
-                    }}
-                    className="w-full rounded-xl text-white font-semibold"
-                    style={{
-                      backgroundColor: "#16A34A",
-                      paddingTop: 12,
-                      paddingBottom: 12,
-                      marginTop: 12,
-                      opacity: prepaidSaving ? 0.6 : 1,
-                      ...POPPINS,
-                    }}
-                  >
-                    {prepaidSaving ? "Saving…" : "Save"}
-                  </button>
-                </div>
-              )}
-            </div>
 
             {/* Quick edit card: status, test date/time, theory pass */}
             <div
@@ -2204,6 +2047,544 @@ function PupilDetailPage() {
 
 
         {activeTab === "payments" && (
+          <>
+            {pupil && (<>
+            {/* Prepaid balance card */}
+            <div
+              className="mt-3"
+              style={{
+                backgroundColor: "#FFFFFF",
+                border: "0.5px solid #E2E6ED",
+                borderRadius: 16,
+                padding: 16,
+              }}
+            >
+              <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+                <div className="flex items-center gap-2">
+                  <PoundSterling size={16} color="#16A34A" />
+                  <span className="font-semibold text-[14px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                    Prepaid balance
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  aria-label={prepaidEditing ? "Cancel edit" : "Edit prepaid balance"}
+                  onClick={() => {
+                    if (prepaidEditing) {
+                      setPrepaidEditing(false);
+                    } else {
+                      setPrepaidHoursDraft(pupil.prepaid_hours != null ? String(pupil.prepaid_hours) : "");
+                      setAccountBalDraft(pupil.account_balance != null ? String(pupil.account_balance) : "");
+                      setPrepaidEditing(true);
+                    }
+                  }}
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: 999,
+                    background: "#F3F4F6",
+                    color: "#6B7280",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {prepaidEditing ? <X size={14} /> : <Pencil size={14} />}
+                </button>
+              </div>
+
+              {!prepaidEditing ? (
+                <div className="flex">
+                  <div className="flex-1 text-center">
+                    <div className="font-black" style={{ fontSize: 28, color: "#16A34A", ...POPPINS, lineHeight: 1.1 }}>
+                      {Number(pupil.prepaid_hours ?? 0)}
+                    </div>
+                    <div className="text-xs" style={{ color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
+                      Hours purchased
+                    </div>
+                  </div>
+                  <div className="flex-1 text-center" style={{ borderLeft: "0.5px solid #F3F4F6" }}>
+                    <div className="font-black" style={{ fontSize: 28, color: "#1A52A0", ...POPPINS, lineHeight: 1.1 }}>
+                      £{Number(pupil.account_balance ?? 0)}
+                    </div>
+                    <div className="text-xs" style={{ color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
+                      Account credit
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-[12px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>
+                      Hours purchased
+                    </label>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      step="0.5"
+                      min="0"
+                      value={prepaidHoursDraft}
+                      onChange={(e) => setPrepaidHoursDraft(e.target.value)}
+                      className="w-full mt-1"
+                      style={{
+                        height: 40,
+                        padding: "0 12px",
+                        borderRadius: 10,
+                        border: "0.5px solid #E2E6ED",
+                        background: "#FFFFFF",
+                        color: "#0B1F3A",
+                        ...POPPINS,
+                      }}
+                    />
+                    <div className="text-[11px]" style={{ color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
+                      Total hours this pupil has paid for upfront
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[12px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>
+                      Account credit £
+                    </label>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      step="0.01"
+                      value={accountBalDraft}
+                      onChange={(e) => setAccountBalDraft(e.target.value)}
+                      className="w-full mt-1"
+                      style={{
+                        height: 40,
+                        padding: "0 12px",
+                        borderRadius: 10,
+                        border: "0.5px solid #E2E6ED",
+                        background: "#FFFFFF",
+                        color: "#0B1F3A",
+                        ...POPPINS,
+                      }}
+                    />
+                    <div className="text-[11px]" style={{ color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
+                      Credit balance from overpayments or advance payments
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={prepaidSaving}
+                    onClick={async () => {
+                      if (!pupil) return;
+                      setPrepaidSaving(true);
+                      const toNum = (v: string) => {
+                        const t = v.trim();
+                        if (t === "") return 0;
+                        const n = Number(t);
+                        return Number.isFinite(n) ? n : 0;
+                      };
+                      const patch = {
+                        prepaid_hours: toNum(prepaidHoursDraft),
+                        account_balance: toNum(accountBalDraft),
+                      };
+                      const { error } = await supabase.from("pupils").update(patch).eq("id", pupil.id);
+                      setPrepaidSaving(false);
+                      if (error) {
+                        toast.error("Failed to save — please try again");
+                        return;
+                      }
+                      setPupil({ ...pupil, ...patch });
+                      setPrepaidEditing(false);
+                      toast.success("✓ Prepaid balance updated");
+                    }}
+                    className="w-full rounded-xl text-white font-semibold"
+                    style={{
+                      backgroundColor: "#16A34A",
+                      paddingTop: 12,
+                      paddingBottom: 12,
+                      marginTop: 12,
+                      opacity: prepaidSaving ? 0.6 : 1,
+                      ...POPPINS,
+                    }}
+                  >
+                    {prepaidSaving ? "Saving…" : "Save"}
+                  </button>
+                </div>
+              )}
+            </div>
+            </>)}
+
+        {pupil?.lead_source === "National Intensive" && (() => {
+          const total = Number(pupil.ni_amount_total ?? 0);
+          const paid = Number(pupil.ni_amount_paid ?? 0);
+          const outstanding = total - paid;
+          let paidColor = "#1877D6";
+          if (total > 0 && paid >= total) paidColor = "#1877D6";
+          else if (paid > 0) paidColor = "#1877D6";
+          const payerLabel =
+            pupil.ni_payer === "national_intensives"
+              ? "National Intensives (agency)"
+              : pupil.ni_payer === "pupil"
+              ? "Pupil direct"
+              : "—";
+          return (
+            <div
+              className="bg-white"
+              style={{
+                marginTop: 12,
+                padding: 16,
+                borderRadius: 12,
+                borderWidth: "0.5px",
+                borderStyle: "solid",
+                borderColor: "#EEF2F7",
+              }}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <span
+                  className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                  style={{ backgroundColor: "#EEF4FB", color: "#1877D6", ...POPPINS }}
+                >
+                  National Intensive
+                </span>
+                <span
+                  className="text-[13px] font-semibold"
+                  style={{ color: "#0B1F3A", ...POPPINS }}
+                >
+                  Payment details
+                </span>
+              </div>
+              <NIRow label="Total course fee" value={pupil.ni_amount_total != null ? `£${total.toFixed(2)}` : "—"} />
+              <NIRow label="Paying party" value={payerLabel} />
+              <NIRow
+                label="Amount paid"
+                value={`£${paid.toFixed(2)}`}
+                valueColor={paidColor}
+              />
+              <NIRow
+                label="Payment date"
+                value={pupil.ni_payment_date ? new Date(`${pupil.ni_payment_date}T00:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "Not recorded"}
+              />
+              <NIRow label="Reference" value={pupil.ni_reference || "—"} />
+              {total > 0 && (
+                outstanding > 0 ? (
+                  <div
+                    style={{
+                      marginTop: 12,
+                      padding: "10px 12px",
+                      borderRadius: 8,
+                      backgroundColor: "#FEF2F2",
+                      border: "1px solid #FECACA",
+                      color: "#1877D6",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      ...POPPINS,
+                    }}
+                  >
+                    £{outstanding.toFixed(2)} outstanding from National Intensives
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      marginTop: 12,
+                      padding: "10px 12px",
+                      borderRadius: 8,
+                      backgroundColor: "#F0FDF4",
+                      border: "1px solid #DBEAFE",
+                      color: "#1877D6",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      ...POPPINS,
+                    }}
+                  >
+                    Fully paid ✓
+                  </div>
+                )
+              )}
+
+              {(() => {
+                const prepaid = Number(pupil.prepaid_hours ?? 0);
+                if (!(total > 0 || prepaid > 0)) return null;
+                const effectiveRate =
+                  total > 0 && prepaid > 0
+                    ? total / prepaid
+                    : instructorRate ?? 0;
+                const hoursPurchased =
+                  prepaid > 0
+                    ? prepaid
+                    : effectiveRate > 0
+                    ? total / effectiveRate
+                    : 0;
+                const hoursRemaining = hoursPurchased - hoursCompleted;
+                let remainColor = "#1877D6";
+                if (hoursRemaining > 5) remainColor = "#1877D6";
+                else if (hoursRemaining >= 1) remainColor = "#1877D6";
+                const pct =
+                  hoursPurchased > 0
+                    ? Math.min(100, Math.max(0, (hoursCompleted / hoursPurchased) * 100))
+                    : 0;
+                return (
+                  <>
+                    <div
+                      className="mt-3 pt-3 text-[11px] font-semibold uppercase tracking-wide"
+                      style={{ color: "#6B7280", borderTop: "0.5px solid #EEF2F7", ...POPPINS }}
+                    >
+                      Hours
+                    </div>
+                    <NIRow label="Hours purchased" value={`${hoursPurchased.toFixed(1)} hrs`} />
+                    <NIRow label="Hours completed" value={`${hoursCompleted.toFixed(1)} hrs`} />
+                    <NIRow
+                      label="Hours remaining"
+                      value={`${hoursRemaining.toFixed(1)} hrs`}
+                      valueColor={remainColor}
+                    />
+                    {total > 0 && prepaid > 0 && (
+                      <NIRow
+                        label="Rate per hour"
+                        value={`£${(total / prepaid).toFixed(2)}/hr`}
+                      />
+                    )}
+                    <div
+                      style={{
+                        marginTop: 10,
+                        height: 8,
+                        borderRadius: 4,
+                        backgroundColor: "#F3F8FF",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: `${pct}%`,
+                          height: "100%",
+                          backgroundColor: "#1877D6",
+                          borderRadius: 4,
+                        }}
+                      />
+                    </div>
+                  </>
+                );
+              })()}
+
+
+              <div
+                className="mt-3 pt-3 text-[11px] font-semibold uppercase tracking-wide"
+                style={{ color: "#6B7280", borderTop: "0.5px solid #EEF2F7", ...POPPINS }}
+              >
+                Test details
+              </div>
+              <NIRow
+                label="Test date"
+                value={pupil.test_date ? new Date(`${pupil.test_date}T00:00:00`).toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }) : "—"}
+              />
+              <NIRow label="Test time" value={pupil.test_time ? pupil.test_time.slice(0, 5) : "—"} />
+              <div
+                className="py-1.5"
+                style={{ borderTop: "0.5px solid #F3F4F6" }}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+                    Test centre
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {(centreInfo || pupil.test_centre) ? (
+                      <span className="inline-flex items-center gap-1 text-[13px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>
+                        <MapPin size={14} color="#1877D6" />
+                        {centreInfo
+                          ? `${centreInfo.name}${centreInfo.town ? `, ${centreInfo.town}` : ""}`
+                          : pupil.test_centre}
+                      </span>
+                    ) : (
+                      <span className="text-[13px]" style={{ color: "#9CA3AF", ...POPPINS }}>—</span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const next = !centrePickerOpen;
+                        setCentrePickerOpen(next);
+                        setCentreSearch("");
+                        if (next && allCentres.length === 0) {
+                          const { data } = await supabase
+                            .from("test_centres")
+                            .select("id, name, town")
+                            .order("name", { ascending: true });
+                          setAllCentres((data as any) ?? []);
+                        }
+                      }}
+                      className="text-[12px] font-semibold"
+                      style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+                    >
+                      {centrePickerOpen ? "Cancel" : "Edit"}
+                    </button>
+                  </div>
+                </div>
+                {centrePickerOpen && (
+                  <div className="mt-2" style={{ position: "relative" }}>
+                    <div style={{ position: "relative" }}>
+                      <Search
+                        size={16}
+                        color="#64748B"
+                        style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Search test centres..."
+                        value={centreSearch}
+                        onChange={(e) => setCentreSearch(e.target.value)}
+                        style={{
+                          width: "100%",
+                          height: 36,
+                          padding: "0 12px 0 36px",
+                          borderRadius: 8,
+                          border: "0.5px solid #E2E6ED",
+                          fontSize: 13,
+                          outline: "none",
+                          ...POPPINS,
+                        }}
+                      />
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 6,
+                        border: "0.5px solid #E2E6ED",
+                        borderRadius: 8,
+                        maxHeight: 220,
+                        overflowY: "auto",
+                        backgroundColor: "#FFFFFF",
+                      }}
+                    >
+                      <div
+                        onClick={async () => {
+                          const { error } = await supabase
+                            .from("pupils")
+                            .update({ test_centre_id: null })
+                            .eq("id", pupil.id);
+                          if (error) { toast.error("Failed to save — please try again"); return; }
+                          setCentreInfo(null);
+                          setPupil({ ...pupil, test_centre_id: null });
+                          setCentrePickerOpen(false);
+                          toast.success("Test centre cleared");
+                        }}
+                        className="cursor-pointer text-[13px]"
+                        style={{ padding: "10px 12px", color: "#EF4444", borderBottom: "0.5px solid #F3F4F6", ...POPPINS }}
+                      >
+                        Clear test centre
+                      </div>
+                      {(() => {
+                        const q = centreSearch.trim().toLowerCase();
+                        const filtered = q
+                          ? allCentres.filter(
+                              (c) =>
+                                (c.name || "").toLowerCase().includes(q) ||
+                                (c.town || "").toLowerCase().includes(q),
+                            )
+                          : allCentres;
+                        if (filtered.length === 0) {
+                          return (
+                            <div className="text-[13px]" style={{ padding: 12, color: "#6B7280", ...POPPINS }}>
+                              No centres found
+                            </div>
+                          );
+                        }
+                        return filtered.map((c) => (
+                          <div
+                            key={c.id}
+                            onClick={async () => {
+                              const { error } = await supabase
+                                .from("pupils")
+                                .update({ test_centre_id: c.id, test_centre: c.name })
+                                .eq("id", pupil.id);
+                              if (error) { toast.error("Failed to save — please try again"); return; }
+                              setCentreInfo(c);
+                              setPupil({ ...pupil, test_centre_id: c.id, test_centre: c.name });
+                              setCentrePickerOpen(false);
+                              setCentreSearch("");
+                              toast.success("Test centre updated");
+                            }}
+                            className="cursor-pointer"
+                            style={{ padding: "10px 12px", borderBottom: "0.5px solid #F3F4F6" }}
+                          >
+                            <div className="text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                              {c.name}
+                            </div>
+                            {c.town ? (
+                              <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+                                {c.town}
+                              </div>
+                            ) : null}
+                          </div>
+                        ));
+                      })()}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div
+                className="mt-3 pt-3 text-[11px] font-semibold uppercase tracking-wide"
+                style={{ color: "#6B7280", borderTop: "0.5px solid #EEF2F7", ...POPPINS }}
+              >
+                EverySwap
+              </div>
+              <div
+                className="flex items-center justify-between py-1.5"
+                style={{ borderTop: "0.5px solid #F3F4F6" }}
+              >
+                <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+                  Swap status
+                </span>
+                {pupil.wants_swap ? (
+                  <span className="flex items-center gap-2">
+                    <span
+                      className="text-[11px] font-semibold text-white px-2 py-0.5 rounded-full"
+                      style={{ backgroundColor: "#1877D6", ...POPPINS }}
+                    >
+                      On EverySwap list
+                    </span>
+                    <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                      Seeking swap
+                    </span>
+                  </span>
+                ) : (
+                  <span className="text-[12px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                    Not on swap list
+                  </span>
+                )}
+              </div>
+
+              <div className="mt-3 flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={openEditSheet}
+                  className="text-[13px] font-medium"
+                  style={{ color: "#1877D6", ...POPPINS }}
+                >
+                  Edit payment details
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const next = !pupil.wants_swap;
+                    const { error } = await supabase
+                      .from("pupils")
+                      .update({ wants_swap: next })
+                      .eq("id", pupil.id);
+                    if (error) { toast.error("Failed to save — please try again"); return; }
+                    setPupil({ ...pupil, wants_swap: next });
+                    toast.success(next ? "Added to EverySwap list" : "Removed from EverySwap list");
+                  }}
+                  className="text-[13px] font-medium"
+                  style={{ color: "#1877D6", ...POPPINS }}
+                >
+                  Manage swap
+                </button>
+              </div>
+            </div>
+          );
+        })()}
+
+            {pupil && (
+              <CustomRatesCard
+                pupil={pupil}
+                instructorRate={instructorRate}
+                onUpdated={(patch) => setPupil((p) => (p ? { ...p, ...patch } : p))}
+              />
+            )}
+          </>
+        )}
           <div
             className="mt-3 text-center"
             style={{
@@ -2815,375 +3196,8 @@ function PupilDetailPage() {
             }}
           />
         )}
-        {pupil?.lead_source === "National Intensive" && (() => {
-          const total = Number(pupil.ni_amount_total ?? 0);
-          const paid = Number(pupil.ni_amount_paid ?? 0);
-          const outstanding = total - paid;
-          let paidColor = "#1877D6";
-          if (total > 0 && paid >= total) paidColor = "#1877D6";
-          else if (paid > 0) paidColor = "#1877D6";
-          const payerLabel =
-            pupil.ni_payer === "national_intensives"
-              ? "National Intensives (agency)"
-              : pupil.ni_payer === "pupil"
-              ? "Pupil direct"
-              : "—";
-          return (
-            <div
-              className="bg-white"
-              style={{
-                marginTop: 12,
-                padding: 16,
-                borderRadius: 12,
-                borderWidth: "0.5px",
-                borderStyle: "solid",
-                borderColor: "#EEF2F7",
-              }}
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <span
-                  className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: "#EEF4FB", color: "#1877D6", ...POPPINS }}
-                >
-                  National Intensive
-                </span>
-                <span
-                  className="text-[13px] font-semibold"
-                  style={{ color: "#0B1F3A", ...POPPINS }}
-                >
-                  Payment details
-                </span>
-              </div>
-              <NIRow label="Total course fee" value={pupil.ni_amount_total != null ? `£${total.toFixed(2)}` : "—"} />
-              <NIRow label="Paying party" value={payerLabel} />
-              <NIRow
-                label="Amount paid"
-                value={`£${paid.toFixed(2)}`}
-                valueColor={paidColor}
-              />
-              <NIRow
-                label="Payment date"
-                value={pupil.ni_payment_date ? new Date(`${pupil.ni_payment_date}T00:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "Not recorded"}
-              />
-              <NIRow label="Reference" value={pupil.ni_reference || "—"} />
-              {total > 0 && (
-                outstanding > 0 ? (
-                  <div
-                    style={{
-                      marginTop: 12,
-                      padding: "10px 12px",
-                      borderRadius: 8,
-                      backgroundColor: "#FEF2F2",
-                      border: "1px solid #FECACA",
-                      color: "#1877D6",
-                      fontSize: 13,
-                      fontWeight: 600,
-                      ...POPPINS,
-                    }}
-                  >
-                    £{outstanding.toFixed(2)} outstanding from National Intensives
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      marginTop: 12,
-                      padding: "10px 12px",
-                      borderRadius: 8,
-                      backgroundColor: "#F0FDF4",
-                      border: "1px solid #DBEAFE",
-                      color: "#1877D6",
-                      fontSize: 13,
-                      fontWeight: 600,
-                      ...POPPINS,
-                    }}
-                  >
-                    Fully paid ✓
-                  </div>
-                )
-              )}
 
-              {(() => {
-                const prepaid = Number(pupil.prepaid_hours ?? 0);
-                if (!(total > 0 || prepaid > 0)) return null;
-                const effectiveRate =
-                  total > 0 && prepaid > 0
-                    ? total / prepaid
-                    : instructorRate ?? 0;
-                const hoursPurchased =
-                  prepaid > 0
-                    ? prepaid
-                    : effectiveRate > 0
-                    ? total / effectiveRate
-                    : 0;
-                const hoursRemaining = hoursPurchased - hoursCompleted;
-                let remainColor = "#1877D6";
-                if (hoursRemaining > 5) remainColor = "#1877D6";
-                else if (hoursRemaining >= 1) remainColor = "#1877D6";
-                const pct =
-                  hoursPurchased > 0
-                    ? Math.min(100, Math.max(0, (hoursCompleted / hoursPurchased) * 100))
-                    : 0;
-                return (
-                  <>
-                    <div
-                      className="mt-3 pt-3 text-[11px] font-semibold uppercase tracking-wide"
-                      style={{ color: "#6B7280", borderTop: "0.5px solid #EEF2F7", ...POPPINS }}
-                    >
-                      Hours
-                    </div>
-                    <NIRow label="Hours purchased" value={`${hoursPurchased.toFixed(1)} hrs`} />
-                    <NIRow label="Hours completed" value={`${hoursCompleted.toFixed(1)} hrs`} />
-                    <NIRow
-                      label="Hours remaining"
-                      value={`${hoursRemaining.toFixed(1)} hrs`}
-                      valueColor={remainColor}
-                    />
-                    {total > 0 && prepaid > 0 && (
-                      <NIRow
-                        label="Rate per hour"
-                        value={`£${(total / prepaid).toFixed(2)}/hr`}
-                      />
-                    )}
-                    <div
-                      style={{
-                        marginTop: 10,
-                        height: 8,
-                        borderRadius: 4,
-                        backgroundColor: "#F3F8FF",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: `${pct}%`,
-                          height: "100%",
-                          backgroundColor: "#1877D6",
-                          borderRadius: 4,
-                        }}
-                      />
-                    </div>
-                  </>
-                );
-              })()}
-
-
-              <div
-                className="mt-3 pt-3 text-[11px] font-semibold uppercase tracking-wide"
-                style={{ color: "#6B7280", borderTop: "0.5px solid #EEF2F7", ...POPPINS }}
-              >
-                Test details
-              </div>
-              <NIRow
-                label="Test date"
-                value={pupil.test_date ? new Date(`${pupil.test_date}T00:00:00`).toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }) : "—"}
-              />
-              <NIRow label="Test time" value={pupil.test_time ? pupil.test_time.slice(0, 5) : "—"} />
-              <div
-                className="py-1.5"
-                style={{ borderTop: "0.5px solid #F3F4F6" }}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
-                    Test centre
-                  </span>
-                  <div className="flex items-center gap-2">
-                    {(centreInfo || pupil.test_centre) ? (
-                      <span className="inline-flex items-center gap-1 text-[13px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>
-                        <MapPin size={14} color="#1877D6" />
-                        {centreInfo
-                          ? `${centreInfo.name}${centreInfo.town ? `, ${centreInfo.town}` : ""}`
-                          : pupil.test_centre}
-                      </span>
-                    ) : (
-                      <span className="text-[13px]" style={{ color: "#9CA3AF", ...POPPINS }}>—</span>
-                    )}
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        const next = !centrePickerOpen;
-                        setCentrePickerOpen(next);
-                        setCentreSearch("");
-                        if (next && allCentres.length === 0) {
-                          const { data } = await supabase
-                            .from("test_centres")
-                            .select("id, name, town")
-                            .order("name", { ascending: true });
-                          setAllCentres((data as any) ?? []);
-                        }
-                      }}
-                      className="text-[12px] font-semibold"
-                      style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
-                    >
-                      {centrePickerOpen ? "Cancel" : "Edit"}
-                    </button>
-                  </div>
-                </div>
-                {centrePickerOpen && (
-                  <div className="mt-2" style={{ position: "relative" }}>
-                    <div style={{ position: "relative" }}>
-                      <Search
-                        size={16}
-                        color="#64748B"
-                        style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}
-                      />
-                      <input
-                        type="text"
-                        placeholder="Search test centres..."
-                        value={centreSearch}
-                        onChange={(e) => setCentreSearch(e.target.value)}
-                        style={{
-                          width: "100%",
-                          height: 36,
-                          padding: "0 12px 0 36px",
-                          borderRadius: 8,
-                          border: "0.5px solid #E2E6ED",
-                          fontSize: 13,
-                          outline: "none",
-                          ...POPPINS,
-                        }}
-                      />
-                    </div>
-                    <div
-                      style={{
-                        marginTop: 6,
-                        border: "0.5px solid #E2E6ED",
-                        borderRadius: 8,
-                        maxHeight: 220,
-                        overflowY: "auto",
-                        backgroundColor: "#FFFFFF",
-                      }}
-                    >
-                      <div
-                        onClick={async () => {
-                          const { error } = await supabase
-                            .from("pupils")
-                            .update({ test_centre_id: null })
-                            .eq("id", pupil.id);
-                          if (error) { toast.error("Failed to save — please try again"); return; }
-                          setCentreInfo(null);
-                          setPupil({ ...pupil, test_centre_id: null });
-                          setCentrePickerOpen(false);
-                          toast.success("Test centre cleared");
-                        }}
-                        className="cursor-pointer text-[13px]"
-                        style={{ padding: "10px 12px", color: "#EF4444", borderBottom: "0.5px solid #F3F4F6", ...POPPINS }}
-                      >
-                        Clear test centre
-                      </div>
-                      {(() => {
-                        const q = centreSearch.trim().toLowerCase();
-                        const filtered = q
-                          ? allCentres.filter(
-                              (c) =>
-                                (c.name || "").toLowerCase().includes(q) ||
-                                (c.town || "").toLowerCase().includes(q),
-                            )
-                          : allCentres;
-                        if (filtered.length === 0) {
-                          return (
-                            <div className="text-[13px]" style={{ padding: 12, color: "#6B7280", ...POPPINS }}>
-                              No centres found
-                            </div>
-                          );
-                        }
-                        return filtered.map((c) => (
-                          <div
-                            key={c.id}
-                            onClick={async () => {
-                              const { error } = await supabase
-                                .from("pupils")
-                                .update({ test_centre_id: c.id, test_centre: c.name })
-                                .eq("id", pupil.id);
-                              if (error) { toast.error("Failed to save — please try again"); return; }
-                              setCentreInfo(c);
-                              setPupil({ ...pupil, test_centre_id: c.id, test_centre: c.name });
-                              setCentrePickerOpen(false);
-                              setCentreSearch("");
-                              toast.success("Test centre updated");
-                            }}
-                            className="cursor-pointer"
-                            style={{ padding: "10px 12px", borderBottom: "0.5px solid #F3F4F6" }}
-                          >
-                            <div className="text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                              {c.name}
-                            </div>
-                            {c.town ? (
-                              <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
-                                {c.town}
-                              </div>
-                            ) : null}
-                          </div>
-                        ));
-                      })()}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div
-                className="mt-3 pt-3 text-[11px] font-semibold uppercase tracking-wide"
-                style={{ color: "#6B7280", borderTop: "0.5px solid #EEF2F7", ...POPPINS }}
-              >
-                EverySwap
-              </div>
-              <div
-                className="flex items-center justify-between py-1.5"
-                style={{ borderTop: "0.5px solid #F3F4F6" }}
-              >
-                <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
-                  Swap status
-                </span>
-                {pupil.wants_swap ? (
-                  <span className="flex items-center gap-2">
-                    <span
-                      className="text-[11px] font-semibold text-white px-2 py-0.5 rounded-full"
-                      style={{ backgroundColor: "#1877D6", ...POPPINS }}
-                    >
-                      On EverySwap list
-                    </span>
-                    <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
-                      Seeking swap
-                    </span>
-                  </span>
-                ) : (
-                  <span className="text-[12px]" style={{ color: "#9CA3AF", ...POPPINS }}>
-                    Not on swap list
-                  </span>
-                )}
-              </div>
-
-              <div className="mt-3 flex items-center gap-4">
-                <button
-                  type="button"
-                  onClick={openEditSheet}
-                  className="text-[13px] font-medium"
-                  style={{ color: "#1877D6", ...POPPINS }}
-                >
-                  Edit payment details
-                </button>
-                <button
-                  type="button"
-                  onClick={async () => {
-                    const next = !pupil.wants_swap;
-                    const { error } = await supabase
-                      .from("pupils")
-                      .update({ wants_swap: next })
-                      .eq("id", pupil.id);
-                    if (error) { toast.error("Failed to save — please try again"); return; }
-                    setPupil({ ...pupil, wants_swap: next });
-                    toast.success(next ? "Added to EverySwap list" : "Removed from EverySwap list");
-                  }}
-                  className="text-[13px] font-medium"
-                  style={{ color: "#1877D6", ...POPPINS }}
-                >
-                  Manage swap
-                </button>
-              </div>
-            </div>
-          );
-        })()}
-
-      {/* Custom lesson rates + calendar colour */}
+      {/* Calendar colour + buffer */}
       {pupil && (
         <PupilRatesAndColour
           pupil={pupil}
@@ -4154,15 +4168,13 @@ function PupilExtras({
   );
 }
 
-function PupilRatesAndColour({
+function CustomRatesCard({
   pupil,
   instructorRate,
-  instructorBufferAfter,
   onUpdated,
 }: {
   pupil: Pupil;
   instructorRate: number | null;
-  instructorBufferAfter: number | null;
   onUpdated: (patch: Partial<Pupil>) => void;
 }) {
   const [r1, setR1] = useState(pupil.custom_rate != null ? String(pupil.custom_rate) : "");
@@ -4180,9 +4192,7 @@ function PupilRatesAndColour({
   }, [editRates, pupil.custom_rate, pupil.custom_rate_90, pupil.custom_rate_120]);
 
   async function patchPupil(patch: Record<string, unknown>) {
-    console.log("[custom-rates] patchPupil url:", `pupils?id=eq.${pupil.id}`, "payload:", patch);
     const { data, error, status } = await supabase.from("pupils").update(patch).eq("id", pupil.id).select();
-    console.log("[custom-rates] result:", status, data, error);
     if (error) {
       console.error("[pupil] patch error", error);
       toast.error("Failed to save — please try again");
@@ -4198,7 +4208,6 @@ function PupilRatesAndColour({
       custom_rate_90: r90 === "" ? null : Number(r90),
       custom_rate_120: r120 === "" ? null : Number(r120),
     };
-    console.log("[custom-rates] saving:", patch);
     const ok = await patchPupil(patch);
     setSavingRates(false);
     if (ok) {
@@ -4219,25 +4228,6 @@ function PupilRatesAndColour({
       onUpdated(patch);
       setEditRates(false);
       toast.success("Custom rates cleared");
-    }
-  }
-
-  async function pickColour(hex: string) {
-    const next = pupil.calendar_colour === hex ? null : hex;
-    const ok = await patchPupil({ calendar_colour: next });
-    if (ok) {
-      onUpdated({ calendar_colour: next });
-      toast.success("Colour updated");
-    }
-  }
-
-  async function saveBuffer(raw: string) {
-    const value = raw === "" ? null : Number(raw);
-    const patch = { buffer_after_minutes: value };
-    const ok = await patchPupil(patch);
-    if (ok) {
-      onUpdated(patch);
-      toast.success("Buffer updated");
     }
   }
 
@@ -4303,7 +4293,52 @@ function PupilRatesAndColour({
           </div>
         )}
       </div>
+    </>
+  );
+}
 
+function PupilRatesAndColour({
+  pupil,
+  instructorRate,
+  instructorBufferAfter,
+  onUpdated,
+}: {
+  pupil: Pupil;
+  instructorRate: number | null;
+  instructorBufferAfter: number | null;
+  onUpdated: (patch: Partial<Pupil>) => void;
+}) {
+  async function patchPupil(patch: Record<string, unknown>) {
+    const { data, error } = await supabase.from("pupils").update(patch).eq("id", pupil.id).select();
+    if (error) {
+      console.error("[pupil] patch error", error);
+      toast.error("Failed to save — please try again");
+      return false;
+    }
+    return true;
+  }
+
+  async function pickColour(hex: string) {
+    const next = pupil.calendar_colour === hex ? null : hex;
+    const ok = await patchPupil({ calendar_colour: next });
+    if (ok) {
+      onUpdated({ calendar_colour: next });
+      toast.success("Colour updated");
+    }
+  }
+
+  async function saveBuffer(raw: string) {
+    const value = raw === "" ? null : Number(raw);
+    const patch = { buffer_after_minutes: value };
+    const ok = await patchPupil(patch);
+    if (ok) {
+      onUpdated(patch);
+      toast.success("Buffer updated");
+    }
+  }
+
+  return (
+    <>
       {/* Gap after lesson */}
       <div className="flex justify-between items-center" style={{ margin: "8px 16px 0", borderRadius: 12, border: "0.5px solid #E2E6ED", padding: "14px 16px", backgroundColor: "#fff" }}>
         <div className="flex items-center gap-2">
