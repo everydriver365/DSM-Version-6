@@ -1254,26 +1254,45 @@ function LivePage() {
         </div>
 
         {tracking ? (
-          <button
-            type="button"
-            onClick={stopTracking}
-            style={{
-              marginTop: 12,
-              width: "100%",
-              height: 46,
-              borderRadius: 10,
-              background: "#1877D6",
-              border: "none",
-              color: "#fff",
-              fontSize: 15,
-              fontWeight: 700,
-              cursor: "pointer",
-              boxShadow: "0 4px 12px rgba(204,34,41,0.3)",
-            }}
-          >
-            End tracking
-          </button>
+          <>
+            {saveError && (
+              <div
+                style={{
+                  marginTop: 12,
+                  background: "#FEF2F2",
+                  border: "1px solid #FECACA",
+                  borderRadius: 10,
+                  padding: "10px 12px",
+                  color: "#991B1B",
+                  fontSize: 13,
+                  fontWeight: 600,
+                }}
+              >
+                {saveError}
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={stopTracking}
+              style={{
+                marginTop: 12,
+                width: "100%",
+                height: 46,
+                borderRadius: 10,
+                background: saveError ? "#CC2229" : "#1877D6",
+                border: "none",
+                color: "#fff",
+                fontSize: 15,
+                fontWeight: 700,
+                cursor: "pointer",
+                boxShadow: saveError ? "0 4px 12px rgba(204,34,41,0.3)" : "0 4px 12px rgba(26,82,160,0.3)",
+              }}
+            >
+              {saveError ? "Retry save" : "End tracking"}
+            </button>
+          </>
         ) : (
+
           <button
             type="button"
             onClick={() => startTracking(activeLessonId, activePupilId)}
