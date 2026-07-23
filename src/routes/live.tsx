@@ -565,7 +565,6 @@ function LivePage() {
       navigator.geolocation.clearWatch(watchIdRef.current);
       watchIdRef.current = null;
     }
-    setTracking(false);
     setSaveError(null);
 
     const saved = await saveCoordinates(true);
@@ -573,6 +572,9 @@ function LivePage() {
       setSaveError("Failed to save trip. Please check your connection and try again.");
       return;
     }
+
+    setTracking(false);
+
 
     // Build report by grouping consecutive points sharing road_name
     const pts = coordsRef.current;
