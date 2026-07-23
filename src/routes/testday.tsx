@@ -204,12 +204,10 @@ function TestDayPage() {
     setSaving(true);
     const faultsNum = faults.trim() === "" ? null : Number(faults);
     const { error } = await supabase
-      .from("driving_tests")
+      .from("pupils")
       .update({
-        result,
-        faults: faultsNum,
-        result_notes: notes || null,
-        result_logged_at: new Date().toISOString(),
+        test_status: result,
+        minor_faults: faultsNum,
       })
       .eq("id", test.id);
     setSaving(false);
@@ -219,7 +217,7 @@ function TestDayPage() {
       return;
     }
     toast.success("Result saved");
-    setTest({ ...test, result, faults: faultsNum, result_notes: notes || null });
+    setTest({ ...test, test_status: result, minor_faults: faultsNum });
   }
 
   return (
