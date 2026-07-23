@@ -13,6 +13,7 @@ import { BottomSheet as BottomSheetV2 } from "../components/dsm/BottomSheetV2";
 import { ChangeDateTimeSheet } from "../components/lessons/ChangeDateTimeSheet";
 import { CancelLessonSheet } from "../components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "../components/lessons/DeleteLessonSheet";
+import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 
 import { resolveHourlyRate } from "../lib/pricing/resolveRate";
 import { deletePaymentRecord } from "./payments";
