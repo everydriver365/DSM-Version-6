@@ -504,8 +504,26 @@ function PupilDetailPage() {
 
 
   useEffect(() => {
+    if (!editSheetOpen) return;
+
+    const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const originalOverflow = document.body.style.overflow;
+    const originalPaddingRight = document.body.style.paddingRight;
+
+    document.body.style.overflow = "hidden";
+    document.body.style.paddingRight = `${scrollBarWidth}px`;
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.paddingRight = originalPaddingRight;
+    };
+  }, [editSheetOpen]);
+
+
+  useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
   }, []);
+
 
   useEffect(() => {
     if (!userId || !id) return;
