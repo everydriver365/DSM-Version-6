@@ -32,8 +32,9 @@ interface MockTestResult {
   minor_faults: number | null;
   serious_faults: number | null;
   dangerous_faults: number | null;
-  pupils: { name: string } | null;
+  pupils: { name: string }[] | null;
 }
+
 
 function todayYmd() {
   const parts = new Intl.DateTimeFormat("en-GB", {

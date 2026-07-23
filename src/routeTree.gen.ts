@@ -54,6 +54,7 @@ import { Route as MtdRouteImport } from './routes/mtd'
 import { Route as MoreRouteImport } from './routes/more'
 import { Route as MonthendRouteImport } from './routes/monthend'
 import { Route as MonthToDateRouteImport } from './routes/month-to-date'
+import { Route as MockTestsRouteImport } from './routes/mock-tests'
 import { Route as MinisiteRouteImport } from './routes/minisite'
 import { Route as MileageRouteImport } from './routes/mileage'
 import { Route as MessagesRouteImport } from './routes/messages'
@@ -375,6 +376,11 @@ const MonthToDateRoute = MonthToDateRouteImport.update({
   path: '/month-to-date',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MockTestsRoute = MockTestsRouteImport.update({
+  id: '/mock-tests',
+  path: '/mock-tests',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MinisiteRoute = MinisiteRouteImport.update({
   id: '/minisite',
   path: '/minisite',
@@ -665,9 +671,9 @@ const NotesIdRoute = NotesIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const MockTestsPupilIdRoute = MockTestsPupilIdRouteImport.update({
-  id: '/mock-tests/$pupilId',
-  path: '/mock-tests/$pupilId',
-  getParentRoute: () => rootRouteImport,
+  id: '/$pupilId',
+  path: '/$pupilId',
+  getParentRoute: () => MockTestsRoute,
 } as any)
 const MessagesPupilIdRoute = MessagesPupilIdRouteImport.update({
   id: '/$pupilId',
@@ -895,6 +901,7 @@ export interface FileRoutesByFullPath {
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
+  '/mock-tests': typeof MockTestsRouteWithChildren
   '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
   '/more': typeof MoreRoute
@@ -1034,6 +1041,7 @@ export interface FileRoutesByTo {
   '/marketplace': typeof MarketplaceRoute
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
+  '/mock-tests': typeof MockTestsRouteWithChildren
   '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
   '/more': typeof MoreRoute
@@ -1176,6 +1184,7 @@ export interface FileRoutesById {
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
+  '/mock-tests': typeof MockTestsRouteWithChildren
   '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
   '/more': typeof MoreRoute
@@ -1319,6 +1328,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/mileage'
     | '/minisite'
+    | '/mock-tests'
     | '/month-to-date'
     | '/monthend'
     | '/more'
@@ -1458,6 +1468,7 @@ export interface FileRouteTypes {
     | '/marketplace'
     | '/mileage'
     | '/minisite'
+    | '/mock-tests'
     | '/month-to-date'
     | '/monthend'
     | '/more'
@@ -1599,6 +1610,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/mileage'
     | '/minisite'
+    | '/mock-tests'
     | '/month-to-date'
     | '/monthend'
     | '/more'
@@ -1742,6 +1754,7 @@ export interface RootRouteChildren {
   MessagesRoute: typeof MessagesRouteWithChildren
   MileageRoute: typeof MileageRoute
   MinisiteRoute: typeof MinisiteRoute
+  MockTestsRoute: typeof MockTestsRouteWithChildren
   MonthToDateRoute: typeof MonthToDateRoute
   MonthendRoute: typeof MonthendRoute
   MoreRoute: typeof MoreRoute
@@ -1799,7 +1812,6 @@ export interface RootRouteChildren {
   MarketplaceApplyRoute: typeof MarketplaceApplyRoute
   MarketplaceEditRoute: typeof MarketplaceEditRoute
   MarketplaceListRoute: typeof MarketplaceListRoute
-  MockTestsPupilIdRoute: typeof MockTestsPupilIdRoute
   NotesIdRoute: typeof NotesIdRoute
   PupilsIdRoute: typeof PupilsIdRoute
   PupilsNewRoute: typeof PupilsNewRoute
@@ -2134,6 +2146,13 @@ declare module '@tanstack/react-router' {
       path: '/month-to-date'
       fullPath: '/month-to-date'
       preLoaderRoute: typeof MonthToDateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mock-tests': {
+      id: '/mock-tests'
+      path: '/mock-tests'
+      fullPath: '/mock-tests'
+      preLoaderRoute: typeof MockTestsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/minisite': {
@@ -2544,10 +2563,10 @@ declare module '@tanstack/react-router' {
     }
     '/mock-tests/$pupilId': {
       id: '/mock-tests/$pupilId'
-      path: '/mock-tests/$pupilId'
+      path: '/$pupilId'
       fullPath: '/mock-tests/$pupilId'
       preLoaderRoute: typeof MockTestsPupilIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof MockTestsRoute
     }
     '/messages/$pupilId': {
       id: '/messages/$pupilId'
@@ -2875,6 +2894,18 @@ const MessagesRouteWithChildren = MessagesRoute._addFileChildren(
   MessagesRouteChildren,
 )
 
+interface MockTestsRouteChildren {
+  MockTestsPupilIdRoute: typeof MockTestsPupilIdRoute
+}
+
+const MockTestsRouteChildren: MockTestsRouteChildren = {
+  MockTestsPupilIdRoute: MockTestsPupilIdRoute,
+}
+
+const MockTestsRouteWithChildren = MockTestsRoute._addFileChildren(
+  MockTestsRouteChildren,
+)
+
 interface QuotesRouteChildren {
   QuotesNewRoute: typeof QuotesNewRoute
   QuotesIndexRoute: typeof QuotesIndexRoute
@@ -2944,6 +2975,7 @@ const rootRouteChildren: RootRouteChildren = {
   MessagesRoute: MessagesRouteWithChildren,
   MileageRoute: MileageRoute,
   MinisiteRoute: MinisiteRoute,
+  MockTestsRoute: MockTestsRouteWithChildren,
   MonthToDateRoute: MonthToDateRoute,
   MonthendRoute: MonthendRoute,
   MoreRoute: MoreRoute,
@@ -3001,7 +3033,6 @@ const rootRouteChildren: RootRouteChildren = {
   MarketplaceApplyRoute: MarketplaceApplyRoute,
   MarketplaceEditRoute: MarketplaceEditRoute,
   MarketplaceListRoute: MarketplaceListRoute,
-  MockTestsPupilIdRoute: MockTestsPupilIdRoute,
   NotesIdRoute: NotesIdRoute,
   PupilsIdRoute: PupilsIdRoute,
   PupilsNewRoute: PupilsNewRoute,
