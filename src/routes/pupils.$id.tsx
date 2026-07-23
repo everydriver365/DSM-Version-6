@@ -375,6 +375,8 @@ function PupilDetailPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "lessons" | "payments" | "profile">("overview");
   const [moreOpen, setMoreOpen] = useState(false);
   const [mockTests, setMockTests] = useState<MockTestResult[]>([]);
+  const [lessonRoutes, setLessonRoutes] = useState<LessonRoute[]>([]);
+
 
 
 
