@@ -7,6 +7,8 @@ import {
   Moon, TrendingUp, Activity, Radio, ShoppingBag, Users, GraduationCap as GraduationCapIcon,
   ChevronRight, PlayCircle,
 } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 // Toggle to false when Learn is no longer "new" — hides the NEW badge only.
 const LEARN_IS_NEW = true;
@@ -91,10 +93,17 @@ function MorePage() {
 
   return (
     <div style={{ background: '#F7FAFC', minHeight: '100vh', paddingBottom: 80, fontFamily: 'Inter, sans-serif' }}>
-      {/* Top bar */}
-      <div style={{ background: '#0F2044', padding: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h1 style={{ fontWeight: 700, fontSize: 18, color: 'white', margin: 0 }}>More</h1>
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="More"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => {/* already on More */}}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       {/* Search */}
       <div
