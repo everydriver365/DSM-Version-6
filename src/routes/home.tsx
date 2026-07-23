@@ -6615,7 +6615,7 @@ function HomePage() {
                       );
                     }
 
-                    const calColour = pupilColour(l.pupil_id, (l.pupils as any)?.calendar_colour ?? null, name);
+                    
                     const durLabel = (() => {
                       const h = Math.floor(dur / 60);
                       const m = dur % 60;
@@ -6634,7 +6634,7 @@ function HomePage() {
                             alignItems: 'stretch',
                             gap: 12,
                             cursor: 'pointer',
-                            background: '#F7F9FC',
+                            background: '#FFFFFF',
                             border: '1px solid rgba(11,31,58,0.05)',
                             borderRadius: 14,
                             boxShadow: 'none',
@@ -6652,16 +6652,6 @@ function HomePage() {
                                 {durLabel}
                               </div>
                             </div>
-                            <div
-                              aria-hidden
-                              style={{
-                                width: 3,
-                                borderRadius: 2,
-                                background: isCancelled ? '#9CA3AF' : calColour,
-                                flexShrink: 0,
-                                alignSelf: 'stretch',
-                              }}
-                            />
                             <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                               {tab === 'next' && (
                                 <div style={{ fontSize: 11, fontWeight: 500, color: '#1877D6', marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
