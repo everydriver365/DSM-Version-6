@@ -2130,6 +2130,106 @@ function PupilDetailPage() {
             })
           )}
         </div>
+
+        <BottomSheetV2
+          open={!!viewingReport || reportLoading}
+          onClose={() => setViewingReport(null)}
+          title="Lesson track"
+        >
+          {reportLoading && !viewingReport ? (
+            <div style={{ padding: 24, textAlign: "center", color: "#6B7280", ...POPPINS }}>
+              <Loader2 className="animate-spin inline mr-2" size={16} /> Loading track…
+            </div>
+          ) : viewingReport ? (
+            <div style={{ padding: "4px 4px 16px", ...POPPINS }}>
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+                  {viewingReport.started_at
+                    ? new Date(viewingReport.started_at).toLocaleString("en-GB", {
+                        weekday: "short", day: "2-digit", month: "short", year: "numeric",
+                        hour: "2-digit", minute: "2-digit",
+                      })
+                    : "—"}
+                </div>
+                <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
+                  {viewingReport.duration_minutes ? `${viewingReport.duration_minutes} min · ` : ""}
+                  Saved to {(pupil?.first_name || pupil?.name || "pupil")}'s record
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 16 }}>
+                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Distance</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>{viewingReport.totalDistanceMiles.toFixed(2)} mi</div>
+                </div>
+                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Max speed</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>{Math.round(viewingReport.overallMaxSpeed)} mph</div>
+                </div>
+                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Overspeed</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: viewingReport.overspeedCount > 0 ? "#CC2229" : "#0B1F3A", marginTop: 2 }}>{viewingReport.overspeedCount}</div>
+                </div>
+              </div>
+
+              <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
+                Road segments
+              </div>
+              <div style={{ border: "0.5px solid #E2E6ED", borderRadius: 12, overflow: "hidden" }}>
+                {viewingReport.segments.length === 0 ? (
+                  <div style={{ padding: 14, fontSize: 12, color: "#9CA3AF" }}>No segments</div>
+                ) : (
+                  viewingReport.segments.map((s, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        padding: "12px 14px",
+                        borderTop: i === 0 ? "none" : "0.5px solid #F3F4F6",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: 8,
+                      }}
+                    >
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {s.road_name}
+                        </div>
+                        <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>
+                          {s.distance_miles.toFixed(2)} mi · {s.speed_limit_mph != null ? `${s.speed_limit_mph} mph limit` : "no limit"} · max {Math.round(s.max_speed_mph)} mph
+                        </div>
+                      </div>
+                      {s.exceeded && (
+                        <span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 8px", borderRadius: 999 }}>
+                          Exceeded
+                        </span>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+                <button
+                  type="button"
+                  onClick={() => setViewingReport(null)}
+                  style={{ flex: 1, padding: "12px 16px", borderRadius: 10, border: "0.5px solid #E2E6ED", background: "#FFFFFF", color: "#0B1F3A", fontSize: 14, fontWeight: 600 }}
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  onClick={exportReportText}
+                  style={{ flex: 1, padding: "12px 16px", borderRadius: 10, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 14, fontWeight: 600 }}
+                >
+                  Export
+                </button>
+              </div>
+            </div>
+          ) : null}
+        </BottomSheetV2>
+
+
         </>)}
 
 
