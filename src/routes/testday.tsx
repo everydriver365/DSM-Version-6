@@ -113,11 +113,12 @@ function TestDayPage() {
       setLoading(true);
       const today = todayYmd();
       const { data, error } = await supabase
-        .from("driving_tests")
+        .from("pupils")
         .select(
-          "id, pupil_id, test_date, test_time, test_centre, result, faults, result_notes, pupils(id, name)",
+          "id, name, test_date, test_time, test_centre, test_status, examiner_first_name, examiner_surname, minor_faults, serious_faults, dangerous_faults",
         )
         .eq("instructor_id", userId)
+        .not("test_date", "is", null)
         .gte("test_date", today)
         .order("test_date", { ascending: true })
         .limit(1);
