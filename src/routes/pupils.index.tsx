@@ -603,7 +603,7 @@ function PupilsIndexPage() {
                               backgroundColor: "#FCEBEB",
                               color: "#CC2229",
                               fontSize: 10,
-                              fontWeight: 500,
+                              fontWeight: 700,
                               padding: "2px 7px",
                               borderRadius: 20,
                               ...POPPINS,
