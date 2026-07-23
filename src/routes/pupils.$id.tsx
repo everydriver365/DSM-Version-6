@@ -378,6 +378,74 @@ function PupilDetailPage() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [mockTests, setMockTests] = useState<MockTestResult[]>([]);
   const [lessonRoutes, setLessonRoutes] = useState<LessonRoute[]>([]);
+  const [viewingReport, setViewingReport] = useState<{
+    started_at: string | null;
+    duration_minutes: number | null;
+    segments: ReportSegment[];
+    totalDistanceMiles: number;
+    overallMaxSpeed: number;
+    overspeedCount: number;
+  } | null>(null);
+  const [reportLoading, setReportLoading] = useState(false);
+
+  const openLessonRouteReport = async (routeId: string) => {
+    setReportLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("lesson_routes")
+        .select("coordinates, pupil_id, started_at, duration_minutes")
+        .eq("id", routeId)
+        .maybeSingle();
+      if (error || !data) {
+        toast.error("Could not load track");
+        return;
+      }
+      const coords = (data.coordinates ?? []) as Coord[];
+      const report = buildTripReport(coords);
+      setViewingReport({
+        started_at: (data as any).started_at ?? null,
+        duration_minutes: (data as any).duration_minutes ?? null,
+        segments: report.segments,
+        totalDistanceMiles: report.totalDistanceMiles,
+        overallMaxSpeed: report.overallMaxSpeed,
+        overspeedCount: report.segments.filter((s) => s.exceeded).length,
+      });
+    } finally {
+      setReportLoading(false);
+    }
+  };
+
+  const exportReportText = async () => {
+    if (!viewingReport) return;
+    const name = [pupil?.first_name, pupil?.last_name].filter(Boolean).join(" ").trim() || pupil?.name || "Pupil";
+    const dateStr = viewingReport.started_at
+      ? new Date(viewingReport.started_at).toLocaleString("en-GB")
+      : "—";
+    const lines: string[] = [];
+    lines.push(`Lesson track — ${name}`);
+    lines.push(dateStr);
+    lines.push(`Distance: ${viewingReport.totalDistanceMiles.toFixed(2)} mi · Max: ${Math.round(viewingReport.overallMaxSpeed)} mph · Overspeed segments: ${viewingReport.overspeedCount}`);
+    lines.push("");
+    viewingReport.segments.forEach((s, i) => {
+      const limit = s.speed_limit_mph != null ? `${s.speed_limit_mph} mph limit` : "no limit data";
+      lines.push(`${i + 1}. ${s.road_name} — ${s.distance_miles.toFixed(2)} mi · ${limit} · max ${Math.round(s.max_speed_mph)} mph${s.exceeded ? " · EXCEEDED" : ""}`);
+    });
+    const text = lines.join("\n");
+    try {
+      if (typeof navigator !== "undefined" && (navigator as any).share) {
+        await (navigator as any).share({ title: `Lesson track — ${name}`, text });
+        return;
+      }
+    } catch {
+      // fall through to clipboard
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Copied to clipboard");
+    } catch {
+      toast.error("Could not export");
+    }
+  };
 
 
 
