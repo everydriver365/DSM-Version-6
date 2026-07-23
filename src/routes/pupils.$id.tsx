@@ -2000,8 +2000,9 @@ function PupilDetailPage() {
               const duration = r.duration_minutes ? `${r.duration_minutes} min` : "—";
               const distance = r.distance_miles != null ? `${r.distance_miles.toFixed(1)} mi` : "—";
               const maxSpeed = r.max_speed_mph != null ? `${Math.round(r.max_speed_mph)} mph` : "—";
-              const overspeeds = r.overspeed_count ?? 0;
+              const overspeeds = (r.overspeed_events ?? []).length;
               return (
+
                 <div
                   key={r.id}
                   style={{
