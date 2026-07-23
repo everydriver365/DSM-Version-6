@@ -761,7 +761,7 @@ function RefundSheet({ row, userId, onClose, onSaved }: { row: HistoryRow; userI
     });
     if (row.lesson_id) {
       await supabase.from("lessons").update({
-        payment_status: "unpaid", amount_due: refundAmount, paid_at: null, paid_amount: null, payment_method: null,
+        payment_status: "unpaid", paid_at: null, paid_amount: null, payment_method: null,
       }).eq("id", row.lesson_id);
     } else {
       const { data: pRow } = await supabase.from("pupils").select("account_balance").eq("id", row.pupil_id).maybeSingle();
