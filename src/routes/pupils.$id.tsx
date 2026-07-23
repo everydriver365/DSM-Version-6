@@ -3671,6 +3671,26 @@ function PupilDetailPage() {
         />
       )}
 
+      {eolWizardFor && (
+        <EndLessonWizard
+          open={true}
+          onClose={() => setEolWizardFor(null)}
+          lessonId={eolWizardFor.id}
+          pupilId={id}
+          pupilName={pupil?.name ?? ""}
+          instructorId={userId ?? ""}
+          durationMinutes={eolWizardFor.duration_minutes ?? 60}
+          lessonDate={eolWizardFor.lesson_date}
+          startTime={eolWizardFor.lesson_time}
+          onCompleted={() => {
+            const lessonId = eolWizardFor.id;
+            setPastLessons((prev) => (prev ?? []).map((l) => (l.id === lessonId ? { ...l, status: "completed", eol_completed: true } : l)));
+            setLessons((prev) => (prev ?? []).map((l) => (l.id === lessonId ? { ...l, status: "completed", eol_completed: true } : l)));
+            setEolWizardFor(null);
+          }}
+        />
+      )}
+
       <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
       </div>
     </div>
