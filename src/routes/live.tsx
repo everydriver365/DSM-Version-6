@@ -838,6 +838,7 @@ function LivePage() {
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 8, fontSize: 12, color: "#374151" }}>
                     <span><b style={{ color: "#0B1F3A" }}>{seg.distance_miles.toFixed(2)} mi</b></span>
+                    <span>Duration: <b style={{ color: "#0B1F3A" }}>{seg.points.length > 1 ? formatDurationMs(seg.points[seg.points.length - 1].timestamp - seg.points[0].timestamp) : "—"}</b></span>
                     <span>Limit: <b style={{ color: "#0B1F3A" }}>{seg.speed_limit_mph != null ? `${seg.speed_limit_mph} mph` : "Not available"}</b></span>
                     <span>Avg: <b style={{ color: "#0B1F3A" }}>{Math.round(seg.avg_speed_mph)} mph</b></span>
                     <span>Max: <b style={{ color: seg.exceeded ? "#CC2229" : "#0B1F3A" }}>{Math.round(seg.max_speed_mph)} mph</b></span>
