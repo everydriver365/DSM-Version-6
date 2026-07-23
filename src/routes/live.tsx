@@ -59,6 +59,17 @@ function haversineKm(a: Coord, b: { lat: number; lng: number }) {
   return 2 * R * Math.asin(Math.sqrt(s));
 }
 
+function formatDurationMs(ms: number) {
+  const totalSeconds = Math.max(0, Math.round(ms / 1000));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
+  if (minutes > 0) return `${minutes}m ${seconds}s`;
+  return `${seconds}s`;
+}
+
+
 let gmapsPromise: Promise<any> | null = null;
 function loadGoogleMaps(): Promise<any> {
   if (typeof window === "undefined") return Promise.reject(new Error("no window"));
