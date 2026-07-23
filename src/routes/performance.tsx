@@ -49,7 +49,7 @@ interface LessonRow { id: string; status: string; pupil_id: string; lesson_date:
 interface PupilRow { id: string; status: string | null }
 interface PaymentRow { amount: number; paid_at: string }
 interface ExpenseRow { amount: number; expense_date: string }
-interface TestRow { id: string; result: string | null; pupil_id: string; test_date: string }
+interface TestRow { id: string; test_status: string | null; test_date: string }
 
 function PerformancePage() {
   const navigate = useNavigate();
@@ -96,9 +96,10 @@ function PerformancePage() {
       if (start) expensesQ = expensesQ.gte("expense_date", start);
 
       let testsQ = supabase
-        .from("driving_tests")
-        .select("id, result, pupil_id, test_date")
-        .eq("instructor_id", userId);
+        .from("pupils")
+        .select("id, test_status, test_date")
+        .eq("instructor_id", userId)
+        .not("test_date", "is", null);
       if (start) testsQ = testsQ.gte("test_date", start);
 
       const pupilsQ = supabase
@@ -130,14 +131,14 @@ function PerformancePage() {
   }, [userId, start]);
 
   // ---- Calculations
-  const passCount = tests.filter((t) => (t.result ?? "").toLowerCase() === "pass").length;
-  const failCount = tests.filter((t) => (t.result ?? "").toLowerCase() === "fail").length;
-  const pendingCount = tests.filter((t) => !t.result).length;
+  const passCount = tests.filter((t) => t.test_status === "Passed").length;
+  const failCount = tests.filter((t) => t.test_status === "Failed").length;
+  const pendingCount = tests.filter((t) => !t.test_status).length;
   const resolvedTests = passCount + failCount;
   const passRate = resolvedTests > 0 ? Math.round((passCount / resolvedTests) * 100) : 0;
 
   const passedPupilIds = new Set(
-    tests.filter((t) => (t.result ?? "").toLowerCase() === "pass").map((t) => t.pupil_id),
+    tests.filter((t) => t.test_status === "Passed").map((t) => t.id),
   );
   const lessonsByPupil = new Map<string, number>();
   lessons.forEach((l) => {
