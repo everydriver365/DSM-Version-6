@@ -926,7 +926,7 @@ function LivePage() {
 
     const safeName = r.pupilName.replace(/[^a-z0-9]+/gi, "_").toLowerCase();
     const date = new Date().toISOString().slice(0, 10);
-    doc.save(`trip-report-${safeName}-${date}.pdf`);
+    doc.save(`trip-report${includePoints ? "-detailed" : ""}-${safeName}-${date}.pdf`);
   }
 
   if (showReport && reportData) {
