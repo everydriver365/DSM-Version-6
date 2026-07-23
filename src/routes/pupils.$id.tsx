@@ -381,6 +381,9 @@ function PupilDetailPage() {
     custom_rate: string;
     custom_rate_90: string;
     custom_rate_120: string;
+    test_date: string;
+    test_time: string;
+    theory_pass: boolean;
   }>({
     first_name: "",
     last_name: "",
@@ -397,6 +400,9 @@ function PupilDetailPage() {
     custom_rate: "",
     custom_rate_90: "",
     custom_rate_120: "",
+    test_date: "",
+    test_time: "",
+    theory_pass: false,
   });
 
 
