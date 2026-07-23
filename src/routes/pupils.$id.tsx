@@ -3591,6 +3591,49 @@ function PupilDetailPage() {
               </select>
             </label>
 
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <label className="text-[12px] text-[#6B7280] block">
+                Test date
+                <input
+                  type="date"
+                  value={editDraft.test_date}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, test_date: e.target.value }))}
+                  className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                />
+              </label>
+              <label className="text-[12px] text-[#6B7280] block">
+                Test time
+                <input
+                  type="time"
+                  value={editDraft.test_time}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, test_time: e.target.value }))}
+                  className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                />
+              </label>
+            </div>
+
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-[12px] text-[#6B7280]">Theory test passed</span>
+              <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                <input
+                  type="checkbox"
+                  checked={editDraft.theory_pass}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, theory_pass: e.target.checked }))}
+                  className="sr-only peer"
+                />
+                <div
+                  className="w-11 h-6 rounded-full transition-colors"
+                  style={{ backgroundColor: editDraft.theory_pass ? "#16A34A" : "#CBD5E1" }}
+                />
+                <div
+                  className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
+                  style={{ transform: editDraft.theory_pass ? "translateX(20px)" : "translateX(0)" }}
+                />
+              </label>
+            </div>
+
             <div className="text-[11px] font-semibold uppercase tracking-wide text-[#6B7280] mb-2">Lead source</div>
             <label className="text-[12px] text-[#6B7280] block mb-4">
               How did they find you?
