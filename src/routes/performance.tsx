@@ -96,9 +96,10 @@ function PerformancePage() {
       if (start) expensesQ = expensesQ.gte("expense_date", start);
 
       let testsQ = supabase
-        .from("driving_tests")
-        .select("id, result, pupil_id, test_date")
-        .eq("instructor_id", userId);
+        .from("pupils")
+        .select("id, test_status, test_date")
+        .eq("instructor_id", userId)
+        .not("test_date", "is", null);
       if (start) testsQ = testsQ.gte("test_date", start);
 
       const pupilsQ = supabase
