@@ -625,6 +625,121 @@ function LivePage() {
   const elapsedSecRem = elapsedSec % 60;
   const distanceMiles = distanceKm * 0.621371;
 
+  async function exportReportPdf(r: ReportData) {
+    const { jsPDF } = await import("jspdf");
+    const doc = new jsPDF({ unit: "pt", format: "a4" });
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    const margin = 40;
+    let y = margin;
+
+    // Navy header band
+    doc.setFillColor(11, 31, 58);
+    doc.rect(0, 0, pageW, 90, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text("TRIP REPORT", margin, 34);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text(r.pupilName, margin, 58);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text(`Saved to ${r.pupilName}'s record`, margin, 76);
+    y = 120;
+
+    // Summary
+    const durMin = Math.floor(r.totalDurationSec / 60);
+    const durSec = r.totalDurationSec % 60;
+    const summary = [
+      ["Distance", `${r.totalDistanceMiles.toFixed(1)} mi`],
+      ["Duration", `${durMin}m ${durSec}s`],
+      ["Max speed", `${Math.round(r.overallMaxSpeed)} mph`],
+      ["Overspeed", `${r.overspeedCount}`],
+    ];
+    const colW = (pageW - margin * 2) / 2;
+    doc.setDrawColor(229, 231, 235);
+    summary.forEach(([label, value], i) => {
+      const col = i % 2;
+      const row = Math.floor(i / 2);
+      const bx = margin + col * colW;
+      const by = y + row * 60;
+      doc.setFillColor(255, 255, 255);
+      doc.roundedRect(bx, by, colW - 8, 52, 6, 6, "FD");
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(107, 114, 128);
+      doc.text(label.toUpperCase(), bx + 10, by + 16);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(15);
+      const isOverspeedRed = label === "Overspeed" && r.overspeedCount > 0;
+      doc.setTextColor(...(isOverspeedRed ? [204, 34, 41] : [11, 31, 58]) as [number, number, number]);
+      doc.text(value, bx + 10, by + 38);
+    });
+    y += 60 * Math.ceil(summary.length / 2) + 16;
+
+    // Segments header
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(107, 114, 128);
+    doc.text(`ROAD SEGMENTS (${r.segments.length})`, margin, y);
+    y += 14;
+
+    // Segments
+    doc.setDrawColor(229, 231, 235);
+    r.segments.forEach((seg) => {
+      const rowH = 52;
+      if (y + rowH > pageH - margin) {
+        doc.addPage();
+        y = margin;
+      }
+      doc.setFillColor(255, 255, 255);
+      doc.roundedRect(margin, y, pageW - margin * 2, rowH, 6, 6, "FD");
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.setTextColor(11, 31, 58);
+      const nameMax = pageW - margin * 2 - (seg.exceeded ? 90 : 20);
+      const name = doc.splitTextToSize(seg.road_name, nameMax)[0];
+      doc.text(name, margin + 10, y + 18);
+
+      if (seg.exceeded) {
+        doc.setFillColor(204, 34, 41);
+        doc.roundedRect(pageW - margin - 78, y + 8, 68, 16, 8, 8, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8);
+        doc.text("EXCEEDED", pageW - margin - 44, y + 19, { align: "center" });
+      }
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(55, 65, 81);
+      const limit = seg.speed_limit_mph != null ? `${seg.speed_limit_mph} mph` : "Not available";
+      const meta = `${seg.distance_miles.toFixed(2)} mi   ·   Limit: ${limit}   ·   Avg: ${Math.round(seg.avg_speed_mph)} mph   ·   Max: ${Math.round(seg.max_speed_mph)} mph`;
+      doc.text(meta, margin + 10, y + 40);
+
+      y += rowH + 6;
+    });
+
+    if (r.segments.length === 0) {
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+      doc.setTextColor(107, 114, 128);
+      doc.text("No segments recorded.", margin, y + 14);
+    }
+
+    // Footer
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(156, 163, 175);
+    doc.text(`Generated ${new Date().toLocaleString("en-GB")}`, margin, pageH - 20);
+
+    const safeName = r.pupilName.replace(/[^a-z0-9]+/gi, "_").toLowerCase();
+    const date = new Date().toISOString().slice(0, 10);
+    doc.save(`trip-report-${safeName}-${date}.pdf`);
+  }
+
   if (showReport && reportData) {
     const r = reportData;
     const durMin = Math.floor(r.totalDurationSec / 60);
