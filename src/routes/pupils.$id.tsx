@@ -4194,6 +4194,7 @@ function CustomRatesCard({
       custom_rate_90: r90 === "" ? null : Number(r90),
       custom_rate_120: r120 === "" ? null : Number(r120),
     };
+    console.log("[custom-rates] saving:", patch);
     const ok = await patchPupil(patch);
     setSavingRates(false);
     if (ok) {
