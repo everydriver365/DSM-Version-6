@@ -656,7 +656,7 @@ function LivePage() {
             height: 64,
             borderRadius: 32,
             background: "#fff",
-            border: "5px solid #1877D6",
+            border: "5px solid #EF4444",
             boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
           }}
         >
