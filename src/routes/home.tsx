@@ -1239,10 +1239,9 @@ function MarketplaceSection({ navigate }: { navigate: ReturnType<typeof useNavig
                         fontWeight: 600,
                         color: "#0F2044",
                         lineHeight: 1.3,
-                        letterSpacing: "-0.01em",
                         display: "-webkit-box",
                         WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
+                        WebkitBoxOrient: "vertical" as const,
                         overflow: "hidden",
                         wordBreak: "break-word",
                       }}
