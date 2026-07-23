@@ -362,7 +362,7 @@ function LivePage() {
   }
 
   async function saveCoordinates(final = false, extras: Record<string, any> = {}) {
-    if (!routeIdRef.current) return;
+    if (!routeIdRef.current) return false;
     const speeds = coordsRef.current.map((c) => c.speed_mph).filter((s) => s > 0);
     const maxSpeed = speeds.length ? Math.max(...speeds) : 0;
     const avgSpeed = speeds.length
@@ -382,11 +382,18 @@ function LivePage() {
       );
     }
     try {
-      await supabase.from("lesson_routes").update(payload).eq("id", routeIdRef.current);
+      const { error } = await supabase.from("lesson_routes").update(payload).eq("id", routeIdRef.current);
+      if (error) {
+        console.warn("[live] save route failed", error);
+        return false;
+      }
+      return true;
     } catch (e) {
       console.warn("[live] save route failed", e);
+      return false;
     }
   }
+
 
   async function recordOverspeed(
     speed: number,
