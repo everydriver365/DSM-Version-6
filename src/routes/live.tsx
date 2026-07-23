@@ -140,6 +140,8 @@ function LivePage() {
   const [showReport, setShowReport] = useState(false);
   const [reportData, setReportData] = useState<ReportData | null>(null);
   const [expandedSegments, setExpandedSegments] = useState<Set<number>>(new Set());
+  const [saveError, setSaveError] = useState<string | null>(null);
+
 
   interface PickerPupil {
     id: string;
