@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronRight, Plus, Search, X, Megaphone, Users, CreditCard, MoreHorizontal } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { EmptyState } from "../components/dsm/EmptyState";
 import { PageLayout } from "@/components/PageLayout";
@@ -9,6 +10,7 @@ import {
   type PupilQuickActionsPupil,
 } from "@/components/pupils/PupilQuickActionsSheet";
 import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 export const Route = createFileRoute("/pupils/")({
   head: () => ({
@@ -301,49 +303,58 @@ function PupilsIndexPage() {
 
   return (
     <PageLayout className="pb-24 pb-safe relative" style={POPPINS}>
-      {/* Top bar */}
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Pupils"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Action bar */}
       <div
-        className="sticky top-0 z-40 flex items-center justify-between px-4"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
+        style={{
+          background: "#FFFFFF",
+          padding: "8px 16px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderBottom: "1px solid #EEF2F7",
+          gap: 10,
+        }}
       >
-        <div className="flex items-center gap-2">
-          <span className="text-[15px] font-bold text-white" style={POPPINS}>
-            DSM
-          </span>
-          <span className="text-[15px] text-white" style={POPPINS}>
-            Pupils
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <Link
-            to="/broadcast"
-            aria-label="Message all pupils"
-            className="flex items-center gap-1 px-2 h-8 rounded-md"
-            style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
-          >
-            <Megaphone size={16} color="#FFFFFF" />
-            <span className="text-[12px] font-medium text-white" style={POPPINS}>Message all</span>
-          </Link>
-          <button
-            type="button"
-            aria-label={searchOpen ? "Close search" : "Open search"}
-            onClick={() => {
-              setSearchOpen((v) => {
-                const next = !v;
-                if (!next) setQuery("");
-                return next;
-              });
-            }}
-            className="flex items-center justify-center"
-            style={{ width: 32, height: 32 }}
-          >
-            {searchOpen ? (
-              <X size={20} color="#FFFFFF" />
-            ) : (
-              <Search size={20} color="#FFFFFF" />
-            )}
-          </button>
-        </div>
+        <Link
+          to="/broadcast"
+          aria-label="Message all pupils"
+          className="flex items-center gap-1 px-2 h-8 rounded-md"
+          style={{ backgroundColor: "#F3F8FF", border: "1px solid #EEF2F7" }}
+        >
+          <Megaphone size={16} color="#1877D6" />
+          <span className="text-[12px] font-medium" style={{ color: "#1877D6", ...POPPINS }}>Message all</span>
+        </Link>
+        <button
+          type="button"
+          aria-label={searchOpen ? "Close search" : "Open search"}
+          onClick={() => {
+            setSearchOpen((v) => {
+              const next = !v;
+              if (!next) setQuery("");
+              return next;
+            });
+          }}
+          className="flex items-center justify-center rounded-md"
+          style={{ width: 32, height: 32, backgroundColor: "#F3F8FF", border: "1px solid #EEF2F7" }}
+        >
+          {searchOpen ? (
+            <X size={20} color="#1877D6" />
+          ) : (
+            <Search size={20} color="#1877D6" />
+          )}
+        </button>
       </div>
 
       {/* Search bar */}
