@@ -349,6 +349,9 @@ function PupilDetailPage() {
   const [adjValue, setAdjValue] = useState<string>("0");
   const [adjNote, setAdjNote] = useState<string>("");
   const [adjSaving, setAdjSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState<"overview" | "lessons" | "payments" | "profile">("overview");
+  const [moreOpen, setMoreOpen] = useState(false);
+
 
   const [editSheetOpen, setEditSheetOpen] = useState(false);
   const [editSaving, setEditSaving] = useState(false);
