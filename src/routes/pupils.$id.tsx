@@ -173,8 +173,9 @@ interface LessonRoute {
   duration_minutes: number | null;
   distance_miles: number | null;
   max_speed_mph: number | null;
-  overspeed_count: number | null;
+  overspeed_events: { id: string }[] | null;
 }
+
 
 
 
