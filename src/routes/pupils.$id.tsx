@@ -1678,7 +1678,13 @@ function PupilDetailPage() {
                     ) : isPaid ? (
                       <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Paid ✓</span>
                     ) : past && l.status !== "cancelled" && !l.eol_completed ? (
-                      <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>EOL</span>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setEolWizardFor(l); }}
+                        style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, border: "none", ...POPPINS }}
+                      >
+                        EOL
+                      </button>
                     ) : null}
                     <button
                       onClick={(e) => { e.stopPropagation(); setActionsOpenFor(actionsOpenFor?.id === l.id ? null : l); }}
