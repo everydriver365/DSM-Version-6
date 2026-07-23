@@ -1041,10 +1041,10 @@ function PupilDetailPage() {
       {/* Profile header card */}
       {pupil && (
         <div className="mt-0 overflow-hidden rounded-b-[28px]">
-            {/* Blue hero band */}
+            {/* Hero band matching header */}
             <div
               className="relative px-4 rounded-b-[28px]"
-              style={{ backgroundColor: "#1877D6", paddingTop: 22, paddingBottom: 76 }}
+              style={{ backgroundColor: "#0B1F3A", paddingTop: 22, paddingBottom: 76 }}
             >
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 relative z-10">
                 <div className="flex items-start gap-3 min-w-0">
