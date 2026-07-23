@@ -1290,7 +1290,7 @@ function PupilDetailPage() {
                           className="text-[9px] font-bold uppercase truncate"
                           style={{ color: "#6B7280", letterSpacing: "0.06em", ...POPPINS }}
                         >
-                          Balance
+                          {net > 0 ? "Balance owed" : "Balance"}
                         </p>
                         <p
                           className="text-[15px] font-bold mt-0.5 leading-tight truncate"
@@ -1371,6 +1371,7 @@ function PupilDetailPage() {
                   })();
                   const theoryPassed = pupil.theory_status === "Passed";
                   const practBooked = Boolean(pupil.test_date);
+                  const practStatus = pupil.test_status || (practBooked ? "Booked" : "Not booked");
                   const segments = 5;
                   const filled = Math.round((readiness.score / 100) * segments);
                   return (
@@ -1441,20 +1442,43 @@ function PupilDetailPage() {
                         <div
                           className="flex items-center gap-3 p-3 rounded-xl border"
                           style={{
-                            backgroundColor: practBooked ? "rgba(204,34,41,0.05)" : "#F9FAFB",
-                            borderColor: practBooked ? "rgba(204,34,41,0.2)" : "#F1F5F9",
+                            backgroundColor:
+                              practStatus === "Passed"
+                                ? "rgba(0,181,165,0.05)"
+                                : practStatus === "Booked"
+                                  ? "rgba(24,119,214,0.08)"
+                                  : practStatus === "Failed"
+                                    ? "rgba(204,34,41,0.05)"
+                                    : "#F9FAFB",
+                            borderColor:
+                              practStatus === "Passed"
+                                ? "rgba(0,181,165,0.2)"
+                                : practStatus === "Booked"
+                                  ? "rgba(24,119,214,0.25)"
+                                  : practStatus === "Failed"
+                                    ? "rgba(204,34,41,0.2)"
+                                    : "#F1F5F9",
                           }}
                         >
                           <div
                             className="p-2 rounded-lg shrink-0 flex items-center justify-center"
-                            style={{ backgroundColor: practBooked ? "#CC2229" : "#94A3B8" }}
+                            style={{
+                              backgroundColor:
+                                practStatus === "Passed"
+                                  ? "#00B5A5"
+                                  : practStatus === "Booked"
+                                    ? "#1877D6"
+                                    : practStatus === "Failed"
+                                      ? "#CC2229"
+                                      : "#94A3B8",
+                            }}
                           >
                             <Car size={14} color="#FFFFFF" />
                           </div>
                           <div className="min-w-0">
                             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider" style={POPPINS}>Practical</p>
                             <p className="text-[12px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
-                              {pupil.test_status || (practBooked ? "Booked" : "Not booked")}
+                              {practStatus}
                             </p>
                           </div>
                         </div>
