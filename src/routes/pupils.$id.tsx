@@ -1545,11 +1545,6 @@ function PupilDetailPage() {
       )}
       <div className="mx-auto w-full md:max-w-3xl md:px-4 md:pt-4">
         <div className="px-4">
-        {pupil && (
-          <>
-
-          </>
-        )}
 
         {/* Quick actions row: Call · Message · Text · Add lesson · More */}
         <div className="grid grid-cols-5 gap-2 mt-4">
