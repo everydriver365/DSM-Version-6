@@ -79,6 +79,7 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
   const [whatsNewItems, setWhatsNewItems] = useState<WhatsNewItem[]>([]);
   const [catchUpRows, setCatchUpRows] = useState<Row[]>([]);
   const [catchUpReady, setCatchUpReady] = useState(false);
+  const [catchUpHandled, setCatchUpHandled] = useState(false);
   const [whatsNewResolved, setWhatsNewResolved] = useState<"pending" | "dismissed" | "later" | "none">(
     "pending",
   );
