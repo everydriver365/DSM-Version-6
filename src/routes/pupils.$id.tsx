@@ -2090,14 +2090,21 @@ function PupilDetailPage() {
               const overspeeds = (r.overspeed_events ?? []).length;
               return (
 
-                <div
+                <button
                   key={r.id}
+                  type="button"
+                  onClick={() => openLessonRouteReport(r.id)}
                   style={{
+                    width: "100%",
+                    background: "transparent",
+                    border: "none",
+                    textAlign: "left",
                     padding: "12px 16px",
                     borderTop: idx === 0 ? "none" : "0.5px solid #F3F4F6",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
+                    cursor: "pointer",
                     ...POPPINS,
                   }}
                 >
@@ -2107,15 +2114,18 @@ function PupilDetailPage() {
                       {duration} · {distance} · {maxSpeed}
                     </div>
                   </div>
-                  {overspeeds > 0 ? (
-                    <span
-                      className="text-[11px] font-semibold"
-                      style={{ backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 8px", borderRadius: 999, ...POPPINS }}
-                    >
-                      {overspeeds} overspeed
-                    </span>
-                  ) : null}
-                </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    {overspeeds > 0 ? (
+                      <span
+                        className="text-[11px] font-semibold"
+                        style={{ backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 8px", borderRadius: 999, ...POPPINS }}
+                      >
+                        {overspeeds} overspeed
+                      </span>
+                    ) : null}
+                    <ChevronRight size={16} color="#9CA3AF" />
+                  </div>
+                </button>
               );
             })
           )}
