@@ -41,6 +41,7 @@ import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -681,16 +682,17 @@ function SettingsPage() {
 
   return (
     <PageLayout className="pb-24 pb-safe" style={POPPINS}>
-      {/* Top bar */}
-      <div
-        className="sticky top-0 z-40 flex items-center justify-between px-4"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
-      >
-        <div className="flex items-center gap-2">
-          <span className="text-[15px] font-bold text-white" style={POPPINS}>DSM</span>
-          <span className="text-[15px] text-white" style={POPPINS}>Settings</span>
-        </div>
-      </div>
+      <InstructorTopBar
+        firstName={instructorName}
+        pageTitle="Settings"
+        onBack={() => navigate({ to: "/more" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
       
 
 
