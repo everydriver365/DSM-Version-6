@@ -156,6 +156,17 @@ interface Lesson {
   pickup_location: string | null;
 }
 
+interface MockTestResult {
+  id: string;
+  pupil_id: string;
+  test_date: string;
+  result: string | null;
+  minor_faults: number | null;
+  serious_faults: number | null;
+  dangerous_faults: number | null;
+}
+
+
 function initials(name: string) {
   const parts = name.trim().split(/\s+/);
   const a = parts[0]?.[0] ?? "";
@@ -352,6 +363,8 @@ function PupilDetailPage() {
   const [adjSaving, setAdjSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<"overview" | "lessons" | "payments" | "profile">("overview");
   const [moreOpen, setMoreOpen] = useState(false);
+  const [mockTests, setMockTests] = useState<MockTestResult[]>([]);
+
 
 
   const [editSheetOpen, setEditSheetOpen] = useState(false);
@@ -505,10 +518,21 @@ function PupilDetailPage() {
         const row = (data as any[])?.[0];
         setLastMessage(row ?? null);
       });
+    supabase
+      .from("mock_test_results")
+      .select("id, pupil_id, test_date, result, minor_faults, serious_faults, dangerous_faults")
+      .eq("pupil_id", id)
+      .order("test_date", { ascending: false })
+      .limit(5)
+      .then(({ data }) => {
+        if (cancelled) return;
+        setMockTests((data ?? []) as MockTestResult[]);
+      });
     return () => {
       cancelled = true;
     };
   }, [userId, id]);
+
 
   useEffect(() => {
     if (!userId) return;
@@ -2570,7 +2594,90 @@ function PupilDetailPage() {
         );
       })()}
 
+        {/* Mock tests card */}
+        {pupil && (
+          <div
+            className="mt-3"
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 16,
+              border: "0.5px solid #E2E6ED",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              overflow: "hidden",
+            }}
+          >
+            <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "0.5px solid #EEF2F7" }}>
+              <span className="flex items-center gap-2 text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                <ClipboardCheck size={16} color="#1877D6" /> Mock tests
+              </span>
+              <span
+                className="text-[11px] font-semibold text-white"
+                style={{ backgroundColor: "#1877D6", padding: "2px 8px", borderRadius: 999, ...POPPINS }}
+              >
+                {mockTests.length}
+              </span>
+            </div>
+            {mockTests.length === 0 ? (
+              <div className="px-4 py-3 text-[13px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                No mock tests logged yet
+              </div>
+            ) : (
+              <div className="flex flex-col">
+                {mockTests.map((mt, idx) => {
+                  const total = (mt.minor_faults ?? 0) + (mt.serious_faults ?? 0) + (mt.dangerous_faults ?? 0);
+                  const result = mt.result ?? "Pending";
+                  const resultColor =
+                    mt.result === "Passed" ? { bg: "#1E8E5A", fg: "#FFFFFF" } :
+                    mt.result === "Failed" ? { bg: "#CC2229", fg: "#FFFFFF" } :
+                    { bg: "#E5E7EB", fg: "#374151" };
+                  const faultSummary = [
+                    (mt.minor_faults ?? 0) > 0 ? `${mt.minor_faults} minor` : null,
+                    (mt.serious_faults ?? 0) > 0 ? `${mt.serious_faults} serious` : null,
+                    (mt.dangerous_faults ?? 0) > 0 ? `${mt.dangerous_faults} dangerous` : null,
+                  ].filter(Boolean).join(" · ") || (total > 0 ? `${total} fault${total === 1 ? "" : "s"}` : null);
+                  return (
+                    <div
+                      key={mt.id}
+                      className="flex items-center justify-between px-4 py-3"
+                      style={{
+                        borderBottom: idx < mockTests.length - 1 ? "0.5px solid #EEF2F7" : "none",
+                        ...POPPINS,
+                      }}
+                    >
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-[13px] font-semibold" style={{ color: "#0B1F3A" }}>
+                          {fmtUKDate(mt.test_date)}
+                        </span>
+                        {faultSummary && (
+                          <span className="text-[11px]" style={{ color: "#6B7280" }}>
+                            {faultSummary}
+                          </span>
+                        )}
+                      </div>
+                      <span
+                        className="text-[11px] font-semibold shrink-0"
+                        style={{ backgroundColor: resultColor.bg, color: resultColor.fg, padding: "2px 8px", borderRadius: 999 }}
+                      >
+                        {result}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => navigate({ to: "/mock-tests", search: { pupilId: id } as never })}
+              className="w-full text-left px-4 py-3 text-[13px] font-medium"
+              style={{ color: "#1877D6", borderTop: "0.5px solid #EEF2F7", background: "none", borderRight: "none", borderLeft: "none", borderBottom: "none", ...POPPINS }}
+            >
+              New mock test
+            </button>
+          </div>
+        )}
+
         {(() => {
+
           const all = [...(lessons ?? []), ...(pastLessons ?? [])];
           let focus: Lesson | null = null;
           if (focusLessonId) focus = all.find((l) => l.id === focusLessonId) ?? null;
