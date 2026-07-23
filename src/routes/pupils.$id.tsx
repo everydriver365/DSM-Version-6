@@ -1265,11 +1265,11 @@ function PupilDetailPage() {
                     }
                   }
                   return (
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-3 gap-1.5">
                       <button
                         type="button"
                         onClick={() => setActiveTab("payments")}
-                        className="text-left rounded-xl p-3 border active:scale-[0.98] transition-transform"
+                        className="text-left rounded-xl p-2 border active:scale-[0.98] transition-transform min-w-0"
                         style={{
                           backgroundColor: "#FFFFFF",
                           borderColor: "#E2E6ED",
@@ -1277,20 +1277,20 @@ function PupilDetailPage() {
                         }}
                       >
                         <p
-                          className="text-[10px] font-bold uppercase tracking-widest"
-                          style={{ color: "#6B7280", ...POPPINS }}
+                          className="text-[9px] font-bold uppercase truncate"
+                          style={{ color: "#6B7280", letterSpacing: "0.06em", ...POPPINS }}
                         >
                           Balance
                         </p>
                         <p
-                          className="text-[18px] font-bold mt-1 leading-tight truncate"
+                          className="text-[15px] font-bold mt-0.5 leading-tight truncate"
                           style={{ color: balanceColor, ...POPPINS }}
                         >
                           {balanceValue}
                         </p>
                       </button>
                       <div
-                        className="rounded-xl p-3 border"
+                        className="rounded-xl p-2 border min-w-0"
                         style={{
                           backgroundColor: "#FFFFFF",
                           borderColor: "#E2E6ED",
@@ -1298,13 +1298,13 @@ function PupilDetailPage() {
                         }}
                       >
                         <p
-                          className="text-[10px] font-bold uppercase tracking-widest"
-                          style={{ color: "#6B7280", ...POPPINS }}
+                          className="text-[9px] font-bold uppercase truncate"
+                          style={{ color: "#6B7280", letterSpacing: "0.06em", ...POPPINS }}
                         >
-                          Hours remaining
+                          Hours left
                         </p>
                         <p
-                          className="text-[18px] font-bold mt-1 leading-tight truncate"
+                          className="text-[15px] font-bold mt-0.5 leading-tight truncate"
                           style={{ color: "#0B1F3A", ...POPPINS }}
                         >
                           {hoursValue}
@@ -1316,7 +1316,7 @@ function PupilDetailPage() {
                           setActiveTab("profile");
                           setPracticalEditing(true);
                         }}
-                        className="text-left rounded-xl p-3 border active:scale-[0.98] transition-transform"
+                        className="text-left rounded-xl p-2 border active:scale-[0.98] transition-transform min-w-0"
                         style={{
                           backgroundColor: "#FFFFFF",
                           borderColor: "#E2E6ED",
@@ -1324,19 +1324,20 @@ function PupilDetailPage() {
                         }}
                       >
                         <p
-                          className="text-[10px] font-bold uppercase tracking-widest"
-                          style={{ color: "#6B7280", ...POPPINS }}
+                          className="text-[9px] font-bold uppercase truncate"
+                          style={{ color: "#6B7280", letterSpacing: "0.06em", ...POPPINS }}
                         >
-                          Days to test
+                          Test in
                         </p>
                         <p
-                          className="text-[18px] font-bold mt-1 leading-tight truncate"
+                          className="text-[15px] font-bold mt-0.5 leading-tight truncate"
                           style={{ color: testColor, ...POPPINS }}
                         >
                           {testValue}
                         </p>
                       </button>
                     </div>
+
                   );
                 })()}
 
