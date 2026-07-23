@@ -1549,14 +1549,14 @@ function PupilDetailPage() {
           <ActionTile
             label="Call"
             icon={<Phone size={20} />}
-            iconBg="#EAF3FB"
-            iconColor="#1877D6"
+            iconBg="#E7F5EE"
+            iconColor="#1E8E3E"
             href={pupil?.phone ? `tel:${pupil.phone}` : undefined}
           />
           <ActionTile
             label="Message"
             icon={<MessageSquare size={20} />}
-            iconBg="#EAF3FB"
+            iconBg="#E6F1FB"
             iconColor="#1877D6"
             onClick={() => navigate({ to: "/messages/$pupilId", params: { pupilId: id } })}
             badge={unreadMessages > 0 ? String(unreadMessages) : undefined}
@@ -1564,22 +1564,22 @@ function PupilDetailPage() {
           <ActionTile
             label="Text"
             icon={<Send size={20} />}
-            iconBg="#EAF3FB"
-            iconColor="#1877D6"
+            iconBg="#F1E9FA"
+            iconColor="#7A3FC0"
             href={pupil?.phone ? `sms:${pupil.phone}` : undefined}
           />
           <ActionTile
             label="Add lesson"
             icon={<Plus size={20} />}
-            iconBg="#EAF3FB"
-            iconColor="#1877D6"
+            iconBg="#FEF3E2"
+            iconColor="#B5661E"
             onClick={() => navigate({ to: "/lessons/new" })}
           />
           <ActionTile
             label="More"
             icon={<MoreHorizontal size={20} />}
-            iconBg="#EAF3FB"
-            iconColor="#1877D6"
+            iconBg="#F3F4F6"
+            iconColor="#6B7280"
             onClick={() => setMoreOpen(true)}
           />
         </div>
