@@ -4176,7 +4176,9 @@ function CustomRatesCard({
   }, [editRates, pupil.custom_rate, pupil.custom_rate_90, pupil.custom_rate_120]);
 
   async function patchPupil(patch: Record<string, unknown>) {
+    console.log("[custom-rates] patchPupil url:", `pupils?id=eq.${pupil.id}`, "payload:", patch);
     const { data, error, status } = await supabase.from("pupils").update(patch).eq("id", pupil.id).select();
+    console.log("[custom-rates] result:", status, data, error);
     if (error) {
       console.error("[pupil] patch error", error);
       toast.error("Failed to save — please try again");
