@@ -261,8 +261,8 @@ function LivePage() {
       const { data: cached } = await supabase
         .from("speed_limit_cache")
         .select("speed_limit_mph, road_name, fetched_at")
-        .eq("lat_key", Number(lat.toFixed(3)))
-        .eq("lng_key", Number(lng.toFixed(3)))
+        .eq("latitude", Number(lat.toFixed(3)))
+        .eq("longitude", Number(lng.toFixed(3)))
         .maybeSingle();
       if (cached && cached.fetched_at) {
         const age = now - new Date(cached.fetched_at).getTime();
@@ -324,8 +324,8 @@ function LivePage() {
     }
     try {
       await supabase.from("speed_limit_cache").upsert({
-        lat_key: Number(lat.toFixed(3)),
-        lng_key: Number(lng.toFixed(3)),
+        latitude: Number(lat.toFixed(3)),
+        longitude: Number(lng.toFixed(3)),
         speed_limit_mph: limit,
         road_name: road,
         fetched_at: new Date().toISOString(),
