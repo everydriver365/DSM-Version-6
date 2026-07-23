@@ -1806,8 +1806,8 @@ function PupilDetailPage() {
           </>
         )}
 
-        <SectionHeader>QUICK ACTIONS</SectionHeader>
-        <div className="grid grid-cols-3 gap-2">
+        {/* Quick actions row: Call · Message · Text · Add lesson · More */}
+        <div className="grid grid-cols-5 gap-2 mt-4">
           <ActionTile
             label="Call"
             icon={<Phone size={20} />}
@@ -1818,87 +1818,145 @@ function PupilDetailPage() {
           <ActionTile
             label="Message"
             icon={<MessageSquare size={20} />}
-            iconBg="#00B5A5"
-            iconColor="#FFFFFF"
+            iconBg="#EAF3FB"
+            iconColor="#1877D6"
             onClick={() => navigate({ to: "/messages/$pupilId", params: { pupilId: id } })}
             badge={unreadMessages > 0 ? String(unreadMessages) : undefined}
           />
           <ActionTile
             label="Text"
-            icon={<MessageSquare size={20} />}
+            icon={<Send size={20} />}
             iconBg="#EAF3FB"
             iconColor="#1877D6"
             href={pupil?.phone ? `sms:${pupil.phone}` : undefined}
           />
           <ActionTile
             label="Add lesson"
-            icon={<Plus size={22} />}
-            iconBg="#DCFCE7"
-            iconColor="#16A34A"
+            icon={<Plus size={20} />}
+            iconBg="#EAF3FB"
+            iconColor="#1877D6"
             onClick={() => navigate({ to: "/lessons/new" })}
           />
           <ActionTile
-            label="Certificate"
-            icon={<Award size={20} />}
-            iconBg="#FEF3C7"
-            iconColor="#B45309"
-            onClick={() => setCertOpen(true)}
-          />
-          <ActionTile
-            label="History"
-            icon={<Clock size={20} />}
-            iconBg="#F3E8FF"
-            iconColor="#7C3AED"
-            onClick={() => navigate({ to: "/pupils/history/$id", params: { id } })}
-          />
-          <ActionTile
-            label="Progress"
-            icon={<BarChart3 size={20} />}
-            iconBg="#E0F2FE"
-            iconColor="#0369A1"
-            onClick={() => navigate({ to: "/pupils/progress/$id", params: { id } })}
-          />
-          <ActionTile
-            label="Syllabus"
-            icon={<BookOpen size={20} />}
-            iconBg="#F1F5F9"
-            iconColor="#0B1F3A"
-            onClick={() => navigate({ to: "/pupils/syllabus/$id", params: { id } })}
-            badge={syllabusPct == null ? undefined : `${syllabusPct}%`}
-          />
-          <ActionTile
-            label="Test day"
-            icon={<Flag size={20} />}
-            iconBg="#FEF3C7"
-            iconColor="#B45309"
-            onClick={() => navigate({ to: "/test-day/$pupilId", params: { pupilId: id } })}
-          />
-          <ActionTile
-            label="Mock test"
-            icon={<ClipboardCheck size={20} />}
-            iconBg="#CFFAFE"
-            iconColor="#0891B2"
-            onClick={() => navigate({ to: "/mock-tests/$pupilId", params: { pupilId: id } })}
+            label="More"
+            icon={<MoreHorizontal size={20} />}
+            iconBg="#EAF3FB"
+            iconColor="#1877D6"
+            onClick={() => setMoreOpen(true)}
           />
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
-          <ActionTile
-            label="Reflective log"
-            icon={<BookOpen size={20} />}
-            iconBg="#F3E8FF"
-            iconColor="#7C3AED"
-            onClick={() => navigate({ to: "/reflective-log/$pupilId", params: { pupilId: id } })}
-          />
-          <ActionTile
-            label="Test result"
-            icon={<Trophy size={20} />}
-            iconBg="#FEF3C7"
-            iconColor="#B45309"
-            onClick={() => navigate({ to: "/driving-test/$pupilId", params: { pupilId: id } })}
-          />
+
+        {/* Tab bar */}
+        <div
+          className="mt-4 mb-2 flex gap-1 rounded-xl p-1"
+          style={{ background: "#EEF2F7", ...POPPINS }}
+        >
+          {(["overview", "lessons", "payments", "profile"] as const).map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setActiveTab(t)}
+              className="flex-1 h-9 rounded-lg text-[13px] font-semibold capitalize transition-colors"
+              style={{
+                background: activeTab === t ? "#FFFFFF" : "transparent",
+                color: activeTab === t ? "#0B1F3A" : "#6B7280",
+                boxShadow: activeTab === t ? "0 1px 3px rgba(0,0,0,0.06)" : "none",
+                border: "none",
+                ...POPPINS,
+              }}
+            >
+              {t}
+            </button>
+          ))}
         </div>
+
+        {activeTab === "lessons" && (
+          <div
+            className="mt-3 text-center"
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 16,
+              border: "0.5px solid #E2E6ED",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              padding: "32px 16px",
+              color: "#6B7280",
+              fontSize: 14,
+              ...POPPINS,
+            }}
+          >
+            Coming in next update
+          </div>
+        )}
+
+        {activeTab === "payments" && (
+          <div
+            className="mt-3 text-center"
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 16,
+              border: "0.5px solid #E2E6ED",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              padding: "32px 16px",
+              color: "#6B7280",
+              fontSize: 14,
+              ...POPPINS,
+            }}
+          >
+            Coming in next update
+          </div>
+        )}
+
+        {activeTab === "overview" && (
+          <>
+            {/* Tests card: theory + practical, tap to edit */}
+            {pupil && (
+              <div
+                style={{
+                  background: "#FFFFFF",
+                  borderRadius: 16,
+                  border: "0.5px solid #E2E6ED",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                  overflow: "hidden",
+                  marginTop: 4,
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab("profile"); setTheoryEditing(true); }}
+                  className="w-full flex items-center justify-between px-4 py-3"
+                  style={{ background: "none", border: "none", ...POPPINS }}
+                >
+                  <span className="flex items-center gap-2 text-[13px] font-semibold" style={{ color: "#0B1F3A" }}>
+                    <BookOpen size={16} color="#1877D6" /> Theory
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="text-[13px]" style={{ color: "#0B1F3A" }}>{pupil.theory_status || "Not started"}</span>
+                    <ChevronRight size={16} color="#6B7280" />
+                  </span>
+                </button>
+                <div style={{ height: "0.5px", background: "#EEF2F7" }} />
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab("profile"); setPracticalEditing(true); }}
+                  className="w-full flex items-center justify-between px-4 py-3"
+                  style={{ background: "none", border: "none", ...POPPINS }}
+                >
+                  <span className="flex items-center gap-2 text-[13px] font-semibold" style={{ color: "#0B1F3A" }}>
+                    <Car size={16} color="#1877D6" /> Practical
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="text-[13px]" style={{ color: "#0B1F3A" }}>
+                      {pupil.test_date ? `${fmtUKDate(pupil.test_date)}${pupil.test_time ? " · " + pupil.test_time.slice(0, 5) : ""}` : "Not booked"}
+                    </span>
+                    <ChevronRight size={16} color="#6B7280" />
+                  </span>
+                </button>
+              </div>
+            )}
+
       {/* Test status tiles */}
       {pupil && (() => {
+
         const showTheory = pupil.theory_status && pupil.theory_status !== "Not started";
         const showPractical = !!pupil.test_date;
         if (!showTheory && !showPractical) return null;
