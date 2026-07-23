@@ -278,7 +278,7 @@ function TestDayPage() {
               Next test
             </div>
             <div className="text-[22px] font-bold leading-tight mt-1">
-              {test.pupils?.name ?? "Unknown pupil"}
+              {test.name ?? "Unknown pupil"}
             </div>
             <div className="text-[18px] font-bold mt-1">
               {formatDateLong(test.test_date)}
