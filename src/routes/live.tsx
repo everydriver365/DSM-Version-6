@@ -758,7 +758,7 @@ function LivePage() {
   const elapsedSecRem = elapsedSec % 60;
   const distanceMiles = distanceKm * 0.621371;
 
-  async function exportReportPdf(r: ReportData) {
+  async function exportReportPdf(r: ReportData, includePoints: boolean = false) {
     const { jsPDF } = await import("jspdf");
     const doc = new jsPDF({ unit: "pt", format: "a4" });
     const pageW = doc.internal.pageSize.getWidth();
