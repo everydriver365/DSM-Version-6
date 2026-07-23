@@ -166,6 +166,17 @@ interface MockTestResult {
   dangerous_faults: number | null;
 }
 
+interface LessonRoute {
+  id: string;
+  pupil_id: string;
+  started_at: string;
+  duration_minutes: number | null;
+  distance_miles: number | null;
+  max_speed_mph: number | null;
+  overspeed_count: number | null;
+}
+
+
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/);
