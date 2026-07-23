@@ -18,6 +18,7 @@ import { Route as VehicleRouteImport } from './routes/vehicle'
 import { Route as TodosRouteImport } from './routes/todos'
 import { Route as TestsRouteImport } from './routes/tests'
 import { Route as TestdayRouteImport } from './routes/testday'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TaxReportRouteImport } from './routes/tax-report'
 import { Route as TaxRouteImport } from './routes/tax'
 import { Route as TakePaymentRouteImport } from './routes/take-payment'
@@ -190,6 +191,11 @@ const TestsRoute = TestsRouteImport.update({
 const TestdayRoute = TestdayRouteImport.update({
   id: '/testday',
   path: '/testday',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TaxReportRoute = TaxReportRouteImport.update({
@@ -912,6 +918,7 @@ export interface FileRoutesByFullPath {
   '/take-payment': typeof TakePaymentRoute
   '/tax': typeof TaxRoute
   '/tax-report': typeof TaxReportRoute
+  '/terms': typeof TermsRoute
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
@@ -1047,6 +1054,7 @@ export interface FileRoutesByTo {
   '/take-payment': typeof TakePaymentRoute
   '/tax': typeof TaxRoute
   '/tax-report': typeof TaxReportRoute
+  '/terms': typeof TermsRoute
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
@@ -1187,6 +1195,7 @@ export interface FileRoutesById {
   '/take-payment': typeof TakePaymentRoute
   '/tax': typeof TaxRoute
   '/tax-report': typeof TaxReportRoute
+  '/terms': typeof TermsRoute
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
@@ -1327,6 +1336,7 @@ export interface FileRouteTypes {
     | '/take-payment'
     | '/tax'
     | '/tax-report'
+    | '/terms'
     | '/testday'
     | '/tests'
     | '/todos'
@@ -1462,6 +1472,7 @@ export interface FileRouteTypes {
     | '/take-payment'
     | '/tax'
     | '/tax-report'
+    | '/terms'
     | '/testday'
     | '/tests'
     | '/todos'
@@ -1601,6 +1612,7 @@ export interface FileRouteTypes {
     | '/take-payment'
     | '/tax'
     | '/tax-report'
+    | '/terms'
     | '/testday'
     | '/tests'
     | '/todos'
@@ -1741,6 +1753,7 @@ export interface RootRouteChildren {
   TakePaymentRoute: typeof TakePaymentRoute
   TaxRoute: typeof TaxRoute
   TaxReportRoute: typeof TaxReportRoute
+  TermsRoute: typeof TermsRoute
   TestdayRoute: typeof TestdayRoute
   TestsRoute: typeof TestsRoute
   TodosRoute: typeof TodosRoute
@@ -1845,6 +1858,13 @@ declare module '@tanstack/react-router' {
       path: '/testday'
       fullPath: '/testday'
       preLoaderRoute: typeof TestdayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tax-report': {
@@ -2909,6 +2929,7 @@ const rootRouteChildren: RootRouteChildren = {
   TakePaymentRoute: TakePaymentRoute,
   TaxRoute: TaxRoute,
   TaxReportRoute: TaxReportRoute,
+  TermsRoute: TermsRoute,
   TestdayRoute: TestdayRoute,
   TestsRoute: TestsRoute,
   TodosRoute: TodosRoute,
