@@ -299,7 +299,7 @@ function SchedulePage() {
   const [hourlyRate, setHourlyRate] = useState<number>(40);
   const minGapMinutes = useMinGapMinutes();
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
-  const [legendOpen, setLegendOpen] = useState(false);
+  
   const [selectedDate, setSelectedDate] = useState<string>(() => ymdLocal(today));
   const [instructor, setInstructor] = useState<{ name: string | null; external_calendar_url: string | null; calendar_last_synced: string | null } | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
@@ -960,49 +960,6 @@ function SchedulePage() {
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
-      {instructor?.external_calendar_url && (
-        <div
-          style={{
-            background: "#FFFFFF",
-            padding: "8px 16px",
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            borderBottom: "1px solid #EEF2F7",
-            gap: 10,
-          }}
-        >
-          <button
-            onClick={handleSync}
-            disabled={syncing}
-            style={{
-              background: "#F3F8FF",
-              border: "1px solid #EEF2F7",
-              borderRadius: 8,
-              padding: "6px 10px",
-              cursor: syncing ? "not-allowed" : "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: 5,
-              color: "#1877D6",
-            }}
-          >
-            <RefreshCw
-              size={14}
-              color="#1877D6"
-              style={{ animation: syncing ? "spin 1s linear infinite" : "none" }}
-            />
-            <span style={{ fontSize: 11, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>
-              {syncing ? "Syncing..." : "Sync"}
-            </span>
-          </button>
-          {lastSynced && (
-            <div style={{ fontSize: 9, color: "#6B7280", textAlign: "right" }}>
-              Synced {formatRelativeSync(lastSynced)}
-            </div>
-          )}
-        </div>
-      )}
       <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
 
       {moveMode && movingLesson && (
@@ -1073,26 +1030,27 @@ function SchedulePage() {
           setViewMonth(d);
           scrollToDate(ymdLocal(today));
         }}
-        legendOpen={legendOpen}
-        onToggleLegend={() => setLegendOpen((v) => !v)}
+        showSync={!!instructor?.external_calendar_url}
+        onSync={handleSync}
+        syncing={syncing}
+        lastSynced={lastSynced}
+        formatRelativeSync={formatRelativeSync}
       />
 
-      {legendOpen && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px 4px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <div style={{ width: 8, height: 8, borderRadius: 2, background: '#1A52A0' }} />
-            <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>DSM lesson</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <div style={{ width: 8, height: 8, borderRadius: 2, background: '#9CA3AF' }} />
-            <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>Google Calendar</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <div style={{ width: 8, height: 8, borderRadius: 2, background: '#D97706' }} />
-            <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>Free slot</span>
-          </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px 4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#1A52A0' }} />
+          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>DSM lesson</span>
         </div>
-      )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#9CA3AF' }} />
+          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>Google Calendar</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#D97706' }} />
+          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>Free slot</span>
+        </div>
+      </div>
 
 
       <div
@@ -2472,8 +2430,11 @@ function MonthStrip({
   onNextMonth,
   onSelectDate,
   onToday,
-  legendOpen,
-  onToggleLegend,
+  showSync,
+  onSync,
+  syncing,
+  lastSynced,
+  formatRelativeSync,
 }: {
   viewMonth: Date;
   selectedDate: string;
@@ -2483,8 +2444,11 @@ function MonthStrip({
   onNextMonth: () => void;
   onSelectDate: (key: string) => void;
   onToday: () => void;
-  legendOpen: boolean;
-  onToggleLegend: () => void;
+  showSync?: boolean;
+  onSync?: () => void;
+  syncing?: boolean;
+  lastSynced?: string | null;
+  formatRelativeSync?: (iso: string) => string;
 }) {
   const scroller = useRef<HTMLDivElement | null>(null);
 
@@ -2556,32 +2520,34 @@ function MonthStrip({
           >
             Today
           </button>
-          <button
-            type="button"
-            onClick={onToggleLegend}
-            aria-label="Toggle legend"
-            aria-expanded={legendOpen}
-            style={{
-              width: 18,
-              height: 18,
-              borderRadius: "50%",
-              border: "1.5px solid #C7CCD4",
-              background: "transparent",
-              color: "#9CA3AF",
-              fontSize: 11,
-              fontWeight: 600,
-              fontStyle: "italic",
-              lineHeight: 1,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              padding: 0,
-              ...POPPINS,
-            }}
-          >
-            i
-          </button>
+          {showSync && (
+            <button
+              type="button"
+              onClick={onSync}
+              disabled={syncing}
+              aria-label={syncing ? "Syncing calendar" : "Sync calendar"}
+              style={{
+                background: "#F3F8FF",
+                border: "1px solid #EEF2F7",
+                borderRadius: 8,
+                padding: "2px 8px",
+                cursor: syncing ? "not-allowed" : "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 5,
+                color: "#1877D6",
+              }}
+            >
+              <RefreshCw
+                size={12}
+                color="#1877D6"
+                style={{ animation: syncing ? "spin 1s linear infinite" : "none" }}
+              />
+              <span style={{ fontSize: 10, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>
+                {syncing ? "Syncing..." : "Sync"}
+              </span>
+            </button>
+          )}
         </div>
         <button
           type="button"
