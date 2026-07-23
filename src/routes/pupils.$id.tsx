@@ -2232,8 +2232,12 @@ function PupilDetailPage() {
             </>
           );
         })()}
+          </>
+        )}
 
+        {activeTab === "profile" && (<>
         <SectionHeader>UPCOMING LESSONS</SectionHeader>
+
         {lessons === null ? null : lessons.length === 0 ? (
           <div className="flex items-center justify-center py-12">
             <p className="text-[14px] text-[#6B7280]" style={POPPINS}>
