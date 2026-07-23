@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Plus, X, GraduationCap } from "lucide-react";
+import { ArrowLeft, Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -294,11 +294,16 @@ function TestsPage() {
 function EmptyState({ text }: { text: string }) {
   return (
     <div
-      className="flex flex-col items-center justify-center text-[13px]"
-      style={{ color: "#6B7280", padding: "24px 0" }}
+      style={{
+        background: "#FFFFFF",
+        borderRadius: 10,
+        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+        padding: "10px 14px",
+        fontSize: 12,
+        color: "#9CA3AF",
+      }}
     >
-      <GraduationCap size={24} color="#6B7280" />
-      <div className="mt-2">{text}</div>
+      {text}
     </div>
   );
 }
@@ -484,7 +489,7 @@ function TestCard({
                 }}
               >
                 {test.result}
-                {test.faults != null ? ` · ${test.faults}` : ""}
+                {test.faults != null ? ` · ${test.faults} fault${test.faults === 1 ? "" : "s"}` : ""}
               </span>
             )}
           </div>
