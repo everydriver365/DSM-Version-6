@@ -30,7 +30,10 @@ interface Coord {
   speed_mph: number;
   heading: number | null;
   timestamp: number;
+  road_name: string | null;
+  speed_limit_mph: number | null;
 }
+
 
 function ymd(d: Date) {
   const parts = new Intl.DateTimeFormat("en-GB", {
@@ -443,7 +446,7 @@ function LivePage() {
     console.log("[live] position update:", pos.coords.latitude, pos.coords.longitude, "speed:", pos.coords.speed);
     const mph = speedMs != null && speedMs > 0 ? Math.round(speedMs * 2.23694) : 0;
     const heading = pos.coords.heading ?? null;
-    const point: Coord = { lat, lng, speed_mph: mph, heading, timestamp: Date.now() };
+    const point: Coord = { lat, lng, speed_mph: mph, heading, timestamp: Date.now(), road_name: roadNameRef.current, speed_limit_mph: speedLimitRef.current };
 
     const prev = coordsRef.current[coordsRef.current.length - 1];
     if (prev) {
