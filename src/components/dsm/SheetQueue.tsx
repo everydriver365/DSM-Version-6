@@ -191,8 +191,12 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
       <DailyCatchUpSheet
         rows={catchUpRows}
         title={title}
-        onDismiss={() => setActive("none")}
+        onDismiss={() => {
+          setCatchUpHandled(true);
+          setActive("none");
+        }}
         onRowClick={(to) => {
+          setCatchUpHandled(true);
           setActive("none");
           navigate({ to });
         }}
