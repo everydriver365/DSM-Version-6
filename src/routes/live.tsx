@@ -942,6 +942,7 @@ function LivePage() {
                 </button>
                 {isOpen && (
                   <div style={{ borderTop: "1px solid #E5E7EB", backgroundColor: "#F9FAFB", maxHeight: 260, overflowY: "auto" }}>
+                    <SegmentSpeedChart points={seg.points} speedLimitMph={seg.speed_limit_mph} />
                     {seg.points.length === 0 ? (
                       <div style={{ padding: 12, fontSize: 12, color: "#6B7280", textAlign: "center" }}>No points</div>
                     ) : (
