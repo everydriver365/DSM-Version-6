@@ -6308,7 +6308,7 @@ function HomePage() {
                   {/* Card header */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
                     <div style={{ fontSize: 16, fontWeight: 500, color: '#0B1F3A', letterSpacing: -0.2 }}>{headerLabel}</div>
-                    <div style={{ fontSize: 13, color: '#8A93A3', fontWeight: 400 }}>
+                    <div style={{ fontSize: 12, color: '#1877D6', fontWeight: 700, background: '#E6F1FB', padding: '4px 11px', borderRadius: 999, fontFamily: PF }}>
                       {lessonRows.length === 0
                         ? `${calendarRows.length} calendar event${calendarRows.length === 1 ? '' : 's'}`
                         : `${lessonRows.length} lesson${lessonRows.length === 1 ? '' : 's'}`}
