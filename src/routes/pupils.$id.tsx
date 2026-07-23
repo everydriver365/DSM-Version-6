@@ -2585,8 +2585,6 @@ function PupilDetailPage() {
             )}
           </>
         )}
-          </>
-        )}
 
         {activeTab === "overview" && (
           <>
