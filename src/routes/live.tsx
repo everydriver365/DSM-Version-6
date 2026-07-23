@@ -853,6 +853,62 @@ function LivePage() {
       doc.text(meta, margin + 10, y + 40);
 
       y += rowH + 6;
+
+      if (includePoints && seg.points.length > 0) {
+        const tableW = pageW - margin * 2;
+        const timeColW = tableW * 0.55;
+        const speedColW = tableW * 0.45;
+        const headerH = 18;
+        const rowPtH = 14;
+
+        // Table header
+        if (y + headerH > pageH - margin) { doc.addPage(); y = margin; }
+        doc.setFillColor(243, 244, 246);
+        doc.rect(margin, y, tableW, headerH, "F");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8);
+        doc.setTextColor(107, 114, 128);
+        doc.text("TIME", margin + 8, y + 12);
+        doc.text("SPEED", margin + timeColW + 8, y + 12);
+        y += headerH;
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+        seg.points.forEach((pt, j) => {
+          if (y + rowPtH > pageH - margin) {
+            doc.addPage();
+            y = margin;
+            // repeat header on new page
+            doc.setFillColor(243, 244, 246);
+            doc.rect(margin, y, tableW, headerH, "F");
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(8);
+            doc.setTextColor(107, 114, 128);
+            doc.text("TIME", margin + 8, y + 12);
+            doc.text("SPEED", margin + timeColW + 8, y + 12);
+            y += headerH;
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(9);
+          }
+          if (j % 2 === 1) {
+            doc.setFillColor(249, 250, 251);
+            doc.rect(margin, y, tableW, rowPtH, "F");
+          }
+          doc.setTextColor(55, 65, 81);
+          const t = new Date(pt.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+          doc.text(t, margin + 8, y + 10);
+          if (pt.over) {
+            doc.setTextColor(204, 34, 41);
+            doc.setFont("helvetica", "bold");
+          } else {
+            doc.setTextColor(11, 31, 58);
+          }
+          doc.text(`${Math.round(pt.speed_mph)} mph`, margin + timeColW + 8, y + 10);
+          doc.setFont("helvetica", "normal");
+          y += rowPtH;
+        });
+        y += 8;
+      }
     });
 
     if (r.segments.length === 0) {
