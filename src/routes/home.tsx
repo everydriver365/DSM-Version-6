@@ -6615,7 +6615,7 @@ function HomePage() {
                       );
                     }
 
-                    const calColour = pupilColour(l.pupil_id, (l.pupils as any)?.calendar_colour ?? null, name);
+                    
                     const durLabel = (() => {
                       const h = Math.floor(dur / 60);
                       const m = dur % 60;
