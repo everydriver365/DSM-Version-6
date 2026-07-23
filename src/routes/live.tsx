@@ -1069,7 +1069,13 @@ function LivePage() {
         <button
           type="button"
           aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
+          onClick={() => {
+            if (tracking) {
+              stopTracking();
+            } else {
+              navigate({ to: "/home" });
+            }
+          }}
           className="flex items-center justify-center"
           style={{ width: 52, height: 52, background: "transparent", border: "none", cursor: "pointer" }}
         >
