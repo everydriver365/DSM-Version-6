@@ -17,6 +17,7 @@ import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 
 import { resolveHourlyRate } from "../lib/pricing/resolveRate";
 import { deletePaymentRecord } from "./payments";
+import { buildTripReport, type ReportSegment, type Coord } from "@/lib/tripReport";
 
 export const Route = createFileRoute("/pupils/$id")({
   validateSearch: (search: Record<string, unknown>) => ({
