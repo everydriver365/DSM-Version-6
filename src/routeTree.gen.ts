@@ -65,6 +65,7 @@ import { Route as LiveRouteImport } from './routes/live'
 import { Route as LessonSeriesRouteImport } from './routes/lesson-series'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as JobsRouteImport } from './routes/jobs'
+import { Route as InvoicesRouteImport } from './routes/invoices'
 import { Route as IntakeQuestionsRouteImport } from './routes/intake-questions'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as HelpRouteImport } from './routes/help'
@@ -424,6 +425,11 @@ const LearnRoute = LearnRouteImport.update({
 const JobsRoute = JobsRouteImport.update({
   id: '/jobs',
   path: '/jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvoicesRoute = InvoicesRouteImport.update({
+  id: '/invoices',
+  path: '/invoices',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IntakeQuestionsRoute = IntakeQuestionsRouteImport.update({
@@ -858,6 +864,7 @@ export interface FileRoutesByFullPath {
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/intake-questions': typeof IntakeQuestionsRoute
+  '/invoices': typeof InvoicesRoute
   '/jobs': typeof JobsRoute
   '/learn': typeof LearnRoute
   '/lesson-series': typeof LessonSeriesRoute
@@ -994,6 +1001,7 @@ export interface FileRoutesByTo {
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/intake-questions': typeof IntakeQuestionsRoute
+  '/invoices': typeof InvoicesRoute
   '/jobs': typeof JobsRoute
   '/learn': typeof LearnRoute
   '/lesson-series': typeof LessonSeriesRoute
@@ -1131,6 +1139,7 @@ export interface FileRoutesById {
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/intake-questions': typeof IntakeQuestionsRoute
+  '/invoices': typeof InvoicesRoute
   '/jobs': typeof JobsRoute
   '/learn': typeof LearnRoute
   '/lesson-series': typeof LessonSeriesRoute
@@ -1270,6 +1279,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/home'
     | '/intake-questions'
+    | '/invoices'
     | '/jobs'
     | '/learn'
     | '/lesson-series'
@@ -1406,6 +1416,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/home'
     | '/intake-questions'
+    | '/invoices'
     | '/jobs'
     | '/learn'
     | '/lesson-series'
@@ -1542,6 +1553,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/home'
     | '/intake-questions'
+    | '/invoices'
     | '/jobs'
     | '/learn'
     | '/lesson-series'
@@ -1681,6 +1693,7 @@ export interface RootRouteChildren {
   HelpRoute: typeof HelpRoute
   HomeRoute: typeof HomeRoute
   IntakeQuestionsRoute: typeof IntakeQuestionsRoute
+  InvoicesRoute: typeof InvoicesRoute
   JobsRoute: typeof JobsRoute
   LearnRoute: typeof LearnRoute
   LessonSeriesRoute: typeof LessonSeriesRoute
@@ -2161,6 +2174,13 @@ declare module '@tanstack/react-router' {
       path: '/jobs'
       fullPath: '/jobs'
       preLoaderRoute: typeof JobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invoices': {
+      id: '/invoices'
+      path: '/invoices'
+      fullPath: '/invoices'
+      preLoaderRoute: typeof InvoicesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/intake-questions': {
@@ -2841,6 +2861,7 @@ const rootRouteChildren: RootRouteChildren = {
   HelpRoute: HelpRoute,
   HomeRoute: HomeRoute,
   IntakeQuestionsRoute: IntakeQuestionsRoute,
+  InvoicesRoute: InvoicesRoute,
   JobsRoute: JobsRoute,
   LearnRoute: LearnRoute,
   LessonSeriesRoute: LessonSeriesRoute,
