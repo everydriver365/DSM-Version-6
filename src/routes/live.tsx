@@ -819,12 +819,14 @@ function LivePage() {
             width: 64,
             height: 64,
             borderRadius: 32,
-            background: "#fff",
+            background: isOverSpeeding ? "#EF4444" : "#fff",
             border: "5px solid #EF4444",
             boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+            animation: isOverSpeeding ? "overspeedFlash 0.6s ease-in-out infinite" : undefined,
+            transition: "background 0.15s ease-out",
           }}
         >
-          <span style={{ fontSize: 22, fontWeight: 800, color: "#0A1628", lineHeight: 1 }}>
+          <span style={{ fontSize: 22, fontWeight: 800, color: isOverSpeeding ? "#fff" : "#0A1628", lineHeight: 1 }}>
             {speedLimit}
           </span>
         </div>
