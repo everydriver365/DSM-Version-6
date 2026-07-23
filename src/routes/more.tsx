@@ -7,6 +7,8 @@ import {
   Moon, TrendingUp, Activity, Radio, ShoppingBag, Users, GraduationCap as GraduationCapIcon,
   ChevronRight, PlayCircle,
 } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 // Toggle to false when Learn is no longer "new" — hides the NEW badge only.
 const LEARN_IS_NEW = true;
