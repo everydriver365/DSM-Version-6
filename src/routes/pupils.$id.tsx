@@ -366,6 +366,7 @@ function PupilDetailPage() {
   const [cancelSheetFor, setCancelSheetFor] = useState<Lesson | null>(null);
   const [deleteSheetFor, setDeleteSheetFor] = useState<Lesson | null>(null);
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
+  const [eolWizardFor, setEolWizardFor] = useState<Lesson | null>(null);
   const [editDraft, setEditDraft] = useState<{
     first_name: string;
     last_name: string;
