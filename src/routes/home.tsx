@@ -6308,7 +6308,7 @@ function HomePage() {
                   {/* Card header */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
                     <div style={{ fontSize: 16, fontWeight: 500, color: '#0B1F3A', letterSpacing: -0.2 }}>{headerLabel}</div>
-                    <div style={{ fontSize: 13, color: '#8A93A3', fontWeight: 400 }}>
+                    <div style={{ fontSize: 12, color: '#1877D6', fontWeight: 700, background: '#E6F1FB', padding: '4px 11px', borderRadius: 999, fontFamily: PF }}>
                       {lessonRows.length === 0
                         ? `${calendarRows.length} calendar event${calendarRows.length === 1 ? '' : 's'}`
                         : `${lessonRows.length} lesson${lessonRows.length === 1 ? '' : 's'}`}
@@ -6634,8 +6634,9 @@ function HomePage() {
                             alignItems: 'stretch',
                             gap: 12,
                             cursor: 'pointer',
-                            background: '#F7F9FC',
+                            background: '#F5FAF6',
                             border: '1px solid rgba(11,31,58,0.05)',
+                            borderLeft: '3px solid #1E8E3E',
                             borderRadius: 14,
                             boxShadow: 'none',
                             boxSizing: 'border-box',
@@ -6671,6 +6672,27 @@ function HomePage() {
                               <div style={{ fontSize: 14, fontWeight: 500, color: isCancelled ? '#6B7280' : '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
                                 {name}
                               </div>
+                              {!isCancelled && priceNode && (
+                                <span style={{
+                                  display: 'inline-block',
+                                  marginTop: 3,
+                                  fontSize: 11,
+                                  fontWeight: 700,
+                                  padding: '2px 9px',
+                                  borderRadius: 999,
+                                  ...(isLive ? {
+                                    background: '#E6F1FB', color: '#1877D6',
+                                  } : isPrepaidPupil || isPaid ? {
+                                    background: '#E7F5EE', color: '#1E8E3E',
+                                  } : dueUnpaid ? {
+                                    background: '#FCEBEB', color: '#CC2229',
+                                  } : {
+                                    background: '#E7F5EE', color: '#1E8E3E',
+                                  }),
+                                }}>
+                                  {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
+                                </span>
+                              )}
                               {isCancelled ? (
                                 <span style={{
                                   display: 'inline-block',
@@ -6693,12 +6715,6 @@ function HomePage() {
                                 </div>
                               )}
                             </div>
-                            {priceNode && (
-                              <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-                                {priceNode}
-                              </div>
-                            )}
-
                             <div
                               style={{
                                 position: 'relative',
