@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, Map as MapIcon, Search, X } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { PupilAvatar } from "../components/PupilAvatar";
+import { buildTripReport } from "../lib/tripReport";
 
 export const Route = createFileRoute("/live")({
   head: () => ({
