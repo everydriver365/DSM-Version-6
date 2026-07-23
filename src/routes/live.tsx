@@ -119,6 +119,26 @@ function LivePage() {
   const [activePupilId, setActivePupilId] = useState<string | null>(null);
   const [trackingPupilName, setTrackingPupilName] = useState<string | null>(null);
 
+  interface ReportSegment {
+    road_name: string;
+    distance_miles: number;
+    speed_limit_mph: number | null;
+    max_speed_mph: number;
+    avg_speed_mph: number;
+    exceeded: boolean;
+  }
+  interface ReportData {
+    pupilName: string;
+    totalDistanceMiles: number;
+    totalDurationSec: number;
+    overallMaxSpeed: number;
+    overspeedCount: number;
+    segments: ReportSegment[];
+    lessonId: string | null;
+  }
+  const [showReport, setShowReport] = useState(false);
+  const [reportData, setReportData] = useState<ReportData | null>(null);
+
   interface PickerPupil {
     id: string;
     name: string | null;
@@ -536,8 +556,65 @@ function LivePage() {
     }
     setTracking(false);
     await saveCoordinates(true);
-    if (activeLessonId) {
-      navigate({ to: "/lessons/$id", params: { id: activeLessonId } });
+
+    // Build report by grouping consecutive points sharing road_name
+    const pts = coordsRef.current;
+    const segments: ReportSegment[] = [];
+    let group: Coord[] = [];
+    const flush = () => {
+      if (group.length === 0) return;
+      let dKm = 0;
+      for (let i = 1; i < group.length; i++) {
+        dKm += haversineKm(group[i - 1], { lat: group[i].lat, lng: group[i].lng });
+      }
+      const speeds = group.map((p) => p.speed_mph).filter((s) => s > 0);
+      const max = speeds.length ? Math.max(...speeds) : 0;
+      const avg = speeds.length ? speeds.reduce((a, b) => a + b, 0) / speeds.length : 0;
+      const limit = group.find((p) => p.speed_limit_mph != null)?.speed_limit_mph ?? null;
+      const exceeded = limit != null && group.some((p) => p.speed_mph > limit);
+      segments.push({
+        road_name: group[0].road_name ?? "Unknown road",
+        distance_miles: dKm * 0.621371,
+        speed_limit_mph: limit,
+        max_speed_mph: max,
+        avg_speed_mph: avg,
+        exceeded,
+      });
+    };
+    for (const p of pts) {
+      if (group.length === 0 || (group[group.length - 1].road_name ?? null) === (p.road_name ?? null)) {
+        group.push(p);
+      } else {
+        flush();
+        group = [p];
+      }
+    }
+    flush();
+
+    const allSpeeds = pts.map((p) => p.speed_mph).filter((s) => s > 0);
+    const overallMax = allSpeeds.length ? Math.max(...allSpeeds) : 0;
+    const pupilName =
+      trackingPupilName ??
+      activeLesson?.pupils?.name ??
+      "this pupil";
+
+    setReportData({
+      pupilName,
+      totalDistanceMiles: distanceKm * 0.621371,
+      totalDurationSec: elapsedSec,
+      overallMaxSpeed: overallMax,
+      overspeedCount,
+      segments,
+      lessonId: activeLessonId,
+    });
+    setShowReport(true);
+  }
+
+  function finishReport() {
+    const lid = reportData?.lessonId ?? activeLessonId;
+    setShowReport(false);
+    if (lid) {
+      navigate({ to: "/lessons/$id", params: { id: lid } });
     } else {
       navigate({ to: "/home" });
     }
@@ -547,6 +624,93 @@ function LivePage() {
   const elapsedMin = Math.floor(elapsedSec / 60);
   const elapsedSecRem = elapsedSec % 60;
   const distanceMiles = distanceKm * 0.621371;
+
+  if (showReport && reportData) {
+    const r = reportData;
+    const durMin = Math.floor(r.totalDurationSec / 60);
+    const durSec = r.totalDurationSec % 60;
+    return (
+      <div className="fixed inset-0 overflow-y-auto" style={{ ...POPPINS, backgroundColor: "#F5F7FA" }}>
+        {/* Header */}
+        <div style={{ backgroundColor: "#0B1F3A", color: "#fff", padding: "20px 16px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+          <div style={{ fontSize: 12, letterSpacing: 1, opacity: 0.7, textTransform: "uppercase" }}>Trip report</div>
+          <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>{r.pupilName}</div>
+          <div style={{ fontSize: 13, opacity: 0.8, marginTop: 6 }}>Saved to {r.pupilName}'s record</div>
+        </div>
+
+        {/* Summary */}
+        <div style={{ padding: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {[
+              { label: "Distance", value: `${r.totalDistanceMiles.toFixed(1)} mi` },
+              { label: "Duration", value: `${durMin}m ${durSec}s` },
+              { label: "Max speed", value: `${Math.round(r.overallMaxSpeed)} mph` },
+              { label: "Overspeed", value: `${r.overspeedCount}`, red: r.overspeedCount > 0 },
+            ].map((s) => (
+              <div key={s.label} style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB", borderRadius: 10, padding: 12, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+                <div style={{ fontSize: 11, letterSpacing: 0.5, color: "#6B7280", textTransform: "uppercase" }}>{s.label}</div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: s.red ? "#CC2229" : "#0B1F3A", marginTop: 4 }}>{s.value}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Segments */}
+          <div style={{ marginTop: 20, fontSize: 12, letterSpacing: 0.5, color: "#6B7280", textTransform: "uppercase", fontWeight: 600 }}>
+            Road segments ({r.segments.length})
+          </div>
+          <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 8 }}>
+            {r.segments.length === 0 && (
+              <div style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB", borderRadius: 10, padding: 16, textAlign: "center", color: "#6B7280", fontSize: 13 }}>
+                No segments recorded.
+              </div>
+            )}
+            {r.segments.map((seg, i) => (
+              <div key={i} style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB", borderRadius: 10, padding: 12, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {seg.road_name}
+                  </div>
+                  {seg.exceeded && (
+                    <span style={{ fontSize: 11, fontWeight: 700, color: "#fff", backgroundColor: "#CC2229", padding: "3px 8px", borderRadius: 999 }}>
+                      Exceeded
+                    </span>
+                  )}
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 8, fontSize: 12, color: "#374151" }}>
+                  <span><b style={{ color: "#0B1F3A" }}>{seg.distance_miles.toFixed(2)} mi</b></span>
+                  <span>Limit: <b style={{ color: "#0B1F3A" }}>{seg.speed_limit_mph != null ? `${seg.speed_limit_mph} mph` : "Not available"}</b></span>
+                  <span>Avg: <b style={{ color: "#0B1F3A" }}>{Math.round(seg.avg_speed_mph)} mph</b></span>
+                  <span>Max: <b style={{ color: seg.exceeded ? "#CC2229" : "#0B1F3A" }}>{Math.round(seg.max_speed_mph)} mph</b></span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={finishReport}
+            style={{
+              marginTop: 24,
+              width: "100%",
+              padding: "14px 16px",
+              borderRadius: 10,
+              border: "none",
+              backgroundColor: "#1877D6",
+              color: "#fff",
+              fontSize: 15,
+              fontWeight: 700,
+              cursor: "pointer",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            }}
+          >
+            Done
+          </button>
+          <div style={{ height: 32 }} />
+        </div>
+      </div>
+    );
+  }
+
+
 
   return (
     <div className="fixed inset-0" style={{ ...POPPINS, backgroundColor: "#0A1628" }}>
