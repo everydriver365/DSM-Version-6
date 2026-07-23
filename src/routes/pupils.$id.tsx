@@ -13,6 +13,7 @@ import { BottomSheet as BottomSheetV2 } from "../components/dsm/BottomSheetV2";
 import { ChangeDateTimeSheet } from "../components/lessons/ChangeDateTimeSheet";
 import { CancelLessonSheet } from "../components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "../components/lessons/DeleteLessonSheet";
+import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 
 import { resolveHourlyRate } from "../lib/pricing/resolveRate";
 import { deletePaymentRecord } from "./payments";
@@ -365,6 +366,7 @@ function PupilDetailPage() {
   const [cancelSheetFor, setCancelSheetFor] = useState<Lesson | null>(null);
   const [deleteSheetFor, setDeleteSheetFor] = useState<Lesson | null>(null);
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
+  const [eolWizardFor, setEolWizardFor] = useState<Lesson | null>(null);
   const [editDraft, setEditDraft] = useState<{
     first_name: string;
     last_name: string;
@@ -1676,7 +1678,13 @@ function PupilDetailPage() {
                     ) : isPaid ? (
                       <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Paid ✓</span>
                     ) : past && l.status !== "cancelled" && !l.eol_completed ? (
-                      <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>EOL</span>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setEolWizardFor(l); }}
+                        style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, border: "none", ...POPPINS }}
+                      >
+                        EOL
+                      </button>
                     ) : null}
                     <button
                       onClick={(e) => { e.stopPropagation(); setActionsOpenFor(actionsOpenFor?.id === l.id ? null : l); }}
@@ -3659,6 +3667,26 @@ function PupilDetailPage() {
             } finally {
               setDeleteSubmitting(false);
             }
+          }}
+        />
+      )}
+
+      {eolWizardFor && (
+        <EndLessonWizard
+          open={true}
+          onClose={() => setEolWizardFor(null)}
+          lessonId={eolWizardFor.id}
+          pupilId={id}
+          pupilName={pupil?.name ?? ""}
+          instructorId={userId ?? ""}
+          durationMinutes={eolWizardFor.duration_minutes ?? 60}
+          lessonDate={eolWizardFor.lesson_date}
+          startTime={eolWizardFor.lesson_time}
+          onCompleted={() => {
+            const lessonId = eolWizardFor.id;
+            setPastLessons((prev) => (prev ?? []).map((l) => (l.id === lessonId ? { ...l, status: "completed", eol_completed: true } : l)));
+            setLessons((prev) => (prev ?? []).map((l) => (l.id === lessonId ? { ...l, status: "completed", eol_completed: true } : l)));
+            setEolWizardFor(null);
           }}
         />
       )}
