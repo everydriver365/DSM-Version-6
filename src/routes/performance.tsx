@@ -49,7 +49,7 @@ interface LessonRow { id: string; status: string; pupil_id: string; lesson_date:
 interface PupilRow { id: string; status: string | null }
 interface PaymentRow { amount: number; paid_at: string }
 interface ExpenseRow { amount: number; expense_date: string }
-interface TestRow { id: string; result: string | null; pupil_id: string; test_date: string }
+interface TestRow { id: string; test_status: string | null; test_date: string }
 
 function PerformancePage() {
   const navigate = useNavigate();
