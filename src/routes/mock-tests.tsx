@@ -14,6 +14,9 @@ export const Route = createFileRoute("/mock-tests")({
   head: () => ({
     meta: [{ title: "Mock tests — DSM by EveryDriver" }],
   }),
+  validateSearch: (search: Record<string, unknown>) => ({
+    pupilId: typeof search.pupilId === "string" ? search.pupilId : "",
+  }),
   component: MockTestsPage,
 });
 
@@ -34,7 +37,6 @@ interface MockTestResult {
   dangerous_faults: number | null;
   pupils: { name: string }[] | null;
 }
-
 
 function todayYmd() {
   const parts = new Intl.DateTimeFormat("en-GB", {
@@ -61,10 +63,12 @@ function initials(name: string) {
 
 function MockTestsPage() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const [userId, setUserId] = useState<string | null>(null);
   const [pupils, setPupils] = useState<Pupil[]>([]);
   const [results, setResults] = useState<MockTestResult[]>([]);
   const [addOpen, setAddOpen] = useState(false);
+  const [dl25Args, setDl25Args] = useState<{ pupilId: string; testDate: string } | null>(null);
   const [resultPrompt, setResultPrompt] = useState<{
     pupilId: string;
     testDate: string;
@@ -95,8 +99,7 @@ function MockTestsPage() {
       .eq("instructor_id", uid)
       .order("test_date", { ascending: false });
     if (error) console.error("[mock-tests] results fetch error", error);
-        setResults((data ?? []) as unknown as MockTestResult[]);
-
+    setResults((data ?? []) as unknown as MockTestResult[]);
   }
 
   useEffect(() => {
@@ -105,18 +108,33 @@ function MockTestsPage() {
     loadResults(userId);
   }, [userId]);
 
+  useEffect(() => {
+    if (search.pupilId) setAddOpen(true);
+  }, [search.pupilId]);
+
   async function handleSetResult(passed: boolean) {
     if (!userId || !resultPrompt) return;
-    const { error } = await supabase
+    const { data: rows, error } = await supabase
       .from("mock_test_results")
-      .update({ result: passed ? "Passed" : "Failed" })
+      .select("id")
       .eq("instructor_id", userId)
       .eq("pupil_id", resultPrompt.pupilId)
       .eq("test_date", resultPrompt.testDate)
       .order("created_at", { ascending: false })
       .limit(1);
-    if (error) {
-      console.error("[mock-tests] result update error", error);
+    if (error || !rows || rows.length === 0) {
+      console.error("[mock-tests] find latest error", error);
+      toast.error("Couldn't find mock test record");
+      setResultPrompt(null);
+      return;
+    }
+    const latestId = (rows[0] as { id: string }).id;
+    const { error: updateErr } = await supabase
+      .from("mock_test_results")
+      .update({ result: passed ? "Passed" : "Failed" })
+      .eq("id", latestId);
+    if (updateErr) {
+      console.error("[mock-tests] result update error", updateErr);
       toast.error("Couldn't update result");
     } else {
       toast.success(passed ? "Marked as passed" : "Marked as failed");
@@ -163,7 +181,6 @@ function MockTestsPage() {
           <div className="flex flex-col" style={{ gap: 8 }}>
             {results.map((r) => {
               const name = r.pupils?.[0]?.name ?? "Unknown pupil";
-
               const total = (r.minor_faults ?? 0) + (r.serious_faults ?? 0) + (r.dangerous_faults ?? 0);
               const result = r.result ?? "Result not set";
               const resultColor =
@@ -206,13 +223,29 @@ function MockTestsPage() {
         )}
       </div>
 
-      {addOpen && userId && (
+      {addOpen && (
         <NewMockTestSheet
           pupils={pupils}
+          initialPupilId={search.pupilId}
           onClose={() => setAddOpen(false)}
           onStart={({ pupilId, testDate }) => {
             setAddOpen(false);
-            setResultPrompt({ pupilId, testDate });
+            setDl25Args({ pupilId, testDate });
+          }}
+        />
+      )}
+
+      {dl25Args && (
+        <DL25Sheet
+          pupilId={dl25Args.pupilId}
+          testDate={dl25Args.testDate}
+          mode="mock"
+          onClose={() => setDl25Args(null)}
+          onSaved={(totals) => {
+            setDl25Args(null);
+            setResultPrompt({ pupilId: dl25Args.pupilId, testDate: dl25Args.testDate });
+            if (userId) loadResults(userId);
+            void totals;
           }}
         />
       )}
@@ -247,18 +280,24 @@ function EmptyState({ text }: { text: string }) {
 
 function NewMockTestSheet({
   pupils,
+  initialPupilId,
   onClose,
   onStart,
 }: {
   pupils: Pupil[];
+  initialPupilId: string;
   onClose: () => void;
   onStart: (p: { pupilId: string; testDate: string }) => void;
 }) {
-  const [pupilId, setPupilId] = useState("");
+  const [pupilId, setPupilId] = useState(initialPupilId);
   const [date, setDate] = useState(todayYmd());
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const selectedPupil = pupils.find((p) => p.id === pupilId);
+
+  useEffect(() => {
+    if (initialPupilId) setPupilId(initialPupilId);
+  }, [initialPupilId]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -413,9 +452,6 @@ function ResultPromptSheet({
   onPass: () => void;
   onFail: () => void;
 }) {
-  const [dl25Open, setDl25Open] = useState(false);
-  const [dl25Args, setDl25Args] = useState<{ pupilId: string; testDate: string } | null>(null);
-
   return (
     <div className="fixed inset-0 z-[70] flex items-end justify-center" style={POPPINS}>
       <div
