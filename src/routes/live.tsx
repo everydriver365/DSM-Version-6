@@ -566,7 +566,13 @@ function LivePage() {
       watchIdRef.current = null;
     }
     setTracking(false);
-    await saveCoordinates(true);
+    setSaveError(null);
+
+    const saved = await saveCoordinates(true);
+    if (!saved) {
+      setSaveError("Failed to save trip. Please check your connection and try again.");
+      return;
+    }
 
     // Build report by grouping consecutive points sharing road_name
     const pts = coordsRef.current;
@@ -625,6 +631,7 @@ function LivePage() {
     });
     setShowReport(true);
   }
+
 
   function finishReport() {
     const lid = reportData?.lessonId ?? activeLessonId;
