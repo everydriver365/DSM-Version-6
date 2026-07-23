@@ -147,11 +147,12 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
     if (
       (whatsNewResolved === "dismissed" || whatsNewResolved === "none") &&
       catchUpReady &&
-      catchUpRows.length > 0
+      catchUpRows.length > 0 &&
+      !catchUpHandled
     ) {
       setActive("catchUp");
     }
-  }, [userId, active, whatsNewResolved, whatsNewItems.length, catchUpReady, catchUpRows.length]);
+  }, [userId, active, whatsNewResolved, whatsNewItems.length, catchUpReady, catchUpRows.length, catchUpHandled]);
 
   if (!userId) return null;
 
