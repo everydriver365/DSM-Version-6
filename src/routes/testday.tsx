@@ -136,7 +136,7 @@ function TestDayPage() {
           .from("lessons")
           .select("id, lesson_date, duration_minutes")
           .eq("instructor_id", userId)
-          .eq("pupil_id", t.pupil_id)
+          .eq("pupil_id", t.id)
           .gte("lesson_date", `${t.test_date}T00:00:00`)
           .lt("lesson_date", `${t.test_date}T23:59:59`)
           .order("lesson_date", { ascending: true })
