@@ -2585,21 +2585,7 @@ function PupilDetailPage() {
             )}
           </>
         )}
-          <div
-            className="mt-3 text-center"
-            style={{
-              background: "#FFFFFF",
-              borderRadius: 16,
-              border: "0.5px solid #E2E6ED",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-              padding: "32px 16px",
-              color: "#6B7280",
-              fontSize: 14,
-              ...POPPINS,
-            }}
-          >
-            Coming in next update
-          </div>
+          </>
         )}
 
         {activeTab === "overview" && (
