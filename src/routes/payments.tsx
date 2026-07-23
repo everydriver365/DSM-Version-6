@@ -8,7 +8,7 @@ import { supabase } from "../lib/supabaseClient";
 import WorkspaceDots from "../components/dsm/WorkspaceDots";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
-import { recordPayment } from "@/lib/payments";
+import { recordPayment, correctPaymentRecord } from "@/lib/payments";
 
 export const Route = createFileRoute("/payments")({
   head: () => ({
@@ -691,27 +691,19 @@ function EditPaymentForm({ row, onCancel, onSaved }: { row: HistoryRow; onCancel
   async function handleSave() {
     setSaving(true);
     const newAmount = Number(amount);
-    const originalAmount = Number(row.lesson_cost ?? 0);
-    const { data: { session } } = await supabase.auth.getSession();
-    const token = session?.access_token;
-    if (!token) { setSaving(false); toast.error("Not signed in"); return; }
-    const SUPABASE_URL = (supabase as any).supabaseUrl as string;
-    const SUPABASE_ANON_KEY = (supabase as any).supabaseKey as string;
     const dateIso = new Date(date + "T" + new Date(row.created_at).toTimeString().slice(0,8)).toISOString();
-    const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/lesson_history?id=eq.${row.id}`, {
-      method: "PATCH",
-      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ lesson_cost: newAmount, payment_method: method, created_at: dateIso, notes: notes || null }),
+    const { error } = await correctPaymentRecord({
+      lessonHistoryId: row.id,
+      lessonId: row.lesson_id,
+      newAmount,
+      method,
+      dateIso,
+      notes: notes || null,
     });
-    if (!patchRes.ok) { toast.error("Failed to update payment"); setSaving(false); return; }
-    if (row.lesson_id && newAmount !== originalAmount) {
-      const { data: lessonData } = await supabase.from("lessons").select("amount_due, paid_amount").eq("id", row.lesson_id).maybeSingle();
-      const originalDue = Number(lessonData?.amount_due ?? 0) + Number(lessonData?.paid_amount ?? 0);
-      if (newAmount >= originalDue) {
-        await supabase.from("lessons").update({ payment_status: "paid", paid_amount: originalDue, amount_due: 0 }).eq("id", row.lesson_id);
-      } else {
-        await supabase.from("lessons").update({ payment_status: "partial", paid_amount: newAmount, amount_due: Math.max(0, originalDue - newAmount) }).eq("id", row.lesson_id);
-      }
+    if (error) {
+      toast.error("Failed to update payment");
+      setSaving(false);
+      return;
     }
     toast.success("Payment updated");
     setSaving(false);

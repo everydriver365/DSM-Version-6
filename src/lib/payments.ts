@@ -230,3 +230,69 @@ export function recordPaymentWithPackage(
 ): Promise<RecordPaymentResult> {
   return recordPaymentCore(input, { hoursBought: input.hoursBought });
 }
+
+/**
+ * Corrects a single, already-recorded lesson_history entry (e.g. fixing
+ * the amount/date/notes on a past payment) — NOT for applying a new
+ * payment across multiple lessons (use recordPayment for that).
+ *
+ * Recalculates the associated lesson's paid_amount and payment_status
+ * against its existing amount_due. Never writes amount_due — that
+ * remains fixed at lesson creation, per the same rule as every other
+ * payment path in this file.
+ */
+export interface CorrectPaymentInput {
+  lessonHistoryId: string;
+  lessonId: string | null;
+  newAmount: number;
+  method: string;
+  dateIso: string;
+  notes: string | null;
+}
+
+export async function correctPaymentRecord(input: CorrectPaymentInput): Promise<{ error: string | null }> {
+  const { lessonHistoryId, lessonId, newAmount, method, dateIso, notes } = input;
+
+  const { error: historyErr } = await supabase
+    .from("lesson_history")
+    .update({
+      lesson_cost: newAmount,
+      payment_method: method,
+      created_at: dateIso,
+      notes: notes || null,
+    })
+    .eq("id", lessonHistoryId);
+
+  if (historyErr) return { error: historyErr.message };
+
+  if (lessonId) {
+    const { data: lesson, error: fetchErr } = await supabase
+      .from("lessons")
+      .select("amount_due")
+      .eq("id", lessonId)
+      .maybeSingle();
+
+    if (fetchErr) return { error: fetchErr.message };
+
+    const amountDue = Number(lesson?.amount_due ?? 0);
+
+    // amount_due is never written — only paid_amount/payment_status,
+    // derived by comparing the corrected amount against the lesson's
+    // fixed, unchanged amount_due.
+    if (newAmount >= amountDue) {
+      const { error } = await supabase
+        .from("lessons")
+        .update({ payment_status: "paid", paid_amount: amountDue, payment_method: method })
+        .eq("id", lessonId);
+      if (error) return { error: error.message };
+    } else {
+      const { error } = await supabase
+        .from("lessons")
+        .update({ payment_status: "partial", paid_amount: newAmount, payment_method: method })
+        .eq("id", lessonId);
+      if (error) return { error: error.message };
+    }
+  }
+
+  return { error: null };
+}
