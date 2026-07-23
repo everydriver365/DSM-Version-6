@@ -89,6 +89,101 @@ function loadGoogleMaps(): Promise<any> {
   return gmapsPromise;
 }
 
+function SegmentSpeedChart({
+  points,
+  speedLimitMph,
+}: {
+  points: { timestamp: number; speed_mph: number; over: boolean }[];
+  speedLimitMph: number | null;
+}) {
+  if (points.length < 2) return null;
+  const width = 280;
+  const height = 72;
+  const padding = { top: 8, right: 8, bottom: 20, left: 32 };
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+  const minT = points[0].timestamp;
+  const maxT = points[points.length - 1].timestamp;
+  const timeSpan = Math.max(1, maxT - minT);
+  const maxSpeed = Math.max(
+    1,
+    Math.max(speedLimitMph ?? 0, ...points.map((p) => p.speed_mph))
+  );
+  const xFor = (t: number) => padding.left + ((t - minT) / timeSpan) * chartW;
+  const yFor = (s: number) => padding.top + chartH - (s / maxSpeed) * chartH;
+  const pathD = points
+    .map((p, i) => `${i === 0 ? "M" : "L"} ${xFor(p.timestamp)} ${yFor(p.speed_mph)}`)
+    .join(" ");
+  const limitY = speedLimitMph != null ? yFor(speedLimitMph) : null;
+
+  return (
+    <div style={{ padding: "12px 12px 0" }}>
+      <svg width="100%" viewBox={`0 0 ${width} ${height}`} style={{ display: "block" }}>
+        {/* grid lines */}
+        {[0, 0.25, 0.5, 0.75, 1].map((r) => {
+          const y = padding.top + chartH * (1 - r);
+          return (
+            <line
+              key={r}
+              x1={padding.left}
+              y1={y}
+              x2={width - padding.right}
+              y2={y}
+              stroke="#E5E7EB"
+              strokeWidth={1}
+            />
+          );
+        })}
+        {/* speed limit line */}
+        {limitY != null && (
+          <line
+            x1={padding.left}
+            y1={limitY}
+            x2={width - padding.right}
+            y2={limitY}
+            stroke="#EF4444"
+            strokeWidth={1.5}
+            strokeDasharray="4 3"
+          />
+        )}
+        {/* speed line */}
+        <path
+          d={pathD}
+          fill="none"
+          stroke="#1877D6"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        {/* points */}
+        {points.map((p, i) => (
+          <circle
+            key={i}
+            cx={xFor(p.timestamp)}
+            cy={yFor(p.speed_mph)}
+            r={2.5}
+            fill={p.over ? "#CC2229" : "#1877D6"}
+          />
+        ))}
+        {/* Y-axis labels */}
+        <text x={padding.left - 4} y={padding.top + 4} textAnchor="end" fontSize={8} fill="#6B7280">
+          {Math.round(maxSpeed)}
+        </text>
+        <text x={padding.left - 4} y={padding.top + chartH + 3} textAnchor="end" fontSize={8} fill="#6B7280">
+          0
+        </text>
+        {/* X-axis labels */}
+        <text x={padding.left} y={height - 4} textAnchor="middle" fontSize={8} fill="#6B7280">
+          {new Date(minT).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+        </text>
+        <text x={width - padding.right} y={height - 4} textAnchor="middle" fontSize={8} fill="#6B7280">
+          {new Date(maxT).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+        </text>
+      </svg>
+    </div>
+  );
+}
+
 function LivePage() {
   const navigate = useNavigate();
   const mapRef = useRef<HTMLDivElement | null>(null);
