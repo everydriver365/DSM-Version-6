@@ -381,6 +381,9 @@ function PupilDetailPage() {
     custom_rate: string;
     custom_rate_90: string;
     custom_rate_120: string;
+    test_date: string;
+    test_time: string;
+    theory_pass: boolean;
   }>({
     first_name: "",
     last_name: "",
@@ -397,6 +400,9 @@ function PupilDetailPage() {
     custom_rate: "",
     custom_rate_90: "",
     custom_rate_120: "",
+    test_date: "",
+    test_time: "",
+    theory_pass: false,
   });
 
 
@@ -419,6 +425,9 @@ function PupilDetailPage() {
       custom_rate: pupil.custom_rate != null ? String(pupil.custom_rate) : "",
       custom_rate_90: pupil.custom_rate_90 != null ? String(pupil.custom_rate_90) : "",
       custom_rate_120: pupil.custom_rate_120 != null ? String(pupil.custom_rate_120) : "",
+      test_date: pupil.test_date ?? "",
+      test_time: pupil.test_time ? pupil.test_time.slice(0, 5) : "",
+      theory_pass: Boolean(pupil.theory_pass),
     });
     setEditSheetOpen(true);
   };
@@ -452,6 +461,9 @@ function PupilDetailPage() {
       custom_rate: numOrNull(editDraft.custom_rate),
       custom_rate_90: numOrNull(editDraft.custom_rate_90),
       custom_rate_120: numOrNull(editDraft.custom_rate_120),
+      test_date: editDraft.test_date || null,
+      test_time: editDraft.test_time || null,
+      theory_pass: editDraft.theory_pass,
     };
 
     const { error } = await supabase.from("pupils").update(patch).eq("id", pupil.id);
@@ -1533,162 +1545,6 @@ function PupilDetailPage() {
       )}
       <div className="mx-auto w-full md:max-w-3xl md:px-4 md:pt-4">
         <div className="px-4">
-        {pupil && (
-          <>
-
-            {/* Quick edit card: status, test date/time, theory pass */}
-            <div
-              className="mt-3"
-              style={{
-                backgroundColor: "#FFFFFF",
-                border: "0.5px solid #E2E6ED",
-                borderRadius: 16,
-                padding: 16,
-              }}
-            >
-              <div className="flex items-center gap-2" style={{ marginBottom: 12 }}>
-                <Pencil size={14} color="#1A52A0" />
-                <span className="font-semibold text-[14px]" style={{ color: "#0B1F3A", ...POPPINS }}>
-                  Quick edit
-                </span>
-              </div>
-
-              {/* Status */}
-              <div className="flex items-center justify-between py-2" style={{ borderTop: "0.5px solid #F3F4F6" }}>
-                <span className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>Status</span>
-                <select
-                  value={(pupil.status ?? "active") || "active"}
-                  onChange={async (e) => {
-                    const next = e.target.value;
-                    const prev = pupil.status;
-                    setPupil({ ...pupil, status: next });
-                    const { error } = await supabase.from("pupils").update({ status: next }).eq("id", pupil.id);
-                    if (error) {
-                      setPupil({ ...pupil, status: prev });
-                      toast.error("Failed to save — please try again");
-                      return;
-                    }
-                    toast.success("✓ Status updated");
-                  }}
-                  style={{
-                    height: 36,
-                    padding: "0 10px",
-                    borderRadius: 8,
-                    border: "0.5px solid #E2E6ED",
-                    background: "#FFFFFF",
-                    color: "#0B1F3A",
-                    fontSize: 13,
-                    ...POPPINS,
-                  }}
-                >
-                  <option value="active">Active</option>
-                  <option value="passed">Passed</option>
-                  <option value="failed">Failed</option>
-                  <option value="paused">Paused</option>
-                  <option value="archived">Archived</option>
-                </select>
-              </div>
-
-              {/* Test date */}
-              <div className="flex items-center justify-between py-2" style={{ borderTop: "0.5px solid #F3F4F6" }}>
-                <span className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>Test date</span>
-                <input
-                  type="date"
-                  value={pupil.test_date ?? ""}
-                  onChange={async (e) => {
-                    const next = e.target.value || null;
-                    const prev = pupil.test_date;
-                    setPupil({ ...pupil, test_date: next });
-                    const { error } = await supabase.from("pupils").update({ test_date: next }).eq("id", pupil.id);
-                    if (error) {
-                      setPupil({ ...pupil, test_date: prev });
-                      toast.error("Failed to save — please try again");
-                      return;
-                    }
-                    toast.success("✓ Test date updated");
-                  }}
-                  style={{
-                    height: 36,
-                    padding: "0 10px",
-                    borderRadius: 8,
-                    border: "0.5px solid #E2E6ED",
-                    background: "#FFFFFF",
-                    color: "#0B1F3A",
-                    fontSize: 13,
-                    ...POPPINS,
-                  }}
-                />
-              </div>
-
-              {/* Test time */}
-              <div className="flex items-center justify-between py-2" style={{ borderTop: "0.5px solid #F3F4F6" }}>
-                <span className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>Test time</span>
-                <input
-                  type="time"
-                  value={pupil.test_time ? pupil.test_time.slice(0, 5) : ""}
-                  onChange={async (e) => {
-                    const next = e.target.value || null;
-                    const prev = pupil.test_time;
-                    setPupil({ ...pupil, test_time: next });
-                    const { error } = await supabase.from("pupils").update({ test_time: next }).eq("id", pupil.id);
-                    if (error) {
-                      setPupil({ ...pupil, test_time: prev });
-                      toast.error("Failed to save — please try again");
-                      return;
-                    }
-                    toast.success("✓ Test time updated");
-                  }}
-                  style={{
-                    height: 36,
-                    padding: "0 10px",
-                    borderRadius: 8,
-                    border: "0.5px solid #E2E6ED",
-                    background: "#FFFFFF",
-                    color: "#0B1F3A",
-                    fontSize: 13,
-                    ...POPPINS,
-                  }}
-                />
-              </div>
-
-              {/* Theory test passed */}
-              <div className="flex items-center justify-between py-2" style={{ borderTop: "0.5px solid #F3F4F6" }}>
-                <span className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>Theory test passed</span>
-                <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                  <input
-                    type="checkbox"
-                    checked={Boolean(pupil.theory_pass)}
-                    onChange={async (e) => {
-                      const next = e.target.checked;
-                      const prev = pupil.theory_pass;
-                      setPupil({ ...pupil, theory_pass: next });
-                      const { error } = await supabase.from("pupils").update({ theory_pass: next }).eq("id", pupil.id);
-                      if (error) {
-                        setPupil({ ...pupil, theory_pass: prev });
-                        toast.error("Failed to save — please try again");
-                        return;
-                      }
-                      toast.success(next ? "✓ Theory test marked passed" : "✓ Theory test updated");
-                    }}
-                    className="sr-only peer"
-                  />
-                  <div
-                    className="w-11 h-6 rounded-full transition-colors"
-                    style={{ backgroundColor: pupil.theory_pass ? "#16A34A" : "#CBD5E1" }}
-                  />
-                  <div
-                    className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
-                    style={{ transform: pupil.theory_pass ? "translateX(20px)" : "translateX(0)" }}
-                  />
-                </label>
-              </div>
-
-              <div className="text-[11px] mt-2" style={{ color: "#9CA3AF", ...POPPINS }}>
-                For all other fields, use the pencil in the header to open the full editor.
-              </div>
-            </div>
-          </>
-        )}
 
         {/* Quick actions row: Call · Message · Text · Add lesson · More */}
         <div className="grid grid-cols-5 gap-2 mt-4">
@@ -3578,6 +3434,49 @@ function PupilDetailPage() {
                 <option value="cancelled">Cancelled</option>
               </select>
             </label>
+
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <label className="text-[12px] text-[#6B7280] block">
+                Test date
+                <input
+                  type="date"
+                  value={editDraft.test_date}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, test_date: e.target.value }))}
+                  className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                />
+              </label>
+              <label className="text-[12px] text-[#6B7280] block">
+                Test time
+                <input
+                  type="time"
+                  value={editDraft.test_time}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, test_time: e.target.value }))}
+                  className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                />
+              </label>
+            </div>
+
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-[12px] text-[#6B7280]">Theory test passed</span>
+              <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                <input
+                  type="checkbox"
+                  checked={editDraft.theory_pass}
+                  onChange={(e) => setEditDraft((d) => ({ ...d, theory_pass: e.target.checked }))}
+                  className="sr-only peer"
+                />
+                <div
+                  className="w-11 h-6 rounded-full transition-colors"
+                  style={{ backgroundColor: editDraft.theory_pass ? "#16A34A" : "#CBD5E1" }}
+                />
+                <div
+                  className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
+                  style={{ transform: editDraft.theory_pass ? "translateX(20px)" : "translateX(0)" }}
+                />
+              </label>
+            </div>
 
             <div className="text-[11px] font-semibold uppercase tracking-wide text-[#6B7280] mb-2">Lead source</div>
             <label className="text-[12px] text-[#6B7280] block mb-4">
