@@ -287,7 +287,7 @@ function LivePage() {
       // "route" so speedLimits reliably populates for a single location.
       // measurementSystem=imperial → speed limits returned in mph.
       const pt = `${lng},${lat}`;
-      const points = `${pt}:${pt}`;
+      const points = `${pt};${pt}`;
       const fields = encodeURIComponent(
         "{route{properties{speedLimits{value,unit},address{roadName}}}}",
       );
