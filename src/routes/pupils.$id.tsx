@@ -425,6 +425,9 @@ function PupilDetailPage() {
       custom_rate: pupil.custom_rate != null ? String(pupil.custom_rate) : "",
       custom_rate_90: pupil.custom_rate_90 != null ? String(pupil.custom_rate_90) : "",
       custom_rate_120: pupil.custom_rate_120 != null ? String(pupil.custom_rate_120) : "",
+      test_date: pupil.test_date ?? "",
+      test_time: pupil.test_time ? pupil.test_time.slice(0, 5) : "",
+      theory_pass: Boolean(pupil.theory_pass),
     });
     setEditSheetOpen(true);
   };
