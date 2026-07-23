@@ -131,14 +131,14 @@ function PerformancePage() {
   }, [userId, start]);
 
   // ---- Calculations
-  const passCount = tests.filter((t) => (t.result ?? "").toLowerCase() === "pass").length;
-  const failCount = tests.filter((t) => (t.result ?? "").toLowerCase() === "fail").length;
-  const pendingCount = tests.filter((t) => !t.result).length;
+  const passCount = tests.filter((t) => t.test_status === "Passed").length;
+  const failCount = tests.filter((t) => t.test_status === "Failed").length;
+  const pendingCount = tests.filter((t) => !t.test_status).length;
   const resolvedTests = passCount + failCount;
   const passRate = resolvedTests > 0 ? Math.round((passCount / resolvedTests) * 100) : 0;
 
   const passedPupilIds = new Set(
-    tests.filter((t) => (t.result ?? "").toLowerCase() === "pass").map((t) => t.pupil_id),
+    tests.filter((t) => t.test_status === "Passed").map((t) => t.id),
   );
   const lessonsByPupil = new Map<string, number>();
   lessons.forEach((l) => {
