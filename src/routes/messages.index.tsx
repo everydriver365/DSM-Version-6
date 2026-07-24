@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, MessageCircle, Search, Edit3, Send, Flag, X, Briefcase } from "lucide-react";
+import { MessageCircle, Search, Send, Flag, X, Briefcase } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import BottomNav from "../components/dsm/BottomNav";
