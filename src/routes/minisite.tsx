@@ -397,6 +397,29 @@ function MiniSitePage() {
           </div>
         </div>
 
+        {/* LIVE PREVIEW */}
+        <div className="mb-3">
+          <div className="flex items-center justify-between mb-2">
+            <SectionHeader>LIVE PREVIEW</SectionHeader>
+            <span className="text-[11px]" style={{ color: "#6B7280", marginBottom: 8 }}>
+              Updates as you edit
+            </span>
+          </div>
+          <MiniSitePreview
+            name={/* best-effort display name */ ""}
+            bio={websiteBio}
+            heroUrl={heroUrl}
+            gallery={gallery}
+            theme={theme}
+            font={font}
+            headerStyle={headerStyle}
+            brandColour={brandColour}
+          />
+          <div className="text-[11px] mt-2 text-center" style={{ color: "#6B7280" }}>
+            This is what visitors will see. Scroll inside to view all sections.
+          </div>
+        </div>
+
         {/* SLUG CLAIM */}
         {!originalSlug && (
           <Card className="mb-3" style={{ background: "#fff" }}>
