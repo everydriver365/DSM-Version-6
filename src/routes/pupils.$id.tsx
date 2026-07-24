@@ -434,6 +434,19 @@ function PupilDetailPage() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [mockTests, setMockTests] = useState<MockTestResult[]>([]);
   const [lessonRoutes, setLessonRoutes] = useState<LessonRoute[]>([]);
+  interface OverspeedEvent {
+    id: string;
+    lesson_route_id: string;
+    instructor_id: string;
+    recorded_at: string;
+    speed_mph: number;
+    speed_limit_mph: number;
+    excess_mph: number;
+    latitude: number | null;
+    longitude: number | null;
+    road_name: string | null;
+    created_at: string;
+  }
   const [viewingReport, setViewingReport] = useState<{
     started_at: string | null;
     duration_minutes: number | null;
@@ -441,14 +454,9 @@ function PupilDetailPage() {
     totalDistanceMiles: number;
     overallMaxSpeed: number;
     overspeedCount: number;
-    overspeedEvents: {
-      recorded_at: string;
-      speed_mph: number;
-      speed_limit_mph: number;
-      excess_mph: number;
-      road_name: string | null;
-    }[];
+    overspeedEvents: OverspeedEvent[];
   } | null>(null);
+  const [selectedOverspeedEvent, setSelectedOverspeedEvent] = useState<OverspeedEvent | null>(null);
   const [reportLoading, setReportLoading] = useState(false);
   const [viewingMock, setViewingMock] = useState<MockTestResult | null>(null);
   const [mockNotesDraft, setMockNotesDraft] = useState("");
@@ -545,16 +553,10 @@ function PupilDetailPage() {
       const report = buildTripReport(coords);
       const { data: evs } = await supabase
         .from("overspeed_events")
-        .select("recorded_at, speed_mph, speed_limit_mph, excess_mph, road_name")
+        .select("id, lesson_route_id, instructor_id, recorded_at, speed_mph, speed_limit_mph, excess_mph, latitude, longitude, road_name, created_at")
         .eq("lesson_route_id", routeId)
         .order("recorded_at", { ascending: true });
-      const overspeedEvents = (evs ?? []) as {
-        recorded_at: string;
-        speed_mph: number;
-        speed_limit_mph: number;
-        excess_mph: number;
-        road_name: string | null;
-      }[];
+      const overspeedEvents = (evs ?? []) as OverspeedEvent[];
       setViewingReport({
         started_at: (data as any).started_at ?? null,
         duration_minutes: (data as any).duration_minutes ?? null,
@@ -2362,15 +2364,23 @@ function PupilDetailPage() {
                   </div>
                   <div style={{ border: "0.5px solid #FCA5A5", borderRadius: 12, overflow: "hidden", marginBottom: 16, background: "#FEF2F2" }}>
                     {viewingReport.overspeedEvents.map((ev, i) => (
-                      <div
-                        key={i}
+                      <button
+                        key={ev.id}
+                        type="button"
+                        onClick={() => setSelectedOverspeedEvent(ev)}
                         style={{
+                          width: "100%",
                           padding: "10px 14px",
                           borderTop: i === 0 ? "none" : "0.5px solid #FECACA",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "space-between",
                           gap: 8,
+                          background: "transparent",
+                          border: "none",
+                          borderBottom: i === viewingReport.overspeedEvents.length - 1 ? "none" : "0.5px solid #FECACA",
+                          cursor: "pointer",
+                          textAlign: "left",
                         }}
                       >
                         <div style={{ minWidth: 0, flex: 1 }}>
@@ -2381,10 +2391,13 @@ function PupilDetailPage() {
                             {new Date(ev.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })} · {Math.round(ev.speed_mph)} mph in a {ev.speed_limit_mph} mph zone
                           </div>
                         </div>
-                        <span style={{ fontSize: 11, fontWeight: 700, color: "#CC2229", whiteSpace: "nowrap" }}>
-                          +{Math.round(ev.excess_mph)} mph
-                        </span>
-                      </div>
+                        <div className="flex items-center gap-1">
+                          <span style={{ fontSize: 11, fontWeight: 700, color: "#CC2229", whiteSpace: "nowrap" }}>
+                            +{Math.round(ev.excess_mph)} mph
+                          </span>
+                          <ChevronRight size={14} color="#CC2229" />
+                        </div>
+                      </button>
                     ))}
                   </div>
                 </>
@@ -2448,6 +2461,73 @@ function PupilDetailPage() {
             </div>
           ) : null}
         </BottomSheetV2>
+        )}
+
+        {selectedOverspeedEvent && (
+          <BottomSheetV2
+            onClose={() => setSelectedOverspeedEvent(null)}
+            title="Overspeed event"
+            subtitle={selectedOverspeedEvent.road_name ?? "Unknown road"}
+          >
+            <div style={{ padding: "4px 4px 16px", ...POPPINS }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
+                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Speed</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#CC2229", marginTop: 2 }}>{Math.round(selectedOverspeedEvent.speed_mph)} mph</div>
+                </div>
+                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Limit</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>{Math.round(selectedOverspeedEvent.speed_limit_mph)} mph</div>
+                </div>
+                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Excess</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#CC2229", marginTop: 2 }}>+{Math.round(selectedOverspeedEvent.excess_mph)} mph</div>
+                </div>
+                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Time</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>
+                    {new Date(selectedOverspeedEvent.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ border: "0.5px solid #E2E6ED", borderRadius: 12, overflow: "hidden", marginBottom: 16 }}>
+                {[
+                  { label: "Event ID", value: selectedOverspeedEvent.id },
+                  { label: "Route ID", value: selectedOverspeedEvent.lesson_route_id },
+                  { label: "Instructor ID", value: selectedOverspeedEvent.instructor_id },
+                  { label: "Recorded at", value: new Date(selectedOverspeedEvent.recorded_at).toLocaleString("en-GB") },
+                  { label: "Created at", value: new Date(selectedOverspeedEvent.created_at).toLocaleString("en-GB") },
+                  { label: "Latitude", value: selectedOverspeedEvent.latitude != null ? String(selectedOverspeedEvent.latitude) : "—" },
+                  { label: "Longitude", value: selectedOverspeedEvent.longitude != null ? String(selectedOverspeedEvent.longitude) : "—" },
+                ].map((row, i, arr) => (
+                  <div
+                    key={row.label}
+                    style={{
+                      padding: "10px 14px",
+                      borderTop: i === 0 ? "none" : "0.5px solid #F3F4F6",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: 8,
+                      borderBottom: i === arr.length - 1 ? "none" : "0.5px solid #F3F4F6",
+                    }}
+                  >
+                    <span style={{ fontSize: 12, color: "#6B7280" }}>{row.label}</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A", textAlign: "right", wordBreak: "break-all" }}>{row.value}</span>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedOverspeedEvent(null)}
+                style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 14, fontWeight: 600 }}
+              >
+                Close
+              </button>
+            </div>
+          </BottomSheetV2>
         )}
 
 
