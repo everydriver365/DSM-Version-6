@@ -405,7 +405,7 @@ function ProfilePage() {
         setTradingName(inst.trading_name ?? "");
         setDbsUploaded(Boolean(inst.dbs_uploaded));
         setDbsUrl(inst.dbs_document_url ?? null);
-        setServiceAreas(Array.isArray(inst.service_areas) ? inst.service_areas : []);
+        
         setVehicleReg(inst.vehicle_reg ?? "");
         setVehicleYear(inst.vehicle_year != null ? String(inst.vehicle_year) : "");
         setDualControls(Boolean(inst.dual_controls));
@@ -447,7 +447,7 @@ function ProfilePage() {
       trading_name: tradingName.trim() || null,
       dbs_uploaded: dbsUploaded,
       dbs_document_url: dbsUrl,
-      service_areas: serviceAreas,
+      
       vehicle_make: vehicleMake.trim() || null,
       vehicle_model: vehicleModel.trim() || null,
       vehicle_reg: vehicleReg.trim() || null,
@@ -623,21 +623,6 @@ function ProfilePage() {
       return;
     }
     toast.success("Vehicle photo removed");
-  }
-
-  function addServiceArea() {
-    const v = serviceAreaInput.trim();
-    if (!v) return;
-    if (serviceAreas.includes(v)) {
-      setServiceAreaInput("");
-      return;
-    }
-    setServiceAreas([...serviceAreas, v]);
-    setServiceAreaInput("");
-  }
-
-  function removeServiceArea(v: string) {
-    setServiceAreas(serviceAreas.filter((x) => x !== v));
   }
 
   function setNotif(key: string, channel: "email" | "sms" | "push", value: boolean) {
