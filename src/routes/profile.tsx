@@ -369,7 +369,8 @@ function ProfilePage() {
       const { data: inst, error: instErr } = await supabase
         .from("instructors")
         .select(
-          "name, phone, bio, car_make, car_model, profile_image_url, address, home_postcode, city, lat, lng, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, vehicle_make, vehicle_model, vehicle_reg, vehicle_year, dual_controls, insurance_expiry, vehicle_photo_url, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
+          "name, phone, bio, car_make, car_model, profile_image_url, address, home_postcode, city, lat, lng, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, vehicle_make, vehicle_model, vehicle_reg, vehicle_year, dual_controls, insurance_expiry, vehicle_photo_url, transmission, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
+
         )
         .eq("id", user.id)
         .maybeSingle();
@@ -411,6 +412,8 @@ function ProfilePage() {
         setDualControls(Boolean(inst.dual_controls));
         setInsuranceExpiry(inst.insurance_expiry ?? "");
         setVehiclePhotoUrl(inst.vehicle_photo_url ?? null);
+        setTransmission(inst.transmission ?? "Manual");
+
         if (inst.notification_prefs && typeof inst.notification_prefs === "object") {
           setNotifPrefs({ ...defaultNotifPrefs(), ...(inst.notification_prefs as NotifPrefs) });
         }
