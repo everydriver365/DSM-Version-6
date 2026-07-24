@@ -2931,51 +2931,8 @@ function PupilDetailPage() {
 
         {activeTab === "overview" && (
           <>
-            {/* Tests card: theory + practical, tap to edit */}
-            {pupil && (
-              <div
-                style={{
-                  background: "#FFFFFF",
-                  borderRadius: 16,
-                  border: "0.5px solid #E2E6ED",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  overflow: "hidden",
-                  marginTop: 4,
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => { setActiveTab("profile"); setTheoryEditing(true); }}
-                  className="w-full flex items-center justify-between px-4 py-3"
-                  style={{ background: "none", border: "none", ...POPPINS }}
-                >
-                  <span className="flex items-center gap-2 text-[13px] font-semibold" style={{ color: "#0B1F3A" }}>
-                    <BookOpen size={16} color="#1877D6" /> Theory
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <span className="text-[13px]" style={{ color: "#0B1F3A" }}>{pupil.theory_status || "Not started"}</span>
-                    <ChevronRight size={16} color="#6B7280" />
-                  </span>
-                </button>
-                <div style={{ height: "0.5px", background: "#EEF2F7" }} />
-                <button
-                  type="button"
-                  onClick={() => { setActiveTab("profile"); setPracticalEditing(true); }}
-                  className="w-full flex items-center justify-between px-4 py-3"
-                  style={{ background: "none", border: "none", ...POPPINS }}
-                >
-                  <span className="flex items-center gap-2 text-[13px] font-semibold" style={{ color: "#0B1F3A" }}>
-                    <Car size={16} color="#1877D6" /> Practical
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <span className="text-[13px]" style={{ color: "#0B1F3A" }}>
-                      {pupil.test_date ? `${fmtUKDate(pupil.test_date)}${pupil.test_time ? " · " + pupil.test_time.slice(0, 5) : ""}` : "Not booked"}
-                    </span>
-                    <ChevronRight size={16} color="#6B7280" />
-                  </span>
-                </button>
-              </div>
-            )}
+            {/* Tests card removed — readiness dashboard tiles above cover this. */}
+
 
       {/* Test status tiles */}
       {pupil && (() => {
