@@ -7,6 +7,7 @@ import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
+import { formatCountdown } from "@/lib/dateHelpers";
 import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/tests")({
@@ -500,6 +501,12 @@ function TestCard({
             {formatTime(test.test_time) || "—"}
             {test.test_centre ? ` · ${test.test_centre}` : ""}
           </div>
+
+          {showDaysBadge && (
+            <div className="text-[11px] font-medium" style={{ color: "#1877D6", ...POPPINS }}>
+              {formatCountdown(test.test_date, test.test_time) ?? "Overdue"}
+            </div>
+          )}
 
           {showDaysBadge && (
             <div className="mt-2 flex items-center" style={{ gap: 8 }}>

@@ -18,6 +18,7 @@ import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 import { resolveHourlyRate } from "../lib/pricing/resolveRate";
 import { deletePaymentRecord } from "./payments";
 import { buildTripReport, type ReportSegment, type Coord } from "@/lib/tripReport";
+import { formatCountdown } from "@/lib/dateHelpers";
 
 export const Route = createFileRoute("/pupils/$id")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -1765,6 +1766,14 @@ function PupilDetailPage() {
                                     {centreInfo?.name || pupil.test_centre}
                                   </p>
                                 )}
+                                {(() => {
+                                  const countdown = formatCountdown(pupil.test_date, pupil.test_time);
+                                  return countdown ? (
+                                    <p className="text-[10px] font-medium text-[#1877D6] truncate" style={POPPINS}>
+                                      {countdown}
+                                    </p>
+                                  ) : null;
+                                })()}
                               </>
                             ) : (
                               <p className="text-[12px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
