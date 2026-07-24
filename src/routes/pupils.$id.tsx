@@ -2463,6 +2463,73 @@ function PupilDetailPage() {
         </BottomSheetV2>
         )}
 
+        {selectedOverspeedEvent && (
+          <BottomSheetV2
+            onClose={() => setSelectedOverspeedEvent(null)}
+            title="Overspeed event"
+            subtitle={selectedOverspeedEvent.road_name ?? "Unknown road"}
+          >
+            <div style={{ padding: "4px 4px 16px", ...POPPINS }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
+                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Speed</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#CC2229", marginTop: 2 }}>{Math.round(selectedOverspeedEvent.speed_mph)} mph</div>
+                </div>
+                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Limit</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>{Math.round(selectedOverspeedEvent.speed_limit_mph)} mph</div>
+                </div>
+                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Excess</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#CC2229", marginTop: 2 }}>+{Math.round(selectedOverspeedEvent.excess_mph)} mph</div>
+                </div>
+                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Time</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>
+                    {new Date(selectedOverspeedEvent.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ border: "0.5px solid #E2E6ED", borderRadius: 12, overflow: "hidden", marginBottom: 16 }}>
+                {[
+                  { label: "Event ID", value: selectedOverspeedEvent.id },
+                  { label: "Route ID", value: selectedOverspeedEvent.lesson_route_id },
+                  { label: "Instructor ID", value: selectedOverspeedEvent.instructor_id },
+                  { label: "Recorded at", value: new Date(selectedOverspeedEvent.recorded_at).toLocaleString("en-GB") },
+                  { label: "Created at", value: new Date(selectedOverspeedEvent.created_at).toLocaleString("en-GB") },
+                  { label: "Latitude", value: selectedOverspeedEvent.latitude != null ? String(selectedOverspeedEvent.latitude) : "—" },
+                  { label: "Longitude", value: selectedOverspeedEvent.longitude != null ? String(selectedOverspeedEvent.longitude) : "—" },
+                ].map((row, i, arr) => (
+                  <div
+                    key={row.label}
+                    style={{
+                      padding: "10px 14px",
+                      borderTop: i === 0 ? "none" : "0.5px solid #F3F4F6",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: 8,
+                      borderBottom: i === arr.length - 1 ? "none" : "0.5px solid #F3F4F6",
+                    }}
+                  >
+                    <span style={{ fontSize: 12, color: "#6B7280" }}>{row.label}</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A", textAlign: "right", wordBreak: "break-all" }}>{row.value}</span>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedOverspeedEvent(null)}
+                style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 14, fontWeight: 600 }}
+              >
+                Close
+              </button>
+            </div>
+          </BottomSheetV2>
+        )}
+
 
         </>)}
 
