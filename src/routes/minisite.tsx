@@ -118,6 +118,7 @@ function MiniSitePage() {
         const existingSlug = d.app_slug ?? "";
         setOriginalSlug(existingSlug);
         setSlug(existingSlug || slugify(d.name ?? user.email?.split("@")[0] ?? ""));
+        setDisplayName(d.name ?? "");
         setPublished(Boolean(d.website_published));
         setWebsiteBio(d.website_bio ?? "");
         setHeroUrl(d.website_hero_image_url ?? null);
