@@ -321,8 +321,9 @@ function ProfilePage() {
   const [bio, setBio] = useState("");
   const [dbsUploaded, setDbsUploaded] = useState(false);
   const [dbsUrl, setDbsUrl] = useState<string | null>(null);
-  const [serviceAreas, setServiceAreas] = useState<string[]>([]);
-  const [serviceAreaInput, setServiceAreaInput] = useState("");
+  const [coverageAreas, setCoverageAreas] = useState<
+    { id: string; area_name: string | null; radius_miles: number | null }[]
+  >([]);
 
   // Vehicle
   const [vehicleMake, setVehicleMake] = useState("");
@@ -368,7 +369,7 @@ function ProfilePage() {
       const { data: inst, error: instErr } = await supabase
         .from("instructors")
         .select(
-          "name, phone, bio, car_make, car_model, profile_image_url, address, home_postcode, city, lat, lng, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, service_areas, vehicle_make, vehicle_model, vehicle_reg, vehicle_year, dual_controls, insurance_expiry, vehicle_photo_url, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
+          "name, phone, bio, car_make, car_model, profile_image_url, address, home_postcode, city, lat, lng, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, vehicle_make, vehicle_model, vehicle_reg, vehicle_year, dual_controls, insurance_expiry, vehicle_photo_url, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
         )
         .eq("id", user.id)
         .maybeSingle();
@@ -404,7 +405,7 @@ function ProfilePage() {
         setTradingName(inst.trading_name ?? "");
         setDbsUploaded(Boolean(inst.dbs_uploaded));
         setDbsUrl(inst.dbs_document_url ?? null);
-        setServiceAreas(Array.isArray(inst.service_areas) ? inst.service_areas : []);
+        
         setVehicleReg(inst.vehicle_reg ?? "");
         setVehicleYear(inst.vehicle_year != null ? String(inst.vehicle_year) : "");
         setDualControls(Boolean(inst.dual_controls));
@@ -417,6 +418,13 @@ function ProfilePage() {
         setTwoFactorMethod(inst.two_factor_method ?? "Authenticator app");
         if (inst.login_alerts != null) setLoginAlerts(inst.login_alerts);
       }
+      const { data: coverage } = await supabase
+        .from("instructor_coverage_areas")
+        .select("id, area_name, radius_miles")
+        .eq("instructor_id", user.id)
+        .order("is_primary", { ascending: false })
+        .order("created_at", { ascending: true });
+      setCoverageAreas((coverage ?? []) as { id: string; area_name: string | null; radius_miles: number | null }[]);
       setLoading(false);
     })();
   }, [navigate]);
@@ -446,7 +454,7 @@ function ProfilePage() {
       trading_name: tradingName.trim() || null,
       dbs_uploaded: dbsUploaded,
       dbs_document_url: dbsUrl,
-      service_areas: serviceAreas,
+      
       vehicle_make: vehicleMake.trim() || null,
       vehicle_model: vehicleModel.trim() || null,
       vehicle_reg: vehicleReg.trim() || null,
@@ -622,21 +630,6 @@ function ProfilePage() {
       return;
     }
     toast.success("Vehicle photo removed");
-  }
-
-  function addServiceArea() {
-    const v = serviceAreaInput.trim();
-    if (!v) return;
-    if (serviceAreas.includes(v)) {
-      setServiceAreaInput("");
-      return;
-    }
-    setServiceAreas([...serviceAreas, v]);
-    setServiceAreaInput("");
-  }
-
-  function removeServiceArea(v: string) {
-    setServiceAreas(serviceAreas.filter((x) => x !== v));
   }
 
   function setNotif(key: string, channel: "email" | "sms" | "push", value: boolean) {
@@ -936,33 +929,33 @@ function ProfilePage() {
                 className="rounded-lg bg-white px-2 py-2 flex flex-wrap gap-2"
                 style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", minHeight: 44 }}
               >
-                {serviceAreas.map((a) => (
-                  <span
-                    key={a}
-                    className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[12px]"
-                    style={{ backgroundColor: "#E0ECFA", color: "#0B1F3A", ...POPPINS }}
-                  >
-                    {a}
-                    <button type="button" onClick={() => removeServiceArea(a)} aria-label={`Remove ${a}`}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B1F3A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                    </button>
+                {coverageAreas.length === 0 ? (
+                  <span className="text-[13px] text-[#6B7280] px-1 py-1" style={POPPINS}>
+                    No coverage areas yet
                   </span>
-                ))}
-                <input
-                  value={serviceAreaInput}
-                  onChange={(e) => setServiceAreaInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === ",") {
-                      e.preventDefault();
-                      addServiceArea();
-                    }
-                  }}
-                  onBlur={addServiceArea}
-                  placeholder="Add a town and press Enter"
-                  className="flex-1 min-w-[140px] bg-transparent text-[14px] text-[#0B1F3A] outline-none px-1"
-                  style={POPPINS}
-                />
+                ) : (
+                  coverageAreas.map((a) => {
+                    const label = (a.area_name && a.area_name.trim()) || "Area";
+                    const radius = a.radius_miles ?? 0;
+                    return (
+                      <span
+                        key={a.id}
+                        className="inline-flex items-center px-2 py-1 rounded-full text-[12px]"
+                        style={{ backgroundColor: "#E0ECFA", color: "#0B1F3A", ...POPPINS }}
+                      >
+                        {label} — {radius}mi
+                      </span>
+                    );
+                  })
+                )}
               </div>
+              <Link
+                to="/coverage-areas"
+                className="inline-block mt-2 text-[13px]"
+                style={{ color: "#1877D6", ...POPPINS }}
+              >
+                Manage coverage areas
+              </Link>
             </div>
           </div>
         </AccordionCard>
