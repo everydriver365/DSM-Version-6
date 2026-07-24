@@ -321,8 +321,9 @@ function ProfilePage() {
   const [bio, setBio] = useState("");
   const [dbsUploaded, setDbsUploaded] = useState(false);
   const [dbsUrl, setDbsUrl] = useState<string | null>(null);
-  const [serviceAreas, setServiceAreas] = useState<string[]>([]);
-  const [serviceAreaInput, setServiceAreaInput] = useState("");
+  const [coverageAreas, setCoverageAreas] = useState<
+    { id: string; area_name: string | null; radius_miles: number | null }[]
+  >([]);
 
   // Vehicle
   const [vehicleMake, setVehicleMake] = useState("");
