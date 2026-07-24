@@ -2364,15 +2364,23 @@ function PupilDetailPage() {
                   </div>
                   <div style={{ border: "0.5px solid #FCA5A5", borderRadius: 12, overflow: "hidden", marginBottom: 16, background: "#FEF2F2" }}>
                     {viewingReport.overspeedEvents.map((ev, i) => (
-                      <div
-                        key={i}
+                      <button
+                        key={ev.id}
+                        type="button"
+                        onClick={() => setSelectedOverspeedEvent(ev)}
                         style={{
+                          width: "100%",
                           padding: "10px 14px",
                           borderTop: i === 0 ? "none" : "0.5px solid #FECACA",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "space-between",
                           gap: 8,
+                          background: "transparent",
+                          border: "none",
+                          borderBottom: i === viewingReport.overspeedEvents.length - 1 ? "none" : "0.5px solid #FECACA",
+                          cursor: "pointer",
+                          textAlign: "left",
                         }}
                       >
                         <div style={{ minWidth: 0, flex: 1 }}>
@@ -2383,10 +2391,13 @@ function PupilDetailPage() {
                             {new Date(ev.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })} · {Math.round(ev.speed_mph)} mph in a {ev.speed_limit_mph} mph zone
                           </div>
                         </div>
-                        <span style={{ fontSize: 11, fontWeight: 700, color: "#CC2229", whiteSpace: "nowrap" }}>
-                          +{Math.round(ev.excess_mph)} mph
-                        </span>
-                      </div>
+                        <div className="flex items-center gap-1">
+                          <span style={{ fontSize: 11, fontWeight: 700, color: "#CC2229", whiteSpace: "nowrap" }}>
+                            +{Math.round(ev.excess_mph)} mph
+                          </span>
+                          <ChevronRight size={14} color="#CC2229" />
+                        </div>
+                      </button>
                     ))}
                   </div>
                 </>
