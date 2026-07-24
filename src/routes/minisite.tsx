@@ -130,6 +130,18 @@ function MiniSitePage() {
     })();
   }, [navigate]);
 
+  // Load Google Fonts for accurate preview rendering
+  useEffect(() => {
+    const id = "minisite-preview-fonts";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;600;700&family=Playfair+Display:wght@400;600;700&display=swap";
+    document.head.appendChild(link);
+  }, []);
+
   // Debounced slug availability check
   useEffect(() => {
     if (!userId) return;
