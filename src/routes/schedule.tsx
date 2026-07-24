@@ -1744,17 +1744,6 @@ function SchedulePage() {
                                             onClick={(ev) => {
                                               ev.stopPropagation();
                                               setActionsOpenFor(null);
-                                              setChangeDateTimeSheetFor(lesson);
-                                            }}
-                                          >
-                                            Change date & time
-                                          </button>
-                                          <button
-                                            type="button"
-                                            style={itemStyle}
-                                            onClick={(ev) => {
-                                              ev.stopPropagation();
-                                              setActionsOpenFor(null);
                                               setCancelSheetFor(lesson);
                                             }}
                                           >
