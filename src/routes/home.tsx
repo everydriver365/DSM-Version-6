@@ -167,7 +167,7 @@ import { PAGE_BACKGROUND } from "@/components/PageLayout";
 import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
-import { ChangeDateTimeSheet } from "@/components/lessons/ChangeDateTimeSheet";
+
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
