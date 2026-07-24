@@ -2937,20 +2937,10 @@ function PupilDetailPage() {
       {/* Test status tiles */}
       {pupil && (() => {
 
-        const showTheory = pupil.theory_status && pupil.theory_status !== "Not started";
         const showPractical = !!pupil.test_date;
-        if (!showTheory && !showPractical) return null;
-        const theoryBadge = statusColour(pupil.theory_status);
+        if (!showPractical) return null;
         const practBadge = statusColour(pupil.test_status);
         const centreName = centreInfo?.name || pupil.test_centre || "";
-        const theoryDescription =
-          pupil.theory_status === "Passed"
-            ? `Passed${pupil.theory_pass_date ? ` on ${fmtUKDate(pupil.theory_pass_date)}` : ""}`
-            : pupil.theory_status === "Failed"
-              ? `Failed${pupil.theory_test_date ? ` on ${fmtUKDate(pupil.theory_test_date)}` : ""}`
-              : pupil.theory_test_date
-                ? `Booked for ${fmtUKDate(pupil.theory_test_date)}`
-                : pupil.theory_status || "Studying";
         const practicalDescription = [
           pupil.test_status || "Booked",
           pupil.test_date ? fmtUKDate(pupil.test_date) : null,
@@ -2961,27 +2951,15 @@ function PupilDetailPage() {
           .filter(Boolean)
           .join(" · ");
         return (
-          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {showTheory && (
-              <ActionTile
-                label="Theory test"
-                icon={<BookOpen size={20} />}
-                iconBg={theoryBadge.bg}
-                iconColor={theoryBadge.fg}
-                description={theoryDescription}
-                orientation="horizontal"
-              />
-            )}
-            {showPractical && (
-              <ActionTile
-                label="Practical test"
-                icon={<Car size={20} />}
-                iconBg={practBadge.bg}
-                iconColor={practBadge.fg}
-                description={practicalDescription}
-                orientation="horizontal"
-              />
-            )}
+          <div className="mt-3">
+            <ActionTile
+              label="Practical test"
+              icon={<Car size={20} />}
+              iconBg={practBadge.bg}
+              iconColor={practBadge.fg}
+              description={practicalDescription}
+              orientation="horizontal"
+            />
           </div>
         );
       })()}
