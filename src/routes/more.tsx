@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
-  Search, X, Briefcase, RefreshCw, Clock, Award, ArrowLeftRight, GraduationCap,
-  ClipboardCheck, FileText, Receipt, Fuel, Car, MapPin, Settings, Calendar,
-  Gift, FileCheck, Zap, ClipboardList, AlertTriangle, BarChart3, Calculator,
+  Search, X, Briefcase, RefreshCw, Award, ArrowLeftRight, GraduationCap,
+  ClipboardCheck, FileText, Receipt, Fuel, Car, MapPin, Calendar,
+  BarChart3, Calculator,
+
   Moon, TrendingUp, Activity, Radio, ShoppingBag, Users, GraduationCap as GraduationCapIcon,
   ChevronRight, PlayCircle,
 } from "lucide-react";
