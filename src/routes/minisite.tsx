@@ -80,6 +80,7 @@ function MiniSitePage() {
 
   // Publish
   const [published, setPublished] = useState(false);
+  const [displayName, setDisplayName] = useState("");
 
   // Content
   const [websiteBio, setWebsiteBio] = useState("");
