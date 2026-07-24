@@ -125,6 +125,9 @@ function MtdPage() {
   const [mileageRows, setMileageRows] = useState<{ miles: number; created_at: string }[]>([]);
   const [mtdMiles, setMtdMiles] = useState(0);
   const [reloadKey, setReloadKey] = useState(0);
+  const [connections, setConnections] = useState<
+    { id: string; provider: string; is_active: boolean; provider_org_name: string | null }[]
+  >([]);
 
   const now = useMemo(() => new Date(), []);
   const taxYearStart = useMemo(() => currentTaxYearStart(now), [now]);
