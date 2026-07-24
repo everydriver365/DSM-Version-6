@@ -418,6 +418,13 @@ function ProfilePage() {
         setTwoFactorMethod(inst.two_factor_method ?? "Authenticator app");
         if (inst.login_alerts != null) setLoginAlerts(inst.login_alerts);
       }
+      const { data: coverage } = await supabase
+        .from("instructor_coverage_areas")
+        .select("id, area_name, radius_miles")
+        .eq("instructor_id", user.id)
+        .order("is_primary", { ascending: false })
+        .order("created_at", { ascending: true });
+      setCoverageAreas((coverage ?? []) as { id: string; area_name: string | null; radius_miles: number | null }[]);
       setLoading(false);
     })();
   }, [navigate]);
