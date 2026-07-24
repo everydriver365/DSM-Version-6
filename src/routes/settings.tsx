@@ -858,6 +858,14 @@ function SettingsPage() {
             }
           />
           <MenuRow
+            icon={<Landmark color="#1877D6" />}
+            iconBg="#E6F1FB"
+            label="Accounting integrations"
+            onClick={() => navigate({ to: "/mtd" })}
+            isLast={false}
+          />
+
+          <MenuRow
             icon={<Crown color="#185FA5" />}
             iconBg="#E6F1FB"
             label="My plan"
