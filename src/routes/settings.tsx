@@ -1222,6 +1222,20 @@ function SettingsPage() {
           )}
         </SectionCard>
 
+        <SectionHeader>LESSON TRACKING</SectionHeader>
+        <SectionCard>
+          <div className="px-4 py-4 flex flex-col gap-4">
+            <div className="flex items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Auto-track lessons</div>
+                <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>Show a one-tap prompt to start GPS tracking when a lesson begins</div>
+              </div>
+              <ToggleSwitch checked={autoTrackLessons} onChange={setAutoTrackLessons} />
+            </div>
+            <SaveRow onClick={() => saveReminderPrefs({ reminder_enabled: reminderEnabled, reminder_hours_before: reminderHoursBefore, payment_reminder_enabled: paymentReminderEnabled, payment_chase_max_reminders: paymentChaseMax, morning_briefing: morningBriefing, auto_track_lessons: autoTrackLessons })} />
+          </div>
+        </SectionCard>
+
         <Label>COVERAGE AREA</Label>
         <div
           onClick={() => navigate({ to: "/coverage-areas" as never })}
