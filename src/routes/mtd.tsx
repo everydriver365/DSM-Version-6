@@ -125,6 +125,9 @@ function MtdPage() {
   const [mileageRows, setMileageRows] = useState<{ miles: number; created_at: string }[]>([]);
   const [mtdMiles, setMtdMiles] = useState(0);
   const [reloadKey, setReloadKey] = useState(0);
+  const [connections, setConnections] = useState<
+    { id: string; provider: string; is_active: boolean; provider_org_name: string | null }[]
+  >([]);
 
   const now = useMemo(() => new Date(), []);
   const taxYearStart = useMemo(() => currentTaxYearStart(now), [now]);
@@ -274,6 +277,23 @@ function MtdPage() {
     };
   }, [userId]);
 
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const { data, error } = await supabase
+        .from("accounting_connections")
+        .select("id, provider, is_active, provider_org_name")
+        .eq("instructor_id", userId);
+      if (error) {
+        console.warn("[mtd] accounting_connections fetch failed:", error);
+        return;
+      }
+      setConnections(
+        (data ?? []) as { id: string; provider: string; is_active: boolean; provider_org_name: string | null }[],
+      );
+    })();
+  }, [userId]);
+
   const mileageAllowance = miles * MILEAGE_RATE;
   const mtdMileageAllowance = mtdMiles * MILEAGE_RATE;
   const netProfit = income - expenses - mileageAllowance;
@@ -357,6 +377,25 @@ function MtdPage() {
     a.click();
     URL.revokeObjectURL(url);
     toast.success("Records exported");
+  }
+
+  const PLATFORMS = ["Xero", "QuickBooks", "FreeAgent", "Sage"] as const;
+
+  function connectProvider(name: string) {
+    toast(`${name} connection coming soon`);
+  }
+
+  async function disconnect(id: string) {
+    const { error } = await supabase
+      .from("accounting_connections")
+      .update({ is_active: false, updated_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setConnections((prev) => prev.map((c) => (c.id === id ? { ...c, is_active: false } : c)));
+    toast.success("Disconnected");
   }
 
   return (
@@ -563,6 +602,55 @@ function MtdPage() {
               <Download size={16} style={{ marginRight: 8 }} />
               Export records
             </Button>
+          </div>
+        </Card>
+
+        <SectionHeader>ACCOUNTING INTEGRATIONS</SectionHeader>
+        <Card>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {PLATFORMS.map((platform) => {
+              const conn = connections.find((c) => c.provider === platform && c.is_active);
+              return (
+                <div
+                  key={platform}
+                  style={{
+                    borderWidth: "1px",
+                    borderStyle: "solid",
+                    borderColor: "#EEF2F7",
+                    borderRadius: 12,
+                    padding: 16,
+                    background: "#fff",
+                  }}
+                >
+                  <div style={{ fontSize: 14, fontWeight: 600, color: VALUE }}>{platform}</div>
+                  <div style={{ fontSize: 12, color: MUTED, marginTop: 4, marginBottom: 12, lineHeight: 1.4 }}>
+                    Sync your income and expenses automatically
+                  </div>
+                  {conn ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      <span style={{ fontSize: 12, color: "#1E8E3E", fontWeight: 500 }}>
+                        Connected as {conn.provider_org_name ?? "Unknown"}
+                      </span>
+                      <Button
+                        variant="destructive"
+                        onClick={() => disconnect(conn.id)}
+                        className="h-9 text-[12px]"
+                      >
+                        Disconnect
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      variant="primary"
+                      onClick={() => connectProvider(platform)}
+                      className="h-9 text-[12px]"
+                    >
+                      Connect
+                    </Button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </Card>
 
