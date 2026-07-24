@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, MessageCircle, Search, Edit3, Send, Flag, X, Briefcase } from "lucide-react";
+import { MessageCircle, Search, Send, Flag, X, Briefcase } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import BottomNav from "../components/dsm/BottomNav";
 import { PageLayout } from "@/components/PageLayout";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useAdminGate } from "./admin";
 
 
@@ -505,132 +506,103 @@ function MessagesIndexPage() {
 
   return (
     <PageLayout style={{ ...FONT, paddingBottom: 80 }}>
-      {/* Header */}
-      <div
-        style={{
-          background: "#0B1F3A",
-          color: "#FFFFFF",
-          padding: "16px 18px 18px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button
-            onClick={() => navigate({ to: "/home" })}
-            style={{ background: "transparent", border: 0, color: "#FFFFFF", padding: 0, cursor: "pointer", display: "flex" }}
-            aria-label="Back"
-          >
-            <ArrowLeft size={20} color="#FFFFFF" />
-          </button>
-          <h1 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>Messages</h1>
-        </div>
-        <div style={{ display: "flex", gap: 10 }}>
-          <button
-            type="button"
-            aria-label="Search messages"
-            onClick={() => {
-              const el = document.getElementById("messages-search-input") as HTMLInputElement | null;
-              el?.focus();
-            }}
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: 10,
-              background: "rgba(255,255,255,0.1)",
-              border: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-            }}
-          >
-            <Search size={17} color="#FFFFFF" />
-          </button>
-          <button
-            type="button"
-            aria-label="New message"
-            onClick={() => navigate({ to: "/broadcast" })}
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: 10,
-              background: "rgba(255,255,255,0.1)",
-              border: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-            }}
-          >
-            <Edit3 size={17} color="#FFFFFF" />
-          </button>
-        </div>
-      </div>
+      <InstructorTopBar
+        firstName={myName ?? ""}
+        pageTitle="Messages"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
-      {/* Tab switcher */}
+      {/* Tab + search bar */}
       <div
         style={{
           background: "#FFFFFF",
           borderBottom: "0.5px solid #E2E6ED",
           display: "flex",
+          alignItems: "center",
+          gap: 12,
+          padding: "8px 16px",
           position: "sticky",
-          top: 60,
+          top: "calc(60px + env(safe-area-inset-top, 0px))",
           zIndex: 9,
         }}
       >
-        {((["pupils", "local", ...(isAdmin ? ["admin"] : [])] as const) as ("pupils" | "local" | "admin")[]).map((tab) => {
-          const active = activeTab === tab;
-          const label = tab === "pupils" ? "Pupils" : tab === "local" ? "Local chat" : "Admin";
-          const badge =
-            tab === "local" ? unreadLocal : tab === "admin" ? unreadAdmin : 0;
-          return (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              style={{
-                flex: 1,
-                padding: 12,
-                textAlign: "center",
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: "pointer",
-                background: "transparent",
-                border: 0,
-                borderBottom: active ? "2px solid #0B1F3A" : "2px solid transparent",
-                color: active ? "#0B1F3A" : "#8A93A3",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 4,
-                ...FONT,
-              }}
-            >
-              {label}
-              {badge > 0 && (
-                <span
-                  style={{
-                    background: "#CC2229",
-                    color: "#FFFFFF",
-                    fontSize: 10,
-                    fontWeight: 700,
-                    padding: "2px 6px",
-                    borderRadius: 999,
-                    marginLeft: 4,
-                    lineHeight: 1,
-                  }}
-                >
-                  {badge}
-                </span>
-              )}
-            </button>
-          );
-        })}
-
+        <button
+          type="button"
+          aria-label="Search messages"
+          onClick={() => {
+            const el = document.getElementById("messages-search-input") as HTMLInputElement | null;
+            el?.focus();
+          }}
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: 8,
+            background: "#F3F8FF",
+            border: "1px solid #EEF2F7",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            flexShrink: 0,
+          }}
+        >
+          <Search size={18} color="#1877D6" />
+        </button>
+        <div style={{ flex: 1, display: "flex" }}>
+          {((["pupils", "local", ...(isAdmin ? ["admin"] : [])] as const) as ("pupils" | "local" | "admin")[]).map((tab) => {
+            const active = activeTab === tab;
+            const label = tab === "pupils" ? "Pupils" : tab === "local" ? "Local chat" : "Admin";
+            const badge =
+              tab === "local" ? unreadLocal : tab === "admin" ? unreadAdmin : 0;
+            return (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                style={{
+                  flex: 1,
+                  padding: 12,
+                  textAlign: "center",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  background: "transparent",
+                  border: 0,
+                  borderBottom: active ? "2px solid #0B1F3A" : "2px solid transparent",
+                  color: active ? "#0B1F3A" : "#8A93A3",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 4,
+                  ...FONT,
+                }}
+              >
+                {label}
+                {badge > 0 && (
+                  <span
+                    style={{
+                      background: "#CC2229",
+                      color: "#FFFFFF",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      padding: "2px 6px",
+                      borderRadius: 999,
+                      marginLeft: 4,
+                      lineHeight: 1,
+                    }}
+                  >
+                    {badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {activeTab === "pupils" ? (
