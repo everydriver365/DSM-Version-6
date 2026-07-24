@@ -413,6 +413,13 @@ function PupilDetailPage() {
   const [addressEditing, setAddressEditing] = useState(false);
   const [theoryEditing, setTheoryEditing] = useState(false);
   const [practicalEditing, setPracticalEditing] = useState(false);
+  const [practicalQuickOpen, setPracticalQuickOpen] = useState(false);
+  const [practicalQuickDate, setPracticalQuickDate] = useState("");
+  const [practicalQuickTime, setPracticalQuickTime] = useState("");
+  const [practicalQuickSaving, setPracticalQuickSaving] = useState(false);
+  const [practicalQuickCentres, setPracticalQuickCentres] = useState<Array<{ id: string; name: string; address: string | null; town: string | null; postcode: string | null }>>([]);
+  const [practicalQuickCentreSearch, setPracticalQuickCentreSearch] = useState("");
+  const [practicalQuickCentrePickerOpen, setPracticalQuickCentrePickerOpen] = useState(false);
   const [emailEditing, setEmailEditing] = useState(false);
   const [emailDraft, setEmailDraft] = useState("");
   const [savingEmail, setSavingEmail] = useState(false);
