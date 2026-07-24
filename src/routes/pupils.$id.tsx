@@ -441,6 +441,13 @@ function PupilDetailPage() {
     totalDistanceMiles: number;
     overallMaxSpeed: number;
     overspeedCount: number;
+    overspeedEvents: {
+      recorded_at: string;
+      speed_mph: number;
+      speed_limit_mph: number;
+      excess_mph: number;
+      road_name: string | null;
+    }[];
   } | null>(null);
   const [reportLoading, setReportLoading] = useState(false);
   const [viewingMock, setViewingMock] = useState<MockTestResult | null>(null);
@@ -536,13 +543,26 @@ function PupilDetailPage() {
       }
       const coords = (data.coordinates ?? []) as Coord[];
       const report = buildTripReport(coords);
+      const { data: evs } = await supabase
+        .from("overspeed_events")
+        .select("recorded_at, speed_mph, speed_limit_mph, excess_mph, road_name")
+        .eq("lesson_route_id", routeId)
+        .order("recorded_at", { ascending: true });
+      const overspeedEvents = (evs ?? []) as {
+        recorded_at: string;
+        speed_mph: number;
+        speed_limit_mph: number;
+        excess_mph: number;
+        road_name: string | null;
+      }[];
       setViewingReport({
         started_at: (data as any).started_at ?? null,
         duration_minutes: (data as any).duration_minutes ?? null,
         segments: report.segments,
         totalDistanceMiles: report.totalDistanceMiles,
         overallMaxSpeed: report.overallMaxSpeed,
-        overspeedCount: report.segments.filter((s) => s.exceeded).length,
+        overspeedCount: overspeedEvents.length || report.segments.filter((s) => s.exceeded).length,
+        overspeedEvents,
       });
     } finally {
       setReportLoading(false);
@@ -2334,6 +2354,43 @@ function PupilDetailPage() {
                   <div style={{ fontSize: 16, fontWeight: 700, color: viewingReport.overspeedCount > 0 ? "#CC2229" : "#0B1F3A", marginTop: 2 }}>{viewingReport.overspeedCount}</div>
                 </div>
               </div>
+
+              {viewingReport.overspeedEvents.length > 0 && (
+                <>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
+                    Overspeed alerts
+                  </div>
+                  <div style={{ border: "0.5px solid #FCA5A5", borderRadius: 12, overflow: "hidden", marginBottom: 16, background: "#FEF2F2" }}>
+                    {viewingReport.overspeedEvents.map((ev, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          padding: "10px 14px",
+                          borderTop: i === 0 ? "none" : "0.5px solid #FECACA",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: 8,
+                        }}
+                      >
+                        <div style={{ minWidth: 0, flex: 1 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                            {ev.road_name ?? "Unknown road"}
+                          </div>
+                          <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>
+                            {new Date(ev.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })} · {Math.round(ev.speed_mph)} mph in a {ev.speed_limit_mph} mph zone
+                          </div>
+                        </div>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: "#CC2229", whiteSpace: "nowrap" }}>
+                          +{Math.round(ev.excess_mph)} mph
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+
 
               <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
                 Road segments
