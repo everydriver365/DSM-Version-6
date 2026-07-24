@@ -503,6 +503,12 @@ function TestCard({
           </div>
 
           {showDaysBadge && (
+            <div className="text-[11px] font-medium" style={{ color: "#1877D6", ...POPPINS }}>
+              {formatCountdown(test.test_date, test.test_time) ?? "Overdue"}
+            </div>
+          )}
+
+          {showDaysBadge && (
             <div className="mt-2 flex items-center" style={{ gap: 8 }}>
               {resultColor ? (
                 <span
