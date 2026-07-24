@@ -362,11 +362,11 @@ function PaymentsPage() {
 
       {/* Summary stats */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "16px 16px 0", marginBottom: 14 }}>
-        <StatTile label="THIS MONTH" value={formatGBP(stats.monthReceived)} color="#2E9E5B" />
+        <StatTile label="THIS MONTH" value={formatGBP(stats.monthReceived)} color="#1E8E3E" />
         <StatTile
           label="OUTSTANDING"
           value={formatGBP(stats.outstanding)}
-          color={stats.outstanding > 0 ? "#E24B4A" : "#B0BAC9"}
+          color={stats.outstanding > 0 ? "#CC2229" : "#B0BAC9"}
         />
         <StatTile
           label="REFUNDED"
@@ -398,7 +398,7 @@ function PaymentsPage() {
         <div
           style={{
             fontSize: 13,
-            color: pupilFilter ? "#12142B" : "#B0BAC9",
+            color: pupilFilter ? "#0B1F3A" : "#B0BAC9",
             flex: 1,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -467,7 +467,7 @@ function PaymentsPage() {
           groups.map((g) => (
             <div key={g.label + g.rows[0].id}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, fontWeight: 500, color: "#12142B", ...POPPINS }}>{g.label}</div>
+                <div style={{ fontSize: 13, fontWeight: 500, color: "#0B1F3A", ...POPPINS }}>{g.label}</div>
                 <div style={{ fontSize: 12, color: "#B0BAC9", ...POPPINS }}>{formatGBP(g.total)}</div>
               </div>
 
@@ -520,7 +520,7 @@ function PaymentsPage() {
                             style={{
                               fontSize: 14,
                               fontWeight: 500,
-                              color: "#12142B",
+                              color: "#0B1F3A",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
@@ -537,7 +537,7 @@ function PaymentsPage() {
                           style={{
                             fontSize: 15,
                             fontWeight: 600,
-                            color: isRefund ? "#E24B4A" : "#2E9E5B",
+                            color: isRefund ? "#CC2229" : "#1E8E3E",
                             flexShrink: 0,
                             ...POPPINS,
                           }}
