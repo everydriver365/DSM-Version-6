@@ -441,6 +441,13 @@ function PupilDetailPage() {
     totalDistanceMiles: number;
     overallMaxSpeed: number;
     overspeedCount: number;
+    overspeedEvents: {
+      recorded_at: string;
+      speed_mph: number;
+      speed_limit_mph: number;
+      excess_mph: number;
+      road_name: string | null;
+    }[];
   } | null>(null);
   const [reportLoading, setReportLoading] = useState(false);
   const [viewingMock, setViewingMock] = useState<MockTestResult | null>(null);
