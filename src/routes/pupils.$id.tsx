@@ -3872,6 +3872,155 @@ function PupilDetailPage() {
         );
       })()}
 
+      {practicalQuickOpen && pupil && (
+        <BottomSheetV2
+          title="Practical test"
+          subtitle="Date, time & centre"
+          onClose={() => {
+            setPracticalQuickOpen(false);
+            setPracticalQuickCentrePickerOpen(false);
+          }}
+          footer={
+            <button
+              type="button"
+              disabled={practicalQuickSaving}
+              onClick={async () => {
+                if (!pupil) return;
+                setPracticalQuickSaving(true);
+                const { error } = await supabase
+                  .from("pupils")
+                  .update({
+                    test_date: practicalQuickDate || null,
+                    test_time: practicalQuickTime ? `${practicalQuickTime}:00` : null,
+                  })
+                  .eq("id", pupil.id);
+                setPracticalQuickSaving(false);
+                if (error) {
+                  toast.error("Could not save test details");
+                  return;
+                }
+                setPupil({
+                  ...pupil,
+                  test_date: practicalQuickDate || null,
+                  test_time: practicalQuickTime ? `${practicalQuickTime}:00` : null,
+                });
+                toast.success("Practical test saved");
+                setPracticalQuickOpen(false);
+              }}
+              className="w-full py-4 rounded-full text-white font-semibold text-base active:opacity-90 disabled:opacity-40"
+              style={{ backgroundColor: "#1877D6" }}
+            >
+              {practicalQuickSaving ? "Saving…" : "Save"}
+            </button>
+          }
+        >
+          <div className="space-y-3 pb-2">
+            <div>
+              <label className="block mb-1 text-[12px] font-medium" style={{ color: "#6B7280", ...POPPINS }}>Date</label>
+              <input
+                type="date"
+                value={practicalQuickDate}
+                onChange={(e) => setPracticalQuickDate(e.target.value)}
+                className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
+                style={{ border: "0.5px solid #EEF2F7", color: "#0B1F3A", ...POPPINS }}
+              />
+            </div>
+            <div>
+              <label className="block mb-1 text-[12px] font-medium" style={{ color: "#6B7280", ...POPPINS }}>Time</label>
+              <input
+                type="time"
+                value={practicalQuickTime}
+                onChange={(e) => setPracticalQuickTime(e.target.value)}
+                className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
+                style={{ border: "0.5px solid #EEF2F7", color: "#0B1F3A", ...POPPINS }}
+              />
+            </div>
+            <div>
+              <label className="block mb-1 text-[12px] font-medium" style={{ color: "#6B7280", ...POPPINS }}>Test centre</label>
+              <button
+                type="button"
+                onClick={async () => {
+                  const next = !practicalQuickCentrePickerOpen;
+                  setPracticalQuickCentrePickerOpen(next);
+                  if (next && practicalQuickCentres.length === 0) {
+                    const { data } = await supabase
+                      .from("test_centres")
+                      .select("id, name, address, town, postcode")
+                      .order("name", { ascending: true });
+                    setPracticalQuickCentres((data as any[]) ?? []);
+                  }
+                }}
+                className="h-11 w-full rounded-lg px-3 text-[14px] bg-white text-left flex items-center justify-between"
+                style={{ border: "0.5px solid #EEF2F7", color: "#0B1F3A", ...POPPINS }}
+              >
+                <span className="truncate">
+                  {centreInfo?.name || pupil.test_centre || "Select a centre"}
+                </span>
+                <ChevronRight size={16} color="#6B7280" />
+              </button>
+              {practicalQuickCentrePickerOpen && (
+                <div className="mt-2 rounded-lg bg-white overflow-hidden" style={{ border: "0.5px solid #EEF2F7" }}>
+                  <input
+                    type="text"
+                    placeholder="Search centres…"
+                    value={practicalQuickCentreSearch}
+                    onChange={(e) => setPracticalQuickCentreSearch(e.target.value)}
+                    className="h-10 w-full px-3 text-[13px] bg-white"
+                    style={{ borderBottom: "0.5px solid #EEF2F7", color: "#0B1F3A", ...POPPINS }}
+                  />
+                  <div className="max-h-64 overflow-y-auto">
+                    {practicalQuickCentres
+                      .filter((c) => {
+                        const q = practicalQuickCentreSearch.trim().toLowerCase();
+                        if (!q) return true;
+                        return (
+                          c.name.toLowerCase().includes(q) ||
+                          (c.town ?? "").toLowerCase().includes(q) ||
+                          (c.postcode ?? "").toLowerCase().includes(q)
+                        );
+                      })
+                      .slice(0, 60)
+                      .map((c) => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={async () => {
+                            if (!pupil) return;
+                            const { error } = await supabase
+                              .from("pupils")
+                              .update({ test_centre_id: c.id, test_centre: c.name })
+                              .eq("id", pupil.id);
+                            if (error) {
+                              toast.error("Could not update test centre");
+                              return;
+                            }
+                            setCentreInfo({ id: c.id, name: c.name, town: c.town });
+                            setPupil({ ...pupil, test_centre_id: c.id, test_centre: c.name });
+                            setPracticalQuickCentrePickerOpen(false);
+                            setPracticalQuickCentreSearch("");
+                            toast.success("Test centre updated");
+                          }}
+                          className="w-full text-left px-3 py-2 text-[13px] flex flex-col"
+                          style={{ borderTop: "0.5px solid #F4F6FA", color: "#0B1F3A", ...POPPINS }}
+                        >
+                          <span className="font-medium">{c.name}</span>
+                          {(c.town || c.postcode) && (
+                            <span className="text-[11px]" style={{ color: "#6B7280" }}>
+                              {[c.town, c.postcode].filter(Boolean).join(", ")}
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </BottomSheetV2>
+      )}
+
+
+
 
       {certOpen && (
         <div className="fixed inset-0 z-[60] flex flex-col justify-end">
