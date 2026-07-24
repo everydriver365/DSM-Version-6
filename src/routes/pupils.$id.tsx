@@ -553,16 +553,10 @@ function PupilDetailPage() {
       const report = buildTripReport(coords);
       const { data: evs } = await supabase
         .from("overspeed_events")
-        .select("recorded_at, speed_mph, speed_limit_mph, excess_mph, road_name")
+        .select("id, lesson_route_id, instructor_id, recorded_at, speed_mph, speed_limit_mph, excess_mph, latitude, longitude, road_name, created_at")
         .eq("lesson_route_id", routeId)
         .order("recorded_at", { ascending: true });
-      const overspeedEvents = (evs ?? []) as {
-        recorded_at: string;
-        speed_mph: number;
-        speed_limit_mph: number;
-        excess_mph: number;
-        road_name: string | null;
-      }[];
+      const overspeedEvents = (evs ?? []) as OverspeedEvent[];
       setViewingReport({
         started_at: (data as any).started_at ?? null,
         duration_minutes: (data as any).duration_minutes ?? null,
