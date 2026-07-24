@@ -725,7 +725,7 @@ function SettingsPage() {
                 width: 52,
                 height: 52,
                 borderRadius: "50%",
-                background: "#185FA5",
+                background: "#1877D6",
                 color: "#FFFFFF",
                 fontSize: 20,
                 fontWeight: 600,
@@ -744,7 +744,7 @@ function SettingsPage() {
               style={{
                 fontSize: 16,
                 fontWeight: 600,
-                color: "#12142B",
+                color: "#0B1F3A",
                 textTransform: "capitalize",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -778,7 +778,7 @@ function SettingsPage() {
               padding: "8px 14px",
               fontSize: 12,
               fontWeight: 500,
-              color: "#12142B",
+              color: "#0B1F3A",
               cursor: "pointer",
               flexShrink: 0,
               ...POPPINS,
@@ -804,12 +804,12 @@ function SettingsPage() {
           className="flex items-center justify-center rounded-xl"
           style={{ width: 44, height: 44, background: "#E0F4FF", flexShrink: 0 }}
         >
-          <Clock color="#1A52A0" size={22} />
+          <Clock color="#1877D6" size={22} />
         </div>
         <div className="flex-1 min-w-0 flex flex-col">
           <span
             className="font-semibold"
-            style={{ fontSize: 14, color: "#0F2044", ...POPPINS }}
+            style={{ fontSize: 14, color: "#0B1F3A", ...POPPINS }}
           >
             Availability & working hours
           </span>
@@ -827,7 +827,7 @@ function SettingsPage() {
         <Label>ACCOUNT</Label>
         <div style={{ backgroundColor: 'white', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
           <MenuRow
-            icon={<User color="#185FA5" />}
+            icon={<User color="#1877D6" />}
             iconBg="#E6F1FB"
             label="Profile"
             onClick={() => navigate({ to: "/profile" })}
@@ -835,7 +835,7 @@ function SettingsPage() {
             isLast={false}
           />
           <MenuRow
-            icon={<PoundSterling color="#A32D2D" />}
+            icon={<PoundSterling color="#CC2229" />}
             iconBg="#FCEBEB"
             label="Payments"
             onClick={() => navigate({ to: "/payments" })}
@@ -885,7 +885,7 @@ function SettingsPage() {
           />
 
           <MenuRow
-            icon={<Crown color="#185FA5" />}
+            icon={<Crown color="#1877D6" />}
             iconBg="#E6F1FB"
             label="My plan"
             value="DSM Free"
@@ -897,7 +897,7 @@ function SettingsPage() {
         <Label>PAYMENTS</Label>
         <div style={{ backgroundColor: 'white', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
           <MenuRow
-            icon={<PoundSterling color="#A32D2D" />}
+            icon={<PoundSterling color="#CC2229" />}
             iconBg="#FCEBEB"
             label="Pass booking fee to pupil"
             expanded={expanded === "payments"}
@@ -1165,8 +1165,8 @@ function SettingsPage() {
                 style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <Clock size={14} color="#0F2044" />
-                  <div className="text-[14px] font-bold" style={{ color: "#0F2044", ...POPPINS }}>
+                  <Clock size={14} color="#0B1F3A" />
+                  <div className="text-[14px] font-bold" style={{ color: "#0B1F3A", ...POPPINS }}>
                     Lesson buffer
                   </div>
                 </div>
@@ -1177,7 +1177,7 @@ function SettingsPage() {
                   className="flex items-center justify-between"
                   style={{ paddingTop: 10, paddingBottom: 10 }}
                 >
-                  <div className="text-[14px]" style={{ color: "#0F2044", ...POPPINS }}>Gap after each lesson</div>
+                  <div className="text-[14px]" style={{ color: "#0B1F3A", ...POPPINS }}>Gap after each lesson</div>
                   <select
                     value={bufferAfter}
                     onChange={(e) => {
@@ -1186,7 +1186,7 @@ function SettingsPage() {
                       void saveBuffers(v);
                     }}
                     className="text-[13px]"
-                    style={{ height: 36, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0F2044", ...POPPINS }}
+                    style={{ height: 36, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0B1F3A", ...POPPINS }}
                   >
                     {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
                       <option key={m} value={m}>{m} min</option>
@@ -1311,10 +1311,10 @@ function SettingsPage() {
               flexShrink: 0,
             }}
           >
-            <MapPin size={22} color="#1A52A0" />
+            <MapPin size={22} color="#1877D6" />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>Coverage areas</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>Coverage areas</div>
             <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
               {coverageAreaCount > 0
                 ? `${coverageAreaCount} ${coverageAreaCount === 1 ? "area" : "areas"} defined`
@@ -1827,7 +1827,7 @@ function SettingsPage() {
           {expanded === "noshow" && (
             <div className="px-4 pb-4 flex flex-col" style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
               {/* No-show charge */}
-              <div className="text-[14px] text-[#0F2044]" style={POPPINS}>No-show charge</div>
+              <div className="text-[14px] text-[#0B1F3A]" style={POPPINS}>No-show charge</div>
               <div className="mt-2">
                 <SelectBox
                   value={String(noShowPercent)}
@@ -1838,7 +1838,7 @@ function SettingsPage() {
               <div className="text-[12px] text-[#9CA3AF] mt-1" style={POPPINS}>Charged when pupil does not attend without notice</div>
 
               {/* Cancellation tiers */}
-              <div className="text-[13px] font-semibold text-[#0F2044]" style={{ ...POPPINS, marginTop: 16, marginBottom: 8 }}>Cancellation policy</div>
+              <div className="text-[13px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, marginTop: 16, marginBottom: 8 }}>Cancellation policy</div>
               <div className="text-[12px] text-[#9CA3AF]" style={{ ...POPPINS, marginBottom: 12 }}>Set different charges based on how much notice the pupil gives:</div>
 
               {cancellationTiers.map((tier, i) => (
@@ -1853,7 +1853,7 @@ function SettingsPage() {
                       setCancellationTiers((prev) => prev.map((t, idx) => idx === i ? { ...t, hours: v } : t));
                     }}
                     className="bg-white"
-                    style={{ width: 60, textAlign: "center", border: "0.5px solid #E2E6ED", borderRadius: 6, padding: "6px 4px", fontSize: 13, color: "#0F2044", ...POPPINS }}
+                    style={{ width: 60, textAlign: "center", border: "0.5px solid #E2E6ED", borderRadius: 6, padding: "6px 4px", fontSize: 13, color: "#0B1F3A", ...POPPINS }}
                   />
                   <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>hours notice</span>
                   <span className="text-[12px]" style={{ color: "#9CA3AF", ...POPPINS }}>→</span>
@@ -1864,7 +1864,7 @@ function SettingsPage() {
                       setCancellationTiers((prev) => prev.map((t, idx) => idx === i ? { ...t, charge_percent: v } : t));
                     }}
                     className="bg-white"
-                    style={{ border: "0.5px solid #E2E6ED", borderRadius: 6, padding: "6px 4px", fontSize: 13, color: "#0F2044", ...POPPINS }}
+                    style={{ border: "0.5px solid #E2E6ED", borderRadius: 6, padding: "6px 4px", fontSize: 13, color: "#0B1F3A", ...POPPINS }}
                   >
                     {[0, 25, 50, 75, 100].map((p) => <option key={p} value={p}>{p}</option>)}
                   </select>
@@ -1884,7 +1884,7 @@ function SettingsPage() {
                 type="button"
                 onClick={() => setCancellationTiers((prev) => [...prev, { hours: 72, charge_percent: 25 }])}
                 className="text-[12px] font-semibold"
-                style={{ color: "#1A52A0", background: "none", border: "none", padding: 0, marginTop: 6, alignSelf: "flex-start", cursor: "pointer", ...POPPINS }}
+                style={{ color: "#1877D6", background: "none", border: "none", padding: 0, marginTop: 6, alignSelf: "flex-start", cursor: "pointer", ...POPPINS }}
               >
                 + Add tier
               </button>
@@ -1892,7 +1892,7 @@ function SettingsPage() {
               {/* Auto-charge toggle */}
               <div className="flex items-start gap-3" style={{ marginTop: 16 }}>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[14px] text-[#0F2044]" style={POPPINS}>Auto-apply charges on cancellation</div>
+                  <div className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Auto-apply charges on cancellation</div>
                   <div className="text-[12px] text-[#9CA3AF] mt-1" style={POPPINS}>Automatically calculate and add the charge when cancelling</div>
                 </div>
                 <ToggleSwitch checked={autoChargeNoShow} onChange={setAutoChargeNoShow} />
@@ -1908,7 +1908,7 @@ function SettingsPage() {
         {/* Section 2 — Lesson reminders (automation) */}
         <SectionCard>
           <MenuRow
-            icon={<Bell color="#1A52A0" />}
+            icon={<Bell color="#1877D6" />}
             iconBg="#E0F4FF"
             label="Lesson reminders"
             subLabel="Automated reminders for lessons and payments"
@@ -2260,10 +2260,10 @@ function SettingsPage() {
 
         <SectionCard>
           <MenuRow
-            icon={<LogOut color="#A32D2D" />}
+            icon={<LogOut color="#CC2229" />}
             iconBg="#FCEBEB"
             label="Sign out"
-            labelColor="#A32D2D"
+            labelColor="#CC2229"
             hideChevron
             isFirst
             onClick={() => setSignOutOpen(true)}
@@ -2339,7 +2339,7 @@ function MenuRow({
       <div className="flex-1 min-w-0 flex flex-col">
         <span
           className="truncate flex items-center gap-2"
-          style={{ fontSize: 14, fontWeight: 500, color: labelColor ?? "#12142B", ...POPPINS }}
+          style={{ fontSize: 14, fontWeight: 500, color: labelColor ?? "#0B1F3A", ...POPPINS }}
         >
           {label}
           {warning ? (
@@ -2378,7 +2378,7 @@ function MenuRow({
         <span
           style={{
             background: "#E6F1FB",
-            color: "#185FA5",
+            color: "#1877D6",
             fontSize: 10,
             fontWeight: 600,
             padding: "3px 9px",
@@ -2559,7 +2559,7 @@ function SaveRow({ onClick }: { onClick: () => void }) {
         marginTop: 4,
         padding: "12px 16px",
         borderRadius: 10,
-        background: "#0F2044",
+        background: "#0B1F3A",
         color: "#FFFFFF",
         border: "none",
         fontSize: 14,
