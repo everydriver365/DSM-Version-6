@@ -605,6 +605,55 @@ function MtdPage() {
           </div>
         </Card>
 
+        <SectionHeader>ACCOUNTING INTEGRATIONS</SectionHeader>
+        <Card>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {PLATFORMS.map((platform) => {
+              const conn = connections.find((c) => c.provider === platform && c.is_active);
+              return (
+                <div
+                  key={platform}
+                  style={{
+                    borderWidth: "1px",
+                    borderStyle: "solid",
+                    borderColor: "#EEF2F7",
+                    borderRadius: 12,
+                    padding: 16,
+                    background: "#fff",
+                  }}
+                >
+                  <div style={{ fontSize: 14, fontWeight: 600, color: VALUE }}>{platform}</div>
+                  <div style={{ fontSize: 12, color: MUTED, marginTop: 4, marginBottom: 12, lineHeight: 1.4 }}>
+                    Sync your income and expenses automatically
+                  </div>
+                  {conn ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      <span style={{ fontSize: 12, color: "#1E8E3E", fontWeight: 500 }}>
+                        Connected as {conn.provider_org_name ?? "Unknown"}
+                      </span>
+                      <Button
+                        variant="destructive"
+                        onClick={() => disconnect(conn.id)}
+                        className="h-9 text-[12px]"
+                      >
+                        Disconnect
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      variant="primary"
+                      onClick={() => connectProvider(platform)}
+                      className="h-9 text-[12px]"
+                    >
+                      Connect
+                    </Button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+
       </div>
     </div>
   );
