@@ -543,13 +543,26 @@ function PupilDetailPage() {
       }
       const coords = (data.coordinates ?? []) as Coord[];
       const report = buildTripReport(coords);
+      const { data: evs } = await supabase
+        .from("overspeed_events")
+        .select("recorded_at, speed_mph, speed_limit_mph, excess_mph, road_name")
+        .eq("lesson_route_id", routeId)
+        .order("recorded_at", { ascending: true });
+      const overspeedEvents = (evs ?? []) as {
+        recorded_at: string;
+        speed_mph: number;
+        speed_limit_mph: number;
+        excess_mph: number;
+        road_name: string | null;
+      }[];
       setViewingReport({
         started_at: (data as any).started_at ?? null,
         duration_minutes: (data as any).duration_minutes ?? null,
         segments: report.segments,
         totalDistanceMiles: report.totalDistanceMiles,
         overallMaxSpeed: report.overallMaxSpeed,
-        overspeedCount: report.segments.filter((s) => s.exceeded).length,
+        overspeedCount: overspeedEvents.length || report.segments.filter((s) => s.exceeded).length,
+        overspeedEvents,
       });
     } finally {
       setReportLoading(false);
