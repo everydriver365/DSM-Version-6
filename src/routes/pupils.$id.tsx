@@ -1709,8 +1709,16 @@ function PupilDetailPage() {
                             </p>
                           </div>
                         </div>
-                        <div
-                          className="flex items-center gap-3 p-3 rounded-xl border"
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPracticalQuickDate(pupil.test_date ?? "");
+                            setPracticalQuickTime(pupil.test_time ? pupil.test_time.slice(0, 5) : "");
+                            setPracticalQuickCentreSearch("");
+                            setPracticalQuickCentrePickerOpen(false);
+                            setPracticalQuickOpen(true);
+                          }}
+                          className="flex items-center gap-3 p-3 rounded-xl border text-left active:scale-[0.98] transition-transform"
                           style={{
                             backgroundColor:
                               practStatus === "Passed"
@@ -1745,13 +1753,26 @@ function PupilDetailPage() {
                           >
                             <Car size={14} color="#FFFFFF" />
                           </div>
-                          <div className="min-w-0">
+                          <div className="min-w-0 flex-1">
                             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider" style={POPPINS}>Practical</p>
-                            <p className="text-[12px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
-                              {practStatus}
-                            </p>
+                            {pupil.test_date ? (
+                              <>
+                                <p className="text-[12px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
+                                  {fmtUKDate(pupil.test_date)}{pupil.test_time ? ` · ${pupil.test_time.slice(0, 5)}` : ""}
+                                </p>
+                                {(centreInfo?.name || pupil.test_centre) && (
+                                  <p className="text-[10px] text-slate-500 truncate" style={POPPINS}>
+                                    {centreInfo?.name || pupil.test_centre}
+                                  </p>
+                                )}
+                              </>
+                            ) : (
+                              <p className="text-[12px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
+                                {practStatus}
+                              </p>
+                            )}
                           </div>
-                        </div>
+                        </button>
                       </div>
                     </div>
                   );
