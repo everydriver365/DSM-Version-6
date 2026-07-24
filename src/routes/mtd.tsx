@@ -379,6 +379,25 @@ function MtdPage() {
     toast.success("Records exported");
   }
 
+  const PLATFORMS = ["Xero", "QuickBooks", "FreeAgent", "Sage"] as const;
+
+  function connectProvider(name: string) {
+    toast(`${name} connection coming soon`);
+  }
+
+  async function disconnect(id: string) {
+    const { error } = await supabase
+      .from("accounting_connections")
+      .update({ is_active: false, updated_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setConnections((prev) => prev.map((c) => (c.id === id ? { ...c, is_active: false } : c)));
+    toast.success("Disconnected");
+  }
+
   return (
     <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F3F8FF", margin: -8 }}>
       {/* TOP BAR */}
