@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Plus, X, MoreVertical, Search, Banknote, CreditCard, Landmark, RotateCcw, Wallet, QrCode, Link2, ShoppingBag, Copy, MessageSquare, Mail, ExternalLink, RefreshCw, Receipt } from "lucide-react";
+import { Plus, X, MoreVertical, Search, Banknote, CreditCard, Landmark, RotateCcw, Wallet, QrCode, Link2, ShoppingBag, Copy, MessageSquare, Mail, ExternalLink, RefreshCw, Receipt } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
@@ -8,6 +8,7 @@ import { supabase } from "../lib/supabaseClient";
 import WorkspaceDots from "../components/dsm/WorkspaceDots";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { recordPayment, correctPaymentRecord } from "@/lib/payments";
 
 export const Route = createFileRoute("/payments")({
@@ -209,6 +210,7 @@ function PaymentsPage() {
   const [menuId, setMenuId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
+  const [instructor, setInstructor] = useState<{ name: string | null } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -242,6 +244,14 @@ function PaymentsPage() {
   }
 
   useEffect(() => { if (userId) refetch(); /* eslint-disable-next-line */ }, [userId]);
+
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const { data } = await supabase.from("instructors").select("name").eq("id", userId).maybeSingle();
+      setInstructor(data as { name: string | null } | null);
+    })();
+  }, [userId]);
 
   // stats
   const stats = useMemo(() => {
