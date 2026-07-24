@@ -434,6 +434,19 @@ function PupilDetailPage() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [mockTests, setMockTests] = useState<MockTestResult[]>([]);
   const [lessonRoutes, setLessonRoutes] = useState<LessonRoute[]>([]);
+  interface OverspeedEvent {
+    id: string;
+    lesson_route_id: string;
+    instructor_id: string;
+    recorded_at: string;
+    speed_mph: number;
+    speed_limit_mph: number;
+    excess_mph: number;
+    latitude: number | null;
+    longitude: number | null;
+    road_name: string | null;
+    created_at: string;
+  }
   const [viewingReport, setViewingReport] = useState<{
     started_at: string | null;
     duration_minutes: number | null;
@@ -441,14 +454,9 @@ function PupilDetailPage() {
     totalDistanceMiles: number;
     overallMaxSpeed: number;
     overspeedCount: number;
-    overspeedEvents: {
-      recorded_at: string;
-      speed_mph: number;
-      speed_limit_mph: number;
-      excess_mph: number;
-      road_name: string | null;
-    }[];
+    overspeedEvents: OverspeedEvent[];
   } | null>(null);
+  const [selectedOverspeedEvent, setSelectedOverspeedEvent] = useState<OverspeedEvent | null>(null);
   const [reportLoading, setReportLoading] = useState(false);
   const [viewingMock, setViewingMock] = useState<MockTestResult | null>(null);
   const [mockNotesDraft, setMockNotesDraft] = useState("");
