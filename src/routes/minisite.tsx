@@ -10,6 +10,8 @@ import {
   X,
   Check,
   Loader2,
+  Star,
+  BadgeCheck,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -78,6 +80,7 @@ function MiniSitePage() {
 
   // Publish
   const [published, setPublished] = useState(false);
+  const [displayName, setDisplayName] = useState("");
 
   // Content
   const [websiteBio, setWebsiteBio] = useState("");
@@ -115,6 +118,7 @@ function MiniSitePage() {
         const existingSlug = d.app_slug ?? "";
         setOriginalSlug(existingSlug);
         setSlug(existingSlug || slugify(d.name ?? user.email?.split("@")[0] ?? ""));
+        setDisplayName(d.name ?? "");
         setPublished(Boolean(d.website_published));
         setWebsiteBio(d.website_bio ?? "");
         setHeroUrl(d.website_hero_image_url ?? null);
@@ -127,6 +131,18 @@ function MiniSitePage() {
       setLoading(false);
     })();
   }, [navigate]);
+
+  // Load Google Fonts for accurate preview rendering
+  useEffect(() => {
+    const id = "minisite-preview-fonts";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;600;700&family=Playfair+Display:wght@400;600;700&display=swap";
+    document.head.appendChild(link);
+  }, []);
 
   // Debounced slug availability check
   useEffect(() => {
@@ -380,6 +396,29 @@ function MiniSitePage() {
                 }}
               />
             </button>
+          </div>
+        </div>
+
+        {/* LIVE PREVIEW */}
+        <div className="mb-3">
+          <div className="flex items-center justify-between mb-2">
+            <SectionHeader>LIVE PREVIEW</SectionHeader>
+            <span className="text-[11px]" style={{ color: "#6B7280", marginBottom: 8 }}>
+              Updates as you edit
+            </span>
+          </div>
+          <MiniSitePreview
+            name={displayName || "Your name"}
+            bio={websiteBio}
+            heroUrl={heroUrl}
+            gallery={gallery}
+            theme={theme}
+            font={font}
+            headerStyle={headerStyle}
+            brandColour={brandColour}
+          />
+          <div className="text-[11px] mt-2 text-center" style={{ color: "#6B7280" }}>
+            This is what visitors will see. Scroll inside to view all sections.
           </div>
         </div>
 
@@ -667,6 +706,210 @@ function MiniSitePage() {
           <Button onClick={saveAll} disabled={saving}>
             {saving ? "Saving…" : "Save changes"}
           </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------- LIVE PREVIEW ----------
+
+const PREVIEW_THEMES = {
+  classic: { bg: "#FFFFFF", primary: "#0B1F3A", accent: "#1877D6", surface: "#F8FAFC", muted: "#475569", border: "#E2E8F0", isDark: false },
+  modern: { bg: "#0A0A0A", primary: "#FFFFFF", accent: "#6366F1", surface: "#171717", muted: "#A3A3A3", border: "#262626", isDark: true },
+  warm: { bg: "#FFF8F0", primary: "#7C2D12", accent: "#EA580C", surface: "#FFEDD5", muted: "#78350F", border: "#FED7AA", isDark: false },
+  bold: { bg: "#0A0A0A", primary: "#DC2626", accent: "#FFFFFF", surface: "#171717", muted: "#A3A3A3", border: "#262626", isDark: true },
+} as const;
+
+interface PreviewProps {
+  name: string;
+  bio: string;
+  heroUrl: string | null;
+  gallery: string[];
+  theme: Theme;
+  font: Font;
+  headerStyle: HeaderStyle;
+  brandColour: string;
+}
+
+function MiniSitePreview({ name, bio, heroUrl, gallery, theme, font, headerStyle, brandColour }: PreviewProps) {
+  const t = PREVIEW_THEMES[theme];
+  const accent = brandColour || t.accent;
+  const fontFamily = `${font}, ${font === "Playfair Display" ? "serif" : "sans-serif"}`;
+  const displayName = name || "Your name";
+
+  const badge = (
+    <span
+      style={{
+        display: "inline-flex", alignItems: "center", gap: 4,
+        background: accent, color: "#FFFFFF",
+        padding: "3px 8px", borderRadius: 999,
+        fontSize: 9, fontWeight: 600, letterSpacing: 0.3,
+      }}
+    >
+      <BadgeCheck size={10} />
+      DVSA APPROVED
+    </span>
+  );
+
+  const rating = (color: string) => (
+    <div style={{ display: "inline-flex", alignItems: "center", gap: 3, color }}>
+      {[1, 2, 3, 4, 5].map((i) => (
+        <Star key={i} size={10} fill={color} stroke={color} />
+      ))}
+      <span style={{ fontSize: 10, fontWeight: 600 }}>5.0 (12)</span>
+    </div>
+  );
+
+  const cta = (
+    <span
+      style={{
+        display: "inline-block", padding: "8px 16px", borderRadius: 8,
+        background: accent, color: t.isDark && accent === "#FFFFFF" ? "#000" : "#FFFFFF",
+        fontWeight: 600, fontSize: 11,
+      }}
+    >
+      Book a lesson
+    </span>
+  );
+
+  return (
+    <div
+      style={{
+        borderRadius: 20,
+        border: "8px solid #0B1F3A",
+        overflow: "hidden",
+        background: "#0B1F3A",
+        boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+      }}
+    >
+      {/* Fake browser chrome */}
+      <div style={{ background: "#0B1F3A", padding: "6px 10px", display: "flex", alignItems: "center", gap: 6 }}>
+        <span style={{ width: 8, height: 8, borderRadius: 999, background: "#EF4444" }} />
+        <span style={{ width: 8, height: 8, borderRadius: 999, background: "#F59E0B" }} />
+        <span style={{ width: 8, height: 8, borderRadius: 999, background: "#10B981" }} />
+        <div style={{ flex: 1, textAlign: "center", color: "#9CA3AF", fontSize: 10, fontFamily: "Inter, sans-serif" }}>
+          everydriver.co.uk/i/…
+        </div>
+      </div>
+
+      {/* Scrollable content */}
+      <div
+        style={{
+          height: 520,
+          overflowY: "auto",
+          background: t.bg,
+          color: t.primary,
+          fontFamily,
+        }}
+      >
+        {/* HERO */}
+        {headerStyle === "standard" && (
+          <div
+            style={{
+              position: "relative", minHeight: 220,
+              background: heroUrl
+                ? `url(${heroUrl}) center/cover`
+                : `linear-gradient(135deg, ${accent}, ${t.primary})`,
+              display: "flex", alignItems: "flex-end", padding: 14,
+            }}
+          >
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.1))" }} />
+            <div style={{ position: "relative", color: "#FFFFFF" }}>
+              {badge}
+              <div style={{ fontSize: 22, fontWeight: 700, margin: "6px 0 4px", lineHeight: 1.1 }}>{displayName}</div>
+              {rating("#FFFFFF")}
+              <div style={{ marginTop: 10 }}>{cta}</div>
+            </div>
+          </div>
+        )}
+
+        {headerStyle === "centered" && (
+          <div style={{ padding: "24px 14px", textAlign: "center", background: t.surface }}>
+            {heroUrl && (
+              <img
+                src={heroUrl}
+                alt=""
+                style={{ width: 72, height: 72, borderRadius: "50%", objectFit: "cover", margin: "0 auto 10px", border: `3px solid ${accent}`, display: "block" }}
+              />
+            )}
+            {badge}
+            <div style={{ fontSize: 20, fontWeight: 700, margin: "6px 0 4px", color: t.primary }}>{displayName}</div>
+            <div style={{ display: "flex", justifyContent: "center" }}>{rating(t.primary)}</div>
+            <div style={{ marginTop: 12 }}>{cta}</div>
+          </div>
+        )}
+
+        {headerStyle === "split" && (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: 180 }}>
+            <div
+              style={{
+                background: heroUrl
+                  ? `url(${heroUrl}) center/cover`
+                  : `linear-gradient(135deg, ${accent}, ${t.primary})`,
+              }}
+            />
+            <div style={{ padding: 12, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+              {badge}
+              <div style={{ fontSize: 16, fontWeight: 700, margin: "6px 0 4px", color: t.primary, lineHeight: 1.15 }}>{displayName}</div>
+              {rating(t.primary)}
+              <div style={{ marginTop: 10 }}>{cta}</div>
+            </div>
+          </div>
+        )}
+
+        {/* ABOUT */}
+        <div style={{ padding: "18px 14px", background: t.bg }}>
+          <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 8, color: t.primary }}>About me</div>
+          <p style={{ fontSize: 12, lineHeight: 1.6, color: t.muted, whiteSpace: "pre-wrap", margin: 0 }}>
+            {bio || "Your bio will appear here. Tell pupils about your teaching style, experience, and what makes you a great choice."}
+          </p>
+        </div>
+
+        {/* GALLERY */}
+        {gallery.length > 0 && (
+          <div style={{ padding: "18px 14px", background: t.surface }}>
+            <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 8, color: t.primary }}>Gallery</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
+              {gallery.slice(0, 6).map((url, i) => (
+                <div key={url + i} style={{ aspectRatio: "1 / 1", borderRadius: 6, overflow: "hidden", background: t.bg }}>
+                  <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* COURSES (placeholder) */}
+        <div style={{ padding: "18px 14px", background: t.bg }}>
+          <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 8, color: t.primary }}>Courses offered</div>
+          <div
+            style={{
+              background: t.surface, border: `1px solid ${t.border}`,
+              borderRadius: 10, padding: 12,
+            }}
+          >
+            <div style={{ fontSize: 9, fontWeight: 600, color: accent, textTransform: "uppercase", letterSpacing: 0.5 }}>
+              Manual · Intensive
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 700, margin: "4px 0 6px", color: t.primary }}>Example course</div>
+            <div style={{ fontSize: 11, color: t.muted, marginBottom: 6 }}>20 hours</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: t.primary }}>£650</div>
+          </div>
+          <div style={{ fontSize: 10, color: t.muted, marginTop: 8, fontStyle: "italic" }}>
+            Your published courses will show here.
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div style={{ padding: "24px 14px", textAlign: "center", background: t.surface }}>
+          <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 6, color: t.primary }}>
+            Ready to start driving?
+          </div>
+          <div style={{ fontSize: 11, color: t.muted, marginBottom: 12 }}>
+            Book your first lesson with {displayName.split(" ")[0]} today.
+          </div>
+          {cta}
         </div>
       </div>
     </div>
