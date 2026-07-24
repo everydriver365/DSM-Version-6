@@ -314,8 +314,6 @@ function SchedulePage() {
   const [cancelSheetFor, setCancelSheetFor] = useState<Lesson | null>(null);
   const [deleteSheetFor, setDeleteSheetFor] = useState<Lesson | null>(null);
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
-  const [changeDateTimeSheetFor, setChangeDateTimeSheetFor] = useState<Lesson | null>(null);
-  const [changeDateTimeSubmitting, setChangeDateTimeSubmitting] = useState(false);
 
   // Close popover on outside click
   useEffect(() => {
