@@ -3043,11 +3043,15 @@ function PupilDetailPage() {
                     (mt.dangerous_faults ?? 0) > 0 ? `${mt.dangerous_faults} dangerous` : null,
                   ].filter(Boolean).join(" · ") || (total > 0 ? `${total} fault${total === 1 ? "" : "s"}` : null);
                   return (
-                    <div
+                    <button
+                      type="button"
                       key={mt.id}
-                      className="flex items-center justify-between px-4 py-3"
+                      onClick={() => openMockDetail(mt)}
+                      className="w-full text-left flex items-center justify-between px-4 py-3"
                       style={{
                         borderBottom: idx < mockTests.length - 1 ? "0.5px solid #EEF2F7" : "none",
+                        background: "none",
+                        border: "none",
                         ...POPPINS,
                       }}
                     >
@@ -3067,7 +3071,7 @@ function PupilDetailPage() {
                       >
                         {result}
                       </span>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
