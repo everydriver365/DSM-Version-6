@@ -102,23 +102,23 @@ function loadMapsScript(): Promise<void> {
 
   return new Promise((resolve, reject) => {
     (g => {
-      let h, a, k;
+      let h: any, a: HTMLScriptElement, k: string;
       const p = "The Google Maps JavaScript API";
       const c = "google", l = "importLibrary", q = "__ib__", m = document;
       let b: any = window;
       b = b[c] || (b[c] = {});
       const d = b.maps || (b.maps = {});
-      const r = new Set();
+      const r = new Set<string>();
       const e = new URLSearchParams();
       const u = () => h || (h = new Promise(async (f: any, n: any) => {
-        a = m.createElement("script");
+        a = m.createElement("script") as HTMLScriptElement;
         e.set("libraries", [...r] + "");
-        for (k in g) e.set(k.replace(/[A-Z]/g, (t: string) => "_" + t[0].toLowerCase()), g[k]);
+        for (k in g) e.set(k.replace(/[A-Z]/g, (t: string) => "_" + t[0].toLowerCase()), (g as any)[k]);
         e.set("callback", c + ".maps." + q);
         a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
         d[q] = f;
         a.onerror = () => (h = n(new Error(p + " could not load.")));
-        a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+        a.nonce = (m.querySelector("script[nonce]") as HTMLScriptElement | null)?.nonce || "";
         m.head.append(a);
       }));
 
