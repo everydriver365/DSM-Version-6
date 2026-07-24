@@ -408,7 +408,7 @@ function MiniSitePage() {
             </span>
           </div>
           <MiniSitePreview
-            name={/* best-effort display name */ ""}
+            name={displayName || "Your name"}
             bio={websiteBio}
             heroUrl={heroUrl}
             gallery={gallery}
