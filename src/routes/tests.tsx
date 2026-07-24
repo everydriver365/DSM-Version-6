@@ -1394,8 +1394,9 @@ function ChoiceRow<T extends string>({
 
 // ============ DL25 Sheet ============
 
-type DL25Mark = null | "fault" | "serious" | "dangerous";
-type FaultMarks = Record<string, DL25Mark>;
+type FaultCounts = { fault: number; serious: number; dangerous: number };
+type FaultMarks = Record<string, FaultCounts>;
+
 
 type DL25Node =
   | { kind: "standalone"; key: string; label: string; faultOnly?: boolean }
@@ -1559,24 +1560,26 @@ export function DL25Sheet({
   const [marks, setMarks] = useState<FaultMarks>({});
   const [saving, setSaving] = useState(false);
 
-  function setMark(key: string, mark: DL25Mark) {
+  function setCount(key: string, category: keyof FaultCounts, count: number) {
     setMarks((m) => {
       const next = { ...m };
-      if (mark === null) delete next[key];
-      else next[key] = mark;
+      const current = next[key] ?? { fault: 0, serious: 0, dangerous: 0 };
+      next[key] = { ...current, [category]: count };
       return next;
     });
   }
 
+
   function totals() {
     let minor = 0, serious = 0, dangerous = 0;
     for (const v of Object.values(marks)) {
-      if (v === "fault") minor++;
-      else if (v === "serious") serious++;
-      else if (v === "dangerous") dangerous++;
+      minor += v?.fault ?? 0;
+      serious += v?.serious ?? 0;
+      dangerous += v?.dangerous ?? 0;
     }
     return { minor, serious, dangerous };
   }
+
 
   async function save() {
     if (saving) return;
@@ -1584,10 +1587,10 @@ export function DL25Sheet({
     const t = totals();
     // Ensure all schema keys exist in stored blob (nulls filled in)
     const allKeys = dl25AllKeys(manoeuvre);
-    const fullMarks: FaultMarks = {};
-    for (const k of allKeys) fullMarks[k] = marks[k] ?? null;
-    fullMarks["manoeuvres_selected"] = null;
-    const fault_marks = { ...fullMarks, manoeuvres_selected: manoeuvre };
+    const fullMarks: Record<string, FaultCounts | string> = {};
+    for (const k of allKeys) fullMarks[k] = marks[k] ?? { fault: 0, serious: 0, dangerous: 0 };
+    const fault_marks: Record<string, FaultCounts | string> = { ...fullMarks, manoeuvres_selected: manoeuvre };
+
 
     if (mode === "real") {
       const payload: Record<string, unknown> = {
@@ -1678,12 +1681,13 @@ export function DL25Sheet({
               <DL25ItemRow
                 key={node.key}
                 label={node.label}
-                value={marks[node.key] ?? null}
-                onChange={(m) => setMark(node.key, m)}
+                value={marks[node.key]}
+                onChange={(cat, n) => setCount(node.key, cat, n)}
                 faultOnly={node.faultOnly}
               />
             );
           }
+
           if (node.kind === "group") {
             return (
               <div key={node.slug}>
@@ -1700,11 +1704,12 @@ export function DL25Sheet({
                       <DL25ItemRow
                         key={k}
                         label={it.label}
-                        value={marks[k] ?? null}
-                        onChange={(m) => setMark(k, m)}
+                        value={marks[k]}
+                        onChange={(cat, n) => setCount(k, cat, n)}
                       />
                     );
                   })}
+
                 </div>
               </div>
             );
@@ -1747,11 +1752,12 @@ export function DL25Sheet({
                     <DL25ItemRow
                       key={k}
                       label={sub === "control" ? "Control" : "Observation"}
-                      value={marks[k] ?? null}
-                      onChange={(m) => setMark(k, m)}
+                      value={marks[k]}
+                      onChange={(cat, n) => setCount(k, cat, n)}
                     />
                   );
                 })}
+
               </div>
             </div>
           );
@@ -1768,18 +1774,11 @@ function DL25ItemRow({
   faultOnly,
 }: {
   label: string;
-  value: DL25Mark;
-  onChange: (m: DL25Mark) => void;
+  value: FaultCounts | undefined;
+  onChange: (category: keyof FaultCounts, count: number) => void;
   faultOnly?: boolean;
 }) {
-  const opts: Array<{ v: DL25Mark; l: string; c: string }> = [
-    { v: null, l: "OK", c: "#6B7280" },
-    { v: "fault", l: "Fault", c: "#B5661E" },
-  ];
-  if (!faultOnly) {
-    opts.push({ v: "serious", l: "S", c: "#CC2229" });
-    opts.push({ v: "dangerous", l: "D", c: "#7A1218" });
-  }
+  const counts = value ?? { fault: 0, serious: 0, dangerous: 0 };
   return (
     <div
       className="flex items-center justify-between"
@@ -1793,31 +1792,48 @@ function DL25ItemRow({
       <span className="text-[13px] pr-2" style={{ color: "#0B1F3A", ...POPPINS }}>
         {label}
       </span>
-      <div className="flex" style={{ gap: 4 }}>
-        {opts.map((o) => {
-          const active = value === o.v;
-          return (
-            <button
-              key={o.l}
-              type="button"
-              onClick={() => onChange(o.v)}
-              className="text-[12px] font-semibold"
-              style={{
-                minWidth: 40,
-                height: 30,
-                padding: "0 8px",
-                borderRadius: 8,
-                border: `1px solid ${active ? o.c : "#E5E7EB"}`,
-                background: active ? o.c : "#FFFFFF",
-                color: active ? "#FFFFFF" : o.c,
-                ...POPPINS,
-              }}
-            >
-              {o.l}
-            </button>
-          );
-        })}
+      <div className="flex" style={{ gap: 8 }}>
+        <NumberInput label="Faults" value={counts.fault} onChange={(n) => onChange("fault", n)} />
+        {!faultOnly && (
+          <>
+            <NumberInput label="Serious" value={counts.serious} onChange={(n) => onChange("serious", n)} />
+            <NumberInput label="Dangerous" value={counts.dangerous} onChange={(n) => onChange("dangerous", n)} />
+          </>
+        )}
       </div>
     </div>
   );
 }
+
+function NumberInput({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  onChange: (n: number) => void;
+}) {
+  return (
+    <label className="flex flex-col items-center" style={{ gap: 2 }}>
+      <span className="text-[10px]" style={{ color: "#6B7280", ...POPPINS }}>{label}</span>
+      <input
+        type="number"
+        min={0}
+        value={value}
+        onChange={(e) => onChange(Math.max(0, parseInt(e.target.value, 10) || 0))}
+        style={{
+          width: 60,
+          height: 36,
+          textAlign: "center",
+          borderRadius: 8,
+          border: "1px solid #E5E7EB",
+          fontSize: 14,
+          color: "#0B1F3A",
+          ...POPPINS,
+        }}
+      />
+    </label>
+  );
+}
+
