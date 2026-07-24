@@ -277,6 +277,23 @@ function MtdPage() {
     };
   }, [userId]);
 
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const { data, error } = await supabase
+        .from("accounting_connections")
+        .select("id, provider, is_active, provider_org_name")
+        .eq("instructor_id", userId);
+      if (error) {
+        console.warn("[mtd] accounting_connections fetch failed:", error);
+        return;
+      }
+      setConnections(
+        (data ?? []) as { id: string; provider: string; is_active: boolean; provider_org_name: string | null }[],
+      );
+    })();
+  }, [userId]);
+
   const mileageAllowance = miles * MILEAGE_RATE;
   const mtdMileageAllowance = mtdMiles * MILEAGE_RATE;
   const netProfit = income - expenses - mileageAllowance;
