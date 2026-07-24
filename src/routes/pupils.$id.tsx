@@ -165,7 +165,55 @@ interface MockTestResult {
   minor_faults: number | null;
   serious_faults: number | null;
   dangerous_faults: number | null;
+  fault_marks: Record<string, { fault?: number; serious?: number; dangerous?: number }> | null;
+  notes: string | null;
 }
+
+const DL25_LABELS: Record<string, string> = {
+  eyesight_test: "Eyesight test",
+  controls_clutch: "Controls · Clutch",
+  controls_gears: "Controls · Gears",
+  controls_footbrake: "Controls · Footbrake",
+  controls_parking_brake: "Controls · Parking brake",
+  controls_steering: "Controls · Steering",
+  controls_precautions: "Controls · Precautions",
+  controls_ancillary_controls: "Controls · Ancillary controls",
+  controls_accelerator: "Controls · Accelerator",
+  move_off_safety: "Move off · Safety",
+  move_off_control: "Move off · Control",
+  use_of_mirrors_signalling: "Mirrors · Signalling",
+  use_of_mirrors_change_direction: "Mirrors · Change direction",
+  use_of_mirrors_change_speed: "Mirrors · Change speed",
+  signals_necessary: "Signals · Necessary",
+  signals_correctly: "Signals · Correctly",
+  signals_timed: "Signals · Timed",
+  junctions_approach_speed: "Junctions · Approach speed",
+  junctions_observation: "Junctions · Observation",
+  junctions_turning_right: "Junctions · Turning right",
+  junctions_turning_left: "Junctions · Turning left",
+  junctions_cutting_corners: "Junctions · Cutting corners",
+  judgement_overtaking: "Judgement · Overtaking",
+  judgement_meeting: "Judgement · Meeting",
+  judgement_crossing: "Judgement · Crossing",
+  clearance: "Clearance",
+  following_distance: "Following distance",
+  use_of_speed: "Use of speed",
+  positioning_lane_discipline: "Positioning · Lane discipline",
+  positioning_normal_driving: "Positioning · Normal driving",
+  pedestrian_crossings: "Pedestrian crossings",
+  position_normal_stop: "Position / normal stop",
+  awareness_planning: "Awareness / planning",
+  progress_appropriate_speed: "Progress · Appropriate speed",
+  progress_undue_hesitation: "Progress · Undue hesitation",
+  response_to_signs_signals_traffic_signs: "Signs · Traffic signs",
+  response_to_signs_signals_road_markings: "Signs · Road markings",
+  response_to_signs_signals_traffic_lights: "Signs · Traffic lights",
+  response_to_signs_signals_traffic_controllers: "Signs · Controllers",
+  response_to_signs_signals_other_road_users: "Signs · Other road users",
+  controlled_stop_controlled_stop: "Controlled stop",
+  show_me_tell_me_questions: "Show me / Tell me",
+};
+const dl25Label = (k: string) => DL25_LABELS[k] || k.replace(/_/g, " ");
 
 interface LessonRoute {
   id: string;
@@ -387,6 +435,84 @@ function PupilDetailPage() {
     overspeedCount: number;
   } | null>(null);
   const [reportLoading, setReportLoading] = useState(false);
+  const [viewingMock, setViewingMock] = useState<MockTestResult | null>(null);
+  const [mockNotesDraft, setMockNotesDraft] = useState("");
+  const [savingMockNotes, setSavingMockNotes] = useState(false);
+  const [savingMockResult, setSavingMockResult] = useState(false);
+
+  const openMockDetail = (mt: MockTestResult) => {
+    setViewingMock(mt);
+    setMockNotesDraft(mt.notes ?? "");
+  };
+
+  const saveMockNotes = async () => {
+    if (!viewingMock) return;
+    setSavingMockNotes(true);
+    const { error } = await supabase
+      .from("mock_test_results")
+      .update({ notes: mockNotesDraft })
+      .eq("id", viewingMock.id);
+    setSavingMockNotes(false);
+    if (error) { toast.error("Failed to save notes"); return; }
+    setMockTests((prev) => prev.map((m) => m.id === viewingMock.id ? { ...m, notes: mockNotesDraft } : m));
+    setViewingMock({ ...viewingMock, notes: mockNotesDraft });
+    toast.success("Notes saved");
+  };
+
+  const updateMockResult = async (result: "Passed" | "Failed") => {
+    if (!viewingMock) return;
+    setSavingMockResult(true);
+    const { error } = await supabase
+      .from("mock_test_results")
+      .update({ result })
+      .eq("id", viewingMock.id);
+    setSavingMockResult(false);
+    if (error) { toast.error("Failed to update result"); return; }
+    setMockTests((prev) => prev.map((m) => m.id === viewingMock.id ? { ...m, result } : m));
+    setViewingMock({ ...viewingMock, result });
+    toast.success(`Marked as ${result.toLowerCase()}`);
+  };
+
+  const shareMockText = async () => {
+    if (!viewingMock) return;
+    const name = [pupil?.first_name, pupil?.last_name].filter(Boolean).join(" ").trim() || pupil?.name || "Pupil";
+    const dateStr = viewingMock.test_date ? new Date(viewingMock.test_date).toLocaleDateString("en-GB") : "—";
+    const result = viewingMock.result ?? "Pending";
+    const minor = viewingMock.minor_faults ?? 0;
+    const serious = viewingMock.serious_faults ?? 0;
+    const dangerous = viewingMock.dangerous_faults ?? 0;
+    const lines: string[] = [];
+    lines.push(`Mock test — ${name}`);
+    lines.push(`${dateStr} · ${result}`);
+    lines.push(`Faults: ${minor} minor · ${serious} serious · ${dangerous} dangerous`);
+    const marks = viewingMock.fault_marks || {};
+    const rows: string[] = [];
+    for (const [k, v] of Object.entries(marks)) {
+      const f = v?.fault ?? 0, s = v?.serious ?? 0, d = v?.dangerous ?? 0;
+      if (f + s + d === 0) continue;
+      const parts = [
+        f > 0 ? `${f} minor` : null,
+        s > 0 ? `${s} serious` : null,
+        d > 0 ? `${d} dangerous` : null,
+      ].filter(Boolean).join(", ");
+      rows.push(`- ${dl25Label(k)}: ${parts}`);
+    }
+    if (rows.length) { lines.push(""); lines.push("Breakdown:"); lines.push(...rows); }
+    if (viewingMock.notes) { lines.push(""); lines.push("Notes:"); lines.push(viewingMock.notes); }
+    const text = lines.join("\n");
+    try {
+      if (typeof navigator !== "undefined" && (navigator as any).share) {
+        await (navigator as any).share({ title: `Mock test — ${name}`, text });
+        return;
+      }
+    } catch { /* fall through */ }
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Copied to clipboard");
+    } catch {
+      toast.error("Could not export");
+    }
+  };
 
   const openLessonRouteReport = async (routeId: string) => {
     setReportLoading(true);
@@ -621,7 +747,7 @@ function PupilDetailPage() {
       });
     supabase
       .from("mock_test_results")
-      .select("id, pupil_id, test_date, result, minor_faults, serious_faults, dangerous_faults")
+      .select("id, pupil_id, test_date, result, minor_faults, serious_faults, dangerous_faults, fault_marks, notes")
       .eq("pupil_id", id)
       .order("test_date", { ascending: false })
       .limit(5)
@@ -2917,11 +3043,15 @@ function PupilDetailPage() {
                     (mt.dangerous_faults ?? 0) > 0 ? `${mt.dangerous_faults} dangerous` : null,
                   ].filter(Boolean).join(" · ") || (total > 0 ? `${total} fault${total === 1 ? "" : "s"}` : null);
                   return (
-                    <div
+                    <button
+                      type="button"
                       key={mt.id}
-                      className="flex items-center justify-between px-4 py-3"
+                      onClick={() => openMockDetail(mt)}
+                      className="w-full text-left flex items-center justify-between px-4 py-3"
                       style={{
                         borderBottom: idx < mockTests.length - 1 ? "0.5px solid #EEF2F7" : "none",
+                        background: "none",
+                        border: "none",
                         ...POPPINS,
                       }}
                     >
@@ -2941,7 +3071,7 @@ function PupilDetailPage() {
                       >
                         {result}
                       </span>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
@@ -2955,6 +3085,152 @@ function PupilDetailPage() {
               New mock test
             </button>
           </div>
+        )}
+
+        {viewingMock && (
+          <BottomSheetV2 onClose={() => setViewingMock(null)} title="Mock test">
+            <div style={{ padding: "4px 4px 16px", ...POPPINS }}>
+              {(() => {
+                const mt = viewingMock;
+                const result = mt.result ?? "Pending";
+                const resultColor =
+                  mt.result === "Passed" ? { bg: "#1E8E5A", fg: "#FFFFFF" } :
+                  mt.result === "Failed" ? { bg: "#CC2229", fg: "#FFFFFF" } :
+                  { bg: "#E5E7EB", fg: "#374151" };
+                const minor = mt.minor_faults ?? 0;
+                const serious = mt.serious_faults ?? 0;
+                const dangerous = mt.dangerous_faults ?? 0;
+                const marks = mt.fault_marks || {};
+                const breakdown = Object.entries(marks)
+                  .map(([k, v]) => ({ k, f: v?.fault ?? 0, s: v?.serious ?? 0, d: v?.dangerous ?? 0 }))
+                  .filter((r) => r.f + r.s + r.d > 0);
+                const isPending = !mt.result || mt.result === "Pending";
+                return (
+                  <>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+                        {fmtUKDate(mt.test_date)}
+                      </div>
+                      <span style={{ fontSize: 11, fontWeight: 700, backgroundColor: resultColor.bg, color: resultColor.fg, padding: "3px 10px", borderRadius: 999 }}>
+                        {result}
+                      </span>
+                    </div>
+
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 16 }}>
+                      <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                        <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Minor</div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>{minor}</div>
+                      </div>
+                      <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                        <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Serious</div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: serious > 0 ? "#CC2229" : "#0B1F3A", marginTop: 2 }}>{serious}</div>
+                      </div>
+                      <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                        <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Dangerous</div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: dangerous > 0 ? "#CC2229" : "#0B1F3A", marginTop: 2 }}>{dangerous}</div>
+                      </div>
+                    </div>
+
+                    {isPending && (
+                      <div style={{ marginBottom: 16 }}>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
+                          Set result
+                        </div>
+                        <div style={{ display: "flex", gap: 8 }}>
+                          <button
+                            type="button"
+                            disabled={savingMockResult}
+                            onClick={() => updateMockResult("Passed")}
+                            style={{ flex: 1, padding: "10px 12px", borderRadius: 10, border: "none", background: "#1E8E5A", color: "#FFFFFF", fontSize: 13, fontWeight: 600 }}
+                          >
+                            Passed
+                          </button>
+                          <button
+                            type="button"
+                            disabled={savingMockResult}
+                            onClick={() => updateMockResult("Failed")}
+                            style={{ flex: 1, padding: "10px 12px", borderRadius: 10, border: "none", background: "#CC2229", color: "#FFFFFF", fontSize: 13, fontWeight: 600 }}
+                          >
+                            Failed
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {breakdown.length > 0 && (
+                      <>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
+                          Breakdown
+                        </div>
+                        <div style={{ border: "0.5px solid #E2E6ED", borderRadius: 12, overflow: "hidden", marginBottom: 16 }}>
+                          {breakdown.map((r, i) => (
+                            <div
+                              key={r.k}
+                              style={{
+                                padding: "10px 14px",
+                                borderTop: i === 0 ? "none" : "0.5px solid #F3F4F6",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: 8,
+                              }}
+                            >
+                              <div style={{ fontSize: 13, color: "#0B1F3A", flex: 1, minWidth: 0 }}>
+                                {dl25Label(r.k)}
+                              </div>
+                              <div style={{ display: "flex", gap: 6 }}>
+                                {r.f > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#F3F4F6", color: "#374151", padding: "2px 7px", borderRadius: 999 }}>{r.f}</span>)}
+                                {r.s > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#FEF3C7", color: "#92400E", padding: "2px 7px", borderRadius: 999 }}>S {r.s}</span>)}
+                                {r.d > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 7px", borderRadius: 999 }}>D {r.d}</span>)}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+
+                    <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
+                      Comments
+                    </div>
+                    <textarea
+                      value={mockNotesDraft}
+                      onChange={(e) => setMockNotesDraft(e.target.value)}
+                      rows={4}
+                      placeholder="Add notes for this mock test…"
+                      style={{ width: "100%", padding: 10, borderRadius: 10, border: "0.5px solid #E2E6ED", fontSize: 13, color: "#0B1F3A", resize: "vertical", ...POPPINS }}
+                    />
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
+                      <button
+                        type="button"
+                        disabled={savingMockNotes || mockNotesDraft === (mt.notes ?? "")}
+                        onClick={saveMockNotes}
+                        style={{ padding: "8px 14px", borderRadius: 10, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 13, fontWeight: 600, opacity: (savingMockNotes || mockNotesDraft === (mt.notes ?? "")) ? 0.6 : 1 }}
+                      >
+                        {savingMockNotes ? "Saving…" : "Save"}
+                      </button>
+                    </div>
+
+                    <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+                      <button
+                        type="button"
+                        onClick={() => setViewingMock(null)}
+                        style={{ flex: 1, padding: "12px 16px", borderRadius: 10, border: "0.5px solid #E2E6ED", background: "#FFFFFF", color: "#0B1F3A", fontSize: 14, fontWeight: 600 }}
+                      >
+                        Close
+                      </button>
+                      <button
+                        type="button"
+                        onClick={shareMockText}
+                        style={{ flex: 1, padding: "12px 16px", borderRadius: 10, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 14, fontWeight: 600 }}
+                      >
+                        Share
+                      </button>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+          </BottomSheetV2>
         )}
 
         {(() => {
