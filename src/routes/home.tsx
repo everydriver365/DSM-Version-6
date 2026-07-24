@@ -6814,17 +6814,6 @@ function HomePage() {
                                     onClick={(ev) => {
                                       ev.stopPropagation();
                                       setActionsOpenForLesson(null);
-                                      setChangeDateTimeSheetForLesson(l);
-                                    }}
-                                  >
-                                    Change date & time
-                                  </button>
-                                  <button
-                                    type="button"
-                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
-                                    onClick={(ev) => {
-                                      ev.stopPropagation();
-                                      setActionsOpenForLesson(null);
                                       setCancelSheetForLesson(l);
                                     }}
                                   >
