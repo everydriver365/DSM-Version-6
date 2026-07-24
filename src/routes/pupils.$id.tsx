@@ -669,7 +669,7 @@ function PupilDetailPage() {
       });
     supabase
       .from("mock_test_results")
-      .select("id, pupil_id, test_date, result, minor_faults, serious_faults, dangerous_faults")
+      .select("id, pupil_id, test_date, result, minor_faults, serious_faults, dangerous_faults, fault_marks, notes")
       .eq("pupil_id", id)
       .order("test_date", { ascending: false })
       .limit(5)
