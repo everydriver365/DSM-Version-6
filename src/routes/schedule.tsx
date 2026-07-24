@@ -227,7 +227,7 @@ function fmtTime(d: Date) {
 function getBlockColour(title: string): { bg: string; border: string; icon: string; text: string } {
   const t = (title || "").toLowerCase();
   if (t.includes("meeting") || t.includes("call") || t.includes("zoom") || t.includes("teams"))
-    return { bg: "#EFF6FF", border: "#1A52A0", icon: "💼", text: "#1A52A0" };
+    return { bg: "#EFF6FF", border: "#1877D6", icon: "💼", text: "#1877D6" };
   if (
     t.includes("doctor") || t.includes("dentist") || t.includes("hospital") ||
     t.includes("appointment") || t.includes("medical") || t.includes("physio")
@@ -242,7 +242,7 @@ function getBlockColour(title: string): { bg: string; border: string; icon: stri
     t.includes("lunch") || t.includes("dinner") || t.includes("coffee") ||
     t.includes("birthday") || t.includes("party") || t.includes("wedding")
   )
-    return { bg: "#E0FFF4", border: "#16A34A", icon: "🎉", text: "#16A34A" };
+    return { bg: "#E0FFF4", border: "#1E8E3E", icon: "🎉", text: "#1E8E3E" };
   if (
     t.includes("travel") || t.includes("flight") || t.includes("train") ||
     t.includes("holiday") || t.includes("vacation") || t.includes("away")
@@ -966,7 +966,7 @@ function SchedulePage() {
             position: 'sticky',
             top: 0,
             zIndex: 50,
-            background: '#1A52A0',
+            background: '#1877D6',
             padding: '12px 16px',
             display: 'flex',
             alignItems: 'center',
@@ -1037,7 +1037,7 @@ function SchedulePage() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px 4px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#1A52A0' }} />
+          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#1877D6' }} />
           <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>DSM lesson</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -1297,7 +1297,7 @@ function SchedulePage() {
                                   tabIndex={0}
                                   style={{
                                     position: "relative",
-                                    background: "#1A52A0",
+                                    background: "#1877D6",
                                     borderRadius: 12,
                                     boxShadow: "0 4px 16px rgba(26, 82, 160, 0.28), 0 1px 3px rgba(0,0,0,0.1)",
                                     padding: "20px 14px 12px",
@@ -1378,7 +1378,7 @@ function SchedulePage() {
                                       position: "relative",
                                       zIndex: 1,
                                       background: "#FFFFFF",
-                                      color: "#1A52A0",
+                                      color: "#1877D6",
                                       fontSize: 12,
                                       fontWeight: 600,
                                       padding: "8px 12px",
@@ -1416,14 +1416,14 @@ function SchedulePage() {
                                     ...POPPINS,
                                   }}
                                 >
-                                  <Clock size={14} color="#16A34A" />
+                                  <Clock size={14} color="#1E8E3E" />
                                   <span style={{ fontSize: 13, fontWeight: 600, color: '#065F46', fontVariantNumeric: 'tabular-nums' }}>
                                     {e.time}
                                   </span>
-                                  <span style={{ fontSize: 11, color: '#16A34A' }}>
+                                  <span style={{ fontSize: 11, color: '#1E8E3E' }}>
                                     {dur} min slot available
                                   </span>
-                                  <span style={{ fontSize: 11, color: '#16A34A', fontWeight: 600, marginLeft: 'auto' }}>
+                                  <span style={{ fontSize: 11, color: '#1E8E3E', fontWeight: 600, marginLeft: 'auto' }}>
                                     Move here →
                                   </span>
                                 </div>
@@ -1518,7 +1518,7 @@ function SchedulePage() {
                                     opacity: cancelled ? 0.55 : isDimmed ? 0.4 : 1,
                                     position: "relative",
                                     zIndex: 1,
-                                    border: isMovingThis ? '2px solid #1A52A0' : undefined,
+                                    border: isMovingThis ? '2px solid #1877D6' : undefined,
                                     animation: isMovingThis ? 'movePulse 1.5s ease-in-out infinite' : undefined,
                                     ...POPPINS,
                                   }}
@@ -2464,7 +2464,7 @@ function MonthStrip({
               cursor: "pointer",
               fontSize: 12,
               fontWeight: 600,
-              color: "#1A52A0",
+              color: "#1877D6",
               padding: "2px 6px",
               ...POPPINS,
             }}
@@ -2527,7 +2527,7 @@ function MonthStrip({
           const isSelected = key === selectedDate;
           const dots = dotsByDay.get(key) ?? [];
           const dow = (d.getDay() + 6) % 7; // Mon=0
-          const numBg = isToday ? "#0B1F3A" : isSelected ? "#1A52A0" : "transparent";
+          const numBg = isToday ? "#0B1F3A" : isSelected ? "#1877D6" : "transparent";
           const numColor = isToday || isSelected ? "#FFFFFF" : "#0B1F3A";
           return (
             <button
