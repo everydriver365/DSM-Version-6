@@ -1766,6 +1766,14 @@ function PupilDetailPage() {
                                     {centreInfo?.name || pupil.test_centre}
                                   </p>
                                 )}
+                                {(() => {
+                                  const countdown = formatCountdown(pupil.test_date, pupil.test_time);
+                                  return countdown ? (
+                                    <p className="text-[10px] font-medium text-[#1877D6] truncate" style={POPPINS}>
+                                      {countdown}
+                                    </p>
+                                  ) : null;
+                                })()}
                               </>
                             ) : (
                               <p className="text-[12px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
