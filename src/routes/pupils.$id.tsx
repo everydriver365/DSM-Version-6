@@ -165,7 +165,55 @@ interface MockTestResult {
   minor_faults: number | null;
   serious_faults: number | null;
   dangerous_faults: number | null;
+  fault_marks: Record<string, { fault?: number; serious?: number; dangerous?: number }> | null;
+  notes: string | null;
 }
+
+const DL25_LABELS: Record<string, string> = {
+  eyesight_test: "Eyesight test",
+  controls_clutch: "Controls · Clutch",
+  controls_gears: "Controls · Gears",
+  controls_footbrake: "Controls · Footbrake",
+  controls_parking_brake: "Controls · Parking brake",
+  controls_steering: "Controls · Steering",
+  controls_precautions: "Controls · Precautions",
+  controls_ancillary_controls: "Controls · Ancillary controls",
+  controls_accelerator: "Controls · Accelerator",
+  move_off_safety: "Move off · Safety",
+  move_off_control: "Move off · Control",
+  use_of_mirrors_signalling: "Mirrors · Signalling",
+  use_of_mirrors_change_direction: "Mirrors · Change direction",
+  use_of_mirrors_change_speed: "Mirrors · Change speed",
+  signals_necessary: "Signals · Necessary",
+  signals_correctly: "Signals · Correctly",
+  signals_timed: "Signals · Timed",
+  junctions_approach_speed: "Junctions · Approach speed",
+  junctions_observation: "Junctions · Observation",
+  junctions_turning_right: "Junctions · Turning right",
+  junctions_turning_left: "Junctions · Turning left",
+  junctions_cutting_corners: "Junctions · Cutting corners",
+  judgement_overtaking: "Judgement · Overtaking",
+  judgement_meeting: "Judgement · Meeting",
+  judgement_crossing: "Judgement · Crossing",
+  clearance: "Clearance",
+  following_distance: "Following distance",
+  use_of_speed: "Use of speed",
+  positioning_lane_discipline: "Positioning · Lane discipline",
+  positioning_normal_driving: "Positioning · Normal driving",
+  pedestrian_crossings: "Pedestrian crossings",
+  position_normal_stop: "Position / normal stop",
+  awareness_planning: "Awareness / planning",
+  progress_appropriate_speed: "Progress · Appropriate speed",
+  progress_undue_hesitation: "Progress · Undue hesitation",
+  response_to_signs_signals_traffic_signs: "Signs · Traffic signs",
+  response_to_signs_signals_road_markings: "Signs · Road markings",
+  response_to_signs_signals_traffic_lights: "Signs · Traffic lights",
+  response_to_signs_signals_traffic_controllers: "Signs · Controllers",
+  response_to_signs_signals_other_road_users: "Signs · Other road users",
+  controlled_stop_controlled_stop: "Controlled stop",
+  show_me_tell_me_questions: "Show me / Tell me",
+};
+const dl25Label = (k: string) => DL25_LABELS[k] || k.replace(/_/g, " ");
 
 interface LessonRoute {
   id: string;
