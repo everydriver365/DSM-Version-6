@@ -875,6 +875,13 @@ function SettingsPage() {
             onClick={() => navigate({ to: "/automations" })}
             isLast={false}
           />
+          <MenuRow
+            icon={<Globe size={18} color="#1877D6" />}
+            iconBg="#E6F1FB"
+            label="My mini website"
+            onClick={() => navigate({ to: "/minisite" })}
+            isLast={false}
+          />
 
           <MenuRow
             icon={<Landmark color="#1877D6" />}
