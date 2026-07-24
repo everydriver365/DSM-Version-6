@@ -2934,35 +2934,6 @@ function PupilDetailPage() {
             {/* Tests card removed — readiness dashboard tiles above cover this. */}
 
 
-      {/* Test status tiles */}
-      {pupil && (() => {
-
-        const showPractical = !!pupil.test_date;
-        if (!showPractical) return null;
-        const practBadge = statusColour(pupil.test_status);
-        const centreName = centreInfo?.name || pupil.test_centre || "";
-        const practicalDescription = [
-          pupil.test_status || "Booked",
-          pupil.test_date ? fmtUKDate(pupil.test_date) : null,
-          pupil.test_time ? pupil.test_time.slice(0, 5) : null,
-          centreName || null,
-          pupil.test_examiner || null,
-        ]
-          .filter(Boolean)
-          .join(" · ");
-        return (
-          <div className="mt-3">
-            <ActionTile
-              label="Practical test"
-              icon={<Car size={20} />}
-              iconBg={practBadge.bg}
-              iconColor={practBadge.fg}
-              description={practicalDescription}
-              orientation="horizontal"
-            />
-          </div>
-        );
-      })()}
 
         {/* Mock tests card */}
         {pupil && (
