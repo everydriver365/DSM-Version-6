@@ -2138,8 +2138,6 @@ function HomePage() {
   const [cancelSheetForLesson, setCancelSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSheetForLesson, setDeleteSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSubmittingHome, setDeleteSubmittingHome] = useState(false);
-  const [changeDateTimeSheetForLesson, setChangeDateTimeSheetForLesson] = useState<LessonRow | null>(null);
-  const [changeDateTimeSubmittingHome, setChangeDateTimeSubmittingHome] = useState(false);
   const [movingLessonHome, setMovingLessonHome] = useState<LessonRow | null>(null);
   const [moveModeHome, setMoveModeHome] = useState(false);
   const [confirmMoveHome, setConfirmMoveHome] = useState<{ date: string; time: string } | null>(null);
