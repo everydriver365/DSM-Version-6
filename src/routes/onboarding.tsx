@@ -13,7 +13,7 @@ export const Route = createFileRoute("/onboarding")({
 });
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 7;
 
 type WebsiteChoice = "yes" | "existing" | "later" | null;
 
@@ -391,6 +391,28 @@ function OnboardingPage() {
         )}
 
         {step === 6 && (
+          <div className="flex flex-col items-center gap-4">
+            <div
+              className="h-16 w-16 rounded-full bg-[#E6F1FB] flex items-center justify-center"
+            >
+              <Globe size={30} color="#1877D6" />
+            </div>
+            <h2 className="text-[24px] font-semibold text-[#0B1F3A] text-center">You&apos;ve got a free mini website</h2>
+            <p className="text-[14px] text-[#6B7280] text-center">
+              DSM automatically gives you a simple, personal website with your bio, photos, and contact info. Customise it and publish yourself whenever you&apos;re ready.
+            </p>
+            <div className="w-full flex flex-col gap-3 mt-2">
+              <Button onClick={() => navigate({ to: "/minisite", replace: true })} className="h-12">
+                Set it up now
+              </Button>
+              <Button variant="ghost" onClick={next} className="h-12">
+                I&apos;ll do this later
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {step === 7 && (
           <div className="flex flex-col items-center gap-4">
             <div
               className="h-16 w-16 rounded-full bg-[#10B981] flex items-center justify-center animate-bounce"
