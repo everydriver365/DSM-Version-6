@@ -3087,6 +3087,152 @@ function PupilDetailPage() {
           </div>
         )}
 
+        {viewingMock && (
+          <BottomSheetV2 onClose={() => setViewingMock(null)} title="Mock test">
+            <div style={{ padding: "4px 4px 16px", ...POPPINS }}>
+              {(() => {
+                const mt = viewingMock;
+                const result = mt.result ?? "Pending";
+                const resultColor =
+                  mt.result === "Passed" ? { bg: "#1E8E5A", fg: "#FFFFFF" } :
+                  mt.result === "Failed" ? { bg: "#CC2229", fg: "#FFFFFF" } :
+                  { bg: "#E5E7EB", fg: "#374151" };
+                const minor = mt.minor_faults ?? 0;
+                const serious = mt.serious_faults ?? 0;
+                const dangerous = mt.dangerous_faults ?? 0;
+                const marks = mt.fault_marks || {};
+                const breakdown = Object.entries(marks)
+                  .map(([k, v]) => ({ k, f: v?.fault ?? 0, s: v?.serious ?? 0, d: v?.dangerous ?? 0 }))
+                  .filter((r) => r.f + r.s + r.d > 0);
+                const isPending = !mt.result || mt.result === "Pending";
+                return (
+                  <>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+                        {fmtUKDate(mt.test_date)}
+                      </div>
+                      <span style={{ fontSize: 11, fontWeight: 700, backgroundColor: resultColor.bg, color: resultColor.fg, padding: "3px 10px", borderRadius: 999 }}>
+                        {result}
+                      </span>
+                    </div>
+
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 16 }}>
+                      <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                        <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Minor</div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>{minor}</div>
+                      </div>
+                      <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                        <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Serious</div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: serious > 0 ? "#CC2229" : "#0B1F3A", marginTop: 2 }}>{serious}</div>
+                      </div>
+                      <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                        <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Dangerous</div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: dangerous > 0 ? "#CC2229" : "#0B1F3A", marginTop: 2 }}>{dangerous}</div>
+                      </div>
+                    </div>
+
+                    {isPending && (
+                      <div style={{ marginBottom: 16 }}>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
+                          Set result
+                        </div>
+                        <div style={{ display: "flex", gap: 8 }}>
+                          <button
+                            type="button"
+                            disabled={savingMockResult}
+                            onClick={() => updateMockResult("Passed")}
+                            style={{ flex: 1, padding: "10px 12px", borderRadius: 10, border: "none", background: "#1E8E5A", color: "#FFFFFF", fontSize: 13, fontWeight: 600 }}
+                          >
+                            Passed
+                          </button>
+                          <button
+                            type="button"
+                            disabled={savingMockResult}
+                            onClick={() => updateMockResult("Failed")}
+                            style={{ flex: 1, padding: "10px 12px", borderRadius: 10, border: "none", background: "#CC2229", color: "#FFFFFF", fontSize: 13, fontWeight: 600 }}
+                          >
+                            Failed
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {breakdown.length > 0 && (
+                      <>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
+                          Breakdown
+                        </div>
+                        <div style={{ border: "0.5px solid #E2E6ED", borderRadius: 12, overflow: "hidden", marginBottom: 16 }}>
+                          {breakdown.map((r, i) => (
+                            <div
+                              key={r.k}
+                              style={{
+                                padding: "10px 14px",
+                                borderTop: i === 0 ? "none" : "0.5px solid #F3F4F6",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: 8,
+                              }}
+                            >
+                              <div style={{ fontSize: 13, color: "#0B1F3A", flex: 1, minWidth: 0 }}>
+                                {dl25Label(r.k)}
+                              </div>
+                              <div style={{ display: "flex", gap: 6 }}>
+                                {r.f > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#F3F4F6", color: "#374151", padding: "2px 7px", borderRadius: 999 }}>{r.f}</span>)}
+                                {r.s > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#FEF3C7", color: "#92400E", padding: "2px 7px", borderRadius: 999 }}>S {r.s}</span>)}
+                                {r.d > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 7px", borderRadius: 999 }}>D {r.d}</span>)}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+
+                    <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
+                      Comments
+                    </div>
+                    <textarea
+                      value={mockNotesDraft}
+                      onChange={(e) => setMockNotesDraft(e.target.value)}
+                      rows={4}
+                      placeholder="Add notes for this mock test…"
+                      style={{ width: "100%", padding: 10, borderRadius: 10, border: "0.5px solid #E2E6ED", fontSize: 13, color: "#0B1F3A", resize: "vertical", ...POPPINS }}
+                    />
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
+                      <button
+                        type="button"
+                        disabled={savingMockNotes || mockNotesDraft === (mt.notes ?? "")}
+                        onClick={saveMockNotes}
+                        style={{ padding: "8px 14px", borderRadius: 10, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 13, fontWeight: 600, opacity: (savingMockNotes || mockNotesDraft === (mt.notes ?? "")) ? 0.6 : 1 }}
+                      >
+                        {savingMockNotes ? "Saving…" : "Save"}
+                      </button>
+                    </div>
+
+                    <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+                      <button
+                        type="button"
+                        onClick={() => setViewingMock(null)}
+                        style={{ flex: 1, padding: "12px 16px", borderRadius: 10, border: "0.5px solid #E2E6ED", background: "#FFFFFF", color: "#0B1F3A", fontSize: 14, fontWeight: 600 }}
+                      >
+                        Close
+                      </button>
+                      <button
+                        type="button"
+                        onClick={shareMockText}
+                        style={{ flex: 1, padding: "12px 16px", borderRadius: 10, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 14, fontWeight: 600 }}
+                      >
+                        Share
+                      </button>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+          </BottomSheetV2>
+        )}
+
         {(() => {
 
           const all = [...(lessons ?? []), ...(pastLessons ?? [])];
