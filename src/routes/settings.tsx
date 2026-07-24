@@ -23,7 +23,9 @@ import {
   AlertTriangle,
   Globe,
   LogOut,
+  Landmark,
   CreditCard,
+
   Calculator,
   Gift,
   Copy,
