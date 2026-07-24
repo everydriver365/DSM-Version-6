@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import BottomNav from "../components/dsm/BottomNav";
 import { PageLayout } from "@/components/PageLayout";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useAdminGate } from "./admin";
 
 
