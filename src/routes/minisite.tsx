@@ -10,6 +10,8 @@ import {
   X,
   Check,
   Loader2,
+  Star,
+  BadgeCheck,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { SectionHeader } from "../components/dsm/SectionHeader";
