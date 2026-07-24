@@ -167,7 +167,7 @@ import { PAGE_BACKGROUND } from "@/components/PageLayout";
 import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
-import { ChangeDateTimeSheet } from "@/components/lessons/ChangeDateTimeSheet";
+
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -2138,8 +2138,6 @@ function HomePage() {
   const [cancelSheetForLesson, setCancelSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSheetForLesson, setDeleteSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSubmittingHome, setDeleteSubmittingHome] = useState(false);
-  const [changeDateTimeSheetForLesson, setChangeDateTimeSheetForLesson] = useState<LessonRow | null>(null);
-  const [changeDateTimeSubmittingHome, setChangeDateTimeSubmittingHome] = useState(false);
   const [movingLessonHome, setMovingLessonHome] = useState<LessonRow | null>(null);
   const [moveModeHome, setMoveModeHome] = useState(false);
   const [confirmMoveHome, setConfirmMoveHome] = useState<{ date: string; time: string } | null>(null);
@@ -6814,17 +6812,6 @@ function HomePage() {
                                     onClick={(ev) => {
                                       ev.stopPropagation();
                                       setActionsOpenForLesson(null);
-                                      setChangeDateTimeSheetForLesson(l);
-                                    }}
-                                  >
-                                    Change date & time
-                                  </button>
-                                  <button
-                                    type="button"
-                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
-                                    onClick={(ev) => {
-                                      ev.stopPropagation();
-                                      setActionsOpenForLesson(null);
                                       setCancelSheetForLesson(l);
                                     }}
                                   >
@@ -7334,42 +7321,6 @@ function HomePage() {
         />
       )}
 
-      {changeDateTimeSheetForLesson && (
-        <ChangeDateTimeSheet
-          open={true}
-          submitting={changeDateTimeSubmittingHome}
-          currentDate={(changeDateTimeSheetForLesson.lesson_date ?? "").slice(0, 10)}
-          currentTime={(changeDateTimeSheetForLesson.lesson_time ?? "").slice(0, 5)}
-          currentDuration={changeDateTimeSheetForLesson.duration_minutes ?? 60}
-          onClose={() => { if (!changeDateTimeSubmittingHome) setChangeDateTimeSheetForLesson(null); }}
-          onConfirm={async (newDate: string, newTime: string, newDurationMinutes: number) => {
-            const lesson = changeDateTimeSheetForLesson;
-            if (!lesson) return;
-            setChangeDateTimeSubmittingHome(true);
-            try {
-              const timeVal = newTime.length === 5 ? `${newTime}:00` : newTime;
-              const { error } = await supabase
-                .from("lessons")
-                .update({ lesson_date: newDate, lesson_time: timeVal, duration_minutes: newDurationMinutes })
-                .eq("id", lesson.id);
-              if (error) throw error;
-              setLessons((prev) =>
-                (prev ?? []).map((l) =>
-                  l.id === lesson.id
-                    ? { ...l, lesson_date: newDate, lesson_time: timeVal, duration_minutes: newDurationMinutes }
-                    : l
-                )
-              );
-              toast.success("Lesson updated");
-              setChangeDateTimeSheetForLesson(null);
-            } catch (err: any) {
-              toast.error(err?.message || "Failed to update lesson");
-            } finally {
-              setChangeDateTimeSubmittingHome(false);
-            }
-          }}
-        />
-      )}
 
       <ConfirmDialog
         open={!!confirmMoveHome}
