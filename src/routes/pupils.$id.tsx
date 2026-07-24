@@ -413,6 +413,13 @@ function PupilDetailPage() {
   const [addressEditing, setAddressEditing] = useState(false);
   const [theoryEditing, setTheoryEditing] = useState(false);
   const [practicalEditing, setPracticalEditing] = useState(false);
+  const [practicalQuickOpen, setPracticalQuickOpen] = useState(false);
+  const [practicalQuickDate, setPracticalQuickDate] = useState("");
+  const [practicalQuickTime, setPracticalQuickTime] = useState("");
+  const [practicalQuickSaving, setPracticalQuickSaving] = useState(false);
+  const [practicalQuickCentres, setPracticalQuickCentres] = useState<Array<{ id: string; name: string; address: string | null; town: string | null; postcode: string | null }>>([]);
+  const [practicalQuickCentreSearch, setPracticalQuickCentreSearch] = useState("");
+  const [practicalQuickCentrePickerOpen, setPracticalQuickCentrePickerOpen] = useState(false);
   const [emailEditing, setEmailEditing] = useState(false);
   const [emailDraft, setEmailDraft] = useState("");
   const [savingEmail, setSavingEmail] = useState(false);
@@ -1702,8 +1709,16 @@ function PupilDetailPage() {
                             </p>
                           </div>
                         </div>
-                        <div
-                          className="flex items-center gap-3 p-3 rounded-xl border"
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPracticalQuickDate(pupil.test_date ?? "");
+                            setPracticalQuickTime(pupil.test_time ? pupil.test_time.slice(0, 5) : "");
+                            setPracticalQuickCentreSearch("");
+                            setPracticalQuickCentrePickerOpen(false);
+                            setPracticalQuickOpen(true);
+                          }}
+                          className="flex items-center gap-3 p-3 rounded-xl border text-left active:scale-[0.98] transition-transform"
                           style={{
                             backgroundColor:
                               practStatus === "Passed"
@@ -1738,13 +1753,26 @@ function PupilDetailPage() {
                           >
                             <Car size={14} color="#FFFFFF" />
                           </div>
-                          <div className="min-w-0">
+                          <div className="min-w-0 flex-1">
                             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider" style={POPPINS}>Practical</p>
-                            <p className="text-[12px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
-                              {practStatus}
-                            </p>
+                            {pupil.test_date ? (
+                              <>
+                                <p className="text-[12px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
+                                  {fmtUKDate(pupil.test_date)}{pupil.test_time ? ` · ${pupil.test_time.slice(0, 5)}` : ""}
+                                </p>
+                                {(centreInfo?.name || pupil.test_centre) && (
+                                  <p className="text-[10px] text-slate-500 truncate" style={POPPINS}>
+                                    {centreInfo?.name || pupil.test_centre}
+                                  </p>
+                                )}
+                              </>
+                            ) : (
+                              <p className="text-[12px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
+                                {practStatus}
+                              </p>
+                            )}
                           </div>
-                        </div>
+                        </button>
                       </div>
                     </div>
                   );
@@ -2903,51 +2931,8 @@ function PupilDetailPage() {
 
         {activeTab === "overview" && (
           <>
-            {/* Tests card: theory + practical, tap to edit */}
-            {pupil && (
-              <div
-                style={{
-                  background: "#FFFFFF",
-                  borderRadius: 16,
-                  border: "0.5px solid #E2E6ED",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  overflow: "hidden",
-                  marginTop: 4,
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => { setActiveTab("profile"); setTheoryEditing(true); }}
-                  className="w-full flex items-center justify-between px-4 py-3"
-                  style={{ background: "none", border: "none", ...POPPINS }}
-                >
-                  <span className="flex items-center gap-2 text-[13px] font-semibold" style={{ color: "#0B1F3A" }}>
-                    <BookOpen size={16} color="#1877D6" /> Theory
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <span className="text-[13px]" style={{ color: "#0B1F3A" }}>{pupil.theory_status || "Not started"}</span>
-                    <ChevronRight size={16} color="#6B7280" />
-                  </span>
-                </button>
-                <div style={{ height: "0.5px", background: "#EEF2F7" }} />
-                <button
-                  type="button"
-                  onClick={() => { setActiveTab("profile"); setPracticalEditing(true); }}
-                  className="w-full flex items-center justify-between px-4 py-3"
-                  style={{ background: "none", border: "none", ...POPPINS }}
-                >
-                  <span className="flex items-center gap-2 text-[13px] font-semibold" style={{ color: "#0B1F3A" }}>
-                    <Car size={16} color="#1877D6" /> Practical
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <span className="text-[13px]" style={{ color: "#0B1F3A" }}>
-                      {pupil.test_date ? `${fmtUKDate(pupil.test_date)}${pupil.test_time ? " · " + pupil.test_time.slice(0, 5) : ""}` : "Not booked"}
-                    </span>
-                    <ChevronRight size={16} color="#6B7280" />
-                  </span>
-                </button>
-              </div>
-            )}
+            {/* Tests card removed — readiness dashboard tiles above cover this. */}
+
 
       {/* Test status tiles */}
       {pupil && (() => {
@@ -3886,6 +3871,155 @@ function PupilDetailPage() {
           </BottomSheetV2>
         );
       })()}
+
+      {practicalQuickOpen && pupil && (
+        <BottomSheetV2
+          title="Practical test"
+          subtitle="Date, time & centre"
+          onClose={() => {
+            setPracticalQuickOpen(false);
+            setPracticalQuickCentrePickerOpen(false);
+          }}
+          footer={
+            <button
+              type="button"
+              disabled={practicalQuickSaving}
+              onClick={async () => {
+                if (!pupil) return;
+                setPracticalQuickSaving(true);
+                const { error } = await supabase
+                  .from("pupils")
+                  .update({
+                    test_date: practicalQuickDate || null,
+                    test_time: practicalQuickTime ? `${practicalQuickTime}:00` : null,
+                  })
+                  .eq("id", pupil.id);
+                setPracticalQuickSaving(false);
+                if (error) {
+                  toast.error("Could not save test details");
+                  return;
+                }
+                setPupil({
+                  ...pupil,
+                  test_date: practicalQuickDate || null,
+                  test_time: practicalQuickTime ? `${practicalQuickTime}:00` : null,
+                });
+                toast.success("Practical test saved");
+                setPracticalQuickOpen(false);
+              }}
+              className="w-full py-4 rounded-full text-white font-semibold text-base active:opacity-90 disabled:opacity-40"
+              style={{ backgroundColor: "#1877D6" }}
+            >
+              {practicalQuickSaving ? "Saving…" : "Save"}
+            </button>
+          }
+        >
+          <div className="space-y-3 pb-2">
+            <div>
+              <label className="block mb-1 text-[12px] font-medium" style={{ color: "#6B7280", ...POPPINS }}>Date</label>
+              <input
+                type="date"
+                value={practicalQuickDate}
+                onChange={(e) => setPracticalQuickDate(e.target.value)}
+                className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
+                style={{ border: "0.5px solid #EEF2F7", color: "#0B1F3A", ...POPPINS }}
+              />
+            </div>
+            <div>
+              <label className="block mb-1 text-[12px] font-medium" style={{ color: "#6B7280", ...POPPINS }}>Time</label>
+              <input
+                type="time"
+                value={practicalQuickTime}
+                onChange={(e) => setPracticalQuickTime(e.target.value)}
+                className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
+                style={{ border: "0.5px solid #EEF2F7", color: "#0B1F3A", ...POPPINS }}
+              />
+            </div>
+            <div>
+              <label className="block mb-1 text-[12px] font-medium" style={{ color: "#6B7280", ...POPPINS }}>Test centre</label>
+              <button
+                type="button"
+                onClick={async () => {
+                  const next = !practicalQuickCentrePickerOpen;
+                  setPracticalQuickCentrePickerOpen(next);
+                  if (next && practicalQuickCentres.length === 0) {
+                    const { data } = await supabase
+                      .from("test_centres")
+                      .select("id, name, address, town, postcode")
+                      .order("name", { ascending: true });
+                    setPracticalQuickCentres((data as any[]) ?? []);
+                  }
+                }}
+                className="h-11 w-full rounded-lg px-3 text-[14px] bg-white text-left flex items-center justify-between"
+                style={{ border: "0.5px solid #EEF2F7", color: "#0B1F3A", ...POPPINS }}
+              >
+                <span className="truncate">
+                  {centreInfo?.name || pupil.test_centre || "Select a centre"}
+                </span>
+                <ChevronRight size={16} color="#6B7280" />
+              </button>
+              {practicalQuickCentrePickerOpen && (
+                <div className="mt-2 rounded-lg bg-white overflow-hidden" style={{ border: "0.5px solid #EEF2F7" }}>
+                  <input
+                    type="text"
+                    placeholder="Search centres…"
+                    value={practicalQuickCentreSearch}
+                    onChange={(e) => setPracticalQuickCentreSearch(e.target.value)}
+                    className="h-10 w-full px-3 text-[13px] bg-white"
+                    style={{ borderBottom: "0.5px solid #EEF2F7", color: "#0B1F3A", ...POPPINS }}
+                  />
+                  <div className="max-h-64 overflow-y-auto">
+                    {practicalQuickCentres
+                      .filter((c) => {
+                        const q = practicalQuickCentreSearch.trim().toLowerCase();
+                        if (!q) return true;
+                        return (
+                          c.name.toLowerCase().includes(q) ||
+                          (c.town ?? "").toLowerCase().includes(q) ||
+                          (c.postcode ?? "").toLowerCase().includes(q)
+                        );
+                      })
+                      .slice(0, 60)
+                      .map((c) => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={async () => {
+                            if (!pupil) return;
+                            const { error } = await supabase
+                              .from("pupils")
+                              .update({ test_centre_id: c.id, test_centre: c.name })
+                              .eq("id", pupil.id);
+                            if (error) {
+                              toast.error("Could not update test centre");
+                              return;
+                            }
+                            setCentreInfo({ id: c.id, name: c.name, town: c.town });
+                            setPupil({ ...pupil, test_centre_id: c.id, test_centre: c.name });
+                            setPracticalQuickCentrePickerOpen(false);
+                            setPracticalQuickCentreSearch("");
+                            toast.success("Test centre updated");
+                          }}
+                          className="w-full text-left px-3 py-2 text-[13px] flex flex-col"
+                          style={{ borderTop: "0.5px solid #F4F6FA", color: "#0B1F3A", ...POPPINS }}
+                        >
+                          <span className="font-medium">{c.name}</span>
+                          {(c.town || c.postcode) && (
+                            <span className="text-[11px]" style={{ color: "#6B7280" }}>
+                              {[c.town, c.postcode].filter(Boolean).join(", ")}
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </BottomSheetV2>
+      )}
+
+
 
 
       {certOpen && (
