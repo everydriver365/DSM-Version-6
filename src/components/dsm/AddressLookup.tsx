@@ -99,26 +99,44 @@ function readText(v: { text?: string } | string | undefined): string {
 function loadMapsScript(): Promise<void> {
   const w = window as GWindow;
   if (w.google?.maps?.importLibrary) return Promise.resolve();
-  const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
-  if (existing) {
-    return new Promise((resolve) => {
-      const iv = setInterval(() => {
-        if ((window as GWindow).google?.maps?.importLibrary) {
-          clearInterval(iv);
-          resolve();
-        }
-      }, 150);
-    });
-  }
+
   return new Promise((resolve, reject) => {
-    const s = document.createElement("script");
-    s.id = SCRIPT_ID;
-    s.async = true;
-    s.defer = true;
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&v=weekly&loading=async`;
-    s.onload = () => resolve();
-    s.onerror = () => reject(new Error("Failed to load Google Maps script"));
-    document.head.appendChild(s);
+    (g => {
+      let h: any, a: HTMLScriptElement, k: string;
+      const p = "The Google Maps JavaScript API";
+      const c = "google", l = "importLibrary", q = "__ib__", m = document;
+      let b: any = window;
+      b = b[c] || (b[c] = {});
+      const d = b.maps || (b.maps = {});
+      const r = new Set<string>();
+      const e = new URLSearchParams();
+      const u = () => h || (h = new Promise(async (f: any, n: any) => {
+        a = m.createElement("script") as HTMLScriptElement;
+        e.set("libraries", [...r] + "");
+        for (k in g) e.set(k.replace(/[A-Z]/g, (t: string) => "_" + t[0].toLowerCase()), (g as any)[k]);
+        e.set("callback", c + ".maps." + q);
+        a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+        d[q] = f;
+        a.onerror = () => (h = n(new Error(p + " could not load.")));
+        a.nonce = (m.querySelector("script[nonce]") as HTMLScriptElement | null)?.nonce || "";
+        m.head.append(a);
+      }));
+
+      d[l] ? console.warn(p + " only loads once. Ignoring:", g) : (d[l] = (f: any, ...n: any[]) => r.add(f) && u().then(() => d[l](f, ...n)));
+    })({ key: GOOGLE_MAPS_KEY, v: "weekly" });
+
+    // Poll briefly for importLibrary to become available, then resolve/reject
+    let attempts = 0;
+    const iv = setInterval(() => {
+      attempts++;
+      if ((window as GWindow).google?.maps?.importLibrary) {
+        clearInterval(iv);
+        resolve();
+      } else if (attempts > 100) {
+        clearInterval(iv);
+        reject(new Error("Google Maps failed to initialize"));
+      }
+    }, 100);
   });
 }
 
