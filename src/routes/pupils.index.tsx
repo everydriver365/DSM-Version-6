@@ -590,7 +590,7 @@ function PupilsIndexPage() {
                     <div className="min-w-0 flex-1 flex flex-col">
                       <div
                         className="truncate"
-                        style={{ fontSize: 15, fontWeight: 500, color: "#12142B", ...POPPINS }}
+                        style={{ fontSize: 15, fontWeight: 500, color: "#0B1F3A", ...POPPINS }}
                       >
                         {displayName(p.name)}
                       </div>
@@ -602,7 +602,7 @@ function PupilsIndexPage() {
                           style={{
                             fontSize: 11,
                             fontWeight: 500,
-                            color: hasHoursLeft ? "#2E9E5B" : "#B0BAC9",
+                            color: hasHoursLeft ? "#1E8E3E" : "#B0BAC9",
                             ...POPPINS,
                           }}
                         >
