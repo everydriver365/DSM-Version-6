@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
-  Search, X, Briefcase, RefreshCw, Clock, Award, ArrowLeftRight, GraduationCap,
-  ClipboardCheck, FileText, Receipt, Fuel, Car, MapPin, Settings, Calendar,
-  Gift, FileCheck, Zap, ClipboardList, AlertTriangle, BarChart3, Calculator,
+  Search, X, Briefcase, RefreshCw, Award, ArrowLeftRight, GraduationCap,
+  ClipboardCheck, FileText, Receipt, Fuel, Car, MapPin, Calendar,
+  BarChart3, Calculator,
+
   Moon, TrendingUp, Activity, Radio, ShoppingBag, Users, GraduationCap as GraduationCapIcon,
   ChevronRight, PlayCircle,
 } from "lucide-react";
@@ -52,15 +53,8 @@ const allTools: Tool[] = [
   { icon: MapPin, colour: '#6B7280', label: 'Mileage', sub: 'Log miles', route: '/mileage', group: 'Business' },
   { icon: FileText, colour: '#1A52A0', label: 'Invoices', sub: 'Billing', route: '/invoices', group: 'Business' },
   { icon: MapPin, colour: '#1A52A0', label: 'Coverage areas', sub: 'Service areas', route: '/coverage-areas', group: 'Business' },
-  // Admin
-  { icon: Settings, colour: '#6B7280', label: 'Settings', sub: 'Account settings', route: '/settings', group: 'Admin' },
-  { icon: Clock, colour: '#1A52A0', label: 'Availability', sub: 'Working hours', route: '/availability-settings', group: 'Admin' },
-  { icon: Calendar, colour: '#1A52A0', label: 'Calendar sync', sub: 'Google Calendar', route: '/calendarsync', group: 'Admin' },
-  { icon: Gift, colour: '#00B5A5', label: 'Referrals', sub: 'Reward programme', route: '/referrals', group: 'Admin' },
-  { icon: FileCheck, colour: '#16A34A', label: 'Terms & conditions', sub: 'T&Cs', route: '/terms', group: 'Admin' },
-  { icon: Zap, colour: '#D97706', label: 'Automations', sub: 'Auto actions', route: '/automations', group: 'Admin' },
-  { icon: ClipboardList, colour: '#7C3AED', label: 'Intake questions', sub: 'New pupils', route: '/intake-questions', group: 'Admin' },
-  { icon: AlertTriangle, colour: '#CC2229', label: 'No-show policy', sub: 'Cancellation fees', route: '/no-show-policy', group: 'Admin' },
+
+
   // Reports
   { icon: BarChart3, colour: '#1A52A0', label: 'MTD', sub: 'Month to date', route: '/mtd', group: 'Reports' },
   { icon: Calculator, colour: '#D97706', label: 'Tax report', sub: 'Self assessment', route: '/tax-report', group: 'Reports' },

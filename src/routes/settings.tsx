@@ -27,6 +27,8 @@ import {
   CreditCard,
 
   Calculator,
+  Zap,
+
   Gift,
   Copy,
 } from "lucide-react";
@@ -859,6 +861,21 @@ function SettingsPage() {
                 : undefined
             }
           />
+          <MenuRow
+            icon={<Gift size={18} color="#00B5A5" />}
+            iconBg="#CCFBF1"
+            label="Referrals"
+            onClick={() => navigate({ to: "/referrals" })}
+            isLast={false}
+          />
+          <MenuRow
+            icon={<Zap size={18} color="#D97706" />}
+            iconBg="#FEF3C7"
+            label="Automations"
+            onClick={() => navigate({ to: "/automations" })}
+            isLast={false}
+          />
+
           <MenuRow
             icon={<Landmark color="#1877D6" />}
             iconBg="#E6F1FB"
