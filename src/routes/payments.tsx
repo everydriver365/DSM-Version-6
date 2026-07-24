@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Plus, X, MoreVertical, Search, Banknote, CreditCard, Landmark, RotateCcw, Wallet, QrCode, Link2, ShoppingBag, Copy, MessageSquare, Mail, ExternalLink, RefreshCw, Receipt } from "lucide-react";
+import { Plus, X, MoreVertical, Search, Banknote, CreditCard, Landmark, RotateCcw, Wallet, QrCode, Link2, ShoppingBag, Copy, MessageSquare, Mail, ExternalLink, RefreshCw, Receipt } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
@@ -8,6 +8,7 @@ import { supabase } from "../lib/supabaseClient";
 import WorkspaceDots from "../components/dsm/WorkspaceDots";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { recordPayment, correctPaymentRecord } from "@/lib/payments";
 
 export const Route = createFileRoute("/payments")({
@@ -209,6 +210,7 @@ function PaymentsPage() {
   const [menuId, setMenuId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
+  const [instructor, setInstructor] = useState<{ name: string | null } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -242,6 +244,14 @@ function PaymentsPage() {
   }
 
   useEffect(() => { if (userId) refetch(); /* eslint-disable-next-line */ }, [userId]);
+
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const { data } = await supabase.from("instructors").select("name").eq("id", userId).maybeSingle();
+      setInstructor(data as { name: string | null } | null);
+    })();
+  }, [userId]);
 
   // stats
   const stats = useMemo(() => {
@@ -314,24 +324,41 @@ function PaymentsPage() {
         navigate({ to: "/home" as never, search: { ws: target } as any });
       }}
     >
-      {/* Top bar */}
-      <div className="sticky top-0 z-40" style={{ backgroundColor: NAVY }}>
-        <div className="flex items-center justify-between px-3" style={{ height: 52 }}>
-          <button type="button" aria-label="Back" onClick={() => navigate({ to: "/home" })} className="flex items-center justify-center" style={{ width: 36, height: 36 }}>
-            <ArrowLeft size={22} color="#fff" />
-          </button>
-          <div className="text-[16px] font-semibold text-white" style={POPPINS}>Payments</div>
-          <button
-            type="button"
-            onClick={() => setTakeOpen(true)}
-            className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
-            style={{ backgroundColor: TEAL }}
-          >
-            <Plus size={16} color="#fff" /> Take payment
-          </button>
-        </div>
-        <WorkspaceDots activeIndex={3} />
+      <InstructorTopBar
+        firstName={instructor?.name ?? ""}
+        pageTitle="Payments"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Action bar */}
+      <div
+        style={{
+          background: "#FFFFFF",
+          padding: "8px 16px",
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          borderBottom: "1px solid #EEF2F7",
+          gap: 10,
+          ...POPPINS,
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => setTakeOpen(true)}
+          className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
+          style={{ backgroundColor: TEAL }}
+        >
+          <Plus size={16} color="#fff" /> Take payment
+        </button>
       </div>
+      <WorkspaceDots activeIndex={3} />
 
       {/* Summary stats */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "16px 16px 0", marginBottom: 14 }}>
