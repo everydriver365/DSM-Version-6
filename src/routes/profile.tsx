@@ -412,6 +412,8 @@ function ProfilePage() {
         setDualControls(Boolean(inst.dual_controls));
         setInsuranceExpiry(inst.insurance_expiry ?? "");
         setVehiclePhotoUrl(inst.vehicle_photo_url ?? null);
+        setTransmission(inst.transmission ?? "Manual");
+
         if (inst.notification_prefs && typeof inst.notification_prefs === "object") {
           setNotifPrefs({ ...defaultNotifPrefs(), ...(inst.notification_prefs as NotifPrefs) });
         }
