@@ -435,6 +435,84 @@ function PupilDetailPage() {
     overspeedCount: number;
   } | null>(null);
   const [reportLoading, setReportLoading] = useState(false);
+  const [viewingMock, setViewingMock] = useState<MockTestResult | null>(null);
+  const [mockNotesDraft, setMockNotesDraft] = useState("");
+  const [savingMockNotes, setSavingMockNotes] = useState(false);
+  const [savingMockResult, setSavingMockResult] = useState(false);
+
+  const openMockDetail = (mt: MockTestResult) => {
+    setViewingMock(mt);
+    setMockNotesDraft(mt.notes ?? "");
+  };
+
+  const saveMockNotes = async () => {
+    if (!viewingMock) return;
+    setSavingMockNotes(true);
+    const { error } = await supabase
+      .from("mock_test_results")
+      .update({ notes: mockNotesDraft })
+      .eq("id", viewingMock.id);
+    setSavingMockNotes(false);
+    if (error) { toast.error("Failed to save notes"); return; }
+    setMockTests((prev) => prev.map((m) => m.id === viewingMock.id ? { ...m, notes: mockNotesDraft } : m));
+    setViewingMock({ ...viewingMock, notes: mockNotesDraft });
+    toast.success("Notes saved");
+  };
+
+  const updateMockResult = async (result: "Passed" | "Failed") => {
+    if (!viewingMock) return;
+    setSavingMockResult(true);
+    const { error } = await supabase
+      .from("mock_test_results")
+      .update({ result })
+      .eq("id", viewingMock.id);
+    setSavingMockResult(false);
+    if (error) { toast.error("Failed to update result"); return; }
+    setMockTests((prev) => prev.map((m) => m.id === viewingMock.id ? { ...m, result } : m));
+    setViewingMock({ ...viewingMock, result });
+    toast.success(`Marked as ${result.toLowerCase()}`);
+  };
+
+  const shareMockText = async () => {
+    if (!viewingMock) return;
+    const name = [pupil?.first_name, pupil?.last_name].filter(Boolean).join(" ").trim() || pupil?.name || "Pupil";
+    const dateStr = viewingMock.test_date ? new Date(viewingMock.test_date).toLocaleDateString("en-GB") : "—";
+    const result = viewingMock.result ?? "Pending";
+    const minor = viewingMock.minor_faults ?? 0;
+    const serious = viewingMock.serious_faults ?? 0;
+    const dangerous = viewingMock.dangerous_faults ?? 0;
+    const lines: string[] = [];
+    lines.push(`Mock test — ${name}`);
+    lines.push(`${dateStr} · ${result}`);
+    lines.push(`Faults: ${minor} minor · ${serious} serious · ${dangerous} dangerous`);
+    const marks = viewingMock.fault_marks || {};
+    const rows: string[] = [];
+    for (const [k, v] of Object.entries(marks)) {
+      const f = v?.fault ?? 0, s = v?.serious ?? 0, d = v?.dangerous ?? 0;
+      if (f + s + d === 0) continue;
+      const parts = [
+        f > 0 ? `${f} minor` : null,
+        s > 0 ? `${s} serious` : null,
+        d > 0 ? `${d} dangerous` : null,
+      ].filter(Boolean).join(", ");
+      rows.push(`- ${dl25Label(k)}: ${parts}`);
+    }
+    if (rows.length) { lines.push(""); lines.push("Breakdown:"); lines.push(...rows); }
+    if (viewingMock.notes) { lines.push(""); lines.push("Notes:"); lines.push(viewingMock.notes); }
+    const text = lines.join("\n");
+    try {
+      if (typeof navigator !== "undefined" && (navigator as any).share) {
+        await (navigator as any).share({ title: `Mock test — ${name}`, text });
+        return;
+      }
+    } catch { /* fall through */ }
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Copied to clipboard");
+    } catch {
+      toast.error("Could not export");
+    }
+  };
 
   const openLessonRouteReport = async (routeId: string) => {
     setReportLoading(true);
