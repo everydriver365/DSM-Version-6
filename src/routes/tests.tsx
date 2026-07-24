@@ -1394,8 +1394,9 @@ function ChoiceRow<T extends string>({
 
 // ============ DL25 Sheet ============
 
-type DL25Mark = null | "fault" | "serious" | "dangerous";
-type FaultMarks = Record<string, DL25Mark>;
+type FaultCounts = { fault: number; serious: number; dangerous: number };
+type FaultMarks = Record<string, FaultCounts>;
+
 
 type DL25Node =
   | { kind: "standalone"; key: string; label: string; faultOnly?: boolean }
@@ -1559,24 +1560,26 @@ export function DL25Sheet({
   const [marks, setMarks] = useState<FaultMarks>({});
   const [saving, setSaving] = useState(false);
 
-  function setMark(key: string, mark: DL25Mark) {
+  function setCount(key: string, category: keyof FaultCounts, count: number) {
     setMarks((m) => {
       const next = { ...m };
-      if (mark === null) delete next[key];
-      else next[key] = mark;
+      const current = next[key] ?? { fault: 0, serious: 0, dangerous: 0 };
+      next[key] = { ...current, [category]: count };
       return next;
     });
   }
 
+
   function totals() {
     let minor = 0, serious = 0, dangerous = 0;
     for (const v of Object.values(marks)) {
-      if (v === "fault") minor++;
-      else if (v === "serious") serious++;
-      else if (v === "dangerous") dangerous++;
+      minor += v?.fault ?? 0;
+      serious += v?.serious ?? 0;
+      dangerous += v?.dangerous ?? 0;
     }
     return { minor, serious, dangerous };
   }
+
 
   async function save() {
     if (saving) return;
@@ -1584,10 +1587,10 @@ export function DL25Sheet({
     const t = totals();
     // Ensure all schema keys exist in stored blob (nulls filled in)
     const allKeys = dl25AllKeys(manoeuvre);
-    const fullMarks: FaultMarks = {};
-    for (const k of allKeys) fullMarks[k] = marks[k] ?? null;
-    fullMarks["manoeuvres_selected"] = null;
-    const fault_marks = { ...fullMarks, manoeuvres_selected: manoeuvre };
+    const fullMarks: Record<string, FaultCounts | string> = {};
+    for (const k of allKeys) fullMarks[k] = marks[k] ?? { fault: 0, serious: 0, dangerous: 0 };
+    const fault_marks: Record<string, FaultCounts | string> = { ...fullMarks, manoeuvres_selected: manoeuvre };
+
 
     if (mode === "real") {
       const payload: Record<string, unknown> = {
