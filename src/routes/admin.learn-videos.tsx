@@ -82,6 +82,12 @@ function VideoForm({
     initial?.sort_order != null ? String(initial.sort_order) : "0",
   );
   const [file, setFile] = useState<File | null>(null);
+  const [source, setSource] = useState<"upload" | "youtube">(
+    initial?.url && /youtu/.test(initial.url) ? "youtube" : "upload",
+  );
+  const [youtubeUrl, setYoutubeUrl] = useState(
+    initial?.url && /youtu/.test(initial.url) ? initial.url : "",
+  );
   const [saving, setSaving] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<
     "idle" | "uploading" | "saved" | "error"
@@ -96,10 +102,18 @@ function VideoForm({
     setSaving(true);
     try {
       let url = initial?.url ?? null;
-      if (file) {
+      if (source === "youtube") {
+        if (!youtubeUrl.trim()) {
+          toast.error("Paste a YouTube link");
+          setSaving(false);
+          return;
+        }
+        url = youtubeUrl.trim();
+      } else if (file) {
         setUploadStatus("uploading");
         url = await uploadVideo(file, title.trim());
       }
+
 
       const payload = {
         title: title.trim(),
