@@ -469,7 +469,7 @@ function AdminLearnVideosPage() {
     setLoading(true);
     const { data, error } = await supabase
       .from("learn_videos")
-      .select("id, title, duration, url, sort_order")
+      .select("id, title, duration, url, thumbnail_url, sort_order")
       .order("sort_order", { ascending: true });
     if (error) {
       console.error("[admin/learn-videos] fetch failed", error);
