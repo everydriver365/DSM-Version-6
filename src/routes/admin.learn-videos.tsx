@@ -87,8 +87,8 @@ function VideoForm({
     "idle" | "uploading" | "saved" | "error"
   >("idle");
 
-
   const handleSubmit = async () => {
+
     if (!title.trim()) {
       toast.error("Title is required");
       return;
