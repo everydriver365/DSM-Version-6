@@ -605,8 +605,15 @@ function PupilDetailPage() {
     }
   };
 
-
-
+  function routeStaticMapUrl(coords: Coord[], size = "400x160") {
+    if (coords.length === 0) return null;
+    const step = Math.max(1, Math.floor(coords.length / 100));
+    const path = coords
+      .filter((_, i) => i % step === 0)
+      .map((c) => `${c.lat},${c.lng}`)
+      .join("|");
+    return `https://maps.googleapis.com/maps/api/staticmap?size=${size}&maptype=roadmap&path=color:0x1877D6FF|weight:4|${path}&key=${GOOGLE_MAPS_KEY}`;
+  }
 
   const [editSheetOpen, setEditSheetOpen] = useState(false);
   const [editSaving, setEditSaving] = useState(false);
