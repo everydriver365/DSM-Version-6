@@ -4,7 +4,7 @@ import {
   IconVideo,
   IconPlayerPlayFilled,
   IconCalendar,
-  IconClock,
+  IconChevronRight,
 } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -16,7 +16,9 @@ const HAIRLINE = "#E2E8F0";
 const MUTED = "#8A94A3";
 const FONT = "Poppins, Inter, sans-serif";
 const RADIUS = 14;
-const HERO_H = 140;
+const SHADOW = "0 1px 3px rgba(0,0,0,0.06)";
+const HERO_W = 120;
+const TILE_H = 110;
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -107,6 +109,52 @@ function youtubeThumb(url: string | null | undefined): string | null {
   return m ? `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg` : null;
 }
 
+function dayOfYear(d: Date) {
+  const start = new Date(d.getFullYear(), 0, 0);
+  return Math.floor((d.getTime() - start.getTime()) / 86400000);
+}
+
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <h2
+      style={{
+        margin: "0 0 12px",
+        fontSize: 18,
+        fontWeight: 600,
+        color: NAVY,
+        letterSpacing: "-0.01em",
+        lineHeight: 1.2,
+        fontFamily: FONT,
+      }}
+    >
+      {children}
+    </h2>
+  );
+}
+
+function CategoryPill({ label, color }: { label: string; color: string }) {
+  return (
+    <span
+      style={{
+        position: "absolute",
+        top: 6,
+        left: 6,
+        background: "rgba(255,255,255,0.92)",
+        color,
+        fontSize: 9.5,
+        fontWeight: 700,
+        textTransform: "uppercase",
+        letterSpacing: "0.04em",
+        padding: "2px 6px",
+        borderRadius: 6,
+        lineHeight: 1.2,
+      }}
+    >
+      {label}
+    </span>
+  );
+}
+
 function TileShell({
   onClick,
   children,
@@ -126,11 +174,11 @@ function TileShell({
         background: "#FFFFFF",
         border: `1px solid ${HAIRLINE}`,
         borderRadius: RADIUS,
+        boxShadow: SHADOW,
         overflow: "hidden",
         cursor: "pointer",
         display: "flex",
-        flexDirection: "column",
-        flex: 1,
+        minHeight: TILE_H,
         fontFamily: FONT,
       }}
     >
@@ -139,12 +187,44 @@ function TileShell({
   );
 }
 
-function TileText({ title, meta }: { title: string; meta: React.ReactNode }) {
+function SeeMore({ label }: { label: string }) {
   return (
-    <div style={{ padding: "9px 10px 11px", flex: 1, minWidth: 0 }}>
+    <div
+      style={{
+        marginTop: 6,
+        fontSize: 11.5,
+        fontWeight: 600,
+        color: BLUE,
+      }}
+    >
+      {label} →
+    </div>
+  );
+}
+
+function TileBody({
+  title,
+  meta,
+  seeMore,
+}: {
+  title: string;
+  meta: React.ReactNode;
+  seeMore: string;
+}) {
+  return (
+    <div
+      style={{
+        flex: 1,
+        minWidth: 0,
+        padding: "10px 12px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}
+    >
       <div
         style={{
-          fontSize: 12,
+          fontSize: 13,
           fontWeight: 600,
           color: NAVY,
           lineHeight: 1.25,
@@ -152,7 +232,6 @@ function TileText({ title, meta }: { title: string; meta: React.ReactNode }) {
           WebkitLineClamp: 2,
           WebkitBoxOrient: "vertical",
           overflow: "hidden",
-          minHeight: 30,
         }}
       >
         {title}
@@ -160,7 +239,7 @@ function TileText({ title, meta }: { title: string; meta: React.ReactNode }) {
       <div
         style={{
           marginTop: 4,
-          fontSize: 10.5,
+          fontSize: 11,
           color: MUTED,
           display: "flex",
           alignItems: "center",
@@ -172,76 +251,28 @@ function TileText({ title, meta }: { title: string; meta: React.ReactNode }) {
       >
         {meta}
       </div>
+      <SeeMore label={seeMore} />
     </div>
   );
 }
 
-function CategoryPill({ label, color }: { label: string; color: string }) {
-  return (
-    <span
-      style={{
-        position: "absolute",
-        top: 6,
-        left: 6,
-        background: "rgba(255,255,255,0.92)",
-        color,
-        fontSize: 10,
-        fontWeight: 600,
-        textTransform: "uppercase",
-        letterSpacing: "0.03em",
-        padding: "2px 6px",
-        borderRadius: 6,
-        lineHeight: 1.2,
-      }}
-    >
-      {label}
-    </span>
-  );
-}
-
-function EmptyTile() {
+function EmptyTile({ label }: { label: string }) {
   return (
     <div
       style={{
         border: `1px dashed ${HAIRLINE}`,
         borderRadius: RADIUS,
-        flex: 1,
+        minHeight: TILE_H,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        textAlign: "center",
-        padding: 8,
         fontFamily: FONT,
-        fontSize: 10.5,
+        fontSize: 11.5,
         color: MUTED,
-        lineHeight: 1.3,
       }}
     >
-      Nothing right now
+      {label}
     </div>
-  );
-}
-
-function SeeMore({ label, onClick }: { label: string; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      style={{
-        marginTop: 6,
-        background: "none",
-        border: "none",
-        padding: 0,
-        fontFamily: FONT,
-        fontSize: 11,
-        fontWeight: 600,
-        color: BLUE,
-        cursor: "pointer",
-        textAlign: "left",
-      }}
-    >
-      {label} →
-    </button>
   );
 }
 
@@ -288,8 +319,8 @@ export function DiscoverSection() {
       const { data, error } = await supabase
         .from("learn_videos")
         .select("id, title, duration, url, thumbnail_url")
-        .order("sort_order", { ascending: true })
-        .limit(6);
+        .not("url", "is", null)
+        .order("sort_order", { ascending: true });
       if (!cancelled && !error && data) setLearn(data as LearnItem[]);
     })();
 
@@ -304,8 +335,12 @@ export function DiscoverSection() {
     if (la !== lb) return lb - la;
     return startMs(a.session_date, a.session_time) - startMs(b.session_date, b.session_time);
   })[0];
-  const learnTop = learn[0];
   const marketTop = market[0];
+
+  const playable = learn.filter((v) => !!v.url);
+  const tip = playable.length
+    ? playable[dayOfYear(new Date()) % playable.length]
+    : null;
 
   const liveTile = (s: LiveItem) => {
     const nowLive = isLiveNow(s);
@@ -319,14 +354,15 @@ export function DiscoverSection() {
         <div
           style={{
             position: "relative",
-            height: HERO_H,
+            width: HERO_W,
+            flexShrink: 0,
             background: `linear-gradient(135deg, ${NAVY} 0%, ${BLUE} 100%)`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <IconVideo size={34} color="#FFFFFF" stroke={1.6} />
+          <IconVideo size={30} color="#FFFFFF" stroke={1.6} />
           <CategoryPill label="Live" color={RED} />
           <span
             style={{
@@ -336,67 +372,27 @@ export function DiscoverSection() {
               background: nowLive ? RED : BLUE,
               color: "#FFFFFF",
               fontSize: 9,
-              fontWeight: 600,
+              fontWeight: 700,
+              textTransform: "uppercase",
               padding: "2px 6px",
               borderRadius: 999,
               lineHeight: 1.2,
             }}
           >
-            {nowLive ? "now" : String(count)}
+            {nowLive ? "Now" : String(count)}
           </span>
         </div>
-        <TileText
+        <TileBody
           title={s.title}
           meta={
             <>
-              <IconCalendar size={11} stroke={1.8} />
+              <IconCalendar size={12} stroke={1.8} />
               <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
                 {fmtWhen(s.session_date, s.session_time)}
               </span>
             </>
           }
-        />
-      </TileShell>
-    );
-  };
-
-  const learnTile = (v: LearnItem) => {
-    const thumb = v.thumbnail_url || youtubeThumb(v.url);
-    return (
-      <TileShell onClick={() => navigate({ to: "/learn" as never })}>
-        <div
-          style={{
-            position: "relative",
-            height: HERO_H,
-            background: thumb ? `${NAVY} url(${thumb}) center/cover` : NAVY,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <CategoryPill label="Learn" color={BLUE} />
-          <span
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.92)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <IconPlayerPlayFilled size={16} color={NAVY} />
-          </span>
-        </div>
-        <TileText
-          title={v.title}
-          meta={
-            <>
-              <IconClock size={11} stroke={1.8} />
-              <span>{v.duration || "Watch"}</span>
-            </>
-          }
+          seeMore="See all live sessions"
         />
       </TileShell>
     );
@@ -414,18 +410,20 @@ export function DiscoverSection() {
         <div
           style={{
             position: "relative",
-            height: HERO_H,
+            width: HERO_W,
+            flexShrink: 0,
             background: img ? `#EEF2F7 url(${img}) center/cover` : "#EEF2F7",
           }}
         >
           <CategoryPill label="Marketplace" color={NAVY} />
         </div>
-        <TileText
+        <TileBody
           title={m.title}
           meta={
             <span
               style={{
-                fontWeight: 600,
+                fontWeight: 700,
+                fontSize: 12,
                 color: priced ? NAVY : AMBER,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -434,61 +432,86 @@ export function DiscoverSection() {
               {priced ? m.price_display : "Coming soon"}
             </span>
           }
+          seeMore="See all marketplace items"
         />
       </TileShell>
     );
   };
 
-  const column = (
-    tile: React.ReactNode,
-    seeMoreLabel: string,
-    onSeeMore: () => void,
-  ) => (
-    <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-      {tile}
-      <SeeMore label={seeMoreLabel} onClick={onSeeMore} />
-    </div>
-  );
-
   return (
     <div style={{ padding: "20px 0 22px", fontFamily: FONT }}>
-      <h2
-        style={{
-          margin: "0 0 12px",
-          fontSize: 18,
-          fontWeight: 600,
-          color: NAVY,
-          letterSpacing: "-0.01em",
-          lineHeight: 1.2,
-        }}
-      >
-        Discover
-      </h2>
+      <SectionHeading>Discover</SectionHeading>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: 10,
-          alignItems: "stretch",
-        }}
-      >
-        {column(
-          liveTop ? liveTile(liveTop) : <EmptyTile />,
-          "See more",
-          () => navigate({ to: "/dsm-live" as never }),
-        )}
-        {column(
-          learnTop ? learnTile(learnTop) : <EmptyTile />,
-          "See more",
-          () => navigate({ to: "/learn" as never }),
-        )}
-        {column(
-          marketTop ? marketTile(marketTop) : <EmptyTile />,
-          "See more",
-          () => navigate({ to: "/marketplace" as never }),
-        )}
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {liveTop ? liveTile(liveTop) : <EmptyTile label="Nothing right now" />}
+        {marketTop ? marketTile(marketTop) : <EmptyTile label="Nothing right now" />}
       </div>
+
+      {tip && (
+        <div style={{ marginTop: 22 }}>
+          <SectionHeading>Tip of the day</SectionHeading>
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate({ to: "/learn" as never })}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") navigate({ to: "/learn" as never });
+            }}
+            style={{
+              background: "#FFFFFF",
+              border: `1px solid ${HAIRLINE}`,
+              borderRadius: RADIUS,
+              boxShadow: SHADOW,
+              padding: 10,
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              cursor: "pointer",
+            }}
+          >
+            {(() => {
+              const thumb = tip.thumbnail_url || youtubeThumb(tip.url);
+              return (
+                <div
+                  style={{
+                    width: 52,
+                    height: 52,
+                    flexShrink: 0,
+                    borderRadius: 10,
+                    overflow: "hidden",
+                    background: thumb ? `${NAVY} url(${thumb}) center/cover` : NAVY,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {!thumb && <IconPlayerPlayFilled size={18} color="#FFFFFF" />}
+                </div>
+              );
+            })()}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: NAVY,
+                  lineHeight: 1.25,
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
+                {tip.title}
+              </div>
+              <div style={{ marginTop: 3, fontSize: 11, color: MUTED }}>
+                {tip.duration ? `${tip.duration} · DSM Learn` : "DSM Learn"}
+              </div>
+            </div>
+            <IconChevronRight size={18} color={MUTED} stroke={1.8} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
