@@ -148,18 +148,18 @@ function NotificationSettingsPage() {
 
   return (
     <PageLayout className="pb-24" style={POPPINS}>
-      <div
-        className="sticky top-0 z-40 flex items-center px-4"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
-      >
-        <button type="button" onClick={() => navigate({ to: "/settings" })} aria-label="Back">
-          <ArrowLeft size={22} color="#FFFFFF" />
-        </button>
-        <div className="flex-1 text-center text-[15px] font-semibold text-white" style={POPPINS}>
-          Notification settings
-        </div>
-        <div style={{ width: 22 }} />
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Notification settings"
+        onBack={() => navigate({ to: "/settings" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
 
       <div className="px-4">
         <SectionHeader>PUSH NOTIFICATIONS</SectionHeader>
