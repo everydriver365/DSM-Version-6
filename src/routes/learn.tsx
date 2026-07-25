@@ -154,9 +154,9 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
           borderRadius: 14,
           overflow: "hidden",
           background: color,
-          ...(v.thumbnail_url
+          ...(thumb
             ? {
-                backgroundImage: `url(${v.thumbnail_url})`,
+                backgroundImage: `url(${thumb})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }
