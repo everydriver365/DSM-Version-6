@@ -4741,23 +4741,24 @@ function HomePage() {
                       </div>
                     </div>
 
-                    {/* Tap for details */}
-                    <button
-                      type="button"
-                      onClick={() => setHeroExpanded((v) => !v)}
-                      style={{
-                        width: '100%', background: '#FFFFFF', border: 'none',
-                        borderTop: '1px solid #EEF2F7', padding: '13px 0',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                        fontSize: 14, fontWeight: 700, color: '#1877D6', cursor: 'pointer',
-                        fontFamily: 'Inter, sans-serif',
-                      }}
-                    >
-                      {heroExpanded ? 'Hide details' : 'Tap for details'}
-                      {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                    </button>
                   </div>
                 </div>
+
+                {/* Tap for details */}
+                <button
+                  type="button"
+                  onClick={() => setHeroExpanded((v) => !v)}
+                  style={{
+                    width: '100%', background: '#FFFFFF', border: 'none',
+                    borderTop: '1px solid #EEF2F7', padding: '13px 0',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                    fontSize: 14, fontWeight: 700, color: '#1877D6', cursor: 'pointer',
+                    fontFamily: 'Inter, sans-serif',
+                  }}
+                >
+                  {heroExpanded ? 'Hide details' : 'Tap for details'}
+                  {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
               ) : (
                 <div style={{ padding: '14px 12px 20px', textAlign: 'center', color: '#8A93A3', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
                   No upcoming lessons
