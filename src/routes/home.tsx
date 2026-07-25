@@ -4426,7 +4426,7 @@ function HomePage() {
         style={{
           margin: '0 16px 16px',
           background: '#FFFFFF',
-          borderRadius: 10,
+          borderRadius: 24,
           boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
           overflow: 'hidden',
           fontFamily: 'Inter, sans-serif',
