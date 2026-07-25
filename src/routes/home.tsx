@@ -3504,6 +3504,18 @@ function HomePage() {
     }) ?? null;
   }, [lessons, now]);
 
+  // Auto-navigate to live tracking once per in-progress lesson when autoTrackLessons is enabled
+  const autoNavigatedLessonId = useRef<string | null>(null);
+  useEffect(() => {
+    if (!autoTrackLessons || !currentLesson) return;
+    if (autoNavigatedLessonId.current === currentLesson.id) return;
+    autoNavigatedLessonId.current = currentLesson.id;
+    navigate({
+      to: '/live',
+      search: { autostart: '1', lessonId: currentLesson.id, pupilId: currentLesson.pupil_id },
+    });
+  }, [autoTrackLessons, currentLesson, navigate]);
+
   // ── Next Lesson traffic + weather chips ───────────────────────────────────
   const fetchWeather = useServerFn(getLessonWeather);
   const fetchDriveTime = useServerFn(getLessonDriveTime);
