@@ -21,6 +21,7 @@ interface LearnVideo {
   title: string;
   duration: string | null;
   url: string | null;
+  thumbnail_url: string | null;
   sort_order: number | null;
 }
 
@@ -34,8 +35,20 @@ function slugify(s: string) {
   );
 }
 
-async function uploadVideo(file: File, title: string) {
-  const ext = file.name.split(".").pop()?.toLowerCase() || "mp4";
+function getYouTubeId(url: string): string | null {
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+  );
+  return match ? match[1] : null;
+}
+
+function youtubeThumbnail(url: string): string | null {
+  const id = getYouTubeId(url);
+  return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
+}
+
+async function uploadToBucket(file: File, title: string, fallbackExt: string) {
+  const ext = file.name.split(".").pop()?.toLowerCase() || fallbackExt;
   const path = `${slugify(title)}-${Date.now()}.${ext}`;
   const { error } = await supabase.storage
     .from("learn-videos")
@@ -43,6 +56,14 @@ async function uploadVideo(file: File, title: string) {
   if (error) throw error;
   const { data } = supabase.storage.from("learn-videos").getPublicUrl(path);
   return data.publicUrl;
+}
+
+async function uploadVideo(file: File, title: string) {
+  return uploadToBucket(file, title, "mp4");
+}
+
+async function uploadThumbnail(file: File, title: string) {
+  return uploadToBucket(file, `${title}-thumb`, "jpg");
 }
 
 const inputStyle: React.CSSProperties = {
@@ -82,6 +103,7 @@ function VideoForm({
     initial?.sort_order != null ? String(initial.sort_order) : "0",
   );
   const [file, setFile] = useState<File | null>(null);
+  const [thumbFile, setThumbFile] = useState<File | null>(null);
   const [source, setSource] = useState<"upload" | "youtube">(
     initial?.url && /youtu/.test(initial.url) ? "youtube" : "upload",
   );
@@ -93,6 +115,10 @@ function VideoForm({
     "idle" | "uploading" | "saved" | "error"
   >("idle");
 
+  const derivedYoutubeThumb = youtubeUrl.trim()
+    ? youtubeThumbnail(youtubeUrl.trim())
+    : null;
+
   const handleSubmit = async () => {
 
     if (!title.trim()) {
@@ -102,6 +128,7 @@ function VideoForm({
     setSaving(true);
     try {
       let url = initial?.url ?? null;
+      let thumbnailUrl = initial?.thumbnail_url ?? null;
       if (source === "youtube") {
         if (!youtubeUrl.trim()) {
           toast.error("Paste a YouTube link");
@@ -109,9 +136,16 @@ function VideoForm({
           return;
         }
         url = youtubeUrl.trim();
-      } else if (file) {
-        setUploadStatus("uploading");
-        url = await uploadVideo(file, title.trim());
+        thumbnailUrl = youtubeThumbnail(url) ?? thumbnailUrl;
+      } else {
+        if (file) {
+          setUploadStatus("uploading");
+          url = await uploadVideo(file, title.trim());
+        }
+        if (thumbFile) {
+          setUploadStatus("uploading");
+          thumbnailUrl = await uploadThumbnail(thumbFile, title.trim());
+        }
       }
 
 
@@ -119,8 +153,10 @@ function VideoForm({
         title: title.trim(),
         duration: duration.trim() || null,
         url,
+        thumbnail_url: thumbnailUrl,
         sort_order: Number(sortOrder) || 0,
       };
+
 
       const { error } = initial?.id
         ? await supabase.from("learn_videos").update(payload).eq("id", initial.id)
@@ -216,6 +252,31 @@ function VideoForm({
             onChange={(e) => setYoutubeUrl(e.target.value)}
             placeholder="https://www.youtube.com/watch?v=..."
           />
+          {derivedYoutubeThumb && (
+            <div
+              style={{
+                marginTop: 10,
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <img
+                src={derivedYoutubeThumb}
+                alt="YouTube thumbnail preview"
+                style={{
+                  width: 96,
+                  height: 54,
+                  objectFit: "cover",
+                  borderRadius: 8,
+                  border: `1px solid ${BORDER}`,
+                }}
+              />
+              <span style={{ fontSize: 12, color: GREY }}>
+                Thumbnail set automatically
+              </span>
+            </div>
+          )}
         </>
       ) : (
         <>
@@ -229,8 +290,25 @@ function VideoForm({
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             style={{ ...inputStyle, height: "auto", padding: 10, fontSize: 13 }}
           />
+
+          <label style={labelStyle} htmlFor="lv-thumb">
+            Thumbnail image (optional)
+          </label>
+          <input
+            id="lv-thumb"
+            type="file"
+            accept="image/*"
+            onChange={(e) => setThumbFile(e.target.files?.[0] ?? null)}
+            style={{ ...inputStyle, height: "auto", padding: 10, fontSize: 13 }}
+          />
+          {thumbFile && (
+            <div style={{ fontSize: 12, color: GREY, marginTop: 6 }}>
+              {thumbFile.name} · {(thumbFile.size / 1024).toFixed(0)} KB
+            </div>
+          )}
         </>
       )}
+
 
       {file && (
         <div style={{ fontSize: 12, color: GREY, marginTop: 6 }}>
@@ -391,7 +469,7 @@ function AdminLearnVideosPage() {
     setLoading(true);
     const { data, error } = await supabase
       .from("learn_videos")
-      .select("id, title, duration, url, sort_order")
+      .select("id, title, duration, url, thumbnail_url, sort_order")
       .order("sort_order", { ascending: true });
     if (error) {
       console.error("[admin/learn-videos] fetch failed", error);
