@@ -309,7 +309,7 @@ function DsmLivePage() {
                   fontSize: 13,
                   fontWeight: active ? 500 : 400,
                   color: active ? "#FFFFFF" : "#8A93A3",
-                  background: active ? "#185FA5" : "transparent",
+                  background: active ? "#1877D6" : "transparent",
                   borderRadius: 8,
                   border: 0,
                   cursor: "pointer",
