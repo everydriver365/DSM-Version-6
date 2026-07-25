@@ -588,18 +588,35 @@ function AdminListingsPage() {
                   <div style={{ marginTop: 12, borderTop: "0.5px solid #E2E6ED", paddingTop: 12 }}>
                     {editing ? (
                       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                        {firstImage && (
-                          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                        {(newImageUrl || firstImage) && (
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                             <img
-                              src={firstImage}
+                              src={newImageUrl || firstImage}
                               alt={l.title}
                               style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 8 }}
                             />
                             <span style={{ fontSize: 12, color: "#6B7280" }}>
-                              Current image (not editable here)
+                              {newImageUrl ? "New image (saves with the listing)" : "Current image"}
                             </span>
                           </div>
                         )}
+                        <Field label="Replace image">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            disabled={uploadingImage}
+                            onChange={(e) => {
+                              const f = e.target.files?.[0];
+                              if (f) uploadHeroImage(f);
+                              e.target.value = "";
+                            }}
+                            style={{ ...inputStyle, padding: 8 }}
+                          />
+                        </Field>
+                        {uploadingImage && (
+                          <span style={{ fontSize: 12, color: "#6B7280" }}>Uploading…</span>
+                        )}
+
                         <Field label="Title">
                           <input
                             value={editDraft.title ?? ""}
