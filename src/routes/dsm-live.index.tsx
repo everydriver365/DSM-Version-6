@@ -205,7 +205,7 @@ function DsmLivePage() {
               style={{
                 fontSize: 18,
                 fontWeight: 500,
-                color: "#0F2044",
+                color: "#0B1F3A",
                 marginBottom: 6,
                 fontFamily: poppins,
               }}
@@ -277,7 +277,7 @@ function DsmLivePage() {
             margin: "0 0 12px",
             fontSize: 15,
             fontWeight: 500,
-            color: "#0F2044",
+            color: "#0B1F3A",
             fontFamily: poppins,
           }}
         >
@@ -819,7 +819,7 @@ function SessionCard({
           style={{
             fontSize: 16,
             fontWeight: 500,
-            color: "#0F2044",
+            color: "#0B1F3A",
             marginBottom: 10,
             fontFamily: poppins,
           }}
@@ -853,7 +853,7 @@ function SessionCard({
               style={{
                 fontSize: 15,
                 fontWeight: 500,
-                color: isFree ? "#3B6D11" : "#0F2044",
+                color: isFree ? "#16A34A" : "#0B1F3A",
                 fontFamily: poppins,
               }}
             >
@@ -869,7 +869,7 @@ function SessionCard({
               onOpen();
             }}
             style={{
-              background: booked ? "#3B6D11" : "#185FA5",
+              background: booked ? "#16A34A" : "#1877D6",
               color: "#FFFFFF",
               fontSize: 13,
               fontWeight: 500,
