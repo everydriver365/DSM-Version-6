@@ -49,6 +49,14 @@ const GROUPS: { heading: string; items: Guide[] }[] = [
   },
 ];
 
+function getYouTubeEmbedUrl(url: string): string | null {
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+  );
+  return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1` : null;
+}
+
+
 function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () => void }) {
   return (
     <button
@@ -411,14 +419,38 @@ function LearnPage() {
           >
             <X size={20} color="#FFFFFF" />
           </button>
-          <video
-            src={playing.url ?? undefined}
-            controls
-            autoPlay
-            playsInline
-            onClick={(e) => e.stopPropagation()}
-            style={{ width: "100%", maxHeight: "80vh", background: "#000" }}
-          />
+          {(() => {
+            const embed = playing.url ? getYouTubeEmbedUrl(playing.url) : null;
+            if (embed) {
+              return (
+                <iframe
+                  src={embed}
+                  title={playing.title ?? "Video"}
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                  onClick={(e) => e.stopPropagation()}
+                  style={{
+                    width: "100%",
+                    maxHeight: "80vh",
+                    aspectRatio: "16 / 9",
+                    border: "none",
+                    background: "#000",
+                  }}
+                />
+              );
+            }
+            return (
+              <video
+                src={playing.url ?? undefined}
+                controls
+                autoPlay
+                playsInline
+                onClick={(e) => e.stopPropagation()}
+                style={{ width: "100%", maxHeight: "80vh", background: "#000" }}
+              />
+            );
+          })()}
+
         </div>
       )}
     </PageLayout>
