@@ -127,41 +127,49 @@ function DsmLivePage() {
   const poppins = "'Poppins', system-ui, -apple-system, sans-serif";
 
   return (
-    <div style={{ background: "#F3F8FF", minHeight: "calc(100vh - 80px)", fontFamily: poppins }}>
-      {/* Top bar */}
-      <div
-        style={{
-          background: "#0F2044",
-          color: "#fff",
-          padding: "12px 16px",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-        }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/" })}
-          style={{ background: "transparent", border: 0, color: "#fff", padding: 4, cursor: "pointer" }}
-          aria-label="Back"
-        >
-          <ArrowLeft size={22} />
-        </button>
-        <div style={{ fontWeight: 600, fontSize: 16, flex: 1, fontFamily: poppins }}>DSM Live</div>
+    <div style={{ background: "#DCE4F0", minHeight: "calc(100vh - 80px)", fontFamily: poppins }}>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="DSM Live"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Live status pill */}
+      <div style={{ background: "#0B1F3A", padding: "0 16px 12px", display: "flex" }}>
         <span
           style={{
-            background: "#CC2229",
-            color: "#fff",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            background: "rgba(255,255,255,0.1)",
+            border: "0.5px solid rgba(255,255,255,0.25)",
+            color: "#FFFFFF",
             fontSize: 11,
-            fontWeight: 700,
+            fontWeight: 500,
             padding: "4px 12px",
             borderRadius: 999,
             fontFamily: poppins,
           }}
         >
-          🔴 LIVE
+          <span
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: 999,
+              background: "#16A34A",
+              display: "inline-block",
+            }}
+          />
+          Live
         </span>
       </div>
+
 
       {/* Hero */}
       <div style={{ padding: "16px 16px 18px" }}>
