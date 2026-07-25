@@ -1,4 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { ChevronLeft, Plus, MapPin, Navigation as NavIcon, Copy } from "lucide-react";
 import { Card } from "../components/dsm/Card";

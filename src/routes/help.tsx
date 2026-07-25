@@ -1,4 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { toast } from "sonner";
 import { useState } from "react";
 import {
   ArrowLeft,

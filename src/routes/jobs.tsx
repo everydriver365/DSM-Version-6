@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { ArrowLeft, Briefcase, X, Send } from "lucide-react";
 import { toast } from "sonner";
