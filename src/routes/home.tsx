@@ -4759,6 +4759,7 @@ function HomePage() {
                   {heroExpanded ? 'Hide details' : 'Tap for details'}
                   {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </button>
+              </>
               ) : (
                 <div style={{ padding: '14px 12px 20px', textAlign: 'center', color: '#8A93A3', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
                   No upcoming lessons
