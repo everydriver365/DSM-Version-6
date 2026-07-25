@@ -21,6 +21,7 @@ interface LearnVideo {
   title: string;
   duration: string | null;
   url: string | null;
+  thumbnail_url: string | null;
   sort_order: number | null;
 }
 
@@ -34,8 +35,20 @@ function slugify(s: string) {
   );
 }
 
-async function uploadVideo(file: File, title: string) {
-  const ext = file.name.split(".").pop()?.toLowerCase() || "mp4";
+function getYouTubeId(url: string): string | null {
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+  );
+  return match ? match[1] : null;
+}
+
+function youtubeThumbnail(url: string): string | null {
+  const id = getYouTubeId(url);
+  return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
+}
+
+async function uploadToBucket(file: File, title: string, fallbackExt: string) {
+  const ext = file.name.split(".").pop()?.toLowerCase() || fallbackExt;
   const path = `${slugify(title)}-${Date.now()}.${ext}`;
   const { error } = await supabase.storage
     .from("learn-videos")
@@ -43,6 +56,14 @@ async function uploadVideo(file: File, title: string) {
   if (error) throw error;
   const { data } = supabase.storage.from("learn-videos").getPublicUrl(path);
   return data.publicUrl;
+}
+
+async function uploadVideo(file: File, title: string) {
+  return uploadToBucket(file, title, "mp4");
+}
+
+async function uploadThumbnail(file: File, title: string) {
+  return uploadToBucket(file, `${title}-thumb`, "jpg");
 }
 
 const inputStyle: React.CSSProperties = {
