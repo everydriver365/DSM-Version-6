@@ -12,6 +12,7 @@ import {
   PoundSterling,
 } from "lucide-react";
 import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { BottomSheet } from "../components/dsm/BottomSheet";
 import { EmptyState } from "../components/dsm/EmptyState";
 import { supabase } from "../lib/supabaseClient";
