@@ -220,6 +220,47 @@ function AdminDsmLive() {
 
   const customDaysInvalid = recurringFrequency === "custom" && recurringDays.length === 0;
 
+  function renderDayPicker() {
+    if (recurringFrequency !== "custom") return null;
+    return (
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A", marginBottom: 6 }}>
+          Repeat on
+        </div>
+        <div style={{ display: "flex", gap: 6 }}>
+          {DAY_LABELS.map((lbl, i) => {
+            const on = recurringDays.includes(i);
+            return (
+              <button
+                key={lbl}
+                type="button"
+                onClick={() => toggleRecurringDay(i)}
+                style={{
+                  flex: 1,
+                  padding: "8px 0",
+                  borderRadius: 8,
+                  border: on ? "0.5px solid #0B1F3A" : "0.5px solid #E2E6ED",
+                  background: on ? "#0B1F3A" : "#FFFFFF",
+                  color: on ? "#FFFFFF" : "#6B7280",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                {lbl}
+              </button>
+            );
+          })}
+        </div>
+        {customDaysInvalid && (
+          <div style={{ fontSize: 11, color: "#CC2229", marginTop: 6 }}>
+            Select at least one day.
+          </div>
+        )}
+      </div>
+    );
+  }
+
   function openAdd() {
     setEditing(null);
     setForm(emptyForm());
