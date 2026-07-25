@@ -904,7 +904,7 @@ function AdminDsmLive() {
           )}
           <button
             type="button"
-            disabled={saving}
+            disabled={saving || ((isRecurring || convertToRecurring) && customDaysInvalid)}
             onClick={handleSave}
             style={{
               width: "100%",
@@ -917,7 +917,7 @@ function AdminDsmLive() {
               fontWeight: 600,
               marginTop: 12,
               cursor: "pointer",
-              opacity: saving ? 0.6 : 1,
+              opacity: saving || ((isRecurring || convertToRecurring) && customDaysInvalid) ? 0.6 : 1,
               position: "sticky",
               bottom: 16,
               boxShadow: "0 -8px 16px rgba(255,255,255,0.9)",
