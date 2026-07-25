@@ -292,7 +292,15 @@ function LearnPage() {
           }}
         >
           {HOW_TO_VIDEOS.map((v, i) => (
-            <VideoCard key={i} v={v} color={i % 2 === 0 ? NAVY : BLUE} />
+            <VideoCard
+              key={i}
+              v={v}
+              color={i % 2 === 0 ? NAVY : BLUE}
+              onPlay={() => {
+                if (v.url) setPlaying(v);
+                else toast.info("Video coming soon");
+              }}
+            />
           ))}
         </div>
       </div>
