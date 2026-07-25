@@ -153,33 +153,35 @@ function MileagePage() {
 
   return (
     <PageLayout className="pb-8" style={POPPINS}>
-      {/* TOP BAR */}
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Mileage"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Action bar */}
       <div
-        className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-[52px] flex items-center px-3 z-50"
-        style={{ background: "#0B1F3A" }}
+        className="flex items-center justify-end"
+        style={{ background: "#FFFFFF", padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
       >
         <button
           type="button"
-          onClick={() => navigate({ to: "/home" })}
-          className="p-1"
-          aria-label="Back"
-        >
-          <ChevronLeft size={24} color="#FFFFFF" />
-        </button>
-        <div className="absolute left-1/2 -translate-x-1/2 text-white text-[16px] font-semibold">
-          Mileage
-        </div>
-        <button
-          type="button"
           onClick={openSheet}
-          className="ml-auto p-1"
-          aria-label="Add mileage"
+          className="inline-flex items-center gap-1 text-[13px] font-semibold text-white"
+          style={{ background: "#1877D6", borderRadius: 999, padding: "8px 14px", border: "none" }}
         >
-          <Plus size={24} color="#FFFFFF" />
+          <Plus size={16} color="#FFFFFF" /> Add mileage
         </button>
       </div>
 
-      <div className="pt-[52px]">
+      <div>
+
         {/* SUMMARY CARD */}
         <div
           className="mx-4 mt-3"
