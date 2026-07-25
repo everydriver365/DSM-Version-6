@@ -26,13 +26,13 @@ const GRAY_LABEL = "#5F6B7A";
 const GRAY_SUBTITLE = "#8A94A3";
 const FONT = "Poppins, sans-serif";
 
-type Video = { title: string; duration: string };
+type Video = { title: string; duration: string; url: string | null };
 
 const HOW_TO_VIDEOS: Video[] = [
-  { title: "Fill gaps in your schedule automatically", duration: "0:24" },
-  { title: "Reply to enquiries in one tap", duration: "0:31" },
-  { title: "Log a lesson from the timeline", duration: "0:18" },
-  { title: "Set up recurring lessons", duration: "0:42" },
+  { title: "Fill gaps in your schedule automatically", duration: "0:24", url: null },
+  { title: "Reply to enquiries in one tap", duration: "0:31", url: null },
+  { title: "Log a lesson from the timeline", duration: "0:18", url: null },
+  { title: "Set up recurring lessons", duration: "0:42", url: null },
 ];
 
 type Guide = { icon: any; title: string; description: string; route: string };
