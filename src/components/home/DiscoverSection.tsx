@@ -266,7 +266,7 @@ function TileBody({
       >
         {meta}
       </div>
-      <SeeMore label={seeMore} />
+      <SeeMore label={seeMore} onClick={onSeeMore} />
     </div>
   );
 }
@@ -408,6 +408,7 @@ export function DiscoverSection() {
             </>
           }
           seeMore="See all live sessions"
+          onSeeMore={() => navigate({ to: "/dsm-live" as never })}
         />
       </TileShell>
     );
@@ -448,6 +449,7 @@ export function DiscoverSection() {
             </span>
           }
           seeMore="See all marketplace items"
+          onSeeMore={() => navigate({ to: "/marketplace" as never })}
         />
       </TileShell>
     );
