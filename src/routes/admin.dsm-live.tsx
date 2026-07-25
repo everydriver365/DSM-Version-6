@@ -236,13 +236,52 @@ function AdminDsmLive() {
           setSaving(false);
           return;
         }
-        console.log("[dsm-live] saving session (PATCH):", payload);
-        await restFetch(`dsm_live_sessions?id=eq.${editing.id}`, {
-          method: "PATCH",
-          body: JSON.stringify(payload),
-        });
-        console.log("[dsm-live] save result: PATCH ok");
-        showToast("Session updated");
+        if (
+          convertToRecurring &&
+          !editing.is_recurring &&
+          recurringUntil &&
+          editing.session_date
+        ) {
+          const groupId = crypto.randomUUID();
+          const futureDates = generateOccurrences(
+            editing.session_date,
+            recurringUntil,
+            recurringFrequency,
+          ).filter((d) => d !== editing.session_date);
+          await restFetch(`dsm_live_sessions?id=eq.${editing.id}`, {
+            method: "PATCH",
+            body: JSON.stringify({
+              ...payload,
+              is_recurring: true,
+              recurring_frequency: recurringFrequency,
+              recurring_group_id: groupId,
+            }),
+          });
+          if (futureDates.length) {
+            const rows = futureDates.map((d) => ({
+              ...payload,
+              session_date: d,
+              is_recurring: true,
+              recurring_frequency: recurringFrequency,
+              recurring_group_id: groupId,
+            }));
+            await restFetch("dsm_live_sessions", {
+              method: "POST",
+              body: JSON.stringify(rows),
+            });
+          }
+          showToast(
+            `Converted to recurring series — ${futureDates.length} future sessions created.`,
+          );
+        } else {
+          console.log("[dsm-live] saving session (PATCH):", payload);
+          await restFetch(`dsm_live_sessions?id=eq.${editing.id}`, {
+            method: "PATCH",
+            body: JSON.stringify(payload),
+          });
+          console.log("[dsm-live] save result: PATCH ok");
+          showToast("Session updated");
+        }
       } else if (isRecurring && recurringUntil && form.session_date) {
         const groupId = crypto.randomUUID();
         const dates = generateOccurrences(form.session_date, recurringUntil, recurringFrequency);
