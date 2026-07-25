@@ -54,10 +54,11 @@ const GROUPS: { heading: string; items: Guide[] }[] = [
   },
 ];
 
-function VideoCard({ v, color }: { v: Video; color: string }) {
+function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () => void }) {
   return (
     <button
       type="button"
+      onClick={onPlay}
       style={{
         background: "transparent",
         border: "none",
