@@ -250,6 +250,22 @@ function GuideRow({ g, onGo, isLast }: { g: Guide; onGo: () => void; isLast: boo
 function LearnPage() {
   const navigate = useNavigate();
   const [playing, setPlaying] = useState<Video | null>(null);
+  const [videos, setVideos] = useState<Video[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("learn_videos")
+        .select("id, title, duration, url")
+        .order("sort_order", { ascending: true });
+      if (!cancelled && !error && data) setVideos(data as Video[]);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
 
 
   return (
@@ -288,9 +304,9 @@ function LearnPage() {
             padding: "0 16px",
           }}
         >
-          {HOW_TO_VIDEOS.map((v, i) => (
+          {videos.map((v, i) => (
             <VideoCard
-              key={i}
+              key={v.id ?? i}
               v={v}
               color={i % 2 === 0 ? NAVY : BLUE}
               onPlay={() => {
