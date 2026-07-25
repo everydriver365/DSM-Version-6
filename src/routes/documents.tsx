@@ -17,6 +17,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { z } from "zod";
 import { Card } from "../components/dsm/Card";
 import { Input } from "../components/dsm/Input";
