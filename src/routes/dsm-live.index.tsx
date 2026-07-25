@@ -785,18 +785,32 @@ function SessionCard({
               position: "absolute",
               bottom: 10,
               right: 10,
-              background: "#CC2229",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              background: "rgba(11,31,58,0.55)",
+              border: "0.5px solid rgba(255,255,255,0.25)",
               color: "#FFFFFF",
               fontSize: 11,
-              fontWeight: 700,
+              fontWeight: 500,
               padding: "3px 10px",
               borderRadius: 999,
               fontFamily: poppins,
             }}
           >
-            🔴 LIVE
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: 999,
+                background: "#16A34A",
+                display: "inline-block",
+              }}
+            />
+            Live
           </span>
         )}
+
       </div>
 
       {/* Body */}
