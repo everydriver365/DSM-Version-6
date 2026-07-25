@@ -407,9 +407,13 @@ function VideoForm({
             id="lv-file"
             type="file"
             accept="video/*"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
             style={{ ...inputStyle, height: "auto", padding: 10, fontSize: 13 }}
           />
+          <div style={{ fontSize: 12, color: GREY, marginTop: 6 }}>
+            A cover image is grabbed from the video automatically — upload one
+            below to override it.
+          </div>
 
           <label style={labelStyle} htmlFor="lv-thumb">
             Thumbnail image (optional)
@@ -426,6 +430,51 @@ function VideoForm({
               {thumbFile.name} · {(thumbFile.size / 1024).toFixed(0)} KB
             </div>
           )}
+
+          {(capturing || previewThumb) && (
+            <div
+              style={{
+                marginTop: 10,
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              {previewThumb ? (
+                <img
+                  src={previewThumb}
+                  alt="Video cover preview"
+                  style={{
+                    width: 96,
+                    height: 54,
+                    objectFit: "cover",
+                    borderRadius: 8,
+                    border: `1px solid ${BORDER}`,
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: 96,
+                    height: 54,
+                    borderRadius: 8,
+                    border: `1px solid ${BORDER}`,
+                    background: "#F1F3F6",
+                  }}
+                />
+              )}
+              <span style={{ fontSize: 12, color: GREY }}>
+                {capturing
+                  ? "Grabbing a cover from the video…"
+                  : thumbFile
+                    ? "Using your uploaded cover"
+                    : autoThumbUrl
+                      ? "Cover grabbed from the video"
+                      : "Current cover"}
+              </span>
+            </div>
+          )}
+
         </>
       )}
 
