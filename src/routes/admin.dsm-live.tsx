@@ -781,6 +781,41 @@ function AdminDsmLive() {
               )}
             </div>
           )}
+          {editing && !editing.is_recurring && (
+            <div style={{ marginTop: 8, padding: 12, background: "#F9FAFB", border: "0.5px solid #E2E6ED", borderRadius: 10 }}>
+              <Toggle
+                label="Convert to recurring series"
+                checked={convertToRecurring}
+                onChange={setConvertToRecurring}
+              />
+              {convertToRecurring && (
+                <div style={{ marginTop: 8 }}>
+                  <FormField label="Frequency">
+                    <select
+                      style={inp}
+                      value={recurringFrequency}
+                      onChange={(e) => setRecurringFrequency(e.target.value as Frequency)}
+                    >
+                      {FREQUENCIES.map((f) => (
+                        <option key={f.value} value={f.value}>{f.label}</option>
+                      ))}
+                    </select>
+                  </FormField>
+                  <FormField label="Repeat until">
+                    <input
+                      type="date"
+                      style={inp}
+                      value={recurringUntil}
+                      onChange={(e) => setRecurringUntil(e.target.value)}
+                    />
+                  </FormField>
+                  <div style={{ fontSize: 11, color: "#6B7280" }}>
+                    Keeps this session and creates future occurrences in the same series.
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
           <button
             type="button"
             disabled={saving}
