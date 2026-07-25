@@ -1261,12 +1261,13 @@ function actionBtn(color: string): React.CSSProperties {
     gap: 4,
     background: "#fff",
     color,
-    border: `1px solid ${color}`,
+    border: `0.5px solid ${color}`,
     borderRadius: 8,
     padding: "6px 10px",
     fontSize: 12,
-    fontWeight: 600,
+    fontWeight: 500,
     cursor: "pointer",
+    fontFamily: "Poppins, system-ui, sans-serif",
   };
 }
 
