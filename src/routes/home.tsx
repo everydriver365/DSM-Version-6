@@ -4659,10 +4659,10 @@ function HomePage() {
                     )}
 
                     {/* Details block */}
-                    <div style={{ padding: '12px 14px 12px' }}>
+                    <div style={{ padding: '16px 16px 14px' }}>
                       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
                         <div style={{ minWidth: 0, flex: 1 }}>
-                          <div style={{ fontSize: 19, fontWeight: 800, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <div style={{ fontSize: 22, fontWeight: 800, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {pupilFullName || 'Pupil'}
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 6, fontSize: 14, color: '#0B1F3A' }}>
