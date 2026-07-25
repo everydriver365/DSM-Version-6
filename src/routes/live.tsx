@@ -375,6 +375,16 @@ function LivePage() {
     };
   }, []);
 
+  // Auto-start tracking when navigated here from Home with autostart query params
+  useEffect(() => {
+    if (search.autostart !== '1' || !search.lessonId || !search.pupilId) return;
+    console.log("[live] autostart triggered for lesson", search.lessonId);
+    setActiveLessonId(search.lessonId);
+    setActivePupilId(search.pupilId);
+    startTracking(search.lessonId, search.pupilId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     if (lessonsLoaded && !tracking && !activeLessonId && !geoError) {
       console.log("[live] no active lesson — showing manual start");
