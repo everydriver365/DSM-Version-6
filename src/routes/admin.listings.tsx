@@ -345,12 +345,33 @@ function AdminListingsPage() {
 
   function startEdit(l: Listing) {
     setEditingId(l.id);
+    setNewImageUrl(null);
     setEditDraft({
       title: l.title,
       description: l.description,
       price_display: l.price_display,
       category_id: l.category_id,
     });
+  }
+
+  async function uploadHeroImage(file: File) {
+    setUploadingImage(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("marketplace-images")
+        .upload(path, file, { cacheControl: "3600", upsert: false });
+      if (upErr) throw upErr;
+      const { data } = supabase.storage.from("marketplace-images").getPublicUrl(path);
+      setNewImageUrl(data.publicUrl);
+      toast.success("Image uploaded");
+    } catch (e: any) {
+      console.error(e);
+      toast.error(e?.message ?? "Upload failed");
+    } finally {
+      setUploadingImage(false);
+    }
   }
 
   async function saveEdit(l: Listing) {
@@ -361,18 +382,26 @@ function AdminListingsPage() {
         price_display: editDraft.price_display,
       };
       if (editDraft.category_id) patch.category_id = editDraft.category_id;
+      if (newImageUrl) {
+        const existing = Array.isArray(l.image_urls)
+          ? l.image_urls
+          : (typeof l.image_urls === "string" ? JSON.parse(l.image_urls) : []);
+        patch.image_urls = [newImageUrl, ...existing.slice(1)];
+      }
       await restPatch(l.id, patch);
       setListings((prev) =>
         prev.map((x) => (x.id === l.id ? { ...x, ...patch } as Listing : x)),
       );
       setEditingId(null);
       setEditDraft({});
+      setNewImageUrl(null);
       toast.success("Listing updated");
     } catch (e) {
       console.error(e);
       toast.error("Failed to update");
     }
   }
+
 
   if (gate === "checking") {
     return (
