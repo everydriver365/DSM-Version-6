@@ -186,6 +186,7 @@ function AdminDsmLive() {
     setIsRecurring(false);
     setRecurringFrequency("weekly");
     setRecurringUntil("");
+    setConvertToRecurring(false);
     setShowSheet(true);
   }
 
@@ -195,6 +196,7 @@ function AdminDsmLive() {
     setIsRecurring(false);
     setRecurringFrequency("weekly");
     setRecurringUntil("");
+    setConvertToRecurring(false);
     setShowSheet(true);
   }
 
