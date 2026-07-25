@@ -306,6 +306,7 @@ export function DiscoverSection() {
           }}
         >
           <IconVideo size={22} color="#FFFFFF" stroke={1.6} />
+          <CategoryPill label="Live" color={RED} />
           <span
             style={{
               position: "absolute",
@@ -340,18 +341,20 @@ export function DiscoverSection() {
 
   const learnTile = (v: LearnItem, i: number) => {
     const thumb = v.thumbnail_url || youtubeThumb(v.url);
+    const flat = i % 2 === 0 ? NAVY : BLUE;
     return (
       <TileShell key={v.id ?? i} onClick={() => navigate({ to: "/learn" as never })}>
         <div
           style={{
             position: "relative",
             height: HERO_H,
-            background: thumb ? `#0B1F3A url(${thumb}) center/cover` : NAVY,
+            background: thumb ? `${NAVY} url(${thumb}) center/cover` : flat,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
+          <CategoryPill label="Learn" color={BLUE} />
           <span
             style={{
               width: 26,
@@ -391,10 +394,13 @@ export function DiscoverSection() {
       >
         <div
           style={{
+            position: "relative",
             height: HERO_H,
             background: img ? `#EEF2F7 url(${img}) center/cover` : "#EEF2F7",
           }}
-        />
+        >
+          <CategoryPill label="Marketplace" color={NAVY} />
+        </div>
         <TileText
           title={m.title}
           meta={
