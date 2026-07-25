@@ -552,56 +552,45 @@ function AdminDsmLive() {
   if (status === "denied") return null;
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Inter, sans-serif", paddingBottom: 40 }}>
-      {/* Top bar */}
+    <div style={{ background: "#F4F6FA", minHeight: "100vh", paddingBottom: 40, ...POPPINS }}>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="DSM live sessions"
+        onBack={() => navigate({ to: "/admin" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => setToast("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Action row */}
       <div
         style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 30,
           background: "#fff",
           borderBottom: "0.5px solid #E2E6ED",
-          padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px",
+          padding: "10px 16px",
           display: "flex",
-          alignItems: "center",
-          gap: 12,
+          justifyContent: "flex-end",
         }}
       >
         <button
           type="button"
-          onClick={() => navigate({ to: "/admin" })}
-          aria-label="Back"
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: "50%",
-            background: "#F3F4F6",
-            border: "none",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            color: "#0B1F3A",
-          }}
-        >
-          <ChevronLeft size={18} />
-        </button>
-        <div style={{ flex: 1, fontSize: 16, fontWeight: 600, color: "#0B1F3A" }}>DSM Live Sessions</div>
-        <button
-          type="button"
           onClick={openAdd}
           style={{
-            background: "#CC2229",
+            background: "#1877D6",
             color: "#fff",
             border: "none",
-            borderRadius: 10,
-            padding: "8px 12px",
+            borderRadius: 8,
+            padding: "8px 14px",
             fontSize: 13,
-            fontWeight: 600,
+            fontWeight: 500,
             display: "inline-flex",
             alignItems: "center",
-            gap: 4,
+            gap: 6,
             cursor: "pointer",
+            ...POPPINS,
           }}
         >
           <Plus size={14} /> Add session
@@ -618,24 +607,24 @@ function AdminDsmLive() {
           <div
             key={s.label}
             style={{
-              background: "#F9FAFB",
+              background: "#fff",
               border: "0.5px solid #E2E6ED",
               borderRadius: 12,
               padding: 12,
               textAlign: "center",
             }}
           >
-            <div style={{ fontSize: 20, fontWeight: 700, color: "#0B1F3A" }}>{s.value}</div>
-            <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{s.label}</div>
+            <div style={{ fontSize: 20, fontWeight: 500, color: "#0B1F3A" }}>{s.value}</div>
+            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{s.label}</div>
           </div>
         ))}
       </div>
 
       {/* Sessions list */}
       {loading ? (
-        <div style={{ padding: 24, color: "#6B7280" }}>Loading…</div>
+        <div style={{ padding: 24, color: "#6B7280", fontSize: 13 }}>Loading…</div>
       ) : sessions.length === 0 ? (
-        <div style={{ padding: 24, color: "#6B7280" }}>No sessions yet.</div>
+        <div style={{ padding: 24, color: "#6B7280", fontSize: 13 }}>No sessions yet.</div>
       ) : (
         sessions.map((s) => (
           <div
@@ -650,39 +639,41 @@ function AdminDsmLive() {
               marginBottom: 8,
             }}
           >
-            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, marginBottom: 6 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A", flex: "1 1 100%" }}>{s.title}</div>
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, marginBottom: 8 }}>
+              <div style={{ fontSize: 15, fontWeight: 500, color: "#0B1F3A", flex: "1 1 100%" }}>
+                {sentenceCase(s.title)}
+              </div>
               {s.category && (
-                <span style={{ fontSize: 10, fontWeight: 600, background: "#EEF2F7", color: "#0B1F3A", padding: "2px 8px", borderRadius: 999 }}>
-                  {s.category}
+                <span style={{ fontSize: 11, fontWeight: 500, background: "#EEF2F7", color: "#4B5563", padding: "3px 8px", borderRadius: 999 }}>
+                  {sentenceCase(s.category)}
                 </span>
               )}
               <span
                 style={{
-                  fontSize: 10,
-                  fontWeight: 600,
-                  padding: "2px 8px",
+                  fontSize: 11,
+                  fontWeight: 500,
+                  padding: "3px 8px",
                   borderRadius: 999,
                   background:
-                    s.status === "upcoming" ? "#DBEAFE" :
-                    s.status === "live" ? "#FEE2E2" :
-                    s.status === "completed" ? "#D1FAE5" : "#F3F4F6",
+                    s.status === "upcoming" ? "#E6F1FB" :
+                    s.status === "live" ? "#FDE8E9" :
+                    s.status === "completed" ? "#E6F5EE" : "#EEF2F7",
                   color:
-                    s.status === "upcoming" ? "#1E40AF" :
-                    s.status === "live" ? "#B91C1C" :
-                    s.status === "completed" ? "#065F46" : "#374151",
+                    s.status === "upcoming" ? "#0C447C" :
+                    s.status === "live" ? "#A3181E" :
+                    s.status === "completed" ? "#0B5B3F" : "#4B5563",
                 }}
               >
-                {s.status}
+                {sentenceCase(s.status)}
               </span>
             </div>
-            <div style={{ fontSize: 12, color: "#6B7280" }}>
+            <div style={{ fontSize: 13, color: "#6B7280" }}>
               {s.session_date} · {s.session_time} · {s.duration_minutes} mins
             </div>
-            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
+            <div style={{ fontSize: 13, color: "#6B7280", marginTop: 2 }}>
               {s.spaces_taken ?? 0}/{s.max_spaces ?? 0} booked · {s.price_display || (s.price_amount ? `£${s.price_amount}` : "Free")}
             </div>
-            <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+            <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
               <button
                 type="button"
                 onClick={() => openEdit(s)}
@@ -708,6 +699,7 @@ function AdminDsmLive() {
           </div>
         ))
       )}
+
 
       {/* Add/Edit sheet */}
       {showSheet && (
