@@ -83,8 +83,12 @@ function VideoForm({
   );
   const [file, setFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<
+    "idle" | "uploading" | "saved" | "error"
+  >("idle");
 
   const handleSubmit = async () => {
+
     if (!title.trim()) {
       toast.error("Title is required");
       return;
@@ -92,7 +96,10 @@ function VideoForm({
     setSaving(true);
     try {
       let url = initial?.url ?? null;
-      if (file) url = await uploadVideo(file, title.trim());
+      if (file) {
+        setUploadStatus("uploading");
+        url = await uploadVideo(file, title.trim());
+      }
 
       const payload = {
         title: title.trim(),
@@ -106,10 +113,13 @@ function VideoForm({
         : await supabase.from("learn_videos").insert(payload);
       if (error) throw error;
 
-      toast.success(initial ? "Video updated" : "Video added");
-      onSaved();
+      setUploadStatus("saved");
+      setTimeout(() => {
+        onSaved();
+      }, 1500);
     } catch (e) {
       console.error("[admin/learn-videos] save failed", e);
+      setUploadStatus("error");
       toast.error((e as Error).message || "Failed to save video");
     } finally {
       setSaving(false);
@@ -117,6 +127,7 @@ function VideoForm({
   };
 
   return (
+
     <div
       style={{
         background: "#fff",
@@ -173,11 +184,92 @@ function VideoForm({
         </div>
       )}
 
+      {uploadStatus === "uploading" && (
+        <div style={{ marginTop: 16 }}>
+          <div
+            style={{
+              fontSize: 13,
+              color: NAVY,
+              fontWeight: 600,
+              marginBottom: 8,
+            }}
+          >
+            Uploading video...
+          </div>
+          <div
+            style={{
+              height: 6,
+              borderRadius: 3,
+              background: "#E2E6ED",
+              overflow: "hidden",
+              position: "relative",
+            }}
+          >
+            <div
+              className="lv-progress-bar"
+              style={{
+                height: "100%",
+                width: "40%",
+                background: BLUE,
+                borderRadius: 3,
+                position: "absolute",
+                left: 0,
+                top: 0,
+              }}
+            />
+          </div>
+          <style>{`
+            @keyframes lv-progress-slide {
+              0% { transform: translateX(-100%); }
+              50% { transform: translateX(150%); }
+              100% { transform: translateX(-100%); }
+            }
+            .lv-progress-bar {
+              animation: lv-progress-slide 1.4s ease-in-out infinite;
+            }
+          `}</style>
+        </div>
+      )}
+
+      {uploadStatus === "saved" && (
+        <div
+          style={{
+            marginTop: 16,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            color: "#1E8E3E",
+            fontSize: 13,
+            fontWeight: 600,
+          }}
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          Saved to Learn videos
+        </div>
+      )}
+
+      {uploadStatus === "error" && (
+        <div style={{ marginTop: 16, fontSize: 13, color: RED, fontWeight: 600 }}>
+          Upload failed. Please try again.
+        </div>
+      )}
+
       <div style={{ display: "flex", gap: 8, marginTop: 18 }}>
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={saving}
+          disabled={saving || uploadStatus === "saved"}
           style={{
             flex: 1,
             height: 44,
@@ -187,7 +279,7 @@ function VideoForm({
             border: "none",
             fontWeight: 600,
             cursor: "pointer",
-            opacity: saving ? 0.7 : 1,
+            opacity: saving || uploadStatus === "saved" ? 0.7 : 1,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -196,12 +288,18 @@ function VideoForm({
           }}
         >
           <Upload size={16} />
-          {saving ? "Saving…" : "Save"}
+          {uploadStatus === "uploading"
+            ? "Uploading…"
+            : uploadStatus === "saved"
+              ? "Saved"
+              : saving
+                ? "Saving…"
+                : "Save"}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          disabled={saving}
+          disabled={saving || uploadStatus === "saved"}
           style={{
             height: 44,
             padding: "0 18px",
@@ -219,6 +317,7 @@ function VideoForm({
       </div>
     </div>
   );
+
 }
 
 function AdminLearnVideosPage() {
