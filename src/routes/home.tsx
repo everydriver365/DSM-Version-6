@@ -10,6 +10,7 @@ import { getLessonWeather, type LessonWeather } from "@/lib/lesson-weather.funct
 import { getLessonDriveTime, type LessonDriveTime } from "@/lib/lesson-drive-time.functions";
 import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { computeDayGaps } from "@/lib/gapDetection";
+import { DiscoverSection as DiscoverGrid } from "@/components/home/DiscoverSection";
 import { Cloud as CloudIcon, CloudRain, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
 import { PageLayout } from "@/components/PageLayout";
 import { SheetQueueController } from "@/components/dsm/SheetQueue";
@@ -6400,7 +6401,7 @@ function HomePage() {
               );
             })()}
 
-            <DiscoverSection />
+            <DiscoverGrid />
 
 
 
