@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { PageLayout } from "@/components/PageLayout";
 
 // Toggle to false when Learn is no longer "new" — hides the NEW badge only.
 const LEARN_IS_NEW = true;
