@@ -4414,7 +4414,7 @@ function HomePage() {
       {/* ============ NEXT LESSON CARD ============ */}
       <div
         style={{
-          margin: '0 6px 16px',
+          margin: '0 16px 16px',
           background: '#FFFFFF',
           borderRadius: 20,
 
