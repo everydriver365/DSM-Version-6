@@ -996,10 +996,11 @@ const inputStyle: React.CSSProperties = {
   borderRadius: 8,
   padding: "8px 10px",
   fontSize: 13,
-  fontFamily: "Inter, sans-serif",
+  fontFamily: "Poppins, Inter, sans-serif",
   color: "#0B1F3A",
   background: "#fff",
   width: "100%",
+
   boxSizing: "border-box",
 };
 
