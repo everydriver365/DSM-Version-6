@@ -715,7 +715,7 @@ function SessionCard({
     ? {
         height: 120,
         position: "relative",
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url(${s.image_url})`,
+        backgroundImage: `url(${s.image_url})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }
@@ -730,13 +730,14 @@ function SessionCard({
       onClick={onOpen}
       style={{
         background: "#FFFFFF",
-        borderRadius: 14,
+        borderRadius: 12,
+        border: "0.5px solid #E2E6ED",
         overflow: "hidden",
         marginBottom: 12,
         cursor: "pointer",
         fontFamily: poppins,
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
       }}
+
     >
       {/* Hero */}
       <div style={heroStyle}>
