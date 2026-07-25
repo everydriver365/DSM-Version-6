@@ -289,6 +289,7 @@ function AdminDsmLive() {
             editing.session_date,
             recurringUntil,
             recurringFrequency,
+            recurringDays,
           ).filter((d) => d !== editing.session_date);
           await restFetch(`dsm_live_sessions?id=eq.${editing.id}`, {
             method: "PATCH",
