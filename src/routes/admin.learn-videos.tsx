@@ -96,7 +96,10 @@ function VideoForm({
     setSaving(true);
     try {
       let url = initial?.url ?? null;
-      if (file) url = await uploadVideo(file, title.trim());
+      if (file) {
+        setUploadStatus("uploading");
+        url = await uploadVideo(file, title.trim());
+      }
 
       const payload = {
         title: title.trim(),
@@ -110,15 +113,19 @@ function VideoForm({
         : await supabase.from("learn_videos").insert(payload);
       if (error) throw error;
 
-      toast.success(initial ? "Video updated" : "Video added");
-      onSaved();
+      setUploadStatus("saved");
+      setTimeout(() => {
+        onSaved();
+      }, 1500);
     } catch (e) {
       console.error("[admin/learn-videos] save failed", e);
+      setUploadStatus("error");
       toast.error((e as Error).message || "Failed to save video");
     } finally {
       setSaving(false);
     }
   };
+
 
   return (
     <div
