@@ -6153,8 +6153,8 @@ function HomePage() {
 
               const renderQuickTile = (tile: QuickTile, key: string, onTap?: () => void) => {
                 const Icon = tile.icon;
-                const subColor = tile.attention ? '#C23B3B' : '#8A93A3';
-                const subWeight = tile.attention ? 600 : 500;
+                const subColor = tile.attention ? '#CC2229' : '#64748B';
+                const subWeight = tile.attention ? 600 : 400;
                 return (
                   <button
                     key={key}
@@ -6164,20 +6164,20 @@ function HomePage() {
                     style={{
                       position: 'relative',
                       background: '#FFFFFF',
-                      border: '1px solid #ECEFF3',
-                      borderRadius: 20,
-                      padding: '18px 18px 16px',
-                      minHeight: 132,
+                      border: '1px solid #E2E8F0',
+                      borderRadius: 14,
+                      padding: 16,
+                      minHeight: 112,
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'flex-start',
-                      justifyContent: 'flex-start',
+                      gap: 12,
                       cursor: 'pointer',
                       textAlign: 'left',
                       fontFamily: "Poppins, Inter, sans-serif",
                       transition: 'transform 0.15s ease, box-shadow 0.2s ease',
                       overflow: 'hidden',
-                      boxShadow: '0 1px 2px rgba(11, 31, 58, 0.05)',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                     }}
                   >
                     {tile.attention && (
@@ -6191,29 +6191,30 @@ function HomePage() {
                         background: '#CC2229',
                       }} />
                     )}
-                    <div style={{
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      marginBottom: 14,
-                      transition: 'transform 0.15s ease',
-                    }} className="qa-icon">
-                      <Icon size={30} color="#1877D6" stroke="#1877D6" strokeWidth={1.6} />
+                    <div
+                      className="qa-icon"
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 12,
+                        background: tile.chipBg,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        transition: 'transform 0.15s ease',
+                      }}
+                    >
+                      <Icon size={22} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={2} />
                     </div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.25, marginBottom: 3, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 'calc(100% - 28px)', fontFamily: "Poppins, Inter, sans-serif" }}>{tile.label}</div>
-                    <div style={{ fontSize: 12, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 'calc(100% - 28px)', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: 1.3, fontFamily: "Poppins, Inter, sans-serif" }}>{tile.sub}</div>
-                    <span style={{
-                      position: 'absolute',
-                      right: 14,
-                      bottom: 14,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                      <ChevronRight size={16} color="#B0BAC9" strokeWidth={1.8} />
-                    </span>
-
+                    <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, maxWidth: '100%' }}>
+                      <span style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', lineHeight: 1.25, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: "Poppins, Inter, sans-serif" }}>{tile.label}</span>
+                      <span style={{ marginTop: 2, fontSize: 11, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: 1.3, fontFamily: "Poppins, Inter, sans-serif" }}>{tile.sub}</span>
+                    </div>
                   </button>
                 );
               };
+
 
 
 
