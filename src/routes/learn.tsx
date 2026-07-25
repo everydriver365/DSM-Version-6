@@ -49,6 +49,14 @@ const GROUPS: { heading: string; items: Guide[] }[] = [
   },
 ];
 
+function getYouTubeEmbedUrl(url: string): string | null {
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+  );
+  return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1` : null;
+}
+
+
 function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () => void }) {
   return (
     <button
