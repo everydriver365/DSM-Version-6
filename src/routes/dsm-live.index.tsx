@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
-  ArrowLeft,
   ArrowRight,
   Calendar as CalendarIcon,
   Clock,
@@ -17,11 +16,13 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { IconBroadcast } from "@tabler/icons-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 import {
   CATEGORIES,
   type LiveSession,
 } from "./dsm-live";
+
 
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -126,49 +127,57 @@ function DsmLivePage() {
   const poppins = "'Poppins', system-ui, -apple-system, sans-serif";
 
   return (
-    <div style={{ background: "#F3F8FF", minHeight: "calc(100vh - 80px)", fontFamily: poppins }}>
-      {/* Top bar */}
-      <div
-        style={{
-          background: "#0F2044",
-          color: "#fff",
-          padding: "12px 16px",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-        }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/" })}
-          style={{ background: "transparent", border: 0, color: "#fff", padding: 4, cursor: "pointer" }}
-          aria-label="Back"
-        >
-          <ArrowLeft size={22} />
-        </button>
-        <div style={{ fontWeight: 600, fontSize: 16, flex: 1, fontFamily: poppins }}>DSM Live</div>
+    <div style={{ background: "#DCE4F0", minHeight: "calc(100vh - 80px)", fontFamily: poppins }}>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="DSM Live"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Live status pill */}
+      <div style={{ background: "#0B1F3A", padding: "0 16px 12px", display: "flex" }}>
         <span
           style={{
-            background: "#CC2229",
-            color: "#fff",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            background: "rgba(255,255,255,0.1)",
+            border: "0.5px solid rgba(255,255,255,0.25)",
+            color: "#FFFFFF",
             fontSize: 11,
-            fontWeight: 700,
+            fontWeight: 500,
             padding: "4px 12px",
             borderRadius: 999,
             fontFamily: poppins,
           }}
         >
-          🔴 LIVE
+          <span
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: 999,
+              background: "#16A34A",
+              display: "inline-block",
+            }}
+          />
+          Live
         </span>
       </div>
+
 
       {/* Hero */}
       <div style={{ padding: "16px 16px 18px" }}>
         <div
           style={{
             background: "#FFFFFF",
-            borderRadius: 14,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            borderRadius: 12,
+            border: "0.5px solid #E2E6ED",
             padding: 18,
             display: "flex",
             flexDirection: "row",
@@ -180,7 +189,7 @@ function DsmLivePage() {
             style={{
               width: 44,
               height: 44,
-              borderRadius: 12,
+              borderRadius: 10,
               background: "#E6F1FB",
               display: "flex",
               alignItems: "center",
@@ -188,14 +197,15 @@ function DsmLivePage() {
               flexShrink: 0,
             }}
           >
-            <IconBroadcast size={22} color="#185FA5" stroke={1.5} />
+            <IconBroadcast size={22} color="#1877D6" stroke={1.5} />
+
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
                 fontSize: 18,
                 fontWeight: 500,
-                color: "#0F2044",
+                color: "#0B1F3A",
                 marginBottom: 6,
                 fontFamily: poppins,
               }}
@@ -241,9 +251,10 @@ function DsmLivePage() {
               onClick={() => setCategory(c)}
               style={{
                 flexShrink: 0,
-                background: active ? "#185FA5" : "#FFFFFF",
-                color: active ? "#FFFFFF" : "#333333",
-                border: active ? "0.5px solid #185FA5" : "0.5px solid rgba(0,0,0,0.08)",
+                background: active ? "#0B1F3A" : "#FFFFFF",
+                color: active ? "#FFFFFF" : "#0B1F3A",
+                border: active ? "0.5px solid #0B1F3A" : "0.5px solid #E2E6ED",
+
                 borderRadius: 999,
                 padding: "8px 16px",
                 fontSize: 13,
@@ -266,7 +277,7 @@ function DsmLivePage() {
             margin: "0 0 12px",
             fontSize: 15,
             fontWeight: 500,
-            color: "#0F2044",
+            color: "#0B1F3A",
             fontFamily: poppins,
           }}
         >
@@ -298,7 +309,7 @@ function DsmLivePage() {
                   fontSize: 13,
                   fontWeight: active ? 500 : 400,
                   color: active ? "#FFFFFF" : "#8A93A3",
-                  background: active ? "#185FA5" : "transparent",
+                  background: active ? "#1877D6" : "transparent",
                   borderRadius: 8,
                   border: 0,
                   cursor: "pointer",
@@ -629,16 +640,9 @@ function SessionCard({
     spaces_available?: number | null;
   };
 
-  // Category → gradient mapping.
-  const gradient = (() => {
-    const c = (s.category ?? "").toLowerCase();
-    if (c.includes("standards")) return "linear-gradient(135deg, #1A52A0, #0F2044)";
-    if (c.includes("business") || c.includes("coach")) return "linear-gradient(135deg, #16A34A, #14532D)";
-    if (c.includes("cpd") || c.includes("webinar")) return "linear-gradient(135deg, #7C3AED, #4C1D95)";
-    if (c.includes("new adi") || c.includes("adi support")) return "linear-gradient(135deg, #D97706, #92400E)";
-    if (c.includes("q&a") || c.includes("qa") || c.includes("question")) return "linear-gradient(135deg, #0891B2, #164E63)";
-    return "linear-gradient(135deg, #CC2229, #7A1419)";
-  })();
+  // Default hero when no image is set: navy → blue.
+  const gradient = "linear-gradient(135deg, #0B1F3A, #1877D6)";
+
 
   // Delivery badge — defaults to "Online" until delivery_type exists.
   const delivery = (() => {
@@ -711,7 +715,7 @@ function SessionCard({
     ? {
         height: 120,
         position: "relative",
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url(${s.image_url})`,
+        backgroundImage: `url(${s.image_url})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }
@@ -726,13 +730,14 @@ function SessionCard({
       onClick={onOpen}
       style={{
         background: "#FFFFFF",
-        borderRadius: 14,
+        borderRadius: 12,
+        border: "0.5px solid #E2E6ED",
         overflow: "hidden",
         marginBottom: 12,
         cursor: "pointer",
         fontFamily: poppins,
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
       }}
+
     >
       {/* Hero */}
       <div style={heroStyle}>
@@ -743,7 +748,7 @@ function SessionCard({
               position: "absolute",
               top: 10,
               left: 10,
-              background: "rgba(15,32,68,0.55)",
+              background: "rgba(11,31,58,0.55)",
               color: "#FFFFFF",
               fontSize: 11,
               fontWeight: 500,
@@ -762,7 +767,7 @@ function SessionCard({
               position: "absolute",
               top: 10,
               right: 10,
-              background: "rgba(15,32,68,0.55)",
+              background: "rgba(11,31,58,0.55)",
               color: "#FFFFFF",
               fontSize: 11,
               padding: "4px 10px",
@@ -780,18 +785,32 @@ function SessionCard({
               position: "absolute",
               bottom: 10,
               right: 10,
-              background: "#CC2229",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              background: "rgba(11,31,58,0.55)",
+              border: "0.5px solid rgba(255,255,255,0.25)",
               color: "#FFFFFF",
               fontSize: 11,
-              fontWeight: 700,
+              fontWeight: 500,
               padding: "3px 10px",
               borderRadius: 999,
               fontFamily: poppins,
             }}
           >
-            🔴 LIVE
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: 999,
+                background: "#16A34A",
+                display: "inline-block",
+              }}
+            />
+            Live
           </span>
         )}
+
       </div>
 
       {/* Body */}
@@ -800,7 +819,7 @@ function SessionCard({
           style={{
             fontSize: 16,
             fontWeight: 500,
-            color: "#0F2044",
+            color: "#0B1F3A",
             marginBottom: 10,
             fontFamily: poppins,
           }}
@@ -834,7 +853,7 @@ function SessionCard({
               style={{
                 fontSize: 15,
                 fontWeight: 500,
-                color: isFree ? "#3B6D11" : "#0F2044",
+                color: isFree ? "#16A34A" : "#0B1F3A",
                 fontFamily: poppins,
               }}
             >
@@ -850,12 +869,12 @@ function SessionCard({
               onOpen();
             }}
             style={{
-              background: booked ? "#3B6D11" : "#185FA5",
+              background: booked ? "#16A34A" : "#1877D6",
               color: "#FFFFFF",
               fontSize: 13,
               fontWeight: 500,
               padding: "10px 18px",
-              borderRadius: 10,
+              borderRadius: 999,
               border: 0,
               cursor: "pointer",
               fontFamily: poppins,
