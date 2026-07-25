@@ -252,6 +252,31 @@ function VideoForm({
             onChange={(e) => setYoutubeUrl(e.target.value)}
             placeholder="https://www.youtube.com/watch?v=..."
           />
+          {derivedYoutubeThumb && (
+            <div
+              style={{
+                marginTop: 10,
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <img
+                src={derivedYoutubeThumb}
+                alt="YouTube thumbnail preview"
+                style={{
+                  width: 96,
+                  height: 54,
+                  objectFit: "cover",
+                  borderRadius: 8,
+                  border: `1px solid ${BORDER}`,
+                }}
+              />
+              <span style={{ fontSize: 12, color: GREY }}>
+                Thumbnail set automatically
+              </span>
+            </div>
+          )}
         </>
       ) : (
         <>
@@ -265,8 +290,25 @@ function VideoForm({
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             style={{ ...inputStyle, height: "auto", padding: 10, fontSize: 13 }}
           />
+
+          <label style={labelStyle} htmlFor="lv-thumb">
+            Thumbnail image (optional)
+          </label>
+          <input
+            id="lv-thumb"
+            type="file"
+            accept="image/*"
+            onChange={(e) => setThumbFile(e.target.files?.[0] ?? null)}
+            style={{ ...inputStyle, height: "auto", padding: 10, fontSize: 13 }}
+          />
+          {thumbFile && (
+            <div style={{ fontSize: 12, color: GREY, marginTop: 6 }}>
+              {thumbFile.name} · {(thumbFile.size / 1024).toFixed(0)} KB
+            </div>
+          )}
         </>
       )}
+
 
       {file && (
         <div style={{ fontSize: 12, color: GREY, marginTop: 6 }}>
