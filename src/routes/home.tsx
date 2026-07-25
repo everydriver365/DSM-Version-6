@@ -4432,7 +4432,7 @@ function HomePage() {
           fontFamily: 'Inter, sans-serif',
         }}
       >
-        {/* Map hero + late banner + stats + reasons */}
+        {/* Redesigned next-lesson hero */}
         {(() => {
 
           // ETA calculation
@@ -4451,23 +4451,10 @@ function HomePage() {
             }
           }
 
-          // Date + time caption
-          let lessonTimeText = '';
-          if (upcoming) {
-            const d = lessonDateTime(upcoming);
-            const endD = new Date(d.getTime() + (upcoming.duration_minutes ?? 0) * 60000);
-            const fmt = (x: Date) => `${String(x.getHours()).padStart(2,'0')}:${String(x.getMinutes()).padStart(2,'0')}`;
-            lessonTimeText = `${fmt(d)} – ${fmt(endD)}`;
-          }
-
-          // Pupil display
-
           const pupilFullName = upcoming?.pupils?.name ?? '';
           const pupilFirstName = pupilFullName.split(/\s+/)[0] || 'there';
           const pupilInitials = (pupilFullName
             .split(/\s+/).map((s) => s.charAt(0)).filter(Boolean).slice(0, 2).join('') || 'P').toUpperCase();
-          const pupilIdKey = upcoming?.pupil_id ?? '';
-          const pupilCalColour = (pupilIdKey && pupilInfoMap[pupilIdKey]?.calendar_colour) || '#1877D6';
 
           // Adverse weather match
           const adverseKeywords = ['rain','snow','ice','storm','fog','wind','hail'];
@@ -4489,32 +4476,82 @@ function HomePage() {
             (driveData.trafficLabel === 'Moderate traffic' || driveData.trafficLabel === 'Heavy traffic');
           const anyReason = isLate && (showTraffic || isAdverseWeather || !!matchedAlert);
 
+          // Payment / due pill
+          const hStatus = (upcoming?.payment_status ?? 'unpaid').toLowerCase();
+          const hAmountDue = Number(upcoming?.amount_due ?? 0);
+          const hLabel = hAmountDue > 0
+            ? `£${hAmountDue.toFixed(0)} due`
+            : hStatus === 'prepaid'
+              ? 'Prepaid'
+              : 'Paid';
+          const hPillBg = hAmountDue > 0 ? '#FDECEC' : '#E7F4E8';
+          const hPillFg = hAmountDue > 0 ? '#CC2229' : '#2F7A3A';
+
+          // Date / time / duration / ETA
+          const d = upcoming ? lessonDateTime(upcoming) : null;
+          const fmt = (x: Date) => `${String(x.getHours()).padStart(2, '0')}:${String(x.getMinutes()).padStart(2, '0')}`;
+          const startText = d ? fmt(d) : '—';
+          const dateShort = d ? d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric' }) : '—';
+          const dur = upcoming?.duration_minutes ?? 0;
+          const durText = dur >= 60
+            ? (dur % 60 === 0 ? `${dur / 60} hr` : `${Math.floor(dur / 60)}h ${dur % 60}m`)
+            : `${dur} min`;
+          const pickup = upcoming?.pickup_location || [upcoming?.pupils?.address, upcoming?.pupils?.postcode].filter(Boolean).join(', ') || 'No pickup';
+          let etaText = '—';
+          if (d && driveData) {
+            const nowMs = Date.now();
+            const msUntilStart = d.getTime() - nowMs;
+            if (msUntilStart > 0 && msUntilStart <= 12 * 60 * 60 * 1000) {
+              const etaMs = nowMs + driveData.durationMinutes * 60000;
+              etaText = new Date(etaMs).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+            }
+          }
+
+          const phone = upcoming?.pupils?.phone ?? null;
+          const openMaps = () => {
+            if (driveData?.directionsUrl) {
+              window.open(driveData.directionsUrl, '_blank');
+            } else if (pickup) {
+              window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickup)}`, '_blank');
+            } else {
+              toast('No pickup location');
+            }
+          };
+
+          const StatCol = ({ label, value }: { label: string; value: string }) => (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, minWidth: 0 }}>
+              <div style={{ fontSize: 9, fontWeight: 600, color: '#8A93A3', letterSpacing: 0.6, textTransform: 'uppercase' }}>{label}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A' }}>{value}</div>
+            </div>
+          );
+
           return (
             <>
+              {/* Gradient header with route line */}
               <div
                 style={{
                   position: 'relative',
+                  height: 140,
+                  background: 'linear-gradient(135deg, #a7eadb 0%, #9ad7f5 50%, #85b7ff 100%)',
+                  borderRadius: '24px 24px 0 0',
                   overflow: 'hidden',
                   boxShadow: isLate ? 'inset 0 0 0 3px #C23B3B' : undefined,
                 }}
               >
-                {driveData ? (
-                  <NextLessonMap
-                    originLat={driveData.originLat}
-                    originLng={driveData.originLng}
-                    destLat={driveData.destLat}
-                    destLng={driveData.destLng}
-                    encodedPolyline={driveData.encodedPolyline}
-                    directionsUrl={driveData.directionsUrl}
-                    height={120}
-                    isLate={isLate}
-                  />
-                ) : (
-                  <div style={{ height: 85, background: '#E8EEF3' }} />
-                )}
+                <svg
+                  width="100%"
+                  height="100%"
+                  viewBox="0 0 200 100"
+                  preserveAspectRatio="none"
+                  style={{ position: 'absolute', inset: 0, padding: '32px 48px 24px' }}
+                >
+                  <path d="M20,80 Q100,20 180,30" stroke="#1877D6" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+                  <circle cx="20" cy="80" r="5" fill="#22C55E" stroke="#FFFFFF" strokeWidth="2" />
+                  <circle cx="180" cy="30" r="5" fill="#CC2229" stroke="#FFFFFF" strokeWidth="2" />
+                </svg>
               </div>
 
-              {/* Notify late banner */}
+              {/* Late banner */}
               {isLate && upcoming && (
                 <div style={{
                   background: '#FEECEC', padding: '8px 12px',
@@ -4537,51 +4574,59 @@ function HomePage() {
                 </div>
               )}
 
-              {/* Header row — avatar + NEXT LESSON label / name / subtitle + status pill */}
-              {upcoming && (() => {
-                const hStatus = (upcoming.payment_status ?? 'unpaid').toLowerCase();
-                const hAmountDue = Number(upcoming.amount_due ?? 0);
-                const hLabel = hAmountDue > 0
-                  ? `£${hAmountDue.toFixed(0)} due`
-                  : hStatus === 'prepaid'
-                    ? 'Prepaid'
-                    : 'Paid';
-                const hPillBg = hAmountDue > 0 ? '#FDECEC' : '#E7F4E8';
-                const hPillFg = hAmountDue > 0 ? '#CC2229' : '#2F7A3A';
-                return (
+              {/* Overlapping pupil info panel */}
+              {upcoming && (
+                <div style={{ padding: '0 16px', marginTop: -24, position: 'relative', zIndex: 2 }}>
                   <div style={{
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '8px 14px 10px',
+                    background: '#FFFFFF',
+                    borderRadius: 16,
+                    padding: 14,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                    border: '0.5px solid #EEF2F7',
                     fontFamily: 'Inter, sans-serif',
                   }}>
                     <div style={{
-                      width: 52, height: 52, borderRadius: '50%',
-                      background: pupilCalColour, color: '#FFFFFF',
+                      width: 48, height: 48, borderRadius: '50%',
+                      background: '#0B1F3A', color: '#FFFFFF',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 17, fontWeight: 700, flexShrink: 0,
-                      marginTop: -26, border: '3px solid #FFFFFF',
-                      position: 'relative', zIndex: 2,
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-                    }}>{pupilInitials}</div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 18, fontWeight: 800, color: '#0B1F3A', lineHeight: 1.15, marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {pupilFullName || 'Pupil'}
-                      </div>
+                      fontSize: 16, fontWeight: 700, flexShrink: 0,
+                    }}>
+                      {pupilInitials}
                     </div>
-                    <span style={{
-                      background: hPillBg, color: hPillFg,
-                      fontSize: 11, fontWeight: 600,
-                      padding: '5px 12px', borderRadius: 999,
-                      flexShrink: 0,
-                    }}>{hLabel}</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                        <div style={{ fontSize: 17, fontWeight: 700, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {pupilFullName || 'Pupil'}
+                        </div>
+                        <span style={{
+                          background: hPillBg, color: hPillFg,
+                          fontSize: 12, fontWeight: 700,
+                          padding: '4px 10px', borderRadius: 999,
+                          flexShrink: 0,
+                        }}>
+                          {hLabel}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: 13, fontWeight: 500, color: '#6B7280', marginTop: 2 }}>
+                        {durText} lesson · {startText}
+                      </div>
+                      {etaLabel && (
+                        <div style={{ fontSize: 12, fontWeight: 600, color: '#1877D6', marginTop: 2 }}>
+                          ETA: {etaLabel}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                );
-              })()}
+                </div>
+              )}
 
-              {/* Reasons row (only when late and at least one true) */}
+              {/* Reasons row */}
               {anyReason && (
                 <div style={{
-                  padding: '6px 12px', borderBottom: '1px solid #EEF2F7',
+                  padding: '6px 16px', borderBottom: '1px solid #EEF2F7',
                   display: 'flex', flexDirection: 'column', gap: 3,
                   fontFamily: 'Inter, sans-serif', fontSize: 11, color: '#5A6270',
                 }}>
@@ -4600,154 +4645,123 @@ function HomePage() {
                   )}
                 </div>
               )}
+
+              {/* Pickup location card */}
+              {upcoming ? (
+                <div style={{ padding: '12px 16px 0', fontFamily: 'Inter, sans-serif' }}>
+                  <div style={{
+                    display: 'flex', alignItems: 'flex-start', gap: 10,
+                    background: '#FFFFFF', borderRadius: 14, padding: '12px 14px',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                    border: '0.5px solid #EEF2F7',
+                  }}>
+                    <div style={{ marginTop: 2, color: '#CC2229', flexShrink: 0 }}>
+                      <MapPin size={18} />
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 11, fontWeight: 600, color: '#8A93A3', letterSpacing: 0.5, textTransform: 'uppercase' }}>Pick up</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', marginTop: 2, wordBreak: 'break-word' }}>{pickup}</div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ padding: '14px 12px', textAlign: 'center', color: '#8A93A3', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
+                  No upcoming lessons
+                </div>
+              )}
+
+              {/* Stats grid */}
+              {upcoming && (
+                <div style={{ padding: '12px 16px 0', fontFamily: 'Inter, sans-serif' }}>
+                  <div style={{
+                    display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6,
+                  }}>
+                    <StatCol label="Date" value={dateShort} />
+                    <StatCol label="Time" value={startText} />
+                    <StatCol label="Duration" value={durText} />
+                    <StatCol label="ETA" value={etaText} />
+                  </div>
+                </div>
+              )}
+
+              {/* Footer actions — Navigate + Text + Call */}
+              {upcoming && (
+                <div style={{ padding: '12px 16px 0', display: 'flex', gap: 8 }}>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); openMaps(); }}
+                    style={{
+                      flex: 3, background: '#1877D6', color: '#FFFFFF',
+                      border: 'none', borderRadius: 12, padding: '12px 0',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                      fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                    }}
+                  >
+                    <Navigation size={18} style={{ transform: 'rotate(45deg)' }} /> Navigate
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate({ to: '/messages/$pupilId', params: { pupilId: upcoming.pupil_id } as any });
+                    }}
+                    style={{
+                      flex: 1.5, background: '#FFFFFF', color: '#0B1F3A',
+                      border: '0.5px solid #EEF2F7', borderRadius: 12, padding: '12px 0',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                    }}
+                  >
+                    <MessageSquare size={18} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!phone) { toast('No phone number'); return; }
+                      window.location.href = `tel:${phone}`;
+                    }}
+                    style={{
+                      flex: 1.5, background: '#FFFFFF', color: '#0B1F3A',
+                      border: '0.5px solid #EEF2F7', borderRadius: 12, padding: '12px 0',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                    }}
+                  >
+                    <Phone size={18} />
+                  </button>
+                </div>
+              )}
+
+              {/* Expand details */}
+              {upcoming && (
+                <div style={{ padding: '12px 16px 16px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setHeroExpanded((v) => !v)}
+                    style={{
+                      width: '100%',
+                      background: '#FFFFFF',
+                      border: '0.5px solid #EEF2F7',
+                      borderRadius: 14,
+                      padding: '10px 0',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                      fontSize: 13, fontWeight: 600, color: '#1877D6',
+                      cursor: 'pointer',
+                      fontFamily: 'Inter, sans-serif',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                    }}
+                  >
+                    {heroExpanded ? 'Hide details' : 'Tap for details'}
+                    {heroExpanded ? <ChevronUp size={14} /> : <ChevronRight size={14} />}
+                  </button>
+                </div>
+              )}
             </>
           );
         })()}
-
-        {/* Pickup + stats */}
-        {upcoming ? (() => {
-          const d = lessonDateTime(upcoming);
-          const fmt = (x: Date) => `${String(x.getHours()).padStart(2, '0')}:${String(x.getMinutes()).padStart(2, '0')}`;
-          const startText = fmt(d);
-          const dateShort = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric' });
-          const dur = upcoming.duration_minutes ?? 0;
-          const durText = dur >= 60
-            ? (dur % 60 === 0 ? `${dur / 60} hr` : `${Math.floor(dur / 60)}h ${dur % 60}m`)
-            : `${dur} min`;
-          const pickup = upcoming.pickup_location || [upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ') || 'No pickup';
-          let etaText = '—';
-          if (driveData) {
-            const nowMs = Date.now();
-            const msUntilStart = d.getTime() - nowMs;
-            if (msUntilStart > 0 && msUntilStart <= 12 * 60 * 60 * 1000) {
-              const etaMs = nowMs + driveData.durationMinutes * 60000;
-              etaText = new Date(etaMs).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-            }
-          }
-          const StatCol = ({ label, value }: { label: string; value: string }) => (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, minWidth: 0 }}>
-              <div style={{ fontSize: 9, fontWeight: 600, color: '#8A93A3', letterSpacing: 0.6, textTransform: 'uppercase' }}>{label}</div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A' }}>{value}</div>
-            </div>
-          );
-          return (
-            <div
-              onClick={() => navigate({ to: '/pupils/$id', params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any })}
-              style={{ cursor: 'pointer', padding: '0 14px 12px', fontFamily: 'Inter, sans-serif' }}
-            >
-              {/* Pickup card */}
-              <div style={{
-                display: 'flex', alignItems: 'flex-start', gap: 8,
-                background: '#EEF3FB', borderRadius: 10, padding: '10px 12px',
-              }}>
-                <div style={{ fontSize: 16, lineHeight: 1, marginTop: 2 }}>📍</div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: '#5A6270', letterSpacing: 0.8, textTransform: 'uppercase' }}>Pick up</div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A', marginTop: 1, wordBreak: 'break-word' }}>{pickup}</div>
-                </div>
-              </div>
-              {/* Stats grid */}
-              <div style={{
-                marginTop: 10,
-                display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6,
-              }}>
-                <StatCol label="Date" value={dateShort} />
-                <StatCol label="Time" value={startText} />
-                <StatCol label="Duration" value={durText} />
-                <StatCol label="ETA" value={etaText} />
-              </div>
-            </div>
-          );
-        })() : (
-          <div style={{ padding: '14px 12px', textAlign: 'center', color: '#8A93A3', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
-            No upcoming lessons
-          </div>
-        )}
-
-        {/* Footer actions — Navigate + Text + Call */}
-        {upcoming && (() => {
-          const phone = upcoming.pupils?.phone ?? null;
-          const pickup = upcoming.pickup_location || [upcoming.pupils?.address, upcoming.pupils?.postcode].filter(Boolean).join(', ') || '';
-          const openMaps = () => {
-            if (driveData?.directionsUrl) {
-              window.open(driveData.directionsUrl, '_blank');
-            } else if (pickup) {
-              window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickup)}`, '_blank');
-            } else {
-              toast('No pickup location');
-            }
-          };
-          const secondaryBtn: React.CSSProperties = {
-            flex: 1, background: '#FFFFFF', color: '#0B1F3A',
-            border: '1px solid #E3E8F0', borderRadius: 10, padding: '10px 0',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-            fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-          };
-          return (
-            <div style={{ padding: '0 14px 12px', display: 'flex', gap: 8 }}>
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); openMaps(); }}
-                style={{
-                  flex: 1, background: '#1877D6', color: '#FFFFFF',
-                  border: 'none', borderRadius: 10, padding: '10px 0',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                  fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-                  boxShadow: '0 1px 3px rgba(24,119,214,0.3)',
-                }}
-              >
-                <span style={{ fontSize: 13 }}>▶</span> Navigate
-              </button>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate({ to: '/messages/$pupilId', params: { pupilId: upcoming.pupil_id } as any });
-                }}
-                style={secondaryBtn}
-              >
-                <span style={{ fontSize: 13 }}>💬</span> Text
-              </button>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!phone) { toast('No phone number'); return; }
-                  window.location.href = `tel:${phone}`;
-                }}
-                style={secondaryBtn}
-              >
-                <span style={{ fontSize: 13 }}>📞</span> Call
-              </button>
-            </div>
-          );
-        })()}
-
-
-        {/* Expand footer */}
-        {upcoming && (
-          <div style={{ padding: '0 10px 8px' }}>
-            <button
-              type="button"
-              onClick={() => setHeroExpanded((v) => !v)}
-              style={{
-                width: '100%',
-                background: '#EEF2F7',
-                border: 'none',
-                borderRadius: 999,
-                padding: '6px 0',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                fontSize: 11, fontWeight: 600, color: '#1877D6',
-                cursor: 'pointer',
-                fontFamily: 'Inter, sans-serif',
-              }}
-            >
-              {heroExpanded ? 'Hide details' : 'Tap for details'}
-              {heroExpanded ? <ChevronUp size={13} /> : <ChevronRight size={13} />}
-            </button>
-          </div>
-        )}
-
 
         {upcoming && heroExpanded && (
           <HeroExpandedPanel
