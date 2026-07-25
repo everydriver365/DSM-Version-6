@@ -131,6 +131,7 @@ import { Route as BookingsIdRouteImport } from './routes/bookings.$id'
 import { Route as AdminTermsRouteImport } from './routes/admin.terms'
 import { Route as AdminPodcastsRouteImport } from './routes/admin.podcasts'
 import { Route as AdminListingsRouteImport } from './routes/admin.listings'
+import { Route as AdminLearnVideosRouteImport } from './routes/admin.learn-videos'
 import { Route as AdminJobOffersRouteImport } from './routes/admin.job-offers'
 import { Route as AdminFeaturedRouteImport } from './routes/admin.featured'
 import { Route as AdminDsmLiveRouteImport } from './routes/admin.dsm-live'
@@ -760,6 +761,11 @@ const AdminListingsRoute = AdminListingsRouteImport.update({
   path: '/listings',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminLearnVideosRoute = AdminLearnVideosRouteImport.update({
+  id: '/learn-videos',
+  path: '/learn-videos',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminJobOffersRoute = AdminJobOffersRouteImport.update({
   id: '/job-offers',
   path: '/job-offers',
@@ -956,6 +962,7 @@ export interface FileRoutesByFullPath {
   '/admin/dsm-live': typeof AdminDsmLiveRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/job-offers': typeof AdminJobOffersRoute
+  '/admin/learn-videos': typeof AdminLearnVideosRoute
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
@@ -1095,6 +1102,7 @@ export interface FileRoutesByTo {
   '/admin/dsm-live': typeof AdminDsmLiveRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/job-offers': typeof AdminJobOffersRoute
+  '/admin/learn-videos': typeof AdminLearnVideosRoute
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
@@ -1239,6 +1247,7 @@ export interface FileRoutesById {
   '/admin/dsm-live': typeof AdminDsmLiveRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/job-offers': typeof AdminJobOffersRoute
+  '/admin/learn-videos': typeof AdminLearnVideosRoute
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
@@ -1383,6 +1392,7 @@ export interface FileRouteTypes {
     | '/admin/dsm-live'
     | '/admin/featured'
     | '/admin/job-offers'
+    | '/admin/learn-videos'
     | '/admin/listings'
     | '/admin/podcasts'
     | '/admin/terms'
@@ -1522,6 +1532,7 @@ export interface FileRouteTypes {
     | '/admin/dsm-live'
     | '/admin/featured'
     | '/admin/job-offers'
+    | '/admin/learn-videos'
     | '/admin/listings'
     | '/admin/podcasts'
     | '/admin/terms'
@@ -1665,6 +1676,7 @@ export interface FileRouteTypes {
     | '/admin/dsm-live'
     | '/admin/featured'
     | '/admin/job-offers'
+    | '/admin/learn-videos'
     | '/admin/listings'
     | '/admin/podcasts'
     | '/admin/terms'
@@ -2687,6 +2699,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminListingsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/learn-videos': {
+      id: '/admin/learn-videos'
+      path: '/learn-videos'
+      fullPath: '/admin/learn-videos'
+      preLoaderRoute: typeof AdminLearnVideosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/job-offers': {
       id: '/admin/job-offers'
       path: '/job-offers'
@@ -2848,6 +2867,7 @@ interface AdminRouteChildren {
   AdminDsmLiveRoute: typeof AdminDsmLiveRoute
   AdminFeaturedRoute: typeof AdminFeaturedRoute
   AdminJobOffersRoute: typeof AdminJobOffersRoute
+  AdminLearnVideosRoute: typeof AdminLearnVideosRoute
   AdminListingsRoute: typeof AdminListingsRoute
   AdminPodcastsRoute: typeof AdminPodcastsRoute
   AdminTermsRoute: typeof AdminTermsRoute
@@ -2858,6 +2878,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminDsmLiveRoute: AdminDsmLiveRoute,
   AdminFeaturedRoute: AdminFeaturedRoute,
   AdminJobOffersRoute: AdminJobOffersRoute,
+  AdminLearnVideosRoute: AdminLearnVideosRoute,
   AdminListingsRoute: AdminListingsRoute,
   AdminPodcastsRoute: AdminPodcastsRoute,
   AdminTermsRoute: AdminTermsRoute,
