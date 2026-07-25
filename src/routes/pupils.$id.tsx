@@ -455,6 +455,7 @@ function PupilDetailPage() {
     overallMaxSpeed: number;
     overspeedCount: number;
     overspeedEvents: OverspeedEvent[];
+    coords: Coord[];
   } | null>(null);
   const [selectedOverspeedEvent, setSelectedOverspeedEvent] = useState<OverspeedEvent | null>(null);
   const [reportLoading, setReportLoading] = useState(false);
@@ -565,6 +566,7 @@ function PupilDetailPage() {
         overallMaxSpeed: report.overallMaxSpeed,
         overspeedCount: overspeedEvents.length || report.segments.filter((s) => s.exceeded).length,
         overspeedEvents,
+        coords,
       });
     } finally {
       setReportLoading(false);
@@ -603,8 +605,15 @@ function PupilDetailPage() {
     }
   };
 
-
-
+  function routeStaticMapUrl(coords: Coord[], size = "400x160") {
+    if (coords.length === 0) return null;
+    const step = Math.max(1, Math.floor(coords.length / 100));
+    const path = coords
+      .filter((_, i) => i % step === 0)
+      .map((c) => `${c.lat},${c.lng}`)
+      .join("|");
+    return `https://maps.googleapis.com/maps/api/staticmap?size=${size}&maptype=roadmap&path=color:0x1877D6FF|weight:4|${path}&key=${GOOGLE_MAPS_KEY}`;
+  }
 
   const [editSheetOpen, setEditSheetOpen] = useState(false);
   const [editSaving, setEditSaving] = useState(false);
@@ -2404,6 +2413,14 @@ function PupilDetailPage() {
               )}
 
 
+
+              {viewingReport.coords.length > 0 && (
+                <img
+                  src={routeStaticMapUrl(viewingReport.coords) ?? undefined}
+                  alt="Lesson route map"
+                  style={{ width: "100%", borderRadius: 12, marginBottom: 12 }}
+                />
+              )}
 
               <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
                 Road segments
