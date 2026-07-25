@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -10,6 +11,7 @@ import {
   CalendarOff,
   Zap,
   CalendarDays,
+  X,
 } from "lucide-react";
 import { IconPlayerPlay } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -37,13 +39,13 @@ const GRAY_BODY = "#6B7A90";
 const LABEL_GRAY = "#5F6B7A";
 const FONT = "Poppins, sans-serif";
 
-type Video = { title: string; duration: string };
+type Video = { title: string; duration: string; url: string | null };
 
 const HOW_TO_VIDEOS: Video[] = [
-  { title: "Fill gaps in your schedule automatically", duration: "0:24" },
-  { title: "Reply to enquiries in one tap", duration: "0:31" },
-  { title: "Log a lesson from the timeline", duration: "0:18" },
-  { title: "Set up recurring lessons", duration: "0:42" },
+  { title: "Fill gaps in your schedule automatically", duration: "0:24", url: null },
+  { title: "Reply to enquiries in one tap", duration: "0:31", url: null },
+  { title: "Log a lesson from the timeline", duration: "0:18", url: null },
+  { title: "Set up recurring lessons", duration: "0:42", url: null },
 ];
 
 type Guide = { icon: LucideIcon; title: string; subtitle: string; route: string };
@@ -134,11 +136,12 @@ function SectionLabel({ icon, children }: { icon: React.ReactNode; children: Rea
   );
 }
 
-function VideoCard({ v, index }: { v: Video; index: number }) {
+function VideoCard({ v, index, onPlay }: { v: Video; index: number; onPlay: () => void }) {
   const fill = index % 2 === 0 ? NAVY : BLUE;
   return (
     <button
       type="button"
+      onClick={onPlay}
       style={{
         background: "transparent",
         border: "none",
@@ -215,6 +218,7 @@ function VideoCard({ v, index }: { v: Video; index: number }) {
 
 function LearnPage() {
   const navigate = useNavigate();
+  const [activeVideo, setActiveVideo] = useState<Video | null>(null);
 
   return (
     <PageLayout className="pb-24" style={{ fontFamily: FONT, background: CANVAS }}>
@@ -247,7 +251,15 @@ function LearnPage() {
           }}
         >
           {HOW_TO_VIDEOS.map((v, i) => (
-            <VideoCard key={v.title} v={v} index={i} />
+            <VideoCard
+              key={v.title}
+              v={v}
+              index={i}
+              onPlay={() => {
+                if (v.url) setActiveVideo(v);
+                else toast.info("Video coming soon");
+              }}
+            />
           ))}
         </div>
       </div>
@@ -276,6 +288,50 @@ function LearnPage() {
         </div>
       ))}
 
+      {activeVideo?.url && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 200,
+            background: "rgba(0,0,0,0.92)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={() => setActiveVideo(null)}
+        >
+          <button
+            type="button"
+            aria-label="Close video"
+            onClick={() => setActiveVideo(null)}
+            style={{
+              position: "absolute",
+              top: "calc(16px + env(safe-area-inset-top, 0px))",
+              right: 16,
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              border: "none",
+              background: "rgba(255,255,255,0.15)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            <X size={20} color="#FFFFFF" />
+          </button>
+          <video
+            src={activeVideo.url}
+            controls
+            autoPlay
+            playsInline
+            onClick={(e) => e.stopPropagation()}
+            style={{ width: "100%", maxHeight: "80vh", background: "#000" }}
+          />
+        </div>
+      )}
     </PageLayout>
   );
 }
