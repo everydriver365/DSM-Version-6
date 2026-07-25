@@ -164,6 +164,21 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
           boxShadow: CARD_SHADOW,
         }}
       >
+        {!thumb && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: 0.18,
+            }}
+          >
+            <Film size={64} color="#FFFFFF" />
+          </div>
+        )}
+
         <div
           style={{
             position: "absolute",
