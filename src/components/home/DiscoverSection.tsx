@@ -33,6 +33,7 @@ type LiveItem = {
   is_live: boolean | null;
   max_spaces: number | null;
   spaces_taken: number | null;
+  image_url: string | null;
 };
 
 type LearnItem = {
@@ -307,7 +308,7 @@ export function DiscoverSection() {
     (async () => {
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&status=eq.upcoming&order=session_date.asc&limit=12&select=id,title,session_date,session_time,duration_minutes,is_live,max_spaces,spaces_taken`,
+          `${SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&status=eq.upcoming&order=session_date.asc&limit=12&select=id,title,session_date,session_time,duration_minutes,is_live,max_spaces,spaces_taken,image_url`,
           { headers },
         );
         const data = (await res.json()) as LiveItem[];
@@ -371,13 +372,15 @@ export function DiscoverSection() {
             position: "relative",
             width: HERO_W,
             flexShrink: 0,
-            background: `linear-gradient(135deg, ${NAVY} 0%, ${BLUE} 100%)`,
+            background: s.image_url
+              ? `url(${s.image_url}) center/cover`
+              : `linear-gradient(135deg, ${NAVY} 0%, ${BLUE} 100%)`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <IconVideo size={30} color="#FFFFFF" stroke={1.6} />
+          {!s.image_url && <IconVideo size={30} color="#FFFFFF" stroke={1.6} />}
           <CategoryPill label="Live" color={RED} />
           <span
             style={{
