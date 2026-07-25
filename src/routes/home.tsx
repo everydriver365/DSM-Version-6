@@ -4564,6 +4564,11 @@ function HomePage() {
             />
           </div>
 
+          {/* LEARN NUDGE */}
+          <div style={{ marginBottom: 20 }}>
+            <LearnNudge />
+          </div>
+
           {/* STATS ROW */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 16, marginBottom: 24 }}>
             <div style={cardStyle}>
