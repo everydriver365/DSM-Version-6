@@ -353,6 +353,30 @@ function GuideRow({ g, onGo, isLast }: { g: Guide; onGo: () => void; isLast: boo
 function LearnPage() {
   const navigate = useNavigate();
   const [playing, setPlaying] = useState<Video | null>(null);
+  const [playbackSrc, setPlaybackSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    let objectUrl: string | null = null;
+    let cancelled = false;
+    setPlaybackSrc(null);
+    const url = playing?.url;
+    if (url && !getYouTubeEmbedUrl(url)) {
+      getCachedObjectUrl(url).then((blobUrl) => {
+        if (!blobUrl) return;
+        if (cancelled) {
+          URL.revokeObjectURL(blobUrl);
+          return;
+        }
+        objectUrl = blobUrl;
+        setPlaybackSrc(blobUrl);
+      });
+    }
+    return () => {
+      cancelled = true;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [playing]);
+
   const [videos, setVideos] = useState<Video[]>([]);
 
   useEffect(() => {
