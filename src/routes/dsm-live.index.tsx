@@ -251,9 +251,10 @@ function DsmLivePage() {
               onClick={() => setCategory(c)}
               style={{
                 flexShrink: 0,
-                background: active ? "#185FA5" : "#FFFFFF",
-                color: active ? "#FFFFFF" : "#333333",
-                border: active ? "0.5px solid #185FA5" : "0.5px solid rgba(0,0,0,0.08)",
+                background: active ? "#0B1F3A" : "#FFFFFF",
+                color: active ? "#FFFFFF" : "#0B1F3A",
+                border: active ? "0.5px solid #0B1F3A" : "0.5px solid #E2E6ED",
+
                 borderRadius: 999,
                 padding: "8px 16px",
                 fontSize: 13,
