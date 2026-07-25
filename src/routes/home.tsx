@@ -6982,6 +6982,24 @@ function HeroExpandedPanel({
         </button>
       </div>
 
+      {/* Text / Call */}
+      <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+        <button
+          type="button"
+          style={{ ...pillBase, flexDirection: 'row', gap: 6, fontSize: 13, fontWeight: 600 }}
+          onClick={(e) => { e.stopPropagation(); navigate({ to: '/messages/$pupilId', params: { pupilId: lesson.pupil_id } as any }); }}
+        >
+          <MessageSquare size={16} color="#0B1F3A" /> Text
+        </button>
+        <button
+          type="button"
+          style={{ ...pillBase, flexDirection: 'row', gap: 6, fontSize: 13, fontWeight: 600 }}
+          onClick={(e) => { e.stopPropagation(); if (!phone) { toast('No phone number'); return; } window.location.href = `tel:${phone}`; }}
+        >
+          <Phone size={16} color="#0B1F3A" /> Call
+        </button>
+      </div>
+
       {/* Pickup */}
       <div style={{ marginTop: 14 }}>
         <div style={sectionLabel}>Pickup</div>
