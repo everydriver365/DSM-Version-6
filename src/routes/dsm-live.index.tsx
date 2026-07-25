@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
-  ArrowLeft,
   ArrowRight,
   Calendar as CalendarIcon,
   Clock,
@@ -17,11 +16,13 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { IconBroadcast } from "@tabler/icons-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 import {
   CATEGORIES,
   type LiveSession,
 } from "./dsm-live";
+
 
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
