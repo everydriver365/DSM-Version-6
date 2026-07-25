@@ -455,6 +455,7 @@ function PupilDetailPage() {
     overallMaxSpeed: number;
     overspeedCount: number;
     overspeedEvents: OverspeedEvent[];
+    coords: Coord[];
   } | null>(null);
   const [selectedOverspeedEvent, setSelectedOverspeedEvent] = useState<OverspeedEvent | null>(null);
   const [reportLoading, setReportLoading] = useState(false);
@@ -565,6 +566,7 @@ function PupilDetailPage() {
         overallMaxSpeed: report.overallMaxSpeed,
         overspeedCount: overspeedEvents.length || report.segments.filter((s) => s.exceeded).length,
         overspeedEvents,
+        coords,
       });
     } finally {
       setReportLoading(false);
