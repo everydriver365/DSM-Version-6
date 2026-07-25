@@ -159,6 +159,7 @@ function AdminDsmLive() {
   const [cropZoom, setCropZoom] = useState<number>(100);
   const cropDragRef = useRef<{ startX: number; startY: number; startPosX: number; startPosY: number; width: number; height: number } | null>(null);
   const [recurringFrequency, setRecurringFrequency] = useState<Frequency>("weekly");
+  const [recurringDays, setRecurringDays] = useState<number[]>([]);
   const [recurringUntil, setRecurringUntil] = useState<string>("");
   const [convertToRecurring, setConvertToRecurring] = useState(false);
   const [recurringUpdateOpen, setRecurringUpdateOpen] = useState(false);
