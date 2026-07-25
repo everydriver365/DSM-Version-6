@@ -1,9 +1,21 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronRight, Play, Star, TrendingUp } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import {
+  ChevronRight,
+  Play,
+  Star,
+  TrendingUp,
+  ShoppingBag,
+  Award,
+  CalendarOff,
+  Zap,
+  CalendarDays,
+} from "lucide-react";
 import { IconPlayerPlay } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+
 
 export const Route = createFileRoute("/learn")({
   head: () => ({
@@ -33,6 +45,75 @@ const HOW_TO_VIDEOS: Video[] = [
   { title: "Log a lesson from the timeline", duration: "0:18" },
   { title: "Set up recurring lessons", duration: "0:42" },
 ];
+
+type Guide = { icon: LucideIcon; title: string; subtitle: string; route: string };
+
+const GROUPS: { heading: string; icon: LucideIcon; items: Guide[] }[] = [
+  {
+    heading: "Grow your business",
+    icon: TrendingUp,
+    items: [
+      { icon: Star, title: "Get more 5 star reviews", subtitle: "2 min read", route: "/reviews" },
+      { icon: ShoppingBag, title: "Marketplace", subtitle: "Sell courses and services to other ADIs", route: "/marketplace" },
+      { icon: Award, title: "Accreditations", subtitle: "Show pupils the qualifications you've earned", route: "/certifications" },
+    ],
+  },
+  {
+    heading: "Organise your day",
+    icon: CalendarDays,
+    items: [
+      { icon: CalendarOff, title: "Gap Filler", subtitle: "Find pupils for empty slots automatically", route: "/gaps" },
+      { icon: Zap, title: "Auto-booking", subtitle: "Let pupils book into your free time", route: "/availability" },
+    ],
+  },
+];
+
+function GuideRow({ g, onGo, isLast }: { g: Guide; onGo: () => void; isLast: boolean }) {
+  const Icon = g.icon;
+  return (
+    <button
+      type="button"
+      onClick={onGo}
+      style={{
+        width: "100%",
+        background: "white",
+        border: "none",
+        padding: "12px 14px",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        cursor: "pointer",
+        textAlign: "left",
+        fontFamily: FONT,
+        borderBottom: isLast ? "none" : "1px solid #F0F3F7",
+      }}
+    >
+      <div
+        style={{
+          width: 36,
+          height: 36,
+          borderRadius: 10,
+          background: "#E6F1FB",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <Icon size={18} color={BLUE} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 13, fontWeight: 600, color: NAVY, lineHeight: 1.3 }}>{g.title}</div>
+        <div style={{ fontSize: 12, color: "#8A94A3", lineHeight: 1.35, marginTop: 1 }}>
+          {g.subtitle}
+        </div>
+      </div>
+      <ChevronRight size={18} color="#8A94A3" />
+    </button>
+  );
+}
+
+
 
 function SectionLabel({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
   return (
@@ -171,59 +252,30 @@ function LearnPage() {
         </div>
       </div>
 
-      <div style={{ marginTop: 24 }}>
-        <SectionLabel icon={<TrendingUp size={14} color={BLUE} />}>Grow your business</SectionLabel>
-        <div
-          style={{
-            margin: "0 16px",
-            background: "white",
-            borderRadius: 14,
-            boxShadow: CARD_SHADOW,
-            overflow: "hidden",
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/reviews" as never })}
+      {GROUPS.map((group) => (
+        <div key={group.heading} style={{ marginTop: 24 }}>
+          <SectionLabel icon={<group.icon size={14} color={BLUE} />}>{group.heading}</SectionLabel>
+          <div
             style={{
-              width: "100%",
+              margin: "0 16px",
               background: "white",
-              border: "none",
-              padding: "12px 14px",
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              cursor: "pointer",
-              textAlign: "left",
-              fontFamily: FONT,
+              borderRadius: 14,
+              boxShadow: CARD_SHADOW,
+              overflow: "hidden",
             }}
           >
-            <div
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 10,
-                background: "#E6F1FB",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <Star size={18} color={BLUE} />
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: NAVY, lineHeight: 1.3 }}>
-                Get more 5 star reviews
-              </div>
-              <div style={{ fontSize: 12, color: "#8A94A3", lineHeight: 1.35, marginTop: 1 }}>
-                2 min read
-              </div>
-            </div>
-            <ChevronRight size={18} color="#8A94A3" />
-          </button>
+            {group.items.map((g, i) => (
+              <GuideRow
+                key={g.title}
+                g={g}
+                onGo={() => navigate({ to: g.route as never })}
+                isLast={i === group.items.length - 1}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      ))}
+
     </PageLayout>
   );
 }
