@@ -21,19 +21,45 @@ const CATEGORIES = [
 ];
 const STATUSES = ["upcoming", "live", "completed", "cancelled"] as const;
 const FREQUENCIES = [
+  { value: "daily", label: "Daily", days: 1 },
   { value: "weekly", label: "Weekly", days: 7 },
   { value: "fortnightly", label: "Fortnightly", days: 14 },
   { value: "monthly", label: "Monthly", days: 0 /* month-based */ },
+  { value: "custom", label: "Custom days", days: 0 },
 ] as const;
+
+const DAY_LABELS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 type Frequency = typeof FREQUENCIES[number]["value"];
 
-function generateOccurrences(startDate: string, until: string, freq: Frequency): string[] {
+function fmtLocalDate(d: Date): string {
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${m}-${day}`;
+}
+
+function generateOccurrences(
+  startDate: string,
+  until: string,
+  freq: Frequency,
+  customDays: number[] = [],
+): string[] {
   const out: string[] = [];
   if (!startDate || !until) return out;
   const start = new Date(startDate + "T00:00:00");
   const end = new Date(until + "T00:00:00");
   if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) return [startDate];
+  if (freq === "custom") {
+    if (!customDays.length) return [startDate];
+    const cur = new Date(start);
+    let guard = 0;
+    while (cur <= end && guard < 1000) {
+      if (customDays.includes(cur.getDay())) out.push(fmtLocalDate(cur));
+      cur.setDate(cur.getDate() + 1);
+      guard++;
+    }
+    return out;
+  }
   const cur = new Date(start);
   let guard = 0;
   while (cur <= end && guard < 500) {
@@ -41,7 +67,7 @@ function generateOccurrences(startDate: string, until: string, freq: Frequency):
     if (freq === "monthly") {
       cur.setMonth(cur.getMonth() + 1);
     } else {
-      const days = freq === "fortnightly" ? 14 : 7;
+      const days = freq === "daily" ? 1 : freq === "fortnightly" ? 14 : 7;
       cur.setDate(cur.getDate() + days);
     }
     guard++;
@@ -133,6 +159,7 @@ function AdminDsmLive() {
   const [cropZoom, setCropZoom] = useState<number>(100);
   const cropDragRef = useRef<{ startX: number; startY: number; startPosX: number; startPosY: number; width: number; height: number } | null>(null);
   const [recurringFrequency, setRecurringFrequency] = useState<Frequency>("weekly");
+  const [recurringDays, setRecurringDays] = useState<number[]>([]);
   const [recurringUntil, setRecurringUntil] = useState<string>("");
   const [convertToRecurring, setConvertToRecurring] = useState(false);
   const [recurringUpdateOpen, setRecurringUpdateOpen] = useState(false);
@@ -180,11 +207,66 @@ function AdminDsmLive() {
     setTimeout(() => setToast(null), 2000);
   }
 
+  function changeFrequency(v: Frequency) {
+    setRecurringFrequency(v);
+    if (v !== "custom") setRecurringDays([]);
+  }
+
+  function toggleRecurringDay(d: number) {
+    setRecurringDays((prev) =>
+      prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d].sort((a, b) => a - b),
+    );
+  }
+
+  const customDaysInvalid = recurringFrequency === "custom" && recurringDays.length === 0;
+
+  function renderDayPicker() {
+    if (recurringFrequency !== "custom") return null;
+    return (
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A", marginBottom: 6 }}>
+          Repeat on
+        </div>
+        <div style={{ display: "flex", gap: 6 }}>
+          {DAY_LABELS.map((lbl, i) => {
+            const on = recurringDays.includes(i);
+            return (
+              <button
+                key={lbl}
+                type="button"
+                onClick={() => toggleRecurringDay(i)}
+                style={{
+                  flex: 1,
+                  padding: "8px 0",
+                  borderRadius: 8,
+                  border: on ? "0.5px solid #0B1F3A" : "0.5px solid #E2E6ED",
+                  background: on ? "#0B1F3A" : "#FFFFFF",
+                  color: on ? "#FFFFFF" : "#6B7280",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                {lbl}
+              </button>
+            );
+          })}
+        </div>
+        {customDaysInvalid && (
+          <div style={{ fontSize: 11, color: "#CC2229", marginTop: 6 }}>
+            Select at least one day.
+          </div>
+        )}
+      </div>
+    );
+  }
+
   function openAdd() {
     setEditing(null);
     setForm(emptyForm());
     setIsRecurring(false);
     setRecurringFrequency("weekly");
+    setRecurringDays([]);
     setRecurringUntil("");
     setConvertToRecurring(false);
     setShowSheet(true);
@@ -195,6 +277,7 @@ function AdminDsmLive() {
     setForm({ ...s });
     setIsRecurring(false);
     setRecurringFrequency("weekly");
+    setRecurringDays([]);
     setRecurringUntil("");
     setConvertToRecurring(false);
     setShowSheet(true);
@@ -247,6 +330,7 @@ function AdminDsmLive() {
             editing.session_date,
             recurringUntil,
             recurringFrequency,
+            recurringDays,
           ).filter((d) => d !== editing.session_date);
           await restFetch(`dsm_live_sessions?id=eq.${editing.id}`, {
             method: "PATCH",
@@ -284,7 +368,7 @@ function AdminDsmLive() {
         }
       } else if (isRecurring && recurringUntil && form.session_date) {
         const groupId = crypto.randomUUID();
-        const dates = generateOccurrences(form.session_date, recurringUntil, recurringFrequency);
+        const dates = generateOccurrences(form.session_date, recurringUntil, recurringFrequency, recurringDays);
         const rows = dates.map((d) => ({
           ...payload,
           session_date: d,
@@ -759,13 +843,14 @@ function AdminDsmLive() {
                     <select
                       style={inp}
                       value={recurringFrequency}
-                      onChange={(e) => setRecurringFrequency(e.target.value as Frequency)}
+                      onChange={(e) => changeFrequency(e.target.value as Frequency)}
                     >
                       {FREQUENCIES.map((f) => (
                         <option key={f.value} value={f.value}>{f.label}</option>
                       ))}
                     </select>
                   </FormField>
+                  {renderDayPicker()}
                   <FormField label="Repeat until">
                     <input
                       type="date"
@@ -794,13 +879,14 @@ function AdminDsmLive() {
                     <select
                       style={inp}
                       value={recurringFrequency}
-                      onChange={(e) => setRecurringFrequency(e.target.value as Frequency)}
+                      onChange={(e) => changeFrequency(e.target.value as Frequency)}
                     >
                       {FREQUENCIES.map((f) => (
                         <option key={f.value} value={f.value}>{f.label}</option>
                       ))}
                     </select>
                   </FormField>
+                  {renderDayPicker()}
                   <FormField label="Repeat until">
                     <input
                       type="date"
@@ -818,7 +904,7 @@ function AdminDsmLive() {
           )}
           <button
             type="button"
-            disabled={saving}
+            disabled={saving || ((isRecurring || convertToRecurring) && customDaysInvalid)}
             onClick={handleSave}
             style={{
               width: "100%",
@@ -831,7 +917,7 @@ function AdminDsmLive() {
               fontWeight: 600,
               marginTop: 12,
               cursor: "pointer",
-              opacity: saving ? 0.6 : 1,
+              opacity: saving || ((isRecurring || convertToRecurring) && customDaysInvalid) ? 0.6 : 1,
               position: "sticky",
               bottom: 16,
               boxShadow: "0 -8px 16px rgba(255,255,255,0.9)",
