@@ -4675,11 +4675,6 @@ function HomePage() {
                             <MapPin size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
                             <span style={{ wordBreak: 'break-word' }}>{pickup}</span>
                           </div>
-                          {etaLabel && (
-                            <div style={{ fontSize: 12, fontWeight: 600, color: isLate ? '#C23B3B' : '#1877D6', marginTop: 6 }}>
-                              ETA {etaLabel}
-                            </div>
-                          )}
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
                           {priceText && (
