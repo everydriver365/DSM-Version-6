@@ -1,29 +1,22 @@
-Plan: Add a full-duration countdown to the Practical test tile and the Tests list
+## What's happening
 
-1. **Create a shared countdown helper** (`src/lib/dateHelpers.ts`)
-   - Add a `formatCountdown(targetDate: string, targetTime?: string | null)` utility.
-   - It computes the difference between now and the target date/time, and returns:
-     - "Today" if the target is today.
-     - "Tomorrow" if the target is tomorrow.
-     - "X days left" for future dates more than 1 day away.
-     - "X hrs left" if today but a time is set and still in the future.
-     - "Overdue" or a past-state label if the target is in the past.
-   - Keep the helper framework-agnostic so it can be used from both `pupils.$id.tsx` and `tests.tsx`.
+The thumbnail code is in place, but every existing `learn_videos` row still has `thumbnail_url: null` (confirmed in the Learn page's fetch response):
 
-2. **Update the Practical test tile** in `src/routes/pupils.$id.tsx` (~line 1756)
-   - Import `formatCountdown`.
-   - Keep the existing date/time/centre display as-is.
-   - Add a new text line directly below the centre line that shows the countdown in the same text styling (e.g., `text-[10px] text-slate-500` or a subtle blue accent) only when `pupil.test_date` is set.
-   - For past/completed tests, show a short status label instead of a negative countdown (e.g., "Test completed").
+- "welcome video" — uploaded file, no thumbnail
+- "Stopping & Impact" — no url at all
+- "Blue Light" — YouTube link `youtu.be/Jq2esSZAX9E`, no thumbnail
 
-3. **Update the Tests list card** in `src/routes/tests.tsx` (`TestCard` component, ~line 437)
-   - Import `formatCountdown` from the new helper.
-   - Keep the existing date/time and the existing small "days badge" as-is.
-   - Add a second line under the date/time showing the full-duration countdown for upcoming tests.
-   - Past tests (the "needs result" group) do not need a countdown; leave that area unchanged.
+Thumbnails are only written when a video is created or re-saved in the admin form, so nothing shows for rows created earlier.
 
-4. **Validation**
-   - Run the TypeScript typecheck to ensure the new helper and its call sites are type-safe.
-   - Do a quick visual check in the pupil-detail preview to confirm the countdown appears under the Practical tile and the Tests list shows the same countdown style.
+## Fix
 
-Scope: only the Practical tile in `pupils.$id.tsx` and the `TestCard` in `tests.tsx`. No live timers, no backend changes.
+1. **`src/routes/learn.tsx` — derive YouTube thumbnails at render time.**
+   Add a small helper that returns `https://img.youtube.com/vi/{id}/hqdefault.jpg` from a video's `url` when it's a YouTube link, and use it in `VideoCard` as: `thumbnail_url` first, then the derived YouTube thumbnail, then the existing flat navy/blue fill. This means YouTube entries always show a thumbnail regardless of what's stored, so no admin re-save is needed.
+
+2. **Backfill stored thumbnails for YouTube rows** so the database matches what's displayed — a one-off SQL update setting `thumbnail_url` for rows whose `url` matches a YouTube pattern.
+
+3. **Uploaded-file videos** (like "welcome video") genuinely have no image available. These keep the flat colour fill until an admin edits the entry and attaches a thumbnail image via the new "Thumbnail image (optional)" input. I'll confirm the edit form preserves and replaces `thumbnail_url` correctly so that path works on the first try.
+
+## Notes
+
+Rows with no `url` at all ("Stopping & Impact") stay on the flat fill — nothing to derive from.
