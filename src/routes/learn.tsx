@@ -391,7 +391,7 @@ function LearnPage() {
     (async () => {
       const { data, error } = await supabase
         .from("learn_videos")
-        .select("id, title, duration, url")
+        .select("id, title, duration, url, thumbnail_url")
         .order("sort_order", { ascending: true });
       if (!cancelled && !error && data) setVideos(data as Video[]);
     })();
