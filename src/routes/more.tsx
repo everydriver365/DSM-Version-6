@@ -310,6 +310,6 @@ function MorePage() {
           );
         })
       )}
-    </div>
+    </PageLayout>
   );
 }
