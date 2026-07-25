@@ -826,21 +826,42 @@ function AdminLearnVideosPage() {
                 }}
               >
                 <div
-                  title={v.url ? "Video uploaded" : "No video uploaded yet"}
+                  title={
+                    v.thumbnail_url
+                      ? "Cover image set"
+                      : v.url
+                        ? "No cover image yet"
+                        : "No video uploaded yet"
+                  }
                   style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 10,
-                    background: v.url ? "#E8F1FC" : "#F1F3F6",
+                    width: 64,
+                    height: 40,
+                    borderRadius: 8,
+                    overflow: "hidden",
+                    background: v.thumbnail_url
+                      ? "#000"
+                      : v.url
+                        ? "#E8F1FC"
+                        : "#F1F3F6",
                     color: v.url ? BLUE : "#B4BCC7",
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
                     flexShrink: 0,
+                    border: `1px solid ${BORDER}`,
                   }}
                 >
-                  <Play size={16} />
+                  {v.thumbnail_url ? (
+                    <img
+                      src={v.thumbnail_url}
+                      alt=""
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <Film size={16} />
+                  )}
                 </div>
+
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div
                     style={{
