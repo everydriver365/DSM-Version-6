@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronRight, Star, TrendingUp, Play, ShoppingBag, Award, CalendarOff, Zap } from "lucide-react";
+import { ChevronRight, Star, TrendingUp, Play, ShoppingBag, Award, CalendarOff, Zap, X } from "lucide-react";
 import { IconPlayerPlay } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
@@ -26,13 +27,13 @@ const GRAY_LABEL = "#5F6B7A";
 const GRAY_SUBTITLE = "#8A94A3";
 const FONT = "Poppins, sans-serif";
 
-type Video = { title: string; duration: string };
+type Video = { title: string; duration: string; url: string | null };
 
 const HOW_TO_VIDEOS: Video[] = [
-  { title: "Fill gaps in your schedule automatically", duration: "0:24" },
-  { title: "Reply to enquiries in one tap", duration: "0:31" },
-  { title: "Log a lesson from the timeline", duration: "0:18" },
-  { title: "Set up recurring lessons", duration: "0:42" },
+  { title: "Fill gaps in your schedule automatically", duration: "0:24", url: null },
+  { title: "Reply to enquiries in one tap", duration: "0:31", url: null },
+  { title: "Log a lesson from the timeline", duration: "0:18", url: null },
+  { title: "Set up recurring lessons", duration: "0:42", url: null },
 ];
 
 type Guide = { icon: any; title: string; description: string; route: string };
@@ -54,10 +55,11 @@ const GROUPS: { heading: string; items: Guide[] }[] = [
   },
 ];
 
-function VideoCard({ v, color }: { v: Video; color: string }) {
+function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () => void }) {
   return (
     <button
       type="button"
+      onClick={onPlay}
       style={{
         background: "transparent",
         border: "none",
@@ -253,6 +255,8 @@ function GuideRow({ g, onGo, isLast }: { g: Guide; onGo: () => void; isLast: boo
 
 function LearnPage() {
   const navigate = useNavigate();
+  const [playing, setPlaying] = useState<Video | null>(null);
+
 
   return (
     <PageLayout className="pb-24" style={{ fontFamily: FONT, background: CANVAS }}>
@@ -291,7 +295,15 @@ function LearnPage() {
           }}
         >
           {HOW_TO_VIDEOS.map((v, i) => (
-            <VideoCard key={i} v={v} color={i % 2 === 0 ? NAVY : BLUE} />
+            <VideoCard
+              key={i}
+              v={v}
+              color={i % 2 === 0 ? NAVY : BLUE}
+              onPlay={() => {
+                if (v.url) setPlaying(v);
+                else toast.info("Video coming soon");
+              }}
+            />
           ))}
         </div>
       </div>
@@ -351,6 +363,54 @@ function LearnPage() {
           </div>
         </div>
       ))}
+
+      {playing && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 2000,
+            background: "rgba(0,0,0,0.94)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={() => setPlaying(null)}
+        >
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setPlaying(null);
+            }}
+            aria-label="Close video"
+            style={{
+              position: "absolute",
+              top: "calc(16px + env(safe-area-inset-top, 0px))",
+              right: 16,
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              border: "none",
+              background: "rgba(255,255,255,0.18)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            <X size={20} color="#FFFFFF" />
+          </button>
+          <video
+            src={playing.url ?? undefined}
+            controls
+            autoPlay
+            playsInline
+            onClick={(e) => e.stopPropagation()}
+            style={{ width: "100%", maxHeight: "80vh", background: "#000" }}
+          />
+        </div>
+      )}
     </PageLayout>
   );
 }
