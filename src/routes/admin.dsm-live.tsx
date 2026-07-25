@@ -327,7 +327,7 @@ function AdminDsmLive() {
         }
       } else if (isRecurring && recurringUntil && form.session_date) {
         const groupId = crypto.randomUUID();
-        const dates = generateOccurrences(form.session_date, recurringUntil, recurringFrequency);
+        const dates = generateOccurrences(form.session_date, recurringUntil, recurringFrequency, recurringDays);
         const rows = dates.map((d) => ({
           ...payload,
           session_date: d,
