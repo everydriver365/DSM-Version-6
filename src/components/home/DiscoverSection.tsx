@@ -187,18 +187,30 @@ function TileShell({
   );
 }
 
-function SeeMore({ label }: { label: string }) {
+function SeeMore({ label, onClick }: { label: string; onClick: () => void }) {
   return (
-    <div
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
       style={{
         marginTop: 6,
+        background: "none",
+        border: "none",
+        padding: 0,
+        textAlign: "left",
+        fontFamily: FONT,
         fontSize: 11.5,
         fontWeight: 600,
         color: BLUE,
+        cursor: "pointer",
+        alignSelf: "flex-start",
       }}
     >
       {label} →
-    </div>
+    </button>
   );
 }
 
@@ -206,11 +218,14 @@ function TileBody({
   title,
   meta,
   seeMore,
+  onSeeMore,
 }: {
   title: string;
   meta: React.ReactNode;
   seeMore: string;
+  onSeeMore: () => void;
 }) {
+
   return (
     <div
       style={{
