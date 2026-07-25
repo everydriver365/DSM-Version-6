@@ -175,7 +175,7 @@ function LocationsPage() {
         </button>
       </div>
 
-      <div className="pt-[52px]">
+      <div>
         <div className="mx-4">
           <SectionHeader>SAVED LOCATIONS</SectionHeader>
 
