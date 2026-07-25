@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronRight, Star, TrendingUp, Play, ShoppingBag, Award, CalendarOff, Zap, X } from "lucide-react";
+import { ChevronRight, Star, TrendingUp, Play, ShoppingBag, Award, CalendarOff, Zap, X, Download, Check } from "lucide-react";
 import { IconPlayerPlay } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
