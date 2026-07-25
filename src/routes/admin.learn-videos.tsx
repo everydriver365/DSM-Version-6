@@ -66,6 +66,88 @@ async function uploadThumbnail(file: File, title: string) {
   return uploadToBucket(file, `${title}-thumb`, "jpg");
 }
 
+/** Grab a poster frame from a locally selected video file. Returns null if the
+ *  browser can't decode/render a frame (codec issues, blank canvas, etc). */
+async function captureVideoFrame(file: File): Promise<File | null> {
+  const objectUrl = URL.createObjectURL(file);
+  try {
+    const video = document.createElement("video");
+    video.preload = "auto";
+    video.muted = true;
+    video.playsInline = true;
+    video.crossOrigin = "anonymous";
+    video.src = objectUrl;
+
+    await new Promise<void>((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error("metadata timeout")), 8000);
+      video.onloadedmetadata = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+      video.onerror = () => {
+        clearTimeout(timer);
+        reject(new Error("video decode failed"));
+      };
+    });
+
+    const duration = Number.isFinite(video.duration) ? video.duration : 0;
+    const target = duration > 0 ? Math.min(1, duration * 0.1) : 0;
+
+    await new Promise<void>((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error("seek timeout")), 8000);
+      video.onseeked = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+      video.onerror = () => {
+        clearTimeout(timer);
+        reject(new Error("seek failed"));
+      };
+      try {
+        video.currentTime = target;
+      } catch {
+        clearTimeout(timer);
+        reject(new Error("seek unsupported"));
+      }
+    });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = 640;
+    canvas.height = 360;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Blank-frame guard: sample a few pixels, bail if everything is identical.
+    try {
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      let varied = false;
+      const first = data[0] + data[1] + data[2];
+      for (let i = 4; i < data.length; i += 4 * 997) {
+        if (Math.abs(data[i] + data[i + 1] + data[i + 2] - first) > 6) {
+          varied = true;
+          break;
+        }
+      }
+      if (!varied) return null;
+    } catch {
+      // getImageData can be blocked; keep the frame rather than failing.
+    }
+
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob((b) => resolve(b), "image/jpeg", 0.8),
+    );
+    if (!blob) return null;
+    return new File([blob], "poster.jpg", { type: "image/jpeg" });
+  } catch (e) {
+    console.warn("[admin/learn-videos] frame capture failed", e);
+    return null;
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
+
 const inputStyle: React.CSSProperties = {
   width: "100%",
   height: 44,
