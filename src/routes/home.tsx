@@ -4411,22 +4411,13 @@ function HomePage() {
         ))}
       </div>
 
-      {/* ============ NEXT LESSON LABEL ============ */}
-      <div style={{ margin: '0 16px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: 'Inter, sans-serif' }}>
-        <span style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Inter, sans-serif' }}>Next lesson</span>
-        <button
-          type="button"
-          onClick={() => navigate({ to: '/schedule' })}
-          style={{ background: 'none', border: 'none', padding: 0, fontSize: 13, fontWeight: 600, color: '#1877D6', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: 0.5, fontFamily: 'Inter, sans-serif' }}
-        >View schedule</button>
-      </div>
-
       {/* ============ NEXT LESSON CARD ============ */}
       <div
         style={{
           margin: '0 16px 16px',
           background: '#FFFFFF',
-          borderRadius: 24,
+          borderRadius: 20,
+
           boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
           overflow: 'hidden',
           fontFamily: 'Inter, sans-serif',
