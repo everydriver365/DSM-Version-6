@@ -16,7 +16,7 @@ const HAIRLINE = "#E2E8F0";
 const MUTED = "#8A94A3";
 const FONT = "Poppins, Inter, sans-serif";
 const RADIUS = 14;
-const HERO_H = 56;
+const HERO_H = 140;
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -130,7 +130,7 @@ function TileShell({
         cursor: "pointer",
         display: "flex",
         flexDirection: "column",
-        height: 132,
+        flex: 1,
         fontFamily: FONT,
       }}
     >
@@ -141,7 +141,7 @@ function TileShell({
 
 function TileText({ title, meta }: { title: string; meta: React.ReactNode }) {
   return (
-    <div style={{ padding: "8px 9px 9px", flex: 1, minWidth: 0 }}>
+    <div style={{ padding: "9px 10px 11px", flex: 1, minWidth: 0 }}>
       <div
         style={{
           fontSize: 12,
@@ -152,6 +152,7 @@ function TileText({ title, meta }: { title: string; meta: React.ReactNode }) {
           WebkitLineClamp: 2,
           WebkitBoxOrient: "vertical",
           overflow: "hidden",
+          minHeight: 30,
         }}
       >
         {title}
@@ -198,13 +199,13 @@ function CategoryPill({ label, color }: { label: string; color: string }) {
   );
 }
 
-function EmptyTile({ label }: { label: string }) {
+function EmptyTile() {
   return (
     <div
       style={{
         border: `1px dashed ${HAIRLINE}`,
         borderRadius: RADIUS,
-        height: 132,
+        flex: 1,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -216,8 +217,31 @@ function EmptyTile({ label }: { label: string }) {
         lineHeight: 1.3,
       }}
     >
-      {label}
+      Nothing right now
     </div>
+  );
+}
+
+function SeeMore({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        marginTop: 6,
+        background: "none",
+        border: "none",
+        padding: 0,
+        fontFamily: FONT,
+        fontSize: 11,
+        fontWeight: 600,
+        color: BLUE,
+        cursor: "pointer",
+        textAlign: "left",
+      }}
+    >
+      {label} →
+    </button>
   );
 }
 
@@ -274,23 +298,20 @@ export function DiscoverSection() {
     };
   }, []);
 
-  const liveTop = [...live]
-    .sort((a, b) => {
-      const la = isLiveNow(a) ? 1 : 0;
-      const lb = isLiveNow(b) ? 1 : 0;
-      if (la !== lb) return lb - la;
-      return startMs(a.session_date, a.session_time) - startMs(b.session_date, b.session_time);
-    })
-    .slice(0, 2);
-  const learnTop = learn.slice(0, 2);
-  const marketTop = market.slice(0, 2);
+  const liveTop = [...live].sort((a, b) => {
+    const la = isLiveNow(a) ? 1 : 0;
+    const lb = isLiveNow(b) ? 1 : 0;
+    if (la !== lb) return lb - la;
+    return startMs(a.session_date, a.session_time) - startMs(b.session_date, b.session_time);
+  })[0];
+  const learnTop = learn[0];
+  const marketTop = market[0];
 
   const liveTile = (s: LiveItem) => {
     const nowLive = isLiveNow(s);
     const count = s.spaces_taken ?? 0;
     return (
       <TileShell
-        key={s.id}
         onClick={() =>
           navigate({ to: "/dsm-live/$sessionId" as never, params: { sessionId: s.id } as never })
         }
@@ -305,7 +326,7 @@ export function DiscoverSection() {
             justifyContent: "center",
           }}
         >
-          <IconVideo size={22} color="#FFFFFF" stroke={1.6} />
+          <IconVideo size={34} color="#FFFFFF" stroke={1.6} />
           <CategoryPill label="Live" color={RED} />
           <span
             style={{
@@ -339,16 +360,15 @@ export function DiscoverSection() {
     );
   };
 
-  const learnTile = (v: LearnItem, i: number) => {
+  const learnTile = (v: LearnItem) => {
     const thumb = v.thumbnail_url || youtubeThumb(v.url);
-    const flat = i % 2 === 0 ? NAVY : BLUE;
     return (
-      <TileShell key={v.id ?? i} onClick={() => navigate({ to: "/learn" as never })}>
+      <TileShell onClick={() => navigate({ to: "/learn" as never })}>
         <div
           style={{
             position: "relative",
             height: HERO_H,
-            background: thumb ? `${NAVY} url(${thumb}) center/cover` : flat,
+            background: thumb ? `${NAVY} url(${thumb}) center/cover` : NAVY,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -357,8 +377,8 @@ export function DiscoverSection() {
           <CategoryPill label="Learn" color={BLUE} />
           <span
             style={{
-              width: 26,
-              height: 26,
+              width: 36,
+              height: 36,
               borderRadius: "50%",
               background: "rgba(255,255,255,0.92)",
               display: "flex",
@@ -366,7 +386,7 @@ export function DiscoverSection() {
               justifyContent: "center",
             }}
           >
-            <IconPlayerPlayFilled size={13} color={NAVY} />
+            <IconPlayerPlayFilled size={16} color={NAVY} />
           </span>
         </div>
         <TileText
@@ -387,7 +407,6 @@ export function DiscoverSection() {
     const priced = !!m.price_display;
     return (
       <TileShell
-        key={m.id}
         onClick={() =>
           navigate({ to: "/marketplace/$listingId" as never, params: { listingId: m.id } as never })
         }
@@ -420,12 +439,16 @@ export function DiscoverSection() {
     );
   };
 
-  const cell = (
-    items: unknown[],
-    row: number,
-    render: () => React.ReactNode,
-    emptyLabel: string,
-  ) => (items.length > row ? render() : <EmptyTile label={emptyLabel} />);
+  const column = (
+    tile: React.ReactNode,
+    seeMoreLabel: string,
+    onSeeMore: () => void,
+  ) => (
+    <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+      {tile}
+      <SeeMore label={seeMoreLabel} onClick={onSeeMore} />
+    </div>
+  );
 
   return (
     <div style={{ padding: "20px 0 22px", fontFamily: FONT }}>
@@ -447,15 +470,24 @@ export function DiscoverSection() {
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
           gap: 10,
+          alignItems: "stretch",
         }}
       >
-        {[0, 1].map((row) => (
-          <div key={row} style={{ display: "contents" }}>
-            {cell(liveTop, row, () => liveTile(liveTop[row]), "Nothing else today")}
-            {cell(learnTop, row, () => learnTile(learnTop[row], row), "Nothing else today")}
-            {cell(marketTop, row, () => marketTile(marketTop[row]), "Nothing else today")}
-          </div>
-        ))}
+        {column(
+          liveTop ? liveTile(liveTop) : <EmptyTile />,
+          "See more",
+          () => navigate({ to: "/dsm-live" as never }),
+        )}
+        {column(
+          learnTop ? learnTile(learnTop) : <EmptyTile />,
+          "See more",
+          () => navigate({ to: "/learn" as never }),
+        )}
+        {column(
+          marketTop ? marketTile(marketTop) : <EmptyTile />,
+          "See more",
+          () => navigate({ to: "/marketplace" as never }),
+        )}
       </div>
     </div>
   );
