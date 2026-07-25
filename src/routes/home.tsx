@@ -4470,13 +4470,16 @@ function HomePage() {
           // Payment / due pill
           const hStatus = (upcoming?.payment_status ?? 'unpaid').toLowerCase();
           const hAmountDue = Number(upcoming?.amount_due ?? 0);
-          const hLabel = hAmountDue > 0
+          const isPrepaid = hStatus === 'prepaid';
+          const hLabel = hAmountDue > 0 && !isPrepaid
             ? `£${hAmountDue.toFixed(0)} due`
-            : hStatus === 'prepaid'
+            : isPrepaid
               ? 'Prepaid'
               : 'Paid';
-          const hPillBg = hAmountDue > 0 ? '#FDECEC' : '#E7F4E8';
-          const hPillFg = hAmountDue > 0 ? '#CC2229' : '#2F7A3A';
+          const hPillBg = hAmountDue > 0 && !isPrepaid ? '#FDECEC' : '#E7F4E8';
+          const hPillFg = hAmountDue > 0 && !isPrepaid ? '#CC2229' : '#1E8E3E';
+          const priceText = hAmountDue > 0 ? `£${hAmountDue.toFixed(2)}` : null;
+          const priceColor = isPrepaid ? '#1E8E3E' : '#CC2229';
 
           // Date / time / duration / ETA
           const d = upcoming ? lessonDateTime(upcoming) : null;
