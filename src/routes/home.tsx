@@ -4547,7 +4547,7 @@ function HomePage() {
                 </button>
               </div>
 
-              {upcoming ? (
+              {upcoming ? (<>
                 <div style={{ display: 'flex', alignItems: 'stretch', fontFamily: 'Inter, sans-serif' }}>
                   {/* Navy date rail */}
                   <div style={{
