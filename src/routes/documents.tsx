@@ -146,34 +146,39 @@ function DocumentsPage() {
 
   return (
     <PageLayout className="pb-8" style={POPPINS}>
-      {/* Top bar */}
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Documents"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Action bar */}
       <div
-        className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
+        style={{
+          background: "#FFFFFF",
+          padding: "8px 16px",
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          borderBottom: "1px solid #EEF2F7",
+          gap: 10,
+          ...POPPINS,
+        }}
       >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
-        >
-          <ArrowLeft size={22} color="#FFFFFF" />
-        </button>
-        <div
-          className="flex-1 text-center text-[15px] font-semibold text-white"
-          style={POPPINS}
-        >
-          Documents
-        </div>
         <button
           type="button"
           aria-label="Add document"
           onClick={() => setAddOpen(true)}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
+          className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
+          style={{ backgroundColor: "#1877D6" }}
         >
-          <Plus size={22} color="#FFFFFF" />
+          <Plus size={16} color="#fff" /> Add document
         </button>
       </div>
 
