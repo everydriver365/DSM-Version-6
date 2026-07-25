@@ -640,16 +640,9 @@ function SessionCard({
     spaces_available?: number | null;
   };
 
-  // Category → gradient mapping.
-  const gradient = (() => {
-    const c = (s.category ?? "").toLowerCase();
-    if (c.includes("standards")) return "linear-gradient(135deg, #1A52A0, #0F2044)";
-    if (c.includes("business") || c.includes("coach")) return "linear-gradient(135deg, #16A34A, #14532D)";
-    if (c.includes("cpd") || c.includes("webinar")) return "linear-gradient(135deg, #7C3AED, #4C1D95)";
-    if (c.includes("new adi") || c.includes("adi support")) return "linear-gradient(135deg, #D97706, #92400E)";
-    if (c.includes("q&a") || c.includes("qa") || c.includes("question")) return "linear-gradient(135deg, #0891B2, #164E63)";
-    return "linear-gradient(135deg, #CC2229, #7A1419)";
-  })();
+  // Default hero when no image is set: navy → blue.
+  const gradient = "linear-gradient(135deg, #0B1F3A, #1877D6)";
+
 
   // Delivery badge — defaults to "Online" until delivery_type exists.
   const delivery = (() => {
