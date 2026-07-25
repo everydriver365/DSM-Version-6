@@ -4683,7 +4683,7 @@ function HomePage() {
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
                           {priceText && (
-                            <div style={{ fontSize: 17, fontWeight: 800, color: '#CC2229' }}>{priceText}</div>
+                            <div style={{ fontSize: 22, fontWeight: 800, color: priceColor }}>{priceText}</div>
                           )}
                           <span style={{
                             background: hPillBg, color: hPillFg,
