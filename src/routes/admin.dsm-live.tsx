@@ -207,11 +207,25 @@ function AdminDsmLive() {
     setTimeout(() => setToast(null), 2000);
   }
 
+  function changeFrequency(v: Frequency) {
+    setRecurringFrequency(v);
+    if (v !== "custom") setRecurringDays([]);
+  }
+
+  function toggleRecurringDay(d: number) {
+    setRecurringDays((prev) =>
+      prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d].sort((a, b) => a - b),
+    );
+  }
+
+  const customDaysInvalid = recurringFrequency === "custom" && recurringDays.length === 0;
+
   function openAdd() {
     setEditing(null);
     setForm(emptyForm());
     setIsRecurring(false);
     setRecurringFrequency("weekly");
+    setRecurringDays([]);
     setRecurringUntil("");
     setConvertToRecurring(false);
     setShowSheet(true);
@@ -222,6 +236,7 @@ function AdminDsmLive() {
     setForm({ ...s });
     setIsRecurring(false);
     setRecurringFrequency("weekly");
+    setRecurringDays([]);
     setRecurringUntil("");
     setConvertToRecurring(false);
     setShowSheet(true);
