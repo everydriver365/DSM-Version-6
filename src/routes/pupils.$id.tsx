@@ -2414,6 +2414,14 @@ function PupilDetailPage() {
 
 
 
+              {viewingReport.coords.length > 0 && (
+                <img
+                  src={routeStaticMapUrl(viewingReport.coords) ?? undefined}
+                  alt="Lesson route map"
+                  style={{ width: "100%", borderRadius: 12, marginBottom: 12 }}
+                />
+              )}
+
               <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
                 Road segments
               </div>
