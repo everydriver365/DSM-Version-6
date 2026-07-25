@@ -254,6 +254,8 @@ function GuideRow({ g, onGo, isLast }: { g: Guide; onGo: () => void; isLast: boo
 
 function LearnPage() {
   const navigate = useNavigate();
+  const [playing, setPlaying] = useState<Video | null>(null);
+
 
   return (
     <PageLayout className="pb-24" style={{ fontFamily: FONT, background: CANVAS }}>
