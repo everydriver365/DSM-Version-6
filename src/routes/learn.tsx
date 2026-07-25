@@ -56,12 +56,77 @@ function getYouTubeEmbedUrl(url: string): string | null {
   return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1` : null;
 }
 
+const LEARN_VIDEO_CACHE = "dsm-learn-videos-v1";
+
+async function isVideoCached(url: string): Promise<boolean> {
+  if (typeof window === "undefined" || !("caches" in window)) return false;
+  try {
+    const cache = await caches.open(LEARN_VIDEO_CACHE);
+    const match = await cache.match(url);
+    return !!match;
+  } catch {
+    return false;
+  }
+}
+
+async function downloadVideoForOffline(url: string): Promise<void> {
+  if (typeof window === "undefined" || !("caches" in window)) return;
+  const cache = await caches.open(LEARN_VIDEO_CACHE);
+  await cache.add(url);
+}
+
+async function getCachedObjectUrl(url: string): Promise<string | null> {
+  if (typeof window === "undefined" || !("caches" in window)) return null;
+  try {
+    const cache = await caches.open(LEARN_VIDEO_CACHE);
+    const match = await cache.match(url);
+    if (!match) return null;
+    const blob = await match.blob();
+    return URL.createObjectURL(blob);
+  } catch {
+    return null;
+  }
+}
 
 function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () => void }) {
+  const downloadable = !!v.url && !getYouTubeEmbedUrl(v.url);
+  const [cached, setCached] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!downloadable || !v.url) return;
+    isVideoCached(v.url).then((r) => {
+      if (!cancelled) setCached(r);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [v.url, downloadable]);
+
+  const handleDownload = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!v.url || cached || downloading) return;
+    setDownloading(true);
+    try {
+      await downloadVideoForOffline(v.url);
+      setCached(true);
+      toast.success("Available offline");
+    } catch {
+      toast.error("Couldn't download this video");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onPlay}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") onPlay();
+      }}
       style={{
         background: "transparent",
         border: "none",
@@ -71,6 +136,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
         fontFamily: FONT,
       }}
     >
+
       <div
         style={{
           position: "relative",
