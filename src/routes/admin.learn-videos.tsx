@@ -103,6 +103,7 @@ function VideoForm({
     initial?.sort_order != null ? String(initial.sort_order) : "0",
   );
   const [file, setFile] = useState<File | null>(null);
+  const [thumbFile, setThumbFile] = useState<File | null>(null);
   const [source, setSource] = useState<"upload" | "youtube">(
     initial?.url && /youtu/.test(initial.url) ? "youtube" : "upload",
   );
@@ -114,6 +115,10 @@ function VideoForm({
     "idle" | "uploading" | "saved" | "error"
   >("idle");
 
+  const derivedYoutubeThumb = youtubeUrl.trim()
+    ? youtubeThumbnail(youtubeUrl.trim())
+    : null;
+
   const handleSubmit = async () => {
 
     if (!title.trim()) {
@@ -123,6 +128,7 @@ function VideoForm({
     setSaving(true);
     try {
       let url = initial?.url ?? null;
+      let thumbnailUrl = initial?.thumbnail_url ?? null;
       if (source === "youtube") {
         if (!youtubeUrl.trim()) {
           toast.error("Paste a YouTube link");
@@ -130,9 +136,16 @@ function VideoForm({
           return;
         }
         url = youtubeUrl.trim();
-      } else if (file) {
-        setUploadStatus("uploading");
-        url = await uploadVideo(file, title.trim());
+        thumbnailUrl = youtubeThumbnail(url) ?? thumbnailUrl;
+      } else {
+        if (file) {
+          setUploadStatus("uploading");
+          url = await uploadVideo(file, title.trim());
+        }
+        if (thumbFile) {
+          setUploadStatus("uploading");
+          thumbnailUrl = await uploadThumbnail(thumbFile, title.trim());
+        }
       }
 
 
@@ -140,8 +153,10 @@ function VideoForm({
         title: title.trim(),
         duration: duration.trim() || null,
         url,
+        thumbnail_url: thumbnailUrl,
         sort_order: Number(sortOrder) || 0,
       };
+
 
       const { error } = initial?.id
         ? await supabase.from("learn_videos").update(payload).eq("id", initial.id)
