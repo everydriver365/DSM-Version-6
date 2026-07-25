@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { ArrowLeft, Briefcase, X, Send } from "lucide-react";
 import { toast } from "sonner";
@@ -158,6 +159,7 @@ function JobsPage() {
   const [uid, setUid] = useState<string | null>(null);
   const [jobs, setJobs] = useState<JobOffer[] | null>(null);
   const [claimedJobs, setClaimedJobs] = useState<JobOffer[] | null>(null);
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"open" | "claimed">("open");
   const [prefs, setPrefs] = useState<InstructorPrefs | null>(null);
   const [coverage, setCoverage] = useState<CoverageArea[]>([]);
@@ -306,30 +308,28 @@ function JobsPage() {
   return (
     <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: "#DCE4F0" }}>
       {/* Header */}
-      <div
-        className="sticky top-0 z-30"
-        style={{ backgroundColor: NAVY }}
-      >
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Jobs"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      <div className="sticky top-0 z-30">
         <div
-          className="flex items-center"
-          style={{
-            paddingTop: "calc(12px + env(safe-area-inset-top, 0px))",
-            paddingBottom: 12,
-            paddingLeft: 12,
-            paddingRight: 12,
-            gap: 8,
-          }}
+          className="flex items-center justify-end"
+          style={{ background: "#FFFFFF", padding: "8px 16px" }}
         >
-          <Link to="/home" className="p-1 -ml-1">
-            <ArrowLeft size={22} color="#FFFFFF" />
-          </Link>
-          <div className="text-[16px] font-semibold text-white" style={POPPINS}>
-            Jobs
-          </div>
-          <div className="ml-auto text-[12px] text-white/70" style={POPPINS}>
+          <div className="text-[12px] font-semibold" style={{ ...POPPINS, color: "#6B7280" }}>
             {activeTab === "open" ? `${jobs?.length ?? 0} open` : `${claimedJobs?.length ?? 0} claimed`}
           </div>
         </div>
+
 
         {/* Tabs */}
         <div

@@ -1,4 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { toast } from "sonner";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Search, X, Receipt } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
@@ -128,15 +130,17 @@ function InvoicesPage() {
   return (
     <PageLayout className="pb-24 pb-safe relative" style={POPPINS}>
       {/* Header */}
-      <div className="sticky top-0 z-40" style={{ backgroundColor: NAVY }}>
-        <div className="flex items-center justify-between px-3" style={{ height: 52 }}>
-          <button type="button" aria-label="Back" onClick={() => navigate({ to: "/home" })} className="flex items-center justify-center" style={{ width: 36, height: 36 }}>
-            <ArrowLeft size={22} color="#fff" />
-          </button>
-          <div className="text-[16px] font-semibold text-white" style={POPPINS}>Invoices</div>
-          <div style={{ width: 36 }} />
-        </div>
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Invoices"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       {/* Summary */}
       <div style={{ background: "white", borderRadius: 14, boxShadow: "0 1px 3px rgba(0,0,0,0.06)", padding: 16, margin: 16 }}>

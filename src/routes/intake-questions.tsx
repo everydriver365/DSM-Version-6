@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -283,49 +284,42 @@ function IntakeQuestionsPage() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#FFFFFF", ...POPPINS }}>
       {/* Top bar */}
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Intake questions"
+        onBack={() => navigate({ to: "/settings" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Action bar */}
       <div
         style={{
-          backgroundColor: "#0B1F3A",
-          color: "#FFFFFF",
-          padding: "14px 16px",
+          background: "#FFFFFF",
+          padding: "8px 16px",
           display: "flex",
-          alignItems: "center",
-          gap: 12,
-          position: "sticky",
-          top: 0,
-          zIndex: 20,
+          justifyContent: "flex-end",
+          borderBottom: "1px solid #EEF2F7",
         }}
       >
         <button
-          onClick={() => navigate({ to: "/settings" })}
-          aria-label="Back"
-          style={{
-            background: "transparent",
-            border: "none",
-            color: "#FFFFFF",
-            padding: 4,
-            cursor: "pointer",
-          }}
-        >
-          <ArrowLeft size={22} />
-        </button>
-        <div style={{ fontSize: 17, fontWeight: 600, flex: 1 }}>Intake questions</div>
-        <button
           onClick={() => {
-            console.log("[intake] add button tapped");
             setEditing(null);
             setSheetOpen(true);
           }}
-
           style={{
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
-            backgroundColor: "#FFFFFF",
-            color: "#0B1F3A",
+            backgroundColor: "#1877D6",
+            color: "#FFFFFF",
             border: "none",
-            borderRadius: 8,
-            padding: "8px 12px",
+            borderRadius: 999,
+            padding: "8px 14px",
             fontSize: 13,
             fontWeight: 600,
             cursor: "pointer",

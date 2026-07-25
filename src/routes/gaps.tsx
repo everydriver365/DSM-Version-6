@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -1470,53 +1471,18 @@ function GapsPage() {
         overflow: "hidden",
       }}
     >
-      {/* Header — navy top layer */}
-      <div
-        style={{
-          background: "#0B1F3A",
-          padding: "14px 16px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-          }}
-        >
-          <button
-            onClick={() => navigate({ to: "/home" })}
-            aria-label="Back"
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: 10,
-              background: "rgba(255,255,255,0.12)",
-              border: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              color: "#FFFFFF",
-              flexShrink: 0,
-            }}
-          >
-            <ArrowLeft size={17} />
-          </button>
-          <h1
-            style={{
-              ...FONT,
-              color: "#FFFFFF",
-              fontSize: 18,
-              fontWeight: 600,
-              margin: 0,
-              lineHeight: 1.2,
-            }}
-          >
-            Fill My Slots
-          </h1>
-        </div>
-      </div>
+      {/* Header — shared instructor top bar */}
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Fill My Slots"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       {/* Header — white stats layer */}
       <div

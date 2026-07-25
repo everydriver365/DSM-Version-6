@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -249,14 +250,33 @@ function EndOfDayPage() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#FFFFFF", fontFamily: "Inter, sans-serif", paddingBottom: 80 }}>
       {/* Top bar */}
-      <div style={{ backgroundColor: "#0B1F3A", color: "#FFFFFF", padding: "14px 16px", display: "flex", alignItems: "center", gap: 12 }}>
-        <button type="button" onClick={() => navigate({ to: "/home" })} style={{ background: "transparent", color: "#FFFFFF", cursor: "pointer" }} aria-label="Back">
-          <ArrowLeft size={20} />
-        </button>
-        <div>
-          <div style={{ fontSize: 16, fontWeight: 700 }}>End of day</div>
-          <div style={{ fontSize: 12, opacity: 0.85 }}>{fmtDateLong(today)}</div>
-        </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="End of day"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Date sub-bar */}
+      <div
+        style={{
+          background: "#FFFFFF",
+          padding: "8px 16px",
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          borderBottom: "1px solid #EEF2F7",
+          color: "#0B1F3A",
+          fontSize: 13,
+          fontWeight: 500,
+        }}
+      >
+        {fmtDateLong(today)}
       </div>
 
       {/* Section 1: Summary */}
