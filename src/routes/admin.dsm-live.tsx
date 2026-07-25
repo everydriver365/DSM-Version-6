@@ -134,6 +134,7 @@ function AdminDsmLive() {
   const cropDragRef = useRef<{ startX: number; startY: number; startPosX: number; startPosY: number; width: number; height: number } | null>(null);
   const [recurringFrequency, setRecurringFrequency] = useState<Frequency>("weekly");
   const [recurringUntil, setRecurringUntil] = useState<string>("");
+  const [convertToRecurring, setConvertToRecurring] = useState(false);
   const [recurringUpdateOpen, setRecurringUpdateOpen] = useState(false);
   const [recurringUpdateChoice, setRecurringUpdateChoice] =
     useState<"single" | "following" | "all">("single");
@@ -185,6 +186,7 @@ function AdminDsmLive() {
     setIsRecurring(false);
     setRecurringFrequency("weekly");
     setRecurringUntil("");
+    setConvertToRecurring(false);
     setShowSheet(true);
   }
 
@@ -194,6 +196,7 @@ function AdminDsmLive() {
     setIsRecurring(false);
     setRecurringFrequency("weekly");
     setRecurringUntil("");
+    setConvertToRecurring(false);
     setShowSheet(true);
   }
 
@@ -233,13 +236,52 @@ function AdminDsmLive() {
           setSaving(false);
           return;
         }
-        console.log("[dsm-live] saving session (PATCH):", payload);
-        await restFetch(`dsm_live_sessions?id=eq.${editing.id}`, {
-          method: "PATCH",
-          body: JSON.stringify(payload),
-        });
-        console.log("[dsm-live] save result: PATCH ok");
-        showToast("Session updated");
+        if (
+          convertToRecurring &&
+          !editing.is_recurring &&
+          recurringUntil &&
+          editing.session_date
+        ) {
+          const groupId = crypto.randomUUID();
+          const futureDates = generateOccurrences(
+            editing.session_date,
+            recurringUntil,
+            recurringFrequency,
+          ).filter((d) => d !== editing.session_date);
+          await restFetch(`dsm_live_sessions?id=eq.${editing.id}`, {
+            method: "PATCH",
+            body: JSON.stringify({
+              ...payload,
+              is_recurring: true,
+              recurring_frequency: recurringFrequency,
+              recurring_group_id: groupId,
+            }),
+          });
+          if (futureDates.length) {
+            const rows = futureDates.map((d) => ({
+              ...payload,
+              session_date: d,
+              is_recurring: true,
+              recurring_frequency: recurringFrequency,
+              recurring_group_id: groupId,
+            }));
+            await restFetch("dsm_live_sessions", {
+              method: "POST",
+              body: JSON.stringify(rows),
+            });
+          }
+          showToast(
+            `Converted to recurring series — ${futureDates.length} future sessions created.`,
+          );
+        } else {
+          console.log("[dsm-live] saving session (PATCH):", payload);
+          await restFetch(`dsm_live_sessions?id=eq.${editing.id}`, {
+            method: "PATCH",
+            body: JSON.stringify(payload),
+          });
+          console.log("[dsm-live] save result: PATCH ok");
+          showToast("Session updated");
+        }
       } else if (isRecurring && recurringUntil && form.session_date) {
         const groupId = crypto.randomUUID();
         const dates = generateOccurrences(form.session_date, recurringUntil, recurringFrequency);
@@ -734,6 +776,41 @@ function AdminDsmLive() {
                   </FormField>
                   <div style={{ fontSize: 11, color: "#6B7280" }}>
                     Generates individual session entries for each occurrence.
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          {editing && !editing.is_recurring && (
+            <div style={{ marginTop: 8, padding: 12, background: "#F9FAFB", border: "0.5px solid #E2E6ED", borderRadius: 10 }}>
+              <Toggle
+                label="Convert to recurring series"
+                checked={convertToRecurring}
+                onChange={setConvertToRecurring}
+              />
+              {convertToRecurring && (
+                <div style={{ marginTop: 8 }}>
+                  <FormField label="Frequency">
+                    <select
+                      style={inp}
+                      value={recurringFrequency}
+                      onChange={(e) => setRecurringFrequency(e.target.value as Frequency)}
+                    >
+                      {FREQUENCIES.map((f) => (
+                        <option key={f.value} value={f.value}>{f.label}</option>
+                      ))}
+                    </select>
+                  </FormField>
+                  <FormField label="Repeat until">
+                    <input
+                      type="date"
+                      style={inp}
+                      value={recurringUntil}
+                      onChange={(e) => setRecurringUntil(e.target.value)}
+                    />
+                  </FormField>
+                  <div style={{ fontSize: 11, color: "#6B7280" }}>
+                    Keeps this session and creates future occurrences in the same series.
                   </div>
                 </div>
               )}
