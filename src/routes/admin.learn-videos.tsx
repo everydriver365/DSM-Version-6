@@ -186,6 +186,9 @@ function VideoForm({
   );
   const [file, setFile] = useState<File | null>(null);
   const [thumbFile, setThumbFile] = useState<File | null>(null);
+  const [autoThumb, setAutoThumb] = useState<File | null>(null);
+  const [autoThumbUrl, setAutoThumbUrl] = useState<string | null>(null);
+  const [capturing, setCapturing] = useState(false);
   const [source, setSource] = useState<"upload" | "youtube">(
     initial?.url && /youtu/.test(initial.url) ? "youtube" : "upload",
   );
@@ -200,6 +203,38 @@ function VideoForm({
   const derivedYoutubeThumb = youtubeUrl.trim()
     ? youtubeThumbnail(youtubeUrl.trim())
     : null;
+
+  const manualThumbUrl = thumbFile ? URL.createObjectURL(thumbFile) : null;
+  useEffect(() => {
+    return () => {
+      if (manualThumbUrl) URL.revokeObjectURL(manualThumbUrl);
+    };
+  }, [manualThumbUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (autoThumbUrl) URL.revokeObjectURL(autoThumbUrl);
+    };
+  }, [autoThumbUrl]);
+
+  const previewThumb = manualThumbUrl || autoThumbUrl || initial?.thumbnail_url || null;
+
+  const handleFileChange = async (picked: File | null) => {
+    setFile(picked);
+    setAutoThumb(null);
+    setAutoThumbUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
+    if (!picked) return;
+    setCapturing(true);
+    const frame = await captureVideoFrame(picked);
+    setCapturing(false);
+    if (frame) {
+      setAutoThumb(frame);
+      setAutoThumbUrl(URL.createObjectURL(frame));
+    }
+  };
 
   const handleSubmit = async () => {
 
@@ -224,11 +259,14 @@ function VideoForm({
           setUploadStatus("uploading");
           url = await uploadVideo(file, title.trim());
         }
-        if (thumbFile) {
+        // Manual thumbnail always wins, then the auto-captured poster frame.
+        const coverFile = thumbFile ?? autoThumb;
+        if (coverFile) {
           setUploadStatus("uploading");
-          thumbnailUrl = await uploadThumbnail(thumbFile, title.trim());
+          thumbnailUrl = await uploadThumbnail(coverFile, title.trim());
         }
       }
+
 
 
       const payload = {
