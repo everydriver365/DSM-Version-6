@@ -1,7 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import {
-  ChevronLeft, ChevronDown, ChevronUp, CheckCircle2, PoundSterling,
+  ChevronDown, ChevronUp, CheckCircle2, PoundSterling,
+
   GraduationCap, Inbox, FileText, Award, CheckSquare, UserX, Phone, Square,
 } from "lucide-react";
 import { Card } from "../components/dsm/Card";

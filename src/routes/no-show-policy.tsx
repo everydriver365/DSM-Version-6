@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, AlertTriangle, Clock, Eye } from "lucide-react";
+import { AlertTriangle, Clock, Eye } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";

@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Download, Car } from "lucide-react";
+import { Download, Car } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+
 import { toast } from "sonner";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Card } from "../components/dsm/Card";
