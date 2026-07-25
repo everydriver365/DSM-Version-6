@@ -1,6 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Plus, FileText } from "lucide-react";
+import { Plus, FileText } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+
 import { Card } from "../components/dsm/Card";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -74,31 +77,33 @@ function NotesListPage() {
 
   return (
     <PageLayout className="pb-8" style={POPPINS}>
-      {/* TOP BAR */}
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Notes"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Action bar */}
       <div
-        className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0B1F3A" }}
+        className="flex items-center justify-end"
+        style={{ background: "#FFFFFF", padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
       >
         <button
           type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 28, height: 28 }}
-        >
-          <ChevronLeft size={22} color="#ffffff" />
-        </button>
-        <div className="text-white text-[15px] font-semibold">Notes</div>
-        <button
-          type="button"
-          aria-label="New note"
           onClick={createNote}
-          className="flex items-center justify-center"
-          style={{ width: 28, height: 28 }}
+          className="inline-flex items-center gap-1 text-[13px] font-semibold text-white"
+          style={{ background: "#1877D6", borderRadius: 999, padding: "8px 14px", border: "none" }}
         >
-          <Plus size={22} color="#ffffff" />
+          <Plus size={16} color="#FFFFFF" /> New note
         </button>
       </div>
+
 
       <div className="px-4 mt-3 flex flex-col" style={{ gap: 8 }}>
         {loading ? null : notes.length === 0 ? (

@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, AlertTriangle, Clock, Eye } from "lucide-react";
+import { AlertTriangle, Clock, Eye } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -127,23 +129,18 @@ function NoShowPolicyPage() {
 
   return (
     <PageLayout className="pb-24 pb-safe" style={FONT}>
-      <div
-        className="sticky top-0 z-40 flex items-center gap-3 px-4"
-        style={{ height: 52, backgroundColor: "#0F2044" }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/settings" })}
-          className="flex items-center justify-center rounded-full"
-          style={{ width: 32, height: 32 }}
-        >
-          <ArrowLeft size={20} color="#FFFFFF" />
-        </button>
-        <span className="text-[15px] font-semibold text-white" style={FONT}>
-          No-show policy
-        </span>
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="No-show policy"
+        onBack={() => navigate({ to: "/settings" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
 
       {/* Intro card */}
       <div

@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Download, Car } from "lucide-react";
+import { Download, Car } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+
 import { toast } from "sonner";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Card } from "../components/dsm/Card";
@@ -400,26 +402,18 @@ function MtdPage() {
 
   return (
     <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F3F8FF", margin: -8 }}>
-      {/* TOP BAR */}
-      <div
-        className="sticky top-0 z-40 h-[52px] px-4 flex items-center"
-        style={{ backgroundColor: "#0B1F3A" }}
-      >
-        <button
-          onClick={() => navigate({ to: "/home" })}
-          aria-label="Back"
-          className="p-1 -ml-1"
-          style={{ color: "#fff" }}
-        >
-          <ArrowLeft size={22} />
-        </button>
-        <h1
-          className="absolute left-1/2 -translate-x-1/2 text-white text-[16px] font-medium"
-          style={{ ...POPPINS }}
-        >
-          Making Tax Digital
-        </h1>
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Making Tax Digital"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
 
       <div className="px-4 pb-12 pt-3">
         {/* Info card */}

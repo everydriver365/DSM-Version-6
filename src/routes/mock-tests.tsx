@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Plus, Search, X } from "lucide-react";
+import { Plus, Search, X } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -145,33 +147,33 @@ function MockTestsPage() {
 
   return (
     <PageLayout className="pb-8" style={POPPINS}>
-      {/* Top bar */}
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Mock tests"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Action bar */}
       <div
-        className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
+        className="flex items-center justify-end"
+        style={{ background: "#FFFFFF", padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
       >
         <button
           type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
-        >
-          <ArrowLeft size={22} color="#FFFFFF" />
-        </button>
-        <div className="flex-1 text-center text-[15px] font-semibold text-white" style={POPPINS}>
-          Mock tests
-        </div>
-        <button
-          type="button"
-          aria-label="New mock test"
           onClick={() => setAddOpen(true)}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
+          className="inline-flex items-center gap-1 text-[13px] font-semibold text-white"
+          style={{ background: "#1877D6", borderRadius: 999, padding: "8px 14px", border: "none" }}
         >
-          <Plus size={22} color="#FFFFFF" />
+          <Plus size={16} color="#FFFFFF" /> New mock test
         </button>
       </div>
+
 
       <div className="px-4 pt-4">
         <SectionHeader>Mock test history</SectionHeader>

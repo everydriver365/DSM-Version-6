@@ -1,6 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
@@ -268,44 +271,18 @@ function MonthEndPage() {
 
   return (
     <PageLayout className="pb-12" style={POPPINS}>
-      {/* Top bar */}
-      <div
-        className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
-        >
-          <ArrowLeft size={22} color="#FFFFFF" />
-        </button>
-        <div className="flex-1 text-center text-[15px] font-semibold text-white" style={POPPINS}>
-          Month end review
-        </div>
-        <div className="flex items-center" style={{ width: 80, justifyContent: "flex-end" }}>
-          <button
-            type="button"
-            aria-label="Previous month"
-            onClick={() => shiftMonth(-1)}
-            className="flex items-center justify-center"
-            style={{ width: 32, height: 40 }}
-          >
-            <ChevronLeft size={20} color="#FFFFFF" />
-          </button>
-          <button
-            type="button"
-            aria-label="Next month"
-            onClick={() => shiftMonth(1)}
-            className="flex items-center justify-center"
-            style={{ width: 32, height: 40 }}
-          >
-            <ChevronRight size={20} color="#FFFFFF" />
-          </button>
-        </div>
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Month end review"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
 
       {/* Month selector */}
       <div className="flex items-center justify-between px-4 mt-3">

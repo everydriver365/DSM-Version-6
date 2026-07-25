@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import {
-  ArrowLeft,
+
   Bell,
   Calendar as CalendarIcon,
   CheckCheck,
@@ -175,51 +176,47 @@ function NotificationsPage() {
 
   return (
     <PageLayout className="pb-8" style={POPPINS}>
-      {/* Top bar */}
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Notifications"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Action bar */}
       <div
-        className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
+        className="flex items-center justify-end gap-2"
+        style={{ background: "#FFFFFF", padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
       >
         <button
           type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
+          onClick={clearAllRead}
+          disabled={!(items ?? []).some((n) => n.read)}
+          className="inline-flex items-center gap-1 text-[12px] font-medium px-2 py-1 rounded disabled:opacity-50"
+          style={{ color: "#6B7280", ...POPPINS }}
+          aria-label="Clear read notifications"
         >
-          <ArrowLeft size={22} color="#FFFFFF" />
+          <Trash2 size={14} color="#6B7280" />
+          Clear read
         </button>
-        <div
-          className="flex-1 text-center text-[15px] font-semibold text-white"
-          style={POPPINS}
+        <button
+          type="button"
+          onClick={markAllRead}
+          disabled={!hasAnyUnread}
+          className="inline-flex items-center gap-1 text-[12px] font-semibold px-2 py-1 rounded disabled:opacity-50"
+          style={{ color: "#1877D6", ...POPPINS }}
+          aria-label="Mark all as read"
         >
-          Notifications
-        </div>
-        <div className="flex items-center gap-1">
-          <button
-            type="button"
-            onClick={clearAllRead}
-            disabled={!(items ?? []).some((n) => n.read)}
-            className="flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded disabled:opacity-50"
-            style={{ color: "#FFFFFF", ...POPPINS }}
-            aria-label="Clear read notifications"
-          >
-            <Trash2 size={14} color="#FFFFFF" />
-            Clear read
-          </button>
-          <button
-            type="button"
-            onClick={markAllRead}
-            disabled={!hasAnyUnread}
-            className="flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded disabled:opacity-50"
-            style={{ color: "#FFFFFF", ...POPPINS }}
-            aria-label="Mark all as read"
-          >
-            <CheckCheck size={14} color="#FFFFFF" />
-            Mark all read
-          </button>
-        </div>
+          <CheckCheck size={14} color="#1877D6" />
+          Mark all read
+        </button>
       </div>
+
 
       <div className="px-4">
         {items === null ? null : items.length === 0 ? (
