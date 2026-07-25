@@ -570,6 +570,9 @@ function VideoForm({
             .lv-progress-bar {
               animation: lv-progress-slide 1.4s ease-in-out infinite;
             }
+            @keyframes lv-spin { to { transform: rotate(360deg); } }
+            .lv-spinner { animation: lv-spin 0.8s linear infinite; }
+
           `}</style>
         </div>
       )}
