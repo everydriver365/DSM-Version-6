@@ -947,14 +947,23 @@ function Toggle({ label, value, onChange }: { label: string; value: boolean; onC
   );
 }
 
-function StatCard({ label, value, color, bg }: { label: string; value: number; color: string; bg: string }) {
+function StatCard({ label, value }: { label: string; value: number; color?: string; bg?: string }) {
   return (
-    <div style={{ background: bg, borderRadius: 12, padding: 12 }}>
-      <div style={{ fontSize: 12, color, opacity: 0.85 }}>{label}</div>
-      <div style={{ fontSize: 22, fontWeight: 700, color, marginTop: 2 }}>{value}</div>
+    <div
+      style={{
+        background: "#fff",
+        border: "0.5px solid #E2E6ED",
+        borderRadius: 12,
+        padding: 12,
+        fontFamily: "Poppins, Inter, sans-serif",
+      }}
+    >
+      <div style={{ fontSize: 22, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.1 }}>{value}</div>
+      <div style={{ fontSize: 11, color: "#6B7280", marginTop: 4 }}>{label}</div>
     </div>
   );
 }
+
 
 function Badge({ children, color, bg }: { children: React.ReactNode; color: string; bg: string }) {
   return (
