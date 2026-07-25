@@ -540,6 +540,18 @@ function AdminListingsPage() {
                   <div style={{ marginTop: 12, borderTop: "0.5px solid #E2E6ED", paddingTop: 12 }}>
                     {editing ? (
                       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                        {firstImage && (
+                          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                            <img
+                              src={firstImage}
+                              alt={l.title}
+                              style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 8 }}
+                            />
+                            <span style={{ fontSize: 12, color: "#6B7280" }}>
+                              Current image (not editable here)
+                            </span>
+                          </div>
+                        )}
                         <Field label="Title">
                           <input
                             value={editDraft.title ?? ""}
