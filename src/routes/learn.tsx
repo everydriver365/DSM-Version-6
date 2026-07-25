@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronRight, Star, TrendingUp, Play, ShoppingBag, Award, CalendarOff, Zap, X, Download, Check } from "lucide-react";
+import { ChevronRight, Star, TrendingUp, Play, ShoppingBag, Award, CalendarOff, Zap, X, Download, Check, Film } from "lucide-react";
 import { IconPlayerPlay } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
@@ -164,6 +164,21 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
           boxShadow: CARD_SHADOW,
         }}
       >
+        {!thumb && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: 0.18,
+            }}
+          >
+            <Film size={64} color="#FFFFFF" />
+          </div>
+        )}
+
         <div
           style={{
             position: "absolute",

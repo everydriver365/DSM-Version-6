@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Play, Pencil, Trash2, Plus, Upload } from "lucide-react";
+import { ChevronLeft, Pencil, Trash2, Plus, Upload, Film } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
@@ -66,6 +66,88 @@ async function uploadThumbnail(file: File, title: string) {
   return uploadToBucket(file, `${title}-thumb`, "jpg");
 }
 
+/** Grab a poster frame from a locally selected video file. Returns null if the
+ *  browser can't decode/render a frame (codec issues, blank canvas, etc). */
+async function captureVideoFrame(file: File): Promise<File | null> {
+  const objectUrl = URL.createObjectURL(file);
+  try {
+    const video = document.createElement("video");
+    video.preload = "auto";
+    video.muted = true;
+    video.playsInline = true;
+    video.crossOrigin = "anonymous";
+    video.src = objectUrl;
+
+    await new Promise<void>((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error("metadata timeout")), 8000);
+      video.onloadedmetadata = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+      video.onerror = () => {
+        clearTimeout(timer);
+        reject(new Error("video decode failed"));
+      };
+    });
+
+    const duration = Number.isFinite(video.duration) ? video.duration : 0;
+    const target = duration > 0 ? Math.min(1, duration * 0.1) : 0;
+
+    await new Promise<void>((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error("seek timeout")), 8000);
+      video.onseeked = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+      video.onerror = () => {
+        clearTimeout(timer);
+        reject(new Error("seek failed"));
+      };
+      try {
+        video.currentTime = target;
+      } catch {
+        clearTimeout(timer);
+        reject(new Error("seek unsupported"));
+      }
+    });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = 640;
+    canvas.height = 360;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Blank-frame guard: sample a few pixels, bail if everything is identical.
+    try {
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      let varied = false;
+      const first = data[0] + data[1] + data[2];
+      for (let i = 4; i < data.length; i += 4 * 997) {
+        if (Math.abs(data[i] + data[i + 1] + data[i + 2] - first) > 6) {
+          varied = true;
+          break;
+        }
+      }
+      if (!varied) return null;
+    } catch {
+      // getImageData can be blocked; keep the frame rather than failing.
+    }
+
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob((b) => resolve(b), "image/jpeg", 0.8),
+    );
+    if (!blob) return null;
+    return new File([blob], "poster.jpg", { type: "image/jpeg" });
+  } catch (e) {
+    console.warn("[admin/learn-videos] frame capture failed", e);
+    return null;
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
+
 const inputStyle: React.CSSProperties = {
   width: "100%",
   height: 44,
@@ -104,6 +186,9 @@ function VideoForm({
   );
   const [file, setFile] = useState<File | null>(null);
   const [thumbFile, setThumbFile] = useState<File | null>(null);
+  const [autoThumb, setAutoThumb] = useState<File | null>(null);
+  const [autoThumbUrl, setAutoThumbUrl] = useState<string | null>(null);
+  const [capturing, setCapturing] = useState(false);
   const [source, setSource] = useState<"upload" | "youtube">(
     initial?.url && /youtu/.test(initial.url) ? "youtube" : "upload",
   );
@@ -118,6 +203,38 @@ function VideoForm({
   const derivedYoutubeThumb = youtubeUrl.trim()
     ? youtubeThumbnail(youtubeUrl.trim())
     : null;
+
+  const manualThumbUrl = thumbFile ? URL.createObjectURL(thumbFile) : null;
+  useEffect(() => {
+    return () => {
+      if (manualThumbUrl) URL.revokeObjectURL(manualThumbUrl);
+    };
+  }, [manualThumbUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (autoThumbUrl) URL.revokeObjectURL(autoThumbUrl);
+    };
+  }, [autoThumbUrl]);
+
+  const previewThumb = manualThumbUrl || autoThumbUrl || initial?.thumbnail_url || null;
+
+  const handleFileChange = async (picked: File | null) => {
+    setFile(picked);
+    setAutoThumb(null);
+    setAutoThumbUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
+    if (!picked) return;
+    setCapturing(true);
+    const frame = await captureVideoFrame(picked);
+    setCapturing(false);
+    if (frame) {
+      setAutoThumb(frame);
+      setAutoThumbUrl(URL.createObjectURL(frame));
+    }
+  };
 
   const handleSubmit = async () => {
 
@@ -142,11 +259,14 @@ function VideoForm({
           setUploadStatus("uploading");
           url = await uploadVideo(file, title.trim());
         }
-        if (thumbFile) {
+        // Manual thumbnail always wins, then the auto-captured poster frame.
+        const coverFile = thumbFile ?? autoThumb;
+        if (coverFile) {
           setUploadStatus("uploading");
-          thumbnailUrl = await uploadThumbnail(thumbFile, title.trim());
+          thumbnailUrl = await uploadThumbnail(coverFile, title.trim());
         }
       }
+
 
 
       const payload = {
@@ -287,9 +407,13 @@ function VideoForm({
             id="lv-file"
             type="file"
             accept="video/*"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
             style={{ ...inputStyle, height: "auto", padding: 10, fontSize: 13 }}
           />
+          <div style={{ fontSize: 12, color: GREY, marginTop: 6 }}>
+            A cover image is grabbed from the video automatically — upload one
+            below to override it.
+          </div>
 
           <label style={labelStyle} htmlFor="lv-thumb">
             Thumbnail image (optional)
@@ -306,6 +430,51 @@ function VideoForm({
               {thumbFile.name} · {(thumbFile.size / 1024).toFixed(0)} KB
             </div>
           )}
+
+          {(capturing || previewThumb) && (
+            <div
+              style={{
+                marginTop: 10,
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              {previewThumb ? (
+                <img
+                  src={previewThumb}
+                  alt="Video cover preview"
+                  style={{
+                    width: 96,
+                    height: 54,
+                    objectFit: "cover",
+                    borderRadius: 8,
+                    border: `1px solid ${BORDER}`,
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: 96,
+                    height: 54,
+                    borderRadius: 8,
+                    border: `1px solid ${BORDER}`,
+                    background: "#F1F3F6",
+                  }}
+                />
+              )}
+              <span style={{ fontSize: 12, color: GREY }}>
+                {capturing
+                  ? "Grabbing a cover from the video…"
+                  : thumbFile
+                    ? "Using your uploaded cover"
+                    : autoThumbUrl
+                      ? "Cover grabbed from the video"
+                      : "Current cover"}
+              </span>
+            </div>
+          )}
+
         </>
       )}
 
@@ -318,16 +487,58 @@ function VideoForm({
 
       {uploadStatus === "uploading" && (
         <div style={{ marginTop: 16 }}>
-          <div
-            style={{
-              fontSize: 13,
-              color: NAVY,
-              fontWeight: 600,
-              marginBottom: 8,
-            }}
-          >
-            Uploading video...
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+            <div
+              style={{
+                position: "relative",
+                width: 96,
+                height: 54,
+                borderRadius: 8,
+                overflow: "hidden",
+                border: `1px solid ${BORDER}`,
+                background: previewThumb ? "#000" : "#F1F3F6",
+                flexShrink: 0,
+              }}
+            >
+              {previewThumb && (
+                <img
+                  src={previewThumb}
+                  alt=""
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    opacity: 0.5,
+                  }}
+                />
+              )}
+              <div
+                className="lv-spinner"
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: -9,
+                  marginLeft: -9,
+                  width: 18,
+                  height: 18,
+                  borderRadius: "50%",
+                  border: `2px solid ${previewThumb ? "rgba(255,255,255,0.5)" : "#D6DBE4"}`,
+                  borderTopColor: previewThumb ? "#fff" : BLUE,
+                }}
+              />
+            </div>
+            <div
+              style={{
+                fontSize: 13,
+                color: NAVY,
+                fontWeight: 600,
+              }}
+            >
+              Uploading video...
+            </div>
           </div>
+
           <div
             style={{
               height: 6,
@@ -359,6 +570,9 @@ function VideoForm({
             .lv-progress-bar {
               animation: lv-progress-slide 1.4s ease-in-out infinite;
             }
+            @keyframes lv-spin { to { transform: rotate(360deg); } }
+            .lv-spinner { animation: lv-spin 0.8s linear infinite; }
+
           `}</style>
         </div>
       )}
@@ -612,21 +826,42 @@ function AdminLearnVideosPage() {
                 }}
               >
                 <div
-                  title={v.url ? "Video uploaded" : "No video uploaded yet"}
+                  title={
+                    v.thumbnail_url
+                      ? "Cover image set"
+                      : v.url
+                        ? "No cover image yet"
+                        : "No video uploaded yet"
+                  }
                   style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 10,
-                    background: v.url ? "#E8F1FC" : "#F1F3F6",
+                    width: 64,
+                    height: 40,
+                    borderRadius: 8,
+                    overflow: "hidden",
+                    background: v.thumbnail_url
+                      ? "#000"
+                      : v.url
+                        ? "#E8F1FC"
+                        : "#F1F3F6",
                     color: v.url ? BLUE : "#B4BCC7",
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
                     flexShrink: 0,
+                    border: `1px solid ${BORDER}`,
                   }}
                 >
-                  <Play size={16} />
+                  {v.thumbnail_url ? (
+                    <img
+                      src={v.thumbnail_url}
+                      alt=""
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <Film size={16} />
+                  )}
                 </div>
+
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div
                     style={{
