@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ChevronRight, Star, TrendingUp, Play, ShoppingBag, Award, CalendarOff, Zap, X } from "lucide-react";
 import { IconPlayerPlay } from "@tabler/icons-react";
@@ -27,14 +28,7 @@ const GRAY_LABEL = "#5F6B7A";
 const GRAY_SUBTITLE = "#8A94A3";
 const FONT = "Poppins, sans-serif";
 
-type Video = { title: string; duration: string; url: string | null };
-
-const HOW_TO_VIDEOS: Video[] = [
-  { title: "Fill gaps in your schedule automatically", duration: "0:24", url: null },
-  { title: "Reply to enquiries in one tap", duration: "0:31", url: null },
-  { title: "Log a lesson from the timeline", duration: "0:18", url: null },
-  { title: "Set up recurring lessons", duration: "0:42", url: null },
-];
+type Video = { id?: string; title: string; duration: string; url: string | null };
 
 type Guide = { icon: any; title: string; description: string; route: string };
 
@@ -256,6 +250,22 @@ function GuideRow({ g, onGo, isLast }: { g: Guide; onGo: () => void; isLast: boo
 function LearnPage() {
   const navigate = useNavigate();
   const [playing, setPlaying] = useState<Video | null>(null);
+  const [videos, setVideos] = useState<Video[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("learn_videos")
+        .select("id, title, duration, url")
+        .order("sort_order", { ascending: true });
+      if (!cancelled && !error && data) setVideos(data as Video[]);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
 
 
   return (
@@ -294,9 +304,9 @@ function LearnPage() {
             padding: "0 16px",
           }}
         >
-          {HOW_TO_VIDEOS.map((v, i) => (
+          {videos.map((v, i) => (
             <VideoCard
-              key={i}
+              key={v.id ?? i}
               v={v}
               color={i % 2 === 0 ? NAVY : BLUE}
               onPlay={() => {
