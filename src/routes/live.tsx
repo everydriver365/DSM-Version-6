@@ -6,6 +6,11 @@ import { PupilAvatar } from "../components/PupilAvatar";
 import { buildTripReport } from "../lib/tripReport";
 
 export const Route = createFileRoute("/live")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    autostart: typeof search.autostart === "string" ? search.autostart : undefined,
+    lessonId: typeof search.lessonId === "string" ? search.lessonId : undefined,
+    pupilId: typeof search.pupilId === "string" ? search.pupilId : undefined,
+  }),
   head: () => ({
     meta: [{ title: "Live tracking — DSM by EveryDriver" }],
   }),
@@ -187,6 +192,7 @@ function SegmentSpeedChart({
 
 function LivePage() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
@@ -367,6 +373,16 @@ function LivePage() {
         watchIdRef.current = null;
       }
     };
+  }, []);
+
+  // Auto-start tracking when navigated here from Home with autostart query params
+  useEffect(() => {
+    if (search.autostart !== '1' || !search.lessonId || !search.pupilId) return;
+    console.log("[live] autostart triggered for lesson", search.lessonId);
+    setActiveLessonId(search.lessonId);
+    setActivePupilId(search.pupilId);
+    startTracking(search.lessonId, search.pupilId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
