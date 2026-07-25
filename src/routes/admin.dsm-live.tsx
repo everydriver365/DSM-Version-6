@@ -802,13 +802,14 @@ function AdminDsmLive() {
                     <select
                       style={inp}
                       value={recurringFrequency}
-                      onChange={(e) => setRecurringFrequency(e.target.value as Frequency)}
+                      onChange={(e) => changeFrequency(e.target.value as Frequency)}
                     >
                       {FREQUENCIES.map((f) => (
                         <option key={f.value} value={f.value}>{f.label}</option>
                       ))}
                     </select>
                   </FormField>
+                  {renderDayPicker()}
                   <FormField label="Repeat until">
                     <input
                       type="date"
