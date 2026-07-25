@@ -374,7 +374,7 @@ function AdminListingsPage() {
 
   if (gate === "checking") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, color: "#6B7280", fontFamily: "Poppins, Inter, sans-serif" }}>
         Checking access…
       </div>
     );
@@ -745,7 +745,7 @@ function SupplierListingSheet({
           borderTopRightRadius: 16,
           display: "flex",
           flexDirection: "column",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Poppins, Inter, sans-serif",
         }}
       >
         <div
