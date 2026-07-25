@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronRight, Star, TrendingUp, Play, ShoppingBag, Award, CalendarOff, Zap } from "lucide-react";
+import { ChevronRight, Star, TrendingUp, Play, ShoppingBag, Award, CalendarOff, Zap, X } from "lucide-react";
 import { IconPlayerPlay } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
