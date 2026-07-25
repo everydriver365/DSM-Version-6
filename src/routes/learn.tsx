@@ -1,9 +1,21 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronRight, Play, Star, TrendingUp } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import {
+  ChevronRight,
+  Play,
+  Star,
+  TrendingUp,
+  ShoppingBag,
+  Award,
+  CalendarOff,
+  Zap,
+  CalendarDays,
+} from "lucide-react";
 import { IconPlayerPlay } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+
 
 export const Route = createFileRoute("/learn")({
   head: () => ({
