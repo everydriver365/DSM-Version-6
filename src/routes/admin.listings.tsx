@@ -374,7 +374,7 @@ function AdminListingsPage() {
 
   if (gate === "checking") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, color: "#6B7280", fontFamily: "Poppins, Inter, sans-serif" }}>
         Checking access…
       </div>
     );
@@ -382,7 +382,7 @@ function AdminListingsPage() {
   if (gate === "denied") return null;
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Inter, sans-serif", paddingBottom: 40 }}>
+    <div style={{ background: "#DCE4F0", minHeight: "100vh", fontFamily: "Poppins, Inter, sans-serif", paddingBottom: 40 }}>
       <div
         style={{
           position: "fixed",
@@ -390,7 +390,7 @@ function AdminListingsPage() {
           left: 0,
           right: 0,
           zIndex: 40,
-          background: "#CC2229",
+          background: "#0B1F3A",
           color: "#fff",
           padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
           display: "flex",
@@ -406,7 +406,7 @@ function AdminListingsPage() {
             width: 32,
             height: 32,
             borderRadius: "50%",
-            background: "rgba(255,255,255,0.15)",
+            background: "rgba(255,255,255,0.12)",
             border: "none",
             display: "inline-flex",
             alignItems: "center",
@@ -415,9 +415,9 @@ function AdminListingsPage() {
             color: "#fff",
           }}
         >
-          <ChevronLeft size={18} />
+          <ChevronLeft size={18} strokeWidth={2} />
         </button>
-        <span style={{ fontSize: 16, fontWeight: 600 }}>Marketplace listings</span>
+        <span style={{ fontSize: 16, fontWeight: 600, letterSpacing: "-0.01em" }}>Marketplace listings</span>
         <button
           type="button"
           onClick={() => setSheetOpen(true)}
@@ -425,29 +425,39 @@ function AdminListingsPage() {
             marginLeft: "auto",
             display: "inline-flex",
             alignItems: "center",
-            gap: 4,
-            background: "rgba(255,255,255,0.18)",
+            gap: 5,
+            background: "#1877D6",
             color: "#fff",
             border: "none",
             borderRadius: 999,
-            padding: "6px 12px",
+            padding: "7px 13px",
             fontSize: 13,
             fontWeight: 600,
+            fontFamily: "Poppins, Inter, sans-serif",
             cursor: "pointer",
           }}
         >
-          <Plus size={14} /> Add supplier listing
+          <Plus size={14} strokeWidth={2} /> Add listing
         </button>
       </div>
 
       <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, padding: 16 }}>
-          <StatCard label="Pending review" value={stats.pending} color="#B45309" bg="#FEF3C7" />
-          <StatCard label="Live" value={stats.live} color="#166534" bg="#DCFCE7" />
-          <StatCard label="Total" value={stats.total} color="#0B1F3A" bg="#EEF2F7" />
+          <StatCard label="Pending review" value={stats.pending} />
+          <StatCard label="Live" value={stats.live} />
+          <StatCard label="Total" value={stats.total} />
         </div>
 
-        <div style={{ display: "flex", gap: 8, overflowX: "auto", padding: "0 16px 12px" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            overflowX: "auto",
+            padding: "0 16px 12px",
+            scrollbarWidth: "none",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
           {(
             [
               ["all", "All"],
@@ -463,18 +473,22 @@ function AdminListingsPage() {
               onClick={() => setFilter(k)}
               style={{
                 whiteSpace: "nowrap",
-                padding: "8px 12px",
+                flexShrink: 0,
+                padding: "8px 14px",
                 borderRadius: 999,
-                border: "0.5px solid #E2E6ED",
-                background: filter === k ? "#0F2044" : "#fff",
+                border: filter === k ? "0.5px solid #0B1F3A" : "0.5px solid #E2E6ED",
+                background: filter === k ? "#0B1F3A" : "#fff",
                 color: filter === k ? "#fff" : "#0B1F3A",
                 fontSize: 13,
+                fontWeight: 500,
+                fontFamily: "Poppins, Inter, sans-serif",
                 cursor: "pointer",
               }}
             >
               {label}
             </button>
           ))}
+          <span aria-hidden style={{ flexShrink: 0, width: 4 }} />
         </div>
 
         {loading ? (
@@ -510,9 +524,11 @@ function AdminListingsPage() {
                   style={{ cursor: "pointer" }}
                 >
                   <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-                    <div style={{ fontWeight: 700, color: "#0B1F3A", fontSize: 15 }}>{l.title}</div>
+                    <div style={{ fontWeight: 600, color: "#0B1F3A", fontSize: 15, letterSpacing: "-0.01em" }}>
+                      {l.title}
+                    </div>
                     {l.marketplace_categories?.name && (
-                      <Badge color="#0B1F3A" bg="#EEF2F7">{l.marketplace_categories.name}</Badge>
+                      <Badge color="#6B7280" bg="#EEF2F7">{l.marketplace_categories.name}</Badge>
                     )}
                   </div>
                   <div style={{ color: "#6B7280", fontSize: 13, marginTop: 4 }}>
@@ -531,10 +547,11 @@ function AdminListingsPage() {
                     )}
                     {l.is_featured && <Badge color="#92400E" bg="#FEF3C7">Featured</Badge>}
                   </div>
-                  <div style={{ color: "#9CA3AF", fontSize: 12, marginTop: 6 }}>
+                  <div style={{ color: "#9CA3AF", fontSize: 11, marginTop: 8 }}>
                     Submitted {new Date(l.created_at).toLocaleDateString()}
                   </div>
                 </div>
+
 
                 {expanded && (
                   <div style={{ marginTop: 12, borderTop: "0.5px solid #E2E6ED", paddingTop: 12 }}>
@@ -581,7 +598,7 @@ function AdminListingsPage() {
                           />
                         </Field>
                         <div style={{ display: "flex", gap: 8 }}>
-                          <button type="button" onClick={() => saveEdit(l)} style={primaryBtn("#0F2044")}>Save</button>
+                          <button type="button" onClick={() => saveEdit(l)} style={primaryBtn("#0B1F3A")}>Save</button>
                           <button type="button" onClick={() => { setEditingId(null); setEditDraft({}); }} style={ghostBtn}>Cancel</button>
                         </div>
                       </div>
@@ -652,8 +669,8 @@ function AdminListingsPage() {
                           style={{
                             ...ghostBtn,
                             background: l.is_featured ? "#FEF3C7" : "#fff",
-                            borderColor: l.is_featured ? "#F59E0B" : "#0F2044",
-                            color: l.is_featured ? "#92400E" : "#0F2044",
+                            borderColor: l.is_featured ? "#F59E0B" : "#0B1F3A",
+                            color: l.is_featured ? "#92400E" : "#0B1F3A",
                           }}
                         >
                           {l.is_featured ? "★ Featured" : "Feature this listing"}
@@ -728,7 +745,7 @@ function SupplierListingSheet({
           borderTopRightRadius: 16,
           display: "flex",
           flexDirection: "column",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Poppins, Inter, sans-serif",
         }}
       >
         <div
@@ -809,7 +826,7 @@ function SupplierListingSheet({
                       padding: "8px 10px",
                       borderRadius: 8,
                       border: "0.5px solid #E2E6ED",
-                      background: draft.priceType === t ? "#0F2044" : "#fff",
+                      background: draft.priceType === t ? "#0B1F3A" : "#fff",
                       color: draft.priceType === t ? "#fff" : "#0B1F3A",
                       fontSize: 13,
                       fontWeight: 600,
@@ -837,7 +854,7 @@ function SupplierListingSheet({
                       padding: "8px 10px",
                       borderRadius: 8,
                       border: "0.5px solid #E2E6ED",
-                      background: draft.contactType === t ? "#0F2044" : "#fff",
+                      background: draft.contactType === t ? "#0B1F3A" : "#fff",
                       color: draft.contactType === t ? "#fff" : "#0B1F3A",
                       fontSize: 13,
                       fontWeight: 600,
@@ -888,7 +905,7 @@ function SupplierListingSheet({
           <button
             type="button"
             onClick={onSave}
-            style={{ ...primaryBtn("#0F2044"), flex: 2, opacity: saving ? 0.6 : 1 }}
+            style={{ ...primaryBtn("#0B1F3A"), flex: 2, opacity: saving ? 0.6 : 1 }}
             disabled={saving}
           >
             {saving ? "Saving…" : "Create listing"}
@@ -947,14 +964,23 @@ function Toggle({ label, value, onChange }: { label: string; value: boolean; onC
   );
 }
 
-function StatCard({ label, value, color, bg }: { label: string; value: number; color: string; bg: string }) {
+function StatCard({ label, value }: { label: string; value: number; color?: string; bg?: string }) {
   return (
-    <div style={{ background: bg, borderRadius: 12, padding: 12 }}>
-      <div style={{ fontSize: 12, color, opacity: 0.85 }}>{label}</div>
-      <div style={{ fontSize: 22, fontWeight: 700, color, marginTop: 2 }}>{value}</div>
+    <div
+      style={{
+        background: "#fff",
+        border: "0.5px solid #E2E6ED",
+        borderRadius: 12,
+        padding: 12,
+        fontFamily: "Poppins, Inter, sans-serif",
+      }}
+    >
+      <div style={{ fontSize: 22, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.1 }}>{value}</div>
+      <div style={{ fontSize: 11, color: "#6B7280", marginTop: 4 }}>{label}</div>
     </div>
   );
 }
+
 
 function Badge({ children, color, bg }: { children: React.ReactNode; color: string; bg: string }) {
   return (
@@ -987,10 +1013,11 @@ const inputStyle: React.CSSProperties = {
   borderRadius: 8,
   padding: "8px 10px",
   fontSize: 13,
-  fontFamily: "Inter, sans-serif",
+  fontFamily: "Poppins, Inter, sans-serif",
   color: "#0B1F3A",
   background: "#fff",
   width: "100%",
+
   boxSizing: "border-box",
 };
 
@@ -1009,8 +1036,8 @@ function primaryBtn(bg: string): React.CSSProperties {
 
 const ghostBtn: React.CSSProperties = {
   background: "#fff",
-  color: "#0F2044",
-  border: "1px solid #0F2044",
+  color: "#0B1F3A",
+  border: "1px solid #0B1F3A",
   borderRadius: 8,
   padding: "8px 12px",
   fontSize: 13,
