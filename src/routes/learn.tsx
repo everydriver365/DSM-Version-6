@@ -88,8 +88,17 @@ async function getCachedObjectUrl(url: string): Promise<string | null> {
   }
 }
 
+function youtubeThumbnailFromUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+  );
+  return match ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg` : null;
+}
+
 function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () => void }) {
   const downloadable = !!v.url && !getYouTubeEmbedUrl(v.url);
+  const thumb = v.thumbnail_url || youtubeThumbnailFromUrl(v.url);
   const [cached, setCached] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
@@ -145,9 +154,9 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
           borderRadius: 14,
           overflow: "hidden",
           background: color,
-          ...(v.thumbnail_url
+          ...(thumb
             ? {
-                backgroundImage: `url(${v.thumbnail_url})`,
+                backgroundImage: `url(${thumb})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }
