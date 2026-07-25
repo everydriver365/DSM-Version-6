@@ -3504,6 +3504,18 @@ function HomePage() {
     }) ?? null;
   }, [lessons, now]);
 
+  // Auto-navigate to live tracking once per in-progress lesson when autoTrackLessons is enabled
+  const autoNavigatedLessonId = useRef<string | null>(null);
+  useEffect(() => {
+    if (!autoTrackLessons || !currentLesson) return;
+    if (autoNavigatedLessonId.current === currentLesson.id) return;
+    autoNavigatedLessonId.current = currentLesson.id;
+    navigate({
+      to: '/live',
+      search: { autostart: '1', lessonId: currentLesson.id, pupilId: currentLesson.pupil_id },
+    });
+  }, [autoTrackLessons, currentLesson, navigate]);
+
   // ── Next Lesson traffic + weather chips ───────────────────────────────────
   const fetchWeather = useServerFn(getLessonWeather);
   const fetchDriveTime = useServerFn(getLessonDriveTime);
@@ -5156,34 +5168,6 @@ function HomePage() {
           fontFamily: 'Inter, sans-serif',
         }}
       >
-        {autoTrackLessons && currentLesson && (
-          <button
-            type="button"
-            onClick={() => navigate({ to: '/live' })}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-              width: '100%',
-              padding: '10px 14px',
-              background: '#1877D6',
-              color: '#FFFFFF',
-              border: 'none',
-              fontSize: 13,
-              fontWeight: 700,
-              fontFamily: 'Inter, sans-serif',
-              cursor: 'pointer',
-              letterSpacing: 0.2,
-            }}
-          >
-            <span style={{
-              width: 7, height: 7, borderRadius: 999,
-              background: '#FFFFFF', boxShadow: '0 0 0 2px rgba(255,255,255,0.35)',
-            }} />
-            Start tracking — {currentLesson.pupils?.name ?? 'lesson in progress'}
-          </button>
-        )}
         {/* Map hero + late banner + stats + reasons */}
         {(() => {
 
