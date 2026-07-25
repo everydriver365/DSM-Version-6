@@ -487,16 +487,58 @@ function VideoForm({
 
       {uploadStatus === "uploading" && (
         <div style={{ marginTop: 16 }}>
-          <div
-            style={{
-              fontSize: 13,
-              color: NAVY,
-              fontWeight: 600,
-              marginBottom: 8,
-            }}
-          >
-            Uploading video...
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+            <div
+              style={{
+                position: "relative",
+                width: 96,
+                height: 54,
+                borderRadius: 8,
+                overflow: "hidden",
+                border: `1px solid ${BORDER}`,
+                background: previewThumb ? "#000" : "#F1F3F6",
+                flexShrink: 0,
+              }}
+            >
+              {previewThumb && (
+                <img
+                  src={previewThumb}
+                  alt=""
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    opacity: 0.5,
+                  }}
+                />
+              )}
+              <div
+                className="lv-spinner"
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: -9,
+                  marginLeft: -9,
+                  width: 18,
+                  height: 18,
+                  borderRadius: "50%",
+                  border: `2px solid ${previewThumb ? "rgba(255,255,255,0.5)" : "#D6DBE4"}`,
+                  borderTopColor: previewThumb ? "#fff" : BLUE,
+                }}
+              />
+            </div>
+            <div
+              style={{
+                fontSize: 13,
+                color: NAVY,
+                fontWeight: 600,
+              }}
+            >
+              Uploading video...
+            </div>
           </div>
+
           <div
             style={{
               height: 6,
