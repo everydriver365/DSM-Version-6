@@ -159,23 +159,24 @@ function ManifestPage() {
 
   return (
     <PageLayout className="pb-12" style={POPPINS}>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Today's manifest"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Date sub-bar */}
       <div
-        className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0B1F3A" }}
+        className="flex items-center justify-end text-[13px] font-medium"
+        style={{ background: "#FFFFFF", padding: "8px 16px", borderBottom: "1px solid #EEF2F7", color: "#0B1F3A" }}
       >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
-        >
-          <ArrowLeft size={22} color="#ffffff" />
-        </button>
-        <div className="text-white text-[15px] font-semibold">Today's manifest</div>
-        <div className="text-white text-[13px]" style={{ minWidth: 40, textAlign: "right" }}>
-          {dateLabel}
-        </div>
+        {dateLabel}
       </div>
 
       {/* SUMMARY STRIP */}
