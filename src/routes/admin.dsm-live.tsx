@@ -2,7 +2,16 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ChevronLeft, Plus, X, Pencil, Trash2, Users as UsersIcon, Camera } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useAdminGate } from "./admin";
+
+const POPPINS: React.CSSProperties = { fontFamily: "Poppins, system-ui, sans-serif" };
+
+function sentenceCase(v?: string | null): string {
+  if (!v) return "";
+  const s = String(v).trim();
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
 
 export const Route = createFileRoute("/admin/dsm-live")({
   component: AdminDsmLive,
