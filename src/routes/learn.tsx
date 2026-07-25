@@ -536,7 +536,8 @@ function LearnPage() {
             }
             return (
               <video
-                src={playing.url ?? undefined}
+                src={playbackSrc ?? playing.url ?? undefined}
+
                 controls
                 autoPlay
                 playsInline
