@@ -598,7 +598,7 @@ function AdminListingsPage() {
                           />
                         </Field>
                         <div style={{ display: "flex", gap: 8 }}>
-                          <button type="button" onClick={() => saveEdit(l)} style={primaryBtn("#0F2044")}>Save</button>
+                          <button type="button" onClick={() => saveEdit(l)} style={primaryBtn("#0B1F3A")}>Save</button>
                           <button type="button" onClick={() => { setEditingId(null); setEditDraft({}); }} style={ghostBtn}>Cancel</button>
                         </div>
                       </div>
@@ -669,8 +669,8 @@ function AdminListingsPage() {
                           style={{
                             ...ghostBtn,
                             background: l.is_featured ? "#FEF3C7" : "#fff",
-                            borderColor: l.is_featured ? "#F59E0B" : "#0F2044",
-                            color: l.is_featured ? "#92400E" : "#0F2044",
+                            borderColor: l.is_featured ? "#F59E0B" : "#0B1F3A",
+                            color: l.is_featured ? "#92400E" : "#0B1F3A",
                           }}
                         >
                           {l.is_featured ? "★ Featured" : "Feature this listing"}
@@ -826,7 +826,7 @@ function SupplierListingSheet({
                       padding: "8px 10px",
                       borderRadius: 8,
                       border: "0.5px solid #E2E6ED",
-                      background: draft.priceType === t ? "#0F2044" : "#fff",
+                      background: draft.priceType === t ? "#0B1F3A" : "#fff",
                       color: draft.priceType === t ? "#fff" : "#0B1F3A",
                       fontSize: 13,
                       fontWeight: 600,
@@ -854,7 +854,7 @@ function SupplierListingSheet({
                       padding: "8px 10px",
                       borderRadius: 8,
                       border: "0.5px solid #E2E6ED",
-                      background: draft.contactType === t ? "#0F2044" : "#fff",
+                      background: draft.contactType === t ? "#0B1F3A" : "#fff",
                       color: draft.contactType === t ? "#fff" : "#0B1F3A",
                       fontSize: 13,
                       fontWeight: 600,
@@ -905,7 +905,7 @@ function SupplierListingSheet({
           <button
             type="button"
             onClick={onSave}
-            style={{ ...primaryBtn("#0F2044"), flex: 2, opacity: saving ? 0.6 : 1 }}
+            style={{ ...primaryBtn("#0B1F3A"), flex: 2, opacity: saving ? 0.6 : 1 }}
             disabled={saving}
           >
             {saving ? "Saving…" : "Create listing"}
@@ -1036,8 +1036,8 @@ function primaryBtn(bg: string): React.CSSProperties {
 
 const ghostBtn: React.CSSProperties = {
   background: "#fff",
-  color: "#0F2044",
-  border: "1px solid #0F2044",
+  color: "#0B1F3A",
+  border: "1px solid #0B1F3A",
   borderRadius: 8,
   padding: "8px 12px",
   fontSize: 13,
