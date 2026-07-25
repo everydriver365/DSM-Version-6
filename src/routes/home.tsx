@@ -4529,7 +4529,7 @@ function HomePage() {
             <>
               {/* Card header */}
               <div style={{
-                margin: '0 12px', padding: '14px 12px 12px', display: 'flex', alignItems: 'center',
+                width: '75%', margin: '0 auto', padding: '14px 12px 12px', display: 'flex', alignItems: 'center',
                 justifyContent: 'space-between', gap: 8, fontFamily: 'Inter, sans-serif',
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
