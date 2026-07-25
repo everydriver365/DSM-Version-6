@@ -187,6 +187,34 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
         >
           {v.duration}
         </div>
+        {downloadable && (
+          <button
+            type="button"
+            onClick={handleDownload}
+            aria-label={cached ? "Available offline" : "Download for offline"}
+            style={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              width: 28,
+              height: 28,
+              borderRadius: "50%",
+              border: "none",
+              background: cached ? "#1E8E3E" : "rgba(0,0,0,0.55)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: cached ? "default" : "pointer",
+              opacity: downloading ? 0.6 : 1,
+            }}
+          >
+            {cached ? (
+              <Check size={15} color="#FFFFFF" strokeWidth={3} />
+            ) : (
+              <Download size={15} color="#FFFFFF" />
+            )}
+          </button>
+        )}
       </div>
       <div
         style={{
@@ -199,7 +227,8 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
       >
         {v.title}
       </div>
-    </button>
+    </div>
+
   );
 }
 
