@@ -382,7 +382,7 @@ function AdminListingsPage() {
   if (gate === "denied") return null;
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Inter, sans-serif", paddingBottom: 40 }}>
+    <div style={{ background: "#DCE4F0", minHeight: "100vh", fontFamily: "Poppins, Inter, sans-serif", paddingBottom: 40 }}>
       <div
         style={{
           position: "fixed",
@@ -390,7 +390,7 @@ function AdminListingsPage() {
           left: 0,
           right: 0,
           zIndex: 40,
-          background: "#CC2229",
+          background: "#0B1F3A",
           color: "#fff",
           padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
           display: "flex",
@@ -406,7 +406,7 @@ function AdminListingsPage() {
             width: 32,
             height: 32,
             borderRadius: "50%",
-            background: "rgba(255,255,255,0.15)",
+            background: "rgba(255,255,255,0.12)",
             border: "none",
             display: "inline-flex",
             alignItems: "center",
@@ -415,9 +415,9 @@ function AdminListingsPage() {
             color: "#fff",
           }}
         >
-          <ChevronLeft size={18} />
+          <ChevronLeft size={18} strokeWidth={2} />
         </button>
-        <span style={{ fontSize: 16, fontWeight: 600 }}>Marketplace listings</span>
+        <span style={{ fontSize: 16, fontWeight: 600, letterSpacing: "-0.01em" }}>Marketplace listings</span>
         <button
           type="button"
           onClick={() => setSheetOpen(true)}
@@ -425,29 +425,39 @@ function AdminListingsPage() {
             marginLeft: "auto",
             display: "inline-flex",
             alignItems: "center",
-            gap: 4,
-            background: "rgba(255,255,255,0.18)",
+            gap: 5,
+            background: "#1877D6",
             color: "#fff",
             border: "none",
             borderRadius: 999,
-            padding: "6px 12px",
+            padding: "7px 13px",
             fontSize: 13,
             fontWeight: 600,
+            fontFamily: "Poppins, Inter, sans-serif",
             cursor: "pointer",
           }}
         >
-          <Plus size={14} /> Add supplier listing
+          <Plus size={14} strokeWidth={2} /> Add listing
         </button>
       </div>
 
       <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, padding: 16 }}>
-          <StatCard label="Pending review" value={stats.pending} color="#B45309" bg="#FEF3C7" />
-          <StatCard label="Live" value={stats.live} color="#166534" bg="#DCFCE7" />
-          <StatCard label="Total" value={stats.total} color="#0B1F3A" bg="#EEF2F7" />
+          <StatCard label="Pending review" value={stats.pending} />
+          <StatCard label="Live" value={stats.live} />
+          <StatCard label="Total" value={stats.total} />
         </div>
 
-        <div style={{ display: "flex", gap: 8, overflowX: "auto", padding: "0 16px 12px" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            overflowX: "auto",
+            padding: "0 16px 12px",
+            scrollbarWidth: "none",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
           {(
             [
               ["all", "All"],
@@ -463,18 +473,22 @@ function AdminListingsPage() {
               onClick={() => setFilter(k)}
               style={{
                 whiteSpace: "nowrap",
-                padding: "8px 12px",
+                flexShrink: 0,
+                padding: "8px 14px",
                 borderRadius: 999,
-                border: "0.5px solid #E2E6ED",
-                background: filter === k ? "#0F2044" : "#fff",
+                border: filter === k ? "0.5px solid #0B1F3A" : "0.5px solid #E2E6ED",
+                background: filter === k ? "#0B1F3A" : "#fff",
                 color: filter === k ? "#fff" : "#0B1F3A",
                 fontSize: 13,
+                fontWeight: 500,
+                fontFamily: "Poppins, Inter, sans-serif",
                 cursor: "pointer",
               }}
             >
               {label}
             </button>
           ))}
+          <span aria-hidden style={{ flexShrink: 0, width: 4 }} />
         </div>
 
         {loading ? (
@@ -510,9 +524,11 @@ function AdminListingsPage() {
                   style={{ cursor: "pointer" }}
                 >
                   <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-                    <div style={{ fontWeight: 700, color: "#0B1F3A", fontSize: 15 }}>{l.title}</div>
+                    <div style={{ fontWeight: 600, color: "#0B1F3A", fontSize: 15, letterSpacing: "-0.01em" }}>
+                      {l.title}
+                    </div>
                     {l.marketplace_categories?.name && (
-                      <Badge color="#0B1F3A" bg="#EEF2F7">{l.marketplace_categories.name}</Badge>
+                      <Badge color="#6B7280" bg="#EEF2F7">{l.marketplace_categories.name}</Badge>
                     )}
                   </div>
                   <div style={{ color: "#6B7280", fontSize: 13, marginTop: 4 }}>
@@ -531,10 +547,11 @@ function AdminListingsPage() {
                     )}
                     {l.is_featured && <Badge color="#92400E" bg="#FEF3C7">Featured</Badge>}
                   </div>
-                  <div style={{ color: "#9CA3AF", fontSize: 12, marginTop: 6 }}>
+                  <div style={{ color: "#9CA3AF", fontSize: 11, marginTop: 8 }}>
                     Submitted {new Date(l.created_at).toLocaleDateString()}
                   </div>
                 </div>
+
 
                 {expanded && (
                   <div style={{ marginTop: 12, borderTop: "0.5px solid #E2E6ED", paddingTop: 12 }}>
