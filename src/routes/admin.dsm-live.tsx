@@ -21,19 +21,45 @@ const CATEGORIES = [
 ];
 const STATUSES = ["upcoming", "live", "completed", "cancelled"] as const;
 const FREQUENCIES = [
+  { value: "daily", label: "Daily", days: 1 },
   { value: "weekly", label: "Weekly", days: 7 },
   { value: "fortnightly", label: "Fortnightly", days: 14 },
   { value: "monthly", label: "Monthly", days: 0 /* month-based */ },
+  { value: "custom", label: "Custom days", days: 0 },
 ] as const;
+
+const DAY_LABELS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 type Frequency = typeof FREQUENCIES[number]["value"];
 
-function generateOccurrences(startDate: string, until: string, freq: Frequency): string[] {
+function fmtLocalDate(d: Date): string {
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${m}-${day}`;
+}
+
+function generateOccurrences(
+  startDate: string,
+  until: string,
+  freq: Frequency,
+  customDays: number[] = [],
+): string[] {
   const out: string[] = [];
   if (!startDate || !until) return out;
   const start = new Date(startDate + "T00:00:00");
   const end = new Date(until + "T00:00:00");
   if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) return [startDate];
+  if (freq === "custom") {
+    if (!customDays.length) return [startDate];
+    const cur = new Date(start);
+    let guard = 0;
+    while (cur <= end && guard < 1000) {
+      if (customDays.includes(cur.getDay())) out.push(fmtLocalDate(cur));
+      cur.setDate(cur.getDate() + 1);
+      guard++;
+    }
+    return out;
+  }
   const cur = new Date(start);
   let guard = 0;
   while (cur <= end && guard < 500) {
@@ -41,7 +67,7 @@ function generateOccurrences(startDate: string, until: string, freq: Frequency):
     if (freq === "monthly") {
       cur.setMonth(cur.getMonth() + 1);
     } else {
-      const days = freq === "fortnightly" ? 14 : 7;
+      const days = freq === "daily" ? 1 : freq === "fortnightly" ? 14 : 7;
       cur.setDate(cur.getDate() + days);
     }
     guard++;
