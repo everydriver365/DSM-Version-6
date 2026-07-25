@@ -4702,40 +4702,7 @@ function HomePage() {
                         </div>
                       )}
 
-                      {/* Text + Call */}
-                      <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate({ to: '/messages/$pupilId', params: { pupilId: upcoming.pupil_id } as any });
-                          }}
-                          style={{
-                            flex: 1, background: '#FFFFFF', color: '#0B1F3A',
-                            border: '0.5px solid #E2E8F0', borderRadius: 10, padding: '9px 0',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                            fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-                          }}
-                        >
-                          <MessageSquare size={16} /> Text
-                        </button>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (!phone) { toast('No phone number'); return; }
-                            window.location.href = `tel:${phone}`;
-                          }}
-                          style={{
-                            flex: 1, background: '#FFFFFF', color: '#0B1F3A',
-                            border: '0.5px solid #E2E8F0', borderRadius: 10, padding: '9px 0',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                            fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-                          }}
-                        >
-                          <Phone size={16} /> Call
-                        </button>
-                      </div>
+                      {/* Text + Call are shown in the expanded panel */}
                     </div>
 
                   </div>
