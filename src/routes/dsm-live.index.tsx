@@ -176,8 +176,8 @@ function DsmLivePage() {
         <div
           style={{
             background: "#FFFFFF",
-            borderRadius: 14,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            borderRadius: 12,
+            border: "0.5px solid #E2E6ED",
             padding: 18,
             display: "flex",
             flexDirection: "row",
@@ -189,7 +189,7 @@ function DsmLivePage() {
             style={{
               width: 44,
               height: 44,
-              borderRadius: 12,
+              borderRadius: 10,
               background: "#E6F1FB",
               display: "flex",
               alignItems: "center",
@@ -197,7 +197,8 @@ function DsmLivePage() {
               flexShrink: 0,
             }}
           >
-            <IconBroadcast size={22} color="#185FA5" stroke={1.5} />
+            <IconBroadcast size={22} color="#1877D6" stroke={1.5} />
+
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
