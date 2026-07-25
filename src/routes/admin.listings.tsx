@@ -110,6 +110,8 @@ function AdminListingsPage() {
   const [rejectReason, setRejectReason] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editDraft, setEditDraft] = useState<Partial<Listing>>({});
+  const [newImageUrl, setNewImageUrl] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [draft, setDraft] = useState<NewListingDraft>(emptyDraft);
