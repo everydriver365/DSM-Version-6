@@ -874,7 +874,7 @@ function SessionCard({
               fontSize: 13,
               fontWeight: 500,
               padding: "10px 18px",
-              borderRadius: 10,
+              borderRadius: 999,
               border: 0,
               cursor: "pointer",
               fontFamily: poppins,
