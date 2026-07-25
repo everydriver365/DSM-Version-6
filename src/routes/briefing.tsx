@@ -4,6 +4,8 @@ import {
   ChevronLeft, ChevronRight, Phone, Navigation, Sun, Cloud, CloudRain, CloudSnow,
   CloudLightning, CloudFog, Wind, Eye, PoundSterling, GraduationCap,
   Inbox, FileText, Wrench, Fuel,
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
