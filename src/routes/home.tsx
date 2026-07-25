@@ -4470,13 +4470,16 @@ function HomePage() {
           // Payment / due pill
           const hStatus = (upcoming?.payment_status ?? 'unpaid').toLowerCase();
           const hAmountDue = Number(upcoming?.amount_due ?? 0);
-          const hLabel = hAmountDue > 0
+          const isPrepaid = hStatus === 'prepaid';
+          const hLabel = hAmountDue > 0 && !isPrepaid
             ? `£${hAmountDue.toFixed(0)} due`
-            : hStatus === 'prepaid'
+            : isPrepaid
               ? 'Prepaid'
               : 'Paid';
-          const hPillBg = hAmountDue > 0 ? '#FDECEC' : '#E7F4E8';
-          const hPillFg = hAmountDue > 0 ? '#CC2229' : '#2F7A3A';
+          const hPillBg = hAmountDue > 0 && !isPrepaid ? '#FDECEC' : '#E7F4E8';
+          const hPillFg = hAmountDue > 0 && !isPrepaid ? '#CC2229' : '#1E8E3E';
+          const priceText = hAmountDue > 0 ? `£${hAmountDue.toFixed(2)}` : null;
+          const priceColor = isPrepaid ? '#1E8E3E' : '#CC2229';
 
           // Date / time / duration / ETA
           const d = upcoming ? lessonDateTime(upcoming) : null;
@@ -4521,7 +4524,6 @@ function HomePage() {
           const railDow = d ? d.toLocaleDateString('en-GB', { weekday: 'short' }).toUpperCase() : '—';
           const railDay = d ? String(d.getDate()) : '—';
           const railMon = d ? d.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase() : '';
-          const priceText = hAmountDue > 0 ? `£${hAmountDue.toFixed(2)}` : null;
 
           return (
             <>
@@ -4657,10 +4659,10 @@ function HomePage() {
                     )}
 
                     {/* Details block */}
-                    <div style={{ padding: '12px 14px 12px' }}>
+                    <div style={{ padding: '16px 16px 14px' }}>
                       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
                         <div style={{ minWidth: 0, flex: 1 }}>
-                          <div style={{ fontSize: 19, fontWeight: 800, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <div style={{ fontSize: 22, fontWeight: 800, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {pupilFullName || 'Pupil'}
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 6, fontSize: 14, color: '#0B1F3A' }}>
@@ -4673,15 +4675,10 @@ function HomePage() {
                             <MapPin size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
                             <span style={{ wordBreak: 'break-word' }}>{pickup}</span>
                           </div>
-                          {etaLabel && (
-                            <div style={{ fontSize: 12, fontWeight: 600, color: isLate ? '#C23B3B' : '#1877D6', marginTop: 6 }}>
-                              ETA {etaLabel}
-                            </div>
-                          )}
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
                           {priceText && (
-                            <div style={{ fontSize: 17, fontWeight: 800, color: '#CC2229' }}>{priceText}</div>
+                            <div style={{ fontSize: 22, fontWeight: 800, color: priceColor }}>{priceText}</div>
                           )}
                           <span style={{
                             background: hPillBg, color: hPillFg,
@@ -4705,40 +4702,7 @@ function HomePage() {
                         </div>
                       )}
 
-                      {/* Text + Call */}
-                      <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate({ to: '/messages/$pupilId', params: { pupilId: upcoming.pupil_id } as any });
-                          }}
-                          style={{
-                            flex: 1, background: '#FFFFFF', color: '#0B1F3A',
-                            border: '0.5px solid #E2E8F0', borderRadius: 10, padding: '9px 0',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                            fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-                          }}
-                        >
-                          <MessageSquare size={16} /> Text
-                        </button>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (!phone) { toast('No phone number'); return; }
-                            window.location.href = `tel:${phone}`;
-                          }}
-                          style={{
-                            flex: 1, background: '#FFFFFF', color: '#0B1F3A',
-                            border: '0.5px solid #E2E8F0', borderRadius: 10, padding: '9px 0',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                            fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-                          }}
-                        >
-                          <Phone size={16} /> Call
-                        </button>
-                      </div>
+                      {/* Text + Call are shown in the expanded panel */}
                     </div>
 
                   </div>
@@ -7015,6 +6979,24 @@ function HeroExpandedPanel({
         >
           <Pencil size={16} color="#0B1F3A" />
           <span style={pillLabel}>Edit</span>
+        </button>
+      </div>
+
+      {/* Text / Call */}
+      <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+        <button
+          type="button"
+          style={{ ...pillBase, flexDirection: 'row', gap: 6, fontSize: 13, fontWeight: 600 }}
+          onClick={(e) => { e.stopPropagation(); navigate({ to: '/messages/$pupilId', params: { pupilId: lesson.pupil_id } as any }); }}
+        >
+          <MessageSquare size={16} color="#0B1F3A" /> Text
+        </button>
+        <button
+          type="button"
+          style={{ ...pillBase, flexDirection: 'row', gap: 6, fontSize: 13, fontWeight: 600 }}
+          onClick={(e) => { e.stopPropagation(); if (!phone) { toast('No phone number'); return; } window.location.href = `tel:${phone}`; }}
+        >
+          <Phone size={16} color="#0B1F3A" /> Call
         </button>
       </div>
 
