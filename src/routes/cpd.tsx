@@ -242,36 +242,41 @@ function CpdPage() {
 
   return (
     <PageLayout className="pb-24" style={POPPINS}>
-      {/* TOP BAR */}
+      <InstructorTopBar
+        firstName=""
+        pageTitle="CPD log"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Action bar */}
       <div
-        className="cf-header-navy sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0B1F3A" }}
+        style={{
+          background: "#FFFFFF",
+          padding: "8px 16px",
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          borderBottom: "1px solid #EEF2F7",
+          gap: 10,
+          ...POPPINS,
+        }}
       >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
-        >
-          <ArrowLeft size={22} color="#ffffff" />
-        </button>
-        <div className="text-white text-[15px] font-semibold">CPD log</div>
         <button
           type="button"
           onClick={() => {
             setEditing(null);
             setShowAdd(true);
           }}
-          className="flex items-center gap-1 text-white text-[13px] font-medium"
-          style={{
-            height: 32,
-            padding: "0 10px",
-            borderRadius: 8,
-            backgroundColor: "rgba(255,255,255,0.15)",
-          }}
+          className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
+          style={{ backgroundColor: "#1877D6" }}
         >
-          <Plus size={16} /> Add CPD
+          <Plus size={16} color="#fff" /> Add CPD
         </button>
       </div>
 
