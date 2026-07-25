@@ -175,6 +175,29 @@ function TileText({ title, meta }: { title: string; meta: React.ReactNode }) {
   );
 }
 
+function CategoryPill({ label, color }: { label: string; color: string }) {
+  return (
+    <span
+      style={{
+        position: "absolute",
+        top: 6,
+        left: 6,
+        background: "rgba(255,255,255,0.92)",
+        color,
+        fontSize: 10,
+        fontWeight: 600,
+        textTransform: "uppercase",
+        letterSpacing: "0.03em",
+        padding: "2px 6px",
+        borderRadius: 6,
+        lineHeight: 1.2,
+      }}
+    >
+      {label}
+    </span>
+  );
+}
+
 function EmptyTile({ label }: { label: string }) {
   return (
     <div
