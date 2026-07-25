@@ -8413,7 +8413,7 @@ function DiscoverSection() {
                     style={{
                       width: 56,
                       height: 56,
-                      background: s.image_url ? `url(${s.image_url}) center/contain` : gradientLive,
+                      background: s.image_url ? `url(${s.image_url}) center/cover` : gradientLive,
                       backgroundColor: "#EEF1F6",
                       position: 'relative',
                       flexShrink: 0,
