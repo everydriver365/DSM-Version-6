@@ -83,6 +83,10 @@ function VideoForm({
   );
   const [file, setFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<
+    "idle" | "uploading" | "saved" | "error"
+  >("idle");
+
 
   const handleSubmit = async () => {
     if (!title.trim()) {
