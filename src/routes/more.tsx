@@ -87,7 +87,7 @@ function MorePage() {
   const go = (route: string) => navigate({ to: route as never });
 
   return (
-    <div style={{ background: '#F7FAFC', minHeight: '100vh', paddingBottom: 80, fontFamily: 'Inter, sans-serif' }}>
+    <PageLayout className="pb-20" style={{ fontFamily: 'Inter, sans-serif' }}>
       <InstructorTopBar
         firstName=""
         pageTitle="More"
