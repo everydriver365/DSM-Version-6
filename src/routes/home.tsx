@@ -4389,7 +4389,6 @@ function HomePage() {
     { icon: <Sun size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Briefing", route: "/briefing" },
     { icon: <AlertCircle size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Outstanding", route: "/outstanding" },
     { icon: <Globe size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My website", route: "/minisite" },
-    { icon: <PlayCircle size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Learn", route: "/learn" },
 
   ] as const;
 
@@ -4562,11 +4561,6 @@ function HomePage() {
               onNavigate={() => navigate({ to: "/schedule" })}
               onAddLesson={() => navigate({ to: "/lessons/new" })}
             />
-          </div>
-
-          {/* LEARN NUDGE */}
-          <div style={{ marginBottom: 20 }}>
-            <LearnNudge />
           </div>
 
           {/* STATS ROW */}
@@ -5109,11 +5103,6 @@ function HomePage() {
             ? <img src={avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             : (firstName?.[0] ?? 'I').toUpperCase()}
         </button>
-      </div>
-
-      {/* LEARN NUDGE */}
-      <div style={{ padding: '0 16px', marginBottom: 22 }}>
-        <LearnNudge />
       </div>
 
       {/* ============ OVERLAPPING STAT TILES ============ */}
@@ -8021,95 +8010,6 @@ function AccessTile({
       </span>
       <span className="text-[10px] text-[#0B1F3A] text-center leading-tight" style={{ maxWidth: '100%', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{label}</span>
     </button>
-  );
-}
-
-function LearnNudge() {
-  const navigate = useNavigate();
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    try {
-      setVisible(window.localStorage.getItem("learn_nudge_seen") !== "true");
-    } catch {
-      setVisible(false);
-    }
-  }, []);
-
-  const dismiss = () => {
-    try {
-      window.localStorage.setItem("learn_nudge_seen", "true");
-    } catch {}
-    setVisible(false);
-  };
-
-  const handleClick = () => {
-    dismiss();
-    navigate({ to: "/learn" });
-  };
-
-  if (!visible) return null;
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 12,
-        background: "#FFFFFF",
-        border: "0.5px solid #E2E6ED",
-        borderRadius: 10,
-        padding: "12px 14px",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-        fontFamily: "Inter, sans-serif",
-      }}
-    >
-      <button
-        type="button"
-        onClick={handleClick}
-        style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          background: "transparent",
-          border: "none",
-          padding: 0,
-          cursor: "pointer",
-          textAlign: "left",
-        }}
-      >
-        <span style={{ display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-          <PlayCircle size={18} color="#1877D6" />
-        </span>
-        <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", flex: 1, lineHeight: 1.3 }}>
-          New to DSM? Watch a 20-second guide
-        </span>
-        <span style={{ fontSize: 13, fontWeight: 600, color: "#1877D6", flexShrink: 0 }}>→</span>
-      </button>
-      <button
-        type="button"
-        aria-label="Dismiss"
-        onClick={(e) => {
-          e.stopPropagation();
-          dismiss();
-        }}
-        style={{
-          background: "transparent",
-          border: "none",
-          padding: 4,
-          marginLeft: 4,
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-        }}
-      >
-        <X size={16} color="#6B7280" />
-      </button>
-    </div>
   );
 }
 
