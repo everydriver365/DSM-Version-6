@@ -296,23 +296,19 @@ function MiniSitePage() {
   const slugValidFormat = /^[a-z0-9-]+$/.test(slug) && slug.length >= 3;
 
   return (
-    <div className="min-h-screen pb-32" style={{ ...POPPINS, backgroundColor: "#F3F8FF", paddingTop: 52 }}>
-      {/* TOP BAR */}
-      <div
-        className="fixed top-0 left-0 right-0 z-40 px-4 flex items-center"
-        style={{ backgroundColor: "#0B1F3A", height: 52 }}
-      >
-        <button
-          onClick={() => navigate({ to: "/home" })}
-          aria-label="Back"
-          style={{ background: "none", border: "none", color: "#fff", display: "flex", alignItems: "center", cursor: "pointer" }}
-        >
-          <ArrowLeft size={22} />
-        </button>
-        <div className="flex-1 text-center text-white text-[16px] font-medium" style={{ marginRight: 22 }}>
-          My website
-        </div>
-      </div>
+    <div className="min-h-screen pb-32" style={{ ...POPPINS, backgroundColor: "#F3F8FF" }}>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="My website"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
 
       <div className="px-4 pt-4">
         {/* PREVIEW LINK CARD */}
