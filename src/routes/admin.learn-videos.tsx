@@ -182,16 +182,56 @@ function VideoForm({
         onChange={(e) => setSortOrder(e.target.value)}
       />
 
-      <label style={labelStyle} htmlFor="lv-file">
-        {initial?.url ? "Replace video file (optional)" : "Video file"}
-      </label>
-      <input
-        id="lv-file"
-        type="file"
-        accept="video/*"
-        onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-        style={{ ...inputStyle, height: "auto", padding: 10, fontSize: 13 }}
-      />
+      <label style={labelStyle}>Video source</label>
+      <div style={{ display: "flex", gap: 8 }}>
+        {(["upload", "youtube"] as const).map((s) => (
+          <button
+            key={s}
+            type="button"
+            onClick={() => setSource(s)}
+            style={{
+              flex: 1,
+              padding: "10px 12px",
+              borderRadius: 10,
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
+              border: `1px solid ${source === s ? BLUE : BORDER}`,
+              background: source === s ? "#E8F1FC" : "#fff",
+              color: source === s ? BLUE : GREY,
+            }}
+          >
+            {s === "upload" ? "Upload file" : "YouTube link"}
+          </button>
+        ))}
+      </div>
+
+      {source === "youtube" ? (
+        <>
+          <label style={labelStyle} htmlFor="lv-yt">YouTube link</label>
+          <input
+            id="lv-yt"
+            style={inputStyle}
+            value={youtubeUrl}
+            onChange={(e) => setYoutubeUrl(e.target.value)}
+            placeholder="https://www.youtube.com/watch?v=..."
+          />
+        </>
+      ) : (
+        <>
+          <label style={labelStyle} htmlFor="lv-file">
+            {initial?.url ? "Replace video file (optional)" : "Video file"}
+          </label>
+          <input
+            id="lv-file"
+            type="file"
+            accept="video/*"
+            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            style={{ ...inputStyle, height: "auto", padding: 10, fontSize: 13 }}
+          />
+        </>
+      )}
+
       {file && (
         <div style={{ fontSize: 12, color: GREY, marginTop: 6 }}>
           {file.name} · {(file.size / 1024 / 1024).toFixed(1)} MB
