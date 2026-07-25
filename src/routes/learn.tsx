@@ -363,6 +363,54 @@ function LearnPage() {
           </div>
         </div>
       ))}
+
+      {playing && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 2000,
+            background: "rgba(0,0,0,0.94)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={() => setPlaying(null)}
+        >
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setPlaying(null);
+            }}
+            aria-label="Close video"
+            style={{
+              position: "absolute",
+              top: "calc(16px + env(safe-area-inset-top, 0px))",
+              right: 16,
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              border: "none",
+              background: "rgba(255,255,255,0.18)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            <X size={20} color="#FFFFFF" />
+          </button>
+          <video
+            src={playing.url ?? undefined}
+            controls
+            autoPlay
+            playsInline
+            onClick={(e) => e.stopPropagation()}
+            style={{ width: "100%", maxHeight: "80vh", background: "#000" }}
+          />
+        </div>
+      )}
     </PageLayout>
   );
 }
