@@ -159,6 +159,7 @@ function JobsPage() {
   const [uid, setUid] = useState<string | null>(null);
   const [jobs, setJobs] = useState<JobOffer[] | null>(null);
   const [claimedJobs, setClaimedJobs] = useState<JobOffer[] | null>(null);
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"open" | "claimed">("open");
   const [prefs, setPrefs] = useState<InstructorPrefs | null>(null);
   const [coverage, setCoverage] = useState<CoverageArea[]>([]);
