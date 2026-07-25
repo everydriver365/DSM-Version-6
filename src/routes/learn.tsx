@@ -28,7 +28,7 @@ const GRAY_LABEL = "#5F6B7A";
 const GRAY_SUBTITLE = "#8A94A3";
 const FONT = "Poppins, sans-serif";
 
-type Video = { id?: string; title: string; duration: string; url: string | null };
+type Video = { id?: string; title: string; duration: string; url: string | null; thumbnail_url?: string | null };
 
 type Guide = { icon: any; title: string; description: string; route: string };
 
