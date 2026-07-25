@@ -4524,7 +4524,6 @@ function HomePage() {
           const railDow = d ? d.toLocaleDateString('en-GB', { weekday: 'short' }).toUpperCase() : '—';
           const railDay = d ? String(d.getDate()) : '—';
           const railMon = d ? d.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase() : '';
-          const priceText = hAmountDue > 0 ? `£${hAmountDue.toFixed(2)}` : null;
 
           return (
             <>
