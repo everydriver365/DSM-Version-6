@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
@@ -97,25 +99,17 @@ function EarningsPage() {
 
   return (
     <PageLayout className="pb-8 pb-safe" style={POPPINS}>
-      {/* Top bar */}
-      <div
-        className="sticky top-0 z-40 flex items-center px-2"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
-        >
-          <ChevronLeft size={24} color="#FFFFFF" />
-        </button>
-        <div className="flex-1 text-center text-white text-[15px] font-semibold" style={POPPINS}>
-          Earnings
-        </div>
-        <div style={{ width: 40 }} />
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Earnings"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       {/* Summary card */}
       <div

@@ -5,6 +5,8 @@ import {
   CloudLightning, CloudFog, Wind, Eye, PoundSterling, GraduationCap,
   Inbox, FileText, Wrench, Fuel,
 } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
@@ -219,17 +221,34 @@ function BriefingPage() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
-      <div style={{
-        position: "sticky", top: 0, zIndex: 10, backgroundColor: "#0B1F3A",
-        padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between",
-      }}>
-        <button onClick={() => navigate({ to: "/home" })}
-          style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex" }}
-          aria-label="Back">
-          <ChevronLeft size={24} />
-        </button>
-        <h1 style={{ color: "#fff", fontSize: 16, fontWeight: 700, margin: 0 }}>Day briefing</h1>
-        <div style={{ color: "#fff", fontSize: 13, fontWeight: 500 }}>{formatTopDate(now)}</div>
+      <InstructorTopBar
+        firstName={firstName}
+        pageTitle="Day briefing"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Date bar */}
+      <div
+        style={{
+          background: "#FFFFFF",
+          padding: "8px 16px",
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          borderBottom: "1px solid #EEF2F7",
+          color: "#0B1F3A",
+          fontSize: 13,
+          fontWeight: 500,
+          ...POPPINS,
+        }}
+      >
+        {formatTopDate(now)}
       </div>
 
       {/* Greeting */}

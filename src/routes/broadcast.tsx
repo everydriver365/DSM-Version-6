@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Users, MessageSquare, Mic, MicOff } from "lucide-react";
 import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 
@@ -265,24 +266,17 @@ function BroadcastPage() {
 
   return (
     <PageLayout className="pb-32" style={POPPINS}>
-      {/* Top bar */}
-      <div
-        className="sticky top-0 z-40 flex items-center px-4"
-        style={{ height: 52, backgroundColor: NAVY }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/home" })}
-          aria-label="Back"
-          className="flex items-center justify-center"
-          style={{ width: 32, height: 32 }}
-        >
-          <ArrowLeft size={20} color="#FFFFFF" />
-        </button>
-        <span className="ml-2 text-[15px] font-semibold text-white" style={POPPINS}>
-          Broadcast message
-        </span>
-      </div>
+      <InstructorTopBar
+        firstName={instructorName === "Your instructor" ? "" : instructorName}
+        pageTitle="Broadcast message"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       {/* SECTION 1 — Audience */}
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 16 }}>

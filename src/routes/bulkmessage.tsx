@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -207,18 +208,17 @@ function BulkMessagePage() {
 
   return (
     <PageLayout className="pb-32" style={POPPINS}>
-      <div
-        className="sticky top-0 z-40 flex items-center px-4"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
-      >
-        <button type="button" onClick={() => navigate({ to: "/home" })} aria-label="Back">
-          <ArrowLeft size={22} color="#FFFFFF" />
-        </button>
-        <div className="flex-1 text-center text-[15px] font-semibold text-white" style={POPPINS}>
-          Bulk message
-        </div>
-        <div style={{ width: 22 }} />
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Bulk message"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => setToast("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       <div className="px-4">
         <SectionHeader>FILTER PUPILS</SectionHeader>
