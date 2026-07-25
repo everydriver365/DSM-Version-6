@@ -192,6 +192,7 @@ function SegmentSpeedChart({
 
 function LivePage() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
