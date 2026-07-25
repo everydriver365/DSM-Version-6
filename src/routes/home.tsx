@@ -4527,29 +4527,44 @@ function HomePage() {
 
           return (
             <>
-              {/* Gradient header with route line */}
-              <div
-                style={{
-                  position: 'relative',
-                  height: 140,
-                  background: 'linear-gradient(135deg, #a7eadb 0%, #9ad7f5 50%, #85b7ff 100%)',
-                  borderRadius: '24px 24px 0 0',
-                  overflow: 'hidden',
-                  boxShadow: isLate ? 'inset 0 0 0 3px #C23B3B' : undefined,
-                }}
-              >
-                <svg
-                  width="100%"
-                  height="100%"
-                  viewBox="0 0 200 100"
-                  preserveAspectRatio="none"
-                  style={{ position: 'absolute', inset: 0, padding: '32px 48px 24px' }}
-                >
-                  <path d="M20,80 Q100,20 180,30" stroke="#1877D6" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-                  <circle cx="20" cy="80" r="5" fill="#22C55E" stroke="#FFFFFF" strokeWidth="2" />
-                  <circle cx="180" cy="30" r="5" fill="#CC2229" stroke="#FFFFFF" strokeWidth="2" />
-                </svg>
+              {/* Real Google map header */}
+              <div style={{ borderRadius: '24px 24px 0 0', overflow: 'hidden' }}>
+                {driveData ? (
+                  <NextLessonMap
+                    originLat={driveData.originLat}
+                    originLng={driveData.originLng}
+                    destLat={driveData.destLat}
+                    destLng={driveData.destLng}
+                    encodedPolyline={driveData.encodedPolyline}
+                    directionsUrl={driveData.directionsUrl}
+                    height={140}
+                    isLate={isLate}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      position: 'relative',
+                      height: 140,
+                      background: 'linear-gradient(135deg, #a7eadb 0%, #9ad7f5 50%, #85b7ff 100%)',
+                      overflow: 'hidden',
+                      boxShadow: isLate ? 'inset 0 0 0 3px #C23B3B' : undefined,
+                    }}
+                  >
+                    <svg
+                      width="100%"
+                      height="100%"
+                      viewBox="0 0 200 100"
+                      preserveAspectRatio="none"
+                      style={{ position: 'absolute', inset: 0, padding: '32px 48px 24px' }}
+                    >
+                      <path d="M20,80 Q100,20 180,30" stroke="#1877D6" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+                      <circle cx="20" cy="80" r="5" fill="#22C55E" stroke="#FFFFFF" strokeWidth="2" />
+                      <circle cx="180" cy="30" r="5" fill="#CC2229" stroke="#FFFFFF" strokeWidth="2" />
+                    </svg>
+                  </div>
+                )}
               </div>
+
 
               {/* Late banner */}
               {isLate && upcoming && (
