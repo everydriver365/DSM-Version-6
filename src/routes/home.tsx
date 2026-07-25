@@ -4552,7 +4552,7 @@ function HomePage() {
                   {/* Navy date rail */}
                   <div style={{
                     width: 62, flexShrink: 0, background: '#0B1F3A',
-                    borderRadius: '0 12px 12px 0',
+                    borderRadius: '12px 0 0 12px',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                     padding: '16px 0', color: '#FFFFFF', gap: 2,
                   }}>
