@@ -588,9 +588,7 @@ export function DiscoverSection() {
 
   return (
     <div style={{ padding: "20px 16px 22px", fontFamily: FONT }}>
-      <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, marginBottom: 10 }}>
-        Discover
-      </div>
+      <SectionHeader>Discover</SectionHeader>
 
       <div
         style={{
