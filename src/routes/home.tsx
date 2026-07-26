@@ -4714,22 +4714,6 @@ function HomePage() {
                         </div>
                       )}
 
-                      {/* More / expand trigger */}
-                      {upcoming && (
-                        <button
-                          type="button"
-                          onClick={() => setHeroExpanded((v) => !v)}
-                          style={{
-                            marginTop: 14, padding: 0, background: 'transparent', border: 'none',
-                            display: 'flex', alignItems: 'center', gap: 5,
-                            fontSize: 13, fontWeight: 700, color: '#1877D6', cursor: 'pointer',
-                            fontFamily: 'Inter, sans-serif', alignSelf: 'flex-start',
-                          }}
-                        >
-                          more
-                          {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                        </button>
-                      )}
 
                       {/* Text + Call are shown in the expanded panel */}
                     </div>
