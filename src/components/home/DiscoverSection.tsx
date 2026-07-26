@@ -530,7 +530,7 @@ export function DiscoverSection() {
   );
 
   const cardShell: React.CSSProperties = {
-    width: "calc(50% + 8px)",
+    width: "calc(50% - 5px)",
     flexShrink: 0,
     background: "#FFFFFF",
     border: `1px solid ${HAIRLINE}`,
