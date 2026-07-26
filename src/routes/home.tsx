@@ -6956,16 +6956,37 @@ function HeroExpandedPanel({
   const [pickupValue, setPickupValue] = useState<string>(lesson.pickup_location ?? homeAddress);
   const [pickupState, setPickupState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
   const [isEditingPickup, setIsEditingPickup] = useState(false);
+  // The address string the current pickupState was computed for — keeps the
+  // verified/unverified line visible after a save + refetch echoes the value back.
+  const verifiedForRef = useRef<string | null>(null);
 
   // --- what3words (manual entry, 3 boxes) ---
   const [w3w, setW3w] = useState<[string, string, string]>(['', '', '']);
   const [w3wState, setW3wState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
 
+  const lessonIdRef = useRef(lesson.id);
   useEffect(() => {
-    setPickupValue(lesson.pickup_location ?? homeAddress);
-    setPickupState('idle');
-    setIsEditingPickup(false);
+    const incoming = lesson.pickup_location ?? homeAddress;
+    const lessonChanged = lessonIdRef.current !== lesson.id;
+    lessonIdRef.current = lesson.id;
+    if (lessonChanged) {
+      setPickupValue(incoming);
+      setPickupState('idle');
+      verifiedForRef.current = null;
+      setIsEditingPickup(false);
+      return;
+    }
+    // Same lesson: only adopt the incoming value if it genuinely differs from
+    // what we're showing (i.e. changed elsewhere) — a refetch echoing back the
+    // value we just saved must not wipe the verification result.
+    setPickupValue((cur) => {
+      if (cur.trim() === incoming.trim()) return cur;
+      setPickupState('idle');
+      verifiedForRef.current = null;
+      return incoming;
+    });
   }, [lesson.id, lesson.pickup_location, homeAddress]);
+
 
   useEffect(() => {
     let cancelled = false;
