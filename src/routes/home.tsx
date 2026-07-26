@@ -5293,9 +5293,7 @@ function HomePage() {
 
 
             {/* 3. TIMELINE with TABS */}
-
-
-
+            <SectionHeader>Teaching Schedule</SectionHeader>
 
 
             {(() => {
