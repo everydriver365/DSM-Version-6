@@ -4415,9 +4415,9 @@ function HomePage() {
       <div
         style={{
           width: 'calc((100% - 32px) * 0.8)',
-          margin: '0 auto 8px',
+          margin: '0 auto',
           background: '#FFFFFF',
-          borderRadius: 16,
+          borderRadius: '16px 16px 0 0',
           boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
           padding: '14px 12px 12px',
           display: 'flex',
