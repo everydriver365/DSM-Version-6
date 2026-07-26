@@ -6985,18 +6985,9 @@ function HeroExpandedPanel({
     setPickupState('checking');
     let verified = false;
     try {
-      const g = (window as GMapsWindow).google;
-      if (g?.maps?.Geocoder) {
-        const geocoder = new g.maps.Geocoder();
-        const res: any = await geocoder.geocode({ address });
-        verified = Array.isArray(res?.results) && res.results.length > 0;
-      } else if (GMAPS_BROWSER_KEY) {
-        const r = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GMAPS_BROWSER_KEY}`,
-        );
-        const j = await r.json();
-        verified = j?.status === 'OK' && (j.results?.length ?? 0) > 0;
-      }
+      const res = await verifyAddress({ data: { address } });
+      verified = Boolean(res?.verified);
+      if (!verified && res?.reason) console.warn('[pickup] not verified:', res.reason);
     } catch (e) {
       console.warn('[pickup] geocode failed', e);
     }
