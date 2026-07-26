@@ -5558,7 +5558,8 @@ function HomePage() {
                         color: '#FFFFFF',
                         borderRadius: 12,
                         padding: '10px 14px',
-                        marginBottom: 12,
+                        margin: '0 16px 12px',
+
                         fontFamily: PF,
                       }}
                     >
