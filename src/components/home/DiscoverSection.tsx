@@ -588,9 +588,9 @@ export function DiscoverSection() {
 
   return (
     <div style={{ padding: "20px 0 22px", fontFamily: FONT }}>
-      <div style={{ padding: "0 16px" }}>
-        <SectionHeader>Discover</SectionHeader>
-      </div>
+      <SectionHeader>Discover</SectionHeader>
+
+
 
       <div
         style={{
@@ -705,8 +705,9 @@ export function DiscoverSection() {
             if (e.key === "Enter" || e.key === " ") navigate({ to: "/learn" as never });
           }}
           style={{
-            margin: "10px 16px 0",
+            margin: "10px 0 0",
             background: "#FFFFFF",
+
             border: `1px solid ${HAIRLINE}`,
             borderRadius: 12,
             boxShadow: "0 2px 8px rgba(11,31,58,0.05)",
