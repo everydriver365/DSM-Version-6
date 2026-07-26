@@ -5293,9 +5293,7 @@ function HomePage() {
 
 
             {/* 3. TIMELINE with TABS */}
-
-
-
+            <SectionHeader>Teaching Schedule</SectionHeader>
 
 
             {(() => {
@@ -6109,6 +6107,7 @@ function HomePage() {
 
               return (
                 <>
+        <SectionHeader>Upcoming Tests</SectionHeader>
         {/* ============ TESTS ROW ============ */}
         {(() => {
           const fmtShortDate = (iso: string) => {
