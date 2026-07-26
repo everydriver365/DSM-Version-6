@@ -6312,6 +6312,7 @@ function HomePage() {
                   )}
                 </>
               );
+            })()}
         {/* ============ TESTS ROW ============ */}
         {(() => {
           const fmtShortDate = (iso: string) => {
@@ -6423,7 +6424,6 @@ function HomePage() {
             </div>
           );
         })()}
-            })()}
 
             <DiscoverGrid />
 
