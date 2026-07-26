@@ -1,20 +1,19 @@
-Make the "Tap for details" toggle its own white card below the Next lesson card, 20% narrower than the lesson card (277px vs 346px at mobile width), flush against it with no gap. The expanded details panel stays the full width of the lesson card.
+## What I found
 
-All changes in `src/routes/home.tsx`:
+The geocoding backend is fine — I called the Google Maps geocoding gateway directly with the project's connected key and it returned a valid `OK` result for a pupil address. So the lookup itself works.
 
-1. Move the "Tap for details" button (currently the last child inside the lesson card, around line 4724) out of the lesson card so it becomes a sibling directly beneath it.
+The problem is in the panel's UI state in `src/routes/home.tsx` (`HeroExpandedPanel`):
 
-2. Wrap it in its own white card:
-   - `width: 'calc((100% - 32px) * 0.8)'` — the same 80% treatment used by the "Next lesson / Full schedule" header card, giving 277px against the lesson card's 346px.
-   - `margin: '0 auto'` so it is centred under the lesson card.
-   - `background: '#FFFFFF'`, `boxShadow: '0 1px 3px rgba(0,0,0,0.06)'`.
-   - `borderRadius: '0 0 16px 16px'` so it reads as a rounded cap hanging below the card.
-   - Keep the existing centred row layout, 14px bold blue label, and chevron icon.
+1. After you finish editing, `verifyAndSavePickup` sets the status (`ok` / `bad`) and then saves to `lessons.pickup_location`. The save triggers a data refetch, the `lesson.pickup_location` prop changes, and the effect at line 6964 immediately runs `setPickupState('idle')` — wiping the just-computed result. You end up back at "Not yet verified", so the check looks like it never ran.
+2. The status line only ever appears for a split second, and there's no visible "Checking…" feedback while the network call is in flight.
+3. The address is sent to Google exactly as typed, with no postcode context, so short/partial entries (e.g. `34`) fail even when the pupil's postcode is known.
 
-3. Remove the gap between the lesson card and the new toggle card: change the lesson card's margin from `0 16px 16px` to `0 16px 0`, and drop the toggle button's own `borderTop` (the card boundary now provides the separation).
+## The fix (only `src/routes/home.tsx`)
 
-4. Keep the expanded panel full width: `HeroExpandedPanel` moves below the toggle card as a sibling with `margin: '0 16px 16px'`, so it matches the lesson card's width rather than the narrower toggle. Its top corners become square and bottom corners stay rounded.
+- Make the reset effect value-aware: only reset `pickupState`/`pickupValue` when the incoming lesson is actually a different lesson (`lesson.id` change) or when the incoming address genuinely differs from what's currently shown. A refetch echoing back the value we just saved must not clear the verified state.
+- Track the verified result against the address string it was computed for, so the status line stays visible in the read-only row after editing ends, and only clears when the text actually changes.
+- Show the `checking` state properly while the request is in flight (spinner/grey "Checking…"), then green verified / amber couldn't-verify.
+- Append the pupil's postcode to the query sent for verification (display and saved value stay exactly what the user typed) so house-number-only entries resolve.
+- Keep verification and saving independent: a "couldn't verify" result still saves the typed address, as it does today.
 
-5. Preserve all behaviour: `setHeroExpanded` toggling, the label swapping between "Tap for details" and "Hide details", the chevron direction, and every prop passed to `HeroExpandedPanel`.
-
-Technical note: the "no upcoming lessons" branch keeps its current rendering — the toggle card and expanded panel only render when there is an upcoming lesson.
+No changes to what3words, payment logic, the map, or any other file.
