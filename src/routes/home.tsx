@@ -5293,85 +5293,15 @@ function HomePage() {
 
 
             {/* 3. TIMELINE with TABS */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginTop: 22, marginBottom: 10 }}>
-              <div style={{ fontSize: 22, fontWeight: 700, color: '#0B1F3A', fontFamily: PF, letterSpacing: -0.4, minWidth: 0 }}>
-                {tab === 'today' ? 'Today' : tab === 'tomorrow' ? 'Tomorrow' : 'Upcoming'}
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-                <button
-                  type="button"
-                  aria-label="Add lesson"
-                  onClick={() => navigate({ to: '/lessons/new' as never, search: (tab === 'tomorrow' ? { date: tomorrowISO } : {}) as any })}
-                  style={{
-                    background: '#0B1F3A',
-                    border: 'none',
-                    borderRadius: 999,
-                    padding: '6px 12px',
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 4,
-                    color: '#FFFFFF',
-                    fontSize: 12.5,
-                    fontWeight: 600,
-                    fontFamily: PF,
-                  }}
-                >
-                  <Plus size={13} color="#FFFFFF" strokeWidth={2.5} />
-                  Add
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: '/schedule' as never })}
-                  style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 500, color: '#1877D6', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
-                >
-                  Full schedule
-                  <IconArrowRight size={13} stroke={2} />
-                </button>
-              </div>
-            </div>
 
 
-            <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 3, background: '#E9EDF2', borderRadius: 999, marginBottom: 12 }}>
-              {(['today', 'tomorrow', 'next'] as const).map((t) => {
-                const active = tab === t;
-                const label = t === 'today' ? 'Today' : t === 'tomorrow' ? 'Tomorrow' : 'Next';
-                return (
-                  <button
-                    key={t}
-                    type="button"
-                    role="tab"
-                    aria-selected={active}
-                    onClick={() => setTab(t)}
-                    style={{
-                      flex: 1,
-                      padding: '8px 0',
-                      borderRadius: 999,
-                      border: 'none',
-                      background: active ? '#FFFFFF' : 'transparent',
-                      color: active ? '#0B1F3A' : '#8A93A3',
-                      fontFamily: PF,
-                      fontSize: 14,
-                      fontWeight: active ? 700 : 500,
-                      cursor: 'pointer',
-                      boxShadow: active ? '0 1px 2px rgba(11,31,58,0.10), 0 1px 3px rgba(11,31,58,0.06)' : 'none',
-                      transition: 'background 120ms ease, color 120ms ease',
-                      textAlign: 'center',
-                      letterSpacing: -0.1,
-                    }}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
 
 
 
             {(() => {
               const lessonRows = rows.filter((r): r is { kind: 'lesson'; l: LessonRow } => r.kind === 'lesson');
               const calendarRows = rows.filter((r): r is { kind: 'calendar'; title: string; start: Date; end: Date } => r.kind === 'calendar');
-              const headerLabel = tab === 'today' ? 'Teaching today' : tab === 'tomorrow' ? 'Teaching tomorrow' : 'Upcoming lessons';
+              
               const emptyLabel = tab === 'today' ? 'No lessons today' : tab === 'tomorrow' ? 'No lessons tomorrow' : 'No upcoming lessons';
 
               if (lessonRows.length === 0 && calendarRows.length === 0) {
@@ -5416,11 +5346,42 @@ function HomePage() {
               };
 
               return (
-                <div style={{ fontFamily: PF, background: '#FFFFFF', borderRadius: 16, padding: '14px 0 2px', boxShadow: '0 1px 3px rgba(11,31,58,0.06), 0 4px 12px rgba(11,31,58,0.04)', border: '1px solid #E2E8F0', overflow: 'hidden' }}>
-                  {/* Card header */}
-                  <div style={{ padding: '0 16px 10px' }}>
-                    <div style={{ fontSize: 16, fontWeight: 600, color: '#0B1F3A', letterSpacing: -0.2 }}>{headerLabel}</div>
+                <div style={{ fontFamily: PF, background: '#FFFFFF', borderRadius: 18, padding: 0, boxShadow: '0 4px 16px rgba(11,31,58,0.06)', border: '1px solid #E2E8F0', overflow: 'hidden' }}>
+                  {/* Segmented control */}
+                  <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 3, background: '#EEF2F7', borderRadius: 999, margin: '16px 18px' }}>
+                    {(['today', 'tomorrow', 'next'] as const).map((t) => {
+                      const active = tab === t;
+                      const label = t === 'today' ? 'Today' : t === 'tomorrow' ? 'Tomorrow' : 'Next';
+                      return (
+                        <button
+                          key={t}
+                          type="button"
+                          role="tab"
+                          aria-selected={active}
+                          onClick={() => setTab(t)}
+                          style={{
+                            flex: 1,
+                            padding: '8px 0',
+                            borderRadius: 999,
+                            border: 'none',
+                            background: active ? '#FFFFFF' : 'transparent',
+                            color: active ? '#0B1F3A' : '#6B7A90',
+                            fontFamily: PF,
+                            fontSize: 14,
+                            fontWeight: active ? 700 : 500,
+                            cursor: 'pointer',
+                            boxShadow: active ? '0 1px 2px rgba(11,31,58,0.10), 0 1px 3px rgba(11,31,58,0.06)' : 'none',
+                            transition: 'background 120ms ease, color 120ms ease',
+                            textAlign: 'center',
+                            letterSpacing: -0.1,
+                          }}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
                   </div>
+                  <div style={{ height: 1, background: '#E2E8F0' }} />
 
 
                   {moveModeHome && movingLessonHome && (
@@ -5990,6 +5951,24 @@ function HomePage() {
                      );
 
                   })}
+                  </div>
+                  {/* Footer */}
+                  <div style={{ borderTop: '1px solid #E2E8F0', padding: '14px 18px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <button
+                      type="button"
+                      onClick={() => navigate({ to: '/lessons/new' as never, search: (tab === 'tomorrow' ? { date: tomorrowISO } : {}) as any })}
+                      style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13.5, fontWeight: 600, color: '#0B1F3A', cursor: 'pointer', lineHeight: 1 }}
+                    >
+                      Add +
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate({ to: '/schedule' as never })}
+                      style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13.5, fontWeight: 600, color: '#1877D6', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                    >
+                      Full schedule
+                      <ArrowRight size={14} strokeWidth={2.2} />
+                    </button>
                   </div>
                 </div>
               );
