@@ -459,82 +459,301 @@ export function DiscoverSection() {
     );
   };
 
+  const fmtTimeDay = (d: string, t: string) => {
+    const ms = startMs(d, t);
+    if (!ms) return "";
+    const date = new Date(ms);
+    const time = date
+      .toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true })
+      .replace(/\s?(AM|PM|am|pm)$/i, (m) => m.trim().toLowerCase());
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+    const same = (a: Date, b: Date) =>
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate();
+    const day = same(date, today)
+      ? "today"
+      : same(date, tomorrow)
+        ? "tomorrow"
+        : date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+    return `${time} ${day}`;
+  };
+
+  const StackMedia = ({
+    height,
+    width,
+    front,
+    children,
+    badge,
+  }: {
+    height: number;
+    width?: number;
+    front: React.CSSProperties;
+    children?: React.ReactNode;
+    badge?: React.ReactNode;
+  }) => (
+    <div style={{ position: "relative", height, width, flexShrink: width ? 0 : undefined }}>
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 7,
+          right: 0,
+          height: height - 16,
+          background: "#DCE4EE",
+          borderRadius: 10,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          top: 12,
+          left: 0,
+          right: 9,
+          bottom: 0,
+          borderRadius: 10,
+          overflow: "hidden",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          ...front,
+        }}
+      >
+        {children}
+      </div>
+      {badge}
+    </div>
+  );
+
+  const cardShell: React.CSSProperties = {
+    flex: 1,
+    minWidth: 0,
+    background: "#FFFFFF",
+    border: `1px solid ${HAIRLINE}`,
+    borderRadius: 12,
+    padding: 10,
+    boxShadow: "0 2px 8px rgba(11,31,58,0.05)",
+    cursor: "pointer",
+    fontFamily: FONT,
+  };
+
+  const cardBtn = (label: string): React.CSSProperties => ({
+    marginTop: 8,
+    width: "100%",
+    background: NAVY,
+    color: "#FFFFFF",
+    border: "none",
+    borderRadius: 7,
+    padding: "7px 0",
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: "0.04em",
+    textTransform: "uppercase",
+    fontFamily: FONT,
+    cursor: "pointer",
+  });
+
+  const cardTitle: React.CSSProperties = {
+    fontSize: 13,
+    fontWeight: 600,
+    color: NAVY,
+    lineHeight: 1.25,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  };
+  const cardSub: React.CSSProperties = {
+    marginTop: 2,
+    fontSize: 11,
+    color: "#6B7A90",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  };
+
+  const marketImg = marketTop ? firstImage(marketTop.image_urls) : null;
+  const marketPrice = (() => {
+    const raw = (marketTop?.price_display ?? "").trim();
+    if (!raw || !/\d/.test(raw)) return "Price on request";
+    return raw.toLowerCase().startsWith("from") ? raw : `From ${raw}`;
+  })();
+
+  const tipThumb = tip ? tip.thumbnail_url || youtubeThumb(tip.url) : null;
+
   return (
     <div style={{ padding: "20px 0 22px", fontFamily: FONT }}>
-      <SectionHeading>Discover</SectionHeading>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {liveTop ? liveTile(liveTop) : <EmptyTile label="Nothing right now" />}
-        {marketTop ? marketTile(marketTop) : <EmptyTile label="Nothing right now" />}
+      <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, marginBottom: 10 }}>
+        Discover
       </div>
 
-      {tip && (
-        <div style={{ marginTop: 22 }}>
-          <SectionHeading>Tip of the day</SectionHeading>
+      <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+        {/* Card A — DSM Live */}
+        {liveTop && (
           <div
             role="button"
             tabIndex={0}
-            onClick={() => navigate({ to: "/learn" as never })}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") navigate({ to: "/learn" as never });
-            }}
-            style={{
-              background: "#FFFFFF",
-              border: `1px solid ${HAIRLINE}`,
-              borderRadius: RADIUS,
-              boxShadow: SHADOW,
-              padding: 10,
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              cursor: "pointer",
-            }}
+            onClick={() =>
+              navigate({
+                to: "/dsm-live/$sessionId" as never,
+                params: { sessionId: liveTop.id } as never,
+              })
+            }
+            style={cardShell}
           >
-            {(() => {
-              const thumb = tip.thumbnail_url || youtubeThumb(tip.url);
-              return (
-                <div
+            <StackMedia
+              height={78}
+              front={{
+                background: liveTop.image_url
+                  ? `#12539E url(${liveTop.image_url}) center/cover`
+                  : "linear-gradient(160deg, #2C6FD6 0%, #12539E 100%)",
+              }}
+              badge={
+                <span
                   style={{
-                    width: 52,
-                    height: 52,
-                    flexShrink: 0,
-                    borderRadius: 10,
-                    overflow: "hidden",
-                    background: thumb ? `${NAVY} url(${thumb}) center/cover` : NAVY,
+                    position: "absolute",
+                    top: 3,
+                    left: 0,
+                    background: RED,
+                    color: "#FFFFFF",
+                    fontSize: 9,
+                    fontWeight: 700,
+                    letterSpacing: "0.04em",
+                    padding: "2px 6px",
+                    borderRadius: 6,
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
+                    gap: 4,
+                    lineHeight: 1.2,
                   }}
                 >
-                  {!thumb && <IconPlayerPlayFilled size={18} color="#FFFFFF" />}
-                </div>
-              );
-            })()}
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div
-                style={{
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: NAVY,
-                  lineHeight: 1.25,
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                }}
-              >
-                {tip.title}
-              </div>
-              <div style={{ marginTop: 3, fontSize: 11, color: MUTED }}>
-                {tip.duration ? `${tip.duration} · DSM Learn` : "DSM Learn"}
-              </div>
-            </div>
-            <IconChevronRight size={18} color={MUTED} stroke={1.8} />
+                  <span
+                    style={{
+                      width: 4,
+                      height: 4,
+                      borderRadius: "50%",
+                      background: "#FFFFFF",
+                      display: "inline-block",
+                    }}
+                  />
+                  LIVE
+                </span>
+              }
+            >
+              {!liveTop.image_url && <IconBroadcast size={18} color="#FFFFFF" stroke={1.9} />}
+            </StackMedia>
+            <div style={{ ...cardTitle, marginTop: 8 }}>{liveTop.title}</div>
+            <div style={cardSub}>{fmtTimeDay(liveTop.session_date, liveTop.session_time)}</div>
+            <button type="button" style={cardBtn("JOIN")}>
+              Join
+            </button>
           </div>
+        )}
+
+        {/* Card B — Marketplace */}
+        {marketTop && (
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() =>
+              navigate({
+                to: "/marketplace/$listingId" as never,
+                params: { listingId: marketTop.id } as never,
+              })
+            }
+            style={cardShell}
+          >
+            <StackMedia
+              height={78}
+              front={{
+                background: marketImg ? `#EEF2F7 url(${marketImg}) center/cover` : "#EEF2F7",
+              }}
+            />
+            <div style={{ ...cardTitle, marginTop: 8 }}>{marketTop.title}</div>
+            <div style={cardSub}>{marketPrice}</div>
+            <button type="button" style={cardBtn("VIEW")}>
+              View
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* DSM Learn — full width, quieter */}
+      {tip && (
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate({ to: "/learn" as never })}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") navigate({ to: "/learn" as never });
+          }}
+          style={{
+            marginTop: 10,
+            background: "#FFFFFF",
+            border: `1px solid ${HAIRLINE}`,
+            borderRadius: 12,
+            boxShadow: "0 2px 8px rgba(11,31,58,0.05)",
+            padding: 10,
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            cursor: "pointer",
+          }}
+        >
+          <StackMedia
+            height={44}
+            width={50}
+            front={{
+              background: tipThumb
+                ? `${NAVY} url(${tipThumb}) center/cover`
+                : "linear-gradient(160deg, #4A5568 0%, #0B1F3A 100%)",
+            }}
+          >
+            {!tipThumb && <IconPlayerPlay size={14} color="#FFFFFF" stroke={2} />}
+          </StackMedia>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 600,
+                color: NAVY,
+                lineHeight: 1.25,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {tip.title}
+            </div>
+            <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
+              {tip.duration ? `${tip.duration} · DSM Learn` : "DSM Learn"}
+            </div>
+          </div>
+          <button
+            type="button"
+            style={{
+              background: NAVY,
+              color: "#FFFFFF",
+              border: "none",
+              borderRadius: 7,
+              padding: "7px 14px",
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+              fontFamily: FONT,
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            Watch
+          </button>
         </div>
       )}
     </div>
   );
 }
+
 
 export default DiscoverSection;
