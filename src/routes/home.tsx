@@ -131,6 +131,7 @@ import {
   IconLayoutGrid,
   IconX,
   IconCalendar,
+  IconMapPin,
   IconClock,
   IconDots,
   IconSearch,
