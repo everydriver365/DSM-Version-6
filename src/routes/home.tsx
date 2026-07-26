@@ -4429,7 +4429,7 @@ function HomePage() {
           fontFamily: 'Inter, sans-serif',
         }}
       >
-        <div style={{ fontSize: 18, color: '#0B1F3A', fontWeight: 700 }}>Next lesson</div>
+        <SectionHeader>Next lesson</SectionHeader>
         <button
           type="button"
           onClick={() => navigate({ to: '/schedule' })}
