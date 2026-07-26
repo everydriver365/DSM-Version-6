@@ -5540,16 +5540,12 @@ function HomePage() {
               };
 
               return (
-                <div style={{ fontFamily: PF, background: '#FFFFFF', borderRadius: 20, padding: 16, boxShadow: '0 1px 3px rgba(11,31,58,0.06), 0 4px 12px rgba(11,31,58,0.04)', border: '1px solid rgba(11,31,58,0.05)' }}>
+                <div style={{ fontFamily: PF, background: '#FFFFFF', borderRadius: 16, padding: '14px 0 2px', boxShadow: '0 1px 3px rgba(11,31,58,0.06), 0 4px 12px rgba(11,31,58,0.04)', border: '1px solid #E2E8F0', overflow: 'hidden' }}>
                   {/* Card header */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
-                    <div style={{ fontSize: 16, fontWeight: 500, color: '#0B1F3A', letterSpacing: -0.2 }}>{headerLabel}</div>
-                    <div style={{ fontSize: 12, color: '#1877D6', fontWeight: 700, background: '#E6F1FB', padding: '4px 11px', borderRadius: 999, fontFamily: PF }}>
-                      {lessonRows.length === 0
-                        ? `${calendarRows.length} calendar event${calendarRows.length === 1 ? '' : 's'}`
-                        : `${lessonRows.length} lesson${lessonRows.length === 1 ? '' : 's'}`}
-                    </div>
+                  <div style={{ padding: '0 16px 10px' }}>
+                    <div style={{ fontSize: 16, fontWeight: 600, color: '#0B1F3A', letterSpacing: -0.2 }}>{headerLabel}</div>
                   </div>
+
 
                   {moveModeHome && movingLessonHome && (
                     <div
