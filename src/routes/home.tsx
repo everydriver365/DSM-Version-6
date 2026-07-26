@@ -7096,7 +7096,7 @@ function HeroExpandedPanel({
       {/* Row 1 — Navigate / Text / Call */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
         <button
-          style={{ ...gridBtn, background: goingActive ? '#FFF8E8' : '#F5F7FA' }}
+          style={{ ...gridBtn, background: goingActive ? '#FFF8E8' : '#FFFFFF' }}
           onClick={() => { setGoingActive(true); sendSms(`Hi ${firstName}, on the way!`); }}
         >
           <IconNavigation size={18} stroke={1.8} color="#0B1F3A" />
