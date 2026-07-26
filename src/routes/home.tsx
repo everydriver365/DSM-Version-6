@@ -4418,15 +4418,10 @@ function HomePage() {
         ))}
       </div>
 
-      {/* Next-lesson header card */}
+      {/* Next lesson section header */}
       <div
         style={{
-          width: 'calc((100% - 32px) * 0.8)',
-          margin: '0 auto',
-          background: '#FFFFFF',
-          borderRadius: '16px 16px 0 0',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-          padding: '14px 12px 12px',
+          margin: '18px 16px 10px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -4434,22 +4429,20 @@ function HomePage() {
           fontFamily: 'Inter, sans-serif',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-          <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#1877D6', flexShrink: 0 }} />
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#5A6270', letterSpacing: 1, textTransform: 'uppercase' }}>Next lesson</span>
-        </div>
+        <div style={{ fontSize: 18, color: '#0B1F3A', fontWeight: 700 }}>Next lesson</div>
         <button
           type="button"
           onClick={() => navigate({ to: '/schedule' })}
           style={{
             background: 'none', border: 'none', padding: 0, cursor: 'pointer',
             display: 'flex', alignItems: 'center', gap: 2,
-            fontSize: 13, fontWeight: 700, color: '#1877D6', fontFamily: 'Inter, sans-serif',
+            fontSize: 13, fontWeight: 600, color: '#1877D6', fontFamily: 'Inter, sans-serif',
           }}
         >
           Full schedule <ChevronRight size={15} />
         </button>
       </div>
+
 
       {/* ============ NEXT LESSON CARD ============ */}
       <div
