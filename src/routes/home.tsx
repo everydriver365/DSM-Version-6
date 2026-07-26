@@ -7205,7 +7205,7 @@ function HeroExpandedPanel({
             <MapPin size={14} color="#8E8E93" />
             <input
               value={pickupValue}
-              onChange={(e) => { setPickupValue(e.target.value); setPickupState('idle'); }}
+              onChange={(e) => { setPickupValue(e.target.value); setPickupState('idle'); verifiedForRef.current = null; }}
               onBlur={verifyAndSavePickup}
               placeholder="Enter pickup address"
               style={fieldInput}
