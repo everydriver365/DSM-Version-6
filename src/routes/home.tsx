@@ -5685,7 +5685,7 @@ function HomePage() {
                                           width: 24,
                                           height: 24,
                                           borderRadius: '50%',
-                                          background: pupilColour(p.id, p.calendar_colour ?? null, p.name ?? null),
+                                          background: pupilColour((p as any).id ?? null, p.calendar_colour ?? null, p.name ?? null),
                                           border: '2px solid #FFFFFF',
                                           display: 'flex',
                                           alignItems: 'center',
