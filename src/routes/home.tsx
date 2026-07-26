@@ -4577,7 +4577,8 @@ function HomePage() {
                   </div>
 
                   {/* Right column */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ flex: 1, minWidth: 0, overflow: 'hidden', borderRadius: '0 12px 12px 0' }}>
+
                     {/* Map strip */}
                     <div style={{
                       position: 'relative',
