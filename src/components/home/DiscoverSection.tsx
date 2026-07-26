@@ -587,8 +587,10 @@ export function DiscoverSection() {
   const tipThumb = tip ? tip.thumbnail_url || youtubeThumb(tip.url) : null;
 
   return (
-    <div style={{ padding: "20px 16px 22px", fontFamily: FONT }}>
-      <SectionHeader>Discover</SectionHeader>
+    <div style={{ padding: "20px 0 22px", fontFamily: FONT }}>
+      <div style={{ padding: "0 16px" }}>
+        <SectionHeader>Discover</SectionHeader>
+      </div>
 
       <div
         style={{
@@ -600,8 +602,7 @@ export function DiscoverSection() {
           scrollSnapType: "x mandatory",
           scrollbarWidth: "none",
           msOverflowStyle: "none",
-          margin: "0 -16px",
-          padding: "0 16px 4px",
+          padding: "0 0 4px",
         }}
       >
         {/* Card A — DSM Live */}
@@ -704,7 +705,7 @@ export function DiscoverSection() {
             if (e.key === "Enter" || e.key === " ") navigate({ to: "/learn" as never });
           }}
           style={{
-            marginTop: 10,
+            margin: "10px 16px 0",
             background: "#FFFFFF",
             border: `1px solid ${HAIRLINE}`,
             borderRadius: 12,
