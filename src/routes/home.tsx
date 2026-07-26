@@ -4714,6 +4714,23 @@ function HomePage() {
                         </div>
                       )}
 
+                      {/* More / expand trigger */}
+                      {upcoming && (
+                        <button
+                          type="button"
+                          onClick={() => setHeroExpanded((v) => !v)}
+                          style={{
+                            marginTop: 14, padding: 0, background: 'transparent', border: 'none',
+                            display: 'flex', alignItems: 'center', gap: 5,
+                            fontSize: 13, fontWeight: 700, color: '#1877D6', cursor: 'pointer',
+                            fontFamily: 'Inter, sans-serif', alignSelf: 'flex-start',
+                          }}
+                        >
+                          more
+                          {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </button>
+                      )}
+
                       {/* Text + Call are shown in the expanded panel */}
                     </div>
 
@@ -4732,34 +4749,7 @@ function HomePage() {
         })()}
       </div>
 
-      {/* Tap for details — narrower card below the lesson card */}
-      {upcoming && (
-        <div
-          style={{
-            width: 'calc((100% - 32px) * 0.8)',
-            margin: heroExpanded ? '0 auto' : '0 auto 16px',
-            background: '#FFFFFF',
-            borderRadius: heroExpanded ? 0 : '0 0 16px 16px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-            overflow: 'hidden',
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => setHeroExpanded((v) => !v)}
-            style={{
-              width: '100%', background: '#FFFFFF', border: 'none',
-              padding: '13px 0',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-              fontSize: 14, fontWeight: 700, color: '#1877D6', cursor: 'pointer',
-              fontFamily: 'Inter, sans-serif',
-            }}
-          >
-            {heroExpanded ? 'Hide details' : 'Tap for details'}
-            {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-          </button>
-        </div>
-      )}
+
 
       {upcoming && heroExpanded && (
         <div style={{ margin: '0 16px 16px', borderRadius: '0 0 16px 16px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
