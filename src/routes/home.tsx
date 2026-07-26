@@ -7090,7 +7090,7 @@ function HeroExpandedPanel({
   };
 
   return (
-    <div style={{ background: '#F3F8FF', borderRadius: '0 0 16px 16px', padding: 12 }}>
+    <div style={{ background: '#F3F8FF', borderRadius: 16, padding: 12 }}>
       {/* Quick Actions */}
       <div style={sectionLabel}>Quick Actions</div>
       {/* Row 1 — Navigate / Text / Call */}
