@@ -7104,7 +7104,7 @@ function HeroExpandedPanel({
         </button>
         <button
           type="button"
-          style={gridBtn}
+          style={{ ...gridBtn, background: '#FFFFFF' }}
           onClick={(e) => { e.stopPropagation(); navigate({ to: '/messages/$pupilId', params: { pupilId: lesson.pupil_id } as any }); }}
         >
           <IconMessage size={18} stroke={1.8} color="#0B1F3A" />
