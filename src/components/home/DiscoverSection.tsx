@@ -586,7 +586,7 @@ export function DiscoverSection() {
   const tipThumb = tip ? tip.thumbnail_url || youtubeThumb(tip.url) : null;
 
   return (
-    <div style={{ padding: "20px 0 22px", fontFamily: FONT }}>
+    <div style={{ padding: "20px 16px 22px", fontFamily: FONT }}>
       <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, marginBottom: 10 }}>
         Discover
       </div>
