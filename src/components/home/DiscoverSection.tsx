@@ -602,7 +602,7 @@ export function DiscoverSection() {
           scrollSnapType: "x mandatory",
           scrollbarWidth: "none",
           msOverflowStyle: "none",
-          padding: "0 16px 4px",
+          padding: "0 0 4px",
         }}
       >
         {/* Card A — DSM Live */}
