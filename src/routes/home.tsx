@@ -7112,7 +7112,7 @@ function HeroExpandedPanel({
         </button>
         <button
           type="button"
-          style={gridBtn}
+          style={{ ...gridBtn, background: '#FFFFFF' }}
           onClick={(e) => { e.stopPropagation(); if (!phone) { toast('No phone number'); return; } window.location.href = `tel:${phone}`; }}
         >
           <IconPhone size={18} stroke={1.8} color="#0B1F3A" />
