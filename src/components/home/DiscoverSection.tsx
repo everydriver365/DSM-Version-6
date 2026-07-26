@@ -530,8 +530,8 @@ export function DiscoverSection() {
   );
 
   const cardShell: React.CSSProperties = {
-    flex: 1,
-    minWidth: 0,
+    width: 252,
+    flexShrink: 0,
     background: "#FFFFFF",
     border: `1px solid ${HAIRLINE}`,
     borderRadius: 12,
@@ -539,6 +539,7 @@ export function DiscoverSection() {
     boxShadow: "0 2px 8px rgba(11,31,58,0.05)",
     cursor: "pointer",
     fontFamily: FONT,
+    scrollSnapAlign: "start",
   };
 
   const cardBtn = (label: string): React.CSSProperties => ({
