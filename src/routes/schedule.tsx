@@ -1585,6 +1585,31 @@ function SchedulePage() {
                                                 return h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
                                               })()}
                                             </div>
+                                            <button
+                                              type="button"
+                                              data-lesson-actions-trigger
+                                              onClick={(ev) => {
+                                                ev.stopPropagation();
+                                                const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                                setActionsOpenFor((cur) => (cur?.id === lesson.id ? null : lesson));
+                                              }}
+                                              aria-label="More lesson options"
+                                              style={{
+                                                width: 28,
+                                                height: 28,
+                                                borderRadius: '50%',
+                                                background: '#F8F9FB',
+                                                border: '0.5px solid #E5E7EB',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                cursor: 'pointer',
+                                                padding: 0,
+                                                marginTop: 8,
+                                              }}
+                                            >
+                                              <MoreHorizontal size={14} color="#6B7280" />
+                                            </button>
                                           </div>
                                            <div
                                              aria-hidden
