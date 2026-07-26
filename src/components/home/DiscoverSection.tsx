@@ -587,8 +587,10 @@ export function DiscoverSection() {
   const tipThumb = tip ? tip.thumbnail_url || youtubeThumb(tip.url) : null;
 
   return (
-    <div style={{ padding: "20px 16px 22px", fontFamily: FONT }}>
-      <SectionHeader>Discover</SectionHeader>
+    <div style={{ padding: "20px 0 22px", fontFamily: FONT }}>
+      <div style={{ padding: "0 16px" }}>
+        <SectionHeader>Discover</SectionHeader>
+      </div>
 
       <div
         style={{
@@ -600,7 +602,6 @@ export function DiscoverSection() {
           scrollSnapType: "x mandatory",
           scrollbarWidth: "none",
           msOverflowStyle: "none",
-          margin: "0 -16px",
           padding: "0 16px 4px",
         }}
       >
