@@ -705,7 +705,7 @@ export function DiscoverSection() {
             if (e.key === "Enter" || e.key === " ") navigate({ to: "/learn" as never });
           }}
           style={{
-            marginTop: 10,
+            margin: "10px 16px 0",
             background: "#FFFFFF",
             border: `1px solid ${HAIRLINE}`,
             borderRadius: 12,
