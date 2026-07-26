@@ -4421,7 +4421,7 @@ function HomePage() {
       {/* Next lesson section header */}
       <div
         style={{
-          margin: '18px 16px 10px',
+          margin: '24px 16px 8px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
