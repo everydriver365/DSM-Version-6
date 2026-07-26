@@ -4839,8 +4839,6 @@ function HomePage() {
             .sort((a, b) => a.test_date.localeCompare(b.test_date));
           if (testsSorted.length === 0) return null;
           const next = testsSorted[0];
-          const centres = Array.from(new Set(testsSorted.map((t) => t.test_centre).filter(Boolean))) as string[];
-          const centreLabel = centres.length === 1 ? centres[0] : 'Multiple centres';
           const thisWeekEnd = nowMs + 7 * 86400000;
           const anyThisWeek = testsSorted.some((t) => new Date(t.test_date + 'T00:00:00').getTime() <= thisWeekEnd);
           return (
