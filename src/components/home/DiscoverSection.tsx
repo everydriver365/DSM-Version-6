@@ -601,6 +601,7 @@ export function DiscoverSection() {
           scrollSnapType: "x mandatory",
           scrollbarWidth: "none",
           msOverflowStyle: "none",
+          margin: "0 -16px",
           padding: "0 16px 4px",
         }}
       >
