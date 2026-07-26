@@ -4531,6 +4531,7 @@ function HomePage() {
               <div style={{
                 padding: '14px 12px 12px', display: 'flex', alignItems: 'center',
                 justifyContent: 'space-between', gap: 8, fontFamily: 'Inter, sans-serif',
+                width: '80%', margin: '0 auto',
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
                   <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#1877D6', flexShrink: 0 }} />
