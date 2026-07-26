@@ -4421,7 +4421,7 @@ function HomePage() {
       {/* Next lesson section header */}
       <div
         style={{
-          margin: '18px 16px 10px',
+          margin: '24px 16px 8px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -4447,7 +4447,7 @@ function HomePage() {
       {/* ============ NEXT LESSON CARD ============ */}
       <div
         style={{
-          margin: upcoming ? '0 16px 0' : '0 16px 16px',
+          margin: '0 16px 0',
           background: '#FFFFFF',
           borderRadius: upcoming ? '20px 20px 0 0' : 20,
           boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
@@ -6124,7 +6124,7 @@ function HomePage() {
             <div
               onClick={() => navigate({ to: '/tests' as never })}
               style={{
-                margin: '16px 0 12px',
+                margin: '0 0 0',
                 background: '#FFFFFF',
                 border: '1px solid #E2E8F0',
                 borderRadius: 18,
@@ -6247,7 +6247,7 @@ function HomePage() {
                     .qa-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at center, rgba(15,32,68,0.18) 0%, transparent 60%); opacity: 0; pointer-events: none; }
                     .qa-card:active::after { animation: qaRipple 0.5s ease-out; }
                   `}</style>
-                    <div style={{ background: PAGE_BACKGROUND, margin: '16px -16px 0', padding: '18px 16px 20px', borderRadius: 0 }}>
+                    <div style={{ background: PAGE_BACKGROUND, margin: '0 -16px 0', padding: '0 16px 0', borderRadius: 0 }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
                         <SectionHeader>Quick Access</SectionHeader>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
