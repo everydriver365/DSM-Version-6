@@ -5894,33 +5894,32 @@ function HomePage() {
                       return h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
                     })();
 
+                    const pickupLabel =
+                      l.pickup_location ||
+                      [(l.pupils as any)?.address, (l.pupils as any)?.postcode].filter(Boolean).join(', ') ||
+                      null;
+
                     return (
-                      <div key={l.id} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 8 }}>
+                      <div key={l.id} style={{ position: 'relative', borderTop: idx === 0 ? 'none' : '1px solid #EEF2F7' }}>
                         <div
                           onClick={() => navigate({ to: '/pupils/$id', params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any })}
                           role="button"
                           tabIndex={0}
                           style={{
-                            padding: '12px 14px',
+                            padding: '12px 16px',
                             display: 'flex',
                             alignItems: 'stretch',
                             gap: 12,
                             cursor: 'pointer',
-                            background: '#F7F9FC',
-                            border: '1px solid rgba(11,31,58,0.05)',
-                            borderRadius: 14,
-                            boxShadow: 'none',
                             boxSizing: 'border-box',
                             opacity: isCancelled ? 0.55 : 1,
                           }}
-
-
                         >
-                            <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                              <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                            <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
+                              <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none' }}>
                                 {timeLabel}
                               </div>
-                              <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                              <div style={{ fontSize: 11.5, fontWeight: 500, color: '#8A93A3', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
                                 {durLabel}
                               </div>
                             </div>
@@ -5929,7 +5928,7 @@ function HomePage() {
                               style={{
                                 width: 3,
                                 borderRadius: 2,
-                                background: isCancelled ? '#9CA3AF' : calColour,
+                                background: isCancelled ? '#9CA3AF' : '#1877D6',
                                 flexShrink: 0,
                                 alignSelf: 'stretch',
                               }}
@@ -5940,52 +5939,56 @@ function HomePage() {
                                   {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
                                 </div>
                               )}
-                              <div style={{ fontSize: 14, fontWeight: 500, color: isCancelled ? '#6B7280' : '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
-                                {name}
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+                                <span style={{ fontSize: 15, fontWeight: 600, color: isCancelled ? '#6B7280' : '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none' }}>
+                                  {name}
+                                </span>
+                                {isCancelled ? (
+                                  <span style={{
+                                    flexShrink: 0,
+                                    fontSize: 10,
+                                    fontWeight: 700,
+                                    letterSpacing: 0.4,
+                                    textTransform: 'uppercase',
+                                    color: '#CC2229',
+                                    background: '#FCEBEB',
+                                    padding: '2px 8px',
+                                    borderRadius: 999,
+                                    lineHeight: 1.4,
+                                  }}>
+                                    Cancelled
+                                  </span>
+                                ) : priceNode ? (
+                                  <span style={{
+                                    flexShrink: 0,
+                                    fontSize: 11,
+                                    fontWeight: 700,
+                                    padding: '2px 9px',
+                                    borderRadius: 999,
+                                    ...(isLive ? {
+                                      background: '#E6F1FB', color: '#1877D6',
+                                    } : isPrepaidPupil || isPaid ? {
+                                      background: '#E7F5EE', color: '#1E8E3E',
+                                    } : dueUnpaid ? {
+                                      background: '#FCEBEB', color: '#CC2229',
+                                    } : {
+                                      background: '#E7F5EE', color: '#1E8E3E',
+                                    }),
+                                  }}>
+                                    {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
+                                  </span>
+                                ) : null}
                               </div>
-                              {!isCancelled && priceNode && (
-                                <span style={{
-                                  display: 'inline-block',
-                                  marginTop: 3,
-                                  fontSize: 11,
-                                  fontWeight: 700,
-                                  padding: '2px 9px',
-                                  borderRadius: 999,
-                                  ...(isLive ? {
-                                    background: '#E6F1FB', color: '#1877D6',
-                                  } : isPrepaidPupil || isPaid ? {
-                                    background: '#E7F5EE', color: '#1E8E3E',
-                                  } : dueUnpaid ? {
-                                    background: '#FCEBEB', color: '#CC2229',
-                                  } : {
-                                    background: '#E7F5EE', color: '#1E8E3E',
-                                  }),
-                                }}>
-                                  {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
-                                </span>
-                              )}
-                              {isCancelled ? (
-                                <span style={{
-                                  display: 'inline-block',
-                                  marginTop: 4,
-                                  fontSize: 9,
-                                  fontWeight: 700,
-                                  letterSpacing: 0.4,
-                                  textTransform: 'uppercase',
-                                  color: '#FFFFFF',
-                                  background: '#CC2229',
-                                  padding: '2px 6px',
-                                  borderRadius: 999,
-                                  lineHeight: 1.2,
-                                }}>
-                                  Cancelled
-                                </span>
-                              ) : (
-                                <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
-                                  {dur} mins
+                              {pickupLabel && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3, minWidth: 0 }}>
+                                  <IconMapPin size={12} stroke={1.9} color="#8A93A3" style={{ flexShrink: 0 }} />
+                                  <span style={{ fontSize: 12, color: '#8A93A3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                    {pickupLabel}
+                                  </span>
                                 </div>
                               )}
                             </div>
+
                             <div
                               style={{
                                 position: 'relative',
