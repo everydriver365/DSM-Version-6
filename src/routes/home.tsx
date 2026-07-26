@@ -4720,21 +4720,6 @@ function HomePage() {
                   </div>
                 </div>
 
-                {/* Tap for details */}
-                <button
-                  type="button"
-                  onClick={() => setHeroExpanded((v) => !v)}
-                  style={{
-                    width: '100%', background: '#FFFFFF', border: 'none',
-                    borderTop: '1px solid #EEF2F7', padding: '13px 0',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                    fontSize: 14, fontWeight: 700, color: '#1877D6', cursor: 'pointer',
-                    fontFamily: 'Inter, sans-serif',
-                  }}
-                >
-                  {heroExpanded ? 'Hide details' : 'Tap for details'}
-                  {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                </button>
               </>
               ) : (
                 <div style={{ padding: '14px 12px 20px', textAlign: 'center', color: '#8A93A3', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
@@ -4745,8 +4730,39 @@ function HomePage() {
           );
 
         })()}
+      </div>
 
-        {upcoming && heroExpanded && (
+      {/* Tap for details — narrower card below the lesson card */}
+      {upcoming && (
+        <div
+          style={{
+            width: 'calc((100% - 32px) * 0.8)',
+            margin: '0 auto',
+            background: '#FFFFFF',
+            borderRadius: '0 0 16px 16px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+            overflow: 'hidden',
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setHeroExpanded((v) => !v)}
+            style={{
+              width: '100%', background: '#FFFFFF', border: 'none',
+              padding: '13px 0',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              fontSize: 14, fontWeight: 700, color: '#1877D6', cursor: 'pointer',
+              fontFamily: 'Inter, sans-serif',
+            }}
+          >
+            {heroExpanded ? 'Hide details' : 'Tap for details'}
+            {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </button>
+        </div>
+      )}
+
+      {upcoming && heroExpanded && (
+        <div style={{ margin: '0 16px 16px', borderRadius: '0 0 16px 16px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
           <HeroExpandedPanel
             lesson={upcoming}
             prev={prevLesson}
@@ -4757,8 +4773,8 @@ function HomePage() {
             onOpenLesson={() => navigate({ to: "/pupils/$id", params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any })}
             onEol={() => setEolLesson(upcoming)}
           />
-        )}
-      </div>
+        </div>
+      )}
 
         {/* Late sheet */}
         <Dialog open={lateOpen} onOpenChange={setLateOpen}>
