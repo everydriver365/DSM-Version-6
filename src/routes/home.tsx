@@ -4737,9 +4737,9 @@ function HomePage() {
         <div
           style={{
             width: 'calc((100% - 32px) * 0.8)',
-            margin: '0 auto',
+            margin: heroExpanded ? '0 auto' : '0 auto 16px',
             background: '#FFFFFF',
-            borderRadius: '0 0 16px 16px',
+            borderRadius: heroExpanded ? 0 : '0 0 16px 16px',
             boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
             overflow: 'hidden',
           }}
