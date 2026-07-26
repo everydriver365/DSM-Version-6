@@ -5615,8 +5615,32 @@ function HomePage() {
                       const dayName = DAY_NAMES[gs.getDay()];
                       const preview = previewMatchForGap({ date: gapDate, dayName, durationMin: r.mins });
                       const gapStartTime = fmtT(gs);
+                      const durLabel = formatMins(r.mins);
                       return (
-                        <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 8 }}>
+                        <div
+                          key={`gap-${idx}`}
+                          style={{
+                            background: moveModeHome ? '#F4F8FE' : '#FFFBF3',
+                            borderTop: idx === 0 ? 'none' : '1px solid #EEF2F7',
+                          }}
+                        >
+                          {/* FILL THIS GAP pill, flush above the row */}
+                          <div style={{ padding: '8px 16px 0' }}>
+                            <span
+                              style={{
+                                display: 'inline-block',
+                                background: '#FBEBD3',
+                                color: '#B5661E',
+                                fontSize: 11,
+                                fontWeight: 700,
+                                letterSpacing: 0.3,
+                                padding: '3px 9px',
+                                borderRadius: '6px 6px 0 0',
+                              }}
+                            >
+                              FILL THIS GAP
+                            </span>
+                          </div>
                           <div
                             onClick={() => {
                               if (moveModeHome && movingLessonHome) {
@@ -5628,79 +5652,80 @@ function HomePage() {
                             role="button"
                             tabIndex={0}
                             style={{
-                              position: 'relative',
-                              background: moveModeHome ? '#F4F8FE' : '#FBFCFE',
-                              borderRadius: 12,
-                              boxShadow: 'none',
-                              padding: '20px 14px 12px',
+                              padding: '4px 16px 14px',
                               display: 'flex',
-                              alignItems: 'center',
-                              gap: 10,
+                              alignItems: 'stretch',
+                              gap: 12,
                               cursor: 'pointer',
-                              border: moveModeHome ? '1.5px dashed #1877D6' : '1px dashed rgba(181,102,30,0.35)',
                             }}
-
                           >
-                            <div
-                              style={{
-                                position: 'absolute',
-                                top: -8,
-                                left: 16,
-                                background: '#B5661E',
-                                color: '#FFFFFF',
-                                fontSize: 9,
-                                fontWeight: 700,
-                                padding: '3px 9px',
-                                borderRadius: 999,
-                                letterSpacing: 0.3,
-                              }}
-                            >
-                              FILL THIS GAP
-                            </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ fontSize: 13, fontWeight: 500, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums' }}>
-                                {fmtT(gs)} – {fmtT(ge)}
+                            <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
+                              <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                                {fmtT(gs)}
                               </div>
+                              <div style={{ fontSize: 11.5, fontWeight: 500, color: '#8A93A3', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
+                                {durLabel}
+                              </div>
+                            </div>
+                            <div aria-hidden style={{ width: 3, borderRadius: 2, background: '#E8A23D', flexShrink: 0, alignSelf: 'stretch' }} />
+                            <div style={{ flex: 1, minWidth: 0, paddingTop: 2, display: 'flex', alignItems: 'center', gap: 8 }}>
                               {preview.count > 0 && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
-                                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    {preview.topPupils.map((p, i) => {
-                                      const initials = (p.name ?? p.first_name ?? "P")
-                                        .split(/\s+/)
-                                        .map((s) => s.charAt(0))
-                                        .join("")
-                                        .slice(0, 2)
-                                        .toUpperCase();
-                                      return (
-                                        <div
-                                          key={i}
-                                          style={{
-                                            width: 22,
-                                            height: 22,
-                                            borderRadius: '50%',
-                                            background: p.calendar_colour ?? '#6B7280',
-                                            border: '2px solid #FFFFFF',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            fontSize: 9,
-                                            fontWeight: 600,
-                                            color: '#FFFFFF',
-                                            marginRight: i === preview.topPupils.length - 1 ? 0 : -7,
-                                          }}
-                                        >
-                                          {initials}
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                  <div style={{ fontSize: 11, color: '#0B1F3A' }}>
-                                    {preview.count} pupil{preview.count === 1 ? "" : "s"} may fit
-                                  </div>
+                                <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                                  {preview.topPupils.map((p, i) => {
+                                    const initials = (p.name ?? p.first_name ?? "P")
+                                      .split(/\s+/)
+                                      .map((s) => s.charAt(0))
+                                      .join("")
+                                      .slice(0, 2)
+                                      .toUpperCase();
+                                    return (
+                                      <div
+                                        key={i}
+                                        style={{
+                                          width: 24,
+                                          height: 24,
+                                          borderRadius: '50%',
+                                          background: pupilColour(p.id, p.calendar_colour ?? null, p.name ?? null),
+                                          border: '2px solid #FFFFFF',
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                          fontSize: 9,
+                                          fontWeight: 700,
+                                          color: '#FFFFFF',
+                                          marginRight: i === preview.topPupils.length - 1 ? 0 : -8,
+                                        }}
+                                      >
+                                        {initials}
+                                      </div>
+                                    );
+                                  })}
+                                  {preview.count > preview.topPupils.length && (
+                                    <div
+                                      style={{
+                                        width: 24,
+                                        height: 24,
+                                        borderRadius: '50%',
+                                        background: '#94A3B8',
+                                        border: '2px solid #FFFFFF',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: 9,
+                                        fontWeight: 700,
+                                        color: '#FFFFFF',
+                                        marginLeft: -8,
+                                      }}
+                                    >
+                                      +{preview.count - preview.topPupils.length}
+                                    </div>
+                                  )}
                                 </div>
                               )}
-                              <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 2 }}>
-                                {formatMins(r.mins)} free · £{potential} potential
+                              <div style={{ fontSize: 13.5, fontWeight: 500, color: '#0B1F3A', minWidth: 0 }}>
+                                {preview.count > 0
+                                  ? `${preview.count} pupil${preview.count === 1 ? '' : 's'} may fit · £${potential} potential`
+                                  : `${durLabel} free · £${potential} potential`}
                               </div>
                             </div>
                             {moveModeHome ? (
@@ -5708,15 +5733,17 @@ function HomePage() {
                                 type="button"
                                 onClick={(e) => { e.stopPropagation(); setConfirmMoveHome({ date: gapDate, time: gapStartTime }); }}
                                 style={{
+                                  alignSelf: 'center',
                                   background: '#0B1F3A',
                                   color: '#FFFFFF',
-                                  fontSize: 12,
-                                  fontWeight: 500,
-                                  padding: '8px 12px',
+                                  fontSize: 12.5,
+                                  fontWeight: 600,
+                                  padding: '8px 14px',
                                   borderRadius: 9,
                                   border: 'none',
                                   cursor: 'pointer',
                                   fontFamily: PF,
+                                  flexShrink: 0,
                                 }}
                               >
                                 Move here
@@ -5726,15 +5753,17 @@ function HomePage() {
                                 type="button"
                                 onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
                                 style={{
+                                  alignSelf: 'center',
                                   background: '#1877D6',
                                   color: '#FFFFFF',
-                                  fontSize: 12,
-                                  fontWeight: 500,
-                                  padding: '8px 12px',
+                                  fontSize: 12.5,
+                                  fontWeight: 600,
+                                  padding: '8px 16px',
                                   borderRadius: 9,
                                   border: 'none',
                                   cursor: 'pointer',
                                   fontFamily: PF,
+                                  flexShrink: 0,
                                 }}
                               >
                                 Fill
@@ -5745,6 +5774,7 @@ function HomePage() {
                       );
 
                     }
+
                     if (r.kind === 'calendar') {
                       const cs = r.start;
                       const ce = r.end;
