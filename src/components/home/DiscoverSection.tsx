@@ -3,6 +3,8 @@ import { useNavigate } from "@tanstack/react-router";
 import {
   IconVideo,
   IconPlayerPlayFilled,
+  IconPlayerPlay,
+  IconBroadcast,
   IconCalendar,
   IconChevronRight,
 } from "@tabler/icons-react";
