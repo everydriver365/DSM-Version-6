@@ -591,7 +591,21 @@ export function DiscoverSection() {
         Discover
       </div>
 
-      <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: 10,
+          alignItems: "stretch",
+          overflowX: "auto",
+          WebkitOverflowScrolling: "touch",
+          scrollSnapType: "x mandatory",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          paddingBottom: 4,
+          marginRight: -16,
+          paddingRight: 16,
+        }}
+      >
         {/* Card A — DSM Live */}
         {liveTop && (
           <div
