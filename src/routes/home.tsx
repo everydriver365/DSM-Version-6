@@ -7131,7 +7131,7 @@ function HeroExpandedPanel({
           <span style={{ ...pillLabel, color: '#CC2229' }}>Running late</span>
         </button>
         <button
-          style={gridBtn}
+          style={{ ...gridBtn, background: '#E8F5E9' }}
           onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
         >
           <IconCurrentLocation size={18} stroke={1.8} color="#0B1F3A" />
