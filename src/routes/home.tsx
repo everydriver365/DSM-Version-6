@@ -5417,79 +5417,33 @@ function HomePage() {
 
 
             {/* 3. TIMELINE with TABS */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: "Inter, sans-serif", letterSpacing: -0.2 }}>
-                {tab === 'today' ? "Today's timeline" : tab === 'tomorrow' ? 'Tomorrow' : 'Upcoming lessons'}
-                {tab === 'today' && (
-                  <button
-                    type="button"
-                    aria-label="Add lesson"
-                    onClick={() => navigate({ to: '/lessons/new' as never })}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      padding: 0,
-                      fontFamily: PF,
-                      fontSize: 13,
-                      fontWeight: 500,
-                      color: '#1877D6',
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 4,
-                    }}
-                  >
-                    Add <Plus size={14} strokeWidth={2.5} />
-                  </button>
-                )}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginTop: 22, marginBottom: 10 }}>
+              <div style={{ fontSize: 22, fontWeight: 700, color: '#0B1F3A', fontFamily: PF, letterSpacing: -0.4, minWidth: 0 }}>
+                {tab === 'today' ? 'Today' : tab === 'tomorrow' ? 'Tomorrow' : 'Upcoming'}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                {tab === 'tomorrow' && (
-                  <button
-                    type="button"
-                    onClick={() => navigate({ to: '/lessons/new' as never, search: { date: tomorrowISO } as any })}
-                    style={{
-                      background: '#0B1F3A',
-                      border: 'none',
-                      borderRadius: 8,
-                      padding: '5px 10px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 4,
-                      color: 'white',
-                      fontSize: 11,
-                      fontWeight: 600,
-                      fontFamily: 'Inter, sans-serif',
-                    }}
-                  >
-                    <Plus size={12} color="white" />
-                    Add
-                  </button>
-                )}
-                {tab === 'next' && (
-                  <button
-                    type="button"
-                    onClick={() => navigate({ to: '/lessons/new' as never })}
-                    style={{
-                      background: '#0B1F3A',
-                      border: 'none',
-                      borderRadius: 8,
-                      padding: '5px 10px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 4,
-                      color: 'white',
-                      fontSize: 11,
-                      fontWeight: 600,
-                      fontFamily: 'Inter, sans-serif',
-                    }}
-                  >
-                    <Plus size={12} color="white" />
-                    Add
-                  </button>
-                )}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+                <button
+                  type="button"
+                  aria-label="Add lesson"
+                  onClick={() => navigate({ to: '/lessons/new' as never, search: (tab === 'tomorrow' ? { date: tomorrowISO } : {}) as any })}
+                  style={{
+                    background: '#0B1F3A',
+                    border: 'none',
+                    borderRadius: 999,
+                    padding: '6px 12px',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 4,
+                    color: '#FFFFFF',
+                    fontSize: 12.5,
+                    fontWeight: 600,
+                    fontFamily: PF,
+                  }}
+                >
+                  <Plus size={13} color="#FFFFFF" strokeWidth={2.5} />
+                  Add
+                </button>
                 <button
                   type="button"
                   onClick={() => navigate({ to: '/schedule' as never })}
@@ -5500,6 +5454,7 @@ function HomePage() {
                 </button>
               </div>
             </div>
+
 
             <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 3, background: '#E9EDF2', borderRadius: 999, marginBottom: 12 }}>
               {(['today', 'tomorrow', 'next'] as const).map((t) => {
@@ -5585,16 +5540,12 @@ function HomePage() {
               };
 
               return (
-                <div style={{ fontFamily: PF, background: '#FFFFFF', borderRadius: 20, padding: 16, boxShadow: '0 1px 3px rgba(11,31,58,0.06), 0 4px 12px rgba(11,31,58,0.04)', border: '1px solid rgba(11,31,58,0.05)' }}>
+                <div style={{ fontFamily: PF, background: '#FFFFFF', borderRadius: 16, padding: '14px 0 2px', boxShadow: '0 1px 3px rgba(11,31,58,0.06), 0 4px 12px rgba(11,31,58,0.04)', border: '1px solid #E2E8F0', overflow: 'hidden' }}>
                   {/* Card header */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 8px' }}>
-                    <div style={{ fontSize: 16, fontWeight: 500, color: '#0B1F3A', letterSpacing: -0.2 }}>{headerLabel}</div>
-                    <div style={{ fontSize: 12, color: '#1877D6', fontWeight: 700, background: '#E6F1FB', padding: '4px 11px', borderRadius: 999, fontFamily: PF }}>
-                      {lessonRows.length === 0
-                        ? `${calendarRows.length} calendar event${calendarRows.length === 1 ? '' : 's'}`
-                        : `${lessonRows.length} lesson${lessonRows.length === 1 ? '' : 's'}`}
-                    </div>
+                  <div style={{ padding: '0 16px 10px' }}>
+                    <div style={{ fontSize: 16, fontWeight: 600, color: '#0B1F3A', letterSpacing: -0.2 }}>{headerLabel}</div>
                   </div>
+
 
                   {moveModeHome && movingLessonHome && (
                     <div
@@ -5607,7 +5558,8 @@ function HomePage() {
                         color: '#FFFFFF',
                         borderRadius: 12,
                         padding: '10px 14px',
-                        marginBottom: 12,
+                        margin: '0 16px 12px',
+
                         fontFamily: PF,
                       }}
                     >
@@ -5663,8 +5615,32 @@ function HomePage() {
                       const dayName = DAY_NAMES[gs.getDay()];
                       const preview = previewMatchForGap({ date: gapDate, dayName, durationMin: r.mins });
                       const gapStartTime = fmtT(gs);
+                      const durLabel = formatMins(r.mins);
                       return (
-                        <div key={`gap-${idx}`} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 8 }}>
+                        <div
+                          key={`gap-${idx}`}
+                          style={{
+                            background: moveModeHome ? '#F4F8FE' : '#FFFBF3',
+                            borderTop: idx === 0 ? 'none' : '1px solid #EEF2F7',
+                          }}
+                        >
+                          {/* FILL THIS GAP pill, flush above the row */}
+                          <div style={{ padding: '8px 16px 0' }}>
+                            <span
+                              style={{
+                                display: 'inline-block',
+                                background: '#FBEBD3',
+                                color: '#B5661E',
+                                fontSize: 11,
+                                fontWeight: 700,
+                                letterSpacing: 0.3,
+                                padding: '3px 9px',
+                                borderRadius: '6px 6px 0 0',
+                              }}
+                            >
+                              FILL THIS GAP
+                            </span>
+                          </div>
                           <div
                             onClick={() => {
                               if (moveModeHome && movingLessonHome) {
@@ -5676,79 +5652,80 @@ function HomePage() {
                             role="button"
                             tabIndex={0}
                             style={{
-                              position: 'relative',
-                              background: moveModeHome ? '#F4F8FE' : '#FBFCFE',
-                              borderRadius: 12,
-                              boxShadow: 'none',
-                              padding: '20px 14px 12px',
+                              padding: '4px 16px 14px',
                               display: 'flex',
-                              alignItems: 'center',
-                              gap: 10,
+                              alignItems: 'stretch',
+                              gap: 12,
                               cursor: 'pointer',
-                              border: moveModeHome ? '1.5px dashed #1877D6' : '1px dashed rgba(181,102,30,0.35)',
                             }}
-
                           >
-                            <div
-                              style={{
-                                position: 'absolute',
-                                top: -8,
-                                left: 16,
-                                background: '#B5661E',
-                                color: '#FFFFFF',
-                                fontSize: 9,
-                                fontWeight: 700,
-                                padding: '3px 9px',
-                                borderRadius: 999,
-                                letterSpacing: 0.3,
-                              }}
-                            >
-                              FILL THIS GAP
-                            </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ fontSize: 13, fontWeight: 500, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums' }}>
-                                {fmtT(gs)} – {fmtT(ge)}
+                            <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
+                              <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                                {fmtT(gs)}
                               </div>
+                              <div style={{ fontSize: 11.5, fontWeight: 500, color: '#8A93A3', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
+                                {durLabel}
+                              </div>
+                            </div>
+                            <div aria-hidden style={{ width: 3, borderRadius: 2, background: '#E8A23D', flexShrink: 0, alignSelf: 'stretch' }} />
+                            <div style={{ flex: 1, minWidth: 0, paddingTop: 2, display: 'flex', alignItems: 'center', gap: 8 }}>
                               {preview.count > 0 && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
-                                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    {preview.topPupils.map((p, i) => {
-                                      const initials = (p.name ?? p.first_name ?? "P")
-                                        .split(/\s+/)
-                                        .map((s) => s.charAt(0))
-                                        .join("")
-                                        .slice(0, 2)
-                                        .toUpperCase();
-                                      return (
-                                        <div
-                                          key={i}
-                                          style={{
-                                            width: 22,
-                                            height: 22,
-                                            borderRadius: '50%',
-                                            background: p.calendar_colour ?? '#6B7280',
-                                            border: '2px solid #FFFFFF',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            fontSize: 9,
-                                            fontWeight: 600,
-                                            color: '#FFFFFF',
-                                            marginRight: i === preview.topPupils.length - 1 ? 0 : -7,
-                                          }}
-                                        >
-                                          {initials}
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                  <div style={{ fontSize: 11, color: '#0B1F3A' }}>
-                                    {preview.count} pupil{preview.count === 1 ? "" : "s"} may fit
-                                  </div>
+                                <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                                  {preview.topPupils.map((p, i) => {
+                                    const initials = (p.name ?? p.first_name ?? "P")
+                                      .split(/\s+/)
+                                      .map((s) => s.charAt(0))
+                                      .join("")
+                                      .slice(0, 2)
+                                      .toUpperCase();
+                                    return (
+                                      <div
+                                        key={i}
+                                        style={{
+                                          width: 24,
+                                          height: 24,
+                                          borderRadius: '50%',
+                                          background: pupilColour((p as any).id ?? null, p.calendar_colour ?? null, p.name ?? null),
+                                          border: '2px solid #FFFFFF',
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                          fontSize: 9,
+                                          fontWeight: 700,
+                                          color: '#FFFFFF',
+                                          marginRight: i === preview.topPupils.length - 1 ? 0 : -8,
+                                        }}
+                                      >
+                                        {initials}
+                                      </div>
+                                    );
+                                  })}
+                                  {preview.count > preview.topPupils.length && (
+                                    <div
+                                      style={{
+                                        width: 24,
+                                        height: 24,
+                                        borderRadius: '50%',
+                                        background: '#94A3B8',
+                                        border: '2px solid #FFFFFF',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: 9,
+                                        fontWeight: 700,
+                                        color: '#FFFFFF',
+                                        marginLeft: -8,
+                                      }}
+                                    >
+                                      +{preview.count - preview.topPupils.length}
+                                    </div>
+                                  )}
                                 </div>
                               )}
-                              <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 2 }}>
-                                {formatMins(r.mins)} free · £{potential} potential
+                              <div style={{ fontSize: 13.5, fontWeight: 500, color: '#0B1F3A', minWidth: 0 }}>
+                                {preview.count > 0
+                                  ? `${preview.count} pupil${preview.count === 1 ? '' : 's'} may fit · £${potential} potential`
+                                  : `${durLabel} free · £${potential} potential`}
                               </div>
                             </div>
                             {moveModeHome ? (
@@ -5756,15 +5733,17 @@ function HomePage() {
                                 type="button"
                                 onClick={(e) => { e.stopPropagation(); setConfirmMoveHome({ date: gapDate, time: gapStartTime }); }}
                                 style={{
+                                  alignSelf: 'center',
                                   background: '#0B1F3A',
                                   color: '#FFFFFF',
-                                  fontSize: 12,
-                                  fontWeight: 500,
-                                  padding: '8px 12px',
+                                  fontSize: 12.5,
+                                  fontWeight: 600,
+                                  padding: '8px 14px',
                                   borderRadius: 9,
                                   border: 'none',
                                   cursor: 'pointer',
                                   fontFamily: PF,
+                                  flexShrink: 0,
                                 }}
                               >
                                 Move here
@@ -5774,15 +5753,17 @@ function HomePage() {
                                 type="button"
                                 onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
                                 style={{
+                                  alignSelf: 'center',
                                   background: '#1877D6',
                                   color: '#FFFFFF',
-                                  fontSize: 12,
-                                  fontWeight: 500,
-                                  padding: '8px 12px',
+                                  fontSize: 12.5,
+                                  fontWeight: 600,
+                                  padding: '8px 16px',
                                   borderRadius: 9,
                                   border: 'none',
                                   cursor: 'pointer',
                                   fontFamily: PF,
+                                  flexShrink: 0,
                                 }}
                               >
                                 Fill
@@ -5793,6 +5774,7 @@ function HomePage() {
                       );
 
                     }
+
                     if (r.kind === 'calendar') {
                       const cs = r.start;
                       const ce = r.end;
@@ -5801,62 +5783,71 @@ function HomePage() {
                       const h = Math.floor(durMin / 60);
                       const m = durMin % 60;
                       const durLabel = h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
-                      const isPast = nowT >= ce;
-                      const barColor = isPast ? '#34A853' : '#1877D6';
+                      // Strip a redundant leading date/time/duration prefix, e.g.
+                      // "27/07/2026 – 7am – NSAC – Standards Check Review" -> "NSAC – Standards Check Review".
+                      const cleanTitle = (() => {
+                        const raw = (r.title ?? '').trim();
+                        if (!raw) return raw;
+                        const sep = /\s*(?:[–—-]|\||·)\s*/;
+                        const parts = raw.split(sep);
+                        if (parts.length < 2) return raw;
+                        const redundant = (s: string) =>
+                          /^\d{1,4}[/.-]\d{1,2}[/.-]\d{1,4}$/.test(s) ||
+                          /^\d{1,2}([:.]\d{2})?\s*(am|pm)$/i.test(s) ||
+                          /^\d{1,2}:\d{2}$/.test(s) ||
+                          /^\d+\s*(min|mins|minutes|h|hr|hrs|hours)$/i.test(s);
+                        let i = 0;
+                        while (i < parts.length - 1 && redundant(parts[i].trim())) i++;
+                        const rest = parts.slice(i).join(' – ').trim();
+                        return rest || raw;
+                      })();
                       return (
-                        <div key={`cal-${idx}`} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 8 }}>
-                          <div
-                            style={{
-                              background: '#E4E9F1',
-                              borderRadius: 12,
-                              boxShadow: 'none',
-                              padding: '12px 14px',
-                              display: 'flex',
-                              alignItems: 'stretch',
-                              gap: 12,
-                            }}
-                          >
-                            <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                              <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
-                                {fmtT(cs)}
-                              </div>
-                              <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
-                                {durLabel}
-                              </div>
+                        <div
+                          key={`cal-${idx}`}
+                          style={{
+                            padding: '12px 16px',
+                            display: 'flex',
+                            alignItems: 'stretch',
+                            gap: 12,
+                            borderTop: idx === 0 ? 'none' : '1px solid #EEF2F7',
+                          }}
+                        >
+                          <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
+                            <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                              {fmtT(cs)}
                             </div>
+                            <div style={{ fontSize: 11.5, fontWeight: 500, color: '#8A93A3', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
+                              {durLabel}
+                            </div>
+                          </div>
+                          <div aria-hidden style={{ width: 3, borderRadius: 2, background: '#94A3B8', flexShrink: 0, alignSelf: 'stretch' }} />
+                          <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                             <div
-                              aria-hidden
                               style={{
-                                width: 3,
-                                borderRadius: 2,
-                                background: barColor,
-                                flexShrink: 0,
-                                alignSelf: 'stretch',
+                                fontSize: 15,
+                                fontWeight: 600,
+                                color: '#0B1F3A',
+                                lineHeight: 1.3,
+                                overflowWrap: 'anywhere',
                               }}
-                            />
-                            <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
-                              <div
-                                style={{
-                                  fontSize: 14,
-                                  fontWeight: 500,
-                                  color: '#4B5563',
-                                  whiteSpace: 'nowrap',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
-                                  lineHeight: 1.3,
-                                }}
-                                title={r.title}
-                              >
-                                {r.title}
-                              </div>
-                              <div style={{ fontSize: 12, color: '#8A93A3', marginTop: 4 }}>
-                                Google Calendar
-                              </div>
+                              title={r.title}
+                            >
+                              {cleanTitle}
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 3 }}>
+                              <svg width="12" height="12" viewBox="0 0 24 24" aria-hidden style={{ flexShrink: 0 }}>
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.07 5.07 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z" />
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.29-2.65l-3.57-2.77c-.99.66-2.26 1.06-3.72 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z" />
+                                <path fill="#FBBC05" d="M5.84 14.11a6.6 6.6 0 0 1 0-4.22V7.05H2.18a11 11 0 0 0 0 9.9l3.66-2.84z" />
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.2 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.05l3.66 2.84C6.71 7.3 9.14 5.38 12 5.38z" />
+                              </svg>
+                              <span style={{ fontSize: 12, color: '#8A93A3', fontWeight: 500 }}>Google Calendar</span>
                             </div>
                           </div>
                         </div>
                       );
                     }
+
                     const row = { kind: 'lesson' as const, l: r.l };
 
                     const l = row.l;
@@ -5903,33 +5894,32 @@ function HomePage() {
                       return h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
                     })();
 
+                    const pickupLabel =
+                      l.pickup_location ||
+                      [(l.pupils as any)?.address, (l.pupils as any)?.postcode].filter(Boolean).join(', ') ||
+                      null;
+
                     return (
-                      <div key={l.id} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 8 }}>
+                      <div key={l.id} style={{ position: 'relative', borderTop: idx === 0 ? 'none' : '1px solid #EEF2F7' }}>
                         <div
                           onClick={() => navigate({ to: '/pupils/$id', params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any })}
                           role="button"
                           tabIndex={0}
                           style={{
-                            padding: '12px 14px',
+                            padding: '12px 16px',
                             display: 'flex',
                             alignItems: 'stretch',
                             gap: 12,
                             cursor: 'pointer',
-                            background: '#F7F9FC',
-                            border: '1px solid rgba(11,31,58,0.05)',
-                            borderRadius: 14,
-                            boxShadow: 'none',
                             boxSizing: 'border-box',
                             opacity: isCancelled ? 0.55 : 1,
                           }}
-
-
                         >
-                            <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                              <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                            <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
+                              <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none' }}>
                                 {timeLabel}
                               </div>
-                              <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                              <div style={{ fontSize: 11.5, fontWeight: 500, color: '#8A93A3', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
                                 {durLabel}
                               </div>
                             </div>
@@ -5938,7 +5928,7 @@ function HomePage() {
                               style={{
                                 width: 3,
                                 borderRadius: 2,
-                                background: isCancelled ? '#9CA3AF' : calColour,
+                                background: isCancelled ? '#9CA3AF' : '#1877D6',
                                 flexShrink: 0,
                                 alignSelf: 'stretch',
                               }}
@@ -5949,52 +5939,56 @@ function HomePage() {
                                   {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
                                 </div>
                               )}
-                              <div style={{ fontSize: 14, fontWeight: 500, color: isCancelled ? '#6B7280' : '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
-                                {name}
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+                                <span style={{ fontSize: 15, fontWeight: 600, color: isCancelled ? '#6B7280' : '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none' }}>
+                                  {name}
+                                </span>
+                                {isCancelled ? (
+                                  <span style={{
+                                    flexShrink: 0,
+                                    fontSize: 10,
+                                    fontWeight: 700,
+                                    letterSpacing: 0.4,
+                                    textTransform: 'uppercase',
+                                    color: '#CC2229',
+                                    background: '#FCEBEB',
+                                    padding: '2px 8px',
+                                    borderRadius: 999,
+                                    lineHeight: 1.4,
+                                  }}>
+                                    Cancelled
+                                  </span>
+                                ) : priceNode ? (
+                                  <span style={{
+                                    flexShrink: 0,
+                                    fontSize: 11,
+                                    fontWeight: 700,
+                                    padding: '2px 9px',
+                                    borderRadius: 999,
+                                    ...(isLive ? {
+                                      background: '#E6F1FB', color: '#1877D6',
+                                    } : isPrepaidPupil || isPaid ? {
+                                      background: '#E7F5EE', color: '#1E8E3E',
+                                    } : dueUnpaid ? {
+                                      background: '#FCEBEB', color: '#CC2229',
+                                    } : {
+                                      background: '#E7F5EE', color: '#1E8E3E',
+                                    }),
+                                  }}>
+                                    {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
+                                  </span>
+                                ) : null}
                               </div>
-                              {!isCancelled && priceNode && (
-                                <span style={{
-                                  display: 'inline-block',
-                                  marginTop: 3,
-                                  fontSize: 11,
-                                  fontWeight: 700,
-                                  padding: '2px 9px',
-                                  borderRadius: 999,
-                                  ...(isLive ? {
-                                    background: '#E6F1FB', color: '#1877D6',
-                                  } : isPrepaidPupil || isPaid ? {
-                                    background: '#E7F5EE', color: '#1E8E3E',
-                                  } : dueUnpaid ? {
-                                    background: '#FCEBEB', color: '#CC2229',
-                                  } : {
-                                    background: '#E7F5EE', color: '#1E8E3E',
-                                  }),
-                                }}>
-                                  {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
-                                </span>
-                              )}
-                              {isCancelled ? (
-                                <span style={{
-                                  display: 'inline-block',
-                                  marginTop: 4,
-                                  fontSize: 9,
-                                  fontWeight: 700,
-                                  letterSpacing: 0.4,
-                                  textTransform: 'uppercase',
-                                  color: '#FFFFFF',
-                                  background: '#CC2229',
-                                  padding: '2px 6px',
-                                  borderRadius: 999,
-                                  lineHeight: 1.2,
-                                }}>
-                                  Cancelled
-                                </span>
-                              ) : (
-                                <div style={{ fontSize: 11, color: '#8A93A3', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
-                                  {dur} mins
+                              {pickupLabel && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3, minWidth: 0 }}>
+                                  <IconMapPin size={12} stroke={1.9} color="#8A93A3" style={{ flexShrink: 0 }} />
+                                  <span style={{ fontSize: 12, color: '#8A93A3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                    {pickupLabel}
+                                  </span>
                                 </div>
                               )}
                             </div>
+
                             <div
                               style={{
                                 position: 'relative',
