@@ -6951,18 +6951,21 @@ function HeroExpandedPanel({
     fontFamily: 'Inter, sans-serif',
   };
 
-  // --- Pickup address (editable + Google verification) ---
-  const [pickupValue, setPickupValue] = useState<string>(lesson.pickup_location ?? '');
+  // --- Pickup address (home address default, editable alternative) ---
+  const homeAddress = lesson.pupils?.address ?? '';
+  const [pickupValue, setPickupValue] = useState<string>(lesson.pickup_location ?? homeAddress);
   const [pickupState, setPickupState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
+  const [isEditingPickup, setIsEditingPickup] = useState(false);
 
   // --- what3words (manual entry, 3 boxes) ---
   const [w3w, setW3w] = useState<[string, string, string]>(['', '', '']);
   const [w3wState, setW3wState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
 
   useEffect(() => {
-    setPickupValue(lesson.pickup_location ?? '');
+    setPickupValue(lesson.pickup_location ?? homeAddress);
     setPickupState('idle');
-  }, [lesson.id, lesson.pickup_location]);
+    setIsEditingPickup(false);
+  }, [lesson.id, lesson.pickup_location, homeAddress]);
 
   useEffect(() => {
     let cancelled = false;
