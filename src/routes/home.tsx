@@ -4414,7 +4414,7 @@ function HomePage() {
       {/* Next-lesson header card */}
       <div
         style={{
-          width: '80%',
+          width: 'calc((100% - 32px) * 0.8)',
           margin: '0 auto 8px',
           background: '#FFFFFF',
           borderRadius: 16,
