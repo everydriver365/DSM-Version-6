@@ -6965,27 +6965,22 @@ function HeroExpandedPanel({
   const [w3wState, setW3wState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
 
   const lessonIdRef = useRef(lesson.id);
+  const pickupValueRef = useRef(pickupValue);
+  pickupValueRef.current = pickupValue;
   useEffect(() => {
     const incoming = lesson.pickup_location ?? homeAddress;
     const lessonChanged = lessonIdRef.current !== lesson.id;
     lessonIdRef.current = lesson.id;
-    if (lessonChanged) {
-      setPickupValue(incoming);
-      setPickupState('idle');
-      verifiedForRef.current = null;
-      setIsEditingPickup(false);
-      return;
-    }
     // Same lesson: only adopt the incoming value if it genuinely differs from
     // what we're showing (i.e. changed elsewhere) — a refetch echoing back the
     // value we just saved must not wipe the verification result.
-    setPickupValue((cur) => {
-      if (cur.trim() === incoming.trim()) return cur;
-      setPickupState('idle');
-      verifiedForRef.current = null;
-      return incoming;
-    });
+    if (!lessonChanged && pickupValueRef.current.trim() === incoming.trim()) return;
+    setPickupValue(incoming);
+    setPickupState('idle');
+    verifiedForRef.current = null;
+    if (lessonChanged) setIsEditingPickup(false);
   }, [lesson.id, lesson.pickup_location, homeAddress]);
+
 
 
   useEffect(() => {
