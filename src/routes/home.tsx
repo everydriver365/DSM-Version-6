@@ -6956,16 +6956,32 @@ function HeroExpandedPanel({
   const [pickupValue, setPickupValue] = useState<string>(lesson.pickup_location ?? homeAddress);
   const [pickupState, setPickupState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
   const [isEditingPickup, setIsEditingPickup] = useState(false);
+  // The address string the current pickupState was computed for — keeps the
+  // verified/unverified line visible after a save + refetch echoes the value back.
+  const verifiedForRef = useRef<string | null>(null);
 
   // --- what3words (manual entry, 3 boxes) ---
   const [w3w, setW3w] = useState<[string, string, string]>(['', '', '']);
   const [w3wState, setW3wState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
 
+  const lessonIdRef = useRef(lesson.id);
+  const pickupValueRef = useRef(pickupValue);
+  pickupValueRef.current = pickupValue;
   useEffect(() => {
-    setPickupValue(lesson.pickup_location ?? homeAddress);
+    const incoming = lesson.pickup_location ?? homeAddress;
+    const lessonChanged = lessonIdRef.current !== lesson.id;
+    lessonIdRef.current = lesson.id;
+    // Same lesson: only adopt the incoming value if it genuinely differs from
+    // what we're showing (i.e. changed elsewhere) — a refetch echoing back the
+    // value we just saved must not wipe the verification result.
+    if (!lessonChanged && pickupValueRef.current.trim() === incoming.trim()) return;
+    setPickupValue(incoming);
     setPickupState('idle');
-    setIsEditingPickup(false);
+    verifiedForRef.current = null;
+    if (lessonChanged) setIsEditingPickup(false);
   }, [lesson.id, lesson.pickup_location, homeAddress]);
+
+
 
   useEffect(() => {
     let cancelled = false;
@@ -6987,14 +7003,21 @@ function HeroExpandedPanel({
     const address = pickupValue.trim();
     if (!address) {
       setPickupState('idle');
+      verifiedForRef.current = null;
       setPickupValue(homeAddress);
       setIsEditingPickup(false);
       return;
     }
     setPickupState('checking');
+    verifiedForRef.current = address;
+    // Give Google postcode context so house-number-only entries resolve.
+    const postcode = (lesson.pupils?.postcode ?? '').trim();
+    const query = postcode && !address.toUpperCase().includes(postcode.toUpperCase())
+      ? `${address}, ${postcode}`
+      : address;
     let verified = false;
     try {
-      const res = await verifyAddress({ data: { address } });
+      const res = await verifyAddress({ data: { address: query } });
       verified = Boolean(res?.verified);
       if (!verified && res?.reason) console.warn('[pickup] not verified:', res.reason);
     } catch (e) {
@@ -7010,6 +7033,7 @@ function HeroExpandedPanel({
       else toast('Pickup saved');
     }
     setIsEditingPickup(false);
+
   };
 
   const verifyAndSaveW3w = async () => {
@@ -7176,7 +7200,7 @@ function HeroExpandedPanel({
             <MapPin size={14} color="#8E8E93" />
             <input
               value={pickupValue}
-              onChange={(e) => { setPickupValue(e.target.value); setPickupState('idle'); }}
+              onChange={(e) => { setPickupValue(e.target.value); setPickupState('idle'); verifiedForRef.current = null; }}
               onBlur={verifyAndSavePickup}
               placeholder="Enter pickup address"
               style={fieldInput}
@@ -7201,7 +7225,12 @@ function HeroExpandedPanel({
             </button>
           </div>
         )}
-        {statusLine(pickupState, 'Verified via Google Maps', "Couldn't verify — check for typos")}
+        {statusLine(
+          verifiedForRef.current !== null && verifiedForRef.current === pickupValue.trim() ? pickupState : 'idle',
+          'Verified via Google Maps',
+          "Couldn't verify — check for typos",
+        )}
+
       </div>
 
       {/* what3words */}
