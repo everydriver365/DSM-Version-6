@@ -6107,6 +6107,7 @@ function HomePage() {
 
               return (
                 <>
+        <SectionHeader>Upcoming Tests</SectionHeader>
         {/* ============ TESTS ROW ============ */}
         {(() => {
           const fmtShortDate = (iso: string) => {
