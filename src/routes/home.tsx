@@ -6124,7 +6124,7 @@ function HomePage() {
             <div
               onClick={() => navigate({ to: '/tests' as never })}
               style={{
-                margin: '16px 0 12px',
+                margin: '0 0 0',
                 background: '#FFFFFF',
                 border: '1px solid #E2E8F0',
                 borderRadius: 18,
