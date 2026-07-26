@@ -4411,13 +4411,45 @@ function HomePage() {
         ))}
       </div>
 
+      {/* Next-lesson header card */}
+      <div
+        style={{
+          width: 'calc((100% - 32px) * 0.8)',
+          margin: '0 auto 8px',
+          background: '#FFFFFF',
+          borderRadius: 16,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+          padding: '14px 12px 12px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 8,
+          fontFamily: 'Inter, sans-serif',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+          <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#1877D6', flexShrink: 0 }} />
+          <span style={{ fontSize: 13, fontWeight: 700, color: '#5A6270', letterSpacing: 1, textTransform: 'uppercase' }}>Next lesson</span>
+        </div>
+        <button
+          type="button"
+          onClick={() => navigate({ to: '/schedule' })}
+          style={{
+            background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: 2,
+            fontSize: 13, fontWeight: 700, color: '#1877D6', fontFamily: 'Inter, sans-serif',
+          }}
+        >
+          Full schedule <ChevronRight size={15} />
+        </button>
+      </div>
+
       {/* ============ NEXT LESSON CARD ============ */}
       <div
         style={{
           margin: '0 16px 16px',
           background: '#FFFFFF',
           borderRadius: 20,
-
           boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
           overflow: 'hidden',
           fontFamily: 'Inter, sans-serif',
@@ -4527,28 +4559,7 @@ function HomePage() {
 
           return (
             <>
-              {/* Card header */}
-              <div style={{
-                padding: '14px 12px 12px', display: 'flex', alignItems: 'center',
-                justifyContent: 'space-between', gap: 8, fontFamily: 'Inter, sans-serif',
-                width: '80%', margin: '0 auto',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                  <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#1877D6', flexShrink: 0 }} />
-                  <span style={{ fontSize: 13, fontWeight: 700, color: '#5A6270', letterSpacing: 1, textTransform: 'uppercase' }}>Next lesson</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: '/schedule' })}
-                  style={{
-                    background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', gap: 2,
-                    fontSize: 13, fontWeight: 700, color: '#1877D6', fontFamily: 'Inter, sans-serif',
-                  }}
-                >
-                  Full schedule <ChevronRight size={15} />
-                </button>
-              </div>
+
 
               {upcoming ? (<>
                 <div style={{ display: 'flex', alignItems: 'stretch', fontFamily: 'Inter, sans-serif' }}>
