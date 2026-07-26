@@ -4447,7 +4447,7 @@ function HomePage() {
       {/* ============ NEXT LESSON CARD ============ */}
       <div
         style={{
-          margin: upcoming ? '0 16px 0' : '0 16px 16px',
+          margin: '0 16px 0',
           background: '#FFFFFF',
           borderRadius: upcoming ? '20px 20px 0 0' : 20,
           boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
