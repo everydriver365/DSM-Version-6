@@ -7122,7 +7122,7 @@ function HeroExpandedPanel({
 
       {/* Row 2 — Prep / Running late / I'm here */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 8 }}>
-        <button style={gridBtn} onClick={onOpenLesson}>
+        <button style={{ ...gridBtn, background: '#FFFFFF' }} onClick={onOpenLesson}>
           <IconClipboardList size={18} stroke={1.8} color="#0B1F3A" />
           <span style={pillLabel}>Prep</span>
         </button>
