@@ -1677,7 +1677,7 @@ function SchedulePage() {
                                     style={{
                                       position: 'absolute',
                                       top: 88,
-                                      left: 52,
+                                      right: 14,
                                       minWidth: 140,
                                       background: '#FFFFFF',
                                       border: '1px solid #E5E7EB',
