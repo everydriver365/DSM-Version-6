@@ -6247,7 +6247,7 @@ function HomePage() {
                     .qa-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at center, rgba(15,32,68,0.18) 0%, transparent 60%); opacity: 0; pointer-events: none; }
                     .qa-card:active::after { animation: qaRipple 0.5s ease-out; }
                   `}</style>
-                    <div style={{ background: PAGE_BACKGROUND, margin: '16px -16px 0', padding: '18px 16px 20px', borderRadius: 0 }}>
+                    <div style={{ background: PAGE_BACKGROUND, margin: '0 -16px 0', padding: '0 16px 0', borderRadius: 0 }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
                         <SectionHeader>Quick Access</SectionHeader>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
