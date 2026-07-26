@@ -4839,8 +4839,6 @@ function HomePage() {
             .sort((a, b) => a.test_date.localeCompare(b.test_date));
           if (testsSorted.length === 0) return null;
           const next = testsSorted[0];
-          const centres = Array.from(new Set(testsSorted.map((t) => t.test_centre).filter(Boolean))) as string[];
-          const centreLabel = centres.length === 1 ? centres[0] : 'Multiple centres';
           const thisWeekEnd = nowMs + 7 * 86400000;
           const anyThisWeek = testsSorted.some((t) => new Date(t.test_date + 'T00:00:00').getTime() <= thisWeekEnd);
           return (
@@ -4881,10 +4879,6 @@ function HomePage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: '#6B7A90', flexWrap: 'wrap' }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                     <IconCalendar size={13} stroke={1.75} /> {testsSorted.length} scheduled
-                  </span>
-                  <span>·</span>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                    <IconMapPin size={13} stroke={1.75} /> {centreLabel}
                   </span>
                 </div>
               </div>
