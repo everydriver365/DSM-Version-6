@@ -8,6 +8,7 @@ import {
   IconCalendar,
   IconChevronRight,
 } from "@tabler/icons-react";
+import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { supabase } from "@/lib/supabaseClient";
 
 const NAVY = "#0B1F3A";
