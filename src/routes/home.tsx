@@ -7230,7 +7230,12 @@ function HeroExpandedPanel({
             </button>
           </div>
         )}
-        {statusLine(pickupState, 'Verified via Google Maps', "Couldn't verify — check for typos")}
+        {statusLine(
+          verifiedForRef.current !== null && verifiedForRef.current === pickupValue.trim() ? pickupState : 'idle',
+          'Verified via Google Maps',
+          "Couldn't verify — check for typos",
+        )}
+
       </div>
 
       {/* what3words */}
