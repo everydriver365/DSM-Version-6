@@ -145,6 +145,11 @@ import {
   IconCircleCheck,
   IconArrowRight,
   IconGift,
+  IconNavigation,
+  IconClipboardList,
+  IconClockExclamation,
+  IconCurrentLocation,
+  IconPencil,
 } from "@tabler/icons-react";
 
 
