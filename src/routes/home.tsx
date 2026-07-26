@@ -6914,6 +6914,7 @@ function HeroExpandedPanel({
   onEol: () => void;
 }) {
   const navigate = useNavigate();
+  const verifyAddressFn = useServerFn(verifyAddress);
   const phone = lesson.pupils?.phone ?? null;
   const firstName = (lesson.pupils?.name ?? "there").split(/\s+/)[0];
   const balance = Number(lesson.amount_due ?? 0);
@@ -7000,12 +7001,21 @@ function HeroExpandedPanel({
   }, [lesson.pupil_id]);
 
   const verifyAndSavePickup = async () => {
+    if (pickupState === 'checking') return;
     const address = pickupValue.trim();
     if (!address) {
       setPickupState('idle');
       verifiedForRef.current = null;
       setPickupValue(homeAddress);
       setIsEditingPickup(false);
+      if (lesson.pickup_location) {
+        const { error } = await supabase
+          .from('lessons')
+          .update({ pickup_location: null })
+          .eq('id', lesson.id);
+        if (error) { console.error('[pickup] clear failed', error); toast("Couldn't save pickup"); }
+        else toast('Pickup reset to home address');
+      }
       return;
     }
     setPickupState('checking');
@@ -7016,18 +7026,25 @@ function HeroExpandedPanel({
       ? `${address}, ${postcode}`
       : address;
     let verified = false;
+    let addressToSave = address;
     try {
-      const res = await verifyAddress({ data: { address: query } });
+      const res = await verifyAddressFn({ data: { address: query } });
       verified = Boolean(res?.verified);
+      if (verified && res?.formattedAddress) {
+        addressToSave = res.formattedAddress;
+        setPickupValue(addressToSave);
+        verifiedForRef.current = addressToSave;
+      }
       if (!verified && res?.reason) console.warn('[pickup] not verified:', res.reason);
     } catch (e) {
       console.warn('[pickup] geocode failed', e);
     }
     setPickupState(verified ? 'ok' : 'bad');
-    if (address !== (lesson.pickup_location ?? '')) {
+    const nextPickupLocation = addressToSave.trim() === homeAddress.trim() ? null : addressToSave;
+    if ((nextPickupLocation ?? '') !== (lesson.pickup_location ?? '')) {
       const { error } = await supabase
         .from('lessons')
-        .update({ pickup_location: address })
+        .update({ pickup_location: nextPickupLocation })
         .eq('id', lesson.id);
       if (error) { console.error('[pickup] save failed', error); toast("Couldn't save pickup"); }
       else toast('Pickup saved');
@@ -7201,11 +7218,38 @@ function HeroExpandedPanel({
             <input
               value={pickupValue}
               onChange={(e) => { setPickupValue(e.target.value); setPickupState('idle'); verifiedForRef.current = null; }}
-              onBlur={verifyAndSavePickup}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  verifyAndSavePickup();
+                }
+              }}
               placeholder="Enter pickup address"
               style={fieldInput}
               autoFocus
             />
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={verifyAndSavePickup}
+              disabled={pickupState === 'checking'}
+              aria-label="Verify and save pickup address"
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: 10,
+                border: '1px solid #B7E4C7',
+                background: pickupState === 'checking' ? '#F5F7FA' : '#E8F5E9',
+                color: '#1F6B2E',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: pickupState === 'checking' ? 'default' : 'pointer',
+                flexShrink: 0,
+              }}
+            >
+              <IconCircleCheck size={18} stroke={1.8} />
+            </button>
           </div>
         ) : (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 10, padding: '9px 12px' }}>
