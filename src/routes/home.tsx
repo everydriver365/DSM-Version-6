@@ -4721,19 +4721,21 @@ function HomePage() {
 
                     {/* More / expand trigger */}
                     {upcoming && (
-                      <button
-                        type="button"
-                        onClick={() => setHeroExpanded((v) => !v)}
-                        style={{
-                          padding: '10px 16px', background: 'transparent', border: 'none',
-                          display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 5,
-                          fontSize: 13, fontWeight: 700, color: '#1877D6', cursor: 'pointer',
-                          fontFamily: 'Inter, sans-serif', width: '100%',
-                        }}
-                      >
-                        More
-                        {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                      </button>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '2px 16px 0' }}>
+                        <button
+                          type="button"
+                          onClick={() => setHeroExpanded((v) => !v)}
+                          style={{
+                            padding: '8px 12px', background: 'transparent', border: 'none',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+                            fontSize: 13, fontWeight: 700, color: '#1877D6', cursor: 'pointer',
+                            fontFamily: 'Inter, sans-serif',
+                          }}
+                        >
+                          More
+                          {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </button>
+                      </div>
                     )}
 
                   </div>
