@@ -5783,62 +5783,71 @@ function HomePage() {
                       const h = Math.floor(durMin / 60);
                       const m = durMin % 60;
                       const durLabel = h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
-                      const isPast = nowT >= ce;
-                      const barColor = isPast ? '#34A853' : '#1877D6';
+                      // Strip a redundant leading date/time/duration prefix, e.g.
+                      // "27/07/2026 – 7am – NSAC – Standards Check Review" -> "NSAC – Standards Check Review".
+                      const cleanTitle = (() => {
+                        const raw = (r.title ?? '').trim();
+                        if (!raw) return raw;
+                        const sep = /\s*(?:[–—-]|\||·)\s*/;
+                        const parts = raw.split(sep);
+                        if (parts.length < 2) return raw;
+                        const redundant = (s: string) =>
+                          /^\d{1,4}[/.-]\d{1,2}[/.-]\d{1,4}$/.test(s) ||
+                          /^\d{1,2}([:.]\d{2})?\s*(am|pm)$/i.test(s) ||
+                          /^\d{1,2}:\d{2}$/.test(s) ||
+                          /^\d+\s*(min|mins|minutes|h|hr|hrs|hours)$/i.test(s);
+                        let i = 0;
+                        while (i < parts.length - 1 && redundant(parts[i].trim())) i++;
+                        const rest = parts.slice(i).join(' – ').trim();
+                        return rest || raw;
+                      })();
                       return (
-                        <div key={`cal-${idx}`} style={{ position: 'relative', marginBottom: idx === rows.length - 1 ? 0 : 8 }}>
-                          <div
-                            style={{
-                              background: '#E4E9F1',
-                              borderRadius: 12,
-                              boxShadow: 'none',
-                              padding: '12px 14px',
-                              display: 'flex',
-                              alignItems: 'stretch',
-                              gap: 12,
-                            }}
-                          >
-                            <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                              <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
-                                {fmtT(cs)}
-                              </div>
-                              <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
-                                {durLabel}
-                              </div>
+                        <div
+                          key={`cal-${idx}`}
+                          style={{
+                            padding: '12px 16px',
+                            display: 'flex',
+                            alignItems: 'stretch',
+                            gap: 12,
+                            borderTop: idx === 0 ? 'none' : '1px solid #EEF2F7',
+                          }}
+                        >
+                          <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
+                            <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                              {fmtT(cs)}
                             </div>
+                            <div style={{ fontSize: 11.5, fontWeight: 500, color: '#8A93A3', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
+                              {durLabel}
+                            </div>
+                          </div>
+                          <div aria-hidden style={{ width: 3, borderRadius: 2, background: '#94A3B8', flexShrink: 0, alignSelf: 'stretch' }} />
+                          <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                             <div
-                              aria-hidden
                               style={{
-                                width: 3,
-                                borderRadius: 2,
-                                background: barColor,
-                                flexShrink: 0,
-                                alignSelf: 'stretch',
+                                fontSize: 15,
+                                fontWeight: 600,
+                                color: '#0B1F3A',
+                                lineHeight: 1.3,
+                                overflowWrap: 'anywhere',
                               }}
-                            />
-                            <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
-                              <div
-                                style={{
-                                  fontSize: 14,
-                                  fontWeight: 500,
-                                  color: '#4B5563',
-                                  whiteSpace: 'nowrap',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
-                                  lineHeight: 1.3,
-                                }}
-                                title={r.title}
-                              >
-                                {r.title}
-                              </div>
-                              <div style={{ fontSize: 12, color: '#8A93A3', marginTop: 4 }}>
-                                Google Calendar
-                              </div>
+                              title={r.title}
+                            >
+                              {cleanTitle}
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 3 }}>
+                              <svg width="12" height="12" viewBox="0 0 24 24" aria-hidden style={{ flexShrink: 0 }}>
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.07 5.07 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z" />
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.29-2.65l-3.57-2.77c-.99.66-2.26 1.06-3.72 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z" />
+                                <path fill="#FBBC05" d="M5.84 14.11a6.6 6.6 0 0 1 0-4.22V7.05H2.18a11 11 0 0 0 0 9.9l3.66-2.84z" />
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.2 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.05l3.66 2.84C6.71 7.3 9.14 5.38 12 5.38z" />
+                              </svg>
+                              <span style={{ fontSize: 12, color: '#8A93A3', fontWeight: 500 }}>Google Calendar</span>
                             </div>
                           </div>
                         </div>
                       );
                     }
+
                     const row = { kind: 'lesson' as const, l: r.l };
 
                     const l = row.l;
