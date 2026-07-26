@@ -6985,7 +6985,12 @@ function HeroExpandedPanel({
 
   const verifyAndSavePickup = async () => {
     const address = pickupValue.trim();
-    if (!address) { setPickupState('idle'); return; }
+    if (!address) {
+      setPickupState('idle');
+      setPickupValue(homeAddress);
+      setIsEditingPickup(false);
+      return;
+    }
     setPickupState('checking');
     let verified = false;
     try {
@@ -7004,6 +7009,7 @@ function HeroExpandedPanel({
       if (error) { console.error('[pickup] save failed', error); toast("Couldn't save pickup"); }
       else toast('Pickup saved');
     }
+    setIsEditingPickup(false);
   };
 
   const verifyAndSaveW3w = async () => {
