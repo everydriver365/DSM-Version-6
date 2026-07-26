@@ -7008,14 +7008,21 @@ function HeroExpandedPanel({
     const address = pickupValue.trim();
     if (!address) {
       setPickupState('idle');
+      verifiedForRef.current = null;
       setPickupValue(homeAddress);
       setIsEditingPickup(false);
       return;
     }
     setPickupState('checking');
+    verifiedForRef.current = address;
+    // Give Google postcode context so house-number-only entries resolve.
+    const postcode = (lesson.pupils?.postcode ?? '').trim();
+    const query = postcode && !address.toUpperCase().includes(postcode.toUpperCase())
+      ? `${address}, ${postcode}`
+      : address;
     let verified = false;
     try {
-      const res = await verifyAddress({ data: { address } });
+      const res = await verifyAddress({ data: { address: query } });
       verified = Boolean(res?.verified);
       if (!verified && res?.reason) console.warn('[pickup] not verified:', res.reason);
     } catch (e) {
@@ -7031,6 +7038,7 @@ function HeroExpandedPanel({
       else toast('Pickup saved');
     }
     setIsEditingPickup(false);
+
   };
 
   const verifyAndSaveW3w = async () => {
