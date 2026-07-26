@@ -7143,7 +7143,7 @@ function HeroExpandedPanel({
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 8 }}>
         <button
           type="button"
-          style={gridBtn}
+          style={{ ...gridBtn, background: '#FFFFFF' }}
           onClick={() => navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } })}
         >
           <IconPencil size={18} stroke={1.8} color="#0B1F3A" />
