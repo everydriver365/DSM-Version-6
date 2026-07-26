@@ -6951,18 +6951,21 @@ function HeroExpandedPanel({
     fontFamily: 'Inter, sans-serif',
   };
 
-  // --- Pickup address (editable + Google verification) ---
-  const [pickupValue, setPickupValue] = useState<string>(lesson.pickup_location ?? '');
+  // --- Pickup address (home address default, editable alternative) ---
+  const homeAddress = lesson.pupils?.address ?? '';
+  const [pickupValue, setPickupValue] = useState<string>(lesson.pickup_location ?? homeAddress);
   const [pickupState, setPickupState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
+  const [isEditingPickup, setIsEditingPickup] = useState(false);
 
   // --- what3words (manual entry, 3 boxes) ---
   const [w3w, setW3w] = useState<[string, string, string]>(['', '', '']);
   const [w3wState, setW3wState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
 
   useEffect(() => {
-    setPickupValue(lesson.pickup_location ?? '');
+    setPickupValue(lesson.pickup_location ?? homeAddress);
     setPickupState('idle');
-  }, [lesson.id, lesson.pickup_location]);
+    setIsEditingPickup(false);
+  }, [lesson.id, lesson.pickup_location, homeAddress]);
 
   useEffect(() => {
     let cancelled = false;
@@ -6982,7 +6985,12 @@ function HeroExpandedPanel({
 
   const verifyAndSavePickup = async () => {
     const address = pickupValue.trim();
-    if (!address) { setPickupState('idle'); return; }
+    if (!address) {
+      setPickupState('idle');
+      setPickupValue(homeAddress);
+      setIsEditingPickup(false);
+      return;
+    }
     setPickupState('checking');
     let verified = false;
     try {
@@ -7001,6 +7009,7 @@ function HeroExpandedPanel({
       if (error) { console.error('[pickup] save failed', error); toast("Couldn't save pickup"); }
       else toast('Pickup saved');
     }
+    setIsEditingPickup(false);
   };
 
   const verifyAndSaveW3w = async () => {
@@ -7162,16 +7171,36 @@ function HeroExpandedPanel({
       {/* Pickup */}
       <div style={{ marginTop: 14 }}>
         <div style={sectionLabel}>Pickup</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <MapPin size={14} color="#8E8E93" />
-          <input
-            value={pickupValue}
-            onChange={(e) => { setPickupValue(e.target.value); setPickupState('idle'); }}
-            onBlur={verifyAndSavePickup}
-            placeholder="Enter pickup address"
-            style={fieldInput}
-          />
-        </div>
+        {isEditingPickup ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <MapPin size={14} color="#8E8E93" />
+            <input
+              value={pickupValue}
+              onChange={(e) => { setPickupValue(e.target.value); setPickupState('idle'); }}
+              onBlur={verifyAndSavePickup}
+              placeholder="Enter pickup address"
+              style={fieldInput}
+              autoFocus
+            />
+          </div>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 10, padding: '9px 12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+              <MapPin size={14} color="#8E8E93" />
+              <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 13, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {pickupValue || 'No address set'}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsEditingPickup(true)}
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#8E8E93', flexShrink: 0 }}
+              aria-label="Edit pickup address"
+            >
+              <Pencil size={16} />
+            </button>
+          </div>
+        )}
         {statusLine(pickupState, 'Verified via Google Maps', "Couldn't verify — check for typos")}
       </div>
 
