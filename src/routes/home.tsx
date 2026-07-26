@@ -7165,16 +7165,36 @@ function HeroExpandedPanel({
       {/* Pickup */}
       <div style={{ marginTop: 14 }}>
         <div style={sectionLabel}>Pickup</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <MapPin size={14} color="#8E8E93" />
-          <input
-            value={pickupValue}
-            onChange={(e) => { setPickupValue(e.target.value); setPickupState('idle'); }}
-            onBlur={verifyAndSavePickup}
-            placeholder="Enter pickup address"
-            style={fieldInput}
-          />
-        </div>
+        {isEditingPickup ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <MapPin size={14} color="#8E8E93" />
+            <input
+              value={pickupValue}
+              onChange={(e) => { setPickupValue(e.target.value); setPickupState('idle'); }}
+              onBlur={verifyAndSavePickup}
+              placeholder="Enter pickup address"
+              style={fieldInput}
+              autoFocus
+            />
+          </div>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 10, padding: '9px 12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+              <MapPin size={14} color="#8E8E93" />
+              <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 13, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {pickupValue || 'No address set'}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsEditingPickup(true)}
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#8E8E93', flexShrink: 0 }}
+              aria-label="Edit pickup address"
+            >
+              <Pencil size={16} />
+            </button>
+          </div>
+        )}
         {statusLine(pickupState, 'Verified via Google Maps', "Couldn't verify — check for typos")}
       </div>
 
