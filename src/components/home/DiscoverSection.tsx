@@ -601,9 +601,7 @@ export function DiscoverSection() {
           scrollSnapType: "x mandatory",
           scrollbarWidth: "none",
           msOverflowStyle: "none",
-          paddingBottom: 4,
-          marginRight: -16,
-          paddingRight: 16,
+          padding: "0 16px 4px",
         }}
       >
         {/* Card A — DSM Live */}
