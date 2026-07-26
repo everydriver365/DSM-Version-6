@@ -5293,43 +5293,6 @@ function HomePage() {
 
 
             {/* 3. TIMELINE with TABS */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginTop: 22, marginBottom: 10 }}>
-              <div style={{ fontSize: 22, fontWeight: 700, color: '#0B1F3A', fontFamily: PF, letterSpacing: -0.4, minWidth: 0 }}>
-                {tab === 'today' ? 'Today' : tab === 'tomorrow' ? 'Tomorrow' : 'Upcoming'}
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-                <button
-                  type="button"
-                  aria-label="Add lesson"
-                  onClick={() => navigate({ to: '/lessons/new' as never, search: (tab === 'tomorrow' ? { date: tomorrowISO } : {}) as any })}
-                  style={{
-                    background: '#0B1F3A',
-                    border: 'none',
-                    borderRadius: 999,
-                    padding: '6px 12px',
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 4,
-                    color: '#FFFFFF',
-                    fontSize: 12.5,
-                    fontWeight: 600,
-                    fontFamily: PF,
-                  }}
-                >
-                  <Plus size={13} color="#FFFFFF" strokeWidth={2.5} />
-                  Add
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: '/schedule' as never })}
-                  style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 500, color: '#1877D6', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
-                >
-                  Full schedule
-                  <IconArrowRight size={13} stroke={2} />
-                </button>
-              </div>
-            </div>
 
 
             <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 3, background: '#E9EDF2', borderRadius: 999, marginBottom: 12 }}>
