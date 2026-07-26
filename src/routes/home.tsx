@@ -5295,39 +5295,6 @@ function HomePage() {
             {/* 3. TIMELINE with TABS */}
 
 
-            <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 3, background: '#E9EDF2', borderRadius: 999, marginBottom: 12 }}>
-              {(['today', 'tomorrow', 'next'] as const).map((t) => {
-                const active = tab === t;
-                const label = t === 'today' ? 'Today' : t === 'tomorrow' ? 'Tomorrow' : 'Next';
-                return (
-                  <button
-                    key={t}
-                    type="button"
-                    role="tab"
-                    aria-selected={active}
-                    onClick={() => setTab(t)}
-                    style={{
-                      flex: 1,
-                      padding: '8px 0',
-                      borderRadius: 999,
-                      border: 'none',
-                      background: active ? '#FFFFFF' : 'transparent',
-                      color: active ? '#0B1F3A' : '#8A93A3',
-                      fontFamily: PF,
-                      fontSize: 14,
-                      fontWeight: active ? 700 : 500,
-                      cursor: 'pointer',
-                      boxShadow: active ? '0 1px 2px rgba(11,31,58,0.10), 0 1px 3px rgba(11,31,58,0.06)' : 'none',
-                      transition: 'background 120ms ease, color 120ms ease',
-                      textAlign: 'center',
-                      letterSpacing: -0.1,
-                    }}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
 
 
 
