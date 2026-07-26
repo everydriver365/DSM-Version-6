@@ -6940,7 +6940,7 @@ function HeroExpandedPanel({
           onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
         >
           <MapPin size={16} color="#0B1F3A" />
-          <span style={pillLabel}>Here</span>
+          <span style={pillLabel}>I'm Here</span>
         </button>
         <button
           style={{
@@ -6950,11 +6950,11 @@ function HeroExpandedPanel({
           onClick={() => { setGoingActive(true); sendSms(`Hi ${firstName}, on the way!`); }}
         >
           <Send size={16} color="#0B1F3A" />
-          <span style={pillLabel}>Going</span>
+          <span style={pillLabel}>Navigate</span>
         </button>
         <button style={pillBase} onClick={onOpenLate}>
           <Clock size={16} color="#0B1F3A" />
-          <span style={pillLabel}>Late</span>
+          <span style={pillLabel}>Running Late</span>
         </button>
       </div>
 
