@@ -4882,10 +4882,6 @@ function HomePage() {
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                     <IconCalendar size={13} stroke={1.75} /> {testsSorted.length} scheduled
                   </span>
-                  <span>·</span>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                    <IconMapPin size={13} stroke={1.75} /> {centreLabel}
-                  </span>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, marginLeft: 8 }}>
