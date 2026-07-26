@@ -6950,116 +6950,265 @@ function HeroExpandedPanel({
     fontFamily: 'Inter, sans-serif',
   };
 
+  // --- Pickup address (editable + Google verification) ---
+  const [pickupValue, setPickupValue] = useState<string>(lesson.pickup_location ?? '');
+  const [pickupState, setPickupState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
+
+  // --- what3words (manual entry, 3 boxes) ---
+  const [w3w, setW3w] = useState<[string, string, string]>(['', '', '']);
+  const [w3wState, setW3wState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
+
+  useEffect(() => {
+    setPickupValue(lesson.pickup_location ?? '');
+    setPickupState('idle');
+  }, [lesson.id, lesson.pickup_location]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from('pupils')
+        .select('what3words')
+        .eq('id', lesson.pupil_id)
+        .maybeSingle();
+      const raw = (data as { what3words?: string | null } | null)?.what3words ?? '';
+      if (cancelled || !raw) return;
+      const parts = String(raw).replace(/^\/+/, '').split('.');
+      if (parts.length === 3) setW3w([parts[0], parts[1], parts[2]]);
+    })();
+    return () => { cancelled = true; };
+  }, [lesson.pupil_id]);
+
+  const verifyAndSavePickup = async () => {
+    const address = pickupValue.trim();
+    if (!address) { setPickupState('idle'); return; }
+    setPickupState('checking');
+    let verified = false;
+    try {
+      const g = (window as GMapsWindow).google;
+      if (g?.maps?.Geocoder) {
+        const geocoder = new g.maps.Geocoder();
+        const res: any = await geocoder.geocode({ address });
+        verified = Array.isArray(res?.results) && res.results.length > 0;
+      } else if (GMAPS_BROWSER_KEY) {
+        const r = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GMAPS_BROWSER_KEY}`,
+        );
+        const j = await r.json();
+        verified = j?.status === 'OK' && (j.results?.length ?? 0) > 0;
+      }
+    } catch (e) {
+      console.warn('[pickup] geocode failed', e);
+    }
+    setPickupState(verified ? 'ok' : 'bad');
+    if (address !== (lesson.pickup_location ?? '')) {
+      const { error } = await supabase
+        .from('lessons')
+        .update({ pickup_location: address })
+        .eq('id', lesson.id);
+      if (error) { console.error('[pickup] save failed', error); toast("Couldn't save pickup"); }
+      else toast('Pickup saved');
+    }
+  };
+
+  const verifyAndSaveW3w = async () => {
+    const [a, b, c] = w3w.map((s) => s.trim().toLowerCase());
+    if (!a || !b || !c) { setW3wState('idle'); return; }
+    const words = `${a}.${b}.${c}`;
+    setW3wState('checking');
+    let verified = false;
+    try {
+      const key = import.meta.env.VITE_W3W_API_KEY as string | undefined;
+      const r = await fetch(
+        `https://api.what3words.com/v3/convert-to-coordinates?words=${encodeURIComponent(words)}&key=${key ?? ''}`,
+      );
+      const j = await r.json();
+      verified = Boolean(j?.coordinates);
+    } catch (e) {
+      console.warn('[w3w] lookup failed', e);
+    }
+    setW3wState(verified ? 'ok' : 'bad');
+    const { error } = await supabase
+      .from('pupils')
+      .update({ what3words: words })
+      .eq('id', lesson.pupil_id);
+    if (error) { console.error('[w3w] save failed', error); toast("Couldn't save what3words"); }
+  };
+
+  const gridBtn: React.CSSProperties = {
+    background: '#F5F7FA',
+    border: '1px solid #E2E8F0',
+    borderRadius: 12,
+    padding: '10px 4px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+    cursor: 'pointer',
+    fontFamily: 'Inter, sans-serif',
+    fontSize: 11,
+    fontWeight: 500,
+    color: '#0B1F3A',
+  };
+  const gridBtnDanger: React.CSSProperties = {
+    ...gridBtn,
+    background: '#FCE9E9',
+    border: '1px solid #F5CBCB',
+    color: '#CC2229',
+  };
+  const fieldInput: React.CSSProperties = {
+    flex: 1,
+    minWidth: 0,
+    background: '#FFFFFF',
+    border: '1px solid #E2E8F0',
+    borderRadius: 10,
+    padding: '9px 12px',
+    fontFamily: 'Inter, sans-serif',
+    fontSize: 13,
+    color: '#0B1F3A',
+    outline: 'none',
+  };
+
+  const statusLine = (
+    state: 'idle' | 'checking' | 'ok' | 'bad',
+    okText: string,
+    badText: string,
+  ) => {
+    if (state === 'checking') {
+      return <div style={{ marginTop: 6, fontSize: 11, color: '#8E8E93', fontFamily: 'Inter, sans-serif' }}>Checking…</div>;
+    }
+    if (state === 'ok') {
+      return (
+        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#1F6B2E', fontFamily: 'Inter, sans-serif' }}>
+          <IconCircleCheck size={14} stroke={1.8} /> {okText}
+        </div>
+      );
+    }
+    if (state === 'bad') {
+      return (
+        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#B45309', fontFamily: 'Inter, sans-serif' }}>
+          <IconAlertTriangle size={14} stroke={1.8} /> {badText}
+        </div>
+      );
+    }
+    return (
+      <div style={{ marginTop: 6, fontSize: 11, color: '#8E8E93', fontFamily: 'Inter, sans-serif' }}>Not yet verified</div>
+    );
+  };
+
   return (
     <div style={{ background: '#F3F8FF', borderRadius: '0 0 16px 16px', padding: 12 }}>
       {/* Quick Actions */}
       <div style={sectionLabel}>Quick Actions</div>
-      {/* Row 1 — status pills */}
+      {/* Row 1 — Navigate / Text / Call */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
         <button
-          style={pillBase}
-          onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
-        >
-          <MapPin size={16} color="#0B1F3A" />
-          <span style={pillLabel}>I'm Here</span>
-        </button>
-        <button
-          style={{
-            ...pillBase,
-            background: goingActive ? '#FFF8E8' : '#F2F2F7',
-          }}
+          style={{ ...gridBtn, background: goingActive ? '#FFF8E8' : '#F5F7FA' }}
           onClick={() => { setGoingActive(true); sendSms(`Hi ${firstName}, on the way!`); }}
         >
-          <Send size={16} color="#0B1F3A" />
+          <IconNavigation size={18} stroke={1.8} color="#0B1F3A" />
           <span style={pillLabel}>Navigate</span>
         </button>
-        <button style={pillBase} onClick={onOpenLate}>
-          <Clock size={16} color="#0B1F3A" />
-          <span style={pillLabel}>Running Late</span>
-        </button>
-      </div>
-
-      {/* Row 2 — Prep / EOL / Arrived / Edit */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 8, marginTop: 8 }}>
-        <button
-          style={pillBase}
-          onClick={onOpenLesson}
-        >
-          <ClipboardList size={16} color="#0B1F3A" />
-          <span style={pillLabel}>Prep</span>
-        </button>
-        <button
-          onClick={(e) => { e.stopPropagation(); onEol(); }}
-          style={{ ...pillBase, background: '#FDEDEE', color: '#CC2229' }}
-        >
-          <CheckCircle2 size={16} color="#CC2229" />
-          <span style={{ ...pillLabel, color: '#CC2229' }}>EOL</span>
-        </button>
-        <button
-          onClick={() => {
-            sendSms(`Hi ${firstName}, I'm outside and ready when you are! 🚗`);
-            toast("Marked as arrived");
-          }}
-          style={{ ...pillBase, background: '#EAF2FC', color: '#1877D6' }}
-        >
-          <CheckCheck size={16} color="#1877D6" />
-          <span style={{ ...pillLabel, color: '#1877D6' }}>Arrived</span>
-        </button>
         <button
           type="button"
-          style={pillBase}
-          onClick={() => navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } })}
-        >
-          <Pencil size={16} color="#0B1F3A" />
-          <span style={pillLabel}>Edit</span>
-        </button>
-      </div>
-
-      {/* Text / Call */}
-      <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-        <button
-          type="button"
-          style={{ ...pillBase, flexDirection: 'row', gap: 6, fontSize: 13, fontWeight: 600 }}
+          style={gridBtn}
           onClick={(e) => { e.stopPropagation(); navigate({ to: '/messages/$pupilId', params: { pupilId: lesson.pupil_id } as any }); }}
         >
-          <MessageSquare size={16} color="#0B1F3A" /> Text
+          <IconMessage size={18} stroke={1.8} color="#0B1F3A" />
+          <span style={pillLabel}>Text</span>
         </button>
         <button
           type="button"
-          style={{ ...pillBase, flexDirection: 'row', gap: 6, fontSize: 13, fontWeight: 600 }}
+          style={gridBtn}
           onClick={(e) => { e.stopPropagation(); if (!phone) { toast('No phone number'); return; } window.location.href = `tel:${phone}`; }}
         >
-          <Phone size={16} color="#0B1F3A" /> Call
+          <IconPhone size={18} stroke={1.8} color="#0B1F3A" />
+          <span style={pillLabel}>Call</span>
+        </button>
+      </div>
+
+      {/* Row 2 — Prep / Running late / I'm here */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 8 }}>
+        <button style={gridBtn} onClick={onOpenLesson}>
+          <IconClipboardList size={18} stroke={1.8} color="#0B1F3A" />
+          <span style={pillLabel}>Prep</span>
+        </button>
+        <button style={gridBtnDanger} onClick={onOpenLate}>
+          <IconClockExclamation size={18} stroke={1.8} color="#CC2229" />
+          <span style={{ ...pillLabel, color: '#CC2229' }}>Running late</span>
+        </button>
+        <button
+          style={gridBtn}
+          onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
+        >
+          <IconCurrentLocation size={18} stroke={1.8} color="#0B1F3A" />
+          <span style={pillLabel}>I'm here</span>
+        </button>
+      </div>
+
+      {/* Row 3 — Edit lesson / EOL */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 8 }}>
+        <button
+          type="button"
+          style={gridBtn}
+          onClick={() => navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } })}
+        >
+          <IconPencil size={18} stroke={1.8} color="#0B1F3A" />
+          <span style={pillLabel}>Edit lesson</span>
+        </button>
+        <button
+          type="button"
+          style={gridBtnDanger}
+          onClick={(e) => { e.stopPropagation(); onEol(); }}
+        >
+          <IconCircleCheck size={18} stroke={1.8} color="#CC2229" />
+          <span style={{ ...pillLabel, color: '#CC2229' }}>EOL</span>
         </button>
       </div>
 
       {/* Pickup */}
       <div style={{ marginTop: 14 }}>
         <div style={sectionLabel}>Pickup</div>
-        <div style={{ background: '#F2F2F7', borderRadius: 9, padding: '9px 12px', display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Inter, sans-serif', fontSize: 13 }}>
-          {pickupPostcode ? (
-            <>
-              <MapPin size={14} color="#0B1F3A" />
-              <span style={{ color: '#0B1F3A', fontWeight: 600 }}>{pickupPostcode}</span>
-              <a
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickupPostcode)}`}
-                target="_blank"
-                rel="noreferrer"
-                style={{ color: '#1877D6', fontWeight: 600, marginLeft: 'auto', fontSize: 12 }}
-              >Navigate</a>
-              <button
-                onClick={() => { navigator.clipboard?.writeText(pickupPostcode); toast("Copied"); }}
-                style={{ background: 'none', border: 'none', color: '#1877D6', fontWeight: 600, fontFamily: 'Inter, sans-serif', fontSize: 12, cursor: 'pointer' }}
-              >Copy</button>
-            </>
-          ) : (
-            <>
-              <MapPin size={14} color="#C7CCD4" />
-              <span style={{ color: '#C7CCD4' }}>No pickup set</span>
-            </>
-          )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <MapPin size={14} color="#8E8E93" />
+          <input
+            value={pickupValue}
+            onChange={(e) => { setPickupValue(e.target.value); setPickupState('idle'); }}
+            onBlur={verifyAndSavePickup}
+            placeholder="Enter pickup address"
+            style={fieldInput}
+          />
         </div>
+        {statusLine(pickupState, 'Verified via Google Maps', "Couldn't verify — check for typos")}
       </div>
+
+      {/* what3words */}
+      <div style={{ marginTop: 14 }}>
+        <div style={sectionLabel}>what3words</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ color: '#E11F26', fontWeight: 700, fontFamily: 'Inter, sans-serif', fontSize: 15 }}>///</span>
+          {[0, 1, 2].map((i) => (
+            <Fragment key={i}>
+              {i > 0 && <span style={{ color: '#0B1F3A', fontWeight: 700 }}>.</span>}
+              <input
+                value={w3w[i]}
+                onChange={(e) => {
+                  const next = [...w3w] as [string, string, string];
+                  next[i] = e.target.value.replace(/[^a-zA-Z\u00C0-\u024F-]/g, '');
+                  setW3w(next);
+                  setW3wState('idle');
+                }}
+                onBlur={verifyAndSaveW3w}
+                placeholder={`word${i + 1}`}
+                style={{ ...fieldInput, textAlign: 'center', padding: '9px 6px' }}
+              />
+            </Fragment>
+          ))}
+        </div>
+        {statusLine(w3wState, 'Verified via what3words', 'Not a recognised what3words address')}
+      </div>
+
 
       {/* Account — driven by lessons.payment_status + lessons.amount_due */}
       {(() => {
