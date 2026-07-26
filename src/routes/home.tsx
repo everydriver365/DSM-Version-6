@@ -4838,61 +4838,75 @@ function HomePage() {
             .sort((a, b) => a.test_date.localeCompare(b.test_date));
           if (testsSorted.length === 0) return null;
           const next = testsSorted[0];
-          const deterministicColor = (seed: string) => {
-            const colors = ['#1877D6', '#7A3FC0', '#1E8E5A', '#D97706', '#CC2229', '#0B1F3A', '#0D9F9F', '#B5661E'];
-            let sum = 0;
-            for (let i = 0; i < seed.length; i++) sum += seed.charCodeAt(i);
-            return colors[sum % colors.length];
-          };
+          const centres = Array.from(new Set(testsSorted.map((t) => t.test_centre).filter(Boolean))) as string[];
+          const centreLabel = centres.length === 1 ? centres[0] : 'Multiple centres';
+          const thisWeekEnd = nowMs + 7 * 86400000;
+          const anyThisWeek = testsSorted.some((t) => new Date(t.test_date + 'T00:00:00').getTime() <= thisWeekEnd);
           return (
             <div
               onClick={() => navigate({ to: '/tests' as never })}
               style={{
-                margin: '0 16px 12px', background: '#FFFFFF', borderRadius: 12,
-                boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '14px 16px',
+                margin: '0 16px 12px', background: '#FFFFFF', borderRadius: 14,
+                border: '1px solid #E2E8F0',
+                boxShadow: '0 2px 8px rgba(11,31,58,0.05)', padding: '14px 16px',
                 display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
                 fontFamily: 'Inter, sans-serif',
               }}
             >
               <div style={{
-                width: 36, height: 36, borderRadius: 10, background: '#E6F1FB',
+                width: 44, height: 44, borderRadius: 10, background: '#E6F1FB',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}>
-                <Car size={18} color="#1877D6" />
+                <IconSteeringWheel size={22} stroke={1.75} color="#1877D6" />
               </div>
-              <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <span style={{ fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>
-                  {testsSorted.length} upcoming test{testsSorted.length === 1 ? '' : 's'}
+              <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: 16, fontWeight: 600, color: '#0B1F3A' }}>
+                    {testsSorted.length} upcoming test{testsSorted.length === 1 ? '' : 's'}
+                  </span>
+                  {anyThisWeek && (
+                    <span style={{
+                      background: '#FCE9E9', color: '#CC2229', fontSize: 11.5, fontWeight: 600,
+                      borderRadius: 7, padding: '3px 9px',
+                    }}>
+                      This week
+                    </span>
+                  )}
+                </div>
+                <span style={{ fontSize: 13.5, color: '#6B7A90', overflowWrap: 'anywhere' }}>
+                  Next: <span style={{ color: '#1877D6', fontWeight: 600 }}>{next.name}</span>
+                  {' — '}{fmtShortDate(next.test_date)}
                 </span>
-                <span style={{ fontSize: 12, color: '#6B7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  Next: {next.name} — {fmtShortDate(next.test_date)}
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: '#6B7A90', flexWrap: 'wrap' }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <IconCalendar size={13} stroke={1.75} /> {testsSorted.length} scheduled
+                  </span>
+                  <span>·</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <IconMapPin size={13} stroke={1.75} /> {centreLabel}
+                  </span>
+                </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, marginLeft: 8 }}>
                 {testsSorted.slice(0, 3).map((t, i) => {
-                  const initials = t.name
-                    .split(/\s+/)
-                    .map((s) => s.charAt(0))
-                    .join('')
-                    .slice(0, 2)
-                    .toUpperCase();
-                  const bg = pupilInfoMap[t.id]?.calendar_colour ?? deterministicColor(t.id + t.name);
+                  const initials = (t.name ?? '').trim().charAt(0).toUpperCase() || '?';
+                  const bg = pupilColour(t.id, pupilInfoMap[t.id]?.calendar_colour ?? null, t.name);
                   return (
                     <div
                       key={t.id}
                       style={{
-                        width: 24,
-                        height: 24,
+                        width: 28,
+                        height: 28,
                         borderRadius: '50%',
                         background: bg,
                         border: '2px solid #FFFFFF',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: 9,
+                        fontSize: 11,
                         fontWeight: 600,
                         color: '#FFFFFF',
-                        marginLeft: i === 0 ? 0 : -7,
+                        marginLeft: i === 0 ? 0 : -8,
                         zIndex: i,
                         position: 'relative',
                       }}
@@ -4904,18 +4918,18 @@ function HomePage() {
                 {testsSorted.length > 3 && (
                   <div
                     style={{
-                      width: 24,
-                      height: 24,
+                      width: 28,
+                      height: 28,
                       borderRadius: '50%',
                       background: '#F3F4F6',
                       border: '2px solid #FFFFFF',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: 9,
+                      fontSize: 11,
                       fontWeight: 600,
                       color: '#8A93A3',
-                      marginLeft: -7,
+                      marginLeft: -8,
                       zIndex: 3,
                       position: 'relative',
                     }}
@@ -4924,10 +4938,11 @@ function HomePage() {
                   </div>
                 )}
               </div>
-              <ChevronRight size={16} color="#C7CCD4" style={{ flexShrink: 0 }} />
+              <IconChevronRight size={18} stroke={1.75} color="#9AA6B6" style={{ flexShrink: 0 }} />
             </div>
           );
         })()}
+
 
         {/* ============ LOCAL ISSUES ============ */}
         {localAlerts !== null && localAlerts.length > 0 && (
