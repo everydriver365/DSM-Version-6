@@ -1667,14 +1667,14 @@ function SchedulePage() {
                                                    }}>
                                                      Cancelled
                                                    </span>
-                                                  ) : (isLive || isPrepaidPupil || isPaid || dueUnpaid) ? (
-                                                    <button
-                                                      type="button"
-                                                      onClick={(ev) => {
-                                                        ev.stopPropagation();
-                                                        setPaymentSheetFor(lesson);
-                                                      }}
-                                                      style={{
+                                                   ) : (isLive || isPrepaidPupil || isPaid || dueUnpaid) ? (
+                                                     <button
+                                                       type="button"
+                                                       onClick={(ev) => {
+                                                         ev.stopPropagation();
+                                                         setPaymentSheetFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
+                                                       }}
+                                                       style={{  
                                                         flexShrink: 0,
                                                         fontSize: 10,
                                                         fontWeight: 700,
