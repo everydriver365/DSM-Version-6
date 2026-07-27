@@ -4485,13 +4485,12 @@ function HomePage() {
         style={{
           margin: '0 16px 0',
           background: '#FFFFFF',
-          borderRadius: upcoming ? '20px 20px 0 0' : 20,
-          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+          borderRadius: upcoming && heroExpanded ? '16px 16px 0 0' : 16,
+          boxShadow: '0 4px 16px rgba(11,31,58,0.08)',
           overflow: 'hidden',
           fontFamily: 'Inter, sans-serif',
         }}
       >
-        {/* Redesigned next-lesson hero */}
         {(() => {
 
           // ETA calculation
@@ -4512,8 +4511,6 @@ function HomePage() {
 
           const pupilFullName = upcoming?.pupils?.name ?? '';
           const pupilFirstName = pupilFullName.split(/\s+/)[0] || 'there';
-          const pupilInitials = (pupilFullName
-            .split(/\s+/).map((s) => s.charAt(0)).filter(Boolean).slice(0, 2).join('') || 'P').toUpperCase();
 
           // Adverse weather match
           const adverseKeywords = ['rain','snow','ice','storm','fog','wind','hail'];
@@ -4535,57 +4532,38 @@ function HomePage() {
             (driveData.trafficLabel === 'Moderate traffic' || driveData.trafficLabel === 'Heavy traffic');
           const anyReason = isLate && (showTraffic || isAdverseWeather || !!matchedAlert);
 
-          // Payment / due pill
+          // Payment / due
           const hStatus = (upcoming?.payment_status ?? 'unpaid').toLowerCase();
           const hAmountDue = Number(upcoming?.amount_due ?? 0);
           const isPrepaid = hStatus === 'prepaid';
           const hLabel = hAmountDue > 0 && !isPrepaid
-            ? `£${hAmountDue.toFixed(0)} due`
+            ? 'Due'
             : isPrepaid
               ? 'Prepaid'
               : 'Paid';
-          const hPillBg = hAmountDue > 0 && !isPrepaid ? '#FDECEC' : '#E7F4E8';
-          const hPillFg = hAmountDue > 0 && !isPrepaid ? '#CC2229' : '#1E8E3E';
+          const hPillBg = hAmountDue > 0 && !isPrepaid ? '#FCE9E9' : '#E5F4EA';
+          const hPillFg = hAmountDue > 0 && !isPrepaid ? '#CC2229' : '#1D8A4E';
           const priceText = hAmountDue > 0 ? `£${hAmountDue.toFixed(2)}` : null;
-          const priceColor = isPrepaid ? '#1E8E3E' : '#CC2229';
 
-          // Date / time / duration / ETA
+          // Date / time / duration
           const d = upcoming ? lessonDateTime(upcoming) : null;
           const fmt = (x: Date) => `${String(x.getHours()).padStart(2, '0')}:${String(x.getMinutes()).padStart(2, '0')}`;
           const startText = d ? fmt(d) : '—';
-          const dateShort = d ? d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric' }) : '—';
           const dur = upcoming?.duration_minutes ?? 0;
           const durText = dur >= 60
             ? (dur % 60 === 0 ? `${dur / 60} hr` : `${Math.floor(dur / 60)}h ${dur % 60}m`)
             : `${dur} min`;
           const pickup = upcoming?.pickup_location || [upcoming?.pupils?.address, upcoming?.pupils?.postcode].filter(Boolean).join(', ') || 'No pickup';
-          let etaText = '—';
-          if (d && driveData) {
-            const nowMs = Date.now();
-            const msUntilStart = d.getTime() - nowMs;
-            if (msUntilStart > 0 && msUntilStart <= 12 * 60 * 60 * 1000) {
-              const etaMs = nowMs + driveData.durationMinutes * 60000;
-              etaText = new Date(etaMs).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-            }
-          }
 
-          const phone = upcoming?.pupils?.phone ?? null;
           const openMaps = () => {
             if (driveData?.directionsUrl) {
               window.open(driveData.directionsUrl, '_blank');
-            } else if (pickup) {
-              window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickup)}`, '_blank');
+            } else if (pickup && pickup !== 'No pickup') {
+              window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(pickup)}&travelmode=driving`, '_blank');
             } else {
               toast('No pickup location');
             }
           };
-
-          const StatCol = ({ label, value }: { label: string; value: string }) => (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, minWidth: 0 }}>
-              <div style={{ fontSize: 9, fontWeight: 600, color: '#8A93A3', letterSpacing: 0.6, textTransform: 'uppercase' }}>{label}</div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A' }}>{value}</div>
-            </div>
-          );
 
           const endD = d && dur ? new Date(d.getTime() + dur * 60000) : null;
           const endText = endD ? fmt(endD) : null;
@@ -4593,201 +4571,132 @@ function HomePage() {
           const railDay = d ? String(d.getDate()) : '—';
           const railMon = d ? d.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase() : '';
 
+          if (!upcoming) {
+            return (
+              <div style={{ padding: '14px 12px 20px', textAlign: 'center', color: '#8A93A3', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
+                No upcoming lessons
+              </div>
+            );
+          }
+
           return (
             <>
-
-
-              {upcoming ? (<>
-                <div style={{ display: 'flex', alignItems: 'stretch', fontFamily: 'Inter, sans-serif' }}>
-                  {/* Navy date rail */}
-                  <div style={{
-                    width: 62, flexShrink: 0, background: '#0B1F3A',
-                    borderRadius: '12px 0 0 12px',
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                    padding: '16px 0', color: '#FFFFFF', gap: 2,
-                  }}>
-                    <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 0.8 }}>{railDow}</div>
-                    <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1 }}>{railDay}</div>
-                    <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 0.8 }}>{railMon}</div>
-                    <div style={{ width: 22, height: 3, borderRadius: 2, background: '#1877D6', marginTop: 8 }} />
-                  </div>
-
-                  {/* Right column */}
-                  <div style={{ flex: 1, minWidth: 0, overflow: 'hidden', borderRadius: '0 12px 12px 0' }}>
-
-                    {/* Map strip */}
-                    <div style={{
-                      position: 'relative',
-                      height: 132,
-                      background: 'linear-gradient(135deg, #a7eadb 0%, #9ad7f5 50%, #85b7ff 100%)',
-                      overflow: 'hidden',
-                      boxShadow: isLate ? 'inset 0 0 0 3px #C23B3B' : undefined,
-                    }}>
-                      {driveData || instructorLocation || (pickup && pickup !== 'No pickup') ? (
-                        <NextLessonMap
-                          originLat={driveData?.originLat ?? instructorLocation?.lat ?? null}
-                          originLng={driveData?.originLng ?? instructorLocation?.lng ?? null}
-                          destLat={driveData?.destLat ?? null}
-                          destLng={driveData?.destLng ?? null}
-                          destAddress={pickup && pickup !== 'No pickup' ? pickup : null}
-                          encodedPolyline={driveData?.encodedPolyline ?? null}
-                          directionsUrl={
-                            driveData?.directionsUrl ??
-                            `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(pickup)}&travelmode=driving`
-                          }
-                          height={132}
-                        />
-                      ) : (
-                        <svg
-                          width="100%" height="100%" viewBox="0 0 200 100" preserveAspectRatio="none"
-                          style={{ position: 'absolute', inset: 0, padding: '32px 48px 24px' }}
-                        >
-                          <path d="M20,80 Q100,20 180,30" stroke="#1877D6" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-                          <circle cx="20" cy="80" r="5" fill="#22C55E" stroke="#FFFFFF" strokeWidth="2" />
-                          <circle cx="180" cy="30" r="5" fill="#CC2229" stroke="#FFFFFF" strokeWidth="2" />
-                        </svg>
-                      )}
-
-                      {/* Maps chip */}
-                      <button
-                        type="button"
-                        onClick={(e) => { e.stopPropagation(); openMaps(); }}
-                        style={{
-                          position: 'absolute', top: 10, left: 10, zIndex: 3,
-                          background: '#FFFFFF', border: 'none', borderRadius: 999,
-                          padding: '7px 12px', display: 'flex', alignItems: 'center', gap: 6,
-                          fontSize: 13, fontWeight: 700, color: '#1877D6', cursor: 'pointer',
-                          boxShadow: '0 1px 4px rgba(0,0,0,0.14)', fontFamily: 'Inter, sans-serif',
-                        }}
-                      >
-                        <Navigation size={15} style={{ transform: 'rotate(45deg)' }} /> Maps
-                      </button>
-
-                      {/* Drive time / traffic chip */}
-                      {driveData && (
-                        <div style={{
-                          position: 'absolute', top: 10, right: 10, zIndex: 3,
-                          background: '#FFFFFF', borderRadius: 999,
-                          padding: '7px 11px', display: 'flex', alignItems: 'center', gap: 6,
-                          fontSize: 12, fontWeight: 600, color: '#0B1F3A',
-                          boxShadow: '0 1px 4px rgba(0,0,0,0.14)',
-                        }}>
-                          <Car size={15} />
-                          {driveData.durationMinutes} min
-                          {driveData.trafficLabel ? ` · ${String(driveData.trafficLabel).replace(/ traffic$/i, '')}` : ''}
-                        </div>
-                      )}
-
-                      {/* Pupil initials badge */}
-                      <div style={{
-                        position: 'absolute', bottom: 8, right: 10, zIndex: 3,
-                        width: 40, height: 40, borderRadius: '50%',
-                        background: '#0B1F3A', color: '#FFFFFF',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: 13, fontWeight: 700,
-                        boxShadow: '0 1px 4px rgba(0,0,0,0.18)',
-                      }}>{pupilInitials}</div>
-                    </div>
-
-                    {/* Late banner */}
-                    {isLate && (
-                      <div style={{
-                        background: '#FEECEC', padding: '8px 12px',
-                        borderBottom: '1px solid #F5D5D5',
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
-                      }}>
-                        <span style={{ fontSize: 11, color: '#7A1F1F', fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                          Arriving ~{etaLabel} — let {pupilFirstName} know?
-                        </span>
-                        <button
-                          type="button"
-                          onClick={(e) => { e.stopPropagation(); setLateOpen(true); }}
-                          style={{
-                            background: '#C23B3B', color: '#FFFFFF', border: 'none',
-                            fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 999,
-                            cursor: 'pointer', flexShrink: 0, fontFamily: 'Inter, sans-serif',
-                          }}
-                        >Notify pupil</button>
-                      </div>
-                    )}
-
-                    {/* Details block */}
-                    <div style={{ padding: '16px 16px 14px' }}>
-                      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
-                        <div style={{ minWidth: 0, flex: 1 }}>
-                          <div style={{ fontSize: 22, fontWeight: 800, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {pupilFullName || 'Pupil'}
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 6, fontSize: 14, color: '#0B1F3A' }}>
-                            <Clock size={16} color="#1877D6" />
-                            <span style={{ fontWeight: 600 }}>{startText}{endText ? ` – ${endText}` : ''}</span>
-                            <span style={{ color: '#D7DEE8' }}>|</span>
-                            <span style={{ color: '#6B7280' }}>({durText})</span>
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 7, marginTop: 6, fontSize: 13.5, color: '#0B1F3A' }}>
-                            <MapPin size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
-                            <span style={{ wordBreak: 'break-word' }}>{pickup}</span>
-                          </div>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
-                          {priceText && (
-                            <div style={{ fontSize: 22, fontWeight: 800, color: priceColor }}>{priceText}</div>
-                          )}
-                          <span style={{
-                            background: hPillBg, color: hPillFg,
-                            fontSize: 12, fontWeight: 700, padding: '4px 10px', borderRadius: 8,
-                          }}>{hLabel}</span>
-                        </div>
-                      </div>
-
-                      {/* Reasons row */}
-                      {anyReason && (
-                        <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 3, fontSize: 11, color: '#5A6270' }}>
-                          {showTraffic && driveData && (
-                            <div>🚦 {driveData.trafficLabel} on your route
-                              {driveData.normalDurationMinutes && driveData.durationMinutes
-                                ? ` (${driveData.normalDurationMinutes}m → ${driveData.durationMinutes}m)`
-                                : ''}
-                            </div>
-                          )}
-                          {isAdverseWeather && <div>⛅ {weatherCondition}</div>}
-                          {matchedAlert && <div style={{ color: '#B45309' }}>⚠️ {(matchedAlert as any).description}</div>}
-                        </div>
-                      )}
-
-
-                      {/* Text + Call are shown in the expanded panel */}
-                    </div>
-
-                    {/* More / expand trigger */}
-                    {upcoming && (
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '2px 16px 0' }}>
-                        <button
-                          type="button"
-                          onClick={() => setHeroExpanded((v) => !v)}
-                          style={{
-                            padding: '8px 12px', background: 'transparent', border: 'none',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-                            fontSize: 13, fontWeight: 700, color: '#1877D6', cursor: 'pointer',
-                            fontFamily: 'Inter, sans-serif',
-                          }}
-                        >
-                          More
-                          {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                        </button>
-                      </div>
-                    )}
-
-                  </div>
+              <div style={{ display: 'flex', alignItems: 'stretch' }}>
+                {/* Date rail */}
+                <div style={{
+                  width: 70, flexShrink: 0,
+                  background: 'linear-gradient(180deg, #1877D6, #12539E)',
+                  color: '#FFFFFF',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  padding: '16px 0', gap: 2, textAlign: 'center',
+                }}>
+                  <div style={{ fontSize: 12, letterSpacing: '.06em', opacity: 0.85 }}>{railDow}</div>
+                  <div style={{ fontSize: 28, fontWeight: 700, lineHeight: 1.1 }}>{railDay}</div>
+                  <div style={{ fontSize: 12, letterSpacing: '.06em', opacity: 0.85 }}>{railMon}</div>
+                  <div style={{ width: 18, height: 2, background: 'rgba(255,255,255,0.45)', marginTop: 8 }} />
                 </div>
 
+                {/* Info block */}
+                <div style={{ flex: 1, minWidth: 0, padding: '14px 16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
+                    <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', minWidth: 0, wordBreak: 'break-word' }}>
+                      {pupilFullName || 'Pupil'}
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flexShrink: 0 }}>
+                      {priceText && (
+                        <div style={{ fontSize: 17, fontWeight: 700, color: '#1D8A4E' }}>{priceText}</div>
+                      )}
+                      <span style={{
+                        background: hPillBg, color: hPillFg,
+                        fontSize: 12, fontWeight: 600, padding: '3px 10px', borderRadius: 7,
+                      }}>{hLabel}</span>
+                    </div>
+                  </div>
 
-              </>
-              ) : (
-                <div style={{ padding: '14px 12px 20px', textAlign: 'center', color: '#8A93A3', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
-                  No upcoming lessons
+                  {/* Time row */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 7, marginTop: 8, fontSize: 14, color: '#0B1F3A' }}>
+                    <Clock size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
+                    <span style={{ fontWeight: 600 }}>
+                      {startText}{endText ? ` – ${endText}` : ''}{' '}
+                      <span style={{ color: '#6B7A90', fontWeight: 500, whiteSpace: 'nowrap' }}>({durText})</span>
+                    </span>
+                  </div>
+
+                  {/* Address row */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 7, marginTop: 6, fontSize: 13.5, color: '#0B1F3A' }}>
+                    <MapPin size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
+                    <span style={{ overflowWrap: 'break-word', minWidth: 0 }}>{pickup}</span>
+                  </div>
+
+                  {/* Reasons row */}
+                  {anyReason && (
+                    <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 3, fontSize: 11, color: '#5A6270' }}>
+                      {showTraffic && driveData && (
+                        <div>🚦 {driveData.trafficLabel} on your route
+                          {driveData.normalDurationMinutes && driveData.durationMinutes
+                            ? ` (${driveData.normalDurationMinutes}m → ${driveData.durationMinutes}m)`
+                            : ''}
+                        </div>
+                      )}
+                      {isAdverseWeather && <div>⛅ {weatherCondition}</div>}
+                      {matchedAlert && <div style={{ color: '#B45309' }}>⚠️ {(matchedAlert as any).description}</div>}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Late banner */}
+              {isLate && (
+                <div style={{
+                  background: '#FEECEC', padding: '8px 12px',
+                  borderTop: '1px solid #F5D5D5',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
+                }}>
+                  <span style={{ fontSize: 11, color: '#7A1F1F', fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    Arriving ~{etaLabel} — let {pupilFirstName} know?
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setLateOpen(true); }}
+                    style={{
+                      background: '#C23B3B', color: '#FFFFFF', border: 'none',
+                      fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 999,
+                      cursor: 'pointer', flexShrink: 0, fontFamily: 'Inter, sans-serif',
+                    }}
+                  >Notify pupil</button>
                 </div>
               )}
+
+              {/* Footer */}
+              <div style={{
+                borderTop: '1px solid #E2E8F0',
+                padding: '11px 16px',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
+              }}>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); openMaps(); }}
+                  style={{
+                    background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    fontSize: 13, fontWeight: 600, color: '#1877D6', fontFamily: 'Inter, sans-serif',
+                  }}
+                >
+                  <Navigation size={15} style={{ transform: 'rotate(45deg)' }} />
+                  View route{driveData ? ` · ${driveData.durationMinutes} min` : ''}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHeroExpanded((v) => !v)}
+                  style={{
+                    background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', gap: 4,
+                    fontSize: 13.5, fontWeight: 600, color: '#1877D6', fontFamily: 'Inter, sans-serif',
+                  }}
+                >
+                  More {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+              </div>
             </>
           );
 
