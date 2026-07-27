@@ -158,7 +158,7 @@ function QuickAccessPage() {
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
           style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
-          {searchOpen ? <X size={15} /> : <SearchIcon size={15} />}
+          {searchOpen ? <X size={15} /> : <Search size={15} />}
           {searchOpen ? "Close search" : "Search"}
         </button>
       </div>
