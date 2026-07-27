@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { IconBroadcast, IconPlayerPlay, IconChevronRight } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -313,11 +313,76 @@ function Empty({ label }: { label: string }) {
   );
 }
 
+function TabBar({
+  active,
+  onChange,
+}: {
+  active: "live" | "learn" | "market";
+  onChange: (tab: "live" | "learn" | "market") => void;
+}) {
+  const tabs: { id: "live" | "learn" | "market"; label: string }[] = [
+    { id: "live", label: "Live" },
+    { id: "learn", label: "Learn" },
+    { id: "market", label: "Marketplace" },
+  ];
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: 6,
+        padding: "12px 16px 0",
+        fontFamily: FONT,
+      }}
+    >
+      {tabs.map((t) => {
+        const isActive = active === t.id;
+        return (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => onChange(t.id)}
+            style={{
+              flex: 1,
+              padding: "10px 8px",
+              borderRadius: 10,
+              border: "none",
+              background: isActive ? NAVY : "#FFFFFF",
+              color: isActive ? "#FFFFFF" : NAVY,
+              fontFamily: FONT,
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
+              boxShadow: isActive ? "none" : SHADOW,
+              borderWidth: isActive ? 0 : 1,
+              borderStyle: "solid",
+              borderColor: isActive ? "transparent" : HAIRLINE,
+              transition: "background 0.15s, color 0.15s",
+            }}
+          >
+            {t.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 function DiscoverPage() {
   const navigate = useNavigate();
   const [live, setLive] = useState<LiveItem[]>([]);
   const [learn, setLearn] = useState<LearnItem[]>([]);
   const [market, setMarket] = useState<MarketItem[]>([]);
+  const [activeTab, setActiveTab] = useState<"live" | "learn" | "market">("live");
+  const liveRef = useRef<HTMLDivElement>(null);
+  const learnRef = useRef<HTMLDivElement>(null);
+  const marketRef = useRef<HTMLDivElement>(null);
+
+  const scrollTo = (tab: "live" | "learn" | "market") => {
+    const ref = { live: liveRef, learn: learnRef, market: marketRef }[tab];
+    ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setActiveTab(tab);
+  };
+
 
   useEffect(() => {
     let cancelled = false;
@@ -387,8 +452,12 @@ function DiscoverPage() {
         </p>
       </div>
 
-      <SectionBlock
-        title="DSM Live"
+      <TabBar active={activeTab} onChange={scrollTo} />
+
+      <div ref={liveRef} id="discover-live">
+        <SectionBlock
+          title="DSM Live"
+
         subtitle="Upcoming live sessions and podcasts"
         actionLabel="See all"
         onAction={() => navigate({ to: "/dsm-live" as never })}
@@ -434,9 +503,12 @@ function DiscoverPage() {
           );
         })}
       </SectionBlock>
+      </div>
 
+      <div ref={learnRef} id="discover-learn">
       <SectionBlock
         title="DSM Learn"
+
         subtitle="Short guides and how-to videos"
         actionLabel="See all"
         onAction={() => navigate({ to: "/learn" as never })}
@@ -461,9 +533,12 @@ function DiscoverPage() {
           );
         })}
       </SectionBlock>
+      </div>
 
+      <div ref={marketRef} id="discover-market">
       <SectionBlock
         title="DSM Marketplace"
+
         subtitle="Cars, kit and services for instructors"
         actionLabel="See all"
         onAction={() => navigate({ to: "/marketplace" as never })}
@@ -489,7 +564,9 @@ function DiscoverPage() {
           );
         })}
       </SectionBlock>
+      </div>
     </div>
+
   );
 }
 
