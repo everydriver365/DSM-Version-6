@@ -456,7 +456,7 @@ function ListingDetailPage() {
                     listing={s}
                     onOpen={(id) =>
                       navigate({
-                        to: "/marketplace_/$listingId",
+                        to: "/marketplace/$listingId",
                         params: { listingId: id },
                       })
                     }
