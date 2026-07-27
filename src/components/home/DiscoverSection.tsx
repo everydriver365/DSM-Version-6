@@ -362,21 +362,8 @@ export function DiscoverSection() {
 
       <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}`}</style>
 
-      <div
-        className="dsm-discover-scroll"
-        style={{
-          display: "flex",
-          flexWrap: "nowrap",
-          gap: 10,
-          alignItems: "stretch",
-          overflowX: "auto",
-          WebkitOverflowScrolling: "touch",
-          scrollSnapType: "x mandatory",
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-          padding: "0 0 4px",
-        }}
-      >
+      <div className="dsm-discover-scroll" style={stripStyle}>
+
         {(() => {
           const marketCard = (m: MarketItem) => {
             const img = firstImage(m.image_urls);
