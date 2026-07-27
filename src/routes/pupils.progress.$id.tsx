@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
@@ -224,29 +226,19 @@ function PupilProgressPage() {
 
   return (
     <PageLayout className="pb-32" style={POPPINS}>
-      <div
-        className="sticky top-0 z-40 flex items-center px-2"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/pupils/$id", params: { id } })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
-        >
-          <ArrowLeft size={22} color="#FFFFFF" />
-        </button>
-        <div className="flex-1 text-center">
-          <div className="text-[15px] font-semibold text-white" style={POPPINS}>
-            Progress
-          </div>
-          {pupilName && (
-            <div className="text-[13px]" style={{ color: "#9CA3AF", ...POPPINS }}>
-              {pupilName}
-            </div>
-          )}
-        </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle={pupilName ? `Progress · ${pupilName}` : "Progress"}
+        onBack={() => navigate({ to: "/pupils/$id", params: { id } } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+
         <div style={{ width: 40 }} />
       </div>
 
