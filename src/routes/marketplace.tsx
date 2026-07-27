@@ -361,21 +361,15 @@ function MarketplacePage() {
         </div>
 
         {loading ? (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 10,
-            }}
-          >
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
                 style={{
-                  height: 158,
+                  height: 116,
                   background: "#F1F5F9",
-                  borderRadius: 16,
-                  border: "1px solid rgba(15,32,68,0.10)",
+                  borderRadius: 14,
+                  border: "1px solid #E3E8F0",
                 }}
               />
             ))}
@@ -383,18 +377,13 @@ function MarketplacePage() {
         ) : topMarketplace.length === 0 ? (
           <div style={{ fontSize: 13, color: "#64748B" }}>No products yet.</div>
         ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 10,
-            }}
-          >
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {topMarketplace.map((l) => (
               <ProductCard key={l.id} listing={l} onOpen={openListing} />
             ))}
           </div>
         )}
+
 
         {/* For sale by instructors */}
         {forSale.length > 0 && (
