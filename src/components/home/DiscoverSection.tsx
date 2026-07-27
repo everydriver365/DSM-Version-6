@@ -641,7 +641,12 @@ export function DiscoverSection() {
               key={`live-${s.id}`}
               role="button"
               tabIndex={0}
-              onClick={() => navigate({ to: "/dsm-live" as never })}
+              onClick={() =>
+                navigate({
+                  to: "/dsm-live/$sessionId" as never,
+                  params: { sessionId: s.id } as never,
+                })
+              }
               style={cardShell}
             >
               <StackMedia
@@ -702,7 +707,12 @@ export function DiscoverSection() {
                 key={`market-${m.id}`}
                 role="button"
                 tabIndex={0}
-                onClick={() => navigate({ to: "/marketplace" as never })}
+                onClick={() =>
+                  navigate({
+                    to: "/marketplace_/$listingId" as never,
+                    params: { listingId: m.id } as never,
+                  })
+                }
                 style={cardShell}
               >
                 <StackMedia
@@ -739,9 +749,15 @@ export function DiscoverSection() {
         <div
           role="button"
           tabIndex={0}
-          onClick={() => navigate({ to: "/learn" as never })}
+          onClick={() => {
+            if (tip.url) window.open(tip.url, "_blank", "noopener,noreferrer");
+            else navigate({ to: "/learn" as never });
+          }}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") navigate({ to: "/learn" as never });
+            if (e.key === "Enter" || e.key === " ") {
+              if (tip.url) window.open(tip.url, "_blank", "noopener,noreferrer");
+              else navigate({ to: "/learn" as never });
+            }
           }}
           style={{
             margin: "10px 0 0",
