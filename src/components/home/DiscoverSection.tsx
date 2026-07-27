@@ -590,8 +590,6 @@ export function DiscoverSection() {
     return raw.toLowerCase().startsWith("from") ? raw : `From ${raw}`;
   };
 
-  const tipThumb = tip ? tip.thumbnail_url || youtubeThumb(tip.url) : null;
-
   return (
     <div style={{ padding: "0 0 22px", fontFamily: FONT }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
@@ -744,83 +742,90 @@ export function DiscoverSection() {
         })()}
       </div>
 
-      {/* DSM Learn — full width, quieter */}
-      {tip && (
+      {/* DSM Learn — horizontal scrollable tiles */}
+      {playable.length > 0 && (
         <div
-          role="button"
-          tabIndex={0}
-          onClick={() => {
-            if (tip.url) window.open(tip.url, "_blank", "noopener,noreferrer");
-            else navigate({ to: "/learn" as never });
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              if (tip.url) window.open(tip.url, "_blank", "noopener,noreferrer");
-              else navigate({ to: "/learn" as never });
-            }
-          }}
           style={{
             margin: "10px 0 0",
-            background: "#FFFFFF",
-
-            border: `1px solid ${HAIRLINE}`,
-            borderRadius: 12,
-            boxShadow: "0 2px 8px rgba(11,31,58,0.05)",
-            padding: 10,
             display: "flex",
-            alignItems: "center",
-            gap: 12,
-            cursor: "pointer",
+            flexWrap: "nowrap",
+            gap: 10,
+            alignItems: "stretch",
+            overflowX: "auto",
+            WebkitOverflowScrolling: "touch",
+            scrollSnapType: "x mandatory",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            padding: "0 0 4px",
           }}
+          className="dsm-discover-scroll"
         >
-          <StackMedia
-            height={44}
-            width={50}
-            front={{
-              background: tipThumb
-                ? `${NAVY} url(${tipThumb}) center/cover`
-                : "linear-gradient(160deg, #4A5568 0%, #0B1F3A 100%)",
-            }}
-          >
-            {!tipThumb && <IconPlayerPlay size={14} color="#FFFFFF" stroke={2} />}
-          </StackMedia>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontSize: 14,
-                fontWeight: 600,
-                color: NAVY,
-                lineHeight: 1.25,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {tip.title}
-            </div>
-            <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
-              {tip.duration ? `${tip.duration} · DSM Learn` : "DSM Learn"}
-            </div>
-          </div>
-          <button
-            type="button"
-            style={{
-              background: NAVY,
-              color: "#FFFFFF",
-              border: "none",
-              borderRadius: 7,
-              padding: "7px 14px",
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: "0.04em",
-              textTransform: "uppercase",
-              fontFamily: FONT,
-              cursor: "pointer",
-              flexShrink: 0,
-            }}
-          >
-            Watch
-          </button>
+          {playable.map((v) => {
+            const thumb = v.thumbnail_url || youtubeThumb(v.url);
+            return (
+              <div
+                key={`learn-${v.id ?? v.title}`}
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
+                  else navigate({ to: "/learn" as never });
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
+                    else navigate({ to: "/learn" as never });
+                  }
+                }}
+                style={{
+                  ...cardShell,
+                  width: "calc(50% - 5px)",
+                  minWidth: "calc(50% - 5px)",
+                }}
+              >
+                <StackMedia
+                  height={78}
+                  front={{
+                    background: thumb
+                      ? `${NAVY} url(${thumb}) center/cover`
+                      : "linear-gradient(160deg, #4A5568 0%, #0B1F3A 100%)",
+                  }}
+                  badge={
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: 3,
+                        left: 0,
+                        background: NAVY,
+                        color: "#FFFFFF",
+                        fontSize: 9,
+                        fontWeight: 700,
+                        letterSpacing: "0.04em",
+                        padding: "2px 6px",
+                        borderRadius: 6,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      <IconPlayerPlay size={10} color="#FFFFFF" stroke={2.2} />
+                      LEARN
+                    </span>
+                  }
+                >
+                  {!thumb && <IconPlayerPlayFilled size={18} color="#FFFFFF" stroke={1.6} />}
+                </StackMedia>
+                <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
+                  <div style={{ ...cardTitle, marginTop: 8 }}>{v.title}</div>
+                  <div style={cardSub}>{v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}</div>
+                </div>
+                <button type="button" style={cardBtn("WATCH")}>
+                  Watch
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
