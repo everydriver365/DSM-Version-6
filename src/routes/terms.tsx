@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Save } from "lucide-react";
+import { Save } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -132,23 +133,18 @@ function TermsPage() {
   return (
     <PageLayout className="pb-24 pb-safe relative" style={POPPINS}>
       {/* Header */}
-      <div className="sticky top-0 z-40" style={{ backgroundColor: NAVY }}>
-        <div className="flex items-center justify-between px-3" style={{ height: 52 }}>
-          <button
-            type="button"
-            aria-label="Back"
-            onClick={() => navigate({ to: "/more" })}
-            className="flex items-center justify-center"
-            style={{ width: 36, height: 36 }}
-          >
-            <ArrowLeft size={22} color="#fff" />
-          </button>
-          <div className="text-[16px] font-semibold text-white" style={POPPINS}>
-            Terms & Conditions
-          </div>
-          <div style={{ width: 36 }} />
-        </div>
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Terms & Conditions"
+        onBack={() => navigate({ to: "/more" } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
 
       <div style={{ padding: 16 }}>
         {/* Explanatory note */}

@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
@@ -99,22 +101,18 @@ function TaxPage() {
   return (
     <PageLayout className="pb-12" style={POPPINS}>
       {/* TOP BAR */}
-      <div
-        className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0B1F3A" }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
-        >
-          <ArrowLeft size={22} color="#ffffff" />
-        </button>
-        <div className="text-white text-[15px] font-semibold">Tax estimate</div>
-        <div style={{ width: 40, height: 40 }} />
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Tax estimate"
+        onBack={() => navigate({ to: "/home" } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
 
       {/* YEAR TABS */}
       <div className="mx-4 mt-3 flex" style={{ gap: 8 }}>
