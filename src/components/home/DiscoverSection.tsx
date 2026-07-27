@@ -742,122 +742,90 @@ export function DiscoverSection() {
         })()}
       </div>
 
-      {/* DSM Learn — header + horizontal scrollable tiles */}
+      {/* DSM Learn — horizontal scrollable tiles */}
       {playable.length > 0 && (
-        <div style={{ margin: "10px 0 0" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 8,
-              marginBottom: 8,
-            }}
-          >
-            <SectionHeading>DSM Learn</SectionHeading>
-            <button
-              type="button"
-              onClick={() => navigate({ to: "/learn" as never })}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 2,
-                background: "none",
-                border: "none",
-                padding: 0,
-                fontFamily: FONT,
-                fontSize: 13,
-                fontWeight: 600,
-                color: BLUE,
-                cursor: "pointer",
-              }}
-            >
-              View all
-              <IconChevronRight size={14} stroke={2.2} />
-            </button>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "nowrap",
-              gap: 10,
-              alignItems: "stretch",
-              overflowX: "auto",
-              WebkitOverflowScrolling: "touch",
-              scrollSnapType: "x mandatory",
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-              padding: "0 0 4px",
-            }}
-            className="dsm-discover-scroll"
-          >
-            {playable.map((v) => {
-              const thumb = v.thumbnail_url || youtubeThumb(v.url);
-              return (
-                <div
-                  key={`learn-${v.id ?? v.title}`}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => {
+        <div
+          style={{
+            margin: "10px 0 0",
+            display: "flex",
+            flexWrap: "nowrap",
+            gap: 10,
+            alignItems: "stretch",
+            overflowX: "auto",
+            WebkitOverflowScrolling: "touch",
+            scrollSnapType: "x mandatory",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            padding: "0 0 4px",
+          }}
+          className="dsm-discover-scroll"
+        >
+          {playable.map((v) => {
+            const thumb = v.thumbnail_url || youtubeThumb(v.url);
+            return (
+              <div
+                key={`learn-${v.id ?? v.title}`}
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
+                  else navigate({ to: "/learn" as never });
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
                     if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
                     else navigate({ to: "/learn" as never });
+                  }
+                }}
+                style={{
+                  ...cardShell,
+                  width: "calc(50% - 5px)",
+                  minWidth: "calc(50% - 5px)",
+                }}
+              >
+                <StackMedia
+                  height={78}
+                  front={{
+                    background: thumb
+                      ? `${NAVY} url(${thumb}) center/cover`
+                      : "linear-gradient(160deg, #4A5568 0%, #0B1F3A 100%)",
                   }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
-                      else navigate({ to: "/learn" as never });
-                    }
-                  }}
-                  style={{
-                    ...cardShell,
-                    width: "calc(50% - 5px)",
-                    minWidth: "calc(50% - 5px)",
-                  }}
+                  badge={
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: 3,
+                        left: 0,
+                        background: NAVY,
+                        color: "#FFFFFF",
+                        fontSize: 9,
+                        fontWeight: 700,
+                        letterSpacing: "0.04em",
+                        padding: "2px 6px",
+                        borderRadius: 6,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      <IconPlayerPlay size={10} color="#FFFFFF" stroke={2.2} />
+                      LEARN
+                    </span>
+                  }
                 >
-                  <StackMedia
-                    height={78}
-                    front={{
-                      background: thumb
-                        ? `${NAVY} url(${thumb}) center/cover`
-                        : "linear-gradient(160deg, #4A5568 0%, #0B1F3A 100%)",
-                    }}
-                    badge={
-                      <span
-                        style={{
-                          position: "absolute",
-                          top: 3,
-                          left: 0,
-                          background: NAVY,
-                          color: "#FFFFFF",
-                          fontSize: 9,
-                          fontWeight: 700,
-                          letterSpacing: "0.04em",
-                          padding: "2px 6px",
-                          borderRadius: 6,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 4,
-                          lineHeight: 1.2,
-                        }}
-                      >
-                        <IconPlayerPlay size={10} color="#FFFFFF" stroke={2.2} />
-                        LEARN
-                      </span>
-                    }
-                  >
-                    {!thumb && <IconPlayerPlayFilled size={18} color="#FFFFFF" stroke={1.6} />}
-                  </StackMedia>
-                  <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
-                    <div style={{ ...cardTitle, marginTop: 8 }}>{v.title}</div>
-                    <div style={cardSub}>{v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}</div>
-                  </div>
-                  <button type="button" style={cardBtn("WATCH")}>
-                    Watch
-                  </button>
+                  {!thumb && <IconPlayerPlayFilled size={18} color="#FFFFFF" stroke={1.6} />}
+                </StackMedia>
+                <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
+                  <div style={{ ...cardTitle, marginTop: 8 }}>{v.title}</div>
+                  <div style={cardSub}>{v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}</div>
                 </div>
-              );
-            })}
-          </div>
+                <button type="button" style={cardBtn("WATCH")}>
+                  Watch
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
