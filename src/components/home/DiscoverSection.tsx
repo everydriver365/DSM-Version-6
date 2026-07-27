@@ -64,27 +64,6 @@ function isLiveNow(s: LiveItem) {
   return now >= start && now < end;
 }
 
-function fmtWhen(d: string, t: string) {
-  const ms = startMs(d, t);
-  if (!ms) return `${d}`;
-  const date = new Date(ms);
-  const today = new Date();
-  const tomorrow = new Date();
-  tomorrow.setDate(today.getDate() + 1);
-  const sameDay = (a: Date, b: Date) =>
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate();
-  const day = sameDay(date, today)
-    ? "Today"
-    : sameDay(date, tomorrow)
-      ? "Tomorrow"
-      : date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-  const time = date
-    .toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true })
-    .replace(/\s?(AM|PM|am|pm)$/i, (m) => m.trim().toLowerCase());
-  return `${day} · ${time}`;
-}
 
 function firstImage(v: string[] | string | null): string | null {
   if (!v) return null;
