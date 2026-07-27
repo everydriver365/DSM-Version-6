@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft } from "lucide-react";
+
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { StatTile } from "../components/dsm/StatTile";
@@ -146,23 +148,18 @@ function ReportsPage() {
 
   return (
     <PageLayout style={POPPINS}>
-      {/* TOP BAR */}
-      <div
-        className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-[52px] flex items-center px-3 z-50"
-        style={{ background: "#0B1F3A" }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/home" })}
-          className="p-1"
-          aria-label="Back"
-        >
-          <ChevronLeft size={24} color="#FFFFFF" />
-        </button>
-        <div className="absolute left-1/2 -translate-x-1/2 text-white text-[16px] font-semibold">
-          Reports
-        </div>
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Reports"
+        onBack={() => navigate({ to: "/home" } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
 
       <div className="pt-[52px] pb-8">
         {/* OVERVIEW */}
