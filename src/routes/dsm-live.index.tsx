@@ -15,7 +15,7 @@ import {
   MapPin,
 } from "lucide-react";
 import { toast } from "sonner";
-import { IconBroadcast } from "@tabler/icons-react";
+import { IconBroadcast, IconSteeringWheel } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 import {
@@ -253,8 +253,7 @@ function DsmLivePage() {
                 flexShrink: 0,
                 background: active ? "#0B1F3A" : "#FFFFFF",
                 color: active ? "#FFFFFF" : "#0B1F3A",
-                border: active ? "0.5px solid #0B1F3A" : "0.5px solid #E2E6ED",
-
+                border: active ? "1px solid #0B1F3A" : "1px solid #E3E8F0",
                 borderRadius: 999,
                 padding: "8px 16px",
                 fontSize: 13,
@@ -268,7 +267,32 @@ function DsmLivePage() {
             </button>
           );
         })}
+        {(() => {
+          const active = view === "upcoming";
+          return (
+            <button
+              type="button"
+              onClick={() => setView(active ? "all" : "upcoming")}
+              style={{
+                flexShrink: 0,
+                background: active ? "#0B1F3A" : "#FFFFFF",
+                color: active ? "#FFFFFF" : "#0B1F3A",
+                border: active ? "1px solid #0B1F3A" : "1px solid #E3E8F0",
+                borderRadius: 999,
+                padding: "8px 16px",
+                fontSize: 13,
+                fontWeight: active ? 500 : 400,
+                fontFamily: poppins,
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Upcoming
+            </button>
+          );
+        })()}
       </div>
+
 
       {/* Sessions */}
       <div style={{ padding: 16 }}>
@@ -284,43 +308,8 @@ function DsmLivePage() {
           Sessions
         </h2>
 
-        {/* Upcoming / All toggle */}
-        <div
-          style={{
-            display: "flex",
-            background: "#FFFFFF",
-            borderRadius: 10,
-            padding: 3,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-            marginBottom: 16,
-            width: "100%",
-          }}
-        >
-          {(["upcoming", "all"] as const).map((v) => {
-            const active = view === v;
-            return (
-              <button
-                key={v}
-                type="button"
-                onClick={() => setView(v)}
-                style={{
-                  flex: 1,
-                  padding: "9px 4px",
-                  fontSize: 13,
-                  fontWeight: active ? 500 : 400,
-                  color: active ? "#FFFFFF" : "#8A93A3",
-                  background: active ? "#1877D6" : "transparent",
-                  borderRadius: 8,
-                  border: 0,
-                  cursor: "pointer",
-                  fontFamily: poppins,
-                }}
-              >
-                {v === "upcoming" ? "Upcoming" : "All sessions"}
-              </button>
-            );
-          })}
-        </div>
+
+
 
 
         {sessions === null ? null : filtered.length === 0 ? (
@@ -618,9 +607,6 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
   );
 }
 
-// NOTE: LiveSession has no `delivery_type` field in the data model.
-// Until the column is added, all delivery badges default to "Online" with a
-// video icon. Wire this up once the field exists on dsm_live_sessions.
 function SessionCard({
   session,
   booked,
@@ -636,225 +622,131 @@ function SessionCard({
     image_url?: string | null;
     price_display?: string | null;
     price?: number | null;
-    spaces?: number | null;
-    spaces_available?: number | null;
   };
 
-  // Default hero when no image is set: navy → blue.
-  const gradient = "linear-gradient(135deg, #0B1F3A, #1877D6)";
-
-
-  // Delivery badge — defaults to "Online" until delivery_type exists.
-  const delivery = (() => {
+  const deliveryLabel = (() => {
     const raw = (s.delivery_type ?? "").toString().toLowerCase();
-    if (raw.includes("zoom")) return { Icon: Video, label: "Zoom" };
-    if (raw.includes("team")) return { Icon: Video, label: "Teams" };
-    if (raw.includes("webinar")) return { Icon: Presentation, label: "Webinar" };
-    if (raw.includes("podcast")) return { Icon: Mic, label: "Podcast" };
-    if (raw.includes("person") || raw.includes("in-person") || raw.includes("in_person"))
-      return { Icon: MapPin, label: "In person" };
-    return { Icon: Video, label: "Online" };
-  })();
-  const DeliveryIcon = delivery.Icon;
-
-  const dateLabel = (() => {
-    if (!s.session_date) return "";
-    try {
-      const d = new Date(s.session_date + "T00:00:00");
-      return d.toLocaleDateString("en-GB", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-      });
-    } catch {
-      return s.session_date;
-    }
+    if (raw.includes("zoom")) return "Zoom";
+    if (raw.includes("team")) return "Teams";
+    if (raw.includes("webinar")) return "Webinar";
+    if (raw.includes("podcast")) return "Podcast";
+    if (raw.includes("person") || raw.includes("in_person")) return "In person";
+    return "Online";
   })();
 
-  const timeLabel = (() => {
-    if (!s.session_time) return "";
-    const fmt = (h: number, m: number) => {
-      const d = new Date();
-      d.setHours(h, m, 0, 0);
-      return d
-        .toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true })
-        .replace(/\s/g, "")
-        .toLowerCase();
-    };
-    try {
-      const [hStr, mStr] = s.session_time.split(":");
-      const h = Number(hStr);
-      const m = Number(mStr);
-      const start = fmt(h, m);
-      if (s.duration_minutes && s.duration_minutes > 0) {
-        return `${start} · ${s.duration_minutes} minutes`;
+  const dateTimeLabel = (() => {
+    const parts: string[] = [];
+    if (s.session_date) {
+      try {
+        parts.push(
+          new Date(s.session_date + "T00:00:00").toLocaleDateString("en-GB", {
+            weekday: "short",
+            day: "numeric",
+            month: "short",
+          }),
+        );
+      } catch {
+        parts.push(s.session_date);
       }
-      return start;
-    } catch {
-      return s.session_time;
     }
+    if (s.session_time) {
+      try {
+        const [hStr, mStr] = s.session_time.split(":");
+        const d = new Date();
+        d.setHours(Number(hStr), Number(mStr), 0, 0);
+        parts.push(
+          d
+            .toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true })
+            .replace(/\s/g, "")
+            .toLowerCase(),
+        );
+      } catch {
+        parts.push(s.session_time);
+      }
+    }
+    return parts.join(" · ");
   })();
 
-  const spacesLabel = (() => {
-    const n = s.spaces_available ?? s.spaces;
-    if (typeof n === "number" && Number.isFinite(n)) return `${n} spaces`;
-    return null;
-  })();
+  const metaLabel = [
+    s.duration_minutes && s.duration_minutes > 0 ? `${s.duration_minutes} min` : null,
+    deliveryLabel,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   const priceLabel = (() => {
     if (s.price_display) return s.price_display;
-    if (typeof s.price === "number") {
-      if (s.price === 0) return "Free";
-      return `£${s.price.toFixed(2)}`;
-    }
+    if (typeof s.price === "number") return s.price === 0 ? "Free" : `£${s.price.toFixed(2)}`;
     return null;
   })();
-  const isFree = priceLabel === "Free";
-
-  const heroStyle: React.CSSProperties = s.image_url
-    ? {
-        height: 120,
-        position: "relative",
-        backgroundImage: `url(${s.image_url})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }
-    : {
-        height: 120,
-        position: "relative",
-        background: gradient,
-      };
+  const isFree = (priceLabel ?? "").toLowerCase() === "free";
 
   return (
     <div
       onClick={onOpen}
       style={{
         background: "#FFFFFF",
-        borderRadius: 12,
-        border: "0.5px solid #E2E6ED",
-        overflow: "hidden",
-        marginBottom: 12,
+        border: "1px solid #E3E8F0",
+        borderRadius: 14,
+        padding: 12,
+        marginBottom: 10,
+        display: "flex",
+        flexDirection: "row",
+        gap: 12,
         cursor: "pointer",
         fontFamily: poppins,
       }}
-
     >
-      {/* Hero */}
-      <div style={heroStyle}>
-        {/* Top-left category — dark scrim pill */}
-        {s.category && (
-          <span
-            style={{
-              position: "absolute",
-              top: 10,
-              left: 10,
-              background: "rgba(11,31,58,0.55)",
-              color: "#FFFFFF",
-              fontSize: 11,
-              fontWeight: 500,
-              padding: "4px 10px",
-              borderRadius: 6,
-              fontFamily: poppins,
-            }}
-          >
-            {s.category}
-          </span>
+      {/* Thumbnail */}
+      <div
+        style={{
+          width: 90,
+          height: 90,
+          borderRadius: 10,
+          flexShrink: 0,
+          background: s.image_url ? `url(${s.image_url}) center/cover` : "#0B1F3A",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {!s.image_url && (
+          <IconSteeringWheel size={26} color="rgba(255,255,255,0.4)" stroke={1.75} />
         )}
-        {/* Top-right spaces */}
-        {spacesLabel && (
-          <span
-            style={{
-              position: "absolute",
-              top: 10,
-              right: 10,
-              background: "rgba(11,31,58,0.55)",
-              color: "#FFFFFF",
-              fontSize: 11,
-              padding: "4px 10px",
-              borderRadius: 6,
-              fontFamily: poppins,
-            }}
-          >
-            {spacesLabel}
-          </span>
-        )}
-        {/* Live badge */}
-        {s.is_live && (
-          <span
-            style={{
-              position: "absolute",
-              bottom: 10,
-              right: 10,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              background: "rgba(11,31,58,0.55)",
-              border: "0.5px solid rgba(255,255,255,0.25)",
-              color: "#FFFFFF",
-              fontSize: 11,
-              fontWeight: 500,
-              padding: "3px 10px",
-              borderRadius: 999,
-              fontFamily: poppins,
-            }}
-          >
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: 999,
-                background: "#16A34A",
-                display: "inline-block",
-              }}
-            />
-            Live
-          </span>
-        )}
-
       </div>
 
-      {/* Body */}
-      <div style={{ padding: 16 }}>
+      {/* Details */}
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
         <div
           style={{
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: 500,
             color: "#0B1F3A",
-            marginBottom: 10,
-            fontFamily: poppins,
+            marginBottom: 4,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
           }}
         >
           {s.title}
         </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-          <CalendarIcon size={15} color="#8A93A3" strokeWidth={1.75} />
-          <span style={{ fontSize: 13, color: "#5A6270" }}>{dateLabel}</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-          <Clock size={15} color="#8A93A3" strokeWidth={1.75} />
-          <span style={{ fontSize: 13, color: "#5A6270" }}>{timeLabel}</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <DeliveryIcon size={15} color="#8A93A3" strokeWidth={1.75} />
-          <span style={{ fontSize: 13, color: "#5A6270" }}>{delivery.label}</span>
-        </div>
+        <div style={{ fontSize: 12, color: "#8792A2", marginBottom: 2 }}>{dateTimeLabel}</div>
+        <div style={{ fontSize: 12, color: "#8792A2", marginBottom: "auto" }}>{metaLabel}</div>
 
         <div
           style={{
+            marginTop: 6,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginTop: 14,
           }}
         >
           {priceLabel ? (
             <span
               style={{
-                fontSize: 15,
+                fontSize: 12,
                 fontWeight: 500,
-                color: isFree ? "#16A34A" : "#0B1F3A",
-                fontFamily: poppins,
+                color: isFree ? "#1D7A4C" : "#0B1F3A",
               }}
             >
               {priceLabel}
@@ -869,26 +761,23 @@ function SessionCard({
               onOpen();
             }}
             style={{
-              background: booked ? "#16A34A" : "#1877D6",
+              background: booked ? "#1D7A4C" : "#1877D6",
               color: "#FFFFFF",
-              fontSize: 13,
+              fontSize: 11,
               fontWeight: 500,
-              padding: "10px 18px",
-              borderRadius: 999,
+              padding: "6px 12px",
+              borderRadius: 8,
               border: 0,
               cursor: "pointer",
               fontFamily: poppins,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
             }}
           >
-            {booked ? "Booked" : "Book now"}
-            <ArrowRight size={15} strokeWidth={2} />
+            {booked ? "Booked" : "Book"}
           </button>
         </div>
       </div>
     </div>
   );
 }
+
 
