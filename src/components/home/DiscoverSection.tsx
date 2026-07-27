@@ -532,7 +532,9 @@ export function DiscoverSection() {
 
   const cardShell: React.CSSProperties = {
     width: "calc(75% - 5px)",
+    minWidth: "calc(75% - 5px)",
     flexShrink: 0,
+    flexGrow: 0,
     background: "#FFFFFF",
     border: `1px solid ${HAIRLINE}`,
     borderRadius: 12,
@@ -634,12 +636,7 @@ export function DiscoverSection() {
           <div
             role="button"
             tabIndex={0}
-            onClick={() =>
-              navigate({
-                to: "/dsm-live/$sessionId" as never,
-                params: { sessionId: liveTop.id } as never,
-              })
-            }
+            onClick={() => navigate({ to: "/dsm-live" as never })}
             style={cardShell}
           >
             <StackMedia
@@ -696,12 +693,7 @@ export function DiscoverSection() {
           <div
             role="button"
             tabIndex={0}
-            onClick={() =>
-              navigate({
-                to: "/marketplace/$listingId" as never,
-                params: { listingId: marketTop.id } as never,
-              })
-            }
+            onClick={() => navigate({ to: "/marketplace" as never })}
             style={cardShell}
           >
             <StackMedia
