@@ -6172,7 +6172,7 @@ function HomePage() {
                   borderRadius: 20, padding: '6px 12px',
                 }}>
                   <IconSteeringWheel size={14} stroke={2} color="#1877D6" />
-                  <span>Practical test</span>
+                  <span>Upcoming Driving Test's</span>
                   <span
                     style={{
                       minWidth: 18,
