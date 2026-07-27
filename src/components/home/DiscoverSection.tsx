@@ -158,9 +158,7 @@ export function DiscoverSection() {
   });
 
   const playable = learn.filter((v) => !!v.url);
-  const tip = playable.length
-    ? playable[dayOfYear(new Date()) % playable.length]
-    : null;
+
 
 
 
