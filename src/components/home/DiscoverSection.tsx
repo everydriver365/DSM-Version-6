@@ -590,8 +590,6 @@ export function DiscoverSection() {
     return raw.toLowerCase().startsWith("from") ? raw : `From ${raw}`;
   };
 
-  const tipThumb = tip ? tip.thumbnail_url || youtubeThumb(tip.url) : null;
-
   return (
     <div style={{ padding: "0 0 22px", fontFamily: FONT }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
