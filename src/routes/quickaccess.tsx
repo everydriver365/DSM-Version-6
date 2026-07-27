@@ -47,6 +47,8 @@ import {
   UserCircle,
   FileSpreadsheet,
 } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 export const Route = createFileRoute("/quickaccess")({
   component: QuickAccessPage,
@@ -129,25 +131,20 @@ function QuickAccessPage() {
       className="min-h-screen pb-24 pb-safe"
       style={{ backgroundColor: "#F3F8FF", fontFamily: "Inter, sans-serif" }}
     >
-      {/* TOP BAR */}
-      <div
-        className="sticky top-0 z-40 h-[56px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0B1F3A" }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ background: "none", border: "none", cursor: "pointer" }}
-          aria-label="Back"
-        >
-          <ArrowLeft size={22} color="#FFFFFF" />
-        </button>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Quick access"
+        onBack={() => navigate({ to: "/home" } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
-        <span className="text-white text-[16px] font-semibold">
-          Quick access
-        </span>
-
+      {/* Actions row */}
+      <div className="flex justify-end px-4 pt-3">
         <button
           type="button"
           onClick={() => {
@@ -157,17 +154,15 @@ function QuickAccessPage() {
               return next;
             });
           }}
-          className="flex items-center justify-center"
-          style={{ background: "none", border: "none", cursor: "pointer" }}
           aria-label="Toggle search"
+          className="inline-flex items-center gap-2 text-[13px] font-semibold"
+          style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
-          {searchOpen ? (
-            <X size={22} color="#FFFFFF" />
-          ) : (
-            <Search size={22} color="#FFFFFF" />
-          )}
+          {searchOpen ? <X size={15} /> : <SearchIcon size={15} />}
+          {searchOpen ? "Close search" : "Search"}
         </button>
       </div>
+
 
       {/* SEARCH BAR */}
       {searchOpen && (
