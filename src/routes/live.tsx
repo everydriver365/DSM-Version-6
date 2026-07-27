@@ -687,40 +687,46 @@ function LivePage() {
   }
 
   async function stopTracking() {
-    if (watchIdRef.current != null && "geolocation" in navigator) {
-      navigator.geolocation.clearWatch(watchIdRef.current);
-      watchIdRef.current = null;
+    if (isStoppingRef.current) return;
+    isStoppingRef.current = true;
+    try {
+      if (watchIdRef.current != null && "geolocation" in navigator) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+        watchIdRef.current = null;
+      }
+      setSaveError(null);
+
+      const saved = await saveCoordinates(true);
+      if (!saved) {
+        setSaveError("Failed to save trip. Please check your connection and try again.");
+        return;
+      }
+
+      setTracking(false);
+
+
+      // Build report by grouping consecutive points sharing road_name
+      const pts = coordsRef.current;
+      const { segments, overallMaxSpeed: overallMax } = buildTripReport(pts);
+
+      const pupilName =
+        trackingPupilName ??
+        activeLesson?.pupils?.name ??
+        "this pupil";
+
+      setReportData({
+        pupilName,
+        totalDistanceMiles: distanceKm * 0.621371,
+        totalDurationSec: elapsedSec,
+        overallMaxSpeed: overallMax,
+        overspeedCount,
+        segments,
+        lessonId: activeLessonId,
+      });
+      setShowReport(true);
+    } finally {
+      isStoppingRef.current = false;
     }
-    setSaveError(null);
-
-    const saved = await saveCoordinates(true);
-    if (!saved) {
-      setSaveError("Failed to save trip. Please check your connection and try again.");
-      return;
-    }
-
-    setTracking(false);
-
-
-    // Build report by grouping consecutive points sharing road_name
-    const pts = coordsRef.current;
-    const { segments, overallMaxSpeed: overallMax } = buildTripReport(pts);
-
-    const pupilName =
-      trackingPupilName ??
-      activeLesson?.pupils?.name ??
-      "this pupil";
-
-    setReportData({
-      pupilName,
-      totalDistanceMiles: distanceKm * 0.621371,
-      totalDurationSec: elapsedSec,
-      overallMaxSpeed: overallMax,
-      overspeedCount,
-      segments,
-      lessonId: activeLessonId,
-    });
-    setShowReport(true);
   }
 
 
