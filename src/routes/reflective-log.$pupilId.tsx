@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, BookOpen, Mic, MicOff, Plus, Send, X } from "lucide-react";
+import { BookOpen, Mic, MicOff, Plus, Send, X } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 
@@ -258,35 +259,18 @@ function ReflectiveLogPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#FFFFFF", ...INTER }}>
-      {/* Top bar */}
-      <div
-        className="sticky top-0 z-10 px-4 py-3 flex items-center gap-3"
-        style={{ backgroundColor: "#0F2044", color: "#FFFFFF" }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/pupils/$id", params: { id: pupilId } })}
-          className="inline-flex items-center justify-center rounded-full"
-          style={{
-            width: 36,
-            height: 36,
-            backgroundColor: "rgba(255,255,255,0.12)",
-            border: "none",
-            color: "#FFFFFF",
-          }}
-          aria-label="Back"
-        >
-          <ArrowLeft size={18} />
-        </button>
-        <div className="flex flex-col min-w-0">
-          <div className="text-[15px] font-semibold truncate">Reflective log</div>
-          {pupilName && (
-            <div className="text-[12px] truncate" style={{ opacity: 0.8 }}>
-              {pupilName}
-            </div>
-          )}
-        </div>
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle={pupilName ? `Reflective log · ${pupilName}` : "Reflective log"}
+        onBack={() => navigate({ to: "/pupils/$id", params: { id: pupilId } } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
 
       {loading ? (
         <div className="p-6 text-center text-[13px]" style={{ color: "#6B7280" }}>

@@ -1,6 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Plus, X, Clock, Send, Check, XCircle } from "lucide-react";
+import { Plus, X, Clock, Send, Check, XCircle } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/waitlist")({
@@ -59,6 +61,7 @@ function initials(name: string) {
 }
 
 function WaitlistPage() {
+  const navigate = useNavigate();
   const [tab, setTab] = useState<"waiting" | "offers">("waiting");
   const [uid, setUid] = useState<string | null>(null);
   const [pupils, setPupils] = useState<PupilLite[]>([]);
@@ -126,24 +129,18 @@ function WaitlistPage() {
   return (
     <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: "#F3F8FF" }}>
       {/* Header */}
-      <div
-        className="sticky top-0 z-30 flex items-center"
-        style={{
-          backgroundColor: NAVY,
-          paddingTop: "calc(12px + env(safe-area-inset-top, 0px))",
-          paddingBottom: 12,
-          paddingLeft: 12,
-          paddingRight: 12,
-          gap: 8,
-        }}
-      >
-        <Link to="/home" className="p-1 -ml-1">
-          <ArrowLeft size={22} color="#FFFFFF" />
-        </Link>
-        <div className="text-[16px] font-semibold text-white" style={POPPINS}>
-          Waiting List
-        </div>
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Waiting List"
+        onBack={() => navigate({ to: "/home" } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
 
       {/* Tabs */}
       <div className="flex bg-white border-b border-[#E5E7EB]">

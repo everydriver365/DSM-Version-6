@@ -1,5 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Check, Crown } from "lucide-react";
+import { Check, Crown } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 
@@ -21,22 +23,18 @@ function SubscriptionPage() {
   return (
     <div className="min-h-screen pb-8" style={{ ...POPPINS, backgroundColor: "#F3F8FF", margin: -8 }}>
       {/* TOP BAR */}
-      <div
-        className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0B1F3A" }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/settings" })}
-          className="flex items-center justify-center"
-          style={{ width: 28, height: 28 }}
-        >
-          <ChevronLeft size={22} color="#ffffff" />
-        </button>
-        <div className="text-white text-[16px] font-semibold">My plan</div>
-        <div style={{ width: 28 }} />
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="My plan"
+        onBack={() => navigate({ to: "/settings" } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
 
       {/* CURRENT PLAN CARD */}
       <div

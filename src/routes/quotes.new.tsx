@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 
@@ -186,12 +187,18 @@ function NewQuotePage() {
 
   return (
     <div className="min-h-screen pb-32" style={{ ...POPPINS, backgroundColor: "#fff" }}>
-      <div style={{ background: "#0B1F3A", color: "#fff", padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, paddingTop: "calc(14px + env(safe-area-inset-top, 0px))" }}>
-        <button onClick={() => navigate({ to: "/quotes" })} aria-label="Back" style={{ background: "none", border: "none", color: "#fff", display: "flex" }}>
-          <ArrowLeft size={22} />
-        </button>
-        <div style={{ fontWeight: 700, fontSize: 16 }}>New quote</div>
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="New quote"
+        onBack={() => navigate({ to: "/quotes" } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
 
       {isRevised && (
         <div style={{ margin: "12px 16px 0", padding: "10px 12px", background: "#EEF4FB", border: "1px solid #BFDBFE", borderRadius: 8, color: "#1D4ED8", fontSize: 13 }}>

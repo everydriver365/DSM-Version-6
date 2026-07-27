@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
-  ArrowLeft,
   ChevronLeft,
   ChevronRight,
   Calendar as CalendarIcon,
@@ -9,6 +8,8 @@ import {
   Star,
   Download,
 } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 
@@ -363,31 +364,18 @@ function WeeklyReportPage() {
 
   return (
     <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
-      {/* Top bar */}
-      <div
-        style={{
-          background: "#0B1F3A",
-          color: "#FFFFFF",
-          padding: "12px 16px",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-        }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/home" })}
-          aria-label="Back"
-          style={{ background: "transparent", border: "none", color: "#FFFFFF", padding: 4, cursor: "pointer" }}
-        >
-          <ArrowLeft size={20} />
-        </button>
-        <div className="flex-1 text-center">
-          <div className="text-[15px] font-semibold" style={POPPINS}>Weekly report</div>
-          <div className="text-[11px] opacity-80" style={POPPINS}>{shortRange(weekStart, weekEnd)}</div>
-        </div>
-        <div style={{ width: 28 }} />
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle={`Weekly report · ${shortRange(weekStart, weekEnd)}`}
+        onBack={() => navigate({ to: "/home" } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
 
       {/* Week navigation */}
       <div

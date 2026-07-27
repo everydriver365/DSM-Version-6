@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Search as SearchIcon, Clock } from "lucide-react";
+import { Search as SearchIcon, Clock } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 
@@ -257,30 +259,23 @@ function SearchPage() {
 
   return (
     <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F3F8FF" }}>
-      {/* TOP BAR */}
-      <div
-        className="sticky top-0 z-40 flex items-center px-3"
-        style={{ height: 56, backgroundColor: "#0B1F3A", gap: 10 }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 32, height: 32 }}
-        >
-          <ArrowLeft size={22} color="#FFFFFF" />
-        </button>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Search"
+        onBack={() => navigate({ to: "/home" } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Search row */}
+      <div className="px-3 pt-3">
         <div
-          className="flex-1 flex items-center"
-          style={{
-            backgroundColor: "#FFFFFF",
-            borderRadius: 10,
-            height: 38,
-            paddingLeft: 10,
-            paddingRight: 10,
-            gap: 8,
-          }}
+          className="flex items-center"
+          style={{ backgroundColor: "#FFFFFF", borderRadius: 10, height: 38, paddingLeft: 10, paddingRight: 10, gap: 8, border: "1px solid #E2E8F0" }}
         >
           <SearchIcon size={16} color="#6B7280" />
           <input
@@ -293,16 +288,13 @@ function SearchPage() {
             style={POPPINS}
           />
           {query && (
-            <button
-              type="button"
-              onClick={() => setQuery("")}
-              className="text-[12px] text-[#6B7280]"
-            >
+            <button type="button" onClick={() => setQuery("")} className="text-[12px] text-[#6B7280]">
               Clear
             </button>
           )}
         </div>
       </div>
+
 
       <div className="px-4">
         {!debounced && (

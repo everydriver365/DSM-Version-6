@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, ToggleLeft, ChevronRight } from "lucide-react";
+import { ToggleLeft, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Card } from "../components/dsm/Card";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
@@ -77,25 +79,18 @@ function QuickAvailabilityPage() {
 
   return (
     <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F3F8FF", margin: -8 }}>
-      {/* Top bar */}
-      <div
-        className="sticky top-0 z-40 h-[52px] px-4 flex items-center"
-        style={{ backgroundColor: "#0B1F3A" }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 32, height: 32 }}
-        >
-          <ArrowLeft size={20} color="#ffffff" />
-        </button>
-        <div className="flex-1 text-center text-white text-[15px] font-semibold">
-          Quick availability
-        </div>
-        <div style={{ width: 32 }} />
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Quick availability"
+        onBack={() => navigate({ to: "/home" } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
 
       {loading ? (
         <div className="p-6 text-[13px] text-[#6B7280]">Loading…</div>
