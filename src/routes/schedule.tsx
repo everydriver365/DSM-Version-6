@@ -169,6 +169,7 @@ interface Pupil {
   first_name?: string | null;
   last_name?: string | null;
   calendar_colour?: string | null;
+  prepaid_hours?: number | null;
 }
 
 interface Lesson {
@@ -179,6 +180,8 @@ interface Lesson {
   duration_minutes: number | null;
   status: string;
   lesson_type?: string | null;
+  payment_status?: string | null;
+  amount_due?: number | null;
   pupil: Pupil | null;
 }
 
@@ -418,7 +421,7 @@ function SchedulePage() {
       const { data, error } = await supabase
         .from("lessons")
         .select(
-          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, pupil:pupils!inner(id, name, first_name, last_name, calendar_colour, status, deleted_at)",
+          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, pupil:pupils!inner(id, name, first_name, last_name, calendar_colour, prepaid_hours, status, deleted_at)",
         )
         .is("deleted_at", null)
         .eq("pupil.status", "active")
@@ -1464,6 +1467,13 @@ function SchedulePage() {
                           }
                           const cancelled = e.kind === "lesson" && e.lesson.status === "cancelled";
                           const isLessonRow = e.kind === "lesson";
+                          const now = new Date();
+                          const isLive = isLessonRow && now >= e.start && now < e.end;
+                          const payStatus = isLessonRow ? (e.lesson.payment_status ?? "").toLowerCase() : "";
+                          const amt = isLessonRow ? Number(e.lesson.amount_due ?? 0) : 0;
+                          const isPrepaidPupil = isLessonRow && Number(e.lesson.pupil?.prepaid_hours ?? 0) > 0;
+                          const isPaid = payStatus === "paid" || payStatus === "prepaid" || isPrepaidPupil;
+                          const dueUnpaid = isLessonRow && amt > 0 && !isPaid;
                           const isBlockRow = e.kind === "block";
                           const clickable = isLessonRow || isBlockRow;
                           const isMovingThis = isLessonRow && movingLesson && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id === movingLesson.id;
@@ -1613,6 +1623,22 @@ function SchedulePage() {
                                          {isLessonRow ? (
                                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, minWidth: 0 }}>
                                              <div style={{ position: 'relative', flexShrink: 0 }}>
+                                               {isLive && (
+                                                 <span
+                                                   aria-label="Live"
+                                                   style={{
+                                                     position: 'absolute',
+                                                     top: 0,
+                                                     right: 0,
+                                                     width: 8,
+                                                     height: 8,
+                                                     borderRadius: 999,
+                                                     backgroundColor: '#DC2626',
+                                                     boxShadow: '0 0 0 2px #FFFFFF',
+                                                     zIndex: 1,
+                                                   }}
+                                                 />
+                                               )}
                                                <PupilAvatar
                                                  pupil={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil : null}
                                                  pupilId={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil_id ?? null : null}
@@ -1620,18 +1646,44 @@ function SchedulePage() {
                                                />
                                              </div>
                                              <div style={{ flex: 1, minWidth: 0 }}>
-                                               <div
-                                                 style={{
-                                                   fontSize: 14,
-                                                   fontWeight: 500,
-                                                   color: "#0B1F3A",
-                                                   overflow: "hidden",
-                                                   textOverflow: "ellipsis",
-                                                   whiteSpace: "nowrap",
-                                                   textDecoration: cancelled ? "line-through" : "none",
-                                                 }}
-                                               >
-                                                 {title}
+                                               <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+                                                 <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: cancelled ? 'line-through' : 'none' }}>
+                                                   {title}
+                                                 </span>
+                                                 {cancelled ? (
+                                                   <span style={{
+                                                     flexShrink: 0,
+                                                     fontSize: 10,
+                                                     fontWeight: 700,
+                                                     letterSpacing: 0.4,
+                                                     textTransform: 'uppercase',
+                                                     color: '#CC2229',
+                                                     background: '#FCEBEB',
+                                                     padding: '2px 8px',
+                                                     borderRadius: 999,
+                                                     lineHeight: 1.4,
+                                                   }}>
+                                                     Cancelled
+                                                   </span>
+                                                 ) : (isLive || isPrepaidPupil || isPaid || dueUnpaid) ? (
+                                                   <span style={{
+                                                     flexShrink: 0,
+                                                     fontSize: 10,
+                                                     fontWeight: 700,
+                                                     padding: '2px 9px',
+                                                     borderRadius: 999,
+                                                     lineHeight: 1.4,
+                                                     ...(isLive ? {
+                                                       background: '#E6F1FB', color: '#1877D6',
+                                                     } : isPrepaidPupil || isPaid ? {
+                                                       background: '#E7F5EE', color: '#1E8E3E',
+                                                     } : {
+                                                       background: '#FCEBEB', color: '#CC2229',
+                                                     }),
+                                                   }}>
+                                                     {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
+                                                   </span>
+                                                 ) : null}
                                                </div>
                                                {timeText ? (
                                                  <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
