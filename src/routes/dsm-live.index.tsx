@@ -308,43 +308,8 @@ function DsmLivePage() {
           Sessions
         </h2>
 
-        {/* Upcoming / All toggle */}
-        <div
-          style={{
-            display: "flex",
-            background: "#FFFFFF",
-            borderRadius: 10,
-            padding: 3,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-            marginBottom: 16,
-            width: "100%",
-          }}
-        >
-          {(["upcoming", "all"] as const).map((v) => {
-            const active = view === v;
-            return (
-              <button
-                key={v}
-                type="button"
-                onClick={() => setView(v)}
-                style={{
-                  flex: 1,
-                  padding: "9px 4px",
-                  fontSize: 13,
-                  fontWeight: active ? 500 : 400,
-                  color: active ? "#FFFFFF" : "#8A93A3",
-                  background: active ? "#1877D6" : "transparent",
-                  borderRadius: 8,
-                  border: 0,
-                  cursor: "pointer",
-                  fontFamily: poppins,
-                }}
-              >
-                {v === "upcoming" ? "Upcoming" : "All sessions"}
-              </button>
-            );
-          })}
-        </div>
+
+
 
 
         {sessions === null ? null : filtered.length === 0 ? (
