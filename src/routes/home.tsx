@@ -6173,6 +6173,24 @@ function HomePage() {
                 }}>
                   <IconSteeringWheel size={14} stroke={2} color="#1877D6" />
                   <span>Practical test</span>
+                  <span
+                    style={{
+                      minWidth: 18,
+                      height: 18,
+                      padding: '0 5px',
+                      borderRadius: 9,
+                      background: '#1877D6',
+                      color: '#FFFFFF',
+                      fontSize: 11,
+                      fontWeight: 700,
+                      lineHeight: '18px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {testsSorted.length}
+                  </span>
                 </div>
                 {statusLabel && (
                   <div style={{
