@@ -516,8 +516,10 @@ function DiscoverPage() {
                     navigate({
                       to: "/dsm-live/$sessionId" as never,
                       params: { sessionId: s.id } as never,
+                      search: { from: "discover", tab: "live" } as never,
                     })
                   }
+
                   media={{
                     background: s.image_url
                       ? `#12539E url(${s.image_url}) center/cover`
