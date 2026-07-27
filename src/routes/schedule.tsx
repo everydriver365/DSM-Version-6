@@ -19,6 +19,7 @@ import { PAGE_BACKGROUND } from "@/components/PageLayout";
 import { PupilAvatar } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
+import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
