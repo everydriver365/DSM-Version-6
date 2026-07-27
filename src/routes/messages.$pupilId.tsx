@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Phone, Send, AlertTriangle, CheckCircle2 } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { Phone, Send, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -414,33 +415,37 @@ function PupilThreadPage() {
 
   return (
     <PageLayout className="flex flex-col" style={POPPINS}>
-      {/* Top bar */}
-      <div
-        className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#0F2044" }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/pupils/$id", params: { id: pupilId } })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
-        >
-          <ArrowLeft size={22} color="#FFFFFF" />
-        </button>
-        <div
-          className="flex-1 text-center text-[15px] font-semibold text-white truncate px-2"
-          style={POPPINS}
-        >
-          {pupilName}
-        </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle={pupilName}
+        onBack={() => navigate({ to: "/pupils/$id", params: { id: pupilId } } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Actions row */}
+      <div className="flex justify-end px-3 pt-2">
         <a
           href={phone ? `tel:${phone}` : undefined}
           aria-label="Call"
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40, opacity: phone ? 1 : 0.4 }}
+          className="inline-flex items-center gap-2 text-[13px] font-semibold"
+          style={{
+            height: 34,
+            padding: "0 12px",
+            borderRadius: 10,
+            border: "1px solid #E2E8F0",
+            background: "#FFFFFF",
+            color: "#0B1F3A",
+            opacity: phone ? 1 : 0.4,
+            textDecoration: "none",
+          }}
         >
-          <Phone size={18} color="#FFFFFF" />
+          <Phone size={15} />
+          Call
         </a>
       </div>
 
