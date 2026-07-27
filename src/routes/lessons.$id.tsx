@@ -287,34 +287,29 @@ function LessonDetailPage() {
 
   return (
     <PageLayout className="pb-8" style={POPPINS}>
-      {/* Top bar */}
-      <div
-        className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => router.history.back()}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
-        >
-          <ArrowLeft size={22} color="#FFFFFF" />
-        </button>
-        <div
-          className="flex-1 text-center text-[15px] font-semibold text-white"
-          style={POPPINS}
-        >
-          Lesson
-        </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Lesson"
+        onBack={() => router.history.back()}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Action bar */}
+      <div className="flex items-center justify-end px-4 py-2">
         <button
           type="button"
           aria-label="Edit lesson"
           onClick={() => navigate({ to: "/lessons/edit/$id", params: { id } })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
+          className="flex items-center gap-1 text-[13px] font-semibold"
+          style={{ color: "#1877D6", background: "none", border: "none" }}
         >
-          <Pencil size={18} color="#FFFFFF" />
+          <Pencil size={16} color="#1877D6" />
+          Edit
         </button>
       </div>
 
