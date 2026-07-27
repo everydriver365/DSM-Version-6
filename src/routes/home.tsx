@@ -6093,170 +6093,157 @@ function HomePage() {
               return (
                 <>
         <SectionHeader>Upcoming Tests</SectionHeader>
-        {/* ============ TESTS ROW ============ */}
+        {/* ============ UPCOMING TESTS CARD ============ */}
         {(() => {
-          const fmtShortDate = (iso: string) => {
+          const parseDate = (iso: string) => {
             const d = new Date(iso + 'T00:00:00');
-            if (isNaN(d.getTime())) return iso;
-            return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+            return isNaN(d.getTime()) ? null : d;
+          };
+          const fmtDateTime = (iso: string, time?: string | null) => {
+            const d = parseDate(iso);
+            if (!d) return iso;
+            const datePart = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+            const timePart = time ? ` · ${String(time).slice(0, 5)}` : '';
+            return `${datePart}${timePart}`;
           };
           const now = new Date();
           const nowMs = now.getTime();
-          const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
           const testsSorted = [...(upcomingTests ?? [])]
             .filter((p) => p.test_date && new Date(p.test_date).getTime() >= nowMs - 86400000)
             .sort((a, b) => a.test_date.localeCompare(b.test_date));
           if (testsSorted.length === 0) return null;
           const next = testsSorted[0];
-          const hasToday = testsSorted.some((t) => t.test_date === todayStr);
-          const thisWeekEnd = nowMs + 7 * 86400000;
-          const anyThisWeek = testsSorted.some((t) => new Date(t.test_date + 'T00:00:00').getTime() <= thisWeekEnd);
-          const statusLabel = hasToday ? 'TODAY' : anyThisWeek ? 'THIS WEEK' : undefined;
+          const nextDate = parseDate(next.test_date);
+          const dayNum = nextDate ? nextDate.getDate() : '--';
+          const monthAbbr = nextDate
+            ? nextDate.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()
+            : '';
+          const brandColors = ['#0B1F3A', '#0F6E56', '#185FA5'];
           return (
             <div
-              onClick={() => navigate({ to: '/upcoming-tests' as never })}
+              onClick={() => navigate({ to: '/tests' as never })}
               style={{
-                margin: '0 0 0',
                 background: '#FFFFFF',
-                border: '1px solid #E2E8F0',
-                borderRadius: 18,
-                boxShadow: '0 4px 16px rgba(11,31,58,0.06)',
-                padding: '18px 20px',
+                border: '1px solid #E3E8F0',
+                borderRadius: 14,
+                padding: '14px 16px',
                 cursor: 'pointer',
                 fontFamily: 'Inter, sans-serif',
               }}
             >
-              {/* Top row */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                <div style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  background: '#E6F1FB', color: '#1877D6', fontSize: 13.5, fontWeight: 600,
-                  borderRadius: 20, padding: '6px 12px',
-                }}>
-                  <IconSteeringWheel size={14} stroke={2} color="#1877D6" />
-                  <span>Upcoming Driving Test's</span>
-                  <span
+              {/* Row 1: next test */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                {/* Date block */}
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 10,
+                    background: '#0B1F3A',
+                    color: '#FFFFFF',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    lineHeight: 1.1,
+                  }}
+                >
+                  <div style={{ fontSize: 15, fontWeight: 700 }}>{dayNum}</div>
+                  <div
                     style={{
-                      minWidth: 18,
-                      height: 18,
-                      padding: '0 5px',
-                      borderRadius: 9,
-                      background: '#1877D6',
-                      color: '#FFFFFF',
-                      fontSize: 11,
-                      fontWeight: 700,
-                      lineHeight: '18px',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      fontSize: 8,
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.04em',
                     }}
                   >
-                    {testsSorted.length}
-                  </span>
-                </div>
-                {statusLabel && (
-                  <div style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 6,
-                    background: '#FCE9E9', color: '#CC2229', fontSize: 12.5, fontWeight: 700,
-                    letterSpacing: '0.03em', borderRadius: 20, padding: '5px 11px',
-                  }}>
-                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#CC2229' }} />
-                    <span>{statusLabel}</span>
+                    {monthAbbr}
                   </div>
-                )}
-              </div>
-              {/* Meta */}
-              <div style={{ marginBottom: 14 }}>
-                <div style={{ fontSize: 14, color: '#0B1F3A', fontWeight: 600, marginBottom: 4 }}>
-                  Next: {next.name}
                 </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 12px', fontSize: 12, color: '#6B7A90' }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                    <MapPin size={12} strokeWidth={2} color="#6B7A90" />
-                    {next.test_centre || 'Test centre TBC'}
-                  </span>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                    <Clock size={12} strokeWidth={2} color="#6B7A90" />
-                    {fmtShortDate(next.test_date)}{next.test_time ? ` · ${String(next.test_time).slice(0, 5)}` : ''}
-                  </span>
+                {/* Meta */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 500,
+                      color: '#0B1F3A',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {next.name} · {next.test_centre || 'Test centre TBC'}
+                  </div>
+                  <div style={{ fontSize: 12, color: '#8792A2', marginTop: 2 }}>
+                    {fmtDateTime(next.test_date, next.test_time)}
+                  </div>
                 </div>
+                {/* Chevron */}
+                <IconChevronRight size={18} stroke={2} color="#8792A2" style={{ flexShrink: 0 }} />
               </div>
               {/* Divider */}
-              <div style={{ height: 1, background: '#E2E8F0', margin: '14px 0' }} />
-              {/* Bottom row */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    {testsSorted.slice(0, 3).map((t, i) => {
-                      const initials = (t.name ?? '').trim().charAt(0).toUpperCase() || '?';
-                      const bg = pupilColour(t.id, pupilInfoMap[t.id]?.calendar_colour ?? null, t.name);
-                      return (
-                        <div
-                          key={t.id}
-                          style={{
-                            width: 38,
-                            height: 38,
-                            borderRadius: '50%',
-                            background: bg,
-                            border: '2px solid #FFFFFF',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: 13,
-                            fontWeight: 600,
-                            color: '#FFFFFF',
-                            marginLeft: i === 0 ? 0 : -10,
-                            zIndex: i,
-                            position: 'relative',
-                          }}
-                        >
-                          {initials}
-                        </div>
-                      );
-                    })}
-                    {testsSorted.length > 3 && (
+              <div style={{ height: 1, background: '#EEF2F7', margin: '10px 0' }} />
+              {/* Row 2: summary */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  {testsSorted.slice(0, 3).map((t, i) => {
+                    const initials = (t.name ?? '').trim().charAt(0).toUpperCase() || '?';
+                    return (
                       <div
+                        key={t.id}
                         style={{
-                          width: 38,
-                          height: 38,
+                          width: 22,
+                          height: 22,
                           borderRadius: '50%',
-                          background: '#DCE4EE',
+                          background: brandColors[i % brandColors.length],
                           border: '2px solid #FFFFFF',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          fontSize: 13,
+                          fontSize: 10,
                           fontWeight: 600,
-                          color: '#6B7A90',
-                          marginLeft: -10,
-                          zIndex: 3,
+                          color: '#FFFFFF',
+                          marginLeft: i === 0 ? 0 : -7,
+                          zIndex: i,
                           position: 'relative',
                         }}
                       >
-                        +{testsSorted.length - 3}
+                        {initials}
                       </div>
-                    )}
-                  </div>
-                  <span style={{ fontSize: 14, color: '#6B7A90' }}>{testsSorted.length} pupils</span>
+                    );
+                  })}
+                  {testsSorted.length > 3 && (
+                    <div
+                      style={{
+                        width: 22,
+                        height: 22,
+                        borderRadius: '50%',
+                        background: '#D3D8E0',
+                        border: '2px solid #FFFFFF',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: 10,
+                        fontWeight: 600,
+                        color: '#5B6472',
+                        marginLeft: -7,
+                        zIndex: 3,
+                        position: 'relative',
+                      }}
+                    >
+                      +{testsSorted.length - 3}
+                    </div>
+                  )}
                 </div>
-                <div
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: '50%',
-                    background: '#E6F1FB',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  <IconChevronRight size={18} stroke={2} color="#1877D6" />
-                </div>
+                <span style={{ fontSize: 12, color: '#8792A2' }}>
+                  {testsSorted.length} pupils with tests booked
+                </span>
               </div>
             </div>
           );
         })()}
+
 
                   <style>{`
                     .qa-card:active { transform: scale(0.975); }
