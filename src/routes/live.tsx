@@ -198,6 +198,7 @@ function LivePage() {
   const markerRef = useRef<any>(null);
   const polylineRef = useRef<any>(null);
   const watchIdRef = useRef<number | null>(null);
+  const isStoppingRef = useRef(false);
   const centeredRef = useRef(false);
 
   const coordsRef = useRef<Coord[]>([]);
