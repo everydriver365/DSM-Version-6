@@ -4954,6 +4954,11 @@ function HomePage() {
         const PURPLE_FG = '#6D28D9';
 
         const activeList = tab === 'today' ? todayLessons : tab === 'tomorrow' ? tomorrowLessons : nextTabLessons;
+        const scheduleCounts = {
+          today: todayLessons.length + todayBlocks.length,
+          tomorrow: tomorrowLessons.length + tomorrowBlocks.length,
+          next: nextTabLessons.length,
+        };
         const sorted = [...activeList].sort((a, b) => {
           const ad = `${a.lesson_date}T${a.lesson_time ?? '00:00'}`;
           const bd = `${b.lesson_date}T${b.lesson_time ?? '00:00'}`;
@@ -5345,6 +5350,7 @@ function HomePage() {
                     {(['today', 'tomorrow', 'next'] as const).map((t) => {
                       const active = tab === t;
                       const label = t === 'today' ? 'Today' : t === 'tomorrow' ? 'Tomorrow' : 'Next';
+                      const count = scheduleCounts[t];
                       return (
                         <button
                           key={t}
@@ -5369,7 +5375,29 @@ function HomePage() {
                             letterSpacing: -0.1,
                           }}
                         >
-                          {label}
+                          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                            {label}
+                            {count > 0 && (
+                              <span
+                                style={{
+                                  minWidth: 18,
+                                  height: 18,
+                                  padding: '0 5px',
+                                  borderRadius: 9,
+                                  background: active ? '#EAF2FC' : 'rgba(11,31,58,0.08)',
+                                  color: active ? '#1877D6' : '#6B7A90',
+                                  fontSize: 11,
+                                  fontWeight: 700,
+                                  lineHeight: '18px',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}
+                              >
+                                {count}
+                              </span>
+                            )}
+                          </span>
                         </button>
                       );
                     })}
