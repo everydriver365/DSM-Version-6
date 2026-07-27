@@ -1,13 +1,14 @@
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
-  ArrowLeft,
   BookOpen,
   Mail,
   MessageSquare,
   Phone,
   User as UserIcon,
 } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/bookings/$id")({
