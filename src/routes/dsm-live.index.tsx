@@ -253,8 +253,7 @@ function DsmLivePage() {
                 flexShrink: 0,
                 background: active ? "#0B1F3A" : "#FFFFFF",
                 color: active ? "#FFFFFF" : "#0B1F3A",
-                border: active ? "0.5px solid #0B1F3A" : "0.5px solid #E2E6ED",
-
+                border: active ? "1px solid #0B1F3A" : "1px solid #E3E8F0",
                 borderRadius: 999,
                 padding: "8px 16px",
                 fontSize: 13,
@@ -268,7 +267,32 @@ function DsmLivePage() {
             </button>
           );
         })}
+        {(() => {
+          const active = view === "upcoming";
+          return (
+            <button
+              type="button"
+              onClick={() => setView(active ? "all" : "upcoming")}
+              style={{
+                flexShrink: 0,
+                background: active ? "#0B1F3A" : "#FFFFFF",
+                color: active ? "#FFFFFF" : "#0B1F3A",
+                border: active ? "1px solid #0B1F3A" : "1px solid #E3E8F0",
+                borderRadius: 999,
+                padding: "8px 16px",
+                fontSize: 13,
+                fontWeight: active ? 500 : 400,
+                fontFamily: poppins,
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Upcoming
+            </button>
+          );
+        })()}
       </div>
+
 
       {/* Sessions */}
       <div style={{ padding: 16 }}>
