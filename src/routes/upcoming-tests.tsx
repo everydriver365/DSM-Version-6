@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, CalendarDays, MapPin, Clock, Bell } from "lucide-react";
+import { CalendarDays, MapPin, Clock, Bell } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { formatCountdown } from "@/lib/dateHelpers";
@@ -104,32 +105,31 @@ function UpcomingTestsPage() {
   return (
     <PageLayout className="pb-8" style={POPPINS}>
       {/* Header */}
-      <div
-        className="sticky top-0 z-40 flex items-center justify-between"
-        style={{ height: 52, backgroundColor: "#0B1F3A", padding: "0 16px" }}
-      >
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Upcoming tests"
+        onBack={() => navigate({ to: "/home" } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Actions row */}
+      <div className="flex justify-end px-4 pt-3">
         <button
           type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
-        >
-          <ArrowLeft size={22} color="#FFFFFF" />
-        </button>
-        <div className="flex-1 text-center text-[15px] font-semibold text-white" style={POPPINS}>
-          Upcoming tests
-        </div>
-        <button
-          type="button"
-          aria-label="Add test reminder"
           onClick={() => navigate({ to: "/tests" })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
+          className="inline-flex items-center gap-2 text-[13px] font-semibold"
+          style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
-          <Bell size={22} color="#FFFFFF" />
+          <Bell size={15} />
+          Test reminders
         </button>
       </div>
+
 
       <div className="px-4 pt-4">
         {loading ? (
