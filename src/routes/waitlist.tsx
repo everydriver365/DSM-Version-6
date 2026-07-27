@@ -61,6 +61,7 @@ function initials(name: string) {
 }
 
 function WaitlistPage() {
+  const navigate = useNavigate();
   const [tab, setTab] = useState<"waiting" | "offers">("waiting");
   const [uid, setUid] = useState<string | null>(null);
   const [pupils, setPupils] = useState<PupilLite[]>([]);
