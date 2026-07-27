@@ -6206,7 +6206,7 @@ function HomePage() {
               {/* Meta */}
               <div style={{ marginBottom: 14 }}>
                 <div style={{ fontSize: 14, color: '#0B1F3A', fontWeight: 600, marginBottom: 4 }}>
-                  {next.name}
+                  Next: {next.name}
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 12px', fontSize: 12, color: '#6B7A90' }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
