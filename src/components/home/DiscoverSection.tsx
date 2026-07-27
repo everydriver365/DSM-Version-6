@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
-  IconVideo,
-  IconPlayerPlayFilled,
   IconPlayerPlay,
   IconBroadcast,
-  IconCalendar,
   IconChevronRight,
 } from "@tabler/icons-react";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
@@ -14,14 +11,10 @@ import { supabase } from "@/lib/supabaseClient";
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 const RED = "#CC2229";
-const AMBER = "#D97706";
 const HAIRLINE = "#E2E8F0";
 const MUTED = "#8A94A3";
 const FONT = "Poppins, Inter, sans-serif";
-const RADIUS = 14;
-const SHADOW = "0 1px 3px rgba(0,0,0,0.06)";
-const HERO_W = 120;
-const TILE_H = 110;
+
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
