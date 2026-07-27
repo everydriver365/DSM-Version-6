@@ -1609,60 +1609,88 @@ function SchedulePage() {
                                           }}
                                         />
                                       )}
-                                      <div style={{ flex: 1, minWidth: 0, paddingTop: isLessonRow ? 2 : 0 }}>
-                                        <div
-                                          style={{
-                                            fontSize: 14,
-                                            fontWeight: 500,
-                                            color: "#0B1F3A",
-                                            overflow: "hidden",
-                                            textOverflow: "ellipsis",
-                                            whiteSpace: "nowrap",
-                                            textDecoration: cancelled ? "line-through" : "none",
-                                          }}
-                                        >
-                                          {title}
-                                        </div>
-                                         {timeText ? (
-                                           <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
-                                             {timeText}
-                                           </div>
-                                         ) : null}
-                                       </div>
-                                           {isLessonRow && (
-                                             <div style={{ flexShrink: 0, marginLeft: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                       <div style={{ flex: 1, minWidth: 0, paddingTop: isLessonRow ? 2 : 0 }}>
+                                         {isLessonRow ? (
+                                           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, minWidth: 0 }}>
+                                             <div style={{ position: 'relative', flexShrink: 0 }}>
                                                <PupilAvatar
                                                  pupil={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil : null}
                                                  pupilId={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil_id ?? null : null}
-                                                 size={36}
+                                                 size={32}
                                                />
-                                               <button
-                                                 type="button"
-                                                 data-lesson-actions-trigger
-                                                 onClick={(ev) => {
-                                                   ev.stopPropagation();
-                                                   const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
-                                                   setActionsOpenFor((cur) => (cur?.id === lesson.id ? null : lesson));
-                                                 }}
-                                                 aria-label="More lesson options"
+                                             </div>
+                                             <div style={{ flex: 1, minWidth: 0 }}>
+                                               <div
                                                  style={{
-                                                   width: 28,
-                                                   height: 28,
-                                                   borderRadius: '50%',
-                                                   background: '#F8F9FB',
-                                                   border: '0.5px solid #E5E7EB',
-                                                   display: 'flex',
-                                                   alignItems: 'center',
-                                                   justifyContent: 'center',
-                                                   cursor: 'pointer',
-                                                   padding: 0,
-                                                   marginTop: 8,
+                                                   fontSize: 14,
+                                                   fontWeight: 500,
+                                                   color: "#0B1F3A",
+                                                   overflow: "hidden",
+                                                   textOverflow: "ellipsis",
+                                                   whiteSpace: "nowrap",
+                                                   textDecoration: cancelled ? "line-through" : "none",
                                                  }}
                                                >
-                                                 <MoreHorizontal size={14} color="#6B7280" />
-                                               </button>
+                                                 {title}
+                                               </div>
+                                               {timeText ? (
+                                                 <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
+                                                   {timeText}
+                                                 </div>
+                                               ) : null}
                                              </div>
-                                           )}
+                                           </div>
+                                         ) : (
+                                           <>
+                                             <div
+                                               style={{
+                                                 fontSize: 14,
+                                                 fontWeight: 500,
+                                                 color: "#0B1F3A",
+                                                 overflow: "hidden",
+                                                 textOverflow: "ellipsis",
+                                                 whiteSpace: "nowrap",
+                                                 textDecoration: cancelled ? "line-through" : "none",
+                                               }}
+                                             >
+                                               {title}
+                                             </div>
+                                             {timeText ? (
+                                               <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
+                                                 {timeText}
+                                               </div>
+                                             ) : null}
+                                           </>
+                                         )}
+                                        </div>
+                                            {isLessonRow && (
+                                              <div style={{ flexShrink: 0, marginLeft: 4, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                                <button
+                                                  type="button"
+                                                  data-lesson-actions-trigger
+                                                  onClick={(ev) => {
+                                                    ev.stopPropagation();
+                                                    const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                                    setActionsOpenFor((cur) => (cur?.id === lesson.id ? null : lesson));
+                                                  }}
+                                                  aria-label="More lesson options"
+                                                  style={{
+                                                    width: 28,
+                                                    height: 28,
+                                                    borderRadius: '50%',
+                                                    background: '#F8F9FB',
+                                                    border: '0.5px solid #E5E7EB',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    cursor: 'pointer',
+                                                    padding: 0,
+                                                  }}
+                                                >
+                                                  <MoreHorizontal size={14} color="#6B7280" />
+                                                </button>
+                                              </div>
+                                            )}
                                      </>
                                   )}
                                 </div>
@@ -1676,7 +1704,7 @@ function SchedulePage() {
                                     onClick={(ev) => ev.stopPropagation()}
                                     style={{
                                       position: 'absolute',
-                                      top: 88,
+                                      top: 44,
                                       right: 14,
                                       minWidth: 140,
                                       background: '#FFFFFF',
