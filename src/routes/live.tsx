@@ -1084,7 +1084,7 @@ function LivePage() {
       >
         <button
           type="button"
-          aria-label="Back"
+          aria-label="End tracking"
           onClick={() => {
             if (tracking) {
               stopTracking();
@@ -1093,9 +1093,20 @@ function LivePage() {
             }
           }}
           className="flex items-center justify-center"
-          style={{ width: 52, height: 52, background: "transparent", border: "none", cursor: "pointer" }}
+          style={{
+            width: "auto",
+            height: 28,
+            padding: "0 10px",
+            borderRadius: 6,
+            background: "#CC2229",
+            color: "#FFFFFF",
+            fontSize: 12,
+            fontWeight: 700,
+            border: "none",
+            cursor: "pointer",
+          }}
         >
-          <X size={24} color="#ffffff" />
+          END
         </button>
         <div className="flex-1 text-center text-white font-semibold" style={{ fontSize: 16 }}>
           Live tracking
