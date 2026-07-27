@@ -5,7 +5,13 @@ import { IconBroadcast, IconPlayerPlay, IconChevronRight } from "@tabler/icons-r
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 
+type DiscoverTab = "live" | "learn" | "market";
+
 export const Route = createFileRoute("/discover")({
+  validateSearch: (search: Record<string, unknown>): { tab?: DiscoverTab } => {
+    const t = search.tab;
+    return t === "live" || t === "learn" || t === "market" ? { tab: t } : {};
+  },
   head: () => ({
     meta: [
       { title: "Discover — DSM" },
@@ -26,6 +32,7 @@ export const Route = createFileRoute("/discover")({
   }),
   component: DiscoverPage,
 });
+
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
