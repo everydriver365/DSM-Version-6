@@ -629,90 +629,99 @@ export function DiscoverSection() {
           padding: "0 0 4px",
         }}
       >
-        {/* Card A — DSM Live */}
-        {liveTop && (
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={() => navigate({ to: "/dsm-live" as never })}
-            style={cardShell}
-          >
-            <StackMedia
-              height={78}
-              front={{
-                background: liveTop.image_url
-                  ? `#12539E url(${liveTop.image_url}) center/cover`
-                  : "linear-gradient(160deg, #2C6FD6 0%, #12539E 100%)",
-              }}
-              badge={
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 3,
-                    left: 0,
-                    background: RED,
-                    color: "#FFFFFF",
-                    fontSize: 9,
-                    fontWeight: 700,
-                    letterSpacing: "0.04em",
-                    padding: "2px 6px",
-                    borderRadius: 6,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 4,
-                    lineHeight: 1.2,
-                  }}
-                >
+        {(() => {
+          const liveCard = (s: LiveItem) => (
+            <div
+              key={`live-${s.id}`}
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate({ to: "/dsm-live" as never })}
+              style={cardShell}
+            >
+              <StackMedia
+                height={78}
+                front={{
+                  background: s.image_url
+                    ? `#12539E url(${s.image_url}) center/cover`
+                    : "linear-gradient(160deg, #2C6FD6 0%, #12539E 100%)",
+                }}
+                badge={
                   <span
                     style={{
-                      width: 4,
-                      height: 4,
-                      borderRadius: "50%",
-                      background: "#FFFFFF",
-                      display: "inline-block",
+                      position: "absolute",
+                      top: 3,
+                      left: 0,
+                      background: RED,
+                      color: "#FFFFFF",
+                      fontSize: 9,
+                      fontWeight: 700,
+                      letterSpacing: "0.04em",
+                      padding: "2px 6px",
+                      borderRadius: 6,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
+                      lineHeight: 1.2,
                     }}
-                  />
-                  LIVE
-                </span>
-              }
-            >
-              {!liveTop.image_url && <IconBroadcast size={18} color="#FFFFFF" stroke={1.9} />}
-            </StackMedia>
-            <div style={{ ...cardTitle, marginTop: 8 }}>{liveTop.title}</div>
-            <div style={cardSub}>{fmtTimeDay(liveTop.session_date, liveTop.session_time)}</div>
-            <button type="button" style={cardBtn("JOIN")}>
-              Join
-            </button>
-          </div>
-        )}
+                  >
+                    <span
+                      style={{
+                        width: 4,
+                        height: 4,
+                        borderRadius: "50%",
+                        background: "#FFFFFF",
+                        display: "inline-block",
+                      }}
+                    />
+                    LIVE
+                  </span>
+                }
+              >
+                {!s.image_url && <IconBroadcast size={18} color="#FFFFFF" stroke={1.9} />}
+              </StackMedia>
+              <div style={{ ...cardTitle, marginTop: 8 }}>{s.title}</div>
+              <div style={cardSub}>{fmtTimeDay(s.session_date, s.session_time)}</div>
+              <button type="button" style={cardBtn("JOIN")}>
+                Join
+              </button>
+            </div>
+          );
 
-        {/* Card B — Marketplace */}
-        {marketTop && (
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={() => navigate({ to: "/marketplace" as never })}
-            style={cardShell}
-          >
-            <StackMedia
-              height={78}
-              front={{
-                background: marketImg ? `#EEF2F7 url(${marketImg}) center/cover` : "#EEF2F7",
-              }}
-            />
-            <div style={{ ...cardTitle, marginTop: 8 }}>{marketTop.title}</div>
-            <div style={cardSub}>{marketPrice}</div>
-            <button type="button" style={cardBtn("VIEW")}>
-              View
-            </button>
-          </div>
-        )}
+          const marketCard = (m: MarketItem) => {
+            const img = firstImage(m.image_urls);
+            return (
+              <div
+                key={`market-${m.id}`}
+                role="button"
+                tabIndex={0}
+                onClick={() => navigate({ to: "/marketplace" as never })}
+                style={cardShell}
+              >
+                <StackMedia
+                  height={78}
+                  front={{
+                    background: img ? `#EEF2F7 url(${img}) center/cover` : "#EEF2F7",
+                  }}
+                />
+                <div style={{ ...cardTitle, marginTop: 8 }}>{m.title}</div>
+                <div style={cardSub}>{priceLabel(m)}</div>
+                <button type="button" style={cardBtn("VIEW")}>
+                  View
+                </button>
+              </div>
+            );
+          };
 
-        {/* Peek spacer — keeps the track scrollable while two tiles fit the viewport */}
-        <div
-          aria-hidden="true"
-          style={{ width: 20, flexShrink: 0, scrollSnapAlign: "end" }}
-        />
+          const nodes: React.ReactNode[] = [];
+          const rounds = Math.max(liveSorted.length, market.length);
+          for (let i = 0; i < rounds; i++) {
+            const s = liveSorted[i];
+            if (s) nodes.push(liveCard(s));
+            const m = market[i];
+            if (m) nodes.push(marketCard(m));
+          }
+          return nodes;
+        })()}
       </div>
 
       {/* DSM Learn — full width, quieter */}
