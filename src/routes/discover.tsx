@@ -383,7 +383,6 @@ function DiscoverPage() {
     setActiveTab(tab);
   };
 
-
   useEffect(() => {
     let cancelled = false;
 
@@ -459,124 +458,117 @@ function DiscoverPage() {
           <SectionBlock
             title="DSM Live"
             subtitle="Upcoming live sessions and podcasts"
-
-        actionLabel="See all"
-        onAction={() => navigate({ to: "/dsm-live" as never })}
-      >
-        {live.length === 0 && <Empty label="No upcoming live sessions right now." />}
-        {live.map((s) => {
-          const now = isLiveNow(s);
-          return (
-            <Row
-              key={s.id}
-              onClick={() => navigate({ to: "/dsm-live" as never })}
-              media={{
-                background: s.image_url
-                  ? `#12539E url(${s.image_url}) center/cover`
-                  : "linear-gradient(160deg, #2C6FD6 0%, #12539E 100%)",
-              }}
-              badge={
-                now ? (
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: 4,
-                      left: 4,
-                      background: RED,
-                      color: "#FFFFFF",
-                      fontSize: 8.5,
-                      fontWeight: 700,
-                      letterSpacing: "0.04em",
-                      padding: "2px 5px",
-                      borderRadius: 5,
-                    }}
-                  >
-                    LIVE
-                  </span>
-                ) : !s.image_url ? (
-                  <IconBroadcast size={18} color="#FFFFFF" stroke={1.9} />
-                ) : null
-              }
-              title={s.title}
-              meta={fmtWhen(s.session_date, s.session_time)}
-              cta="Join"
-            />
-          );
-        })}
-      </SectionBlock>
-      </div>
+            actionLabel="See all"
+            onAction={() => navigate({ to: "/dsm-live" as never })}
+          >
+            {live.length === 0 && <Empty label="No upcoming live sessions right now." />}
+            {live.map((s) => {
+              const now = isLiveNow(s);
+              return (
+                <Row
+                  key={s.id}
+                  onClick={() => navigate({ to: "/dsm-live" as never })}
+                  media={{
+                    background: s.image_url
+                      ? `#12539E url(${s.image_url}) center/cover`
+                      : "linear-gradient(160deg, #2C6FD6 0%, #12539E 100%)",
+                  }}
+                  badge={
+                    now ? (
+                      <span
+                        style={{
+                          position: "absolute",
+                          top: 4,
+                          left: 4,
+                          background: RED,
+                          color: "#FFFFFF",
+                          fontSize: 8.5,
+                          fontWeight: 700,
+                          letterSpacing: "0.04em",
+                          padding: "2px 5px",
+                          borderRadius: 5,
+                        }}
+                      >
+                        LIVE
+                      </span>
+                    ) : !s.image_url ? (
+                      <IconBroadcast size={18} color="#FFFFFF" stroke={1.9} />
+                    ) : null
+                  }
+                  title={s.title}
+                  meta={fmtWhen(s.session_date, s.session_time)}
+                  cta="Join"
+                />
+              );
+            })}
+          </SectionBlock>
+        </div>
       )}
 
       {activeTab === "learn" && (
         <div ref={learnRef} id="discover-learn">
-
-      <SectionBlock
-        title="DSM Learn"
-
-        subtitle="Short guides and how-to videos"
-        actionLabel="See all"
-        onAction={() => navigate({ to: "/learn" as never })}
-      >
-        {learn.length === 0 && <Empty label="No videos available yet." />}
-        {learn.map((v, i) => {
-          const thumb = v.thumbnail_url || youtubeThumb(v.url);
-          return (
-            <Row
-              key={v.id ?? i}
-              onClick={() => navigate({ to: "/learn" as never })}
-              media={{
-                background: thumb
-                  ? `${NAVY} url(${thumb}) center/cover`
-                  : "linear-gradient(160deg, #4A5568 0%, #0B1F3A 100%)",
-              }}
-              badge={!thumb ? <IconPlayerPlay size={16} color="#FFFFFF" stroke={2} /> : null}
-              title={v.title}
-              meta={v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}
-              cta="Watch"
-            />
-          );
-        })}
-      </SectionBlock>
-      </div>
+          <SectionBlock
+            title="DSM Learn"
+            subtitle="Short guides and how-to videos"
+            actionLabel="See all"
+            onAction={() => navigate({ to: "/learn" as never })}
+          >
+            {learn.length === 0 && <Empty label="No videos available yet." />}
+            {learn.map((v, i) => {
+              const thumb = v.thumbnail_url || youtubeThumb(v.url);
+              return (
+                <Row
+                  key={v.id ?? i}
+                  onClick={() => navigate({ to: "/learn" as never })}
+                  media={{
+                    background: thumb
+                      ? `${NAVY} url(${thumb}) center/cover`
+                      : "linear-gradient(160deg, #4A5568 0%, #0B1F3A 100%)",
+                  }}
+                  badge={!thumb ? <IconPlayerPlay size={16} color="#FFFFFF" stroke={2} /> : null}
+                  title={v.title}
+                  meta={v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}
+                  cta="Watch"
+                />
+              );
+            })}
+          </SectionBlock>
+        </div>
       )}
 
       {activeTab === "market" && (
         <div ref={marketRef} id="discover-market">
-
-      <SectionBlock
-        title="DSM Marketplace"
-
-        subtitle="Cars, kit and services for instructors"
-        actionLabel="See all"
-        onAction={() => navigate({ to: "/marketplace" as never })}
-      >
-        {market.length === 0 && <Empty label="No listings available right now." />}
-        {market.map((m) => {
-          const img = firstImage(m.image_urls);
-          const raw = (m.price_display ?? "").trim();
-          const price = !raw || !/\d/.test(raw)
-            ? "Price on request"
-            : raw.toLowerCase().startsWith("from")
-              ? raw
-              : `From ${raw}`;
-          return (
-            <Row
-              key={m.id}
-              onClick={() => navigate({ to: "/marketplace" as never })}
-              media={{ background: img ? `#EEF2F7 url(${img}) center/cover` : "#EEF2F7" }}
-              title={m.title}
-              meta={price}
-              cta="View"
-            />
-          );
-        })}
-      </SectionBlock>
-      </div>
+          <SectionBlock
+            title="DSM Marketplace"
+            subtitle="Cars, kit and services for instructors"
+            actionLabel="See all"
+            onAction={() => navigate({ to: "/marketplace" as never })}
+          >
+            {market.length === 0 && <Empty label="No listings available right now." />}
+            {market.map((m) => {
+              const img = firstImage(m.image_urls);
+              const raw = (m.price_display ?? "").trim();
+              const price = !raw || !/\d/.test(raw)
+                ? "Price on request"
+                : raw.toLowerCase().startsWith("from")
+                  ? raw
+                  : `From ${raw}`;
+              return (
+                <Row
+                  key={m.id}
+                  onClick={() => navigate({ to: "/marketplace" as never })}
+                  media={{ background: img ? `#EEF2F7 url(${img}) center/cover` : "#EEF2F7" }}
+                  title={m.title}
+                  meta={price}
+                  cta="View"
+                />
+              );
+            })}
+          </SectionBlock>
+        </div>
       )}
     </div>
-
   );
-
 }
 
 export default DiscoverPage;
