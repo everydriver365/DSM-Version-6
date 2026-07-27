@@ -1467,6 +1467,13 @@ function SchedulePage() {
                           }
                           const cancelled = e.kind === "lesson" && e.lesson.status === "cancelled";
                           const isLessonRow = e.kind === "lesson";
+                          const now = new Date();
+                          const isLive = isLessonRow && now >= e.start && now < e.end;
+                          const payStatus = isLessonRow ? (e.lesson.payment_status ?? "").toLowerCase() : "";
+                          const amt = isLessonRow ? Number(e.lesson.amount_due ?? 0) : 0;
+                          const isPrepaidPupil = isLessonRow && Number(e.lesson.pupil?.prepaid_hours ?? 0) > 0;
+                          const isPaid = payStatus === "paid" || payStatus === "prepaid" || isPrepaidPupil;
+                          const dueUnpaid = isLessonRow && amt > 0 && !isPaid;
                           const isBlockRow = e.kind === "block";
                           const clickable = isLessonRow || isBlockRow;
                           const isMovingThis = isLessonRow && movingLesson && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id === movingLesson.id;
