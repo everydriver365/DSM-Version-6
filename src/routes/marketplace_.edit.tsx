@@ -195,35 +195,17 @@ function MarketplaceEditPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#fff" }}>
-      <div
-        style={{
-          background: "#0B1F3A",
-          color: "#fff",
-          padding: "14px 16px",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-        }}
-      >
-        <button
-          onClick={() => navigate({ to: "/marketplace" })}
-          style={{
-            background: "transparent",
-            border: "none",
-            color: "#fff",
-            fontSize: 22,
-            cursor: "pointer",
-            padding: 4,
-          }}
-          aria-label="Back"
-        >
-          ←
-        </button>
-        <h1 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>Edit Marketplace</h1>
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Edit Marketplace"
+        onBack={() => navigate({ to: "/marketplace" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       <div style={{ maxWidth: 720, margin: "0 auto", padding: 16 }}>
         {loadError && (
