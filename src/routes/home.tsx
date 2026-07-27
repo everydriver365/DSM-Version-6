@@ -5877,26 +5877,35 @@ function HomePage() {
                                       }}>
                                         Cancelled
                                       </span>
-                                    ) : priceNode ? (
-                                      <span style={{
-                                        flexShrink: 0,
-                                        fontSize: 11,
-                                        fontWeight: 700,
-                                        padding: '2px 9px',
-                                        borderRadius: 999,
-                                        ...(isLive ? {
-                                          background: '#E6F1FB', color: '#1877D6',
-                                        } : isPrepaidPupil || isPaid ? {
-                                          background: '#E7F5EE', color: '#1E8E3E',
-                                        } : dueUnpaid ? {
-                                          background: '#FCEBEB', color: '#CC2229',
-                                        } : {
-                                          background: '#E7F5EE', color: '#1E8E3E',
-                                        }),
-                                      }}>
-                                        {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
-                                      </span>
-                                    ) : null}
+                                     ) : priceNode ? (
+                                       <button
+                                         type="button"
+                                         onClick={(ev) => {
+                                           ev.stopPropagation();
+                                           setPaymentSheetForLesson(l);
+                                         }}
+                                         style={{
+                                           flexShrink: 0,
+                                           fontSize: 11,
+                                           fontWeight: 700,
+                                           padding: '2px 9px',
+                                           borderRadius: 999,
+                                           border: 'none',
+                                           cursor: 'pointer',
+                                           ...(isLive ? {
+                                             background: '#E6F1FB', color: '#1877D6',
+                                           } : isPrepaidPupil || isPaid ? {
+                                             background: '#E7F5EE', color: '#1E8E3E',
+                                           } : dueUnpaid ? {
+                                             background: '#FCEBEB', color: '#CC2229',
+                                           } : {
+                                             background: '#E7F5EE', color: '#1E8E3E',
+                                           }),
+                                         }}
+                                       >
+                                         {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
+                                       </button>
+                                     ) : null}
                                   </div>
                                   {pickupLabel && (
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3, minWidth: 0 }}>
