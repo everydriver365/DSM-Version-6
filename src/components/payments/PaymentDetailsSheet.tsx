@@ -1,4 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet, PrimaryButton, GhostButton } from "@/components/dsm/BottomSheetV2";
 import {
   IconCreditCard,
@@ -6,6 +8,9 @@ import {
   IconCalendar,
   IconUser,
   IconCoins,
+  IconCashBanknote,
+  IconLink,
+  IconBell,
 } from "@tabler/icons-react";
 
 interface PaymentDetailsSheetProps {
@@ -18,6 +23,9 @@ interface PaymentDetailsSheetProps {
   amountDue: number;
   prepaidHours?: number;
   duration?: number;
+  pupilId?: string | null;
+  pupilPhone?: string | null;
+  lessonId?: string | null;
 }
 
 const NAVY = "#0B1F3A";
@@ -29,6 +37,25 @@ const HAIRLINE = "#E2E8F0";
 
 function formatMoney(n: number) {
   return `£${n.toFixed(2)}`;
+}
+
+function formatDay(d?: string | null) {
+  if (!d) return "";
+  const dt = new Date(d.length <= 10 ? `${d}T00:00:00` : d);
+  if (Number.isNaN(dt.getTime())) return d;
+  return dt.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+
+function methodLabel(m?: string | null) {
+  if (!m) return "";
+  const map: Record<string, string> = {
+    cash: "Cash",
+    card: "Card",
+    card_qr: "Card (QR)",
+    bank_transfer: "Bank transfer",
+    bank: "Bank transfer",
+  };
+  return map[m] ?? m.replace(/_/g, " ");
 }
 
 function statusLabel(status: string, prepaidHours?: number) {
@@ -114,7 +141,17 @@ export function PaymentDetailsSheet({
   amountDue,
   prepaidHours,
   duration,
+  pupilId,
+  pupilPhone,
+  lessonId,
 }: PaymentDetailsSheetProps) {
+  const [lastPayment, setLastPayment] = useState<
+    { amount: number; date: string | null; method: string | null } | null
+  >(null);
+  const [hoursLeft, setHoursLeft] = useState<number | null>(null);
+  const [phone, setPhone] = useState<string | null>(pupilPhone ?? null);
+  const [sendingLink, setSendingLink] = useState(false);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -124,12 +161,115 @@ export function PaymentDetailsSheet({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
+  useEffect(() => {
+    if (!open || !pupilId) return;
+    let cancelled = false;
+
+    (async () => {
+      const [{ data: pay }, { data: pupil }] = await Promise.all([
+        supabase
+          .from("payments")
+          .select("amount, payment_date, paid_at, created_at, payment_method")
+          .eq("pupil_id", pupilId)
+          .is("deleted_at", null)
+          .order("created_at", { ascending: false })
+          .limit(1),
+        supabase
+          .from("pupils")
+          .select("prepaid_hours, phone")
+          .eq("id", pupilId)
+          .maybeSingle(),
+      ]);
+
+      if (cancelled) return;
+
+      const p = (pay ?? [])[0] as
+        | {
+            amount?: number | null;
+            payment_date?: string | null;
+            paid_at?: string | null;
+            created_at?: string | null;
+            payment_method?: string | null;
+          }
+        | undefined;
+      setLastPayment(
+        p
+          ? {
+              amount: Number(p.amount ?? 0),
+              date: p.payment_date ?? p.paid_at ?? p.created_at ?? null,
+              method: p.payment_method ?? null,
+            }
+          : null,
+      );
+
+      const pu = pupil as { prepaid_hours?: number | null; phone?: string | null } | null;
+      if (pu) {
+        setHoursLeft(Number(pu.prepaid_hours ?? 0));
+        if (!pupilPhone) setPhone(pu.phone ?? null);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [open, pupilId, pupilPhone]);
+
   if (!open) return null;
 
   const label = statusLabel(paymentStatus, prepaidHours);
   const colors = statusColors(paymentStatus, prepaidHours);
   const amountText = amountDue > 0 ? formatMoney(amountDue) : "£0.00";
   const durationText = duration ? `${duration} min lesson` : "Lesson";
+  const effectiveHours = hoursLeft ?? prepaidHours ?? 0;
+  const firstName = pupilName.split(" ")[0] || pupilName;
+
+  const sendReminder = () => {
+    if (!phone) {
+      toast.error("No phone number for this pupil");
+      return;
+    }
+    const body = encodeURIComponent(
+      amountDue > 0
+        ? `Hi ${firstName}, just a friendly reminder your lesson balance of £${amountDue.toFixed(2)} is outstanding. Thanks!`
+        : `Hi ${firstName}, just a quick reminder about your upcoming lesson. Thanks!`,
+    );
+    window.location.href = `sms:${phone}?&body=${body}`;
+  };
+
+  const sendPaymentLink = async () => {
+    if (!phone) {
+      toast.error("No phone number for this pupil");
+      return;
+    }
+    setSendingLink(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
+        body: {
+          amount: amountDue > 0 ? amountDue : 0,
+          pupil_id: pupilId,
+          pupil_name: pupilName,
+          lesson_id: lessonId,
+          description: `Lesson payment · ${pupilName}`,
+          commission: 1,
+        },
+      });
+      if (error) throw error;
+      const url =
+        (data as { paymentUrl?: string; url?: string })?.paymentUrl ??
+        (data as { url?: string })?.url ??
+        null;
+      if (!url) throw new Error("No payment URL returned");
+      const body = encodeURIComponent(
+        `Hi ${firstName}, here's your secure payment link for £${amountDue.toFixed(2)}: ${url}`,
+      );
+      window.location.href = `sms:${phone}?&body=${body}`;
+    } catch (e) {
+      console.error("[payment-sheet] payment link failed", e);
+      toast.error("Couldn't generate payment link");
+    } finally {
+      setSendingLink(false);
+    }
+  };
 
   return (
     <BottomSheet
@@ -138,9 +278,10 @@ export function PaymentDetailsSheet({
       onClose={onClose}
       footer={
         <>
-          <PrimaryButton onClick={onClose} color={BLUE}>
-            Close
+          <PrimaryButton onClick={sendPaymentLink} color={BLUE} disabled={sendingLink}>
+            {sendingLink ? "Creating link…" : "Send payment link"}
           </PrimaryButton>
+          <GhostButton onClick={sendReminder}>Send reminder</GhostButton>
         </>
       }
     >
@@ -220,20 +361,57 @@ export function PaymentDetailsSheet({
           label="Time"
           value={lessonTime}
         />
-        {prepaidHours !== undefined && prepaidHours > 0 && (
-          <DetailRow
-            icon={<IconCoins size={18} color={GREEN} stroke={2} />}
-            label="Prepaid hours"
-            value={`${prepaidHours} remaining`}
-          />
+        <DetailRow
+          icon={<IconCreditCard size={18} color={amountDue > 0 ? RED : GREEN} stroke={2} />}
+          label="Amount due"
+          value={amountText}
+          highlight={amountDue > 0}
+        />
+        <DetailRow
+          icon={<IconCashBanknote size={18} color={GREEN} stroke={2} />}
+          label="Last payment"
+          value={
+            lastPayment
+              ? `${formatMoney(lastPayment.amount)}${lastPayment.date ? ` · ${formatDay(lastPayment.date)}` : ""}${
+                  lastPayment.method ? ` · ${methodLabel(lastPayment.method)}` : ""
+                }`
+              : "No payments recorded"
+          }
+        />
+        <DetailRow
+          icon={<IconCoins size={18} color={effectiveHours > 0 ? GREEN : MUTED} stroke={2} />}
+          label="Hours prepaid / remaining"
+          value={`${effectiveHours.toFixed(1)} hrs remaining`}
+        />
+        {!phone && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              marginTop: 12,
+              fontSize: 12,
+              color: MUTED,
+            }}
+          >
+            <IconBell size={14} color={MUTED} stroke={2} />
+            No phone number on file — reminders and links can't be sent.
+          </div>
         )}
-        {amountDue > 0 && !prepaidHours && (
-          <DetailRow
-            icon={<IconCreditCard size={18} color={RED} stroke={2} />}
-            label="Amount due"
-            value={amountText}
-            highlight
-          />
+        {phone && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              marginTop: 12,
+              fontSize: 12,
+              color: MUTED,
+            }}
+          >
+            <IconLink size={14} color={MUTED} stroke={2} />
+            Sends via SMS to {phone}
+          </div>
         )}
       </div>
     </BottomSheet>
