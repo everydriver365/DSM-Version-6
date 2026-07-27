@@ -19,6 +19,7 @@ import { PAGE_BACKGROUND } from "@/components/PageLayout";
 import { PupilAvatar } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
+import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
 
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
@@ -316,6 +317,7 @@ function SchedulePage() {
   const [actionsOpenFor, setActionsOpenFor] = useState<Lesson | null>(null);
   const [cancelSheetFor, setCancelSheetFor] = useState<Lesson | null>(null);
   const [deleteSheetFor, setDeleteSheetFor] = useState<Lesson | null>(null);
+  const [paymentSheetFor, setPaymentSheetFor] = useState<Lesson | null>(null);
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
 
   // Close popover on outside click
@@ -1665,25 +1667,34 @@ function SchedulePage() {
                                                    }}>
                                                      Cancelled
                                                    </span>
-                                                 ) : (isLive || isPrepaidPupil || isPaid || dueUnpaid) ? (
-                                                   <span style={{
-                                                     flexShrink: 0,
-                                                     fontSize: 10,
-                                                     fontWeight: 700,
-                                                     padding: '2px 9px',
-                                                     borderRadius: 999,
-                                                     lineHeight: 1.4,
-                                                     ...(isLive ? {
-                                                       background: '#E6F1FB', color: '#1877D6',
-                                                     } : isPrepaidPupil || isPaid ? {
-                                                       background: '#E7F5EE', color: '#1E8E3E',
-                                                     } : {
-                                                       background: '#FCEBEB', color: '#CC2229',
-                                                     }),
-                                                   }}>
-                                                     {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
-                                                   </span>
-                                                 ) : null}
+                                                   ) : (isLive || isPrepaidPupil || isPaid || dueUnpaid) ? (
+                                                     <button
+                                                       type="button"
+                                                       onClick={(ev) => {
+                                                         ev.stopPropagation();
+                                                         setPaymentSheetFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
+                                                       }}
+                                                       style={{  
+                                                        flexShrink: 0,
+                                                        fontSize: 10,
+                                                        fontWeight: 700,
+                                                        padding: '2px 9px',
+                                                        borderRadius: 999,
+                                                        lineHeight: 1.4,
+                                                        border: 'none',
+                                                        cursor: 'pointer',
+                                                        ...(isLive ? {
+                                                          background: '#E6F1FB', color: '#1877D6',
+                                                        } : isPrepaidPupil || isPaid ? {
+                                                          background: '#E7F5EE', color: '#1E8E3E',
+                                                        } : {
+                                                          background: '#FCEBEB', color: '#CC2229',
+                                                        }),
+                                                      }}
+                                                    >
+                                                      {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
+                                                    </button>
+                                                  ) : null}
                                                </div>
                                                {timeText ? (
                                                  <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
@@ -1900,8 +1911,19 @@ function SchedulePage() {
         />
       )}
 
-
-
+      {paymentSheetFor && (
+        <PaymentDetailsSheet
+          open={true}
+          onClose={() => setPaymentSheetFor(null)}
+          pupilName={pupilDisplayName(paymentSheetFor.pupil)}
+          lessonDate={paymentSheetFor.lesson_date}
+          lessonTime={String(paymentSheetFor.lesson_time ?? "").slice(0, 5)}
+          paymentStatus={(paymentSheetFor as any).payment_status ?? ""}
+          amountDue={Number((paymentSheetFor as any).amount_due ?? 0)}
+          prepaidHours={Number((paymentSheetFor as any).pupil?.prepaid_hours ?? 0)}
+          duration={paymentSheetFor.duration_minutes ?? 60}
+        />
+      )}
 
 
       <button
