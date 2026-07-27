@@ -370,7 +370,7 @@ export function DiscoverSection() {
                 tabIndex={0}
                 onClick={() =>
                   navigate({
-                    to: "/marketplace_/$listingId" as never,
+                    to: "/marketplace/$listingId" as never,
                     params: { listingId: m.id } as never,
                   })
                 }

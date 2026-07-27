@@ -600,7 +600,7 @@ function DiscoverPage() {
                   key={m.id}
                   onClick={() =>
                     navigate({
-                      to: "/marketplace_/$listingId" as never,
+                      to: "/marketplace/$listingId" as never,
                       params: { listingId: m.id } as never,
                     })
                   }
