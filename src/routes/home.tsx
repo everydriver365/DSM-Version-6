@@ -5881,25 +5881,6 @@ function HomePage() {
                                 marginLeft: 4,
                               }}
                             >
-                              <div aria-hidden style={{ position: 'relative' }}>
-                                {isLive && (
-                                  <span
-                                    aria-label="Live"
-                                    style={{
-                                      position: 'absolute',
-                                      top: 0,
-                                      right: 0,
-                                      width: 8,
-                                      height: 8,
-                                      borderRadius: 999,
-                                      backgroundColor: '#DC2626',
-                                      boxShadow: '0 0 0 2px #FFFFFF',
-                                      zIndex: 1,
-                                    }}
-                                  />
-                                )}
-                                <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={36} />
-                              </div>
                               <button
                                 type="button"
                                 data-home-lesson-actions-trigger
