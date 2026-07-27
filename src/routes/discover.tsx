@@ -480,7 +480,12 @@ function DiscoverPage() {
         </p>
       </div>
 
-      <TabBar active={activeTab} onChange={scrollTo} />
+      <TabBar
+        active={activeTab}
+        onChange={scrollTo}
+        counts={{ live: live.length, learn: learn.length, market: market.length }}
+      />
+
 
       {activeTab === "live" && (
         <div ref={liveRef} id="discover-live">
