@@ -683,10 +683,12 @@ export function DiscoverSection() {
                   </span>
                 }
               >
-                {!s.image_url && <IconBroadcast size={18} color="#FFFFFF" stroke={1.9} />}
+              {!s.image_url && <IconBroadcast size={18} color="#FFFFFF" stroke={1.9} />}
               </StackMedia>
-              <div style={{ ...cardTitle, marginTop: 8 }}>{s.title}</div>
-              <div style={cardSub}>{fmtTimeDay(s.session_date, s.session_time)}</div>
+              <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
+                <div style={{ ...cardTitle, marginTop: 8 }}>{s.title}</div>
+                <div style={cardSub}>{fmtTimeDay(s.session_date, s.session_time)}</div>
+              </div>
               <button type="button" style={cardBtn("JOIN")}>
                 Join
               </button>
