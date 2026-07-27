@@ -709,6 +709,12 @@ export function DiscoverSection() {
             </button>
           </div>
         )}
+
+        {/* Peek spacer — keeps the track scrollable while two tiles fit the viewport */}
+        <div
+          aria-hidden="true"
+          style={{ width: 20, flexShrink: 0, scrollSnapAlign: "end" }}
+        />
       </div>
 
       {/* DSM Learn — full width, quieter */}
