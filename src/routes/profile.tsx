@@ -17,6 +17,7 @@ import {
   Apple,
   Loader2,
 } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
