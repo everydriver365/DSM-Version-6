@@ -28,8 +28,11 @@ type Booking = {
 };
 
 export const Route = createFileRoute("/dsm-live/$sessionId")({
+  validateSearch: (search: Record<string, unknown>): { from?: "discover" } =>
+    search.from === "discover" ? { from: "discover" } : {},
   component: SessionDetailPage,
 });
+
 
 function authHeaders(extra: Record<string, string> = {}) {
   return {
