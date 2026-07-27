@@ -641,7 +641,12 @@ export function DiscoverSection() {
               key={`live-${s.id}`}
               role="button"
               tabIndex={0}
-              onClick={() => navigate({ to: "/dsm-live" as never })}
+              onClick={() =>
+                navigate({
+                  to: "/dsm-live/$sessionId" as never,
+                  params: { sessionId: s.id } as never,
+                })
+              }
               style={cardShell}
             >
               <StackMedia
