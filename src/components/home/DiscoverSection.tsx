@@ -111,23 +111,6 @@ function dayOfYear(d: Date) {
   return Math.floor((d.getTime() - start.getTime()) / 86400000);
 }
 
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <h2
-      style={{
-        margin: "0 0 12px",
-        fontSize: 18,
-        fontWeight: 600,
-        color: NAVY,
-        letterSpacing: "-0.01em",
-        lineHeight: 1.2,
-        fontFamily: FONT,
-      }}
-    >
-      {children}
-    </h2>
-  );
-}
 
 
 
