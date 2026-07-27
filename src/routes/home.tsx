@@ -6695,6 +6695,20 @@ function HomePage() {
         />
       )}
 
+      {paymentSheetForLesson && (
+        <PaymentDetailsSheet
+          open={true}
+          onClose={() => setPaymentSheetForLesson(null)}
+          pupilName={pupilName(paymentSheetForLesson)}
+          lessonDate={paymentSheetForLesson.lesson_date}
+          lessonTime={String(paymentSheetForLesson.lesson_time ?? "").slice(0, 5)}
+          paymentStatus={(paymentSheetForLesson as any).payment_status ?? ""}
+          amountDue={Number((paymentSheetForLesson as any).amount_due ?? 0)}
+          prepaidHours={Number((paymentSheetForLesson.pupils as any)?.prepaid_hours ?? 0)}
+          duration={paymentSheetForLesson.duration_minutes ?? 60}
+        />
+      )}
+
 
       <ConfirmDialog
         open={!!confirmMoveHome}
