@@ -405,19 +405,23 @@ function TabBar({
 
 function DiscoverPage() {
   const navigate = useNavigate();
+  const { tab } = Route.useSearch();
   const [live, setLive] = useState<LiveItem[]>([]);
   const [learn, setLearn] = useState<LearnItem[]>([]);
   const [market, setMarket] = useState<MarketItem[]>([]);
-  const [activeTab, setActiveTab] = useState<"live" | "learn" | "market">("live");
+  const activeTab: DiscoverTab = tab ?? "live";
   const liveRef = useRef<HTMLDivElement>(null);
   const learnRef = useRef<HTMLDivElement>(null);
   const marketRef = useRef<HTMLDivElement>(null);
 
-  const scrollTo = (tab: "live" | "learn" | "market") => {
-    const ref = { live: liveRef, learn: learnRef, market: marketRef }[tab];
+  // Keep the active tab in the URL so returning from an item detail page
+  // (browser back or an explicit back button) lands on the same section.
+  const scrollTo = (next: DiscoverTab) => {
+    const ref = { live: liveRef, learn: learnRef, market: marketRef }[next];
     ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    setActiveTab(tab);
+    navigate({ to: "/discover", search: { tab: next }, replace: true });
   };
+
 
   useEffect(() => {
     let cancelled = false;
