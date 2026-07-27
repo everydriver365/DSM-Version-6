@@ -368,7 +368,7 @@ export function DiscoverSection() {
     return (
       <TileShell
         onClick={() =>
-          navigate({ to: "/dsm-live/$sessionId" as never, params: { sessionId: s.id } as never })
+          navigate({ to: "/dsm-live" as never })
         }
       >
         <div
@@ -427,7 +427,7 @@ export function DiscoverSection() {
     return (
       <TileShell
         onClick={() =>
-          navigate({ to: "/marketplace/$listingId" as never, params: { listingId: m.id } as never })
+          navigate({ to: "/marketplace" as never })
         }
       >
         <div
@@ -532,7 +532,9 @@ export function DiscoverSection() {
 
   const cardShell: React.CSSProperties = {
     width: "calc(75% - 5px)",
+    minWidth: "calc(75% - 5px)",
     flexShrink: 0,
+    flexGrow: 0,
     background: "#FFFFFF",
     border: `1px solid ${HAIRLINE}`,
     borderRadius: 12,
@@ -588,13 +590,37 @@ export function DiscoverSection() {
 
   return (
     <div style={{ padding: "0 0 22px", fontFamily: FONT }}>
-      <SectionHeader>Discover</SectionHeader>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+        <SectionHeader>Discover</SectionHeader>
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/discover" as never })}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 2,
+            background: "none",
+            border: "none",
+            padding: 0,
+            fontFamily: FONT,
+            fontSize: 13,
+            fontWeight: 600,
+            color: BLUE,
+            cursor: "pointer",
+          }}
+        >
+          See more
+          <IconChevronRight size={14} stroke={2.2} />
+        </button>
+      </div>
 
-
+      <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}`}</style>
 
       <div
+        className="dsm-discover-scroll"
         style={{
           display: "flex",
+          flexWrap: "nowrap",
           gap: 10,
           alignItems: "stretch",
           overflowX: "auto",
@@ -610,12 +636,7 @@ export function DiscoverSection() {
           <div
             role="button"
             tabIndex={0}
-            onClick={() =>
-              navigate({
-                to: "/dsm-live/$sessionId" as never,
-                params: { sessionId: liveTop.id } as never,
-              })
-            }
+            onClick={() => navigate({ to: "/dsm-live" as never })}
             style={cardShell}
           >
             <StackMedia
@@ -672,12 +693,7 @@ export function DiscoverSection() {
           <div
             role="button"
             tabIndex={0}
-            onClick={() =>
-              navigate({
-                to: "/marketplace/$listingId" as never,
-                params: { listingId: marketTop.id } as never,
-              })
-            }
+            onClick={() => navigate({ to: "/marketplace" as never })}
             style={cardShell}
           >
             <StackMedia
