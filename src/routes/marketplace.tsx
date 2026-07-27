@@ -16,6 +16,8 @@ import {
   Megaphone,
   Package,
 } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
