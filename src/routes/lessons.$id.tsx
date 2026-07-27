@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Pencil, Navigation, ChevronRight, Map, AlertTriangle } from "lucide-react";
+import { Pencil, Navigation, ChevronRight, Map, AlertTriangle } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
