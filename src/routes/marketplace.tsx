@@ -459,8 +459,11 @@ function ProductCard({
 }) {
   const cat = listing.marketplace_categories;
   const Icon = iconFor(cat?.slug);
-  const bg = colorFor(cat?.slug);
-  const iconColor = bg === "#0F2044" ? "#3D7BE0" : "#FFFFFF";
+  const accent = colorFor(cat?.slug);
+  const image = listing.image_urls?.[0] ?? null;
+  const price = listing.price_display?.trim() || null;
+  const subtitle =
+    listing.marketplace_suppliers?.name || cat?.name || "Marketplace";
 
   return (
     <div
@@ -475,87 +478,86 @@ function ProductCard({
       }}
       style={{
         background: "#FFFFFF",
-        border: "1px solid rgba(15,32,68,0.10)",
-        borderRadius: 16,
-        overflow: "hidden",
+        border: "1px solid #E3E8F0",
+        borderRadius: 14,
+        padding: 12,
+        display: "flex",
+        flexDirection: "row",
+        gap: 12,
         cursor: "pointer",
         userSelect: "none",
         fontFamily: POPPINS,
-        position: "relative",
       }}
     >
       <div
         style={{
-          height: 100,
-          background: bg,
+          width: 90,
+          height: 90,
+          flexShrink: 0,
+          borderRadius: 10,
+          background: image ? `#F1F5F9 url(${image}) center/cover no-repeat` : `${accent}1F`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <Icon size={40} color={iconColor} strokeWidth={1.75} />
+        {!image && <Icon size={28} color={accent} strokeWidth={1.75} />}
       </div>
 
-      {listing.is_featured ? (
-        <span
-          style={{
-            position: "absolute",
-            top: 8,
-            left: 8,
-            background: "#E24B4A",
-            color: "#FFFFFF",
-            fontSize: 8,
-            fontWeight: 500,
-            padding: "3px 8px",
-            borderRadius: 20,
-          }}
-        >
-          Featured
-        </span>
-      ) : cat ? (
-        <span
-          style={{
-            position: "absolute",
-            top: 8,
-            left: 8,
-            background: "#FFFFFF",
-            color: bg,
-            fontSize: 8,
-            fontWeight: 500,
-            padding: "3px 8px",
-            borderRadius: 20,
-          }}
-        >
-          {cat.name}
-        </span>
-      ) : null}
-
-      <div style={{ padding: "10px 12px 12px" }}>
-        {cat && (
-          <div
-            style={{
-              fontSize: 12,
-              fontWeight: 500,
-              color: "#64748B",
-              marginBottom: 4,
-            }}
-          >
-            {cat.name}
-          </div>
-        )}
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
         <div
           style={{
-            fontSize: 13,
+            fontSize: 14,
             fontWeight: 500,
-            color: "#0F2044",
+            color: "#0B1F3A",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            marginBottom: 4,
+          }}
+        >
+          {listing.title}
+        </div>
+        <div
+          style={{
+            fontSize: 12,
+            color: "#8792A2",
+            marginBottom: "auto",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
           }}
         >
-          {listing.title}
+          {subtitle}
+        </div>
+
+        <div
+          style={{
+            marginTop: 6,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 8,
+          }}
+        >
+          <span style={{ fontSize: 12, fontWeight: 500, color: "#0B1F3A" }}>
+            {price ?? "Price on request"}
+          </span>
+          <span
+            style={{
+              background: "#1877D6",
+              color: "#FFFFFF",
+              fontSize: 11,
+              fontWeight: 500,
+              padding: "6px 12px",
+              borderRadius: 8,
+            }}
+          >
+            View
+          </span>
         </div>
       </div>
     </div>
   );
 }
+
