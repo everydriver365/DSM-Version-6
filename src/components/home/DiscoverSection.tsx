@@ -707,7 +707,12 @@ export function DiscoverSection() {
                 key={`market-${m.id}`}
                 role="button"
                 tabIndex={0}
-                onClick={() => navigate({ to: "/marketplace" as never })}
+                onClick={() =>
+                  navigate({
+                    to: "/marketplace_/$listingId" as never,
+                    params: { listingId: m.id } as never,
+                  })
+                }
                 style={cardShell}
               >
                 <StackMedia
