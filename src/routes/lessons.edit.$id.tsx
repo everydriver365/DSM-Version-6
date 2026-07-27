@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, PoundSterling } from "lucide-react";
+import { PoundSterling } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
