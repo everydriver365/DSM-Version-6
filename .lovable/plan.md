@@ -1,39 +1,38 @@
-## Goal
+## Plan: Make DSM Live and DSM Learn rows swipable
 
-Restructure the Home "Discover" section so the scrollable top tiles show **only Marketplace listings**, and add two full-width rows underneath matching the uploaded reference: a **DSM Live** row and the existing **DSM Learn** row.
+### Goal
+Allow the user to swipe through every available DSM Live session and DSM Learn video in the Discover section, mirroring the horizontal scroll behaviour already in place for the Marketplace carousel.
 
-Only `src/components/home/DiscoverSection.tsx` changes.
+### Files to change
+- `src/components/home/DiscoverSection.tsx` only.
 
-## Layout after the change
+### What will change
 
-```text
-Discover                                 See more >
-[ Marketplace card ][ Marketplace card ]  → scrolls
-┌───────────────────────────────────────────────┐
-│ [icon•]  Standards check          [ Join ]    │  DSM Live (next/live session)
-│          Live · 10:10am tomorrow              │
-└───────────────────────────────────────────────┘
-┌───────────────────────────────────────────────┐
-│ [▷]      Blue light                     >     │  DSM Learn (tip of the day)
-│          DSM Learn                            │
-└───────────────────────────────────────────────┘
-```
+1. **DSM Live row becomes a horizontal scroll list**
+   - Replace the single full-width Live card with a horizontal scroll container.
+   - Render one full-width card per item in `liveSorted` (live-now sessions first, then upcoming).
+   - Keep the existing card styling: white card, 1px `#E2E8F0` border, 12px radius, soft shadow, 10px padding, navy icon box, red live dot, `Join` pill, and tap-to-navigate to `/dsm-live/$sessionId`.
+   - Add a small invisible right spacer so the last card is fully swipeable.
+   - Hide the entire Live strip when there are no upcoming sessions.
 
-## Changes
+2. **DSM Learn row becomes a horizontal scroll list**
+   - Replace the single "tip of the day" row with a horizontal scroll container showing all `playable` learn videos.
+   - Keep the existing styling: white card, 1px border, 12px radius, soft shadow, light-grey icon box with play icon or thumbnail, title + "DSM Learn" subtitle, and chevron-right on the right edge.
+   - Tapping a card opens the video URL in a new tab (or navigates to `/learn` if no URL is available).
+   - Add a small invisible right spacer for swipeability.
+   - Hide the strip when there are no playable learn videos.
 
-1. **Carousel** — remove the live/marketplace interleave loop; render only `market.map(marketCard)` plus the existing scroll spacer. Card size, styling, snap scrolling and per-item navigation to `/marketplace_/$listingId` stay as they are.
+3. **Reusable scroll container**
+   - Extract the current Marketplace carousel scroll wrapper into a small internal helper (`ScrollStrip`) so Marketplace, Live, and Learn share the same snap-scroll, gap, and hide-scrollbar styles.
+   - Marketplace content itself stays unchanged: still shows only marketplace listings.
 
-2. **New DSM Live row** — full-width white card (1px `#E2E8F0`, 12px radius, same soft shadow, 10px padding, 12px gap) placed directly under the carousel, using the first item of `liveSorted`:
-   - Left: 44px navy `#0B1F3A` rounded square with a white broadcast icon; small red dot badge on the top-right corner of that square when the session is live now.
-   - Middle: session title (15px, semibold, navy, single-line ellipsis) with `Live · {time day}` underneath (11px, `#6B7A90`) reusing `fmtTimeDay`.
-   - Right: navy "Join" pill button.
-   - Whole row taps through to `/dsm-live/$sessionId`.
-   - Hidden entirely when there are no upcoming sessions.
+### What stays the same
+- Data fetching, limits, and sorting.
+- Marketplace carousel content and card design.
+- Header with "Discover" and "See more" link to `/discover`.
+- Navigation targets and tap behaviour per card.
+- Overall page layout and margins around the section.
 
-3. **DSM Learn row** — keep the existing tip-of-the-day row and behaviour, restyled to match: same 44px left tile with play icon (light grey `#EEF2F7` background, grey icon, no offset stack), title + "DSM Learn" subtitle, and the "Watch" button replaced with a grey chevron-right on the right edge.
-
-4. Delete the now-unused `liveTile`/`marketTile`/`TileShell`/`TileBody`/`SeeMore`/`CategoryPill` helpers only if they are genuinely unreferenced after the edit, to keep the file clean and typecheck-safe.
-
-## Not changing
-
-Data fetching queries, the "See more" header link to `/discover`, the `/discover` page itself, and the Home page layout around the section.
+### Verification
+- Run TypeScript check.
+- Check the preview to confirm three independent horizontal strips: Marketplace, Live, Learn.
