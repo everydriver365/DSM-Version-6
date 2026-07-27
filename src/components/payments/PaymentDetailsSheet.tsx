@@ -145,9 +145,10 @@ export function PaymentDetailsSheet({
   pupilPhone,
   lessonId,
 }: PaymentDetailsSheetProps) {
-  const [lastPayment, setLastPayment] = useState<
-    { amount: number; date: string | null; method: string | null } | null
-  >(null);
+  const [payments, setPayments] = useState<
+    { id: string; amount: number; date: string | null; method: string | null }[]
+  >([]);
+  const lastPayment = payments[0] ?? null;
   const [hoursLeft, setHoursLeft] = useState<number | null>(null);
   const [phone, setPhone] = useState<string | null>(pupilPhone ?? null);
   const [sendingLink, setSendingLink] = useState(false);
@@ -169,11 +170,11 @@ export function PaymentDetailsSheet({
       const [{ data: pay }, { data: pupil }] = await Promise.all([
         supabase
           .from("payments")
-          .select("amount, payment_date, paid_at, created_at, payment_method")
+          .select("id, amount, payment_date, paid_at, created_at, payment_method")
           .eq("pupil_id", pupilId)
           .is("deleted_at", null)
           .order("created_at", { ascending: false })
-          .limit(1),
+          .limit(5),
         supabase
           .from("pupils")
           .select("prepaid_hours, phone")
@@ -183,23 +184,21 @@ export function PaymentDetailsSheet({
 
       if (cancelled) return;
 
-      const p = (pay ?? [])[0] as
-        | {
-            amount?: number | null;
-            payment_date?: string | null;
-            paid_at?: string | null;
-            created_at?: string | null;
-            payment_method?: string | null;
-          }
-        | undefined;
-      setLastPayment(
-        p
-          ? {
-              amount: Number(p.amount ?? 0),
-              date: p.payment_date ?? p.paid_at ?? p.created_at ?? null,
-              method: p.payment_method ?? null,
-            }
-          : null,
+      const rows = (pay ?? []) as {
+        id?: string;
+        amount?: number | null;
+        payment_date?: string | null;
+        paid_at?: string | null;
+        created_at?: string | null;
+        payment_method?: string | null;
+      }[];
+      setPayments(
+        rows.map((p, i) => ({
+          id: p.id ?? String(i),
+          amount: Number(p.amount ?? 0),
+          date: p.payment_date ?? p.paid_at ?? p.created_at ?? null,
+          method: p.payment_method ?? null,
+        })),
       );
 
       const pu = pupil as { prepaid_hours?: number | null; phone?: string | null } | null;
@@ -383,6 +382,62 @@ export function PaymentDetailsSheet({
           label="Hours prepaid / remaining"
           value={`${effectiveHours.toFixed(1)} hrs remaining`}
         />
+
+        <div style={{ marginTop: 16 }}>
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.05em",
+              color: MUTED,
+              textTransform: "uppercase",
+              marginBottom: 6,
+            }}
+          >
+            Payment history
+          </div>
+          {payments.length === 0 ? (
+            <div style={{ fontSize: 13, color: MUTED, padding: "8px 0" }}>
+              No payments recorded yet
+            </div>
+          ) : (
+            <div
+              style={{
+                background: "#FFFFFF",
+                borderRadius: 12,
+                boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                overflow: "hidden",
+              }}
+            >
+              {payments.map((p, i) => (
+                <div
+                  key={p.id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 12,
+                    padding: "10px 12px",
+                    borderTop: i === 0 ? "none" : `1px solid ${HAIRLINE}`,
+                  }}
+                >
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: NAVY }}>
+                      {formatDay(p.date) || "Unknown date"}
+                    </div>
+                    <div style={{ fontSize: 11, color: MUTED, marginTop: 1 }}>
+                      {methodLabel(p.method) || "—"}
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: GREEN, flexShrink: 0 }}>
+                    {formatMoney(p.amount)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {!phone && (
           <div
             style={{
