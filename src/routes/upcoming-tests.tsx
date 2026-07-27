@@ -28,8 +28,6 @@ interface PupilTestRow {
   test_date: string;
   test_time: string | null;
   test_centre: string | null;
-  test_examiner: string | null;
-  test_status: string | null;
 }
 
 function todayYmd() {
@@ -81,19 +79,24 @@ function UpcomingTestsPage() {
       }
       const { data, error } = await supabase
         .from("pupils")
-        .select("id, name, test_date, test_time, test_centre, test_examiner, test_status")
+        .select("id, name, first_name, test_date, test_time, test_centre")
         .eq("instructor_id", userId)
-        .is("deleted_at", null)
-        .is("test_status", null)
         .not("test_date", "is", null)
         .gte("test_date", todayYmd())
-        .order("test_date", { ascending: true })
-        .order("test_time", { ascending: true });
+        .order("test_date", { ascending: true });
       if (error) {
         console.error("[upcoming-tests] fetch error", error);
         toast.error("Could not load upcoming tests");
       }
-      setTests((data ?? []) as PupilTestRow[]);
+      setTests(
+        ((data ?? []) as any[]).map((p) => ({
+          id: p.id,
+          name: p.name || p.first_name || "Pupil",
+          test_date: p.test_date,
+          test_time: p.test_time ?? null,
+          test_centre: p.test_centre ?? null,
+        })),
+      );
       setLoading(false);
     })();
   }, []);
