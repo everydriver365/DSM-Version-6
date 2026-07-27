@@ -544,6 +544,8 @@ export function DiscoverSection() {
     cursor: "pointer",
     fontFamily: FONT,
     scrollSnapAlign: "start",
+    display: "flex",
+    flexDirection: "column",
   };
 
   const cardBtn = (label: string): React.CSSProperties => ({
