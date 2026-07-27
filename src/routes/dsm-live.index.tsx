@@ -15,7 +15,7 @@ import {
   MapPin,
 } from "lucide-react";
 import { toast } from "sonner";
-import { IconBroadcast } from "@tabler/icons-react";
+import { IconBroadcast, IconSteeringWheel } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 import {
