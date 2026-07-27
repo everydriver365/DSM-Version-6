@@ -5,7 +5,13 @@ import { IconBroadcast, IconPlayerPlay, IconChevronRight } from "@tabler/icons-r
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 
+type DiscoverTab = "live" | "learn" | "market";
+
 export const Route = createFileRoute("/discover")({
+  validateSearch: (search: Record<string, unknown>): { tab?: DiscoverTab } => {
+    const t = search.tab;
+    return t === "live" || t === "learn" || t === "market" ? { tab: t } : {};
+  },
   head: () => ({
     meta: [
       { title: "Discover — DSM" },
@@ -26,6 +32,7 @@ export const Route = createFileRoute("/discover")({
   }),
   component: DiscoverPage,
 });
+
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
@@ -398,19 +405,23 @@ function TabBar({
 
 function DiscoverPage() {
   const navigate = useNavigate();
+  const { tab } = Route.useSearch();
   const [live, setLive] = useState<LiveItem[]>([]);
   const [learn, setLearn] = useState<LearnItem[]>([]);
   const [market, setMarket] = useState<MarketItem[]>([]);
-  const [activeTab, setActiveTab] = useState<"live" | "learn" | "market">("live");
+  const activeTab: DiscoverTab = tab ?? "live";
   const liveRef = useRef<HTMLDivElement>(null);
   const learnRef = useRef<HTMLDivElement>(null);
   const marketRef = useRef<HTMLDivElement>(null);
 
-  const scrollTo = (tab: "live" | "learn" | "market") => {
-    const ref = { live: liveRef, learn: learnRef, market: marketRef }[tab];
+  // Keep the active tab in the URL so returning from an item detail page
+  // (browser back or an explicit back button) lands on the same section.
+  const scrollTo = (next: DiscoverTab) => {
+    const ref = { live: liveRef, learn: learnRef, market: marketRef }[next];
     ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    setActiveTab(tab);
+    navigate({ to: "/discover", search: { tab: next }, replace: true });
   };
+
 
   useEffect(() => {
     let cancelled = false;
@@ -505,8 +516,10 @@ function DiscoverPage() {
                     navigate({
                       to: "/dsm-live/$sessionId" as never,
                       params: { sessionId: s.id } as never,
+                      search: { from: "discover", tab: "live" } as never,
                     })
                   }
+
                   media={{
                     background: s.image_url
                       ? `#12539E url(${s.image_url}) center/cover`
@@ -602,8 +615,10 @@ function DiscoverPage() {
                     navigate({
                       to: "/marketplace/$listingId" as never,
                       params: { listingId: m.id } as never,
+                      search: { from: "discover", tab: "market" } as never,
                     })
                   }
+
                   media={{ background: img ? `#EEF2F7 url(${img}) center/cover` : "#EEF2F7" }}
                   title={m.title}
                   meta={price}

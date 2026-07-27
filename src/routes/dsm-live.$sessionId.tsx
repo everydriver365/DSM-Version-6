@@ -28,8 +28,11 @@ type Booking = {
 };
 
 export const Route = createFileRoute("/dsm-live/$sessionId")({
+  validateSearch: (search: Record<string, unknown>): { from?: "discover" } =>
+    search.from === "discover" ? { from: "discover" } : {},
   component: SessionDetailPage,
 });
+
 
 function authHeaders(extra: Record<string, string> = {}) {
   return {
@@ -43,6 +46,13 @@ function authHeaders(extra: Record<string, string> = {}) {
 function SessionDetailPage() {
   const navigate = useNavigate();
   const { sessionId } = Route.useParams();
+  const { from } = Route.useSearch();
+  // Return to the Discover live section when we arrived from there.
+  const goBack = () =>
+    from === "discover"
+      ? navigate({ to: "/discover", search: { tab: "live" } })
+      : navigate({ to: "/dsm-live" });
+
   const [session, setSession] = useState<SessionDetail | null>(null);
   const [booking, setBooking] = useState<Booking | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
@@ -228,7 +238,7 @@ END:VCALENDAR`;
       >
         <button
           type="button"
-          onClick={() => navigate({ to: "/dsm-live" })}
+          onClick={goBack}
           style={{ background: "transparent", border: 0, color: "#fff", padding: 4, cursor: "pointer" }}
           aria-label="Back"
         >
