@@ -5797,54 +5797,77 @@ function HomePage() {
                                   {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
                                 </div>
                               )}
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
-                                <span style={{ fontSize: 15, fontWeight: 600, color: isCancelled ? '#6B7280' : '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none' }}>
-                                  {name}
-                                </span>
-                                {isCancelled ? (
-                                  <span style={{
-                                    flexShrink: 0,
-                                    fontSize: 10,
-                                    fontWeight: 700,
-                                    letterSpacing: 0.4,
-                                    textTransform: 'uppercase',
-                                    color: '#CC2229',
-                                    background: '#FCEBEB',
-                                    padding: '2px 8px',
-                                    borderRadius: 999,
-                                    lineHeight: 1.4,
-                                  }}>
-                                    Cancelled
-                                  </span>
-                                ) : priceNode ? (
-                                  <span style={{
-                                    flexShrink: 0,
-                                    fontSize: 11,
-                                    fontWeight: 700,
-                                    padding: '2px 9px',
-                                    borderRadius: 999,
-                                    ...(isLive ? {
-                                      background: '#E6F1FB', color: '#1877D6',
-                                    } : isPrepaidPupil || isPaid ? {
-                                      background: '#E7F5EE', color: '#1E8E3E',
-                                    } : dueUnpaid ? {
-                                      background: '#FCEBEB', color: '#CC2229',
-                                    } : {
-                                      background: '#E7F5EE', color: '#1E8E3E',
-                                    }),
-                                  }}>
-                                    {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
-                                  </span>
-                                ) : null}
-                              </div>
-                              {pickupLabel && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3, minWidth: 0 }}>
-                                  <IconMapPin size={12} stroke={1.9} color="#8A93A3" style={{ flexShrink: 0 }} />
-                                  <span style={{ fontSize: 12, color: '#8A93A3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                    {pickupLabel}
-                                  </span>
+                              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, minWidth: 0 }}>
+                                <div aria-hidden style={{ position: 'relative', flexShrink: 0 }}>
+                                  {isLive && (
+                                    <span
+                                      aria-label="Live"
+                                      style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        right: 0,
+                                        width: 8,
+                                        height: 8,
+                                        borderRadius: 999,
+                                        backgroundColor: '#DC2626',
+                                        boxShadow: '0 0 0 2px #FFFFFF',
+                                        zIndex: 1,
+                                      }}
+                                    />
+                                  )}
+                                  <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={32} />
                                 </div>
-                              )}
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+                                    <span style={{ fontSize: 15, fontWeight: 600, color: isCancelled ? '#6B7280' : '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none' }}>
+                                      {name}
+                                    </span>
+                                    {isCancelled ? (
+                                      <span style={{
+                                        flexShrink: 0,
+                                        fontSize: 10,
+                                        fontWeight: 700,
+                                        letterSpacing: 0.4,
+                                        textTransform: 'uppercase',
+                                        color: '#CC2229',
+                                        background: '#FCEBEB',
+                                        padding: '2px 8px',
+                                        borderRadius: 999,
+                                        lineHeight: 1.4,
+                                      }}>
+                                        Cancelled
+                                      </span>
+                                    ) : priceNode ? (
+                                      <span style={{
+                                        flexShrink: 0,
+                                        fontSize: 11,
+                                        fontWeight: 700,
+                                        padding: '2px 9px',
+                                        borderRadius: 999,
+                                        ...(isLive ? {
+                                          background: '#E6F1FB', color: '#1877D6',
+                                        } : isPrepaidPupil || isPaid ? {
+                                          background: '#E7F5EE', color: '#1E8E3E',
+                                        } : dueUnpaid ? {
+                                          background: '#FCEBEB', color: '#CC2229',
+                                        } : {
+                                          background: '#E7F5EE', color: '#1E8E3E',
+                                        }),
+                                      }}>
+                                        {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
+                                      </span>
+                                    ) : null}
+                                  </div>
+                                  {pickupLabel && (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3, minWidth: 0 }}>
+                                      <IconMapPin size={12} stroke={1.9} color="#8A93A3" style={{ flexShrink: 0 }} />
+                                      <span style={{ fontSize: 12, color: '#8A93A3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                        {pickupLabel}
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
                             </div>
 
                             <div
