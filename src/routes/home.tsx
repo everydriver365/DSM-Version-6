@@ -4621,14 +4621,18 @@ function HomePage() {
                       overflow: 'hidden',
                       boxShadow: isLate ? 'inset 0 0 0 3px #C23B3B' : undefined,
                     }}>
-                      {driveData ? (
+                      {driveData || instructorLocation || (pickup && pickup !== 'No pickup') ? (
                         <NextLessonMap
-                          originLat={driveData.originLat}
-                          originLng={driveData.originLng}
-                          destLat={driveData.destLat}
-                          destLng={driveData.destLng}
-                          encodedPolyline={driveData.encodedPolyline}
-                          directionsUrl={driveData.directionsUrl}
+                          originLat={driveData?.originLat ?? instructorLocation?.lat ?? null}
+                          originLng={driveData?.originLng ?? instructorLocation?.lng ?? null}
+                          destLat={driveData?.destLat ?? null}
+                          destLng={driveData?.destLng ?? null}
+                          destAddress={pickup && pickup !== 'No pickup' ? pickup : null}
+                          encodedPolyline={driveData?.encodedPolyline ?? null}
+                          directionsUrl={
+                            driveData?.directionsUrl ??
+                            `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(pickup)}&travelmode=driving`
+                          }
                           height={132}
                         />
                       ) : (
