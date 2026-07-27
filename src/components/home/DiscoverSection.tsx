@@ -594,7 +594,7 @@ export function DiscoverSection() {
         <SectionHeader>Discover</SectionHeader>
         <button
           type="button"
-          onClick={() => navigate({ to: "/dsm-live" as never })}
+          onClick={() => navigate({ to: "/discover" as never })}
           style={{
             display: "inline-flex",
             alignItems: "center",
