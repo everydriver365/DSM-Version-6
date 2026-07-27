@@ -1663,40 +1663,34 @@ function SchedulePage() {
                                            </>
                                          )}
                                         </div>
-                                           {isLessonRow && (
-                                             <div style={{ flexShrink: 0, marginLeft: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                               <PupilAvatar
-                                                 pupil={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil : null}
-                                                 pupilId={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil_id ?? null : null}
-                                                 size={36}
-                                               />
-                                               <button
-                                                 type="button"
-                                                 data-lesson-actions-trigger
-                                                 onClick={(ev) => {
-                                                   ev.stopPropagation();
-                                                   const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
-                                                   setActionsOpenFor((cur) => (cur?.id === lesson.id ? null : lesson));
-                                                 }}
-                                                 aria-label="More lesson options"
-                                                 style={{
-                                                   width: 28,
-                                                   height: 28,
-                                                   borderRadius: '50%',
-                                                   background: '#F8F9FB',
-                                                   border: '0.5px solid #E5E7EB',
-                                                   display: 'flex',
-                                                   alignItems: 'center',
-                                                   justifyContent: 'center',
-                                                   cursor: 'pointer',
-                                                   padding: 0,
-                                                   marginTop: 8,
-                                                 }}
-                                               >
-                                                 <MoreHorizontal size={14} color="#6B7280" />
-                                               </button>
-                                             </div>
-                                           )}
+                                            {isLessonRow && (
+                                              <div style={{ flexShrink: 0, marginLeft: 4, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                                <button
+                                                  type="button"
+                                                  data-lesson-actions-trigger
+                                                  onClick={(ev) => {
+                                                    ev.stopPropagation();
+                                                    const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                                    setActionsOpenFor((cur) => (cur?.id === lesson.id ? null : lesson));
+                                                  }}
+                                                  aria-label="More lesson options"
+                                                  style={{
+                                                    width: 28,
+                                                    height: 28,
+                                                    borderRadius: '50%',
+                                                    background: '#F8F9FB',
+                                                    border: '0.5px solid #E5E7EB',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    cursor: 'pointer',
+                                                    padding: 0,
+                                                  }}
+                                                >
+                                                  <MoreHorizontal size={14} color="#6B7280" />
+                                                </button>
+                                              </div>
+                                            )}
                                      </>
                                   )}
                                 </div>
