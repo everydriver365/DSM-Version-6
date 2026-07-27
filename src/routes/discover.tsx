@@ -501,7 +501,12 @@ function DiscoverPage() {
               return (
                 <Row
                   key={s.id}
-                  onClick={() => navigate({ to: "/dsm-live" as never })}
+                  onClick={() =>
+                    navigate({
+                      to: "/dsm-live/$sessionId" as never,
+                      params: { sessionId: s.id } as never,
+                    })
+                  }
                   media={{
                     background: s.image_url
                       ? `#12539E url(${s.image_url}) center/cover`
@@ -553,7 +558,10 @@ function DiscoverPage() {
               return (
                 <Row
                   key={v.id ?? i}
-                  onClick={() => navigate({ to: "/learn" as never })}
+                  onClick={() => {
+                    if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
+                    else navigate({ to: "/learn" as never });
+                  }}
                   media={{
                     background: thumb
                       ? `${NAVY} url(${thumb}) center/cover`
@@ -590,7 +598,12 @@ function DiscoverPage() {
               return (
                 <Row
                   key={m.id}
-                  onClick={() => navigate({ to: "/marketplace" as never })}
+                  onClick={() =>
+                    navigate({
+                      to: "/marketplace_/$listingId" as never,
+                      params: { listingId: m.id } as never,
+                    })
+                  }
                   media={{ background: img ? `#EEF2F7 url(${img}) center/cover` : "#EEF2F7" }}
                   title={m.title}
                   meta={price}
