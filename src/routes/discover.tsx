@@ -503,9 +503,12 @@ function DiscoverPage() {
           );
         })}
       </SectionBlock>
+      </div>
 
+      <div ref={learnRef} id="discover-learn">
       <SectionBlock
         title="DSM Learn"
+
         subtitle="Short guides and how-to videos"
         actionLabel="See all"
         onAction={() => navigate({ to: "/learn" as never })}
