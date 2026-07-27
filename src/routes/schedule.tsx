@@ -1911,8 +1911,19 @@ function SchedulePage() {
         />
       )}
 
-
-
+      {paymentSheetFor && (
+        <PaymentDetailsSheet
+          open={true}
+          onClose={() => setPaymentSheetFor(null)}
+          pupilName={pupilDisplayName(paymentSheetFor.pupil)}
+          lessonDate={paymentSheetFor.lesson_date}
+          lessonTime={String(paymentSheetFor.lesson_time ?? "").slice(0, 5)}
+          paymentStatus={(paymentSheetFor as any).payment_status ?? ""}
+          amountDue={Number((paymentSheetFor as any).amount_due ?? 0)}
+          prepaidHours={Number((paymentSheetFor as any).pupil?.prepaid_hours ?? 0)}
+          duration={paymentSheetFor.duration_minutes ?? 60}
+        />
+      )}
 
 
       <button
