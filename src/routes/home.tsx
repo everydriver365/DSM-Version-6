@@ -248,15 +248,17 @@ function NextLessonMap({
   originLng,
   destLat,
   destLng,
+  destAddress,
   encodedPolyline,
   directionsUrl,
   height = 160,
   isLate = false,
 }: {
-  originLat: number;
-  originLng: number;
+  originLat: number | null;
+  originLng: number | null;
   destLat: number | null;
   destLng: number | null;
+  destAddress?: string | null;
   encodedPolyline: string | null;
   directionsUrl: string;
   height?: number;
@@ -279,66 +281,98 @@ function NextLessonMap({
     const g = (window as GMapsWindow).google;
     if (!g?.maps) return;
 
-    const map = new g.maps.Map(ref.current, {
-      center: { lat: originLat, lng: originLng },
-      zoom: 12,
-      disableDefaultUI: true,
-      gestureHandling: "none",
-      keyboardShortcuts: false,
-      clickableIcons: false,
-      styles: [
-        { featureType: "poi", stylers: [{ visibility: "off" }] },
-        { featureType: "transit", stylers: [{ visibility: "off" }] },
-      ],
-    });
+    let cancelled = false;
 
-    new g.maps.Marker({
-      position: { lat: originLat, lng: originLng },
-      map,
-      icon: {
+    const draw = (dLat: number | null, dLng: number | null) => {
+      if (cancelled || !ref.current) return;
+      const hasOrigin = originLat != null && originLng != null;
+      const center = hasOrigin
+        ? { lat: originLat as number, lng: originLng as number }
+        : dLat != null && dLng != null
+          ? { lat: dLat, lng: dLng }
+          : null;
+      if (!center) return;
+
+      const map = new g.maps.Map(ref.current, {
+        center,
+        zoom: 12,
+        disableDefaultUI: true,
+        gestureHandling: "none",
+        keyboardShortcuts: false,
+        clickableIcons: false,
+        styles: [
+          { featureType: "poi", stylers: [{ visibility: "off" }] },
+          { featureType: "transit", stylers: [{ visibility: "off" }] },
+        ],
+      });
+
+      const dot = (fillColor: string) => ({
         path: g.maps.SymbolPath.CIRCLE,
         scale: 7,
-        fillColor: "#22C55E",
+        fillColor,
         fillOpacity: 1,
         strokeColor: "#FFFFFF",
         strokeWeight: 2,
-      },
-    });
-
-    if (destLat != null && destLng != null) {
-      new g.maps.Marker({
-        position: { lat: destLat, lng: destLng },
-        map,
-        icon: {
-          path: g.maps.SymbolPath.CIRCLE,
-          scale: 7,
-          fillColor: "#CC2229",
-          fillOpacity: 1,
-          strokeColor: "#FFFFFF",
-          strokeWeight: 2,
-        },
       });
+
+      if (hasOrigin) {
+        new g.maps.Marker({
+          position: { lat: originLat as number, lng: originLng as number },
+          map,
+          icon: dot("#22C55E"),
+        });
+      }
+
+      if (dLat != null && dLng != null) {
+        new g.maps.Marker({ position: { lat: dLat, lng: dLng }, map, icon: dot("#CC2229") });
+      }
+
+      if (encodedPolyline && g.maps.geometry?.encoding) {
+        const path = g.maps.geometry.encoding.decodePath(encodedPolyline);
+        new g.maps.Polyline({
+          path,
+          map,
+          strokeColor: "#1877D6",
+          strokeOpacity: 0.95,
+          strokeWeight: 4,
+        });
+        const bounds = new g.maps.LatLngBounds();
+        path.forEach((p: any) => bounds.extend(p));
+        map.fitBounds(bounds, { top: 30, right: 30, bottom: 30, left: 30 });
+      } else if (hasOrigin && dLat != null && dLng != null) {
+        // No route geometry (drive-time unavailable) — show a straight connector.
+        new g.maps.Polyline({
+          path: [
+            { lat: originLat as number, lng: originLng as number },
+            { lat: dLat, lng: dLng },
+          ],
+          map,
+          strokeColor: "#1877D6",
+          strokeOpacity: 0.7,
+          strokeWeight: 3,
+        });
+        const bounds = new g.maps.LatLngBounds();
+        bounds.extend({ lat: originLat as number, lng: originLng as number });
+        bounds.extend({ lat: dLat, lng: dLng });
+        map.fitBounds(bounds, { top: 30, right: 30, bottom: 30, left: 30 });
+      } else if (dLat != null && dLng != null) {
+        map.setZoom(14);
+      }
+    };
+
+    if ((destLat == null || destLng == null) && destAddress && g.maps.Geocoder) {
+      const geocoder = new g.maps.Geocoder();
+      geocoder.geocode({ address: `${destAddress}, UK` }, (results: any, status: string) => {
+        if (cancelled) return;
+        const loc = status === "OK" ? results?.[0]?.geometry?.location : null;
+        draw(loc ? loc.lat() : null, loc ? loc.lng() : null);
+      });
+    } else {
+      draw(destLat, destLng);
     }
 
-    if (encodedPolyline && g.maps.geometry?.encoding) {
-      const path = g.maps.geometry.encoding.decodePath(encodedPolyline);
-      new g.maps.Polyline({
-        path,
-        map,
-        strokeColor: "#1877D6",
-        strokeOpacity: 0.95,
-        strokeWeight: 4,
-      });
-      const bounds = new g.maps.LatLngBounds();
-      path.forEach((p: any) => bounds.extend(p));
-      map.fitBounds(bounds, { top: 30, right: 30, bottom: 30, left: 30 });
-    } else if (destLat != null && destLng != null) {
-      const bounds = new g.maps.LatLngBounds();
-      bounds.extend({ lat: originLat, lng: originLng });
-      bounds.extend({ lat: destLat, lng: destLng });
-      map.fitBounds(bounds, { top: 30, right: 30, bottom: 30, left: 30 });
-    }
-  }, [ready, originLat, originLng, destLat, destLng, encodedPolyline]);
+    return () => { cancelled = true; };
+  }, [ready, originLat, originLng, destLat, destLng, destAddress, encodedPolyline]);
 
   return (
     <div
@@ -4587,14 +4621,18 @@ function HomePage() {
                       overflow: 'hidden',
                       boxShadow: isLate ? 'inset 0 0 0 3px #C23B3B' : undefined,
                     }}>
-                      {driveData ? (
+                      {driveData || instructorLocation || (pickup && pickup !== 'No pickup') ? (
                         <NextLessonMap
-                          originLat={driveData.originLat}
-                          originLng={driveData.originLng}
-                          destLat={driveData.destLat}
-                          destLng={driveData.destLng}
-                          encodedPolyline={driveData.encodedPolyline}
-                          directionsUrl={driveData.directionsUrl}
+                          originLat={driveData?.originLat ?? instructorLocation?.lat ?? null}
+                          originLng={driveData?.originLng ?? instructorLocation?.lng ?? null}
+                          destLat={driveData?.destLat ?? null}
+                          destLng={driveData?.destLng ?? null}
+                          destAddress={pickup && pickup !== 'No pickup' ? pickup : null}
+                          encodedPolyline={driveData?.encodedPolyline ?? null}
+                          directionsUrl={
+                            driveData?.directionsUrl ??
+                            `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(pickup)}&travelmode=driving`
+                          }
                           height={132}
                         />
                       ) : (
