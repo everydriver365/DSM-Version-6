@@ -103,7 +103,14 @@ async function sbGet<T>(path: string): Promise<T> {
 
 function ListingDetailPage() {
   const { listingId } = Route.useParams();
+  const { from } = Route.useSearch();
   const navigate = useNavigate();
+  // Return to the Discover marketplace section when we arrived from there.
+  const goBack = () =>
+    from === "discover"
+      ? navigate({ to: "/discover", search: { tab: "market" } })
+      : navigate({ to: "/marketplace" });
+
   const [listing, setListing] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
   const [similar, setSimilar] = useState<Listing[]>([]);
