@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { Trash2 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { PageLayout } from "@/components/PageLayout";
@@ -76,36 +78,30 @@ function NoteEditPage() {
 
   return (
     <PageLayout className="flex flex-col" style={POPPINS}>
-      {/* TOP BAR */}
-      <div
-        className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#0B1F3A" }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/notes" })}
-          className="flex items-center justify-center"
-          style={{ width: 28, height: 28 }}
-        >
-          <ChevronLeft size={22} color="#ffffff" />
-        </button>
-        <div className="flex items-center" style={{ gap: 8 }}>
-          <div className="text-white text-[15px] font-semibold">Note</div>
-          {savedFlag && (
-            <span className="text-[11px]" style={{ color: "#1877D6" }}>
-              Saved
-            </span>
-          )}
-        </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Note"
+        onBack={() => navigate({ to: "/notes" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Actions row */}
+      <div className="flex items-center justify-between px-4 pt-3">
+        <span className="text-[11px]" style={{ color: "#1877D6" }}>{savedFlag ? "Saved" : ""}</span>
         <button
           type="button"
           aria-label="Delete note"
           onClick={() => setConfirmOpen(true)}
-          className="flex items-center justify-center"
-          style={{ width: 28, height: 28 }}
+          className="inline-flex items-center gap-2 text-[13px] font-semibold"
+          style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#CC2229" }}
         >
-          <Trash2 size={20} color="#1877D6" />
+          <Trash2 size={15} />
+          Delete
         </button>
       </div>
 

@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowLeft,
   Calendar as CalendarIcon,
   ChevronDown,
   ChevronUp,
@@ -15,6 +14,7 @@ import {
   User,
 } from "lucide-react";
 import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 
@@ -482,30 +482,17 @@ function DrivingTestPage() {
 
   return (
     <PageLayout className="pb-32" style={INTER}>
-      {/* Top bar */}
-      <div
-        className="sticky top-0 z-20 flex items-center gap-3 px-4 py-3"
-        style={{ backgroundColor: "#0F2044", color: "#FFFFFF" }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/pupils/$id", params: { id: pupilId } })}
-          className="inline-flex items-center justify-center rounded-full"
-          style={{
-            width: 36,
-            height: 36,
-            backgroundColor: "rgba(255,255,255,0.12)",
-            border: "none",
-            color: "#FFFFFF",
-          }}
-          aria-label="Back"
-        >
-          <ArrowLeft size={18} />
-        </button>
-        <div className="text-[15px] font-semibold truncate flex-1">
-          Test report {pupilName ? `— ${pupilName}` : ""}
-        </div>
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle={`Test report${pupilName ? ` — ${pupilName}` : ""}`}
+        onBack={() => navigate({ to: "/pupils/$id", params: { id: pupilId } } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       {/* Tabs */}
       <div className="px-4 pt-4 flex gap-2">

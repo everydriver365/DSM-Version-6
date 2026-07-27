@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
-  ArrowLeft,
   Mail,
   Smartphone,
   Camera,
@@ -18,6 +17,7 @@ import {
   Apple,
   Loader2,
 } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -689,33 +689,31 @@ function ProfilePage() {
 
   return (
     <PageLayout style={POPPINS}>
-      {/* Top bar */}
-      <div
-        className="sticky top-0 z-40 flex items-center justify-between px-4"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/settings" })}
-          className="flex items-center justify-center"
-          style={{ width: 36, height: 36 }}
-          aria-label="Back"
-        >
-          <ArrowLeft size={22} color="#FFFFFF" />
-        </button>
-        <div className="text-[15px] font-semibold text-white" style={POPPINS}>
-          My profile
-        </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="My profile"
+        onBack={() => navigate({ to: "/settings" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Actions row */}
+      <div className="flex justify-end px-4 pt-3">
         <button
           type="button"
           onClick={saveAll}
           disabled={saving || loading}
-          className="text-[14px] font-medium text-white disabled:opacity-50 px-2"
-          style={POPPINS}
+          className="inline-flex items-center text-[13px] font-semibold disabled:opacity-50"
+          style={{ height: 34, padding: "0 14px", borderRadius: 10, border: "none", background: "#1877D6", color: "#FFFFFF" }}
         >
           {saving ? "Saving…" : "Save"}
         </button>
       </div>
+
 
       <div className="px-4 py-4 pb-24 max-w-3xl mx-auto">
         {/* Personal */}

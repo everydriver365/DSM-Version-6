@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import type { ComponentType } from "react";
 import {
-  ArrowLeft,
   Search as SearchIcon,
   Star,
   MapPin,
@@ -17,6 +16,8 @@ import {
   Megaphone,
   Package,
 } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -236,36 +237,17 @@ function MarketplacePage() {
   return (
     <div style={{ minHeight: "100vh", background: "#FFFFFF", paddingBottom: 96, fontFamily: POPPINS }}>
       {/* Top bar */}
-      <div
-        style={{
-          background: "#0F2044",
-          color: "#FFFFFF",
-          padding: "14px 16px",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-        }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/home" })}
-          aria-label="Back"
-          style={{
-            background: "transparent",
-            border: "none",
-            color: "#FFFFFF",
-            cursor: "pointer",
-            padding: 0,
-            display: "flex",
-          }}
-        >
-          <ArrowLeft size={22} />
-        </button>
-        <div style={{ fontSize: 16, fontWeight: 500, fontFamily: POPPINS }}>DSM Marketplace</div>
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="DSM Marketplace"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       <div style={{ padding: "20px 16px 8px" }}>
         {/* Search bar */}

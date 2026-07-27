@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
-import { ArrowLeft, Award, BarChart3, BookOpen, Calendar, Camera, Car, ChevronDown, ChevronRight, ClipboardCheck, ClipboardList, Clock, CreditCard, ExternalLink, Flag, Heart, History, Loader2, Mail, MapPin, MessageSquare, MoreHorizontal, Palette, Pencil, Phone, Plus, PoundSterling, RefreshCw, Search, Send, Trash2, Trophy, X, Check } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { Award, BarChart3, BookOpen, Calendar, Camera, Car, ChevronDown, ChevronRight, ClipboardCheck, ClipboardList, Clock, CreditCard, ExternalLink, Flag, Heart, History, Loader2, Mail, MapPin, MessageSquare, MoreHorizontal, Palette, Pencil, Phone, Plus, PoundSterling, RefreshCw, Search, Send, Trash2, Trophy, X, Check } from "lucide-react";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
@@ -1291,55 +1292,32 @@ function PupilDetailPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-8" style={POPPINS}>
-      {/* Top bar — Structured clarity: white sticky header */}
-      <div
-        className="sticky top-0 z-40 flex items-center justify-between px-2 bg-white border-b border-slate-200"
-        style={{ height: 52 }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/pupils" })}
-          className="flex items-center justify-center text-slate-600"
-          style={{ width: 40, height: 40 }}
-        >
-          <ArrowLeft size={22} />
+      <InstructorTopBar
+        firstName=""
+        pageTitle={pupil?.name ?? ""}
+        onBack={() => navigate({ to: "/pupils" } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Actions row */}
+      <div className="flex items-center justify-end gap-2 px-4 pt-3">
+        <a href={pupil?.phone ? `tel:${pupil.phone}` : undefined} aria-label="Call pupil" className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A", textDecoration: "none" }}>
+          <Phone size={15} /> Call
+        </a>
+        <button type="button" onClick={openEditSheet} className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A", textDecoration: "none" }}>
+          <Pencil size={15} /> Edit
         </button>
-        <div
-          className="flex-1 text-center text-[15px] font-semibold text-slate-900 truncate px-2"
-          style={POPPINS}
-        >
-          {pupil?.name ?? ""}
-        </div>
-        <div className="flex items-center">
-          <a
-            href={pupil?.phone ? `tel:${pupil.phone}` : undefined}
-            aria-label="Call pupil"
-            className="flex items-center justify-center text-blue-600"
-            style={{ width: 40, height: 40 }}
-          >
-            <Phone size={18} />
-          </a>
-          <button
-            type="button"
-            aria-label="Edit pupil"
-            onClick={openEditSheet}
-            className="flex items-center justify-center text-slate-600 hover:text-blue-600"
-            style={{ width: 40, height: 40 }}
-          >
-            <Pencil size={18} />
-          </button>
-          <button
-            type="button"
-            aria-label="Remove pupil"
-            onClick={() => setRemoveOpen(true)}
-            className="flex items-center justify-center text-slate-400 hover:text-red-600"
-            style={{ width: 40, height: 40 }}
-          >
-            <Trash2 size={18} />
-          </button>
-        </div>
+        <button type="button" onClick={() => setRemoveOpen(true)} className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#CC2229" }}>
+          <Trash2 size={15} /> Remove
+        </button>
       </div>
+
+
       {/* Profile header card */}
       {pupil && (
         <div className="mt-0 overflow-hidden rounded-b-[28px]">

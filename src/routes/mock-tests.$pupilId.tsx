@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ClipboardCheck, Mic, MicOff, Plus, Trash2, X } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { ClipboardCheck, Mic, MicOff, Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { supabase } from "../lib/supabaseClient";
@@ -314,40 +315,31 @@ function MockTestsPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#FFFFFF", ...INTER }}>
-      {/* Top bar */}
-      <div
-        className="sticky top-0 z-10 px-4 py-3 flex items-center gap-3"
-        style={{ backgroundColor: "#0F2044", color: "#FFFFFF" }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/pupils/$id", params: { id: pupilId } })}
-          className="inline-flex items-center justify-center rounded-full"
-          style={{
-            width: 36,
-            height: 36,
-            backgroundColor: "rgba(255,255,255,0.12)",
-            border: "none",
-            color: "#FFFFFF",
-          }}
-          aria-label="Back"
-        >
-          <ArrowLeft size={18} />
-        </button>
-        <div className="text-[15px] font-semibold truncate flex-1">
-          Mock tests {pupilName ? `— ${pupilName}` : ""}
-        </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle={`Mock tests${pupilName ? ` — ${pupilName}` : ""}`}
+        onBack={() => navigate({ to: "/pupils/$id", params: { id: pupilId } } as never)}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Actions row */}
+      <div className="flex justify-end px-4 pt-3">
         <button
           type="button"
           onClick={() => {
             resetForm();
             setAddOpen(true);
           }}
-          aria-label="Record mock test"
-          className="inline-flex items-center justify-center rounded-full"
-          style={{ width: 36, height: 36, backgroundColor: "#0891B2", border: "none", color: "#FFFFFF" }}
+          className="inline-flex items-center gap-2 text-[13px] font-semibold"
+          style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
-          <Plus size={18} />
+          <Plus size={15} />
+          Record mock test
         </button>
       </div>
 
