@@ -6152,7 +6152,7 @@ function HomePage() {
           const statusLabel = hasToday ? 'TODAY' : anyThisWeek ? 'THIS WEEK' : undefined;
           return (
             <div
-              onClick={() => navigate({ to: '/tests' as never })}
+              onClick={() => navigate({ to: '/upcoming-tests' as never })}
               style={{
                 margin: '0 0 0',
                 background: '#FFFFFF',

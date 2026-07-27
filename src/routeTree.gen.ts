@@ -15,6 +15,7 @@ import { Route as WaiversRouteImport } from './routes/waivers'
 import { Route as WaitlistRouteImport } from './routes/waitlist'
 import { Route as WaitinglistRouteImport } from './routes/waitinglist'
 import { Route as VehicleRouteImport } from './routes/vehicle'
+import { Route as UpcomingTestsRouteImport } from './routes/upcoming-tests'
 import { Route as TodosRouteImport } from './routes/todos'
 import { Route as TestsRouteImport } from './routes/tests'
 import { Route as TestdayRouteImport } from './routes/testday'
@@ -181,6 +182,11 @@ const WaitinglistRoute = WaitinglistRouteImport.update({
 const VehicleRoute = VehicleRouteImport.update({
   id: '/vehicle',
   path: '/vehicle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UpcomingTestsRoute = UpcomingTestsRouteImport.update({
+  id: '/upcoming-tests',
+  path: '/upcoming-tests',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TodosRoute = TodosRouteImport.update({
@@ -954,6 +960,7 @@ export interface FileRoutesByFullPath {
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
+  '/upcoming-tests': typeof UpcomingTestsRoute
   '/vehicle': typeof VehicleRoute
   '/waitinglist': typeof WaitinglistRoute
   '/waitlist': typeof WaitlistRoute
@@ -1095,6 +1102,7 @@ export interface FileRoutesByTo {
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
+  '/upcoming-tests': typeof UpcomingTestsRoute
   '/vehicle': typeof VehicleRoute
   '/waitinglist': typeof WaitinglistRoute
   '/waitlist': typeof WaitlistRoute
@@ -1241,6 +1249,7 @@ export interface FileRoutesById {
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
+  '/upcoming-tests': typeof UpcomingTestsRoute
   '/vehicle': typeof VehicleRoute
   '/waitinglist': typeof WaitinglistRoute
   '/waitlist': typeof WaitlistRoute
@@ -1387,6 +1396,7 @@ export interface FileRouteTypes {
     | '/testday'
     | '/tests'
     | '/todos'
+    | '/upcoming-tests'
     | '/vehicle'
     | '/waitinglist'
     | '/waitlist'
@@ -1528,6 +1538,7 @@ export interface FileRouteTypes {
     | '/testday'
     | '/tests'
     | '/todos'
+    | '/upcoming-tests'
     | '/vehicle'
     | '/waitinglist'
     | '/waitlist'
@@ -1673,6 +1684,7 @@ export interface FileRouteTypes {
     | '/testday'
     | '/tests'
     | '/todos'
+    | '/upcoming-tests'
     | '/vehicle'
     | '/waitinglist'
     | '/waitlist'
@@ -1819,6 +1831,7 @@ export interface RootRouteChildren {
   TestdayRoute: typeof TestdayRoute
   TestsRoute: typeof TestsRoute
   TodosRoute: typeof TodosRoute
+  UpcomingTestsRoute: typeof UpcomingTestsRoute
   VehicleRoute: typeof VehicleRoute
   WaitinglistRoute: typeof WaitinglistRoute
   WaitlistRoute: typeof WaitlistRoute
@@ -1898,6 +1911,13 @@ declare module '@tanstack/react-router' {
       path: '/vehicle'
       fullPath: '/vehicle'
       preLoaderRoute: typeof VehicleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/upcoming-tests': {
+      id: '/upcoming-tests'
+      path: '/upcoming-tests'
+      fullPath: '/upcoming-tests'
+      preLoaderRoute: typeof UpcomingTestsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/todos': {
@@ -3057,6 +3077,7 @@ const rootRouteChildren: RootRouteChildren = {
   TestdayRoute: TestdayRoute,
   TestsRoute: TestsRoute,
   TodosRoute: TodosRoute,
+  UpcomingTestsRoute: UpcomingTestsRoute,
   VehicleRoute: VehicleRoute,
   WaitinglistRoute: WaitinglistRoute,
   WaitlistRoute: WaitlistRoute,
