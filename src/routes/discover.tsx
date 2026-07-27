@@ -454,11 +454,12 @@ function DiscoverPage() {
 
       <TabBar active={activeTab} onChange={scrollTo} />
 
-      <div ref={liveRef} id="discover-live">
-        <SectionBlock
-          title="DSM Live"
+      {activeTab === "live" && (
+        <div ref={liveRef} id="discover-live">
+          <SectionBlock
+            title="DSM Live"
+            subtitle="Upcoming live sessions and podcasts"
 
-        subtitle="Upcoming live sessions and podcasts"
         actionLabel="See all"
         onAction={() => navigate({ to: "/dsm-live" as never })}
       >
@@ -504,8 +505,11 @@ function DiscoverPage() {
         })}
       </SectionBlock>
       </div>
+      )}
 
-      <div ref={learnRef} id="discover-learn">
+      {activeTab === "learn" && (
+        <div ref={learnRef} id="discover-learn">
+
       <SectionBlock
         title="DSM Learn"
 
@@ -534,8 +538,11 @@ function DiscoverPage() {
         })}
       </SectionBlock>
       </div>
+      )}
 
-      <div ref={marketRef} id="discover-market">
+      {activeTab === "market" && (
+        <div ref={marketRef} id="discover-market">
+
       <SectionBlock
         title="DSM Marketplace"
 
@@ -565,9 +572,11 @@ function DiscoverPage() {
         })}
       </SectionBlock>
       </div>
+      )}
     </div>
 
   );
+
 }
 
 export default DiscoverPage;
