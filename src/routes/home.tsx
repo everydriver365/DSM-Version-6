@@ -6295,7 +6295,7 @@ function HomePage() {
                         if (dx > 50 && quickPage < totalPages - 1) setQuickPage((p) => p + 1);
                         if (dx < -50 && quickPage > 0) setQuickPage((p) => p - 1);
                       }}
-                      style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}
+                      style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}
                     >
                       {currentTiles.map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
                     </div>
