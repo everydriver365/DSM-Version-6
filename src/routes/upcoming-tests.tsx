@@ -88,7 +88,15 @@ function UpcomingTestsPage() {
         console.error("[upcoming-tests] fetch error", error);
         toast.error("Could not load upcoming tests");
       }
-      setTests((data ?? []) as PupilTestRow[]);
+      setTests(
+        ((data ?? []) as any[]).map((p) => ({
+          id: p.id,
+          name: p.name || p.first_name || "Pupil",
+          test_date: p.test_date,
+          test_time: p.test_time ?? null,
+          test_centre: p.test_centre ?? null,
+        })),
+      );
       setLoading(false);
     })();
   }, []);
