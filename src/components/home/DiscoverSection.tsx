@@ -312,7 +312,7 @@ export function DiscoverSection() {
       try {
         const today = new Date().toISOString().slice(0, 10);
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&status=eq.upcoming&session_date=gte.${today}&order=session_date.asc&order=session_time.asc&limit=1&select=id,title,session_date,session_time,duration_minutes,is_live,max_spaces,spaces_taken,image_url`,
+          `${SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&status=eq.upcoming&session_date=gte.${today}&order=session_date.asc&order=session_time.asc&limit=5&select=id,title,session_date,session_time,duration_minutes,is_live,max_spaces,spaces_taken,image_url`,
           { headers },
         );
         const data = (await res.json()) as LiveItem[];
@@ -325,7 +325,7 @@ export function DiscoverSection() {
     (async () => {
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,image_urls&order=is_featured.desc,created_at.desc&limit=1`,
+          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,image_urls&order=is_featured.desc,created_at.desc&limit=5`,
           { headers },
         );
         const data = (await res.json()) as MarketItem[];
@@ -349,13 +349,12 @@ export function DiscoverSection() {
     };
   }, []);
 
-  const liveTop = [...live].sort((a, b) => {
+  const liveSorted = [...live].sort((a, b) => {
     const la = isLiveNow(a) ? 1 : 0;
     const lb = isLiveNow(b) ? 1 : 0;
     if (la !== lb) return lb - la;
     return startMs(a.session_date, a.session_time) - startMs(b.session_date, b.session_time);
-  })[0];
-  const marketTop = market[0];
+  });
 
   const playable = learn.filter((v) => !!v.url);
   const tip = playable.length
@@ -579,12 +578,11 @@ export function DiscoverSection() {
     textOverflow: "ellipsis",
   };
 
-  const marketImg = marketTop ? firstImage(marketTop.image_urls) : null;
-  const marketPrice = (() => {
-    const raw = (marketTop?.price_display ?? "").trim();
+  const priceLabel = (m: MarketItem) => {
+    const raw = (m.price_display ?? "").trim();
     if (!raw || !/\d/.test(raw)) return "Price on request";
     return raw.toLowerCase().startsWith("from") ? raw : `From ${raw}`;
-  })();
+  };
 
   const tipThumb = tip ? tip.thumbnail_url || youtubeThumb(tip.url) : null;
 
