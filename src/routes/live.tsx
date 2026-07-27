@@ -1093,6 +1093,7 @@ function LivePage() {
           type="button"
           aria-label="End tracking"
           onClick={() => {
+            if (isStoppingRef.current) return;
             if (tracking) {
               stopTracking();
             } else {
