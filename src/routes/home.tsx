@@ -6706,6 +6706,9 @@ function HomePage() {
           amountDue={Number((paymentSheetForLesson as any).amount_due ?? 0)}
           prepaidHours={Number((paymentSheetForLesson.pupils as any)?.prepaid_hours ?? 0)}
           duration={paymentSheetForLesson.duration_minutes ?? 60}
+          pupilId={(paymentSheetForLesson as any).pupil_id ?? null}
+          pupilPhone={(paymentSheetForLesson.pupils as any)?.phone ?? null}
+          lessonId={(paymentSheetForLesson as any).id ?? null}
         />
       )}
 
