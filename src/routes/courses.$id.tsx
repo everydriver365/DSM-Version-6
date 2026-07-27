@@ -256,65 +256,43 @@ function CourseDetailPage() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
-      {/* Top bar */}
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-          backgroundColor: "#0B1F3A",
-          padding: "14px 16px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 8,
-        }}
-      >
+      <InstructorTopBar
+        firstName=""
+        pageTitle={course?.name ?? "Course"}
+        onBack={() => navigate({ to: "/courses" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Action bar */}
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: 16, padding: "8px 16px" }}>
         <button
-          onClick={() => navigate({ to: "/courses" })}
-          style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex" }}
-          aria-label="Back"
-        >
-          <ChevronLeft size={24} />
-        </button>
-        <h1
-          style={{
-            color: "#fff",
-            fontSize: 15,
-            fontWeight: 700,
-            margin: 0,
-            flex: 1,
-            textAlign: "center",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
+          onClick={() => {
+            if (editing) {
+              setEditing(false);
+              setForm(course);
+            } else {
+              setEditing(true);
+            }
           }}
+          style={{ background: "none", border: "none", cursor: "pointer", color: "#1877D6", display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600 }}
+          aria-label={editing ? "Cancel edit" : "Edit"}
         >
-          {course?.name ?? "Course"}
-        </h1>
-        <div style={{ display: "flex", gap: 12 }}>
-          <button
-            onClick={() => {
-              if (editing) {
-                setEditing(false);
-                setForm(course);
-              } else {
-                setEditing(true);
-              }
-            }}
-            style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex" }}
-            aria-label={editing ? "Cancel edit" : "Edit"}
-          >
-            {editing ? <X size={22} /> : <Pencil size={20} />}
-          </button>
-          <button
-            onClick={archive}
-            style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex" }}
-            aria-label="Archive"
-          >
-            <Archive size={20} />
-          </button>
-        </div>
+          {editing ? <X size={18} /> : <Pencil size={16} />}
+          {editing ? "Cancel" : "Edit"}
+        </button>
+        <button
+          onClick={archive}
+          style={{ background: "none", border: "none", cursor: "pointer", color: "#1877D6", display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600 }}
+          aria-label="Archive"
+        >
+          <Archive size={16} />
+          Archive
+        </button>
       </div>
 
       <div style={{ padding: "12px 16px" }}>
