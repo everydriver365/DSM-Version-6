@@ -1,19 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import {
-  ArrowRight,
-  Calendar as CalendarIcon,
-  Clock,
-  Video,
-  Play,
-  Users,
-  ClipboardCheck,
-  Car,
-  Armchair,
-  Mic,
-  Presentation,
-  MapPin,
-} from "lucide-react";
+import { Play, Users, Mic } from "lucide-react";
+
 import { toast } from "sonner";
 import { IconBroadcast, IconSteeringWheel } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
