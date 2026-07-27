@@ -6204,8 +6204,20 @@ function HomePage() {
                 )}
               </div>
               {/* Meta */}
-              <div style={{ fontSize: 14, color: '#6B7A90', marginBottom: 14 }}>
-                Next: <span style={{ color: '#0B1F3A', fontWeight: 600 }}>{next.name}</span> · {fmtShortDate(next.test_date)}
+              <div style={{ marginBottom: 14 }}>
+                <div style={{ fontSize: 14, color: '#0B1F3A', fontWeight: 600, marginBottom: 4 }}>
+                  {next.name}
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 12px', fontSize: 12, color: '#6B7A90' }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <MapPin size={12} strokeWidth={2} color="#6B7A90" />
+                    {next.test_centre || 'Test centre TBC'}
+                  </span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <Clock size={12} strokeWidth={2} color="#6B7A90" />
+                    {fmtShortDate(next.test_date)}{next.test_time ? ` · ${String(next.test_time).slice(0, 5)}` : ''}
+                  </span>
+                </div>
               </div>
               {/* Divider */}
               <div style={{ height: 1, background: '#E2E8F0', margin: '14px 0' }} />
