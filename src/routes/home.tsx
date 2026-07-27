@@ -6203,10 +6203,6 @@ function HomePage() {
                   </div>
                 )}
               </div>
-              {/* Title */}
-              <div style={{ fontSize: 20, fontWeight: 700, color: '#0B1F3A', marginBottom: 4 }}>
-                {testsSorted.length} upcoming test{testsSorted.length === 1 ? '' : 's'}
-              </div>
               {/* Meta */}
               <div style={{ fontSize: 14, color: '#6B7A90', marginBottom: 14 }}>
                 Next: <span style={{ color: '#0B1F3A', fontWeight: 600 }}>{next.name}</span> · {fmtShortDate(next.test_date)}
