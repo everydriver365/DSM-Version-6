@@ -779,8 +779,8 @@ export function DiscoverSection() {
                 }}
                 style={{
                   ...cardShell,
-                  width: "calc(50% - 5px)",
-                  minWidth: "calc(50% - 5px)",
+                  width: "100%",
+                  minWidth: "100%",
                 }}
               >
                 <StackMedia
