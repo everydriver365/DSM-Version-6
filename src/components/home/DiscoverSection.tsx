@@ -242,6 +242,8 @@ export function DiscoverSection() {
     cursor: "pointer",
     fontFamily: FONT,
     scrollSnapAlign: "start",
+    scrollSnapStop: "always",
+
     display: "flex",
     flexDirection: "column",
   };
@@ -296,6 +298,8 @@ export function DiscoverSection() {
     overflowX: "auto",
     WebkitOverflowScrolling: "touch",
     scrollSnapType: "x mandatory",
+    scrollPadding: "0px",
+    overscrollBehaviorX: "contain",
     scrollbarWidth: "none",
     msOverflowStyle: "none",
     padding: "0 0 4px",
@@ -307,8 +311,10 @@ export function DiscoverSection() {
     flexShrink: 0,
     flexGrow: 0,
     scrollSnapAlign: "start",
+    scrollSnapStop: "always",
     background: "#FFFFFF",
     border: `1px solid ${HAIRLINE}`,
+
     borderRadius: 12,
     boxShadow: "0 2px 8px rgba(11,31,58,0.05)",
     padding: 10,
