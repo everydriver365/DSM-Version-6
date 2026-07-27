@@ -1650,7 +1650,7 @@ function SchedulePage() {
                                                  <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: cancelled ? 'line-through' : 'none' }}>
                                                    {title}
                                                  </span>
-                                                 {isCancelled ? (
+                                                 {cancelled ? (
                                                    <span style={{
                                                      flexShrink: 0,
                                                      fontSize: 10,
