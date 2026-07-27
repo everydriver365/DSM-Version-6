@@ -1609,26 +1609,60 @@ function SchedulePage() {
                                           }}
                                         />
                                       )}
-                                      <div style={{ flex: 1, minWidth: 0, paddingTop: isLessonRow ? 2 : 0 }}>
-                                        <div
-                                          style={{
-                                            fontSize: 14,
-                                            fontWeight: 500,
-                                            color: "#0B1F3A",
-                                            overflow: "hidden",
-                                            textOverflow: "ellipsis",
-                                            whiteSpace: "nowrap",
-                                            textDecoration: cancelled ? "line-through" : "none",
-                                          }}
-                                        >
-                                          {title}
-                                        </div>
-                                         {timeText ? (
-                                           <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
-                                             {timeText}
+                                       <div style={{ flex: 1, minWidth: 0, paddingTop: isLessonRow ? 2 : 0 }}>
+                                         {isLessonRow ? (
+                                           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, minWidth: 0 }}>
+                                             <div style={{ position: 'relative', flexShrink: 0 }}>
+                                               <PupilAvatar
+                                                 pupil={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil : null}
+                                                 pupilId={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil_id ?? null : null}
+                                                 size={32}
+                                               />
+                                             </div>
+                                             <div style={{ flex: 1, minWidth: 0 }}>
+                                               <div
+                                                 style={{
+                                                   fontSize: 14,
+                                                   fontWeight: 500,
+                                                   color: "#0B1F3A",
+                                                   overflow: "hidden",
+                                                   textOverflow: "ellipsis",
+                                                   whiteSpace: "nowrap",
+                                                   textDecoration: cancelled ? "line-through" : "none",
+                                                 }}
+                                               >
+                                                 {title}
+                                               </div>
+                                               {timeText ? (
+                                                 <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
+                                                   {timeText}
+                                                 </div>
+                                               ) : null}
+                                             </div>
                                            </div>
-                                         ) : null}
-                                       </div>
+                                         ) : (
+                                           <>
+                                             <div
+                                               style={{
+                                                 fontSize: 14,
+                                                 fontWeight: 500,
+                                                 color: "#0B1F3A",
+                                                 overflow: "hidden",
+                                                 textOverflow: "ellipsis",
+                                                 whiteSpace: "nowrap",
+                                                 textDecoration: cancelled ? "line-through" : "none",
+                                               }}
+                                             >
+                                               {title}
+                                             </div>
+                                             {timeText ? (
+                                               <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
+                                                 {timeText}
+                                               </div>
+                                             ) : null}
+                                           </>
+                                         )}
+                                        </div>
                                            {isLessonRow && (
                                              <div style={{ flexShrink: 0, marginLeft: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                                <PupilAvatar
