@@ -749,9 +749,15 @@ export function DiscoverSection() {
         <div
           role="button"
           tabIndex={0}
-          onClick={() => navigate({ to: "/learn" as never })}
+          onClick={() => {
+            if (tip.url) window.open(tip.url, "_blank", "noopener,noreferrer");
+            else navigate({ to: "/learn" as never });
+          }}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") navigate({ to: "/learn" as never });
+            if (e.key === "Enter" || e.key === " ") {
+              if (tip.url) window.open(tip.url, "_blank", "noopener,noreferrer");
+              else navigate({ to: "/learn" as never });
+            }
           }}
           style={{
             margin: "10px 0 0",
