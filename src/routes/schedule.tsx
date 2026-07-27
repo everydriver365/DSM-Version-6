@@ -1917,9 +1917,104 @@ function SchedulePage() {
         />
       )}
 
+      {paymentModalFor && (
+        <BottomSheet
+          title="Payment details"
+          subtitle={`${pupilDisplayName(paymentModalFor.pupil)} · ${paymentModalFor.lesson_date}`}
+          onClose={() => setPaymentModalFor(null)}
+        >
+          <div style={{ ...POPPINS, padding: '4px 4px 12px' }}>
+            {/* Status pill */}
+            {(() => {
+              const payStatus = (paymentModalFor.payment_status ?? '').toLowerCase();
+              const amt = Number(paymentModalFor.amount_due ?? 0);
+              const isPrepaidPupil = Number(paymentModalFor.pupil?.prepaid_hours ?? 0) > 0;
+              const isPaid = payStatus === 'paid' || payStatus === 'prepaid' || isPrepaidPupil;
+              const isDue = amt > 0 && !isPaid;
+              const label = isPaid ? 'Paid' : isPrepaidPupil ? 'Prepaid' : isDue ? `£${amt.toFixed(0)} due` : 'No payment set';
+              const color = isPaid || isPrepaidPupil ? '#1E8E3E' : isDue ? '#CC2229' : '#8A93A3';
+              const bg = isPaid || isPrepaidPupil ? '#E7F5EE' : isDue ? '#FCEBEB' : '#F3F4F6';
+              return (
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    background: bg,
+                    color: color,
+                    padding: '6px 12px',
+                    borderRadius: 999,
+                    fontSize: 12,
+                    fontWeight: 700,
+                    marginBottom: 20,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: '50%',
+                      background: color,
+                    }}
+                  />
+                  {label}
+                </div>
+              );
+            })()}
 
+            {/* Lesson info rows */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: 13, color: '#8A93A3' }}>Lesson time</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A' }}>
+                  {(paymentModalFor.lesson_time ?? '').slice(0, 5)}
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: 13, color: '#8A93A3' }}>Duration</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A' }}>
+                  {paymentModalFor.duration_minutes ?? 60} minutes
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: 13, color: '#8A93A3' }}>Lesson type</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A' }}>
+                  {(paymentModalFor.lesson_type ?? '').trim() || 'Standard'}
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: 13, color: '#8A93A3' }}>Amount due</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A' }}>
+                  £{Number(paymentModalFor.amount_due ?? 0).toFixed(2)}
+                </span>
+              </div>
+              {Number(paymentModalFor.pupil?.prepaid_hours ?? 0) > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: 13, color: '#8A93A3' }}>Prepaid hours</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A' }}>
+                    {Number(paymentModalFor.pupil?.prepaid_hours).toFixed(1)} hrs
+                  </span>
+                </div>
+              )}
+            </div>
 
-
+            {/* Action hint */}
+            <div
+              style={{
+                marginTop: 20,
+                padding: 12,
+                background: '#FFFFFF',
+                borderRadius: 12,
+                fontSize: 12,
+                color: '#6B7280',
+                lineHeight: 1.45,
+              }}
+            >
+              Tap the lesson card to open the full lesson page and update payment status or take payment.
+            </div>
+          </div>
+        </BottomSheet>
+      )}
 
       <button
         type="button"
