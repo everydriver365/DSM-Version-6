@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, MapPin, Trash2 } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { MapPin, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -107,13 +108,18 @@ function PostcodeRatesPage() {
 
   return (
     <PageLayout className="pb-12" style={POPPINS}>
-      <div className="sticky top-0 z-40 flex items-center px-2" style={{ height: 52, background: "#0F2044" }}>
-        <button type="button" aria-label="Back" onClick={() => navigate({ to: "/settings" })} className="flex items-center justify-center" style={{ width: 40, height: 40 }}>
-          <ArrowLeft size={22} color="#fff" />
-        </button>
-        <div className="flex-1 text-center text-[15px] font-semibold text-white" style={POPPINS}>Postcode rates</div>
-        <div style={{ width: 40 }} />
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Postcode rates"
+        onBack={() => navigate({ to: "/settings" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
 
       <div className="px-4 pt-4">
         <p className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>

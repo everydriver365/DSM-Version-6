@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Plus, X } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
@@ -91,30 +92,28 @@ function PipelinePage() {
 
   return (
     <PageLayout style={POPPINS}>
-      <div
-        className="sticky top-0 z-40 flex items-center justify-between px-2"
-        style={{ height: 52, backgroundColor: "#0B1F3A" }}
-      >
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Pipeline"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Actions row */}
+      <div className="flex justify-end px-4 pt-3">
         <button
           type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
-        >
-          <ArrowLeft size={22} color="#FFFFFF" />
-        </button>
-        <div className="flex-1 text-center text-[15px] font-semibold text-white" style={POPPINS}>
-          Pipeline
-        </div>
-        <button
-          type="button"
-          aria-label="Add lead"
           onClick={() => setAddOpen(true)}
-          className="flex items-center justify-center"
-          style={{ width: 40, height: 40 }}
+          className="inline-flex items-center gap-2 text-[13px] font-semibold"
+          style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
-          <Plus size={22} color="#FFFFFF" />
+          <Plus size={15} />
+          Add lead
         </button>
       </div>
 
