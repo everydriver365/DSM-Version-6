@@ -6370,7 +6370,7 @@ function HomePage() {
                             No features found
                           </div>
                         ) : (
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
                             {searchResults.map((tile, idx) => renderQuickTile(tile, `qs-${tile.label}-${idx}`, () => setQuickSearchOpen(false)))}
                           </div>
                         )}
