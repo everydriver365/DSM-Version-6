@@ -17,19 +17,27 @@ export function formatCountdown(dateIso: string, time?: string | null): string |
   const diffMs = target.getTime() - now.getTime();
   if (diffMs <= 0) return null;
 
+  // Calendar-day difference (midnight to midnight), so "tomorrow at 9am"
+  // reads as "Tomorrow" even when it is only ~15 hours away.
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const startOfTarget = new Date(year, month - 1, day);
+  const dayDiff = Math.round(
+    (startOfTarget.getTime() - startOfToday.getTime()) / 86400000,
+  );
+
   const totalMinutes = Math.floor(diffMs / 60000);
-  const days = Math.floor(totalMinutes / 1440);
-  const hours = Math.floor((totalMinutes % 1440) / 60);
+  const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
 
-  if (days === 0 && hours === 0) {
-    return `${minutes} min${minutes === 1 ? "" : "s"} left`;
+  if (dayDiff <= 0) {
+    if (hours === 0) return `${minutes} min${minutes === 1 ? "" : "s"} left`;
+    return minutes > 0
+      ? `${hours} hr${hours === 1 ? "" : "s"} ${minutes} min${minutes === 1 ? "" : "s"} left`
+      : `${hours} hr${hours === 1 ? "" : "s"} left`;
   }
-  if (days === 0) {
-    return `${hours} hr${hours === 1 ? "" : "s"} left`;
+  if (dayDiff === 1) {
+    return hours < 24 ? `Tomorrow · ${hours} hr${hours === 1 ? "" : "s"} left` : "Tomorrow";
   }
-  if (days === 1) {
-    return hours > 0 ? `Tomorrow · ${hours} hr${hours === 1 ? "" : "s"} left` : "Tomorrow";
-  }
-  return `${days} days${hours > 0 ? ` ${hours} hr${hours === 1 ? "" : "s"}` : ""} left`;
+  return `${dayDiff} days left`;
 }
+
