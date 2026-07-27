@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ChevronLeft, Loader2, MapPin, Calendar, Repeat, CalendarDays, CalendarCheck, Clock, Sunrise, Sun, Moon, GraduationCap, Settings } from "lucide-react";
+import { Loader2, MapPin, Calendar, Repeat, CalendarDays, CalendarCheck, Clock, Sunrise, Sun, Moon, GraduationCap, Settings } from "lucide-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
 
@@ -401,27 +402,20 @@ function NewCoursePage() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 24 }}>
-      {/* Top bar */}
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-          backgroundColor: "#0B1F3A",
-          padding: "14px 16px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <button
-          onClick={() => navigate({ to: "/courses" })}
-          style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex" }}
-          aria-label="Back"
-        >
-          <ChevronLeft size={24} />
-        </button>
-        <h1 style={{ color: "#fff", fontSize: 16, fontWeight: 700, margin: 0 }}>New course</h1>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="New course"
+        onBack={() => navigate({ to: "/courses" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Action bar */}
+      <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 16px" }}>
         <button
           onClick={() => {
             if (step < 3) {
@@ -435,15 +429,14 @@ function NewCoursePage() {
             background: "none",
             border: "none",
             cursor: saving ? "not-allowed" : "pointer",
-            color: "#fff",
+            color: "#1877D6",
             fontWeight: 700,
             fontSize: 14,
-            opacity: saving ? 0.5 : step < 3 ? 0.7 : 1,
+            opacity: saving ? 0.5 : 1,
           }}
         >
           {step < 3 ? "Next" : "Publish"}
         </button>
-
       </div>
 
       {/* Step indicator */}

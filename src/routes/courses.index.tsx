@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Plus, GraduationCap, ChevronRight, Pencil, MapPin } from "lucide-react";
+import { Plus, GraduationCap, ChevronRight, Pencil, MapPin } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
@@ -97,33 +99,27 @@ function CoursesPage() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS }}>
-      {/* Top bar */}
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-          backgroundColor: "#0B1F3A",
-          padding: "14px 16px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <button
-          onClick={() => navigate({ to: "/home" })}
-          style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex" }}
-          aria-label="Back"
-        >
-          <ChevronLeft size={24} />
-        </button>
-        <h1 style={{ color: "#fff", fontSize: 16, fontWeight: 700, margin: 0 }}>My courses</h1>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="My courses"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+
+      {/* Action bar */}
+      <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 16px" }}>
         <button
           onClick={() => navigate({ to: "/courses/new" })}
-          style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex" }}
+          style={{ background: "none", border: "none", cursor: "pointer", color: "#1877D6", display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600 }}
           aria-label="New course"
         >
-          <Plus size={24} />
+          <Plus size={18} />
+          New course
         </button>
       </div>
 

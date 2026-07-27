@@ -1,13 +1,14 @@
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
-  ArrowLeft,
   BookOpen,
   Mail,
   MessageSquare,
   Phone,
   User as UserIcon,
 } from "lucide-react";
+import { toast } from "sonner";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/bookings/$id")({
@@ -155,26 +156,17 @@ function BookingDetailPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#fff", ...POPPINS }}>
-      {/* Top bar */}
-      <div
-        style={{
-          background: "#0B1F3A",
-          color: "#fff",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          padding: "14px 16px",
-        }}
-      >
-        <button
-          onClick={() => router.history.back()}
-          aria-label="Back"
-          style={{ background: "transparent", border: 0, color: "#fff", cursor: "pointer" }}
-        >
-          <ArrowLeft size={22} />
-        </button>
-        <h1 style={{ fontSize: 17, fontWeight: 600, margin: 0 }}>Booking details</h1>
-      </div>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Booking details"
+        onBack={() => router.history.back()}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       {loading ? (
         <div style={{ padding: 24, color: "#6B7280" }}>Loading…</div>
