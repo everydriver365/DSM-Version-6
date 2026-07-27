@@ -711,8 +711,10 @@ export function DiscoverSection() {
                     background: img ? `#EEF2F7 url(${img}) center/cover` : "#EEF2F7",
                   }}
                 />
-                <div style={{ ...cardTitle, marginTop: 8 }}>{m.title}</div>
-                <div style={cardSub}>{priceLabel(m)}</div>
+                <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
+                  <div style={{ ...cardTitle, marginTop: 8 }}>{m.title}</div>
+                  <div style={cardSub}>{priceLabel(m)}</div>
+                </div>
                 <button type="button" style={cardBtn("VIEW")}>
                   View
                 </button>
