@@ -567,17 +567,19 @@ export function DiscoverSection() {
     fontWeight: 600,
     color: NAVY,
     lineHeight: 1.25,
-    whiteSpace: "nowrap",
+    display: "-webkit-box",
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: "vertical",
     overflow: "hidden",
-    textOverflow: "ellipsis",
   };
   const cardSub: React.CSSProperties = {
     marginTop: 2,
     fontSize: 11,
     color: "#6B7A90",
-    whiteSpace: "nowrap",
+    display: "-webkit-box",
+    WebkitLineClamp: 1,
+    WebkitBoxOrient: "vertical",
     overflow: "hidden",
-    textOverflow: "ellipsis",
   };
 
   const priceLabel = (m: MarketItem) => {
