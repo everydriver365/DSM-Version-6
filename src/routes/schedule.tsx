@@ -169,6 +169,7 @@ interface Pupil {
   first_name?: string | null;
   last_name?: string | null;
   calendar_colour?: string | null;
+  prepaid_hours?: number | null;
 }
 
 interface Lesson {
@@ -179,6 +180,8 @@ interface Lesson {
   duration_minutes: number | null;
   status: string;
   lesson_type?: string | null;
+  payment_status?: string | null;
+  amount_due?: number | null;
   pupil: Pupil | null;
 }
 
