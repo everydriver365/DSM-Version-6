@@ -46,6 +46,13 @@ function authHeaders(extra: Record<string, string> = {}) {
 function SessionDetailPage() {
   const navigate = useNavigate();
   const { sessionId } = Route.useParams();
+  const { from } = Route.useSearch();
+  // Return to the Discover live section when we arrived from there.
+  const goBack = () =>
+    from === "discover"
+      ? navigate({ to: "/discover", search: { tab: "live" } })
+      : navigate({ to: "/dsm-live" });
+
   const [session, setSession] = useState<SessionDetail | null>(null);
   const [booking, setBooking] = useState<Booking | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
