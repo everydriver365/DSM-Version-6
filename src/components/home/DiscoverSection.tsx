@@ -292,7 +292,47 @@ export function DiscoverSection() {
     return raw.toLowerCase().startsWith("from") ? raw : `From ${raw}`;
   };
 
-  const tipThumb = tip ? tip.thumbnail_url || youtubeThumb(tip.url) : null;
+  const stripStyle: React.CSSProperties = {
+    display: "flex",
+    flexWrap: "nowrap",
+    gap: 10,
+    alignItems: "stretch",
+    overflowX: "auto",
+    WebkitOverflowScrolling: "touch",
+    scrollSnapType: "x mandatory",
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
+    padding: "0 0 4px",
+  };
+
+  const rowShell: React.CSSProperties = {
+    width: "100%",
+    minWidth: "100%",
+    flexShrink: 0,
+    flexGrow: 0,
+    scrollSnapAlign: "start",
+    background: "#FFFFFF",
+    border: `1px solid ${HAIRLINE}`,
+    borderRadius: 12,
+    boxShadow: "0 2px 8px rgba(11,31,58,0.05)",
+    padding: 10,
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    cursor: "pointer",
+    fontFamily: FONT,
+  };
+
+  const rowTitle: React.CSSProperties = {
+    fontSize: 14,
+    fontWeight: 600,
+    color: NAVY,
+    lineHeight: 1.25,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  };
+
 
   return (
     <div style={{ padding: "0 0 22px", fontFamily: FONT }}>
