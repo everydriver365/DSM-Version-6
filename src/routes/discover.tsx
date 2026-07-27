@@ -368,11 +368,21 @@ function TabBar({
 }
 
 function DiscoverPage() {
-
   const navigate = useNavigate();
   const [live, setLive] = useState<LiveItem[]>([]);
   const [learn, setLearn] = useState<LearnItem[]>([]);
   const [market, setMarket] = useState<MarketItem[]>([]);
+  const [activeTab, setActiveTab] = useState<"live" | "learn" | "market">("live");
+  const liveRef = useRef<HTMLDivElement>(null);
+  const learnRef = useRef<HTMLDivElement>(null);
+  const marketRef = useRef<HTMLDivElement>(null);
+
+  const scrollTo = (tab: "live" | "learn" | "market") => {
+    const ref = { live: liveRef, learn: learnRef, market: marketRef }[tab];
+    ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setActiveTab(tab);
+  };
+
 
   useEffect(() => {
     let cancelled = false;
