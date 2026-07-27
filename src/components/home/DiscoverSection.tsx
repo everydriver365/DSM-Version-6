@@ -382,173 +382,140 @@ export function DiscoverSection() {
         })()}
       </div>
 
-      {/* DSM Live — full-width row */}
-      {liveSorted[0] && (() => {
-        const s = liveSorted[0];
-        const nowLive = isLiveNow(s);
-        const open = () =>
-          navigate({
-            to: "/dsm-live/$sessionId" as never,
-            params: { sessionId: s.id } as never,
-          });
-        return (
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={open}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") open();
-            }}
-            style={{
-              margin: "10px 0 0",
-              background: "#FFFFFF",
-              border: `1px solid ${HAIRLINE}`,
-              borderRadius: 12,
-              boxShadow: "0 2px 8px rgba(11,31,58,0.05)",
-              padding: 10,
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              cursor: "pointer",
-            }}
-          >
-            <div style={{ position: "relative", flexShrink: 0 }}>
+      {/* DSM Live — swipable full-width rows */}
+      {liveSorted.length > 0 && (
+        <div className="dsm-discover-scroll" style={{ ...stripStyle, marginTop: 10 }}>
+          {liveSorted.map((s) => {
+            const nowLive = isLiveNow(s);
+            const open = () =>
+              navigate({
+                to: "/dsm-live/$sessionId" as never,
+                params: { sessionId: s.id } as never,
+              });
+            return (
               <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 12,
-                  background: s.image_url
-                    ? `${NAVY} url(${s.image_url}) center/cover`
-                    : NAVY,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                key={`live-${s.id}`}
+                role="button"
+                tabIndex={0}
+                onClick={open}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") open();
                 }}
+                style={rowShell}
               >
-                {!s.image_url && <IconBroadcast size={20} color="#FFFFFF" stroke={1.9} />}
-              </div>
-              {nowLive && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: -3,
-                    right: -3,
-                    width: 10,
-                    height: 10,
-                    borderRadius: "50%",
-                    background: RED,
-                    border: "2px solid #FFFFFF",
+                <div style={{ position: "relative", flexShrink: 0 }}>
+                  <div
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: 12,
+                      background: s.image_url
+                        ? `${NAVY} url(${s.image_url}) center/cover`
+                        : NAVY,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {!s.image_url && <IconBroadcast size={20} color="#FFFFFF" stroke={1.9} />}
+                  </div>
+                  {nowLive && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: -3,
+                        right: -3,
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        background: RED,
+                        border: "2px solid #FFFFFF",
+                      }}
+                    />
+                  )}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={rowTitle}>{s.title}</div>
+                  <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
+                    Live · {fmtTimeDay(s.session_date, s.session_time)}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    open();
                   }}
-                />
-              )}
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: NAVY,
-                  lineHeight: 1.25,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {s.title}
+                  style={{
+                    background: NAVY,
+                    color: "#FFFFFF",
+                    border: "none",
+                    borderRadius: 999,
+                    padding: "8px 18px",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    fontFamily: FONT,
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                >
+                  Join
+                </button>
               </div>
-              <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
-                Live · {fmtTimeDay(s.session_date, s.session_time)}
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                open();
-              }}
-              style={{
-                background: NAVY,
-                color: "#FFFFFF",
-                border: "none",
-                borderRadius: 999,
-                padding: "8px 18px",
-                fontSize: 12,
-                fontWeight: 600,
-                fontFamily: FONT,
-                cursor: "pointer",
-                flexShrink: 0,
-              }}
-            >
-              Join
-            </button>
-          </div>
-        );
-      })()}
-
-      {/* DSM Learn — full width, quieter */}
-      {tip && (
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => {
-            if (tip.url) window.open(tip.url, "_blank", "noopener,noreferrer");
-            else navigate({ to: "/learn" as never });
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              if (tip.url) window.open(tip.url, "_blank", "noopener,noreferrer");
-              else navigate({ to: "/learn" as never });
-            }
-          }}
-          style={{
-            margin: "10px 0 0",
-            background: "#FFFFFF",
-            border: `1px solid ${HAIRLINE}`,
-            borderRadius: 12,
-            boxShadow: "0 2px 8px rgba(11,31,58,0.05)",
-            padding: 10,
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            cursor: "pointer",
-          }}
-        >
-          <div
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 12,
-              flexShrink: 0,
-              background: tipThumb ? `#EEF2F7 url(${tipThumb}) center/cover` : "#EEF2F7",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {!tipThumb && <IconPlayerPlay size={18} color={MUTED} stroke={2} />}
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontSize: 14,
-                fontWeight: 600,
-                color: NAVY,
-                lineHeight: 1.25,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {tip.title}
-            </div>
-            <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
-              {tip.duration ? `${tip.duration} · DSM Learn` : "DSM Learn"}
-            </div>
-          </div>
-          <IconChevronRight size={20} stroke={2} color={MUTED} />
+            );
+          })}
+          <div aria-hidden="true" style={{ width: 20, flexShrink: 0 }} />
         </div>
       )}
+
+      {/* DSM Learn — swipable full-width rows */}
+      {playable.length > 0 && (
+        <div className="dsm-discover-scroll" style={{ ...stripStyle, marginTop: 10 }}>
+          {playable.map((v, i) => {
+            const thumb = v.thumbnail_url || youtubeThumb(v.url);
+            const open = () => {
+              if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
+              else navigate({ to: "/learn" as never });
+            };
+            return (
+              <div
+                key={`learn-${v.id ?? i}`}
+                role="button"
+                tabIndex={0}
+                onClick={open}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") open();
+                }}
+                style={rowShell}
+              >
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 12,
+                    flexShrink: 0,
+                    background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {!thumb && <IconPlayerPlay size={18} color={MUTED} stroke={2} />}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={rowTitle}>{v.title}</div>
+                  <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
+                    {v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}
+                  </div>
+                </div>
+                <IconChevronRight size={20} stroke={2} color={MUTED} />
+              </div>
+            );
+          })}
+          <div aria-hidden="true" style={{ width: 20, flexShrink: 0 }} />
+        </div>
+      )}
+
 
     </div>
   );
