@@ -1922,6 +1922,9 @@ function SchedulePage() {
           amountDue={Number((paymentSheetFor as any).amount_due ?? 0)}
           prepaidHours={Number((paymentSheetFor as any).pupil?.prepaid_hours ?? 0)}
           duration={paymentSheetFor.duration_minutes ?? 60}
+          pupilId={(paymentSheetFor as any).pupil?.id ?? paymentSheetFor.pupil_id ?? null}
+          pupilPhone={(paymentSheetFor as any).pupil?.phone ?? null}
+          lessonId={paymentSheetFor.id ?? null}
         />
       )}
 
