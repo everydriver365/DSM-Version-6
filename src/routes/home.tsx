@@ -6679,8 +6679,9 @@ function HomePage() {
           const nowIso = new Date().toISOString();
 
           if (row.source === "lesson-earned") {
-            // Fix 2: reverse lesson to unpaid, restore amount_due,
-            // reverse account_balance if applicable, and soft-delete the
+            // Fix 2: reverse lesson to unpaid (amount_due is fixed at lesson
+            // creation and must never change here), reverse account_balance if
+            // applicable, and soft-delete the
             // corresponding payments + lesson_history rows.
             const { data: lessonRow, error: lessonFetchErr } = await supabase
               .from("lessons")
@@ -6700,7 +6701,6 @@ function HomePage() {
               .from("lessons")
               .update({
                 payment_status: "unpaid",
-                amount_due: restoreAmount,
                 paid_at: null,
                 paid_amount: null,
                 payment_method: null,
