@@ -740,6 +740,13 @@ export function DiscoverSection() {
             const m = market[i];
             if (m) nodes.push(marketCard(m));
           }
+          nodes.push(
+            <div
+              key="scroll-spacer"
+              aria-hidden="true"
+              style={{ width: 20, flexShrink: 0 }}
+            />
+          );
           return nodes;
         })()}
       </div>
