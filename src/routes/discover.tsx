@@ -452,8 +452,12 @@ function DiscoverPage() {
         </p>
       </div>
 
-      <SectionBlock
-        title="DSM Live"
+      <TabBar active={activeTab} onChange={scrollTo} />
+
+      <div ref={liveRef} id="discover-live">
+        <SectionBlock
+          title="DSM Live"
+
         subtitle="Upcoming live sessions and podcasts"
         actionLabel="See all"
         onAction={() => navigate({ to: "/dsm-live" as never })}
