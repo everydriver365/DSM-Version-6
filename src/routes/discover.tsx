@@ -316,9 +316,11 @@ function Empty({ label }: { label: string }) {
 function TabBar({
   active,
   onChange,
+  counts,
 }: {
   active: "live" | "learn" | "market";
   onChange: (tab: "live" | "learn" | "market") => void;
+  counts: Record<"live" | "learn" | "market", number>;
 }) {
   const tabs: { id: "live" | "learn" | "market"; label: string }[] = [
     { id: "live", label: "Live" },
@@ -336,6 +338,7 @@ function TabBar({
     >
       {tabs.map((t) => {
         const isActive = active === t.id;
+        const count = counts[t.id];
         return (
           <button
             key={t.id}
@@ -357,15 +360,41 @@ function TabBar({
               borderStyle: "solid",
               borderColor: isActive ? "transparent" : HAIRLINE,
               transition: "background 0.15s, color 0.15s",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 6,
             }}
           >
             {t.label}
+            {count > 0 && (
+              <span
+                aria-label={`${count} items`}
+                style={{
+                  minWidth: 18,
+                  height: 18,
+                  padding: "0 5px",
+                  borderRadius: 9,
+                  background: isActive ? "rgba(255,255,255,0.22)" : "#EAF2FC",
+                  color: isActive ? "#FFFFFF" : "#1877D6",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  lineHeight: "18px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {count}
+              </span>
+            )}
           </button>
         );
       })}
     </div>
   );
 }
+
 
 function DiscoverPage() {
   const navigate = useNavigate();
