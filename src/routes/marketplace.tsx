@@ -117,6 +117,20 @@ function colorFor(slug?: string | null): string {
   return CATEGORY_COLOR[slug] ?? "#185FA5";
 }
 
+// Sentence case: keep the first word's capitalisation, lowercase later words
+// unless they look like acronyms (ADI, DVSA).
+function sentenceCase(name: string): string {
+  return name
+    .split(" ")
+    .map((w, i) => {
+      if (i === 0) return w.charAt(0).toUpperCase() + w.slice(1);
+      if (w.length > 1 && w === w.toUpperCase()) return w;
+      return w.toLowerCase();
+    })
+    .join(" ");
+}
+
+
 async function sbGet<T>(path: string): Promise<T> {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     headers: {
@@ -286,49 +300,60 @@ function MarketplacePage() {
         </div>
 
         {/* Categories */}
-        <div
-          style={{
-            fontSize: 12,
-            fontWeight: 500,
-            color: "#64748B",
-            letterSpacing: "0.04em",
-            marginBottom: 10,
-          }}
-        >
-          CATEGORIES
+        <style>{`.mkt-cat-row::-webkit-scrollbar{display:none}`}</style>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+          <span style={{ width: 4, height: 14, borderRadius: 2, background: "#1877D6" }} />
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 500,
+              color: "#0B1F3A",
+              letterSpacing: "0.5px",
+              textTransform: "uppercase",
+              fontFamily: POPPINS,
+            }}
+          >
+            Categories
+          </span>
         </div>
         <div
+          className="mkt-cat-row"
           style={{
             display: "flex",
-            flexWrap: "wrap",
             gap: 8,
+            overflowX: "auto",
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none",
             marginBottom: 22,
           }}
         >
-          {categories.map((cat) => {
-            const isActive = activeCategory === cat.slug;
+          {[{ id: "__all", slug: null as string | null, name: "All" }, ...categories].map((cat) => {
+            const isActive = cat.slug === null ? activeCategory === null : activeCategory === cat.slug;
             return (
               <button
                 key={cat.id}
                 type="button"
-                onClick={() => setActiveCategory(isActive ? null : cat.slug)}
+                onClick={() => setActiveCategory(cat.slug)}
                 style={{
-                  background: isActive ? "#185FA5" : "#FFFFFF",
-                  border: isActive ? "none" : "1px solid rgba(15,32,68,0.10)",
+                  background: isActive ? "#0B1F3A" : "#FFFFFF",
+                  border: isActive ? "1px solid #0B1F3A" : "1px solid #E3E8F0",
                   borderRadius: 100,
                   padding: "8px 16px",
                   fontSize: 13,
                   fontWeight: 500,
-                  color: isActive ? "#FFFFFF" : "#334155",
+                  color: isActive ? "#FFFFFF" : "#5B6472",
                   cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
                   fontFamily: POPPINS,
                 }}
               >
-                {cat.name}
+                {sentenceCase(cat.name)}
               </button>
             );
           })}
         </div>
+
 
         {/* Top marketplace */}
         <div
