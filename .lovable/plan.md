@@ -1,32 +1,39 @@
-## What's actually happening
+## Goal
 
-Verified in your running preview:
+Restructure the Home "Discover" section so the scrollable top tiles show **only Marketplace listings**, and add two full-width rows underneath matching the uploaded reference: a **DSM Live** row and the existing **DSM Learn** row.
 
-- The next-lesson tile is showing the **fake placeholder** (the hand-drawn SVG curve with green/red dots), not a real map. No Google map container (`.gm-style`) exists in the page.
-- The tile only renders the real map when `driveData` is non-null (`src/routes/home.tsx` ~line 4590).
-- `driveData` is null because the drive-time server function returns null. Server log, captured just now:
-  `[lesson-drive-time] missing LOVABLE_API_KEY or GOOGLE_MAPS_API_KEY`
-- So it is **not** a Google/API problem: I called the Routes API through the connector gateway with your "Ken's Google Maps Platform" connection and it returned HTTP 200 with a valid route. The connection is linked, and both secrets exist at project level.
-- The failure is that those two server-side secrets are not present in the preview/dev server runtime environment, so `process.env.LOVABLE_API_KEY` / `process.env.GOOGLE_MAPS_API_KEY` are undefined inside the handler and it bails out before calling Google.
-- The lesson itself has a good destination ("2 The Lyndons, Passfield, Liphook, GU30 7SD"), geolocation permission is granted, so nothing upstream is at fault.
+Only `src/components/home/DiscoverSection.tsx` changes.
 
-Net effect: on the published site (where the secrets are injected) the map likely works; in preview it always falls back to the fake SVG. Either way, the tile has a single point of failure — no drive time means no map at all.
+## Layout after the change
 
-## Plan
+```text
+Discover                                 See more >
+[ Marketplace card ][ Marketplace card ]  → scrolls
+┌───────────────────────────────────────────────┐
+│ [icon•]  Standards check          [ Join ]    │  DSM Live (next/live session)
+│          Live · 10:10am tomorrow              │
+└───────────────────────────────────────────────┘
+┌───────────────────────────────────────────────┐
+│ [▷]      Blue light                     >     │  DSM Learn (tip of the day)
+│          DSM Learn                            │
+└───────────────────────────────────────────────┘
+```
 
-Only `src/routes/home.tsx` changes (plus an optional check of the published deployment).
+## Changes
 
-1. **Verify published behaviour first.** Hit the drive-time function on the published deployment to confirm the secrets are injected there. If it also returns null, the fix is credential-side (re-link the Google Maps connection so the secrets propagate) and I'll report that rather than paper over it.
+1. **Carousel** — remove the live/marketplace interleave loop; render only `market.map(marketCard)` plus the existing scroll spacer. Card size, styling, snap scrolling and per-item navigation to `/marketplace_/$listingId` stay as they are.
 
-2. **Decouple the map from drive time.** In the next-lesson tile, render `NextLessonMap` whenever we have *any* usable coordinates or a destination address, not only when `driveData` exists:
-   - If `driveData` exists → current behaviour (origin, destination, route polyline, traffic ETA).
-   - If not, but we have the browser geolocation position and/or the pupil's address → render the map using the client-side Google Maps JS key (`VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY`, already present and working in the browser), geocoding the destination client-side and dropping the two markers with a straight connector line. No route/ETA, but a real map.
+2. **New DSM Live row** — full-width white card (1px `#E2E8F0`, 12px radius, same soft shadow, 10px padding, 12px gap) placed directly under the carousel, using the first item of `liveSorted`:
+   - Left: 44px navy `#0B1F3A` rounded square with a white broadcast icon; small red dot badge on the top-right corner of that square when the session is live now.
+   - Middle: session title (15px, semibold, navy, single-line ellipsis) with `Live · {time day}` underneath (11px, `#6B7A90`) reusing `fmtTimeDay`.
+   - Right: navy "Join" pill button.
+   - Whole row taps through to `/dsm-live/$sessionId`.
+   - Hidden entirely when there are no upcoming sessions.
 
-3. **Only fall back to the illustration when there is genuinely nothing** (no destination and no location), and keep the existing "Loading map…" state while the map initialises so it never silently looks broken.
+3. **DSM Learn row** — keep the existing tip-of-the-day row and behaviour, restyled to match: same 44px left tile with play icon (light grey `#EEF2F7` background, grey icon, no offset stack), title + "DSM Learn" subtitle, and the "Watch" button replaced with a grey chevron-right on the right edge.
 
-4. Leave all existing ETA / traffic / "More" behaviour untouched.
+4. Delete the now-unused `liveTile`/`marketTile`/`TileShell`/`TileBody`/`SeeMore`/`CategoryPill` helpers only if they are genuinely unreferenced after the edit, to keep the file clean and typecheck-safe.
 
-## Technical notes
+## Not changing
 
-- `NextLessonMap` already loads the Maps JS API with the browser key and handles markers/polyline/bounds — it just currently never mounts without `driveData`. The change is in the caller's condition plus passing coordinates from a client-side geocode instead of from the server response.
-- Client-side geocoding will use the Maps JS `Geocoder` (allowed by the browser key on `*.lovable.app`), so no extra server round-trip.
+Data fetching queries, the "See more" header link to `/discover`, the `/discover` page itself, and the Home page layout around the section.
