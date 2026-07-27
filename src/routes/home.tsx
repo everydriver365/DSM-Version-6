@@ -1443,6 +1443,7 @@ function HomePage() {
   const [actionsOpenForLesson, setActionsOpenForLesson] = useState<LessonRow | null>(null);
   const [cancelSheetForLesson, setCancelSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSheetForLesson, setDeleteSheetForLesson] = useState<LessonRow | null>(null);
+  const [paymentSheetForLesson, setPaymentSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSubmittingHome, setDeleteSubmittingHome] = useState(false);
   const [movingLessonHome, setMovingLessonHome] = useState<LessonRow | null>(null);
   const [moveModeHome, setMoveModeHome] = useState(false);
