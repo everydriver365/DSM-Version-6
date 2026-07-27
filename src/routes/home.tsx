@@ -6210,11 +6210,11 @@ function HomePage() {
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 12px', fontSize: 12, color: '#6B7A90' }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                    <MapPin size={12} stroke={2} color="#6B7A90" />
+                    <MapPin size={12} strokeWidth={2} color="#6B7A90" />
                     {next.test_centre || 'Test centre TBC'}
                   </span>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                    <Clock size={12} stroke={2} color="#6B7A90" />
+                    <Clock size={12} strokeWidth={2} color="#6B7A90" />
                     {fmtShortDate(next.test_date)}{next.test_time ? ` · ${String(next.test_time).slice(0, 5)}` : ''}
                   </span>
                 </div>
