@@ -1704,7 +1704,7 @@ function SchedulePage() {
                                     onClick={(ev) => ev.stopPropagation()}
                                     style={{
                                       position: 'absolute',
-                                      top: 88,
+                                      top: 44,
                                       right: 14,
                                       minWidth: 140,
                                       background: '#FFFFFF',
