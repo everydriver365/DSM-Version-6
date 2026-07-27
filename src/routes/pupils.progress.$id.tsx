@@ -239,9 +239,6 @@ function PupilProgressPage() {
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
 
-        <div style={{ width: 40 }} />
-      </div>
-
       <div className="flex flex-col items-center mt-6">
         <div style={{ width: size, height: size, position: "relative" }}>
           <svg width={size} height={size}>
