@@ -115,12 +115,13 @@ export function SettingsIcon(props: IconProps) {
 export function CarIcon(props: IconProps) {
   return wrap(
     <>
-      {/* Side-view car silhouette */}
-      <path d="M3 15l1.5-5A2.5 2.5 0 017 8h10a2.5 2.5 0 012.5 2L21 15" />
-      <path d="M3 15v3h18v-3" />
-      <path d="M3 15h18" />
-      <circle cx="7.5" cy="18" r="1.5" />
-      <circle cx="16.5" cy="18" r="1.5" />
+      {/* Front-facing car silhouette */}
+      <path d="M4 17v-2a3 3 0 013-3h10a3 3 0 013 3v2" />
+      <path d="M4 17h16" />
+      <path d="M2 20h20" />
+      <circle cx="6.5" cy="20" r="1.5" />
+      <circle cx="17.5" cy="20" r="1.5" />
+      <path d="M9 12h6" />
     </>,
     { ...defaultProps, ...props },
   );
