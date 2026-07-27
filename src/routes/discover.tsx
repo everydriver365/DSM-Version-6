@@ -564,7 +564,9 @@ function DiscoverPage() {
           );
         })}
       </SectionBlock>
+      </div>
     </div>
+
   );
 }
 
