@@ -4954,6 +4954,11 @@ function HomePage() {
         const PURPLE_FG = '#6D28D9';
 
         const activeList = tab === 'today' ? todayLessons : tab === 'tomorrow' ? tomorrowLessons : nextTabLessons;
+        const scheduleCounts = {
+          today: todayLessons.length + todayBlocks.length,
+          tomorrow: tomorrowLessons.length + tomorrowBlocks.length,
+          next: nextTabLessons.length,
+        };
         const sorted = [...activeList].sort((a, b) => {
           const ad = `${a.lesson_date}T${a.lesson_time ?? '00:00'}`;
           const bd = `${b.lesson_date}T${b.lesson_time ?? '00:00'}`;
