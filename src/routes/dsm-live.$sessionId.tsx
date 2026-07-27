@@ -238,7 +238,7 @@ END:VCALENDAR`;
       >
         <button
           type="button"
-          onClick={() => navigate({ to: "/dsm-live" })}
+          onClick={goBack}
           style={{ background: "transparent", border: 0, color: "#fff", padding: 4, cursor: "pointer" }}
           aria-label="Back"
         >
