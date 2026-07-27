@@ -6033,7 +6033,7 @@ function HomePage() {
                       background: '#FFFFFF',
                       border: '1px solid #E2E8F0',
                       borderRadius: 14,
-                      padding: 16,
+                      padding: 12,
                       minHeight: 112,
                       display: 'flex',
                       flexDirection: 'column',
@@ -6061,9 +6061,9 @@ function HomePage() {
                     <div
                       className="qa-icon"
                       style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 12,
+                        width: 34,
+                        height: 34,
+                        borderRadius: 9,
                         background: tile.chipBg,
                         display: 'flex',
                         alignItems: 'center',
@@ -6072,10 +6072,10 @@ function HomePage() {
                         transition: 'transform 0.15s ease',
                       }}
                     >
-                      <Icon size={22} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={2} />
+                      <Icon size={17} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={2} />
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, maxWidth: '100%' }}>
-                      <span style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', lineHeight: 1.25, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: "Poppins, Inter, sans-serif" }}>{tile.label}</span>
+                      <span style={{ fontSize: 13, fontWeight: 500, color: '#0B1F3A', lineHeight: 1.25, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: "Poppins, Inter, sans-serif" }}>{tile.label}</span>
                       <span style={{ marginTop: 2, fontSize: 11, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: 1.3, fontFamily: "Poppins, Inter, sans-serif" }}>{tile.sub}</span>
                     </div>
                   </button>
@@ -6295,7 +6295,7 @@ function HomePage() {
                         if (dx > 50 && quickPage < totalPages - 1) setQuickPage((p) => p + 1);
                         if (dx < -50 && quickPage > 0) setQuickPage((p) => p - 1);
                       }}
-                      style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}
+                      style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}
                     >
                       {currentTiles.map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
                     </div>
@@ -6370,7 +6370,7 @@ function HomePage() {
                             No features found
                           </div>
                         ) : (
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
                             {searchResults.map((tile, idx) => renderQuickTile(tile, `qs-${tile.label}-${idx}`, () => setQuickSearchOpen(false)))}
                           </div>
                         )}
