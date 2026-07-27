@@ -1646,18 +1646,44 @@ function SchedulePage() {
                                                />
                                              </div>
                                              <div style={{ flex: 1, minWidth: 0 }}>
-                                               <div
-                                                 style={{
-                                                   fontSize: 14,
-                                                   fontWeight: 500,
-                                                   color: "#0B1F3A",
-                                                   overflow: "hidden",
-                                                   textOverflow: "ellipsis",
-                                                   whiteSpace: "nowrap",
-                                                   textDecoration: cancelled ? "line-through" : "none",
-                                                 }}
-                                               >
-                                                 {title}
+                                               <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+                                                 <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: cancelled ? 'line-through' : 'none' }}>
+                                                   {title}
+                                                 </span>
+                                                 {isCancelled ? (
+                                                   <span style={{
+                                                     flexShrink: 0,
+                                                     fontSize: 10,
+                                                     fontWeight: 700,
+                                                     letterSpacing: 0.4,
+                                                     textTransform: 'uppercase',
+                                                     color: '#CC2229',
+                                                     background: '#FCEBEB',
+                                                     padding: '2px 8px',
+                                                     borderRadius: 999,
+                                                     lineHeight: 1.4,
+                                                   }}>
+                                                     Cancelled
+                                                   </span>
+                                                 ) : (isLive || isPrepaidPupil || isPaid || dueUnpaid) ? (
+                                                   <span style={{
+                                                     flexShrink: 0,
+                                                     fontSize: 10,
+                                                     fontWeight: 700,
+                                                     padding: '2px 9px',
+                                                     borderRadius: 999,
+                                                     lineHeight: 1.4,
+                                                     ...(isLive ? {
+                                                       background: '#E6F1FB', color: '#1877D6',
+                                                     } : isPrepaidPupil || isPaid ? {
+                                                       background: '#E7F5EE', color: '#1E8E3E',
+                                                     } : {
+                                                       background: '#FCEBEB', color: '#CC2229',
+                                                     }),
+                                                   }}>
+                                                     {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
+                                                   </span>
+                                                 ) : null}
                                                </div>
                                                {timeText ? (
                                                  <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
