@@ -533,9 +533,12 @@ function DiscoverPage() {
           );
         })}
       </SectionBlock>
+      </div>
 
+      <div ref={marketRef} id="discover-market">
       <SectionBlock
         title="DSM Marketplace"
+
         subtitle="Cars, kit and services for instructors"
         actionLabel="See all"
         onAction={() => navigate({ to: "/marketplace" as never })}
