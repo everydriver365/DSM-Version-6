@@ -1667,25 +1667,40 @@ function SchedulePage() {
                                                    }}>
                                                      Cancelled
                                                    </span>
-                                                 ) : (isLive || isPrepaidPupil || isPaid || dueUnpaid) ? (
-                                                   <span style={{
-                                                     flexShrink: 0,
-                                                     fontSize: 10,
-                                                     fontWeight: 700,
-                                                     padding: '2px 9px',
-                                                     borderRadius: 999,
-                                                     lineHeight: 1.4,
-                                                     ...(isLive ? {
-                                                       background: '#E6F1FB', color: '#1877D6',
-                                                     } : isPrepaidPupil || isPaid ? {
-                                                       background: '#E7F5EE', color: '#1E8E3E',
-                                                     } : {
-                                                       background: '#FCEBEB', color: '#CC2229',
-                                                     }),
-                                                   }}>
-                                                     {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
-                                                   </span>
-                                                 ) : null}
+                                                  ) : (isLive || isPrepaidPupil || isPaid || dueUnpaid) ? (
+                                                    <span
+                                                      role="button"
+                                                      tabIndex={0}
+                                                      onClick={(ev) => {
+                                                        ev.stopPropagation();
+                                                        if (isLessonRow) setPaymentModalFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
+                                                      }}
+                                                      onKeyDown={(ev) => {
+                                                        if (ev.key === 'Enter' || ev.key === ' ') {
+                                                          ev.stopPropagation();
+                                                          if (isLessonRow) setPaymentModalFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
+                                                        }
+                                                      }}
+                                                      style={{
+                                                        flexShrink: 0,
+                                                        fontSize: 10,
+                                                        fontWeight: 700,
+                                                        padding: '2px 9px',
+                                                        borderRadius: 999,
+                                                        lineHeight: 1.4,
+                                                        cursor: 'pointer',
+                                                        ...(isLive ? {
+                                                          background: '#E6F1FB', color: '#1877D6',
+                                                        } : isPrepaidPupil || isPaid ? {
+                                                          background: '#E7F5EE', color: '#1E8E3E',
+                                                        } : {
+                                                          background: '#FCEBEB', color: '#CC2229',
+                                                        }),
+                                                      }}
+                                                    >
+                                                      {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
+                                                    </span>
+                                                  ) : null}
                                                </div>
                                                {timeText ? (
                                                  <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
