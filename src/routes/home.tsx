@@ -248,15 +248,17 @@ function NextLessonMap({
   originLng,
   destLat,
   destLng,
+  destAddress,
   encodedPolyline,
   directionsUrl,
   height = 160,
   isLate = false,
 }: {
-  originLat: number;
-  originLng: number;
+  originLat: number | null;
+  originLng: number | null;
   destLat: number | null;
   destLng: number | null;
+  destAddress?: string | null;
   encodedPolyline: string | null;
   directionsUrl: string;
   height?: number;
