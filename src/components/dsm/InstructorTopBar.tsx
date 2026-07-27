@@ -111,15 +111,15 @@ export default function InstructorTopBar({
             <img
               src={dsmLogoWhite.url}
               alt="DSM"
-              style={{ height: 38, width: "auto", objectFit: "contain", display: "block" }}
+              style={{ height: 48, width: "auto", objectFit: "contain", display: "block" }}
             />
           </button>
           <IconBtn
             ariaLabel="Voice commands"
             onClick={onMicPress}
-            style={{ background: "#1877D6", width: 36, height: 36 }}
+            style={{ background: "#1877D6", width: 30, height: 30 }}
           >
-            <Mic size={19} strokeWidth={1.8} color="#ffffff" />
+            <Mic size={16} strokeWidth={1.8} color="#ffffff" />
           </IconBtn>
         </div>
       )}
