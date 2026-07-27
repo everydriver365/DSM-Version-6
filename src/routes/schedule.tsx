@@ -1623,6 +1623,22 @@ function SchedulePage() {
                                          {isLessonRow ? (
                                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, minWidth: 0 }}>
                                              <div style={{ position: 'relative', flexShrink: 0 }}>
+                                               {isLive && (
+                                                 <span
+                                                   aria-label="Live"
+                                                   style={{
+                                                     position: 'absolute',
+                                                     top: 0,
+                                                     right: 0,
+                                                     width: 8,
+                                                     height: 8,
+                                                     borderRadius: 999,
+                                                     backgroundColor: '#DC2626',
+                                                     boxShadow: '0 0 0 2px #FFFFFF',
+                                                     zIndex: 1,
+                                                   }}
+                                                 />
+                                               )}
                                                <PupilAvatar
                                                  pupil={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil : null}
                                                  pupilId={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil_id ?? null : null}
