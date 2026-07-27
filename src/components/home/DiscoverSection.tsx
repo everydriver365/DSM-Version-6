@@ -636,70 +636,6 @@ export function DiscoverSection() {
         }}
       >
         {(() => {
-          const liveCard = (s: LiveItem) => (
-            <div
-              key={`live-${s.id}`}
-              role="button"
-              tabIndex={0}
-              onClick={() =>
-                navigate({
-                  to: "/dsm-live/$sessionId" as never,
-                  params: { sessionId: s.id } as never,
-                })
-              }
-              style={cardShell}
-            >
-              <StackMedia
-                height={78}
-                front={{
-                  background: s.image_url
-                    ? `#12539E url(${s.image_url}) center/cover`
-                    : "linear-gradient(160deg, #2C6FD6 0%, #12539E 100%)",
-                }}
-                badge={
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: 3,
-                      left: 0,
-                      background: RED,
-                      color: "#FFFFFF",
-                      fontSize: 9,
-                      fontWeight: 700,
-                      letterSpacing: "0.04em",
-                      padding: "2px 6px",
-                      borderRadius: 6,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 4,
-                      lineHeight: 1.2,
-                    }}
-                  >
-                    <span
-                      style={{
-                        width: 4,
-                        height: 4,
-                        borderRadius: "50%",
-                        background: "#FFFFFF",
-                        display: "inline-block",
-                      }}
-                    />
-                    LIVE
-                  </span>
-                }
-              >
-              {!s.image_url && <IconBroadcast size={18} color="#FFFFFF" stroke={1.9} />}
-              </StackMedia>
-              <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
-                <div style={{ ...cardTitle, marginTop: 8 }}>{s.title}</div>
-                <div style={cardSub}>{fmtTimeDay(s.session_date, s.session_time)}</div>
-              </div>
-              <button type="button" style={cardBtn("JOIN")}>
-                Join
-              </button>
-            </div>
-          );
-
           const marketCard = (m: MarketItem) => {
             const img = firstImage(m.image_urls);
             return (
@@ -732,14 +668,7 @@ export function DiscoverSection() {
             );
           };
 
-          const nodes: React.ReactNode[] = [];
-          const rounds = Math.max(liveSorted.length, market.length);
-          for (let i = 0; i < rounds; i++) {
-            const s = liveSorted[i];
-            if (s) nodes.push(liveCard(s));
-            const m = market[i];
-            if (m) nodes.push(marketCard(m));
-          }
+          const nodes: React.ReactNode[] = market.map((m) => marketCard(m));
           nodes.push(
             <div
               key="scroll-spacer"
@@ -750,6 +679,110 @@ export function DiscoverSection() {
           return nodes;
         })()}
       </div>
+
+      {/* DSM Live — full-width row */}
+      {liveSorted[0] && (() => {
+        const s = liveSorted[0];
+        const nowLive = isLiveNow(s);
+        const open = () =>
+          navigate({
+            to: "/dsm-live/$sessionId" as never,
+            params: { sessionId: s.id } as never,
+          });
+        return (
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={open}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") open();
+            }}
+            style={{
+              margin: "10px 0 0",
+              background: "#FFFFFF",
+              border: `1px solid ${HAIRLINE}`,
+              borderRadius: 12,
+              boxShadow: "0 2px 8px rgba(11,31,58,0.05)",
+              padding: 10,
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              cursor: "pointer",
+            }}
+          >
+            <div style={{ position: "relative", flexShrink: 0 }}>
+              <div
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 12,
+                  background: s.image_url
+                    ? `${NAVY} url(${s.image_url}) center/cover`
+                    : NAVY,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {!s.image_url && <IconBroadcast size={20} color="#FFFFFF" stroke={1.9} />}
+              </div>
+              {nowLive && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: -3,
+                    right: -3,
+                    width: 10,
+                    height: 10,
+                    borderRadius: "50%",
+                    background: RED,
+                    border: "2px solid #FFFFFF",
+                  }}
+                />
+              )}
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: NAVY,
+                  lineHeight: 1.25,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {s.title}
+              </div>
+              <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
+                Live · {fmtTimeDay(s.session_date, s.session_time)}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                open();
+              }}
+              style={{
+                background: NAVY,
+                color: "#FFFFFF",
+                border: "none",
+                borderRadius: 999,
+                padding: "8px 18px",
+                fontSize: 12,
+                fontWeight: 600,
+                fontFamily: FONT,
+                cursor: "pointer",
+                flexShrink: 0,
+              }}
+            >
+              Join
+            </button>
+          </div>
+        );
+      })()}
 
       {/* DSM Learn — full width, quieter */}
       {tip && (
@@ -769,7 +802,6 @@ export function DiscoverSection() {
           style={{
             margin: "10px 0 0",
             background: "#FFFFFF",
-
             border: `1px solid ${HAIRLINE}`,
             borderRadius: 12,
             boxShadow: "0 2px 8px rgba(11,31,58,0.05)",
@@ -780,17 +812,20 @@ export function DiscoverSection() {
             cursor: "pointer",
           }}
         >
-          <StackMedia
-            height={44}
-            width={50}
-            front={{
-              background: tipThumb
-                ? `${NAVY} url(${tipThumb}) center/cover`
-                : "linear-gradient(160deg, #4A5568 0%, #0B1F3A 100%)",
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              flexShrink: 0,
+              background: tipThumb ? `#EEF2F7 url(${tipThumb}) center/cover` : "#EEF2F7",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            {!tipThumb && <IconPlayerPlay size={14} color="#FFFFFF" stroke={2} />}
-          </StackMedia>
+            {!tipThumb && <IconPlayerPlay size={18} color={MUTED} stroke={2} />}
+          </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
@@ -809,27 +844,10 @@ export function DiscoverSection() {
               {tip.duration ? `${tip.duration} · DSM Learn` : "DSM Learn"}
             </div>
           </div>
-          <button
-            type="button"
-            style={{
-              background: NAVY,
-              color: "#FFFFFF",
-              border: "none",
-              borderRadius: 7,
-              padding: "7px 14px",
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: "0.04em",
-              textTransform: "uppercase",
-              fontFamily: FONT,
-              cursor: "pointer",
-              flexShrink: 0,
-            }}
-          >
-            Watch
-          </button>
+          <IconChevronRight size={20} stroke={2} color={MUTED} />
         </div>
       )}
+
     </div>
   );
 }
