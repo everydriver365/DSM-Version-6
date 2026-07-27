@@ -5350,6 +5350,7 @@ function HomePage() {
                     {(['today', 'tomorrow', 'next'] as const).map((t) => {
                       const active = tab === t;
                       const label = t === 'today' ? 'Today' : t === 'tomorrow' ? 'Tomorrow' : 'Next';
+                      const count = scheduleCounts[t];
                       return (
                         <button
                           key={t}
@@ -5374,7 +5375,29 @@ function HomePage() {
                             letterSpacing: -0.1,
                           }}
                         >
-                          {label}
+                          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                            {label}
+                            {count > 0 && (
+                              <span
+                                style={{
+                                  minWidth: 18,
+                                  height: 18,
+                                  padding: '0 5px',
+                                  borderRadius: 9,
+                                  background: active ? '#EAF2FC' : 'rgba(11,31,58,0.08)',
+                                  color: active ? '#1877D6' : '#6B7A90',
+                                  fontSize: 11,
+                                  fontWeight: 700,
+                                  lineHeight: '18px',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}
+                              >
+                                {count}
+                              </span>
+                            )}
+                          </span>
                         </button>
                       );
                     })}
