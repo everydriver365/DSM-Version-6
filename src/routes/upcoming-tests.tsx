@@ -28,8 +28,6 @@ interface PupilTestRow {
   test_date: string;
   test_time: string | null;
   test_centre: string | null;
-  test_examiner: string | null;
-  test_status: string | null;
 }
 
 function todayYmd() {
