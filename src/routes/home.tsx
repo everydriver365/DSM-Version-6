@@ -4585,7 +4585,7 @@ function HomePage() {
                 {/* Date rail */}
                 <div style={{
                   width: 70, flexShrink: 0,
-                  background: 'linear-gradient(180deg, #1877D6, #12539E)',
+                  background: '#0B1F3A',
                   color: '#FFFFFF',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                   padding: '16px 0', gap: 2, textAlign: 'center',
