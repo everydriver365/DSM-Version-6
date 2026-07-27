@@ -615,8 +615,10 @@ function DiscoverPage() {
                     navigate({
                       to: "/marketplace/$listingId" as never,
                       params: { listingId: m.id } as never,
+                      search: { from: "discover", tab: "market" } as never,
                     })
                   }
+
                   media={{ background: img ? `#EEF2F7 url(${img}) center/cover` : "#EEF2F7" }}
                   title={m.title}
                   meta={price}
