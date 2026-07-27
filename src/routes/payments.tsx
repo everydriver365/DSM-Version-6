@@ -141,7 +141,6 @@ export async function deletePaymentRecord(historyId: string, token: string, _use
       headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         payment_status: "unpaid",
-        amount_due: record.lesson_cost,
         paid_at: null,
         paid_amount: null,
         payment_method: null,
