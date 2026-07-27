@@ -242,6 +242,8 @@ export function DiscoverSection() {
     cursor: "pointer",
     fontFamily: FONT,
     scrollSnapAlign: "start",
+    scrollSnapStop: "always",
+
     display: "flex",
     flexDirection: "column",
   };
