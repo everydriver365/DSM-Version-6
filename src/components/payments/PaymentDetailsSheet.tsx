@@ -382,6 +382,62 @@ export function PaymentDetailsSheet({
           label="Hours prepaid / remaining"
           value={`${effectiveHours.toFixed(1)} hrs remaining`}
         />
+
+        <div style={{ marginTop: 16 }}>
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.05em",
+              color: MUTED,
+              textTransform: "uppercase",
+              marginBottom: 6,
+            }}
+          >
+            Payment history
+          </div>
+          {payments.length === 0 ? (
+            <div style={{ fontSize: 13, color: MUTED, padding: "8px 0" }}>
+              No payments recorded yet
+            </div>
+          ) : (
+            <div
+              style={{
+                background: "#FFFFFF",
+                borderRadius: 12,
+                boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                overflow: "hidden",
+              }}
+            >
+              {payments.map((p, i) => (
+                <div
+                  key={p.id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 12,
+                    padding: "10px 12px",
+                    borderTop: i === 0 ? "none" : `1px solid ${HAIRLINE}`,
+                  }}
+                >
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: NAVY }}>
+                      {formatDay(p.date) || "Unknown date"}
+                    </div>
+                    <div style={{ fontSize: 11, color: MUTED, marginTop: 1 }}>
+                      {methodLabel(p.method) || "—"}
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: GREEN, flexShrink: 0 }}>
+                    {formatMoney(p.amount)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {!phone && (
           <div
             style={{
