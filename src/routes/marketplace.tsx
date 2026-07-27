@@ -117,6 +117,20 @@ function colorFor(slug?: string | null): string {
   return CATEGORY_COLOR[slug] ?? "#185FA5";
 }
 
+// Sentence case: keep the first word's capitalisation, lowercase later words
+// unless they look like acronyms (ADI, DVSA).
+function sentenceCase(name: string): string {
+  return name
+    .split(" ")
+    .map((w, i) => {
+      if (i === 0) return w.charAt(0).toUpperCase() + w.slice(1);
+      if (w.length > 1 && w === w.toUpperCase()) return w;
+      return w.toLowerCase();
+    })
+    .join(" ");
+}
+
+
 async function sbGet<T>(path: string): Promise<T> {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     headers: {
