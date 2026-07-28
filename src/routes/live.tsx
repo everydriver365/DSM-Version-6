@@ -1083,6 +1083,7 @@ function LivePage() {
         className="absolute top-0 left-0 right-0 z-[1000] flex items-center"
         style={{
           height: 52,
+          paddingLeft: 16,
           paddingTop: "env(safe-area-inset-top, 0px)",
           background: "rgba(10,22,40,0.85)",
           backdropFilter: "blur(8px)",
