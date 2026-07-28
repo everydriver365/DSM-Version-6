@@ -694,13 +694,7 @@ function LivePage() {
         navigator.geolocation.clearWatch(watchIdRef.current);
         watchIdRef.current = null;
       }
-      setSaveError(null);
-
-      const saved = await saveCoordinates(true);
-      if (!saved) {
-        setSaveError("Failed to save trip. Please check your connection and try again.");
-        return;
-      }
+      await saveCoordinates(true);
 
       setTracking(false);
 
