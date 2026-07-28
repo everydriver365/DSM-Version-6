@@ -1180,64 +1180,66 @@ function LivePage() {
         </div>
       )}
 
-      {/* SPEED LIMIT SIGN bottom-left */}
-      {speedLimit != null && (
-        <div
-          className="absolute z-[1000] flex items-center justify-center"
-          style={{
-            left: 16,
-            bottom: 260,
-            width: 64,
-            height: 64,
-            borderRadius: 32,
-            background: isOverSpeeding ? "#EF4444" : "#fff",
-            border: "5px solid #EF4444",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-            animation: isOverSpeeding ? "overspeedFlash 0.6s ease-in-out infinite" : undefined,
-            transition: "background 0.15s ease-out",
-          }}
-        >
-          <span style={{ fontSize: 22, fontWeight: 800, color: isOverSpeeding ? "#fff" : "#0A1628", lineHeight: 1 }}>
-            {speedLimit}
-          </span>
-        </div>
-      )}
-
-      {/* CURRENT SPEED */}
+      {/* UNIFIED SPEED PILL */}
       <div
         className="absolute z-[1000]"
         style={{
-          right: 16,
+          left: "50%",
           bottom: 260,
+          transform: "translateX(-50%)",
+          width: 220,
           background: "rgba(10,22,40,0.85)",
           backdropFilter: "blur(8px)",
-          WebkitBackdropFilter: "blur(8px)",
-          padding: "10px 16px",
-          borderRadius: 12,
-          color: speedColor,
-          minWidth: 90,
-          textAlign: "center",
+          borderRadius: 14,
         }}
       >
-        <div style={{ fontSize: 32, fontWeight: 800, lineHeight: 1, color: speedColor }}>
-          {currentSpeed ?? 0}
-        </div>
-        <div style={{ fontSize: 11, opacity: 0.8, marginTop: 2, color: "#fff" }}>mph</div>
-        {roadName && (
+        {/* Top row */}
+        <div className="flex items-center" style={{ gap: 10, padding: "10px 14px 6px" }}>
+          {/* Speed limit circle */}
           <div
+            className="flex items-center justify-center"
             style={{
-              fontSize: 10,
-              marginTop: 4,
-              color: "#cbd5e1",
-              maxWidth: 110,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              background: isOverSpeeding ? "#EF4444" : "#fff",
+              border: "3px solid #CC2229",
+              animation: isOverSpeeding ? "overspeedFlash 0.6s ease-in-out infinite" : undefined,
+              transition: "background 0.15s ease-out",
+              flexShrink: 0,
             }}
           >
-            {roadName}
+            <span style={{ fontSize: 18, fontWeight: 800, color: isOverSpeeding ? "#fff" : "#0A1628", lineHeight: 1 }}>
+              {speedLimit ?? "—"}
+            </span>
           </div>
-        )}
+
+          {/* Current speed */}
+          <div>
+            <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1, color: speedColor }}>
+              {currentSpeed ?? 0}
+            </div>
+            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", marginTop: 2 }}>mph</div>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div style={{ height: 1, background: "rgba(255,255,255,0.12)", width: "100%" }} />
+
+        {/* Bottom row */}
+        <div
+          style={{
+            padding: "6px 14px 10px",
+            fontSize: 11,
+            color: roadName ? "#cbd5e1" : "rgba(255,255,255,0.4)",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            maxWidth: "100%",
+          }}
+        >
+          {roadName ?? "Road not identified"}
+        </div>
       </div>
 
 
