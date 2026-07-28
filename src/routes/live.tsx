@@ -565,7 +565,6 @@ function LivePage() {
     setOverspeedCount(0);
     setOverspeedEvents([]);
     setElapsedSec(0);
-    setSaveError(null);
 
 
     try {
