@@ -1328,7 +1328,7 @@ function LivePage() {
         style={{
           borderRadius: "16px 16px 0 0",
           padding: "16px 20px",
-          paddingBottom: "calc(20px + env(safe-area-inset-bottom, 0px))",
+          paddingBottom: "calc(84px + env(safe-area-inset-bottom, 0px))",
           boxShadow: "0 -4px 20px rgba(0,0,0,0.15)",
         }}
       >
