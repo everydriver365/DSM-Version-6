@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Check, ChevronRight, RefreshCw, Sparkles, XCircle, X as XIcon } from "lucide-react";
 import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
 import { BottomSheet } from "../components/dsm/BottomSheet";
