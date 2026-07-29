@@ -511,9 +511,6 @@ function BroadcastPage() {
             );
           })}
         </div>
-        <p className="mt-3 text-[11px]" style={{ color: "#6B7280", ...POPPINS }}>
-          SMS will open your phone's messaging app for each recipient.
-        </p>
       </div>
 
       {/* Sticky send button */}
