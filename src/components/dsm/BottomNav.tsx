@@ -193,6 +193,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
             />
           )}
           <Icon size={22} color={color} />
+          {key === "messages" && <UnreadBadge count={unreadMessages} />}
           <span className={labelClass} style={{ color }}>
             {label}
           </span>
