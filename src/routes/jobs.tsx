@@ -345,7 +345,9 @@ function JobCard({
   );
 }
 
+function JobsPage() {
   const [uid, setUid] = useState<string | null>(null);
+
   const [jobs, setJobs] = useState<JobOffer[] | null>(null);
   const [claimedJobs, setClaimedJobs] = useState<JobOffer[] | null>(null);
   const navigate = useNavigate();
