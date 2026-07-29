@@ -2021,6 +2021,7 @@ function HomePage() {
       payment: { bg: "#16A34A", Icon: PoundSterling, route: "/payments" },
       message: { bg: "#00B5A5", Icon: MessageSquare, route: "/messages" },
       rewards: { bg: "#D97706", Icon: Trophy, route: "/rewards" },
+      pupil_reply: { bg: "#00B5A5", Icon: MessageSquare, route: "/messages" },
       gap_accepted: { bg: "#1E8E3E", Icon: Zap, route: "/gaps" },
       gap_message_sent: { bg: "#1877D6", Icon: Send, route: "/gaps" },
       default: { bg: "#CC2229", Icon: Bell, route: "/notifications" },
@@ -4455,6 +4456,74 @@ function HomePage() {
           </button>
         ))}
       </div>
+
+      {/* ============ PUPIL REPLIES ============ */}
+      {unreadMsgs.length > 0 && (
+        <div
+          style={{
+            background: '#FFFFFF',
+            borderRadius: 14,
+            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+            margin: '0 16px 12px',
+            padding: 14,
+            fontFamily: 'Inter, sans-serif',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A' }}>Pupil replies</div>
+            <span style={{ background: '#E6F1FB', color: '#1877D6', fontSize: 11, fontWeight: 700, borderRadius: 999, padding: '2px 8px' }}>
+              {unreadMsgs.length}
+            </span>
+          </div>
+          {unreadMsgs.slice(0, 3).map((m) => {
+            const displayName = m.pupils?.first_name || m.pupils?.name || 'Pupil';
+            const initial = displayName.trim().charAt(0).toUpperCase() || '?';
+            const ago = (() => {
+              const diff = Math.max(0, Date.now() - new Date(m.created_at).getTime());
+              const mm = Math.floor(diff / 60000);
+              if (mm < 1) return 'just now';
+              if (mm < 60) return `${mm}m ago`;
+              const h = Math.floor(mm / 60);
+              if (h < 24) return `${h}h ago`;
+              return `${Math.floor(h / 24)}d ago`;
+            })();
+            return (
+              <div
+                key={m.id}
+                onClick={() => navigate({ to: '/messages' as never })}
+                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', cursor: 'pointer' }}
+              >
+                <div
+                  style={{
+                    width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                    background: pupilColour(m.pupil_id, null, displayName),
+                    color: '#FFFFFF', fontSize: 12, fontWeight: 700,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}
+                >
+                  {initial}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A' }}>{displayName}</div>
+                  <div style={{ fontSize: 12, color: '#8A93A3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {m.body || ''}
+                  </div>
+                </div>
+                <div style={{ fontSize: 11, color: '#8A93A3', flexShrink: 0 }}>{ago}</div>
+              </div>
+            );
+          })}
+          {unreadMsgs.length > 3 && (
+            <button
+              type="button"
+              onClick={() => navigate({ to: '/messages' as never })}
+              style={{ background: 'none', border: 'none', padding: '8px 0 0', color: '#1877D6', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+            >
+              See all {unreadMsgs.length} messages →
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Next lesson section header */}
       <div
