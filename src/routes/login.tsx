@@ -91,7 +91,7 @@ function LoginPage() {
       style={{ fontFamily: "Inter, sans-serif" }}
     >
       {/* Logo */}
-      <div className="flex flex-col items-center mb-8">
+      <div className="flex flex-col items-center mb-4">
         <img
           src={dsmLogoAsset.url}
           alt="DSM logo"
