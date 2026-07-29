@@ -676,7 +676,36 @@ function MessagesIndexPage() {
                 }}
               />
             </div>
+
+            {unreadPupils > 0 && (
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -8, marginBottom: 12 }}>
+                <button
+                  type="button"
+                  onClick={markAllPupilMessagesRead}
+                  disabled={markingAllRead}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "8px 14px",
+                    borderRadius: 999,
+                    background: "#E6F1FB",
+                    border: "1px solid #CFE3F8",
+                    color: "#1877D6",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: markingAllRead ? "default" : "pointer",
+                    opacity: markingAllRead ? 0.6 : 1,
+                    ...FONT,
+                  }}
+                >
+                  <Check size={14} color="#1877D6" />
+                  {markingAllRead ? "Marking…" : `Mark all as read (${unreadPupils})`}
+                </button>
+              </div>
+            )}
           </div>
+
 
           {/* Conversation list */}
           <div style={{ padding: "0 16px" }}>
