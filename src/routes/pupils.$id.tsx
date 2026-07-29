@@ -395,7 +395,7 @@ function PupilDetailPage() {
   const [progressData, setProgressData] = useState<{ total: number; competent: number } | null>(null);
   const [syllabusPct, setSyllabusPct] = useState<number | null>(null);
   const [syllabusSum, setSyllabusSum] = useState<number>(0);
-  const [syllabus, setSyllabus] = useState<{ status: string }[] | null>(null);
+  const [syllabus, setSyllabus] = useState<{ level: number }[] | null>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [liveOwed, setLiveOwed] = useState<number | null>(null);
   const [balance, setBalance] = useState<number>(0);
@@ -1687,7 +1687,7 @@ function PupilDetailPage() {
                 {(() => {
                   const readiness = (() => {
                     const lessonCount = completedLessonCount;
-                    const syllabusAchieved = syllabus?.filter((s) => s.status === "achieved")?.length || 0;
+                    const syllabusAchieved = syllabus?.filter((s) => Number(s.level) >= 5)?.length || 0;
                     const theoryPassed = pupil?.theory_status === "Passed";
                     if (lessonCount === 0 && theoryPassed) {
                       return { score: 10, syllabusPoints: 0, lessonPoints: 0, theoryPoints: 10 };
