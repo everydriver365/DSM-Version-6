@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, UserPlus } from "lucide-react";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
