@@ -4457,7 +4457,7 @@ function HomePage() {
       {/* Next lesson section header */}
       <div
         style={{
-          margin: '24px 16px 8px',
+          margin: '16px 16px 8px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -4465,7 +4465,7 @@ function HomePage() {
           fontFamily: 'Inter, sans-serif',
         }}
       >
-        <SectionHeader>Next lesson</SectionHeader>
+        <SectionHeader style={{ margin: 0 }}>Next lesson</SectionHeader>
         <button
           type="button"
           onClick={() => navigate({ to: '/schedule' })}
@@ -4478,6 +4478,7 @@ function HomePage() {
           Full schedule <ChevronRight size={15} />
         </button>
       </div>
+
 
 
       {/* ============ NEXT LESSON CARD ============ */}

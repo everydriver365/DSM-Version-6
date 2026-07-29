@@ -1,12 +1,14 @@
 interface Props {
   children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 // Checkfront-style eyebrow: small caps, wide tracking, brand blue,
 // prefixed with a 3px accent bar for scannability.
-export function SectionHeader({ children }: Props) {
+export function SectionHeader({ children, className = "", style }: Props) {
   return (
-    <div className="mt-6 mb-2 flex items-center gap-2">
+    <div className={`mt-6 mb-2 flex items-center gap-2 ${className}`} style={style}>
       <span
         aria-hidden
         style={{
