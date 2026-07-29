@@ -22,6 +22,8 @@ import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
 import { BottomSheet } from "../components/dsm/BottomSheet";
 import { BottomSheet as BottomSheetV2 } from "../components/dsm/BottomSheetV2";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+
 import {
   slotFitsPupilWindow,
   previewMatchForGap,
