@@ -1389,6 +1389,14 @@ function GapsPage() {
       }
     }
 
+    await supabase.from("instructor_notifications").insert({
+      instructor_id: userId,
+      type: "gap_message_sent",
+      title: "Gap filler messages sent",
+      body: `Message sent to ${withBodies.length} pupil${withBodies.length === 1 ? "" : "s"} for ${slotsForOffer.length} slot${slotsForOffer.length === 1 ? "" : "s"}.`,
+      read: false,
+    });
+
     setMessageSheetOpen(false);
     setSelectedPupilIds(new Set());
     setRanked(null);
