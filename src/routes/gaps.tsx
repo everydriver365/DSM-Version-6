@@ -1421,6 +1421,8 @@ function GapsPage() {
         failedNames.push(...phoneCandidates.map((x) => fullNameOf(x.pupil)));
       } else {
         smsQueuedCount = phoneCandidates.length;
+        // Trigger immediate SMS processing — don't wait for cron
+        void supabase.functions.invoke("send-sms", { body: {} });
       }
     }
 
