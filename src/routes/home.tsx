@@ -5975,9 +5975,9 @@ function HomePage() {
                 { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#1877D6', chipBg: '#E6F1FB', attention: unreadCount > 0, graphic: 'bubbles' },
                 { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'running-late', graphic: 'alarm' },
                 // Page 2 — Teaching
-                { label: 'EOL', sub: 'End of lesson', route: '/eol', icon: BookOpen, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'book' },
+                { label: 'EOL', sub: 'End of lesson', route: '/pupils', icon: BookOpen, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'book' },
                 { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: Award, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'medal' },
-                { label: 'Test swap', sub: 'Swap requests', route: '/test-swaps', icon: ArrowLeftRight, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'swap' },
+                { label: 'Test swap', sub: 'Manage per pupil', route: '/pupils', icon: ArrowLeftRight, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'swap' },
                 { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: RefreshCw, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'repeat' },
                 { label: 'Syllabus', sub: 'Standards', route: '/standards', icon: GraduationCap, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'grad' },
                 { label: 'Mock tests', sub: 'Practice', route: '/mock-tests', icon: ClipboardCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
@@ -5994,7 +5994,7 @@ function HomePage() {
                 { label: 'Weekly', sub: 'Week report', route: '/weekly-report', icon: CalendarIcon, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'bars' },
                 { label: 'End of day', sub: 'Daily wrap', route: '/end-of-day', icon: Moon, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'moon' },
                 { label: 'Invoices', sub: 'Billing', route: '/invoices', icon: FileText, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'invoice' },
-                { label: 'Forecast', sub: 'Earnings', route: '/earnings-forecast', icon: TrendingUp, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'trend' },
+                { label: 'Forecast', sub: 'Earnings', route: '/earnings', icon: TrendingUp, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'trend' },
                 // Page 5 — Admin
                 { label: 'Settings', sub: 'Account', route: '/settings', icon: SettingsIcon, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'gear' },
                 { label: 'Availability', sub: 'Working hours', route: '/availability-settings', icon: Clock, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'clock2' },
