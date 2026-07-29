@@ -1440,20 +1440,49 @@ function LivePage() {
             </div>
           </div>
         ) : tracking ? (
-          <div style={{ marginBottom: 12 }}>
+          <div className="flex items-center justify-between" style={{ gap: 12, padding: "8px 0" }}>
+            <div style={{ minWidth: 0 }}>
+              <div
+                style={{
+                  fontSize: 10,
+                  letterSpacing: "0.08em",
+                  color: "#6B7280",
+                  textTransform: "uppercase",
+                  fontWeight: 600,
+                  lineHeight: 1.2,
+                }}
+              >
+                Tracking
+              </div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.2 }}>
+                {trackingPupilName ?? "Manual journey"}
+              </div>
+            </div>
+
+            {/* Compact stats chip */}
             <div
+              className="flex items-center"
               style={{
-                fontSize: 10,
-                letterSpacing: "0.08em",
-                color: "#6B7280",
-                textTransform: "uppercase",
-                fontWeight: 600,
+                background: "#EEF2F7",
+                borderRadius: 10,
+                padding: "6px 10px",
+                gap: 10,
+                flexShrink: 0,
               }}
             >
-              Tracking
-            </div>
-            <div style={{ marginTop: 4, fontSize: 15, fontWeight: 700, color: "#0B1F3A" }}>
-              {trackingPupilName ?? "Manual journey"}
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.2 }}>
+                  {distanceMiles.toFixed(1)}
+                </div>
+                <div style={{ fontSize: 9, color: "#6B7280", lineHeight: 1.2 }}>mi</div>
+              </div>
+              <div style={{ width: 1, alignSelf: "stretch", background: "#D7DEE8" }} />
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.2 }}>
+                  {elapsedMin}:{String(elapsedSecRem).padStart(2, "0")}
+                </div>
+                <div style={{ fontSize: 9, color: "#6B7280", lineHeight: 1.2 }}>duration</div>
+              </div>
             </div>
           </div>
         ) : (
@@ -1461,63 +1490,14 @@ function LivePage() {
             style={{
               fontSize: 13,
               color: "#6B7280",
-              marginBottom: 12,
               fontStyle: "italic",
+              padding: "8px 0",
             }}
           >
             No active lesson — tracking route manually
           </div>
         )}
 
-        {/* STATS ROW */}
-        <div
-          className="flex"
-          style={{
-            gap: 8,
-            background: "#F3F4F6",
-            borderRadius: 10,
-            padding: "10px 12px",
-          }}
-        >
-          <div className="flex-1" style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
-              {distanceMiles.toFixed(1)}
-            </div>
-            <div style={{ fontSize: 10, color: "#6B7280", marginTop: 2 }}>mi</div>
-          </div>
-          <div style={{ width: 1, background: "#E5E7EB" }} />
-          <div className="flex-1" style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
-              {elapsedMin}:{String(elapsedSecRem).padStart(2, "0")}
-            </div>
-            <div style={{ fontSize: 10, color: "#6B7280", marginTop: 2 }}>duration</div>
-          </div>
-          <div style={{ width: 1, background: "#E5E7EB" }} />
-          <button
-            type="button"
-            className="flex-1"
-            onClick={() => overspeedCount > 0 && setShowOverspeedList(true)}
-            style={{
-              textAlign: "center",
-              background: "transparent",
-              border: "none",
-              padding: 0,
-              cursor: overspeedCount > 0 ? "pointer" : "default",
-            }}
-          >
-            <div
-              style={{
-                fontSize: 16,
-                fontWeight: 700,
-                color: overspeedCount > 0 ? "#EF4444" : "#0B1F3A",
-                textDecoration: overspeedCount > 0 ? "underline" : "none",
-              }}
-            >
-              {overspeedCount}
-            </div>
-            <div style={{ fontSize: 10, color: "#6B7280", marginTop: 2 }}>overspeed</div>
-          </button>
-        </div>
 
       </div>
 
