@@ -572,148 +572,26 @@ function JobsPage() {
           </div>
         ) : (
           <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
-            {jobs.map((job) => {
-              const hoursDays = computeHoursDaysMatch(job, prefs);
-              const distanceMi = distanceToCoverage(job, coverage);
-              const inRadius = withinAnyCoverage(job, coverage);
-              const hasCoords = job.centre_lat != null && job.centre_lng != null;
-              const distanceKnown = hasCoords && coverage.length > 0;
-              const hoursDaysGood = hoursDays === "good";
+            {jobs.map((job) => (
+              <JobCard
+                key={job.id}
+                job={job}
+                variant="offer"
+                uid={uid}
+                setDetailJob={setDetailJob}
+                prefs={prefs}
+                coverage={coverage}
+                onDecline={async () => {
+                  if (!uid) return;
+                  await supabase
+                    .from("job_offers")
+                    .update({ declined_by: [...(job.declined_by ?? []), uid] })
+                    .eq("id", job.id);
+                  setJobs((prev) => (prev ?? []).filter((j) => j.id !== job.id));
+                }}
+              />
+            ))}
 
-              let badge: { label: string; color: string; bg: string } | null = null;
-              if (!distanceKnown) {
-                if (hoursDaysGood) badge = { label: "Good schedule", color: GREEN, bg: "#E5F5EC" };
-                else if (hoursDays === "possible") badge = { label: "Possible schedule fit", color: AMBER, bg: "#FDF2E4" };
-              } else {
-                const distText = `${distanceMi!.toFixed(1)} mi`;
-                if (hoursDaysGood && inRadius) badge = { label: `Good match · ${distText}`, color: GREEN, bg: "#E5F5EC" };
-                else if (hoursDaysGood) badge = { label: `Fits schedule · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
-                else if (inRadius) badge = { label: `Nearby · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
-              }
-
-              const worth = job.course_hours != null && job.offered_rate != null
-                ? Number(job.course_hours) * Number(job.offered_rate)
-                : null;
-
-              return (
-                <div
-                  key={job.id}
-                  onClick={() => setDetailJob(job)}
-                  style={{
-                    background: "#FFFFFF",
-                    borderRadius: 14,
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                    overflow: "hidden",
-                    cursor: "pointer",
-                  }}
-                >
-                  <div
-                    style={{
-                      background: NAVY,
-                      padding: "14px 16px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div style={{ fontSize: 11, fontWeight: 600, color: "#B9C4D4", letterSpacing: 0.3 }}>
-                      Job offer · Posted {relTime(job.created_at)}
-                    </div>
-                    {worth != null && (
-                      <div style={{ fontSize: 20, fontWeight: 700, color: "#FFFFFF" }}>
-                        £{worth.toFixed(2)}
-                      </div>
-                    )}
-                  </div>
-
-                  <div style={{ padding: 16 }}>
-                    <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>
-                      {[titleCase(job.pupil_name) || "New pupil", job.postcode_area]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </div>
-                    <div style={{ fontSize: 13.5, color: "#5A6B85", marginTop: 2 }}>
-                      {[
-                        sentenceCase(job.transmission),
-                        job.course_hours ? `${job.course_hours} hrs` : null,
-                        job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : null,
-                        distanceMi != null ? `${distanceMi.toFixed(1)} mi away` : null,
-                        sentenceCase(job.preferred_timing?.join(", ")),
-                      ].filter(Boolean).join(" · ")}
-                    </div>
-
-                    {badge && (
-                      <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
-                        <div style={{
-                          display: "inline-flex", alignItems: "center", gap: 6,
-                          fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.3,
-                          color: badge.color === GREEN ? "#1E9E5A" : badge.color,
-                          background: badge.color === GREEN ? "#E4F6EB" : badge.bg,
-                          padding: "4px 10px", borderRadius: 999, whiteSpace: "nowrap",
-                        }}>
-                          {badge.color === GREEN && (
-                            <span style={{ width: 6, height: 6, borderRadius: 999, background: "#1E9E5A" }} />
-                          )}
-                          {badge.label}
-                        </div>
-                      </div>
-                    )}
-
-                    <div style={{ height: 1, background: "#EDF0F5", margin: "16px 0" }} />
-
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <button
-                        type="button"
-                        onClick={async (e) => {
-                          e.stopPropagation();
-                          if (!uid) return;
-                          await supabase
-                            .from("job_offers")
-                            .update({ declined_by: [...(job.declined_by ?? []), uid] })
-                            .eq("id", job.id);
-                          setJobs((prev) => (prev ?? []).filter((j) => j.id !== job.id));
-                        }}
-                        style={{
-                          background: "#FFFFFF",
-                          color: NAVY,
-                          height: 42,
-                          borderRadius: 12,
-                          padding: "0 16px",
-                          border: "1.5px solid #DCE2EB",
-                          fontSize: 13,
-                          fontWeight: 700,
-                          cursor: "pointer",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        Decline
-                      </button>
-                      <button
-                        type="button"
-                        onClick={(e) => { e.stopPropagation(); setDetailJob(job); }}
-                        style={{
-                          background: BLUE,
-                          color: "#FFF",
-                          height: 42,
-                          borderRadius: 12,
-                          padding: "0 12px",
-                          border: "none",
-                          fontSize: 13,
-                          fontWeight: 700,
-                          cursor: "pointer",
-                          whiteSpace: "nowrap",
-                          flex: 1,
-                        }}
-                      >
-                        More details
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-              );
-
-            })}
           </div>
         )
       ) : (
