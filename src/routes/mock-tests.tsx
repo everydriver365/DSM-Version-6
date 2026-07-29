@@ -182,7 +182,7 @@ function MockTestsPage() {
         ) : (
           <div className="flex flex-col" style={{ gap: 8 }}>
             {results.map((r) => {
-              const name = r.pupils?.[0]?.name ?? "Unknown pupil";
+              const name = (Array.isArray(r.pupils) ? r.pupils[0]?.name : (r.pupils as any)?.name) ?? "Unknown pupil";
               const total = (r.minor_faults ?? 0) + (r.serious_faults ?? 0) + (r.dangerous_faults ?? 0);
               const result = r.result ?? "Result not set";
               const resultColor =
@@ -353,7 +353,7 @@ function NewMockTestSheet({
                 <input
                   type="text"
                   value={selectedPupil ? selectedPupil.name : search}
-                  placeholder="Search pupils…"
+                  placeholder="Select pupil…"
                   onChange={(e) => {
                     setSearch(e.target.value);
                     setPupilId("");
@@ -378,7 +378,7 @@ function NewMockTestSheet({
                   </button>
                 )}
               </div>
-              {open && filtered.length > 0 && !selectedPupil && (
+              {open && !selectedPupil && (
                 <div
                   style={{
                     position: "absolute",
@@ -395,6 +395,14 @@ function NewMockTestSheet({
                     overflowY: "auto",
                   }}
                 >
+                  {!pupilId && filtered.length > 0 && (
+                    <div
+                      className="px-3 py-2 text-[12px]"
+                      style={{ color: "#9CA3AF", ...POPPINS }}
+                    >
+                      Select pupil…
+                    </div>
+                  )}
                   {filtered.map((p) => (
                     <button
                       key={p.id}
@@ -410,6 +418,14 @@ function NewMockTestSheet({
                       {p.name}
                     </button>
                   ))}
+                  {filtered.length === 0 && (
+                    <div
+                      className="px-3 py-2 text-[12px]"
+                      style={{ color: "#9CA3AF", ...POPPINS }}
+                    >
+                      No pupils found
+                    </div>
+                  )}
                 </div>
               )}
             </div>
