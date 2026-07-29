@@ -3128,9 +3128,10 @@ function GapsPage() {
         >
           <button
             type="button"
-            onClick={() => void bulkMessageSelected()}
+            onClick={() => setConfirmSendOpen(true)}
             disabled={selectedPupilIds.size === 0}
             style={{
+
               width: "100%",
               height: 48,
               borderRadius: 12,
