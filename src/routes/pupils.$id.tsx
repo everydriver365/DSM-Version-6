@@ -1239,6 +1239,38 @@ function PupilDetailPage() {
     navigate({ to: "/pupils" });
   }
 
+  // Hard delete — admin only, archived pupils only. Each step continues on
+  // error so the record is never left half-deleted.
+  async function permanentlyDeletePupil() {
+    if (!id) return;
+    setPermDeleting(true);
+    setPermDeleteOpen(false);
+
+    const childTables = [
+      "lesson_routes",
+      "mock_test_results",
+      "dl25_reports",
+      "pupil_terms_signatures",
+      "gap_filler_offers",
+      "chat_messages",
+      "lessons",
+    ] as const;
+
+    for (const table of childTables) {
+      const { error } = await supabase.from(table).delete().eq("pupil_id", id);
+      if (error) console.error(`[pupil] permanent delete ${table} error`, error);
+    }
+
+    const { error: pupilErr } = await supabase.from("pupils").delete().eq("id", id);
+    if (pupilErr) console.error("[pupil] permanent delete pupils error", pupilErr);
+
+    setPermDeleting(false);
+    toast.success("Pupil record permanently deleted");
+    navigate({ to: "/pupils" });
+  }
+
+
+
   async function saveNotes() {
     setSavingNotes(true);
     setNoteSaved(false);
