@@ -499,6 +499,7 @@ function MessagesIndexPage() {
         c.sender_type === "pupil" && !c.read_at ? { ...c, read_at: now } : c,
       ),
     );
+    window.dispatchEvent(new CustomEvent("dsm-messages-read"));
     toast.success("All messages marked as read");
   }
 
