@@ -179,6 +179,7 @@ function RootComponent() {
     "/login",
     "/register",
     "/livesession",
+    "/live",
     "/subscription",
     "/onboarding",
     "/forgotpassword",
