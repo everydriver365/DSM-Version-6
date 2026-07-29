@@ -1385,6 +1385,8 @@ function GapsPage() {
     }
 
     setMessageSheetOpen(false);
+    setSelectedPupilIds(new Set());
+    setRanked(null);
 
     const pupilCount = withBodies.length;
     const smsCount = withBodies.filter((x) => !!x.pupil.phone).length;
@@ -1411,9 +1413,8 @@ function GapsPage() {
         return;
       }
     }
-
-    setSelectedPupilIds(new Set());
   }
+
 
 
 
