@@ -338,8 +338,8 @@ export function DiscoverSection() {
 
   return (
     <div style={{ padding: "0 0 22px", fontFamily: FONT }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-        <SectionHeader>Discover</SectionHeader>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, margin: "16px 0 8px" }}>
+        <SectionHeader style={{ margin: 0 }}>Discover</SectionHeader>
         <button
           type="button"
           onClick={() => navigate({ to: "/discover" as never })}
@@ -361,6 +361,7 @@ export function DiscoverSection() {
           <IconChevronRight size={14} stroke={2.2} />
         </button>
       </div>
+
 
       <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}`}</style>
 
