@@ -180,6 +180,7 @@ function RootComponent() {
     "/register",
     "/livesession",
     "/live",
+    "/gaps",
     "/subscription",
     "/onboarding",
     "/forgotpassword",
