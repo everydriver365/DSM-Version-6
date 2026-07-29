@@ -1174,66 +1174,148 @@ function LivePage() {
       )}
 
       {/* UNIFIED SPEED PILL */}
-      <div
-        className="absolute z-[1000]"
-        style={{
-          left: "50%",
-          bottom: 260,
-          transform: "translateX(-50%)",
-          width: 220,
-          background: "rgba(10,22,40,0.85)",
-          backdropFilter: "blur(8px)",
-          borderRadius: 14,
-        }}
-      >
-        {/* Top row */}
-        <div className="flex items-center" style={{ gap: 10, padding: "10px 14px 6px" }}>
-          {/* Speed limit circle */}
+      {(() => {
+        const rn = roadName ?? "";
+        const m = rn.match(/^([AB]\s?\d+)\b[\s,·-]*(.*)$/i);
+        const roadTag = m ? m[1].replace(/\s/g, "").toUpperCase() : null;
+        const roadLabel = m ? (m[2] || "").trim() || null : rn || null;
+        const over = isOverSpeeding && speedLimit != null && currentSpeed != null;
+        const excess = over ? Math.max(0, (currentSpeed ?? 0) - (speedLimit ?? 0)) : 0;
+        return (
           <div
-            className="flex items-center justify-center"
+            className="absolute z-[1000]"
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              background: isOverSpeeding ? "#EF4444" : "#fff",
-              border: "3px solid #CC2229",
-              animation: isOverSpeeding ? "overspeedFlash 0.6s ease-in-out infinite" : undefined,
-              transition: "background 0.15s ease-out",
-              flexShrink: 0,
+              left: 16,
+              right: 16,
+              top: 16,
+              height: 86,
+              background: "rgba(10,22,40,0.85)",
+              backdropFilter: "blur(8px)",
+              borderRadius: 14,
+              overflow: "hidden",
+              fontFamily: "Poppins, Inter, sans-serif",
             }}
           >
-            <span style={{ fontSize: 18, fontWeight: 800, color: isOverSpeeding ? "#fff" : "#0A1628", lineHeight: 1 }}>
-              {speedLimit ?? "—"}
-            </span>
-          </div>
+            {/* Top row */}
+            <div
+              className="flex items-center justify-between"
+              style={{ padding: "8px 14px", height: 53 }}
+            >
+              <div className="flex items-end" style={{ gap: 10 }}>
+                {/* Speed limit circle + overspeed badge */}
+                <div style={{ position: "relative", flexShrink: 0 }}>
+                  <div
+                    className="flex items-center justify-center"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "50%",
+                      background: "#fff",
+                      border: "4px solid #CC2229",
+                      animation: isOverSpeeding ? "overspeedFlash 0.6s ease-in-out infinite" : undefined,
+                      transition: "background 0.15s ease-out",
+                    }}
+                  >
+                    <span style={{ fontSize: 17, fontWeight: 800, color: "#0B1F3A", lineHeight: 1 }}>
+                      {speedLimit ?? "—"}
+                    </span>
+                  </div>
+                  {overspeedCount > 0 && (
+                    <span
+                      className="flex items-center justify-center"
+                      style={{
+                        position: "absolute",
+                        top: -5,
+                        right: -5,
+                        width: 18,
+                        height: 18,
+                        borderRadius: "50%",
+                        background: "#CC2229",
+                        border: "2px solid #0A1628",
+                        color: "#fff",
+                        fontSize: 10,
+                        fontWeight: 800,
+                        lineHeight: 1,
+                      }}
+                    >
+                      {overspeedCount}
+                    </span>
+                  )}
+                </div>
 
-          {/* Current speed */}
-          <div>
-            <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1, color: speedColor }}>
-              {currentSpeed ?? 0}
+                {/* Current speed, baseline aligned */}
+                <div className="flex items-baseline" style={{ gap: 4 }}>
+                  <span
+                    style={{
+                      fontSize: 28,
+                      fontWeight: 800,
+                      lineHeight: 1,
+                      color: over ? "#FF6B6B" : speedColor,
+                    }}
+                  >
+                    {currentSpeed ?? 0}
+                  </span>
+                  <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>mph</span>
+                </div>
+              </div>
+
+              {/* Status text */}
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  textAlign: "right",
+                  color: over ? "#FF6B6B" : "#8CA1C2",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {over ? `${excess} mph over` : speedLimit != null ? "Within limit" : ""}
+              </div>
             </div>
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", marginTop: 2 }}>mph</div>
+
+            {/* Divider */}
+            <div style={{ height: 1, background: "rgba(255,255,255,0.12)", width: "100%" }} />
+
+            {/* Road info row */}
+            <div
+              className="flex items-center"
+              style={{ padding: "0 14px", height: 32, gap: 8, minWidth: 0 }}
+            >
+              {roadTag && (
+                <span
+                  style={{
+                    flexShrink: 0,
+                    background: "#1877D6",
+                    border: "1px solid rgba(255,255,255,0.5)",
+                    borderRadius: 6,
+                    color: "#fff",
+                    fontWeight: 700,
+                    fontSize: 10,
+                    padding: "2px 6px",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {roadTag}
+                </span>
+              )}
+              <span
+                style={{
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: roadLabel ? "#fff" : "rgba(255,255,255,0.4)",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  minWidth: 0,
+                }}
+              >
+                {roadLabel ?? (roadTag ? "" : "Road not identified")}
+              </span>
+            </div>
           </div>
-        </div>
+        );
+      })()}
 
-        {/* Divider */}
-        <div style={{ height: 1, background: "rgba(255,255,255,0.12)", width: "100%" }} />
-
-        {/* Bottom row */}
-        <div
-          style={{
-            padding: "6px 14px 10px",
-            fontSize: 11,
-            color: roadName ? "#cbd5e1" : "rgba(255,255,255,0.4)",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            maxWidth: "100%",
-          }}
-        >
-          {roadName ?? "Road not identified"}
-        </div>
-      </div>
 
 
       {/* MANUAL START OVERLAY — shown when no active lesson and not yet tracking */}
