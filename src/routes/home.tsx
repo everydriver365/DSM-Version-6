@@ -2021,6 +2021,7 @@ function HomePage() {
       payment: { bg: "#16A34A", Icon: PoundSterling, route: "/payments" },
       message: { bg: "#00B5A5", Icon: MessageSquare, route: "/messages" },
       rewards: { bg: "#D97706", Icon: Trophy, route: "/rewards" },
+      gap_accepted: { bg: "#1E8E3E", Icon: Zap, route: "/gaps" },
       default: { bg: "#CC2229", Icon: Bell, route: "/notifications" },
     };
     const cfg = map[type] ?? map.default;
