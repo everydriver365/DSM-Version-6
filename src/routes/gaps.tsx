@@ -3165,6 +3165,7 @@ function GapsPage() {
         onCancel={() => setConfirmSendOpen(false)}
       />
 
+      <Toaster />
     </div>
 
   );
