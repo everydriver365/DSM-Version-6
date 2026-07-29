@@ -1554,17 +1554,31 @@ export function DL25Sheet({
   pupilId,
   testDate,
   mode = "real",
+  readOnly = false,
+  initialMarks,
   onClose,
   onSaved,
 }: {
   pupilId: string;
   testDate: string;
   mode?: "real" | "mock";
+  readOnly?: boolean;
+  initialMarks?: FaultMarks;
   onClose: () => void;
   onSaved: (totals: { minor: number; serious: number; dangerous: number }) => void;
 }) {
-  const [manoeuvre, setManoeuvre] = useState<string>(DL25_MANOEUVRE_OPTIONS[0].value);
-  const [marks, setMarks] = useState<FaultMarks>({});
+  const [manoeuvre, setManoeuvre] = useState<string>(() => {
+    const sel = (initialMarks as Record<string, unknown> | undefined)?.manoeuvres_selected;
+    return typeof sel === "string" ? sel : DL25_MANOEUVRE_OPTIONS[0].value;
+  });
+  const [marks, setMarks] = useState<FaultMarks>(() => {
+    if (!initialMarks) return {};
+    const out: FaultMarks = {};
+    for (const [k, v] of Object.entries(initialMarks as Record<string, unknown>)) {
+      if (v && typeof v === "object") out[k] = v as FaultCounts;
+    }
+    return out;
+  });
   const [saving, setSaving] = useState(false);
 
   function setCount(key: string, category: keyof FaultCounts, count: number) {
@@ -1672,12 +1686,16 @@ export function DL25Sheet({
               <span style={{ color: "#CC2229", fontWeight: 600 }}>{t.dangerous}</span> dangerous
             </span>
           </div>
-          <div className="grid grid-cols-2" style={{ gap: 8 }}>
-            <Button variant="ghost" onClick={onClose} type="button">Cancel</Button>
-            <Button onClick={save} disabled={saving} type="button">
-              {saving ? "Saving…" : "Save DL25"}
-            </Button>
-          </div>
+          {readOnly ? (
+            <Button variant="ghost" onClick={onClose} type="button">Close</Button>
+          ) : (
+            <div className="grid grid-cols-2" style={{ gap: 8 }}>
+              <Button variant="ghost" onClick={onClose} type="button">Cancel</Button>
+              <Button onClick={save} disabled={saving} type="button">
+                {saving ? "Saving…" : "Save DL25"}
+              </Button>
+            </div>
+          )}
         </div>
       }
     >
@@ -1691,6 +1709,7 @@ export function DL25Sheet({
                 value={marks[node.key]}
                 onChange={(cat, n) => setCount(node.key, cat, n)}
                 faultOnly={node.faultOnly}
+                readOnly={readOnly}
               />
             );
           }
@@ -1713,6 +1732,7 @@ export function DL25Sheet({
                         label={it.label}
                         value={marks[k]}
                         onChange={(cat, n) => setCount(k, cat, n)}
+                        readOnly={readOnly}
                       />
                     );
                   })}
@@ -1730,7 +1750,7 @@ export function DL25Sheet({
               >
                 MANOEUVRES
               </div>
-              <div className="mb-2">
+              <div className="mb-2" style={{ display: readOnly ? "none" : undefined }}>
                 <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">
                   Manoeuvre used
                 </label>
@@ -1761,6 +1781,7 @@ export function DL25Sheet({
                       label={sub === "control" ? "Control" : "Observation"}
                       value={marks[k]}
                       onChange={(cat, n) => setCount(k, cat, n)}
+                      readOnly={readOnly}
                     />
                   );
                 })}
@@ -1779,11 +1800,13 @@ function DL25ItemRow({
   value,
   onChange,
   faultOnly,
+  readOnly,
 }: {
   label: string;
   value: FaultCounts | undefined;
   onChange: (category: keyof FaultCounts, count: number) => void;
   faultOnly?: boolean;
+  readOnly?: boolean;
 }) {
   const counts = value ?? { fault: 0, serious: 0, dangerous: 0 };
   return (
@@ -1800,11 +1823,11 @@ function DL25ItemRow({
         {label}
       </span>
       <div className="flex" style={{ gap: 8 }}>
-        <NumberInput label="Faults" value={counts.fault} onChange={(n) => onChange("fault", n)} />
+        <NumberInput label="Faults" value={counts.fault} onChange={(n) => onChange("fault", n)} readOnly={readOnly} />
         {!faultOnly && (
           <>
-            <NumberInput label="Serious" value={counts.serious} onChange={(n) => onChange("serious", n)} />
-            <NumberInput label="Dangerous" value={counts.dangerous} onChange={(n) => onChange("dangerous", n)} />
+            <NumberInput label="Serious" value={counts.serious} onChange={(n) => onChange("serious", n)} readOnly={readOnly} />
+            <NumberInput label="Dangerous" value={counts.dangerous} onChange={(n) => onChange("dangerous", n)} readOnly={readOnly} />
           </>
         )}
       </div>
@@ -1816,10 +1839,12 @@ function NumberInput({
   label,
   value,
   onChange,
+  readOnly,
 }: {
   label: string;
   value: number;
   onChange: (n: number) => void;
+  readOnly?: boolean;
 }) {
   return (
     <label className="flex flex-col items-center" style={{ gap: 2 }}>
@@ -1828,6 +1853,7 @@ function NumberInput({
         type="number"
         min={0}
         value={value}
+        disabled={readOnly}
         onChange={(e) => onChange(Math.max(0, parseInt(e.target.value, 10) || 0))}
         style={{
           width: 60,
@@ -1837,6 +1863,7 @@ function NumberInput({
           border: "1px solid #E5E7EB",
           fontSize: 14,
           color: "#0B1F3A",
+          ...(readOnly ? { opacity: 0.7, cursor: "default", background: "#F8F9FB" } : null),
           ...POPPINS,
         }}
       />
