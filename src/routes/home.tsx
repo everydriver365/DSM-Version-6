@@ -6043,7 +6043,7 @@ function HomePage() {
                     <button
                       type="button"
                       onClick={() => navigate({ to: '/lessons/new' as never, search: (tab === 'tomorrow' ? { date: tomorrowISO } : {}) as any })}
-                      style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13.5, fontWeight: 600, color: '#0B1F3A', cursor: 'pointer', lineHeight: 1 }}
+                      style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13.5, fontWeight: 600, color: '#1877D6', cursor: 'pointer', lineHeight: 1 }}
                     >
                       Add +
                     </button>
