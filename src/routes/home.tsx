@@ -3700,7 +3700,7 @@ function HomePage() {
     { icon: <PlayCircle size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Live session", route: "/livesession" },
     { icon: <Search size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Search", route: "/search" },
     { icon: <Bell size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Notifications", route: "/notifications" },
-    { icon: <CalendarDays size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Availability", route: "/quickavailability" },
+    
     { icon: <RefreshCw size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Calendar sync", route: "/calendarsync" },
     { icon: <UserCircle size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Profile", route: "/profile" },
     { icon: <FileSpreadsheet size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "MTD", route: "/mtd" },
