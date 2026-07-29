@@ -1409,13 +1409,13 @@ function LivePage() {
         className="absolute left-0 right-0 bottom-0 z-[1000] bg-white"
         style={{
           borderRadius: "16px 16px 0 0",
-          padding: "16px 20px",
-          paddingBottom: "calc(84px + env(safe-area-inset-bottom, 0px))",
+          padding: "10px 20px",
+          paddingBottom: "calc(50px + env(safe-area-inset-bottom, 0px))",
           boxShadow: "0 -4px 20px rgba(0,0,0,0.15)",
         }}
       >
         {activeLesson ? (
-          <div style={{ marginBottom: 12 }}>
+          <div style={{ marginBottom: 8 }}>
             <div
               style={{
                 fontSize: 10,
@@ -1440,7 +1440,7 @@ function LivePage() {
             </div>
           </div>
         ) : tracking ? (
-          <div className="flex items-center justify-between" style={{ gap: 12, padding: "8px 0" }}>
+          <div className="flex items-center justify-between" style={{ gap: 12, padding: "4px 0" }}>
             <div style={{ minWidth: 0 }}>
               <div
                 style={{
@@ -1491,7 +1491,7 @@ function LivePage() {
               fontSize: 13,
               color: "#6B7280",
               fontStyle: "italic",
-              padding: "8px 0",
+              padding: "4px 0",
             }}
           >
             No active lesson — tracking route manually
