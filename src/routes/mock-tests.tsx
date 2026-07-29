@@ -353,7 +353,7 @@ function NewMockTestSheet({
                 <input
                   type="text"
                   value={selectedPupil ? selectedPupil.name : search}
-                  placeholder="Search pupils…"
+                  placeholder="Select pupil…"
                   onChange={(e) => {
                     setSearch(e.target.value);
                     setPupilId("");
