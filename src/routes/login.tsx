@@ -308,26 +308,16 @@ function LoginPage() {
             </Link>
           </p>
 
-          {webauthnSupported && (
-            <button
-              type="button"
-              onClick={onBiometric}
-              className="h-12 w-full rounded-lg bg-white text-[#0B1F3A] text-[14px] flex items-center justify-center gap-2 hover:bg-[#F8FAFC]"
-              style={{ border: "1.5px solid #EEF2F7", fontFamily: "Inter, sans-serif" }}
+          {notice && (
+            <p
+              className="text-[13px] text-[#15803D] text-center"
+              role="status"
+              style={{ fontFamily: "Inter, sans-serif" }}
             >
-              <ScanFace size={20} />
-              Sign in with Face ID / Touch ID
-            </button>
+              {notice}
+            </p>
           )}
 
-          {webauthnSupported && (
-            <Link
-              to="/forgotpassword"
-              className="text-[13px] text-[#1877D6] hover:underline text-center"
-            >
-              Forgot password?
-            </Link>
-          )}
 
           {error && (
             <p
