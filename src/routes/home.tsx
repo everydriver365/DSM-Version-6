@@ -4475,9 +4475,10 @@ function HomePage() {
               {unreadMsgs.length}
             </span>
           </div>
-          {unreadMsgs.slice(0, 3).map((m) => {
+          {unreadMsgs.slice(0, 3).map((m, idx) => {
             const displayName = m.pupils?.first_name || m.pupils?.name || 'Pupil';
             const initial = displayName.trim().charAt(0).toUpperCase() || '?';
+            const isNewest = idx === 0;
             const ago = (() => {
               const diff = Math.max(0, Date.now() - new Date(m.created_at).getTime());
               const mm = Math.floor(diff / 60000);
@@ -4491,7 +4492,17 @@ function HomePage() {
               <div
                 key={m.id}
                 onClick={() => navigate({ to: '/messages' as never })}
-                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', cursor: 'pointer' }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  padding: isNewest ? '8px 10px' : '6px 0',
+                  cursor: 'pointer',
+                  background: isNewest ? '#F0F7FF' : 'transparent',
+                  borderRadius: isNewest ? 10 : 0,
+                  marginBottom: isNewest ? 4 : 0,
+                  borderLeft: isNewest ? '3px solid #1877D6' : '3px solid transparent',
+                }}
               >
                 <div
                   style={{
