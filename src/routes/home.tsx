@@ -3645,7 +3645,7 @@ function HomePage() {
 
   const quickAccessTiles = [
     { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Schedule", route: "/schedule" },
-    { icon: <BarChart3 size={20} color="#FFFFFF" />, bg: "#1877D6", label: "MTD", route: "/month-to-date" },
+    
     { icon: <Map size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Start tracking", route: "/live" },
     { icon: <CalendarCheck size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Month end", route: "/monthend" },
     { icon: <Users size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
