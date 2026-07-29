@@ -11,6 +11,7 @@ import { Button } from "../components/dsm/Button";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 import { BottomSheet as BottomSheetV2 } from "../components/dsm/BottomSheetV2";
+import { DL25Sheet } from "./tests";
 import { ChangeDateTimeSheet } from "../components/lessons/ChangeDateTimeSheet";
 import { CancelLessonSheet } from "../components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "../components/lessons/DeleteLessonSheet";
@@ -3216,33 +3217,14 @@ function PupilDetailPage() {
         )}
 
         {viewingDl25 && (
-          <BottomSheetV2 onClose={() => setViewingDl25(null)} title={`DL25 · ${fmtUKDate(viewingDl25.test_date)}`}>
-            <div style={{ padding: "4px 4px 16px", ...POPPINS }}>
-              {(() => {
-                const rows = Object.entries(viewingDl25.fault_marks || {})
-                  .filter(([, v]) => v && typeof v === "object")
-                  .map(([k, v]) => ({ k, f: v?.fault ?? 0, s: v?.serious ?? 0, d: v?.dangerous ?? 0 }))
-                  .filter((r) => r.f + r.s + r.d > 0);
-                if (rows.length === 0) {
-                  return <div style={{ fontSize: 13, color: "#6B7280" }}>No faults recorded.</div>;
-                }
-                return (
-                  <div style={{ border: "0.5px solid #E2E6ED", borderRadius: 12, overflow: "hidden" }}>
-                    {rows.map((r, i) => (
-                      <div key={r.k} style={{ padding: "10px 14px", borderTop: i === 0 ? "none" : "0.5px solid #F3F4F6", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                        <div style={{ fontSize: 13, color: "#0B1F3A", flex: 1, minWidth: 0 }}>{dl25Label(r.k)}</div>
-                        <div style={{ display: "flex", gap: 6 }}>
-                          {r.f > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#F3F4F6", color: "#374151", padding: "2px 7px", borderRadius: 999 }}>{r.f}</span>)}
-                          {r.s > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#FEF3C7", color: "#92400E", padding: "2px 7px", borderRadius: 999 }}>S {r.s}</span>)}
-                          {r.d > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 7px", borderRadius: 999 }}>D {r.d}</span>)}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                );
-              })()}
-            </div>
-          </BottomSheetV2>
+          <DL25Sheet
+            pupilId={viewingDl25.pupil_id}
+            testDate={viewingDl25.test_date}
+            readOnly
+            initialMarks={(viewingDl25.fault_marks ?? {}) as never}
+            onClose={() => setViewingDl25(null)}
+            onSaved={() => setViewingDl25(null)}
+          />
         )}
 
         {viewingMock && (
