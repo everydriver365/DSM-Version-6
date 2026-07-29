@@ -217,6 +217,7 @@ function BroadcastPage() {
   const sendNow = async () => {
     const recipients = pupils.filter((p) => selected.has(p.id));
     if (recipients.length === 0 || !message.trim()) return;
+    if (!instructorId) { toast.error("Not signed in"); return; }
 
     const sendSms = method === "sms";
     const smsRows: { instructor_id: string | null; pupil_phone: string; message: string }[] = [];
@@ -225,13 +226,17 @@ function BroadcastPage() {
       const p = recipients[i];
       const body = personalize(message, p.name);
 
-      await supabase.from("chat_messages").insert({
-        instructor_id: instructorId,
-        pupil_id: p.id,
-        sender_type: "instructor",
-        sender_id: instructorId,
-        body,
-      });
+      try {
+        await supabase.from("chat_messages").insert({
+          instructor_id: instructorId,
+          pupil_id: p.id,
+          sender_type: "instructor",
+          sender_id: instructorId,
+          body,
+        });
+      } catch (err) {
+        console.error("[broadcast] chat_messages insert failed:", err);
+      }
 
       if (sendSms && p.phone) {
         smsRows.push({ instructor_id: instructorId, pupil_phone: p.phone, message: body });
