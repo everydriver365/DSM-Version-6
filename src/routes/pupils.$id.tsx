@@ -1001,7 +1001,6 @@ function PupilDetailPage() {
 
 
       .eq("id", id)
-      .is("deleted_at", null)
       .maybeSingle()
       .then(({ data, error }) => {
         if (error) console.error("[pupil] fetch error", error);
