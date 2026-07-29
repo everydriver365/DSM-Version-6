@@ -4016,12 +4016,16 @@ function HomePage() {
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     {todayLessons.map((l) => {
                       const paid = (l.payment_status ?? "").toLowerCase() === "paid";
+                      const [hh, mm] = (l.lesson_time ?? "00:00").split(":").map(Number);
+                      const endMinutes = hh * 60 + mm + (l.duration_minutes ?? 60);
+                      const nowMinutes = new Date().getHours() * 60 + new Date().getMinutes();
+                      const eolDue = !l.eol_completed && l.lesson_date === todayISO && endMinutes <= nowMinutes;
                       return (
                         <button
                           key={l.id}
                           onClick={() => navigate({ to: "/pupils/$id", params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any })}
                           style={{
-                            display: "grid", gridTemplateColumns: "70px 1fr auto auto",
+                            display: "grid", gridTemplateColumns: "70px 1fr auto auto auto",
                             gap: 12, alignItems: "center", padding: "10px 12px",
                             borderRadius: 10, border: "0.5px solid #E2E6ED",
                             background: "#FFFFFF", cursor: "pointer", textAlign: "left",
@@ -4037,6 +4041,22 @@ function HomePage() {
                             background: paid ? "#DCFCE7" : "#FEE2E2",
                             color: paid ? "#166534" : "#991B1B",
                           }}>{paid ? "Paid" : "Unpaid"}</span>
+                          {eolDue && (
+                            <span
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate({ to: "/end-of-day" });
+                              }}
+                              style={{
+                                fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+                                padding: "3px 8px", borderRadius: 6,
+                                background: "#FEF3C7", color: "#B45309",
+                                cursor: "pointer",
+                              }}
+                            >
+                              EOL due
+                            </span>
+                          )}
                         </button>
                       );
                     })}
