@@ -17,15 +17,21 @@ export const Route = createFileRoute("/login")({
 
 const REMEMBER_KEY = "dsm:rememberedEmail";
 
+const ENROLLED_KEY = "dsm_webauthn_enrolled";
+const REFRESH_KEY = "dsm_refresh_token";
+
 function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [remember, setRemember] = useState(false);
   const [webauthnSupported, setWebauthnSupported] = useState(false);
+  const [enrolled, setEnrolled] = useState(false);
+  const [askEnroll, setAskEnroll] = useState(false);
 
   useEffect(() => {
     try {
@@ -34,6 +40,7 @@ function LoginPage() {
         setEmail(saved);
         setRemember(true);
       }
+      setEnrolled(localStorage.getItem(ENROLLED_KEY) === "true");
     } catch {
       /* ignore */
     }
@@ -51,9 +58,18 @@ function LoginPage() {
     }
   }
 
+  function readLS(key: string) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    setNotice(null);
     setLoading(true);
     const { error: err } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
@@ -62,11 +78,68 @@ function LoginPage() {
       return;
     }
     persistRemember(email, remember);
+    if (webauthnSupported && readLS(ENROLLED_KEY) !== "true") {
+      setAskEnroll(true);
+      return;
+    }
+    navigate({ to: "/home", replace: true });
+  }
+
+  async function enableFaceId() {
+    setAskEnroll(false);
+    try {
+      const challenge = new Uint8Array(32);
+      crypto.getRandomValues(challenge);
+      const cred = await navigator.credentials.create({
+        publicKey: {
+          challenge,
+          rp: { name: "DSM by EveryDriver", id: window.location.hostname },
+          user: {
+            id: new TextEncoder().encode(email),
+            name: email,
+            displayName: email,
+          },
+          pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+          authenticatorSelection: {
+            authenticatorAttachment: "platform",
+            userVerification: "required",
+            residentKey: "preferred",
+          },
+          timeout: 60000,
+        },
+      });
+      if (cred) {
+        const { data } = await supabase.auth.getSession();
+        const refreshToken = data.session?.refresh_token;
+        if (refreshToken) {
+          localStorage.setItem(REFRESH_KEY, refreshToken);
+          localStorage.setItem(ENROLLED_KEY, "true");
+          setEnrolled(true);
+          setNotice("Face ID enabled — you can use it next time you sign in");
+          setTimeout(() => navigate({ to: "/home", replace: true }), 900);
+          return;
+        }
+      }
+    } catch {
+      /* enrollment cancelled or failed */
+    }
+    navigate({ to: "/home", replace: true });
+  }
+
+  function skipEnroll() {
+    setAskEnroll(false);
     navigate({ to: "/home", replace: true });
   }
 
   async function onBiometric() {
     setError(null);
+    setNotice(null);
+    const isEnrolled = readLS(ENROLLED_KEY) === "true";
+    const refreshToken = readLS(REFRESH_KEY);
+    if (!isEnrolled || !refreshToken) {
+      setError("Face ID not set up — sign in with your password first");
+      return;
+    }
     try {
       const challenge = new Uint8Array(32);
       crypto.getRandomValues(challenge);
@@ -77,13 +150,25 @@ function LoginPage() {
           userVerification: "required",
         },
       });
-      // Biometric is gesture-only here; surface a hint until a credential is enrolled.
-      setError("No biometric credential enrolled yet. Sign in with your password first.");
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Biometric sign-in failed";
-      setError(msg);
+    } catch {
+      setError("Face ID failed — use your password instead");
+      return;
     }
+    const { error: err } = await supabase.auth.refreshSession({ refresh_token: refreshToken });
+    if (err) {
+      try {
+        localStorage.removeItem(REFRESH_KEY);
+        localStorage.removeItem(ENROLLED_KEY);
+      } catch {
+        /* ignore */
+      }
+      setEnrolled(false);
+      setError("Session expired — please sign in with your password");
+      return;
+    }
+    navigate({ to: "/home", replace: true });
   }
+
 
   return (
     <div
@@ -102,8 +187,64 @@ function LoginPage() {
         </span>
       </div>
 
+      {/* Face ID sign-in */}
+      {webauthnSupported && (
+        <button
+          type="button"
+          onClick={
+            enrolled
+              ? onBiometric
+              : () => setError("Sign in with your password first to enable Face ID")
+          }
+          className="w-full max-w-[360px] h-12 rounded-lg text-[14px] font-medium flex items-center justify-center gap-2 mt-8"
+          style={{
+            fontFamily: "Inter, sans-serif",
+            background: enrolled ? "#1877D6" : "#1B2C4A",
+            color: enrolled ? "#FFFFFF" : "#8CA1C2",
+            border: enrolled ? "1.5px solid #1877D6" : "1.5px solid #22375A",
+          }}
+        >
+          <ScanFace size={20} />
+          {enrolled ? "Sign in with Face ID" : "Set up Face ID"}
+        </button>
+      )}
+
+      {/* One-time enrolment prompt */}
+      {askEnroll && (
+        <div
+          className="w-full max-w-[360px] bg-white mt-4"
+          style={{ borderRadius: 14, padding: 16, border: "1px solid #E2E8F0" }}
+        >
+          <p className="text-[14px] font-semibold text-[#0B1F3A]" style={{ fontFamily: "Inter, sans-serif" }}>
+            Enable Face ID for next time?
+          </p>
+          <p className="text-[13px] text-[#6B7280] mt-1" style={{ fontFamily: "Inter, sans-serif" }}>
+            Sign in faster without typing your password.
+          </p>
+          <div className="flex gap-2 mt-3">
+            <button
+              type="button"
+              onClick={enableFaceId}
+              className="flex-1 h-10 rounded-lg text-[14px] font-medium text-white"
+              style={{ background: "#1877D6", fontFamily: "Inter, sans-serif" }}
+            >
+              Enable
+            </button>
+            <button
+              type="button"
+              onClick={skipEnroll}
+              className="flex-1 h-10 rounded-lg text-[14px] font-medium text-[#0B1F3A]"
+              style={{ border: "1.5px solid #E2E8F0", fontFamily: "Inter, sans-serif" }}
+            >
+              Not now
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Card */}
       <form
+
         onSubmit={onSubmit}
         className="w-full max-w-[360px] bg-white flex flex-col mt-12"
         style={{
@@ -223,26 +364,16 @@ function LoginPage() {
             </Link>
           </p>
 
-          {webauthnSupported && (
-            <button
-              type="button"
-              onClick={onBiometric}
-              className="h-12 w-full rounded-lg bg-white text-[#0B1F3A] text-[14px] flex items-center justify-center gap-2 hover:bg-[#F8FAFC]"
-              style={{ border: "1.5px solid #EEF2F7", fontFamily: "Inter, sans-serif" }}
+          {notice && (
+            <p
+              className="text-[13px] text-[#15803D] text-center"
+              role="status"
+              style={{ fontFamily: "Inter, sans-serif" }}
             >
-              <ScanFace size={20} />
-              Sign in with Face ID / Touch ID
-            </button>
+              {notice}
+            </p>
           )}
 
-          {webauthnSupported && (
-            <Link
-              to="/forgotpassword"
-              className="text-[13px] text-[#1877D6] hover:underline text-center"
-            >
-              Forgot password?
-            </Link>
-          )}
 
           {error && (
             <p
