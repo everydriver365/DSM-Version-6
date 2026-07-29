@@ -187,8 +187,64 @@ function LoginPage() {
         </span>
       </div>
 
+      {/* Face ID sign-in */}
+      {webauthnSupported && (
+        <button
+          type="button"
+          onClick={
+            enrolled
+              ? onBiometric
+              : () => setError("Sign in with your password first to enable Face ID")
+          }
+          className="w-full max-w-[360px] h-12 rounded-lg text-[14px] font-medium flex items-center justify-center gap-2 mt-8"
+          style={{
+            fontFamily: "Inter, sans-serif",
+            background: enrolled ? "#1877D6" : "#1B2C4A",
+            color: enrolled ? "#FFFFFF" : "#8CA1C2",
+            border: enrolled ? "1.5px solid #1877D6" : "1.5px solid #22375A",
+          }}
+        >
+          <ScanFace size={20} />
+          {enrolled ? "Sign in with Face ID" : "Set up Face ID"}
+        </button>
+      )}
+
+      {/* One-time enrolment prompt */}
+      {askEnroll && (
+        <div
+          className="w-full max-w-[360px] bg-white mt-4"
+          style={{ borderRadius: 14, padding: 16, border: "1px solid #E2E8F0" }}
+        >
+          <p className="text-[14px] font-semibold text-[#0B1F3A]" style={{ fontFamily: "Inter, sans-serif" }}>
+            Enable Face ID for next time?
+          </p>
+          <p className="text-[13px] text-[#6B7280] mt-1" style={{ fontFamily: "Inter, sans-serif" }}>
+            Sign in faster without typing your password.
+          </p>
+          <div className="flex gap-2 mt-3">
+            <button
+              type="button"
+              onClick={enableFaceId}
+              className="flex-1 h-10 rounded-lg text-[14px] font-medium text-white"
+              style={{ background: "#1877D6", fontFamily: "Inter, sans-serif" }}
+            >
+              Enable
+            </button>
+            <button
+              type="button"
+              onClick={skipEnroll}
+              className="flex-1 h-10 rounded-lg text-[14px] font-medium text-[#0B1F3A]"
+              style={{ border: "1.5px solid #E2E8F0", fontFamily: "Inter, sans-serif" }}
+            >
+              Not now
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Card */}
       <form
+
         onSubmit={onSubmit}
         className="w-full max-w-[360px] bg-white flex flex-col mt-12"
         style={{
