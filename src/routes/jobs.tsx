@@ -170,7 +170,181 @@ function computeHoursDaysMatch(job: JobOffer, prefs: InstructorPrefs | null): Ma
   return "none";
 }
 
-function JobsPage() {
+function JobCard({
+  job,
+  variant,
+  uid,
+  setDetailJob,
+  prefs,
+  coverage,
+  onDecline,
+}: {
+  job: JobOffer;
+  variant: "offer" | "claimed";
+  uid: string | null;
+  setDetailJob: (job: JobOffer) => void;
+  prefs: InstructorPrefs | null;
+  coverage: CoverageArea[];
+  onDecline?: () => void;
+}) {
+  const worth =
+    job.course_hours != null && job.offered_rate != null
+      ? Number(job.course_hours) * Number(job.offered_rate)
+      : null;
+
+  const hoursDays = computeHoursDaysMatch(job, prefs);
+  const distanceMi = distanceToCoverage(job, coverage);
+  const inRadius = withinAnyCoverage(job, coverage);
+  const hasCoords = job.centre_lat != null && job.centre_lng != null;
+  const distanceKnown = hasCoords && coverage.length > 0;
+  const hoursDaysGood = hoursDays === "good";
+
+  let badge: { label: string; color: string; bg: string } | null = null;
+  if (variant === "claimed") {
+    badge = { label: "Accepted", color: "#1E9E5A", bg: "#E4F6EB" };
+  } else {
+    if (!distanceKnown) {
+      if (hoursDaysGood) badge = { label: "Good schedule", color: GREEN, bg: "#E5F5EC" };
+      else if (hoursDays === "possible") badge = { label: "Possible schedule fit", color: AMBER, bg: "#FDF2E4" };
+    } else {
+      const distText = `${distanceMi!.toFixed(1)} mi`;
+      if (hoursDaysGood && inRadius) badge = { label: `Good match · ${distText}`, color: GREEN, bg: "#E5F5EC" };
+      else if (hoursDaysGood) badge = { label: `Fits schedule · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
+      else if (inRadius) badge = { label: `Nearby · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
+    }
+  }
+
+  return (
+    <div
+      onClick={() => setDetailJob(job)}
+      style={{
+        background: "#FFFFFF",
+        borderRadius: 14,
+        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+        overflow: "hidden",
+        cursor: "pointer",
+      }}
+    >
+      <div
+        style={{
+          background: NAVY,
+          padding: "14px 16px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ fontSize: 11, fontWeight: 600, color: "#B9C4D4", letterSpacing: 0.3 }}>
+          {variant === "claimed"
+            ? `Job accepted · ${job.claimed_at ? relTime(job.claimed_at) : "—"}`
+            : `Job offer · Posted ${relTime(job.created_at)}`}
+        </div>
+        {worth != null && (
+          <div style={{ fontSize: 20, fontWeight: 700, color: "#FFFFFF" }}>
+            £{worth.toFixed(2)}
+          </div>
+        )}
+      </div>
+
+      <div style={{ padding: 16 }}>
+        <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>
+          {[titleCase(job.pupil_name) || "New pupil", job.postcode_area]
+            .filter(Boolean)
+            .join(" · ")}
+        </div>
+        <div style={{ fontSize: 13.5, color: "#5A6B85", marginTop: 2 }}>
+          {[
+            sentenceCase(job.transmission),
+            job.course_hours ? `${job.course_hours} hrs` : null,
+            job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : null,
+            distanceMi != null ? `${distanceMi.toFixed(1)} mi away` : null,
+            sentenceCase(job.preferred_timing?.join(", ")),
+          ]
+            .filter(Boolean)
+            .join(" · ")}
+        </div>
+
+        {badge && (
+          <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                fontSize: 10,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: 0.3,
+                color: badge.color,
+                background: badge.bg,
+                padding: "4px 10px",
+                borderRadius: 999,
+                whiteSpace: "nowrap",
+              }}
+            >
+              {badge.color === "#1E9E5A" && (
+                <span style={{ width: 6, height: 6, borderRadius: 999, background: "#1E9E5A" }} />
+              )}
+              {badge.label}
+            </div>
+          </div>
+        )}
+
+        <div style={{ height: 1, background: "#EDF0F5", margin: "16px 0" }} />
+
+        <div style={{ display: "flex", gap: 8 }}>
+          {variant === "offer" && (
+            <button
+              type="button"
+              onClick={async (e) => {
+                e.stopPropagation();
+                if (!uid) return;
+                onDecline?.();
+              }}
+              style={{
+                background: "#FFFFFF",
+                color: NAVY,
+                height: 42,
+                borderRadius: 12,
+                padding: "0 16px",
+                border: "1.5px solid #DCE2EB",
+                fontSize: 13,
+                fontWeight: 700,
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Decline
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setDetailJob(job);
+            }}
+            style={{
+              background: BLUE,
+              color: "#FFF",
+              height: 42,
+              borderRadius: 12,
+              padding: "0 12px",
+              border: "none",
+              fontSize: 13,
+              fontWeight: 700,
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              flex: variant === "claimed" ? 1 : undefined,
+            }}
+          >
+            More details
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
   const [uid, setUid] = useState<string | null>(null);
   const [jobs, setJobs] = useState<JobOffer[] | null>(null);
   const [claimedJobs, setClaimedJobs] = useState<JobOffer[] | null>(null);
