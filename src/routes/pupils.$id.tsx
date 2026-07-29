@@ -1185,7 +1185,7 @@ function PupilDetailPage() {
 
     supabase
       .from("pupil_syllabus_progress")
-      .select("level, status")
+      .select("level")
       .eq("pupil_id", id)
       .then(({ data, error }) => {
         if (error) {
@@ -1193,7 +1193,7 @@ function PupilDetailPage() {
           setSyllabusPct(0);
           return;
         }
-        const rows = (data as { level: number; status: string }[]) ?? [];
+        const rows = (data as { level: number }[]) ?? [];
         setSyllabus(rows);
         const total = rows.reduce((s, r) => s + (Number(r.level) || 0), 0);
         setSyllabusSum(total);
