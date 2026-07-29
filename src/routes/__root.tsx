@@ -412,6 +412,7 @@ function RootComponent() {
       {!hideNav && <BottomNav active={active} />}
       <CommandPalette />
       <EventToastController />
+      <Toaster />
     </QueryClientProvider>
   );
 }
