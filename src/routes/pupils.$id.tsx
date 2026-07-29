@@ -465,6 +465,7 @@ function PupilDetailPage() {
   const [selectedOverspeedEvent, setSelectedOverspeedEvent] = useState<OverspeedEvent | null>(null);
   const [reportLoading, setReportLoading] = useState(false);
   const [viewingMock, setViewingMock] = useState<MockTestResult | null>(null);
+  const [viewingDl25, setViewingDl25] = useState<MockTestResult | null>(null);
   const [mockNotesDraft, setMockNotesDraft] = useState("");
   const [savingMockNotes, setSavingMockNotes] = useState(false);
   const [savingMockResult, setSavingMockResult] = useState(false);
@@ -3214,6 +3215,36 @@ function PupilDetailPage() {
           </div>
         )}
 
+        {viewingDl25 && (
+          <BottomSheetV2 onClose={() => setViewingDl25(null)} title={`DL25 · ${fmtUKDate(viewingDl25.test_date)}`}>
+            <div style={{ padding: "4px 4px 16px", ...POPPINS }}>
+              {(() => {
+                const rows = Object.entries(viewingDl25.fault_marks || {})
+                  .filter(([, v]) => v && typeof v === "object")
+                  .map(([k, v]) => ({ k, f: v?.fault ?? 0, s: v?.serious ?? 0, d: v?.dangerous ?? 0 }))
+                  .filter((r) => r.f + r.s + r.d > 0);
+                if (rows.length === 0) {
+                  return <div style={{ fontSize: 13, color: "#6B7280" }}>No faults recorded.</div>;
+                }
+                return (
+                  <div style={{ border: "0.5px solid #E2E6ED", borderRadius: 12, overflow: "hidden" }}>
+                    {rows.map((r, i) => (
+                      <div key={r.k} style={{ padding: "10px 14px", borderTop: i === 0 ? "none" : "0.5px solid #F3F4F6", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                        <div style={{ fontSize: 13, color: "#0B1F3A", flex: 1, minWidth: 0 }}>{dl25Label(r.k)}</div>
+                        <div style={{ display: "flex", gap: 6 }}>
+                          {r.f > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#F3F4F6", color: "#374151", padding: "2px 7px", borderRadius: 999 }}>{r.f}</span>)}
+                          {r.s > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#FEF3C7", color: "#92400E", padding: "2px 7px", borderRadius: 999 }}>S {r.s}</span>)}
+                          {r.d > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 7px", borderRadius: 999 }}>D {r.d}</span>)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+            </div>
+          </BottomSheetV2>
+        )}
+
         {viewingMock && (
           <BottomSheetV2 onClose={() => setViewingMock(null)} title="Mock test">
             <div style={{ padding: "4px 4px 16px", ...POPPINS }}>
@@ -3314,6 +3345,16 @@ function PupilDetailPage() {
                           ))}
                         </div>
                       </>
+                    )}
+
+                    {breakdown.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setViewingDl25(mt)}
+                        style={{ width: "100%", padding: "10px 12px", borderRadius: 10, border: "1px solid #1877D6", background: "#FFFFFF", color: "#1877D6", fontSize: 13, fontWeight: 600, marginBottom: 16, ...POPPINS }}
+                      >
+                        View DL25
+                      </button>
                     )}
 
                     <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
