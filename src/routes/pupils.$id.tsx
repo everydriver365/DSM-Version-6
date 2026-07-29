@@ -3864,7 +3864,58 @@ function PupilDetailPage() {
           onUpdated={(patch) => setPupil((p) => (p ? { ...p, ...patch } : p))}
         />
       )}
+
+      {/* Danger zone — archived pupils, admins only */}
+      {pupil && pupil.deleted_at && isAdmin && (
+        <div className="mt-4">
+          <SectionHeader>DANGER ZONE</SectionHeader>
+          <div
+            className="bg-white"
+            style={{
+              borderRadius: 12,
+              borderWidth: "0.5px",
+              borderStyle: "solid",
+              borderColor: "#F3D2D3",
+              padding: 16,
+            }}
+          >
+            <div className="text-[12px] mb-3" style={{ color: "#6B7280", ...POPPINS }}>
+              This pupil is archived. Permanently deleting removes the pupil and all
+              lessons, messages, reports and test records. This cannot be undone.
+            </div>
+            <button
+              type="button"
+              disabled={permDeleting}
+              onClick={() => setPermDeleteOpen(true)}
+              className="w-full inline-flex items-center justify-center gap-2 text-[14px] font-semibold disabled:opacity-50"
+              style={{
+                height: 44,
+                borderRadius: 10,
+                border: "none",
+                background: "#CC2229",
+                color: "#FFFFFF",
+                ...POPPINS,
+              }}
+            >
+              <Trash2 size={16} />
+              {permDeleting ? "Deleting…" : "Permanently delete record"}
+            </button>
+          </div>
+        </div>
+      )}
         </>)}
+
+      <ConfirmDialog
+        open={permDeleteOpen}
+        title="Are you sure?"
+        message={`This cannot be undone. ${pupil?.name ?? "This pupil"} and all their lessons, messages, reports and test records will be permanently deleted.`}
+        confirmLabel="Yes, delete permanently"
+        cancelLabel="Cancel"
+        destructive
+        onConfirm={permanentlyDeletePupil}
+        onCancel={() => setPermDeleteOpen(false)}
+      />
+
       <ConfirmDialog
 
         open={removeOpen}
