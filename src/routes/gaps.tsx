@@ -448,7 +448,9 @@ function GapsPage() {
   const [recipientsExpanded, setRecipientsExpanded] = useState(false);
   const [searchSlots, setSearchSlots] = useState<SelectedSlot[]>([]);
   const [messageSheetOpen, setMessageSheetOpen] = useState(false);
+  const [confirmSendOpen, setConfirmSendOpen] = useState(false);
   const [messageTemplate, setMessageTemplate] = useState("");
+
   const [selectedDiscountId, setSelectedDiscountId] = useState<string | null>(null);
   const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([]);
   const [instructorName, setInstructorName] = useState("Your instructor");
