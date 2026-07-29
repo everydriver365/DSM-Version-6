@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MessageCircle, Search, Send, Flag, X, Briefcase } from "lucide-react";
+import { MessageCircle, Search, Send, Flag, X, Briefcase, CheckCheck as Check } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import BottomNav from "../components/dsm/BottomNav";
@@ -465,6 +465,43 @@ function MessagesIndexPage() {
     });
   }, [convos, query]);
 
+  const unreadPupils = useMemo(
+    () => convos.filter((c) => c.sender_type === "pupil" && !c.read_at).length,
+    [convos],
+  );
+
+  const [markingAllRead, setMarkingAllRead] = useState(false);
+
+  async function markAllPupilMessagesRead() {
+    if (markingAllRead) return;
+    setMarkingAllRead(true);
+    const { data: sessionRes } = await supabase.auth.getSession();
+    const uid = sessionRes.session?.user?.id;
+    if (!uid) {
+      setMarkingAllRead(false);
+      return;
+    }
+    const now = new Date().toISOString();
+    const { error } = await supabase
+      .from("chat_messages")
+      .update({ read_at: now })
+      .eq("instructor_id", uid)
+      .eq("sender_type", "pupil")
+      .is("read_at", null);
+    setMarkingAllRead(false);
+    if (error) {
+      console.error("[messages] mark all read error", error);
+      toast.error("Could not mark messages as read");
+      return;
+    }
+    setConvos((prev) =>
+      prev.map((c) =>
+        c.sender_type === "pupil" && !c.read_at ? { ...c, read_at: now } : c,
+      ),
+    );
+    toast.success("All messages marked as read");
+  }
+
   const unreadLocal = useMemo(() => {
     if (!userId) return 0;
     return localMessages.filter(
@@ -639,7 +676,36 @@ function MessagesIndexPage() {
                 }}
               />
             </div>
+
+            {unreadPupils > 0 && (
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -8, marginBottom: 12 }}>
+                <button
+                  type="button"
+                  onClick={markAllPupilMessagesRead}
+                  disabled={markingAllRead}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "8px 14px",
+                    borderRadius: 999,
+                    background: "#E6F1FB",
+                    border: "1px solid #CFE3F8",
+                    color: "#1877D6",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: markingAllRead ? "default" : "pointer",
+                    opacity: markingAllRead ? 0.6 : 1,
+                    ...FONT,
+                  }}
+                >
+                  <Check size={14} color="#1877D6" />
+                  {markingAllRead ? "Marking…" : `Mark all as read (${unreadPupils})`}
+                </button>
+              </div>
+            )}
           </div>
+
 
           {/* Conversation list */}
           <div style={{ padding: "0 16px" }}>
