@@ -125,6 +125,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
     return () => window.removeEventListener('dsm-workspace-change', handler as EventListener);
   }, []);
   const currentWs = listenerWs;
+  const unreadMessages = useUnreadPupilMessages();
 
   const renderCustomItems = (list: BottomNavItem[], offset: number) =>
     list.map((it, i) => {
@@ -136,6 +137,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
         if (typeof it.ws === 'number' && onSelectWs) onSelectWs(it.ws);
         it.onClick?.();
       };
+      const showBadge = it.key === "messages" || it.to === "/messages";
       const inner: ReactNode = (
         <>
           {isActive && (
@@ -146,6 +148,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
             />
           )}
           <it.Icon size={22} color={color} />
+          {showBadge && <UnreadBadge count={unreadMessages} />}
           <span className="text-[9px] whitespace-nowrap" style={{ color }}>{it.label}</span>
         </>
       );
