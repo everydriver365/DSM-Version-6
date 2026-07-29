@@ -1781,13 +1781,53 @@ function GapsPage() {
           </div>
         )}
 
-        {/* Selected date content */}
+        {/* All days content (date strip scrolls to a day) */}
         {dayGroups
-          .filter((g) => g.iso === selectedDateIso)
           .map((g) => {
             const hasGaps = g.slots.length > 0;
+            const dayDate = new Date(g.iso + "T00:00:00");
+            const isSelectedDay = g.iso === selectedDateIso;
             return (
-              <div key={g.iso} style={{ marginBottom: 14 }}>
+              <div
+                key={g.iso}
+                ref={(el) => {
+                  daySectionRefs.current[g.iso] = el;
+                }}
+                style={{ marginBottom: 14, scrollMarginTop: 12 }}
+              >
+                <div
+                  style={{
+                    background: isSelectedDay ? "#DCE4F0" : "#EEF2F7",
+                    padding: "8px 16px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: 10,
+                  }}
+                >
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A" }}>
+                    {dayDate.toLocaleDateString("en-GB", { weekday: "long" })}
+                    <span style={{ fontWeight: 500, marginLeft: 6 }}>
+                      {dayDate.toLocaleDateString("en-GB", {
+                        weekday: "short",
+                        day: "numeric",
+                        month: "short",
+                      })}
+                    </span>
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: hasGaps ? "#1877D6" : "#8A93A3",
+                    }}
+                  >
+                    {hasGaps
+                      ? `${g.slots.length} slot${g.slots.length === 1 ? "" : "s"}`
+                      : "No gaps"}
+                  </span>
+                </div>
+
                 {g.lunch && (
                   <div
                     style={{
