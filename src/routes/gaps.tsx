@@ -1387,6 +1387,14 @@ function GapsPage() {
 
     setMessageSheetOpen(false);
 
+    const pupilCount = withBodies.length;
+    const smsCount = withBodies.filter((x) => !!x.pupil.phone).length;
+    toast.success(
+      smsCount > 0
+        ? `Message sent to ${pupilCount} pupil${pupilCount === 1 ? "" : "s"} · SMS queued for ${smsCount}`
+        : `Message sent to ${pupilCount} pupil${pupilCount === 1 ? "" : "s"}`,
+    );
+
     // 2. Queue texts via sms_queue for pupils with a phone number.
     const smsRows = withBodies
       .filter((x) => !!x.pupil.phone)
@@ -1405,9 +1413,6 @@ function GapsPage() {
       }
     }
 
-    toast.success(
-      `Text queued for ${smsRows.length} pupil${smsRows.length === 1 ? "" : "s"} — sending shortly`,
-    );
     setSelectedPupilIds(new Set());
   }
 
