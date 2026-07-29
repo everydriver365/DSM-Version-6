@@ -607,111 +607,18 @@ function JobsPage() {
           </div>
         ) : (
           <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
-            {claimedJobs.map((job) => {
-              const worth = job.course_hours != null && job.offered_rate != null
-                ? Number(job.course_hours) * Number(job.offered_rate)
-                : null;
+            {claimedJobs.map((job) => (
+              <JobCard
+                key={job.id}
+                job={job}
+                variant="claimed"
+                uid={uid}
+                setDetailJob={setDetailJob}
+                prefs={prefs}
+                coverage={coverage}
+              />
+            ))}
 
-              let statusBadge: { label: string; color: string; bg: string };
-              if (job.status === "cancelled") {
-                statusBadge = { label: "Cancelled", color: "#CC2229", bg: "#FDE7E9" };
-              } else if (job.contact_released) {
-                statusBadge = { label: "Paid", color: GREEN, bg: "#E5F5EC" };
-              } else {
-                statusBadge = { label: "Awaiting payment", color: AMBER, bg: "#FDF2E4" };
-              }
-
-              const updatedAfterClaimed =
-                job.status !== "cancelled" &&
-                job.updated_at &&
-                job.claimed_at &&
-                new Date(job.updated_at) > new Date(job.claimed_at);
-
-              return (
-                <div
-                  key={job.id}
-                  onClick={() => setDetailJob(job)}
-                  style={{
-                    background: "#FFFFFF",
-                    borderRadius: 14,
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                    overflow: "hidden",
-                    cursor: "pointer",
-                  }}
-                >
-                  <div
-                    style={{
-                      background: GREEN,
-                      padding: "10px 16px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "#FFFFFF" }}>
-                      CLAIMED JOB · Claimed {job.claimed_at ? relTime(job.claimed_at) : "—"}
-                    </div>
-                    {worth != null && (
-                      <div style={{ fontSize: 16, fontWeight: 700, color: "#FFFFFF" }}>
-                        £{worth.toFixed(2)}
-                      </div>
-                    )}
-                  </div>
-
-                  <div style={{ padding: 16 }}>
-                    <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>
-                      {job.pupil_name || "New pupil"} · {job.postcode_area}
-                    </div>
-                    <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>
-                      {[
-                        job.transmission,
-                        job.course_hours ? `${job.course_hours} hrs` : null,
-                        job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : null,
-                        job.preferred_timing?.join(", "),
-                      ].filter(Boolean).join(" · ")}
-                    </div>
-
-                    <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
-                      <div
-                        style={{
-                          fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.3,
-                          color: statusBadge.color, background: statusBadge.bg,
-                          padding: "4px 8px", borderRadius: 999, whiteSpace: "nowrap",
-                        }}
-                      >
-                        {statusBadge.label}
-                      </div>
-                      {updatedAfterClaimed && (
-                        <div
-                          style={{
-                            fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.3,
-                            color: BLUE, background: "#E5F0FC",
-                            padding: "4px 8px", borderRadius: 999, whiteSpace: "nowrap",
-                          }}
-                        >
-                          Updated
-                        </div>
-                      )}
-                    </div>
-
-                    {job.contact_released && (job.pupil_phone || job.pupil_email) && (
-                      <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 4 }}>
-                        {job.pupil_phone && (
-                          <div style={{ fontSize: 13, color: NAVY, fontWeight: 600 }}>
-                            {job.pupil_phone}
-                          </div>
-                        )}
-                        {job.pupil_email && (
-                          <div style={{ fontSize: 13, color: NAVY, fontWeight: 600 }}>
-                            {job.pupil_email}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
           </div>
         )
       )}
