@@ -418,18 +418,18 @@ function JobsPage() {
                 >
                   <div
                     style={{
-                      background: GREEN,
-                      padding: "10px 16px",
+                      background: NAVY,
+                      padding: "14px 16px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
                     }}
                   >
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "#FFFFFF" }}>
-                      JOB OFFER · Posted {relTime(job.created_at)}
+                    <div style={{ fontSize: 11, fontWeight: 600, color: "#B9C4D4", letterSpacing: 0.3 }}>
+                      Job offer · Posted {relTime(job.created_at)}
                     </div>
                     {worth != null && (
-                      <div style={{ fontSize: 16, fontWeight: 700, color: "#FFFFFF" }}>
+                      <div style={{ fontSize: 20, fontWeight: 700, color: "#FFFFFF" }}>
                         £{worth.toFixed(2)}
                       </div>
                     )}
@@ -437,30 +437,40 @@ function JobsPage() {
 
                   <div style={{ padding: 16 }}>
                     <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>
-                      {job.pupil_name || "New pupil"} · {job.postcode_area}
+                      {[titleCase(job.pupil_name) || "New pupil", job.postcode_area]
+                        .filter(Boolean)
+                        .join(" · ")}
                     </div>
-                    <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>
+                    <div style={{ fontSize: 13.5, color: "#5A6B85", marginTop: 2 }}>
                       {[
-                        job.transmission,
+                        sentenceCase(job.transmission),
                         job.course_hours ? `${job.course_hours} hrs` : null,
                         job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : null,
                         distanceMi != null ? `${distanceMi.toFixed(1)} mi away` : null,
-                        job.preferred_timing?.join(", "),
+                        sentenceCase(job.preferred_timing?.join(", ")),
                       ].filter(Boolean).join(" · ")}
                     </div>
 
                     {badge && (
                       <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
                         <div style={{
+                          display: "inline-flex", alignItems: "center", gap: 6,
                           fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.3,
-                          color: badge.color, background: badge.bg, padding: "4px 8px", borderRadius: 999, whiteSpace: "nowrap",
+                          color: badge.color === GREEN ? "#1E9E5A" : badge.color,
+                          background: badge.color === GREEN ? "#E4F6EB" : badge.bg,
+                          padding: "4px 10px", borderRadius: 999, whiteSpace: "nowrap",
                         }}>
+                          {badge.color === GREEN && (
+                            <span style={{ width: 6, height: 6, borderRadius: 999, background: "#1E9E5A" }} />
+                          )}
                           {badge.label}
                         </div>
                       </div>
                     )}
 
-                    <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                    <div style={{ height: 1, background: "#EDF0F5", margin: "16px 0" }} />
+
+                    <div style={{ display: "flex", gap: 8 }}>
                       <button
                         type="button"
                         onClick={async (e) => {
@@ -473,14 +483,14 @@ function JobsPage() {
                           setJobs((prev) => (prev ?? []).filter((j) => j.id !== job.id));
                         }}
                         style={{
-                          background: "#F3F4F6",
+                          background: "#FFFFFF",
                           color: NAVY,
                           height: 42,
-                          borderRadius: 10,
-                          padding: "0 12px",
-                          border: "none",
+                          borderRadius: 12,
+                          padding: "0 16px",
+                          border: "1.5px solid #DCE2EB",
                           fontSize: 13,
-                          fontWeight: 600,
+                          fontWeight: 700,
                           cursor: "pointer",
                           whiteSpace: "nowrap",
                         }}
@@ -491,14 +501,14 @@ function JobsPage() {
                         type="button"
                         onClick={(e) => { e.stopPropagation(); setDetailJob(job); }}
                         style={{
-                          background: NAVY,
+                          background: BLUE,
                           color: "#FFF",
                           height: 42,
-                          borderRadius: 10,
+                          borderRadius: 12,
                           padding: "0 12px",
                           border: "none",
                           fontSize: 13,
-                          fontWeight: 600,
+                          fontWeight: 700,
                           cursor: "pointer",
                           whiteSpace: "nowrap",
                           flex: 1,
@@ -507,6 +517,8 @@ function JobsPage() {
                         More details
                       </button>
                     </div>
+                  </div>
+
                   </div>
                 </div>
               );
