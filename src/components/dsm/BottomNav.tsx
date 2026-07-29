@@ -1,6 +1,76 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { Home, CalendarDays, Users, MessageCircle, LayoutGrid } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
+
+/**
+ * Unread pupil replies count. Kept inside BottomNav so every screen gets the
+ * badge without prop drilling. Refreshes on route change, on a 60s interval,
+ * and when a screen broadcasts `dsm-messages-read` after marking messages read.
+ */
+function useUnreadPupilMessages(): number {
+  const [count, setCount] = useState(0);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const load = async () => {
+      const { data: sessionRes } = await supabase.auth.getSession();
+      const uid = sessionRes.session?.user?.id;
+      if (!uid) {
+        if (!cancelled) setCount(0);
+        return;
+      }
+      const { count: c, error } = await supabase
+        .from("chat_messages")
+        .select("id", { count: "exact", head: true })
+        .eq("instructor_id", uid)
+        .eq("sender_type", "pupil")
+        .is("read_at", null)
+        .is("deleted_at", null);
+      if (!cancelled && !error) setCount(c ?? 0);
+    };
+
+    load();
+    const interval = window.setInterval(load, 60000);
+    const onRead = () => load();
+    window.addEventListener("dsm-messages-read", onRead);
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+      window.removeEventListener("dsm-messages-read", onRead);
+    };
+  }, [pathname]);
+
+  return count;
+}
+
+function UnreadBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
+  return (
+    <span
+      aria-label={`${count} unread messages`}
+      className="absolute flex items-center justify-center"
+      style={{
+        top: 4,
+        left: "calc(50% + 6px)",
+        minWidth: 16,
+        height: 16,
+        padding: "0 4px",
+        borderRadius: 999,
+        background: "#CC2229",
+        color: "#FFFFFF",
+        fontSize: 9,
+        fontWeight: 700,
+        lineHeight: 1,
+        border: "1.5px solid #FFFFFF",
+      }}
+    >
+      {count > 9 ? "9+" : count}
+    </span>
+  );
+}
 
 export type NavKey = "home" | "schedule" | "pupils" | "messages" | "more" | "settings" | "payments";
 
