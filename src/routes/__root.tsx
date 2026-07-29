@@ -17,6 +17,7 @@ import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
 import { supabase } from "../lib/supabaseClient";
 import { EventToastController, emitLiveEvent, type LiveEventKind } from "../components/dsm/EventToast";
+import { Toaster } from "@/components/ui/sonner";
 
 
 
