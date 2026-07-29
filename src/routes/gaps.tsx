@@ -1855,14 +1855,30 @@ function GapsPage() {
                       data-slot-key={`${slot.date}-${slot.startTime}`}
                       className={isPrefilterMatch ? "gaps-prefilter-match" : undefined}
                       style={{
-                        background: anySelected ? "#F0F6FC" : "#FFFFFF",
+                        position: "relative",
+                        background: anySelected ? "#F0F7FF" : "#FFFFFF",
                         borderRadius: 16,
-                        border: anySelected ? "2px solid #1877D6" : "1px solid #DCEAF7",
+                        border: anySelected ? "1.5px solid #1877D6" : "1px solid #DCEAF7",
                         boxShadow: "0 4px 14px rgba(24,95,165,0.12)",
                         margin: "0 16px 18px",
                         padding: "12px 14px",
                       }}
                     >
+                      {anySelected && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 8,
+                            right: 8,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Check size={14} color="#1877D6" strokeWidth={2.5} />
+                        </div>
+                      )}
+
                       <button
                         onClick={() => {
                           setSelectedSlots((prev) => {
