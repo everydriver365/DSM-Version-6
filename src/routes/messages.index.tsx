@@ -465,6 +465,43 @@ function MessagesIndexPage() {
     });
   }, [convos, query]);
 
+  const unreadPupils = useMemo(
+    () => convos.filter((c) => c.sender_type === "pupil" && !c.read_at).length,
+    [convos],
+  );
+
+  const [markingAllRead, setMarkingAllRead] = useState(false);
+
+  async function markAllPupilMessagesRead() {
+    if (markingAllRead) return;
+    setMarkingAllRead(true);
+    const { data: sessionRes } = await supabase.auth.getSession();
+    const uid = sessionRes.session?.user?.id;
+    if (!uid) {
+      setMarkingAllRead(false);
+      return;
+    }
+    const now = new Date().toISOString();
+    const { error } = await supabase
+      .from("chat_messages")
+      .update({ read_at: now })
+      .eq("instructor_id", uid)
+      .eq("sender_type", "pupil")
+      .is("read_at", null);
+    setMarkingAllRead(false);
+    if (error) {
+      console.error("[messages] mark all read error", error);
+      toast.error("Could not mark messages as read");
+      return;
+    }
+    setConvos((prev) =>
+      prev.map((c) =>
+        c.sender_type === "pupil" && !c.read_at ? { ...c, read_at: now } : c,
+      ),
+    );
+    toast.success("All messages marked as read");
+  }
+
   const unreadLocal = useMemo(() => {
     if (!userId) return 0;
     return localMessages.filter(
