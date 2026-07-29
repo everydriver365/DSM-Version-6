@@ -156,6 +156,44 @@ function NewPupilPage() {
           }}
           className="flex flex-col gap-4 mt-2"
         >
+          {typeof navigator !== "undefined" &&
+            "contacts" in navigator &&
+            (navigator as unknown as Navigator & { contacts?: { select?: unknown } }).contacts?.select && (
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    const contacts = await (navigator as unknown as Navigator & {
+                      contacts: { select: (props: string[], opts: { multiple: boolean }) => Promise<{ name?: string[]; tel?: string[]; email?: string[] }[]> };
+                    }).contacts.select(["name", "tel", "email"], { multiple: false });
+                    if (contacts && contacts.length > 0) {
+                      const c = contacts[0];
+                      if (c.name && c.name.length > 0) {
+                        const [first, last] = splitName(c.name[0]);
+                        setFirstName(first);
+                        setLastName(last);
+                      }
+                      if (c.tel && c.tel.length > 0) {
+                        setPhone(c.tel[0]);
+                      }
+                      // Email field is not present in this form; skipped intentionally.
+                    }
+                  } catch {
+                    // Graceful degradation — ignore contact-picker errors.
+                  }
+                }}
+                className="self-start flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] font-medium border"
+                style={{
+                  color: "#1877D6",
+                  borderColor: "#1877D6",
+                  backgroundColor: "transparent",
+                  fontFamily: "Inter, sans-serif",
+                }}
+              >
+                <UserPlus size={16} color="#1877D6" />
+                Import from contacts
+              </button>
+            )}
           <div>
             <Input
               label="First name"
