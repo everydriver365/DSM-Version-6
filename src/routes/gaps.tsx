@@ -22,6 +22,8 @@ import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
 import { BottomSheet } from "../components/dsm/BottomSheet";
 import { BottomSheet as BottomSheetV2 } from "../components/dsm/BottomSheetV2";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+
 import {
   slotFitsPupilWindow,
   previewMatchForGap,
@@ -446,7 +448,9 @@ function GapsPage() {
   const [recipientsExpanded, setRecipientsExpanded] = useState(false);
   const [searchSlots, setSearchSlots] = useState<SelectedSlot[]>([]);
   const [messageSheetOpen, setMessageSheetOpen] = useState(false);
+  const [confirmSendOpen, setConfirmSendOpen] = useState(false);
   const [messageTemplate, setMessageTemplate] = useState("");
+
   const [selectedDiscountId, setSelectedDiscountId] = useState<string | null>(null);
   const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([]);
   const [instructorName, setInstructorName] = useState("Your instructor");
@@ -3124,9 +3128,10 @@ function GapsPage() {
         >
           <button
             type="button"
-            onClick={() => void bulkMessageSelected()}
+            onClick={() => setConfirmSendOpen(true)}
             disabled={selectedPupilIds.size === 0}
             style={{
+
               width: "100%",
               height: 48,
               borderRadius: 12,
@@ -3146,7 +3151,21 @@ function GapsPage() {
         </div>
       </BottomSheet>
 
+      <ConfirmDialog
+        open={confirmSendOpen}
+        title="Send bulk message?"
+        message={`You are about to send a message to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"} for ${selectedSlots.length} selected slot${selectedSlots.length === 1 ? "" : "s"}. This will queue SMS messages where phone numbers are available and send an in-app message to all selected pupils.`}
+        confirmLabel="Send"
+        cancelLabel="Cancel"
+        onConfirm={() => {
+          setConfirmSendOpen(false);
+          void bulkMessageSelected();
+        }}
+        onCancel={() => setConfirmSendOpen(false)}
+      />
+
     </div>
+
   );
 }
 
