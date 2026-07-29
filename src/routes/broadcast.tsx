@@ -225,6 +225,15 @@ function BroadcastPage() {
     for (let i = 0; i < recipients.length; i++) {
       const p = recipients[i];
       const body = personalize(message, p.name);
+
+      await supabase.from("chat_messages").insert({
+        instructor_id: instructorId,
+        pupil_id: p.id,
+        sender_type: "instructor",
+        sender_id: instructorId,
+        body,
+      });
+
       if (sendSms && p.phone) {
         smsRows.push({ instructor_id: instructorId, pupil_phone: p.phone, message: body });
       }
@@ -237,7 +246,11 @@ function BroadcastPage() {
 
     if (smsRows.length > 0) {
       const { error } = await supabase.from("sms_queue").insert(smsRows);
-      if (error) console.error("[broadcast] sms_queue insert failed:", error);
+      if (error) {
+        console.error("[broadcast] sms_queue insert failed:", error);
+      } else {
+        void supabase.functions.invoke("send-sms", { body: {} });
+      }
     }
 
     toast.success(`Messages queued for ${recipients.length} pupil${recipients.length === 1 ? "" : "s"} — sending shortly`);
