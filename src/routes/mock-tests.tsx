@@ -38,6 +38,7 @@ interface MockTestResult {
   serious_faults: number | null;
   dangerous_faults: number | null;
   pupils: { name: string }[] | null;
+  fault_marks: Record<string, { fault?: number; serious?: number; dangerous?: number }> | null;
 }
 
 function todayYmd() {
@@ -71,6 +72,7 @@ function MockTestsPage() {
   const [results, setResults] = useState<MockTestResult[]>([]);
   const [addOpen, setAddOpen] = useState(false);
   const [dl25Args, setDl25Args] = useState<{ pupilId: string; testDate: string } | null>(null);
+  const [viewingDl25, setViewingDl25] = useState<MockTestResult | null>(null);
   const [resultPrompt, setResultPrompt] = useState<{
     pupilId: string;
     testDate: string;
@@ -97,7 +99,7 @@ function MockTestsPage() {
   async function loadResults(uid: string) {
     const { data, error } = await supabase
       .from("mock_test_results")
-      .select("id, pupil_id, test_date, result, minor_faults, serious_faults, dangerous_faults, pupils(name)")
+      .select("id, pupil_id, test_date, result, minor_faults, serious_faults, dangerous_faults, fault_marks, pupils(name)")
       .eq("instructor_id", uid)
       .order("test_date", { ascending: false });
     if (error) console.error("[mock-tests] results fetch error", error);
@@ -216,6 +218,16 @@ function MockTestsPage() {
                           {r.minor_faults ?? 0} minor · {r.serious_faults ?? 0} serious · {r.dangerous_faults ?? 0} dangerous
                         </div>
                       )}
+                      {hasFaultMarks(r.fault_marks) && (
+                        <button
+                          type="button"
+                          onClick={() => setViewingDl25(r)}
+                          className="text-[12px] font-semibold mt-2"
+                          style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+                        >
+                          View DL25
+                        </button>
+                      )}
                     </div>
                   </div>
                 </Card>
@@ -252,6 +264,10 @@ function MockTestsPage() {
         />
       )}
 
+      {viewingDl25 && (
+        <DL25ViewSheet result={viewingDl25} onClose={() => setViewingDl25(null)} />
+      )}
+
       {resultPrompt && (
         <ResultPromptSheet
           onClose={() => setResultPrompt(null)}
@@ -260,6 +276,67 @@ function MockTestsPage() {
         />
       )}
     </PageLayout>
+  );
+}
+
+function hasFaultMarks(fm: MockTestResult["fault_marks"]) {
+  if (!fm) return false;
+  return Object.keys(fm).length > 0;
+}
+
+function dl25Label(k: string) {
+  return k.replace(/_/g, " ").replace(/^./, (c) => c.toUpperCase());
+}
+
+function DL25ViewSheet({ result, onClose }: { result: MockTestResult; onClose: () => void }) {
+  const marks = result.fault_marks || {};
+  const rows = Object.entries(marks)
+    .filter(([, v]) => v && typeof v === "object")
+    .map(([k, v]) => ({ k, f: v?.fault ?? 0, s: v?.serious ?? 0, d: v?.dangerous ?? 0 }))
+    .filter((r) => r.f + r.s + r.d > 0);
+  return (
+    <div className="fixed inset-0 z-[80] flex items-end justify-center" style={POPPINS}>
+      <div className="absolute inset-0" style={{ backgroundColor: "rgba(11,31,58,0.5)" }} onClick={onClose} aria-hidden />
+      <div className="relative w-full bg-white flex flex-col" style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16, maxHeight: "85vh" }}>
+        <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "0.5px solid #EEF2F7" }}>
+          <div className="text-[15px] font-semibold" style={{ color: "#0B1F3A" }}>DL25 · {formatDateLong(result.test_date)}</div>
+          <button type="button" onClick={onClose} style={{ background: "none", border: "none" }} aria-label="Close">
+            <X size={18} color="#6B7280" />
+          </button>
+        </div>
+        <div className="px-4 py-3 overflow-y-auto">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 14 }}>
+            {[
+              { label: "Minor", v: result.minor_faults ?? 0, red: false },
+              { label: "Serious", v: result.serious_faults ?? 0, red: (result.serious_faults ?? 0) > 0 },
+              { label: "Dangerous", v: result.dangerous_faults ?? 0, red: (result.dangerous_faults ?? 0) > 0 },
+            ].map((c) => (
+              <div key={c.label} style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
+                <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>{c.label}</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: c.red ? "#CC2229" : "#0B1F3A", marginTop: 2 }}>{c.v}</div>
+              </div>
+            ))}
+          </div>
+          {rows.length === 0 ? (
+            <div className="text-[13px]" style={{ color: "#6B7280" }}>No faults recorded.</div>
+          ) : (
+            <div style={{ border: "0.5px solid #E2E6ED", borderRadius: 12, overflow: "hidden", marginBottom: 12 }}>
+              {rows.map((r, i) => (
+                <div key={r.k} style={{ padding: "10px 14px", borderTop: i === 0 ? "none" : "0.5px solid #F3F4F6", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                  <div style={{ fontSize: 13, color: "#0B1F3A", flex: 1, minWidth: 0 }}>{dl25Label(r.k)}</div>
+                  <div style={{ display: "flex", gap: 6 }}>
+                    {r.f > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#F3F4F6", color: "#374151", padding: "2px 7px", borderRadius: 999 }}>{r.f}</span>)}
+                    {r.s > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#FEF3C7", color: "#92400E", padding: "2px 7px", borderRadius: 999 }}>S {r.s}</span>)}
+                    {r.d > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 7px", borderRadius: 999 }}>D {r.d}</span>)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div style={{ height: "env(safe-area-inset-bottom, 0px)" }} />
+      </div>
+    </div>
   );
 }
 
