@@ -256,6 +256,14 @@ function NotificationsPage() {
                           navigate({ to: "/live" });
                         } else if (n.type === "quote_accepted") {
                           navigate({ to: "/quotes" });
+                        } else if (n.type === "pupil_reply") {
+                          if (n.reference_id) {
+                            navigate({ to: "/messages/$pupilId", params: { pupilId: n.reference_id } as never });
+                          } else {
+                            navigate({ to: "/messages" });
+                          }
+                        } else if (n.type === "gap_accepted" || n.type === "gap_message_sent") {
+                          navigate({ to: "/gaps" });
                         }
                       }}
                       className="w-full text-left rounded-xl overflow-hidden cursor-pointer"
