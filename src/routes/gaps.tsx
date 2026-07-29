@@ -1389,31 +1389,46 @@ function GapsPage() {
     setRanked(null);
 
     const pupilCount = withBodies.length;
-    const smsCount = withBodies.filter((x) => !!x.pupil.phone).length;
-    toast.success(
-      smsCount > 0
-        ? `Message sent to ${pupilCount} pupil${pupilCount === 1 ? "" : "s"} · SMS queued for ${smsCount}`
-        : `Message sent to ${pupilCount} pupil${pupilCount === 1 ? "" : "s"}`,
-    );
+    const phoneCandidates = withBodies.filter((x) => !!x.pupil.phone);
+    const noPhone = withBodies.filter((x) => !x.pupil.phone);
+
+    let smsQueuedCount = 0;
+    const failedNames: string[] = [];
 
     // 2. Queue texts via sms_queue for pupils with a phone number.
-    const smsRows = withBodies
-      .filter((x) => !!x.pupil.phone)
-      .map((x) => ({
+    if (phoneCandidates.length > 0) {
+      const smsRows = phoneCandidates.map((x) => ({
         instructor_id: userId,
         pupil_phone: x.pupil.phone!,
         message: x.body,
       }));
-
-    if (smsRows.length > 0) {
       const { error: smsErr } = await supabase.from("sms_queue").insert(smsRows);
       if (smsErr) {
         console.error("[gaps] sms_queue insert failed:", smsErr);
-        toast.error("Failed to queue texts");
-        return;
+        failedNames.push(...phoneCandidates.map((x) => fullNameOf(x.pupil)));
+      } else {
+        smsQueuedCount = phoneCandidates.length;
       }
     }
+
+    const descriptionParts = [
+      smsQueuedCount > 0
+        ? `SMS queued for ${smsQueuedCount} pupil${smsQueuedCount === 1 ? "" : "s"}`
+        : null,
+      noPhone.length > 0
+        ? `No phone number for ${noPhone.length} pupil${noPhone.length === 1 ? "" : "s"}: ${noPhone.map((x) => fullNameOf(x.pupil)).join(", ")}`
+        : null,
+      failedNames.length > 0 ? `SMS queue failed: ${failedNames.join(", ")}` : null,
+    ].filter(Boolean) as string[];
+
+    const title = `Message sent to ${pupilCount} pupil${pupilCount === 1 ? "" : "s"}`;
+    if (failedNames.length > 0) {
+      toast.error(title, { description: descriptionParts.join(" · ") });
+    } else {
+      toast.success(title, { description: descriptionParts.join(" · ") });
+    }
   }
+
 
 
 
