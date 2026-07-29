@@ -2792,7 +2792,7 @@ function GapsPage() {
         title="Message selected pupils"
         description={`Personalize your message before sending to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}.`}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 80 }}>
           {(() => {
             const selectedList =
               ranked?.filter((r) => selectedPupilIds.has(r.pupil.id)) ?? [];
@@ -3166,7 +3166,20 @@ function GapsPage() {
               </p>
             )}
           </div>
+        </div>
 
+        <div
+          style={{
+            position: "sticky",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            padding: "12px 16px",
+            background: "#FFFFFF",
+            borderTop: "1px solid #E2E8F0",
+            zIndex: 10,
+          }}
+        >
           <button
             type="button"
             onClick={() => void bulkMessageSelected()}
@@ -3180,7 +3193,6 @@ function GapsPage() {
               fontWeight: 700,
               fontSize: 15,
               border: "none",
-              marginTop: 8,
               cursor: "pointer",
               opacity: selectedPupilIds.size === 0 ? 0.5 : 1,
             }}
