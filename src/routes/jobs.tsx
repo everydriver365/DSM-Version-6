@@ -22,6 +22,21 @@ const GREEN = "#0F9D58";
 const AMBER = "#B5661E";
 const GREY = "#6B7280";
 
+const titleCase = (s?: string | null) =>
+  (s ?? "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ");
+
+const sentenceCase = (s?: string | null) => {
+  const t = (s ?? "").trim();
+  return t ? t.charAt(0).toUpperCase() + t.slice(1).toLowerCase() : "";
+};
+
+
+
 interface JobOffer {
   id: string;
   pupil_name: string | null;
