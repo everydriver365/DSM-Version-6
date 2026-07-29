@@ -762,6 +762,22 @@ function PupilDetailPage() {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
   }, []);
 
+  // Admin detection — used only to expose the permanent-delete action on
+  // archived (soft-deleted) pupils.
+  useEffect(() => {
+    if (!userId) { setIsAdmin(false); return; }
+    let cancelled = false;
+    (async () => {
+      const { data: adminRow } = await supabase
+        .from("admin_users")
+        .select("user_id")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (!cancelled) setIsAdmin(!!adminRow);
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
+
 
   useEffect(() => {
     if (!userId || !id) return;
