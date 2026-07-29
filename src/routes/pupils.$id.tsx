@@ -96,6 +96,7 @@ interface Pupil {
   last_name: string | null;
   phone: string | null;
   email: string | null;
+  deleted_at?: string | null;
   
   account_balance: number | null;
   prepaid_hours: number | null;
