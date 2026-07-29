@@ -96,6 +96,7 @@ interface Pupil {
   last_name: string | null;
   phone: string | null;
   email: string | null;
+  deleted_at?: string | null;
   
   account_balance: number | null;
   prepaid_hours: number | null;
@@ -426,6 +427,9 @@ function PupilDetailPage() {
   const [emailDraft, setEmailDraft] = useState("");
   const [savingEmail, setSavingEmail] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [permDeleteOpen, setPermDeleteOpen] = useState(false);
+  const [permDeleting, setPermDeleting] = useState(false);
   const [pupilSeries, setPupilSeries] = useState<Array<{ id: string; day_of_week: string; lesson_time: string; duration_minutes: number; frequency: string }> | null>(null);
   const [adjSheetOpen, setAdjSheetOpen] = useState(false);
   const [adjValue, setAdjValue] = useState<string>("0");
@@ -759,6 +763,22 @@ function PupilDetailPage() {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
   }, []);
 
+  // Admin detection — used only to expose the permanent-delete action on
+  // archived (soft-deleted) pupils.
+  useEffect(() => {
+    if (!userId) { setIsAdmin(false); return; }
+    let cancelled = false;
+    (async () => {
+      const { data: adminRow } = await supabase
+        .from("admin_users")
+        .select("user_id")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (!cancelled) setIsAdmin(!!adminRow);
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
+
 
   useEffect(() => {
     if (!userId || !id) return;
@@ -975,7 +995,8 @@ function PupilDetailPage() {
         driving_licence_number, driving_licence_checked, custom_rate, custom_rate_90, custom_rate_120,
         buffer_after_minutes, calendar_colour,
         theory_status, theory_test_date, theory_pass_date, theory_score,
-        test_status, test_examiner, date_of_birth, lesson_count_adjustment
+        test_status, test_examiner, date_of_birth, lesson_count_adjustment,
+        deleted_at
       `)
 
 
@@ -1219,6 +1240,38 @@ function PupilDetailPage() {
     }
     navigate({ to: "/pupils" });
   }
+
+  // Hard delete — admin only, archived pupils only. Each step continues on
+  // error so the record is never left half-deleted.
+  async function permanentlyDeletePupil() {
+    if (!id) return;
+    setPermDeleting(true);
+    setPermDeleteOpen(false);
+
+    const childTables = [
+      "lesson_routes",
+      "mock_test_results",
+      "dl25_reports",
+      "pupil_terms_signatures",
+      "gap_filler_offers",
+      "chat_messages",
+      "lessons",
+    ] as const;
+
+    for (const table of childTables) {
+      const { error } = await supabase.from(table).delete().eq("pupil_id", id);
+      if (error) console.error(`[pupil] permanent delete ${table} error`, error);
+    }
+
+    const { error: pupilErr } = await supabase.from("pupils").delete().eq("id", id);
+    if (pupilErr) console.error("[pupil] permanent delete pupils error", pupilErr);
+
+    setPermDeleting(false);
+    toast.success("Pupil record permanently deleted");
+    navigate({ to: "/pupils" });
+  }
+
+
 
   async function saveNotes() {
     setSavingNotes(true);
@@ -3813,7 +3866,58 @@ function PupilDetailPage() {
           onUpdated={(patch) => setPupil((p) => (p ? { ...p, ...patch } : p))}
         />
       )}
+
+      {/* Danger zone — archived pupils, admins only */}
+      {pupil && pupil.deleted_at && isAdmin && (
+        <div className="mt-4">
+          <SectionHeader>DANGER ZONE</SectionHeader>
+          <div
+            className="bg-white"
+            style={{
+              borderRadius: 12,
+              borderWidth: "0.5px",
+              borderStyle: "solid",
+              borderColor: "#F3D2D3",
+              padding: 16,
+            }}
+          >
+            <div className="text-[12px] mb-3" style={{ color: "#6B7280", ...POPPINS }}>
+              This pupil is archived. Permanently deleting removes the pupil and all
+              lessons, messages, reports and test records. This cannot be undone.
+            </div>
+            <button
+              type="button"
+              disabled={permDeleting}
+              onClick={() => setPermDeleteOpen(true)}
+              className="w-full inline-flex items-center justify-center gap-2 text-[14px] font-semibold disabled:opacity-50"
+              style={{
+                height: 44,
+                borderRadius: 10,
+                border: "none",
+                background: "#CC2229",
+                color: "#FFFFFF",
+                ...POPPINS,
+              }}
+            >
+              <Trash2 size={16} />
+              {permDeleting ? "Deleting…" : "Permanently delete record"}
+            </button>
+          </div>
+        </div>
+      )}
         </>)}
+
+      <ConfirmDialog
+        open={permDeleteOpen}
+        title="Are you sure?"
+        message={`This cannot be undone. ${pupil?.name ?? "This pupil"} and all their lessons, messages, reports and test records will be permanently deleted.`}
+        confirmLabel="Yes, delete permanently"
+        cancelLabel="Cancel"
+        destructive
+        onConfirm={permanentlyDeletePupil}
+        onCancel={() => setPermDeleteOpen(false)}
+      />
+
       <ConfirmDialog
 
         open={removeOpen}
