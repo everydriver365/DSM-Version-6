@@ -218,8 +218,7 @@ function BroadcastPage() {
     const recipients = pupils.filter((p) => selected.has(p.id));
     if (recipients.length === 0 || !message.trim()) return;
 
-    const sendSms = method === "sms" || method === "both";
-    const sendEmail = method === "email" || method === "both";
+    const sendSms = method === "sms";
     const smsRows: { instructor_id: string | null; pupil_phone: string; message: string }[] = [];
 
     for (let i = 0; i < recipients.length; i++) {
@@ -236,11 +235,6 @@ function BroadcastPage() {
 
       if (sendSms && p.phone) {
         smsRows.push({ instructor_id: instructorId, pupil_phone: p.phone, message: body });
-      }
-      if (sendEmail && p.email) {
-        const url = `mailto:${p.email}?subject=${encodeURIComponent("Message from your driving instructor")}&body=${encodeURIComponent(body)}`;
-        window.location.href = url;
-        await new Promise((r) => setTimeout(r, 500));
       }
     }
 
@@ -495,8 +489,6 @@ function BroadcastPage() {
         <div className="flex gap-2">
           {([
             { k: "sms", label: "SMS" },
-            { k: "email", label: "Email" },
-            { k: "both", label: "Both" },
           ] as { k: SendMethod; label: string }[]).map((o) => {
             const active = method === o.k;
             return (
