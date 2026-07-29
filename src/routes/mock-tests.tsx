@@ -378,7 +378,7 @@ function NewMockTestSheet({
                   </button>
                 )}
               </div>
-              {open && filtered.length > 0 && !selectedPupil && (
+              {open && !selectedPupil && (
                 <div
                   style={{
                     position: "absolute",
@@ -395,6 +395,14 @@ function NewMockTestSheet({
                     overflowY: "auto",
                   }}
                 >
+                  {!pupilId && filtered.length > 0 && (
+                    <div
+                      className="px-3 py-2 text-[12px]"
+                      style={{ color: "#9CA3AF", ...POPPINS }}
+                    >
+                      Select pupil…
+                    </div>
+                  )}
                   {filtered.map((p) => (
                     <button
                       key={p.id}
@@ -410,6 +418,14 @@ function NewMockTestSheet({
                       {p.name}
                     </button>
                   ))}
+                  {filtered.length === 0 && (
+                    <div
+                      className="px-3 py-2 text-[12px]"
+                      style={{ color: "#9CA3AF", ...POPPINS }}
+                    >
+                      No pupils found
+                    </div>
+                  )}
                 </div>
               )}
             </div>
