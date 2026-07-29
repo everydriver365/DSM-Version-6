@@ -1490,58 +1490,6 @@ function GapsPage() {
       />
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
-      {/* Header — white stats layer */}
-      <div
-        style={{
-          background: "#FFFFFF",
-          padding: "12px 16px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-        }}
-      >
-        <div style={{ display: "flex", gap: 8 }}>
-          {[
-            { label: "SLOTS", value: String(freeSlots.length), color: "#0B1F3A" },
-            { label: "DAYS", value: String(daysWithGaps), color: "#0B1F3A" },
-            {
-              label: "POTENTIAL",
-              value: potentialValue,
-              color: hourlyRate > 0 ? "#2E9E5B" : "#0B1F3A",
-            },
-          ].map((s) => (
-            <div
-              key={s.label}
-              style={{
-                flex: 1,
-                background: "#F3F8FF",
-                borderRadius: 14,
-                padding: "12px 14px",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 10,
-                  fontWeight: 500,
-                  color: "#6B87A8",
-                  letterSpacing: "0.03em",
-                  marginBottom: 6,
-                }}
-              >
-                {s.label}
-              </div>
-              <div
-                style={{
-                  fontSize: 22,
-                  fontWeight: 600,
-                  color: s.color,
-                  lineHeight: 1.1,
-                }}
-              >
-                {s.value}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* Pulse animation for the freed-slot highlight */}
       <style>{`
