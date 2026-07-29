@@ -64,7 +64,7 @@ const DAYS = [
   "Friday",
   "Saturday",
 ];
-const GAP_FILLER_FUTURE_DAYS = 14;
+const GAP_FILLER_FUTURE_DAYS = 7;
 
 interface FreeSlot {
   date: string;
@@ -469,6 +469,12 @@ function GapsPage() {
     const first = dayGroups.find((g) => g.slots.length > 0);
     setSelectedDateIso(first?.iso ?? dayGroups[0]?.iso ?? todayIso());
   }, [dayGroups, selectedDateIso]);
+  const daySectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  useEffect(() => {
+    if (!selectedDateIso) return;
+    const el = daySectionRefs.current[selectedDateIso];
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [selectedDateIso]);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
   const [allPupils, setAllPupils] = useState<Pupil[]>([]);
