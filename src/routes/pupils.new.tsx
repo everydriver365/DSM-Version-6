@@ -158,7 +158,7 @@ function NewPupilPage() {
         >
           {typeof navigator !== "undefined" &&
             "contacts" in navigator &&
-            (navigator as unknown as Navigator & { contacts?: { select?: unknown } }).contacts?.select && (
+            !!(navigator as unknown as Navigator & { contacts?: { select?: unknown } }).contacts?.select && (
               <button
                 type="button"
                 onClick={async () => {
