@@ -268,7 +268,35 @@ export function SendMessageSheet({
             resize: "none",
           }}
         />
+
+        {/* Quick replies */}
+        <div style={{ marginTop: 10 }}>
+          <SectionLabel>QUICK REPLIES</SectionLabel>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {QUICK_REPLIES.map((t) => (
+              <button
+                key={t.label}
+                type="button"
+                onClick={() => insertTemplate(t.body)}
+                style={{
+                  padding: "7px 11px",
+                  borderRadius: 999,
+                  border: "1px solid #CFE1F7",
+                  background: "#EEF5FE",
+                  color: BLUE,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
+
 
       {/* SMS toggle */}
       {pupilPhone && (
