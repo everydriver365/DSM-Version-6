@@ -1,38 +1,45 @@
-# Why Google events come in but lessons don't go out
+# Google Calendar: two-way setup UI + push on lesson create
 
-## What the code actually does today
+Scope: only `src/routes/calendarsync.tsx`, `src/routes/lessons.new.tsx`, `src/components/lessons/AddLessonSheet.tsx`.
 
-Reading Google → DSM (works):
-- On Calendar sync you paste your Google Calendar **secret ICS URL** (`calendarsync.tsx`).
-- It's stored on `instructors.external_calendar_url`.
-- On every app load, `__root.tsx` silently calls the `sync-external-calendar` edge function, which fetches that ICS and writes rows into `calendar_blocks` with `source = 'external_calendar'`.
-- Home and Schedule read those rows and interleave them into the timeline.
+## What exists today
 
-Writing DSM → Google (doesn't work, and can't with the current setup):
-- The only outbound path is the `ics-feed` edge function — a read-only calendar feed you subscribe to in Google. Subscribed feeds are one-way and Google refreshes them on its own schedule (often 8–24 hours), so new lessons appear late or not at all.
-- `syncToGoogleCalendar()` in `home.tsx`, `lessons.new.tsx` and `lessons.$id.tsx` is misleading: it just re-runs the *inbound* import and then opens calendar.google.com in a new tab. It never creates an event.
+`calendarsync.tsx` (800 lines) renders, in order: info card → "Import your Google Calendar" card (ICS URL paste, sync error / last-synced states, "Save and sync calendar", "Sync now", "Remove calendar") → "YOUR ICS FEED URL" card (copy/share) → "How calendar sync works" → info banner.
 
-So the asymmetry is by design of the two mechanisms used: ICS-in is a fetch we control, ICS-out is a subscription Google controls. Writing events requires the Google Calendar API with each instructor's OAuth authorisation — which the app has never had.
+`AddLessonSheet.tsx` already inserts with `.select("id").single()` into `insertedLesson` (line ~285). `lessons.new.tsx` inserts without `.select()`, so it needs `.select("id").single()` added to get the new lesson id.
 
-## Proposed fix: real one-way push to Google (per instructor)
+## Changes
 
-Add per-instructor Google authorisation and write lessons into their Google Calendar immediately on create, edit, cancel and delete. Inbound ICS import stays exactly as it is.
+### 1. calendarsync.tsx — two labelled sections
 
-### Steps
+**Section 1 — "Bring Google events into DSM"**
+Add a `SectionHeader` above the existing import card. Logic, state and markup inside it stay byte-identical.
 
-1. **Connect Google per user** — set up the Google Calendar App User Connector so each instructor authorises their own Google account from the Calendar sync page (scope: `calendar.events`). Store each user's connection handle server-side, encrypted, keyed by instructor id.
-2. **Track the link** — new table `google_calendar_links` (instructor_id, connected_at, target calendar id, encrypted connection key) and a `google_event_id` column on `lessons` so we can update/delete the right Google event later.
-3. **Server functions** (`src/lib/googleCalendar.functions.ts`) calling the Google Calendar API through the connector gateway:
-   - `pushLesson` — insert or patch an event (summary "Pupil name — Driving lesson", start/end from `lesson_date` + `lesson_time` + duration, Europe/London timezone, pickup address as location, notes as description); saves `google_event_id`.
-   - `removeLesson` — delete the Google event on cancel/delete.
-   - `backfillLessons` — push all future lessons once, right after connecting.
-4. **Wire the triggers** — call `pushLesson` after a successful save in `lessons.new.tsx`, `AddLessonSheet.tsx`, `lessons.edit.$id.tsx` / reschedule, and `removeLesson` from the cancel/delete sheets. Failures never block the save; they toast quietly and log.
-5. **Clean up the lie** — delete `syncToGoogleCalendar()` and its buttons in `home.tsx`, `lessons.new.tsx`, `lessons.$id.tsx`.
-6. **Calendar sync page** — split into two clear sections: "Bring Google events into DSM" (existing ICS paste, unchanged) and "Send DSM lessons to Google" (Connect / Connected as … / Disconnect, last push time, and a note that the old ICS subscribe link is still available but slow).
+**Section 2 — "Send DSM lessons to Google"** (new card, placed directly below section 1, above the ICS feed card)
 
-### Technical notes
+On mount (in the existing auth effect, after `setUserId`), read `google_calendar_connections` for `connected_at, last_synced_at` where `instructor_id = user.id` via `maybeSingle()`; failures are swallowed so the page still renders.
 
-- Google writes go through the Lovable connector gateway from server functions only — no Google credentials in browser code.
-- Timezone: lessons store London wall-clock date/time; events are sent with an explicit `Europe/London` timeZone rather than converted to UTC, so BST is handled by Google.
-- Deletes are idempotent: a missing `google_event_id` or a 404 from Google is treated as success.
-- Requires a Google OAuth web client configured once at workspace level with the Lovable gateway callback registered as the redirect URI.
+- Not connected: full-width blue `#1877D6` "Connect Google Calendar" button. On click, `supabase.functions.invoke("google-calendar-auth")`, take `{ url }` from the response and `window.location.href = url`. Error toast if no url comes back.
+- Connected: green check + "Connected on {connected_at formatted}", "Last synced: {timeAgo(last_synced_at)}" (reusing the existing `timeAgo` helper), and a red-outline "Disconnect" button that deletes the `google_calendar_connections` row and clears `google_event_id` on the instructor's future lessons (`lesson_date >= today`), then resets local state and toasts.
+
+Also on mount, read `window.location.search`: `?connected=google` → success toast, `?error=...` → error toast; strip the params with `history.replaceState` so they don't re-fire.
+
+The existing "How calendar sync works" copy that says lessons appear in Google "within 24 hours" stays as-is unless you want it reworded once the push path is live.
+
+### 2 & 3. Push new lessons
+
+`lessons.new.tsx`: change the insert to `.select("id").single()` and keep the existing error handling. `AddLessonSheet.tsx` already returns the id.
+
+In both, immediately after the successful insert:
+
+```ts
+void supabase.functions.invoke("google-calendar-sync", {
+  body: { action: "push", lesson_id: newLesson.id, instructor_id: user.id },
+});
+```
+
+Not awaited, no toast, no error surfaced — save flow and navigation are unchanged.
+
+## Prerequisite worth flagging
+
+Neither `google-calendar-auth` nor `google-calendar-sync` exists in `supabase/functions/`, and there's no migration for `google_calendar_connections` or a `lessons.google_event_id` column in `db/`. This plan builds only the three frontend files you named, so until those backend pieces are deployed the Connect button will error and the push call will no-op silently (by design). Say the word if you want a follow-up plan for the edge functions and migration.
