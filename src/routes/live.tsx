@@ -1514,16 +1514,25 @@ function LivePage() {
                 <button
                   type="button"
                   onClick={() => {
-                    const lesson = lessons.find((l) => l.id === pickedLessonId) ?? null;
                     setShowLessonPicker(false);
-                    if (lesson) {
-                      setActivePupilId(lesson.pupil_id);
-                      setTrackingPupilName(lesson.pupils?.name ?? null);
-                      startTracking(lesson.id, lesson.pupil_id);
+                    if (pickedLessonId.startsWith("pupil:")) {
+                      const pupilId = pickedLessonId.replace("pupil:", "");
+                      const pupil = activePupils.find((p) => p.id === pupilId);
+                      setActivePupilId(pupilId);
+                      setTrackingPupilName(pupil?.name ?? null);
+                      startTracking(null, pupilId);
                     } else {
-                      startTracking(null, null);
+                      const lesson = lessons.find((l) => l.id === pickedLessonId) ?? null;
+                      if (lesson) {
+                        setActivePupilId(lesson.pupil_id);
+                        setTrackingPupilName(lesson.pupils?.name ?? null);
+                        startTracking(lesson.id, lesson.pupil_id);
+                      } else {
+                        startTracking(null, null);
+                      }
                     }
                   }}
+
                   style={{
                     flex: 1,
                     height: 46,
