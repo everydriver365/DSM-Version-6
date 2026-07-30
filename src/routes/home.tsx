@@ -6799,6 +6799,17 @@ function HomePage() {
         />
       )}
 
+      <AddLessonSheet
+        open={addLessonOpen}
+        onClose={() => setAddLessonOpen(false)}
+        initialPupilId={addLessonPupilId}
+        initialDate={addLessonDate}
+        onSaved={() => {
+          setAddLessonOpen(false);
+          setReloadKey((k) => k + 1);
+        }}
+      />
+
 
       <ConfirmDialog
         open={!!confirmMoveHome}
