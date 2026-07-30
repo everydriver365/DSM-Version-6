@@ -202,8 +202,8 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
   if (!userId) return null;
 
   if (active === "whatsNew") {
-    const handleDismiss = () => {
-      setLastSeenVersion(userId, APP_VERSION);
+    const handleDismiss = async () => {
+      await setLastSeenVersion(userId, APP_VERSION);
       // Trigger unmount now. The resolved state flips only after WhatsNewSheet
       // reports it is fully closed (see onFullyClosed), so DailyCatchUpSheet
       // can never mount while the What's new backdrop is still in the DOM.
