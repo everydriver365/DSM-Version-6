@@ -177,6 +177,7 @@ import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
+import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
