@@ -181,6 +181,7 @@ import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { TakePaymentSheet } from "@/components/payments/TakePaymentSheet";
 import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
 import { LogMileageSheet } from "@/components/mileage/LogMileageSheet";
+import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
