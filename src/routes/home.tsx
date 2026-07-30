@@ -1441,6 +1441,9 @@ function HomePage() {
   const [allPupils, setAllPupils] = useState<PreviewPupil[]>([]);
   const [allAvailability, setAllAvailability] = useState<PupilReadySetting[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
+  const [addLessonOpen, setAddLessonOpen] = useState(false);
+  const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
+  const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
   const [lessons, setLessons] = useState<LessonRow[]>([]);
   const [autoTrackLessons, setAutoTrackLessons] = useState<boolean>(false);
   const [actionsOpenForLesson, setActionsOpenForLesson] = useState<LessonRow | null>(null);
