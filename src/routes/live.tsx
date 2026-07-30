@@ -355,6 +355,18 @@ function LivePage() {
       if (pupilsErr) console.error("[live] pupils fetch", pupilsErr);
       setAllPupils((pupilsData ?? []) as PickerPupil[]);
 
+      // Load active pupils for the lesson picker "Other pupils" section
+      const { data: activePupilsData, error: activePupilsErr } = await supabase
+        .from("pupils")
+        .select("id, name")
+        .eq("instructor_id", auth.user.id)
+        .eq("status", "active")
+        .is("deleted_at", null)
+        .order("name", { ascending: true });
+      if (activePupilsErr) console.error("[live] active pupils fetch", activePupilsErr);
+      setActivePupils((activePupilsData ?? []) as { id: string; name: string }[]);
+
+
       const now = new Date();
       const nowMin = now.getHours() * 60 + now.getMinutes();
       const inProgress = rows.find((l) => {
