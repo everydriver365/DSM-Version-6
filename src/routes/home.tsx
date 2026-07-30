@@ -6115,6 +6115,7 @@ function HomePage() {
 
               const goTile = (tile: QuickTile) => {
                 if (tile.action === 'running-late') { setRunningLateOpen(true); return; }
+                else if (tile.action === 'nearby') { setNearbyOpen(true); return; }
                 if (tile.wsIndex === 1) { navigate({ to: '/schedule' as never }); return; }
                 if (tile.wsIndex === 2) { navigate({ to: '/pupils' as never }); return; }
                 if (tile.wsIndex === 3) { navigate({ to: '/payments' as never }); return; }
