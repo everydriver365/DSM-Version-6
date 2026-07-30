@@ -1504,11 +1504,11 @@ function SchedulePage() {
                                       duration: 5000,
                                       action: {
                                         label: 'Add as lesson →',
-                                        onClick: () =>
-                                          navigate({
-                                            to: '/lessons/new' as never,
-                                            search: `?date=${blockDate}&time=${blockTime}&duration=${blockDurationMins}` as never,
-                                          }),
+                                        onClick: () => {
+                                          setAddLessonPupilId(undefined);
+                                          setAddLessonDate(blockDate);
+                                          setAddLessonOpen(true);
+                                        },
                                       },
                                     },
                                   );
