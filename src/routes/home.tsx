@@ -5436,7 +5436,7 @@ function HomePage() {
                                   height: 18,
                                   padding: '0 5px',
                                   borderRadius: 9,
-                                  background: '#DC2626',
+                                  background: '#1877D6',
                                   color: '#FFFFFF',
                                   fontSize: 11,
                                   fontWeight: 700,
