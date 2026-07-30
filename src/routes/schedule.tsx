@@ -1933,6 +1933,19 @@ function SchedulePage() {
         />
       )}
 
+      <AddLessonSheet
+        open={addLessonOpen}
+        onClose={() => setAddLessonOpen(false)}
+        initialPupilId={addLessonPupilId}
+        initialDate={addLessonDate}
+        onSaved={() => {
+          setAddLessonOpen(false);
+          setLessonsReloadKey((k) => k + 1);
+        }}
+      />
+
+
+
 
       <button
         type="button"
