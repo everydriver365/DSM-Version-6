@@ -1450,6 +1450,8 @@ function HomePage() {
   const [takePaymentOpen, setTakePaymentOpen] = useState(false);
   const [addExpenseOpen, setAddExpenseOpen] = useState(false);
   const [logMileageOpen, setLogMileageOpen] = useState(false);
+  const [sendMessageOpen, setSendMessageOpen] = useState(false);
+  const [sendMessagePupilId, setSendMessagePupilId] = useState<string | undefined>();
   const [takePaymentPupilId, setTakePaymentPupilId] = useState<string | undefined>();
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
