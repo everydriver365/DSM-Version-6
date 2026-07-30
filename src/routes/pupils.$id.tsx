@@ -1368,8 +1368,6 @@ function PupilDetailPage() {
       />
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
-
-
       {/* Profile header card */}
       {pupil && (
         <div className="mt-0 overflow-hidden rounded-b-[28px]">
