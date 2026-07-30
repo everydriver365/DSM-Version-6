@@ -181,6 +181,7 @@ import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { TakePaymentSheet } from "@/components/payments/TakePaymentSheet";
 import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
 import { LogMileageSheet } from "@/components/mileage/LogMileageSheet";
+import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
@@ -1449,6 +1450,8 @@ function HomePage() {
   const [takePaymentOpen, setTakePaymentOpen] = useState(false);
   const [addExpenseOpen, setAddExpenseOpen] = useState(false);
   const [logMileageOpen, setLogMileageOpen] = useState(false);
+  const [sendMessageOpen, setSendMessageOpen] = useState(false);
+  const [sendMessagePupilId, setSendMessagePupilId] = useState<string | undefined>();
   const [takePaymentPupilId, setTakePaymentPupilId] = useState<string | undefined>();
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
@@ -6081,7 +6084,7 @@ function HomePage() {
             {(() => {
               const unreadCount = unreadMsgs.length;
               type GraphicKind = 'timeline' | 'calendar' | 'donut' | 'chart' | 'bubbles' | 'alarm' | 'book' | 'medal' | 'swap' | 'repeat' | 'checklist' | 'receipt' | 'grad' | 'map' | 'location' | 'fuel' | 'car' | 'bars' | 'moon' | 'invoice' | 'trend' | 'gear' | 'clock2' | 'sync' | 'gift' | 'shield' | 'spark' | 'calc' | 'card';
-              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late' | 'nearby' | 'take-payment' | 'add-expense' | 'log-mileage'; badge?: number; graphic?: GraphicKind };
+              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late' | 'nearby' | 'take-payment' | 'add-expense' | 'log-mileage' | 'send-message'; badge?: number; graphic?: GraphicKind };
               const quickTiles: QuickTile[] = [
                 // First four
                 { label: 'Fill slots', sub: 'Gaps', route: '/gaps', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0, badge: freeSlotCount, graphic: 'timeline' },
@@ -6092,6 +6095,7 @@ function HomePage() {
                 { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, iconStroke: '#6B4FA0', chipBg: '#EAE3F5', graphic: 'donut' },
                 { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} owed` : 'All settled', route: '/payments', icon: IconCurrencyPound, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0, badge: outstanding > 0 ? Math.round(outstanding) : undefined, graphic: 'chart' },
                 { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#1877D6', chipBg: '#E6F1FB', attention: unreadCount > 0, graphic: 'bubbles' },
+                { label: 'Send message', sub: 'Quick text', route: null, icon: IconMessage, iconStroke: '#1877D6', chipBg: '#E6F1FB', action: 'send-message', graphic: 'bubbles' },
                 { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'running-late', graphic: 'alarm' },
                 { label: 'EOL', sub: 'End of lesson', route: '/pupils', icon: BookOpen, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'book' },
                 { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: Award, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'medal' },
@@ -6133,6 +6137,7 @@ function HomePage() {
                 else if (tile.action === 'take-payment') { setTakePaymentOpen(true); return; }
                 else if (tile.action === 'add-expense') { setAddExpenseOpen(true); return; }
                 else if (tile.action === 'log-mileage') { setLogMileageOpen(true); return; }
+                else if (tile.action === 'send-message') { setSendMessagePupilId(undefined); setSendMessageOpen(true); return; }
                 if (tile.wsIndex === 1) { navigate({ to: '/schedule' as never }); return; }
                 if (tile.wsIndex === 2) { navigate({ to: '/pupils' as never }); return; }
                 if (tile.wsIndex === 3) { navigate({ to: '/payments' as never }); return; }
@@ -6843,6 +6848,15 @@ function HomePage() {
         onClose={() => setLogMileageOpen(false)}
         onSaved={() => setReloadKey((k) => k + 1)}
       />
+
+      <SendMessageSheet
+        open={sendMessageOpen}
+        onClose={() => { setSendMessageOpen(false); setSendMessagePupilId(undefined); }}
+        initialPupilId={sendMessagePupilId}
+        onSent={() => setReloadKey((k) => k + 1)}
+      />
+
+
 
 
 

@@ -5,6 +5,7 @@ import { Award, BarChart3, BookOpen, Calendar, Camera, Car, ChevronDown, Chevron
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { TakePaymentSheet } from "@/components/payments/TakePaymentSheet";
+import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -410,6 +411,8 @@ function PupilDetailPage() {
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
   const [takePaymentOpen, setTakePaymentOpen] = useState(false);
+  const [sendMessageOpen, setSendMessageOpen] = useState(false);
+  const [sendMessagePupilId, setSendMessagePupilId] = useState<string | undefined>();
   const [takePaymentPupilId, setTakePaymentPupilId] = useState<string | undefined>();
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
   const [instructorRate, setInstructorRate] = useState<number | null>(null);
@@ -1952,7 +1955,7 @@ function PupilDetailPage() {
             icon={<MessageSquare size={20} />}
             iconBg="#E6F1FB"
             iconColor="#1877D6"
-            onClick={() => navigate({ to: "/messages/$pupilId", params: { pupilId: id } })}
+            onClick={() => { setSendMessagePupilId(pupil?.id ?? id); setSendMessageOpen(true); }}
             badge={unreadMessages > 0 ? String(unreadMessages) : undefined}
           />
           <ActionTile
@@ -4775,6 +4778,15 @@ function PupilDetailPage() {
           setPaymentHistoryRefresh((v) => v + 1);
         }}
       />
+
+      <SendMessageSheet
+        open={sendMessageOpen}
+        onClose={() => { setSendMessageOpen(false); setSendMessagePupilId(undefined); }}
+        initialPupilId={sendMessagePupilId}
+        onSent={() => setPaymentHistoryRefresh((v) => v + 1)}
+      />
+
+
 
 
       <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>

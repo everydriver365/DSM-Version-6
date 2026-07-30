@@ -21,6 +21,7 @@ import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
+import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
@@ -320,6 +321,8 @@ function SchedulePage() {
   const [allPupils, setAllPupils] = useState<Array<{ id: string; name: string | null; first_name: string | null; last_name?: string | null; calendar_colour: string | null }>>([]);
   const [allAvailability, setAllAvailability] = useState<any[]>([]);
   const [actionsOpenFor, setActionsOpenFor] = useState<Lesson | null>(null);
+  const [sendMessageOpen, setSendMessageOpen] = useState(false);
+  const [sendMessagePupilId, setSendMessagePupilId] = useState<string | undefined>();
   const [cancelSheetFor, setCancelSheetFor] = useState<Lesson | null>(null);
   const [deleteSheetFor, setDeleteSheetFor] = useState<Lesson | null>(null);
   const [paymentSheetFor, setPaymentSheetFor] = useState<Lesson | null>(null);
@@ -1815,6 +1818,18 @@ function SchedulePage() {
                                             onClick={(ev) => {
                                               ev.stopPropagation();
                                               setActionsOpenFor(null);
+                                              setSendMessagePupilId(lesson.pupil_id ?? undefined);
+                                              setSendMessageOpen(true);
+                                            }}
+                                          >
+                                            Message pupil
+                                          </button>
+                                          <button
+                                            type="button"
+                                            style={itemStyle}
+                                            onClick={(ev) => {
+                                              ev.stopPropagation();
+                                              setActionsOpenFor(null);
                                               setMovingLesson(lesson);
                                               setMoveMode(true);
                                               const firstName = (lesson as any).pupil?.first_name || (lesson as any).pupils?.first_name || 'this lesson';
@@ -1943,6 +1958,14 @@ function SchedulePage() {
           setLessonsReloadKey((k) => k + 1);
         }}
       />
+
+      <SendMessageSheet
+        open={sendMessageOpen}
+        onClose={() => { setSendMessageOpen(false); setSendMessagePupilId(undefined); }}
+        initialPupilId={sendMessagePupilId}
+      />
+
+
 
 
 
