@@ -135,6 +135,7 @@ import {
   IconClock,
   IconDots,
   IconSearch,
+  IconCreditCard,
 
   IconUserPlus,
   IconCalendarPlus,
