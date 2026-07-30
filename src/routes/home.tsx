@@ -6084,7 +6084,7 @@ function HomePage() {
             {(() => {
               const unreadCount = unreadMsgs.length;
               type GraphicKind = 'timeline' | 'calendar' | 'donut' | 'chart' | 'bubbles' | 'alarm' | 'book' | 'medal' | 'swap' | 'repeat' | 'checklist' | 'receipt' | 'grad' | 'map' | 'location' | 'fuel' | 'car' | 'bars' | 'moon' | 'invoice' | 'trend' | 'gear' | 'clock2' | 'sync' | 'gift' | 'shield' | 'spark' | 'calc' | 'card';
-              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late' | 'nearby' | 'take-payment' | 'add-expense' | 'log-mileage'; badge?: number; graphic?: GraphicKind };
+              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late' | 'nearby' | 'take-payment' | 'add-expense' | 'log-mileage' | 'send-message'; badge?: number; graphic?: GraphicKind };
               const quickTiles: QuickTile[] = [
                 // First four
                 { label: 'Fill slots', sub: 'Gaps', route: '/gaps', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0, badge: freeSlotCount, graphic: 'timeline' },
