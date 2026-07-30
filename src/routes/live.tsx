@@ -4,6 +4,7 @@ import { ChevronLeft, Map as MapIcon, Search, X } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { PupilAvatar } from "../components/PupilAvatar";
 import { buildTripReport } from "../lib/tripReport";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/live")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -16,6 +17,8 @@ export const Route = createFileRoute("/live")({
   }),
   component: LivePage,
 });
+
+const SILENT_AUDIO_SRC = "data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAFhpbmcAAAAPAAAAAwAAA0kAVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjU0AAAAAAAAAAAAAAAAJAYHAAAAAAAAqkBJgQAAAAAAAAAAAAAAAAAAAAD/4zCACAAALSAAAAgAAANIAAAAETEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVvvvv";
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 const GOOGLE_MAPS_KEY = "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
@@ -198,6 +201,7 @@ function LivePage() {
   const markerRef = useRef<any>(null);
   const polylineRef = useRef<any>(null);
   const watchIdRef = useRef<number | null>(null);
+  const silentAudioRef = useRef<HTMLAudioElement | null>(null);
   const isStoppingRef = useRef(false);
   const centeredRef = useRef(false);
 
@@ -372,8 +376,30 @@ function LivePage() {
         navigator.geolocation.clearWatch(watchIdRef.current);
         watchIdRef.current = null;
       }
+      try {
+        silentAudioRef.current?.pause();
+      } catch {
+        // ignore
+      }
+      silentAudioRef.current = null;
     };
   }, []);
+
+  // Recover the GPS watch if iOS suspended the page while tracking
+  useEffect(() => {
+    function onVisibility() {
+      if (document.visibilityState !== "visible") return;
+      if (!tracking) return;
+      if (watchIdRef.current != null) return;
+      startGpsWatch();
+      startSilentAudio();
+      toast.info("Tracking resumed");
+    }
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tracking]);
+
 
   // Auto-start tracking when navigated here from Home with autostart query params
   useEffect(() => {
@@ -585,6 +611,12 @@ function LivePage() {
     }
 
     setTracking(true);
+    startSilentAudio();
+    startGpsWatch();
+  }
+
+  function startGpsWatch() {
+    if (!("geolocation" in navigator)) return;
     console.log("[live] starting geolocation watch");
     watchIdRef.current = navigator.geolocation.watchPosition(
       (pos) => handlePosition(pos),
@@ -594,6 +626,29 @@ function LivePage() {
       },
       { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 },
     );
+  }
+
+  function startSilentAudio() {
+    try {
+      if (silentAudioRef.current) return;
+      const audio = new Audio();
+      audio.src = SILENT_AUDIO_SRC;
+      audio.loop = true;
+      audio.volume = 0.001;
+      void audio.play().catch(() => {});
+      silentAudioRef.current = audio;
+    } catch {
+      // ignore — audio is only a background-keepalive hint
+    }
+  }
+
+  function stopSilentAudio() {
+    try {
+      silentAudioRef.current?.pause();
+    } catch {
+      // ignore
+    }
+    silentAudioRef.current = null;
   }
 
   function handlePosition(pos: GeolocationPosition) {
@@ -692,6 +747,7 @@ function LivePage() {
         navigator.geolocation.clearWatch(watchIdRef.current);
         watchIdRef.current = null;
       }
+      stopSilentAudio();
       await saveCoordinates(true);
 
       setTracking(false);
