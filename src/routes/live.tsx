@@ -1245,7 +1245,7 @@ function LivePage() {
             style={{
               left: 16,
               right: 16,
-              top: "calc(env(safe-area-inset-top, 0px) + 68px)",
+              bottom: "calc(env(safe-area-inset-bottom, 0px) + 100px)",
               height: 86,
               background: "rgba(10,22,40,0.85)",
               backdropFilter: "blur(8px)",
