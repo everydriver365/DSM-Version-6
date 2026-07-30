@@ -42,6 +42,7 @@ import { Route as QuotesRouteImport } from './routes/quotes'
 import { Route as QuickavailabilityRouteImport } from './routes/quickavailability'
 import { Route as QuickaccessRouteImport } from './routes/quickaccess'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PostcodeRatesRouteImport } from './routes/postcode-rates'
 import { Route as PipelineRouteImport } from './routes/pipeline'
 import { Route as PerformanceRouteImport } from './routes/performance'
@@ -318,6 +319,11 @@ const QuickaccessRoute = QuickaccessRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PostcodeRatesRoute = PostcodeRatesRouteImport.update({
@@ -941,6 +947,7 @@ export interface FileRoutesByFullPath {
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
   '/postcode-rates': typeof PostcodeRatesRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
@@ -1085,6 +1092,7 @@ export interface FileRoutesByTo {
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
   '/postcode-rates': typeof PostcodeRatesRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
@@ -1232,6 +1240,7 @@ export interface FileRoutesById {
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
   '/postcode-rates': typeof PostcodeRatesRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
@@ -1380,6 +1389,7 @@ export interface FileRouteTypes {
     | '/performance'
     | '/pipeline'
     | '/postcode-rates'
+    | '/privacy'
     | '/profile'
     | '/quickaccess'
     | '/quickavailability'
@@ -1524,6 +1534,7 @@ export interface FileRouteTypes {
     | '/performance'
     | '/pipeline'
     | '/postcode-rates'
+    | '/privacy'
     | '/profile'
     | '/quickaccess'
     | '/quickavailability'
@@ -1670,6 +1681,7 @@ export interface FileRouteTypes {
     | '/performance'
     | '/pipeline'
     | '/postcode-rates'
+    | '/privacy'
     | '/profile'
     | '/quickaccess'
     | '/quickavailability'
@@ -1818,6 +1830,7 @@ export interface RootRouteChildren {
   PerformanceRoute: typeof PerformanceRoute
   PipelineRoute: typeof PipelineRoute
   PostcodeRatesRoute: typeof PostcodeRatesRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
   QuickaccessRoute: typeof QuickaccessRoute
   QuickavailabilityRoute: typeof QuickavailabilityRoute
@@ -2113,6 +2126,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/postcode-rates': {
@@ -3072,6 +3092,7 @@ const rootRouteChildren: RootRouteChildren = {
   PerformanceRoute: PerformanceRoute,
   PipelineRoute: PipelineRoute,
   PostcodeRatesRoute: PostcodeRatesRoute,
+  PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
   QuickaccessRoute: QuickaccessRoute,
   QuickavailabilityRoute: QuickavailabilityRoute,
@@ -3138,3 +3159,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
