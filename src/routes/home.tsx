@@ -6814,6 +6814,19 @@ function HomePage() {
         }}
       />
 
+      <TakePaymentSheet
+        open={takePaymentOpen}
+        onClose={() => setTakePaymentOpen(false)}
+        initialPupilId={takePaymentPupilId}
+        onSaved={() => {
+          setTakePaymentOpen(false);
+          setTakePaymentPupilId(undefined);
+          setReloadKey((k) => k + 1);
+        }}
+      />
+
+
+
 
       <ConfirmDialog
         open={!!confirmMoveHome}
