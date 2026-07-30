@@ -186,16 +186,25 @@ export function WhatsNewController({ userId }: { userId: string | null }) {
 
   useEffect(() => {
     if (!userId) return;
-    const last = getLastSeenVersion(userId);
-    if (!isNewerVersion(APP_VERSION, last)) return;
-    const versionItems = WHATS_NEW_BY_VERSION[APP_VERSION] ?? [];
-    if (versionItems.length === 0) {
-      // Nothing to show — mark as seen so we don't keep checking.
-      setLastSeenVersion(userId, APP_VERSION);
-      return;
-    }
-    setItems(versionItems);
-    setOpen(true);
+    let cancelled = false;
+
+    (async () => {
+      const last = await getLastSeenVersion(userId);
+      if (cancelled) return;
+      if (!isNewerVersion(APP_VERSION, last)) return;
+      const versionItems = WHATS_NEW_BY_VERSION[APP_VERSION] ?? [];
+      if (versionItems.length === 0) {
+        // Nothing to show — mark as seen so we don't keep checking.
+        await setLastSeenVersion(userId, APP_VERSION);
+        return;
+      }
+      setItems(versionItems);
+      setOpen(true);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [userId]);
 
   if (!open || !userId) return null;
@@ -203,8 +212,8 @@ export function WhatsNewController({ userId }: { userId: string | null }) {
   return (
     <WhatsNewSheet
       items={items}
-      onDismiss={() => {
-        setLastSeenVersion(userId, APP_VERSION);
+      onDismiss={async () => {
+        await setLastSeenVersion(userId, APP_VERSION);
         setOpen(false);
       }}
       onLater={() => setOpen(false)}

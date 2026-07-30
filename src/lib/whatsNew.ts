@@ -1,3 +1,5 @@
+import { supabase } from "@/lib/supabaseClient";
+
 // Configuration for "What's new" sheet.
 // Bump APP_VERSION when shipping a release that should re-trigger the sheet.
 // Populate WHATS_NEW_BY_VERSION[version] with the items to feature.
@@ -58,22 +60,26 @@ export function isNewerVersion(current: string, previous: string | null): boolea
   return false;
 }
 
-const KEY = (userId: string) => `dsm.lastSeenVersion.${userId}`;
-
-export function getLastSeenVersion(userId: string): string | null {
-  if (typeof window === "undefined") return null;
+export async function getLastSeenVersion(userId: string): Promise<string | null> {
   try {
-    return window.localStorage.getItem(KEY(userId));
+    const { data } = await supabase
+      .from("instructors")
+      .select("last_seen_app_version")
+      .eq("id", userId)
+      .maybeSingle();
+    return data?.last_seen_app_version ?? null;
   } catch {
     return null;
   }
 }
 
-export function setLastSeenVersion(userId: string, version: string): void {
-  if (typeof window === "undefined") return;
+export async function setLastSeenVersion(userId: string, version: string): Promise<void> {
   try {
-    window.localStorage.setItem(KEY(userId), version);
+    await supabase
+      .from("instructors")
+      .update({ last_seen_app_version: version })
+      .eq("id", userId);
   } catch {
-    /* ignore */
+    // ignore
   }
 }

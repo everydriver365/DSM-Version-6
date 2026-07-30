@@ -134,22 +134,23 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
     if (!userId) return;
     let cancelled = false;
 
-    // --- What's new evaluation (sync) ---
-    const last = getLastSeenVersion(userId);
-    let wnDue = false;
-    if (isNewerVersion(APP_VERSION, last)) {
-      const items = WHATS_NEW_BY_VERSION[APP_VERSION] ?? [];
-      if (items.length === 0) {
-        setLastSeenVersion(userId, APP_VERSION);
-      } else {
-        wnDue = true;
-        setWhatsNewItems(items);
-      }
-    }
-    if (!wnDue) setWhatsNewResolved("none");
-
-    // --- Daily catch-up evaluation (async) ---
     (async () => {
+      // --- What's new evaluation (async) ---
+      const last = await getLastSeenVersion(userId);
+      if (cancelled) return;
+      let wnDue = false;
+      if (isNewerVersion(APP_VERSION, last)) {
+        const items = WHATS_NEW_BY_VERSION[APP_VERSION] ?? [];
+        if (items.length === 0) {
+          await setLastSeenVersion(userId, APP_VERSION);
+        } else {
+          wnDue = true;
+          setWhatsNewItems(items);
+        }
+      }
+      if (!wnDue) setWhatsNewResolved("none");
+
+      // --- Daily catch-up evaluation (async) ---
       const key = catchUpStorageKey(userId);
       let lastShown: string | null = null;
       try {
@@ -201,8 +202,8 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
   if (!userId) return null;
 
   if (active === "whatsNew") {
-    const handleDismiss = () => {
-      setLastSeenVersion(userId, APP_VERSION);
+    const handleDismiss = async () => {
+      await setLastSeenVersion(userId, APP_VERSION);
       // Trigger unmount now. The resolved state flips only after WhatsNewSheet
       // reports it is fully closed (see onFullyClosed), so DailyCatchUpSheet
       // can never mount while the What's new backdrop is still in the DOM.
