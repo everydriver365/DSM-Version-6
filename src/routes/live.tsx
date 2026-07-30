@@ -238,6 +238,8 @@ function LivePage() {
   const [trackingPupilName, setTrackingPupilName] = useState<string | null>(null);
   const [showLessonPicker, setShowLessonPicker] = useState(false);
   const [pickedLessonId, setPickedLessonId] = useState<string>("manual");
+  const [activePupils, setActivePupils] = useState<{ id: string; name: string }[]>([]);
+
 
   interface ReportSegment {
     road_name: string;
@@ -352,6 +354,18 @@ function LivePage() {
         .is("deleted_at", null);
       if (pupilsErr) console.error("[live] pupils fetch", pupilsErr);
       setAllPupils((pupilsData ?? []) as PickerPupil[]);
+
+      // Load active pupils for the lesson picker "Other pupils" section
+      const { data: activePupilsData, error: activePupilsErr } = await supabase
+        .from("pupils")
+        .select("id, name")
+        .eq("instructor_id", auth.user.id)
+        .eq("status", "active")
+        .is("deleted_at", null)
+        .order("name", { ascending: true });
+      if (activePupilsErr) console.error("[live] active pupils fetch", activePupilsErr);
+      setActivePupils((activePupilsData ?? []) as { id: string; name: string }[]);
+
 
       const now = new Date();
       const nowMin = now.getHours() * 60 + now.getMinutes();
@@ -1453,18 +1467,28 @@ function LivePage() {
                   marginBottom: 10,
                 }}
               >
-                {lessons.map((l) => {
-                  const t = new Date(l.lesson_time);
-                  const time = Number.isNaN(t.getTime())
-                    ? ""
-                    : t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-                  return (
-                    <option key={l.id} value={l.id}>
-                      {time} {l.pupils?.name ?? "Pupil"}
+                <optgroup label="Today's lessons">
+                  {lessons.map((l) => {
+                    const t = new Date(l.lesson_time);
+                    const time = Number.isNaN(t.getTime())
+                      ? ""
+                      : t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+                    return (
+                      <option key={l.id} value={l.id}>
+                        {time} {l.pupils?.name ?? "Pupil"}
+                      </option>
+                    );
+                  })}
+                </optgroup>
+                <optgroup label="Other pupils">
+                  {activePupils.map((p) => (
+                    <option key={`pupil-${p.id}`} value={`pupil:${p.id}`}>
+                      {p.name}
                     </option>
-                  );
-                })}
+                  ))}
+                </optgroup>
                 <option value="manual">Manual journey (no lesson)</option>
+
               </select>
               <div style={{ display: "flex", gap: 8 }}>
                 <button
@@ -1490,17 +1514,26 @@ function LivePage() {
                 <button
                   type="button"
                   onClick={() => {
-                    const lesson = lessons.find((l) => l.id === pickedLessonId) ?? null;
                     setShowLessonPicker(false);
-                    if (lesson) {
-                      setActivePupilId(lesson.pupil_id);
-                      setTrackingPupilName(lesson.pupils?.name ?? null);
-                      startTracking(lesson.id, lesson.pupil_id);
+                    if (pickedLessonId.startsWith("pupil:")) {
+                      const pupilId = pickedLessonId.replace("pupil:", "");
+                      const pupil = activePupils.find((p) => p.id === pupilId);
+                      setActivePupilId(pupilId);
+                      setTrackingPupilName(pupil?.name ?? null);
+                      startTracking(null, pupilId);
                     } else {
-                      startTracking(null, null);
+                      const lesson = lessons.find((l) => l.id === pickedLessonId) ?? null;
+                      if (lesson) {
+                        setActivePupilId(lesson.pupil_id);
+                        setTrackingPupilName(lesson.pupils?.name ?? null);
+                        startTracking(lesson.id, lesson.pupil_id);
+                      } else {
+                        startTracking(null, null);
+                      }
                     }
                   }}
                   style={{
+
                     flex: 1,
                     height: 46,
                     borderRadius: 10,
