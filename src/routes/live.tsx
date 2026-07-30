@@ -238,6 +238,8 @@ function LivePage() {
   const [trackingPupilName, setTrackingPupilName] = useState<string | null>(null);
   const [showLessonPicker, setShowLessonPicker] = useState(false);
   const [pickedLessonId, setPickedLessonId] = useState<string>("manual");
+  const [activePupils, setActivePupils] = useState<{ id: string; name: string }[]>([]);
+
 
   interface ReportSegment {
     road_name: string;
