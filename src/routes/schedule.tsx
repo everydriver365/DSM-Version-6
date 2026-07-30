@@ -20,6 +20,7 @@ import { PupilAvatar } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
+import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
@@ -292,6 +293,10 @@ function SchedulePage() {
   const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today, rangeStart]);
 
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
+  const [lessonsReloadKey, setLessonsReloadKey] = useState(0);
+  const [addLessonOpen, setAddLessonOpen] = useState(false);
+  const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
+  const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; is_all_day?: boolean | null }>>([]);
   const [recurringBlocks, setRecurringBlocks] = useState<Array<{ day_of_week: string; start_time: string; end_time: string; is_active: boolean }>>([]);
   const [timeOff, setTimeOff] = useState<Array<{ start_date: string; end_date: string; all_day: boolean }>>([]);
@@ -443,7 +448,7 @@ function SchedulePage() {
     return () => {
       cancelled = true;
     };
-  }, [rangeStart, rangeEnd]);
+  }, [rangeStart, rangeEnd, lessonsReloadKey]);
 
   // Fetch external calendar blocks in the same window.
   const fetchCalendarBlocks = useCallback(async () => {
@@ -1499,11 +1504,11 @@ function SchedulePage() {
                                       duration: 5000,
                                       action: {
                                         label: 'Add as lesson →',
-                                        onClick: () =>
-                                          navigate({
-                                            to: '/lessons/new' as never,
-                                            search: `?date=${blockDate}&time=${blockTime}&duration=${blockDurationMins}` as never,
-                                          }),
+                                        onClick: () => {
+                                          setAddLessonPupilId(undefined);
+                                          setAddLessonDate(blockDate);
+                                          setAddLessonOpen(true);
+                                        },
                                       },
                                     },
                                   );
@@ -1928,10 +1933,23 @@ function SchedulePage() {
         />
       )}
 
+      <AddLessonSheet
+        open={addLessonOpen}
+        onClose={() => setAddLessonOpen(false)}
+        initialPupilId={addLessonPupilId}
+        initialDate={addLessonDate}
+        onSaved={() => {
+          setAddLessonOpen(false);
+          setLessonsReloadKey((k) => k + 1);
+        }}
+      />
+
+
+
 
       <button
         type="button"
-        onClick={() => navigate({ to: '/lessons/new' as never })}
+        onClick={() => { setAddLessonPupilId(undefined); setAddLessonDate(selectedDate); setAddLessonOpen(true); }}
         style={{
           position: 'fixed',
           bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',

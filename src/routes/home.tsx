@@ -177,6 +177,7 @@ import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
+import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
@@ -1441,6 +1442,9 @@ function HomePage() {
   const [allPupils, setAllPupils] = useState<PreviewPupil[]>([]);
   const [allAvailability, setAllAvailability] = useState<PupilReadySetting[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
+  const [addLessonOpen, setAddLessonOpen] = useState(false);
+  const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
+  const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
   const [lessons, setLessons] = useState<LessonRow[]>([]);
   const [autoTrackLessons, setAutoTrackLessons] = useState<boolean>(false);
   const [actionsOpenForLesson, setActionsOpenForLesson] = useState<LessonRow | null>(null);
@@ -3885,7 +3889,7 @@ function HomePage() {
             <TodayLessonsTile
               todayLessons={todayLessons}
               onNavigate={() => navigate({ to: "/schedule" })}
-              onAddLesson={() => navigate({ to: "/lessons/new" })}
+              onAddLesson={() => { setAddLessonDate(undefined); setAddLessonPupilId(undefined); setAddLessonOpen(true); }}
             />
           </div>
 
@@ -6045,7 +6049,7 @@ function HomePage() {
                   <div style={{ borderTop: '1px solid #E2E8F0', padding: '14px 18px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <button
                       type="button"
-                      onClick={() => navigate({ to: '/lessons/new' as never, search: (tab === 'tomorrow' ? { date: tomorrowISO } : {}) as any })}
+                      onClick={() => { setAddLessonPupilId(undefined); setAddLessonDate(tab === 'tomorrow' ? tomorrowISO : undefined); setAddLessonOpen(true); }}
                       style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13.5, fontWeight: 600, color: '#1877D6', cursor: 'pointer', lineHeight: 1 }}
                     >
                       Add +
@@ -6794,6 +6798,17 @@ function HomePage() {
           lessonId={(paymentSheetForLesson as any).id ?? null}
         />
       )}
+
+      <AddLessonSheet
+        open={addLessonOpen}
+        onClose={() => setAddLessonOpen(false)}
+        initialPupilId={addLessonPupilId}
+        initialDate={addLessonDate}
+        onSaved={() => {
+          setAddLessonOpen(false);
+          setReloadKey((k) => k + 1);
+        }}
+      />
 
 
       <ConfirmDialog
