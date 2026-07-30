@@ -8,6 +8,17 @@ import { supabase } from "@/lib/supabaseClient";
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 
+const QUICK_REPLIES: { label: string; body: string }[] = [
+  { label: "Running late", body: "Hi {name}, I'm running about 10 minutes late for your lesson — see you shortly!" },
+  { label: "On my way", body: "Hi {name}, I'm on my way to you now." },
+  { label: "Outside now", body: "Hi {name}, I'm outside — whenever you're ready." },
+  { label: "Confirm lesson", body: "Hi {name}, just confirming your lesson — are you still OK for it?" },
+  { label: "Payment due", body: "Hi {name}, just a reminder that there's a payment outstanding for your lessons. Thanks!" },
+  { label: "Well done", body: "Great work today {name} — really good progress. Keep it up!" },
+  { label: "Cancel lesson", body: "Hi {name}, I'm sorry but I need to cancel your lesson. I'll be in touch to rearrange." },
+  { label: "Reschedule", body: "Hi {name}, could we look at moving your lesson to another time? Let me know what suits." },
+];
+
 export interface SendMessageSheetProps {
   open: boolean;
   onClose: () => void;
@@ -108,6 +119,13 @@ export function SendMessageSheet({
     if (!q) return pupils;
     return pupils.filter((p) => (p.name ?? "").toLowerCase().includes(q));
   }, [pupils, pupilQuery]);
+
+  function insertTemplate(body: string) {
+    const first = (pupilName || "").trim().split(" ")[0] || "there";
+    const text = body.replace(/\{name\}/g, first);
+    setMessageText((prev) => (prev.trim() ? `${prev.trim()} ${text}` : text));
+    textareaRef.current?.focus();
+  }
 
   async function handleSend() {
     const body = messageText.trim();
