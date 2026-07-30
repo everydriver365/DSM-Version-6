@@ -306,6 +306,13 @@ export function AddLessonSheet({
       return;
     }
 
+    const newLessonId = (insertedLesson as any)?.id as string | undefined;
+    if (newLessonId) {
+      void supabase.functions.invoke("google-calendar-sync", {
+        body: { action: "push", lesson_id: newLessonId, instructor_id: user.id },
+      });
+    }
+
     if (isRecurring && seriesId) {
       // Generate remaining occurrences after the initial one
       const step = recurringFreq === "fortnightly" ? 14 : 7;
@@ -337,16 +344,24 @@ export function AddLessonSheet({
       try {
         for (let i = 0; i < lessonsPayload.length; i += 50) {
           const batch = lessonsPayload.slice(i, i + 50);
-          await fetch(`${SUPABASE_URL}/rest/v1/lessons`, {
+          const res = await fetch(`${SUPABASE_URL}/rest/v1/lessons`, {
             method: "POST",
             headers: {
               apikey: SUPABASE_ANON_KEY,
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
-              Prefer: "return=minimal",
+              Prefer: "return=representation",
             },
             body: JSON.stringify(batch),
           });
+          const rows = (await res.json().catch(() => [])) as Array<{ id?: string }>;
+          for (const r of rows) {
+            if (r?.id) {
+              void supabase.functions.invoke("google-calendar-sync", {
+                body: { action: "push", lesson_id: r.id, instructor_id: user.id },
+              });
+            }
+          }
         }
       } catch (e) {
         console.warn("[AddLessonSheet] recurring batch insert failed", e);
