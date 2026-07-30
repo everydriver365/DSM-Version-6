@@ -344,7 +344,7 @@ function WhatsChangedPage() {
             raw: r,
           })),
         },
-      ].filter((s) => s.items.length > 0);
+      ] as Section[]).filter((s) => s.items.length > 0);
 
       setSections(built);
       setLoading(false);
