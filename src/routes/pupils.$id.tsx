@@ -5,6 +5,7 @@ import { Award, BarChart3, BookOpen, Calendar, Camera, Car, ChevronDown, Chevron
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { TakePaymentSheet } from "@/components/payments/TakePaymentSheet";
+import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
