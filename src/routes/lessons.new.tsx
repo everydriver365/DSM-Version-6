@@ -9,8 +9,6 @@ import { applyPricingRules, type PricingRule } from "../lib/pricingRules";
 import { computeLessonAmount, fetchPostcodeRates } from "../lib/pricing/resolveRate";
 import { PageLayout } from "@/components/PageLayout";
 
-const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
 
 const UK_POSTCODE_RE = /([A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})/i;
 function extractPostcode(addr: string | null | undefined): string | undefined {
