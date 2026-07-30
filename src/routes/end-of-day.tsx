@@ -7,11 +7,14 @@ import {
   AlertTriangle,
   Calendar as CalendarIcon,
   FileText,
+  Receipt,
+  ChevronRight,
   Mic,
   MicOff,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
+import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
 
 export const Route = createFileRoute("/end-of-day")({
   component: EndOfDayPage,
@@ -85,6 +88,7 @@ function EndOfDayPage() {
   const [notes, setNotes] = useState("");
   const [savingNote, setSavingNote] = useState(false);
   const [listening, setListening] = useState(false);
+  const [addExpenseOpen, setAddExpenseOpen] = useState(false);
   const [eolLesson, setEolLesson] = useState<Lesson | null>(null);
   const recogRef = useRef<any>(null);
 
@@ -434,6 +438,46 @@ function EndOfDayPage() {
         </div>
         <style>{`@keyframes eod-pulse{0%,100%{opacity:1}50%{opacity:.55}}`}</style>
       </Card>
+
+      <Card>
+        <button
+          type="button"
+          onClick={() => setAddExpenseOpen(true)}
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            background: "none",
+            border: 0,
+            padding: 0,
+            cursor: "pointer",
+            textAlign: "left",
+          }}
+        >
+          <span
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: 10,
+              background: "#FBE2E2",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <Receipt size={17} color="#C23B3B" />
+          </span>
+          <span style={{ flex: 1 }}>
+            <span style={{ display: "block", fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>Log an expense</span>
+            <span style={{ display: "block", fontSize: 12, color: "#6B7280" }}>Add today's costs</span>
+          </span>
+          <ChevronRight size={18} color="#94A3B8" />
+        </button>
+      </Card>
+
+      <AddExpenseSheet open={addExpenseOpen} onClose={() => setAddExpenseOpen(false)} />
 
       {eolLesson && instructorId && (
         <EndLessonWizard

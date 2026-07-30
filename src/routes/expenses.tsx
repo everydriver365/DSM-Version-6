@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { BottomSheet } from "../components/dsm/BottomSheet";
 import { EmptyState } from "../components/dsm/EmptyState";
+import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
 
 export const Route = createFileRoute("/expenses")({
   head: () => ({ meta: [{ title: "Expenses — DSM by EveryDriver" }] }),
@@ -126,6 +127,7 @@ function ExpensesPage() {
   const [rows, setRows] = useState<Expense[]>([]);
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [addExpenseOpen, setAddExpenseOpen] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
   const [instructorId, setInstructorId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -229,7 +231,7 @@ function ExpensesPage() {
           type="button"
           onClick={() => {
             setEditing(null);
-            setSheetOpen(true);
+            setAddExpenseOpen(true);
           }}
           style={{
             background: "rgba(255,255,255,0.14)",
@@ -375,6 +377,14 @@ function ExpensesPage() {
           />
         )}
       </BottomSheet>
+
+      <AddExpenseSheet
+        open={addExpenseOpen}
+        onClose={() => setAddExpenseOpen(false)}
+        onSaved={async () => {
+          if (instructorId) await refetch(instructorId);
+        }}
+      />
     </div>
   );
 }
