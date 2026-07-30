@@ -4729,6 +4729,18 @@ function PupilDetailPage() {
         />
       )}
 
+      <AddLessonSheet
+        open={addLessonOpen}
+        onClose={() => setAddLessonOpen(false)}
+        initialPupilId={addLessonPupilId}
+        initialDate={addLessonDate}
+        onSaved={() => {
+          setAddLessonOpen(false);
+          setPaymentHistoryRefresh((v) => v + 1);
+        }}
+      />
+
+
       <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
       </div>
     </div>
