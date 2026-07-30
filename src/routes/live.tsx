@@ -376,8 +376,30 @@ function LivePage() {
         navigator.geolocation.clearWatch(watchIdRef.current);
         watchIdRef.current = null;
       }
+      try {
+        silentAudioRef.current?.pause();
+      } catch {
+        // ignore
+      }
+      silentAudioRef.current = null;
     };
   }, []);
+
+  // Recover the GPS watch if iOS suspended the page while tracking
+  useEffect(() => {
+    function onVisibility() {
+      if (document.visibilityState !== "visible") return;
+      if (!tracking) return;
+      if (watchIdRef.current != null) return;
+      startGpsWatch();
+      startSilentAudio();
+      toast.info("Tracking resumed");
+    }
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tracking]);
+
 
   // Auto-start tracking when navigated here from Home with autostart query params
   useEffect(() => {
