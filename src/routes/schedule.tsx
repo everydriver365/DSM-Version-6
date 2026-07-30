@@ -293,6 +293,10 @@ function SchedulePage() {
   const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today, rangeStart]);
 
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
+  const [lessonsReloadKey, setLessonsReloadKey] = useState(0);
+  const [addLessonOpen, setAddLessonOpen] = useState(false);
+  const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
+  const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; is_all_day?: boolean | null }>>([]);
   const [recurringBlocks, setRecurringBlocks] = useState<Array<{ day_of_week: string; start_time: string; end_time: string; is_active: boolean }>>([]);
   const [timeOff, setTimeOff] = useState<Array<{ start_date: string; end_date: string; all_day: boolean }>>([]);
