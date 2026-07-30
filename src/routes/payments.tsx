@@ -978,9 +978,7 @@ async function generateRyftLink(args: { amount: number; pupilId: string; pupilNa
       pupil_id: args.pupilId || undefined,
       pupil_name: args.pupilName || undefined,
       description: args.description || "Payment",
-      commission: 1,
-      booking_fee_pence: 100,
-      instructor_payout_pence: amountPence - 100,
+      payment_type: "qr",
       fee_absorbed_by_instructor: true,
     },
   });

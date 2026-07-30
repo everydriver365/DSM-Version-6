@@ -422,6 +422,7 @@ function TakePaymentPage() {
           pupil_name: pupilName || undefined,
           description: description || "Payment",
           mode: "embedded",
+          payment_type: "qr",
           fee_absorbed_by_instructor: !passBookingFee,
         },
       });
