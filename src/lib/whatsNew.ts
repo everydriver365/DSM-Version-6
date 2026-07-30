@@ -2,7 +2,7 @@
 // Bump APP_VERSION when shipping a release that should re-trigger the sheet.
 // Populate WHATS_NEW_BY_VERSION[version] with the items to feature.
 
-export const APP_VERSION = "2026.07.21";
+export const APP_VERSION = "2026.07.30";
 
 export type WhatsNewItem = {
   title: string;
@@ -14,14 +14,30 @@ export type WhatsNewItem = {
 };
 
 export const WHATS_NEW_BY_VERSION: Record<string, WhatsNewItem[]> = {
-  "2026.07.21": [
+  "2026.07.30": [
     {
-      title: "Learn hub",
-      description: "Short how-to videos to help you get more out of DSM.",
+      title: "Gap filler — SMS auto-booking",
+      description: "Pupils can now reply YES to a gap filler text and their lesson books automatically.",
     },
     {
-      title: "Auto-fill your gaps",
-      description: "DSM now finds pupils to match empty slots in your day.",
+      title: "Live lesson tracking",
+      description: "Track routes, speeds and road names in real time. Trip reports save to pupil profiles.",
+    },
+    {
+      title: "Jobs & offers",
+      description: "Post and claim driving instructor job offers directly in DSM.",
+    },
+    {
+      title: "Terms & signatures",
+      description: "Send, sign and store lesson terms digitally — including guardian signatures for under-18s.",
+    },
+    {
+      title: "DL25 & mock tests",
+      description: "Record real and mock test results with full DVSA fault categories.",
+    },
+    {
+      title: "DSM Learn",
+      description: "Short video guides to help you get more from DSM — now in the app.",
     },
   ],
 };
