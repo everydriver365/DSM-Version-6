@@ -178,6 +178,7 @@ import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
+import { TakePaymentSheet } from "@/components/payments/TakePaymentSheet";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
