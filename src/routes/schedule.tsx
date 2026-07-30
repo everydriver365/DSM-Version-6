@@ -1959,6 +1959,14 @@ function SchedulePage() {
         }}
       />
 
+      <SendMessageSheet
+        open={sendMessageOpen}
+        onClose={() => { setSendMessageOpen(false); setSendMessagePupilId(undefined); }}
+        initialPupilId={sendMessagePupilId}
+      />
+
+
+
 
 
 
