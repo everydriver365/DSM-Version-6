@@ -64,6 +64,9 @@ function CalendarSyncPage() {
   const [howToOpen, setHowToOpen] = useState(false);
   const [removing, setRemoving] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [conn, setConn] = useState<GoogleConnection | null>(null);
+  const [connecting, setConnecting] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
 
   useEffect(() => {
     (async () => {
