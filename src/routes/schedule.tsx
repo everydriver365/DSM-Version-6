@@ -1818,6 +1818,17 @@ function SchedulePage() {
                                             onClick={(ev) => {
                                               ev.stopPropagation();
                                               setActionsOpenFor(null);
+                                              setSendMessagePupilId(lesson.pupil_id ?? undefined);
+                                              setSendMessageOpen(true);
+                                            }}
+                                          >
+                                            Message pupil
+                                          <button
+                                            type="button"
+                                            style={itemStyle}
+                                            onClick={(ev) => {
+                                              ev.stopPropagation();
+                                              setActionsOpenFor(null);
                                               setMovingLesson(lesson);
                                               setMoveMode(true);
                                               const firstName = (lesson as any).pupil?.first_name || (lesson as any).pupils?.first_name || 'this lesson';
