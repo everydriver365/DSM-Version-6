@@ -6137,6 +6137,7 @@ function HomePage() {
                 else if (tile.action === 'take-payment') { setTakePaymentOpen(true); return; }
                 else if (tile.action === 'add-expense') { setAddExpenseOpen(true); return; }
                 else if (tile.action === 'log-mileage') { setLogMileageOpen(true); return; }
+                else if (tile.action === 'send-message') { setSendMessagePupilId(undefined); setSendMessageOpen(true); return; }
                 if (tile.wsIndex === 1) { navigate({ to: '/schedule' as never }); return; }
                 if (tile.wsIndex === 2) { navigate({ to: '/pupils' as never }); return; }
                 if (tile.wsIndex === 3) { navigate({ to: '/payments' as never }); return; }
