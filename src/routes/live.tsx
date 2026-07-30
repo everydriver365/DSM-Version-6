@@ -1532,8 +1532,8 @@ function LivePage() {
                       }
                     }
                   }}
-
                   style={{
+
                     flex: 1,
                     height: 46,
                     borderRadius: 10,
