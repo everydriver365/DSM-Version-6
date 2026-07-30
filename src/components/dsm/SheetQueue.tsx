@@ -134,22 +134,23 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
     if (!userId) return;
     let cancelled = false;
 
-    // --- What's new evaluation (sync) ---
-    const last = getLastSeenVersion(userId);
-    let wnDue = false;
-    if (isNewerVersion(APP_VERSION, last)) {
-      const items = WHATS_NEW_BY_VERSION[APP_VERSION] ?? [];
-      if (items.length === 0) {
-        setLastSeenVersion(userId, APP_VERSION);
-      } else {
-        wnDue = true;
-        setWhatsNewItems(items);
-      }
-    }
-    if (!wnDue) setWhatsNewResolved("none");
-
-    // --- Daily catch-up evaluation (async) ---
     (async () => {
+      // --- What's new evaluation (async) ---
+      const last = await getLastSeenVersion(userId);
+      if (cancelled) return;
+      let wnDue = false;
+      if (isNewerVersion(APP_VERSION, last)) {
+        const items = WHATS_NEW_BY_VERSION[APP_VERSION] ?? [];
+        if (items.length === 0) {
+          await setLastSeenVersion(userId, APP_VERSION);
+        } else {
+          wnDue = true;
+          setWhatsNewItems(items);
+        }
+      }
+      if (!wnDue) setWhatsNewResolved("none");
+
+      // --- Daily catch-up evaluation (async) ---
       const key = catchUpStorageKey(userId);
       let lastShown: string | null = null;
       try {
