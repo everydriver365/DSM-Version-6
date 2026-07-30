@@ -1936,7 +1936,7 @@ function SchedulePage() {
 
       <button
         type="button"
-        onClick={() => navigate({ to: '/lessons/new' as never })}
+        onClick={() => { setAddLessonPupilId(undefined); setAddLessonDate(selectedDate); setAddLessonOpen(true); }}
         style={{
           position: 'fixed',
           bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
