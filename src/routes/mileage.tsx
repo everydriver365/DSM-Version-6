@@ -410,6 +410,14 @@ function MileagePage() {
         }
       `}</style>
 
+      <LogMileageSheet
+        open={logMileageOpen}
+        onClose={() => setLogMileageOpen(false)}
+        onSaved={() => {
+          if (userId) fetchLogs(userId);
+        }}
+      />
+
       <ConfirmDialog
         open={pendingDelete !== null}
         title="Delete this entry?"

@@ -15,6 +15,7 @@ import {
 import { supabase } from "../lib/supabaseClient";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
+import { LogMileageSheet } from "@/components/mileage/LogMileageSheet";
 
 export const Route = createFileRoute("/end-of-day")({
   component: EndOfDayPage,
@@ -89,6 +90,7 @@ function EndOfDayPage() {
   const [savingNote, setSavingNote] = useState(false);
   const [listening, setListening] = useState(false);
   const [addExpenseOpen, setAddExpenseOpen] = useState(false);
+  const [logMileageOpen, setLogMileageOpen] = useState(false);
   const [eolLesson, setEolLesson] = useState<Lesson | null>(null);
   const recogRef = useRef<any>(null);
 
