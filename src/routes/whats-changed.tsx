@@ -223,7 +223,7 @@ function WhatsChangedPage() {
 
       const rowsOf = (res: any): any[] => (res?.data ?? []) as any[];
 
-      const built: Section[] = [
+      const built: Section[] = ([
         {
           key: "lesson_new",
           label: "New bookings",
