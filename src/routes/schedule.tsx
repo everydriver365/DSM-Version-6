@@ -321,6 +321,8 @@ function SchedulePage() {
   const [allPupils, setAllPupils] = useState<Array<{ id: string; name: string | null; first_name: string | null; last_name?: string | null; calendar_colour: string | null }>>([]);
   const [allAvailability, setAllAvailability] = useState<any[]>([]);
   const [actionsOpenFor, setActionsOpenFor] = useState<Lesson | null>(null);
+  const [sendMessageOpen, setSendMessageOpen] = useState(false);
+  const [sendMessagePupilId, setSendMessagePupilId] = useState<string | undefined>();
   const [cancelSheetFor, setCancelSheetFor] = useState<Lesson | null>(null);
   const [deleteSheetFor, setDeleteSheetFor] = useState<Lesson | null>(null);
   const [paymentSheetFor, setPaymentSheetFor] = useState<Lesson | null>(null);
