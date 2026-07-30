@@ -1,238 +1,171 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Save } from "lucide-react";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { toast } from "sonner";
-import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
-import { Button } from "@/components/dsm/Button";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms & Conditions — DSM by EveryDriver" },
-      { name: "description", content: "Edit your instructor terms and conditions." },
+      { title: "Terms of Service — DSM by EveryDriver" },
+      { name: "description", content: "Terms of Service for DSM by EveryDriver." },
+      { property: "og:title", content: "Terms of Service — DSM by EveryDriver" },
+      { property: "og:description", content: "Terms of Service for DSM by EveryDriver." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: TermsPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 const NAVY = "#0B1F3A";
-const BORDER = "#E2E6ED";
-const MUTED = "#6B7280";
 const BLUE = "#1877D6";
-
-interface InstructorTerms {
-  instructor_id: string;
-  content: string;
-  version: number;
-  updated_at: string | null;
-  created_at: string | null;
-}
-
-function relativeTime(iso: string | null | undefined) {
-  if (!iso) return null;
-  const then = new Date(iso).getTime();
-  const now = Date.now();
-  const seconds = Math.floor((now - then) / 1000);
-  if (seconds < 60) return "just now";
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `${days} day${days === 1 ? "" : "s"} ago`;
-  const months = Math.floor(days / 30);
-  if (months < 12) return `${months} month${months === 1 ? "" : "s"} ago`;
-  const years = Math.floor(months / 12);
-  return `${years} year${years === 1 ? "" : "s"} ago`;
-}
+const BG = "#F8F9FB";
+const TEXT = "#374151";
+const FONT = "'Poppins', system-ui, -apple-system, sans-serif";
 
 function TermsPage() {
-  const navigate = useNavigate();
-  const [userId, setUserId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [content, setContent] = useState("");
-  const [originalContent, setOriginalContent] = useState("");
-  const [terms, setTerms] = useState<InstructorTerms | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      const { data } = await supabase.auth.getUser();
-      setUserId(data.user?.id ?? null);
-    })();
-  }, []);
-
-  useEffect(() => {
-    if (!userId) return;
-    (async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("instructor_terms")
-        .select("instructor_id, content, version, updated_at, created_at")
-        .eq("instructor_id", userId)
-        .maybeSingle();
-
-      if (error) {
-        console.error("Failed to fetch terms", error);
-        toast.error("Could not load your terms");
-      } else if (data) {
-        const row = data as InstructorTerms;
-        setTerms(row);
-        setContent(row.content ?? "");
-        setOriginalContent(row.content ?? "");
-      }
-      setLoading(false);
-    })();
-  }, [userId]);
-
-  async function handleSave() {
-    if (!userId) return;
-    const trimmed = content.trim();
-    const changed = trimmed !== (originalContent ?? "").trim();
-
-    setSaving(true);
-    const nextVersion = terms ? (changed ? (terms.version ?? 0) + 1 : terms.version ?? 1) : 1;
-
-    const { error } = await supabase.from("instructor_terms").upsert(
-      {
-        instructor_id: userId,
-        content: trimmed,
-        version: nextVersion,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "instructor_id" },
-    );
-
-    setSaving(false);
-    if (error) {
-      console.error("Failed to save terms", error);
-      toast.error("Failed to save terms");
-      return;
-    }
-
-    setOriginalContent(trimmed);
-    setTerms((prev) =>
-      prev
-        ? { ...prev, content: trimmed, version: nextVersion, updated_at: new Date().toISOString() }
-        : {
-            instructor_id: userId,
-            content: trimmed,
-            version: nextVersion,
-            updated_at: new Date().toISOString(),
-            created_at: new Date().toISOString(),
-          },
-    );
-    toast.success("Terms saved");
-  }
-
-  const lastUpdated = relativeTime(terms?.updated_at ?? terms?.created_at);
-
   return (
-    <PageLayout className="pb-24 pb-safe relative" style={POPPINS}>
+    <div style={{ minHeight: "100dvh", backgroundColor: BG, fontFamily: FONT }}>
       {/* Header */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Terms & Conditions"
-        onBack={() => navigate({ to: "/more" } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      <header
+        style={{
+          backgroundColor: NAVY,
+          padding: "16px 20px",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <span style={{ color: "#fff", fontSize: 18, fontWeight: 600 }}>
+          DSM by <span style={{ color: BLUE }}>EveryDriver</span>
+        </span>
+      </header>
 
-
-      <div style={{ padding: 16 }}>
-        {/* Explanatory note */}
-        <div
+      {/* Content */}
+      <main
+        style={{
+          maxWidth: 760,
+          margin: "0 auto",
+          padding: "40px 20px 80px",
+        }}
+      >
+        <h1
           style={{
-            background: "#E6F1FB",
-            borderRadius: 10,
-            padding: "12px 14px",
-            fontSize: 13,
-            color: BLUE,
-            lineHeight: 1.45,
-            marginBottom: 16,
+            fontSize: 28,
+            fontWeight: 700,
+            color: NAVY,
+            margin: "0 0 8px",
           }}
         >
-          These terms will be shown to pupils when you send them for signature. A separate DSM platform
-          terms document is managed separately.
-        </div>
+          Terms of Service
+        </h1>
+        <p style={{ fontSize: 14, color: "#6B7280", margin: "0 0 32px" }}>
+          Last updated: 30 July 2026
+        </p>
 
-        {/* Last updated */}
-        {lastUpdated && (
-          <div
-            style={{
-              fontSize: 12,
-              color: MUTED,
-              marginBottom: 12,
-              fontWeight: 500,
-            }}
-          >
-            Last updated {lastUpdated}
-            {terms?.version ? ` · Version ${terms.version}` : ""}
-          </div>
-        )}
+        <Section title="1. Agreement">
+          <p>
+            By creating an account on DSM by EveryDriver you agree to these terms.
+          </p>
+        </Section>
 
-        {loading ? (
-          <div style={{ textAlign: "center", padding: 40, color: MUTED, fontSize: 13 }}>Loading…</div>
-        ) : (
-          <>
-            <label
-              htmlFor="terms-content"
-              style={{
-                display: "block",
-                fontSize: 14,
-                fontWeight: 600,
-                color: NAVY,
-                marginBottom: 8,
-              }}
-            >
-              Your terms
-            </label>
-            <textarea
-              id="terms-content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Enter your terms and conditions here. These will be shown to pupils when you send them for signature."
-              style={{
-                width: "100%",
-                minHeight: 320,
-                borderRadius: 10,
-                border: `1px solid ${BORDER}`,
-                padding: 14,
-                fontSize: 14,
-                lineHeight: 1.5,
-                color: NAVY,
-                background: "#fff",
-                resize: "vertical",
-                outline: "none",
-                ...POPPINS,
-              }}
-            />
+        <Section title="2. The service">
+          <p>
+            DSM is a business management platform for driving instructors and driving schools in the UK, including lesson scheduling, pupil management, payment processing, live tracking and related features.
+          </p>
+        </Section>
 
-            <Button
-              onClick={handleSave}
-              disabled={saving}
-              style={{
-                marginTop: 16,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}
-            >
-              <Save size={18} />
-              {saving ? "Saving…" : "Save"}
-            </Button>
-          </>
-        )}
+        <Section title="3. Your account">
+          <ul>
+            <li>You must be a legitimate driving instructor or driving school operator</li>
+            <li>You are responsible for maintaining security of your login credentials</li>
+            <li>You must not share your account or use it for unlawful purposes</li>
+            <li>You are responsible for all activity under your account</li>
+          </ul>
+        </Section>
+
+        <Section title="4. Pupil data">
+          <p>
+            You are the data controller for your pupils' personal data. You are responsible for complying with UK GDPR. DSM processes pupil data as your data processor.
+          </p>
+        </Section>
+
+        <Section title="5. Payments">
+          <p>
+            Payment processing is handled by Ryft. A platform fee of 1% applies to single card payments. Course payments use the school skim amount. Fees subject to change with 30 days notice.
+          </p>
+        </Section>
+
+        <Section title="6. Google Calendar integration">
+          <p>
+            If you connect Google Calendar, you authorise DSM to create, update and delete calendar events on your behalf. We only access data needed to sync your DSM lessons. You can revoke access at any time from Settings.
+          </p>
+        </Section>
+
+        <Section title="7. Live tracking">
+          <p>
+            You are responsible for informing pupils that GPS routes may be recorded and for complying with applicable data protection obligations.
+          </p>
+        </Section>
+
+        <Section title="8. Acceptable use">
+          <p>
+            You must not use DSM to harass pupils or users, send unsolicited messages, attempt unauthorised access, or violate UK law.
+          </p>
+        </Section>
+
+        <Section title="9. Availability">
+          <p>
+            We aim for high availability but do not guarantee uninterrupted access.
+          </p>
+        </Section>
+
+        <Section title="10. Termination">
+          <p>
+            You may close your account at any time. Data deleted within 30 days of termination except where retention is required by law.
+          </p>
+        </Section>
+
+        <Section title="11. Limitation of liability">
+          <p>
+            DSM's liability is limited to fees paid in the three months preceding any claim. We are not liable for indirect or consequential losses.
+          </p>
+        </Section>
+
+        <Section title="12. Governing law">
+          <p>
+            Governed by the laws of England and Wales.
+          </p>
+        </Section>
+
+        <Section title="13. Contact">
+          <p>hello@everydriver.co.uk</p>
+        </Section>
+      </main>
+    </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section style={{ marginBottom: 28 }}>
+      <h2
+        style={{
+          fontSize: 16,
+          fontWeight: 600,
+          color: NAVY,
+          margin: "0 0 12px",
+        }}
+      >
+        {title}
+      </h2>
+      <div
+        style={{
+          fontSize: 14,
+          fontWeight: 400,
+          color: TEXT,
+          lineHeight: 1.6,
+        }}
+      >
+        {children}
       </div>
-    </PageLayout>
+    </section>
   );
 }
 
