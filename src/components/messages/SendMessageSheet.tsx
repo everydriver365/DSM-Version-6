@@ -26,6 +26,17 @@ export interface SendMessageSheetProps {
   initialPupilId?: string;
 }
 
+type DraftStatus = "empty" | "unsaved" | "saved" | "sent";
+
+const DRAFT_KEY_PREFIX = "dsm.msgDraft.";
+
+const DRAFT_UI: Record<DraftStatus, { label: string; color: string }> = {
+  empty: { label: "No draft", color: "#8A93A3" },
+  unsaved: { label: "Unsaved…", color: "#8A5A00" },
+  saved: { label: "Draft saved", color: "#0F7B4F" },
+  sent: { label: "Sent", color: "#1877D6" },
+};
+
 type SmsStatus = "idle" | "queued" | "sending" | "sent" | "failed";
 
 const SMS_STATUS_UI: Record<
@@ -105,6 +116,7 @@ export function SendMessageSheet({
   const [sending, setSending] = useState(false);
   const [pendingPupil, setPendingPupil] = useState<PupilRow | null>(null);
   const [smsStatus, setSmsStatus] = useState<SmsStatus>("idle");
+  const [draftStatus, setDraftStatus] = useState<DraftStatus>("empty");
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -119,9 +131,59 @@ export function SendMessageSheet({
     setSending(false);
     setPendingPupil(null);
     setSmsStatus("idle");
+    setDraftStatus("empty");
     const t = setTimeout(() => textareaRef.current?.focus(), 120);
     return () => clearTimeout(t);
   }, [open, initialPupilId]);
+
+  // Restore any saved draft for the selected pupil
+  useEffect(() => {
+    if (!open || !pupilId) return;
+    try {
+      const saved = window.localStorage.getItem(DRAFT_KEY_PREFIX + pupilId);
+      if (saved) {
+        setMessageText(saved);
+        setDraftStatus("saved");
+      }
+    } catch {
+      /* storage unavailable */
+    }
+  }, [open, pupilId]);
+
+  // Autosave the draft (debounced) and reflect its state
+  useEffect(() => {
+    if (!open || !pupilId || draftStatus === "sent") return;
+    const key = DRAFT_KEY_PREFIX + pupilId;
+    if (!messageText.trim()) {
+      try {
+        window.localStorage.removeItem(key);
+      } catch {
+        /* ignore */
+      }
+      setDraftStatus("empty");
+      return;
+    }
+    let stored = "";
+    try {
+      stored = window.localStorage.getItem(key) ?? "";
+    } catch {
+      /* ignore */
+    }
+    if (stored === messageText) {
+      setDraftStatus("saved");
+      return;
+    }
+    setDraftStatus("unsaved");
+    const t = setTimeout(() => {
+      try {
+        window.localStorage.setItem(key, messageText);
+        setDraftStatus("saved");
+      } catch {
+        /* ignore */
+      }
+    }, 700);
+    return () => clearTimeout(t);
+  }, [messageText, pupilId, open, draftStatus]);
 
   // Stop polling when the sheet closes or unmounts
   useEffect(() => {
@@ -224,6 +286,17 @@ export function SendMessageSheet({
     }, 2000);
   }
 
+  function clearDraft() {
+    if (pupilId) {
+      try {
+        window.localStorage.removeItem(DRAFT_KEY_PREFIX + pupilId);
+      } catch {
+        /* ignore */
+      }
+    }
+    setDraftStatus("sent");
+  }
+
   async function handleSend() {
     const body = messageText.trim();
     if (!body || !pupilId || sending) return;
@@ -271,6 +344,7 @@ export function SendMessageSheet({
 
         toast.success("Message sent");
         onSent?.();
+        clearDraft();
         // Keep the sheet open so delivery progress stays visible
         setMessageText("");
         return;
@@ -278,6 +352,7 @@ export function SendMessageSheet({
 
       toast.success("Message sent");
       onSent?.();
+      clearDraft();
       onClose();
     } catch (err) {
       console.error("[SendMessageSheet] send failed", err);
@@ -467,7 +542,37 @@ export function SendMessageSheet({
 
       {/* Message */}
       <div style={cardStyle}>
-        <SectionLabel>MESSAGE</SectionLabel>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 8,
+          }}
+        >
+          <SectionLabel>MESSAGE</SectionLabel>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              fontSize: 11,
+              fontWeight: 700,
+              color: DRAFT_UI[draftStatus].color,
+              marginBottom: 6,
+            }}
+          >
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: DRAFT_UI[draftStatus].color,
+              }}
+            />
+            {DRAFT_UI[draftStatus].label}
+          </div>
+        </div>
         <textarea
           ref={textareaRef}
           rows={4}
