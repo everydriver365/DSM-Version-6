@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, X, MoreVertical, Search, Banknote, CreditCard, Landmark, RotateCcw, Wallet, QrCode, Link2, ShoppingBag, Copy, MessageSquare, Mail, ExternalLink, RefreshCw, Receipt } from "lucide-react";
+import { Plus, X, MoreVertical, Search, Banknote, CreditCard, Landmark, RotateCcw, Wallet, QrCode, Receipt } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
