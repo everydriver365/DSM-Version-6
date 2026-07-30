@@ -3889,7 +3889,7 @@ function HomePage() {
             <TodayLessonsTile
               todayLessons={todayLessons}
               onNavigate={() => navigate({ to: "/schedule" })}
-              onAddLesson={() => navigate({ to: "/lessons/new" })}
+              onAddLesson={() => { setAddLessonDate(undefined); setAddLessonPupilId(undefined); setAddLessonOpen(true); }}
             />
           </div>
 
