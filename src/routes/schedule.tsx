@@ -21,6 +21,7 @@ import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
+import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
