@@ -16,46 +16,38 @@ export const Route = createFileRoute("/privacy")({
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
-const BG = "#F8F9FB";
 const TEXT = "#374151";
+const MUTED = "#6B7280";
 const FONT = "'Poppins', system-ui, -apple-system, sans-serif";
 
 function PrivacyPage() {
   return (
-    <div style={{ minHeight: "100dvh", backgroundColor: BG, fontFamily: FONT }}>
-      {/* Header */}
+    <div style={{ minHeight: "100dvh", backgroundColor: "#fff", fontFamily: FONT }}>
       <header
         style={{
+          height: 56,
           backgroundColor: NAVY,
-          padding: "16px 20px",
+          padding: "0 24px",
           display: "flex",
           alignItems: "center",
         }}
       >
-        <span style={{ color: "#fff", fontSize: 18, fontWeight: 600 }}>
+        <span style={{ color: "#fff", fontSize: 18, fontWeight: 700 }}>
           DSM by <span style={{ color: BLUE }}>EveryDriver</span>
         </span>
       </header>
 
-      {/* Content */}
       <main
         style={{
           maxWidth: 760,
           margin: "0 auto",
-          padding: "40px 20px 80px",
+          padding: "32px 24px 40px",
         }}
       >
-        <h1
-          style={{
-            fontSize: 28,
-            fontWeight: 700,
-            color: NAVY,
-            margin: "0 0 8px",
-          }}
-        >
+        <h1 style={{ fontSize: 28, fontWeight: 700, color: NAVY, margin: "0 0 8px" }}>
           Privacy Policy
         </h1>
-        <p style={{ fontSize: 14, color: "#6B7280", margin: "0 0 32px" }}>
+        <p style={{ fontSize: 13, color: MUTED, margin: "0 0 40px" }}>
           Last updated: 30 July 2026
         </p>
 
@@ -68,68 +60,56 @@ function PrivacyPage() {
 
         <Section title="What data we collect">
           <ul>
+            <li>Account data: name, email, phone</li>
+            <li>Pupil data: names, contact details, lesson history, test dates</li>
+            <li>Lesson data: dates, times, locations, GPS routes, notes</li>
             <li>
-              Account data: name, email, phone, business details
+              Payment data: transaction records — card numbers never stored, processed by Ryft
             </li>
-            <li>
-              Pupil data: names, contact details, lesson history, test dates, progress
-            </li>
-            <li>
-              Lesson data: dates, times, locations, routes, notes
-            </li>
-            <li>
-              Payment data: transaction records (card numbers never stored — processed by Ryft)
-            </li>
-            <li>
-              Location data: GPS coordinates during live tracking only when active
-            </li>
-            <li>
-              Calendar data: if you connect Google Calendar, we read/write events using OAuth2 you explicitly grant
-            </li>
-            <li>
-              Usage data: feature usage, session logs, error reports
-            </li>
+            <li>Location data: GPS only when live tracking is active</li>
+            <li>Calendar data: Google Calendar events when you connect via OAuth</li>
+            <li>Usage data: feature usage, error logs</li>
           </ul>
         </Section>
 
         <Section title="How we use your data">
           <ul>
-            <li>To provide and operate the DSM platform</li>
-            <li>To send lesson reminders and SMS messages to pupils on your behalf</li>
-            <li>To sync lessons with Google Calendar when you connect your account</li>
-            <li>To process payments through Ryft</li>
-            <li>To generate reports and financial summaries</li>
-            <li>To improve the platform and fix issues</li>
+            <li>To provide the DSM platform</li>
+            <li>To send lesson reminders and SMS to pupils on your behalf</li>
+            <li>To sync lessons with Google Calendar when connected</li>
+            <li>To process payments via Ryft</li>
+            <li>To generate financial reports</li>
+            <li>To improve the platform</li>
           </ul>
         </Section>
 
         <Section title="Google Calendar integration">
           <p>
-            If you connect Google Calendar, DSM will create events when lessons are booked, update them when rescheduled, and delete them when cancelled.
+            If you connect Google Calendar, DSM creates events when lessons are booked, updates them when rescheduled, and deletes them when cancelled.
           </p>
           <p>
             We request only the calendar.events scope — the minimum required. We do not read your existing calendar events or any other Google data.
           </p>
           <p>
-            You can disconnect at any time from Settings → Calendar sync. Our use complies with the Google API Services User Data Policy including the Limited Use requirements.
+            You can disconnect at any time from Settings → Calendar sync. Our use of Google Calendar data complies with the Google API Services User Data Policy including the Limited Use requirements.
           </p>
         </Section>
 
         <Section title="Data sharing">
           <p>
-            We do not sell your data. We share data only with: Supabase (database/auth), Ryft (payments), Twilio (SMS), Google (calendar sync when connected), Resend (email).
+            We do not sell your data. We share only with: Supabase (database and auth), Ryft (payments), Twilio (SMS), Google (calendar sync when connected), Resend (email).
           </p>
         </Section>
 
         <Section title="Data retention">
           <p>
-            Data retained while account is active. Deleted within 30 days of account closure except where required by law.
+            Retained while your account is active. Deleted within 30 days of account closure except where required by law.
           </p>
         </Section>
 
         <Section title="Your rights">
           <p>
-            Under UK GDPR you have the right to access, correct, export or delete your data. Contact hello@everydriver.co.uk
+            Under UK GDPR you have the right to access, correct, export or delete your data. Email hello@everydriver.co.uk
           </p>
         </Section>
 
@@ -145,6 +125,25 @@ function PrivacyPage() {
           </p>
         </Section>
       </main>
+
+      <footer
+        style={{
+          borderTop: "1px solid #E5E7EB",
+          padding: "24px",
+          textAlign: "center",
+          fontSize: 13,
+          color: "#9CA3AF",
+        }}
+      >
+        © 2026 EveryDriver Ltd ·{" "}
+        <a href="/terms" style={{ color: "#9CA3AF", textDecoration: "none" }}>
+          Terms
+        </a>{" "}
+        ·{" "}
+        <a href="mailto:hello@everydriver.co.uk" style={{ color: "#9CA3AF", textDecoration: "none" }}>
+          hello@everydriver.co.uk
+        </a>
+      </footer>
     </div>
   );
 }
