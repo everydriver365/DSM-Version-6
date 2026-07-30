@@ -377,6 +377,8 @@ function CalendarSyncPage() {
           </p>
         </div>
 
+        {/* Section 1 — Google events → DSM */}
+        <SectionHeader>GOOGLE EVENTS → DSM</SectionHeader>
         {/* Import external Google Calendar */}
         <div
           style={{
