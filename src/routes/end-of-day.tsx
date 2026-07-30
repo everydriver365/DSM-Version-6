@@ -477,9 +477,48 @@ function EndOfDayPage() {
           </span>
           <ChevronRight size={18} color="#94A3B8" />
         </button>
+
+        {/* Log mileage row */}
+        <button
+          type="button"
+          onClick={() => setLogMileageOpen(true)}
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            background: "none",
+            border: 0,
+            padding: 0,
+            cursor: "pointer",
+            textAlign: "left",
+            marginTop: 8,
+          }}
+        >
+          <span
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: 10,
+              background: "#E6F1FB",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <Car size={17} color="#1877D6" />
+          </span>
+          <span style={{ flex: 1 }}>
+            <span style={{ display: "block", fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>Log mileage</span>
+            <span style={{ display: "block", fontSize: 12, color: "#6B7280" }}>Track a trip</span>
+          </span>
+          <ChevronRight size={18} color="#94A3B8" />
+        </button>
       </Card>
 
       <AddExpenseSheet open={addExpenseOpen} onClose={() => setAddExpenseOpen(false)} />
+      <LogMileageSheet open={logMileageOpen} onClose={() => setLogMileageOpen(false)} />
 
       {eolLesson && instructorId && (
         <EndLessonWizard
