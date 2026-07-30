@@ -4744,6 +4744,16 @@ function PupilDetailPage() {
         }}
       />
 
+      <TakePaymentSheet
+        open={takePaymentOpen}
+        onClose={() => setTakePaymentOpen(false)}
+        initialPupilId={takePaymentPupilId}
+        onSaved={() => {
+          setTakePaymentOpen(false);
+          setPaymentHistoryRefresh((v) => v + 1);
+        }}
+      />
+
 
       <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
       </div>
