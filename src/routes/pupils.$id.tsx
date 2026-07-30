@@ -2591,7 +2591,26 @@ function PupilDetailPage() {
         {activeTab === "payments" && (
           <>
             {pupil && (<>
+            {/* Take payment */}
+            <button
+              type="button"
+              onClick={() => { setTakePaymentPupilId(pupil.id); setTakePaymentOpen(true); }}
+              className="mt-3 w-full flex items-center justify-center gap-2"
+              style={{
+                height: 44,
+                borderRadius: 12,
+                background: "#1877D6",
+                color: "#FFFFFF",
+                fontSize: 14,
+                fontWeight: 600,
+                border: "none",
+                ...POPPINS,
+              }}
+            >
+              <CreditCard size={16} color="#FFFFFF" /> Take payment
+            </button>
             {/* Prepaid balance card */}
+
             <div
               className="mt-3"
               style={{
