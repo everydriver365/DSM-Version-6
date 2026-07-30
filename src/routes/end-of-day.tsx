@@ -11,6 +11,7 @@ import {
   ChevronRight,
   Mic,
   MicOff,
+  Car,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
