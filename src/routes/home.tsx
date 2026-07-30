@@ -1427,6 +1427,8 @@ function HomePage() {
   const [quickPage, setQuickPage] = useState(0);
   const [quickSearchOpen, setQuickSearchOpen] = useState(false);
   const [runningLateOpen, setRunningLateOpen] = useState(false);
+  const [nearbyOpen, setNearbyOpen] = useState(false);
+  const [nearbyLoading, setNearbyLoading] = useState<string | null>(null);
   const [quickSearchQuery, setQuickSearchQuery] = useState('');
   const qaStartX = useRef(0);
 
