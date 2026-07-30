@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WhatsChangedRouteImport } from './routes/whats-changed'
 import { Route as WeeklyreportRouteImport } from './routes/weeklyreport'
 import { Route as WeeklyReportRouteImport } from './routes/weekly-report'
 import { Route as WaiversRouteImport } from './routes/waivers'
@@ -154,6 +155,11 @@ import { Route as LessonsFeedbackIdRouteImport } from './routes/lessons.feedback
 import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
 import { Route as DsmLivePodcastPodcastIdRouteImport } from './routes/dsm-live.podcast.$podcastId'
 
+const WhatsChangedRoute = WhatsChangedRouteImport.update({
+  id: '/whats-changed',
+  path: '/whats-changed',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WeeklyreportRoute = WeeklyreportRouteImport.update({
   id: '/weeklyreport',
   path: '/weeklyreport',
@@ -967,6 +973,7 @@ export interface FileRoutesByFullPath {
   '/waivers': typeof WaiversRoute
   '/weekly-report': typeof WeeklyReportRoute
   '/weeklyreport': typeof WeeklyreportRoute
+  '/whats-changed': typeof WhatsChangedRoute
   '/about': typeof MarketingAboutRoute
   '/contact': typeof MarketingContactRoute
   '/features': typeof MarketingFeaturesRoute
@@ -1109,6 +1116,7 @@ export interface FileRoutesByTo {
   '/waivers': typeof WaiversRoute
   '/weekly-report': typeof WeeklyReportRoute
   '/weeklyreport': typeof WeeklyreportRoute
+  '/whats-changed': typeof WhatsChangedRoute
   '/about': typeof MarketingAboutRoute
   '/contact': typeof MarketingContactRoute
   '/features': typeof MarketingFeaturesRoute
@@ -1256,6 +1264,7 @@ export interface FileRoutesById {
   '/waivers': typeof WaiversRoute
   '/weekly-report': typeof WeeklyReportRoute
   '/weeklyreport': typeof WeeklyreportRoute
+  '/whats-changed': typeof WhatsChangedRoute
   '/_marketing/about': typeof MarketingAboutRoute
   '/_marketing/contact': typeof MarketingContactRoute
   '/_marketing/features': typeof MarketingFeaturesRoute
@@ -1403,6 +1412,7 @@ export interface FileRouteTypes {
     | '/waivers'
     | '/weekly-report'
     | '/weeklyreport'
+    | '/whats-changed'
     | '/about'
     | '/contact'
     | '/features'
@@ -1545,6 +1555,7 @@ export interface FileRouteTypes {
     | '/waivers'
     | '/weekly-report'
     | '/weeklyreport'
+    | '/whats-changed'
     | '/about'
     | '/contact'
     | '/features'
@@ -1691,6 +1702,7 @@ export interface FileRouteTypes {
     | '/waivers'
     | '/weekly-report'
     | '/weeklyreport'
+    | '/whats-changed'
     | '/_marketing/about'
     | '/_marketing/contact'
     | '/_marketing/features'
@@ -1838,6 +1850,7 @@ export interface RootRouteChildren {
   WaiversRoute: typeof WaiversRoute
   WeeklyReportRoute: typeof WeeklyReportRoute
   WeeklyreportRoute: typeof WeeklyreportRoute
+  WhatsChangedRoute: typeof WhatsChangedRoute
   BookingsIdRoute: typeof BookingsIdRoute
   CoursesIdRoute: typeof CoursesIdRoute
   CoursesNewRoute: typeof CoursesNewRoute
@@ -1871,6 +1884,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/whats-changed': {
+      id: '/whats-changed'
+      path: '/whats-changed'
+      fullPath: '/whats-changed'
+      preLoaderRoute: typeof WhatsChangedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/weeklyreport': {
       id: '/weeklyreport'
       path: '/weeklyreport'
@@ -3084,6 +3104,7 @@ const rootRouteChildren: RootRouteChildren = {
   WaiversRoute: WaiversRoute,
   WeeklyReportRoute: WeeklyReportRoute,
   WeeklyreportRoute: WeeklyreportRoute,
+  WhatsChangedRoute: WhatsChangedRoute,
   BookingsIdRoute: BookingsIdRoute,
   CoursesIdRoute: CoursesIdRoute,
   CoursesNewRoute: CoursesNewRoute,
@@ -3117,3 +3138,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
