@@ -12,24 +12,6 @@ import { PageLayout } from "@/components/PageLayout";
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
 
-async function syncToGoogleCalendar(userId: string, token: string) {
-  try {
-    await fetch(SUPABASE_URL + '/functions/v1/sync-external-calendar', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify({ instructorId: userId }),
-    });
-  } catch (e) {
-    console.warn('[sync] failed', e);
-  }
-  window.open('https://calendar.google.com', '_blank');
-}
-
-
 const UK_POSTCODE_RE = /([A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})/i;
 function extractPostcode(addr: string | null | undefined): string | undefined {
   if (!addr) return undefined;
@@ -271,7 +253,7 @@ function NewLessonPage() {
       seriesId = (seriesRow as any).id;
     }
 
-    const { error } = await supabase.from("lessons").insert({
+    const { data: insertedLesson, error } = await supabase.from("lessons").insert({
       instructor_id: user.id,
       pupil_id: pupilId,
       lesson_date: date,
@@ -283,11 +265,18 @@ function NewLessonPage() {
       payment_status: paymentStatus,
       prepaid_hours_used: prepaidHoursUsed,
       series_id: seriesId,
-    });
+    }).select("id").single();
     if (error) {
       setErrors({ form: error.message });
       setSaving(false);
       return;
+    }
+
+    const newLessonId = (insertedLesson as any)?.id as string | undefined;
+    if (newLessonId) {
+      void supabase.functions.invoke("google-calendar-sync", {
+        body: { action: "push", lesson_id: newLessonId, instructor_id: user.id },
+      });
     }
 
     if (isRecurring && seriesId) {
@@ -324,29 +313,31 @@ function NewLessonPage() {
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
         for (let i = 0; i < lessonsPayload.length; i += 50) {
           const batch = lessonsPayload.slice(i, i + 50);
-          await fetch(`${SUPABASE_URL_LOCAL}/rest/v1/lessons`, {
+          const res = await fetch(`${SUPABASE_URL_LOCAL}/rest/v1/lessons`, {
             method: "POST",
             headers: {
               apikey: SUPABASE_ANON_KEY_LOCAL,
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
-              Prefer: "return=minimal",
+              Prefer: "return=representation",
             },
             body: JSON.stringify(batch),
           });
+          const rows = (await res.json().catch(() => [])) as Array<{ id?: string }>;
+          for (const r of rows) {
+            if (r?.id) {
+              void supabase.functions.invoke("google-calendar-sync", {
+                body: { action: "push", lesson_id: r.id, instructor_id: user.id },
+              });
+            }
+          }
         }
       } catch (e) {
         console.warn("[lessons.new] recurring batch insert failed", e);
       }
     }
 
-    toast.success('Lesson added', {
-      action: {
-        label: '📅 Sync to Google Cal',
-        onClick: () => syncToGoogleCalendar(user.id, token),
-      },
-      duration: 8000,
-    });
+    toast.success('Lesson added');
     navigate({ to: "/schedule" });
   }
 
