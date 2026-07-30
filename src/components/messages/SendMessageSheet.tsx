@@ -26,6 +26,42 @@ export interface SendMessageSheetProps {
   initialPupilId?: string;
 }
 
+type SmsStatus = "idle" | "queued" | "sending" | "sent" | "failed";
+
+const SMS_STATUS_UI: Record<
+  Exclude<SmsStatus, "idle">,
+  { label: string; detail: string; fg: string; bg: string; border: string }
+> = {
+  queued: {
+    label: "Queued",
+    detail: "Your text is waiting to be picked up for delivery.",
+    fg: "#8A5A00",
+    bg: "#FFF7EC",
+    border: "#FCD9A8",
+  },
+  sending: {
+    label: "Sending…",
+    detail: "Handing the text to the SMS provider.",
+    fg: "#1877D6",
+    bg: "#EEF5FE",
+    border: "#CFE1F7",
+  },
+  sent: {
+    label: "Sent",
+    detail: "The text was delivered to the provider.",
+    fg: "#0F7B4F",
+    bg: "#ECFAF3",
+    border: "#B7E7CE",
+  },
+  failed: {
+    label: "Failed",
+    detail: "The text could not be sent — try again or call instead.",
+    fg: "#CC2229",
+    bg: "#FEF0F0",
+    border: "#F8C9CB",
+  },
+};
+
 interface PupilRow {
   id: string;
   name: string | null;
@@ -68,6 +104,8 @@ export function SendMessageSheet({
   const [sendSms, setSendSms] = useState(true);
   const [sending, setSending] = useState(false);
   const [pendingPupil, setPendingPupil] = useState<PupilRow | null>(null);
+  const [smsStatus, setSmsStatus] = useState<SmsStatus>("idle");
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   // Reset when opened
@@ -80,9 +118,20 @@ export function SendMessageSheet({
     setSendSms(true);
     setSending(false);
     setPendingPupil(null);
+    setSmsStatus("idle");
     const t = setTimeout(() => textareaRef.current?.focus(), 120);
     return () => clearTimeout(t);
   }, [open, initialPupilId]);
+
+  // Stop polling when the sheet closes or unmounts
+  useEffect(() => {
+    return () => {
+      if (pollRef.current) {
+        clearInterval(pollRef.current);
+        pollRef.current = null;
+      }
+    };
+  }, [open]);
 
   // Load active pupils
   useEffect(() => {
@@ -137,6 +186,44 @@ export function SendMessageSheet({
     textareaRef.current?.focus();
   }
 
+  function watchSmsStatus(smsId: string) {
+    if (pollRef.current) clearInterval(pollRef.current);
+    const startedAt = Date.now();
+    pollRef.current = setInterval(async () => {
+      const { data, error } = await supabase
+        .from("sms_queue")
+        .select("status, sent_at")
+        .eq("id", smsId)
+        .maybeSingle();
+
+      const done = (next: SmsStatus) => {
+        if (pollRef.current) clearInterval(pollRef.current);
+        pollRef.current = null;
+        setSmsStatus(next);
+      };
+
+      if (error) {
+        console.warn("[SendMessageSheet] sms status poll", error);
+        return;
+      }
+      const status = (data?.status ?? "").toLowerCase();
+      if (status === "sent" || data?.sent_at) {
+        done("sent");
+        toast.success("Text delivered");
+        return;
+      }
+      if (status === "failed" || status === "error") {
+        done("failed");
+        toast.error("Text failed to send");
+        return;
+      }
+      if (Date.now() - startedAt > 30000) {
+        // Still queued after 30s — leave it with the cron and stop polling
+        done("queued");
+      }
+    }, 2000);
+  }
+
   async function handleSend() {
     const body = messageText.trim();
     if (!body || !pupilId || sending) return;
@@ -161,18 +248,32 @@ export function SendMessageSheet({
 
       // 2. Optional SMS — same queue logic as gaps.tsx
       if (sendSms && pupilPhone) {
-        const { error: smsErr } = await supabase.from("sms_queue").insert({
-          instructor_id: uid,
-          pupil_phone: pupilPhone,
-          message: body,
-        });
+        const { data: smsRow, error: smsErr } = await supabase
+          .from("sms_queue")
+          .insert({
+            instructor_id: uid,
+            pupil_phone: pupilPhone,
+            message: body,
+          })
+          .select("id")
+          .single();
         if (smsErr) {
           console.error("[SendMessageSheet] sms_queue insert failed:", smsErr);
+          setSmsStatus("failed");
           toast.error("Message sent, but the text failed to queue");
         } else {
+          setSmsStatus("queued");
           // Fire and forget — don't wait for cron
           void supabase.functions.invoke("send-sms", { body: {} });
+          setSmsStatus("sending");
+          if (smsRow?.id) watchSmsStatus(smsRow.id as string);
         }
+
+        toast.success("Message sent");
+        onSent?.();
+        // Keep the sheet open so delivery progress stays visible
+        setMessageText("");
+        return;
       }
 
       toast.success("Message sent");
@@ -196,11 +297,44 @@ export function SendMessageSheet({
       subtitle={pupilName || undefined}
       onClose={onClose}
       footer={
-        <PrimaryButton onClick={handleSend} disabled={!canSend}>
-          {sending ? "Sending…" : "Send"}
-        </PrimaryButton>
+        smsStatus === "idle" ? (
+          <PrimaryButton onClick={handleSend} disabled={!canSend}>
+            {sending ? "Sending…" : "Send"}
+          </PrimaryButton>
+        ) : (
+          <PrimaryButton onClick={onClose}>Done</PrimaryButton>
+        )
       }
     >
+      {/* SMS delivery status */}
+      {smsStatus !== "idle" && (
+        <div
+          style={{
+            ...cardStyle,
+            background: SMS_STATUS_UI[smsStatus].bg,
+            border: `1px solid ${SMS_STATUS_UI[smsStatus].border}`,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: SMS_STATUS_UI[smsStatus].fg,
+                flexShrink: 0,
+              }}
+            />
+            <div style={{ fontSize: 14, fontWeight: 700, color: SMS_STATUS_UI[smsStatus].fg }}>
+              SMS {SMS_STATUS_UI[smsStatus].label}
+            </div>
+          </div>
+          <div style={{ fontSize: 12, color: "#8A93A3", marginTop: 4 }}>
+            {SMS_STATUS_UI[smsStatus].detail}
+          </div>
+        </div>
+      )}
+
       {/* Pupil selector */}
       <div style={cardStyle}>
         <SectionLabel>PUPIL</SectionLabel>
