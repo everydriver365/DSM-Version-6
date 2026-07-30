@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Info, Copy, Check, Calendar, AlertTriangle, ChevronDown, Loader2, AlertCircle, CheckCircle } from "lucide-react";
+import { ArrowLeft, Info, Copy, Check, Calendar, CalendarPlus, AlertTriangle, ChevronDown, Loader2, AlertCircle, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
@@ -25,6 +25,18 @@ function timeAgo(iso: string): string {
   if (h < 24) return `${h} hour${h === 1 ? "" : "s"} ago`;
   const d = Math.floor(h / 24);
   return `${d} day${d === 1 ? "" : "s"} ago`;
+}
+
+function formatDate(iso: string | null | undefined): string {
+  if (!iso) return "Never";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "Never";
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+
+interface GoogleConnection {
+  connected_at: string | null;
+  last_synced_at: string | null;
 }
 
 export const Route = createFileRoute("/calendarsync")({
@@ -52,6 +64,9 @@ function CalendarSyncPage() {
   const [howToOpen, setHowToOpen] = useState(false);
   const [removing, setRemoving] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [conn, setConn] = useState<GoogleConnection | null>(null);
+  const [connecting, setConnecting] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -106,6 +121,87 @@ function CalendarSyncPage() {
       }
     })();
   }, [navigate]);
+
+  // Google Calendar (outbound) connection state + OAuth return handling
+  useEffect(() => {
+    (async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      const uid = userData.user?.id;
+      if (!uid) return;
+      try {
+        const { data: row } = await supabase
+          .from("google_calendar_connections")
+          .select("connected_at, last_synced_at")
+          .eq("instructor_id", uid)
+          .maybeSingle();
+        setConn((row as GoogleConnection | null) ?? null);
+      } catch {
+        // table may not exist yet
+      }
+    })();
+
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const connected = params.get("connected");
+    const err = params.get("error");
+    if (connected === "google") {
+      toast.success("Google Calendar connected");
+    } else if (err === "google_denied") {
+      toast.error("Google Calendar access was denied");
+    } else if (err === "token_failed") {
+      toast.error("Could not complete Google Calendar connection");
+    }
+    if (connected || err) {
+      params.delete("connected");
+      params.delete("error");
+      const qs = params.toString();
+      window.history.replaceState({}, "", window.location.pathname + (qs ? `?${qs}` : ""));
+    }
+  }, []);
+
+  async function connectGoogle() {
+    setConnecting(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      const { data, error } = await supabase.functions.invoke("google-calendar-auth", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (error) throw error;
+      const url = (data as { url?: string } | null)?.url;
+      if (url) {
+        window.location.href = url;
+        return;
+      }
+      toast.error("Could not start Google sign-in");
+    } catch {
+      toast.error("Could not connect to Google Calendar");
+    } finally {
+      setConnecting(false);
+    }
+  }
+
+  async function disconnectGoogle() {
+    if (!userId) return;
+    setDisconnecting(true);
+    try {
+      const today = new Date().toISOString().split("T")[0];
+      await supabase.from("google_calendar_connections").delete().eq("instructor_id", userId);
+      await supabase
+        .from("lessons")
+        .update({ google_event_id: null })
+        .eq("instructor_id", userId)
+        .gte("lesson_date", today);
+      setConn(null);
+      toast.success("Google Calendar disconnected");
+    } catch {
+      toast.error("Could not disconnect Google Calendar");
+    } finally {
+      setDisconnecting(false);
+    }
+  }
+
+
 
   async function runSync(urlToUse: string) {
     if (!userId) return;
@@ -281,6 +377,8 @@ function CalendarSyncPage() {
           </p>
         </div>
 
+        {/* Section 1 — Google events → DSM */}
+        <SectionHeader>GOOGLE EVENTS → DSM</SectionHeader>
         {/* Import external Google Calendar */}
         <div
           style={{
@@ -483,7 +581,87 @@ function CalendarSyncPage() {
           )}
         </div>
 
+        {/* ---- Divider ---- */}
+        <div style={{ height: 1, background: "#E2E6ED", margin: "24px 0" }} />
+
+        {/* Section 2 — DSM lessons → Google */}
+        <SectionHeader>DSM LESSONS → GOOGLE</SectionHeader>
+        <div
+          style={{
+            backgroundColor: "#FFFFFF",
+            borderWidth: "0.5px",
+            borderStyle: "solid",
+            borderColor: "#E2E6ED",
+            borderRadius: 12,
+            padding: 16,
+          }}
+        >
+          <p className="text-xs" style={{ ...POPPINS, color: "#6B7280", marginBottom: 14 }}>
+            Connect your Google account so lessons you book in DSM appear in your Google Calendar straight away.
+          </p>
+
+          {conn ? (
+            <>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <CheckCircle size={18} color="#16A34A" />
+                <span className="text-[14px] font-semibold" style={{ ...POPPINS, color: "#0B1F3A" }}>
+                  Connected to Google Calendar
+                </span>
+              </div>
+              <div className="text-xs" style={{ ...POPPINS, color: "#6B7280", marginTop: 8 }}>
+                Connected on: {formatDate(conn.connected_at)}
+              </div>
+              <div className="text-xs" style={{ ...POPPINS, color: "#6B7280", marginTop: 2 }}>
+                Last synced: {formatDate(conn.last_synced_at)}
+              </div>
+              <button
+                type="button"
+                onClick={disconnectGoogle}
+                disabled={disconnecting}
+                className="w-full rounded-xl text-sm font-semibold"
+                style={{
+                  ...POPPINS,
+                  marginTop: 14,
+                  paddingTop: 11,
+                  paddingBottom: 11,
+                  color: "#CC2229",
+                  background: "#FFFFFF",
+                  border: "1px solid #CC2229",
+                  opacity: disconnecting ? 0.6 : 1,
+                }}
+              >
+                {disconnecting ? "Disconnecting…" : "Disconnect"}
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={connectGoogle}
+              disabled={connecting}
+              className="w-full rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2"
+              style={{
+                ...POPPINS,
+                backgroundColor: "#1877D6",
+                paddingTop: 12,
+                paddingBottom: 12,
+                opacity: connecting ? 0.6 : 1,
+              }}
+            >
+              {connecting ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" /> Connecting…
+                </>
+              ) : (
+                <>
+                  <CalendarPlus size={16} /> Connect Google Calendar
+                </>
+              )}
+            </button>
+          )}
+        </div>
+
         {/* ICS Feed URL */}
+
         <SectionHeader>YOUR ICS FEED URL</SectionHeader>
         <Card className="flex flex-col gap-3">
           <input
