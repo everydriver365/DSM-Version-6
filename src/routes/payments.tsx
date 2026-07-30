@@ -352,7 +352,7 @@ function PaymentsPage() {
       >
         <button
           type="button"
-          onClick={() => setTakeOpen(true)}
+          onClick={() => { setTakePaymentPupilId(pupilFilter && pupilFilter !== "all" ? pupilFilter : undefined); setTakePaymentOpen(true); }}
           className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
           style={{ backgroundColor: TEAL }}
         >
