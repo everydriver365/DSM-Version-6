@@ -6074,12 +6074,12 @@ function HomePage() {
             {(() => {
               const unreadCount = unreadMsgs.length;
               type GraphicKind = 'timeline' | 'calendar' | 'donut' | 'chart' | 'bubbles' | 'alarm' | 'book' | 'medal' | 'swap' | 'repeat' | 'checklist' | 'receipt' | 'grad' | 'map' | 'location' | 'fuel' | 'car' | 'bars' | 'moon' | 'invoice' | 'trend' | 'gear' | 'clock2' | 'sync' | 'gift' | 'shield' | 'spark' | 'calc' | 'card';
-              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late' | 'nearby'; badge?: number; graphic?: GraphicKind };
+              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late' | 'nearby' | 'take-payment'; badge?: number; graphic?: GraphicKind };
               const quickTiles: QuickTile[] = [
                 // First four
                 { label: 'Fill slots', sub: 'Gaps', route: '/gaps', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0, badge: freeSlotCount, graphic: 'timeline' },
                 { label: 'Schedule', sub: 'View diary', route: null, icon: IconCalendar, iconStroke: '#1877D6', chipBg: '#E6F1FB', wsIndex: 1, graphic: 'calendar' },
-                { label: 'Take payment', sub: 'Card & QR', route: '/take-payment', icon: IconCreditCard, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', graphic: 'card' },
+                { label: 'Take payment', sub: 'Card & QR', route: null, icon: IconCreditCard, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', action: 'take-payment', graphic: 'card' },
                 { label: 'Nearby', sub: 'Find places', route: null, icon: IconMapPin, iconStroke: '#1877D6', chipBg: '#E6F1FB', action: 'nearby', graphic: 'location' },
                 // Page 2 — Teaching
                 { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, iconStroke: '#6B4FA0', chipBg: '#EAE3F5', graphic: 'donut' },
