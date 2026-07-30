@@ -1444,6 +1444,8 @@ function HomePage() {
   const [allAvailability, setAllAvailability] = useState<PupilReadySetting[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
   const [addLessonOpen, setAddLessonOpen] = useState(false);
+  const [takePaymentOpen, setTakePaymentOpen] = useState(false);
+  const [takePaymentPupilId, setTakePaymentPupilId] = useState<string | undefined>();
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
   const [lessons, setLessons] = useState<LessonRow[]>([]);
