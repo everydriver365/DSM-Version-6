@@ -67,6 +67,7 @@ export function SendMessageSheet({
   const [messageText, setMessageText] = useState("");
   const [sendSms, setSendSms] = useState(true);
   const [sending, setSending] = useState(false);
+  const [pendingPupil, setPendingPupil] = useState<PupilRow | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   // Reset when opened
@@ -78,6 +79,7 @@ export function SendMessageSheet({
     setMessageText("");
     setSendSms(true);
     setSending(false);
+    setPendingPupil(null);
     const t = setTimeout(() => textareaRef.current?.focus(), 120);
     return () => clearTimeout(t);
   }, [open, initialPupilId]);
@@ -119,6 +121,14 @@ export function SendMessageSheet({
     if (!q) return pupils;
     return pupils.filter((p) => (p.name ?? "").toLowerCase().includes(q));
   }, [pupils, pupilQuery]);
+
+  function applyPupil(p: PupilRow) {
+    setPupilId(p.id);
+    setPupilOpen(false);
+    setPupilQuery("");
+    setSendSms(!!p.phone);
+    setPendingPupil(null);
+  }
 
   function insertTemplate(body: string) {
     const first = (pupilName || "").trim().split(" ")[0] || "there";
@@ -208,6 +218,62 @@ export function SendMessageSheet({
           </div>
         )}
 
+        {pendingPupil && (
+          <div
+            style={{
+              marginTop: 8,
+              padding: 10,
+              borderRadius: 10,
+              border: "1px solid #FCD9A8",
+              background: "#FFF7EC",
+            }}
+          >
+            <div style={{ fontSize: 13, color: NAVY, fontWeight: 600 }}>
+              Switch to {pendingPupil.name ?? "this pupil"}?
+            </div>
+            <div style={{ fontSize: 12, color: "#8A93A3", marginTop: 2 }}>
+              Your unsent message will be kept, but it was written for{" "}
+              {pupilName || "the current pupil"}.
+            </div>
+            <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+              <button
+                type="button"
+                onClick={() => applyPupil(pendingPupil)}
+                style={{
+                  flex: 1,
+                  height: 36,
+                  borderRadius: 10,
+                  border: "none",
+                  background: BLUE,
+                  color: "#fff",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Switch pupil
+              </button>
+              <button
+                type="button"
+                onClick={() => setPendingPupil(null)}
+                style={{
+                  flex: 1,
+                  height: 36,
+                  borderRadius: 10,
+                  border: "1px solid #E2E8F0",
+                  background: "#fff",
+                  color: NAVY,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Keep current
+              </button>
+            </div>
+          </div>
+        )}
+
         {pupilOpen && (
           <div style={{ marginTop: 8 }}>
             <div style={{ position: "relative" }}>
@@ -232,10 +298,11 @@ export function SendMessageSheet({
                   key={p.id}
                   type="button"
                   onClick={() => {
-                    setPupilId(p.id);
-                    setPupilOpen(false);
-                    setPupilQuery("");
-                    setSendSms(!!p.phone);
+                    if (pupilId && p.id !== pupilId && messageText.trim()) {
+                      setPendingPupil(p);
+                      return;
+                    }
+                    applyPupil(p);
                   }}
                   style={{
                     display: "flex",
