@@ -622,9 +622,16 @@ function PaymentsPage() {
         <PupilPicker pupils={allPupils} selectedId={pupilFilter} onClose={() => setPupilPickerOpen(false)} onSelect={(id) => { setPupilFilter(id); setPupilPickerOpen(false); }} allowAll />
       )}
 
-      {takeOpen && (
-        <TakePaymentSheet pupils={allPupils} userId={userId} onClose={() => setTakeOpen(false)} onRecorded={async () => { await refetch(); }} />
-      )}
+      <SharedTakePaymentSheet
+        open={takePaymentOpen}
+        onClose={() => setTakePaymentOpen(false)}
+        initialPupilId={takePaymentPupilId}
+        onSaved={async () => {
+          setTakePaymentOpen(false);
+          await refetch();
+        }}
+      />
+
 
       {refundRow && (
         <RefundSheet row={refundRow} userId={userId} onClose={() => setRefundRow(null)} onSaved={async () => { setRefundRow(null); await refetch(); }} />
