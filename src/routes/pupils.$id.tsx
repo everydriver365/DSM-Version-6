@@ -4,6 +4,7 @@ import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Award, BarChart3, BookOpen, Calendar, Camera, Car, ChevronDown, ChevronRight, ClipboardCheck, ClipboardList, Clock, CreditCard, ExternalLink, Flag, Heart, History, Loader2, Mail, MapPin, MessageSquare, MoreHorizontal, Palette, Pencil, Phone, Plus, PoundSterling, RefreshCw, Search, Send, Trash2, Trophy, X, Check } from "lucide-react";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
+import { TakePaymentSheet } from "@/components/payments/TakePaymentSheet";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -408,6 +409,8 @@ function PupilDetailPage() {
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
+  const [takePaymentOpen, setTakePaymentOpen] = useState(false);
+  const [takePaymentPupilId, setTakePaymentPupilId] = useState<string | undefined>();
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
   const [instructorRate, setInstructorRate] = useState<number | null>(null);
   const [instructorBufferAfter, setInstructorBufferAfter] = useState<number | null>(null);
@@ -2591,7 +2594,26 @@ function PupilDetailPage() {
         {activeTab === "payments" && (
           <>
             {pupil && (<>
+            {/* Take payment */}
+            <button
+              type="button"
+              onClick={() => { setTakePaymentPupilId(pupil.id); setTakePaymentOpen(true); }}
+              className="mt-3 w-full flex items-center justify-center gap-2"
+              style={{
+                height: 44,
+                borderRadius: 12,
+                background: "#1877D6",
+                color: "#FFFFFF",
+                fontSize: 14,
+                fontWeight: 600,
+                border: "none",
+                ...POPPINS,
+              }}
+            >
+              <CreditCard size={16} color="#FFFFFF" /> Take payment
+            </button>
             {/* Prepaid balance card */}
+
             <div
               className="mt-3"
               style={{
@@ -4740,6 +4762,16 @@ function PupilDetailPage() {
         initialDate={addLessonDate}
         onSaved={() => {
           setAddLessonOpen(false);
+          setPaymentHistoryRefresh((v) => v + 1);
+        }}
+      />
+
+      <TakePaymentSheet
+        open={takePaymentOpen}
+        onClose={() => setTakePaymentOpen(false)}
+        initialPupilId={takePaymentPupilId}
+        onSaved={() => {
+          setTakePaymentOpen(false);
           setPaymentHistoryRefresh((v) => v + 1);
         }}
       />

@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { recordPayment, correctPaymentRecord } from "@/lib/payments";
+import { TakePaymentSheet as SharedTakePaymentSheet } from "@/components/payments/TakePaymentSheet";
 
 export const Route = createFileRoute("/payments")({
   head: () => ({
@@ -204,7 +205,8 @@ function PaymentsPage() {
   const [datePreset, setDatePreset] = useState<DatePreset>("month");
   const [methodFilter, setMethodFilter] = useState<MethodFilter>("all");
 
-  const [takeOpen, setTakeOpen] = useState(false);
+  const [takePaymentOpen, setTakePaymentOpen] = useState(false);
+  const [takePaymentPupilId, setTakePaymentPupilId] = useState<string | undefined>();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [menuId, setMenuId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -350,7 +352,7 @@ function PaymentsPage() {
       >
         <button
           type="button"
-          onClick={() => setTakeOpen(true)}
+          onClick={() => { setTakePaymentPupilId(pupilFilter && pupilFilter !== "all" ? pupilFilter : undefined); setTakePaymentOpen(true); }}
           className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
           style={{ backgroundColor: TEAL }}
         >
@@ -621,9 +623,16 @@ function PaymentsPage() {
         <PupilPicker pupils={allPupils} selectedId={pupilFilter} onClose={() => setPupilPickerOpen(false)} onSelect={(id) => { setPupilFilter(id); setPupilPickerOpen(false); }} allowAll />
       )}
 
-      {takeOpen && (
-        <TakePaymentSheet pupils={allPupils} userId={userId} onClose={() => setTakeOpen(false)} onRecorded={async () => { await refetch(); }} />
-      )}
+      <SharedTakePaymentSheet
+        open={takePaymentOpen}
+        onClose={() => setTakePaymentOpen(false)}
+        initialPupilId={takePaymentPupilId}
+        onSaved={async () => {
+          setTakePaymentOpen(false);
+          await refetch();
+        }}
+      />
+
 
       {refundRow && (
         <RefundSheet row={refundRow} userId={userId} onClose={() => setRefundRow(null)} onSaved={async () => { setRefundRow(null); await refetch(); }} />
