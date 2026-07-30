@@ -144,7 +144,7 @@ export function DailyCatchUpSheet({
 
         <button
           type="button"
-          onClick={onDismiss}
+          onClick={() => onRowClick("/whats-changed")}
           style={{
             width: "100%",
             padding: "14px 16px",
@@ -158,7 +158,7 @@ export function DailyCatchUpSheet({
             fontFamily: FONT,
           }}
         >
-          Got it
+          See what's changed →
         </button>
       </div>
     </div>
