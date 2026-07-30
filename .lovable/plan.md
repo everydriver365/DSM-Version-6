@@ -1,45 +1,44 @@
-# Google Calendar: two-way setup UI + push on lesson create
+# Google Calendar: connect account + push lessons out
 
-Scope: only `src/routes/calendarsync.tsx`, `src/routes/lessons.new.tsx`, `src/components/lessons/AddLessonSheet.tsx`.
+Three files change: `src/routes/calendarsync.tsx`, `src/routes/lessons.new.tsx`, `src/components/lessons/AddLessonSheet.tsx`. Nothing else.
 
-## What exists today
+## Current state (verified by reading the files)
 
-`calendarsync.tsx` (800 lines) renders, in order: info card → "Import your Google Calendar" card (ICS URL paste, sync error / last-synced states, "Save and sync calendar", "Sync now", "Remove calendar") → "YOUR ICS FEED URL" card (copy/share) → "How calendar sync works" → info banner.
+- **calendarsync.tsx** (800 lines): one continuous page — copyable DSM ICS feed URL, a "paste your Google ICS URL" input, a "Sync now" button that calls the `sync-external-calendar` edge function, last-synced/error status, and a "How to" accordion. All of it is inbound only (Google → DSM). There is no outbound connection UI.
+- **lessons.new.tsx**: `handleSave()` inserts the lesson with `supabase.from("lessons").insert({...})` and does **not** request the new row's id. Recurring occurrences are inserted through a raw REST `POST /rest/v1/lessons` with `Prefer: return=minimal`, so no ids come back. It also defines and calls `syncToGoogleCalendar()`, which just re-runs the inbound sync and opens google.com/calendar in a tab — misleading, gets removed along with the toast action that triggers it.
+- **AddLessonSheet.tsx**: same save logic; the single lesson insert already ends with `.select("id")`, and the recurring batch also uses `Prefer: return=minimal`.
 
-`AddLessonSheet.tsx` already inserts with `.select("id").single()` into `insertedLesson` (line ~285). `lessons.new.tsx` inserts without `.select()`, so it needs `.select("id").single()` added to get the new lesson id.
+## Section 1 — calendarsync.tsx
 
-## Changes
+Keep every existing ICS behaviour untouched, just group it under a header **"Google events → DSM"**, then a divider, then the new section.
 
-### 1. calendarsync.tsx — two labelled sections
+**"DSM lessons → Google"** — on mount, read `google_calendar_connections` for the signed-in instructor (`connected_at`, `last_synced_at`, `maybeSingle`). Also read the URL query on mount:
 
-**Section 1 — "Bring Google events into DSM"**
-Add a `SectionHeader` above the existing import card. Logic, state and markup inside it stay byte-identical.
+- `?connected=google` → success toast
+- `?error=google_denied` / `?error=token_failed` → error toast
 
-**Section 2 — "Send DSM lessons to Google"** (new card, placed directly below section 1, above the ICS feed card)
+then strip the param from the URL.
 
-On mount (in the existing auth effect, after `setUserId`), read `google_calendar_connections` for `connected_at, last_synced_at` where `instructor_id = user.id` via `maybeSingle()`; failures are swallowed so the page still renders.
+Not connected: full-width blue (#1877D6) "Connect Google Calendar" button that invokes the `google-calendar-auth` edge function with the user's bearer token and redirects to the returned `url`.
 
-- Not connected: full-width blue `#1877D6` "Connect Google Calendar" button. On click, `supabase.functions.invoke("google-calendar-auth")`, take `{ url }` from the response and `window.location.href = url`. Error toast if no url comes back.
-- Connected: green check + "Connected on {connected_at formatted}", "Last synced: {timeAgo(last_synced_at)}" (reusing the existing `timeAgo` helper), and a red-outline "Disconnect" button that deletes the `google_calendar_connections` row and clears `google_event_id` on the instructor's future lessons (`lesson_date >= today`), then resets local state and toasts.
+Connected: green check + "Connected to Google Calendar", muted "Connected on {date}" and "Last synced: {date or Never}", plus a red-outline "Disconnect" that deletes the connection row, nulls `google_event_id` on that instructor's lessons from today onward, toasts success, and clears local state.
 
-Also on mount, read `window.location.search`: `?connected=google` → success toast, `?error=...` → error toast; strip the params with `history.replaceState` so they don't re-fire.
+## Section 2 — push on save
 
-The existing "How calendar sync works" copy that says lessons appear in Google "within 24 hours" stays as-is unless you want it reworded once the push path is live.
-
-### 2 & 3. Push new lessons
-
-`lessons.new.tsx`: change the insert to `.select("id").single()` and keep the existing error handling. `AddLessonSheet.tsx` already returns the id.
-
-In both, immediately after the successful insert:
+In both `lessons.new.tsx` and `AddLessonSheet.tsx`, after a lesson row is saved successfully, fire and forget:
 
 ```ts
 void supabase.functions.invoke("google-calendar-sync", {
-  body: { action: "push", lesson_id: newLesson.id, instructor_id: user.id },
+  body: { action: "push", lesson_id, instructor_id: userId },
 });
 ```
 
-Not awaited, no toast, no error surfaced — save flow and navigation are unchanged.
+Never awaited, never surfaced as an error.
 
-## Prerequisite worth flagging
+To have an id to push, the single insert in `lessons.new.tsx` gains `.select("id").single()`, and the recurring batch POST in both files switches its `Prefer` header to `return=representation` so the returned rows' ids can each be pushed. Existing insert payloads, pricing, prepaid and series logic stay exactly as they are.
 
-Neither `google-calendar-auth` nor `google-calendar-sync` exists in `supabase/functions/`, and there's no migration for `google_calendar_connections` or a `lessons.google_event_id` column in `db/`. This plan builds only the three frontend files you named, so until those backend pieces are deployed the Connect button will error and the push call will no-op silently (by design). Say the word if you want a follow-up plan for the edge functions and migration.
+`syncToGoogleCalendar()` and the toast action that calls it are deleted from `lessons.new.tsx`; the toast becomes a plain "Lesson added".
+
+## Dependencies outside these files
+
+This is the frontend half. It assumes the backend pieces already exist (or will be added separately): the `google_calendar_connections` table, a `google_event_id` column on `lessons`, and the `google-calendar-auth` / `google-calendar-sync` edge functions. Until those exist, connect will error and the push calls will silently no-op — which is exactly the fire-and-forget behaviour requested.
