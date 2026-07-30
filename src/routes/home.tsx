@@ -6111,7 +6111,7 @@ function HomePage() {
                 { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
                 { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: Zap, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'spark' },
               ];
-              const tilesPerPage = 4;
+              const tilesPerPage = 6;
               const totalPages = Math.ceil(quickTiles.length / tilesPerPage);
               const currentTiles = quickTiles.slice(quickPage * tilesPerPage, (quickPage + 1) * tilesPerPage);
 
