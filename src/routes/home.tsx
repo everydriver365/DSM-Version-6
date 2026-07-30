@@ -6142,12 +6142,12 @@ function HomePage() {
                       background: '#FFFFFF',
                       border: '1px solid #E2E8F0',
                       borderRadius: 14,
-                      padding: 12,
-                      minHeight: 112,
+                      padding: 10,
+                      minHeight: 94,
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'flex-start',
-                      gap: 12,
+                      gap: 8,
                       cursor: 'pointer',
                       textAlign: 'left',
                       fontFamily: "Poppins, Inter, sans-serif",
@@ -6159,8 +6159,8 @@ function HomePage() {
                     {tile.attention && (
                       <span style={{
                         position: 'absolute',
-                        top: 12,
-                        right: 12,
+                        top: 10,
+                        right: 10,
                         width: 8,
                         height: 8,
                         borderRadius: 999,
@@ -6170,9 +6170,9 @@ function HomePage() {
                     <div
                       className="qa-icon"
                       style={{
-                        width: 34,
-                        height: 34,
-                        borderRadius: 9,
+                        width: 30,
+                        height: 30,
+                        borderRadius: 8,
                         background: tile.chipBg,
                         display: 'flex',
                         alignItems: 'center',
@@ -6181,11 +6181,11 @@ function HomePage() {
                         transition: 'transform 0.15s ease',
                       }}
                     >
-                      <Icon size={17} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={2} />
+                      <Icon size={15} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={2} />
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, maxWidth: '100%' }}>
-                      <span style={{ fontSize: 13, fontWeight: 500, color: '#0B1F3A', lineHeight: 1.25, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: "Poppins, Inter, sans-serif" }}>{tile.label}</span>
-                      <span style={{ marginTop: 2, fontSize: 11, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: 1.3, fontFamily: "Poppins, Inter, sans-serif" }}>{tile.sub}</span>
+                      <span style={{ fontSize: 11, fontWeight: 500, color: '#0B1F3A', lineHeight: 1.25, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: "Poppins, Inter, sans-serif" }}>{tile.label}</span>
+                      <span style={{ marginTop: 1, fontSize: 10, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: 1.3, fontFamily: "Poppins, Inter, sans-serif" }}>{tile.sub}</span>
                     </div>
                   </button>
                 );
