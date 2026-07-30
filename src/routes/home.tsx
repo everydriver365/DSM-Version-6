@@ -179,6 +179,7 @@ import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { TakePaymentSheet } from "@/components/payments/TakePaymentSheet";
+import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
@@ -1445,6 +1446,7 @@ function HomePage() {
   const [reloadKey, setReloadKey] = useState(0);
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [takePaymentOpen, setTakePaymentOpen] = useState(false);
+  const [addExpenseOpen, setAddExpenseOpen] = useState(false);
   const [takePaymentPupilId, setTakePaymentPupilId] = useState<string | undefined>();
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
@@ -6077,7 +6079,7 @@ function HomePage() {
             {(() => {
               const unreadCount = unreadMsgs.length;
               type GraphicKind = 'timeline' | 'calendar' | 'donut' | 'chart' | 'bubbles' | 'alarm' | 'book' | 'medal' | 'swap' | 'repeat' | 'checklist' | 'receipt' | 'grad' | 'map' | 'location' | 'fuel' | 'car' | 'bars' | 'moon' | 'invoice' | 'trend' | 'gear' | 'clock2' | 'sync' | 'gift' | 'shield' | 'spark' | 'calc' | 'card';
-              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late' | 'nearby' | 'take-payment'; badge?: number; graphic?: GraphicKind };
+              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late' | 'nearby' | 'take-payment' | 'add-expense'; badge?: number; graphic?: GraphicKind };
               const quickTiles: QuickTile[] = [
                 // First four
                 { label: 'Fill slots', sub: 'Gaps', route: '/gaps', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0, badge: freeSlotCount, graphic: 'timeline' },
@@ -6097,6 +6099,7 @@ function HomePage() {
                 { label: 'Mock tests', sub: 'Practice', route: '/mock-tests', icon: ClipboardCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
                 // Page 3 — Business
                 { label: 'Expenses', sub: 'Track costs', route: '/expenses', icon: Receipt, iconStroke: '#C23B3B', chipBg: '#FBE2E2', graphic: 'receipt' },
+                { label: 'Log expense', sub: 'Add cost', route: null, icon: Receipt, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'add-expense', graphic: 'receipt' },
                 { label: 'Certifications', sub: 'Licences', route: '/certifications', icon: Award, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'shield' },
                 { label: 'CPD log', sub: 'Development', route: '/cpd', icon: GraduationCap, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'bars' },
                 { label: 'Mileage', sub: 'Log miles', route: '/mileage', icon: MapPin, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'map' },
@@ -6126,6 +6129,7 @@ function HomePage() {
                 if (tile.action === 'running-late') { setRunningLateOpen(true); return; }
                 else if (tile.action === 'nearby') { setNearbyOpen(true); return; }
                 else if (tile.action === 'take-payment') { setTakePaymentOpen(true); return; }
+                else if (tile.action === 'add-expense') { setAddExpenseOpen(true); return; }
                 if (tile.wsIndex === 1) { navigate({ to: '/schedule' as never }); return; }
                 if (tile.wsIndex === 2) { navigate({ to: '/pupils' as never }); return; }
                 if (tile.wsIndex === 3) { navigate({ to: '/payments' as never }); return; }
@@ -6823,6 +6827,12 @@ function HomePage() {
           setTakePaymentPupilId(undefined);
           setReloadKey((k) => k + 1);
         }}
+      />
+
+      <AddExpenseSheet
+        open={addExpenseOpen}
+        onClose={() => setAddExpenseOpen(false)}
+        onSaved={() => setReloadKey((k) => k + 1)}
       />
 
 
