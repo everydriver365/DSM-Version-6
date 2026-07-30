@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Plus, Car, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { LogMileageSheet } from "@/components/mileage/LogMileageSheet";
 
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -47,6 +48,7 @@ function MileagePage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [logs, setLogs] = useState<MileageRow[]>([]);
   const [showSheet, setShowSheet] = useState(false);
+  const [logMileageOpen, setLogMileageOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<MileageRow | null>(null);
 
   const [tripDate, setTripDate] = useState(ymd(new Date()));
@@ -175,7 +177,7 @@ function MileagePage() {
       >
         <button
           type="button"
-          onClick={openSheet}
+          onClick={() => setLogMileageOpen(true)}
           className="inline-flex items-center gap-1 text-[13px] font-semibold text-white"
           style={{ background: "#1877D6", borderRadius: 999, padding: "8px 14px", border: "none" }}
         >
@@ -407,6 +409,14 @@ function MileagePage() {
           to { transform: translateY(0); }
         }
       `}</style>
+
+      <LogMileageSheet
+        open={logMileageOpen}
+        onClose={() => setLogMileageOpen(false)}
+        onSaved={() => {
+          if (userId) fetchLogs(userId);
+        }}
+      />
 
       <ConfirmDialog
         open={pendingDelete !== null}
