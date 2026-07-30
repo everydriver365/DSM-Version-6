@@ -122,6 +122,87 @@ function CalendarSyncPage() {
     })();
   }, [navigate]);
 
+  // Google Calendar (outbound) connection state + OAuth return handling
+  useEffect(() => {
+    (async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      const uid = userData.user?.id;
+      if (!uid) return;
+      try {
+        const { data: row } = await supabase
+          .from("google_calendar_connections")
+          .select("connected_at, last_synced_at")
+          .eq("instructor_id", uid)
+          .maybeSingle();
+        setConn((row as GoogleConnection | null) ?? null);
+      } catch {
+        // table may not exist yet
+      }
+    })();
+
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const connected = params.get("connected");
+    const err = params.get("error");
+    if (connected === "google") {
+      toast.success("Google Calendar connected");
+    } else if (err === "google_denied") {
+      toast.error("Google Calendar access was denied");
+    } else if (err === "token_failed") {
+      toast.error("Could not complete Google Calendar connection");
+    }
+    if (connected || err) {
+      params.delete("connected");
+      params.delete("error");
+      const qs = params.toString();
+      window.history.replaceState({}, "", window.location.pathname + (qs ? `?${qs}` : ""));
+    }
+  }, []);
+
+  async function connectGoogle() {
+    setConnecting(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      const { data, error } = await supabase.functions.invoke("google-calendar-auth", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (error) throw error;
+      const url = (data as { url?: string } | null)?.url;
+      if (url) {
+        window.location.href = url;
+        return;
+      }
+      toast.error("Could not start Google sign-in");
+    } catch {
+      toast.error("Could not connect to Google Calendar");
+    } finally {
+      setConnecting(false);
+    }
+  }
+
+  async function disconnectGoogle() {
+    if (!userId) return;
+    setDisconnecting(true);
+    try {
+      const today = new Date().toISOString().split("T")[0];
+      await supabase.from("google_calendar_connections").delete().eq("instructor_id", userId);
+      await supabase
+        .from("lessons")
+        .update({ google_event_id: null })
+        .eq("instructor_id", userId)
+        .gte("lesson_date", today);
+      setConn(null);
+      toast.success("Google Calendar disconnected");
+    } catch {
+      toast.error("Could not disconnect Google Calendar");
+    } finally {
+      setDisconnecting(false);
+    }
+  }
+
+
+
   async function runSync(urlToUse: string) {
     if (!userId) return;
     const trimmed = urlToUse.trim();
