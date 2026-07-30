@@ -421,10 +421,7 @@ function TakePaymentPage() {
           pupil_id: pupilId || undefined,
           pupil_name: pupilName || undefined,
           description: description || "Payment",
-          commission: 1,
           mode: "embedded",
-          booking_fee_pence: 100,
-          instructor_payout_pence: amountPence - 100,
           fee_absorbed_by_instructor: !passBookingFee,
         },
       });
