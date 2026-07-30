@@ -27,6 +27,18 @@ function timeAgo(iso: string): string {
   return `${d} day${d === 1 ? "" : "s"} ago`;
 }
 
+function formatDate(iso: string | null | undefined): string {
+  if (!iso) return "Never";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "Never";
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+
+interface GoogleConnection {
+  connected_at: string | null;
+  last_synced_at: string | null;
+}
+
 export const Route = createFileRoute("/calendarsync")({
   head: () => ({
     meta: [
