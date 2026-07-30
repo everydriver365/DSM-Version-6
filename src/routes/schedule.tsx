@@ -448,7 +448,7 @@ function SchedulePage() {
     return () => {
       cancelled = true;
     };
-  }, [rangeStart, rangeEnd]);
+  }, [rangeStart, rangeEnd, lessonsReloadKey]);
 
   // Fetch external calendar blocks in the same window.
   const fetchCalendarBlocks = useCallback(async () => {
