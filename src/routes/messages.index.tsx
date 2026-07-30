@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MessageCircle, Search, Send, Flag, X, Briefcase, CheckCheck as Check } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -177,8 +177,8 @@ function MessagesIndexPage() {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const scrollBoxRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    (async () => {
+  const loadConvos = useCallback(async () => {
+    {
       const { data: sessionRes } = await supabase.auth.getSession();
       const token = sessionRes.session?.access_token;
       const uid = sessionRes.session?.user?.id;
@@ -225,8 +225,53 @@ function MessagesIndexPage() {
 
       setConvos(latest.map((c) => ({ ...c, pupil: pupilMap.get(c.pupil_id) })));
       setLoading(false);
-    })();
+    }
   }, []);
+
+  useEffect(() => {
+    void loadConvos();
+  }, [loadConvos]);
+
+  // Keep the inbox fresh when a message is sent from Home, a pupil page or Schedule
+  useEffect(() => {
+    let uid: string | null = null;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let cancelled = false;
+
+    (async () => {
+      const { data: sessionRes } = await supabase.auth.getSession();
+      uid = sessionRes.session?.user?.id ?? null;
+      if (!uid || cancelled) return;
+      channel = supabase
+        .channel(`inbox_chat_messages_${uid}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "chat_messages",
+            filter: `instructor_id=eq.${uid}`,
+          },
+          () => {
+            void loadConvos();
+          },
+        )
+        .subscribe();
+    })();
+
+    function onVisible() {
+      if (document.visibilityState === "visible") void loadConvos();
+    }
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", onVisible);
+
+    return () => {
+      cancelled = true;
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", onVisible);
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, [loadConvos]);
 
   // Fetch user id + instructor once for local chat
   useEffect(() => {
