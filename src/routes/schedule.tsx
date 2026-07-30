@@ -1823,6 +1823,7 @@ function SchedulePage() {
                                             }}
                                           >
                                             Message pupil
+                                          </button>
                                           <button
                                             type="button"
                                             style={itemStyle}
