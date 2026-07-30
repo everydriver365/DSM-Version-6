@@ -483,7 +483,87 @@ function CalendarSyncPage() {
           )}
         </div>
 
+        {/* ---- Divider ---- */}
+        <div style={{ height: 1, background: "#E2E6ED", margin: "24px 0" }} />
+
+        {/* Section 2 — DSM lessons → Google */}
+        <SectionHeader>DSM LESSONS → GOOGLE</SectionHeader>
+        <div
+          style={{
+            backgroundColor: "#FFFFFF",
+            borderWidth: "0.5px",
+            borderStyle: "solid",
+            borderColor: "#E2E6ED",
+            borderRadius: 12,
+            padding: 16,
+          }}
+        >
+          <p className="text-xs" style={{ ...POPPINS, color: "#6B7280", marginBottom: 14 }}>
+            Connect your Google account so lessons you book in DSM appear in your Google Calendar straight away.
+          </p>
+
+          {conn ? (
+            <>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <CheckCircle size={18} color="#16A34A" />
+                <span className="text-[14px] font-semibold" style={{ ...POPPINS, color: "#0B1F3A" }}>
+                  Connected to Google Calendar
+                </span>
+              </div>
+              <div className="text-xs" style={{ ...POPPINS, color: "#6B7280", marginTop: 8 }}>
+                Connected on: {formatDate(conn.connected_at)}
+              </div>
+              <div className="text-xs" style={{ ...POPPINS, color: "#6B7280", marginTop: 2 }}>
+                Last synced: {formatDate(conn.last_synced_at)}
+              </div>
+              <button
+                type="button"
+                onClick={disconnectGoogle}
+                disabled={disconnecting}
+                className="w-full rounded-xl text-sm font-semibold"
+                style={{
+                  ...POPPINS,
+                  marginTop: 14,
+                  paddingTop: 11,
+                  paddingBottom: 11,
+                  color: "#CC2229",
+                  background: "#FFFFFF",
+                  border: "1px solid #CC2229",
+                  opacity: disconnecting ? 0.6 : 1,
+                }}
+              >
+                {disconnecting ? "Disconnecting…" : "Disconnect"}
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={connectGoogle}
+              disabled={connecting}
+              className="w-full rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2"
+              style={{
+                ...POPPINS,
+                backgroundColor: "#1877D6",
+                paddingTop: 12,
+                paddingBottom: 12,
+                opacity: connecting ? 0.6 : 1,
+              }}
+            >
+              {connecting ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" /> Connecting…
+                </>
+              ) : (
+                <>
+                  <CalendarPlus size={16} /> Connect Google Calendar
+                </>
+              )}
+            </button>
+          )}
+        </div>
+
         {/* ICS Feed URL */}
+
         <SectionHeader>YOUR ICS FEED URL</SectionHeader>
         <Card className="flex flex-col gap-3">
           <input
