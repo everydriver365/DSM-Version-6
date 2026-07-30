@@ -134,6 +134,14 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
     if (!userId) return;
     let cancelled = false;
 
+    // Record this login so /whats-changed knows the "since" window.
+    try {
+      const loginKey = `dsm.lastLogin.${userId}`;
+      if (!localStorage.getItem(loginKey)) {
+        localStorage.setItem(loginKey, new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+      }
+    } catch {}
+
     (async () => {
       // --- What's new evaluation (async) ---
       const last = await getLastSeenVersion(userId);
@@ -239,6 +247,7 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
         onDismiss={() => {
           setCatchUpHandled(true);
           setActive("none");
+          navigate({ to: "/whats-changed" as never });
         }}
         onRowClick={(to) => {
           setCatchUpHandled(true);
