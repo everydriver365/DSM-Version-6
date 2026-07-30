@@ -6849,6 +6849,15 @@ function HomePage() {
         onSaved={() => setReloadKey((k) => k + 1)}
       />
 
+      <SendMessageSheet
+        open={sendMessageOpen}
+        onClose={() => { setSendMessageOpen(false); setSendMessagePupilId(undefined); }}
+        initialPupilId={sendMessagePupilId}
+        onSent={() => setReloadKey((k) => k + 1)}
+      />
+
+
+
 
 
 
