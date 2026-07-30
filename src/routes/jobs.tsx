@@ -468,6 +468,8 @@ function JobsPage() {
         body: {
           amount: amountPence,
           currency: "GBP",
+          payment_type: "course",
+          instructor_id: uid,
           metadata: { jobOfferId: job.id, pupil_email: job.pupil_email, pupil_name: job.pupil_name },
         },
       });
