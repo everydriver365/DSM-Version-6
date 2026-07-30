@@ -1368,20 +1368,6 @@ function PupilDetailPage() {
       />
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
-      {/* Actions row */}
-      <div className="flex items-center justify-end gap-2 px-4 pt-3">
-        <a href={pupil?.phone ? `tel:${pupil.phone}` : undefined} aria-label="Call pupil" className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A", textDecoration: "none" }}>
-          <Phone size={15} /> Call
-        </a>
-        <button type="button" onClick={openEditSheet} className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A", textDecoration: "none" }}>
-          <Pencil size={15} /> Edit
-        </button>
-        <button type="button" onClick={() => setRemoveOpen(true)} className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#CC2229" }}>
-          <Trash2 size={15} /> Remove
-        </button>
-      </div>
-
-
       {/* Profile header card */}
       {pupil && (
         <div className="mt-0 overflow-hidden rounded-b-[28px]">
@@ -1557,6 +1543,19 @@ function PupilDetailPage() {
                   boxShadow: "0 10px 40px -15px rgba(11,31,58,0.18)",
                 }}
               >
+                {/* Actions row */}
+                <div className="flex items-center justify-end gap-2">
+                  <a href={pupil?.phone ? `tel:${pupil.phone}` : undefined} aria-label="Call pupil" className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A", textDecoration: "none" }}>
+                    <Phone size={15} /> Call
+                  </a>
+                  <button type="button" onClick={openEditSheet} className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A", textDecoration: "none" }}>
+                    <Pencil size={15} /> Edit
+                  </button>
+                  <button type="button" onClick={() => setRemoveOpen(true)} className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#CC2229" }}>
+                    <Trash2 size={15} /> Remove
+                  </button>
+                </div>
+
                 {/* Photo consent row */}
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                   <span className="text-[14px] font-medium text-slate-700" style={POPPINS}>
