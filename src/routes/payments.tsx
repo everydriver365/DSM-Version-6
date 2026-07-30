@@ -852,4 +852,18 @@ function RefundSheet({ row, userId, onClose, onSaved }: { row: HistoryRow; userI
     </div>
   );
 }
+// ---------- tiny form primitives ----------
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return <label className="block text-[12px] font-medium" style={{ color: MUTED, ...POPPINS }}>{children}</label>;
+}
+function SelectField({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: [string, string][] }) {
+  return (
+    <div>
+      <FieldLabel>{label}</FieldLabel>
+      <select value={value} onChange={(e) => onChange(e.target.value)} className="h-11 w-full rounded-lg px-3 text-[14px] bg-white mt-1" style={{ border: `0.5px solid ${BORDER}`, color: NAVY, ...POPPINS }}>
+        {options.map(([v,l]) => <option key={v} value={v}>{l}</option>)}
+      </select>
+    </div>
+  );
+}
 
