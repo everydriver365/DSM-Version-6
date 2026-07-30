@@ -1955,7 +1955,7 @@ function PupilDetailPage() {
             icon={<MessageSquare size={20} />}
             iconBg="#E6F1FB"
             iconColor="#1877D6"
-            onClick={() => navigate({ to: "/messages/$pupilId", params: { pupilId: id } })}
+            onClick={() => { setSendMessagePupilId(pupil?.id ?? id); setSendMessageOpen(true); }}
             badge={unreadMessages > 0 ? String(unreadMessages) : undefined}
           />
           <ActionTile
