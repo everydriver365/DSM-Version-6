@@ -1964,7 +1964,7 @@ function PupilDetailPage() {
             icon={<Plus size={20} />}
             iconBg="#FEF3E2"
             iconColor="#B5661E"
-            onClick={() => navigate({ to: "/lessons/new" })}
+            onClick={() => { setAddLessonDate(undefined); setAddLessonPupilId(pupil?.id ?? id); setAddLessonOpen(true); }}
           />
           <ActionTile
             label="More"
