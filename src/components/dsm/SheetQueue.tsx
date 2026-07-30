@@ -1,6 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Briefcase, MessageSquare, Mail, CalendarCheck, CalendarX } from "lucide-react";
+import {
+  Briefcase,
+  MessageSquare,
+  Mail,
+  CalendarCheck,
+  CalendarX,
+  CreditCard,
+  Zap,
+  Video,
+  PlayCircle,
+  ShoppingBag,
+} from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { WhatsNewSheet } from "@/components/dsm/WhatsNewSheet";
 import { DailyCatchUpSheet } from "@/components/dsm/DailyCatchUpSheet";
@@ -33,12 +44,40 @@ const catchUpStorageKey = (uid: string) => `dsm.dailyCatchUp.lastShown.${uid}`;
 async function buildCatchUpRows(uid: string, since: Date): Promise<Row[]> {
   const sinceIso = since.toISOString();
   const rows: Row[] = [];
-  const [jobs, enquiries, messages, lessonsNew, lessonsCanc] = await Promise.all([
+  const [jobs, enquiries, messages, lessonsNew, lessonsCanc, payments, gapAccepted, liveNew, learnNew, marketplaceNew] = await Promise.all([
     supabase.from("job_offers").select("id", { count: "exact", head: true }).eq("status", "open").gte("created_at", sinceIso),
     supabase.from("enquiries").select("id", { count: "exact", head: true }).eq("instructor_id", uid).gte("created_at", sinceIso),
     supabase.from("chat_messages").select("id", { count: "exact", head: true }).eq("instructor_id", uid).eq("sender_type", "pupil").is("read_at", null).gte("created_at", sinceIso),
     supabase.from("lessons").select("id", { count: "exact", head: true }).eq("instructor_id", uid).neq("status", "cancelled").gte("created_at", sinceIso),
     supabase.from("lessons").select("id", { count: "exact", head: true }).eq("instructor_id", uid).eq("status", "cancelled").gte("updated_at", sinceIso),
+    supabase
+      .from("lessons")
+      .select("id", { count: "exact", head: true })
+      .eq("instructor_id", uid)
+      .eq("payment_status", "paid")
+      .gte("updated_at", sinceIso),
+    supabase
+      .from("gap_filler_offers")
+      .select("id", { count: "exact", head: true })
+      .eq("instructor_id", uid)
+      .eq("status", "accepted")
+      .gte("updated_at", sinceIso),
+    supabase
+      .from("dsm_live_sessions")
+      .select("id", { count: "exact", head: true })
+      .is("deleted_at", null)
+      .gte("created_at", sinceIso),
+    supabase
+      .from("learn_videos")
+      .select("id", { count: "exact", head: true })
+      .not("url", "is", null)
+      .gte("created_at", sinceIso),
+    supabase
+      .from("marketplace_listings")
+      .select("id", { count: "exact", head: true })
+      .eq("is_active", true)
+      .is("deleted_at", null)
+      .gte("created_at", sinceIso),
   ]).catch(() => [] as any);
 
   const push = (
@@ -60,6 +99,11 @@ async function buildCatchUpRows(uid: string, since: Date): Promise<Row[]> {
   push(messages?.count, "messages", "new message", "new messages", <MessageSquare size={18} color={BLUE} />, "#E5EFFA", "/messages");
   push(lessonsNew?.count, "bookings", "new booking", "new bookings", <CalendarCheck size={18} color="#1B7F3B" />, "#E7F5EE", "/schedule");
   push(lessonsCanc?.count, "cancellations", "cancellation", "cancellations", <CalendarX size={18} color="#CC2229" />, "#FBE6E7", "/schedule");
+  push(payments?.count, "payments", "payment received", "payments received", <CreditCard size={18} color="#1B7F3B" />, "#E7F5EE", "/payments");
+  push(gapAccepted?.count, "gaps", "slot accepted", "slots accepted", <Zap size={18} color="#1B7F3B" />, "#E7F5EE", "/gaps");
+  push(liveNew?.count, "live", "new live session", "new live sessions", <Video size={18} color="#1877D6" />, "#E6F1FB", "/dsm-live");
+  push(learnNew?.count, "learn", "new tutorial", "new tutorials", <PlayCircle size={18} color="#7C3AED" />, "#F0EBFF", "/learn");
+  push(marketplaceNew?.count, "marketplace", "new listing", "new listings", <ShoppingBag size={18} color="#B5661E" />, "#FBEFDF", "/marketplace");
   return rows;
 }
 
