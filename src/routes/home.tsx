@@ -6089,6 +6089,7 @@ function HomePage() {
                 { label: 'CPD log', sub: 'Development', route: '/cpd', icon: GraduationCap, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'bars' },
                 { label: 'Mileage', sub: 'Log miles', route: '/mileage', icon: MapPin, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'map' },
                 { label: 'Find fuel', sub: 'Nearby', route: '/fuel', icon: Fuel, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'fuel' },
+                { label: 'Nearby', sub: 'Find places', route: null, icon: IconMapPin, iconStroke: '#1877D6', chipBg: '#E6F1FB', action: 'nearby', graphic: 'location' },
                 { label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', icon: Car, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'car' },
                 // Page 4 — Reports
                 { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: BarChart3, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'bars' },
