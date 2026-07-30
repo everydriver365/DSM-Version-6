@@ -1467,18 +1467,28 @@ function LivePage() {
                   marginBottom: 10,
                 }}
               >
-                {lessons.map((l) => {
-                  const t = new Date(l.lesson_time);
-                  const time = Number.isNaN(t.getTime())
-                    ? ""
-                    : t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-                  return (
-                    <option key={l.id} value={l.id}>
-                      {time} {l.pupils?.name ?? "Pupil"}
+                <optgroup label="Today's lessons">
+                  {lessons.map((l) => {
+                    const t = new Date(l.lesson_time);
+                    const time = Number.isNaN(t.getTime())
+                      ? ""
+                      : t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+                    return (
+                      <option key={l.id} value={l.id}>
+                        {time} {l.pupils?.name ?? "Pupil"}
+                      </option>
+                    );
+                  })}
+                </optgroup>
+                <optgroup label="Other pupils">
+                  {activePupils.map((p) => (
+                    <option key={`pupil-${p.id}`} value={`pupil:${p.id}`}>
+                      {p.name}
                     </option>
-                  );
-                })}
+                  ))}
+                </optgroup>
                 <option value="manual">Manual journey (no lesson)</option>
+
               </select>
               <div style={{ display: "flex", gap: 8 }}>
                 <button
