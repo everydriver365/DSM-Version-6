@@ -236,6 +236,8 @@ function LivePage() {
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [activePupilId, setActivePupilId] = useState<string | null>(null);
   const [trackingPupilName, setTrackingPupilName] = useState<string | null>(null);
+  const [showLessonPicker, setShowLessonPicker] = useState(false);
+  const [pickedLessonId, setPickedLessonId] = useState<string>("manual");
 
   interface ReportSegment {
     road_name: string;
@@ -1401,25 +1403,121 @@ function LivePage() {
           <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 20, lineHeight: 1.4 }}>
             You can still track this journey manually
           </div>
-          <button
-            type="button"
-            onClick={() => startTracking(null, null)}
-            style={{
-              width: "100%",
-              height: 46,
-              borderRadius: 10,
-              background: "#1877D6",
-              border: "none",
-              color: "#fff",
-              fontSize: 15,
-              fontWeight: 700,
-              cursor: "pointer",
-              marginBottom: 8,
-              boxShadow: "0 4px 12px rgba(26,82,160,0.3)",
-            }}
-          >
-            Start manual tracking
-          </button>
+          {!showLessonPicker ? (
+            <button
+              type="button"
+              onClick={() => setShowLessonPicker(true)}
+              style={{
+                width: "100%",
+                height: 46,
+                borderRadius: 10,
+                background: "#1877D6",
+                border: "none",
+                color: "#fff",
+                fontSize: 15,
+                fontWeight: 700,
+                cursor: "pointer",
+                marginBottom: 8,
+                boxShadow: "0 4px 12px rgba(26,82,160,0.3)",
+              }}
+            >
+              Start manual tracking
+            </button>
+          ) : (
+            <div style={{ textAlign: "left", marginBottom: 8 }}>
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: "#8A93A3",
+                  textTransform: "uppercase",
+                  letterSpacing: 0.4,
+                  marginBottom: 6,
+                }}
+              >
+                Track against
+              </div>
+              <select
+                value={pickedLessonId}
+                onChange={(e) => setPickedLessonId(e.target.value)}
+                style={{
+                  width: "100%",
+                  height: 44,
+                  borderRadius: 10,
+                  border: "1px solid #E2E8F0",
+                  background: "#fff",
+                  color: "#0B1F3A",
+                  fontSize: 15,
+                  fontWeight: 600,
+                  padding: "0 10px",
+                  marginBottom: 10,
+                }}
+              >
+                {lessons.map((l) => {
+                  const t = new Date(l.lesson_time);
+                  const time = Number.isNaN(t.getTime())
+                    ? ""
+                    : t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+                  return (
+                    <option key={l.id} value={l.id}>
+                      {time} {l.pupils?.name ?? "Pupil"}
+                    </option>
+                  );
+                })}
+                <option value="manual">Manual journey (no lesson)</option>
+              </select>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowLessonPicker(false);
+                    setPickedLessonId("manual");
+                  }}
+                  style={{
+                    flex: 1,
+                    height: 46,
+                    borderRadius: 10,
+                    background: "#fff",
+                    border: "1px solid #E2E8F0",
+                    color: "#6B7280",
+                    fontSize: 15,
+                    fontWeight: 700,
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const lesson = lessons.find((l) => l.id === pickedLessonId) ?? null;
+                    setShowLessonPicker(false);
+                    if (lesson) {
+                      setActivePupilId(lesson.pupil_id);
+                      setTrackingPupilName(lesson.pupils?.name ?? null);
+                      startTracking(lesson.id, lesson.pupil_id);
+                    } else {
+                      startTracking(null, null);
+                    }
+                  }}
+                  style={{
+                    flex: 1,
+                    height: 46,
+                    borderRadius: 10,
+                    background: "#1877D6",
+                    border: "none",
+                    color: "#fff",
+                    fontSize: 15,
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    boxShadow: "0 4px 12px rgba(26,82,160,0.3)",
+                  }}
+                >
+                  Start
+                </button>
+              </div>
+            </div>
+          )}
           <button
             type="button"
             onClick={() => setPupilPickerOpen(true)}
