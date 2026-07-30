@@ -212,8 +212,8 @@ export function WhatsNewController({ userId }: { userId: string | null }) {
   return (
     <WhatsNewSheet
       items={items}
-      onDismiss={() => {
-        setLastSeenVersion(userId, APP_VERSION);
+      onDismiss={async () => {
+        await setLastSeenVersion(userId, APP_VERSION);
         setOpen(false);
       }}
       onLater={() => setOpen(false)}
