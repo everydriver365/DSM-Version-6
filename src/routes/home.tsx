@@ -4598,16 +4598,6 @@ function HomePage() {
 
           return (
             <>
-              {isLessonToday && (
-                <span style={{
-                  position: 'absolute', top: 34, right: 16, zIndex: 1,
-                  background: '#CC2229', color: '#FFFFFF',
-                  fontSize: 10, fontWeight: 500, padding: '3px 9px',
-                  borderRadius: 20, letterSpacing: '0.3px',
-                }}>
-                  TODAY
-                </span>
-              )}
               <div style={{ display: 'flex', alignItems: 'stretch' }}>
                 {/* Date rail */}
                 <div style={{
