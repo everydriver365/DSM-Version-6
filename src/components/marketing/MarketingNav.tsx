@@ -87,7 +87,7 @@ export function MarketingNav() {
         zIndex: 50,
         background: "#fff",
         borderBottom: `1px solid ${BORDER}`,
-        fontFamily: "'Inter', sans-serif",
+        fontFamily: "'Poppins', system-ui, -apple-system, sans-serif",
       }}
     >
       <div
