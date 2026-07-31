@@ -796,8 +796,10 @@ function ReportSheet({
               <div style={{ position: "relative" }}>
                 <MapPin size={16} color="#9CA3AF" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
                 <input
+                  ref={locationInputRef}
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
+
                   placeholder={locationLoading ? "Detecting your location..." : "Road name or location..."}
                   disabled={locationLoading}
                   style={{
