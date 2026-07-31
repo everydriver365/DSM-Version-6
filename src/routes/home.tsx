@@ -4504,6 +4504,7 @@ function HomePage() {
           boxShadow: '0 4px 16px rgba(11,31,58,0.08)',
           overflow: 'hidden',
           fontFamily: 'Inter, sans-serif',
+          position: 'relative',
         }}
       >
         {(() => {
@@ -4565,9 +4566,6 @@ function HomePage() {
           const fmt = (x: Date) => `${String(x.getHours()).padStart(2, '0')}:${String(x.getMinutes()).padStart(2, '0')}`;
           const startText = d ? fmt(d) : '—';
           const dur = upcoming?.duration_minutes ?? 0;
-          const durText = dur >= 60
-            ? (dur % 60 === 0 ? `${dur / 60} hr` : `${Math.floor(dur / 60)}h ${dur % 60}m`)
-            : `${dur} min`;
           const pickup = upcoming?.pickup_location || [upcoming?.pupils?.address, upcoming?.pupils?.postcode].filter(Boolean).join(', ') || 'No pickup';
 
           const openMaps = () => {
@@ -4585,6 +4583,7 @@ function HomePage() {
           const railDow = d ? d.toLocaleDateString('en-GB', { weekday: 'short' }).toUpperCase() : '—';
           const railDay = d ? String(d.getDate()) : '—';
           const railMon = d ? d.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase() : '';
+          const isLessonToday = upcoming && d ? ymd(d) === ymd(todayStart) : false;
 
           if (!upcoming) {
             return (
@@ -4596,71 +4595,78 @@ function HomePage() {
 
           return (
             <>
-              <div style={{ display: 'flex', alignItems: 'stretch' }}>
-                {/* Date rail */}
-                <div style={{
-                  width: 64, flexShrink: 0,
-                  display: 'flex', flexDirection: 'column', justifyContent: 'center',
-                  padding: '14px 0 14px 14px', gap: 2,
-                  borderLeft: '3px solid #1877D6',
-                  borderRight: '0.5px solid #E5E7EB',
+              {isLessonToday && (
+                <span style={{
+                  position: 'absolute', top: 12, right: 16, zIndex: 1,
+                  background: '#CC2229', color: '#FFFFFF',
+                  fontSize: 10, fontWeight: 500, padding: '3px 9px',
+                  borderRadius: 20, letterSpacing: '0.3px',
                 }}>
-                  <div style={{ fontSize: 11, fontWeight: 500, color: '#8A93A3', lineHeight: 1.2 }}>
-                    {railDow}, {railMon}
-                  </div>
-                  <div style={{ fontSize: 32, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.2 }}>
-                    {railDay}
-                  </div>
+                  TODAY
+                </span>
+              )}
+              <div style={{ padding: '12px 16px 0' }}>
+                <div style={{ fontSize: 11, fontWeight: 600, color: '#8A93A3', letterSpacing: '0.5px' }}>
+                  NEXT LESSON
+                </div>
+              </div>
+
+              <div style={{ padding: '0 16px 12px' }}>
+                <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', marginTop: 2, minWidth: 0, wordBreak: 'break-word' }}>
+                  {pupilFullName || 'Pupil'}
                 </div>
 
-
-                {/* Info block */}
-                <div style={{ flex: 1, minWidth: 0, padding: '14px 16px' }}>
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
-                    <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', minWidth: 0, wordBreak: 'break-word' }}>
-                      {pupilFullName || 'Pupil'}
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flexShrink: 0 }}>
-                      {priceText && (
-                        <div style={{ fontSize: 17, fontWeight: 700, color: '#1D8A4E' }}>{priceText}</div>
-                      )}
-                      <span style={{
-                        background: hPillBg, color: hPillFg,
-                        fontSize: 12, fontWeight: 600, padding: '3px 10px', borderRadius: 7,
-                      }}>{hLabel}</span>
-                    </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
+                  {/* Date rail */}
+                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: 5, borderLeft: '3px solid #1877D6', paddingLeft: 8 }}>
+                    <div style={{ fontSize: 32, fontWeight: 700, color: '#0B1F3A', lineHeight: 1 }}>{railDay}</div>
+                    <div style={{ fontSize: 11, fontWeight: 500, color: '#8A93A3', lineHeight: 1, marginBottom: 4 }}>{railDow}, {railMon}</div>
                   </div>
 
-                  {/* Time row */}
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 7, marginTop: 8, fontSize: 14, color: '#0B1F3A' }}>
-                    <Clock size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
+                  <div style={{ width: 0.5, height: 24, background: '#E5E7EB' }} />
+
+                  {/* Time */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 14, color: '#0B1F3A' }}>
+                    <Clock size={16} color="#1877D6" style={{ flexShrink: 0 }} />
                     <span style={{ fontWeight: 600 }}>
-                      {startText}{endText ? ` – ${endText}` : ''}{' '}
-                      <span style={{ color: '#6B7A90', fontWeight: 500, whiteSpace: 'nowrap' }}>({durText})</span>
+                      {startText}{endText ? ` – ${endText}` : ''}
                     </span>
                   </div>
 
-                  {/* Address row */}
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 7, marginTop: 6, fontSize: 13.5, color: '#0B1F3A' }}>
-                    <MapPin size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
-                    <span style={{ overflowWrap: 'break-word', minWidth: 0 }}>{pickup}</span>
-                  </div>
+                  <div style={{ flex: 1 }} />
 
-                  {/* Reasons row */}
-                  {anyReason && (
-                    <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 3, fontSize: 11, color: '#5A6270' }}>
-                      {showTraffic && driveData && (
-                        <div>🚦 {driveData.trafficLabel} on your route
-                          {driveData.normalDurationMinutes && driveData.durationMinutes
-                            ? ` (${driveData.normalDurationMinutes}m → ${driveData.durationMinutes}m)`
-                            : ''}
-                        </div>
-                      )}
-                      {isAdverseWeather && <div>⛅ {weatherCondition}</div>}
-                      {matchedAlert && <div style={{ color: '#B45309' }}>⚠️ {(matchedAlert as any).description}</div>}
-                    </div>
-                  )}
+                  {/* Price / status */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                    {priceText && (
+                      <div style={{ fontSize: 17, fontWeight: 700, color: '#1D8A4E' }}>{priceText}</div>
+                    )}
+                    <span style={{
+                      background: hPillBg, color: hPillFg,
+                      fontSize: 12, fontWeight: 600, padding: '3px 10px', borderRadius: 7,
+                    }}>{hLabel}</span>
+                  </div>
                 </div>
+
+                {/* Address row */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 7, marginTop: 8, fontSize: 13.5, color: '#0B1F3A' }}>
+                  <MapPin size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
+                  <span style={{ overflowWrap: 'break-word', minWidth: 0 }}>{pickup}</span>
+                </div>
+
+                {/* Reasons row */}
+                {anyReason && (
+                  <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 3, fontSize: 11, color: '#5A6270' }}>
+                    {showTraffic && driveData && (
+                      <div>🚦 {driveData.trafficLabel} on your route
+                        {driveData.normalDurationMinutes && driveData.durationMinutes
+                          ? ` (${driveData.normalDurationMinutes}m → ${driveData.durationMinutes}m)`
+                          : ''}
+                      </div>
+                    )}
+                    {isAdverseWeather && <div>⛅ {weatherCondition}</div>}
+                    {matchedAlert && <div style={{ color: '#B45309' }}>⚠️ {(matchedAlert as any).description}</div>}
+                  </div>
+                )}
               </div>
 
               {/* Late banner */}
@@ -4700,7 +4706,7 @@ function HomePage() {
                     fontSize: 13, fontWeight: 600, color: '#1877D6', fontFamily: 'Inter, sans-serif',
                   }}
                 >
-                  <Navigation size={15} style={{ transform: 'rotate(45deg)' }} />
+                  <ArrowRight size={15} />
                   View route{driveData ? ` · ${driveData.durationMinutes} min` : ''}
                 </button>
                 <button
