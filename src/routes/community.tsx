@@ -147,12 +147,18 @@ function loadGoogleMaps(): Promise<void> {
 
 function CommunityPage() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const [activeTab, setActiveTab] = useState<"alerts" | "local" | "uk">("alerts");
   const [userId, setUserId] = useState<string | null>(null);
   const [instructorFirstName, setInstructorFirstNameState] = useState<string>("");
   const [instructorArea, setInstructorArea] = useState<string>("Your area");
   const [instructorOutcode, setInstructorOutcode] = useState<string | null>(null);
   const [instructorProfile, setInstructorProfile] = useState<{ name: string | null; profile_image_url: string | null } | null>(null);
+
+  useEffect(() => {
+    if (search?.tab === "local") setActiveTab("local");
+    else if (search?.tab === "uk") setActiveTab("uk");
+  }, []);
 
   useEffect(() => {
     (async () => {
