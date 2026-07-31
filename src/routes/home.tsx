@@ -2141,6 +2141,15 @@ function HomePage() {
     return window.sessionStorage.getItem("dsm:notifPromptDismissed") === "1";
   });
   const [heroExpanded, setHeroExpanded] = useState(false);
+  const setHeroExpandedWithEvent = (next: boolean | ((prev: boolean) => boolean)) => {
+    setHeroExpanded((prev) => {
+      const value = typeof next === "function" ? (next as (prev: boolean) => boolean)(prev) : next;
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event(value ? "dsm-sheet-open" : "dsm-sheet-close"));
+      }
+      return value;
+    });
+  };
   const [prevLesson, setPrevLesson] = useState<PrevLessonRow | null>(null);
   const [goingActive, setGoingActive] = useState(false);
   const [lateOpen, setLateOpen] = useState(false);
@@ -4720,7 +4729,7 @@ function HomePage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setHeroExpanded((v) => !v)}
+                  onClick={() => setHeroExpandedWithEvent((v) => !v)}
                   style={{
                     background: 'none', border: 'none', padding: 0, cursor: 'pointer',
                     display: 'flex', alignItems: 'center', gap: 4,
@@ -4741,7 +4750,7 @@ function HomePage() {
       {upcoming && heroExpanded && (
         <LessonActionsSheet
           open={heroExpanded}
-          onClose={() => setHeroExpanded(false)}
+          onClose={() => setHeroExpandedWithEvent(false)}
           lesson={upcoming as any}
           prev={prevLesson as any}
           goingActive={goingActive}
