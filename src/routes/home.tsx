@@ -4837,7 +4837,7 @@ function HomePage() {
               return (
                 <div
                   key={alert.id}
-                  onClick={() => navigate({ to: '/community' as never })}
+                  onClick={() => navigate({ to: '/community' as never, search: { tab: 'local' } })}
                   style={{
                     background: 'white', borderRadius: 10, boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                     padding: '10px 12px', marginBottom: 6, display: 'flex', alignItems: 'center',
