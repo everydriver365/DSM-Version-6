@@ -4729,7 +4729,7 @@ function HomePage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setHeroExpanded((v) => !v)}
+                  onClick={() => setHeroExpandedWithEvent((v) => !v)}
                   style={{
                     background: 'none', border: 'none', padding: 0, cursor: 'pointer',
                     display: 'flex', alignItems: 'center', gap: 4,
