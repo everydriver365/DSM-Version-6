@@ -4650,7 +4650,12 @@ function HomePage() {
                 </div>
 
                 {/* Address row */}
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 7, marginTop: 8, fontSize: 13.5, color: '#0B1F3A' }}>
+                <div style={{
+                  display: 'flex', alignItems: 'flex-start', gap: 7,
+                  marginTop: 8, paddingTop: 8,
+                  borderTop: '1px solid #E2E8F0',
+                  fontSize: 12.5, color: '#0B1F3A',
+                }}>
                   <MapPin size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
                   <span style={{ overflowWrap: 'break-word', minWidth: 0 }}>{pickup}</span>
                 </div>
