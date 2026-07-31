@@ -678,6 +678,7 @@ function RootComponent() {
       </div>
       {!hideNav && <BottomNav active={active} />}
       <CommandPalette />
+      <GlobalMenu />
       <EventToastController />
       <Toaster />
     </QueryClientProvider>
