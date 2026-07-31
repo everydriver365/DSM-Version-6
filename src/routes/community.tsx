@@ -99,8 +99,8 @@ function firstName(name: string | null | undefined): string {
 }
 
 // -------------------- Google Maps (browser key) --------------------
-const GMAPS_KEY = import.meta.env
-  .VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string;
+const GMAPS_BROWSER_KEY = import.meta.env
+  .VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined;
 const GMAPS_SCRIPT_ID = "google-maps-js-script";
 
 type GMapsWindow = Window & { google?: any };
@@ -108,12 +108,12 @@ type GMapsWindow = Window & { google?: any };
 function loadGoogleMaps(): Promise<void> {
   if (typeof window === "undefined") return Promise.resolve();
   const w = window as GMapsWindow;
-  if (w.google?.maps?.places) return Promise.resolve();
+  if (w.google?.maps?.geometry) return Promise.resolve();
   const existing = document.getElementById(GMAPS_SCRIPT_ID) as HTMLScriptElement | null;
   if (existing) {
     return new Promise((resolve) => {
       const iv = setInterval(() => {
-        if ((window as GMapsWindow).google?.maps?.places) {
+        if ((window as GMapsWindow).google?.maps?.geometry) {
           clearInterval(iv);
           resolve();
         }
@@ -121,17 +121,18 @@ function loadGoogleMaps(): Promise<void> {
     });
   }
   return new Promise((resolve, reject) => {
-    if (!GMAPS_KEY) { reject(new Error("Missing Google Maps browser key")); return; }
+    if (!GMAPS_BROWSER_KEY) { reject(new Error("Missing Google Maps browser key")); return; }
     const s = document.createElement("script");
     s.id = GMAPS_SCRIPT_ID;
     s.async = true;
     s.defer = true;
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${GMAPS_KEY}&libraries=places,geometry&loading=async`;
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${GMAPS_BROWSER_KEY}&libraries=geometry,places&loading=async`;
     s.onload = () => resolve();
     s.onerror = () => reject(new Error("Failed to load Google Maps JS"));
     document.head.appendChild(s);
   });
 }
+
 
 
 function CommunityPage() {
