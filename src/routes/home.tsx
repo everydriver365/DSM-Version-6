@@ -4934,26 +4934,58 @@ function HomePage() {
               margin: '8px 16px 0', background: 'white', borderRadius: 10,
               boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '10px 12px',
               display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
-              fontFamily: 'Inter, sans-serif',
+              fontFamily: 'Poppins, sans-serif',
+              border: unreadChat > 0 ? '1.5px solid #7C3AED' : '1px solid transparent',
             }}
           >
-            <div style={{
-              width: 28, height: 28, borderRadius: 8, background: '#F0EBFF',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-            }}>
-              <MessageSquare size={14} color="#6B4FD6" />
+            <div style={{ position: 'relative', flexShrink: 0 }}>
+              <div style={{
+                width: 28, height: 28, borderRadius: 8,
+                background: unreadChat > 0 ? '#7C3AED' : '#F0EBFF',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <MessageSquare size={14} color={unreadChat > 0 ? '#FFFFFF' : '#6B4FD6'} />
+              </div>
+              {unreadChat > 0 && (
+                <div style={{
+                  position: 'absolute', top: -4, right: -4,
+                  minWidth: 16, height: 16, borderRadius: 8,
+                  background: '#7C3AED', color: '#FFFFFF',
+                  fontSize: 10, fontWeight: 700, lineHeight: '16px',
+                  textAlign: 'center', padding: '0 4px', boxSizing: 'border-box',
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
+                  {unreadChat}
+                </div>
+              )}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Inter, sans-serif' }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
                 Local chat · {localRoom.area_name}
               </div>
-              <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {localChatLatest
-                  ? `${(localChatLatest.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(localChatLatest.message || '').substring(0, 40)}${(localChatLatest.message || '').length > 40 ? '...' : ''}`
-                  : `Be the first to chat in ${localRoom.area_name}!`}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 1 }}>
+                <div style={{ fontSize: 11, color: '#9CA3AF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, minWidth: 0 }}>
+                  {localChatLatest
+                    ? `${(localChatLatest.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(localChatLatest.message || '').substring(0, 40)}${(localChatLatest.message || '').length > 40 ? '...' : ''}`
+                    : `Be the first to chat in ${localRoom.area_name}!`}
+                </div>
+                {localChatLatest?.created_at && (
+                  <div style={{ fontSize: 10, color: '#9CA3AF', flexShrink: 0, fontFamily: 'Poppins, sans-serif' }}>
+                    {(() => {
+                      const iso = localChatLatest.created_at;
+                      const diff = Math.max(0, Date.now() - new Date(iso).getTime());
+                      const m = Math.floor(diff / 60000);
+                      if (m < 1) return 'just now';
+                      if (m < 60) return `${m}m ago`;
+                      const h = Math.floor(m / 60);
+                      if (h < 24) return `${h}h ago`;
+                      return `${Math.floor(h / 24)}d ago`;
+                    })()}
+                  </div>
+                )}
               </div>
             </div>
-            <ChevronRight size={12} color="#D1D5DB" />
+            <ChevronRight size={12} color="#D1D5DB" style={{ flexShrink: 0 }} />
           </div>
         )}
 
