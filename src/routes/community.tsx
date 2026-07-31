@@ -590,26 +590,23 @@ function ReportSheet({
       return;
     }
     setLocationLoading(true);
+    setLocationError("");
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
         setReportLat(latitude);
         setReportLng(longitude);
         try {
-          const res = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&result_type=route|street_address&key=${GMAPS_BROWSER_KEY}`
-          );
-          const json = await res.json();
-          const road = json.results?.[0]?.address_components?.find(
-            (c: any) => c.types.includes("route")
-          )?.long_name ?? "";
-          const detectedTown = json.results?.[0]?.address_components?.find(
-            (c: any) => c.types.includes("postal_town") || c.types.includes("locality")
-          )?.long_name ?? "";
-          if (road) setLocation(road);
-          if (detectedTown) setTown(detectedTown);
+          const result = await reverseGeocode({ data: { lat: latitude, lng: longitude } });
+          if (result.error) setLocationError(result.error);
+          if (result.road) {
+            suppressSuggestRef.current = true;
+            setLocation(result.road);
+          }
+          if (result.town) setTown(result.town);
         } catch (err) {
           console.warn("[community] reverse geocode failed:", err);
+          setLocationError("Could not detect your location — type it in below.");
         } finally {
           setLocationLoading(false);
         }
@@ -622,44 +619,85 @@ function ReportSheet({
     );
   }, [reportSheetOpen]);
 
-  // Google Places autocomplete on the road name input
+  // Places (New) autocomplete suggestions for the road name input
   useEffect(() => {
-    if (!reportSheetOpen) return;
+    if (!reportSheetOpen) {
+      setSuggestions([]);
+      return;
+    }
+    if (suppressSuggestRef.current) {
+      suppressSuggestRef.current = false;
+      setSuggestions([]);
+      return;
+    }
+    const query = location.trim();
+    if (query.length < 3) {
+      setSuggestions([]);
+      return;
+    }
     let cancelled = false;
-    let listener: any = null;
-    let autocomplete: any = null;
-    loadGoogleMaps()
-      .then(() => {
+    const timer = setTimeout(async () => {
+      try {
+        await loadGoogleMaps();
         if (cancelled) return;
-        const input = locationInputRef.current;
         const g = (window as GMapsWindow).google;
-        if (!input || !g?.maps?.places?.Autocomplete) return;
-        autocomplete = new g.maps.places.Autocomplete(input, {
-          types: ["route", "establishment"],
-          componentRestrictions: { country: "gb" },
-          fields: ["address_components", "name", "formatted_address"],
+        const places: any = await g.maps.importLibrary("places");
+        const { AutocompleteSuggestion, AutocompleteSessionToken } = places;
+        if (!AutocompleteSuggestion) return;
+        if (!sessionTokenRef.current) sessionTokenRef.current = new AutocompleteSessionToken();
+        const { suggestions: results } = await AutocompleteSuggestion.fetchAutocompleteSuggestions({
+          input: query,
+          sessionToken: sessionTokenRef.current,
+          includedRegionCodes: ["gb"],
         });
-        listener = autocomplete.addListener("place_changed", () => {
-          const place = autocomplete.getPlace();
-          const components = place?.address_components ?? [];
-          const road =
-            components.find((c: any) => c.types.includes("route"))?.long_name ||
-            place?.name ||
-            "";
-          const detectedTown = components.find(
-            (c: any) => c.types.includes("postal_town") || c.types.includes("locality")
-          )?.long_name ?? "";
-          if (road) setLocation(road);
-          if (detectedTown) setTown(detectedTown);
-        });
-      })
-      .catch((err) => console.warn("[community] maps load failed:", err));
+        if (cancelled) return;
+        setSuggestions(
+          (results ?? [])
+            .slice(0, 5)
+            .map((s: any) => ({
+              placeId: s.placePrediction?.placeId as string,
+              text: s.placePrediction?.text?.toString?.() ?? "",
+            }))
+            .filter((s: { placeId?: string }) => !!s.placeId)
+        );
+      } catch (err) {
+        console.warn("[community] autocomplete failed:", err);
+        if (!cancelled) setSuggestions([]);
+      }
+    }, 300);
     return () => {
       cancelled = true;
-      const g = (window as GMapsWindow).google;
-      if (listener && g?.maps?.event) g.maps.event.removeListener(listener);
+      clearTimeout(timer);
     };
-  }, [reportSheetOpen]);
+  }, [location, reportSheetOpen]);
+
+  const pickSuggestion = async (placeId: string, fallbackText: string) => {
+    suppressSuggestRef.current = true;
+    setSuggestions([]);
+    try {
+      const g = (window as GMapsWindow).google;
+      const places: any = await g.maps.importLibrary("places");
+      const place = new places.Place({ id: placeId });
+      await place.fetchFields({ fields: ["addressComponents", "displayName"] });
+      const components: any[] = place.addressComponents ?? [];
+      const road =
+        components.find((c) => c.types.includes("route"))?.longText ||
+        place.displayName ||
+        fallbackText.split(",")[0];
+      const detectedTown =
+        components.find(
+          (c) => c.types.includes("postal_town") || c.types.includes("locality")
+        )?.longText ?? "";
+      setLocation(road ?? "");
+      if (detectedTown) setTown(detectedTown);
+    } catch (err) {
+      console.warn("[community] place details failed:", err);
+      setLocation(fallbackText.split(",")[0]);
+    } finally {
+      sessionTokenRef.current = null;
+    }
+  };
+
 
 
   const canSubmit = !!selectedType && description.trim().length > 0 && !!userId && !!instructorOutcode && !submitting;
