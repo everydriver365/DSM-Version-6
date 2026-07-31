@@ -170,7 +170,7 @@ function CalendarSyncPage() {
       if (error) throw error;
       const url = (data as { url?: string } | null)?.url;
       if (url) {
-        window.open(url, "_blank");
+        window.open(url, "_system");
         return;
       }
       toast.error("Could not start Google sign-in");
