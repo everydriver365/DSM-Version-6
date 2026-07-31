@@ -11,7 +11,6 @@ import {
 import { useEffect, useState, type ReactNode } from "react";
 import {
   X,
-  ChevronRight,
   Calendar,
   PoundSterling,
   CreditCard,
