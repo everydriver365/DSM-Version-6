@@ -4737,19 +4737,20 @@ function HomePage() {
 
 
       {upcoming && heroExpanded && (
-        <div style={{ margin: '0 16px 16px', borderRadius: '0 0 16px 16px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
-          <HeroExpandedPanel
-            lesson={upcoming}
-            prev={prevLesson}
-            goingActive={goingActive}
-            setGoingActive={setGoingActive}
-            onOpenLate={() => setLateOpen(true)}
-            navigateTo={(to) => navigate({ to })}
-            onOpenLesson={() => navigate({ to: "/pupils/$id", params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any })}
-            onEol={() => setEolLesson(upcoming)}
-          />
-        </div>
+        <LessonActionsSheet
+          open={heroExpanded}
+          onClose={() => setHeroExpanded(false)}
+          lesson={upcoming as any}
+          prev={prevLesson as any}
+          goingActive={goingActive}
+          setGoingActive={setGoingActive}
+          onOpenLate={() => setLateOpen(true)}
+          onOpenLesson={() => navigate({ to: "/pupils/$id", params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any })}
+          onEol={() => setEolLesson(upcoming)}
+          userId={userId}
+        />
       )}
+
 
         {/* Late sheet */}
         <Dialog open={lateOpen} onOpenChange={setLateOpen}>
