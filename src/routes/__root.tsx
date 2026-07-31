@@ -52,6 +52,8 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
 import { supabase } from "../lib/supabaseClient";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { EventToastController, emitLiveEvent, type LiveEventKind } from "../components/dsm/EventToast";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -407,34 +409,19 @@ function GlobalMenu() {
             {QUICK_ACTIONS.map((m) => (
               <Row key={m.label} m={m} quick />
             ))}
-            <div style={{ borderTop: "0.5px solid #F5CBCB" }} />
-            <button
-              type="button"
+            <Separator className="h-[0.5px] bg-[#F5CBCB]" />
+            <Button
+              variant="ghost"
               onClick={async () => {
                 setOpen(false);
                 await supabase.auth.signOut();
                 navigate({ to: "/" as never, replace: true });
               }}
-              style={{
-                width: "100%",
-                minHeight: 44,
-                textAlign: "left",
-                padding: "10px 18px",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                fontFamily: "Inter, sans-serif",
-                fontSize: 13,
-                fontWeight: 500,
-                color: "#CC2229",
-              }}
+              className="w-full h-auto min-h-[44px] justify-start px-[18px] py-2.5 text-[13px] font-medium text-[#CC2229] hover:bg-transparent hover:text-[#CC2229] font-['Inter',sans-serif]"
             >
               <IconLogout size={16} color="#CC2229" />
               Sign out
-            </button>
+            </Button>
           </div>
 
           {MENU_GROUPS.map((g) => (
