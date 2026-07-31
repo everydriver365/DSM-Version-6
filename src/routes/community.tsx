@@ -1,8 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { z } from "zod";
 import {
   ArrowLeft,
   Plus,
@@ -100,39 +98,41 @@ function firstName(name: string | null | undefined): string {
   return name.trim().split(/\s+/)[0] || "Someone";
 }
 
-const reverseGeocodeLocation = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
-    z.object({ lat: z.number(), lng: z.number() }).parse(data)
-  )
-  .handler(async ({ data }): Promise<{ location: string | null; lat: number; lng: number }> => {
-    const googleKey = process.env.GOOGLE_API_KEY;
-    if (!googleKey) {
-      console.warn("[community] GOOGLE_API_KEY not set");
-      return { location: null, lat: data.lat, lng: data.lng };
-    }
-    try {
-      const res = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${data.lat},${data.lng}&key=${googleKey}&result_type=route|street_address`
-      );
-      if (!res.ok) {
-        console.warn("[community] geocode response not ok:", res.status);
-        return { location: null, lat: data.lat, lng: data.lng };
-      }
-      const json: any = await res.json();
-      const result = json?.results?.[0];
-      if (!result) return { location: null, lat: data.lat, lng: data.lng };
-      const components = result.address_components ?? [];
-      const road = components.find((c: any) => c.types.includes("route"))?.long_name;
-      const town = components.find(
-        (c: any) => c.types.includes("postal_town") || c.types.includes("locality")
-      )?.long_name;
-      const locationStr = [road, town].filter(Boolean).join(", ") || result.formatted_address;
-      return { location: locationStr, lat: data.lat, lng: data.lng };
-    } catch (err) {
-      console.warn("[community] reverse geocode failed:", err);
-      return { location: null, lat: data.lat, lng: data.lng };
-    }
+// -------------------- Google Maps (browser key) --------------------
+const GMAPS_KEY = import.meta.env
+  .VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string;
+const GMAPS_SCRIPT_ID = "google-maps-js-script";
+
+type GMapsWindow = Window & { google?: any };
+
+function loadGoogleMaps(): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+  const w = window as GMapsWindow;
+  if (w.google?.maps?.places) return Promise.resolve();
+  const existing = document.getElementById(GMAPS_SCRIPT_ID) as HTMLScriptElement | null;
+  if (existing) {
+    return new Promise((resolve) => {
+      const iv = setInterval(() => {
+        if ((window as GMapsWindow).google?.maps?.places) {
+          clearInterval(iv);
+          resolve();
+        }
+      }, 150);
+    });
+  }
+  return new Promise((resolve, reject) => {
+    if (!GMAPS_KEY) { reject(new Error("Missing Google Maps browser key")); return; }
+    const s = document.createElement("script");
+    s.id = GMAPS_SCRIPT_ID;
+    s.async = true;
+    s.defer = true;
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${GMAPS_KEY}&libraries=places,geometry&loading=async`;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Failed to load Google Maps JS"));
+    document.head.appendChild(s);
   });
+}
+
 
 function CommunityPage() {
   const navigate = useNavigate();
@@ -557,6 +557,7 @@ function ReportSheet({
   });
   const [selectedType, setSelectedType] = useState<string>("");
   const [location, setLocation] = useState("");
+  const [town, setTown] = useState("");
   const [description, setDescription] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [expiry, setExpiry] = useState<"30min" | "1hour" | "2hours" | "allday">("1hour");
@@ -564,6 +565,8 @@ function ReportSheet({
   const [locationLoading, setLocationLoading] = useState(false);
   const [reportLat, setReportLat] = useState<number | null>(null);
   const [reportLng, setReportLng] = useState<number | null>(null);
+  const locationInputRef = useRef<HTMLInputElement | null>(null);
+
 
   useEffect(() => {
     setIsAnonymous(selectedType === "examiner_tip");
@@ -587,10 +590,18 @@ function ReportSheet({
         setReportLat(latitude);
         setReportLng(longitude);
         try {
-          const result = await reverseGeocodeLocation({ data: { lat: latitude, lng: longitude } });
-          if (result.location) {
-            setLocation(result.location);
-          }
+          const res = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&result_type=route|street_address&key=${GMAPS_KEY}`
+          );
+          const json = await res.json();
+          const road = json.results?.[0]?.address_components?.find(
+            (c: any) => c.types.includes("route")
+          )?.long_name ?? "";
+          const detectedTown = json.results?.[0]?.address_components?.find(
+            (c: any) => c.types.includes("postal_town") || c.types.includes("locality")
+          )?.long_name ?? "";
+          if (road) setLocation(road);
+          if (detectedTown) setTown(detectedTown);
         } catch (err) {
           console.warn("[community] reverse geocode failed:", err);
         } finally {
@@ -604,6 +615,46 @@ function ReportSheet({
       { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
     );
   }, [reportSheetOpen]);
+
+  // Google Places autocomplete on the road name input
+  useEffect(() => {
+    if (!reportSheetOpen) return;
+    let cancelled = false;
+    let listener: any = null;
+    let autocomplete: any = null;
+    loadGoogleMaps()
+      .then(() => {
+        if (cancelled) return;
+        const input = locationInputRef.current;
+        const g = (window as GMapsWindow).google;
+        if (!input || !g?.maps?.places?.Autocomplete) return;
+        autocomplete = new g.maps.places.Autocomplete(input, {
+          types: ["route", "establishment"],
+          componentRestrictions: { country: "gb" },
+          fields: ["address_components", "name", "formatted_address"],
+        });
+        listener = autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+          const components = place?.address_components ?? [];
+          const road =
+            components.find((c: any) => c.types.includes("route"))?.long_name ||
+            place?.name ||
+            "";
+          const detectedTown = components.find(
+            (c: any) => c.types.includes("postal_town") || c.types.includes("locality")
+          )?.long_name ?? "";
+          if (road) setLocation(road);
+          if (detectedTown) setTown(detectedTown);
+        });
+      })
+      .catch((err) => console.warn("[community] maps load failed:", err));
+    return () => {
+      cancelled = true;
+      const g = (window as GMapsWindow).google;
+      if (listener && g?.maps?.event) g.maps.event.removeListener(listener);
+    };
+  }, [reportSheetOpen]);
+
 
   const canSubmit = !!selectedType && description.trim().length > 0 && !!userId && !!instructorOutcode && !submitting;
 
@@ -626,7 +677,7 @@ function ReportSheet({
       instructor_id: userId,
       alert_type: selectedType,
       description: description.trim(),
-      location_name: location.trim() || null,
+      location_name: [location.trim(), town.trim()].filter(Boolean).join(", ") || null,
       area: instructorArea,
       outcode: instructorOutcode,
       lat: reportLat,
@@ -743,8 +794,10 @@ function ReportSheet({
               <div style={{ position: "relative" }}>
                 <MapPin size={16} color="#9CA3AF" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
                 <input
+                  ref={locationInputRef}
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
+
                   placeholder={locationLoading ? "Detecting your location..." : "Road name or location..."}
                   disabled={locationLoading}
                   style={{
@@ -787,7 +840,28 @@ function ReportSheet({
                   Location detected — edit if needed
                 </div>
               )}
+              <div style={{ marginTop: 10 }}>
+                <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 6 }}>Town / area</div>
+                <input
+                  value={town}
+                  onChange={(e) => setTown(e.target.value)}
+                  placeholder="Town or area..."
+                  style={{
+                    width: "100%",
+                    padding: "11px 14px",
+                    background: "#F7FAFC",
+                    border: "0.5px solid " + (town ? "#86EFAC" : "#E2E6ED"),
+                    borderRadius: 10,
+                    fontSize: 13,
+                    fontFamily: "Inter, sans-serif",
+                    color: "#0F2044",
+                    outline: "none",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
             </div>
+
 
             <div style={{ padding: "0 20px", marginBottom: 12 }}>
               <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 6 }}>Details</div>
