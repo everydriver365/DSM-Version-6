@@ -689,7 +689,7 @@ function RootComponent() {
       <div style={Object.keys(wrapperStyle).length ? wrapperStyle : undefined}>
         <Outlet />
       </div>
-      {!hideNav && <BottomNav active={active} />}
+      {!hideNav && !sheetOpen && <BottomNav active={active} />}
       <CommandPalette />
       <GlobalMenu />
       <EventToastController />
