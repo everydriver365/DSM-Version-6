@@ -88,6 +88,11 @@ function AdminChatRooms() {
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  // Filters
+  const [filterOutcode, setFilterOutcode] = useState("");
+  const [filterType, setFilterType] = useState<"all" | "local" | "uk">("all");
+  const [filterOptIn, setFilterOptIn] = useState<"all" | "opt-in">("all");
+
   useEffect(() => {
     if (status === "denied") navigate({ to: "/home" });
   }, [status, navigate]);
