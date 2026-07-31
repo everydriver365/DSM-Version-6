@@ -52,6 +52,8 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
 import { supabase } from "../lib/supabaseClient";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { EventToastController, emitLiveEvent, type LiveEventKind } from "../components/dsm/EventToast";
 import { Toaster } from "@/components/ui/sonner";
 
