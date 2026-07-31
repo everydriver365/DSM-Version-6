@@ -1707,7 +1707,7 @@ function HomePage() {
 
         let query = supabase
           .from('local_alerts')
-          .select('id, alert_type, description, location_name, upvotes, expires_at, created_at, area, outcode, dismissed_by')
+          .select('id, alert_type, description, location_name, upvotes, expires_at, created_at, area, outcode')
           .eq('is_active', true)
           .gt('expires_at', new Date().toISOString())
           .order('upvotes', { ascending: false })
@@ -1716,9 +1716,7 @@ function HomePage() {
         const { data, error } = await query;
         if (cancelled) return;
         if (error) { setLocalAlerts([]); return; }
-        const filtered = (Array.isArray(data) ? data : []).filter(
-          (a: any) => !Array.isArray(a?.dismissed_by) || !a.dismissed_by.includes(userId)
-        );
+        const filtered = Array.isArray(data) ? data : [];
         setLocalAlerts(filtered.slice(0, 3));
 
         // Local chat room + latest message
