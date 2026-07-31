@@ -292,6 +292,7 @@ function CommunityPage() {
           instructorProfile={instructorProfile}
           instructorArea={instructorArea}
           instructorOutcode={instructorOutcode}
+          onRoomRead={(s) => setUnread((u) => ({ ...u, [s]: 0 }))}
         />
       )}
       {activeTab === "uk" && (
@@ -302,8 +303,10 @@ function CommunityPage() {
           instructorProfile={instructorProfile}
           instructorArea="All UK"
           instructorOutcode="UK"
+          onRoomRead={(s) => setUnread((u) => ({ ...u, [s]: 0 }))}
         />
       )}
+
     </div>
   );
 }
