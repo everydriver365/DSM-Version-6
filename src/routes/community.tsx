@@ -679,7 +679,7 @@ function ReportSheet({
       instructor_id: userId,
       alert_type: selectedType,
       description: description.trim(),
-      location_name: location.trim() || null,
+      location_name: [location.trim(), town.trim()].filter(Boolean).join(", ") || null,
       area: instructorArea,
       outcode: instructorOutcode,
       lat: reportLat,
