@@ -100,39 +100,41 @@ function firstName(name: string | null | undefined): string {
   return name.trim().split(/\s+/)[0] || "Someone";
 }
 
-const reverseGeocodeLocation = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
-    z.object({ lat: z.number(), lng: z.number() }).parse(data)
-  )
-  .handler(async ({ data }): Promise<{ location: string | null; lat: number; lng: number }> => {
-    const googleKey = process.env.GOOGLE_API_KEY;
-    if (!googleKey) {
-      console.warn("[community] GOOGLE_API_KEY not set");
-      return { location: null, lat: data.lat, lng: data.lng };
-    }
-    try {
-      const res = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${data.lat},${data.lng}&key=${googleKey}&result_type=route|street_address`
-      );
-      if (!res.ok) {
-        console.warn("[community] geocode response not ok:", res.status);
-        return { location: null, lat: data.lat, lng: data.lng };
-      }
-      const json: any = await res.json();
-      const result = json?.results?.[0];
-      if (!result) return { location: null, lat: data.lat, lng: data.lng };
-      const components = result.address_components ?? [];
-      const road = components.find((c: any) => c.types.includes("route"))?.long_name;
-      const town = components.find(
-        (c: any) => c.types.includes("postal_town") || c.types.includes("locality")
-      )?.long_name;
-      const locationStr = [road, town].filter(Boolean).join(", ") || result.formatted_address;
-      return { location: locationStr, lat: data.lat, lng: data.lng };
-    } catch (err) {
-      console.warn("[community] reverse geocode failed:", err);
-      return { location: null, lat: data.lat, lng: data.lng };
-    }
+// -------------------- Google Maps (browser key) --------------------
+const GMAPS_KEY = import.meta.env
+  .VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string;
+const GMAPS_SCRIPT_ID = "google-maps-js-script";
+
+type GMapsWindow = Window & { google?: any };
+
+function loadGoogleMaps(): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+  const w = window as GMapsWindow;
+  if (w.google?.maps?.places) return Promise.resolve();
+  const existing = document.getElementById(GMAPS_SCRIPT_ID) as HTMLScriptElement | null;
+  if (existing) {
+    return new Promise((resolve) => {
+      const iv = setInterval(() => {
+        if ((window as GMapsWindow).google?.maps?.places) {
+          clearInterval(iv);
+          resolve();
+        }
+      }, 150);
+    });
+  }
+  return new Promise((resolve, reject) => {
+    if (!GMAPS_KEY) { reject(new Error("Missing Google Maps browser key")); return; }
+    const s = document.createElement("script");
+    s.id = GMAPS_SCRIPT_ID;
+    s.async = true;
+    s.defer = true;
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${GMAPS_KEY}&libraries=places,geometry&loading=async`;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Failed to load Google Maps JS"));
+    document.head.appendChild(s);
   });
+}
+
 
 function CommunityPage() {
   const navigate = useNavigate();
