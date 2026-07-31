@@ -314,15 +314,72 @@ function AdminChatRooms() {
 
         {/* List */}
         <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", marginBottom: 10 }}>
-          Existing rooms{rooms.length ? ` (${rooms.length})` : ""}
+          Existing rooms{filteredRooms.length ? ` (${filteredRooms.length})` : ""}
         </div>
+
+        {/* Filters */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 14 }}>
+          <input
+            type="text"
+            placeholder="Search outcode…"
+            value={filterOutcode}
+            onChange={(e) => setFilterOutcode(e.target.value.toUpperCase())}
+            style={inputStyle}
+          />
+          <div style={{ display: "flex", gap: 8 }}>
+            {(["all", "local", "uk"] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setFilterType(t)}
+                style={{
+                  flex: 1,
+                  height: 36,
+                  borderRadius: 10,
+                  border: `1px solid ${filterType === t ? "#1877D6" : "#E2E8F0"}`,
+                  background: filterType === t ? "#EAF2FC" : "#fff",
+                  color: filterType === t ? "#1877D6" : "#6B7280",
+                  fontWeight: 600,
+                  fontSize: 13,
+                  cursor: "pointer",
+                  textTransform: "capitalize",
+                }}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+          <label
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              fontSize: 14,
+              color: "#0B1F3A",
+              cursor: "pointer",
+              background: "#fff",
+              border: "1px solid #E2E8F0",
+              borderRadius: 10,
+              padding: "10px 12px",
+            }}
+          >
+            Opt-in only
+            <input
+              type="checkbox"
+              checked={filterOptIn === "opt-in"}
+              onChange={(e) => setFilterOptIn(e.target.checked ? "opt-in" : "all")}
+              style={{ width: 18, height: 18, accentColor: "#1877D6" }}
+            />
+          </label>
+        </div>
+
         {loadingList ? (
           <div style={{ color: "#6B7280", fontSize: 14 }}>Loading…</div>
-        ) : rooms.length === 0 ? (
-          <div style={{ color: "#6B7280", fontSize: 14 }}>No rooms yet.</div>
+        ) : filteredRooms.length === 0 ? (
+          <div style={{ color: "#6B7280", fontSize: 14 }}>No rooms match your filters.</div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {rooms.map((room) => (
+            {filteredRooms.map((room) => (
               <div
                 key={room.id}
                 style={{
