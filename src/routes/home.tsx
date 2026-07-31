@@ -4498,7 +4498,6 @@ function HomePage() {
       {/* ============ NEXT LESSON CARD ============ */}
       <div
         style={{
-          position: 'relative',
           margin: '0 16px 0',
           background: '#FFFFFF',
           borderRadius: upcoming && heroExpanded ? '16px 16px 0 0' : 16,
@@ -4563,7 +4562,6 @@ function HomePage() {
 
           // Date / time / duration
           const d = upcoming ? lessonDateTime(upcoming) : null;
-          const isLessonToday = upcoming && ymd(lessonDateTime(upcoming)) === ymd(todayStart);
           const fmt = (x: Date) => `${String(x.getHours()).padStart(2, '0')}:${String(x.getMinutes()).padStart(2, '0')}`;
           const startText = d ? fmt(d) : '—';
           const dur = upcoming?.duration_minutes ?? 0;
@@ -4598,16 +4596,6 @@ function HomePage() {
 
           return (
             <>
-              {isLessonToday && (
-                <span style={{
-                  position: 'absolute', top: 34, right: 16, zIndex: 1,
-                  background: '#CC2229', color: '#FFFFFF',
-                  fontSize: 10, fontWeight: 500, padding: '3px 9px',
-                  borderRadius: 20, letterSpacing: '0.3px',
-                }}>
-                  TODAY
-                </span>
-              )}
               <div style={{ display: 'flex', alignItems: 'stretch' }}>
                 {/* Date rail */}
                 <div style={{
