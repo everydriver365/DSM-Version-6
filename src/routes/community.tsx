@@ -1160,19 +1160,11 @@ function ChatTab({
         .maybeSingle();
       if (cancelled) return;
       if (!roomRow) {
-        const areaName = instructorArea || outcode;
-        const { data: newRoom, error: createErr } = await supabase
-          .from("local_chat_rooms")
-          .insert({ outcode, area_name: areaName, instructor_count: 1 })
-          .select()
-          .single();
-        if (createErr || !newRoom) {
-          setNoRoom(true);
-          setRoom(null);
-          return;
-        }
-        setNoRoom(false);
-        setRoom(newRoom as ChatRoom);
+        setNoRoom(true);
+        setRoom(null);
+        setNoRoomMessage(
+          "No chat room exists for your area yet. DSM will create one shortly — check back soon."
+        );
         return;
       }
       setNoRoom(false);
