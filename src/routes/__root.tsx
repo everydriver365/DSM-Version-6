@@ -277,7 +277,7 @@ const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
   },
 ];
 
-function GlobalMenu() {
+function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -383,13 +383,34 @@ function GlobalMenu() {
           }}
         >
           <div style={{ fontWeight: 700, fontSize: 16 }}>Menu</div>
-          <button
-            onClick={() => setOpen(false)}
-            aria-label="Close menu"
-            style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", display: "flex" }}
-          >
-            <X size={22} />
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            {isAdmin && (
+              <button
+                onClick={() => {
+                  navigate({ to: "/admin" as never });
+                  setOpen(false);
+                }}
+                style={{
+                  fontSize: 10,
+                  fontWeight: 500,
+                  color: "rgba(255,255,255,0.5)",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: 0,
+                }}
+              >
+                Admin
+              </button>
+            )}
+            <button
+              onClick={() => setOpen(false)}
+              aria-label="Close menu"
+              style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", display: "flex" }}
+            >
+              <X size={22} />
+            </button>
+          </div>
         </div>
 
         <div style={{ overflowY: "auto", flex: 1, paddingBottom: 24 }}>
