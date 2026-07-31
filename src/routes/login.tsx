@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect, useRef, type FormEvent } from "react";
 import { Eye, EyeOff, ScanFace } from "lucide-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
@@ -17,9 +17,6 @@ export const Route = createFileRoute("/login")({
 
 const REMEMBER_KEY = "dsm:rememberedEmail";
 
-const ENROLLED_KEY = "dsm_webauthn_enrolled";
-const REFRESH_KEY = "dsm_refresh_token";
-
 function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -32,21 +29,34 @@ function LoginPage() {
   const [webauthnSupported, setWebauthnSupported] = useState(false);
   const [enrolled, setEnrolled] = useState(false);
   const [askEnroll, setAskEnroll] = useState(false);
+  const fetchedRefreshToken = useRef<string | null>(null);
+  const instructorId = useRef<string | null>(null);
 
   useEffect(() => {
+    let saved: string | null = null;
     try {
-      const saved = localStorage.getItem(REMEMBER_KEY);
-      if (saved) {
-        setEmail(saved);
-        setRemember(true);
-      }
-      setEnrolled(localStorage.getItem(ENROLLED_KEY) === "true");
+      saved = localStorage.getItem(REMEMBER_KEY);
     } catch {
       /* ignore */
+    }
+    if (saved) {
+      setEmail(saved);
+      setRemember(true);
     }
     if (typeof window !== "undefined" && window.PublicKeyCredential && navigator.credentials) {
       setWebauthnSupported(true);
     }
+    if (!saved) return;
+    (async () => {
+      const { data: instructor } = await supabase
+        .from("instructors")
+        .select("id, faceid_enrolled, faceid_refresh_token")
+        .eq("remembered_email", saved)
+        .maybeSingle();
+      instructorId.current = instructor?.id ?? null;
+      fetchedRefreshToken.current = instructor?.faceid_refresh_token ?? null;
+      if (instructor?.faceid_enrolled) setEnrolled(true);
+    })();
   }, []);
 
   function persistRemember(value: string, on: boolean) {
@@ -58,27 +68,27 @@ function LoginPage() {
     }
   }
 
-  function readLS(key: string) {
-    try {
-      return localStorage.getItem(key);
-    } catch {
-      return null;
-    }
-  }
-
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
     setNotice(null);
     setLoading(true);
-    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error: err } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (err) {
       setError(err.message);
       return;
     }
+    const userId = data.session?.user?.id ?? null;
+    instructorId.current = userId;
     persistRemember(email, remember);
-    if (webauthnSupported && readLS(ENROLLED_KEY) !== "true") {
+    if (userId) {
+      await supabase
+        .from("instructors")
+        .update({ remembered_email: remember ? email : null })
+        .eq("id", userId);
+    }
+    if (webauthnSupported && !enrolled) {
       setAskEnroll(true);
       return;
     }
@@ -111,9 +121,14 @@ function LoginPage() {
       if (cred) {
         const { data } = await supabase.auth.getSession();
         const refreshToken = data.session?.refresh_token;
-        if (refreshToken) {
-          localStorage.setItem(REFRESH_KEY, refreshToken);
-          localStorage.setItem(ENROLLED_KEY, "true");
+        const userId = data.session?.user?.id;
+        if (refreshToken && userId) {
+          await supabase
+            .from("instructors")
+            .update({ faceid_enrolled: true, faceid_refresh_token: refreshToken })
+            .eq("id", userId);
+          instructorId.current = userId;
+          fetchedRefreshToken.current = refreshToken;
           setEnrolled(true);
           setNotice("Face ID enabled — you can use it next time you sign in");
           setTimeout(() => navigate({ to: "/home", replace: true }), 900);
@@ -134,9 +149,8 @@ function LoginPage() {
   async function onBiometric() {
     setError(null);
     setNotice(null);
-    const isEnrolled = readLS(ENROLLED_KEY) === "true";
-    const refreshToken = readLS(REFRESH_KEY);
-    if (!isEnrolled || !refreshToken) {
+    const refreshToken = fetchedRefreshToken.current;
+    if (!enrolled || !refreshToken) {
       setError("Face ID not set up — sign in with your password first");
       return;
     }
@@ -156,15 +170,24 @@ function LoginPage() {
     }
     const { error: err } = await supabase.auth.refreshSession({ refresh_token: refreshToken });
     if (err) {
-      try {
-        localStorage.removeItem(REFRESH_KEY);
-        localStorage.removeItem(ENROLLED_KEY);
-      } catch {
-        /* ignore */
-      }
+      await supabase
+        .from("instructors")
+        .update({ faceid_enrolled: false, faceid_refresh_token: null })
+        .eq("faceid_refresh_token", refreshToken);
+      fetchedRefreshToken.current = null;
       setEnrolled(false);
       setError("Session expired — please sign in with your password");
       return;
+    }
+    const newSession = await supabase.auth.getSession();
+    const newToken = newSession.data.session?.refresh_token;
+    const userId = newSession.data.session?.user?.id ?? instructorId.current;
+    if (newToken && userId) {
+      fetchedRefreshToken.current = newToken;
+      await supabase
+        .from("instructors")
+        .update({ faceid_refresh_token: newToken })
+        .eq("id", userId);
     }
     navigate({ to: "/home", replace: true });
   }
