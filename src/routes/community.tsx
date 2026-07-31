@@ -1127,6 +1127,7 @@ function ChatTab({
 }) {
   const [room, setRoom] = useState<ChatRoom | null>(null);
   const [noRoom, setNoRoom] = useState(false);
+  const [noRoomMessage, setNoRoomMessage] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [subscription, setSubscription] = useState<ChatSubscription | null>(null);
@@ -1159,19 +1160,11 @@ function ChatTab({
         .maybeSingle();
       if (cancelled) return;
       if (!roomRow) {
-        const areaName = instructorArea || outcode;
-        const { data: newRoom, error: createErr } = await supabase
-          .from("local_chat_rooms")
-          .insert({ outcode, area_name: areaName, instructor_count: 1 })
-          .select()
-          .single();
-        if (createErr || !newRoom) {
-          setNoRoom(true);
-          setRoom(null);
-          return;
-        }
-        setNoRoom(false);
-        setRoom(newRoom as ChatRoom);
+        setNoRoom(true);
+        setRoom(null);
+        setNoRoomMessage(
+          "No chat room exists for your area yet. DSM will create one shortly — check back soon."
+        );
         return;
       }
       setNoRoom(false);
@@ -1453,7 +1446,7 @@ function ChatTab({
               No chat room yet for your area
             </div>
             <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4, lineHeight: 1.5 }}>
-              Check back soon, or contact support.
+              {noRoomMessage || "Check back soon, or contact support."}
             </div>
           </div>
         ) : messages.length === 0 ? (
