@@ -4566,9 +4566,6 @@ function HomePage() {
           const fmt = (x: Date) => `${String(x.getHours()).padStart(2, '0')}:${String(x.getMinutes()).padStart(2, '0')}`;
           const startText = d ? fmt(d) : '—';
           const dur = upcoming?.duration_minutes ?? 0;
-          const durText = dur >= 60
-            ? (dur % 60 === 0 ? `${dur / 60} hr` : `${Math.floor(dur / 60)}h ${dur % 60}m`)
-            : `${dur} min`;
           const pickup = upcoming?.pickup_location || [upcoming?.pupils?.address, upcoming?.pupils?.postcode].filter(Boolean).join(', ') || 'No pickup';
 
           const openMaps = () => {
