@@ -464,6 +464,7 @@ function RootComponent() {
     "/livesession",
     "/live",
     "/gaps",
+    "/community",
     "/subscription",
     "/onboarding",
     "/forgotpassword",
