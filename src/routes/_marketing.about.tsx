@@ -46,7 +46,7 @@ const stats = [
 
 function AboutPage() {
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
       {/* Hero */}
       <section className="bg-[#F7FAFC] py-20 px-6 text-center">
         <div className="max-w-[1180px] mx-auto">
@@ -63,7 +63,7 @@ function AboutPage() {
       </section>
 
       {/* Story section */}
-      <section className="bg-white py-20 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-white py-20 px-6" style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl font-black text-[#133155] mb-8">Why we built DSM</h2>
           <div className="flex flex-col gap-6">
@@ -84,7 +84,7 @@ function AboutPage() {
       </section>
 
       {/* Mission section */}
-      <section className="bg-[#F7FAFC] py-20 px-6 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-[#F7FAFC] py-20 px-6 text-center" style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <h2 className="text-3xl font-black text-[#133155] mb-6">Our mission</h2>
           <p className="text-2xl font-black text-[#1877D6] mb-6">
@@ -97,7 +97,7 @@ function AboutPage() {
       </section>
 
       {/* Values section */}
-      <section className="bg-white py-20 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-white py-20 px-6" style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <h2 className="text-3xl font-black text-[#133155] text-center mb-12">What we stand for</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -121,7 +121,7 @@ function AboutPage() {
       </section>
 
       {/* Stats section */}
-      <section className="bg-[#133155] py-20 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-[#133155] py-20 px-6" style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto text-center">
             {stats.map((s) => (
@@ -135,7 +135,7 @@ function AboutPage() {
       </section>
 
       {/* Contact teaser */}
-      <section className="bg-[#F7FAFC] py-16 px-6 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-[#F7FAFC] py-16 px-6 text-center" style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <h2 className="text-3xl font-black text-[#133155] mb-4">Get in touch</h2>
           <p className="text-[#718096] mb-8">Questions, feedback or just want to say hello?</p>
