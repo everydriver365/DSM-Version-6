@@ -4596,14 +4596,23 @@ function HomePage() {
           return (
             <>
               {isPrepaid && (
-                <span style={{
+                <div style={{
                   position: 'absolute', top: 12, right: 16, zIndex: 1,
-                  background: '#E5F4EA', color: '#1D8A4E',
-                  fontSize: 10, fontWeight: 600, padding: '3px 9px',
-                  borderRadius: 20, letterSpacing: '0.3px',
+                  display: 'flex', alignItems: 'center', gap: 6,
                 }}>
-                  Prepaid
-                </span>
+                  {priceText && (
+                    <span style={{ fontSize: 12, fontWeight: 700, color: '#1D8A4E' }}>
+                      {priceText}
+                    </span>
+                  )}
+                  <span style={{
+                    background: '#E5F4EA', color: '#1D8A4E',
+                    fontSize: 10, fontWeight: 600, padding: '3px 9px',
+                    borderRadius: 20, letterSpacing: '0.3px',
+                  }}>
+                    Prepaid
+                  </span>
+                </div>
               )}
               <div style={{ padding: '12px 16px 0' }}>
                 <div style={{ fontSize: 11, fontWeight: 600, color: '#8A93A3', letterSpacing: '0.5px' }}>
@@ -4637,7 +4646,7 @@ function HomePage() {
 
                   {/* Price / status */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-                    {priceText && (
+                    {priceText && !isPrepaid && (
                       <div style={{ fontSize: 17, fontWeight: 700, color: '#1D8A4E' }}>{priceText}</div>
                     )}
                     {!isPrepaid && (
