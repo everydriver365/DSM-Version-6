@@ -4816,7 +4816,7 @@ function HomePage() {
               </div>
               <button
                 type="button"
-                onClick={() => navigate({ to: '/community' as never })}
+                onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
                 style={{ fontSize: 11, color: '#1877D6', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
               >
                 See all →
@@ -4837,7 +4837,7 @@ function HomePage() {
               return (
                 <div
                   key={alert.id}
-                  onClick={() => navigate({ to: '/community' as never })}
+                  onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
                   style={{
                     background: 'white', borderRadius: 10, boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                     padding: '10px 12px', marginBottom: 6, display: 'flex', alignItems: 'center',
@@ -4886,7 +4886,7 @@ function HomePage() {
             })}
             {localAlerts.length > 2 && (
               <button
-                onClick={() => navigate({ to: '/community' as never })}
+                onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
                 style={{ fontSize: 11, color: '#1877D6', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, padding: '4px 0' }}
               >
                 +{localAlerts.length - 2} more local alerts →
@@ -4898,7 +4898,7 @@ function HomePage() {
         {/* ============ LOCAL CHAT ============ */}
         {localRoom && (
           <div
-            onClick={() => navigate({ to: '/community' as never })}
+            onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
             style={{
               margin: '8px 16px 0', background: 'white', borderRadius: 10,
               boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '10px 12px',
