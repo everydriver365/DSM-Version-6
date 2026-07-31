@@ -4646,7 +4646,7 @@ function HomePage() {
 
                   {/* Price / status */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-                    {priceText && (
+                    {priceText && !isPrepaid && (
                       <div style={{ fontSize: 17, fontWeight: 700, color: '#1D8A4E' }}>{priceText}</div>
                     )}
                     {!isPrepaid && (
