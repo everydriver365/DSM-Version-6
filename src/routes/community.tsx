@@ -1127,6 +1127,7 @@ function ChatTab({
 }) {
   const [room, setRoom] = useState<ChatRoom | null>(null);
   const [noRoom, setNoRoom] = useState(false);
+  const [noRoomMessage, setNoRoomMessage] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [subscription, setSubscription] = useState<ChatSubscription | null>(null);
