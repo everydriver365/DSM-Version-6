@@ -1141,6 +1141,34 @@ function ChatTab({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, scope, instructorOutcode]);
 
+  // Fetch subscription for this room + mark as read on open
+  useEffect(() => {
+    if (!room || !userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data: sub } = await supabase
+        .from("chat_room_subscriptions")
+        .select("id, muted_until, last_read_at")
+        .eq("instructor_id", userId)
+        .eq("room_id", room.id)
+        .maybeSingle();
+      if (cancelled) return;
+      if (sub) {
+        const now = new Date().toISOString();
+        setSubscription({ ...(sub as ChatSubscription), last_read_at: now });
+        await supabase
+          .from("chat_room_subscriptions")
+          .update({ last_read_at: now })
+          .eq("id", (sub as any).id);
+        onRoomRead?.(scope);
+      } else {
+        setSubscription(null);
+      }
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [room, userId]);
+
   useEffect(() => {
     if (!room) return;
     const channel = supabase
@@ -1157,11 +1185,28 @@ function ChatTab({
             .maybeSingle();
           setMessages((prev) => [...prev, (withInstructor ?? inserted) as ChatMessage]);
           scrollToBottom();
+
+          // Notify when not actively viewing and not muted
+          const notViewing = typeof document !== "undefined" && document.visibilityState !== "visible";
+          const mutedNow = !!subscription?.muted_until && new Date(subscription.muted_until) > new Date();
+          if (inserted.instructor_id !== userId && userId && subscription && !mutedNow && notViewing) {
+            const body = inserted.message.length > 60 ? inserted.message.slice(0, 60) + "..." : inserted.message;
+            await supabase.from("instructor_notifications").insert({
+              instructor_id: userId,
+              type: "chat_message",
+              title: `New message in ${room.area_name} chat`,
+              body,
+              read: false,
+              reference_type: "chat_room",
+              reference_id: room.id,
+            });
+          }
         },
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [room]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [room, userId, subscription]);
 
   const send = async () => {
     if (!room || !userId) return;
@@ -1173,7 +1218,75 @@ function ChatTab({
       instructor_id: userId,
       message: msg,
     });
-    if (error) toast.error("Couldn't send");
+    if (error) { toast.error("Couldn't send"); return; }
+
+    // Auto-subscribe on first message
+    if (!subscription) {
+      const { data: newSub } = await supabase
+        .from("chat_room_subscriptions")
+        .insert({
+          instructor_id: userId,
+          room_id: room.id,
+          last_read_at: new Date().toISOString(),
+        })
+        .select("id, muted_until, last_read_at")
+        .maybeSingle();
+      if (newSub) setSubscription(newSub as ChatSubscription);
+    }
+  };
+
+  const subscribeToRoom = async () => {
+    if (!room || !userId) return;
+    const { data: newSub, error } = await supabase
+      .from("chat_room_subscriptions")
+      .insert({
+        instructor_id: userId,
+        room_id: room.id,
+        last_read_at: new Date().toISOString(),
+      })
+      .select("id, muted_until, last_read_at")
+      .maybeSingle();
+    if (error || !newSub) { toast.error("Couldn't subscribe"); return; }
+    setSubscription(newSub as ChatSubscription);
+    toast.success("Subscribed — you'll be notified of new messages");
+  };
+
+  const muteFor = async (hours: number | null) => {
+    if (!subscription) return;
+    const mutedUntil = hours === null
+      ? new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10).toISOString()
+      : new Date(Date.now() + hours * 3600_000).toISOString();
+    const { error } = await supabase
+      .from("chat_room_subscriptions")
+      .update({ muted_until: mutedUntil })
+      .eq("id", subscription.id);
+    setMuteMenuOpen(false);
+    if (error) { toast.error("Couldn't mute"); return; }
+    setSubscription({ ...subscription, muted_until: mutedUntil });
+    toast.success(hours === null ? "Muted indefinitely" : `Muted for ${hours} hour${hours === 1 ? "" : "s"}`);
+  };
+
+  const unmute = async () => {
+    if (!subscription) return;
+    const { error } = await supabase
+      .from("chat_room_subscriptions")
+      .update({ muted_until: null })
+      .eq("id", subscription.id);
+    if (error) { toast.error("Couldn't unmute"); return; }
+    setSubscription({ ...subscription, muted_until: null });
+    toast.success("Notifications unmuted");
+  };
+
+  const unsubscribe = async () => {
+    if (!subscription) return;
+    const { error } = await supabase
+      .from("chat_room_subscriptions")
+      .delete()
+      .eq("id", subscription.id);
+    setMuteMenuOpen(false);
+    if (error) { toast.error("Couldn't unsubscribe"); return; }
+    setSubscription(null);
+    toast.success("Unsubscribed from this chat");
   };
 
   const flag = async (msg: ChatMessage) => {
@@ -1184,6 +1297,7 @@ function ChatTab({
       .eq("id", msg.id);
     if (!error) toast.info("Message flagged for review by DSM");
   };
+
 
   const areaLabel = scope === "uk" ? "All UK" : (room?.area_name ?? instructorArea);
   const memberCount = room?.instructor_count ?? 1;
