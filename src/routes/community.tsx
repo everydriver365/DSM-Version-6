@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { reverseGeocode } from "@/lib/geocode.functions";
+import { IconBell, IconBellOff } from "@tabler/icons-react";
+
 
 import {
   ArrowLeft,
@@ -150,11 +152,46 @@ function CommunityPage() {
   const [instructorArea, setInstructorArea] = useState<string>("Your area");
   const [instructorOutcode, setInstructorOutcode] = useState<string | null>(null);
   const [instructorProfile, setInstructorProfile] = useState<{ name: string | null; profile_image_url: string | null } | null>(null);
+  const [unread, setUnread] = useState<{ local: number; uk: number }>({ local: 0, uk: 0 });
 
   useEffect(() => {
     if (search?.tab === "local") setActiveTab("local");
     else if (search?.tab === "uk") setActiveTab("uk");
   }, []);
+
+  // Unread counts per subscribed room
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data: subs } = await supabase
+        .from("chat_room_subscriptions")
+        .select("room_id, last_read_at, muted_until")
+        .eq("instructor_id", userId);
+      if (cancelled || !subs?.length) return;
+      const roomIds = (subs as any[]).map((s) => s.room_id);
+      const { data: rooms } = await supabase
+        .from("local_chat_rooms")
+        .select("id, outcode")
+        .in("id", roomIds);
+      if (cancelled) return;
+      const next = { local: 0, uk: 0 };
+      for (const s of subs as any[]) {
+        const roomOutcode = (rooms as any[] | null)?.find((r) => r.id === s.room_id)?.outcode;
+        const key: "local" | "uk" = roomOutcode === "UK" ? "uk" : "local";
+        const { count } = await supabase
+          .from("local_chat_messages")
+          .select("id", { count: "exact", head: true })
+          .eq("room_id", s.room_id)
+          .neq("instructor_id", userId)
+          .gt("created_at", s.last_read_at ?? new Date(0).toISOString());
+        next[key] += count ?? 0;
+      }
+      if (!cancelled) setUnread(next);
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
+
 
   useEffect(() => {
     (async () => {
@@ -210,6 +247,7 @@ function CommunityPage() {
           { id: "uk", label: "All UK" },
         ] as const).map((t) => {
           const active = activeTab === t.id;
+          const badge = t.id === "local" ? unread.local : t.id === "uk" ? unread.uk : 0;
           return (
             <button
               key={t.id}
@@ -220,12 +258,22 @@ function CommunityPage() {
                 fontWeight: 600, background: "none", border: "none", cursor: "pointer",
                 borderBottom: active ? "2px solid #185FA5" : "2px solid transparent",
                 color: active ? "#185FA5" : "#8A93A3",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
               }}
             >
               {t.label}
+              {badge > 0 && (
+                <span style={{
+                  background: "#1877D6", color: "white", fontSize: 10, fontWeight: 700,
+                  borderRadius: 999, padding: "1px 6px", minWidth: 18, lineHeight: "16px",
+                }}>
+                  {badge > 99 ? "99+" : badge}
+                </span>
+              )}
             </button>
           );
         })}
+
       </div>
 
       {activeTab === "alerts" && (
@@ -244,6 +292,7 @@ function CommunityPage() {
           instructorProfile={instructorProfile}
           instructorArea={instructorArea}
           instructorOutcode={instructorOutcode}
+          onRoomRead={(s) => setUnread((u) => ({ ...u, [s]: 0 }))}
         />
       )}
       {activeTab === "uk" && (
@@ -254,8 +303,10 @@ function CommunityPage() {
           instructorProfile={instructorProfile}
           instructorArea="All UK"
           instructorOutcode="UK"
+          onRoomRead={(s) => setUnread((u) => ({ ...u, [s]: 0 }))}
         />
       )}
+
     </div>
   );
 }
@@ -1062,20 +1113,29 @@ function ReportSheet({
 
 /* ============================================================ CHAT TAB */
 
+type ChatSubscription = { id: string; muted_until: string | null; last_read_at: string | null };
+
 function ChatTab({
-  scope, userId, instructorProfile, instructorArea, instructorOutcode,
+  scope, userId, instructorProfile, instructorArea, instructorOutcode, onRoomRead,
 }: {
   scope: "local" | "uk";
   userId: string | null;
   instructorProfile: { name: string | null; profile_image_url: string | null } | null;
   instructorArea: string;
   instructorOutcode: string | null;
+  onRoomRead?: (scope: "local" | "uk") => void;
 }) {
   const [room, setRoom] = useState<ChatRoom | null>(null);
   const [noRoom, setNoRoom] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [subscription, setSubscription] = useState<ChatSubscription | null>(null);
+  const [muteMenuOpen, setMuteMenuOpen] = useState(false);
   const listRef = useRef<HTMLDivElement | null>(null);
+
+  const isSubscribed = subscription !== null;
+  const isMuted = !!subscription?.muted_until && new Date(subscription.muted_until) > new Date();
+
 
   const scrollToBottom = () => {
     requestAnimationFrame(() => {
@@ -1132,6 +1192,34 @@ function ChatTab({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, scope, instructorOutcode]);
 
+  // Fetch subscription for this room + mark as read on open
+  useEffect(() => {
+    if (!room || !userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data: sub } = await supabase
+        .from("chat_room_subscriptions")
+        .select("id, muted_until, last_read_at")
+        .eq("instructor_id", userId)
+        .eq("room_id", room.id)
+        .maybeSingle();
+      if (cancelled) return;
+      if (sub) {
+        const now = new Date().toISOString();
+        setSubscription({ ...(sub as ChatSubscription), last_read_at: now });
+        await supabase
+          .from("chat_room_subscriptions")
+          .update({ last_read_at: now })
+          .eq("id", (sub as any).id);
+        onRoomRead?.(scope);
+      } else {
+        setSubscription(null);
+      }
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [room, userId]);
+
   useEffect(() => {
     if (!room) return;
     const channel = supabase
@@ -1148,11 +1236,28 @@ function ChatTab({
             .maybeSingle();
           setMessages((prev) => [...prev, (withInstructor ?? inserted) as ChatMessage]);
           scrollToBottom();
+
+          // Notify when not actively viewing and not muted
+          const notViewing = typeof document !== "undefined" && document.visibilityState !== "visible";
+          const mutedNow = !!subscription?.muted_until && new Date(subscription.muted_until) > new Date();
+          if (inserted.instructor_id !== userId && userId && subscription && !mutedNow && notViewing) {
+            const body = inserted.message.length > 60 ? inserted.message.slice(0, 60) + "..." : inserted.message;
+            await supabase.from("instructor_notifications").insert({
+              instructor_id: userId,
+              type: "chat_message",
+              title: `New message in ${room.area_name} chat`,
+              body,
+              read: false,
+              reference_type: "chat_room",
+              reference_id: room.id,
+            });
+          }
         },
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [room]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [room, userId, subscription]);
 
   const send = async () => {
     if (!room || !userId) return;
@@ -1164,7 +1269,75 @@ function ChatTab({
       instructor_id: userId,
       message: msg,
     });
-    if (error) toast.error("Couldn't send");
+    if (error) { toast.error("Couldn't send"); return; }
+
+    // Auto-subscribe on first message
+    if (!subscription) {
+      const { data: newSub } = await supabase
+        .from("chat_room_subscriptions")
+        .insert({
+          instructor_id: userId,
+          room_id: room.id,
+          last_read_at: new Date().toISOString(),
+        })
+        .select("id, muted_until, last_read_at")
+        .maybeSingle();
+      if (newSub) setSubscription(newSub as ChatSubscription);
+    }
+  };
+
+  const subscribeToRoom = async () => {
+    if (!room || !userId) return;
+    const { data: newSub, error } = await supabase
+      .from("chat_room_subscriptions")
+      .insert({
+        instructor_id: userId,
+        room_id: room.id,
+        last_read_at: new Date().toISOString(),
+      })
+      .select("id, muted_until, last_read_at")
+      .maybeSingle();
+    if (error || !newSub) { toast.error("Couldn't subscribe"); return; }
+    setSubscription(newSub as ChatSubscription);
+    toast.success("Subscribed — you'll be notified of new messages");
+  };
+
+  const muteFor = async (hours: number | null) => {
+    if (!subscription) return;
+    const mutedUntil = hours === null
+      ? new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10).toISOString()
+      : new Date(Date.now() + hours * 3600_000).toISOString();
+    const { error } = await supabase
+      .from("chat_room_subscriptions")
+      .update({ muted_until: mutedUntil })
+      .eq("id", subscription.id);
+    setMuteMenuOpen(false);
+    if (error) { toast.error("Couldn't mute"); return; }
+    setSubscription({ ...subscription, muted_until: mutedUntil });
+    toast.success(hours === null ? "Muted indefinitely" : `Muted for ${hours} hour${hours === 1 ? "" : "s"}`);
+  };
+
+  const unmute = async () => {
+    if (!subscription) return;
+    const { error } = await supabase
+      .from("chat_room_subscriptions")
+      .update({ muted_until: null })
+      .eq("id", subscription.id);
+    if (error) { toast.error("Couldn't unmute"); return; }
+    setSubscription({ ...subscription, muted_until: null });
+    toast.success("Notifications unmuted");
+  };
+
+  const unsubscribe = async () => {
+    if (!subscription) return;
+    const { error } = await supabase
+      .from("chat_room_subscriptions")
+      .delete()
+      .eq("id", subscription.id);
+    setMuteMenuOpen(false);
+    if (error) { toast.error("Couldn't unsubscribe"); return; }
+    setSubscription(null);
+    toast.success("Unsubscribed from this chat");
   };
 
   const flag = async (msg: ChatMessage) => {
@@ -1176,6 +1349,7 @@ function ChatTab({
     if (!error) toast.info("Message flagged for review by DSM");
   };
 
+
   const areaLabel = scope === "uk" ? "All UK" : (room?.area_name ?? instructorArea);
   const memberCount = room?.instructor_count ?? 1;
 
@@ -1184,14 +1358,89 @@ function ChatTab({
       <div style={{
         background: "white", borderBottom: "0.5px solid #E2E6ED",
         padding: "12px 16px", position: "sticky", top: 45, zIndex: 5,
+        display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8,
       }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>
-          {scope === "uk" ? "All UK ADIs" : `${areaLabel} ADIs`}
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>
+            {scope === "uk" ? "All UK ADIs" : `${areaLabel} ADIs`}
+          </div>
+          <div style={{ fontSize: 12, color: "#9CA3AF" }}>
+            {memberCount} members · {scope === "uk" ? "Chat with ADIs across the UK" : "Real names only"}
+          </div>
         </div>
-        <div style={{ fontSize: 12, color: "#9CA3AF" }}>
-          {memberCount} members · {scope === "uk" ? "Chat with ADIs across the UK" : "Real names only"}
-        </div>
+
+        {room && (
+          <div style={{ position: "relative", flexShrink: 0 }}>
+            <button
+              type="button"
+              aria-label={!isSubscribed ? "Subscribe to notifications" : isMuted ? "Unmute notifications" : "Notification settings"}
+              onClick={() => {
+                if (!isSubscribed) { subscribeToRoom(); return; }
+                if (isMuted) { unmute(); return; }
+                setMuteMenuOpen((v) => !v);
+              }}
+              style={{
+                background: "none", border: "none", cursor: "pointer",
+                padding: 4, display: "flex", alignItems: "center",
+              }}
+            >
+              {!isSubscribed ? (
+                <IconBell size={20} color="#9CA3AF" />
+              ) : isMuted ? (
+                <IconBellOff size={20} color="#B45309" />
+              ) : (
+                <IconBell size={20} color="#1877D6" fill="#1877D6" />
+              )}
+            </button>
+
+            {muteMenuOpen && (
+              <>
+                <div
+                  onClick={() => setMuteMenuOpen(false)}
+                  style={{ position: "fixed", inset: 0, zIndex: 40 }}
+                />
+                <div style={{
+                  position: "absolute", top: 32, right: 0, zIndex: 41,
+                  background: "white", border: "0.5px solid #E2E6ED", borderRadius: 12,
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)", overflow: "hidden", minWidth: 190,
+                }}>
+                  {[
+                    { label: "Mute for 1 hour", hours: 1 },
+                    { label: "Mute for 8 hours", hours: 8 },
+                    { label: "Mute for 24 hours", hours: 24 },
+                    { label: "Mute indefinitely", hours: null as number | null },
+                  ].map((o) => (
+                    <button
+                      key={o.label}
+                      type="button"
+                      onClick={() => muteFor(o.hours)}
+                      style={{
+                        display: "block", width: "100%", textAlign: "left",
+                        padding: "10px 14px", fontSize: 13, color: "#0F2044",
+                        background: "none", border: "none", borderBottom: "0.5px solid #F1F4F8", cursor: "pointer",
+                      }}
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={unsubscribe}
+                    style={{
+                      display: "block", width: "100%", textAlign: "left",
+                      padding: "10px 14px", fontSize: 13, color: "#CC2229", fontWeight: 600,
+                      background: "none", border: "none", cursor: "pointer",
+                    }}
+                  >
+                    Unsubscribe
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        )}
       </div>
+
 
       <div
         ref={listRef}

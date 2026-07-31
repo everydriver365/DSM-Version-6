@@ -1661,6 +1661,35 @@ function HomePage() {
     read_at: string | null;
     pupils: { name: string | null; first_name: string | null; profile_image_url: string | null } | null;
   }>>([]);
+
+  // Unread community chat messages across subscribed, non-muted rooms
+  const [unreadChat, setUnreadChat] = useState(0);
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data: subs } = await supabase
+        .from('chat_room_subscriptions')
+        .select('room_id, last_read_at, muted_until')
+        .eq('instructor_id', userId);
+      if (cancelled || !subs?.length) return;
+      let total = 0;
+      for (const s of subs as any[]) {
+        const muted = s.muted_until && new Date(s.muted_until) > new Date();
+        if (muted) continue;
+        const { count } = await supabase
+          .from('local_chat_messages')
+          .select('id', { count: 'exact', head: true })
+          .eq('room_id', s.room_id)
+          .neq('instructor_id', userId)
+          .gt('created_at', s.last_read_at ?? new Date(0).toISOString());
+        total += count ?? 0;
+      }
+      if (!cancelled) setUnreadChat(total);
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
+
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
@@ -2040,6 +2069,8 @@ function HomePage() {
       message: { bg: "#00B5A5", Icon: MessageSquare, route: "/messages" },
       rewards: { bg: "#D97706", Icon: Trophy, route: "/rewards" },
       pupil_reply: { bg: "#00B5A5", Icon: MessageSquare, route: "/messages" },
+      chat_message: { bg: "#7C3AED", Icon: IconMessageCircle, route: "/community" },
+
       gap_accepted: { bg: "#1E8E3E", Icon: Zap, route: "/gaps" },
       gap_message_sent: { bg: "#1877D6", Icon: Send, route: "/gaps" },
       default: { bg: "#CC2229", Icon: Bell, route: "/notifications" },
@@ -6016,6 +6047,8 @@ function HomePage() {
                 { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, iconStroke: '#6B4FA0', chipBg: '#EAE3F5', graphic: 'donut' },
                 { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} owed` : 'All settled', route: '/payments', icon: IconCurrencyPound, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0, badge: outstanding > 0 ? Math.round(outstanding) : undefined, graphic: 'chart' },
                 { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#1877D6', chipBg: '#E6F1FB', attention: unreadCount > 0, graphic: 'bubbles' },
+                { label: 'Community', sub: unreadChat > 0 ? `${unreadChat} unread` : 'ADI chat', route: '/community', icon: IconMessageCircle, iconStroke: '#7C3AED', chipBg: '#EFE7FB', attention: unreadChat > 0, badge: unreadChat > 0 ? unreadChat : undefined, graphic: 'bubbles' },
+
                 { label: 'Send message', sub: 'Quick text', route: null, icon: IconMessage, iconStroke: '#1877D6', chipBg: '#E6F1FB', action: 'send-message', graphic: 'bubbles' },
                 { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'running-late', graphic: 'alarm' },
                 { label: 'EOL', sub: 'End of lesson', route: '/pupils', icon: BookOpen, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'book' },
