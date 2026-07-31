@@ -49,7 +49,7 @@ function FeatureSection({
   bg?: string;
 }) {
   return (
-    <section className="py-20 px-6" style={{ background: bg, fontFamily: "'Inter', sans-serif" }}>
+    <section className="py-20 px-6" style={{ background: bg, fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
       <div className="max-w-[1180px] mx-auto">
         <div
           className={`grid md:grid-cols-2 gap-12 items-center ${reversed ? "md:grid-flow-dense" : ""}`}
@@ -77,7 +77,7 @@ function MockupCard({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="bg-[#F7FAFC] rounded-2xl p-8 min-h-[320px] flex items-center justify-center"
-      style={{ fontFamily: "'Inter', sans-serif" }}
+      style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}
     >
       {children}
     </div>
@@ -86,7 +86,7 @@ function MockupCard({ children }: { children: React.ReactNode }) {
 
 function FeaturesPage() {
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
       {/* Hero */}
       <section className="bg-[#F7FAFC] py-20 px-6 text-center">
         <div className="max-w-[1180px] mx-auto">
@@ -220,7 +220,7 @@ function FeaturesPage() {
       />
 
       {/* EveryDriver integration */}
-      <section className="bg-[#133155] py-20 px-6 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-[#133155] py-20 px-6 text-center" style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <h2 className="text-3xl font-black text-white mb-4">Get more pupils automatically</h2>
           <p className="text-white/70 text-lg mb-8 max-w-2xl mx-auto">
@@ -238,7 +238,7 @@ function FeaturesPage() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="bg-[#1877D6] py-16 px-6 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-[#1877D6] py-16 px-6 text-center" style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <h2 className="text-4xl font-black text-white mb-4">Ready to try DSM?</h2>
           <p className="text-white/80 mb-8">Free forever. No card required.</p>

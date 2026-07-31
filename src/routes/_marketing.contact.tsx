@@ -120,7 +120,7 @@ function ContactPage() {
 
 
   return (
-    <div style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
       {/* HERO */}
       <section className="bg-[#F7FAFC] py-16 px-6 text-center">
         <span className="inline-block bg-[#E6F7F6] text-[#1877D6] text-xs font-semibold px-3 py-1 rounded-full mb-4">

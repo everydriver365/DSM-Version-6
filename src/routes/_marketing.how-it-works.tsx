@@ -143,7 +143,7 @@ function StepsRow({
 
 function HowItWorksPage() {
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
       {/* Hero */}
       <section className="bg-[#F7FAFC] py-20 px-6 text-center">
         <div className="max-w-[1180px] mx-auto">
@@ -160,7 +160,7 @@ function HowItWorksPage() {
       </section>
 
       {/* For instructors */}
-      <section className="bg-white py-20 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-white py-20 px-6" style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <h2 className="text-3xl font-black text-[#133155] text-center mb-16">For instructors</h2>
           <StepsRow steps={instructorSteps} />
@@ -168,7 +168,7 @@ function HowItWorksPage() {
       </section>
 
       {/* For learners */}
-      <section className="bg-[#F7FAFC] py-20 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-[#F7FAFC] py-20 px-6" style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <h2 className="text-3xl font-black text-[#133155] text-center mb-16">For learners</h2>
           <StepsRow steps={learnerSteps} />
@@ -176,7 +176,7 @@ function HowItWorksPage() {
       </section>
 
       {/* EveryDriver connection */}
-      <section className="bg-[#133155] py-20 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-[#133155] py-20 px-6" style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <h2 className="text-3xl font-black text-white text-center mb-6">
             One platform. Both sides connected.
@@ -197,7 +197,7 @@ function HowItWorksPage() {
       </section>
 
       {/* FAQ */}
-      <section className="bg-white py-16 px-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-white py-16 px-6" style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <h2 className="text-3xl font-black text-[#133155] text-center mb-12">Common questions</h2>
           <Accordion type="single" collapsible className="max-w-2xl mx-auto">
@@ -216,7 +216,7 @@ function HowItWorksPage() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="bg-[#1877D6] py-16 px-6 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <section className="bg-[#1877D6] py-16 px-6 text-center" style={{ fontFamily: "'Poppins', system-ui, -apple-system, sans-serif" }}>
         <div className="max-w-[1180px] mx-auto">
           <h2 className="text-4xl font-black text-white mb-4">Ready to get started?</h2>
           <p className="text-white/80 mb-8">Join hundreds of driving instructors already using DSM.</p>
