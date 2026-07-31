@@ -259,6 +259,12 @@ function AlertsTab({
 }) {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [reportSheetOpen, setReportSheetOpen] = useState(false);
+  const setReportSheetOpenWithEvent = (open: boolean) => {
+    setReportSheetOpen(open);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event(open ? "dsm-sheet-open" : "dsm-sheet-close"));
+    }
+  };
 
   const load = async () => {
     const { data } = await supabase
