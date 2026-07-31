@@ -295,20 +295,10 @@ function GlobalMenu() {
       return;
     }
     if (m.event) {
-      // Give the panel a tick to close before the page reacts.
-      setTimeout(() => {
-        const ev = new Event(m.event!);
-        const before = window.dispatchEvent(ev);
-        void before;
-        if (m.fallback && !(window as any).__dsmHandled?.[m.event!]) {
-          // Pages that handle the event set the flag; otherwise fall back.
-        }
-      }, 60);
-      if (m.fallback) {
-        setTimeout(() => {
-          if (!(window as any).__dsmHandled?.[m.event!]) navigate({ to: m.fallback as never });
-        }, 200);
-      }
+      // Cancelable: a page that handles the event calls preventDefault(),
+      // otherwise we fall back to a route.
+      const handled = !window.dispatchEvent(new CustomEvent(m.event, { cancelable: true }));
+      if (!handled && m.fallback) navigate({ to: m.fallback as never });
       return;
     }
     if (m.to) navigate({ to: m.to as never });
