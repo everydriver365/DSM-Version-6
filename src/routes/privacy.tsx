@@ -85,14 +85,32 @@ function PrivacyPage() {
 
         <Section title="Google Calendar integration">
           <p>
-            If you connect Google Calendar, DSM creates events when lessons are booked, updates them when rescheduled, and deletes them when cancelled.
+            DSM by EveryDriver's use of information received from Google APIs will adhere to the Google API Services User Data Policy, including the Limited Use requirements.
+          </p>
+          <p>When you connect your Google Calendar account, DSM will:</p>
+          <ul>
+            <li>Create a calendar event when you book a lesson in DSM</li>
+            <li>Update that event when the lesson is rescheduled or its details change</li>
+            <li>Delete that event when the lesson is cancelled or removed</li>
+          </ul>
+          <p>
+            <strong>Scope and access:</strong> We request only the calendar.events scope. This is the minimum scope required to create, update and delete calendar events. We do not access your existing calendar events, contacts, Gmail, Google Drive, or any other Google data. We do not read, store or share the contents of your Google Calendar.
           </p>
           <p>
-            We request only the calendar.events scope — the minimum required. We do not read your existing calendar events or any other Google data.
+            <strong>Data handling:</strong> Your Google OAuth tokens are stored securely in our database, encrypted at rest, and used only to write lesson events to your calendar. We never share your Google tokens or calendar data with any third party. We never use your Google Calendar data for advertising or to train AI/ML models. Calendar data is used solely to provide the lesson sync feature you explicitly enabled.
           </p>
           <p>
-            You can disconnect at any time from Settings → Calendar sync. Our use of Google Calendar data complies with the Google API Services User Data Policy including the Limited Use requirements.
+            <strong>Revoking access:</strong> You can disconnect Google Calendar at any time from Settings → Calendar sync → Disconnect. This immediately deletes your stored tokens and stops all calendar sync. You can also revoke access directly from your Google Account at myaccount.google.com/permissions.
           </p>
+          <p>
+            <strong>Compliance:</strong> Our use of Google user data complies with the Google API Services User Data Policy (https://developers.google.com/terms/api-services-user-data-policy) including the Limited Use requirements. Specifically:
+          </p>
+          <ul>
+            <li>We only use Google Calendar data to provide the calendar sync feature described above</li>
+            <li>We do not transfer Google user data to third parties except as necessary to provide the sync feature</li>
+            <li>We do not use Google user data for serving advertisements</li>
+            <li>We do not allow humans to read Google user data unless you have given explicit permission or it is required for security/legal reasons</li>
+          </ul>
         </Section>
 
         <Section title="Data sharing">
