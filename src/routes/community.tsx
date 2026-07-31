@@ -1307,14 +1307,89 @@ function ChatTab({
       <div style={{
         background: "white", borderBottom: "0.5px solid #E2E6ED",
         padding: "12px 16px", position: "sticky", top: 45, zIndex: 5,
+        display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8,
       }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>
-          {scope === "uk" ? "All UK ADIs" : `${areaLabel} ADIs`}
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>
+            {scope === "uk" ? "All UK ADIs" : `${areaLabel} ADIs`}
+          </div>
+          <div style={{ fontSize: 12, color: "#9CA3AF" }}>
+            {memberCount} members · {scope === "uk" ? "Chat with ADIs across the UK" : "Real names only"}
+          </div>
         </div>
-        <div style={{ fontSize: 12, color: "#9CA3AF" }}>
-          {memberCount} members · {scope === "uk" ? "Chat with ADIs across the UK" : "Real names only"}
-        </div>
+
+        {room && (
+          <div style={{ position: "relative", flexShrink: 0 }}>
+            <button
+              type="button"
+              aria-label={!isSubscribed ? "Subscribe to notifications" : isMuted ? "Unmute notifications" : "Notification settings"}
+              onClick={() => {
+                if (!isSubscribed) { subscribeToRoom(); return; }
+                if (isMuted) { unmute(); return; }
+                setMuteMenuOpen((v) => !v);
+              }}
+              style={{
+                background: "none", border: "none", cursor: "pointer",
+                padding: 4, display: "flex", alignItems: "center",
+              }}
+            >
+              {!isSubscribed ? (
+                <IconBell size={20} color="#9CA3AF" />
+              ) : isMuted ? (
+                <IconBellOff size={20} color="#B45309" />
+              ) : (
+                <IconBell size={20} color="#1877D6" fill="#1877D6" />
+              )}
+            </button>
+
+            {muteMenuOpen && (
+              <>
+                <div
+                  onClick={() => setMuteMenuOpen(false)}
+                  style={{ position: "fixed", inset: 0, zIndex: 40 }}
+                />
+                <div style={{
+                  position: "absolute", top: 32, right: 0, zIndex: 41,
+                  background: "white", border: "0.5px solid #E2E6ED", borderRadius: 12,
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)", overflow: "hidden", minWidth: 190,
+                }}>
+                  {[
+                    { label: "Mute for 1 hour", hours: 1 },
+                    { label: "Mute for 8 hours", hours: 8 },
+                    { label: "Mute for 24 hours", hours: 24 },
+                    { label: "Mute indefinitely", hours: null as number | null },
+                  ].map((o) => (
+                    <button
+                      key={o.label}
+                      type="button"
+                      onClick={() => muteFor(o.hours)}
+                      style={{
+                        display: "block", width: "100%", textAlign: "left",
+                        padding: "10px 14px", fontSize: 13, color: "#0F2044",
+                        background: "none", border: "none", borderBottom: "0.5px solid #F1F4F8", cursor: "pointer",
+                      }}
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={unsubscribe}
+                    style={{
+                      display: "block", width: "100%", textAlign: "left",
+                      padding: "10px 14px", fontSize: 13, color: "#CC2229", fontWeight: 600,
+                      background: "none", border: "none", cursor: "pointer",
+                    }}
+                  >
+                    Unsubscribe
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        )}
       </div>
+
 
       <div
         ref={listRef}
