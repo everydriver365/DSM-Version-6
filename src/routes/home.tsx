@@ -4936,13 +4936,13 @@ function HomePage() {
               boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '10px 12px',
               display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
               fontFamily: 'Poppins, sans-serif',
-              border: unreadChat > 0 ? '1.5px solid #7C3AED' : '1px solid transparent',
+              border: unreadChat > 0 ? '1.5px solid #22C55E' : '1px solid transparent',
             }}
           >
             <div style={{ position: 'relative', flexShrink: 0 }}>
               <div style={{
                 width: 28, height: 28, borderRadius: 8,
-                background: unreadChat > 0 ? '#7C3AED' : '#F0EBFF',
+                background: unreadChat > 0 ? '#22C55E' : '#F0EBFF',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 <MessageSquare size={14} color={unreadChat > 0 ? '#FFFFFF' : '#6B4FD6'} />
@@ -4965,7 +4965,7 @@ function HomePage() {
                 </div>
                 {localChatLatest?.created_at && (
                   <div style={{
-                    fontSize: 10, color: unreadChat > 0 ? '#7C3AED' : '#9CA3AF', flexShrink: 0,
+                    fontSize: 10, color: unreadChat > 0 ? '#22C55E' : '#9CA3AF', flexShrink: 0,
                     fontFamily: 'Poppins, sans-serif',
                   }}>
                     {timeAgo(localChatLatest.created_at)}
@@ -4976,7 +4976,7 @@ function HomePage() {
             {unreadChat > 0 && (
               <div style={{
                 width: 16, height: 16, borderRadius: 8, flexShrink: 0,
-                background: '#7C3AED', color: '#FFFFFF', fontSize: 10, fontWeight: 700,
+                background: '#22C55E', color: '#FFFFFF', fontSize: 10, fontWeight: 700,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontFamily: 'Poppins, sans-serif',
               }}>
