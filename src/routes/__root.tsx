@@ -44,6 +44,7 @@ import {
   HelpCircle,
   LogOut,
 } from "lucide-react";
+import { IconLogout } from "@tabler/icons-react";
 
 import appCss from "../styles.css?url";
 import icon192 from "../assets/icon-192.png.asset.json";
@@ -408,6 +409,34 @@ function GlobalMenu() {
             {QUICK_ACTIONS.map((m) => (
               <Row key={m.label} m={m} quick />
             ))}
+            <div style={{ borderTop: "0.5px solid #F5CBCB" }} />
+            <button
+              type="button"
+              onClick={async () => {
+                setOpen(false);
+                await supabase.auth.signOut();
+                navigate({ to: "/" as never, replace: true });
+              }}
+              style={{
+                width: "100%",
+                minHeight: 44,
+                textAlign: "left",
+                padding: "10px 18px",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                fontFamily: "Inter, sans-serif",
+                fontSize: 13,
+                fontWeight: 500,
+                color: "#CC2229",
+              }}
+            >
+              <IconLogout size={16} color="#CC2229" />
+              Sign out
+            </button>
           </div>
 
           {MENU_GROUPS.map((g) => (
