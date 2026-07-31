@@ -457,8 +457,8 @@ function AlertsTab({
       {reportSheetOpen && (
         <ReportSheet
           reportSheetOpen={reportSheetOpen}
-          onClose={() => setReportSheetOpen(false)}
-          onSubmitted={() => { setReportSheetOpen(false); load(); }}
+          onClose={() => setReportSheetOpenWithEvent(false)}
+          onSubmitted={() => { setReportSheetOpenWithEvent(false); load(); }}
           userId={userId}
           instructorFirstName={instructorFirstName}
           instructorArea={instructorArea}
