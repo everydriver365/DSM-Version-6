@@ -1446,7 +1446,7 @@ function ChatTab({
               No chat room yet for your area
             </div>
             <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4, lineHeight: 1.5 }}>
-              Check back soon, or contact support.
+              {noRoomMessage || "Check back soon, or contact support."}
             </div>
           </div>
         ) : messages.length === 0 ? (
