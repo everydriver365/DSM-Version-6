@@ -21,15 +21,11 @@ import {
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 
-import { fallback, zodValidator } from "@tanstack/zod-adapter";
-import { z } from "zod";
-
-const communitySearchSchema = z.object({
-  tab: fallback(z.string(), "").default(""),
-});
-
 export const Route = createFileRoute("/community")({
-  validateSearch: zodValidator(communitySearchSchema),
+  validateSearch: (search: Record<string, unknown>): { tab?: string } => {
+    const t = search.tab;
+    return typeof t === "string" ? { tab: t } : {};
+  },
   head: () => ({
     meta: [
       { title: "Community — DSM" },
