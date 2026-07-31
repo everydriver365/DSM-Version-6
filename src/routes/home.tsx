@@ -4640,10 +4640,12 @@ function HomePage() {
                     {priceText && (
                       <div style={{ fontSize: 17, fontWeight: 700, color: '#1D8A4E' }}>{priceText}</div>
                     )}
-                    <span style={{
-                      background: hPillBg, color: hPillFg,
-                      fontSize: 12, fontWeight: 600, padding: '3px 10px', borderRadius: 7,
-                    }}>{hLabel}</span>
+                    {!isPrepaid && (
+                      <span style={{
+                        background: hPillBg, color: hPillFg,
+                        fontSize: 12, fontWeight: 600, padding: '3px 10px', borderRadius: 7,
+                      }}>{hLabel}</span>
+                    )}
                   </div>
                 </div>
 
