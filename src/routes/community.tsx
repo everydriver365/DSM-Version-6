@@ -873,12 +873,58 @@ function ReportSheet({
                     ×
                   </button>
                 )}
+                {suggestions.length > 0 && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "calc(100% + 4px)",
+                      left: 0,
+                      right: 0,
+                      background: "#FFFFFF",
+                      border: "1px solid #E2E6ED",
+                      borderRadius: 10,
+                      boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
+                      overflow: "hidden",
+                      zIndex: 20,
+                    }}
+                  >
+                    {suggestions.map((s) => (
+                      <button
+                        key={s.placeId}
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => pickSuggestion(s.placeId, s.text)}
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          textAlign: "left",
+                          padding: "10px 12px",
+                          background: "none",
+                          border: "none",
+                          borderBottom: "1px solid #F1F4F8",
+                          fontSize: 13,
+                          fontFamily: "Inter, sans-serif",
+                          color: "#0F2044",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {s.text}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               {locationLoading && (
                 <div style={{ fontSize: 12, color: "#185FA5", marginTop: 6 }}>
                   Getting your location...
                 </div>
               )}
+              {!!locationError && !locationLoading && (
+                <div style={{ fontSize: 12, color: "#CC2229", marginTop: 6 }}>
+                  {locationError}
+                </div>
+              )}
+
               {location && !locationLoading && (
                 <div style={{ fontSize: 12, color: "#22C580", marginTop: 6 }}>
                   Location detected — edit if needed
