@@ -2142,7 +2142,6 @@ function HomePage() {
   const [prevLesson, setPrevLesson] = useState<PrevLessonRow | null>(null);
   const [goingActive, setGoingActive] = useState(false);
   const [lateOpen, setLateOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
 
 
 
@@ -3888,7 +3887,7 @@ function HomePage() {
           onPhone={() => navigate({ to: "/enquiries" })}
           onLiveTrack={() => navigate({ to: "/live" })}
           onBell={() => navigate({ to: "/notifications" })}
-          onMenu={() => navigate({ to: "/settings" })}
+          onMenu={() => window.dispatchEvent(new Event('dsm-open-menu'))}
           onMicPress={() => toast.info("Voice commands coming soon!")}
         />
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
@@ -4294,124 +4293,12 @@ function HomePage() {
         onPhone={() => navigate({ to: "/enquiries" })}
         onLiveTrack={() => navigate({ to: "/live" })}
         onBell={() => navigate({ to: "/notifications" })}
-        onMenu={() => navigate({ to: "/settings" })}
+        onMenu={() => window.dispatchEvent(new Event('dsm-open-menu'))}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
 
       <PushPermissionCard />
 
-      {/* SLIDE-IN MENU */}
-      {menuOpen && (
-        <div
-          onClick={() => setMenuOpen(false)}
-          style={{
-            position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)",
-            zIndex: 50, display: "flex", justifyContent: "flex-end",
-          }}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              width: "min(82vw, 320px)", height: "100vh", background: "#fff",
-              boxShadow: "-4px 0 24px rgba(0,0,0,0.2)",
-              display: "flex", flexDirection: "column",
-              fontFamily: "Inter, sans-serif",
-            }}
-          >
-            <div style={{
-              background: "#0B1F3A", color: "#fff", padding: "16px 18px",
-              display: "flex", alignItems: "center", justifyContent: "space-between",
-            }}>
-              <div style={{ fontWeight: 700, fontSize: 16 }}>Menu</div>
-              <button
-                onClick={() => setMenuOpen(false)}
-                aria-label="Close menu"
-                style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", display: "flex" }}
-              >
-                <X size={22} />
-              </button>
-            </div>
-            <div style={{ overflowY: "auto", padding: "8px 0", flex: 1 }}>
-              {[
-                { label: "Home", to: "/home" as const },
-                { label: "Schedule", to: "/schedule" as const },
-                { label: "Pupils", to: "/pupils" as const },
-                { label: "Lessons", to: "/schedule" as const },
-                { label: "Payments", to: "/payments" as const },
-                { label: "Earnings", to: "/earnings" as const },
-                { label: "Expenses", to: "/expenses" as const },
-                { label: "Mileage", to: "/mileage" as const },
-                { label: "Messages", to: "/messages" as const },
-                { label: "Enquiries", to: "/enquiries" as const },
-                { label: "Tests", to: "/tests" as const },
-                { label: "Courses", to: "/courses" as const },
-                { label: "Quotes", to: "/quotes" as const },
-                { label: "Day briefing", to: "/briefing" as const },
-                { label: "Outstanding tasks", to: "/outstanding" as const },
-                { label: "Reports", to: "/reports" as const },
-                { label: "Vehicle", to: "/vehicle" as const },
-                { label: "Documents", to: "/documents" as const },
-                { label: "MTD", to: "/mtd" as const },
-                { label: "Settings", to: "/settings" as const },
-                { label: "Profile", to: "/profile" as const },
-                { label: "Help", to: "/help" as const },
-              ].map((m) => (
-                <button
-                  key={m.label}
-                  onClick={() => { setMenuOpen(false); navigate({ to: m.to }); }}
-                  style={{
-                    width: "100%", textAlign: "left", padding: "12px 18px",
-                    background: "none", border: "none", cursor: "pointer",
-                    fontSize: 14, fontWeight: 500, color: "#0B1F3A",
-                    fontFamily: "Inter, sans-serif",
-                    display: "flex", alignItems: "center", justifyContent: "space-between",
-                  }}
-                >
-                  {m.label}
-                  <ChevronRight size={16} color="#9CA3AF" />
-                </button>
-              ))}
-            </div>
-
-            {/* Auth action at bottom */}
-            <div style={{ borderTop: "0.5px solid #EEF2F7", padding: "12px 18px" }}>
-              {userId ? (
-                <button
-                  onClick={async () => {
-                    setMenuOpen(false);
-                    await supabase.auth.signOut();
-                    navigate({ to: "/login", replace: true });
-                  }}
-                  style={{
-                    width: "100%", textAlign: "left", padding: "12px 0",
-                    background: "none", border: "none", cursor: "pointer",
-                    fontSize: 14, fontWeight: 600, color: "#1877D6",
-                    fontFamily: "Inter, sans-serif",
-                    display: "flex", alignItems: "center", gap: 10,
-                  }}
-                >
-                  <LogOut size={18} />
-                  Sign out
-                </button>
-              ) : (
-                <button
-                  onClick={() => { setMenuOpen(false); navigate({ to: "/login" }); }}
-                  style={{
-                    width: "100%", textAlign: "left", padding: "12px 0",
-                    background: "none", border: "none", cursor: "pointer",
-                    fontSize: 14, fontWeight: 600, color: "#1877D6",
-                    fontFamily: "Inter, sans-serif",
-                    display: "flex", alignItems: "center", gap: 10,
-                  }}
-                >
-                  <LogIn size={18} />
-                  Log in
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
 
 
