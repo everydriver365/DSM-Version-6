@@ -342,7 +342,6 @@ function GlobalMenu() {
             {m.label}
           </span>
         </span>
-        {!isSignOut && <ChevronRight size={16} color="#CBD5E1" />}
       </button>
     );
   };
