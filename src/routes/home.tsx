@@ -4628,14 +4628,12 @@ function HomePage() {
                   <div style={{ width: 0.5, height: 24, background: '#E5E7EB' }} />
 
                   {/* Time */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 14, color: '#0B1F3A' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 5, flex: 1, fontSize: 14, color: '#0B1F3A' }}>
                     <Clock size={16} color="#1877D6" style={{ flexShrink: 0 }} />
                     <span style={{ fontWeight: 600 }}>
                       {startText}{endText ? ` – ${endText}` : ''}
                     </span>
                   </div>
-
-                  <div style={{ flex: 1 }} />
 
                   {/* Price / status */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
