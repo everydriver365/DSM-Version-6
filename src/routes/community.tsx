@@ -1089,8 +1089,19 @@ function ChatTab({
         .maybeSingle();
       if (cancelled) return;
       if (!roomRow) {
-        setNoRoom(true);
-        setRoom(null);
+        const areaName = instructorArea || outcode;
+        const { data: newRoom, error: createErr } = await supabase
+          .from("local_chat_rooms")
+          .insert({ outcode, area_name: areaName, instructor_count: 1 })
+          .select()
+          .single();
+        if (createErr || !newRoom) {
+          setNoRoom(true);
+          setRoom(null);
+          return;
+        }
+        setNoRoom(false);
+        setRoom(newRoom as ChatRoom);
         return;
       }
       setNoRoom(false);
