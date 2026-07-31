@@ -22,6 +22,7 @@ import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
+import { filterEchoedBlocks } from "@/lib/calendarDedupe";
 
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
@@ -706,6 +707,17 @@ function SchedulePage() {
 
 
 
+  // Imported Google events that are really DSM lessons pushed out to Google
+  // are dropped here so a lesson never renders (or blocks a gap) twice.
+  const visibleCalendarBlocks = useMemo(
+    () =>
+      filterEchoedBlocks(
+        (calendarBlocks || []).map((b) => ({ ...b, source: "external_calendar" })),
+        (lessons ?? []) as Array<{ lesson_date: string; lesson_time: string }>,
+      ),
+    [calendarBlocks, lessons],
+  );
+
   // Group entries by day (YYYY-MM-DD), skipping days with zero entries.
   const entriesByDay = useMemo(() => {
     const map = new Map<string, AgendaEntry[]>();
@@ -723,7 +735,7 @@ function SchedulePage() {
       map.set(key, arr);
     }
     // Merge external calendar blocks into the same per-day map.
-    for (const b of calendarBlocks) {
+    for (const b of visibleCalendarBlocks) {
       if (!b.start_datetime || !b.end_datetime) continue;
       const key = b.start_datetime.substring(0, 10);
       const start = new Date(b.start_datetime);
@@ -748,7 +760,7 @@ function SchedulePage() {
       map.set(k, arr);
     }
     return map;
-  }, [lessons, calendarBlocks]);
+  }, [lessons, visibleCalendarBlocks]);
 
   // Ordered list of day keys that actually have entries.
   const orderedDayKeys = useMemo(() => {
@@ -873,7 +885,7 @@ function SchedulePage() {
     const map = new Map<string, string[]>();
     const keys = new Set<string>();
     for (const l of lessons ?? []) keys.add(l.lesson_date.substring(0, 10));
-    for (const b of calendarBlocks) {
+    for (const b of visibleCalendarBlocks) {
       if (b.start_datetime) keys.add(b.start_datetime.substring(0, 10));
     }
     for (const key of workingDayKeysInRange) keys.add(key);
@@ -882,7 +894,7 @@ function SchedulePage() {
         (l) => l.lesson_date.substring(0, 10) === key &&
           String(l.status || "").toLowerCase() !== "cancelled",
       );
-      const dayBlocks = calendarBlocks.filter(
+      const dayBlocks = visibleCalendarBlocks.filter(
         (b) => (b.start_datetime || "").substring(0, 10) === key,
       );
       const dayName = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
@@ -905,7 +917,7 @@ function SchedulePage() {
             dayStart,
             dayEnd,
             bufferAfter,
-            calendarBlocks,
+            visibleCalendarBlocks,
             recurringBlocks,
             timeOff,
             key,
@@ -920,7 +932,7 @@ function SchedulePage() {
       if (dots.length > 0) map.set(key, dots);
     }
     return map;
-  }, [lessons, calendarBlocks, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
+  }, [lessons, visibleCalendarBlocks, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
 
   const scrollToDate = useCallback(
     (key: string) => {
@@ -1190,7 +1202,7 @@ function SchedulePage() {
                           dayStart,
                           dayEnd,
                           bufferAfter,
-                          calendarBlocks,
+                          visibleCalendarBlocks,
                           recurringBlocks,
                           timeOff,
                           row.key,
@@ -1226,7 +1238,7 @@ function SchedulePage() {
                         const s = timeToMins(l.lesson_time);
                         busy.push({ start: s, end: s + (l.duration_minutes || 60) });
                       }
-                      const dayBlocks = (calendarBlocks || []).filter((b) => (b.start_datetime || '').substring(0, 10) === row.key);
+                      const dayBlocks = (visibleCalendarBlocks || []).filter((b) => (b.start_datetime || '').substring(0, 10) === row.key);
                       for (const b of dayBlocks) {
                         busy.push({
                           start: timeToMins((b.start_datetime || '').substring(11, 16) || '00:00'),

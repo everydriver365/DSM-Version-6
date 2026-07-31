@@ -182,6 +182,7 @@ import { TakePaymentSheet } from "@/components/payments/TakePaymentSheet";
 import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
 import { LogMileageSheet } from "@/components/mileage/LogMileageSheet";
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
+import { filterEchoedBlocks } from "@/lib/calendarDedupe";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
@@ -3083,10 +3084,17 @@ function HomePage() {
   const tabLessons =
     tab === "today" ? todayLessons : tab === "tomorrow" ? tomorrowLessons : nextTabLessons;
 
+  // Imported Google events that are really DSM lessons pushed out to Google are
+  // dropped here so they don't render (or block gaps) twice.
+  const visibleCalendarBlocks = filterEchoedBlocks(
+    (calendarBlocks || []).map((b) => ({ ...b, source: "external_calendar" })),
+    (allLessons || []) as Array<{ lesson_date: string; lesson_time: string }>,
+  );
+
   // Convert calendar blocks for a given date to sorted [startMins, endMins] intervals.
   // Parses UTC timestamps into LOCAL date/time so BST/GMT boundaries don't misclassify blocks.
   const blocksForDate = (dateStr: string) =>
-    (calendarBlocks || [])
+    (visibleCalendarBlocks || [])
       .map((b) => {
         const sd = new Date(b.start_datetime);
         const ed = new Date(b.end_datetime);
@@ -3143,7 +3151,7 @@ function HomePage() {
             ? (pupilBufferMap[l.pupil_id].after as number)
             : null,
       }));
-    const rawBlocks = (calendarBlocks || []).map((b) => ({
+    const rawBlocks = (visibleCalendarBlocks || []).map((b) => ({
       start_datetime: b.start_datetime,
       end_datetime: b.end_datetime,
       title: b.title,
@@ -3223,11 +3231,11 @@ function HomePage() {
   }
 
   const { count: freeSlotCount, totalMinutes: totalFreeMinutesToday } = computeFreeMinutes(
-    todayLessons, calendarBlocks, todayISO, true, startTimeStr, todayEndTime, instructorBufferAfter, pupilBufferMap
+    todayLessons, visibleCalendarBlocks, todayISO, true, startTimeStr, todayEndTime, instructorBufferAfter, pupilBufferMap
   );
 
   const { totalMinutes: totalFreeMinutesTomorrow } = computeFreeMinutes(
-    tomorrowLessons, calendarBlocks, tomorrowISO, false, startTimeStr, tomorrowEndTime, instructorBufferAfter, pupilBufferMap
+    tomorrowLessons, visibleCalendarBlocks, tomorrowISO, false, startTimeStr, tomorrowEndTime, instructorBufferAfter, pupilBufferMap
   );
 
 
@@ -5075,7 +5083,7 @@ function HomePage() {
               status: l.status,
               bufferAfterMinutes: (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) ?? null,
             })),
-            calendarBlocks: (calendarBlocks || []).map((b) => ({
+            calendarBlocks: (visibleCalendarBlocks || []).map((b) => ({
               start_datetime: b.start_datetime,
               end_datetime: b.end_datetime,
               title: b.title,
