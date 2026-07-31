@@ -4563,7 +4563,7 @@ function HomePage() {
 
           // Date / time / duration
           const d = upcoming ? lessonDateTime(upcoming) : null;
-          const isLessonToday = upcoming && ymd(lessonDateTime(upcoming)) === ymd(todayStart);
+          
           const fmt = (x: Date) => `${String(x.getHours()).padStart(2, '0')}:${String(x.getMinutes()).padStart(2, '0')}`;
           const startText = d ? fmt(d) : '—';
           const dur = upcoming?.duration_minutes ?? 0;
