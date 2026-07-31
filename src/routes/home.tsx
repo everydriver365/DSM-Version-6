@@ -3868,6 +3868,16 @@ function HomePage() {
   const naEnquiries = pendingSwapCount || 0;
   const naUrgentCount = [naJobs, naTests, naCalls, naEnquiries].filter((n) => n > 0).length;
 
+  const timeAgo = (iso: string) => {
+    const diff = Math.max(0, Date.now() - new Date(iso).getTime());
+    const m = Math.floor(diff / 60000);
+    if (m < 1) return "just now";
+    if (m < 60) return `${m}m ago`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h}h ago`;
+    return `${Math.floor(h / 24)}d ago`;
+  };
+
   if (isDesktop) {
     const now = new Date();
     const in7 = new Date(now.getTime() + 7 * 86400000);
@@ -3881,15 +3891,6 @@ function HomePage() {
     const dateHeader = now.toLocaleDateString("en-GB", {
       weekday: "long", day: "numeric", month: "long", year: "numeric",
     });
-    const timeAgo = (iso: string) => {
-      const diff = Math.max(0, Date.now() - new Date(iso).getTime());
-      const m = Math.floor(diff / 60000);
-      if (m < 1) return "just now";
-      if (m < 60) return `${m}m ago`;
-      const h = Math.floor(m / 60);
-      if (h < 24) return `${h}h ago`;
-      return `${Math.floor(h / 24)}d ago`;
-    };
     const cardStyle: React.CSSProperties = {
       background: "#FFFFFF", border: "0.5px solid #E2E6ED",
       borderRadius: 10, padding: 16,
@@ -4946,45 +4947,42 @@ function HomePage() {
               }}>
                 <MessageSquare size={14} color={unreadChat > 0 ? '#FFFFFF' : '#6B4FD6'} />
               </div>
-              {unreadChat > 0 && (
-                <div style={{
-                  position: 'absolute', top: -4, right: -4,
-                  minWidth: 16, height: 16, borderRadius: 8,
-                  background: '#7C3AED', color: '#FFFFFF',
-                  fontSize: 10, fontWeight: 700, lineHeight: '16px',
-                  textAlign: 'center', padding: '0 4px', boxSizing: 'border-box',
-                  fontFamily: 'Poppins, sans-serif',
-                }}>
-                  {unreadChat}
-                </div>
-              )}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
                 Local chat · {localRoom.area_name}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 1 }}>
-                <div style={{ fontSize: 11, color: '#9CA3AF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, minWidth: 0 }}>
+                <div style={{
+                  fontSize: unreadChat > 0 ? 12 : 11,
+                  fontWeight: unreadChat > 0 ? 600 : 400,
+                  color: unreadChat > 0 ? '#0B1F3A' : '#9CA3AF',
+                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, minWidth: 0,
+                }}>
                   {localChatLatest
                     ? `${(localChatLatest.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(localChatLatest.message || '').substring(0, 40)}${(localChatLatest.message || '').length > 40 ? '...' : ''}`
                     : `Be the first to chat in ${localRoom.area_name}!`}
                 </div>
                 {localChatLatest?.created_at && (
-                  <div style={{ fontSize: 10, color: '#9CA3AF', flexShrink: 0, fontFamily: 'Poppins, sans-serif' }}>
-                    {(() => {
-                      const iso = localChatLatest.created_at;
-                      const diff = Math.max(0, Date.now() - new Date(iso).getTime());
-                      const m = Math.floor(diff / 60000);
-                      if (m < 1) return 'just now';
-                      if (m < 60) return `${m}m ago`;
-                      const h = Math.floor(m / 60);
-                      if (h < 24) return `${h}h ago`;
-                      return `${Math.floor(h / 24)}d ago`;
-                    })()}
+                  <div style={{
+                    fontSize: 10, color: unreadChat > 0 ? '#7C3AED' : '#9CA3AF', flexShrink: 0,
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    {timeAgo(localChatLatest.created_at)}
                   </div>
                 )}
               </div>
             </div>
+            {unreadChat > 0 && (
+              <div style={{
+                width: 16, height: 16, borderRadius: 8, flexShrink: 0,
+                background: '#7C3AED', color: '#FFFFFF', fontSize: 10, fontWeight: 700,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'Poppins, sans-serif',
+              }}>
+                {unreadChat}
+              </div>
+            )}
             <ChevronRight size={12} color="#D1D5DB" style={{ flexShrink: 0 }} />
           </div>
         )}
