@@ -1062,20 +1062,29 @@ function ReportSheet({
 
 /* ============================================================ CHAT TAB */
 
+type ChatSubscription = { id: string; muted_until: string | null; last_read_at: string | null };
+
 function ChatTab({
-  scope, userId, instructorProfile, instructorArea, instructorOutcode,
+  scope, userId, instructorProfile, instructorArea, instructorOutcode, onRoomRead,
 }: {
   scope: "local" | "uk";
   userId: string | null;
   instructorProfile: { name: string | null; profile_image_url: string | null } | null;
   instructorArea: string;
   instructorOutcode: string | null;
+  onRoomRead?: (scope: "local" | "uk") => void;
 }) {
   const [room, setRoom] = useState<ChatRoom | null>(null);
   const [noRoom, setNoRoom] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [subscription, setSubscription] = useState<ChatSubscription | null>(null);
+  const [muteMenuOpen, setMuteMenuOpen] = useState(false);
   const listRef = useRef<HTMLDivElement | null>(null);
+
+  const isSubscribed = subscription !== null;
+  const isMuted = !!subscription?.muted_until && new Date(subscription.muted_until) > new Date();
+
 
   const scrollToBottom = () => {
     requestAnimationFrame(() => {
