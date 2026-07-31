@@ -351,7 +351,7 @@ function AlertsTab({
             type="button"
             onClick={() => {
               console.log("[community] FAB tapped (empty state)");
-              setReportSheetOpen(true);
+              setReportSheetOpenWithEvent(true);
             }}
             style={{
               background: "#CC2229", color: "white", border: "none", borderRadius: 12,
