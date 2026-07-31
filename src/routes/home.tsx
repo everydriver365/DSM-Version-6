@@ -3084,10 +3084,17 @@ function HomePage() {
   const tabLessons =
     tab === "today" ? todayLessons : tab === "tomorrow" ? tomorrowLessons : nextTabLessons;
 
+  // Imported Google events that are really DSM lessons pushed out to Google are
+  // dropped here so they don't render (or block gaps) twice.
+  const visibleCalendarBlocks = filterEchoedBlocks(
+    (calendarBlocks || []).map((b) => ({ ...b, source: "external_calendar" })),
+    (allLessons || []) as Array<{ lesson_date: string; lesson_time: string }>,
+  );
+
   // Convert calendar blocks for a given date to sorted [startMins, endMins] intervals.
   // Parses UTC timestamps into LOCAL date/time so BST/GMT boundaries don't misclassify blocks.
   const blocksForDate = (dateStr: string) =>
-    (calendarBlocks || [])
+    (visibleCalendarBlocks || [])
       .map((b) => {
         const sd = new Date(b.start_datetime);
         const ed = new Date(b.end_datetime);
