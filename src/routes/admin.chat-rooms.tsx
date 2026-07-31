@@ -114,6 +114,8 @@ function AdminChatRooms() {
       return;
     }
     setRooms((data as ChatRoom[]) || []);
+  }
+
   const filteredRooms = useMemo(() => {
     return rooms.filter((room) => {
       if (filterOutcode && !room.outcode.toUpperCase().includes(filterOutcode.toUpperCase().trim())) {
@@ -129,7 +131,7 @@ function AdminChatRooms() {
     });
   }, [rooms, filterOutcode, filterType, filterOptIn]);
 
-    e.preventDefault();
+  async function handleCreate(e: React.FormEvent) {
     setError(null);
     const code = outcode.toUpperCase().trim();
     const area = areaName.trim();
