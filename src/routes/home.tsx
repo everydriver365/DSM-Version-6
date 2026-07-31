@@ -4599,17 +4599,20 @@ function HomePage() {
               <div style={{ display: 'flex', alignItems: 'stretch' }}>
                 {/* Date rail */}
                 <div style={{
-                  width: 70, flexShrink: 0,
-                  background: '#0B1F3A',
-                  color: '#FFFFFF',
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                  padding: '16px 0', gap: 2, textAlign: 'center',
+                  width: 64, flexShrink: 0,
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                  padding: '14px 0 14px 14px', gap: 2,
+                  borderLeft: '3px solid #1877D6',
+                  borderRight: '0.5px solid #E5E7EB',
                 }}>
-                  <div style={{ fontSize: 12, letterSpacing: '.06em', opacity: 0.85 }}>{railDow}</div>
-                  <div style={{ fontSize: 28, fontWeight: 700, lineHeight: 1.1 }}>{railDay}</div>
-                  <div style={{ fontSize: 12, letterSpacing: '.06em', opacity: 0.85 }}>{railMon}</div>
-                  <div style={{ width: 18, height: 2, background: 'rgba(255,255,255,0.45)', marginTop: 8 }} />
+                  <div style={{ fontSize: 11, fontWeight: 500, color: '#8A93A3', lineHeight: 1.2 }}>
+                    {railDow}, {railMon}
+                  </div>
+                  <div style={{ fontSize: 32, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.2 }}>
+                    {railDay}
+                  </div>
                 </div>
+
 
                 {/* Info block */}
                 <div style={{ flex: 1, minWidth: 0, padding: '14px 16px' }}>
