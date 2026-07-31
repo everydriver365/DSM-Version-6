@@ -438,6 +438,7 @@ function GlobalMenu() {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+  const [sheetOpen, setSheetOpen] = useState(false);
   const active = getActiveNav(router.state.location.pathname);
   const pathname = router.state.location.pathname;
   const hideNavExact = new Set([
@@ -511,6 +512,18 @@ function RootComponent() {
     return () => {
       mounted = false;
       sub.subscription.unsubscribe();
+    };
+  }, []);
+
+  // Hide bottom nav while any sheet (e.g. community report sheet) is open.
+  useEffect(() => {
+    const onOpen = () => setSheetOpen(true);
+    const onClose = () => setSheetOpen(false);
+    window.addEventListener("dsm-sheet-open", onOpen);
+    window.addEventListener("dsm-sheet-close", onClose);
+    return () => {
+      window.removeEventListener("dsm-sheet-open", onOpen);
+      window.removeEventListener("dsm-sheet-close", onClose);
     };
   }, []);
 
@@ -676,7 +689,7 @@ function RootComponent() {
       <div style={Object.keys(wrapperStyle).length ? wrapperStyle : undefined}>
         <Outlet />
       </div>
-      {!hideNav && <BottomNav active={active} />}
+      {!hideNav && !sheetOpen && <BottomNav active={active} />}
       <CommandPalette />
       <GlobalMenu />
       <EventToastController />

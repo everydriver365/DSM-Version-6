@@ -259,6 +259,12 @@ function AlertsTab({
 }) {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [reportSheetOpen, setReportSheetOpen] = useState(false);
+  const setReportSheetOpenWithEvent = (open: boolean) => {
+    setReportSheetOpen(open);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event(open ? "dsm-sheet-open" : "dsm-sheet-close"));
+    }
+  };
 
   const load = async () => {
     const { data } = await supabase
@@ -345,7 +351,7 @@ function AlertsTab({
             type="button"
             onClick={() => {
               console.log("[community] FAB tapped (empty state)");
-              setReportSheetOpen(true);
+              setReportSheetOpenWithEvent(true);
             }}
             style={{
               background: "#CC2229", color: "white", border: "none", borderRadius: 12,
@@ -434,7 +440,7 @@ function AlertsTab({
           console.log("[community] agreed:", typeof window !== "undefined" ? localStorage.getItem("community_agreed") : "n/a");
           console.log("[community] instructor area:", instructorArea, instructorOutcode);
           console.log("[community] userId:", userId);
-          setReportSheetOpen(true);
+          setReportSheetOpenWithEvent(true);
         }}
         aria-label="Report local issue"
         style={{
@@ -451,8 +457,8 @@ function AlertsTab({
       {reportSheetOpen && (
         <ReportSheet
           reportSheetOpen={reportSheetOpen}
-          onClose={() => setReportSheetOpen(false)}
-          onSubmitted={() => { setReportSheetOpen(false); load(); }}
+          onClose={() => setReportSheetOpenWithEvent(false)}
+          onSubmitted={() => { setReportSheetOpenWithEvent(false); load(); }}
           userId={userId}
           instructorFirstName={instructorFirstName}
           instructorArea={instructorArea}
