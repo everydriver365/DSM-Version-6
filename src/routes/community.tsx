@@ -559,6 +559,7 @@ function ReportSheet({
   });
   const [selectedType, setSelectedType] = useState<string>("");
   const [location, setLocation] = useState("");
+  const [town, setTown] = useState("");
   const [description, setDescription] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [expiry, setExpiry] = useState<"30min" | "1hour" | "2hours" | "allday">("1hour");
@@ -566,6 +567,8 @@ function ReportSheet({
   const [locationLoading, setLocationLoading] = useState(false);
   const [reportLat, setReportLat] = useState<number | null>(null);
   const [reportLng, setReportLng] = useState<number | null>(null);
+  const locationInputRef = useRef<HTMLInputElement | null>(null);
+
 
   useEffect(() => {
     setIsAnonymous(selectedType === "examiner_tip");
