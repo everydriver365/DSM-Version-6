@@ -592,10 +592,18 @@ function ReportSheet({
         setReportLat(latitude);
         setReportLng(longitude);
         try {
-          const result = await reverseGeocodeLocation({ data: { lat: latitude, lng: longitude } });
-          if (result.location) {
-            setLocation(result.location);
-          }
+          const res = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&result_type=route|street_address&key=${GMAPS_KEY}`
+          );
+          const json = await res.json();
+          const road = json.results?.[0]?.address_components?.find(
+            (c: any) => c.types.includes("route")
+          )?.long_name ?? "";
+          const detectedTown = json.results?.[0]?.address_components?.find(
+            (c: any) => c.types.includes("postal_town") || c.types.includes("locality")
+          )?.long_name ?? "";
+          if (road) setLocation(road);
+          if (detectedTown) setTown(detectedTown);
         } catch (err) {
           console.warn("[community] reverse geocode failed:", err);
         } finally {
@@ -609,6 +617,46 @@ function ReportSheet({
       { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
     );
   }, [reportSheetOpen]);
+
+  // Google Places autocomplete on the road name input
+  useEffect(() => {
+    if (!reportSheetOpen) return;
+    let cancelled = false;
+    let listener: any = null;
+    let autocomplete: any = null;
+    loadGoogleMaps()
+      .then(() => {
+        if (cancelled) return;
+        const input = locationInputRef.current;
+        const g = (window as GMapsWindow).google;
+        if (!input || !g?.maps?.places?.Autocomplete) return;
+        autocomplete = new g.maps.places.Autocomplete(input, {
+          types: ["route", "establishment"],
+          componentRestrictions: { country: "gb" },
+          fields: ["address_components", "name", "formatted_address"],
+        });
+        listener = autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+          const components = place?.address_components ?? [];
+          const road =
+            components.find((c: any) => c.types.includes("route"))?.long_name ||
+            place?.name ||
+            "";
+          const detectedTown = components.find(
+            (c: any) => c.types.includes("postal_town") || c.types.includes("locality")
+          )?.long_name ?? "";
+          if (road) setLocation(road);
+          if (detectedTown) setTown(detectedTown);
+        });
+      })
+      .catch((err) => console.warn("[community] maps load failed:", err));
+    return () => {
+      cancelled = true;
+      const g = (window as GMapsWindow).google;
+      if (listener && g?.maps?.event) g.maps.event.removeListener(listener);
+    };
+  }, [reportSheetOpen]);
+
 
   const canSubmit = !!selectedType && description.trim().length > 0 && !!userId && !!instructorOutcode && !submitting;
 
