@@ -564,9 +564,14 @@ function ReportSheet({
   const [expiry, setExpiry] = useState<"30min" | "1hour" | "2hours" | "allday">("1hour");
   const [submitting, setSubmitting] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
+  const [locationError, setLocationError] = useState<string>("");
+  const [suggestions, setSuggestions] = useState<{ placeId: string; text: string }[]>([]);
   const [reportLat, setReportLat] = useState<number | null>(null);
   const [reportLng, setReportLng] = useState<number | null>(null);
   const locationInputRef = useRef<HTMLInputElement | null>(null);
+  const suppressSuggestRef = useRef(false);
+  const sessionTokenRef = useRef<any>(null);
+
 
 
   useEffect(() => {
