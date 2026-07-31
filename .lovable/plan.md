@@ -1,39 +1,43 @@
-# Plan: Lesson Details Sheet on Next Lesson Tile Tap
+# Fix address lookup on the Community page
 
-## Goal
-Make the Next Lesson tile on `/home` tappable. A single tap/click opens a bottom-sheet modal showing the full lesson details: date, time, pupil info, pickup, and payment status. Existing buttons inside the tile (maps, notify, More) remain independently clickable and do not trigger the sheet.
+## What's wrong
 
-## What will change
+The console shows the real cause:
 
-### 1. New component: `src/components/lessons/LessonDetailsSheet.tsx`
-A reusable sheet built on the existing `BottomSheet` from `src/components/dsm/BottomSheetV2.tsx`. It receives a `LessonRow` object and renders:
+```text
+establishment cannot be mixed with other types.
+```
 
-- Header with pupil name and a close button.
-- A `StatRow` showing: date, start time, duration.
-- Pupil info section: name, phone (tappable to call/SMS), pickup address, postcode.
-- Payment section: amount due, payment status pill (Paid / Due / Prepaid), and a "Take payment" action if money is owed.
-- Footer buttons: "View pupil", "Cancel lesson", "Go to live lesson".
+In `src/routes/community.tsx` the address box is configured with
+`types: ["route", "establishment"]`. Google rejects that combination, so every
+keystroke returns an error and no suggestions ever appear. The script itself
+loads fine — it's the request that's rejected.
 
-The sheet will match the existing DSM visual style (white card, 1px borders, 14px radius, brand blue `#1877D6`, navy `#0B1F3A`).
+A second, related risk: the "detect my location" step calls the Geocoding REST
+API directly with the browser key. That key is only authorised for Maps
+JavaScript and Places, so geocoding can come back `REQUEST_DENIED` and silently
+leave the road/town fields blank.
 
-### 2. Update `src/routes/home.tsx`
-- Add a local state `detailsOpen` (boolean) and `detailsLesson` (the selected lesson).
-- Attach an `onClick` handler to the main Next Lesson card container. The handler opens the sheet.
-- Wrap all existing inner buttons (View route, More, Notify pupil) with `e.stopPropagation()` so they do not also open the sheet.
-- Render `<LessonDetailsSheet />` conditionally when `detailsOpen` is true.
-- Reuse the already-fetched `upcoming` lesson object; no new data fetching is needed.
+## The fix
 
-### 3. Files to touch
-- `src/components/lessons/LessonDetailsSheet.tsx` (new)
-- `src/routes/home.tsx` (add state, handler, stopPropagation on child buttons, render sheet)
+1. Use a single valid type for the suggestion list (`["route"]`, or drop `types`
+   entirely to allow addresses and places). This alone restores suggestions.
+2. Move off the deprecated legacy `google.maps.places.Autocomplete` to the
+   current Places API surface (`AutocompleteSuggestion.fetchAutocompleteSuggestions`),
+   rendering suggestions in a small dropdown under the road input, still
+   restricted to Great Britain, with debounced input and a session token.
+3. Selecting a suggestion fills both the road name and the town/area fields as
+   it does today.
+4. Route the reverse-geocode lookup through the server-side Google Maps gateway
+   instead of the browser key, so "use my location" reliably returns a road and
+   town. Errors surface as a short inline message rather than failing silently.
 
-## Out of scope
-- No new server functions or Supabase queries. The `upcoming` lesson already contains all required fields.
-- No changes to the `HeroExpandedPanel` or the existing "More" expansion behavior.
-- No changes to calendar sync, live tracking, or lesson edit flows.
+## Technical notes
 
-## Verification
-- Build passes (`bun run build`).
-- Tap the Next Lesson tile on `/home` in the preview: the sheet opens.
-- Tap the existing "View route" or "More" buttons: the sheet does not open and the original action still works.
-- The sheet displays the correct date, time, pupil name, pickup, and payment status for the upcoming lesson.
+- Files touched: `src/routes/community.tsx`, plus one small server function file
+  for the gateway-backed reverse geocode (e.g. `src/lib/geocode.functions.ts`).
+- Script loading (`loadGoogleMaps`, `libraries=geometry,places&loading=async`)
+  stays as is.
+- If you'd rather keep this to a one-line change, step 1 alone fixes the
+  reported symptom; steps 2-4 remove the deprecation and the silent
+  location-detection failure.
