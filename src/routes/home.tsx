@@ -6047,6 +6047,8 @@ function HomePage() {
                 { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, iconStroke: '#6B4FA0', chipBg: '#EAE3F5', graphic: 'donut' },
                 { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} owed` : 'All settled', route: '/payments', icon: IconCurrencyPound, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0, badge: outstanding > 0 ? Math.round(outstanding) : undefined, graphic: 'chart' },
                 { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#1877D6', chipBg: '#E6F1FB', attention: unreadCount > 0, graphic: 'bubbles' },
+                { label: 'Community', sub: unreadChat > 0 ? `${unreadChat} unread` : 'ADI chat', route: '/community', icon: IconMessageCircle, iconStroke: '#7C3AED', chipBg: '#EFE7FB', attention: unreadChat > 0, badge: unreadChat > 0 ? unreadChat : undefined, graphic: 'bubbles' },
+
                 { label: 'Send message', sub: 'Quick text', route: null, icon: IconMessage, iconStroke: '#1877D6', chipBg: '#E6F1FB', action: 'send-message', graphic: 'bubbles' },
                 { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'running-late', graphic: 'alarm' },
                 { label: 'EOL', sub: 'End of lesson', route: '/pupils', icon: BookOpen, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'book' },
