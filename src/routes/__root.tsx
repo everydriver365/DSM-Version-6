@@ -727,7 +727,7 @@ function RootComponent() {
       </div>
       {!hideNav && !sheetOpen && <BottomNav active={active} />}
       <CommandPalette />
-      <GlobalMenu />
+      <GlobalMenu isAdmin={isAdmin} />
       <EventToastController />
       <Toaster />
     </QueryClientProvider>
