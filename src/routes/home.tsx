@@ -3151,7 +3151,7 @@ function HomePage() {
             ? (pupilBufferMap[l.pupil_id].after as number)
             : null,
       }));
-    const rawBlocks = (calendarBlocks || []).map((b) => ({
+    const rawBlocks = (visibleCalendarBlocks || []).map((b) => ({
       start_datetime: b.start_datetime,
       end_datetime: b.end_datetime,
       title: b.title,
@@ -3231,11 +3231,11 @@ function HomePage() {
   }
 
   const { count: freeSlotCount, totalMinutes: totalFreeMinutesToday } = computeFreeMinutes(
-    todayLessons, calendarBlocks, todayISO, true, startTimeStr, todayEndTime, instructorBufferAfter, pupilBufferMap
+    todayLessons, visibleCalendarBlocks, todayISO, true, startTimeStr, todayEndTime, instructorBufferAfter, pupilBufferMap
   );
 
   const { totalMinutes: totalFreeMinutesTomorrow } = computeFreeMinutes(
-    tomorrowLessons, calendarBlocks, tomorrowISO, false, startTimeStr, tomorrowEndTime, instructorBufferAfter, pupilBufferMap
+    tomorrowLessons, visibleCalendarBlocks, tomorrowISO, false, startTimeStr, tomorrowEndTime, instructorBufferAfter, pupilBufferMap
   );
 
 
@@ -5083,7 +5083,7 @@ function HomePage() {
               status: l.status,
               bufferAfterMinutes: (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) ?? null,
             })),
-            calendarBlocks: (calendarBlocks || []).map((b) => ({
+            calendarBlocks: (visibleCalendarBlocks || []).map((b) => ({
               start_datetime: b.start_datetime,
               end_datetime: b.end_datetime,
               title: b.title,
