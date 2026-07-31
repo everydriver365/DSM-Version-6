@@ -4898,7 +4898,7 @@ function HomePage() {
         {/* ============ LOCAL CHAT ============ */}
         {localRoom && (
           <div
-            onClick={() => navigate({ to: '/community' as never })}
+            onClick={() => navigate({ to: '/community' as never, search: { tab: 'local' } })}
             style={{
               margin: '8px 16px 0', background: 'white', borderRadius: 10,
               boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '10px 12px',
