@@ -2141,6 +2141,15 @@ function HomePage() {
     return window.sessionStorage.getItem("dsm:notifPromptDismissed") === "1";
   });
   const [heroExpanded, setHeroExpanded] = useState(false);
+  const setHeroExpandedWithEvent = (next: boolean | ((prev: boolean) => boolean)) => {
+    setHeroExpanded((prev) => {
+      const value = typeof next === "function" ? (next as (prev: boolean) => boolean)(prev) : next;
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event(value ? "dsm-sheet-open" : "dsm-sheet-close"));
+      }
+      return value;
+    });
+  };
   const [prevLesson, setPrevLesson] = useState<PrevLessonRow | null>(null);
   const [goingActive, setGoingActive] = useState(false);
   const [lateOpen, setLateOpen] = useState(false);
