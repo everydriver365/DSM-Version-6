@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
+import { reverseGeocode } from "@/lib/geocode.functions";
+
 import {
   ArrowLeft,
   Plus,
@@ -564,9 +566,14 @@ function ReportSheet({
   const [expiry, setExpiry] = useState<"30min" | "1hour" | "2hours" | "allday">("1hour");
   const [submitting, setSubmitting] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
+  const [locationError, setLocationError] = useState<string>("");
+  const [suggestions, setSuggestions] = useState<{ placeId: string; text: string }[]>([]);
   const [reportLat, setReportLat] = useState<number | null>(null);
   const [reportLng, setReportLng] = useState<number | null>(null);
   const locationInputRef = useRef<HTMLInputElement | null>(null);
+  const suppressSuggestRef = useRef(false);
+  const sessionTokenRef = useRef<any>(null);
+
 
 
   useEffect(() => {
@@ -585,26 +592,23 @@ function ReportSheet({
       return;
     }
     setLocationLoading(true);
+    setLocationError("");
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
         setReportLat(latitude);
         setReportLng(longitude);
         try {
-          const res = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&result_type=route|street_address&key=${GMAPS_BROWSER_KEY}`
-          );
-          const json = await res.json();
-          const road = json.results?.[0]?.address_components?.find(
-            (c: any) => c.types.includes("route")
-          )?.long_name ?? "";
-          const detectedTown = json.results?.[0]?.address_components?.find(
-            (c: any) => c.types.includes("postal_town") || c.types.includes("locality")
-          )?.long_name ?? "";
-          if (road) setLocation(road);
-          if (detectedTown) setTown(detectedTown);
+          const result = await reverseGeocode({ data: { lat: latitude, lng: longitude } });
+          if (result.error) setLocationError(result.error);
+          if (result.road) {
+            suppressSuggestRef.current = true;
+            setLocation(result.road);
+          }
+          if (result.town) setTown(result.town);
         } catch (err) {
           console.warn("[community] reverse geocode failed:", err);
+          setLocationError("Could not detect your location — type it in below.");
         } finally {
           setLocationLoading(false);
         }
@@ -617,44 +621,85 @@ function ReportSheet({
     );
   }, [reportSheetOpen]);
 
-  // Google Places autocomplete on the road name input
+  // Places (New) autocomplete suggestions for the road name input
   useEffect(() => {
-    if (!reportSheetOpen) return;
+    if (!reportSheetOpen) {
+      setSuggestions([]);
+      return;
+    }
+    if (suppressSuggestRef.current) {
+      suppressSuggestRef.current = false;
+      setSuggestions([]);
+      return;
+    }
+    const query = location.trim();
+    if (query.length < 3) {
+      setSuggestions([]);
+      return;
+    }
     let cancelled = false;
-    let listener: any = null;
-    let autocomplete: any = null;
-    loadGoogleMaps()
-      .then(() => {
+    const timer = setTimeout(async () => {
+      try {
+        await loadGoogleMaps();
         if (cancelled) return;
-        const input = locationInputRef.current;
         const g = (window as GMapsWindow).google;
-        if (!input || !g?.maps?.places?.Autocomplete) return;
-        autocomplete = new g.maps.places.Autocomplete(input, {
-          types: ["route", "establishment"],
-          componentRestrictions: { country: "gb" },
-          fields: ["address_components", "name", "formatted_address"],
+        const places: any = await g.maps.importLibrary("places");
+        const { AutocompleteSuggestion, AutocompleteSessionToken } = places;
+        if (!AutocompleteSuggestion) return;
+        if (!sessionTokenRef.current) sessionTokenRef.current = new AutocompleteSessionToken();
+        const { suggestions: results } = await AutocompleteSuggestion.fetchAutocompleteSuggestions({
+          input: query,
+          sessionToken: sessionTokenRef.current,
+          includedRegionCodes: ["gb"],
         });
-        listener = autocomplete.addListener("place_changed", () => {
-          const place = autocomplete.getPlace();
-          const components = place?.address_components ?? [];
-          const road =
-            components.find((c: any) => c.types.includes("route"))?.long_name ||
-            place?.name ||
-            "";
-          const detectedTown = components.find(
-            (c: any) => c.types.includes("postal_town") || c.types.includes("locality")
-          )?.long_name ?? "";
-          if (road) setLocation(road);
-          if (detectedTown) setTown(detectedTown);
-        });
-      })
-      .catch((err) => console.warn("[community] maps load failed:", err));
+        if (cancelled) return;
+        setSuggestions(
+          (results ?? [])
+            .slice(0, 5)
+            .map((s: any) => ({
+              placeId: s.placePrediction?.placeId as string,
+              text: s.placePrediction?.text?.toString?.() ?? "",
+            }))
+            .filter((s: { placeId?: string }) => !!s.placeId)
+        );
+      } catch (err) {
+        console.warn("[community] autocomplete failed:", err);
+        if (!cancelled) setSuggestions([]);
+      }
+    }, 300);
     return () => {
       cancelled = true;
-      const g = (window as GMapsWindow).google;
-      if (listener && g?.maps?.event) g.maps.event.removeListener(listener);
+      clearTimeout(timer);
     };
-  }, [reportSheetOpen]);
+  }, [location, reportSheetOpen]);
+
+  const pickSuggestion = async (placeId: string, fallbackText: string) => {
+    suppressSuggestRef.current = true;
+    setSuggestions([]);
+    try {
+      const g = (window as GMapsWindow).google;
+      const places: any = await g.maps.importLibrary("places");
+      const place = new places.Place({ id: placeId });
+      await place.fetchFields({ fields: ["addressComponents", "displayName"] });
+      const components: any[] = place.addressComponents ?? [];
+      const road =
+        components.find((c) => c.types.includes("route"))?.longText ||
+        place.displayName ||
+        fallbackText.split(",")[0];
+      const detectedTown =
+        components.find(
+          (c) => c.types.includes("postal_town") || c.types.includes("locality")
+        )?.longText ?? "";
+      setLocation(road ?? "");
+      if (detectedTown) setTown(detectedTown);
+    } catch (err) {
+      console.warn("[community] place details failed:", err);
+      setLocation(fallbackText.split(",")[0]);
+    } finally {
+      sessionTokenRef.current = null;
+    }
+  };
+
 
 
   const canSubmit = !!selectedType && description.trim().length > 0 && !!userId && !!instructorOutcode && !submitting;
@@ -830,12 +875,58 @@ function ReportSheet({
                     ×
                   </button>
                 )}
+                {suggestions.length > 0 && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "calc(100% + 4px)",
+                      left: 0,
+                      right: 0,
+                      background: "#FFFFFF",
+                      border: "1px solid #E2E6ED",
+                      borderRadius: 10,
+                      boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
+                      overflow: "hidden",
+                      zIndex: 20,
+                    }}
+                  >
+                    {suggestions.map((s) => (
+                      <button
+                        key={s.placeId}
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => pickSuggestion(s.placeId, s.text)}
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          textAlign: "left",
+                          padding: "10px 12px",
+                          background: "none",
+                          border: "none",
+                          borderBottom: "1px solid #F1F4F8",
+                          fontSize: 13,
+                          fontFamily: "Inter, sans-serif",
+                          color: "#0F2044",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {s.text}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               {locationLoading && (
                 <div style={{ fontSize: 12, color: "#185FA5", marginTop: 6 }}>
                   Getting your location...
                 </div>
               )}
+              {!!locationError && !locationLoading && (
+                <div style={{ fontSize: 12, color: "#CC2229", marginTop: 6 }}>
+                  {locationError}
+                </div>
+              )}
+
               {location && !locationLoading && (
                 <div style={{ fontSize: 12, color: "#22C580", marginTop: 6 }}>
                   Location detected — edit if needed
