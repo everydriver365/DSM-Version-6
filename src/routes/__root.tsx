@@ -204,6 +204,247 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+type MenuItem = {
+  label: string;
+  icon: any;
+  to?: string;
+  event?: string;
+  fallback?: string;
+  signOut?: boolean;
+};
+
+const QUICK_ACTIONS: MenuItem[] = [
+  { label: "Schedule", icon: Calendar, to: "/schedule" },
+  { label: "Take payment", icon: PoundSterling, event: "dsm-open-take-payment", fallback: "/take-payment" },
+  { label: "Payments", icon: CreditCard, to: "/payments" },
+  { label: "Availability", icon: CalendarCheck, to: "/availability" },
+  { label: "Start tracking", icon: Navigation, to: "/live" },
+  { label: "Fill slots", icon: Zap, to: "/gaps" },
+  { label: "Nearby", icon: MapPin, event: "dsm-open-nearby", fallback: "/satnav" },
+];
+
+const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
+  {
+    title: "Daily",
+    items: [
+      { label: "Day briefing", icon: Sun, to: "/briefing" },
+      { label: "Outstanding", icon: ListTodo, to: "/outstanding" },
+      { label: "End of day", icon: Moon, to: "/end-of-day" },
+      { label: "What's changed", icon: Sparkles, to: "/whats-changed" },
+    ],
+  },
+  {
+    title: "Money",
+    items: [
+      { label: "Earnings", icon: TrendingUp, to: "/earnings" },
+      { label: "Expenses", icon: Receipt, to: "/expenses" },
+      { label: "Mileage", icon: Car, to: "/mileage" },
+      { label: "Tax & MTD", icon: Calculator, to: "/mtd" },
+      { label: "Invoices", icon: FileText, to: "/invoices" },
+    ],
+  },
+  {
+    title: "Pupils & lessons",
+    items: [
+      { label: "Tests", icon: ClipboardCheck, to: "/tests" },
+      { label: "Courses", icon: GraduationCap, to: "/courses" },
+      { label: "Quotes", icon: FileSignature, to: "/quotes" },
+      { label: "Waiting list", icon: Users, to: "/waitinglist" },
+      { label: "Waivers", icon: ShieldCheck, to: "/waivers" },
+    ],
+  },
+  {
+    title: "Growth & business",
+    items: [
+      { label: "Reviews", icon: Star, to: "/reviews" },
+      { label: "Referrals", icon: Gift, to: "/referrals" },
+      { label: "Broadcast", icon: Megaphone, to: "/broadcast" },
+      { label: "Reports", icon: BarChart3, to: "/reports" },
+      { label: "CPD & certs", icon: Award, to: "/cpd" },
+      { label: "Community", icon: MessageCircle, to: "/community" },
+    ],
+  },
+  {
+    title: "Account",
+    items: [
+      { label: "Settings", icon: SettingsIcon, to: "/settings" },
+      { label: "Calendar sync", icon: RefreshCw, to: "/calendarsync" },
+      { label: "Help", icon: HelpCircle, to: "/help" },
+      { label: "Sign out", icon: LogOut, signOut: true },
+    ],
+  },
+];
+
+function GlobalMenu() {
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener("dsm-open-menu", handler);
+    return () => window.removeEventListener("dsm-open-menu", handler);
+  }, []);
+
+  if (!open) return null;
+
+  const go = async (m: MenuItem) => {
+    setOpen(false);
+    if (m.signOut) {
+      await supabase.auth.signOut();
+      navigate({ to: "/" as never, replace: true });
+      return;
+    }
+    if (m.event) {
+      // Give the panel a tick to close before the page reacts.
+      setTimeout(() => {
+        const ev = new Event(m.event!);
+        const before = window.dispatchEvent(ev);
+        void before;
+        if (m.fallback && !(window as any).__dsmHandled?.[m.event!]) {
+          // Pages that handle the event set the flag; otherwise fall back.
+        }
+      }, 60);
+      if (m.fallback) {
+        setTimeout(() => {
+          if (!(window as any).__dsmHandled?.[m.event!]) navigate({ to: m.fallback as never });
+        }, 200);
+      }
+      return;
+    }
+    if (m.to) navigate({ to: m.to as never });
+  };
+
+  const Row = ({ m, quick }: { m: MenuItem; quick?: boolean }) => {
+    const Icon = m.icon;
+    const isSignOut = !!m.signOut;
+    return (
+      <button
+        type="button"
+        onClick={() => go(m)}
+        style={{
+          width: "100%",
+          minHeight: quick ? 44 : 42,
+          textAlign: "left",
+          padding: quick ? "10px 18px" : "9px 18px",
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 12,
+          fontFamily: "Inter, sans-serif",
+        }}
+      >
+        <span style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <Icon
+            size={quick ? 19 : 18}
+            strokeWidth={1.8}
+            color={isSignOut ? "#CC2229" : quick ? "#1877D6" : "#94A3B8"}
+          />
+          <span
+            style={{
+              fontSize: 14,
+              fontWeight: quick ? 500 : 400,
+              color: isSignOut ? "#CC2229" : "#0B1F3A",
+            }}
+          >
+            {m.label}
+          </span>
+        </span>
+        {!isSignOut && <ChevronRight size={16} color="#CBD5E1" />}
+      </button>
+    );
+  };
+
+  return (
+    <div
+      onClick={() => setOpen(false)}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.5)",
+        zIndex: 60,
+        display: "flex",
+        justifyContent: "flex-end",
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "min(82vw, 320px)",
+          height: "100vh",
+          background: "#fff",
+          boxShadow: "-4px 0 24px rgba(0,0,0,0.2)",
+          display: "flex",
+          flexDirection: "column",
+          fontFamily: "Inter, sans-serif",
+        }}
+      >
+        <div
+          style={{
+            background: "#0B1F3A",
+            color: "#fff",
+            padding: "16px 18px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ fontWeight: 700, fontSize: 16 }}>Menu</div>
+          <button
+            onClick={() => setOpen(false)}
+            aria-label="Close menu"
+            style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", display: "flex" }}
+          >
+            <X size={22} />
+          </button>
+        </div>
+
+        <div style={{ overflowY: "auto", flex: 1, paddingBottom: 24 }}>
+          <div style={{ padding: "10px 0 10px", borderBottom: "2px solid #E2E8F0" }}>
+            <div
+              style={{
+                fontSize: 10,
+                textTransform: "uppercase",
+                letterSpacing: "0.12em",
+                color: "#94A3B8",
+                fontWeight: 600,
+                padding: "4px 18px 6px",
+              }}
+            >
+              Quick actions
+            </div>
+            {QUICK_ACTIONS.map((m) => (
+              <Row key={m.label} m={m} quick />
+            ))}
+          </div>
+
+          {MENU_GROUPS.map((g) => (
+            <div key={g.title} style={{ padding: "8px 0", borderBottom: "0.5px solid #EEF2F7" }}>
+              <div
+                style={{
+                  fontSize: 10,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.12em",
+                  color: "#94A3B8",
+                  fontWeight: 600,
+                  padding: "4px 18px 6px",
+                }}
+              >
+                {g.title}
+              </div>
+              {g.items.map((m) => (
+                <Row key={m.label} m={m} />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
