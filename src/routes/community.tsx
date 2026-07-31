@@ -440,7 +440,7 @@ function AlertsTab({
           console.log("[community] agreed:", typeof window !== "undefined" ? localStorage.getItem("community_agreed") : "n/a");
           console.log("[community] instructor area:", instructorArea, instructorOutcode);
           console.log("[community] userId:", userId);
-          setReportSheetOpen(true);
+          setReportSheetOpenWithEvent(true);
         }}
         aria-label="Report local issue"
         style={{
