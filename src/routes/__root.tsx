@@ -515,6 +515,18 @@ function RootComponent() {
     };
   }, []);
 
+  // Hide bottom nav while any sheet (e.g. community report sheet) is open.
+  useEffect(() => {
+    const onOpen = () => setSheetOpen(true);
+    const onClose = () => setSheetOpen(false);
+    window.addEventListener("dsm-sheet-open", onOpen);
+    window.addEventListener("dsm-sheet-close", onClose);
+    return () => {
+      window.removeEventListener("dsm-sheet-open", onOpen);
+      window.removeEventListener("dsm-sheet-close", onClose);
+    };
+  }, []);
+
   // Check if current user is an admin (informational only, no redirects).
   const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => {
