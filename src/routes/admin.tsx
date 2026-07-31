@@ -402,7 +402,7 @@ function AdminHub() {
           <AdminSectionTile
             icon={<MessageCircle size={18} />}
             label="Chat rooms"
-            onClick={scrollToChatRooms}
+            onClick={() => navigate({ to: "/admin/chat-rooms" as never })}
           />
         </div>
         <div ref={chatRoomsRef}>
