@@ -4498,6 +4498,7 @@ function HomePage() {
       {/* ============ NEXT LESSON CARD ============ */}
       <div
         style={{
+          position: 'relative',
           margin: '0 16px 0',
           background: '#FFFFFF',
           borderRadius: upcoming && heroExpanded ? '16px 16px 0 0' : 16,
