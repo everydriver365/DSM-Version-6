@@ -152,11 +152,46 @@ function CommunityPage() {
   const [instructorArea, setInstructorArea] = useState<string>("Your area");
   const [instructorOutcode, setInstructorOutcode] = useState<string | null>(null);
   const [instructorProfile, setInstructorProfile] = useState<{ name: string | null; profile_image_url: string | null } | null>(null);
+  const [unread, setUnread] = useState<{ local: number; uk: number }>({ local: 0, uk: 0 });
 
   useEffect(() => {
     if (search?.tab === "local") setActiveTab("local");
     else if (search?.tab === "uk") setActiveTab("uk");
   }, []);
+
+  // Unread counts per subscribed room
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data: subs } = await supabase
+        .from("chat_room_subscriptions")
+        .select("room_id, last_read_at, muted_until")
+        .eq("instructor_id", userId);
+      if (cancelled || !subs?.length) return;
+      const roomIds = (subs as any[]).map((s) => s.room_id);
+      const { data: rooms } = await supabase
+        .from("local_chat_rooms")
+        .select("id, outcode")
+        .in("id", roomIds);
+      if (cancelled) return;
+      const next = { local: 0, uk: 0 };
+      for (const s of subs as any[]) {
+        const roomOutcode = (rooms as any[] | null)?.find((r) => r.id === s.room_id)?.outcode;
+        const key: "local" | "uk" = roomOutcode === "UK" ? "uk" : "local";
+        const { count } = await supabase
+          .from("local_chat_messages")
+          .select("id", { count: "exact", head: true })
+          .eq("room_id", s.room_id)
+          .neq("instructor_id", userId)
+          .gt("created_at", s.last_read_at ?? new Date(0).toISOString());
+        next[key] += count ?? 0;
+      }
+      if (!cancelled) setUnread(next);
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
+
 
   useEffect(() => {
     (async () => {
