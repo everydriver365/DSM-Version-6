@@ -4886,7 +4886,7 @@ function HomePage() {
             })}
             {localAlerts.length > 2 && (
               <button
-                onClick={() => navigate({ to: '/community' as never, search: { tab: 'local' } })}
+                onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
                 style={{ fontSize: 11, color: '#1877D6', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, padding: '4px 0' }}
               >
                 +{localAlerts.length - 2} more local alerts →
