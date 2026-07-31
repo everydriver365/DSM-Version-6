@@ -842,7 +842,28 @@ function ReportSheet({
                   Location detected — edit if needed
                 </div>
               )}
+              <div style={{ marginTop: 10 }}>
+                <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 6 }}>Town / area</div>
+                <input
+                  value={town}
+                  onChange={(e) => setTown(e.target.value)}
+                  placeholder="Town or area..."
+                  style={{
+                    width: "100%",
+                    padding: "11px 14px",
+                    background: "#F7FAFC",
+                    border: "0.5px solid " + (town ? "#86EFAC" : "#E2E6ED"),
+                    borderRadius: 10,
+                    fontSize: 13,
+                    fontFamily: "Inter, sans-serif",
+                    color: "#0F2044",
+                    outline: "none",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
             </div>
+
 
             <div style={{ padding: "0 20px", marginBottom: 12 }}>
               <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 6 }}>Details</div>
