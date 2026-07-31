@@ -394,6 +394,7 @@ function AlertsTab({
       return;
     }
     toast.success("Alert cancelled");
+    setAlerts((prev) => prev.filter((a) => a.id !== alert.id));
     load();
   };
 
