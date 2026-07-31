@@ -4750,7 +4750,7 @@ function HomePage() {
       {upcoming && heroExpanded && (
         <LessonActionsSheet
           open={heroExpanded}
-          onClose={() => setHeroExpanded(false)}
+          onClose={() => setHeroExpandedWithEvent(false)}
           lesson={upcoming as any}
           prev={prevLesson as any}
           goingActive={goingActive}
