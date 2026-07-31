@@ -114,9 +114,21 @@ function AdminChatRooms() {
       return;
     }
     setRooms((data as ChatRoom[]) || []);
-  }
+  const filteredRooms = useMemo(() => {
+    return rooms.filter((room) => {
+      if (filterOutcode && !room.outcode.toUpperCase().includes(filterOutcode.toUpperCase().trim())) {
+        return false;
+      }
+      if (filterType !== "all" && room.room_type !== filterType) {
+        return false;
+      }
+      if (filterOptIn === "opt-in" && !room.is_opt_in) {
+        return false;
+      }
+      return true;
+    });
+  }, [rooms, filterOutcode, filterType, filterOptIn]);
 
-  async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     const code = outcode.toUpperCase().trim();
