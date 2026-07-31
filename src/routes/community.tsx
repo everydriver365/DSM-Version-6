@@ -247,6 +247,7 @@ function CommunityPage() {
           { id: "uk", label: "All UK" },
         ] as const).map((t) => {
           const active = activeTab === t.id;
+          const badge = t.id === "local" ? unread.local : t.id === "uk" ? unread.uk : 0;
           return (
             <button
               key={t.id}
@@ -257,12 +258,22 @@ function CommunityPage() {
                 fontWeight: 600, background: "none", border: "none", cursor: "pointer",
                 borderBottom: active ? "2px solid #185FA5" : "2px solid transparent",
                 color: active ? "#185FA5" : "#8A93A3",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
               }}
             >
               {t.label}
+              {badge > 0 && (
+                <span style={{
+                  background: "#1877D6", color: "white", fontSize: 10, fontWeight: 700,
+                  borderRadius: 999, padding: "1px 6px", minWidth: 18, lineHeight: "16px",
+                }}>
+                  {badge > 99 ? "99+" : badge}
+                </span>
+              )}
             </button>
           );
         })}
+
       </div>
 
       {activeTab === "alerts" && (
