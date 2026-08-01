@@ -1631,6 +1631,7 @@ function HomePage() {
   }, []);
   const [activePupilsCount, setActivePupilsCount] = useState(0);
   const [localAlerts, setLocalAlerts] = useState<any[] | null>(null);
+  const [hasUnreadAlertComments, setHasUnreadAlertComments] = useState(false);
   const [localRoom, setLocalRoom] = useState<{ id: string; area_name: string } | null>(null);
   const [localChatLatest, setLocalChatLatest] = useState<{ message: string; created_at: string; instructors: { name: string | null } | null } | null>(null);
   const [instructorArea, setInstructorArea] = useState<string>('your area');
