@@ -278,6 +278,7 @@ function CommunityPage() {
   const [instructorFirstName, setInstructorFirstNameState] = useState<string>("");
   const [instructorArea, setInstructorArea] = useState<string>("Your area");
   const [instructorOutcode, setInstructorOutcode] = useState<string | null>(null);
+  const [coverageOutcodes, setCoverageOutcodes] = useState<string[]>([]);
   const [instructorProfile, setInstructorProfile] = useState<{ name: string | null; profile_image_url: string | null } | null>(null);
   const [unread, setUnread] = useState<{ local: number; uk: number }>({ local: 0, uk: 0 });
 
@@ -341,6 +342,19 @@ function CommunityPage() {
         name: (instructor as any)?.name ?? null,
         profile_image_url: (instructor as any)?.profile_image_url ?? null,
       });
+
+      // Coverage areas — alerts should span every area the instructor works, not just home
+      const { data: coverageAreas } = await supabase
+        .from("instructor_coverage_areas")
+        .select("postcode_outcodes, centre_lat, centre_lng")
+        .eq("instructor_id", u.id);
+      const outcodesFromCoverage = ((coverageAreas ?? []) as any[])
+        .flatMap((a) => a.postcode_outcodes ?? [])
+        .map((o: string) => o.trim().toUpperCase())
+        .filter(Boolean);
+      // Home outcode always included as a fallback, even when coverage areas exist.
+      const allOutcodes = Array.from(new Set([outcode, ...outcodesFromCoverage].filter(Boolean))) as string[];
+      setCoverageOutcodes(allOutcodes);
     })();
   }, []);
 
@@ -409,6 +423,7 @@ function CommunityPage() {
           instructorFirstName={instructorFirstName}
           instructorArea={instructorArea}
           instructorOutcode={instructorOutcode}
+          coverageOutcodes={coverageOutcodes}
         />
       )}
       {activeTab === "local" && (
@@ -441,12 +456,13 @@ function CommunityPage() {
 /* ============================================================ ALERTS TAB */
 
 function AlertsTab({
-  userId, instructorFirstName, instructorArea, instructorOutcode,
+  userId, instructorFirstName, instructorArea, instructorOutcode, coverageOutcodes,
 }: {
   userId: string | null;
   instructorFirstName: string;
   instructorArea: string;
   instructorOutcode: string | null;
+  coverageOutcodes: string[];
 }) {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
@@ -469,9 +485,11 @@ function AlertsTab({
       .gt("expires_at", new Date().toISOString())
       .order("created_at", { ascending: false });
     const rows = (data ?? []) as Alert[];
-    const filtered = instructorOutcode
-      ? rows.filter((a) => (a.outcode ?? "").toUpperCase() === instructorOutcode)
-      : rows;
+    const filtered = coverageOutcodes.length > 0
+      ? rows.filter((a) => coverageOutcodes.includes((a.outcode ?? "").toUpperCase()))
+      : instructorOutcode
+        ? rows.filter((a) => (a.outcode ?? "").toUpperCase() === instructorOutcode)
+        : rows;
     setAlerts(filtered);
 
     if (filtered.length > 0) {
@@ -498,7 +516,7 @@ function AlertsTab({
       .subscribe();
     return () => { supabase.removeChannel(channel); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, instructorOutcode]);
+  }, [userId, instructorOutcode, coverageOutcodes]);
 
   const myAlerts = useMemo(
     () => alerts.filter((a) => a.instructor_id === userId),
@@ -605,7 +623,7 @@ function AlertsTab({
     <div style={{ padding: 16, paddingBottom: 100, marginBottom: 80 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
         <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>
-          Alerts near {instructorArea}
+          Alerts near {coverageOutcodes.length > 1 ? "your coverage areas" : instructorArea}
         </div>
         <div style={{ fontSize: 12, color: "#9CA3AF" }}>
           {otherAlerts.length === 0
