@@ -20,9 +20,10 @@ export const Route = createFileRoute("/coverage-areas")({
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
-// Same key used elsewhere in the app (see AddressLookup.tsx)
-const GOOGLE_MAPS_KEY = "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
-const SCRIPT_ID = "google-maps-places-script";
+// Prefer the Lovable-managed browser key (referrer-restricted); fall back to the legacy key.
+const GOOGLE_MAPS_KEY =
+  (import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined) ||
+  "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
 
 interface CoverageArea {
   id: string;
@@ -36,52 +37,91 @@ interface CoverageArea {
   created_at?: string;
 }
 
-type GAutocomplete = {
-  addListener: (evt: string, cb: () => void) => void;
-  getPlace: () => {
-    name?: string;
-    formatted_address?: string;
-    geometry?: { location?: { lat: () => number; lng: () => number } };
-  };
+// Places API (New) — minimal typings for what we use
+type NewPlace = {
+  displayName?: string;
+  formattedAddress?: string;
+  location?: { lat: () => number; lng: () => number };
+  fetchFields: (req: { fields: string[] }) => Promise<unknown>;
 };
+
+type PlacePrediction = {
+  placeId: string;
+  text?: { text?: string } | string;
+  mainText?: { text?: string } | string;
+  secondaryText?: { text?: string } | string;
+  toPlace: () => NewPlace;
+};
+
+type PlacesLib = {
+  AutocompleteSuggestion: {
+    fetchAutocompleteSuggestions: (req: {
+      input: string;
+      sessionToken?: unknown;
+      includedRegionCodes?: string[];
+    }) => Promise<{ suggestions: Array<{ placePrediction?: PlacePrediction }> }>;
+  };
+  AutocompleteSessionToken: new () => unknown;
+};
+
 type GWindow = Window & {
   google?: {
     maps?: {
-      places?: {
-        Autocomplete: new (
-          input: HTMLInputElement,
-          opts: Record<string, unknown>,
-        ) => GAutocomplete;
-      };
+      places?: unknown;
+      importLibrary?: (name: string) => Promise<unknown>;
     };
   };
 };
 
-function loadPlacesScript(): Promise<void> {
+function readText(v: { text?: string } | string | undefined): string {
+  if (!v) return "";
+  if (typeof v === "string") return v;
+  return v.text ?? "";
+}
+
+function loadMapsScript(): Promise<void> {
   const w = window as GWindow;
-  if (w.google?.maps?.places) return Promise.resolve();
-  const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
-  if (existing) {
-    return new Promise((resolve) => {
-      const iv = setInterval(() => {
-        if ((window as GWindow).google?.maps?.places) {
-          clearInterval(iv);
-          resolve();
-        }
-      }, 150);
-    });
-  }
+  if (w.google?.maps?.importLibrary) return Promise.resolve();
+
   return new Promise((resolve, reject) => {
-    const s = document.createElement("script");
-    s.id = SCRIPT_ID;
-    s.async = true;
-    s.defer = true;
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&libraries=places&loading=async`;
-    s.onload = () => resolve();
-    s.onerror = () => reject(new Error("Failed to load Google Maps"));
-    document.head.appendChild(s);
+    (g => {
+      let h: any, a: HTMLScriptElement, k: string;
+      const p = "The Google Maps JavaScript API";
+      const c = "google", l = "importLibrary", q = "__ib__", m = document;
+      let b: any = window;
+      b = b[c] || (b[c] = {});
+      const d = b.maps || (b.maps = {});
+      const r = new Set<string>();
+      const e = new URLSearchParams();
+      const u = () => h || (h = new Promise(async (f: any, n: any) => {
+        a = m.createElement("script") as HTMLScriptElement;
+        e.set("libraries", [...r] + "");
+        for (k in g) e.set(k.replace(/[A-Z]/g, (t: string) => "_" + t[0].toLowerCase()), (g as any)[k]);
+        e.set("callback", c + ".maps." + q);
+        a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+        d[q] = f;
+        a.onerror = () => (h = n(new Error(p + " could not load.")));
+        a.nonce = (m.querySelector("script[nonce]") as HTMLScriptElement | null)?.nonce || "";
+        m.head.append(a);
+      }));
+
+      d[l] ? undefined : (d[l] = (f: any, ...n: any[]) => r.add(f) && u().then(() => d[l](f, ...n)));
+    })({ key: GOOGLE_MAPS_KEY, v: "weekly" });
+
+    let attempts = 0;
+    const iv = setInterval(() => {
+      attempts++;
+      if ((window as GWindow).google?.maps?.importLibrary) {
+        clearInterval(iv);
+        resolve();
+      } else if (attempts > 100) {
+        clearInterval(iv);
+        reject(new Error("Google Maps failed to initialize"));
+      }
+    }, 100);
   });
 }
+
 
 function staticMapUrl(lat: number | null, lng: number | null, radius: number, size = "400x100") {
   if (lat == null || lng == null) return "";
@@ -460,10 +500,17 @@ function AreaEditor({
   const [radius, setRadius] = useState<number>(initial?.radius_miles ?? 5);
   const [isPrimary, setIsPrimary] = useState<boolean>(initial?.is_primary ?? false);
   const [saving, setSaving] = useState(false);
-  const [placesLoaded, setPlacesLoaded] = useState<boolean>(
-    typeof window !== "undefined" && !!(window as GWindow).google?.maps?.places,
-  );
+  const [placesLoaded, setPlacesLoaded] = useState(false);
+  const [placesError, setPlacesError] = useState(false);
+  const [suggestions, setSuggestions] = useState<
+    Array<{ id: string; main: string; secondary: string }>
+  >([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [nameTouched, setNameTouched] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const placesLibRef = useRef<PlacesLib | null>(null);
+  const sessionTokenRef = useRef<unknown>(null);
+  const predsRef = useRef<Map<string, PlacePrediction>>(new Map());
 
   // Reset state when opening
   useEffect(() => {
@@ -476,45 +523,105 @@ function AreaEditor({
       setOutcodeError(null);
       setRadius(initial?.radius_miles ?? 5);
       setIsPrimary(initial?.is_primary ?? false);
+      setSuggestions([]);
+      setShowSuggestions(false);
+      setNameTouched(false);
     }
   }, [open, initial]);
 
-  // Load places script
+  // Load Google Maps + Places (New)
   useEffect(() => {
-    if (!open) return;
+    if (!open || placesLibRef.current) return;
     let cancelled = false;
-    loadPlacesScript()
-      .then(() => {
-        if (!cancelled) setPlacesLoaded(true);
-      })
-      .catch((e) => console.error("[coverage-areas] places load", e));
+    (async () => {
+      try {
+        await loadMapsScript();
+        const g = (window as GWindow).google;
+        if (!g?.maps?.importLibrary) throw new Error("importLibrary unavailable");
+        const lib = (await g.maps.importLibrary("places")) as PlacesLib;
+        if (cancelled) return;
+        placesLibRef.current = lib;
+        sessionTokenRef.current = new lib.AutocompleteSessionToken();
+        setPlacesLoaded(true);
+      } catch (e) {
+        console.error("[coverage-areas] places load", e);
+        if (!cancelled) setPlacesError(true);
+      }
+    })();
     return () => {
       cancelled = true;
     };
   }, [open]);
 
-  // Bind city autocomplete
+  // Fetch suggestions as the user types
   useEffect(() => {
-    if (!open || !placesLoaded || !inputRef.current) return;
-    const g = (window as GWindow).google;
-    if (!g?.maps?.places) return;
-    const ac = new g.maps.places.Autocomplete(inputRef.current, {
-      componentRestrictions: { country: "gb" },
-      types: ["(cities)"],
-      fields: ["name", "formatted_address", "geometry"],
-    });
-    ac.addListener("place_changed", () => {
-      const p = ac.getPlace();
-      if (p.name) setAreaName(p.name);
-      const la = p.geometry?.location?.lat();
-      const ln = p.geometry?.location?.lng();
+    const lib = placesLibRef.current;
+    const query = areaName.trim();
+    if (!open || !placesLoaded || !lib || !nameTouched || query.length < 2) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      try {
+        const { suggestions: raw } = await lib.AutocompleteSuggestion.fetchAutocompleteSuggestions({
+          input: query,
+          sessionToken: sessionTokenRef.current ?? undefined,
+          includedRegionCodes: ["gb"],
+        });
+        if (cancelled) return;
+        const map = new Map<string, PlacePrediction>();
+        const list = raw
+          .map((s) => s.placePrediction)
+          .filter((p): p is PlacePrediction => !!p)
+          .map((p) => {
+            map.set(p.placeId, p);
+            return {
+              id: p.placeId,
+              main: readText(p.mainText) || readText(p.text),
+              secondary: readText(p.secondaryText),
+            };
+          });
+        predsRef.current = map;
+        setSuggestions(list);
+        setShowSuggestions(list.length > 0);
+      } catch (e) {
+        if (cancelled) return;
+        console.error("[coverage-areas] fetchAutocompleteSuggestions failed", e);
+        setSuggestions([]);
+        setShowSuggestions(false);
+      }
+    }, 300);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [areaName, open, placesLoaded, nameTouched]);
+
+  async function selectSuggestion(id: string) {
+    const lib = placesLibRef.current;
+    const pred = predsRef.current.get(id);
+    if (!lib || !pred) return;
+    setShowSuggestions(false);
+    setNameTouched(false);
+    try {
+      const place = pred.toPlace();
+      await place.fetchFields({ fields: ["displayName", "formattedAddress", "location"] });
+      const name = place.displayName || place.formattedAddress || "";
+      if (name) setAreaName(name);
+      const la = place.location?.lat();
+      const ln = place.location?.lng();
       if (typeof la === "number" && typeof ln === "number") {
         setLat(la);
         setLng(ln);
       }
-    });
-    inputRef.current.setAttribute("autocomplete", "new-password");
-  }, [open, placesLoaded]);
+      sessionTokenRef.current = new lib.AutocompleteSessionToken();
+    } catch (e) {
+      console.error("[coverage-areas] fetchFields failed", e);
+    }
+  }
+
 
   async function addOutcode() {
     const raw = outcodeInput.trim().toUpperCase().replace(/\s+/g, "");
@@ -593,15 +700,22 @@ function AreaEditor({
       title={initial ? "Edit coverage area" : "Add coverage area"}
     >
       {/* Area name */}
-      <div>
+      <div style={{ position: "relative" }}>
         <label style={{ fontSize: 12, color: "#9CA3AF", ...POPPINS }}>Area name</label>
         <input
           ref={inputRef}
           type="text"
           value={areaName}
-          onChange={(e) => setAreaName(e.target.value)}
-          placeholder={placesLoaded ? "e.g. Winchester, Eastleigh, Chandlers Ford" : "Loading…"}
-          disabled={!placesLoaded}
+          onChange={(e) => {
+            setNameTouched(true);
+            setAreaName(e.target.value);
+          }}
+          onFocus={() => {
+            if (suggestions.length > 0) setShowSuggestions(true);
+          }}
+          onBlur={() => window.setTimeout(() => setShowSuggestions(false), 150)}
+          placeholder="e.g. Winchester, Eastleigh, Chandlers Ford"
+          autoComplete="new-password"
           style={{
             width: "100%",
             height: 44,
@@ -615,7 +729,55 @@ function AreaEditor({
             ...POPPINS,
           }}
         />
+        {placesError && (
+          <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
+            Address lookup unavailable — type the area name and add a postcode below.
+          </div>
+        )}
+        {showSuggestions && suggestions.length > 0 && (
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: "100%",
+              marginTop: 4,
+              background: "#fff",
+              border: "0.5px solid #EEF2F7",
+              borderRadius: 10,
+              boxShadow: "0 4px 12px rgba(11,31,58,0.08)",
+              maxHeight: 220,
+              overflowY: "auto",
+              zIndex: 60,
+            }}
+          >
+            {suggestions.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => selectSuggestion(s.id)}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  textAlign: "left",
+                  padding: "10px 12px",
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  ...POPPINS,
+                }}
+              >
+                <div style={{ fontSize: 14, color: "#0F2044" }}>{s.main}</div>
+                {s.secondary && (
+                  <div style={{ fontSize: 12, color: "#9CA3AF" }}>{s.secondary}</div>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
+
 
       {/* Outcodes */}
       <div style={{ marginTop: 12 }}>
