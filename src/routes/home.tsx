@@ -4892,6 +4892,16 @@ function HomePage() {
               }}>
                 {localAlerts.length}
               </div>
+              {hasUnreadAlertComments && (
+                <>
+                  <style>{`@keyframes localIssuePulse{0%{opacity:1}50%{opacity:0.3}100%{opacity:1}}`}</style>
+                  <div style={{
+                    position: 'absolute', bottom: -2, left: -2,
+                    width: 6, height: 6, borderRadius: '50%', background: '#CC2229',
+                    animation: 'localIssuePulse 1.4s ease-in-out infinite',
+                  }} />
+                </>
+              )}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
