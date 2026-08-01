@@ -344,7 +344,21 @@ function AdminListingsPage() {
     } catch (e) {
       console.error(e);
       toast.error("Failed to update");
+  }
+
+  async function handleToggleShowImage(l: Listing) {
+    try {
+      const next = !l.show_image;
+      await restPatch(l.id, { show_image: next });
+      setListings((prev) =>
+        prev.map((x) => (x.id === l.id ? { ...x, show_image: next } : x)),
+      );
+      toast.success(next ? "Image shown" : "Image hidden");
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to update");
     }
+  }
   }
 
   function startEdit(l: Listing) {
