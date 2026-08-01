@@ -127,7 +127,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     (async () => {
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,price_amount,image_urls&order=is_featured.desc,created_at.desc&limit=10`,
+          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,price_amount,image_urls,is_featured,created_at,marketplace_categories(name,slug)&order=is_featured.desc,created_at.desc&limit=10`,
 
           { headers },
         );
