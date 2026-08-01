@@ -412,20 +412,27 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     params: { listingId: m.id } as never,
                   })
                 }
-                style={{ ...cardShell, background: GRADIENTS[i % 3] }}
+                style={{
+                  ...cardShell,
+                  background: photo
+                    ? `${GRADIENTS[i % 3].replace("155deg,", "155deg, rgba(11,31,58,0.25) 0%, rgba(11,31,58,0.85) 100%), linear-gradient(155deg,")}, url(${photo}) center/cover`
+                    : GRADIENTS[i % 3],
+                }}
               >
-                <div
-                  aria-hidden="true"
-                  style={{
-                    position: "absolute",
-                    top: -40,
-                    right: -40,
-                    width: 120,
-                    height: 120,
-                    borderRadius: "50%",
-                    background: "rgba(255,255,255,0.08)",
-                  }}
-                />
+                {!photo && (
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      top: -40,
+                      right: -40,
+                      width: 120,
+                      height: 120,
+                      borderRadius: "50%",
+                      background: "rgba(255,255,255,0.08)",
+                    }}
+                  />
+                )}
                 {ribbon && (
                   <div
                     style={{
