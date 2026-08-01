@@ -35,3 +35,16 @@ export const reverseGeocode = createServerFn({ method: "POST" })
       googleMapsKey: process.env.GOOGLE_MAPS_API_KEY,
     });
   });
+
+export const reverseGeocodeToOutcode = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z.object({ lat: z.number().min(-90).max(90), lng: z.number().min(-180).max(180) }).parse(data),
+  )
+  .handler(async ({ data }): Promise<PostcodeLookupResult> => {
+    return reverseGeocodeToOutcode({
+      lat: data.lat,
+      lng: data.lng,
+      lovableKey: process.env.LOVABLE_API_KEY,
+      googleMapsKey: process.env.GOOGLE_MAPS_API_KEY,
+    });
+  });
