@@ -661,7 +661,7 @@ function AreaEditor({
     setOutcodes((prev) => prev.filter((x) => x !== oc));
   }
 
-  const canSave = areaName.trim().length > 0 && lat != null && lng != null && radius > 0;
+  const canSave = areaName.trim().length > 0 && (isNationwide || (lat != null && lng != null && radius > 0));
   const previewUrl = useMemo(
     () => staticMapUrl(lat, lng, radius, "600x300"),
     [lat, lng, radius],
