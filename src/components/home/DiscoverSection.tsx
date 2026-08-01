@@ -473,80 +473,82 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         })()}
       </div>
 
-      {/* DSM Live — grouped rows */}
+      {/* DSM Live — one event visible, rest horizontally scrollable */}
       {liveSorted.length > 0 && (
         <div style={listShell}>
-          {liveSorted.map((s, idx) => {
-            const nowLive = isLiveNow(s);
-            const open = () =>
-              navigate({
-                to: "/dsm-live/$sessionId" as never,
-                params: { sessionId: s.id } as never,
-              });
-            return (
-              <div
-                key={`live-${s.id}`}
-                role="button"
-                tabIndex={0}
-                onClick={open}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") open();
-                }}
-                style={listRow(idx === liveSorted.length - 1)}
-              >
+          <div className="dsm-live-carousel" style={carouselStyle}>
+            {liveSorted.map((s, idx) => {
+              const nowLive = isLiveNow(s);
+              const open = () =>
+                navigate({
+                  to: "/dsm-live/$sessionId" as never,
+                  params: { sessionId: s.id } as never,
+                });
+              return (
                 <div
-                  style={{
-                    ...thumbStyle,
-                    background: s.image_url
-                      ? `${NAVY} url(${s.image_url}) center/cover`
-                      : NAVY,
+                  key={`live-${s.id}`}
+                  role="button"
+                  tabIndex={0}
+                  onClick={open}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") open();
                   }}
+                  style={{ ...tileStyle, ...listRow(idx === liveSorted.length - 1) }}
                 >
-                  {!s.image_url && <IconBroadcast size={20} color="#FFFFFF" stroke={1.9} />}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    {unreadIds.includes(s.id) && <Dot size={8} />}
-                    <div style={rowTitle}>{s.title}</div>
-                  </div>
                   <div
                     style={{
-                      marginTop: 2,
-                      fontSize: 11,
-                      color: "#6B7A90",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 5,
+                      ...thumbStyle,
+                      background: s.image_url
+                        ? `${NAVY} url(${s.image_url}) center/cover`
+                        : NAVY,
                     }}
                   >
-                    {nowLive && <Dot size={6} />}
-                    <span>Live · {fmtTimeDay(s.session_date, s.session_time)}</span>
+                    {!s.image_url && <IconBroadcast size={20} color="#FFFFFF" stroke={1.9} />}
                   </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      {unreadIds.includes(s.id) && <Dot size={8} />}
+                      <div style={rowTitle}>{s.title}</div>
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 2,
+                        fontSize: 11,
+                        color: "#6B7A90",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 5,
+                      }}
+                    >
+                      {nowLive && <Dot size={6} />}
+                      <span>Live · {fmtTimeDay(s.session_date, s.session_time)}</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      open();
+                    }}
+                    style={{
+                      background: NAVY,
+                      color: "#FFFFFF",
+                      border: "none",
+                      borderRadius: 999,
+                      padding: "8px 18px",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      fontFamily: FONT,
+                      cursor: "pointer",
+                      flexShrink: 0,
+                    }}
+                  >
+                    Join
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    open();
-                  }}
-                  style={{
-                    background: NAVY,
-                    color: "#FFFFFF",
-                    border: "none",
-                    borderRadius: 999,
-                    padding: "8px 18px",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    fontFamily: FONT,
-                    cursor: "pointer",
-                    flexShrink: 0,
-                  }}
-                >
-                  Join
-                </button>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
 
