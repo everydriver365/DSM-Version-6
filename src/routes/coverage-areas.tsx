@@ -706,12 +706,13 @@ function AreaEditor({
       title={initial ? "Edit coverage area" : "Add coverage area"}
     >
       {/* Area name */}
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative", opacity: isNationwide ? 0.5 : 1, pointerEvents: isNationwide ? "none" : "auto" }}>
         <label style={{ fontSize: 12, color: "#9CA3AF", ...POPPINS }}>Area name</label>
         <input
           ref={inputRef}
           type="text"
           value={areaName}
+          disabled={isNationwide}
           onChange={(e) => {
             setNameTouched(true);
             setAreaName(e.target.value);
@@ -730,7 +731,7 @@ function AreaEditor({
             border: "0.5px solid #E2E6ED",
             borderRadius: 10,
             fontSize: 14,
-            background: "#fff",
+            background: isNationwide ? "#F3F4F6" : "#fff",
             color: "#0F2044",
             ...POPPINS,
           }}
