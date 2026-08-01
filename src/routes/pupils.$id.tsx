@@ -1077,20 +1077,26 @@ function PupilDetailPage() {
       });
 
     supabase
-      .from("lesson_history")
-      .select("lesson_cost, payment_status")
+      .from("lessons")
+      .select("id, amount_due, paid_amount, payment_status")
       .eq("pupil_id", id)
+      .neq("status", "cancelled")
       .is("deleted_at", null)
       .then(({ data, error }) => {
-        if (error) console.error("[pupil] lesson_history error", error);
-        const rows = (data as { lesson_cost: number | null; payment_status: string | null }[]) ?? [];
-        const totalCost = rows.reduce((s, r) => s + (Number(r.lesson_cost) || 0), 0);
-        const totalPaid = rows
-          .filter((r) => r.payment_status === "paid")
-          .reduce((s, r) => s + (Number(r.lesson_cost) || 0), 0);
-        const bal = totalPaid - totalCost;
-        setBalance(bal);
-        console.log("[pupils.$id] balance:", bal, "totalCost:", totalCost, "totalPaid:", totalPaid);
+        if (error) {
+          console.error("[pupil] lessons balance error", error);
+          return;
+        }
+        const lessonRows = (data as { id: string; amount_due: number | null; paid_amount: number | null; payment_status: string | null }[]) ?? [];
+        const totalCost = lessonRows.reduce((s, l) => s + Number(l.amount_due ?? 0), 0);
+        const totalPaid = lessonRows.reduce((s, l) => s + Number(l.paid_amount ?? 0), 0);
+        const accountCredit = Number(pupil?.account_balance ?? 0);
+        const balance = totalPaid + accountCredit - totalCost;
+        // Negative = owes money, Positive = in credit
+        setBalance(balance);
+        setTotalCost(totalCost);
+        setTotalPaid(totalPaid + accountCredit);
+        console.log("[pupils.$id] balance:", balance, "totalCost:", totalCost, "totalPaid:", totalPaid + accountCredit);
       });
 
     supabase
