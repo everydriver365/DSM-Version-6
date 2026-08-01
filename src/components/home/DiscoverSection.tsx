@@ -194,6 +194,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     "linear-gradient(155deg, #CC2229 0%, #7A1418 100%)",
   ];
 
+  const TINTS = [
+    "linear-gradient(155deg, rgba(24,119,214,0.62) 0%, rgba(11,31,58,0.8) 100%)",
+    "linear-gradient(155deg, rgba(11,31,58,0.62) 0%, rgba(7,19,40,0.82) 100%)",
+    "linear-gradient(155deg, rgba(204,34,41,0.58) 0%, rgba(122,20,24,0.78) 100%)",
+  ];
+
   const CATEGORY_ICONS: Record<string, string> = {
     dashcam: "📹",
     dashcams: "📹",
@@ -329,8 +335,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   });
 
   const thumbStyle: React.CSSProperties = {
-    width: 48,
-    height: 48,
+    width: 44,
+    height: 44,
     borderRadius: 10,
     flexShrink: 0,
     border: `1px solid ${HAIRLINE}`,
@@ -391,7 +397,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       </div>
 
 
-      <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}.dsm-feed-strip::-webkit-scrollbar{display:none}@keyframes dsmLivePulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.35}100%{transform:scale(1);opacity:1}}.dsm-live-pulse{animation:dsmLivePulse 1.4s ease-in-out infinite}`}</style>
+      <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}.dsm-feed-strip::-webkit-scrollbar{display:none}@keyframes dsmLivePulse{0%{opacity:1}50%{opacity:.3}100%{opacity:1}}.dsm-live-pulse{animation:dsmLivePulse 1.4s ease infinite}`}</style>
 
 
       <div className="dsm-discover-scroll" style={stripStyle}>
@@ -415,7 +421,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 style={{
                   ...cardShell,
                   background: photo
-                    ? `linear-gradient(155deg, rgba(11,31,58,0.28) 0%, rgba(11,31,58,0.88) 100%), url(${photo}) center/cover`
+                    ? `${TINTS[i % 3]}, url(${photo}) center/cover`
                     : GRADIENTS[i % 3],
                 }}
               >
