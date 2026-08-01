@@ -23,6 +23,30 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
+import { BottomSheet } from "@/components/dsm/BottomSheetV2";
+
+function commentTimeAgo(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
+
+const COMMENT_COLOURS = ["#7B4FC9", "#1877D6", "#0C8577", "#C4501E", "#3B6D11"];
+function commentColour(id: string): string {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
+  return COMMENT_COLOURS[Math.abs(h) % COMMENT_COLOURS.length];
+}
+function commentInitials(name: string | null | undefined): string {
+  if (!name) return "?";
+  const parts = name.trim().split(/\s+/);
+  if (parts.length > 1) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  return parts[0].slice(0, 2).toUpperCase();
+}
 
 export const Route = createFileRoute("/community")({
   validateSearch: (search: Record<string, unknown>): { tab?: string } => {
