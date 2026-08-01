@@ -2611,6 +2611,21 @@ function PupilDetailPage() {
         {activeTab === "payments" && (
           <>
             {pupil && (<>
+            {/* Pricing & payment */}
+            <button
+              onClick={() => setPricingSheetOpen(true)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                width: '100%', padding: '12px 16px',
+                background: '#fff', border: '0.5px solid #E2E8F0',
+                borderRadius: 10, marginBottom: 12, cursor: 'pointer',
+              }}
+            >
+              <CreditCard size={16} color="#1877D6" />
+              <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A',
+                flex: 1, textAlign: 'left' }}>Pricing & payment</span>
+              <ChevronRight size={14} color="#9CA3AF" />
+            </button>
             {/* Take payment */}
             <button
               type="button"
