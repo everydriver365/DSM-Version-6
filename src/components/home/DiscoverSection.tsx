@@ -400,6 +400,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           const marketCard = (m: MarketItem, i: number) => {
             const [amount, unit] = splitPrice(priceLabel(m));
             const ribbon = ribbonLabel(m);
+            const photo = m.show_image === false ? null : firstImage(m.image_urls);
             return (
               <div
                 key={`market-${m.id}`}
