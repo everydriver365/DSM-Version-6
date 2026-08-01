@@ -424,8 +424,22 @@ function AreaCard({
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0, flexWrap: "wrap" }}>
           <div style={{ fontWeight: 700, fontSize: 15, color: "#0F2044" }}>{area.area_name}</div>
+          {area.is_nationwide && (
+            <span
+              style={{
+                backgroundColor: "#0F2044",
+                color: "#fff",
+                fontSize: 11,
+                fontWeight: 700,
+                padding: "2px 8px",
+                borderRadius: 999,
+              }}
+            >
+              Nationwide
+            </span>
+          )}
           {area.is_primary && (
             <span
               style={{
