@@ -34,6 +34,7 @@ interface CoverageArea {
   centre_lng: number | null;
   radius_miles: number;
   is_primary: boolean;
+  is_nationwide: boolean;
   created_at?: string;
 }
 
