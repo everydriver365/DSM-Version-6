@@ -944,6 +944,7 @@ function AlertCard({
   const cfg = TYPE_CONFIG[alert.alert_type] ?? TYPE_CONFIG.other;
   const alreadyUpvoted = !!userId && (alert.upvoted_by ?? []).includes(userId);
   const reporter = firstName(alert.instructors?.name);
+  const source = alert.source ?? 'manual';
 
   return (
     <div onClick={() => onSelect?.(alert)} style={{
