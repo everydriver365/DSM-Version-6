@@ -4,7 +4,7 @@ import { ArrowLeft, MapPin, Circle, Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
-import { BottomSheet } from "@/components/dsm/BottomSheet";
+import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { reverseGeocode } from "@/lib/geocode.functions";
 
@@ -699,11 +699,34 @@ function AreaEditor({
     setSaving(false);
   }
 
+  if (!open) return null;
+
   return (
     <BottomSheet
-      open={open}
-      onOpenChange={onOpenChange}
+      onClose={() => onOpenChange(false)}
       title={initial ? "Edit coverage area" : "Add coverage area"}
+      footer={
+        <button
+          type="button"
+          onClick={submit}
+          disabled={!canSave || saving}
+          style={{
+            backgroundColor: "#0F2044",
+            color: "#fff",
+            width: "100%",
+            borderRadius: 12,
+            padding: "12px 0",
+            border: "none",
+            fontSize: 14,
+            fontWeight: 600,
+            cursor: !canSave || saving ? "not-allowed" : "pointer",
+            opacity: !canSave || saving ? 0.5 : 1,
+            ...POPPINS,
+          }}
+        >
+          {saving ? "Saving…" : initial ? "Save changes" : "Add area"}
+        </button>
+      }
     >
       {/* Area name */}
       <div style={{ position: "relative", opacity: isNationwide ? 0.5 : 1, pointerEvents: isNationwide ? "none" : "auto" }}>
@@ -990,28 +1013,6 @@ function AreaEditor({
           />
         </div>
       )}
-
-      <button
-        type="button"
-        onClick={submit}
-        disabled={!canSave || saving}
-        style={{
-          marginTop: 20,
-          backgroundColor: "#0F2044",
-          color: "#fff",
-          width: "100%",
-          borderRadius: 12,
-          padding: "12px 0",
-          border: "none",
-          fontSize: 14,
-          fontWeight: 600,
-          cursor: !canSave || saving ? "not-allowed" : "pointer",
-          opacity: !canSave || saving ? 0.5 : 1,
-          ...POPPINS,
-        }}
-      >
-        {saving ? "Saving…" : initial ? "Save changes" : "Add area"}
-      </button>
     </BottomSheet>
   );
 }
