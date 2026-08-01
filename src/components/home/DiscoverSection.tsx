@@ -44,6 +44,7 @@ type MarketItem = {
   id: string;
   title: string;
   price_display: string | null;
+  price_amount: number | null;
   image_urls: string[] | string | null;
 };
 
@@ -123,7 +124,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     (async () => {
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,image_urls&order=is_featured.desc,created_at.desc&limit=10`,
+          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,price_amount,image_urls&order=is_featured.desc,created_at.desc&limit=10`,
 
           { headers },
         );
@@ -260,8 +261,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const priceLabel = (m: MarketItem) => {
     const raw = (m.price_display ?? "").trim();
-    if (!raw || !/\d/.test(raw)) return "Price on request";
-    return raw.toLowerCase().startsWith("from") ? raw : `From ${raw}`;
+    const hasDigit = /\d/.test(raw);
+    if (hasDigit) {
+      return raw.toLowerCase().startsWith("from") ? raw : `From ${raw}`;
+    }
+    if (m.price_amount != null) {
+      const unit = raw ? `/${raw}` : "";
+      return `£${m.price_amount}${unit}`;
+    }
+    return "Price on request";
   };
 
   const splitPrice = (label: string): [string, string] => {
