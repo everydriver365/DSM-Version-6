@@ -6,6 +6,7 @@ import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { BottomSheet } from "@/components/dsm/BottomSheet";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { reverseGeocode } from "@/lib/geocode.functions";
 
 export const Route = createFileRoute("/coverage-areas")({
   head: () => ({
