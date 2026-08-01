@@ -692,6 +692,7 @@ function AreaEditor({
       centre_lng: lng,
       radius_miles: radius,
       is_primary: isPrimary,
+      is_nationwide: isNationwide,
     });
     setSaving(false);
   }
