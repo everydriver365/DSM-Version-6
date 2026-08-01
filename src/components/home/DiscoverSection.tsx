@@ -386,7 +386,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       </div>
 
 
-      <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}`}</style>
+      <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}.dsm-live-carousel::-webkit-scrollbar{display:none}`}</style>
+
 
       <div className="dsm-discover-scroll" style={stripStyle}>
 
