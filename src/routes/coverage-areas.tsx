@@ -752,9 +752,10 @@ function AreaEditor({
   if (!open) return null;
 
   return (
-    <BottomSheet
-      onClose={() => onOpenChange(false)}
-      title={initial ? "Edit coverage area" : "Add coverage area"}
+    <>
+      <BottomSheet
+        onClose={requestClose}
+        title={initial ? "Edit coverage area" : "Add coverage area"}
       footer={
         <button
           type="button"
@@ -1082,5 +1083,19 @@ function AreaEditor({
         </div>
       )}
     </BottomSheet>
+    <ConfirmDialog
+      open={showDiscardConfirm}
+      title="Discard changes?"
+      message="You have unsaved changes. If you close now, your changes will be lost."
+      confirmLabel="Discard"
+      cancelLabel="Keep editing"
+      destructive
+      onConfirm={() => {
+        setShowDiscardConfirm(false);
+        onOpenChange(false);
+      }}
+      onCancel={() => setShowDiscardConfirm(false)}
+    />
+  </>
   );
 }
