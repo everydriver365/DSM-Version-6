@@ -462,21 +462,23 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     gap: 8,
                   }}
                 >
-                  <div
-                    style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius: 10,
-                      background: "rgba(255,255,255,0.16)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 17,
-                      color: "#FFFFFF",
-                    }}
-                  >
-                    {categoryIcon(m)}
-                  </div>
+                  {!photo && (
+                    <div
+                      style={{
+                        width: 34,
+                        height: 34,
+                        borderRadius: 10,
+                        background: "rgba(255,255,255,0.16)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 17,
+                        color: "#FFFFFF",
+                      }}
+                    >
+                      {categoryIcon(m)}
+                    </div>
+                  )}
                   <div style={cardTitle}>{m.title}</div>
                   <div
                     style={{
