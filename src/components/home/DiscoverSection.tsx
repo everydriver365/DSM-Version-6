@@ -416,7 +416,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 />
                 <div
                   style={{
-                    padding: 10,
+                    padding: "10px 12px 12px",
                     flex: 1,
                     display: "flex",
                     flexDirection: "column",
@@ -433,7 +433,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       gap: 6,
                     }}
                   >
-                    <div style={{ minWidth: 0, overflow: "hidden" }}>
+                    <div style={{ minWidth: 0, overflow: "hidden", whiteSpace: "nowrap" }}>
                       <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>{amount}</span>
                       {unit && (
                         <span style={{ fontSize: 11, color: "#6B7A90", marginLeft: 1 }}>{unit}</span>
