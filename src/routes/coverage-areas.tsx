@@ -500,6 +500,7 @@ function AreaEditor({
   const [outcodeError, setOutcodeError] = useState<string | null>(null);
   const [radius, setRadius] = useState<number>(initial?.radius_miles ?? 5);
   const [isPrimary, setIsPrimary] = useState<boolean>(initial?.is_primary ?? false);
+  const [isNationwide, setIsNationwide] = useState<boolean>(initial?.is_nationwide ?? false);
   const [saving, setSaving] = useState(false);
   const [placesLoaded, setPlacesLoaded] = useState(false);
   const [placesError, setPlacesError] = useState(false);
