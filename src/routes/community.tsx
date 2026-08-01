@@ -399,6 +399,41 @@ function AlertsTab({
     load();
   };
 
+  const loadComments = async (alertId: string) => {
+    const { data } = await supabase
+      .from("alert_comments")
+      .select("id, body, created_at, instructor_id, instructors(name)")
+      .eq("alert_id", alertId)
+      .order("created_at", { ascending: true });
+    setComments((data ?? []) as AlertComment[]);
+  };
+
+  useEffect(() => {
+    if (!selectedAlert?.id) {
+      setComments([]);
+      return;
+    }
+    loadComments(selectedAlert.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedAlert?.id]);
+
+  const handleAddComment = async () => {
+    if (!selectedAlert || !userId) return;
+    const body = commentDraft.trim();
+    if (!body) return;
+    const { error } = await supabase.from("alert_comments").insert({
+      alert_id: selectedAlert.id,
+      instructor_id: userId,
+      body,
+    });
+    if (error) {
+      toast.error("Couldn't post comment");
+      return;
+    }
+    setCommentDraft("");
+    loadComments(selectedAlert.id);
+  };
+
   return (
     <div style={{ padding: 16, paddingBottom: 100, marginBottom: 80 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
