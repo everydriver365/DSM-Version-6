@@ -529,6 +529,21 @@ function AreaEditor({
   const placesLibRef = useRef<PlacesLib | null>(null);
   const sessionTokenRef = useRef<unknown>(null);
   const predsRef = useRef<Map<string, PlacePrediction>>(new Map());
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
+
+  const isDirty = useMemo(() => {
+    const initialOutcodes = initial?.postcode_outcodes ?? [];
+    if (areaName.trim() !== (initial?.area_name ?? "").trim()) return true;
+    if (lat !== (initial?.centre_lat ?? null)) return true;
+    if (lng !== (initial?.centre_lng ?? null)) return true;
+    if (radius !== (initial?.radius_miles ?? 5)) return true;
+    if (isPrimary !== (initial?.is_primary ?? false)) return true;
+    if (isNationwide !== (initial?.is_nationwide ?? false)) return true;
+    if (outcodes.length !== initialOutcodes.length) return true;
+    const sortedCurrent = [...outcodes].sort();
+    const sortedInitial = [...initialOutcodes].sort();
+    return sortedCurrent.some((v, i) => v !== sortedInitial[i]);
+  }, [areaName, lat, lng, radius, isPrimary, isNationwide, outcodes, initial]);
 
   // Reset state when opening
   useEffect(() => {
@@ -725,12 +740,22 @@ function AreaEditor({
     setSaving(false);
   }
 
+  const requestClose = () => {
+    if (saving) return;
+    if (isDirty) {
+      setShowDiscardConfirm(true);
+    } else {
+      onOpenChange(false);
+    }
+  };
+
   if (!open) return null;
 
   return (
-    <BottomSheet
-      onClose={() => onOpenChange(false)}
-      title={initial ? "Edit coverage area" : "Add coverage area"}
+    <>
+      <BottomSheet
+        onClose={requestClose}
+        title={initial ? "Edit coverage area" : "Add coverage area"}
       footer={
         <button
           type="button"
@@ -1058,5 +1083,19 @@ function AreaEditor({
         </div>
       )}
     </BottomSheet>
+    <ConfirmDialog
+      open={showDiscardConfirm}
+      title="Discard changes?"
+      message="You have unsaved changes. If you close now, your changes will be lost."
+      confirmLabel="Discard"
+      cancelLabel="Keep editing"
+      destructive
+      onConfirm={() => {
+        setShowDiscardConfirm(false);
+        onOpenChange(false);
+      }}
+      onCancel={() => setShowDiscardConfirm(false)}
+    />
+  </>
   );
 }
