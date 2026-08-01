@@ -11,6 +11,7 @@ import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { recordPayment, correctPaymentRecord } from "@/lib/payments";
 import { TakePaymentSheet as SharedTakePaymentSheet } from "@/components/payments/TakePaymentSheet";
+import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";
 
 export const Route = createFileRoute("/payments")({
   head: () => ({
@@ -208,7 +209,6 @@ function PaymentsPage() {
   const [takePaymentOpen, setTakePaymentOpen] = useState(false);
   const [takePaymentPupilId, setTakePaymentPupilId] = useState<string | undefined>();
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [menuId, setMenuId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
   const [instructor, setInstructor] = useState<{ name: string | null } | null>(null);
@@ -543,58 +543,37 @@ function PaymentsPage() {
                             ...POPPINS,
                           }}
                         >
-                          {formatGBP(amt)}
+                        {formatGBP(amt)}
                         </div>
-                        <div style={{ position: "relative", flexShrink: 0 }}>
-                          <button
-                            type="button"
-                            aria-label="More"
-                            onClick={() => setMenuId(menuId === row.id ? null : row.id)}
-                            style={{
-                              width: 28,
-                              height: 28,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              background: "none",
-                              border: 0,
-                              cursor: "pointer",
-                            }}
-                          >
-                            <MoreVertical size={16} color="#B0BAC9" />
-                          </button>
-                          {menuId === row.id && (
-                            <>
-                              <div style={{ position: "fixed", inset: 0, zIndex: 30 }} onClick={() => setMenuId(null)} />
-                              <div
-                                style={{
-                                  position: "absolute",
-                                  right: 0,
-                                  top: 32,
-                                  zIndex: 40,
-                                  background: "#FFFFFF",
-                                  borderRadius: 8,
-                                  border: `0.5px solid ${BORDER}`,
-                                  boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
-                                  minWidth: 140,
-                                }}
-                              >
-                                {!isRefund && <MenuItem onClick={() => { setEditingId(row.id); setExpandedId(row.id); setMenuId(null); }}>Edit</MenuItem>}
-                                {!isRefund && <MenuItem onClick={() => { setRefundRow(row); setMenuId(null); }}>Refund</MenuItem>}
-                                <MenuItem danger onClick={async () => {
-                                  setMenuId(null);
-                                  if (!window.confirm("Delete this payment? This will restore the lesson balance.")) return;
-                                  if (!userId) return;
-                                  const { data: { session } } = await supabase.auth.getSession();
-                                  const token = session?.access_token;
-                                  if (!token) return;
-                                  const ok = await deletePaymentRecord(row.id, token, userId);
-                                  if (ok) await refetch();
-                                }}>Delete</MenuItem>
-                              </div>
-                            </>
+                        <QuickActionsMenu
+                          trigger={({ onClick }) => (
+                            <button
+                              type="button"
+                              aria-label="More"
+                              onClick={onClick}
+                              style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: 0, cursor: "pointer" }}
+                            >
+                              <MoreVertical size={16} color="#B0BAC9" />
+                            </button>
                           )}
-                        </div>
+                          items={[
+                            ...(!isRefund ? [{ label: "Edit", onClick: () => { setEditingId(row.id); setExpandedId(row.id); } }] : []),
+                            ...(!isRefund ? [{ label: "Refund", onClick: () => setRefundRow(row) }] : []),
+                            {
+                              label: "Delete",
+                              destructive: true,
+                              onClick: async () => {
+                                if (!window.confirm("Delete this payment? This will restore the lesson balance.")) return;
+                                if (!userId) return;
+                                const { data: { session } } = await supabase.auth.getSession();
+                                const token = session?.access_token;
+                                if (!token) return;
+                                const ok = await deletePaymentRecord(row.id, token, userId);
+                                if (ok) await refetch();
+                              },
+                            },
+                          ]}
+                        />
                       </div>
 
                       {isOpen && (
@@ -677,11 +656,6 @@ function Pill({ active, onClick, children }: { active: boolean; onClick: () => v
   return (
     <button type="button" onClick={onClick} className="px-3 h-8 rounded-full text-[12px] font-medium whitespace-nowrap shrink-0"
       style={{ backgroundColor: active ? NAVY : "#F3F4F6", color: active ? "#fff" : NAVY, border: `0.5px solid ${active ? NAVY : BORDER}` }}>{children}</button>
-  );
-}
-function MenuItem({ children, onClick, danger }: { children: React.ReactNode; onClick: () => void; danger?: boolean }) {
-  return (
-    <button type="button" onClick={onClick} className="w-full text-left px-3 py-2 text-[13px]" style={{ color: danger ? RED : NAVY, ...POPPINS }}>{children}</button>
   );
 }
 
