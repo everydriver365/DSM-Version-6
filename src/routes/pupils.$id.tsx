@@ -5,6 +5,7 @@ import { Award, BarChart3, BookOpen, Calendar, Camera, Car, ChevronDown, Chevron
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { TakePaymentSheet } from "@/components/payments/TakePaymentSheet";
+import { PricingPaymentSheet } from "@/components/payments/PricingPaymentSheet";
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
@@ -416,6 +417,7 @@ function PupilDetailPage() {
   const [sendMessageOpen, setSendMessageOpen] = useState(false);
   const [sendMessagePupilId, setSendMessagePupilId] = useState<string | undefined>();
   const [takePaymentPupilId, setTakePaymentPupilId] = useState<string | undefined>();
+  const [pricingSheetOpen, setPricingSheetOpen] = useState(false);
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
   const [instructorRate, setInstructorRate] = useState<number | null>(null);
   const [instructorBufferAfter, setInstructorBufferAfter] = useState<number | null>(null);
@@ -2609,6 +2611,21 @@ function PupilDetailPage() {
         {activeTab === "payments" && (
           <>
             {pupil && (<>
+            {/* Pricing & payment */}
+            <button
+              onClick={() => setPricingSheetOpen(true)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                width: '100%', padding: '12px 16px',
+                background: '#fff', border: '0.5px solid #E2E8F0',
+                borderRadius: 10, marginBottom: 12, cursor: 'pointer',
+              }}
+            >
+              <CreditCard size={16} color="#1877D6" />
+              <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A',
+                flex: 1, textAlign: 'left' }}>Pricing & payment</span>
+              <ChevronRight size={14} color="#9CA3AF" />
+            </button>
             {/* Take payment */}
             <button
               type="button"
@@ -4798,8 +4815,16 @@ function PupilDetailPage() {
         onSent={() => setPaymentHistoryRefresh((v) => v + 1)}
       />
 
-
-
+      <PricingPaymentSheet
+        open={pricingSheetOpen}
+        onClose={() => setPricingSheetOpen(false)}
+        pupilId={id}
+        instructorId={userId ?? ''}
+        onSaved={() => {
+          setPricingSheetOpen(false);
+          setPaymentHistoryRefresh(r => r + 1);
+        }}
+      />
 
       <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
       </div>
