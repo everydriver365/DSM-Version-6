@@ -456,12 +456,13 @@ function CommunityPage() {
 /* ============================================================ ALERTS TAB */
 
 function AlertsTab({
-  userId, instructorFirstName, instructorArea, instructorOutcode,
+  userId, instructorFirstName, instructorArea, instructorOutcode, coverageOutcodes,
 }: {
   userId: string | null;
   instructorFirstName: string;
   instructorArea: string;
   instructorOutcode: string | null;
+  coverageOutcodes: string[];
 }) {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
