@@ -525,6 +525,7 @@ function AreaEditor({
       setOutcodeError(null);
       setRadius(initial?.radius_miles ?? 5);
       setIsPrimary(initial?.is_primary ?? false);
+      setIsNationwide(initial?.is_nationwide ?? false);
       setSuggestions([]);
       setShowSuggestions(false);
       setNameTouched(false);
