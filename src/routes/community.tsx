@@ -508,7 +508,8 @@ function AlertsTab({
             const chipGradient = alertGradient[a.alert_type] ?? alertGradient.other;
             return (
               <div key={a.id} style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
-                <div style={{
+                <div onClick={() => setSelectedAlert(a)} style={{
+                  cursor: "pointer",
                   background: "white",
                   borderRadius: 14,
                   boxShadow: "0 3px 10px rgba(11,31,58,0.08)",
