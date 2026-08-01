@@ -374,6 +374,7 @@ export function DiscoverSection() {
         {(() => {
           const marketCard = (m: MarketItem) => {
             const img = firstImage(m.image_urls);
+            const [amount, unit] = splitPrice(priceLabel(m));
             return (
               <div
                 key={`market-${m.id}`}
@@ -387,22 +388,58 @@ export function DiscoverSection() {
                 }
                 style={cardShell}
               >
-                <StackMedia
-                  height={78}
-                  front={{
+                <div
+                  style={{
+                    height: 88,
                     background: img ? `#EEF2F7 url(${img}) center/cover` : "#EEF2F7",
                   }}
                 />
-                <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
-                  <div style={{ ...cardTitle, marginTop: 8 }}>{m.title}</div>
-                  <div style={cardSub}>{priceLabel(m)}</div>
+                <div
+                  style={{
+                    padding: 10,
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 8,
+                  }}
+                >
+                  <div style={cardTitle}>{m.title}</div>
+                  <div
+                    style={{
+                      marginTop: "auto",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 6,
+                    }}
+                  >
+                    <div style={{ minWidth: 0, overflow: "hidden" }}>
+                      <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>{amount}</span>
+                      {unit && (
+                        <span style={{ fontSize: 11, color: "#6B7A90", marginLeft: 1 }}>{unit}</span>
+                      )}
+                    </div>
+                    <span
+                      style={{
+                        width: 22,
+                        height: 22,
+                        borderRadius: "50%",
+                        background: "#FFFFFF",
+                        border: `1px solid ${HAIRLINE}`,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconChevronRight size={13} stroke={2.2} color={NAVY} />
+                    </span>
+                  </div>
                 </div>
-                <button type="button" style={cardBtn("VIEW")}>
-                  View
-                </button>
               </div>
             );
           };
+
 
           const nodes: React.ReactNode[] = market.map((m) => marketCard(m));
           nodes.push(
