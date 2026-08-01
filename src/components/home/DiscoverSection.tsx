@@ -415,7 +415,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 style={{
                   ...cardShell,
                   background: photo
-                    ? `${GRADIENTS[i % 3].replace("155deg,", "155deg, rgba(11,31,58,0.25) 0%, rgba(11,31,58,0.85) 100%), linear-gradient(155deg,")}, url(${photo}) center/cover`
+                    ? `linear-gradient(155deg, rgba(11,31,58,0.28) 0%, rgba(11,31,58,0.88) 100%), url(${photo}) center/cover`
                     : GRADIENTS[i % 3],
                 }}
               >
