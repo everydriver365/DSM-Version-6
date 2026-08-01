@@ -974,7 +974,13 @@ function AlertCard({
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2, flexShrink: 0 }}>
           <div style={{ fontSize: 10, color: "#9CA3AF" }}>{formatCountdown(alert.expires_at)}</div>
-          <div style={{ fontSize: 10, color: "#9CA3AF" }}>{reporter}</div>
+          {source === 'tomtom' ? (
+            <div style={{ background: '#E3EEFC', color: '#1877D6', fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 20 }}>
+              TomTom
+            </div>
+          ) : (
+            <div style={{ fontSize: 10, color: "#9CA3AF" }}>{reporter}</div>
+          )}
         </div>
       </div>
 
