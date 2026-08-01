@@ -806,7 +806,7 @@ function AlertsTab({
                 >
                   Close
                 </button>
-                {isMine ? (
+                {isMine && selectedAlert.source !== 'tomtom' ? (
                   <button
                     type="button"
                     onClick={() => { handleCancel(selectedAlert); setSelectedAlert(null); }}
