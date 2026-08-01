@@ -335,8 +335,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   });
 
   const thumbStyle: React.CSSProperties = {
-    width: 48,
-    height: 48,
+    width: 44,
+    height: 44,
     borderRadius: 10,
     flexShrink: 0,
     border: `1px solid ${HAIRLINE}`,
