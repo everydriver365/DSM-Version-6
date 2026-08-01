@@ -1455,7 +1455,6 @@ function HomePage() {
     return () => window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
   }, []);
   const [addLessonOpen, setAddLessonOpen] = useState(false);
-  const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [takePaymentOpen, setTakePaymentOpen] = useState(false);
   const [addExpenseOpen, setAddExpenseOpen] = useState(false);
   const [logMileageOpen, setLogMileageOpen] = useState(false);
