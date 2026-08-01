@@ -449,56 +449,99 @@ function AlertsTab({
           </div>
           {myAlerts.map((a) => {
             const cfg = TYPE_CONFIG[a.alert_type] ?? TYPE_CONFIG.other;
+            const alertGradient: Record<string, string> = {
+              roadworks: "linear-gradient(135deg, #F5A623 0%, #D97706 100%)",
+              heavy_traffic: "linear-gradient(135deg, #F5A623 0%, #D97706 100%)",
+              road_closure: "linear-gradient(135deg, #E5484D 0%, #A81B21 100%)",
+              hazard: "linear-gradient(135deg, #E5484D 0%, #A81B21 100%)",
+              test_centre_busy: "linear-gradient(135deg, #E5484D 0%, #A81B21 100%)",
+              test_centre_delay: "linear-gradient(135deg, #E5484D 0%, #A81B21 100%)",
+              examiner_tip: "linear-gradient(135deg, #8B7CF6 0%, #6B4FD6 100%)",
+              other: "linear-gradient(135deg, rgba(107,114,128,0.55) 0%, rgba(107,114,128,0.85) 100%)",
+            };
+            const chipGradient = alertGradient[a.alert_type] ?? alertGradient.other;
             return (
-              <div key={a.id} style={{
-                background: cfg.bg,
-                borderLeft: `3px solid ${cfg.colour}`,
-                borderRadius: 12,
-                boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                padding: "14px 16px",
-                marginBottom: 8,
-                position: "relative",
-              }}>
+              <div key={a.id} style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
                 <div style={{
-                  position: "absolute",
-                  top: 12,
-                  right: 12,
-                  background: "#0F2044",
-                  color: "white",
-                  fontSize: 9,
-                  fontWeight: 700,
-                  padding: "2px 8px",
-                  borderRadius: 999,
-                  textTransform: "uppercase",
-                  letterSpacing: 0.3,
+                  background: "white",
+                  borderRadius: 14,
+                  boxShadow: "0 3px 10px rgba(11,31,58,0.08)",
+                  padding: "11px 12px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 11,
                 }}>
-                  Your alert
-                </div>
-                <div style={{ paddingRight: 80 }}>
                   <div style={{
-                    fontSize: 10, fontWeight: 700, textTransform: "uppercase",
-                    color: cfg.colour, letterSpacing: 0.3,
+                    width: 38,
+                    height: 38,
+                    borderRadius: 12,
+                    flexShrink: 0,
+                    background: chipGradient,
+                    boxShadow: `0 3px 8px ${cfg.colour}40`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}>
-                    {cfg.label}
+                    <cfg.Icon size={16} color="white" strokeWidth={2.2} />
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044" }}>
-                    {a.description}
+                  <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}>
+                    <div style={{
+                      fontSize: 13.5,
+                      fontWeight: 700,
+                      color: "#0B1F3A",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      lineHeight: 1.2,
+                    }}>
+                      <span>{cfg.label}</span>
+                      <span style={{ color: "#C7CDD9" }}> · </span>
+                      <span>{a.description}</span>
+                    </div>
+                    {a.location_name && (
+                      <div style={{
+                        fontSize: 11,
+                        color: "#9CA3AF",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}>
+                        {a.location_name}
+                      </div>
+                    )}
                   </div>
-                  <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>
-                    {formatCountdown(a.expires_at)}
+                  <div style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 8 }}>
+                    <div style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      color: "#0B1F3A",
+                      background: "#EEF2F7",
+                      padding: "4px 9px",
+                      borderRadius: 20,
+                      whiteSpace: "nowrap",
+                    }}>
+                      {formatCountdown(a.expires_at)}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleCancel(a)}
+                      style={{
+                        width: 26,
+                        height: 26,
+                        borderRadius: "50%",
+                        background: "#0B1F3A",
+                        border: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        padding: 0,
+                      }}
+                      aria-label="Cancel alert"
+                    >
+                      <X size={13} color="white" strokeWidth={2.4} />
+                    </button>
                   </div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
-                  <button
-                    type="button"
-                    onClick={() => handleCancel(a)}
-                    style={{
-                      background: "#FEF2F2", color: "#CC2229", border: "0.5px solid #FECACA",
-                      borderRadius: 8, padding: "6px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer",
-                    }}
-                  >
-                    Cancel
-                  </button>
                 </div>
               </div>
             );
