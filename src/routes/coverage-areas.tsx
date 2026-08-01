@@ -383,9 +383,6 @@ function CoverageAreasPage() {
         onOpenChange={(v) => {
           setSheetOpen(v);
           if (!v) setEditing(null);
-          if (typeof window !== "undefined") {
-            window.dispatchEvent(new Event(v ? "dsm-sheet-open" : "dsm-sheet-close"));
-          }
         }}
         initial={editing}
         onSave={handleSave}
@@ -550,6 +547,18 @@ function AreaEditor({
       setNameTouched(false);
     }
   }, [open, initial]);
+
+  // Hide/show bottom nav when sheet opens/closes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("dsm-sheet-open"));
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("dsm-sheet-close"));
+      }
+    };
+  }, []);
 
   // Load Google Maps + Places (New)
   useEffect(() => {
