@@ -537,130 +537,129 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       </div>
 
 
-      {/* DSM Live — one event visible, rest horizontally scrollable */}
-      {liveSorted.length > 0 && (
+      {/* DSM Live + DSM Learn — single merged feed */}
+      {(liveSorted.length > 0 || playable.length > 0) && (
         <div style={listShell}>
-          <div className="dsm-live-carousel" style={carouselStyle}>
-            {liveSorted.map((s, idx) => {
-              const nowLive = isLiveNow(s);
-              const open = () =>
-                navigate({
-                  to: "/dsm-live/$sessionId" as never,
-                  params: { sessionId: s.id } as never,
-                });
-              return (
+          {liveSorted.map((s, idx) => {
+            const nowLive = isLiveNow(s);
+            const last = idx === liveSorted.length - 1 && playable.length === 0;
+            const open = () =>
+              navigate({
+                to: "/dsm-live/$sessionId" as never,
+                params: { sessionId: s.id } as never,
+              });
+            return (
+              <div
+                key={`live-${s.id}`}
+                role="button"
+                tabIndex={0}
+                onClick={open}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") open();
+                }}
+                style={{
+                  ...listRow(last),
+                  borderLeft: `3px solid ${RED}`,
+                }}
+              >
                 <div
-                  key={`live-${s.id}`}
-                  role="button"
-                  tabIndex={0}
-                  onClick={open}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") open();
+                  style={{
+                    ...thumbStyle,
+                    background: s.image_url
+                      ? `${NAVY} url(${s.image_url}) center/cover`
+                      : NAVY,
                   }}
-                  style={{ ...tileStyle, ...listRow(idx === liveSorted.length - 1) }}
                 >
+                  {!s.image_url && <IconBroadcast size={20} color="#FFFFFF" stroke={1.9} />}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    {unreadIds.includes(s.id) && <Dot size={8} />}
+                    <div style={rowTitle}>{s.title}</div>
+                  </div>
                   <div
                     style={{
-                      ...thumbStyle,
-                      background: s.image_url
-                        ? `${NAVY} url(${s.image_url}) center/cover`
-                        : NAVY,
-                    }}
-                  >
-                    {!s.image_url && <IconBroadcast size={20} color="#FFFFFF" stroke={1.9} />}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      {unreadIds.includes(s.id) && <Dot size={8} />}
-                      <div style={rowTitle}>{s.title}</div>
-                    </div>
-                    <div
-                      style={{
-                        marginTop: 2,
-                        fontSize: 11,
-                        color: "#6B7A90",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 5,
-                      }}
-                    >
-                      {nowLive && <Dot size={6} />}
-                      <span>Live · {fmtTimeDay(s.session_date, s.session_time)}</span>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      open();
-                    }}
-                    style={{
-                      background: NAVY,
-                      color: "#FFFFFF",
-                      border: "none",
-                      borderRadius: 999,
-                      padding: "8px 18px",
-                      fontSize: 12,
+                      marginTop: 2,
+                      fontSize: 11,
                       fontWeight: 600,
-                      fontFamily: FONT,
-                      cursor: "pointer",
-                      flexShrink: 0,
+                      color: RED,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 5,
                     }}
                   >
-                    Join
-                  </button>
+                    <span className={nowLive ? "dsm-live-pulse" : undefined}>
+                      <Dot size={6} />
+                    </span>
+                    <span>Live · {fmtTimeDay(s.session_date, s.session_time)}</span>
+                  </div>
                 </div>
-              );
-            })}
-          </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    open();
+                  }}
+                  style={{
+                    background: NAVY,
+                    color: "#FFFFFF",
+                    border: "none",
+                    borderRadius: 999,
+                    padding: "8px 18px",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    fontFamily: FONT,
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                >
+                  Join
+                </button>
+              </div>
+            );
+          })}
+
+          {playable.map((v, i) => {
+            const thumb = v.thumbnail_url || youtubeThumb(v.url);
+            const open = () => {
+              if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
+              else navigate({ to: "/learn" as never });
+            };
+            return (
+              <div
+                key={`learn-${v.id ?? i}`}
+                role="button"
+                tabIndex={0}
+                onClick={open}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") open();
+                }}
+                style={listRow(i === playable.length - 1)}
+              >
+                <div
+                  style={{
+                    ...thumbStyle,
+                    background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
+                  }}
+                >
+                  {!thumb && <IconPlayerPlay size={18} color={MUTED} stroke={2} />}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    {v.id && unreadIds.includes(v.id) && <Dot size={8} />}
+                    <div style={rowTitle}>{v.title}</div>
+                  </div>
+                  <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
+                    {v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}
+                  </div>
+                </div>
+                <IconChevronRight size={20} stroke={2} color={MUTED} />
+              </div>
+            );
+          })}
         </div>
       )}
 
-      {/* DSM Learn — one video visible, rest horizontally scrollable */}
-      {playable.length > 0 && (
-        <div style={listShell}>
-          <div className="dsm-learn-carousel" style={carouselStyle}>
-            {playable.map((v, i) => {
-              const thumb = v.thumbnail_url || youtubeThumb(v.url);
-              const open = () => {
-                if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
-                else navigate({ to: "/learn" as never });
-              };
-              return (
-                <div
-                  key={`learn-${v.id ?? i}`}
-                  role="button"
-                  tabIndex={0}
-                  onClick={open}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") open();
-                  }}
-                  style={{ ...tileStyle, ...listRow(i === playable.length - 1) }}
-                >
-                  <div
-                    style={{
-                      ...thumbStyle,
-                      background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
-                    }}
-                  >
-                    {!thumb && <IconPlayerPlay size={18} color={MUTED} stroke={2} />}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      {v.id && unreadIds.includes(v.id) && <Dot size={8} />}
-                      <div style={rowTitle}>{v.title}</div>
-                    </div>
-                    <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
-                      {v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}
-                    </div>
-                  </div>
-                  <IconChevronRight size={20} stroke={2} color={MUTED} />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
 
 
 
