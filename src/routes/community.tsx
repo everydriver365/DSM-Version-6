@@ -653,6 +653,167 @@ function AlertsTab({
           instructorOutcode={instructorOutcode}
         />
       )}
+
+      {selectedAlert && (() => {
+        const cfg = TYPE_CONFIG[selectedAlert.alert_type] ?? TYPE_CONFIG.other;
+        const isMine = selectedAlert.instructor_id === userId;
+        const alreadyUpvoted = !!userId && (selectedAlert.upvoted_by ?? []).includes(userId);
+        const rowStyle: React.CSSProperties = {
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+          padding: "11px 14px", fontSize: 13,
+        };
+        const metaRows: { label: string; value: string }[] = [
+          ...(selectedAlert.location_name ? [{ label: "Location", value: selectedAlert.location_name }] : []),
+          { label: "Reported", value: new Date(selectedAlert.created_at).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) },
+          { label: "Expires", value: formatCountdown(selectedAlert.expires_at) },
+          { label: "Confirmations", value: String(selectedAlert.upvotes) },
+        ];
+        return (
+          <BottomSheet
+            title={cfg.label}
+            subtitle={selectedAlert.description}
+            onClose={() => setSelectedAlert(null)}
+            footer={
+              <div style={{ display: "flex", gap: 8 }}>
+                <button
+                  type="button"
+                  onClick={() => setSelectedAlert(null)}
+                  style={{
+                    flex: 1, padding: "12px 0", borderRadius: 999, background: "white",
+                    border: "1px solid #E2E6ED", color: "#0B1F3A", fontWeight: 600,
+                    fontSize: 14, cursor: "pointer",
+                  }}
+                >
+                  Close
+                </button>
+                {isMine ? (
+                  <button
+                    type="button"
+                    onClick={() => { handleCancel(selectedAlert); setSelectedAlert(null); }}
+                    style={{
+                      flex: 1, padding: "12px 0", borderRadius: 999, background: "#0B1F3A",
+                      border: "none", color: "white", fontWeight: 600, fontSize: 14, cursor: "pointer",
+                    }}
+                  >
+                    Cancel alert
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handleUpvote(selectedAlert)}
+                    style={{
+                      flex: 1, padding: "12px 0", borderRadius: 999,
+                      background: "#F7FAFC", border: "1px solid #E2E6ED",
+                      display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <ThumbsUp
+                      size={14}
+                      color={alreadyUpvoted ? "#1877D6" : "#9CA3AF"}
+                      fill={alreadyUpvoted ? "#1877D6" : "none"}
+                    />
+                    <span style={{ fontSize: 14, fontWeight: 600, color: alreadyUpvoted ? "#1877D6" : "#6B7280" }}>
+                      {selectedAlert.upvotes} confirmed
+                    </span>
+                  </button>
+                )}
+              </div>
+            }
+          >
+            <div style={{ background: "white", borderRadius: 14, overflow: "hidden", marginBottom: 14 }}>
+              {metaRows.map((r, i) => (
+                <div key={r.label} style={{ ...rowStyle, borderTop: i === 0 ? "none" : "0.5px solid #EEF0F3" }}>
+                  <span style={{ color: "#8A93A3" }}>{r.label}</span>
+                  <span style={{ color: "#0B1F3A", fontWeight: 600, textAlign: "right", marginLeft: 12 }}>{r.value}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Description</div>
+            <div style={{
+              background: "white", borderRadius: 14, padding: "12px 14px",
+              fontSize: 13.5, color: "#0B1F3A", lineHeight: 1.45, marginBottom: 14,
+            }}>
+              {selectedAlert.description}
+            </div>
+
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>
+              Comments · {comments.length}
+            </div>
+            {comments.length > 0 && (
+              <div style={{ background: "white", borderRadius: 14, overflow: "hidden", marginBottom: 10 }}>
+                {comments.map((c, i) => (
+                  <div
+                    key={c.id}
+                    style={{
+                      display: "flex", gap: 10, padding: "11px 14px",
+                      borderTop: i === 0 ? "none" : "0.5px solid #EEF0F3",
+                    }}
+                  >
+                    <div style={{
+                      width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
+                      background: commentColour(c.instructor_id), color: "white",
+                      fontSize: 11, fontWeight: 700,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}>
+                      {commentInitials(c.instructors?.name)}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 12, color: "#8A93A3" }}>
+                        <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{firstName(c.instructors?.name)}</span>
+                        {" · "}{commentTimeAgo(c.created_at)}
+                      </div>
+                      <div style={{ fontSize: 13.5, color: "#0B1F3A", marginTop: 2, lineHeight: 1.4, wordBreak: "break-word" }}>
+                        {c.body}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div style={{
+              background: "white", borderRadius: 14, padding: 8, marginBottom: 6,
+              display: "flex", alignItems: "center", gap: 8,
+            }}>
+              <div style={{
+                width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
+                background: userId ? commentColour(userId) : "#9CA3AF", color: "white",
+                fontSize: 11, fontWeight: 700,
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                {commentInitials(instructorFirstName)}
+              </div>
+              <input
+                value={commentDraft}
+                onChange={(e) => setCommentDraft(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddComment(); } }}
+                placeholder="Add an update…"
+                style={{
+                  flex: 1, minWidth: 0, border: "none", outline: "none",
+                  fontSize: 13.5, color: "#0B1F3A", background: "transparent",
+                }}
+              />
+              <button
+                type="button"
+                onClick={handleAddComment}
+                disabled={!commentDraft.trim()}
+                aria-label="Post comment"
+                style={{
+                  width: 32, height: 32, borderRadius: "50%", flexShrink: 0,
+                  background: "#1877D6", border: "none", color: "white",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  cursor: commentDraft.trim() ? "pointer" : "default",
+                  opacity: commentDraft.trim() ? 1 : 0.4, padding: 0,
+                }}
+              >
+                <Send size={15} />
+              </button>
+            </div>
+          </BottomSheet>
+        );
+      })()}
     </div>
   );
 }
