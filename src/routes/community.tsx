@@ -571,7 +571,7 @@ function AlertsTab({
                     </div>
                     <button
                       type="button"
-                      onClick={() => handleCancel(a)}
+                      onClick={(e) => { e.stopPropagation(); handleCancel(a); }}
                       style={{
                         width: 26,
                         height: 26,
