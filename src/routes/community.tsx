@@ -76,6 +76,7 @@ type Alert = {
   is_active: boolean;
   expires_at: string;
   created_at: string;
+  source?: 'manual' | 'tomtom';
   instructors?: { name: string | null } | null;
 };
 
@@ -710,25 +711,27 @@ function AlertsTab({
                     }}>
                       {formatCountdown(a.expires_at)}
                     </div>
-                    <button
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); handleCancel(a); }}
-                      style={{
-                        width: 26,
-                        height: 26,
-                        borderRadius: "50%",
-                        background: "#0B1F3A",
-                        border: "none",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        padding: 0,
-                      }}
-                      aria-label="Cancel alert"
-                    >
-                      <X size={13} color="white" strokeWidth={2.4} />
-                    </button>
+                    {(a.source ?? 'manual') !== 'tomtom' && (
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); handleCancel(a); }}
+                        style={{
+                          width: 26,
+                          height: 26,
+                          borderRadius: "50%",
+                          background: "#0B1F3A",
+                          border: "none",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                          padding: 0,
+                        }}
+                        aria-label="Cancel alert"
+                      >
+                        <X size={13} color="white" strokeWidth={2.4} />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -781,7 +784,7 @@ function AlertsTab({
         };
         const metaRows: { label: string; value: string }[] = [
           ...(selectedAlert.location_name ? [{ label: "Location", value: selectedAlert.location_name }] : []),
-          { label: "Reported", value: new Date(selectedAlert.created_at).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) },
+          { label: "Reported", value: selectedAlert.source === 'tomtom' ? "TomTom Traffic" : new Date(selectedAlert.created_at).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) },
           { label: "Expires", value: formatCountdown(selectedAlert.expires_at) },
           { label: "Confirmations", value: String(selectedAlert.upvotes) },
         ];
@@ -803,7 +806,7 @@ function AlertsTab({
                 >
                   Close
                 </button>
-                {isMine ? (
+                {isMine && selectedAlert.source !== 'tomtom' ? (
                   <button
                     type="button"
                     onClick={() => { handleCancel(selectedAlert); setSelectedAlert(null); }}
@@ -839,12 +842,20 @@ function AlertsTab({
             }
           >
             <div style={{ background: "white", borderRadius: 14, overflow: "hidden", marginBottom: 14 }}>
-              {metaRows.map((r, i) => (
-                <div key={r.label} style={{ ...rowStyle, borderTop: i === 0 ? "none" : "0.5px solid #EEF0F3" }}>
-                  <span style={{ color: "#8A93A3" }}>{r.label}</span>
-                  <span style={{ color: "#0B1F3A", fontWeight: 600, textAlign: "right", marginLeft: 12 }}>{r.value}</span>
-                </div>
-              ))}
+              {metaRows.map((r, i) => {
+                const isReportedTomTom = r.label === "Reported" && selectedAlert.source === 'tomtom';
+                return (
+                  <div key={r.label} style={{ ...rowStyle, borderTop: i === 0 ? "none" : "0.5px solid #EEF0F3", alignItems: isReportedTomTom ? "flex-start" : "center" }}>
+                    <span style={{ color: "#8A93A3" }}>{r.label}</span>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", marginLeft: 12 }}>
+                      <span style={{ color: "#0B1F3A", fontWeight: 600, textAlign: "right" }}>{r.value}</span>
+                      {isReportedTomTom && (
+                        <span style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>Updates automatically</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Description</div>
@@ -943,6 +954,7 @@ function AlertCard({
   const cfg = TYPE_CONFIG[alert.alert_type] ?? TYPE_CONFIG.other;
   const alreadyUpvoted = !!userId && (alert.upvoted_by ?? []).includes(userId);
   const reporter = firstName(alert.instructors?.name);
+  const source = alert.source ?? 'manual';
 
   return (
     <div onClick={() => onSelect?.(alert)} style={{
@@ -972,7 +984,13 @@ function AlertCard({
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2, flexShrink: 0 }}>
           <div style={{ fontSize: 10, color: "#9CA3AF" }}>{formatCountdown(alert.expires_at)}</div>
-          <div style={{ fontSize: 10, color: "#9CA3AF" }}>{reporter}</div>
+          {source === 'tomtom' ? (
+            <div style={{ background: '#E3EEFC', color: '#1877D6', fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 20 }}>
+              TomTom
+            </div>
+          ) : (
+            <div style={{ fontSize: 10, color: "#9CA3AF" }}>{reporter}</div>
+          )}
         </div>
       </div>
 
@@ -980,7 +998,9 @@ function AlertCard({
         display: "flex", justifyContent: "space-between", alignItems: "center",
         marginTop: 10, paddingTop: 8, borderTop: "0.5px solid #F3F4F6",
       }}>
-        <div style={{ fontSize: 12, color: "#9CA3AF" }}>{reporter} reported this</div>
+        <div style={{ fontSize: 12, color: "#9CA3AF" }}>
+          {source === 'tomtom' ? 'Official traffic data' : `${reporter} reported this`}
+        </div>
         {commentCount > 0 && (
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <MessageCircle size={13} color="#9CA3AF" />
