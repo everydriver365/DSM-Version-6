@@ -6,6 +6,7 @@ import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { BottomSheet } from "@/components/dsm/BottomSheet";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { reverseGeocode } from "@/lib/geocode.functions";
 
 export const Route = createFileRoute("/coverage-areas")({
   head: () => ({
@@ -562,10 +563,21 @@ function AreaEditor({
       return;
     }
     setSaving(true);
+    let finalOutcodes = outcodes;
+    if (finalOutcodes.length === 0 && lat != null && lng != null) {
+      try {
+        const result = (await reverseGeocode({ data: { lat, lng } })) as { postcode?: string } | null;
+        const derivedOutcode = result?.postcode?.split(" ")[0]?.toUpperCase();
+        if (derivedOutcode) finalOutcodes = [derivedOutcode];
+      } catch (e) {
+        console.warn("[coverage-areas] auto-derive outcode failed", e);
+        // non-fatal — area still saves without an outcode, same as current behaviour
+      }
+    }
     await onSave({
       id: initial?.id,
       area_name: areaName.trim(),
-      postcode_outcodes: outcodes,
+      postcode_outcodes: finalOutcodes,
       centre_lat: lat,
       centre_lng: lng,
       radius_miles: radius,
