@@ -403,6 +403,8 @@ function PupilDetailPage() {
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [liveOwed, setLiveOwed] = useState<number | null>(null);
   const [balance, setBalance] = useState<number>(0);
+  const [totalCost, setTotalCost] = useState<number>(0);
+  const [totalPaid, setTotalPaid] = useState<number>(0);
   const [paymentHistory, setPaymentHistory] = useState<
     { id: string; lesson_id: string | null; lesson_cost: number | null; payment_method: string | null; created_at: string; notes: string | null }[]
   >([]);
