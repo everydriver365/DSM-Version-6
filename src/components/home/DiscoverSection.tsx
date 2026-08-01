@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import {
-  IconPlayerPlay,
-  IconBroadcast,
-  IconChevronRight,
-} from "@tabler/icons-react";
+import { IconPlayerPlay, IconBroadcast, IconChevronRight } from "@tabler/icons-react";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -14,7 +10,6 @@ const RED = "#CC2229";
 const HAIRLINE = "#E1E7EF";
 const MUTED = "#8A94A3";
 const FONT = "Poppins, Inter, sans-serif";
-
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -64,7 +59,6 @@ function isLiveNow(s: LiveItem) {
   return now >= start && now < end;
 }
 
-
 function firstImage(v: string[] | string | null): string | null {
   if (!v) return null;
   if (Array.isArray(v)) return v[0] ?? null;
@@ -84,13 +78,6 @@ function youtubeThumb(url: string | null | undefined): string | null {
   );
   return m ? `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg` : null;
 }
-
-
-
-
-
-
-
 
 export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {}) {
   const navigate = useNavigate();
@@ -156,10 +143,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   });
 
   const playable = learn.filter((v) => !!v.url);
-
-
-
-
 
   const fmtTimeDay = (d: string, t: string) => {
     const ms = startMs(d, t);
@@ -339,10 +322,17 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     />
   );
 
-
   return (
     <div style={{ padding: "0 0 22px", fontFamily: FONT }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, margin: "16px 0 8px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 8,
+          margin: "16px 0 8px",
+        }}
+      >
         <SectionHeader style={{ margin: 0 }}>Discover</SectionHeader>
         <button
           type="button"
@@ -366,11 +356,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         </button>
       </div>
 
-
       <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}`}</style>
 
       <div className="dsm-discover-scroll" style={stripStyle}>
-
         {(() => {
           const marketCard = (m: MarketItem) => {
             const img = firstImage(m.image_urls);
@@ -416,7 +404,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     <div style={{ minWidth: 0, overflow: "hidden" }}>
                       <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>{amount}</span>
                       {unit && (
-                        <span style={{ fontSize: 11, color: "#6B7A90", marginLeft: 1 }}>{unit}</span>
+                        <span style={{ fontSize: 11, color: "#6B7A90", marginLeft: 1 }}>
+                          {unit}
+                        </span>
                       )}
                     </div>
                     <span
@@ -440,14 +430,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             );
           };
 
-
           const nodes: React.ReactNode[] = market.map((m) => marketCard(m));
           nodes.push(
-            <div
-              key="scroll-spacer"
-              aria-hidden="true"
-              style={{ width: 20, flexShrink: 0 }}
-            />
+            <div key="scroll-spacer" aria-hidden="true" style={{ width: 20, flexShrink: 0 }} />,
           );
           return nodes;
         })()}
@@ -478,17 +463,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     height: 88,
-                    background: s.image_url
-                      ? `${NAVY} url(${s.image_url}) center/cover`
-                      : NAVY,
+                    background: s.image_url ? `${NAVY} url(${s.image_url}) center/cover` : NAVY,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  {!s.image_url && (
-                    <IconBroadcast size={28} color="#FFFFFF" stroke={1.9} />
-                  )}
+                  {!s.image_url && <IconBroadcast size={28} color="#FFFFFF" stroke={1.9} />}
                 </div>
                 <div
                   style={{
@@ -538,11 +519,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               </div>
             );
           })()}
-          <div
-            key="live-spacer"
-            aria-hidden="true"
-            style={{ width: 20, flexShrink: 0 }}
-          />
+          <div key="live-spacer" aria-hidden="true" style={{ width: 20, flexShrink: 0 }} />
         </div>
       )}
 
@@ -570,17 +547,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     height: 88,
-                    background: thumb
-                      ? `#EEF2F7 url(${thumb}) center/cover`
-                      : "#EEF2F7",
+                    background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  {!thumb && (
-                    <IconPlayerPlay size={28} color={MUTED} stroke={2} />
-                  )}
+                  {!thumb && <IconPlayerPlay size={28} color={MUTED} stroke={2} />}
                 </div>
                 <div
                   style={{
@@ -624,20 +597,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               </div>
             );
           })()}
-          <div
-            key="learn-spacer"
-            aria-hidden="true"
-            style={{ width: 20, flexShrink: 0 }}
-          />
+          <div key="learn-spacer" aria-hidden="true" style={{ width: 20, flexShrink: 0 }} />
         </div>
       )}
-
-
-
-
     </div>
   );
 }
-
 
 export default DiscoverSection;
