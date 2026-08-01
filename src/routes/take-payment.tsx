@@ -4,6 +4,7 @@ import { ChevronLeft, Delete, QrCode, CreditCard, Banknote, Share2, Copy, X, Cir
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import { recordPayment, recordPaymentWithPackage } from "@/lib/payments";
 
 const RYFT_PUBLIC_KEY =
   "pk_sandbox_QpmgBnWSyZXGthN4EtZy6XIXYu+oRRkEUeceUFKLrXS5zmRA7XWBrkAdD8E6FgTn";
