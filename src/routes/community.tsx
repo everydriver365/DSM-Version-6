@@ -342,6 +342,19 @@ function CommunityPage() {
         name: (instructor as any)?.name ?? null,
         profile_image_url: (instructor as any)?.profile_image_url ?? null,
       });
+
+      // Coverage areas — alerts should span every area the instructor works, not just home
+      const { data: coverageAreas } = await supabase
+        .from("instructor_coverage_areas")
+        .select("postcode_outcodes, centre_lat, centre_lng")
+        .eq("instructor_id", u.id);
+      const outcodesFromCoverage = ((coverageAreas ?? []) as any[])
+        .flatMap((a) => a.postcode_outcodes ?? [])
+        .map((o: string) => o.trim().toUpperCase())
+        .filter(Boolean);
+      // Home outcode always included as a fallback, even when coverage areas exist.
+      const allOutcodes = Array.from(new Set([outcode, ...outcodesFromCoverage].filter(Boolean))) as string[];
+      setCoverageOutcodes(allOutcodes);
     })();
   }, []);
 
