@@ -570,7 +570,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       gap: 5,
                     }}
                   >
-                    <span className={nowLive ? "dsm-live-pulse" : undefined}>
+                    <span
+                      className={nowLive ? "dsm-live-pulse" : undefined}
+                      style={{ display: "inline-flex" }}
+                    >
                       <Dot size={6} />
                     </span>
                     <span>Live · {fmtTimeDay(s.session_date, s.session_time)}</span>
