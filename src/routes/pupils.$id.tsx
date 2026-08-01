@@ -4815,8 +4815,16 @@ function PupilDetailPage() {
         onSent={() => setPaymentHistoryRefresh((v) => v + 1)}
       />
 
-
-
+      <PricingPaymentSheet
+        open={pricingSheetOpen}
+        onClose={() => setPricingSheetOpen(false)}
+        pupilId={id}
+        instructorId={userId ?? ''}
+        onSaved={() => {
+          setPricingSheetOpen(false);
+          setPaymentHistoryRefresh(r => r + 1);
+        }}
+      />
 
       <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
       </div>
