@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { reverseGeocode } from "@/lib/geocode.functions";
 import { IconBell, IconBellOff } from "@tabler/icons-react";
@@ -556,17 +556,6 @@ function AlertsTab({
           </div>
           {myAlerts.map((a) => {
             const cfg = TYPE_CONFIG[a.alert_type] ?? TYPE_CONFIG.other;
-            const alertGradient: Record<string, string> = {
-              roadworks: "linear-gradient(135deg, #F5A623 0%, #D97706 100%)",
-              heavy_traffic: "linear-gradient(135deg, #F5A623 0%, #D97706 100%)",
-              road_closure: "linear-gradient(135deg, #E5484D 0%, #A81B21 100%)",
-              hazard: "linear-gradient(135deg, #E5484D 0%, #A81B21 100%)",
-              test_centre_busy: "linear-gradient(135deg, #E5484D 0%, #A81B21 100%)",
-              test_centre_delay: "linear-gradient(135deg, #E5484D 0%, #A81B21 100%)",
-              examiner_tip: "linear-gradient(135deg, #8B7CF6 0%, #6B4FD6 100%)",
-              other: "linear-gradient(135deg, rgba(107,114,128,0.55) 0%, rgba(107,114,128,0.85) 100%)",
-            };
-            const chipGradient = alertGradient[a.alert_type] ?? alertGradient.other;
             return (
               <div key={a.id} style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
                 <div onClick={() => setSelectedAlert(a)} style={{
@@ -584,13 +573,12 @@ function AlertsTab({
                     height: 38,
                     borderRadius: 12,
                     flexShrink: 0,
-                    background: chipGradient,
-                    boxShadow: `0 3px 8px ${cfg.colour}40`,
+                    background: "transparent",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}>
-                    <cfg.Icon size={16} color="white" strokeWidth={2.2} />
+                    <AlertSignIcon type={a.alert_type} size={32} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}>
                     <div style={{
@@ -861,7 +849,6 @@ function AlertCard({
   alert: Alert; userId: string | null; onUpvote: (a: Alert) => void; onSelect?: (a: Alert) => void; commentCount: number;
 }) {
   const cfg = TYPE_CONFIG[alert.alert_type] ?? TYPE_CONFIG.other;
-  const Icon = cfg.Icon;
   const alreadyUpvoted = !!userId && (alert.upvoted_by ?? []).includes(userId);
   const reporter = firstName(alert.instructors?.name);
 
@@ -872,10 +859,10 @@ function AlertCard({
     }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
         <div style={{
-          width: 28, height: 28, borderRadius: 8, background: cfg.bg,
+          width: 28, height: 28, borderRadius: 8, background: "transparent",
           display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
         }}>
-          <Icon size={14} color={cfg.colour} />
+          <AlertSignIcon type={alert.alert_type} size={28} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{
