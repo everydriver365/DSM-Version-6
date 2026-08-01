@@ -390,15 +390,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       </div>
 
 
-      <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}.dsm-live-carousel::-webkit-scrollbar{display:none}.dsm-learn-carousel::-webkit-scrollbar{display:none}`}</style>
+      <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}@keyframes dsmLivePulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.35}100%{transform:scale(1);opacity:1}}.dsm-live-pulse{animation:dsmLivePulse 1.4s ease-in-out infinite}`}</style>
 
 
       <div className="dsm-discover-scroll" style={stripStyle}>
 
         {(() => {
-          const marketCard = (m: MarketItem) => {
-            const img = firstImage(m.image_urls);
+          const marketCard = (m: MarketItem, i: number) => {
             const [amount, unit] = splitPrice(priceLabel(m));
+            const ribbon = ribbonLabel(m);
             return (
               <div
                 key={`market-${m.id}`}
@@ -410,53 +410,112 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     params: { listingId: m.id } as never,
                   })
                 }
-                style={cardShell}
+                style={{ ...cardShell, background: GRADIENTS[i % 3] }}
               >
                 <div
+                  aria-hidden="true"
                   style={{
-                    height: 88,
-                    background: img ? `#EEF2F7 url(${img}) center/cover` : "#EEF2F7",
+                    position: "absolute",
+                    top: -40,
+                    right: -40,
+                    width: 120,
+                    height: 120,
+                    borderRadius: "50%",
+                    background: "rgba(255,255,255,0.08)",
                   }}
                 />
+                {ribbon && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 11,
+                      right: -30,
+                      transform: "rotate(40deg)",
+                      background: "#FFFFFF",
+                      color: NAVY,
+                      fontSize: 9,
+                      fontWeight: 800,
+                      letterSpacing: "0.04em",
+                      textTransform: "uppercase",
+                      padding: "3px 32px",
+                    }}
+                  >
+                    {ribbon}
+                  </div>
+                )}
                 <div
                   style={{
-                    padding: "10px 12px 12px",
+                    position: "relative",
+                    padding: 12,
                     flex: 1,
                     display: "flex",
                     flexDirection: "column",
                     gap: 8,
                   }}
                 >
+                  <div
+                    style={{
+                      width: 34,
+                      height: 34,
+                      borderRadius: 10,
+                      background: "rgba(255,255,255,0.16)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 17,
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    {categoryIcon(m)}
+                  </div>
                   <div style={cardTitle}>{m.title}</div>
                   <div
                     style={{
                       marginTop: "auto",
                       display: "flex",
-                      alignItems: "center",
+                      alignItems: "flex-end",
                       justifyContent: "space-between",
                       gap: 6,
                     }}
                   >
                     <div style={{ minWidth: 0, overflow: "hidden", whiteSpace: "nowrap" }}>
-                      <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>{amount}</span>
+                      <span
+                        style={{
+                          fontSize: 26,
+                          fontWeight: 800,
+                          color: "#FFFFFF",
+                          letterSpacing: "-0.01em",
+                        }}
+                      >
+                        {amount}
+                      </span>
                       {unit && (
-                        <span style={{ fontSize: 11, color: "#6B7A90", marginLeft: 1 }}>{unit}</span>
+                        <span
+                          style={{
+                            fontSize: 11,
+                            fontWeight: 600,
+                            color: "#FFFFFF",
+                            opacity: 0.7,
+                            marginLeft: 1,
+                          }}
+                        >
+                          {unit}
+                        </span>
                       )}
                     </div>
                     <span
                       style={{
-                        width: 22,
-                        height: 22,
+                        width: 28,
+                        height: 28,
                         borderRadius: "50%",
-                        background: "#FFFFFF",
-                        border: `1px solid ${HAIRLINE}`,
+                        background: "rgba(255,255,255,0.2)",
                         display: "inline-flex",
                         alignItems: "center",
                         justifyContent: "center",
                         flexShrink: 0,
                       }}
                     >
-                      <IconChevronRight size={13} stroke={2.2} color={NAVY} />
+                      <IconChevronRight size={15} stroke={2.2} color="#FFFFFF" />
                     </span>
                   </div>
                 </div>
@@ -465,7 +524,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           };
 
 
-          const nodes: React.ReactNode[] = market.map((m) => marketCard(m));
+          const nodes: React.ReactNode[] = market.map((m, i) => marketCard(m, i));
           nodes.push(
             <div
               key="scroll-spacer"
@@ -476,6 +535,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           return nodes;
         })()}
       </div>
+
 
       {/* DSM Live — one event visible, rest horizontally scrollable */}
       {liveSorted.length > 0 && (
