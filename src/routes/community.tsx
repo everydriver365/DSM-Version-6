@@ -54,6 +54,14 @@ type Alert = {
   instructors?: { name: string | null } | null;
 };
 
+type AlertComment = {
+  id: string;
+  body: string;
+  created_at: string;
+  instructor_id: string;
+  instructors: { name: string | null } | null;
+};
+
 type ChatRoom = { id: string; area_name: string; outcode: string; instructor_count?: number };
 type ChatMessage = {
   id: string;
