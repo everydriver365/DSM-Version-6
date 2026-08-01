@@ -76,6 +76,7 @@ type Alert = {
   is_active: boolean;
   expires_at: string;
   created_at: string;
+  source?: 'manual' | 'tomtom';
   instructors?: { name: string | null } | null;
 };
 
