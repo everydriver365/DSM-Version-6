@@ -508,6 +508,8 @@ function AlertsTab({
     () => alerts.filter((a) => a.instructor_id !== userId),
     [alerts, userId],
   );
+  const instructorReportedCount = otherAlerts.filter((a) => a.source !== "tomtom").length;
+  const officialCount = otherAlerts.filter((a) => a.source === "tomtom").length;
 
   const handleUpvote = async (alert: Alert) => {
     if (!userId) return;
