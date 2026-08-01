@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { reverseGeocode } from "@/lib/geocode.functions";
 import { IconBell, IconBellOff } from "@tabler/icons-react";
@@ -175,7 +175,99 @@ function loadGoogleMaps(): Promise<void> {
   });
 }
 
+function AlertSignIcon({ type, size = 28 }: { type: string; size?: number }) {
+  const warning = (children: React.ReactNode) => (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      style={{ display: "block", filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.08))" }}
+    >
+      <path
+        d="M12 3 L21 20 H3 Z"
+        fill="white"
+        stroke="#C8102E"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+      {children}
+    </svg>
+  );
 
+  switch (type) {
+    case "roadworks":
+      return warning(
+        <g fill="black">
+          <rect x="11" y="8" width="2" height="5" rx="0.5" />
+          <path d="M9 13 h6 l-1 4 h-4 z" />
+        </g>
+      );
+    case "road_closure":
+      return warning(<rect x="5" y="12" width="14" height="3" rx="0.5" fill="black" />);
+    case "heavy_traffic":
+      return warning(
+        <g fill="black">
+          <rect x="5" y="9" width="14" height="2" rx="0.5" />
+          <rect x="6" y="12" width="12" height="2" rx="0.5" />
+          <rect x="5" y="15" width="14" height="2" rx="0.5" />
+        </g>
+      );
+    case "hazard":
+    case "test_centre_busy":
+      return warning(
+        <g fill="black">
+          <rect x="11" y="8" width="2" height="8" rx="0.5" />
+          <circle cx="12" cy="18" r="1.5" />
+        </g>
+      );
+    case "test_centre_delay":
+      return warning(
+        <g fill="none" stroke="black" strokeWidth="1.5" strokeLinecap="round">
+          <circle cx="12" cy="13" r="4.5" />
+          <path d="M12 9.5 V13 L14 14.5" />
+        </g>
+      );
+    case "examiner_tip":
+      return (
+        <svg
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          style={{ display: "block", filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.08))" }}
+        >
+          <rect x="3" y="3" width="18" height="18" rx="2" fill="#005EB8" />
+          <rect x="11" y="7" width="2" height="2" rx="0.5" fill="white" />
+          <rect x="11" y="11" width="2" height="8" rx="0.5" fill="white" />
+        </svg>
+      );
+    default:
+      return (
+        <svg
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          style={{ display: "block", filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.08))" }}
+        >
+          <circle cx="12" cy="12" r="10" fill="#9CA3AF" />
+          <text
+            x="12"
+            y="16"
+            textAnchor="middle"
+            fill="white"
+            fontSize="11"
+            fontWeight="700"
+            fontFamily="Inter, system-ui, sans-serif"
+          >
+            ?
+          </text>
+        </svg>
+      );
+  }
+}
 
 function CommunityPage() {
   const navigate = useNavigate();
@@ -556,17 +648,6 @@ function AlertsTab({
           </div>
           {myAlerts.map((a) => {
             const cfg = TYPE_CONFIG[a.alert_type] ?? TYPE_CONFIG.other;
-            const alertGradient: Record<string, string> = {
-              roadworks: "linear-gradient(135deg, #F5A623 0%, #D97706 100%)",
-              heavy_traffic: "linear-gradient(135deg, #F5A623 0%, #D97706 100%)",
-              road_closure: "linear-gradient(135deg, #E5484D 0%, #A81B21 100%)",
-              hazard: "linear-gradient(135deg, #E5484D 0%, #A81B21 100%)",
-              test_centre_busy: "linear-gradient(135deg, #E5484D 0%, #A81B21 100%)",
-              test_centre_delay: "linear-gradient(135deg, #E5484D 0%, #A81B21 100%)",
-              examiner_tip: "linear-gradient(135deg, #8B7CF6 0%, #6B4FD6 100%)",
-              other: "linear-gradient(135deg, rgba(107,114,128,0.55) 0%, rgba(107,114,128,0.85) 100%)",
-            };
-            const chipGradient = alertGradient[a.alert_type] ?? alertGradient.other;
             return (
               <div key={a.id} style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
                 <div onClick={() => setSelectedAlert(a)} style={{
@@ -584,13 +665,12 @@ function AlertsTab({
                     height: 38,
                     borderRadius: 12,
                     flexShrink: 0,
-                    background: chipGradient,
-                    boxShadow: `0 3px 8px ${cfg.colour}40`,
+                    background: "transparent",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}>
-                    <cfg.Icon size={16} color="white" strokeWidth={2.2} />
+                    <AlertSignIcon type={a.alert_type} size={32} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}>
                     <div style={{
@@ -861,7 +941,6 @@ function AlertCard({
   alert: Alert; userId: string | null; onUpvote: (a: Alert) => void; onSelect?: (a: Alert) => void; commentCount: number;
 }) {
   const cfg = TYPE_CONFIG[alert.alert_type] ?? TYPE_CONFIG.other;
-  const Icon = cfg.Icon;
   const alreadyUpvoted = !!userId && (alert.upvoted_by ?? []).includes(userId);
   const reporter = firstName(alert.instructors?.name);
 
@@ -872,10 +951,10 @@ function AlertCard({
     }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
         <div style={{
-          width: 28, height: 28, borderRadius: 8, background: cfg.bg,
+          width: 28, height: 28, borderRadius: 8, background: "transparent",
           display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
         }}>
-          <Icon size={14} color={cfg.colour} />
+          <AlertSignIcon type={alert.alert_type} size={28} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{
