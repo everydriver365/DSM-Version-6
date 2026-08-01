@@ -5,6 +5,7 @@ import { Award, BarChart3, BookOpen, Calendar, Camera, Car, ChevronDown, Chevron
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { TakePaymentSheet } from "@/components/payments/TakePaymentSheet";
+import { PricingPaymentSheet } from "@/components/payments/PricingPaymentSheet";
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
@@ -416,6 +417,7 @@ function PupilDetailPage() {
   const [sendMessageOpen, setSendMessageOpen] = useState(false);
   const [sendMessagePupilId, setSendMessagePupilId] = useState<string | undefined>();
   const [takePaymentPupilId, setTakePaymentPupilId] = useState<string | undefined>();
+  const [pricingSheetOpen, setPricingSheetOpen] = useState(false);
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
   const [instructorRate, setInstructorRate] = useState<number | null>(null);
   const [instructorBufferAfter, setInstructorBufferAfter] = useState<number | null>(null);
