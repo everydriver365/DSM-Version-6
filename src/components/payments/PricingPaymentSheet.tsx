@@ -182,7 +182,9 @@ export function PricingPaymentSheet({
   useEffect(() => {
     if (!open || typeof window === "undefined") return;
     window.dispatchEvent(new Event("dsm-sheet-open"));
-    return () => window.dispatchEvent(new Event("dsm-sheet-close"));
+    return () => {
+      window.dispatchEvent(new Event("dsm-sheet-close"));
+    };
   }, [open]);
 
   const handleClose = useCallback(() => {
