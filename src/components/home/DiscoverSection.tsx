@@ -453,10 +453,10 @@ export function DiscoverSection() {
         })()}
       </div>
 
-      {/* DSM Live — swipable full-width rows */}
+      {/* DSM Live — grouped rows */}
       {liveSorted.length > 0 && (
-        <div className="dsm-discover-scroll" style={{ ...stripStyle, marginTop: 10 }}>
-          {liveSorted.map((s) => {
+        <div style={listShell}>
+          {liveSorted.map((s, idx) => {
             const nowLive = isLiveNow(s);
             const open = () =>
               navigate({
@@ -472,43 +472,35 @@ export function DiscoverSection() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") open();
                 }}
-                style={rowShell}
+                style={listRow(idx === liveSorted.length - 1)}
               >
-                <div style={{ position: "relative", flexShrink: 0 }}>
-                  <div
-                    style={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: 12,
-                      background: s.image_url
-                        ? `${NAVY} url(${s.image_url}) center/cover`
-                        : NAVY,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {!s.image_url && <IconBroadcast size={20} color="#FFFFFF" stroke={1.9} />}
-                  </div>
-                  {nowLive && (
-                    <span
-                      style={{
-                        position: "absolute",
-                        top: -3,
-                        right: -3,
-                        width: 10,
-                        height: 10,
-                        borderRadius: "50%",
-                        background: RED,
-                        border: "2px solid #FFFFFF",
-                      }}
-                    />
-                  )}
+                <div
+                  style={{
+                    ...thumbStyle,
+                    background: s.image_url
+                      ? `${NAVY} url(${s.image_url}) center/cover`
+                      : NAVY,
+                  }}
+                >
+                  {!s.image_url && <IconBroadcast size={20} color="#FFFFFF" stroke={1.9} />}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={rowTitle}>{s.title}</div>
-                  <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
-                    Live · {fmtTimeDay(s.session_date, s.session_time)}
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    {unreadIds.includes(s.id) && <Dot size={8} />}
+                    <div style={rowTitle}>{s.title}</div>
+                  </div>
+                  <div
+                    style={{
+                      marginTop: 2,
+                      fontSize: 11,
+                      color: "#6B7A90",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 5,
+                    }}
+                  >
+                    {nowLive && <Dot size={6} />}
+                    <span>Live · {fmtTimeDay(s.session_date, s.session_time)}</span>
                   </div>
                 </div>
                 <button
@@ -535,13 +527,12 @@ export function DiscoverSection() {
               </div>
             );
           })}
-          <div aria-hidden="true" style={{ width: 20, flexShrink: 0 }} />
         </div>
       )}
 
-      {/* DSM Learn — swipable full-width rows */}
+      {/* DSM Learn — grouped rows */}
       {playable.length > 0 && (
-        <div className="dsm-discover-scroll" style={{ ...stripStyle, marginTop: 10 }}>
+        <div style={listShell}>
           {playable.map((v, i) => {
             const thumb = v.thumbnail_url || youtubeThumb(v.url);
             const open = () => {
@@ -557,24 +548,21 @@ export function DiscoverSection() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") open();
                 }}
-                style={rowShell}
+                style={listRow(i === playable.length - 1)}
               >
                 <div
                   style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 12,
-                    flexShrink: 0,
+                    ...thumbStyle,
                     background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
                   }}
                 >
                   {!thumb && <IconPlayerPlay size={18} color={MUTED} stroke={2} />}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={rowTitle}>{v.title}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    {v.id && unreadIds.includes(v.id) && <Dot size={8} />}
+                    <div style={rowTitle}>{v.title}</div>
+                  </div>
                   <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
                     {v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}
                   </div>
@@ -583,9 +571,9 @@ export function DiscoverSection() {
               </div>
             );
           })}
-          <div aria-hidden="true" style={{ width: 20, flexShrink: 0 }} />
         </div>
       )}
+
 
 
     </div>
