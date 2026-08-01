@@ -30,6 +30,7 @@ type Listing = {
   tags: string[] | null;
   is_active: boolean;
   is_featured: boolean | null;
+  show_image: boolean | null;
   created_at: string;
   instructor_id: string | null;
   supplier_id: string | null;
@@ -76,6 +77,7 @@ type NewListingDraft = {
   contactType: "website" | "email" | "phone";
   contactValue: string;
   isFeatured: boolean;
+  showImage: boolean;
   isVerified: boolean;
   isActive: boolean;
   images: [string, string, string, string];
@@ -94,6 +96,7 @@ const emptyDraft: NewListingDraft = {
   contactType: "website",
   contactValue: "",
   isFeatured: false,
+  showImage: true,
   isVerified: true,
   isActive: true,
   images: ["", "", "", ""],
@@ -238,6 +241,7 @@ function AdminListingsPage() {
         contact_type: draft.contactType,
         is_active: draft.isActive,
         is_featured: draft.isFeatured,
+        show_image: draft.showImage,
         is_verified: draft.isVerified,
         listing_type: "supplier",
         image_urls: images,
@@ -337,6 +341,20 @@ function AdminListingsPage() {
         prev.map((x) => (x.id === l.id ? { ...x, is_featured: next } : x)),
       );
       toast.success(next ? "Featured" : "Unfeatured");
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to update");
+    }
+  }
+
+  async function handleToggleShowImage(l: Listing) {
+    try {
+      const next = !l.show_image;
+      await restPatch(l.id, { show_image: next });
+      setListings((prev) =>
+        prev.map((x) => (x.id === l.id ? { ...x, show_image: next } : x)),
+      );
+      toast.success(next ? "Image shown" : "Image hidden");
     } catch (e) {
       console.error(e);
       toast.error("Failed to update");
@@ -723,6 +741,13 @@ function AdminListingsPage() {
                         >
                           {l.is_featured ? "★ Featured" : "Feature this listing"}
                         </button>
+                        <button
+                          type="button"
+                          onClick={() => handleToggleShowImage(l)}
+                          style={ghostBtn}
+                        >
+                          {l.show_image === false ? "Show image" : "Hide image"}
+                        </button>
                       </div>
                     )}
                   </div>
@@ -941,6 +966,7 @@ function SupplierListingSheet({
 
           <Section title="Settings">
             <Toggle label="Featured (show in featured carousel)" value={draft.isFeatured} onChange={(v) => upd("isFeatured", v)} />
+            <Toggle label="Show product image" value={draft.showImage} onChange={(v) => upd("showImage", v)} />
             <Toggle label="Verified badge" value={draft.isVerified} onChange={(v) => upd("isVerified", v)} />
             <Toggle label="Active (publish immediately)" value={draft.isActive} onChange={(v) => upd("isActive", v)} />
           </Section>

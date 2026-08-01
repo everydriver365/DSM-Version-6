@@ -46,6 +46,7 @@ type MarketItem = {
   price_display: string | null;
   price_amount: number | null;
   image_urls: string[] | string | null;
+  show_image?: boolean | null;
   is_featured?: boolean | null;
   created_at?: string | null;
   marketplace_categories?: { name: string | null; slug: string | null } | null;
@@ -127,7 +128,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     (async () => {
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,price_amount,image_urls,is_featured,created_at,marketplace_categories(name,slug)&order=is_featured.desc,created_at.desc&limit=10`,
+          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,price_amount,image_urls,show_image,is_featured,created_at,marketplace_categories(name,slug)&order=is_featured.desc,created_at.desc&limit=10`,
 
           { headers },
         );
@@ -399,6 +400,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           const marketCard = (m: MarketItem, i: number) => {
             const [amount, unit] = splitPrice(priceLabel(m));
             const ribbon = ribbonLabel(m);
+            const photo = m.show_image === false ? null : firstImage(m.image_urls);
             return (
               <div
                 key={`market-${m.id}`}
@@ -410,20 +412,27 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     params: { listingId: m.id } as never,
                   })
                 }
-                style={{ ...cardShell, background: GRADIENTS[i % 3] }}
+                style={{
+                  ...cardShell,
+                  background: photo
+                    ? `linear-gradient(155deg, rgba(11,31,58,0.28) 0%, rgba(11,31,58,0.88) 100%), url(${photo}) center/cover`
+                    : GRADIENTS[i % 3],
+                }}
               >
-                <div
-                  aria-hidden="true"
-                  style={{
-                    position: "absolute",
-                    top: -40,
-                    right: -40,
-                    width: 120,
-                    height: 120,
-                    borderRadius: "50%",
-                    background: "rgba(255,255,255,0.08)",
-                  }}
-                />
+                {!photo && (
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      top: -40,
+                      right: -40,
+                      width: 120,
+                      height: 120,
+                      borderRadius: "50%",
+                      background: "rgba(255,255,255,0.08)",
+                    }}
+                  />
+                )}
                 {ribbon && (
                   <div
                     style={{
@@ -453,21 +462,23 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     gap: 8,
                   }}
                 >
-                  <div
-                    style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius: 10,
-                      background: "rgba(255,255,255,0.16)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 17,
-                      color: "#FFFFFF",
-                    }}
-                  >
-                    {categoryIcon(m)}
-                  </div>
+                  {!photo && (
+                    <div
+                      style={{
+                        width: 34,
+                        height: 34,
+                        borderRadius: 10,
+                        background: "rgba(255,255,255,0.16)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 17,
+                        color: "#FFFFFF",
+                      }}
+                    >
+                      {categoryIcon(m)}
+                    </div>
+                  )}
                   <div style={cardTitle}>{m.title}</div>
                   <div
                     style={{
