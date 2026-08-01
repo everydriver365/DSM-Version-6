@@ -397,7 +397,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       </div>
 
 
-      <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}.dsm-feed-strip::-webkit-scrollbar{display:none}@keyframes dsmLivePulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.35}100%{transform:scale(1);opacity:1}}.dsm-live-pulse{animation:dsmLivePulse 1.4s ease-in-out infinite}`}</style>
+      <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}.dsm-feed-strip::-webkit-scrollbar{display:none}@keyframes dsmLivePulse{0%{opacity:1}50%{opacity:.3}100%{opacity:1}}.dsm-live-pulse{animation:dsmLivePulse 1.4s ease infinite}`}</style>
 
 
       <div className="dsm-discover-scroll" style={stripStyle}>
