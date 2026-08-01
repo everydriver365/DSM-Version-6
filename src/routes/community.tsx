@@ -485,9 +485,11 @@ function AlertsTab({
       .gt("expires_at", new Date().toISOString())
       .order("created_at", { ascending: false });
     const rows = (data ?? []) as Alert[];
-    const filtered = instructorOutcode
-      ? rows.filter((a) => (a.outcode ?? "").toUpperCase() === instructorOutcode)
-      : rows;
+    const filtered = coverageOutcodes.length > 0
+      ? rows.filter((a) => coverageOutcodes.includes((a.outcode ?? "").toUpperCase()))
+      : instructorOutcode
+        ? rows.filter((a) => (a.outcode ?? "").toUpperCase() === instructorOutcode)
+        : rows;
     setAlerts(filtered);
 
     if (filtered.length > 0) {
