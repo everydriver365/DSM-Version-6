@@ -421,7 +421,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 style={{
                   ...cardShell,
                   background: photo
-                    ? `linear-gradient(155deg, rgba(11,31,58,0.28) 0%, rgba(11,31,58,0.88) 100%), url(${photo}) center/cover`
+                    ? `${TINTS[i % 3]}, url(${photo}) center/cover`
                     : GRADIENTS[i % 3],
                 }}
               >
