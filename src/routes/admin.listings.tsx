@@ -30,6 +30,7 @@ type Listing = {
   tags: string[] | null;
   is_active: boolean;
   is_featured: boolean | null;
+  show_image: boolean | null;
   created_at: string;
   instructor_id: string | null;
   supplier_id: string | null;
