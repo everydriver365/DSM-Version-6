@@ -46,6 +46,9 @@ type MarketItem = {
   price_display: string | null;
   price_amount: number | null;
   image_urls: string[] | string | null;
+  is_featured?: boolean | null;
+  created_at?: string | null;
+  marketplace_categories?: { name: string | null; slug: string | null } | null;
 };
 
 function startMs(d: string, t: string) {
@@ -124,7 +127,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     (async () => {
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,price_amount,image_urls&order=is_featured.desc,created_at.desc&limit=10`,
+          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,price_amount,image_urls,is_featured,created_at,marketplace_categories(name,slug)&order=is_featured.desc,created_at.desc&limit=10`,
 
           { headers },
         );
@@ -184,60 +187,51 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     return `${time} ${day}`;
   };
 
-  const StackMedia = ({
-    height,
-    width,
-    front,
-    children,
-    badge,
-  }: {
-    height: number;
-    width?: number;
-    front: React.CSSProperties;
-    children?: React.ReactNode;
-    badge?: React.ReactNode;
-  }) => (
-    <div style={{ position: "relative", height, width, flexShrink: width ? 0 : undefined }}>
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 7,
-          right: 0,
-          height: height - 16,
-          background: "#DCE4EE",
-          borderRadius: 10,
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          top: 12,
-          left: 0,
-          right: 9,
-          bottom: 0,
-          borderRadius: 10,
-          overflow: "hidden",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          ...front,
-        }}
-      >
-        {children}
-      </div>
-      {badge}
-    </div>
-  );
+  const GRADIENTS = [
+    "linear-gradient(155deg, #1877D6 0%, #0B1F3A 100%)",
+    "linear-gradient(155deg, #0B1F3A 0%, #071328 100%)",
+    "linear-gradient(155deg, #CC2229 0%, #7A1418 100%)",
+  ];
+
+  const CATEGORY_ICONS: Record<string, string> = {
+    dashcam: "📹",
+    dashcams: "📹",
+    websites: "🌐",
+    website: "🌐",
+    marketing: "📣",
+    insurance: "🛡️",
+    finance: "💷",
+    vehicles: "🚗",
+    cars: "🚗",
+    training: "🎓",
+    software: "💻",
+    equipment: "🧰",
+    accessories: "🧰",
+  };
+
+  const categoryIcon = (m: MarketItem) => {
+    const slug = (m.marketplace_categories?.slug ?? "").toLowerCase();
+    const name = (m.marketplace_categories?.name ?? "").toLowerCase();
+    return CATEGORY_ICONS[slug] ?? CATEGORY_ICONS[name] ?? "🏷️";
+  };
+
+  const ribbonLabel = (m: MarketItem): string | null => {
+    if (m.is_featured) return "Popular";
+    if (m.created_at) {
+      const age = Date.now() - new Date(m.created_at).getTime();
+      if (age >= 0 && age < 14 * 24 * 60 * 60 * 1000) return "New";
+    }
+    return null;
+  };
 
   const cardShell: React.CSSProperties = {
-    width: 168,
-    minWidth: 168,
+    position: "relative",
+    width: 158,
+    minWidth: 158,
+    height: 172,
     flexShrink: 0,
     flexGrow: 0,
-    background: "#FFFFFF",
-    border: `1px solid ${HAIRLINE}`,
-    borderRadius: 12,
+    borderRadius: 18,
     overflow: "hidden",
     cursor: "pointer",
     fontFamily: FONT,
@@ -248,16 +242,17 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   };
 
   const cardTitle: React.CSSProperties = {
-    fontSize: 13.5,
-    fontWeight: 600,
-    color: NAVY,
+    fontSize: 13,
+    fontWeight: 700,
+    color: "#FFFFFF",
     lineHeight: 1.25,
-    height: 34,
+    maxWidth: "85%",
     display: "-webkit-box",
     WebkitLineClamp: 2,
     WebkitBoxOrient: "vertical",
     overflow: "hidden",
   };
+
 
   const priceLabel = (m: MarketItem) => {
     const raw = (m.price_display ?? "").trim();
@@ -293,30 +288,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     padding: "0 0 4px",
   };
 
-  const carouselStyle: React.CSSProperties = {
-    display: "flex",
-    flexWrap: "nowrap",
-    overflowX: "auto",
-    WebkitOverflowScrolling: "touch",
-    scrollSnapType: "x mandatory",
-    scrollPadding: "0px",
-    overscrollBehaviorX: "contain",
-    scrollbarWidth: "none",
-    msOverflowStyle: "none",
-  };
-
-  const tileStyle: React.CSSProperties = {
-    flex: "0 0 100%",
-    width: "100%",
-    scrollSnapAlign: "start",
-    scrollSnapStop: "always",
-  };
 
   const listShell: React.CSSProperties = {
     marginTop: 10,
     background: "#FFFFFF",
     border: `1px solid ${HAIRLINE}`,
-    borderRadius: 12,
+    borderRadius: 16,
+    boxShadow: "0 4px 16px rgba(11,31,58,0.08)",
     overflow: "hidden",
     fontFamily: FONT,
   };
@@ -394,15 +372,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       </div>
 
 
-      <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}.dsm-live-carousel::-webkit-scrollbar{display:none}.dsm-learn-carousel::-webkit-scrollbar{display:none}`}</style>
+      <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}@keyframes dsmLivePulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.35}100%{transform:scale(1);opacity:1}}.dsm-live-pulse{animation:dsmLivePulse 1.4s ease-in-out infinite}`}</style>
 
 
       <div className="dsm-discover-scroll" style={stripStyle}>
 
         {(() => {
-          const marketCard = (m: MarketItem) => {
-            const img = firstImage(m.image_urls);
+          const marketCard = (m: MarketItem, i: number) => {
             const [amount, unit] = splitPrice(priceLabel(m));
+            const ribbon = ribbonLabel(m);
             return (
               <div
                 key={`market-${m.id}`}
@@ -414,53 +392,112 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     params: { listingId: m.id } as never,
                   })
                 }
-                style={cardShell}
+                style={{ ...cardShell, background: GRADIENTS[i % 3] }}
               >
                 <div
+                  aria-hidden="true"
                   style={{
-                    height: 88,
-                    background: img ? `#EEF2F7 url(${img}) center/cover` : "#EEF2F7",
+                    position: "absolute",
+                    top: -40,
+                    right: -40,
+                    width: 120,
+                    height: 120,
+                    borderRadius: "50%",
+                    background: "rgba(255,255,255,0.08)",
                   }}
                 />
+                {ribbon && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 11,
+                      right: -30,
+                      transform: "rotate(40deg)",
+                      background: "#FFFFFF",
+                      color: NAVY,
+                      fontSize: 9,
+                      fontWeight: 800,
+                      letterSpacing: "0.04em",
+                      textTransform: "uppercase",
+                      padding: "3px 32px",
+                    }}
+                  >
+                    {ribbon}
+                  </div>
+                )}
                 <div
                   style={{
-                    padding: "10px 12px 12px",
+                    position: "relative",
+                    padding: 12,
                     flex: 1,
                     display: "flex",
                     flexDirection: "column",
                     gap: 8,
                   }}
                 >
+                  <div
+                    style={{
+                      width: 34,
+                      height: 34,
+                      borderRadius: 10,
+                      background: "rgba(255,255,255,0.16)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 17,
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    {categoryIcon(m)}
+                  </div>
                   <div style={cardTitle}>{m.title}</div>
                   <div
                     style={{
                       marginTop: "auto",
                       display: "flex",
-                      alignItems: "center",
+                      alignItems: "flex-end",
                       justifyContent: "space-between",
                       gap: 6,
                     }}
                   >
                     <div style={{ minWidth: 0, overflow: "hidden", whiteSpace: "nowrap" }}>
-                      <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>{amount}</span>
+                      <span
+                        style={{
+                          fontSize: 26,
+                          fontWeight: 800,
+                          color: "#FFFFFF",
+                          letterSpacing: "-0.01em",
+                        }}
+                      >
+                        {amount}
+                      </span>
                       {unit && (
-                        <span style={{ fontSize: 11, color: "#6B7A90", marginLeft: 1 }}>{unit}</span>
+                        <span
+                          style={{
+                            fontSize: 11,
+                            fontWeight: 600,
+                            color: "#FFFFFF",
+                            opacity: 0.7,
+                            marginLeft: 1,
+                          }}
+                        >
+                          {unit}
+                        </span>
                       )}
                     </div>
                     <span
                       style={{
-                        width: 22,
-                        height: 22,
+                        width: 28,
+                        height: 28,
                         borderRadius: "50%",
-                        background: "#FFFFFF",
-                        border: `1px solid ${HAIRLINE}`,
+                        background: "rgba(255,255,255,0.2)",
                         display: "inline-flex",
                         alignItems: "center",
                         justifyContent: "center",
                         flexShrink: 0,
                       }}
                     >
-                      <IconChevronRight size={13} stroke={2.2} color={NAVY} />
+                      <IconChevronRight size={15} stroke={2.2} color="#FFFFFF" />
                     </span>
                   </div>
                 </div>
@@ -469,7 +506,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           };
 
 
-          const nodes: React.ReactNode[] = market.map((m) => marketCard(m));
+          const nodes: React.ReactNode[] = market.map((m, i) => marketCard(m, i));
           nodes.push(
             <div
               key="scroll-spacer"
@@ -481,130 +518,133 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         })()}
       </div>
 
-      {/* DSM Live — one event visible, rest horizontally scrollable */}
-      {liveSorted.length > 0 && (
+
+      {/* DSM Live + DSM Learn — single merged feed */}
+      {(liveSorted.length > 0 || playable.length > 0) && (
         <div style={listShell}>
-          <div className="dsm-live-carousel" style={carouselStyle}>
-            {liveSorted.map((s, idx) => {
-              const nowLive = isLiveNow(s);
-              const open = () =>
-                navigate({
-                  to: "/dsm-live/$sessionId" as never,
-                  params: { sessionId: s.id } as never,
-                });
-              return (
+          {liveSorted.map((s, idx) => {
+            const nowLive = isLiveNow(s);
+            const last = idx === liveSorted.length - 1 && playable.length === 0;
+            const open = () =>
+              navigate({
+                to: "/dsm-live/$sessionId" as never,
+                params: { sessionId: s.id } as never,
+              });
+            return (
+              <div
+                key={`live-${s.id}`}
+                role="button"
+                tabIndex={0}
+                onClick={open}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") open();
+                }}
+                style={{
+                  ...listRow(last),
+                  borderLeft: `3px solid ${RED}`,
+                }}
+              >
                 <div
-                  key={`live-${s.id}`}
-                  role="button"
-                  tabIndex={0}
-                  onClick={open}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") open();
+                  style={{
+                    ...thumbStyle,
+                    background: s.image_url
+                      ? `${NAVY} url(${s.image_url}) center/cover`
+                      : NAVY,
                   }}
-                  style={{ ...tileStyle, ...listRow(idx === liveSorted.length - 1) }}
                 >
+                  {!s.image_url && <IconBroadcast size={20} color="#FFFFFF" stroke={1.9} />}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    {unreadIds.includes(s.id) && <Dot size={8} />}
+                    <div style={rowTitle}>{s.title}</div>
+                  </div>
                   <div
                     style={{
-                      ...thumbStyle,
-                      background: s.image_url
-                        ? `${NAVY} url(${s.image_url}) center/cover`
-                        : NAVY,
-                    }}
-                  >
-                    {!s.image_url && <IconBroadcast size={20} color="#FFFFFF" stroke={1.9} />}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      {unreadIds.includes(s.id) && <Dot size={8} />}
-                      <div style={rowTitle}>{s.title}</div>
-                    </div>
-                    <div
-                      style={{
-                        marginTop: 2,
-                        fontSize: 11,
-                        color: "#6B7A90",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 5,
-                      }}
-                    >
-                      {nowLive && <Dot size={6} />}
-                      <span>Live · {fmtTimeDay(s.session_date, s.session_time)}</span>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      open();
-                    }}
-                    style={{
-                      background: NAVY,
-                      color: "#FFFFFF",
-                      border: "none",
-                      borderRadius: 999,
-                      padding: "8px 18px",
-                      fontSize: 12,
+                      marginTop: 2,
+                      fontSize: 11,
                       fontWeight: 600,
-                      fontFamily: FONT,
-                      cursor: "pointer",
-                      flexShrink: 0,
+                      color: RED,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 5,
                     }}
                   >
-                    Join
-                  </button>
+                    <span
+                      className={nowLive ? "dsm-live-pulse" : undefined}
+                      style={{ display: "inline-flex" }}
+                    >
+                      <Dot size={6} />
+                    </span>
+                    <span>Live · {fmtTimeDay(s.session_date, s.session_time)}</span>
+                  </div>
                 </div>
-              );
-            })}
-          </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    open();
+                  }}
+                  style={{
+                    background: NAVY,
+                    color: "#FFFFFF",
+                    border: "none",
+                    borderRadius: 999,
+                    padding: "8px 18px",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    fontFamily: FONT,
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                >
+                  Join
+                </button>
+              </div>
+            );
+          })}
+
+          {playable.map((v, i) => {
+            const thumb = v.thumbnail_url || youtubeThumb(v.url);
+            const open = () => {
+              if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
+              else navigate({ to: "/learn" as never });
+            };
+            return (
+              <div
+                key={`learn-${v.id ?? i}`}
+                role="button"
+                tabIndex={0}
+                onClick={open}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") open();
+                }}
+                style={listRow(i === playable.length - 1)}
+              >
+                <div
+                  style={{
+                    ...thumbStyle,
+                    background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
+                  }}
+                >
+                  {!thumb && <IconPlayerPlay size={18} color={MUTED} stroke={2} />}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    {v.id && unreadIds.includes(v.id) && <Dot size={8} />}
+                    <div style={rowTitle}>{v.title}</div>
+                  </div>
+                  <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
+                    {v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}
+                  </div>
+                </div>
+                <IconChevronRight size={20} stroke={2} color={MUTED} />
+              </div>
+            );
+          })}
         </div>
       )}
 
-      {/* DSM Learn — one video visible, rest horizontally scrollable */}
-      {playable.length > 0 && (
-        <div style={listShell}>
-          <div className="dsm-learn-carousel" style={carouselStyle}>
-            {playable.map((v, i) => {
-              const thumb = v.thumbnail_url || youtubeThumb(v.url);
-              const open = () => {
-                if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
-                else navigate({ to: "/learn" as never });
-              };
-              return (
-                <div
-                  key={`learn-${v.id ?? i}`}
-                  role="button"
-                  tabIndex={0}
-                  onClick={open}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") open();
-                  }}
-                  style={{ ...tileStyle, ...listRow(i === playable.length - 1) }}
-                >
-                  <div
-                    style={{
-                      ...thumbStyle,
-                      background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
-                    }}
-                  >
-                    {!thumb && <IconPlayerPlay size={18} color={MUTED} stroke={2} />}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      {v.id && unreadIds.includes(v.id) && <Dot size={8} />}
-                      <div style={rowTitle}>{v.title}</div>
-                    </div>
-                    <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
-                      {v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}
-                    </div>
-                  </div>
-                  <IconChevronRight size={20} stroke={2} color={MUTED} />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
 
 
 
