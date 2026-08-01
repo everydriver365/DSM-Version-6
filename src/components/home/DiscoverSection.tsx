@@ -299,6 +299,24 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     fontFamily: FONT,
   };
 
+  const feedCarousel: React.CSSProperties = {
+    display: "flex",
+    flexWrap: "nowrap",
+    overflowX: "auto",
+    WebkitOverflowScrolling: "touch",
+    scrollSnapType: "x mandatory",
+    overscrollBehaviorX: "contain",
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
+  };
+
+  const feedTile: React.CSSProperties = {
+    flex: "0 0 100%",
+    width: "100%",
+    scrollSnapAlign: "start",
+    scrollSnapStop: "always",
+  };
+
   const listRow = (last: boolean): React.CSSProperties => ({
     display: "flex",
     alignItems: "center",
@@ -372,7 +390,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       </div>
 
 
-      <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}@keyframes dsmLivePulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.35}100%{transform:scale(1);opacity:1}}.dsm-live-pulse{animation:dsmLivePulse 1.4s ease-in-out infinite}`}</style>
+      <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}.dsm-feed-strip::-webkit-scrollbar{display:none}@keyframes dsmLivePulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.35}100%{transform:scale(1);opacity:1}}.dsm-live-pulse{animation:dsmLivePulse 1.4s ease-in-out infinite}`}</style>
 
 
       <div className="dsm-discover-scroll" style={stripStyle}>
@@ -519,129 +537,141 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       </div>
 
 
-      {/* DSM Live + DSM Learn — single merged feed */}
+      {/* DSM Live + DSM Learn — merged card, each section a one-at-a-time swipe strip */}
       {(liveSorted.length > 0 || playable.length > 0) && (
         <div style={listShell}>
-          {liveSorted.map((s, idx) => {
-            const nowLive = isLiveNow(s);
-            const last = idx === liveSorted.length - 1 && playable.length === 0;
-            const open = () =>
-              navigate({
-                to: "/dsm-live/$sessionId" as never,
-                params: { sessionId: s.id } as never,
-              });
-            return (
-              <div
-                key={`live-${s.id}`}
-                role="button"
-                tabIndex={0}
-                onClick={open}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") open();
-                }}
-                style={{
-                  ...listRow(last),
-                  borderLeft: `3px solid ${RED}`,
-                }}
-              >
-                <div
-                  style={{
-                    ...thumbStyle,
-                    background: s.image_url
-                      ? `${NAVY} url(${s.image_url}) center/cover`
-                      : NAVY,
-                  }}
-                >
-                  {!s.image_url && <IconBroadcast size={20} color="#FFFFFF" stroke={1.9} />}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    {unreadIds.includes(s.id) && <Dot size={8} />}
-                    <div style={rowTitle}>{s.title}</div>
-                  </div>
+          {liveSorted.length > 0 && (
+            <div className="dsm-feed-strip" style={feedCarousel}>
+              {liveSorted.map((s) => {
+                const nowLive = isLiveNow(s);
+                const open = () =>
+                  navigate({
+                    to: "/dsm-live/$sessionId" as never,
+                    params: { sessionId: s.id } as never,
+                  });
+                return (
                   <div
+                    key={`live-${s.id}`}
+                    role="button"
+                    tabIndex={0}
+                    onClick={open}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") open();
+                    }}
                     style={{
-                      marginTop: 2,
-                      fontSize: 11,
-                      fontWeight: 600,
-                      color: RED,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 5,
+                      ...feedTile,
+                      ...listRow(true),
+                      borderLeft: `3px solid ${RED}`,
                     }}
                   >
-                    <span
-                      className={nowLive ? "dsm-live-pulse" : undefined}
-                      style={{ display: "inline-flex" }}
+                    <div
+                      style={{
+                        ...thumbStyle,
+                        background: s.image_url
+                          ? `${NAVY} url(${s.image_url}) center/cover`
+                          : NAVY,
+                      }}
                     >
-                      <Dot size={6} />
-                    </span>
-                    <span>Live · {fmtTimeDay(s.session_date, s.session_time)}</span>
+                      {!s.image_url && <IconBroadcast size={20} color="#FFFFFF" stroke={1.9} />}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        {unreadIds.includes(s.id) && <Dot size={8} />}
+                        <div style={rowTitle}>{s.title}</div>
+                      </div>
+                      <div
+                        style={{
+                          marginTop: 2,
+                          fontSize: 11,
+                          fontWeight: 600,
+                          color: RED,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 5,
+                        }}
+                      >
+                        <span
+                          className={nowLive ? "dsm-live-pulse" : undefined}
+                          style={{ display: "inline-flex" }}
+                        >
+                          <Dot size={6} />
+                        </span>
+                        <span>Live · {fmtTimeDay(s.session_date, s.session_time)}</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        open();
+                      }}
+                      style={{
+                        background: NAVY,
+                        color: "#FFFFFF",
+                        border: "none",
+                        borderRadius: 999,
+                        padding: "8px 18px",
+                        fontSize: 12,
+                        fontWeight: 600,
+                        fontFamily: FONT,
+                        cursor: "pointer",
+                        flexShrink: 0,
+                      }}
+                    >
+                      Join
+                    </button>
                   </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    open();
-                  }}
-                  style={{
-                    background: NAVY,
-                    color: "#FFFFFF",
-                    border: "none",
-                    borderRadius: 999,
-                    padding: "8px 18px",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    fontFamily: FONT,
-                    cursor: "pointer",
-                    flexShrink: 0,
-                  }}
-                >
-                  Join
-                </button>
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          )}
 
-          {playable.map((v, i) => {
-            const thumb = v.thumbnail_url || youtubeThumb(v.url);
-            const open = () => {
-              if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
-              else navigate({ to: "/learn" as never });
-            };
-            return (
-              <div
-                key={`learn-${v.id ?? i}`}
-                role="button"
-                tabIndex={0}
-                onClick={open}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") open();
-                }}
-                style={listRow(i === playable.length - 1)}
-              >
-                <div
-                  style={{
-                    ...thumbStyle,
-                    background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
-                  }}
-                >
-                  {!thumb && <IconPlayerPlay size={18} color={MUTED} stroke={2} />}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    {v.id && unreadIds.includes(v.id) && <Dot size={8} />}
-                    <div style={rowTitle}>{v.title}</div>
+          {liveSorted.length > 0 && playable.length > 0 && (
+            <div style={{ height: 1, background: HAIRLINE }} />
+          )}
+
+          {playable.length > 0 && (
+            <div className="dsm-feed-strip" style={feedCarousel}>
+              {playable.map((v, i) => {
+                const thumb = v.thumbnail_url || youtubeThumb(v.url);
+                const open = () => {
+                  if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
+                  else navigate({ to: "/learn" as never });
+                };
+                return (
+                  <div
+                    key={`learn-${v.id ?? i}`}
+                    role="button"
+                    tabIndex={0}
+                    onClick={open}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") open();
+                    }}
+                    style={{ ...feedTile, ...listRow(true) }}
+                  >
+                    <div
+                      style={{
+                        ...thumbStyle,
+                        background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
+                      }}
+                    >
+                      {!thumb && <IconPlayerPlay size={18} color={MUTED} stroke={2} />}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        {v.id && unreadIds.includes(v.id) && <Dot size={8} />}
+                        <div style={rowTitle}>{v.title}</div>
+                      </div>
+                      <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
+                        {v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}
+                      </div>
+                    </div>
+                    <IconChevronRight size={20} stroke={2} color={MUTED} />
                   </div>
-                  <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
-                    {v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}
-                  </div>
-                </div>
-                <IconChevronRight size={20} stroke={2} color={MUTED} />
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 
