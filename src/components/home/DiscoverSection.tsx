@@ -386,7 +386,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       </div>
 
 
-      <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}.dsm-live-carousel::-webkit-scrollbar{display:none}`}</style>
+      <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}.dsm-live-carousel::-webkit-scrollbar{display:none}.dsm-learn-carousel::-webkit-scrollbar{display:none}`}</style>
 
 
       <div className="dsm-discover-scroll" style={stripStyle}>
@@ -552,47 +552,49 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         </div>
       )}
 
-      {/* DSM Learn — grouped rows */}
+      {/* DSM Learn — one video visible, rest horizontally scrollable */}
       {playable.length > 0 && (
         <div style={listShell}>
-          {playable.map((v, i) => {
-            const thumb = v.thumbnail_url || youtubeThumb(v.url);
-            const open = () => {
-              if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
-              else navigate({ to: "/learn" as never });
-            };
-            return (
-              <div
-                key={`learn-${v.id ?? i}`}
-                role="button"
-                tabIndex={0}
-                onClick={open}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") open();
-                }}
-                style={listRow(i === playable.length - 1)}
-              >
+          <div className="dsm-learn-carousel" style={carouselStyle}>
+            {playable.map((v, i) => {
+              const thumb = v.thumbnail_url || youtubeThumb(v.url);
+              const open = () => {
+                if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
+                else navigate({ to: "/learn" as never });
+              };
+              return (
                 <div
-                  style={{
-                    ...thumbStyle,
-                    background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
+                  key={`learn-${v.id ?? i}`}
+                  role="button"
+                  tabIndex={0}
+                  onClick={open}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") open();
                   }}
+                  style={{ ...tileStyle, ...listRow(i === playable.length - 1) }}
                 >
-                  {!thumb && <IconPlayerPlay size={18} color={MUTED} stroke={2} />}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    {v.id && unreadIds.includes(v.id) && <Dot size={8} />}
-                    <div style={rowTitle}>{v.title}</div>
+                  <div
+                    style={{
+                      ...thumbStyle,
+                      background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
+                    }}
+                  >
+                    {!thumb && <IconPlayerPlay size={18} color={MUTED} stroke={2} />}
                   </div>
-                  <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
-                    {v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      {v.id && unreadIds.includes(v.id) && <Dot size={8} />}
+                      <div style={rowTitle}>{v.title}</div>
+                    </div>
+                    <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
+                      {v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}
+                    </div>
                   </div>
+                  <IconChevronRight size={20} stroke={2} color={MUTED} />
                 </div>
-                <IconChevronRight size={20} stroke={2} color={MUTED} />
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
 
