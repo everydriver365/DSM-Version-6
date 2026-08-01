@@ -344,6 +344,7 @@ function AdminListingsPage() {
     } catch (e) {
       console.error(e);
       toast.error("Failed to update");
+    }
   }
 
   async function handleToggleShowImage(l: Listing) {
@@ -358,7 +359,6 @@ function AdminListingsPage() {
       console.error(e);
       toast.error("Failed to update");
     }
-  }
   }
 
   function startEdit(l: Listing) {
