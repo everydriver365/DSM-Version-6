@@ -61,6 +61,7 @@ import { Route as MockTestsRouteImport } from './routes/mock-tests'
 import { Route as MinisiteRouteImport } from './routes/minisite'
 import { Route as MileageRouteImport } from './routes/mileage'
 import { Route as MessagesRouteImport } from './routes/messages'
+import { Route as MarketplaceTokenPreviewRouteImport } from './routes/marketplace-token-preview'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as ManifestRouteImport } from './routes/manifest'
 import { Route as LoginRouteImport } from './routes/login'
@@ -415,6 +416,11 @@ const MileageRoute = MileageRouteImport.update({
 const MessagesRoute = MessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketplaceTokenPreviewRoute = MarketplaceTokenPreviewRouteImport.update({
+  id: '/marketplace-token-preview',
+  path: '/marketplace-token-preview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MarketplaceRoute = MarketplaceRouteImport.update({
@@ -935,6 +941,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
   '/marketplace': typeof MarketplaceRoute
+  '/marketplace-token-preview': typeof MarketplaceTokenPreviewRoute
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
@@ -1082,6 +1089,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
   '/marketplace': typeof MarketplaceRoute
+  '/marketplace-token-preview': typeof MarketplaceTokenPreviewRoute
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
   '/mock-tests': typeof MockTestsRouteWithChildren
@@ -1230,6 +1238,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/manifest': typeof ManifestRoute
   '/marketplace': typeof MarketplaceRoute
+  '/marketplace-token-preview': typeof MarketplaceTokenPreviewRoute
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
@@ -1380,6 +1389,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manifest'
     | '/marketplace'
+    | '/marketplace-token-preview'
     | '/messages'
     | '/mileage'
     | '/minisite'
@@ -1527,6 +1537,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manifest'
     | '/marketplace'
+    | '/marketplace-token-preview'
     | '/mileage'
     | '/minisite'
     | '/mock-tests'
@@ -1674,6 +1685,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manifest'
     | '/marketplace'
+    | '/marketplace-token-preview'
     | '/messages'
     | '/mileage'
     | '/minisite'
@@ -1824,6 +1836,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ManifestRoute: typeof ManifestRoute
   MarketplaceRoute: typeof MarketplaceRoute
+  MarketplaceTokenPreviewRoute: typeof MarketplaceTokenPreviewRoute
   MessagesRoute: typeof MessagesRouteWithChildren
   MileageRoute: typeof MileageRoute
   MinisiteRoute: typeof MinisiteRoute
@@ -2271,6 +2284,13 @@ declare module '@tanstack/react-router' {
       path: '/messages'
       fullPath: '/messages'
       preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marketplace-token-preview': {
+      id: '/marketplace-token-preview'
+      path: '/marketplace-token-preview'
+      fullPath: '/marketplace-token-preview'
+      preLoaderRoute: typeof MarketplaceTokenPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/marketplace': {
@@ -3095,6 +3115,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ManifestRoute: ManifestRoute,
   MarketplaceRoute: MarketplaceRoute,
+  MarketplaceTokenPreviewRoute: MarketplaceTokenPreviewRoute,
   MessagesRoute: MessagesRouteWithChildren,
   MileageRoute: MileageRoute,
   MinisiteRoute: MinisiteRoute,
@@ -3180,13 +3201,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
