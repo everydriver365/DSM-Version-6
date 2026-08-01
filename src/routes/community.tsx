@@ -516,7 +516,7 @@ function AlertsTab({
       .subscribe();
     return () => { supabase.removeChannel(channel); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, instructorOutcode]);
+  }, [userId, instructorOutcode, coverageOutcodes]);
 
   const myAlerts = useMemo(
     () => alerts.filter((a) => a.instructor_id === userId),
