@@ -741,6 +741,13 @@ function AdminListingsPage() {
                         >
                           {l.is_featured ? "★ Featured" : "Feature this listing"}
                         </button>
+                        <button
+                          type="button"
+                          onClick={() => handleToggleShowImage(l)}
+                          style={ghostBtn}
+                        >
+                          {l.show_image === false ? "Show image" : "Hide image"}
+                        </button>
                       </div>
                     )}
                   </div>
