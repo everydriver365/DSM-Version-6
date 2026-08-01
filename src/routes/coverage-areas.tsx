@@ -237,6 +237,7 @@ function CoverageAreasPage() {
           centre_lng: payload.centre_lng,
           radius_miles: payload.radius_miles,
           is_primary: payload.is_primary,
+          is_nationwide: payload.is_nationwide,
         });
         if (error) throw error;
         toast.success("Coverage area added");
