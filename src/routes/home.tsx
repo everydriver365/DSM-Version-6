@@ -1760,7 +1760,7 @@ function HomePage() {
               .in('alert_id', myAlertIds)
               .order('created_at', { ascending: false });
             if (cancelled) return;
-            const latestByAlert = new Map<string, string>();
+            const latestByAlert: Record<string, string> = {};
             (Array.isArray(comments) ? comments : []).forEach((c: any) => {
               if (c?.alert_id && !latestByAlert.has(c.alert_id)) latestByAlert.set(c.alert_id, c.created_at);
             });
