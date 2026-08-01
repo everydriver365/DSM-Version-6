@@ -623,7 +623,7 @@ function AlertsTab({
     <div style={{ padding: 16, paddingBottom: 100, marginBottom: 80 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
         <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>
-          Alerts near {instructorArea}
+          Alerts near {coverageOutcodes.length > 1 ? "your coverage areas" : instructorArea}
         </div>
         <div style={{ fontSize: 12, color: "#9CA3AF" }}>
           {otherAlerts.length === 0
