@@ -220,9 +220,9 @@ export function TakePaymentSheet({
       instructor_id: instructorId,
       pupil_id: pupilIdForPayment,
       amount: amountPaid,
-      payment_method: methodNorm,
-      payment_date: today,
-      status: "completed",
+      notes: methodNorm,
+      paid_at: now,
+      created_at: now,
     });
     if (payErr) console.error("[TakePaymentSheet] payments insert", payErr);
   }

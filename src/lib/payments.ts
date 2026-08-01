@@ -153,14 +153,14 @@ async function recordPaymentCore(
     if (hErr) console.error("[recordPayment] history insert", hErr);
   }
 
-  // 4. Legacy payments row.
+  // 4) Legacy payments table row for reporting compatibility.
   const { error: payErr } = await supabase.from("payments").insert({
     instructor_id: instructorId,
     pupil_id: pupilId,
     amount,
-    payment_method: method,
-    payment_date: today,
-    status: "completed",
+    notes: `${method}${hoursBought > 0 ? ` — ${hoursBought}h package` : ""}`,
+    paid_at: now,
+    created_at: now,
   });
   if (payErr) console.error("[recordPayment] payments insert", payErr);
 
