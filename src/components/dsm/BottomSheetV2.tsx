@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { X } from "lucide-react";
 
 // ---------------------------------------------------------------------------
@@ -36,6 +36,17 @@ export interface BottomSheetProps {
 }
 
 export function BottomSheet({ title, subtitle, onClose, children, footer }: BottomSheetProps) {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("dsm-sheet-open"));
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("dsm-sheet-close"));
+      }
+    };
+  }, []);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
