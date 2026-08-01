@@ -1631,6 +1631,7 @@ function HomePage() {
   }, []);
   const [activePupilsCount, setActivePupilsCount] = useState(0);
   const [localAlerts, setLocalAlerts] = useState<any[] | null>(null);
+  const [hasUnreadAlertComments, setHasUnreadAlertComments] = useState(false);
   const [localRoom, setLocalRoom] = useState<{ id: string; area_name: string } | null>(null);
   const [localChatLatest, setLocalChatLatest] = useState<{ message: string; created_at: string; instructors: { name: string | null } | null } | null>(null);
   const [instructorArea, setInstructorArea] = useState<string>('your area');
@@ -1736,7 +1737,7 @@ function HomePage() {
 
         let query = supabase
           .from('local_alerts')
-          .select('id, alert_type, description, location_name, upvotes, expires_at, created_at, area, outcode')
+          .select('id, alert_type, description, location_name, upvotes, expires_at, created_at, area, outcode, instructor_id, owner_last_read_at')
           .eq('is_active', true)
           .gt('expires_at', new Date().toISOString())
           .order('upvotes', { ascending: false })
@@ -1747,6 +1748,33 @@ function HomePage() {
         if (error) { setLocalAlerts([]); return; }
         const filtered = Array.isArray(data) ? data : [];
         setLocalAlerts(filtered.slice(0, 3));
+
+        // Unread comment activity on the user's own alerts
+        try {
+          const myAlerts = filtered.filter((a: any) => a?.instructor_id === userId);
+          const myAlertIds = myAlerts.map((a: any) => a.id);
+          if (myAlertIds.length > 0) {
+            const { data: comments } = await supabase
+              .from('alert_comments')
+              .select('alert_id, created_at')
+              .in('alert_id', myAlertIds)
+              .order('created_at', { ascending: false });
+            if (cancelled) return;
+            const latestByAlert: Record<string, string> = {};
+            (Array.isArray(comments) ? comments : []).forEach((c: any) => {
+              if (c?.alert_id && !latestByAlert[c.alert_id]) latestByAlert[c.alert_id] = c.created_at;
+            });
+            const unread = myAlerts.some((a: any) => {
+              const latest = latestByAlert[a.id];
+              if (!latest) return false;
+              if (!a.owner_last_read_at) return true;
+              return new Date(latest).getTime() > new Date(a.owner_last_read_at).getTime();
+            });
+            setHasUnreadAlertComments(unread);
+          } else {
+            setHasUnreadAlertComments(false);
+          }
+        } catch {}
 
         // Local chat room + latest message
         if (outcode) {
@@ -4864,6 +4892,16 @@ function HomePage() {
               }}>
                 {localAlerts.length}
               </div>
+              {hasUnreadAlertComments && (
+                <>
+                  <style>{`@keyframes localIssuePulse{0%{opacity:1}50%{opacity:0.3}100%{opacity:1}}`}</style>
+                  <div style={{
+                    position: 'absolute', bottom: -2, left: -2,
+                    width: 6, height: 6, borderRadius: '50%', background: '#CC2229',
+                    animation: 'localIssuePulse 1.4s ease-in-out infinite',
+                  }} />
+                </>
+              )}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
