@@ -194,6 +194,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     "linear-gradient(155deg, #CC2229 0%, #7A1418 100%)",
   ];
 
+  const TINTS = [
+    "linear-gradient(155deg, rgba(24,119,214,0.62) 0%, rgba(11,31,58,0.8) 100%)",
+    "linear-gradient(155deg, rgba(11,31,58,0.62) 0%, rgba(7,19,40,0.82) 100%)",
+    "linear-gradient(155deg, rgba(204,34,41,0.58) 0%, rgba(122,20,24,0.78) 100%)",
+  ];
+
   const CATEGORY_ICONS: Record<string, string> = {
     dashcam: "📹",
     dashcams: "📹",
