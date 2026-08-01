@@ -46,6 +46,9 @@ type MarketItem = {
   price_display: string | null;
   price_amount: number | null;
   image_urls: string[] | string | null;
+  is_featured?: boolean | null;
+  created_at?: string | null;
+  marketplace_categories?: { name: string | null; slug: string | null } | null;
 };
 
 function startMs(d: string, t: string) {
