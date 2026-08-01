@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { geocodeAddress, reverseGeocodeCoords, reverseGeocodeToOutcode, type GeocodeResult, type ReverseGeocodeResult, type PostcodeLookupResult } from "./geocode.server";
+import { geocodeAddress, reverseGeocodeCoords, reverseGeocodeToOutcode as reverseGeocodeToOutcodeImpl, type GeocodeResult, type ReverseGeocodeResult, type PostcodeLookupResult } from "./geocode.server";
 
 export type { GeocodeResult, ReverseGeocodeResult, PostcodeLookupResult };
 
