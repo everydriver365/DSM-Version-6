@@ -508,7 +508,7 @@ function AlertsTab({
         )
       ) : (
         otherAlerts.map((a) => (
-          <AlertCard key={a.id} alert={a} userId={userId} onUpvote={handleUpvote} />
+          <AlertCard key={a.id} alert={a} userId={userId} onUpvote={handleUpvote} onSelect={setSelectedAlert} />
         ))
       )}
 
