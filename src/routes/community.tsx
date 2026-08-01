@@ -416,7 +416,7 @@ function AlertsTab({
       .select("id, body, created_at, instructor_id, instructors(name)")
       .eq("alert_id", alertId)
       .order("created_at", { ascending: true });
-    setComments((data ?? []) as AlertComment[]);
+    setComments((data ?? []) as unknown as AlertComment[]);
   };
 
   useEffect(() => {
