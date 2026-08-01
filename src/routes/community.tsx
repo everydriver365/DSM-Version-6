@@ -784,7 +784,7 @@ function AlertsTab({
         };
         const metaRows: { label: string; value: string }[] = [
           ...(selectedAlert.location_name ? [{ label: "Location", value: selectedAlert.location_name }] : []),
-          { label: "Reported", value: new Date(selectedAlert.created_at).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) },
+          { label: "Reported", value: selectedAlert.source === 'tomtom' ? "TomTom Traffic" : new Date(selectedAlert.created_at).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) },
           { label: "Expires", value: formatCountdown(selectedAlert.expires_at) },
           { label: "Confirmations", value: String(selectedAlert.upvotes) },
         ];
