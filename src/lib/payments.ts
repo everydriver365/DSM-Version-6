@@ -28,6 +28,8 @@ export interface RecordPaymentInput {
   /** Optional ISO timestamp — used for paid_at and the audit row's created_at.
    *  Defaults to now. Lets callers backdate a payment to a chosen date. */
   createdAt?: string;
+  /** Optional lesson to pay first, before FIFO allocation. */
+  targetLessonId?: string | null;
 }
 
 /** Extended input for the full payments page, where "record payment" can
@@ -83,7 +85,38 @@ async function recordPaymentCore(
   let lessonsFullyPaid = 0;
   let lessonsLeftPartial = 0;
 
-  // 1. Apply to oldest unpaid lessons.
+  // 0. If a specific lesson was targeted, pay that one first.
+  if (input.targetLessonId) {
+    const { data: lRow } = await supabase
+      .from("lessons")
+      .select("amount_due")
+      .eq("id", input.targetLessonId)
+      .maybeSingle();
+    const due = Number((lRow as { amount_due?: number | null } | null)?.amount_due ?? 0);
+    const pay = Math.min(due, remaining);
+    if (pay > 0) {
+      const full = pay >= due;
+      await supabase
+        .from("lessons")
+        .update({
+          payment_status: full ? "paid" : "partial",
+          payment_method: method,
+          paid_at: now,
+          paid_amount: full ? due : pay,
+        })
+        .eq("id", input.targetLessonId);
+      remaining -= pay;
+      if (full) lessonsFullyPaid += 1;
+      else lessonsLeftPartial = 1;
+    } else if (due === 0) {
+      await supabase
+        .from("lessons")
+        .update({ payment_status: "paid", payment_method: method, paid_at: now, paid_amount: 0 })
+        .eq("id", input.targetLessonId);
+    }
+  }
+
+  // 1. Apply any remaining amount to oldest unpaid lessons.
   const { data: unpaid } = await supabase
     .from("lessons")
     .select("id, amount_due")
