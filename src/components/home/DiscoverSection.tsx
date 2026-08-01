@@ -299,6 +299,24 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     fontFamily: FONT,
   };
 
+  const feedCarousel: React.CSSProperties = {
+    display: "flex",
+    flexWrap: "nowrap",
+    overflowX: "auto",
+    WebkitOverflowScrolling: "touch",
+    scrollSnapType: "x mandatory",
+    overscrollBehaviorX: "contain",
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
+  };
+
+  const feedTile: React.CSSProperties = {
+    flex: "0 0 100%",
+    width: "100%",
+    scrollSnapAlign: "start",
+    scrollSnapStop: "always",
+  };
+
   const listRow = (last: boolean): React.CSSProperties => ({
     display: "flex",
     alignItems: "center",
