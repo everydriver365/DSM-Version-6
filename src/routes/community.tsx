@@ -278,6 +278,7 @@ function CommunityPage() {
   const [instructorFirstName, setInstructorFirstNameState] = useState<string>("");
   const [instructorArea, setInstructorArea] = useState<string>("Your area");
   const [instructorOutcode, setInstructorOutcode] = useState<string | null>(null);
+  const [coverageOutcodes, setCoverageOutcodes] = useState<string[]>([]);
   const [instructorProfile, setInstructorProfile] = useState<{ name: string | null; profile_image_url: string | null } | null>(null);
   const [unread, setUnread] = useState<{ local: number; uk: number }>({ local: 0, uk: 0 });
 
