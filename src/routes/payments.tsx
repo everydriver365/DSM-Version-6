@@ -137,6 +137,24 @@ export async function deletePaymentRecord(historyId: string, token: string, _use
     body: JSON.stringify({ deleted_at: new Date().toISOString() }),
   });
 
+  const matchRes = await fetch(
+    `${SUPABASE_URL}/rest/v1/payments?instructor_id=eq.${record.instructor_id}&pupil_id=eq.${record.pupil_id}&amount=eq.${record.lesson_cost}&paid_at=eq.${record.created_at}&deleted_at=is.null&select=id`,
+    { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+  );
+  const matchData = await matchRes.json();
+  const matchedPaymentId = matchData?.[0]?.id;
+
+  if (matchedPaymentId) {
+    await fetch(`${SUPABASE_URL}/rest/v1/payments?id=eq.${matchedPaymentId}`, {
+      method: "PATCH",
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ deleted_at: new Date().toISOString() }),
+    });
+  } else {
+    console.warn("[deletePaymentRecord] no matching payments row found to soft-delete", record);
+  }
+
+
   if (record.lesson_id) {
     await fetch(`${SUPABASE_URL}/rest/v1/lessons?id=eq.${record.lesson_id}`, {
       method: "PATCH",
