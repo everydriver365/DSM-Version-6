@@ -92,7 +92,7 @@ function youtubeThumb(url: string | null | undefined): string | null {
 
 
 
-export function DiscoverSection() {
+export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {}) {
   const navigate = useNavigate();
   const [live, setLive] = useState<LiveItem[]>([]);
   const [learn, setLearn] = useState<LearnItem[]>([]);
