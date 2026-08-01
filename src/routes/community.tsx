@@ -13,6 +13,7 @@ import {
   Flag,
   ThumbsUp,
   MapPin,
+  ChevronDown,
   AlertTriangle,
   Car,
   Building2 as Building,
@@ -404,29 +405,37 @@ function AlertsTab({
         <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>
           Alerts near {instructorArea}
         </div>
-        <div style={{ fontSize: 12, color: "#9CA3AF" }}>{otherAlerts.length} active</div>
+        <div style={{ fontSize: 12, color: "#9CA3AF" }}>{otherAlerts.length} from other instructors</div>
       </div>
 
       {otherAlerts.length === 0 ? (
-        <div style={{ padding: 40, textAlign: "center" }}>
-          <MapPin size={48} color="#D1D5DB" style={{ margin: "0 auto 12px" }} />
-          <div style={{ fontWeight: 600, color: "#6B7280" }}>No alerts near {instructorArea}</div>
-          <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>Be the first to report an issue</div>
-          <button
-            type="button"
-            onClick={() => {
-              console.log("[community] FAB tapped (empty state)");
-              setReportSheetOpenWithEvent(true);
-            }}
-            style={{
-              background: "#CC2229", color: "white", border: "none", borderRadius: 12,
-              padding: "10px 24px", marginTop: 16, fontWeight: 600, cursor: "pointer",
-            }}
-          >
-
-            Report alert
-          </button>
-        </div>
+        myAlerts.length === 0 ? (
+          <div style={{ padding: 40, textAlign: "center" }}>
+            <MapPin size={48} color="#D1D5DB" style={{ margin: "0 auto 12px" }} />
+            <div style={{ fontWeight: 600, color: "#6B7280" }}>No other alerts near {instructorArea}</div>
+            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>Be the first to report an issue</div>
+            <button
+              type="button"
+              onClick={() => {
+                console.log("[community] FAB tapped (empty state)");
+                setReportSheetOpenWithEvent(true);
+              }}
+              style={{
+                background: "#CC2229", color: "white", border: "none", borderRadius: 12,
+                padding: "10px 24px", marginTop: 16, fontWeight: 600, cursor: "pointer",
+              }}
+            >
+              Report alert
+            </button>
+          </div>
+        ) : (
+          <div style={{ padding: 24, textAlign: "center" }}>
+            <div style={{ fontSize: 12, color: "#9CA3AF", display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
+              You have an active alert below
+              <ChevronDown size={14} />
+            </div>
+          </div>
+        )
       ) : (
         otherAlerts.map((a) => (
           <AlertCard key={a.id} alert={a} userId={userId} onUpvote={handleUpvote} />
