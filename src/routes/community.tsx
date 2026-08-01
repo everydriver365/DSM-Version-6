@@ -988,7 +988,9 @@ function AlertCard({
         display: "flex", justifyContent: "space-between", alignItems: "center",
         marginTop: 10, paddingTop: 8, borderTop: "0.5px solid #F3F4F6",
       }}>
-        <div style={{ fontSize: 12, color: "#9CA3AF" }}>{reporter} reported this</div>
+        <div style={{ fontSize: 12, color: "#9CA3AF" }}>
+          {source === 'tomtom' ? 'Official traffic data' : `${reporter} reported this`}
+        </div>
         {commentCount > 0 && (
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <MessageCircle size={13} color="#9CA3AF" />
