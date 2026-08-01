@@ -966,6 +966,7 @@ function SupplierListingSheet({
 
           <Section title="Settings">
             <Toggle label="Featured (show in featured carousel)" value={draft.isFeatured} onChange={(v) => upd("isFeatured", v)} />
+            <Toggle label="Show product image" value={draft.showImage} onChange={(v) => upd("showImage", v)} />
             <Toggle label="Verified badge" value={draft.isVerified} onChange={(v) => upd("isVerified", v)} />
             <Toggle label="Active (publish immediately)" value={draft.isActive} onChange={(v) => upd("isActive", v)} />
           </Section>
