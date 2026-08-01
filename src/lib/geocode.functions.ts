@@ -41,7 +41,7 @@ export const reverseGeocodeToOutcode = createServerFn({ method: "POST" })
     z.object({ lat: z.number().min(-90).max(90), lng: z.number().min(-180).max(180) }).parse(data),
   )
   .handler(async ({ data }): Promise<PostcodeLookupResult> => {
-    return reverseGeocodeToOutcode({
+    return reverseGeocodeToOutcodeImpl({
       lat: data.lat,
       lng: data.lng,
       lovableKey: process.env.LOVABLE_API_KEY,
