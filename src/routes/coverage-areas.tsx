@@ -223,6 +223,7 @@ function CoverageAreasPage() {
             centre_lng: payload.centre_lng,
             radius_miles: payload.radius_miles,
             is_primary: payload.is_primary,
+            is_nationwide: payload.is_nationwide,
           })
           .eq("id", payload.id);
         if (error) throw error;
