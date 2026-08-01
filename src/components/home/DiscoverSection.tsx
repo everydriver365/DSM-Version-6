@@ -311,7 +311,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     marginTop: 10,
     background: "#FFFFFF",
     border: `1px solid ${HAIRLINE}`,
-    borderRadius: 12,
+    borderRadius: 16,
+    boxShadow: "0 4px 16px rgba(11,31,58,0.08)",
     overflow: "hidden",
     fontFamily: FONT,
   };
