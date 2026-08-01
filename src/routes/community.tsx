@@ -711,25 +711,27 @@ function AlertsTab({
                     }}>
                       {formatCountdown(a.expires_at)}
                     </div>
-                    <button
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); handleCancel(a); }}
-                      style={{
-                        width: 26,
-                        height: 26,
-                        borderRadius: "50%",
-                        background: "#0B1F3A",
-                        border: "none",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        padding: 0,
-                      }}
-                      aria-label="Cancel alert"
-                    >
-                      <X size={13} color="white" strokeWidth={2.4} />
-                    </button>
+                    {(a.source ?? 'manual') !== 'tomtom' && (
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); handleCancel(a); }}
+                        style={{
+                          width: 26,
+                          height: 26,
+                          borderRadius: "50%",
+                          background: "#0B1F3A",
+                          border: "none",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                          padding: 0,
+                        }}
+                        aria-label="Cancel alert"
+                      >
+                        <X size={13} color="white" strokeWidth={2.4} />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
