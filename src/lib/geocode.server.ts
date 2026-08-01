@@ -114,3 +114,50 @@ export async function reverseGeocodeCoords(args: {
 
   return { road, town };
 }
+
+export type PostcodeLookupResult = {
+  outcode: string | null;
+  error?: string;
+};
+
+export async function reverseGeocodeToOutcode(args: {
+  lat: number;
+  lng: number;
+  lovableKey?: string;
+  googleMapsKey?: string;
+}): Promise<PostcodeLookupResult> {
+  const { lat, lng, lovableKey, googleMapsKey } = args;
+  if (!lovableKey || !googleMapsKey) {
+    return { outcode: null, error: "Location lookup is not configured." };
+  }
+
+  const url = `${GATEWAY_URL}/maps/api/geocode/json?latlng=${lat},${lng}&result_type=postal_code`;
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${lovableKey}`,
+      "X-Connection-Api-Key": googleMapsKey,
+    },
+  });
+
+  if (!res.ok) {
+    const body = await res.text();
+    console.error(`[geocode] outcode lookup failed [${res.status}]: ${body}`);
+    return { outcode: null, error: `gateway_${res.status}` };
+  }
+
+  const json = (await res.json()) as {
+    status?: string;
+    results?: Array<{ address_components?: Array<{ long_name?: string; types?: string[] }> }>;
+  };
+
+  const postalComponent = json.results?.[0]?.address_components?.find((c) =>
+    c.types?.includes("postal_code"),
+  );
+  const fullPostcode = postalComponent?.long_name ?? null;
+  const outcode = fullPostcode ? fullPostcode.trim().split(" ")[0].toUpperCase() : null;
+
+  if (!outcode) {
+    return { outcode: null, error: json.status ?? "no_postcode_found" };
+  }
+  return { outcode };
+}
