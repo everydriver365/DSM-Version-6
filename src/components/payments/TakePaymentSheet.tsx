@@ -299,6 +299,9 @@ export function TakePaymentSheet({
           });
           toast.success("Payment received — balance updated");
           setQrPaymentId(null);
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new Event("dsm-payment-recorded"));
+          }
           onSaved?.("qr", totalNum);
           onClose();
         }
@@ -327,6 +330,9 @@ export function TakePaymentSheet({
         method: cashMethod,
       });
       toast.success("Payment recorded — balance updated");
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("dsm-payment-recorded"));
+      }
       onSaved?.(cashMethod, amountNum);
       onClose();
     } catch (e) {
