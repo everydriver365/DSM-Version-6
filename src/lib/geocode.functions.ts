@@ -1,8 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { geocodeAddress, reverseGeocodeCoords, type GeocodeResult, type ReverseGeocodeResult } from "./geocode.server";
+import { geocodeAddress, reverseGeocodeCoords, reverseGeocodeToOutcode, type GeocodeResult, type ReverseGeocodeResult, type PostcodeLookupResult } from "./geocode.server";
 
-export type { GeocodeResult, ReverseGeocodeResult };
+export type { GeocodeResult, ReverseGeocodeResult, PostcodeLookupResult };
 
 export const verifyAddress = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.object({ address: z.string().min(2).max(300) }).parse(data))
