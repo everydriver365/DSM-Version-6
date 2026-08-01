@@ -6147,7 +6147,7 @@ function HomePage() {
                       border: '1px solid #E2E8F0',
                       borderRadius: 14,
                       padding: 10,
-                      minHeight: 94,
+                      minHeight: 78,
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'flex-start',
@@ -6185,7 +6185,7 @@ function HomePage() {
                         transition: 'transform 0.15s ease',
                       }}
                     >
-                      <Icon size={15} color={tile.iconStroke} stroke={tile.iconStroke} strokeWidth={2} />
+                      <Icon size={16} color={tile.iconStroke} strokeWidth={2} />
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, maxWidth: '100%' }}>
                       <span style={{ fontSize: 11, fontWeight: 500, color: '#0B1F3A', lineHeight: 1.25, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: "Poppins, Inter, sans-serif" }}>{tile.label}</span>
