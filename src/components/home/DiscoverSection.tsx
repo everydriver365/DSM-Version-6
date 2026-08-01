@@ -11,7 +11,7 @@ import { supabase } from "@/lib/supabaseClient";
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 const RED = "#CC2229";
-const HAIRLINE = "#E2E8F0";
+const HAIRLINE = "#E1E7EF";
 const MUTED = "#8A94A3";
 const FONT = "Poppins, Inter, sans-serif";
 
@@ -92,7 +92,7 @@ function youtubeThumb(url: string | null | undefined): string | null {
 
 
 
-export function DiscoverSection() {
+export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {}) {
   const navigate = useNavigate();
   const [live, setLive] = useState<LiveItem[]>([]);
   const [learn, setLearn] = useState<LearnItem[]>([]);
@@ -230,56 +230,30 @@ export function DiscoverSection() {
   );
 
   const cardShell: React.CSSProperties = {
-    width: "calc(50% - 5px)",
-    minWidth: "calc(50% - 5px)",
+    width: 168,
+    minWidth: 168,
     flexShrink: 0,
     flexGrow: 0,
     background: "#FFFFFF",
     border: `1px solid ${HAIRLINE}`,
     borderRadius: 12,
-    padding: 10,
-    boxShadow: "0 2px 8px rgba(11,31,58,0.05)",
+    overflow: "hidden",
     cursor: "pointer",
     fontFamily: FONT,
     scrollSnapAlign: "start",
     scrollSnapStop: "always",
-
     display: "flex",
     flexDirection: "column",
   };
 
-  const cardBtn = (label: string): React.CSSProperties => ({
-    marginTop: 8,
-    width: "100%",
-    background: NAVY,
-    color: "#FFFFFF",
-    border: "none",
-    borderRadius: 7,
-    padding: "7px 0",
-    fontSize: 11,
-    fontWeight: 700,
-    letterSpacing: "0.04em",
-    textTransform: "uppercase",
-    fontFamily: FONT,
-    cursor: "pointer",
-  });
-
   const cardTitle: React.CSSProperties = {
-    fontSize: 13,
+    fontSize: 13.5,
     fontWeight: 600,
     color: NAVY,
     lineHeight: 1.25,
+    height: 34,
     display: "-webkit-box",
     WebkitLineClamp: 2,
-    WebkitBoxOrient: "vertical",
-    overflow: "hidden",
-  };
-  const cardSub: React.CSSProperties = {
-    marginTop: 2,
-    fontSize: 11,
-    color: "#6B7A90",
-    display: "-webkit-box",
-    WebkitLineClamp: 1,
     WebkitBoxOrient: "vertical",
     overflow: "hidden",
   };
@@ -288,6 +262,12 @@ export function DiscoverSection() {
     const raw = (m.price_display ?? "").trim();
     if (!raw || !/\d/.test(raw)) return "Price on request";
     return raw.toLowerCase().startsWith("from") ? raw : `From ${raw}`;
+  };
+
+  const splitPrice = (label: string): [string, string] => {
+    const idx = label.indexOf("/");
+    if (idx === -1) return [label, ""];
+    return [label.slice(0, idx).trim(), label.slice(idx)];
   };
 
   const stripStyle: React.CSSProperties = {
@@ -305,24 +285,35 @@ export function DiscoverSection() {
     padding: "0 0 4px",
   };
 
-  const rowShell: React.CSSProperties = {
-    width: "100%",
-    minWidth: "100%",
-    flexShrink: 0,
-    flexGrow: 0,
-    scrollSnapAlign: "start",
-    scrollSnapStop: "always",
+  const listShell: React.CSSProperties = {
+    marginTop: 10,
     background: "#FFFFFF",
     border: `1px solid ${HAIRLINE}`,
-
     borderRadius: 12,
-    boxShadow: "0 2px 8px rgba(11,31,58,0.05)",
-    padding: 10,
+    overflow: "hidden",
+    fontFamily: FONT,
+  };
+
+  const listRow = (last: boolean): React.CSSProperties => ({
     display: "flex",
     alignItems: "center",
     gap: 12,
+    padding: 10,
     cursor: "pointer",
+    borderBottom: last ? "none" : `1px solid ${HAIRLINE}`,
     fontFamily: FONT,
+  });
+
+  const thumbStyle: React.CSSProperties = {
+    width: 48,
+    height: 48,
+    borderRadius: 10,
+    flexShrink: 0,
+    border: `1px solid ${HAIRLINE}`,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
   };
 
   const rowTitle: React.CSSProperties = {
@@ -334,6 +325,19 @@ export function DiscoverSection() {
     overflow: "hidden",
     textOverflow: "ellipsis",
   };
+
+  const Dot = ({ size }: { size: number }) => (
+    <span
+      style={{
+        display: "inline-block",
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        background: RED,
+        flexShrink: 0,
+      }}
+    />
+  );
 
 
   return (
@@ -370,6 +374,7 @@ export function DiscoverSection() {
         {(() => {
           const marketCard = (m: MarketItem) => {
             const img = firstImage(m.image_urls);
+            const [amount, unit] = splitPrice(priceLabel(m));
             return (
               <div
                 key={`market-${m.id}`}
@@ -383,22 +388,58 @@ export function DiscoverSection() {
                 }
                 style={cardShell}
               >
-                <StackMedia
-                  height={78}
-                  front={{
+                <div
+                  style={{
+                    height: 88,
                     background: img ? `#EEF2F7 url(${img}) center/cover` : "#EEF2F7",
                   }}
                 />
-                <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
-                  <div style={{ ...cardTitle, marginTop: 8 }}>{m.title}</div>
-                  <div style={cardSub}>{priceLabel(m)}</div>
+                <div
+                  style={{
+                    padding: 10,
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 8,
+                  }}
+                >
+                  <div style={cardTitle}>{m.title}</div>
+                  <div
+                    style={{
+                      marginTop: "auto",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 6,
+                    }}
+                  >
+                    <div style={{ minWidth: 0, overflow: "hidden" }}>
+                      <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>{amount}</span>
+                      {unit && (
+                        <span style={{ fontSize: 11, color: "#6B7A90", marginLeft: 1 }}>{unit}</span>
+                      )}
+                    </div>
+                    <span
+                      style={{
+                        width: 22,
+                        height: 22,
+                        borderRadius: "50%",
+                        background: "#FFFFFF",
+                        border: `1px solid ${HAIRLINE}`,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconChevronRight size={13} stroke={2.2} color={NAVY} />
+                    </span>
+                  </div>
                 </div>
-                <button type="button" style={cardBtn("VIEW")}>
-                  View
-                </button>
               </div>
             );
           };
+
 
           const nodes: React.ReactNode[] = market.map((m) => marketCard(m));
           nodes.push(
@@ -412,10 +453,10 @@ export function DiscoverSection() {
         })()}
       </div>
 
-      {/* DSM Live — swipable full-width rows */}
+      {/* DSM Live — grouped rows */}
       {liveSorted.length > 0 && (
-        <div className="dsm-discover-scroll" style={{ ...stripStyle, marginTop: 10 }}>
-          {liveSorted.map((s) => {
+        <div style={listShell}>
+          {liveSorted.map((s, idx) => {
             const nowLive = isLiveNow(s);
             const open = () =>
               navigate({
@@ -431,43 +472,35 @@ export function DiscoverSection() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") open();
                 }}
-                style={rowShell}
+                style={listRow(idx === liveSorted.length - 1)}
               >
-                <div style={{ position: "relative", flexShrink: 0 }}>
-                  <div
-                    style={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: 12,
-                      background: s.image_url
-                        ? `${NAVY} url(${s.image_url}) center/cover`
-                        : NAVY,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {!s.image_url && <IconBroadcast size={20} color="#FFFFFF" stroke={1.9} />}
-                  </div>
-                  {nowLive && (
-                    <span
-                      style={{
-                        position: "absolute",
-                        top: -3,
-                        right: -3,
-                        width: 10,
-                        height: 10,
-                        borderRadius: "50%",
-                        background: RED,
-                        border: "2px solid #FFFFFF",
-                      }}
-                    />
-                  )}
+                <div
+                  style={{
+                    ...thumbStyle,
+                    background: s.image_url
+                      ? `${NAVY} url(${s.image_url}) center/cover`
+                      : NAVY,
+                  }}
+                >
+                  {!s.image_url && <IconBroadcast size={20} color="#FFFFFF" stroke={1.9} />}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={rowTitle}>{s.title}</div>
-                  <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
-                    Live · {fmtTimeDay(s.session_date, s.session_time)}
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    {unreadIds.includes(s.id) && <Dot size={8} />}
+                    <div style={rowTitle}>{s.title}</div>
+                  </div>
+                  <div
+                    style={{
+                      marginTop: 2,
+                      fontSize: 11,
+                      color: "#6B7A90",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 5,
+                    }}
+                  >
+                    {nowLive && <Dot size={6} />}
+                    <span>Live · {fmtTimeDay(s.session_date, s.session_time)}</span>
                   </div>
                 </div>
                 <button
@@ -494,13 +527,12 @@ export function DiscoverSection() {
               </div>
             );
           })}
-          <div aria-hidden="true" style={{ width: 20, flexShrink: 0 }} />
         </div>
       )}
 
-      {/* DSM Learn — swipable full-width rows */}
+      {/* DSM Learn — grouped rows */}
       {playable.length > 0 && (
-        <div className="dsm-discover-scroll" style={{ ...stripStyle, marginTop: 10 }}>
+        <div style={listShell}>
           {playable.map((v, i) => {
             const thumb = v.thumbnail_url || youtubeThumb(v.url);
             const open = () => {
@@ -516,24 +548,21 @@ export function DiscoverSection() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") open();
                 }}
-                style={rowShell}
+                style={listRow(i === playable.length - 1)}
               >
                 <div
                   style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 12,
-                    flexShrink: 0,
+                    ...thumbStyle,
                     background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
                   }}
                 >
                   {!thumb && <IconPlayerPlay size={18} color={MUTED} stroke={2} />}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={rowTitle}>{v.title}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    {v.id && unreadIds.includes(v.id) && <Dot size={8} />}
+                    <div style={rowTitle}>{v.title}</div>
+                  </div>
                   <div style={{ marginTop: 2, fontSize: 11, color: "#6B7A90" }}>
                     {v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}
                   </div>
@@ -542,9 +571,9 @@ export function DiscoverSection() {
               </div>
             );
           })}
-          <div aria-hidden="true" style={{ width: 20, flexShrink: 0 }} />
         </div>
       )}
+
 
 
     </div>
