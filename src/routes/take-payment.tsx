@@ -233,11 +233,10 @@ function TakePaymentPage() {
     const { error: payErr } = await supabase.from("payments").insert({
       instructor_id: instructorId,
       pupil_id: pupilIdForPayment,
-      lesson_id: lessonId,
       amount: amountPaid,
-      payment_method: methodNorm,
-      payment_date: today,
-      status: "completed",
+      notes: `${methodNorm}${lessonId ? ` — lesson ${lessonId}` : ""}`,
+      paid_at: now,
+      created_at: now,
     });
     if (payErr) console.error("[take-payment] payments insert", payErr);
 
