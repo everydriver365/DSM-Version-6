@@ -700,15 +700,22 @@ function AreaEditor({
       title={initial ? "Edit coverage area" : "Add coverage area"}
     >
       {/* Area name */}
-      <div>
+      <div style={{ position: "relative" }}>
         <label style={{ fontSize: 12, color: "#9CA3AF", ...POPPINS }}>Area name</label>
         <input
           ref={inputRef}
           type="text"
           value={areaName}
-          onChange={(e) => setAreaName(e.target.value)}
-          placeholder={placesLoaded ? "e.g. Winchester, Eastleigh, Chandlers Ford" : "Loading…"}
-          disabled={!placesLoaded}
+          onChange={(e) => {
+            setNameTouched(true);
+            setAreaName(e.target.value);
+          }}
+          onFocus={() => {
+            if (suggestions.length > 0) setShowSuggestions(true);
+          }}
+          onBlur={() => window.setTimeout(() => setShowSuggestions(false), 150)}
+          placeholder="e.g. Winchester, Eastleigh, Chandlers Ford"
+          autoComplete="new-password"
           style={{
             width: "100%",
             height: 44,
@@ -722,7 +729,55 @@ function AreaEditor({
             ...POPPINS,
           }}
         />
+        {placesError && (
+          <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
+            Address lookup unavailable — type the area name and add a postcode below.
+          </div>
+        )}
+        {showSuggestions && suggestions.length > 0 && (
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: "100%",
+              marginTop: 4,
+              background: "#fff",
+              border: "0.5px solid #EEF2F7",
+              borderRadius: 10,
+              boxShadow: "0 4px 12px rgba(11,31,58,0.08)",
+              maxHeight: 220,
+              overflowY: "auto",
+              zIndex: 60,
+            }}
+          >
+            {suggestions.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => selectSuggestion(s.id)}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  textAlign: "left",
+                  padding: "10px 12px",
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  ...POPPINS,
+                }}
+              >
+                <div style={{ fontSize: 14, color: "#0F2044" }}>{s.main}</div>
+                {s.secondary && (
+                  <div style={{ fontSize: 12, color: "#9CA3AF" }}>{s.secondary}</div>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
+
 
       {/* Outcodes */}
       <div style={{ marginTop: 12 }}>
