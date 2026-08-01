@@ -4,7 +4,7 @@ import { ArrowLeft, MapPin, Circle, Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
-import { BottomSheet } from "@/components/dsm/BottomSheet";
+import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { reverseGeocode } from "@/lib/geocode.functions";
 
