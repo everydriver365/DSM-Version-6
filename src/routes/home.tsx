@@ -6928,7 +6928,7 @@ function HomePage() {
             // corresponding payments + lesson_history rows.
             const { data: lessonRow, error: lessonFetchErr } = await supabase
               .from("lessons")
-              .select("id, pupil_id, payment_status, amount_due, paid_amount")
+              .select("id, pupil_id, payment_status, amount_due, paid_amount, paid_at")
               .eq("id", row.id)
               .maybeSingle();
             if (lessonFetchErr) {
@@ -6973,7 +6973,10 @@ function HomePage() {
             const { error: payErr } = await supabase
               .from("payments")
               .update({ deleted_at: nowIso })
-              .eq("lesson_id", row.id)
+              .eq("instructor_id", userId)
+              .eq("pupil_id", lessonRow?.pupil_id)
+              .eq("amount", lessonRow?.amount_due)
+              .eq("paid_at", lessonRow?.paid_at)
               .is("deleted_at", null);
             if (payErr) console.error("[home] payments soft-delete error", payErr);
 
