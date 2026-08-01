@@ -383,6 +383,9 @@ function CoverageAreasPage() {
         onOpenChange={(v) => {
           setSheetOpen(v);
           if (!v) setEditing(null);
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new Event(v ? "dsm-sheet-open" : "dsm-sheet-close"));
+          }
         }}
         initial={editing}
         onSave={handleSave}
