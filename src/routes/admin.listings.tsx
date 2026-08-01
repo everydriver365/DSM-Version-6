@@ -96,6 +96,7 @@ const emptyDraft: NewListingDraft = {
   contactType: "website",
   contactValue: "",
   isFeatured: false,
+  showImage: true,
   isVerified: true,
   isActive: true,
   images: ["", "", "", ""],
