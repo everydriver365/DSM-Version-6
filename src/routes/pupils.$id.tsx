@@ -1071,7 +1071,7 @@ function PupilDetailPage() {
           return;
         }
         const rows = (data as { duration_minutes: number | null; amount_due: number | null; payment_status: string | null }[]) ?? [];
-        setUnpaidLessons(rows.filter((r) => r.payment_status !== "paid"));
+        setUnpaidLessons(rows.filter((r) => r.payment_status !== "paid" && r.payment_status !== "prepaid"));
       });
 
     supabase
