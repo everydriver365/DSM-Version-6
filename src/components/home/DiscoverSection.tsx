@@ -187,60 +187,51 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     return `${time} ${day}`;
   };
 
-  const StackMedia = ({
-    height,
-    width,
-    front,
-    children,
-    badge,
-  }: {
-    height: number;
-    width?: number;
-    front: React.CSSProperties;
-    children?: React.ReactNode;
-    badge?: React.ReactNode;
-  }) => (
-    <div style={{ position: "relative", height, width, flexShrink: width ? 0 : undefined }}>
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 7,
-          right: 0,
-          height: height - 16,
-          background: "#DCE4EE",
-          borderRadius: 10,
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          top: 12,
-          left: 0,
-          right: 9,
-          bottom: 0,
-          borderRadius: 10,
-          overflow: "hidden",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          ...front,
-        }}
-      >
-        {children}
-      </div>
-      {badge}
-    </div>
-  );
+  const GRADIENTS = [
+    "linear-gradient(155deg, #1877D6 0%, #0B1F3A 100%)",
+    "linear-gradient(155deg, #0B1F3A 0%, #071328 100%)",
+    "linear-gradient(155deg, #CC2229 0%, #7A1418 100%)",
+  ];
+
+  const CATEGORY_ICONS: Record<string, string> = {
+    dashcam: "📹",
+    dashcams: "📹",
+    websites: "🌐",
+    website: "🌐",
+    marketing: "📣",
+    insurance: "🛡️",
+    finance: "💷",
+    vehicles: "🚗",
+    cars: "🚗",
+    training: "🎓",
+    software: "💻",
+    equipment: "🧰",
+    accessories: "🧰",
+  };
+
+  const categoryIcon = (m: MarketItem) => {
+    const slug = (m.marketplace_categories?.slug ?? "").toLowerCase();
+    const name = (m.marketplace_categories?.name ?? "").toLowerCase();
+    return CATEGORY_ICONS[slug] ?? CATEGORY_ICONS[name] ?? "🏷️";
+  };
+
+  const ribbonLabel = (m: MarketItem): string | null => {
+    if (m.is_featured) return "Popular";
+    if (m.created_at) {
+      const age = Date.now() - new Date(m.created_at).getTime();
+      if (age >= 0 && age < 14 * 24 * 60 * 60 * 1000) return "New";
+    }
+    return null;
+  };
 
   const cardShell: React.CSSProperties = {
-    width: 168,
-    minWidth: 168,
+    position: "relative",
+    width: 158,
+    minWidth: 158,
+    height: 172,
     flexShrink: 0,
     flexGrow: 0,
-    background: "#FFFFFF",
-    border: `1px solid ${HAIRLINE}`,
-    borderRadius: 12,
+    borderRadius: 18,
     overflow: "hidden",
     cursor: "pointer",
     fontFamily: FONT,
@@ -251,16 +242,17 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   };
 
   const cardTitle: React.CSSProperties = {
-    fontSize: 13.5,
-    fontWeight: 600,
-    color: NAVY,
+    fontSize: 13,
+    fontWeight: 700,
+    color: "#FFFFFF",
     lineHeight: 1.25,
-    height: 34,
+    maxWidth: "85%",
     display: "-webkit-box",
     WebkitLineClamp: 2,
     WebkitBoxOrient: "vertical",
     overflow: "hidden",
   };
+
 
   const priceLabel = (m: MarketItem) => {
     const raw = (m.price_display ?? "").trim();
