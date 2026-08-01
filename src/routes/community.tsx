@@ -423,6 +423,7 @@ function CommunityPage() {
           instructorFirstName={instructorFirstName}
           instructorArea={instructorArea}
           instructorOutcode={instructorOutcode}
+          coverageOutcodes={coverageOutcodes}
         />
       )}
       {activeTab === "local" && (
