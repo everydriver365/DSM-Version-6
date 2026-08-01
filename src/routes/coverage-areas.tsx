@@ -740,6 +740,15 @@ function AreaEditor({
     setSaving(false);
   }
 
+  const requestClose = () => {
+    if (saving) return;
+    if (isDirty) {
+      setShowDiscardConfirm(true);
+    } else {
+      onOpenChange(false);
+    }
+  };
+
   if (!open) return null;
 
   return (
