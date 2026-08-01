@@ -11,7 +11,7 @@ import { supabase } from "@/lib/supabaseClient";
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 const RED = "#CC2229";
-const HAIRLINE = "#E2E8F0";
+const HAIRLINE = "#E1E7EF";
 const MUTED = "#8A94A3";
 const FONT = "Poppins, Inter, sans-serif";
 
@@ -230,56 +230,30 @@ export function DiscoverSection() {
   );
 
   const cardShell: React.CSSProperties = {
-    width: "calc(50% - 5px)",
-    minWidth: "calc(50% - 5px)",
+    width: 168,
+    minWidth: 168,
     flexShrink: 0,
     flexGrow: 0,
     background: "#FFFFFF",
     border: `1px solid ${HAIRLINE}`,
     borderRadius: 12,
-    padding: 10,
-    boxShadow: "0 2px 8px rgba(11,31,58,0.05)",
+    overflow: "hidden",
     cursor: "pointer",
     fontFamily: FONT,
     scrollSnapAlign: "start",
     scrollSnapStop: "always",
-
     display: "flex",
     flexDirection: "column",
   };
 
-  const cardBtn = (label: string): React.CSSProperties => ({
-    marginTop: 8,
-    width: "100%",
-    background: NAVY,
-    color: "#FFFFFF",
-    border: "none",
-    borderRadius: 7,
-    padding: "7px 0",
-    fontSize: 11,
-    fontWeight: 700,
-    letterSpacing: "0.04em",
-    textTransform: "uppercase",
-    fontFamily: FONT,
-    cursor: "pointer",
-  });
-
   const cardTitle: React.CSSProperties = {
-    fontSize: 13,
+    fontSize: 13.5,
     fontWeight: 600,
     color: NAVY,
     lineHeight: 1.25,
+    height: 34,
     display: "-webkit-box",
     WebkitLineClamp: 2,
-    WebkitBoxOrient: "vertical",
-    overflow: "hidden",
-  };
-  const cardSub: React.CSSProperties = {
-    marginTop: 2,
-    fontSize: 11,
-    color: "#6B7A90",
-    display: "-webkit-box",
-    WebkitLineClamp: 1,
     WebkitBoxOrient: "vertical",
     overflow: "hidden",
   };
@@ -288,6 +262,12 @@ export function DiscoverSection() {
     const raw = (m.price_display ?? "").trim();
     if (!raw || !/\d/.test(raw)) return "Price on request";
     return raw.toLowerCase().startsWith("from") ? raw : `From ${raw}`;
+  };
+
+  const splitPrice = (label: string): [string, string] => {
+    const idx = label.indexOf("/");
+    if (idx === -1) return [label, ""];
+    return [label.slice(0, idx).trim(), label.slice(idx)];
   };
 
   const stripStyle: React.CSSProperties = {
@@ -305,24 +285,35 @@ export function DiscoverSection() {
     padding: "0 0 4px",
   };
 
-  const rowShell: React.CSSProperties = {
-    width: "100%",
-    minWidth: "100%",
-    flexShrink: 0,
-    flexGrow: 0,
-    scrollSnapAlign: "start",
-    scrollSnapStop: "always",
+  const listShell: React.CSSProperties = {
+    marginTop: 10,
     background: "#FFFFFF",
     border: `1px solid ${HAIRLINE}`,
-
     borderRadius: 12,
-    boxShadow: "0 2px 8px rgba(11,31,58,0.05)",
-    padding: 10,
+    overflow: "hidden",
+    fontFamily: FONT,
+  };
+
+  const listRow = (last: boolean): React.CSSProperties => ({
     display: "flex",
     alignItems: "center",
     gap: 12,
+    padding: 10,
     cursor: "pointer",
+    borderBottom: last ? "none" : `1px solid ${HAIRLINE}`,
     fontFamily: FONT,
+  });
+
+  const thumbStyle: React.CSSProperties = {
+    width: 48,
+    height: 48,
+    borderRadius: 10,
+    flexShrink: 0,
+    border: `1px solid ${HAIRLINE}`,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
   };
 
   const rowTitle: React.CSSProperties = {
@@ -334,6 +325,19 @@ export function DiscoverSection() {
     overflow: "hidden",
     textOverflow: "ellipsis",
   };
+
+  const Dot = ({ size }: { size: number }) => (
+    <span
+      style={{
+        display: "inline-block",
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        background: RED,
+        flexShrink: 0,
+      }}
+    />
+  );
 
 
   return (
