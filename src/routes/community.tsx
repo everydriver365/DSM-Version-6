@@ -175,7 +175,99 @@ function loadGoogleMaps(): Promise<void> {
   });
 }
 
+function AlertSignIcon({ type, size = 28 }: { type: string; size?: number }) {
+  const warning = (children: React.ReactNode) => (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      style={{ display: "block", filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.08))" }}
+    >
+      <path
+        d="M12 3 L21 20 H3 Z"
+        fill="white"
+        stroke="#C8102E"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+      {children}
+    </svg>
+  );
 
+  switch (type) {
+    case "roadworks":
+      return warning(
+        <g fill="black">
+          <rect x="11" y="8" width="2" height="5" rx="0.5" />
+          <path d="M9 13 h6 l-1 4 h-4 z" />
+        </g>
+      );
+    case "road_closure":
+      return warning(<rect x="5" y="12" width="14" height="3" rx="0.5" fill="black" />);
+    case "heavy_traffic":
+      return warning(
+        <g fill="black">
+          <rect x="5" y="9" width="14" height="2" rx="0.5" />
+          <rect x="6" y="12" width="12" height="2" rx="0.5" />
+          <rect x="5" y="15" width="14" height="2" rx="0.5" />
+        </g>
+      );
+    case "hazard":
+    case "test_centre_busy":
+      return warning(
+        <g fill="black">
+          <rect x="11" y="8" width="2" height="8" rx="0.5" />
+          <circle cx="12" cy="18" r="1.5" />
+        </g>
+      );
+    case "test_centre_delay":
+      return warning(
+        <g fill="none" stroke="black" strokeWidth="1.5" strokeLinecap="round">
+          <circle cx="12" cy="13" r="4.5" />
+          <path d="M12 9.5 V13 L14 14.5" />
+        </g>
+      );
+    case "examiner_tip":
+      return (
+        <svg
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          style={{ display: "block", filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.08))" }}
+        >
+          <rect x="3" y="3" width="18" height="18" rx="2" fill="#005EB8" />
+          <rect x="11" y="7" width="2" height="2" rx="0.5" fill="white" />
+          <rect x="11" y="11" width="2" height="8" rx="0.5" fill="white" />
+        </svg>
+      );
+    default:
+      return (
+        <svg
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          style={{ display: "block", filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.08))" }}
+        >
+          <circle cx="12" cy="12" r="10" fill="#9CA3AF" />
+          <text
+            x="12"
+            y="16"
+            textAnchor="middle"
+            fill="white"
+            fontSize="11"
+            fontWeight="700"
+            fontFamily="Inter, system-ui, sans-serif"
+          >
+            ?
+          </text>
+        </svg>
+      );
+  }
+}
 
 function CommunityPage() {
   const navigate = useNavigate();
