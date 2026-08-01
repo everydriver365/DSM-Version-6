@@ -706,7 +706,7 @@ function AlertCard({
         <div style={{ fontSize: 12, color: "#9CA3AF" }}>{reporter} reported this</div>
         <button
           type="button"
-          onClick={() => onUpvote(alert)}
+          onClick={(e) => { e.stopPropagation(); onUpvote(alert); }}
           style={{
             display: "flex", alignItems: "center", gap: 4,
             background: "#F7FAFC", border: "0.5px solid #E2E6ED", borderRadius: 8,
