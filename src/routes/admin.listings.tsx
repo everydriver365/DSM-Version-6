@@ -241,6 +241,7 @@ function AdminListingsPage() {
         contact_type: draft.contactType,
         is_active: draft.isActive,
         is_featured: draft.isFeatured,
+        show_image: draft.showImage,
         is_verified: draft.isVerified,
         listing_type: "supplier",
         image_urls: images,
