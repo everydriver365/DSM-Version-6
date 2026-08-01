@@ -288,24 +288,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     padding: "0 0 4px",
   };
 
-  const carouselStyle: React.CSSProperties = {
-    display: "flex",
-    flexWrap: "nowrap",
-    overflowX: "auto",
-    WebkitOverflowScrolling: "touch",
-    scrollSnapType: "x mandatory",
-    scrollPadding: "0px",
-    overscrollBehaviorX: "contain",
-    scrollbarWidth: "none",
-    msOverflowStyle: "none",
-  };
-
-  const tileStyle: React.CSSProperties = {
-    flex: "0 0 100%",
-    width: "100%",
-    scrollSnapAlign: "start",
-    scrollSnapStop: "always",
-  };
 
   const listShell: React.CSSProperties = {
     marginTop: 10,
