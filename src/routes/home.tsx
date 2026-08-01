@@ -1449,6 +1449,11 @@ function HomePage() {
   const [allPupils, setAllPupils] = useState<PreviewPupil[]>([]);
   const [allAvailability, setAllAvailability] = useState<PupilReadySetting[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
+  useEffect(() => {
+    const onPaymentRecorded = () => setReloadKey((k) => k + 1);
+    window.addEventListener("dsm-payment-recorded", onPaymentRecorded);
+    return () => window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
+  }, []);
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [takePaymentOpen, setTakePaymentOpen] = useState(false);
   const [addExpenseOpen, setAddExpenseOpen] = useState(false);
