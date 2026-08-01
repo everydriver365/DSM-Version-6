@@ -658,9 +658,9 @@ function AlertsTab({
 }
 
 function AlertCard({
-  alert, userId, onUpvote,
+  alert, userId, onUpvote, onSelect,
 }: {
-  alert: Alert; userId: string | null; onUpvote: (a: Alert) => void;
+  alert: Alert; userId: string | null; onUpvote: (a: Alert) => void; onSelect?: (a: Alert) => void;
 }) {
   const cfg = TYPE_CONFIG[alert.alert_type] ?? TYPE_CONFIG.other;
   const Icon = cfg.Icon;
@@ -668,9 +668,9 @@ function AlertCard({
   const reporter = firstName(alert.instructors?.name);
 
   return (
-    <div style={{
+    <div onClick={() => onSelect?.(alert)} style={{
       background: "white", borderRadius: 12, boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-      padding: "14px 16px", marginBottom: 8,
+      padding: "14px 16px", marginBottom: 8, cursor: "pointer",
     }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
         <div style={{
