@@ -4841,7 +4841,7 @@ function HomePage() {
         {/* ============ LOCAL ISSUES ============ */}
         {localAlerts !== null && localAlerts.length > 0 && (
           <div
-            onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
+            onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })}
             style={{
               margin: '8px 16px 0', background: 'white', borderRadius: 14,
               boxShadow: '0 2px 8px rgba(11,31,58,0.06)', padding: '13px 14px',
