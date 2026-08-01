@@ -1762,10 +1762,10 @@ function HomePage() {
             if (cancelled) return;
             const latestByAlert: Record<string, string> = {};
             (Array.isArray(comments) ? comments : []).forEach((c: any) => {
-              if (c?.alert_id && !latestByAlert.has(c.alert_id)) latestByAlert.set(c.alert_id, c.created_at);
+              if (c?.alert_id && !latestByAlert[c.alert_id]) latestByAlert[c.alert_id] = c.created_at;
             });
             const unread = myAlerts.some((a: any) => {
-              const latest = latestByAlert.get(a.id);
+              const latest = latestByAlert[a.id];
               if (!latest) return false;
               if (!a.owner_last_read_at) return true;
               return new Date(latest).getTime() > new Date(a.owner_last_read_at).getTime();
