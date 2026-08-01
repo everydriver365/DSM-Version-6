@@ -4840,90 +4840,53 @@ function HomePage() {
 
         {/* ============ LOCAL ISSUES ============ */}
         {localAlerts !== null && localAlerts.length > 0 && (
-          <div style={{ margin: '12px 16px 0', fontFamily: 'Inter, sans-serif' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <AlertTriangle size={14} color="#D97706" />
-                <span style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Inter, sans-serif' }}>Local issues</span>
+          <div
+            onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
+            style={{
+              margin: '8px 16px 0', background: 'white', borderRadius: 14,
+              boxShadow: '0 2px 8px rgba(11,31,58,0.06)', padding: '13px 14px',
+              display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
+              fontFamily: 'Poppins, sans-serif',
+            }}
+          >
+            <div style={{
+              width: 36, height: 36, borderRadius: 11, background: '#FDECD9',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              position: 'relative',
+            }}>
+              <AlertTriangle size={18} color="#D97706" />
+              <div style={{
+                position: 'absolute', top: -5, right: -5,
+                width: 17, height: 17, borderRadius: '50%', background: '#CC2229',
+                color: '#FFFFFF', fontSize: 10, fontWeight: 800,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: '2px solid white', boxSizing: 'border-box',
+              }}>
+                {localAlerts.length}
               </div>
-              <button
-                type="button"
-                onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
-                style={{ fontSize: 11, color: '#1877D6', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
-              >
-                See all →
-              </button>
             </div>
-            {localAlerts.slice(0, 2).map((alert: any) => {
-              const typeConfig = ({
-                roadworks: { bg: '#FEF3C7', colour: '#D97706', Icon: Car },
-                road_closure: { bg: '#FEF3C7', colour: '#D97706', Icon: AlertTriangle },
-                heavy_traffic: { bg: '#FEF3C7', colour: '#D97706', Icon: Car },
-                hazard: { bg: '#FCEBEB', colour: '#CC2229', Icon: AlertTriangle },
-                test_centre_busy: { bg: '#FCEBEB', colour: '#CC2229', Icon: Building },
-                test_centre_delay: { bg: '#FCEBEB', colour: '#CC2229', Icon: Clock },
-                examiner_tip: { bg: '#F5F3FF', colour: '#6B4FD6', Icon: Info },
-                other: { bg: '#F3F4F6', colour: '#6B7280', Icon: Info },
-              } as any)[alert.alert_type] || { bg: '#F3F4F6', colour: '#6B7280', Icon: Info };
-              const Icon = typeConfig.Icon;
-              return (
-                <div
-                  key={alert.id}
-                  onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
-                  style={{
-                    background: 'white', borderRadius: 10, boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-                    padding: '10px 12px', marginBottom: 6, display: 'flex', alignItems: 'center',
-                    gap: 10, cursor: 'pointer',
-                  }}
-                >
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+                Local issues
+              </div>
+              {(() => {
+                const topAlert = [...localAlerts].sort((a: any, b: any) => {
+                  const upvoteDiff = (b.upvotes ?? 0) - (a.upvotes ?? 0);
+                  if (upvoteDiff !== 0) return upvoteDiff;
+                  return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+                })[0];
+                return (
                   <div style={{
-                    width: 28, height: 28, borderRadius: 8, background: typeConfig.bg,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                    fontSize: 11, color: '#9CA3AF', marginTop: 1,
+                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                    fontFamily: 'Poppins, sans-serif',
                   }}>
-                    <Icon size={14} color={typeConfig.colour} />
+                    {topAlert?.location_name || 'In your area'}
                   </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {alert.description}
-                    </div>
-                    <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 1 }}>
-                      {alert.location_name && `${alert.location_name} · `}{alert.upvotes} confirmed
-                    </div>
-                  </div>
-                  <ChevronRight size={12} color="#D1D5DB" />
-                  <button
-                    type="button"
-                    aria-label="Dismiss alert"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const dismissed = Array.isArray(alert.dismissed_by) ? alert.dismissed_by : [];
-                      setLocalAlerts((prev) => (prev ?? []).filter((a: any) => a.id !== alert.id));
-                      if (!userId) return;
-                      supabase
-                        .from('local_alerts')
-                        .update({ dismissed_by: [...dismissed, userId] })
-                        .eq('id', alert.id)
-                        .then(({ error }) => { if (error) console.error('[local_alerts dismiss]', error); });
-                    }}
-                    style={{
-                      width: 24, height: 24, borderRadius: 6, background: 'transparent',
-                      border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      cursor: 'pointer', flexShrink: 0, marginLeft: 2,
-                    }}
-                  >
-                    <X size={14} color="#9CA3AF" />
-                  </button>
-                </div>
-              );
-            })}
-            {localAlerts.length > 2 && (
-              <button
-                onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
-                style={{ fontSize: 11, color: '#1877D6', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, padding: '4px 0' }}
-              >
-                +{localAlerts.length - 2} more local alerts →
-              </button>
-            )}
+                );
+              })()}
+            </div>
+            <ChevronRight size={17} color="#C7CDD9" style={{ flexShrink: 0 }} />
           </div>
         )}
 
@@ -4932,20 +4895,20 @@ function HomePage() {
           <div
             onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
             style={{
-              margin: '8px 16px 0', background: 'white', borderRadius: 10,
-              boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: '10px 12px',
-              display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
+              margin: '8px 16px 0', background: 'white', borderRadius: 14,
+              boxShadow: '0 2px 8px rgba(11,31,58,0.06)', padding: '13px 14px',
+              display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
               fontFamily: 'Poppins, sans-serif',
               border: unreadChat > 0 ? '1.5px solid #22C55E' : '1px solid transparent',
             }}
           >
             <div style={{ position: 'relative', flexShrink: 0 }}>
               <div style={{
-                width: 28, height: 28, borderRadius: 8,
+                width: 36, height: 36, borderRadius: 11,
                 background: unreadChat > 0 ? '#22C55E' : '#F0EBFF',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
-                <MessageSquare size={14} color={unreadChat > 0 ? '#FFFFFF' : '#6B4FD6'} />
+                <MessageSquare size={18} color={unreadChat > 0 ? '#FFFFFF' : '#6B4FD6'} />
               </div>
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -4958,6 +4921,7 @@ function HomePage() {
                   fontWeight: unreadChat > 0 ? 600 : 400,
                   color: unreadChat > 0 ? '#0B1F3A' : '#9CA3AF',
                   whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, minWidth: 0,
+                  fontFamily: 'Poppins, sans-serif',
                 }}>
                   {localChatLatest
                     ? `${(localChatLatest.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(localChatLatest.message || '').substring(0, 40)}${(localChatLatest.message || '').length > 40 ? '...' : ''}`
@@ -4983,7 +4947,7 @@ function HomePage() {
                 {unreadChat}
               </div>
             )}
-            <ChevronRight size={12} color="#D1D5DB" style={{ flexShrink: 0 }} />
+            <ChevronRight size={17} color="#C7CDD9" style={{ flexShrink: 0 }} />
           </div>
         )}
 
