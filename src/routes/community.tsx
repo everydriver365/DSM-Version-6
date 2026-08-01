@@ -323,6 +323,9 @@ function AlertsTab({
   instructorOutcode: string | null;
 }) {
   const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
+  const [comments, setComments] = useState<AlertComment[]>([]);
+  const [commentDraft, setCommentDraft] = useState("");
   const [reportSheetOpen, setReportSheetOpen] = useState(false);
   const setReportSheetOpenWithEvent = (open: boolean) => {
     setReportSheetOpen(open);
