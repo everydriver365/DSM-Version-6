@@ -21,6 +21,7 @@ import {
   Info,
   GraduationCap,
   MessageSquare,
+  MessageCircle,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
@@ -358,6 +359,7 @@ function AlertsTab({
   const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
   const [comments, setComments] = useState<AlertComment[]>([]);
   const [commentDraft, setCommentDraft] = useState("");
+  const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [reportSheetOpen, setReportSheetOpen] = useState(false);
   const setReportSheetOpenWithEvent = (open: boolean) => {
     setReportSheetOpen(open);
@@ -378,6 +380,20 @@ function AlertsTab({
       ? rows.filter((a) => (a.outcode ?? "").toUpperCase() === instructorOutcode)
       : rows;
     setAlerts(filtered);
+
+    if (filtered.length > 0) {
+      const { data: commentRows } = await supabase
+        .from("alert_comments")
+        .select("alert_id")
+        .in("alert_id", filtered.map((a) => a.id));
+      const counts: Record<string, number> = {};
+      for (const row of (commentRows ?? []) as { alert_id: string }[]) {
+        counts[row.alert_id] = (counts[row.alert_id] ?? 0) + 1;
+      }
+      setCommentCounts(counts);
+    } else {
+      setCommentCounts({});
+    }
   };
 
   useEffect(() => {
@@ -529,7 +545,7 @@ function AlertsTab({
         )
       ) : (
         otherAlerts.map((a) => (
-          <AlertCard key={a.id} alert={a} userId={userId} onUpvote={handleUpvote} onSelect={setSelectedAlert} />
+          <AlertCard key={a.id} alert={a} userId={userId} onUpvote={handleUpvote} onSelect={setSelectedAlert} commentCount={commentCounts[a.id] ?? 0} />
         ))
       )}
 
@@ -840,9 +856,9 @@ function AlertsTab({
 }
 
 function AlertCard({
-  alert, userId, onUpvote, onSelect,
+  alert, userId, onUpvote, onSelect, commentCount,
 }: {
-  alert: Alert; userId: string | null; onUpvote: (a: Alert) => void; onSelect?: (a: Alert) => void;
+  alert: Alert; userId: string | null; onUpvote: (a: Alert) => void; onSelect?: (a: Alert) => void; commentCount: number;
 }) {
   const cfg = TYPE_CONFIG[alert.alert_type] ?? TYPE_CONFIG.other;
   const Icon = cfg.Icon;
@@ -886,6 +902,12 @@ function AlertCard({
         marginTop: 10, paddingTop: 8, borderTop: "0.5px solid #F3F4F6",
       }}>
         <div style={{ fontSize: 12, color: "#9CA3AF" }}>{reporter} reported this</div>
+        {commentCount > 0 && (
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            <MessageCircle size={13} color="#9CA3AF" />
+            <span style={{ fontSize: 12, color: "#9CA3AF" }}>{commentCount}</span>
+          </div>
+        )}
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); onUpvote(alert); }}
