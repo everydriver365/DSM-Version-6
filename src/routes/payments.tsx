@@ -658,11 +658,6 @@ function Pill({ active, onClick, children }: { active: boolean; onClick: () => v
       style={{ backgroundColor: active ? NAVY : "#F3F4F6", color: active ? "#fff" : NAVY, border: `0.5px solid ${active ? NAVY : BORDER}` }}>{children}</button>
   );
 }
-function MenuItem({ children, onClick, danger }: { children: React.ReactNode; onClick: () => void; danger?: boolean }) {
-  return (
-    <button type="button" onClick={onClick} className="w-full text-left px-3 py-2 text-[13px]" style={{ color: danger ? RED : NAVY, ...POPPINS }}>{children}</button>
-  );
-}
 
 function PupilPicker({ pupils, selectedId, onClose, onSelect, allowAll }: { pupils: PupilLite[]; selectedId: string; onClose: () => void; onSelect: (id: string) => void; allowAll?: boolean }) {
   const [q, setQ] = useState("");
