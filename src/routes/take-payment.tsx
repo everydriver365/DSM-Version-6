@@ -4,6 +4,7 @@ import { ChevronLeft, Delete, QrCode, CreditCard, Banknote, Share2, Copy, X, Cir
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import { recordPayment, recordPaymentWithPackage } from "@/lib/payments";
 
 const RYFT_PUBLIC_KEY =
   "pk_sandbox_QpmgBnWSyZXGthN4EtZy6XIXYu+oRRkEUeceUFKLrXS5zmRA7XWBrkAdD8E6FgTn";
@@ -108,155 +109,45 @@ function TakePaymentPage() {
     if (search.pupilId) setPupilId(search.pupilId);
   }, [search.pupilId]);
 
-  // Shared: after a successful payment, mark the lesson paid, reduce
-  // pupils.balance_owed, and insert into payments. Best-effort — each
-  // step's error is logged but does not abort the others.
+  // Shared: after a successful payment, reconcile via the single canonical
+  // payment write path in @/lib/payments.
   async function recordPaymentSideEffects(args: {
     instructorId: string | null;
     pupilIdForPayment: string | null;
     amountPaid: number;
     method: "cash" | "bank" | "card";
   }) {
-    const { instructorId, pupilIdForPayment, amountPaid, method } = args;
-    const now = new Date().toISOString();
-    const today = now.slice(0, 10);
+    const { pupilIdForPayment, amountPaid, method } = args;
+    if (!pupilIdForPayment || !(amountPaid > 0)) return;
     const methodNorm = method === "bank" ? "bank_transfer" : method;
     const hours = Number(hoursBought) || 0;
 
-    let remaining = amountPaid;
+    const { data: pupilRow } = await supabase
+      .from("pupils")
+      .select("account_balance")
+      .eq("id", pupilIdForPayment)
+      .maybeSingle();
+    const currentAccountBalance = Number(
+      (pupilRow as { account_balance?: number | null } | null)?.account_balance ?? 0,
+    );
 
-    // 1) If a specific lesson was targeted, mark that one first.
-    if (lessonId) {
-      const { data: lRow } = await supabase
-        .from("lessons")
-        .select("amount_due")
-        .eq("id", lessonId)
-        .maybeSingle();
-      const due = Number((lRow as { amount_due?: number | null } | null)?.amount_due ?? 0);
-      const pay = Math.min(due, remaining);
-      if (pay > 0) {
-        const full = pay >= due;
-        // NOTE: never write amount_due on payment — it's set at lesson creation
-        // and is the source of truth for lesson value. paid_amount reflects
-        // cash received; for full pay we always copy from amount_due.
-        const { error: lessonErr } = await supabase
-          .from("lessons")
-          .update({
-            payment_status: full ? "paid" : "partial",
-            payment_method: methodNorm,
-            paid_at: now,
-            paid_amount: full ? due : pay,
-          })
-          .eq("id", lessonId);
-        if (lessonErr) console.error("[take-payment] lesson update", lessonErr);
-        remaining -= pay;
-      } else if (due === 0) {
-        // Already zeroed — still stamp the metadata.
-        await supabase
-          .from("lessons")
-          .update({ payment_status: "paid", payment_method: methodNorm, paid_at: now, paid_amount: 0 })
-          .eq("id", lessonId);
-      }
-
-    }
-
-    // 2) Apply leftover to oldest unpaid lessons for the pupil.
-    if (pupilIdForPayment && remaining > 0) {
-      const { data: unpaid } = await supabase
-        .from("lessons")
-        .select("id, amount_due")
-        .eq("pupil_id", pupilIdForPayment)
-        .eq("payment_status", "unpaid")
-        .is("deleted_at", null)
-        .order("lesson_date", { ascending: true });
-      for (const l of (unpaid ?? []) as { id: string; amount_due: number | null }[]) {
-        if (remaining <= 0) break;
-        const due = Number(l.amount_due ?? 0);
-        if (due <= 0) continue;
-        // NOTE: never write amount_due on payment — see rationale above.
-        if (due <= remaining) {
-          await supabase
-            .from("lessons")
-            .update({
-              payment_status: "paid",
-              payment_method: methodNorm,
-              paid_at: now,
-              paid_amount: due,
-            })
-            .eq("id", l.id);
-          remaining -= due;
-        } else {
-          await supabase
-            .from("lessons")
-            .update({
-              payment_status: "partial",
-              payment_method: methodNorm,
-              paid_at: now,
-              paid_amount: remaining,
-            })
-            .eq("id", l.id);
-          remaining = 0;
-        }
-      }
-
-    }
-
-    // 3) Any overpayment → pupil credit (account_balance).
-    if (pupilIdForPayment && remaining > 0) {
-      const { data: pRow } = await supabase
-        .from("pupils")
-        .select("account_balance")
-        .eq("id", pupilIdForPayment)
-        .maybeSingle();
-      const cur = Number((pRow as { account_balance?: number | null } | null)?.account_balance ?? 0);
-      await supabase
-        .from("pupils")
-        .update({ account_balance: cur + remaining })
-        .eq("id", pupilIdForPayment);
-    }
-
-    // 4) Audit trail — one lesson_history row per payment.
-    if (instructorId && pupilIdForPayment) {
-      const { error: hErr } = await supabase.from("lesson_history").insert({
-        instructor_id: instructorId,
-        pupil_id: pupilIdForPayment,
-        lesson_cost: amountPaid,
-        payment_status: "paid",
-        payment_method: methodNorm,
-        notes: description.trim() || (hours > 0 ? `${hours}h package` : null),
-        created_at: now,
-      });
-      if (hErr) console.error("[take-payment] lesson_history insert", hErr);
-    }
-
-    // 5) Legacy payments table row for reporting compatibility.
-    const { error: payErr } = await supabase.from("payments").insert({
-      instructor_id: instructorId,
-      pupil_id: pupilIdForPayment,
+    const paymentInput = {
+      pupilId: pupilIdForPayment,
       amount: amountPaid,
-      notes: `${methodNorm}${lessonId ? ` — lesson ${lessonId}` : ""}`,
-      paid_at: now,
-      created_at: now,
-    });
-    if (payErr) console.error("[take-payment] payments insert", payErr);
+      method: methodNorm,
+      notes: description.trim() || null,
+      currentAccountBalance,
+      targetLessonId: lessonId,
+    };
 
-    // Add bought hours to the pupil's package totals
-    if (pupilIdForPayment && hours > 0) {
-      const { data: pRow } = await supabase
-        .from("pupils")
-        .select("lesson_count, prepaid_hours")
-        .eq("id", pupilIdForPayment)
-        .maybeSingle();
-      const curLessons = Number((pRow as { lesson_count?: number | null } | null)?.lesson_count ?? 0);
-      const curPrepaid = Number((pRow as { prepaid_hours?: number | null } | null)?.prepaid_hours ?? 0);
-      const { error: puErr } = await supabase
-        .from("pupils")
-        .update({
-          lesson_count: curLessons + hours,
-          prepaid_hours: curPrepaid + hours,
-        })
-        .eq("id", pupilIdForPayment);
-      if (puErr) console.error("[take-payment] pupil hours update", puErr);
+    if (hours > 0) {
+      await recordPaymentWithPackage({ ...paymentInput, hoursBought: hours });
+    } else {
+      await recordPayment(paymentInput);
+    }
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("dsm-payment-recorded"));
     }
   }
 
