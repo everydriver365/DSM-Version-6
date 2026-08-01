@@ -452,6 +452,23 @@ function AlertsTab({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedAlert?.id]);
 
+  useEffect(() => {
+    if (!selectedAlert) return;
+    const updated = alerts.find((a) => a.id === selectedAlert.id);
+    if (!updated) return;
+    const sameVotes =
+      updated.upvotes === selectedAlert.upvotes &&
+      updated.expires_at === selectedAlert.expires_at &&
+      updated.is_active === selectedAlert.is_active;
+    const sameVoters =
+      (updated.upvoted_by ?? []).join(",") ===
+      (selectedAlert.upvoted_by ?? []).join(",");
+    if (!sameVotes || !sameVoters) {
+      setSelectedAlert(updated);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [alerts]);
+
   const handleAddComment = async () => {
     if (!selectedAlert || !userId) return;
     const body = commentDraft.trim();
@@ -466,7 +483,11 @@ function AlertsTab({
       return;
     }
     setCommentDraft("");
-    loadComments(selectedAlert.id);
+    await loadComments(selectedAlert.id);
+    const already = (selectedAlert.upvoted_by ?? []).includes(userId);
+    if (!already) {
+      await handleUpvote(selectedAlert);
+    }
   };
 
   return (
