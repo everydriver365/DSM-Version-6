@@ -77,6 +77,7 @@ type NewListingDraft = {
   contactType: "website" | "email" | "phone";
   contactValue: string;
   isFeatured: boolean;
+  showImage: boolean;
   isVerified: boolean;
   isActive: boolean;
   images: [string, string, string, string];
