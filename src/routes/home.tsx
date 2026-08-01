@@ -1737,7 +1737,7 @@ function HomePage() {
 
         let query = supabase
           .from('local_alerts')
-          .select('id, alert_type, description, location_name, upvotes, expires_at, created_at, area, outcode')
+          .select('id, alert_type, description, location_name, upvotes, expires_at, created_at, area, outcode, instructor_id, owner_last_read_at')
           .eq('is_active', true)
           .gt('expires_at', new Date().toISOString())
           .order('upvotes', { ascending: false })
@@ -1748,6 +1748,33 @@ function HomePage() {
         if (error) { setLocalAlerts([]); return; }
         const filtered = Array.isArray(data) ? data : [];
         setLocalAlerts(filtered.slice(0, 3));
+
+        // Unread comment activity on the user's own alerts
+        try {
+          const myAlerts = filtered.filter((a: any) => a?.instructor_id === userId);
+          const myAlertIds = myAlerts.map((a: any) => a.id);
+          if (myAlertIds.length > 0) {
+            const { data: comments } = await supabase
+              .from('alert_comments')
+              .select('alert_id, created_at')
+              .in('alert_id', myAlertIds)
+              .order('created_at', { ascending: false });
+            if (cancelled) return;
+            const latestByAlert = new Map<string, string>();
+            (Array.isArray(comments) ? comments : []).forEach((c: any) => {
+              if (c?.alert_id && !latestByAlert.has(c.alert_id)) latestByAlert.set(c.alert_id, c.created_at);
+            });
+            const unread = myAlerts.some((a: any) => {
+              const latest = latestByAlert.get(a.id);
+              if (!latest) return false;
+              if (!a.owner_last_read_at) return true;
+              return new Date(latest).getTime() > new Date(a.owner_last_read_at).getTime();
+            });
+            setHasUnreadAlertComments(unread);
+          } else {
+            setHasUnreadAlertComments(false);
+          }
+        } catch {}
 
         // Local chat room + latest message
         if (outcode) {
