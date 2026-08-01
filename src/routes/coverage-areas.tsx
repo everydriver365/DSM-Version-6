@@ -500,10 +500,17 @@ function AreaEditor({
   const [radius, setRadius] = useState<number>(initial?.radius_miles ?? 5);
   const [isPrimary, setIsPrimary] = useState<boolean>(initial?.is_primary ?? false);
   const [saving, setSaving] = useState(false);
-  const [placesLoaded, setPlacesLoaded] = useState<boolean>(
-    typeof window !== "undefined" && !!(window as GWindow).google?.maps?.places,
-  );
+  const [placesLoaded, setPlacesLoaded] = useState(false);
+  const [placesError, setPlacesError] = useState(false);
+  const [suggestions, setSuggestions] = useState<
+    Array<{ id: string; main: string; secondary: string }>
+  >([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [nameTouched, setNameTouched] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const placesLibRef = useRef<PlacesLib | null>(null);
+  const sessionTokenRef = useRef<unknown>(null);
+  const predsRef = useRef<Map<string, PlacePrediction>>(new Map());
 
   // Reset state when opening
   useEffect(() => {
@@ -516,45 +523,105 @@ function AreaEditor({
       setOutcodeError(null);
       setRadius(initial?.radius_miles ?? 5);
       setIsPrimary(initial?.is_primary ?? false);
+      setSuggestions([]);
+      setShowSuggestions(false);
+      setNameTouched(false);
     }
   }, [open, initial]);
 
-  // Load places script
+  // Load Google Maps + Places (New)
   useEffect(() => {
-    if (!open) return;
+    if (!open || placesLibRef.current) return;
     let cancelled = false;
-    loadPlacesScript()
-      .then(() => {
-        if (!cancelled) setPlacesLoaded(true);
-      })
-      .catch((e) => console.error("[coverage-areas] places load", e));
+    (async () => {
+      try {
+        await loadMapsScript();
+        const g = (window as GWindow).google;
+        if (!g?.maps?.importLibrary) throw new Error("importLibrary unavailable");
+        const lib = (await g.maps.importLibrary("places")) as PlacesLib;
+        if (cancelled) return;
+        placesLibRef.current = lib;
+        sessionTokenRef.current = new lib.AutocompleteSessionToken();
+        setPlacesLoaded(true);
+      } catch (e) {
+        console.error("[coverage-areas] places load", e);
+        if (!cancelled) setPlacesError(true);
+      }
+    })();
     return () => {
       cancelled = true;
     };
   }, [open]);
 
-  // Bind city autocomplete
+  // Fetch suggestions as the user types
   useEffect(() => {
-    if (!open || !placesLoaded || !inputRef.current) return;
-    const g = (window as GWindow).google;
-    if (!g?.maps?.places) return;
-    const ac = new g.maps.places.Autocomplete(inputRef.current, {
-      componentRestrictions: { country: "gb" },
-      types: ["(cities)"],
-      fields: ["name", "formatted_address", "geometry"],
-    });
-    ac.addListener("place_changed", () => {
-      const p = ac.getPlace();
-      if (p.name) setAreaName(p.name);
-      const la = p.geometry?.location?.lat();
-      const ln = p.geometry?.location?.lng();
+    const lib = placesLibRef.current;
+    const query = areaName.trim();
+    if (!open || !placesLoaded || !lib || !nameTouched || query.length < 2) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      try {
+        const { suggestions: raw } = await lib.AutocompleteSuggestion.fetchAutocompleteSuggestions({
+          input: query,
+          sessionToken: sessionTokenRef.current ?? undefined,
+          includedRegionCodes: ["gb"],
+        });
+        if (cancelled) return;
+        const map = new Map<string, PlacePrediction>();
+        const list = raw
+          .map((s) => s.placePrediction)
+          .filter((p): p is PlacePrediction => !!p)
+          .map((p) => {
+            map.set(p.placeId, p);
+            return {
+              id: p.placeId,
+              main: readText(p.mainText) || readText(p.text),
+              secondary: readText(p.secondaryText),
+            };
+          });
+        predsRef.current = map;
+        setSuggestions(list);
+        setShowSuggestions(list.length > 0);
+      } catch (e) {
+        if (cancelled) return;
+        console.error("[coverage-areas] fetchAutocompleteSuggestions failed", e);
+        setSuggestions([]);
+        setShowSuggestions(false);
+      }
+    }, 300);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [areaName, open, placesLoaded, nameTouched]);
+
+  async function selectSuggestion(id: string) {
+    const lib = placesLibRef.current;
+    const pred = predsRef.current.get(id);
+    if (!lib || !pred) return;
+    setShowSuggestions(false);
+    setNameTouched(false);
+    try {
+      const place = pred.toPlace();
+      await place.fetchFields({ fields: ["displayName", "formattedAddress", "location"] });
+      const name = place.displayName || place.formattedAddress || "";
+      if (name) setAreaName(name);
+      const la = place.location?.lat();
+      const ln = place.location?.lng();
       if (typeof la === "number" && typeof ln === "number") {
         setLat(la);
         setLng(ln);
       }
-    });
-    inputRef.current.setAttribute("autocomplete", "new-password");
-  }, [open, placesLoaded]);
+      sessionTokenRef.current = new lib.AutocompleteSessionToken();
+    } catch (e) {
+      console.error("[coverage-areas] fetchFields failed", e);
+    }
+  }
+
 
   async function addOutcode() {
     const raw = outcodeInput.trim().toUpperCase().replace(/\s+/g, "");
