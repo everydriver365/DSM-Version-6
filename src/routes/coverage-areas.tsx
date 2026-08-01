@@ -34,6 +34,7 @@ interface CoverageArea {
   centre_lng: number | null;
   radius_miles: number;
   is_primary: boolean;
+  is_nationwide: boolean;
   created_at?: string;
 }
 
@@ -222,6 +223,7 @@ function CoverageAreasPage() {
             centre_lng: payload.centre_lng,
             radius_miles: payload.radius_miles,
             is_primary: payload.is_primary,
+            is_nationwide: payload.is_nationwide,
           })
           .eq("id", payload.id);
         if (error) throw error;
@@ -235,6 +237,7 @@ function CoverageAreasPage() {
           centre_lng: payload.centre_lng,
           radius_miles: payload.radius_miles,
           is_primary: payload.is_primary,
+          is_nationwide: payload.is_nationwide,
         });
         if (error) throw error;
         toast.success("Coverage area added");
@@ -499,6 +502,7 @@ function AreaEditor({
   const [outcodeError, setOutcodeError] = useState<string | null>(null);
   const [radius, setRadius] = useState<number>(initial?.radius_miles ?? 5);
   const [isPrimary, setIsPrimary] = useState<boolean>(initial?.is_primary ?? false);
+  const [isNationwide, setIsNationwide] = useState<boolean>(initial?.is_nationwide ?? false);
   const [saving, setSaving] = useState(false);
   const [placesLoaded, setPlacesLoaded] = useState(false);
   const [placesError, setPlacesError] = useState(false);
@@ -523,6 +527,7 @@ function AreaEditor({
       setOutcodeError(null);
       setRadius(initial?.radius_miles ?? 5);
       setIsPrimary(initial?.is_primary ?? false);
+      setIsNationwide(initial?.is_nationwide ?? false);
       setSuggestions([]);
       setShowSuggestions(false);
       setNameTouched(false);
@@ -658,7 +663,7 @@ function AreaEditor({
     setOutcodes((prev) => prev.filter((x) => x !== oc));
   }
 
-  const canSave = areaName.trim().length > 0 && lat != null && lng != null && radius > 0;
+  const canSave = areaName.trim().length > 0 && (isNationwide || (lat != null && lng != null && radius > 0));
   const previewUrl = useMemo(
     () => staticMapUrl(lat, lng, radius, "600x300"),
     [lat, lng, radius],
@@ -689,6 +694,7 @@ function AreaEditor({
       centre_lng: lng,
       radius_miles: radius,
       is_primary: isPrimary,
+      is_nationwide: isNationwide,
     });
     setSaving(false);
   }
@@ -700,12 +706,13 @@ function AreaEditor({
       title={initial ? "Edit coverage area" : "Add coverage area"}
     >
       {/* Area name */}
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative", opacity: isNationwide ? 0.5 : 1, pointerEvents: isNationwide ? "none" : "auto" }}>
         <label style={{ fontSize: 12, color: "#9CA3AF", ...POPPINS }}>Area name</label>
         <input
           ref={inputRef}
           type="text"
           value={areaName}
+          disabled={isNationwide}
           onChange={(e) => {
             setNameTouched(true);
             setAreaName(e.target.value);
@@ -724,7 +731,7 @@ function AreaEditor({
             border: "0.5px solid #E2E6ED",
             borderRadius: 10,
             fontSize: 14,
-            background: "#fff",
+            background: isNationwide ? "#F3F4F6" : "#fff",
             color: "#0F2044",
             ...POPPINS,
           }}
@@ -858,8 +865,55 @@ function AreaEditor({
         )}
       </div>
 
+      {/* Nationwide toggle */}
+      <div
+        style={{
+          marginTop: 16,
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: 12,
+        }}
+      >
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 14, color: "#0F2044", ...POPPINS }}>Covers the whole UK</div>
+          <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+            Skip the radius below — for national/intensive course providers
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => setIsNationwide((v) => !v)}
+          aria-pressed={isNationwide}
+          style={{
+            width: 44,
+            height: 26,
+            borderRadius: 999,
+            backgroundColor: isNationwide ? "#1A52A0" : "#E2E6ED",
+            border: "none",
+            position: "relative",
+            cursor: "pointer",
+            flexShrink: 0,
+            transition: "background-color 150ms",
+          }}
+        >
+          <span
+            style={{
+              position: "absolute",
+              top: 3,
+              left: isNationwide ? 21 : 3,
+              width: 20,
+              height: 20,
+              borderRadius: "50%",
+              backgroundColor: "#fff",
+              transition: "left 150ms",
+            }}
+          />
+        </button>
+      </div>
+
       {/* Radius */}
-      <div style={{ marginTop: 16 }}>
+      <div style={{ marginTop: 16, opacity: isNationwide ? 0.5 : 1, pointerEvents: isNationwide ? "none" : "auto" }}>
         <label style={{ fontSize: 12, color: "#9CA3AF", ...POPPINS }}>Teaching radius</label>
         <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044", marginTop: 4 }}>
           {radius} miles
@@ -870,6 +924,7 @@ function AreaEditor({
           max={100}
           step={0.5}
           value={radius}
+          disabled={isNationwide}
           onChange={(e) => setRadius(Number(e.target.value))}
           style={{ width: "100%", marginTop: 4, accentColor: "#1A52A0" }}
         />
