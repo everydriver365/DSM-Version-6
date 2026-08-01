@@ -209,7 +209,6 @@ function PaymentsPage() {
   const [takePaymentOpen, setTakePaymentOpen] = useState(false);
   const [takePaymentPupilId, setTakePaymentPupilId] = useState<string | undefined>();
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [menuId, setMenuId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
   const [instructor, setInstructor] = useState<{ name: string | null } | null>(null);
