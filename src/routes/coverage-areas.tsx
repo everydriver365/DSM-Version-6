@@ -864,8 +864,55 @@ function AreaEditor({
         )}
       </div>
 
+      {/* Nationwide toggle */}
+      <div
+        style={{
+          marginTop: 16,
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: 12,
+        }}
+      >
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 14, color: "#0F2044", ...POPPINS }}>Covers the whole UK</div>
+          <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+            Skip the radius below — for national/intensive course providers
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => setIsNationwide((v) => !v)}
+          aria-pressed={isNationwide}
+          style={{
+            width: 44,
+            height: 26,
+            borderRadius: 999,
+            backgroundColor: isNationwide ? "#1A52A0" : "#E2E6ED",
+            border: "none",
+            position: "relative",
+            cursor: "pointer",
+            flexShrink: 0,
+            transition: "background-color 150ms",
+          }}
+        >
+          <span
+            style={{
+              position: "absolute",
+              top: 3,
+              left: isNationwide ? 21 : 3,
+              width: 20,
+              height: 20,
+              borderRadius: "50%",
+              backgroundColor: "#fff",
+              transition: "left 150ms",
+            }}
+          />
+        </button>
+      </div>
+
       {/* Radius */}
-      <div style={{ marginTop: 16 }}>
+      <div style={{ marginTop: 16, opacity: isNationwide ? 0.5 : 1, pointerEvents: isNationwide ? "none" : "auto" }}>
         <label style={{ fontSize: 12, color: "#9CA3AF", ...POPPINS }}>Teaching radius</label>
         <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044", marginTop: 4 }}>
           {radius} miles
@@ -876,6 +923,7 @@ function AreaEditor({
           max={100}
           step={0.5}
           value={radius}
+          disabled={isNationwide}
           onChange={(e) => setRadius(Number(e.target.value))}
           style={{ width: "100%", marginTop: 4, accentColor: "#1A52A0" }}
         />
