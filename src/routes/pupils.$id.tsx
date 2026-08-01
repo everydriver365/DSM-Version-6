@@ -419,7 +419,7 @@ function PupilDetailPage() {
   const [instructorBufferAfter, setInstructorBufferAfter] = useState<number | null>(null);
   const [instructorName, setInstructorName] = useState<string>("");
   const [postcodeRates, setPostcodeRates] = useState<{ outward_code: string; hourly_rate: number }[]>([]);
-  const [unpaidLessons, setUnpaidLessons] = useState<{ duration_minutes: number | null; amount_due: number | null }[] | null>(null);
+  const [unpaidLessons, setUnpaidLessons] = useState<{ duration_minutes: number | null; amount_due: number | null; paid_amount: number | null; payment_status: string | null }[] | null>(null);
   const [certOpen, setCertOpen] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState<number>(0);
   const [certMilestone, setCertMilestone] = useState<"first_lesson" | "10_lessons" | "20_lessons" | "theory_pass" | "test_pass">("test_pass");
@@ -1061,7 +1061,7 @@ function PupilDetailPage() {
     // pupil's rate or postcode pricing was different.
     supabase
       .from("lessons")
-      .select("duration_minutes, amount_due, payment_status, status")
+      .select("duration_minutes, amount_due, paid_amount, payment_status, status")
       .eq("pupil_id", id)
       .is("deleted_at", null)
       .neq("status", "cancelled")
@@ -1070,8 +1070,8 @@ function PupilDetailPage() {
           console.error("[pupil] unpaid lessons error", error);
           return;
         }
-        const rows = (data as { duration_minutes: number | null; amount_due: number | null; payment_status: string | null }[]) ?? [];
-        setUnpaidLessons(rows.filter((r) => r.payment_status !== "paid" && r.payment_status !== "prepaid"));
+        const rows = (data as { duration_minutes: number | null; amount_due: number | null; paid_amount: number | null; payment_status: string | null }[]) ?? [];
+        setUnpaidLessons(rows.filter((r) => !["paid", "prepaid", "cancelled"].includes(r.payment_status ?? "")));
       });
 
     supabase
@@ -1234,8 +1234,13 @@ function PupilDetailPage() {
       setLiveOwed(0);
       return;
     }
-    // Single source of truth: sum stored lessons.amount_due for unpaid lessons.
-    const owed = unpaidLessons.reduce((sum, l) => sum + (Number(l.amount_due) || 0), 0);
+    // Single source of truth: sum remaining balance for unpaid/partial lessons.
+    const owed = unpaidLessons.reduce((sum, l) => {
+      const due = Number(l.amount_due) || 0;
+      const paid = Number(l.paid_amount) || 0;
+      const remaining = Math.max(0, due - paid);
+      return sum + remaining;
+    }, 0);
     setLiveOwed(Math.round(owed * 100) / 100);
   }, [unpaidLessons]);
 
