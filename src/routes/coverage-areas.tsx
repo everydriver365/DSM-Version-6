@@ -126,7 +126,7 @@ function loadMapsScript(): Promise<void> {
 function staticMapUrl(lat: number | null, lng: number | null, radius: number, size = "400x100") {
   if (lat == null || lng == null) return "";
   // Approx radius zoom: 11 works well for ~10mi; adjust slightly by radius.
-  const zoom = radius <= 3 ? 12 : radius <= 8 ? 11 : radius <= 15 ? 10 : 9;
+  const zoom = radius <= 3 ? 12 : radius <= 8 ? 11 : radius <= 15 ? 10 : radius <= 30 ? 9 : radius <= 60 ? 8 : 7;
   const path = `path=color:0x1A52A0AA|weight:2|fillcolor:0x1A52A033|geodesic:true|` +
     circlePathPoints(lat, lng, radius).join("|");
   return `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=${zoom}&size=${size}&maptype=roadmap&${path}&key=${GOOGLE_MAPS_KEY}`;
@@ -867,7 +867,7 @@ function AreaEditor({
         <input
           type="range"
           min={1}
-          max={15}
+          max={100}
           step={0.5}
           value={radius}
           onChange={(e) => setRadius(Number(e.target.value))}
