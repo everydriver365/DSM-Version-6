@@ -607,7 +607,15 @@ function AlertsTab({
         <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>
           Alerts near {instructorArea}
         </div>
-        <div style={{ fontSize: 12, color: "#9CA3AF" }}>{otherAlerts.length} from other instructors</div>
+        <div style={{ fontSize: 12, color: "#9CA3AF" }}>
+          {otherAlerts.length === 0
+            ? "0 active"
+            : instructorReportedCount > 0 && officialCount > 0
+              ? `${instructorReportedCount} from instructors · ${officialCount} official`
+              : instructorReportedCount > 0
+                ? `${instructorReportedCount} from instructors`
+                : `${officialCount} official`}
+        </div>
       </div>
 
       {otherAlerts.length === 0 ? (
