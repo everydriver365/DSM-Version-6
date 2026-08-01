@@ -551,6 +551,18 @@ function AreaEditor({
     }
   }, [open, initial]);
 
+  // Hide/show bottom nav when sheet opens/closes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("dsm-sheet-open"));
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("dsm-sheet-close"));
+      }
+    };
+  }, []);
+
   // Load Google Maps + Places (New)
   useEffect(() => {
     if (!open || placesLibRef.current) return;
