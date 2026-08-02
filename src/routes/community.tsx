@@ -22,6 +22,10 @@ import {
   GraduationCap,
   MessageSquare,
   MessageCircle,
+  LayoutGrid,
+  Search,
+  Users,
+
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
