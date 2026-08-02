@@ -361,7 +361,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   ];
 
   return (
-    <div style={{ padding: "0 16px 22px", fontFamily: FONT }}>
+    <div style={{ margin: "0 -16px 0", padding: "0 16px 22px", borderRadius: 0, fontFamily: FONT }}>
       <div
         style={{
           display: "flex",
