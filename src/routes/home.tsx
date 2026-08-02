@@ -4962,10 +4962,13 @@ function HomePage() {
           );
 
           return (
-            <div style={{
-              margin: '8px 16px 0', background: '#FFFFFF', borderRadius: 16,
-              border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
-            }}>
+            <>
+              <SectionHeader style={{ margin: '16px 16px 4px' }}>Local Issues</SectionHeader>
+              <div style={{
+                margin: '0 16px', background: '#FFFFFF', borderRadius: 16,
+                border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
+              }}>
+
               {alerts.length > 0 && (
                 <div
                   onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })}
@@ -5040,8 +5043,10 @@ function HomePage() {
                 </div>
               )}
             </div>
+            </>
           );
         })()}
+
 
         {/* ============ NATIONAL CHAT ============ */}
         {ukRoom && (
