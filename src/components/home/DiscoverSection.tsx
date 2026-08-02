@@ -238,7 +238,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     height: 172,
     flexShrink: 0,
     flexGrow: 0,
-    borderRadius: 18,
+    borderRadius: 14,
+    border: `1px solid #E4E8EF`,
+    background: "#FFFFFF",
     overflow: "hidden",
     cursor: "pointer",
     fontFamily: FONT,
@@ -250,15 +252,21 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const cardTitle: React.CSSProperties = {
     fontSize: 13,
-    fontWeight: 700,
-    color: "#FFFFFF",
+    fontWeight: 600,
+    color: NAVY,
     lineHeight: 1.25,
-    maxWidth: "85%",
     display: "-webkit-box",
     WebkitLineClamp: 2,
     WebkitBoxOrient: "vertical",
     overflow: "hidden",
   };
+
+  const CARD_TONES = [
+    { pillBg: "#EAF3FB", pillFg: BLUE, priceBg: "#EAF3FB", priceFg: BLUE },
+    { pillBg: "#EDF0F5", pillFg: NAVY, priceBg: "#EDF0F5", priceFg: NAVY },
+    { pillBg: "#FDECED", pillFg: RED, priceBg: "#FDECED", priceFg: RED },
+  ];
+
 
 
   const priceLabel = (m: MarketItem) => {
