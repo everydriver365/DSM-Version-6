@@ -194,7 +194,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const onStripScroll = () => {
     const el = stripRef.current;
     if (!el) return;
-    const idx = Math.round(el.scrollLeft / 168);
+    const idx = Math.round(el.scrollLeft / 186);
     setActiveCard(Math.max(0, Math.min(market.length - 1, idx)));
   };
 
