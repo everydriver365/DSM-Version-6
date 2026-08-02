@@ -5209,7 +5209,7 @@ function HomePage() {
                 border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
               }}>
 
-              {alerts.length > 0 && (
+              {!alertsHidden && (
                 <div
                   onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })}
                   style={{
@@ -5246,16 +5246,22 @@ function HomePage() {
                       </div>
                     )}
                   </div>
+                  <MenuButton
+                    items={rowMenu('alerts', 'Local issues', topAlert?.id ? [{
+                      label: 'Dismiss this alert',
+                      onClick: () => muteRow(`alert:${topAlert.id}`, 365 * 24 * HOUR, 'Alert dismissed', 'Alert restored'),
+                    }] : [])}
+                  />
                 </div>
               )}
 
-              {localRoom && (
+              {!localChatHidden && localRoom && (
                 <div
                   onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '14px 16px', cursor: 'pointer',
-                    borderTop: alerts.length > 0 ? `1px solid ${BORDER_C}` : undefined,
+                    borderTop: !alertsHidden ? `1px solid ${BORDER_C}` : undefined,
                   }}
                 >
                   {ChatIcon}
@@ -5280,17 +5286,18 @@ function HomePage() {
                       {timeAgo(localChatLatest.created_at)}
                     </div>
                   )}
+                  <MenuButton items={rowMenu('localchat', 'Local chat')} />
                 </div>
               )}
 
-              {joinedRoomChats.map((room, idx) => (
+              {visibleRooms.map((room, idx) => (
                 <div
                   key={room.id}
                   onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '14px 16px', cursor: 'pointer',
-                    borderTop: (alerts.length > 0 || localRoom || idx > 0) ? `1px solid ${BORDER_C}` : undefined,
+                    borderTop: (!alertsHidden || !localChatHidden || idx > 0) ? `1px solid ${BORDER_C}` : undefined,
                   }}
                 >
                   {ChatIcon}
@@ -5313,8 +5320,28 @@ function HomePage() {
                       {timeAgo(room.latest.created_at)}
                     </div>
                   )}
+                  <MenuButton items={rowMenu(`room:${room.id}`, `${room.area_name || room.outcode} chat`)} />
                 </div>
               ))}
+
+              {mutedCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    persistMutedRows({});
+                    toast.success('Muted items restored');
+                  }}
+                  style={{
+                    width: '100%', textAlign: 'center', padding: '10px 16px',
+                    background: '#F7F9FC', border: 'none',
+                    borderTop: `1px solid ${BORDER_C}`,
+                    fontSize: 12, fontWeight: 600, color: GREY_C, fontFamily: PF_C, cursor: 'pointer',
+                  }}
+                >
+                  {mutedCount} muted · Show all
+                </button>
+              )}
+
             </div>
             </>
           );
