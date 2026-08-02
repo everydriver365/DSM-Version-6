@@ -331,8 +331,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     borderRadius: 10,
     padding: "8px 10px",
     overflow: "hidden",
-    whiteSpace: "nowrap",
     textOverflow: "ellipsis",
+  };
+
+  const livePriceBox: React.CSSProperties = {
+    ...priceBox,
+    whiteSpace: "normal",
+    lineHeight: 1.25,
   };
 
   const cardFooter: React.CSSProperties = {
