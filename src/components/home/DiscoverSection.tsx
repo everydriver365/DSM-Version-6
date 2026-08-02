@@ -431,13 +431,32 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     position: "relative",
                     height: 49,
                     flexShrink: 0,
-                    background: photo ? `url(${photo}) center/cover` : tone.tint,
+                    background: tone.tint,
                     borderBottom: `1px solid ${HAIRLINE}`,
+                    overflow: "hidden",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
+                  {photo && (
+                    <img
+                      src={photo}
+                      alt=""
+                      loading="lazy"
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  )}
                   <span
                     style={{
                       ...pillBase,
+                      zIndex: 1,
                       background: "rgba(255,255,255,0.95)",
                       color: tone.pillFg,
                     }}
