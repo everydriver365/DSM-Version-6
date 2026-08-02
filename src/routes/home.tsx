@@ -4904,128 +4904,144 @@ function HomePage() {
 
 
 
-        {/* ============ LOCAL ISSUES ============ */}
-        {localAlerts !== null && localAlerts.length > 0 && (
-          <div
-            onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })}
-            style={{
-              margin: '8px 16px 0', background: 'white', borderRadius: 14,
-              boxShadow: '0 2px 8px rgba(11,31,58,0.06)', padding: '13px 14px',
-              display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
-              fontFamily: 'Poppins, sans-serif',
-            }}
-          >
+        {/* ============ LOCAL ISSUES + LOCAL CHAT (unified card) ============ */}
+        {((localAlerts !== null && localAlerts.length > 0) || localRoom) && (() => {
+          const NAVY_C = '#0B1F3A';
+          const GREY_C = '#6B7686';
+          const BORDER_C = '#E4E8EF';
+          const GREEN_C = '#1E9E5A';
+          const AMBER_C = '#D97706';
+          const RED_C = '#CC2229';
+          const PF_C = 'Poppins, sans-serif';
+
+          const severityOf = (a: any): string => {
+            const txt = `${a?.alert_type ?? ''} ${a?.description ?? ''}`.toLowerCase();
+            if (/closed|closure|crash|collision|accident|blocked/.test(txt)) return RED_C;
+            if (/broken|breakdown|broken down|lane|roadworks|works|queue|delay|hazard|flood/.test(txt)) return AMBER_C;
+            return GREEN_C;
+          };
+          const rank = (c: string) => (c === RED_C ? 3 : c === AMBER_C ? 2 : 1);
+
+          const alerts = Array.isArray(localAlerts) ? localAlerts : [];
+          const topAlert = alerts.length
+            ? [...alerts].sort((a: any, b: any) => {
+                const d = rank(severityOf(b)) - rank(severityOf(a));
+                if (d !== 0) return d;
+                return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+              })[0]
+            : null;
+          const sevColor = topAlert ? severityOf(topAlert) : GREEN_C;
+          const alertPreview = topAlert
+            ? (topAlert.description || topAlert.alert_type || topAlert.location_name || 'Active issue nearby')
+            : '';
+
+          const HazardIcon = (
+            <svg width={26} height={26} viewBox="0 0 26 26" style={{ flexShrink: 0, display: 'block' }} aria-hidden="true">
+              <path d="M13 2.6 L24.4 22.4 H1.6 Z" fill="#FFFFFF" stroke={RED_C} strokeWidth={3} strokeLinejoin="round" />
+              <rect x="11.85" y="9.4" width="2.3" height="7.1" rx="1.15" fill="#111111" />
+              <circle cx="13" cy="18.9" r="1.35" fill="#111111" />
+            </svg>
+          );
+
+          const ChatIcon = (
+            <svg width={28} height={28} viewBox="0 0 28 28" style={{ flexShrink: 0, display: 'block' }} aria-hidden="true">
+              <defs>
+                <linearGradient id="dsmChatGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#63E356" />
+                  <stop offset="100%" stopColor="#2CC916" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M14 3C7.6 3 2.6 7.3 2.6 12.6c0 3 1.6 5.6 4.2 7.4.2 1.9-.8 3.6-2 4.6-.3.3-.1.8.3.8 2.7-.1 4.9-1 6.4-2.2 1 .2 1.9.3 2.5.3 6.4 0 11.4-4.3 11.4-9.6C25.4 7.3 20.4 3 14 3Z"
+                fill="url(#dsmChatGrad)"
+              />
+              <circle cx="9.2" cy="12.6" r="1.5" fill="#FFFFFF" />
+              <circle cx="14" cy="12.6" r="1.5" fill="#FFFFFF" />
+              <circle cx="18.8" cy="12.6" r="1.5" fill="#FFFFFF" />
+            </svg>
+          );
+
+          return (
             <div style={{
-              width: 36, height: 36, borderRadius: 11, background: '#FDECD9',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-              position: 'relative',
+              margin: '8px 16px 0', background: '#FFFFFF', borderRadius: 16,
+              border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
             }}>
-              <AlertTriangle size={18} color="#D97706" />
-              <div style={{
-                position: 'absolute', top: -5, right: -5,
-                width: 17, height: 17, borderRadius: '50%', background: '#CC2229',
-                color: '#FFFFFF', fontSize: 10, fontWeight: 800,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: '2px solid white', boxSizing: 'border-box',
-              }}>
-                {localAlerts.length}
-              </div>
-              {hasUnreadAlertComments && (
-                <>
-                  <style>{`@keyframes localIssuePulse{0%{opacity:1}50%{opacity:0.3}100%{opacity:1}}`}</style>
-                  <div style={{
-                    position: 'absolute', bottom: -2, left: -2,
-                    width: 6, height: 6, borderRadius: '50%', background: '#CC2229',
-                    animation: 'localIssuePulse 1.4s ease-in-out infinite',
-                  }} />
-                </>
+              {alerts.length > 0 && (
+                <div
+                  onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '14px 16px', cursor: 'pointer',
+                  }}
+                >
+                  {HazardIcon}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>
+                      Local issues
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, minWidth: 0 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: sevColor, flexShrink: 0 }} />
+                      <span style={{
+                        fontSize: 12, fontWeight: 600, color: sevColor, fontFamily: PF_C,
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                      }}>
+                        {alertPreview}
+                      </span>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, flexShrink: 0 }}>
+                    <div style={{
+                      minWidth: 22, height: 22, borderRadius: 999, background: sevColor,
+                      color: '#FFFFFF', fontSize: 11, fontWeight: 700, fontFamily: PF_C,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 6px',
+                    }}>
+                      {alerts.length}
+                    </div>
+                    {topAlert?.created_at && (
+                      <div style={{ fontSize: 10, color: GREY_C, fontFamily: PF_C }}>
+                        {timeAgo(topAlert.created_at)}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {localRoom && (
+                <div
+                  onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '14px 16px', cursor: 'pointer',
+                    borderTop: alerts.length > 0 ? `1px solid ${BORDER_C}` : undefined,
+                  }}
+                >
+                  {ChatIcon}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>
+                      Local chat · {localRoom.area_name}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, minWidth: 0 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: GREEN_C, flexShrink: 0 }} />
+                      <span style={{
+                        fontSize: 12, fontWeight: 600, color: GREEN_C, fontFamily: PF_C,
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                      }}>
+                        {localChatLatest
+                          ? `${(localChatLatest.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(localChatLatest.message || '').substring(0, 40)}${(localChatLatest.message || '').length > 40 ? '...' : ''}`
+                          : `Be the first to chat in ${localRoom.area_name}!`}
+                      </span>
+                    </div>
+                  </div>
+                  {localChatLatest?.created_at && (
+                    <div style={{ fontSize: 11, color: GREY_C, fontFamily: PF_C, flexShrink: 0 }}>
+                      {timeAgo(localChatLatest.created_at)}
+                    </div>
+                  )}
+                </div>
               )}
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
-                Local issues
-              </div>
-              {(() => {
-                const topAlert = [...localAlerts].sort((a: any, b: any) => {
-                  const upvoteDiff = (b.upvotes ?? 0) - (a.upvotes ?? 0);
-                  if (upvoteDiff !== 0) return upvoteDiff;
-                  return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
-                })[0];
-                return (
-                  <div style={{
-                    fontSize: 11, color: '#9CA3AF', marginTop: 1,
-                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}>
-                    {topAlert?.location_name || 'In your area'}
-                  </div>
-                );
-              })()}
-            </div>
-            <ChevronRight size={17} color="#C7CDD9" style={{ flexShrink: 0 }} />
-          </div>
-        )}
-
-        {/* ============ LOCAL CHAT ============ */}
-        {localRoom && (
-          <div
-            onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
-            style={{
-              margin: '8px 16px 0', background: 'white', borderRadius: 14,
-              boxShadow: '0 2px 8px rgba(11,31,58,0.06)', padding: '13px 14px',
-              display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
-              fontFamily: 'Poppins, sans-serif',
-              border: unreadChat > 0 ? '1.5px solid #22C55E' : '1px solid transparent',
-            }}
-          >
-            <div style={{ position: 'relative', flexShrink: 0 }}>
-              <div style={{
-                width: 36, height: 36, borderRadius: 11,
-                background: unreadChat > 0 ? '#22C55E' : '#F0EBFF',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <MessageSquare size={18} color={unreadChat > 0 ? '#FFFFFF' : '#6B4FD6'} />
-              </div>
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
-                Local chat · {localRoom.area_name}
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 1 }}>
-                <div style={{
-                  fontSize: unreadChat > 0 ? 12 : 11,
-                  fontWeight: unreadChat > 0 ? 600 : 400,
-                  color: unreadChat > 0 ? '#0B1F3A' : '#9CA3AF',
-                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, minWidth: 0,
-                  fontFamily: 'Poppins, sans-serif',
-                }}>
-                  {localChatLatest
-                    ? `${(localChatLatest.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(localChatLatest.message || '').substring(0, 40)}${(localChatLatest.message || '').length > 40 ? '...' : ''}`
-                    : `Be the first to chat in ${localRoom.area_name}!`}
-                </div>
-                {localChatLatest?.created_at && (
-                  <div style={{
-                    fontSize: 10, color: unreadChat > 0 ? '#22C55E' : '#9CA3AF', flexShrink: 0,
-                    fontFamily: 'Poppins, sans-serif',
-                  }}>
-                    {timeAgo(localChatLatest.created_at)}
-                  </div>
-                )}
-              </div>
-            </div>
-            {unreadChat > 0 && (
-              <div style={{
-                width: 16, height: 16, borderRadius: 8, flexShrink: 0,
-                background: '#22C55E', color: '#FFFFFF', fontSize: 10, fontWeight: 700,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontFamily: 'Poppins, sans-serif',
-              }}>
-                {unreadChat}
-              </div>
-            )}
-            <ChevronRight size={17} color="#C7CDD9" style={{ flexShrink: 0 }} />
-          </div>
-        )}
+          );
+        })()}
 
         {/* ============ NATIONAL CHAT ============ */}
         {ukRoom && (
