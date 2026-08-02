@@ -250,14 +250,19 @@ function PaymentsPage() {
         .eq("instructor_id", userId).is("deleted_at", null)
         .order("created_at", { ascending: false }),
       supabase.from("lessons")
-        .select("amount_due")
+        .select("amount_due, paid_amount, payment_status")
         .eq("instructor_id", userId)
-        .eq("payment_status", "unpaid")
+        .in("payment_status", ["unpaid", "partial"])
         .is("deleted_at", null),
     ]);
     setAllPupils((pupilRows ?? []) as PupilLite[]);
     setHistory((hist as unknown as HistoryRow[]) ?? []);
-    const owed = ((unpaid ?? []) as { amount_due: number | null }[]).reduce((s, l) => s + Number(l.amount_due || 0), 0);
+    const owed = ((unpaid ?? []) as { amount_due: number | null; paid_amount: number | null }[])
+      .reduce((s, l) => {
+        const due = Number(l.amount_due || 0);
+        const paid = Number(l.paid_amount || 0);
+        return s + Math.max(0, due - paid);
+      }, 0);
     setOutstanding(owed);
     setLoading(false);
   }
