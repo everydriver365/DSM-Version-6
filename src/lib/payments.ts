@@ -329,3 +329,98 @@ export async function correctPaymentRecord(input: CorrectPaymentInput): Promise<
 
   return { error: null };
 }
+
+export interface PupilBalance {
+  pricingType: 'standard' | 'block' | 'national_intensives' | 'custom';
+  // For block/NI pupils
+  packageTotal: number;      // prepaid_amount_paid or ni_amount_total
+  packagePaid: number;       // sum of cash payments from lesson_history
+  packageOutstanding: number; // packageTotal - packagePaid
+  hoursTotal: number;        // block_hours_total
+  hoursRemaining: number;    // prepaid_hours
+  hoursUsed: number;         // hoursTotal - hoursRemaining
+  // For standard/custom pupils
+  lessonsOwed: number;       // sum of amount_due on unpaid/partial lessons
+  lessonsPaid: number;       // sum of paid_amount on paid lessons
+  accountCredit: number;     // account_balance (cash overpayment credit only)
+  outstanding: number;       // what the pupil still owes overall
+}
+
+export async function getPupilBalance(pupilId: string): Promise<PupilBalance> {
+  // Fetch pupil data
+  const { data: pupil } = await supabase
+    .from('pupils')
+    .select('pricing_type, prepaid_hours, block_hours_total, prepaid_amount_paid, ni_amount_total, ni_amount_paid, account_balance')
+    .eq('id', pupilId)
+    .maybeSingle();
+
+  const pricingType = (pupil?.pricing_type || 'standard') as PupilBalance['pricingType'];
+  const accountCredit = Number(pupil?.account_balance ?? 0);
+
+  if (pricingType === 'block' || pricingType === 'national_intensives') {
+    // For block/NI — track package payments separately from lessons
+    const packageTotal = pricingType === 'block'
+      ? Number(pupil?.prepaid_amount_paid ?? 0)
+      : Number(pupil?.ni_amount_total ?? 0);
+
+    // Sum actual cash received from lesson_history
+    const { data: history } = await supabase
+      .from('lesson_history')
+      .select('amount_paid')
+      .eq('pupil_id', pupilId)
+      .not('amount_paid', 'is', null);
+
+    const packagePaid = (history ?? []).reduce(
+      (s, r) => s + Number(r.amount_paid ?? 0), 0
+    );
+
+    const hoursTotal = Number(pupil?.block_hours_total ?? 0);
+    const hoursRemaining = Number(pupil?.prepaid_hours ?? 0);
+
+    return {
+      pricingType,
+      packageTotal,
+      packagePaid,
+      packageOutstanding: Math.max(0, packageTotal - packagePaid),
+      hoursTotal,
+      hoursRemaining,
+      hoursUsed: hoursTotal - hoursRemaining,
+      lessonsOwed: 0,
+      lessonsPaid: packagePaid,
+      accountCredit,
+      outstanding: Math.max(0, packageTotal - packagePaid),
+    };
+  }
+
+  // Standard/custom — calculate from lessons directly
+  const { data: lessons } = await supabase
+    .from('lessons')
+    .select('amount_due, paid_amount, payment_status')
+    .eq('pupil_id', pupilId)
+    .neq('status', 'cancelled')
+    .is('deleted_at', null);
+
+  const lessonsOwed = (lessons ?? [])
+    .filter(l => l.payment_status !== 'paid' && l.payment_status !== 'prepaid')
+    .reduce((s, l) => s + Number(l.amount_due ?? 0), 0);
+
+  const lessonsPaid = (lessons ?? [])
+    .reduce((s, l) => s + Number(l.paid_amount ?? 0), 0);
+
+  const outstanding = Math.max(0, lessonsOwed - accountCredit);
+
+  return {
+    pricingType,
+    packageTotal: 0,
+    packagePaid: 0,
+    packageOutstanding: 0,
+    hoursTotal: 0,
+    hoursRemaining: Number(pupil?.prepaid_hours ?? 0),
+    hoursUsed: 0,
+    lessonsOwed,
+    lessonsPaid,
+    accountCredit,
+    outstanding,
+  };
+}
+
