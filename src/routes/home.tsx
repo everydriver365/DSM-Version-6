@@ -2527,7 +2527,7 @@ function HomePage() {
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
         .select(
-          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name, first_name, phone, postcode, address, prepaid_hours, deleted_at)"
+          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name, first_name, phone, postcode, address, prepaid_hours, pricing_type, block_hours_total, deleted_at)"
         )
         .eq("instructor_id", userId)
         .is("deleted_at", null)
