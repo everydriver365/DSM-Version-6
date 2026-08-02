@@ -4836,12 +4836,21 @@ function HomePage() {
                   }}>
                     PRICE
                   </div>
-                  <span style={{
-                    fontSize: 16, fontWeight: 700, color: '#0B1F3A',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}>
-                    {priceText}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{
+                      background: hPillBgFinal, color: hPillFgFinal,
+                      fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 6,
+                      fontFamily: 'Poppins, sans-serif',
+                    }}>
+                      {hLabelFinal}
+                    </span>
+                    <span style={{
+                      fontSize: 16, fontWeight: 700, color: '#0B1F3A',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}>
+                      {priceText}
+                    </span>
+                  </div>
                 </div>
 
               </div>
@@ -4902,17 +4911,6 @@ function HomePage() {
                 }}>
                   {pickup}
                 </span>
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); openMaps(); }}
-                  style={{
-                    background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                    fontSize: 12, fontWeight: 600, color: '#1877D6',
-                    fontFamily: 'Poppins, sans-serif', flexShrink: 0, whiteSpace: 'nowrap',
-                  }}
-                >
-                  View route{driveData ? ` · ${driveData.durationMinutes} min` : ''}
-                </button>
               </div>
 
               {/* Footer / More */}
@@ -4920,13 +4918,19 @@ function HomePage() {
                 padding: '11px 16px',
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
               }}>
-                <span style={{
-                  background: hPillBgFinal, color: hPillFgFinal,
-                  fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 6,
-                  fontFamily: 'Poppins, sans-serif',
-                }}>
-                  {hLabelFinal}
-                </span>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); openMaps(); }}
+                  style={{
+                    background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', gap: 4,
+                    fontSize: 13, fontWeight: 600, color: '#1877D6',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}
+                >
+                  <Navigation size={16} />
+                  View route{driveData ? ` · ${driveData.durationMinutes} min` : ''}
+                </button>
                 <button
                   type="button"
                   onClick={() => setHeroExpandedWithEvent((v) => !v)}
