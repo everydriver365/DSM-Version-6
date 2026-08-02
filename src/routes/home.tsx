@@ -4615,6 +4615,17 @@ function HomePage() {
           const weatherCondition = weatherData?.condition ?? '';
           const isAdverseWeather = !!weatherCondition &&
             adverseKeywords.some((k) => weatherCondition.toLowerCase().includes(k));
+          let WeatherIcon: React.ReactNode = null;
+          if (weatherCondition) {
+            const w = weatherCondition.toLowerCase();
+            const commonProps = { size: 14, color: '#1877D6', style: { flexShrink: 0 } as React.CSSProperties };
+            if (w.includes('rain') || w.includes('drizzle')) WeatherIcon = <CloudRain {...commonProps} />;
+            else if (w.includes('snow') || w.includes('sleet') || w.includes('ice')) WeatherIcon = <CloudSnow {...commonProps} />;
+            else if (w.includes('storm') || w.includes('thunder')) WeatherIcon = <CloudLightning {...commonProps} />;
+            else if (w.includes('fog') || w.includes('mist')) WeatherIcon = <CloudFog {...commonProps} />;
+            else if (w.includes('sun') || w.includes('clear')) WeatherIcon = <Sun {...commonProps} />;
+            else WeatherIcon = <CloudIcon {...commonProps} />;
+          }
 
           // Community alert matched to pupil outcode
           const pupilPostcode = (upcoming?.pupils?.postcode ?? '').trim();
@@ -4633,22 +4644,28 @@ function HomePage() {
           // Payment / due
           const hStatus = (upcoming?.payment_status ?? 'unpaid').toLowerCase();
           const hAmountDue = Number(upcoming?.amount_due ?? 0);
-          const isPrepaid = hStatus === 'prepaid';
-          const hLabel = hAmountDue > 0 && !isPrepaid
-            ? 'Due'
-            : isPrepaid
-              ? 'Prepaid'
-              : 'Paid';
-          const hPillBg = hAmountDue > 0 && !isPrepaid ? '#FCE9E9' : '#E5F4EA';
-          const hPillFg = hAmountDue > 0 && !isPrepaid ? '#CC2229' : '#1D8A4E';
-          const priceText = hAmountDue > 0 ? `£${hAmountDue.toFixed(2)}` : null;
+          const isPaid = hStatus === 'paid' || hStatus === 'prepaid' || hAmountDue <= 0;
+          const isOverdue = !isPaid && d && d < todayStart;
+          const hLabel = isPaid ? 'Paid' : isOverdue ? 'Overdue' : 'Due';
+          const hPillBg = isPaid ? '#E5F4EA' : isOverdue ? '#FEECEC' : '#FEF3C7';
+          const hPillFg = isPaid ? '#1E9E5A' : isOverdue ? '#CC2229' : '#D97706';
+          const priceText = `£${hAmountDue.toFixed(2)}`;
+
+          // Package info
+          const pType = (upcoming?.pupils?.pricing_type ?? '').toLowerCase();
+          const pTotal = Number(upcoming?.pupils?.block_hours_total ?? 0);
+          const pHours = Number(upcoming?.pupils?.prepaid_hours ?? 0);
+          const isOnPackage = pType === 'block' || pType === 'national_intensives' || (pType === '' && pHours > 0);
+          const packageText = isOnPackage && pTotal > 0 ? `${Math.round(pHours)}/${Math.round(pTotal)} lessons` : null;
 
           // Date / time / duration
           const d = upcoming ? lessonDateTime(upcoming) : null;
           const fmt = (x: Date) => `${String(x.getHours()).padStart(2, '0')}:${String(x.getMinutes()).padStart(2, '0')}`;
           const startText = d ? fmt(d) : '—';
           const dur = upcoming?.duration_minutes ?? 0;
+          const durationDecimal = dur ? (dur / 60).toFixed(dur % 60 === 0 ? 0 : 1) : '0';
           const pickup = upcoming?.pickup_location || [upcoming?.pupils?.address, upcoming?.pupils?.postcode].filter(Boolean).join(', ') || 'No pickup';
+
 
           const openMaps = () => {
             if (driveData?.directionsUrl) {
