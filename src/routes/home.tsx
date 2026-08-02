@@ -4827,7 +4827,7 @@ function HomePage() {
                 {/* Price column */}
                 <div style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center',
-                  paddingLeft: 12, gap: 3,
+                  paddingLeft: 12, gap: 4,
                 }}>
                   <div style={{
                     fontSize: 10, fontWeight: 600, color: '#6B7686',
@@ -4836,22 +4836,21 @@ function HomePage() {
                   }}>
                     PRICE
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span style={{
-                      fontSize: 16, fontWeight: 700, color: '#0B1F3A',
-                      fontFamily: 'Poppins, sans-serif',
-                    }}>
-                      {priceText}
-                    </span>
-                    <span style={{
-                      background: hPillBgFinal, color: hPillFgFinal,
-                      fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 6,
-                      fontFamily: 'Poppins, sans-serif',
-                    }}>
-                      {hLabelFinal}
-                    </span>
-                  </div>
+                  <span style={{
+                    background: hPillBgFinal, color: hPillFgFinal,
+                    fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 6,
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    {hLabelFinal}
+                  </span>
+                  <span style={{
+                    fontSize: 16, fontWeight: 700, color: '#0B1F3A',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    {priceText}
+                  </span>
                 </div>
+
               </div>
 
               {/* Reasons row */}
