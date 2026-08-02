@@ -1642,6 +1642,13 @@ function HomePage() {
   const [ukRoom, setUkRoom] = useState<{ id: string; area_name: string } | null>(null);
   const [ukChatLatest, setUkChatLatest] = useState<any>(null);
   const [unreadUkChat, setUnreadUkChat] = useState(0);
+  const [joinedRoomChats, setJoinedRoomChats] = useState<Array<{
+    id: string;
+    area_name: string | null;
+    outcode: string;
+    latest: { message: string | null; created_at: string; instructors: { name: string | null } | null } | null;
+    unread: boolean;
+  }>>([]);
   const [instructorArea, setInstructorArea] = useState<string>('your area');
   const [instructorHomePostcode, setInstructorHomePostcode] = useState<string | null>(null);
   const [pupilsTab, setPupilsTab] = useState<'current' | 'passed' | 'cancelled' | 'inactive'>('current');
