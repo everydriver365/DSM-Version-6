@@ -455,6 +455,21 @@ function CommunityPage() {
 
 /* ============================================================ ALERTS TAB */
 
+const TOMTOM_FILTERS: { key: string; label: string }[] = [
+  { key: "all", label: "All" },
+  { key: "roadworks", label: "Roadworks" },
+  { key: "accidents", label: "Accidents" },
+  { key: "congestion", label: "Congestion" },
+  { key: "hazards", label: "Hazards" },
+];
+
+const TOMTOM_FILTER_TYPES: Record<string, string[]> = {
+  roadworks: ["roadworks", "road_closure"],
+  accidents: ["accident", "collision"],
+  congestion: ["heavy_traffic", "congestion"],
+  hazards: ["hazard", "other"],
+};
+
 function AlertsTab({
   userId, instructorFirstName, instructorArea, instructorOutcode, coverageOutcodes,
 }: {
