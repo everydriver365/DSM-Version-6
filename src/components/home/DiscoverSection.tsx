@@ -560,7 +560,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               <div
                 style={{
                   position: "relative",
-                  height: 110,
+                  height: 70,
                   flexShrink: 0,
                   background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
                   borderBottom: `1px solid ${HAIRLINE}`,
@@ -569,7 +569,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   justifyContent: "center",
                 }}
               >
-                {!thumb && <IconPlayerPlay size={24} color={MUTED} stroke={2} />}
+                {!thumb && <IconPlayerPlay size={20} color={MUTED} stroke={2} />}
                 <span
                   style={{
                     ...pillBase,
