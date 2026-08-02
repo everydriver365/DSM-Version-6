@@ -2234,7 +2234,10 @@ function PupilDetailPage() {
                   {visible.map((l, idx) => {
                     const d = new Date(`${l.lesson_date}T00:00:00`);
                     const isPaid = l.payment_status === "paid";
+                    const isPartial = l.payment_status === "partial";
+                    const isUnpaid = l.payment_status === "unpaid";
                     const isCancelled = l.status === "cancelled";
+                    const remaining = Math.max(0, Number(l.amount_due || 0) - Number(l.paid_amount || 0));
                     const prev = idx > 0 ? visible[idx - 1] : null;
                     const gapDays = prev ? daysBetween(l.lesson_date, prev.lesson_date) : 0;
                     const showGap = gapDays > 7;
@@ -2271,6 +2274,10 @@ function PupilDetailPage() {
                             <span style={{ background: "#FDECEA", color: "#B42318", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Cancelled</span>
                           ) : isPaid ? (
                             <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Paid ✓</span>
+                          ) : isPartial ? (
+                            <span style={{ background: "#F3E8FF", color: "#7C3AED", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Partial £{remaining.toFixed(0)}</span>
+                          ) : isUnpaid ? (
+                            <span style={{ background: "#FDECC8", color: "#8A5A00", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Unpaid £{remaining.toFixed(0)}</span>
                           ) : null}
                           <button
                             onClick={(e) => { e.stopPropagation(); setActionsOpenFor(actionsOpenFor?.id === l.id ? null : l); }}
