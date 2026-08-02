@@ -232,9 +232,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const cardShell: React.CSSProperties = {
     position: "relative",
-    width: 158,
-    minWidth: 158,
-    height: 172,
+    width: 176,
+    minWidth: 176,
+    height: 268,
     flexShrink: 0,
     flexGrow: 0,
     borderRadius: 14,
@@ -250,8 +250,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   };
 
   const cardTitle: React.CSSProperties = {
-    fontSize: 13,
-    fontWeight: 600,
+    fontSize: 14,
+    fontWeight: 700,
     color: NAVY,
     lineHeight: 1.25,
     display: "-webkit-box",
@@ -261,10 +261,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   };
 
   const CARD_TONES = [
-    { pillBg: "#EAF3FB", pillFg: BLUE, priceBg: "#EAF3FB", priceFg: BLUE },
-    { pillBg: "#EDF0F5", pillFg: NAVY, priceBg: "#EDF0F5", priceFg: NAVY },
-    { pillBg: "#FDECED", pillFg: RED, priceBg: "#FDECED", priceFg: RED },
+    { pillFg: BLUE, tint: "#EAF3FB", imgBg: "linear-gradient(160deg,#EAF3FB 0%,#F6FAFE 100%)" },
+    { pillFg: "#067647", tint: "#E7F8EF", imgBg: "linear-gradient(160deg,#E4F5EC 0%,#F5FBF8 100%)" },
+    { pillFg: "#6D3BD1", tint: "#F0EBFB", imgBg: "linear-gradient(160deg,#EFE9FB 0%,#F9F7FE 100%)" },
+    { pillFg: "#B45309", tint: "#FDF1DF", imgBg: "linear-gradient(160deg,#FCEFD9 0%,#FEF9F1 100%)" },
   ];
+
 
 
 
