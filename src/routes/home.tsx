@@ -4820,7 +4820,7 @@ function HomePage() {
                     fontSize: 14, fontWeight: 700, color: '#0B1F3A',
                     fontFamily: 'Poppins, sans-serif',
                   }}>
-                    {startText}{endText ? ` – ${endText}` : ''}
+                    {startText}
                   </div>
                 </div>
 
