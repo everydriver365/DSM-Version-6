@@ -411,7 +411,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "relative",
-                    height: 104,
+                    height: 124,
                     flexShrink: 0,
                     background: tone.tint,
                     borderBottom: `1px solid ${HAIRLINE}`,
@@ -481,7 +481,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "relative",
-                    height: 104,
+                    height: 124,
                     flexShrink: 0,
                     background: NAVY,
                     borderBottom: `1px solid ${HAIRLINE}`,
@@ -555,7 +555,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               <div
                 style={{
                   position: "relative",
-                  height: 104,
+                  height: 124,
                   flexShrink: 0,
                   background: "#EEF2F7",
                   borderBottom: `1px solid ${HAIRLINE}`,
