@@ -4645,10 +4645,8 @@ function HomePage() {
           const hStatus = (upcoming?.payment_status ?? 'unpaid').toLowerCase();
           const hAmountDue = Number(upcoming?.amount_due ?? 0);
           const isPaid = hStatus === 'paid' || hStatus === 'prepaid' || hAmountDue <= 0;
-          const hLabel = isPaid ? 'Paid' : 'Overdue';
-          const hPillBg = isPaid ? '#E5F4EA' : '#FEF3C7';
-          const hPillFg = isPaid ? '#1E9E5A' : '#D97706';
           const priceText = `£${hAmountDue.toFixed(2)}`;
+
 
           // Package info
           const pType = (upcoming?.pupils?.pricing_type ?? '').toLowerCase();
