@@ -4,6 +4,7 @@ import { Fragment, useCallback, useEffect, useMemo, useRef, useState, isValidEle
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { QuickActionsMenu, type QuickAction } from "@/components/dsm/QuickActionsMenu";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
 import { getLessonWeather, type LessonWeather } from "@/lib/lesson-weather.functions";
@@ -1635,7 +1636,53 @@ function HomePage() {
     return () => window.removeEventListener("resize", handler);
   }, []);
   const [activePupilsCount, setActivePupilsCount] = useState(0);
+  // Dismiss / mute state for the Local Issues + chat rows (per-device)
+  const LOCAL_MUTE_KEY = "dsm-home-local-muted";
+  const [mutedRows, setMutedRows] = useState<Record<string, number>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const raw = window.localStorage.getItem(LOCAL_MUTE_KEY);
+      return raw ? (JSON.parse(raw) as Record<string, number>) : {};
+    } catch {
+      return {};
+    }
+  });
+  const persistMutedRows = useCallback((next: Record<string, number>) => {
+    setMutedRows(next);
+    try {
+      window.localStorage.setItem(LOCAL_MUTE_KEY, JSON.stringify(next));
+    } catch {
+      /* ignore */
+    }
+  }, []);
+  const isRowMuted = useCallback(
+    (key: string) => {
+      const until = mutedRows[key];
+      return typeof until === "number" && until > Date.now();
+    },
+    [mutedRows],
+  );
+  const muteRow = useCallback(
+    (key: string, ms: number, label: string, undoLabel: string) => {
+      const prev = mutedRows[key];
+      persistMutedRows({ ...mutedRows, [key]: Date.now() + ms });
+      toast.success(label, {
+        action: {
+          label: "Undo",
+          onClick: () => {
+            const next = { ...mutedRows };
+            if (prev === undefined) delete next[key];
+            else next[key] = prev;
+            persistMutedRows(next);
+            toast.success(undoLabel);
+          },
+        },
+      });
+    },
+    [mutedRows, persistMutedRows],
+  );
   const [localAlerts, setLocalAlerts] = useState<any[] | null>(null);
+
   const [hasUnreadAlertComments, setHasUnreadAlertComments] = useState(false);
   const [localRoom, setLocalRoom] = useState<{ id: string; area_name: string } | null>(null);
   const [localChatLatest, setLocalChatLatest] = useState<{ message: string; created_at: string; instructors: { name: string | null } | null } | null>(null);
@@ -5080,7 +5127,14 @@ function HomePage() {
           };
           const rank = (c: string) => (c === RED_C ? 3 : c === AMBER_C ? 2 : 1);
 
-          const alerts = Array.isArray(localAlerts) ? localAlerts : [];
+          const allAlerts = Array.isArray(localAlerts) ? localAlerts : [];
+          const alerts = allAlerts.filter((a: any) => !isRowMuted(`alert:${a?.id}`));
+          const alertsHidden = isRowMuted('alerts') || alerts.length === 0;
+          const localChatHidden = !localRoom || isRowMuted('localchat');
+          const visibleRooms = joinedRoomChats.filter((r) => !isRowMuted(`room:${r.id}`));
+          const mutedCount = Object.keys(mutedRows).filter((k) => isRowMuted(k)).length;
+          if (alertsHidden && localChatHidden && visibleRooms.length === 0 && mutedCount === 0) return null;
+
           const topAlert = alerts.length
             ? [...alerts].sort((a: any, b: any) => {
                 const d = rank(severityOf(b)) - rank(severityOf(a));
@@ -5092,6 +5146,35 @@ function HomePage() {
           const alertPreview = topAlert
             ? (topAlert.description || topAlert.alert_type || topAlert.location_name || 'Active issue nearby')
             : '';
+
+          const HOUR = 3600_000;
+          const rowMenu = (key: string, name: string, extra: QuickAction[] = []): QuickAction[] => [
+            ...extra,
+            { label: 'Mute for 8 hours', onClick: () => muteRow(key, 8 * HOUR, `${name} muted for 8 hours`, `${name} unmuted`) },
+            { label: 'Mute for 7 days', onClick: () => muteRow(key, 7 * 24 * HOUR, `${name} muted for 7 days`, `${name} unmuted`) },
+            { label: 'Dismiss', onClick: () => muteRow(key, 365 * 24 * HOUR, `${name} dismissed`, `${name} restored`), destructive: true },
+          ];
+          const MenuButton = ({ items }: { items: QuickAction[] }) => (
+            <div onClick={(e) => e.stopPropagation()} style={{ flexShrink: 0 }}>
+              <QuickActionsMenu
+                items={items}
+                trigger={({ onClick }) => (
+                  <button
+                    type="button"
+                    aria-label="Row options"
+                    onClick={onClick}
+                    style={{
+                      background: 'none', border: 'none', padding: 4, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}
+                  >
+                    <MoreHorizontal size={16} color={GREY_C} />
+                  </button>
+                )}
+              />
+            </div>
+          );
+
 
           const HazardIcon = (
             <svg width={26} height={26} viewBox="0 0 26 26" style={{ flexShrink: 0, display: 'block' }} aria-hidden="true">
@@ -5127,7 +5210,7 @@ function HomePage() {
                 border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
               }}>
 
-              {alerts.length > 0 && (
+              {!alertsHidden && (
                 <div
                   onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })}
                   style={{
@@ -5164,16 +5247,22 @@ function HomePage() {
                       </div>
                     )}
                   </div>
+                  <MenuButton
+                    items={rowMenu('alerts', 'Local issues', topAlert?.id ? [{
+                      label: 'Dismiss this alert',
+                      onClick: () => muteRow(`alert:${topAlert.id}`, 365 * 24 * HOUR, 'Alert dismissed', 'Alert restored'),
+                    }] : [])}
+                  />
                 </div>
               )}
 
-              {localRoom && (
+              {!localChatHidden && localRoom && (
                 <div
                   onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '14px 16px', cursor: 'pointer',
-                    borderTop: alerts.length > 0 ? `1px solid ${BORDER_C}` : undefined,
+                    borderTop: !alertsHidden ? `1px solid ${BORDER_C}` : undefined,
                   }}
                 >
                   {ChatIcon}
@@ -5198,17 +5287,18 @@ function HomePage() {
                       {timeAgo(localChatLatest.created_at)}
                     </div>
                   )}
+                  <MenuButton items={rowMenu('localchat', 'Local chat')} />
                 </div>
               )}
 
-              {joinedRoomChats.map((room, idx) => (
+              {visibleRooms.map((room, idx) => (
                 <div
                   key={room.id}
                   onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '14px 16px', cursor: 'pointer',
-                    borderTop: (alerts.length > 0 || localRoom || idx > 0) ? `1px solid ${BORDER_C}` : undefined,
+                    borderTop: (!alertsHidden || !localChatHidden || idx > 0) ? `1px solid ${BORDER_C}` : undefined,
                   }}
                 >
                   {ChatIcon}
@@ -5231,8 +5321,28 @@ function HomePage() {
                       {timeAgo(room.latest.created_at)}
                     </div>
                   )}
+                  <MenuButton items={rowMenu(`room:${room.id}`, `${room.area_name || room.outcode} chat`)} />
                 </div>
               ))}
+
+              {mutedCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    persistMutedRows({});
+                    toast.success('Muted items restored');
+                  }}
+                  style={{
+                    width: '100%', textAlign: 'center', padding: '10px 16px',
+                    background: '#F7F9FC', border: 'none',
+                    borderTop: `1px solid ${BORDER_C}`,
+                    fontSize: 12, fontWeight: 600, color: GREY_C, fontFamily: PF_C, cursor: 'pointer',
+                  }}
+                >
+                  {mutedCount} muted · Show all
+                </button>
+              )}
+
             </div>
             </>
           );
