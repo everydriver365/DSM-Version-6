@@ -285,10 +285,12 @@ function CommunityPage() {
   const [coverageOutcodes, setCoverageOutcodes] = useState<string[]>([]);
   const [instructorProfile, setInstructorProfile] = useState<{ name: string | null; profile_image_url: string | null } | null>(null);
   const [unread, setUnread] = useState<{ local: number; uk: number }>({ local: 0, uk: 0 });
+  const [selectedRoom, setSelectedRoom] = useState<{ outcode: string; area_name: string } | null>(null);
 
   useEffect(() => {
     if (search?.tab === "local") setActiveTab("local");
     else if (search?.tab === "uk") setActiveTab("uk");
+    else if (search?.tab === "rooms") setActiveTab("rooms");
   }, []);
 
   // Unread counts per subscribed room
