@@ -526,8 +526,25 @@ function AlertsTab({
     () => alerts.filter((a) => a.instructor_id !== userId),
     [alerts, userId],
   );
-  const instructorReportedCount = otherAlerts.filter((a) => a.source !== "tomtom").length;
-  const officialCount = otherAlerts.filter((a) => a.source === "tomtom").length;
+  const instructorAlerts = useMemo(
+    () => otherAlerts.filter((a) => (a.source ?? "manual") !== "tomtom"),
+    [otherAlerts],
+  );
+  const officialAlerts = useMemo(
+    () => otherAlerts.filter((a) => a.source === "tomtom"),
+    [otherAlerts],
+  );
+  const instructorReportedCount = instructorAlerts.length;
+  const officialCount = officialAlerts.length;
+
+  const [tomtomOpen, setTomtomOpen] = useState(false);
+  const [tomtomFilter, setTomtomFilter] = useState<string>("all");
+  const filteredOfficialAlerts = useMemo(() => {
+    if (tomtomFilter === "all") return officialAlerts;
+    const types = TOMTOM_FILTER_TYPES[tomtomFilter] ?? [];
+    return officialAlerts.filter((a) => types.includes(a.alert_type));
+  }, [officialAlerts, tomtomFilter]);
+
 
   const handleUpvote = async (alert: Alert) => {
     if (!userId) return;
