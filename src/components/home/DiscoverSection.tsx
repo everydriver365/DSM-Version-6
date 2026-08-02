@@ -603,15 +603,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   {unread && <Dot size={6} />}
                   <div style={cardTitle}>{v.title}</div>
                 </div>
-                <div style={{ ...priceBox, background: "#E8F6ED" }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: GREEN }}>
-                    {v.duration ? `${v.duration} · DSM Learn` : "Free · DSM Learn"}
-                  </span>
+                <div style={cardSub}>
+                  {v.duration ? `${v.duration} · DSM Learn` : "Free · DSM Learn"}
                 </div>
-              </div>
-              <div style={cardFooter}>
-                <span>Watch</span>
-                <IconChevronRight size={12} stroke={2.4} color={NAVY} />
               </div>
             </div>
           );
