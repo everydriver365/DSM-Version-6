@@ -158,6 +158,7 @@ interface Lesson {
   duration_minutes: number | null;
   status: string;
   amount_due: number | null;
+  paid_amount: number | null;
   payment_status: string | null;
   notes: string | null;
   eol_completed: boolean | null;
