@@ -271,7 +271,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   };
 
   const cardTitle: React.CSSProperties = {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: 700,
     color: NAVY,
     lineHeight: 1.25,
@@ -283,15 +283,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const pillBase: React.CSSProperties = {
     position: "absolute",
-    top: 8,
-    left: 8,
-    maxWidth: "calc(100% - 16px)",
+    top: 6,
+    left: 6,
+    maxWidth: "calc(100% - 12px)",
     display: "inline-flex",
     alignItems: "center",
     gap: 4,
     borderRadius: 999,
-    padding: "4px 9px",
-    fontSize: 10,
+    padding: "3px 7px",
+    fontSize: 9,
     fontWeight: 700,
     letterSpacing: "0.04em",
     textTransform: "uppercase",
@@ -303,7 +303,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const stripStyle: React.CSSProperties = {
     display: "flex",
     flexWrap: "nowrap",
-    gap: 10,
+    gap: 8,
     alignItems: "stretch",
     overflowX: "auto",
     WebkitOverflowScrolling: "touch",
@@ -317,19 +317,19 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const cardBody: React.CSSProperties = {
     position: "relative",
-    padding: "12px 12px 0",
+    padding: "8px 10px 0",
     flex: 1,
     display: "flex",
     flexDirection: "column",
-    gap: 6,
+    gap: 4,
     minHeight: 0,
   };
 
   const priceBox: React.CSSProperties = {
     marginTop: "auto",
-    marginBottom: 8,
-    borderRadius: 10,
-    padding: "8px 10px",
+    marginBottom: 6,
+    borderRadius: 8,
+    padding: "6px 8px",
     overflow: "hidden",
     textOverflow: "ellipsis",
   };
@@ -342,7 +342,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const cardFooter: React.CSSProperties = {
     borderTop: `1px solid ${HAIRLINE}`,
-    padding: "9px 12px",
+    padding: "7px 10px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
