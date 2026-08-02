@@ -414,6 +414,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           const marketCard = (m: MarketItem, i: number) => {
             const [amount, unit] = splitPrice(priceLabel(m));
             const ribbon = ribbonLabel(m);
+            const tone = CARD_TONES[i % 3];
+            const catName =
+              m.marketplace_categories?.name ?? ribbon ?? "Marketplace";
             const photo = m.show_image === false ? null : firstImage(m.image_urls);
             return (
               <div
@@ -426,127 +429,91 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     params: { listingId: m.id } as never,
                   })
                 }
-                style={{
-                  ...cardShell,
-                  background: photo
-                    ? `${TINTS[i % 3]}, url(${photo}) center/cover`
-                    : GRADIENTS[i % 3],
-                }}
+                style={cardShell}
               >
-                {!photo && (
+                {photo && (
                   <div
                     aria-hidden="true"
                     style={{
-                      position: "absolute",
-                      top: -40,
-                      right: -40,
-                      width: 120,
-                      height: 120,
-                      borderRadius: "50%",
-                      background: "rgba(255,255,255,0.08)",
+                      height: 58,
+                      flexShrink: 0,
+                      background: `#EEF2F7 url(${photo}) center/cover`,
+                      borderBottom: `1px solid ${HAIRLINE}`,
                     }}
                   />
-                )}
-                {ribbon && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 11,
-                      right: -30,
-                      transform: "rotate(40deg)",
-                      background: "#FFFFFF",
-                      color: NAVY,
-                      fontSize: 9,
-                      fontWeight: 800,
-                      letterSpacing: "0.04em",
-                      textTransform: "uppercase",
-                      padding: "3px 32px",
-                    }}
-                  >
-                    {ribbon}
-                  </div>
                 )}
                 <div
                   style={{
                     position: "relative",
-                    padding: 12,
+                    padding: 10,
                     flex: 1,
                     display: "flex",
                     flexDirection: "column",
-                    gap: 8,
+                    gap: 6,
+                    minHeight: 0,
                   }}
                 >
-                  {!photo && (
-                    <div
-                      style={{
-                        width: 34,
-                        height: 34,
-                        borderRadius: 10,
-                        background: "rgba(255,255,255,0.16)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 17,
-                        color: "#FFFFFF",
-                      }}
-                    >
-                      {categoryIcon(m)}
-                    </div>
-                  )}
+                  <span
+                    style={{
+                      alignSelf: "flex-start",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      maxWidth: "100%",
+                      background: tone.pillBg,
+                      color: tone.pillFg,
+                      borderRadius: 999,
+                      padding: "3px 8px",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      letterSpacing: "0.04em",
+                      textTransform: "uppercase",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    <span style={{ fontSize: 11 }}>{categoryIcon(m)}</span>
+                    {catName}
+                  </span>
                   <div style={cardTitle}>{m.title}</div>
                   <div
                     style={{
                       marginTop: "auto",
                       display: "flex",
-                      alignItems: "flex-end",
+                      alignItems: "center",
                       justifyContent: "space-between",
                       gap: 6,
                     }}
                   >
-                    <div style={{ minWidth: 0, overflow: "hidden", whiteSpace: "nowrap" }}>
-                      <span
-                        style={{
-                          fontSize: 26,
-                          fontWeight: 800,
-                          color: "#FFFFFF",
-                          letterSpacing: "-0.01em",
-                        }}
-                      >
-                        {amount}
-                      </span>
+                    <span
+                      style={{
+                        minWidth: 0,
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        background: tone.priceBg,
+                        color: tone.priceFg,
+                        borderRadius: 8,
+                        padding: "4px 8px",
+                        fontSize: 13,
+                        fontWeight: 700,
+                      }}
+                    >
+                      {amount}
                       {unit && (
-                        <span
-                          style={{
-                            fontSize: 11,
-                            fontWeight: 600,
-                            color: "#FFFFFF",
-                            opacity: 0.7,
-                            marginLeft: 1,
-                          }}
-                        >
+                        <span style={{ fontSize: 10, fontWeight: 600, opacity: 0.75 }}>
                           {unit}
                         </span>
                       )}
-                    </div>
-                    <span
-                      style={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: "50%",
-                        background: "rgba(255,255,255,0.2)",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <IconChevronRight size={15} stroke={2.2} color="#FFFFFF" />
                     </span>
+                    <IconChevronRight size={16} stroke={2.2} color={MUTED} />
                   </div>
                 </div>
               </div>
             );
           };
+
 
 
           const nodes: React.ReactNode[] = market.map((m, i) => marketCard(m, i));
