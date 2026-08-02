@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   IconPlayerPlay,
@@ -188,17 +188,16 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     return `${time} ${day}`;
   };
 
-  const GRADIENTS = [
-    "linear-gradient(155deg, #1877D6 0%, #0B1F3A 100%)",
-    "linear-gradient(155deg, #0B1F3A 0%, #071328 100%)",
-    "linear-gradient(155deg, #CC2229 0%, #7A1418 100%)",
-  ];
+  const stripRef = useRef<HTMLDivElement | null>(null);
+  const [activeCard, setActiveCard] = useState(0);
 
-  const TINTS = [
-    "linear-gradient(155deg, rgba(24,119,214,0.62) 0%, rgba(11,31,58,0.8) 100%)",
-    "linear-gradient(155deg, rgba(11,31,58,0.62) 0%, rgba(7,19,40,0.82) 100%)",
-    "linear-gradient(155deg, rgba(204,34,41,0.58) 0%, rgba(122,20,24,0.78) 100%)",
-  ];
+  const onStripScroll = () => {
+    const el = stripRef.current;
+    if (!el) return;
+    const idx = Math.round(el.scrollLeft / 168);
+    setActiveCard(Math.max(0, Math.min(market.length - 1, idx)));
+  };
+
 
   const CATEGORY_ICONS: Record<string, string> = {
     dashcam: "📹",
@@ -238,7 +237,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     height: 172,
     flexShrink: 0,
     flexGrow: 0,
-    borderRadius: 18,
+    borderRadius: 14,
+    border: `1px solid #E4E8EF`,
+    background: "#FFFFFF",
     overflow: "hidden",
     cursor: "pointer",
     fontFamily: FONT,
@@ -250,15 +251,21 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const cardTitle: React.CSSProperties = {
     fontSize: 13,
-    fontWeight: 700,
-    color: "#FFFFFF",
+    fontWeight: 600,
+    color: NAVY,
     lineHeight: 1.25,
-    maxWidth: "85%",
     display: "-webkit-box",
     WebkitLineClamp: 2,
     WebkitBoxOrient: "vertical",
     overflow: "hidden",
   };
+
+  const CARD_TONES = [
+    { pillBg: "#EAF3FB", pillFg: BLUE, priceBg: "#EAF3FB", priceFg: BLUE },
+    { pillBg: "#EDF0F5", pillFg: NAVY, priceBg: "#EDF0F5", priceFg: NAVY },
+    { pillBg: "#FDECED", pillFg: RED, priceBg: "#FDECED", priceFg: RED },
+  ];
+
 
 
   const priceLabel = (m: MarketItem) => {
@@ -400,12 +407,20 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}.dsm-feed-strip::-webkit-scrollbar{display:none}@keyframes dsmLivePulse{0%{opacity:1}50%{opacity:.3}100%{opacity:1}}.dsm-live-pulse{animation:dsmLivePulse 1.4s ease infinite}`}</style>
 
 
-      <div className="dsm-discover-scroll" style={stripStyle}>
+      <div
+        className="dsm-discover-scroll"
+        style={stripStyle}
+        ref={stripRef}
+        onScroll={onStripScroll}
+      >
 
         {(() => {
           const marketCard = (m: MarketItem, i: number) => {
             const [amount, unit] = splitPrice(priceLabel(m));
             const ribbon = ribbonLabel(m);
+            const tone = CARD_TONES[i % 3];
+            const catName =
+              m.marketplace_categories?.name ?? ribbon ?? "Marketplace";
             const photo = m.show_image === false ? null : firstImage(m.image_urls);
             return (
               <div
@@ -418,127 +433,91 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     params: { listingId: m.id } as never,
                   })
                 }
-                style={{
-                  ...cardShell,
-                  background: photo
-                    ? `${TINTS[i % 3]}, url(${photo}) center/cover`
-                    : GRADIENTS[i % 3],
-                }}
+                style={cardShell}
               >
-                {!photo && (
+                {photo && (
                   <div
                     aria-hidden="true"
                     style={{
-                      position: "absolute",
-                      top: -40,
-                      right: -40,
-                      width: 120,
-                      height: 120,
-                      borderRadius: "50%",
-                      background: "rgba(255,255,255,0.08)",
+                      height: 58,
+                      flexShrink: 0,
+                      background: `#EEF2F7 url(${photo}) center/cover`,
+                      borderBottom: `1px solid ${HAIRLINE}`,
                     }}
                   />
-                )}
-                {ribbon && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 11,
-                      right: -30,
-                      transform: "rotate(40deg)",
-                      background: "#FFFFFF",
-                      color: NAVY,
-                      fontSize: 9,
-                      fontWeight: 800,
-                      letterSpacing: "0.04em",
-                      textTransform: "uppercase",
-                      padding: "3px 32px",
-                    }}
-                  >
-                    {ribbon}
-                  </div>
                 )}
                 <div
                   style={{
                     position: "relative",
-                    padding: 12,
+                    padding: 10,
                     flex: 1,
                     display: "flex",
                     flexDirection: "column",
-                    gap: 8,
+                    gap: 6,
+                    minHeight: 0,
                   }}
                 >
-                  {!photo && (
-                    <div
-                      style={{
-                        width: 34,
-                        height: 34,
-                        borderRadius: 10,
-                        background: "rgba(255,255,255,0.16)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 17,
-                        color: "#FFFFFF",
-                      }}
-                    >
-                      {categoryIcon(m)}
-                    </div>
-                  )}
+                  <span
+                    style={{
+                      alignSelf: "flex-start",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      maxWidth: "100%",
+                      background: tone.pillBg,
+                      color: tone.pillFg,
+                      borderRadius: 999,
+                      padding: "3px 8px",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      letterSpacing: "0.04em",
+                      textTransform: "uppercase",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    <span style={{ fontSize: 11 }}>{categoryIcon(m)}</span>
+                    {catName}
+                  </span>
                   <div style={cardTitle}>{m.title}</div>
                   <div
                     style={{
                       marginTop: "auto",
                       display: "flex",
-                      alignItems: "flex-end",
+                      alignItems: "center",
                       justifyContent: "space-between",
                       gap: 6,
                     }}
                   >
-                    <div style={{ minWidth: 0, overflow: "hidden", whiteSpace: "nowrap" }}>
-                      <span
-                        style={{
-                          fontSize: 26,
-                          fontWeight: 800,
-                          color: "#FFFFFF",
-                          letterSpacing: "-0.01em",
-                        }}
-                      >
-                        {amount}
-                      </span>
+                    <span
+                      style={{
+                        minWidth: 0,
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        background: tone.priceBg,
+                        color: tone.priceFg,
+                        borderRadius: 8,
+                        padding: "4px 8px",
+                        fontSize: 13,
+                        fontWeight: 700,
+                      }}
+                    >
+                      {amount}
                       {unit && (
-                        <span
-                          style={{
-                            fontSize: 11,
-                            fontWeight: 600,
-                            color: "#FFFFFF",
-                            opacity: 0.7,
-                            marginLeft: 1,
-                          }}
-                        >
+                        <span style={{ fontSize: 10, fontWeight: 600, opacity: 0.75 }}>
                           {unit}
                         </span>
                       )}
-                    </div>
-                    <span
-                      style={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: "50%",
-                        background: "rgba(255,255,255,0.2)",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <IconChevronRight size={15} stroke={2.2} color="#FFFFFF" />
                     </span>
+                    <IconChevronRight size={16} stroke={2.2} color={MUTED} />
                   </div>
                 </div>
               </div>
             );
           };
+
 
 
           const nodes: React.ReactNode[] = market.map((m, i) => marketCard(m, i));
@@ -552,6 +531,37 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           return nodes;
         })()}
       </div>
+
+      {market.length > 1 && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
+            marginTop: 10,
+          }}
+        >
+          {market.map((m, i) => {
+            const active = i === activeCard;
+            return (
+              <span
+                key={`dot-${m.id}`}
+                aria-hidden="true"
+                style={{
+                  width: active ? 8 : 6,
+                  height: active ? 8 : 6,
+                  borderRadius: "50%",
+                  background: active ? BLUE : "#D7DCE3",
+                  transition: "all .18s ease",
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
+
+
 
 
       {/* DSM Live + DSM Learn — merged card, each section a one-at-a-time swipe strip */}
