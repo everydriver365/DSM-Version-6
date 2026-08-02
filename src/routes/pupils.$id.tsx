@@ -2068,7 +2068,10 @@ function PupilDetailPage() {
               });
               const price = computed > 0 ? computed : stored;
               const isPaid = l.payment_status === "paid";
-              const unpaid = !isPaid && price > 0;
+              const isPartial = l.payment_status === "partial";
+              const isUnpaid = l.payment_status === "unpaid";
+              const remaining = Math.max(0, price - Number(l.paid_amount || 0));
+              const past = isLessonPast(l);
               const showGap = gapDays > 7;
               const colour = pupil?.calendar_colour || "#1A52A0";
               const initials = (pupil?.name ?? "P").split(/\s+/).map((s) => s.charAt(0)).join("").slice(0, 2).toUpperCase();
@@ -2104,10 +2107,12 @@ function PupilDetailPage() {
                     </div>
                     {live ? (
                       <span style={{ background: "#DBEAFE", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Live</span>
-                    ) : unpaid && past ? (
-                      <span style={{ background: "#FDECC8", color: "#8A5A00", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>£{price.toFixed(0)}</span>
                     ) : isPaid ? (
                       <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Paid ✓</span>
+                    ) : isPartial ? (
+                      <span style={{ background: "#F3E8FF", color: "#7C3AED", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Partial £{remaining.toFixed(0)}</span>
+                    ) : isUnpaid && price > 0 ? (
+                      <span style={{ background: "#FDECC8", color: "#8A5A00", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Unpaid £{price.toFixed(0)}</span>
                     ) : past && l.status !== "cancelled" && !l.eol_completed ? (
                       <button
                         type="button"
