@@ -429,7 +429,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "relative",
-                    height: 47,
+                    height: 49,
                     flexShrink: 0,
                     background: photo ? `url(${photo}) center/cover` : tone.tint,
                     borderBottom: `1px solid ${HAIRLINE}`,
@@ -498,7 +498,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "relative",
-                    height: 47,
+                    height: 49,
                     flexShrink: 0,
                     background: s.image_url ? `${NAVY} url(${s.image_url}) center/cover` : NAVY,
                     borderBottom: `1px solid ${HAIRLINE}`,
@@ -561,7 +561,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               <div
                 style={{
                   position: "relative",
-                  height: 47,
+                  height: 49,
                   flexShrink: 0,
                   background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
                   borderBottom: `1px solid ${HAIRLINE}`,
