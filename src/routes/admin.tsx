@@ -321,11 +321,45 @@ function ChatRoomsSection() {
               }}
             >
               <div>
-                <div style={{ fontWeight: 600, color: "#0B1F3A", fontSize: 14 }}>{room.area_name}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ fontWeight: 600, color: "#0B1F3A", fontSize: 14 }}>{room.area_name}</div>
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      borderRadius: 999,
+                      padding: "2px 8px",
+                      background: room.is_opt_in ? "#F1F3F7" : "#EAF2FC",
+                      color: room.is_opt_in ? "#6B7280" : "#1877D6",
+                    }}
+                  >
+                    {room.is_opt_in ? "Private" : "Public"}
+                  </span>
+                </div>
                 <div style={{ color: "#6B7280", fontSize: 12, marginTop: 2 }}>Outcode: {room.outcode}</div>
               </div>
-              <div style={{ color: "#6B7280", fontSize: 12 }}>{room.instructor_count ?? 0} instructors</div>
-            </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ color: "#6B7280", fontSize: 12 }}>{room.instructor_count ?? 0} instructors</div>
+                <button
+                  type="button"
+                  onClick={() => toggleOptIn(room)}
+                  disabled={savingId === room.id}
+                  style={{
+                    height: 30,
+                    padding: "0 12px",
+                    borderRadius: 8,
+                    border: "1px solid #EEF2F7",
+                    background: "#fff",
+                    color: "#1877D6",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    opacity: savingId === room.id ? 0.6 : 1,
+                  }}
+                >
+                  {savingId === room.id ? "Saving…" : room.is_opt_in ? "Make public" : "Make private"}
+                </button>
+              </div>
           ))
         )}
       </div>
