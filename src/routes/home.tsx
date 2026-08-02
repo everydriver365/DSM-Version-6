@@ -4911,17 +4911,6 @@ function HomePage() {
                 }}>
                   {pickup}
                 </span>
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); openMaps(); }}
-                  style={{
-                    background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                    fontSize: 12, fontWeight: 600, color: '#1877D6',
-                    fontFamily: 'Poppins, sans-serif', flexShrink: 0, whiteSpace: 'nowrap',
-                  }}
-                >
-                  View route{driveData ? ` · ${driveData.durationMinutes} min` : ''}
-                </button>
               </div>
 
               {/* Footer / More */}
