@@ -218,9 +218,9 @@ function PupilsIndexPage() {
       try {
         const { data: lessonBalances, error: lbErr } = await supabase
           .from("lessons")
-          .select("pupil_id, amount_due")
+          .select("pupil_id, amount_due, paid_amount")
           .eq("instructor_id", uid)
-          .eq("payment_status", "unpaid")
+          .in("payment_status", ["unpaid", "partial"])
           .is("deleted_at", null);
         if (lbErr) console.error("[pupils] lesson balances error", lbErr);
         const bMap = ((lessonBalances ?? []) as { pupil_id: string; amount_due: number | null }[]).reduce(
