@@ -360,6 +360,7 @@ function ChatRoomsSection() {
                   {savingId === room.id ? "Saving…" : room.is_opt_in ? "Make public" : "Make private"}
                 </button>
               </div>
+            </div>
           ))
         )}
       </div>
