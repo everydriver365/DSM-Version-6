@@ -188,17 +188,16 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     return `${time} ${day}`;
   };
 
-  const GRADIENTS = [
-    "linear-gradient(155deg, #1877D6 0%, #0B1F3A 100%)",
-    "linear-gradient(155deg, #0B1F3A 0%, #071328 100%)",
-    "linear-gradient(155deg, #CC2229 0%, #7A1418 100%)",
-  ];
+  const stripRef = useRef<HTMLDivElement | null>(null);
+  const [activeCard, setActiveCard] = useState(0);
 
-  const TINTS = [
-    "linear-gradient(155deg, rgba(24,119,214,0.62) 0%, rgba(11,31,58,0.8) 100%)",
-    "linear-gradient(155deg, rgba(11,31,58,0.62) 0%, rgba(7,19,40,0.82) 100%)",
-    "linear-gradient(155deg, rgba(204,34,41,0.58) 0%, rgba(122,20,24,0.78) 100%)",
-  ];
+  const onStripScroll = () => {
+    const el = stripRef.current;
+    if (!el) return;
+    const idx = Math.round(el.scrollLeft / 168);
+    setActiveCard(Math.max(0, Math.min(market.length - 1, idx)));
+  };
+
 
   const CATEGORY_ICONS: Record<string, string> = {
     dashcam: "📹",
