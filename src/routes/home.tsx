@@ -1805,6 +1805,36 @@ function HomePage() {
             if (!cancelled) setLocalChatLatest(latest as any);
           }
         }
+
+        // National (UK) chat room + latest message + unread
+        const { data: ukRoomData } = await supabase
+          .from('local_chat_rooms')
+          .select('id, area_name')
+          .eq('outcode', 'UK')
+          .maybeSingle();
+        if (!cancelled && ukRoomData) {
+          setUkRoom(ukRoomData as any);
+          const { data: ukLatest } = await supabase
+            .from('local_chat_messages')
+            .select('message, created_at, instructors(name)')
+            .eq('room_id', (ukRoomData as any).id)
+            .is('deleted_at', null)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          if (!cancelled) setUkChatLatest(ukLatest as any);
+
+          const { data: ukSub } = await supabase
+            .from('chat_room_subscriptions')
+            .select('last_read_at')
+            .eq('instructor_id', userId)
+            .eq('room_id', (ukRoomData as any).id)
+            .maybeSingle();
+          if (!cancelled && (ukSub as any)?.last_read_at && (ukLatest as any)?.created_at) {
+            const isUnread = new Date((ukLatest as any).created_at) > new Date((ukSub as any).last_read_at);
+            setUnreadUkChat(isUnread ? 1 : 0);
+          }
+        }
       } catch {
         if (!cancelled) setLocalAlerts([]);
       }
