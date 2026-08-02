@@ -409,6 +409,7 @@ function CommunityPage() {
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
               }}
             >
+              {t.id === "rooms" && <LayoutGrid size={14} />}
               {t.label}
               {badge > 0 && (
                 <span style={{
