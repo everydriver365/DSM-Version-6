@@ -272,10 +272,21 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   };
 
   const cardTitle: React.CSSProperties = {
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: 700,
     color: NAVY,
     lineHeight: 1.25,
+    display: "-webkit-box",
+    WebkitLineClamp: 1,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+  };
+
+  const cardSub: React.CSSProperties = {
+    fontSize: 11,
+    fontWeight: 500,
+    color: MUTED,
+    lineHeight: 1.35,
     display: "-webkit-box",
     WebkitLineClamp: 2,
     WebkitBoxOrient: "vertical",
@@ -318,41 +329,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const cardBody: React.CSSProperties = {
     position: "relative",
-    padding: "5px 7px 0",
+    padding: "8px 10px 10px",
     flex: 1,
     display: "flex",
     flexDirection: "column",
     gap: 3,
     minHeight: 0,
-  };
-
-  const priceBox: React.CSSProperties = {
-    marginTop: "auto",
-    marginBottom: 4,
-    borderRadius: 6,
-    padding: "4px 6px",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-  };
-
-  const livePriceBox: React.CSSProperties = {
-    ...priceBox,
-    whiteSpace: "normal",
-    lineHeight: 1.25,
-  };
-
-  const cardFooter: React.CSSProperties = {
-    borderTop: `1px solid ${HAIRLINE}`,
-    padding: "5px 7px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 3,
-    fontSize: 10,
-    fontWeight: 700,
-    color: NAVY,
-    letterSpacing: "0.02em",
-    textTransform: "uppercase",
   };
 
   const allItems = [
@@ -429,7 +411,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "relative",
-                    height: 49,
+                    height: 104,
                     flexShrink: 0,
                     background: tone.tint,
                     borderBottom: `1px solid ${HAIRLINE}`,
@@ -467,28 +449,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 </div>
                 <div style={cardBody}>
                   <div style={cardTitle}>{m.title}</div>
-                  <div style={{ ...priceBox, background: tone.tint }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: tone.pillFg }}>
-                      {amount}
-                    </span>
-                    {unit && (
-                      <span
-                        style={{
-                          fontSize: 10,
-                          fontWeight: 600,
-                          color: tone.pillFg,
-                          opacity: 0.8,
-                          marginLeft: 2,
-                        }}
-                      >
-                        {unit}
-                      </span>
-                    )}
+                  <div style={cardSub}>
+                    {amount}
+                    {unit}
                   </div>
-                </div>
-                <div style={cardFooter}>
-                  <span>View details</span>
-                  <IconChevronRight size={12} stroke={2.4} color={NAVY} />
                 </div>
               </div>
             );
@@ -517,7 +481,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "relative",
-                    height: 49,
+                    height: 104,
                     flexShrink: 0,
                     background: NAVY,
                     borderBottom: `1px solid ${HAIRLINE}`,
@@ -562,15 +526,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     {unread && <Dot size={6} />}
                     <div style={cardTitle}>{s.title}</div>
                   </div>
-                <div style={{ ...livePriceBox, background: "#FFF0F0" }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: RED }}>
-                    {fmtTimeDay(s.session_date, s.session_time)}
-                  </span>
-                </div>
-                </div>
-                <div style={cardFooter}>
-                  <span>Join now</span>
-                  <IconChevronRight size={12} stroke={2.4} color={NAVY} />
+                  <div style={cardSub}>
+                    {fmtTimeDay(s.session_date, s.session_time)} · DSM Live
+                  </div>
                 </div>
               </div>
             );
@@ -597,7 +555,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               <div
                 style={{
                   position: "relative",
-                  height: 49,
+                  height: 104,
                   flexShrink: 0,
                   background: "#EEF2F7",
                   borderBottom: `1px solid ${HAIRLINE}`,
@@ -639,15 +597,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   {unread && <Dot size={6} />}
                   <div style={cardTitle}>{v.title}</div>
                 </div>
-                <div style={{ ...priceBox, background: "#E8F6ED" }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: GREEN }}>
-                    {v.duration ? `${v.duration} · DSM Learn` : "Free · DSM Learn"}
-                  </span>
+                <div style={cardSub}>
+                  {v.duration ? `${v.duration} · DSM Learn` : "Free · DSM Learn"}
                 </div>
-              </div>
-              <div style={cardFooter}>
-                <span>Watch</span>
-                <IconChevronRight size={12} stroke={2.4} color={NAVY} />
               </div>
             </div>
           );
