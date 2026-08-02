@@ -277,7 +277,7 @@ function AlertSignIcon({ type, size = 28 }: { type: string; size?: number }) {
 function CommunityPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const [activeTab, setActiveTab] = useState<"alerts" | "local" | "uk">("alerts");
+  const [activeTab, setActiveTab] = useState<"alerts" | "local" | "rooms" | "uk">("alerts");
   const [userId, setUserId] = useState<string | null>(null);
   const [instructorFirstName, setInstructorFirstNameState] = useState<string>("");
   const [instructorArea, setInstructorArea] = useState<string>("Your area");
