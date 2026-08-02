@@ -599,17 +599,34 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   position: "relative",
                   height: 49,
                   flexShrink: 0,
-                  background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
+                  background: "#EEF2F7",
                   borderBottom: `1px solid ${HAIRLINE}`,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  overflow: "hidden",
                 }}
               >
-                {!thumb && <IconPlayerPlay size={15} color={MUTED} stroke={2} />}
+                {thumb ? (
+                  <img
+                    src={thumb}
+                    alt=""
+                    loading="lazy"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  <IconPlayerPlay size={15} color={MUTED} stroke={2} />
+                )}
                 <span
                   style={{
                     ...pillBase,
+                    zIndex: 1,
                     background: GREEN,
                     color: "#FFFFFF",
                   }}
