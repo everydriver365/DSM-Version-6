@@ -137,13 +137,16 @@ type ChatRoom = {
   area_name: string;
   outcode: string;
   instructor_count: number;
+  is_opt_in: boolean | null;
 };
 
 function ChatRoomsSection() {
   const [areaName, setAreaName] = useState("");
   const [outcode, setOutcode] = useState("");
+  const [isOptIn, setIsOptIn] = useState(false);
   const [rooms, setRooms] = useState<ChatRoom[]>([]);
   const [loading, setLoading] = useState(false);
+  const [savingId, setSavingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -153,13 +156,27 @@ function ChatRoomsSection() {
   async function fetchRooms() {
     const { data, error } = await supabase
       .from("local_chat_rooms")
-      .select("id, area_name, outcode, instructor_count")
+      .select("id, area_name, outcode, instructor_count, is_opt_in")
       .order("area_name", { ascending: true });
     if (error) {
       console.error("[admin] fetch rooms error", error);
       return;
     }
     setRooms((data as ChatRoom[]) || []);
+  }
+
+  async function toggleOptIn(room: ChatRoom) {
+    setSavingId(room.id);
+    const { error } = await supabase
+      .from("local_chat_rooms")
+      .update({ is_opt_in: !room.is_opt_in })
+      .eq("id", room.id);
+    setSavingId(null);
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    await fetchRooms();
   }
 
   async function handleCreate(e: React.FormEvent) {
@@ -171,6 +188,7 @@ function ChatRoomsSection() {
       area_name: areaName.trim(),
       outcode: outcode.trim().toUpperCase(),
       instructor_count: 0,
+      is_opt_in: isOptIn,
     });
     setLoading(false);
     if (error) {
@@ -179,6 +197,7 @@ function ChatRoomsSection() {
     }
     setAreaName("");
     setOutcode("");
+    setIsOptIn(false);
     await fetchRooms();
   }
 
