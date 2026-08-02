@@ -519,17 +519,34 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     position: "relative",
                     height: 49,
                     flexShrink: 0,
-                    background: s.image_url ? `${NAVY} url(${s.image_url}) center/cover` : NAVY,
+                    background: NAVY,
                     borderBottom: `1px solid ${HAIRLINE}`,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    overflow: "hidden",
                   }}
                 >
-                  {!s.image_url && <IconBroadcast size={18} color="#FFFFFF" stroke={1.8} />}
+                  {s.image_url ? (
+                    <img
+                      src={s.image_url}
+                      alt=""
+                      loading="lazy"
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <IconBroadcast size={18} color="#FFFFFF" stroke={1.8} />
+                  )}
                   <span
                     style={{
                       ...pillBase,
+                      zIndex: 1,
                       background: RED,
                       color: "#FFFFFF",
                     }}
