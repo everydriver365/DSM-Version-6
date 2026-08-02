@@ -201,6 +201,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const stripRef = useRef<HTMLDivElement | null>(null);
   const [activeCard, setActiveCard] = useState(0);
 
+  // Re-render each minute so "Starts in X min" and the live window stay accurate.
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => t + 1), 60000);
+    return () => clearInterval(id);
+  }, []);
+
+
   const onStripScroll = () => {
     const el = stripRef.current;
     if (!el) return;
