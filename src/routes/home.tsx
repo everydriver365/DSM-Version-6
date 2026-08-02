@@ -1635,7 +1635,53 @@ function HomePage() {
     return () => window.removeEventListener("resize", handler);
   }, []);
   const [activePupilsCount, setActivePupilsCount] = useState(0);
+  // Dismiss / mute state for the Local Issues + chat rows (per-device)
+  const LOCAL_MUTE_KEY = "dsm-home-local-muted";
+  const [mutedRows, setMutedRows] = useState<Record<string, number>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const raw = window.localStorage.getItem(LOCAL_MUTE_KEY);
+      return raw ? (JSON.parse(raw) as Record<string, number>) : {};
+    } catch {
+      return {};
+    }
+  });
+  const persistMutedRows = useCallback((next: Record<string, number>) => {
+    setMutedRows(next);
+    try {
+      window.localStorage.setItem(LOCAL_MUTE_KEY, JSON.stringify(next));
+    } catch {
+      /* ignore */
+    }
+  }, []);
+  const isRowMuted = useCallback(
+    (key: string) => {
+      const until = mutedRows[key];
+      return typeof until === "number" && until > Date.now();
+    },
+    [mutedRows],
+  );
+  const muteRow = useCallback(
+    (key: string, ms: number, label: string, undoLabel: string) => {
+      const prev = mutedRows[key];
+      persistMutedRows({ ...mutedRows, [key]: Date.now() + ms });
+      toast.success(label, {
+        action: {
+          label: "Undo",
+          onClick: () => {
+            const next = { ...mutedRows };
+            if (prev === undefined) delete next[key];
+            else next[key] = prev;
+            persistMutedRows(next);
+            toast.success(undoLabel);
+          },
+        },
+      });
+    },
+    [mutedRows, persistMutedRows],
+  );
   const [localAlerts, setLocalAlerts] = useState<any[] | null>(null);
+
   const [hasUnreadAlertComments, setHasUnreadAlertComments] = useState(false);
   const [localRoom, setLocalRoom] = useState<{ id: string; area_name: string } | null>(null);
   const [localChatLatest, setLocalChatLatest] = useState<{ message: string; created_at: string; instructors: { name: string | null } | null } | null>(null);
