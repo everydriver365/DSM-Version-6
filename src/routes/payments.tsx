@@ -291,6 +291,8 @@ function PaymentsPage() {
     return { monthReceived, outstanding, monthRefunded };
   }, [history, outstanding]);
 
+  const paidBreakdown = useMemo(() => calculatePaidOutstandingBreakdown(unpaidLessons), [unpaidLessons]);
+
   // filtered
   const filtered = useMemo(() => {
     const rows = history ?? [];
