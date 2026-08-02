@@ -259,9 +259,9 @@ function PaymentsPage() {
     ]);
     setAllPupils((pupilRows ?? []) as PupilLite[]);
     setHistory((hist as unknown as HistoryRow[]) ?? []);
-    const owed = calculateOutstandingOwed(
-      (unpaid ?? []) as { amount_due: number | null; paid_amount: number | null }[],
-    );
+    const unpaidRows = (unpaid ?? []) as { amount_due: number | null; paid_amount: number | null }[];
+    setUnpaidLessons(unpaidRows);
+    const owed = calculateOutstandingOwed(unpaidRows);
     setOutstanding(owed);
     setLoading(false);
   }
