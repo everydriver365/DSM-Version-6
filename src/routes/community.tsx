@@ -391,6 +391,7 @@ function CommunityPage() {
         {([
           { id: "alerts", label: "Local Alerts" },
           { id: "local", label: "Local Chat" },
+          { id: "rooms", label: "Rooms" },
           { id: "uk", label: "All UK" },
         ] as const).map((t) => {
           const active = activeTab === t.id;
