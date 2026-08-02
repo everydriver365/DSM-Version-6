@@ -584,6 +584,14 @@ function RoomsTab({
             }}>
               {room.outcode}
             </span>
+            {room.is_opt_in && (
+              <span style={{
+                background: "#F1F3F7", color: "#6B7280", fontSize: 10, fontWeight: 700,
+                borderRadius: 999, padding: "2px 8px", flexShrink: 0,
+              }}>
+                Private
+              </span>
+            )}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 3, fontSize: 11, color: "#8A93A3" }}>
             <Users size={12} />
