@@ -1706,6 +1706,47 @@ function HomePage() {
     return () => { cancelled = true; };
   }, [userId]);
 
+  // Latest message from every other room the instructor has joined
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data: subs } = await supabase
+        .from('chat_room_subscriptions')
+        .select('room_id, last_read_at')
+        .eq('instructor_id', userId);
+      if (cancelled || !subs?.length) { if (!cancelled) setJoinedRoomChats([]); return; }
+      const excluded = new Set([localRoom?.id, ukRoom?.id].filter(Boolean) as string[]);
+      const roomIds = (subs as any[]).map((s) => s.room_id).filter((id: string) => id && !excluded.has(id));
+      if (!roomIds.length) { if (!cancelled) setJoinedRoomChats([]); return; }
+      const { data: rooms } = await supabase
+        .from('local_chat_rooms')
+        .select('id, area_name, outcode')
+        .in('id', roomIds);
+      if (cancelled || !rooms?.length) { if (!cancelled) setJoinedRoomChats([]); return; }
+      const out: Array<any> = [];
+      for (const room of rooms as any[]) {
+        const sub = (subs as any[]).find((s) => s.room_id === room.id);
+        const { data: latest } = await supabase
+          .from('local_chat_messages')
+          .select('message, created_at, instructors(name)')
+          .eq('room_id', room.id)
+          .is('deleted_at', null)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (!latest) continue;
+        const unread = !sub?.last_read_at || new Date((latest as any).created_at) > new Date(sub.last_read_at);
+        out.push({ id: room.id, area_name: room.area_name, outcode: room.outcode, latest, unread });
+      }
+      out.sort((a, b) => new Date(b.latest.created_at).getTime() - new Date(a.latest.created_at).getTime());
+      if (!cancelled) setJoinedRoomChats(out);
+    })();
+    return () => { cancelled = true; };
+  }, [userId, localRoom?.id, ukRoom?.id]);
+
+
+
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
