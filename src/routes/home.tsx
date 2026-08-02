@@ -4699,92 +4699,188 @@ function HomePage() {
 
           return (
             <>
-              <div style={{ padding: '12px 16px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
-                <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', minWidth: 0, wordBreak: 'break-word' }}>
-                  {pupilFullName || 'Pupil'}
+              {/* Header strip */}
+              <div style={{
+                background: '#EEF2F7',
+                padding: '10px 14px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 8,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ width: 3, height: 12, borderRadius: 2, background: '#1877D6' }} />
+                  <span style={{
+                    fontSize: 11, fontWeight: 700, color: '#1877D6',
+                    letterSpacing: '0.06em', textTransform: 'uppercase',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    NEXT LESSON
+                  </span>
                 </div>
-                {isPrepaid && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-                    {priceText && (
-                      <span style={{ fontSize: 12, fontWeight: 700, color: '#1D8A4E' }}>
-                        {priceText}
-                      </span>
-                    )}
-                    <span style={{
-                      background: '#E5F4EA', color: '#1D8A4E',
-                      fontSize: 10, fontWeight: 600, padding: '3px 9px',
-                      borderRadius: 20, letterSpacing: '0.3px',
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: '/schedule' })}
+                  style={{
+                    background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', gap: 2,
+                    fontSize: 12, fontWeight: 600, color: '#1877D6',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}
+                >
+                  Full schedule <ChevronRight size={14} />
+                </button>
+              </div>
+
+              {/* Pupil row */}
+              <div style={{
+                padding: '14px 16px',
+                display: 'flex', alignItems: 'flex-start', gap: 12,
+                borderBottom: '1px solid #E4E8EF',
+              }}>
+                <PupilAvatar pupil={upcoming?.pupils ?? null} pupilId={upcoming?.pupil_id ?? null} size={36} />
+                <div style={{ flex: 1, minWidth: 0, paddingTop: 1 }}>
+                  <div style={{
+                    fontSize: 18, fontWeight: 700, color: '#0B1F3A',
+                    fontFamily: 'Poppins, sans-serif', lineHeight: 1.25,
+                  }}>
+                    {pupilFullName || 'Pupil'}
+                  </div>
+                  <div style={{
+                    fontSize: 12, color: '#6B7686',
+                    fontFamily: 'Poppins, sans-serif', marginTop: 3,
+                  }}>
+                    {upcoming?.lesson_type || 'Standard lesson'} · {durationDecimal}hr{packageText ? ` · ${packageText}` : ''}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); const phone = upcoming?.pupils?.phone; if (phone) window.location.href = `tel:${phone}`; }}
+                    style={{
+                      width: 32, height: 32, borderRadius: '50%', background: '#EEF2F7', border: 'none',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+                    }}
+                  >
+                    <Phone size={16} color="#0B1F3A" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); navigate({ to: '/pupils/$id', params: { id: upcoming?.pupil_id ?? '' }, search: { lessonId: upcoming?.id } as any }); }}
+                    style={{
+                      width: 32, height: 32, borderRadius: '50%', background: '#EEF2F7', border: 'none',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+                    }}
+                  >
+                    <MessageSquare size={16} color="#0B1F3A" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Date / Time / Price grid */}
+              <div style={{
+                display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
+                alignItems: 'stretch', padding: '12px 16px',
+                borderBottom: '1px solid #E4E8EF',
+              }}>
+                {/* Date column */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingRight: 12, borderRight: '1px solid #E4E8EF' }}>
+                  <span style={{ width: 3, height: 32, borderRadius: 2, background: '#1877D6' }} />
+                  <div>
+                    <div style={{
+                      fontSize: 28, fontWeight: 700, color: '#0B1F3A', lineHeight: 1,
+                      fontFamily: 'Poppins, sans-serif',
                     }}>
-                      Prepaid
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              <div style={{ padding: '0 16px 12px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
-                  {/* Date rail */}
-                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: 5, borderLeft: '3px solid #1877D6', paddingLeft: 8 }}>
-                    <div style={{ fontSize: 32, fontWeight: 700, color: '#0B1F3A', lineHeight: 1 }}>{railDay}</div>
-                    <div style={{ fontSize: 11, fontWeight: 500, color: '#8A93A3', lineHeight: 1, marginBottom: 4 }}>{railDow}, {railMon}</div>
-                  </div>
-
-                  <div style={{ width: 0.5, height: 24, background: '#E5E7EB' }} />
-
-                  {/* Time */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 5, flex: 1, fontSize: 14, color: '#0B1F3A' }}>
-                    <Clock size={16} color="#1877D6" style={{ flexShrink: 0 }} />
-                    <span style={{ fontWeight: 600 }}>
-                      {startText}{endText ? ` – ${endText}` : ''}
-                    </span>
-                  </div>
-
-                  {/* Price / status */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-                    {priceText && !isPrepaid && (
-                      <div style={{ fontSize: 17, fontWeight: 700, color: '#1D8A4E' }}>{priceText}</div>
-                    )}
-                    {!isPrepaid && (
-                      <span style={{
-                        background: hPillBg, color: hPillFg,
-                        fontSize: 12, fontWeight: 600, padding: '3px 10px', borderRadius: 7,
-                      }}>{hLabel}</span>
-                    )}
+                      {railDay}
+                    </div>
+                    <div style={{
+                      fontSize: 10, fontWeight: 600, color: '#6B7686',
+                      textTransform: 'uppercase', letterSpacing: '0.04em', marginTop: 2,
+                      fontFamily: 'Poppins, sans-serif',
+                    }}>
+                      {railDow}, {railMon}
+                    </div>
                   </div>
                 </div>
 
-                {/* Address row */}
+                {/* Time column */}
                 <div style={{
-                  display: 'flex', alignItems: 'flex-start', gap: 7,
-                  marginTop: 8, paddingTop: 8,
-                  borderTop: '1px solid #E2E8F0',
-                  fontSize: 12.5, color: '#0B1F3A',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  padding: '0 12px', borderRight: '1px solid #E4E8EF', gap: 3,
                 }}>
-                  <MapPin size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
-                  <span style={{ overflowWrap: 'break-word', minWidth: 0 }}>{pickup}</span>
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 4,
+                    fontSize: 10, fontWeight: 600, color: '#6B7686',
+                    textTransform: 'uppercase', letterSpacing: '0.04em',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    <Clock size={12} color="#6B7686" />
+                    TIME
+                    {WeatherIcon}
+                  </div>
+                  <div style={{
+                    fontSize: 14, fontWeight: 700, color: '#0B1F3A',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    {startText}{endText ? ` – ${endText}` : ''}
+                  </div>
                 </div>
 
-                {/* Reasons row */}
-                {anyReason && (
-                  <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 3, fontSize: 11, color: '#5A6270' }}>
-                    {showTraffic && driveData && (
-                      <div>🚦 {driveData.trafficLabel} on your route
-                        {driveData.normalDurationMinutes && driveData.durationMinutes
-                          ? ` (${driveData.normalDurationMinutes}m → ${driveData.durationMinutes}m)`
-                          : ''}
-                      </div>
-                    )}
-                    {isAdverseWeather && <div>⛅ {weatherCondition}</div>}
-                    {matchedAlert && <div style={{ color: '#B45309' }}>⚠️ {(matchedAlert as any).description}</div>}
+                {/* Price column */}
+                <div style={{
+                  display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center',
+                  paddingLeft: 12, gap: 3,
+                }}>
+                  <div style={{
+                    fontSize: 10, fontWeight: 600, color: '#6B7686',
+                    textTransform: 'uppercase', letterSpacing: '0.04em',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    PRICE
                   </div>
-                )}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{
+                      fontSize: 16, fontWeight: 700, color: '#0B1F3A',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}>
+                      {priceText}
+                    </span>
+                    <span style={{
+                      background: hPillBgFinal, color: hPillFgFinal,
+                      fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 6,
+                      fontFamily: 'Poppins, sans-serif',
+                    }}>
+                      {hLabelFinal}
+                    </span>
+                  </div>
+                </div>
               </div>
+
+              {/* Reasons row */}
+              {anyReason && (
+                <div style={{
+                  marginTop: 0, padding: '10px 16px',
+                  display: 'flex', flexDirection: 'column', gap: 3,
+                  fontSize: 11, color: '#5A6270',
+                  borderBottom: '1px solid #E4E8EF',
+                }}>
+                  {showTraffic && driveData && (
+                    <div>🚦 {driveData.trafficLabel} on your route
+                      {driveData.normalDurationMinutes && driveData.durationMinutes
+                        ? ` (${driveData.normalDurationMinutes}m → ${driveData.durationMinutes}m)`
+                        : ''}
+                    </div>
+                  )}
+                  {isAdverseWeather && <div>⛅ {weatherCondition}</div>}
+                  {matchedAlert && <div style={{ color: '#B45309' }}>⚠️ {(matchedAlert as any).description}</div>}
+                </div>
+              )}
 
               {/* Late banner */}
               {isLate && (
                 <div style={{
                   background: '#FEECEC', padding: '8px 12px',
-                  borderTop: '1px solid #F5D5D5',
+                  borderBottom: '1px solid #F5D5D5',
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
                 }}>
                   <span style={{ fontSize: 11, color: '#7A1F1F', fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -4794,39 +4890,54 @@ function HomePage() {
                     type="button"
                     onClick={(e) => { e.stopPropagation(); setLateOpen(true); }}
                     style={{
-                      background: '#C23B3B', color: '#FFFFFF', border: 'none',
+                      background: '#CC2229', color: '#FFFFFF', border: 'none',
                       fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 999,
-                      cursor: 'pointer', flexShrink: 0, fontFamily: 'Inter, sans-serif',
+                      cursor: 'pointer', flexShrink: 0, fontFamily: 'Poppins, sans-serif',
                     }}
                   >Notify pupil</button>
                 </div>
               )}
 
-              {/* Footer */}
+              {/* Address row */}
               <div style={{
-                borderTop: '1px solid #E2E8F0',
-                padding: '11px 16px',
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
+                padding: '12px 16px',
+                display: 'flex', alignItems: 'center', gap: 8,
+                borderBottom: '1px solid #E4E8EF',
               }}>
+                <MapPin size={16} color="#6B7686" style={{ flexShrink: 0 }} />
+                <span style={{
+                  flex: 1, fontSize: 12, color: '#6B7686',
+                  fontFamily: 'Poppins, sans-serif',
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                }}>
+                  {pickup}
+                </span>
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); openMaps(); }}
                   style={{
                     background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    fontSize: 13, fontWeight: 600, color: '#1877D6', fontFamily: 'Inter, sans-serif',
+                    fontSize: 12, fontWeight: 600, color: '#1877D6',
+                    fontFamily: 'Poppins, sans-serif', flexShrink: 0, whiteSpace: 'nowrap',
                   }}
                 >
-                  <ArrowRight size={15} />
                   View route{driveData ? ` · ${driveData.durationMinutes} min` : ''}
                 </button>
+              </div>
+
+              {/* Footer / More */}
+              <div style={{
+                padding: '11px 16px',
+                display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10,
+              }}>
                 <button
                   type="button"
                   onClick={() => setHeroExpandedWithEvent((v) => !v)}
                   style={{
                     background: 'none', border: 'none', padding: 0, cursor: 'pointer',
                     display: 'flex', alignItems: 'center', gap: 4,
-                    fontSize: 13.5, fontWeight: 600, color: '#1877D6', fontFamily: 'Inter, sans-serif',
+                    fontSize: 13, fontWeight: 600, color: '#0B1F3A',
+                    fontFamily: 'Poppins, sans-serif',
                   }}
                 >
                   More {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -4834,6 +4945,7 @@ function HomePage() {
               </div>
             </>
           );
+
 
         })()}
       </div>
