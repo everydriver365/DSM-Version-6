@@ -223,10 +223,12 @@ function PupilsIndexPage() {
           .in("payment_status", ["unpaid", "partial"])
           .is("deleted_at", null);
         if (lbErr) console.error("[pupils] lesson balances error", lbErr);
-        const bMap = ((lessonBalances ?? []) as { pupil_id: string; amount_due: number | null }[]).reduce(
+        const bMap = ((lessonBalances ?? []) as { pupil_id: string; amount_due: number | null; paid_amount: number | null }[]).reduce(
           (acc, row) => {
             if (!row.pupil_id) return acc;
-            acc[row.pupil_id] = (acc[row.pupil_id] || 0) + Number(row.amount_due || 0);
+            const due = Number(row.amount_due || 0);
+            const paid = Number(row.paid_amount || 0);
+            acc[row.pupil_id] = (acc[row.pupil_id] || 0) + Math.max(0, due - paid);
             return acc;
           },
           {} as Record<string, number>,
