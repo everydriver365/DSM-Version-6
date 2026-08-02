@@ -2072,7 +2072,6 @@ function PupilDetailPage() {
               const isPartial = l.payment_status === "partial";
               const isUnpaid = l.payment_status === "unpaid";
               const remaining = Math.max(0, price - Number(l.paid_amount || 0));
-              const past = isLessonPast(l);
               const showGap = gapDays > 7;
               const colour = pupil?.calendar_colour || "#1A52A0";
               const initials = (pupil?.name ?? "P").split(/\s+/).map((s) => s.charAt(0)).join("").slice(0, 2).toUpperCase();
