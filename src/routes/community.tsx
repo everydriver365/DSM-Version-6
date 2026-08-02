@@ -540,6 +540,7 @@ function RoomsTab({
     const q = query.trim().toLowerCase();
     return rooms
       .filter((r) => !mine.has(r.id))
+      .filter((r) => !r.is_opt_in)
       .filter((r) => !q
         || (r.area_name ?? "").toLowerCase().includes(q)
         || r.outcode.toLowerCase().includes(q));
