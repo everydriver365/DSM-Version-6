@@ -411,7 +411,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "relative",
-                    height: 49,
+                    height: 104,
                     flexShrink: 0,
                     background: tone.tint,
                     borderBottom: `1px solid ${HAIRLINE}`,
@@ -449,28 +449,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 </div>
                 <div style={cardBody}>
                   <div style={cardTitle}>{m.title}</div>
-                  <div style={{ ...priceBox, background: tone.tint }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: tone.pillFg }}>
-                      {amount}
-                    </span>
-                    {unit && (
-                      <span
-                        style={{
-                          fontSize: 10,
-                          fontWeight: 600,
-                          color: tone.pillFg,
-                          opacity: 0.8,
-                          marginLeft: 2,
-                        }}
-                      >
-                        {unit}
-                      </span>
-                    )}
+                  <div style={cardSub}>
+                    {amount}
+                    {unit}
                   </div>
-                </div>
-                <div style={cardFooter}>
-                  <span>View details</span>
-                  <IconChevronRight size={12} stroke={2.4} color={NAVY} />
                 </div>
               </div>
             );
