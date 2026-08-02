@@ -182,7 +182,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     if (!el) return;
     const page = el.offsetWidth / 2;
     const idx = Math.round(el.scrollLeft / page);
-    setActiveCard(Math.max(0, Math.min(allItems.length - 1, idx)));
+    const pages = Math.max(1, Math.ceil(allItems.length / 2));
+    setActiveCard(Math.max(0, Math.min(pages - 1, idx)));
   };
 
   const CATEGORY_ICONS: Record<string, string> = {
@@ -256,8 +257,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   );
 
   const cardShell: React.CSSProperties = {
-    flex: "0 0 calc(50% - 14px)",
-    minWidth: "calc(50% - 14px)",
+    flex: "0 0 calc(50% - 4px)",
+    minWidth: "calc(50% - 4px)",
     borderRadius: 14,
     border: "1px solid #E4E8EF",
     background: "#FFFFFF",
@@ -271,7 +272,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   };
 
   const cardTitle: React.CSSProperties = {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: 700,
     color: NAVY,
     lineHeight: 1.25,
@@ -283,15 +284,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const pillBase: React.CSSProperties = {
     position: "absolute",
-    top: 8,
-    left: 8,
-    maxWidth: "calc(100% - 16px)",
+    top: 6,
+    left: 6,
+    maxWidth: "calc(100% - 12px)",
     display: "inline-flex",
     alignItems: "center",
     gap: 4,
     borderRadius: 999,
-    padding: "4px 9px",
-    fontSize: 10,
+    padding: "3px 7px",
+    fontSize: 9,
     fontWeight: 700,
     letterSpacing: "0.04em",
     textTransform: "uppercase",
@@ -303,7 +304,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const stripStyle: React.CSSProperties = {
     display: "flex",
     flexWrap: "nowrap",
-    gap: 10,
+    gap: 8,
     alignItems: "stretch",
     overflowX: "auto",
     WebkitOverflowScrolling: "touch",
@@ -317,19 +318,19 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const cardBody: React.CSSProperties = {
     position: "relative",
-    padding: "12px 12px 0",
+    padding: "8px 10px 0",
     flex: 1,
     display: "flex",
     flexDirection: "column",
-    gap: 6,
+    gap: 4,
     minHeight: 0,
   };
 
   const priceBox: React.CSSProperties = {
     marginTop: "auto",
-    marginBottom: 8,
-    borderRadius: 10,
-    padding: "8px 10px",
+    marginBottom: 6,
+    borderRadius: 8,
+    padding: "6px 8px",
     overflow: "hidden",
     textOverflow: "ellipsis",
   };
@@ -342,7 +343,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const cardFooter: React.CSSProperties = {
     borderTop: `1px solid ${HAIRLINE}`,
-    padding: "9px 12px",
+    padding: "7px 10px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -361,7 +362,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   ];
 
   return (
-    <div style={{ padding: "0 16px 22px", fontFamily: FONT }}>
+    <div style={{ margin: "0 -16px 0", padding: "0 16px 22px", borderRadius: 0, fontFamily: FONT }}>
       <div
         style={{
           display: "flex",
@@ -428,7 +429,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "relative",
-                    height: 110,
+                    height: 70,
                     flexShrink: 0,
                     background: photo ? `url(${photo}) center/cover` : tone.tint,
                     borderBottom: `1px solid ${HAIRLINE}`,
@@ -497,7 +498,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "relative",
-                    height: 110,
+                    height: 70,
                     flexShrink: 0,
                     background: s.image_url ? `${NAVY} url(${s.image_url}) center/cover` : NAVY,
                     borderBottom: `1px solid ${HAIRLINE}`,
@@ -506,7 +507,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     justifyContent: "center",
                   }}
                 >
-                  {!s.image_url && <IconBroadcast size={28} color="#FFFFFF" stroke={1.8} />}
+                  {!s.image_url && <IconBroadcast size={24} color="#FFFFFF" stroke={1.8} />}
                   <span
                     style={{
                       ...pillBase,
@@ -515,7 +516,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     }}
                   >
                     <span className={nowLive ? "dsm-live-pulse" : undefined}>
-                      <Dot size={6} />
+                      <Dot size={5} />
                     </span>
                     Live
                   </span>
@@ -560,7 +561,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               <div
                 style={{
                   position: "relative",
-                  height: 110,
+                  height: 70,
                   flexShrink: 0,
                   background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
                   borderBottom: `1px solid ${HAIRLINE}`,
@@ -569,7 +570,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   justifyContent: "center",
                 }}
               >
-                {!thumb && <IconPlayerPlay size={24} color={MUTED} stroke={2} />}
+                {!thumb && <IconPlayerPlay size={20} color={MUTED} stroke={2} />}
                 <span
                   style={{
                     ...pillBase,
@@ -600,7 +601,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         })}
       </div>
 
-      {allItems.length > 1 && (
+      {allItems.length > 2 && (
         <div
           style={{
             display: "flex",
@@ -610,7 +611,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             marginTop: 10,
           }}
         >
-          {allItems.map((_, i) => {
+          {Array.from({ length: Math.ceil(allItems.length / 2) }).map((_, i) => {
             const active = i === activeCard;
             return (
               <span
