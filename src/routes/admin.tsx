@@ -236,6 +236,52 @@ function ChatRoomsSection() {
           }}
         />
         <button
+          type="button"
+          onClick={() => setIsOptIn((v) => !v)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+            height: 44,
+            borderRadius: 10,
+            border: "1px solid #EEF2F7",
+            background: "#F8FAFC",
+            padding: "0 12px",
+            cursor: "pointer",
+            textAlign: "left",
+          }}
+        >
+          <span style={{ fontSize: 13, color: "#0B1F3A", fontWeight: 600 }}>
+            Invite only <span style={{ color: "#6B7280", fontWeight: 400 }}>— hidden from room browser</span>
+          </span>
+          <span
+            style={{
+              width: 42,
+              height: 24,
+              borderRadius: 999,
+              background: isOptIn ? "#1877D6" : "#CBD5E1",
+              position: "relative",
+              flexShrink: 0,
+              transition: "background 0.15s",
+            }}
+          >
+            <span
+              style={{
+                position: "absolute",
+                top: 2,
+                left: isOptIn ? 20 : 2,
+                width: 20,
+                height: 20,
+                borderRadius: "50%",
+                background: "#fff",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                transition: "left 0.15s",
+              }}
+            />
+          </span>
+        </button>
+        <button
           type="submit"
           disabled={loading || !areaName.trim() || !outcode.trim()}
           style={{
