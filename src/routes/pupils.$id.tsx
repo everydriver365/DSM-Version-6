@@ -23,6 +23,7 @@ import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 
 import { resolveHourlyRate } from "../lib/pricing/resolveRate";
 import { deletePaymentRecord } from "./payments";
+import { getPupilBalance, type PupilBalance } from "@/lib/payments";
 import { buildTripReport, type ReportSegment, type Coord } from "@/lib/tripReport";
 import { formatCountdown } from "@/lib/dateHelpers";
 
@@ -406,6 +407,7 @@ function PupilDetailPage() {
   const [balance, setBalance] = useState<number>(0);
   const [totalCost, setTotalCost] = useState<number>(0);
   const [totalPaid, setTotalPaid] = useState<number>(0);
+  const [pricingType, setPricingType] = useState<PupilBalance["pricingType"] | null>(null);
   const [paymentHistory, setPaymentHistory] = useState<
     { id: string; lesson_id: string | null; lesson_cost: number | null; payment_method: string | null; created_at: string; notes: string | null }[]
   >([]);
@@ -995,6 +997,7 @@ function PupilDetailPage() {
   const photoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    let cancelled = false;
     supabase
       .from("pupils")
       .select(`
@@ -1078,28 +1081,23 @@ function PupilDetailPage() {
         setUnpaidLessons(rows.filter((r) => !["paid", "prepaid", "cancelled"].includes(r.payment_status ?? "")));
       });
 
-    supabase
-      .from("lessons")
-      .select("id, amount_due, paid_amount, payment_status")
-      .eq("pupil_id", id)
-      .neq("status", "cancelled")
-      .is("deleted_at", null)
-      .then(({ data, error }) => {
-        if (error) {
-          console.error("[pupil] lessons balance error", error);
-          return;
-        }
-        const lessonRows = (data as { id: string; amount_due: number | null; paid_amount: number | null; payment_status: string | null }[]) ?? [];
-        const totalCost = lessonRows.reduce((s, l) => s + Number(l.amount_due ?? 0), 0);
-        const totalPaid = lessonRows.reduce((s, l) => s + Number(l.paid_amount ?? 0), 0);
-        const accountCredit = Number(pupil?.account_balance ?? 0);
-        const balance = totalPaid + accountCredit - totalCost;
-        // Negative = owes money, Positive = in credit
-        setBalance(balance);
-        setTotalCost(totalCost);
-        setTotalPaid(totalPaid + accountCredit);
-        console.log("[pupils.$id] balance:", balance, "totalCost:", totalCost, "totalPaid:", totalPaid + accountCredit);
-      });
+    (async () => {
+      const bal = await getPupilBalance(id);
+      if (!cancelled) {
+        setBalance(bal.outstanding);
+        setTotalCost(
+          bal.pricingType === "block" || bal.pricingType === "national_intensives"
+            ? bal.packageTotal
+            : bal.lessonsOwed,
+        );
+        setTotalPaid(
+          bal.pricingType === "block" || bal.pricingType === "national_intensives"
+            ? bal.packagePaid
+            : bal.lessonsPaid,
+        );
+        setPricingType(bal.pricingType);
+      }
+    })();
 
     supabase
       .from("lesson_history")
@@ -1232,6 +1230,10 @@ function PupilDetailPage() {
         if (error) console.error("[pupil] intake answers error", error);
         setIntakeAnswers(data ?? []);
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [id, paymentHistoryRefresh]);
 
   // Recompute live "owed" from the pupil's CURRENT rates.
@@ -1598,21 +1600,39 @@ function PupilDetailPage() {
 
                 {/* 3-up hero stat row: Balance | Hours remaining | Days to test */}
                 {(() => {
-                  const outstanding = liveOwed ?? 0;
-                  const credit = Number(pupil.account_balance ?? 0);
-                  const net = outstanding - credit;
-                  const balanceColor = net > 0 ? "#CC2229" : net < 0 ? "#16A34A" : "#0B1F3A";
-                  const balanceValue =
-                    net > 0
-                      ? `£${net.toFixed(2)}`
-                      : net < 0
-                        ? `£${Math.abs(net).toFixed(2)}`
-                        : "All paid";
+                  const isBlock =
+                    pricingType === "block" || pricingType === "national_intensives";
+                  const accountCredit = Number(pupil.account_balance ?? 0);
+                  const balanceColor = isBlock
+                    ? balance > 0
+                      ? "#CC2229"
+                      : "#16A34A"
+                    : balance > 0
+                      ? "#CC2229"
+                      : accountCredit > 0
+                        ? "#16A34A"
+                        : "#0B1F3A";
                   const hoursRemaining = Math.max(
                     0,
                     Number(pupil.prepaid_hours ?? 0) - hoursCompleted,
                   );
                   const hoursValue = hoursRemaining.toFixed(1);
+                  const balanceLabel = isBlock
+                    ? "Package"
+                    : balance > 0
+                      ? "Balance owed"
+                      : accountCredit > 0
+                        ? "In credit"
+                        : "Balance";
+                  const balanceValue = isBlock
+                    ? balance > 0
+                      ? `${hoursValue} hrs remaining · £${balance.toFixed(2)} outstanding`
+                      : `${hoursValue} hrs remaining · Fully paid`
+                    : balance > 0
+                      ? `£${balance.toFixed(2)}`
+                      : accountCredit > 0
+                        ? `£${accountCredit.toFixed(2)}`
+                        : "All paid";
                   const today = ymd(new Date());
                   let testValue = "Not booked";
                   let testColor = "#6B7280";
@@ -1648,7 +1668,7 @@ function PupilDetailPage() {
                           className="text-[9px] font-bold uppercase truncate"
                           style={{ color: "#6B7280", letterSpacing: "0.06em", ...POPPINS }}
                         >
-                          {net > 0 ? "Balance owed" : "Balance"}
+                          {balanceLabel}
                         </p>
                         <p
                           className="text-[15px] font-bold mt-0.5 leading-tight truncate"
