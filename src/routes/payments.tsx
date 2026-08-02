@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { recordPayment, correctPaymentRecord } from "@/lib/payments";
-import { calculateOutstandingOwed } from "@/lib/paymentsOwed";
+import { calculateOutstandingOwed, calculatePaidOutstandingBreakdown } from "@/lib/paymentsOwed";
 import { TakePaymentSheet as SharedTakePaymentSheet } from "@/components/payments/TakePaymentSheet";
 import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";
 
