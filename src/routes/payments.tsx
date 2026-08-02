@@ -257,7 +257,12 @@ function PaymentsPage() {
     ]);
     setAllPupils((pupilRows ?? []) as PupilLite[]);
     setHistory((hist as unknown as HistoryRow[]) ?? []);
-    const owed = ((unpaid ?? []) as { amount_due: number | null }[]).reduce((s, l) => s + Number(l.amount_due || 0), 0);
+    const owed = ((unpaid ?? []) as { amount_due: number | null; paid_amount: number | null }[])
+      .reduce((s, l) => {
+        const due = Number(l.amount_due || 0);
+        const paid = Number(l.paid_amount || 0);
+        return s + Math.max(0, due - paid);
+      }, 0);
     setOutstanding(owed);
     setLoading(false);
   }
