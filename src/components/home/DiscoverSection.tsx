@@ -431,13 +431,32 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     position: "relative",
                     height: 49,
                     flexShrink: 0,
-                    background: photo ? `url(${photo}) center/cover` : tone.tint,
+                    background: tone.tint,
                     borderBottom: `1px solid ${HAIRLINE}`,
+                    overflow: "hidden",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
+                  {photo && (
+                    <img
+                      src={photo}
+                      alt=""
+                      loading="lazy"
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  )}
                   <span
                     style={{
                       ...pillBase,
+                      zIndex: 1,
                       background: "rgba(255,255,255,0.95)",
                       color: tone.pillFg,
                     }}
@@ -500,17 +519,34 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     position: "relative",
                     height: 49,
                     flexShrink: 0,
-                    background: s.image_url ? `${NAVY} url(${s.image_url}) center/cover` : NAVY,
+                    background: NAVY,
                     borderBottom: `1px solid ${HAIRLINE}`,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    overflow: "hidden",
                   }}
                 >
-                  {!s.image_url && <IconBroadcast size={18} color="#FFFFFF" stroke={1.8} />}
+                  {s.image_url ? (
+                    <img
+                      src={s.image_url}
+                      alt=""
+                      loading="lazy"
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <IconBroadcast size={18} color="#FFFFFF" stroke={1.8} />
+                  )}
                   <span
                     style={{
                       ...pillBase,
+                      zIndex: 1,
                       background: RED,
                       color: "#FFFFFF",
                     }}
@@ -563,17 +599,34 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   position: "relative",
                   height: 49,
                   flexShrink: 0,
-                  background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
+                  background: "#EEF2F7",
                   borderBottom: `1px solid ${HAIRLINE}`,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  overflow: "hidden",
                 }}
               >
-                {!thumb && <IconPlayerPlay size={15} color={MUTED} stroke={2} />}
+                {thumb ? (
+                  <img
+                    src={thumb}
+                    alt=""
+                    loading="lazy"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  <IconPlayerPlay size={15} color={MUTED} stroke={2} />
+                )}
                 <span
                   style={{
                     ...pillBase,
+                    zIndex: 1,
                     background: GREEN,
                     color: "#FFFFFF",
                   }}
