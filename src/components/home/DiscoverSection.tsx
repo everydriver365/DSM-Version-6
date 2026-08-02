@@ -337,11 +337,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     minHeight: 0,
   };
 
+  // Sessions that are live now, or starting within the next 3 hours, jump to
+  // the front of the strip and stick to the left edge while the user scrolls.
+  const urgentLive = liveSorted.filter(isUrgentLive);
+  const otherLive = liveSorted.filter((s) => !isUrgentLive(s));
+
   const allItems = [
+    ...urgentLive.map((s) => ({ type: "live" as const, data: s, urgent: true })),
     ...market.map((m, i) => ({ type: "market" as const, marketIndex: i, data: m })),
-    ...liveSorted.map((s) => ({ type: "live" as const, data: s })),
+    ...otherLive.map((s) => ({ type: "live" as const, data: s, urgent: false })),
     ...playable.map((v) => ({ type: "learn" as const, data: v })),
   ];
+
 
   return (
     <div style={{ margin: "0 -16px 0", padding: "0 16px 22px", borderRadius: 0, fontFamily: FONT }}>
