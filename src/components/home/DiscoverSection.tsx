@@ -442,13 +442,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     height: 108,
                     flexShrink: 0,
                     background: photo
-                      ? `${tone.imgBg}, url(${photo}) center/cover`
+                      ? `url(${photo}) center/cover, ${tone.imgBg}`
                       : tone.imgBg,
-                    backgroundImage: photo
-                      ? `url(${photo})`
-                      : tone.imgBg,
-                    backgroundSize: photo ? "cover" : undefined,
-                    backgroundPosition: "center",
+                    borderBottom: `1px solid ${HAIRLINE}`,
                   }}
                 >
                   <span
