@@ -4918,8 +4918,15 @@ function HomePage() {
               {/* Footer / More */}
               <div style={{
                 padding: '11px 16px',
-                display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10,
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
               }}>
+                <span style={{
+                  background: hPillBgFinal, color: hPillFgFinal,
+                  fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 6,
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
+                  {hLabelFinal}
+                </span>
                 <button
                   type="button"
                   onClick={() => setHeroExpandedWithEvent((v) => !v)}
