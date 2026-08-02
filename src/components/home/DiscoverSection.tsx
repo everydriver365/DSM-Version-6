@@ -329,41 +329,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const cardBody: React.CSSProperties = {
     position: "relative",
-    padding: "5px 7px 0",
+    padding: "8px 10px 10px",
     flex: 1,
     display: "flex",
     flexDirection: "column",
     gap: 3,
     minHeight: 0,
-  };
-
-  const priceBox: React.CSSProperties = {
-    marginTop: "auto",
-    marginBottom: 4,
-    borderRadius: 6,
-    padding: "4px 6px",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-  };
-
-  const livePriceBox: React.CSSProperties = {
-    ...priceBox,
-    whiteSpace: "normal",
-    lineHeight: 1.25,
-  };
-
-  const cardFooter: React.CSSProperties = {
-    borderTop: `1px solid ${HAIRLINE}`,
-    padding: "5px 7px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 3,
-    fontSize: 10,
-    fontWeight: 700,
-    color: NAVY,
-    letterSpacing: "0.02em",
-    textTransform: "uppercase",
   };
 
   const allItems = [
