@@ -488,6 +488,7 @@ type BrowseRoom = {
   area_name: string | null;
   instructor_count: number | null;
   room_type: string | null;
+  is_opt_in: boolean | null;
 };
 
 function RoomsTab({
@@ -518,7 +519,7 @@ function RoomsTab({
       setLoading(true);
       const { data: allRooms } = await supabase
         .from("local_chat_rooms")
-        .select("id, outcode, area_name, instructor_count, room_type")
+        .select("id, outcode, area_name, instructor_count, room_type, is_opt_in")
         .order("instructor_count", { ascending: false });
       if (cancelled) return;
       setRooms((allRooms ?? []) as BrowseRoom[]);
@@ -531,7 +532,8 @@ function RoomsTab({
 
   const myRooms = useMemo(
     () => rooms.filter((r) =>
-      subscribedIds.has(r.id) || r.outcode === instructorOutcode || r.outcode === "UK"),
+      subscribedIds.has(r.id)
+      || (!r.is_opt_in && (r.outcode === instructorOutcode || r.outcode === "UK"))),
     [rooms, subscribedIds, instructorOutcode]
   );
   const availableRooms = useMemo(() => {
@@ -539,6 +541,7 @@ function RoomsTab({
     const q = query.trim().toLowerCase();
     return rooms
       .filter((r) => !mine.has(r.id))
+      .filter((r) => !r.is_opt_in)
       .filter((r) => !q
         || (r.area_name ?? "").toLowerCase().includes(q)
         || r.outcode.toLowerCase().includes(q));
@@ -581,6 +584,14 @@ function RoomsTab({
             }}>
               {room.outcode}
             </span>
+            {room.is_opt_in && (
+              <span style={{
+                background: "#F1F3F7", color: "#6B7280", fontSize: 10, fontWeight: 700,
+                borderRadius: 999, padding: "2px 8px", flexShrink: 0,
+              }}>
+                Private
+              </span>
+            )}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 3, fontSize: 11, color: "#8A93A3" }}>
             <Users size={12} />

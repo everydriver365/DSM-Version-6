@@ -137,13 +137,16 @@ type ChatRoom = {
   area_name: string;
   outcode: string;
   instructor_count: number;
+  is_opt_in: boolean | null;
 };
 
 function ChatRoomsSection() {
   const [areaName, setAreaName] = useState("");
   const [outcode, setOutcode] = useState("");
+  const [isOptIn, setIsOptIn] = useState(false);
   const [rooms, setRooms] = useState<ChatRoom[]>([]);
   const [loading, setLoading] = useState(false);
+  const [savingId, setSavingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -153,13 +156,27 @@ function ChatRoomsSection() {
   async function fetchRooms() {
     const { data, error } = await supabase
       .from("local_chat_rooms")
-      .select("id, area_name, outcode, instructor_count")
+      .select("id, area_name, outcode, instructor_count, is_opt_in")
       .order("area_name", { ascending: true });
     if (error) {
       console.error("[admin] fetch rooms error", error);
       return;
     }
     setRooms((data as ChatRoom[]) || []);
+  }
+
+  async function toggleOptIn(room: ChatRoom) {
+    setSavingId(room.id);
+    const { error } = await supabase
+      .from("local_chat_rooms")
+      .update({ is_opt_in: !room.is_opt_in })
+      .eq("id", room.id);
+    setSavingId(null);
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    await fetchRooms();
   }
 
   async function handleCreate(e: React.FormEvent) {
@@ -171,6 +188,7 @@ function ChatRoomsSection() {
       area_name: areaName.trim(),
       outcode: outcode.trim().toUpperCase(),
       instructor_count: 0,
+      is_opt_in: isOptIn,
     });
     setLoading(false);
     if (error) {
@@ -179,6 +197,7 @@ function ChatRoomsSection() {
     }
     setAreaName("");
     setOutcode("");
+    setIsOptIn(false);
     await fetchRooms();
   }
 
@@ -216,6 +235,52 @@ function ChatRoomsSection() {
             fontFamily: "Inter, sans-serif",
           }}
         />
+        <button
+          type="button"
+          onClick={() => setIsOptIn((v) => !v)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+            height: 44,
+            borderRadius: 10,
+            border: "1px solid #EEF2F7",
+            background: "#F8FAFC",
+            padding: "0 12px",
+            cursor: "pointer",
+            textAlign: "left",
+          }}
+        >
+          <span style={{ fontSize: 13, color: "#0B1F3A", fontWeight: 600 }}>
+            Invite only <span style={{ color: "#6B7280", fontWeight: 400 }}>— hidden from room browser</span>
+          </span>
+          <span
+            style={{
+              width: 42,
+              height: 24,
+              borderRadius: 999,
+              background: isOptIn ? "#1877D6" : "#CBD5E1",
+              position: "relative",
+              flexShrink: 0,
+              transition: "background 0.15s",
+            }}
+          >
+            <span
+              style={{
+                position: "absolute",
+                top: 2,
+                left: isOptIn ? 20 : 2,
+                width: 20,
+                height: 20,
+                borderRadius: "50%",
+                background: "#fff",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                transition: "left 0.15s",
+              }}
+            />
+          </span>
+        </button>
         <button
           type="submit"
           disabled={loading || !areaName.trim() || !outcode.trim()}
@@ -256,10 +321,45 @@ function ChatRoomsSection() {
               }}
             >
               <div>
-                <div style={{ fontWeight: 600, color: "#0B1F3A", fontSize: 14 }}>{room.area_name}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ fontWeight: 600, color: "#0B1F3A", fontSize: 14 }}>{room.area_name}</div>
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      borderRadius: 999,
+                      padding: "2px 8px",
+                      background: room.is_opt_in ? "#F1F3F7" : "#EAF2FC",
+                      color: room.is_opt_in ? "#6B7280" : "#1877D6",
+                    }}
+                  >
+                    {room.is_opt_in ? "Private" : "Public"}
+                  </span>
+                </div>
                 <div style={{ color: "#6B7280", fontSize: 12, marginTop: 2 }}>Outcode: {room.outcode}</div>
               </div>
-              <div style={{ color: "#6B7280", fontSize: 12 }}>{room.instructor_count ?? 0} instructors</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ color: "#6B7280", fontSize: 12 }}>{room.instructor_count ?? 0} instructors</div>
+                <button
+                  type="button"
+                  onClick={() => toggleOptIn(room)}
+                  disabled={savingId === room.id}
+                  style={{
+                    height: 30,
+                    padding: "0 12px",
+                    borderRadius: 8,
+                    border: "1px solid #EEF2F7",
+                    background: "#fff",
+                    color: "#1877D6",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    opacity: savingId === room.id ? 0.6 : 1,
+                  }}
+                >
+                  {savingId === room.id ? "Saving…" : room.is_opt_in ? "Make public" : "Make private"}
+                </button>
+              </div>
             </div>
           ))
         )}
