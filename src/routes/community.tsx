@@ -436,13 +436,32 @@ function CommunityPage() {
       )}
       {activeTab === "local" && (
         <ChatTab
-          key="local"
+          key={selectedRoom ? `room-${selectedRoom.outcode}` : "local"}
           scope="local"
           userId={userId}
           instructorProfile={instructorProfile}
-          instructorArea={instructorArea}
-          instructorOutcode={instructorOutcode}
+          instructorArea={selectedRoom ? selectedRoom.area_name : instructorArea}
+          instructorOutcode={selectedRoom ? selectedRoom.outcode : instructorOutcode}
           onRoomRead={(s) => setUnread((u) => ({ ...u, [s]: 0 }))}
+        />
+      )}
+      {activeTab === "rooms" && (
+        <RoomsTab
+          userId={userId}
+          instructorOutcode={instructorOutcode}
+          onOpenRoom={(room) => {
+            if (room.outcode === "UK") {
+              setSelectedRoom(null);
+              setActiveTab("uk");
+            } else {
+              setSelectedRoom(
+                room.outcode === instructorOutcode
+                  ? null
+                  : { outcode: room.outcode, area_name: room.area_name ?? room.outcode }
+              );
+              setActiveTab("local");
+            }
+          }}
         />
       )}
       {activeTab === "uk" && (
