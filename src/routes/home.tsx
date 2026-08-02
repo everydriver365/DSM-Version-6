@@ -5027,6 +5027,67 @@ function HomePage() {
           </div>
         )}
 
+        {/* ============ NATIONAL CHAT ============ */}
+        {ukRoom && (
+          <div
+            onClick={() => navigate({ to: '/community', search: { tab: 'uk' } })}
+            style={{
+              margin: '8px 16px 0', background: 'white', borderRadius: 14,
+              boxShadow: '0 2px 8px rgba(11,31,58,0.06)', padding: '13px 14px',
+              display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
+              fontFamily: 'Poppins, sans-serif',
+              border: unreadUkChat > 0 ? '1.5px solid #1877D6' : '1px solid transparent',
+            }}
+          >
+            <div style={{ position: 'relative', flexShrink: 0 }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: 11,
+                background: unreadUkChat > 0 ? '#1877D6' : '#E6F1FB',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Globe size={18} color={unreadUkChat > 0 ? '#FFFFFF' : '#1877D6'} />
+              </div>
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+                DSM National Chat
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 1 }}>
+                <div style={{
+                  fontSize: unreadUkChat > 0 ? 12 : 11,
+                  fontWeight: unreadUkChat > 0 ? 600 : 400,
+                  color: unreadUkChat > 0 ? '#0B1F3A' : '#9CA3AF',
+                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, minWidth: 0,
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
+                  {ukChatLatest
+                    ? `${(ukChatLatest.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(ukChatLatest.message || '').substring(0, 40)}${(ukChatLatest.message || '').length > 40 ? '...' : ''}`
+                    : 'Join the national conversation!'}
+                </div>
+                {ukChatLatest?.created_at && (
+                  <div style={{
+                    fontSize: 10, color: unreadUkChat > 0 ? '#1877D6' : '#9CA3AF', flexShrink: 0,
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    {timeAgo(ukChatLatest.created_at)}
+                  </div>
+                )}
+              </div>
+            </div>
+            {unreadUkChat > 0 && (
+              <div style={{
+                width: 16, height: 16, borderRadius: 8, flexShrink: 0,
+                background: '#1877D6', color: '#FFFFFF', fontSize: 10, fontWeight: 700,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'Poppins, sans-serif',
+              }}>
+                {unreadUkChat}
+              </div>
+            )}
+            <ChevronRight size={17} color="#C7CDD9" style={{ flexShrink: 0 }} />
+          </div>
+        )}
+
 
 
 
