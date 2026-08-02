@@ -4576,33 +4576,8 @@ function HomePage() {
       )}
 
       {/* Next lesson section header */}
-      <div
-        style={{
-          margin: '16px 16px 8px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 8,
-          fontFamily: 'Inter, sans-serif',
-        }}
-      >
-        <SectionHeader style={{ margin: 0 }}>Next lesson</SectionHeader>
-        <button
-          type="button"
-          onClick={() => navigate({ to: '/schedule' })}
-          style={{
-            background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-            display: 'flex', alignItems: 'center', gap: 2,
-            fontSize: 13, fontWeight: 600, color: '#1877D6', fontFamily: 'Inter, sans-serif',
-          }}
-        >
-          Full schedule <ChevronRight size={15} />
-        </button>
-      </div>
-
-
-
       {/* ============ NEXT LESSON CARD ============ */}
+
       <div
         style={{
           margin: '0 16px 0',
