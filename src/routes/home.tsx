@@ -4836,12 +4836,21 @@ function HomePage() {
                   }}>
                     PRICE
                   </div>
-                  <span style={{
-                    fontSize: 16, fontWeight: 700, color: '#0B1F3A',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}>
-                    {priceText}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{
+                      background: hPillBgFinal, color: hPillFgFinal,
+                      fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 6,
+                      fontFamily: 'Poppins, sans-serif',
+                    }}>
+                      {hLabelFinal}
+                    </span>
+                    <span style={{
+                      fontSize: 16, fontWeight: 700, color: '#0B1F3A',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}>
+                      {priceText}
+                    </span>
+                  </div>
                 </div>
 
               </div>
