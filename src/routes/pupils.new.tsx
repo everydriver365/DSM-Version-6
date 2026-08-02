@@ -102,7 +102,6 @@ function NewPupilPage() {
     if (hasBlock) {
       insert.prepaid_amount_paid = amountNum;
       insert.prepaid_hours = hoursNum;
-      
     }
     const { data: inserted, error } = await supabase
       .from("pupils")
