@@ -69,6 +69,30 @@ function isLiveNow(s: LiveItem) {
   return now >= start && now < end;
 }
 
+const URGENT_WINDOW_MIN = 180;
+
+/** Minutes from now until a session starts (negative once it has started). */
+function minsUntil(s: LiveItem) {
+  const start = startMs(s.session_date, s.session_time);
+  if (!start) return Number.POSITIVE_INFINITY;
+  return Math.round((start - Date.now()) / 60000);
+}
+
+/** Live right now, or starting within the next few hours. */
+function isUrgentLive(s: LiveItem) {
+  if (isLiveNow(s)) return true;
+  const m = minsUntil(s);
+  return m > 0 && m <= URGENT_WINDOW_MIN;
+}
+
+function urgentLabel(s: LiveItem) {
+  if (isLiveNow(s)) return "Live now";
+  const m = minsUntil(s);
+  if (m < 60) return `Starts in ${m} min`;
+  const hrs = Math.round(m / 60);
+  return `Starts in ${hrs} hr${hrs === 1 ? "" : "s"}`;
+}
+
 function firstImage(v: string[] | string | null): string | null {
   if (!v) return null;
   if (Array.isArray(v)) return v[0] ?? null;
@@ -176,6 +200,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const stripRef = useRef<HTMLDivElement | null>(null);
   const [activeCard, setActiveCard] = useState(0);
+
+  // Re-render each minute so "Starts in X min" and the live window stay accurate.
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => t + 1), 60000);
+    return () => clearInterval(id);
+  }, []);
+
 
   const onStripScroll = () => {
     const el = stripRef.current;
@@ -337,11 +369,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     minHeight: 0,
   };
 
+  // Sessions that are live now, or starting within the next 3 hours, jump to
+  // the front of the strip and stick to the left edge while the user scrolls.
+  const urgentLive = liveSorted.filter(isUrgentLive);
+  const otherLive = liveSorted.filter((s) => !isUrgentLive(s));
+
   const allItems = [
+    ...urgentLive.map((s) => ({ type: "live" as const, data: s, urgent: true })),
     ...market.map((m, i) => ({ type: "market" as const, marketIndex: i, data: m })),
-    ...liveSorted.map((s) => ({ type: "live" as const, data: s })),
+    ...otherLive.map((s) => ({ type: "live" as const, data: s, urgent: false })),
     ...playable.map((v) => ({ type: "learn" as const, data: v })),
   ];
+
 
   return (
     <div style={{ margin: "0 -16px 0", padding: "0 16px 22px", borderRadius: 0, fontFamily: FONT }}>
@@ -461,6 +500,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           if (item.type === "live") {
             const s = item.data;
             const nowLive = isLiveNow(s);
+            const urgent = item.urgent;
             const open = () =>
               navigate({
                 to: "/dsm-live/$sessionId" as never,
@@ -476,7 +516,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") open();
                 }}
-                style={cardShell}
+                style={
+                  urgent
+                    ? {
+                        ...cardShell,
+                        position: "sticky",
+                        left: 0,
+                        zIndex: 2,
+                        border: `1.5px solid ${RED}`,
+                        boxShadow: "0 2px 10px rgba(204,34,41,0.18)",
+                      }
+                    : cardShell
+                }
               >
                 <div
                   style={{
@@ -515,10 +566,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       color: "#FFFFFF",
                     }}
                   >
-                    <span className={nowLive ? "dsm-live-pulse" : undefined}>
+                    <span className={nowLive || urgent ? "dsm-live-pulse" : undefined}>
                       <Dot size={4} />
                     </span>
-                    Live
+                    {urgent ? urgentLabel(s) : "Live"}
                   </span>
                 </div>
                 <div style={cardBody}>
@@ -526,9 +577,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     {unread && <Dot size={6} />}
                     <div style={cardTitle}>{s.title}</div>
                   </div>
-                  <div style={cardSub}>
-                    {fmtTimeDay(s.session_date, s.session_time)} · DSM Live
+                  <div style={{ ...cardSub, color: urgent ? RED : MUTED, fontWeight: urgent ? 600 : 500 }}>
+                    {urgent ? urgentLabel(s) : fmtTimeDay(s.session_date, s.session_time)} · DSM Live
                   </div>
+
                 </div>
               </div>
             );
