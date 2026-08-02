@@ -519,7 +519,7 @@ function RoomsTab({
       setLoading(true);
       const { data: allRooms } = await supabase
         .from("local_chat_rooms")
-        .select("id, outcode, area_name, instructor_count, room_type")
+        .select("id, outcode, area_name, instructor_count, room_type, is_opt_in")
         .order("instructor_count", { ascending: false });
       if (cancelled) return;
       setRooms((allRooms ?? []) as BrowseRoom[]);
