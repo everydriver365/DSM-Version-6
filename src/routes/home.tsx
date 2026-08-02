@@ -5043,8 +5043,10 @@ function HomePage() {
                 </div>
               )}
             </div>
+            </>
           );
         })()}
+
 
         {/* ============ NATIONAL CHAT ============ */}
         {ukRoom && (
