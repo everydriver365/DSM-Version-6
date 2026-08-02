@@ -1639,6 +1639,9 @@ function HomePage() {
   const [hasUnreadAlertComments, setHasUnreadAlertComments] = useState(false);
   const [localRoom, setLocalRoom] = useState<{ id: string; area_name: string } | null>(null);
   const [localChatLatest, setLocalChatLatest] = useState<{ message: string; created_at: string; instructors: { name: string | null } | null } | null>(null);
+  const [ukRoom, setUkRoom] = useState<{ id: string; area_name: string } | null>(null);
+  const [ukChatLatest, setUkChatLatest] = useState<any>(null);
+  const [unreadUkChat, setUnreadUkChat] = useState(0);
   const [instructorArea, setInstructorArea] = useState<string>('your area');
   const [instructorHomePostcode, setInstructorHomePostcode] = useState<string | null>(null);
   const [pupilsTab, setPupilsTab] = useState<'current' | 'passed' | 'cancelled' | 'inactive'>('current');
@@ -1800,6 +1803,36 @@ function HomePage() {
               .limit(1)
               .maybeSingle();
             if (!cancelled) setLocalChatLatest(latest as any);
+          }
+        }
+
+        // National (UK) chat room + latest message + unread
+        const { data: ukRoomData } = await supabase
+          .from('local_chat_rooms')
+          .select('id, area_name')
+          .eq('outcode', 'UK')
+          .maybeSingle();
+        if (!cancelled && ukRoomData) {
+          setUkRoom(ukRoomData as any);
+          const { data: ukLatest } = await supabase
+            .from('local_chat_messages')
+            .select('message, created_at, instructors(name)')
+            .eq('room_id', (ukRoomData as any).id)
+            .is('deleted_at', null)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          if (!cancelled) setUkChatLatest(ukLatest as any);
+
+          const { data: ukSub } = await supabase
+            .from('chat_room_subscriptions')
+            .select('last_read_at')
+            .eq('instructor_id', userId)
+            .eq('room_id', (ukRoomData as any).id)
+            .maybeSingle();
+          if (!cancelled && (ukSub as any)?.last_read_at && (ukLatest as any)?.created_at) {
+            const isUnread = new Date((ukLatest as any).created_at) > new Date((ukSub as any).last_read_at);
+            setUnreadUkChat(isUnread ? 1 : 0);
           }
         }
       } catch {
@@ -4988,6 +5021,67 @@ function HomePage() {
                 fontFamily: 'Poppins, sans-serif',
               }}>
                 {unreadChat}
+              </div>
+            )}
+            <ChevronRight size={17} color="#C7CDD9" style={{ flexShrink: 0 }} />
+          </div>
+        )}
+
+        {/* ============ NATIONAL CHAT ============ */}
+        {ukRoom && (
+          <div
+            onClick={() => navigate({ to: '/community', search: { tab: 'uk' } })}
+            style={{
+              margin: '8px 16px 0', background: 'white', borderRadius: 14,
+              boxShadow: '0 2px 8px rgba(11,31,58,0.06)', padding: '13px 14px',
+              display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
+              fontFamily: 'Poppins, sans-serif',
+              border: unreadUkChat > 0 ? '1.5px solid #1877D6' : '1px solid transparent',
+            }}
+          >
+            <div style={{ position: 'relative', flexShrink: 0 }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: 11,
+                background: unreadUkChat > 0 ? '#1877D6' : '#E6F1FB',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Globe size={18} color={unreadUkChat > 0 ? '#FFFFFF' : '#1877D6'} />
+              </div>
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+                DSM National Chat
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 1 }}>
+                <div style={{
+                  fontSize: unreadUkChat > 0 ? 12 : 11,
+                  fontWeight: unreadUkChat > 0 ? 600 : 400,
+                  color: unreadUkChat > 0 ? '#0B1F3A' : '#9CA3AF',
+                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, minWidth: 0,
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
+                  {ukChatLatest
+                    ? `${(ukChatLatest.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(ukChatLatest.message || '').substring(0, 40)}${(ukChatLatest.message || '').length > 40 ? '...' : ''}`
+                    : 'Join the national conversation!'}
+                </div>
+                {ukChatLatest?.created_at && (
+                  <div style={{
+                    fontSize: 10, color: unreadUkChat > 0 ? '#1877D6' : '#9CA3AF', flexShrink: 0,
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    {timeAgo(ukChatLatest.created_at)}
+                  </div>
+                )}
+              </div>
+            </div>
+            {unreadUkChat > 0 && (
+              <div style={{
+                width: 16, height: 16, borderRadius: 8, flexShrink: 0,
+                background: '#1877D6', color: '#FFFFFF', fontSize: 10, fontWeight: 700,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'Poppins, sans-serif',
+              }}>
+                {unreadUkChat}
               </div>
             )}
             <ChevronRight size={17} color="#C7CDD9" style={{ flexShrink: 0 }} />
