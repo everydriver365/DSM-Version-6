@@ -469,7 +469,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 </div>
                 <div style={cardFooter}>
                   <span>View details</span>
-                  <IconChevronRight size={14} stroke={2.4} color={NAVY} />
+                  <IconChevronRight size={12} stroke={2.4} color={NAVY} />
                 </div>
               </div>
             );
@@ -507,7 +507,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     justifyContent: "center",
                   }}
                 >
-                  {!s.image_url && <IconBroadcast size={24} color="#FFFFFF" stroke={1.8} />}
+                  {!s.image_url && <IconBroadcast size={18} color="#FFFFFF" stroke={1.8} />}
                   <span
                     style={{
                       ...pillBase,
@@ -516,14 +516,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     }}
                   >
                     <span className={nowLive ? "dsm-live-pulse" : undefined}>
-                      <Dot size={5} />
+                      <Dot size={4} />
                     </span>
                     Live
                   </span>
                 </div>
                 <div style={cardBody}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    {unread && <Dot size={8} />}
+                    {unread && <Dot size={6} />}
                     <div style={cardTitle}>{s.title}</div>
                   </div>
                 <div style={{ ...livePriceBox, background: "#FFF0F0" }}>
@@ -534,7 +534,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 </div>
                 <div style={cardFooter}>
                   <span>Join now</span>
-                  <IconChevronRight size={14} stroke={2.4} color={NAVY} />
+                  <IconChevronRight size={12} stroke={2.4} color={NAVY} />
                 </div>
               </div>
             );
@@ -570,7 +570,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   justifyContent: "center",
                 }}
               >
-                {!thumb && <IconPlayerPlay size={20} color={MUTED} stroke={2} />}
+                {!thumb && <IconPlayerPlay size={15} color={MUTED} stroke={2} />}
                 <span
                   style={{
                     ...pillBase,
@@ -583,18 +583,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               </div>
               <div style={cardBody}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  {unread && <Dot size={8} />}
+                  {unread && <Dot size={6} />}
                   <div style={cardTitle}>{v.title}</div>
                 </div>
                 <div style={{ ...priceBox, background: "#E8F6ED" }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: GREEN }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: GREEN }}>
                     {v.duration ? `${v.duration} · DSM Learn` : "Free · DSM Learn"}
                   </span>
                 </div>
               </div>
               <div style={cardFooter}>
                 <span>Watch</span>
-                <IconChevronRight size={14} stroke={2.4} color={NAVY} />
+                <IconChevronRight size={12} stroke={2.4} color={NAVY} />
               </div>
             </div>
           );
