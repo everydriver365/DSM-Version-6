@@ -497,7 +497,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "relative",
-                    height: 110,
+                    height: 70,
                     flexShrink: 0,
                     background: s.image_url ? `${NAVY} url(${s.image_url}) center/cover` : NAVY,
                     borderBottom: `1px solid ${HAIRLINE}`,
@@ -506,7 +506,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     justifyContent: "center",
                   }}
                 >
-                  {!s.image_url && <IconBroadcast size={28} color="#FFFFFF" stroke={1.8} />}
+                  {!s.image_url && <IconBroadcast size={24} color="#FFFFFF" stroke={1.8} />}
                   <span
                     style={{
                       ...pillBase,
@@ -515,7 +515,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     }}
                   >
                     <span className={nowLive ? "dsm-live-pulse" : undefined}>
-                      <Dot size={6} />
+                      <Dot size={5} />
                     </span>
                     Live
                   </span>
