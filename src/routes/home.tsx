@@ -5126,7 +5126,14 @@ function HomePage() {
           };
           const rank = (c: string) => (c === RED_C ? 3 : c === AMBER_C ? 2 : 1);
 
-          const alerts = Array.isArray(localAlerts) ? localAlerts : [];
+          const allAlerts = Array.isArray(localAlerts) ? localAlerts : [];
+          const alerts = allAlerts.filter((a: any) => !isRowMuted(`alert:${a?.id}`));
+          const alertsHidden = isRowMuted('alerts') || alerts.length === 0;
+          const localChatHidden = !localRoom || isRowMuted('localchat');
+          const visibleRooms = joinedRoomChats.filter((r) => !isRowMuted(`room:${r.id}`));
+          const mutedCount = Object.keys(mutedRows).filter((k) => isRowMuted(k)).length;
+          if (alertsHidden && localChatHidden && visibleRooms.length === 0 && mutedCount === 0) return null;
+
           const topAlert = alerts.length
             ? [...alerts].sort((a: any, b: any) => {
                 const d = rank(severityOf(b)) - rank(severityOf(a));
@@ -5138,6 +5145,35 @@ function HomePage() {
           const alertPreview = topAlert
             ? (topAlert.description || topAlert.alert_type || topAlert.location_name || 'Active issue nearby')
             : '';
+
+          const HOUR = 3600_000;
+          const rowMenu = (key: string, name: string, extra: QuickAction[] = []): QuickAction[] => [
+            ...extra,
+            { label: 'Mute for 8 hours', onClick: () => muteRow(key, 8 * HOUR, `${name} muted for 8 hours`, `${name} unmuted`) },
+            { label: 'Mute for 7 days', onClick: () => muteRow(key, 7 * 24 * HOUR, `${name} muted for 7 days`, `${name} unmuted`) },
+            { label: 'Dismiss', onClick: () => muteRow(key, 365 * 24 * HOUR, `${name} dismissed`, `${name} restored`), destructive: true },
+          ];
+          const MenuButton = ({ items }: { items: QuickAction[] }) => (
+            <div onClick={(e) => e.stopPropagation()} style={{ flexShrink: 0 }}>
+              <QuickActionsMenu
+                items={items}
+                trigger={({ onClick }) => (
+                  <button
+                    type="button"
+                    aria-label="Row options"
+                    onClick={onClick}
+                    style={{
+                      background: 'none', border: 'none', padding: 4, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}
+                  >
+                    <MoreHorizontal size={16} color={GREY_C} />
+                  </button>
+                )}
+              />
+            </div>
+          );
+
 
           const HazardIcon = (
             <svg width={26} height={26} viewBox="0 0 26 26" style={{ flexShrink: 0, display: 'block' }} aria-hidden="true">
