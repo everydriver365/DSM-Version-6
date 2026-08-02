@@ -5200,6 +5200,39 @@ function HomePage() {
                   )}
                 </div>
               )}
+
+              {joinedRoomChats.map((room, idx) => (
+                <div
+                  key={room.id}
+                  onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '14px 16px', cursor: 'pointer',
+                    borderTop: (alerts.length > 0 || localRoom || idx > 0) ? `1px solid ${BORDER_C}` : undefined,
+                  }}
+                >
+                  {ChatIcon}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>
+                      {room.area_name || room.outcode} chat
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, minWidth: 0 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: room.unread ? '#1877D6' : GREEN_C, flexShrink: 0 }} />
+                      <span style={{
+                        fontSize: 12, fontWeight: 600, color: room.unread ? '#1877D6' : GREEN_C, fontFamily: PF_C,
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                      }}>
+                        {`${(room.latest?.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(room.latest?.message || '').substring(0, 40)}${(room.latest?.message || '').length > 40 ? '...' : ''}`}
+                      </span>
+                    </div>
+                  </div>
+                  {room.latest?.created_at && (
+                    <div style={{ fontSize: 11, color: GREY_C, fontFamily: PF_C, flexShrink: 0 }}>
+                      {timeAgo(room.latest.created_at)}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
             </>
           );
