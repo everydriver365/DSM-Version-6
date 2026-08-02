@@ -636,8 +636,12 @@ function AlertsTab({
         </div>
       </div>
 
-      {otherAlerts.length === 0 ? (
-        myAlerts.length === 0 ? (
+      {/* SECTION 1 — Reported by instructors */}
+      <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 8 }}>
+        Reported by instructors
+      </div>
+      {instructorAlerts.length === 0 ? (
+        myAlerts.length === 0 && officialAlerts.length === 0 ? (
           <div style={{ padding: 40, textAlign: "center" }}>
             <MapPin size={48} color="#D1D5DB" style={{ margin: "0 auto 12px" }} />
             <div style={{ fontWeight: 600, color: "#6B7280" }}>No other alerts near {instructorArea}</div>
@@ -657,18 +661,82 @@ function AlertsTab({
             </button>
           </div>
         ) : (
-          <div style={{ padding: 24, textAlign: "center" }}>
-            <div style={{ fontSize: 12, color: "#9CA3AF", display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
-              You have an active alert below
-              <ChevronDown size={14} />
-            </div>
+          <div style={{
+            padding: "14px 12px", textAlign: "center", background: "#F8FAFC",
+            border: "1px dashed #E2E8F0", borderRadius: 12, fontSize: 12, color: "#9CA3AF",
+          }}>
+            No instructor reports in your area
           </div>
         )
       ) : (
-        otherAlerts.map((a) => (
+        instructorAlerts.map((a) => (
           <AlertCard key={a.id} alert={a} userId={userId} onUpvote={handleUpvote} onSelect={setSelectedAlert} commentCount={commentCounts[a.id] ?? 0} />
         ))
       )}
+
+      {/* SECTION 2 — Traffic & road data (collapsible) */}
+      {officialAlerts.length > 0 && (
+        <div style={{ marginTop: 20 }}>
+          <button
+            type="button"
+            onClick={() => setTomtomOpen((v) => !v)}
+            style={{
+              width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
+              background: "white", border: "1px solid #E2E8F0", borderRadius: 12,
+              padding: "11px 12px", cursor: "pointer",
+            }}
+          >
+            <span style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A" }}>
+              Traffic &amp; road data · {officialAlerts.length} incident{officialAlerts.length === 1 ? "" : "s"}
+            </span>
+            <ChevronDown
+              size={18}
+              color="#6B7280"
+              style={{ transform: tomtomOpen ? "rotate(180deg)" : "none", transition: "transform .15s" }}
+            />
+          </button>
+
+          {tomtomOpen && (
+            <>
+              <div style={{ display: "flex", gap: 6, overflowX: "auto", padding: "10px 0 2px" }}>
+                {TOMTOM_FILTERS.map((f) => {
+                  const active = tomtomFilter === f.key;
+                  return (
+                    <button
+                      key={f.key}
+                      type="button"
+                      onClick={() => setTomtomFilter(f.key)}
+                      style={{
+                        flexShrink: 0,
+                        border: `1px solid ${active ? "#0B1F3A" : "#E2E8F0"}`,
+                        background: active ? "#0B1F3A" : "white",
+                        color: active ? "white" : "#6B7280",
+                        borderRadius: 20, padding: "5px 12px",
+                        fontSize: 12, fontWeight: 600, cursor: "pointer",
+                      }}
+                    >
+                      {f.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {filteredOfficialAlerts.length === 0 ? (
+                <div style={{ padding: "14px 12px", textAlign: "center", fontSize: 12, color: "#9CA3AF" }}>
+                  No matching incidents
+                </div>
+              ) : (
+                <div style={{ marginTop: 8 }}>
+                  {filteredOfficialAlerts.map((a) => (
+                    <AlertCard key={a.id} alert={a} userId={userId} onUpvote={handleUpvote} onSelect={setSelectedAlert} commentCount={commentCounts[a.id] ?? 0} />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
 
       {myAlerts.length > 0 && (
         <div style={{ marginTop: 24 }}>
