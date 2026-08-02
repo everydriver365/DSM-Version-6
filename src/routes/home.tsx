@@ -5063,7 +5063,7 @@ function HomePage() {
 
 
         {/* ============ LOCAL ISSUES + LOCAL CHAT (unified card) ============ */}
-        {((localAlerts !== null && localAlerts.length > 0) || localRoom) && (() => {
+        {((localAlerts !== null && localAlerts.length > 0) || localRoom || joinedRoomChats.length > 0) && (() => {
           const NAVY_C = '#0B1F3A';
           const GREY_C = '#6B7686';
           const BORDER_C = '#E4E8EF';
