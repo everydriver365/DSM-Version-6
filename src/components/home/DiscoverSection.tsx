@@ -182,7 +182,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     if (!el) return;
     const page = el.offsetWidth / 2;
     const idx = Math.round(el.scrollLeft / page);
-    setActiveCard(Math.max(0, Math.min(allItems.length - 1, idx)));
+    const pages = Math.max(1, Math.ceil(allItems.length / 2));
+    setActiveCard(Math.max(0, Math.min(pages - 1, idx)));
   };
 
   const CATEGORY_ICONS: Record<string, string> = {
