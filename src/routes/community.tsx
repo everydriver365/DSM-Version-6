@@ -488,6 +488,7 @@ type BrowseRoom = {
   area_name: string | null;
   instructor_count: number | null;
   room_type: string | null;
+  is_opt_in: boolean | null;
 };
 
 function RoomsTab({
