@@ -272,7 +272,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   };
 
   const cardTitle: React.CSSProperties = {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 700,
     color: NAVY,
     lineHeight: 1.25,
