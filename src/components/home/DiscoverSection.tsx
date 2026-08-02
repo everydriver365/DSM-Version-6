@@ -525,11 +525,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     {unread && <Dot size={8} />}
                     <div style={cardTitle}>{s.title}</div>
                   </div>
-                  <div style={{ ...priceBox, background: "#FFF0F0" }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: RED }}>
-                      {fmtTimeDay(s.session_date, s.session_time)}
-                    </span>
-                  </div>
+                <div style={{ ...livePriceBox, background: "#FFF0F0" }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: RED }}>
+                    {fmtTimeDay(s.session_date, s.session_time)}
+                  </span>
+                </div>
                 </div>
                 <div style={cardFooter}>
                   <span>Join now</span>
