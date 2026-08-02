@@ -256,8 +256,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   );
 
   const cardShell: React.CSSProperties = {
-    flex: "0 0 calc(50% - 14px)",
-    minWidth: "calc(50% - 14px)",
+    flex: "0 0 calc(50% - 4px)",
+    minWidth: "calc(50% - 4px)",
     borderRadius: 14,
     border: "1px solid #E4E8EF",
     background: "#FFFFFF",
