@@ -407,7 +407,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       <style>{`.dsm-discover-scroll::-webkit-scrollbar{display:none}.dsm-feed-strip::-webkit-scrollbar{display:none}@keyframes dsmLivePulse{0%{opacity:1}50%{opacity:.3}100%{opacity:1}}.dsm-live-pulse{animation:dsmLivePulse 1.4s ease infinite}`}</style>
 
 
-      <div className="dsm-discover-scroll" style={stripStyle}>
+      <div
+        className="dsm-discover-scroll"
+        style={stripStyle}
+        ref={stripRef}
+        onScroll={onStripScroll}
+      >
 
         {(() => {
           const marketCard = (m: MarketItem, i: number) => {
