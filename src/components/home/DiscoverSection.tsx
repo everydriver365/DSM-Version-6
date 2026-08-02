@@ -528,6 +528,37 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         })()}
       </div>
 
+      {market.length > 1 && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
+            marginTop: 10,
+          }}
+        >
+          {market.map((m, i) => {
+            const active = i === activeCard;
+            return (
+              <span
+                key={`dot-${m.id}`}
+                aria-hidden="true"
+                style={{
+                  width: active ? 8 : 6,
+                  height: active ? 8 : 6,
+                  borderRadius: "50%",
+                  background: active ? BLUE : "#D7DCE3",
+                  transition: "all .18s ease",
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
+
+
+
 
       {/* DSM Live + DSM Learn — merged card, each section a one-at-a-time swipe strip */}
       {(liveSorted.length > 0 || playable.length > 0) && (
