@@ -284,15 +284,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const pillBase: React.CSSProperties = {
     position: "absolute",
-    top: 6,
-    left: 6,
+    top: 4,
+    left: 4,
     maxWidth: "calc(100% - 12px)",
     display: "inline-flex",
     alignItems: "center",
-    gap: 4,
+    gap: 3,
     borderRadius: 999,
-    padding: "3px 7px",
-    fontSize: 9,
+    padding: "2px 5px",
+    fontSize: 8,
     fontWeight: 700,
     letterSpacing: "0.04em",
     textTransform: "uppercase",
@@ -318,19 +318,19 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const cardBody: React.CSSProperties = {
     position: "relative",
-    padding: "8px 10px 0",
+    padding: "5px 7px 0",
     flex: 1,
     display: "flex",
     flexDirection: "column",
-    gap: 4,
+    gap: 3,
     minHeight: 0,
   };
 
   const priceBox: React.CSSProperties = {
     marginTop: "auto",
-    marginBottom: 6,
-    borderRadius: 8,
-    padding: "6px 8px",
+    marginBottom: 4,
+    borderRadius: 6,
+    padding: "4px 6px",
     overflow: "hidden",
     textOverflow: "ellipsis",
   };
@@ -343,12 +343,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const cardFooter: React.CSSProperties = {
     borderTop: `1px solid ${HAIRLINE}`,
-    padding: "7px 10px",
+    padding: "5px 7px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     gap: 3,
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: 700,
     color: NAVY,
     letterSpacing: "0.02em",
