@@ -480,6 +480,194 @@ function CommunityPage() {
   );
 }
 
+/* ============================================================ ROOMS TAB */
+
+type BrowseRoom = {
+  id: string;
+  outcode: string;
+  area_name: string | null;
+  instructor_count: number | null;
+  room_type: string | null;
+};
+
+function RoomsTab({
+  userId, instructorOutcode, onOpenRoom,
+}: {
+  userId: string | null;
+  instructorOutcode: string | null;
+  onOpenRoom: (room: BrowseRoom) => void;
+}) {
+  const [rooms, setRooms] = useState<BrowseRoom[]>([]);
+  const [subscribedIds, setSubscribedIds] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
+  const [joiningId, setJoiningId] = useState<string | null>(null);
+
+  async function loadSubs() {
+    if (!userId) return;
+    const { data: mySubs } = await supabase
+      .from("chat_room_subscriptions")
+      .select("room_id")
+      .eq("instructor_id", userId);
+    setSubscribedIds(new Set(((mySubs ?? []) as any[]).map((s) => s.room_id)));
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      const { data: allRooms } = await supabase
+        .from("local_chat_rooms")
+        .select("id, outcode, area_name, instructor_count, room_type")
+        .order("instructor_count", { ascending: false });
+      if (cancelled) return;
+      setRooms((allRooms ?? []) as BrowseRoom[]);
+      await loadSubs();
+      if (!cancelled) setLoading(false);
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
+
+  const myRooms = useMemo(
+    () => rooms.filter((r) =>
+      subscribedIds.has(r.id) || r.outcode === instructorOutcode || r.outcode === "UK"),
+    [rooms, subscribedIds, instructorOutcode]
+  );
+  const availableRooms = useMemo(() => {
+    const mine = new Set(myRooms.map((r) => r.id));
+    const q = query.trim().toLowerCase();
+    return rooms
+      .filter((r) => !mine.has(r.id))
+      .filter((r) => !q
+        || (r.area_name ?? "").toLowerCase().includes(q)
+        || r.outcode.toLowerCase().includes(q));
+  }, [rooms, myRooms, query]);
+
+  async function join(room: BrowseRoom) {
+    if (!userId) return;
+    setJoiningId(room.id);
+    const { error } = await supabase.from("chat_room_subscriptions").insert({
+      instructor_id: userId,
+      room_id: room.id,
+      last_read_at: new Date().toISOString(),
+    });
+    setJoiningId(null);
+    if (error) {
+      toast.error("Could not join room");
+      return;
+    }
+    toast.success("Joined " + (room.area_name ?? room.outcode));
+    await loadSubs();
+    onOpenRoom(room);
+  }
+
+  const rowStyle: React.CSSProperties = {
+    background: "white", border: "0.5px solid #E2E6ED", borderRadius: 12,
+    padding: "12px 14px", display: "flex", alignItems: "center", gap: 10,
+  };
+
+  function RoomRow({ room, action }: { room: BrowseRoom; action: React.ReactNode }) {
+    return (
+      <div style={rowStyle}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {room.area_name || room.outcode}
+            </div>
+            <span style={{
+              background: "#EAF2FC", color: "#1877D6", fontSize: 10, fontWeight: 700,
+              borderRadius: 999, padding: "2px 8px", flexShrink: 0,
+            }}>
+              {room.outcode}
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 3, fontSize: 11, color: "#8A93A3" }}>
+            <Users size={12} />
+            {room.instructor_count ?? 0} instructors
+          </div>
+        </div>
+        {action}
+      </div>
+    );
+  }
+
+  const btn = (bg: string): React.CSSProperties => ({
+    height: 32, padding: "0 14px", borderRadius: 8, border: "none",
+    background: bg, color: "white", fontSize: 12, fontWeight: 700, cursor: "pointer", flexShrink: 0,
+  });
+
+  return (
+    <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 18 }}>
+      <div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: "#8A93A3", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
+          Your rooms
+        </div>
+        {loading ? (
+          <div style={{ fontSize: 13, color: "#8A93A3" }}>Loading…</div>
+        ) : myRooms.length === 0 ? (
+          <div style={{ fontSize: 13, color: "#8A93A3" }}>You haven’t joined any rooms yet.</div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {myRooms.map((room) => (
+              <RoomRow
+                key={room.id}
+                room={room}
+                action={
+                  <button type="button" style={btn("#185FA5")} onClick={() => onOpenRoom(room)}>
+                    Open
+                  </button>
+                }
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: "#8A93A3", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
+          Available rooms
+        </div>
+        <div style={{
+          display: "flex", alignItems: "center", gap: 8, background: "white",
+          border: "0.5px solid #E2E6ED", borderRadius: 10, padding: "0 12px", height: 40, marginBottom: 10,
+        }}>
+          <Search size={15} color="#8A93A3" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search area or outcode"
+            style={{ flex: 1, border: "none", outline: "none", fontSize: 13, color: "#0F2044", background: "transparent" }}
+          />
+        </div>
+        {loading ? null : availableRooms.length === 0 ? (
+          <div style={{ fontSize: 13, color: "#8A93A3" }}>No other rooms found.</div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {availableRooms.map((room) => (
+              <RoomRow
+                key={room.id}
+                room={room}
+                action={
+                  <button
+                    type="button"
+                    disabled={joiningId === room.id}
+                    style={{ ...btn("#0C8577"), opacity: joiningId === room.id ? 0.6 : 1 }}
+                    onClick={() => join(room)}
+                  >
+                    {joiningId === room.id ? "Joining…" : "Join"}
+                  </button>
+                }
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
 /* ============================================================ ALERTS TAB */
 
 const TOMTOM_FILTERS: { key: string; label: string }[] = [
