@@ -218,6 +218,7 @@ function PaymentsPage() {
   const [allPupils, setAllPupils] = useState<PupilLite[]>([]);
   const [history, setHistory] = useState<HistoryRow[] | null>(null);
   const [outstanding, setOutstanding] = useState(0);
+  const [unpaidLessons, setUnpaidLessons] = useState<{ amount_due: number | null; paid_amount: number | null }[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [pupilFilter, setPupilFilter] = useState<string>("");
