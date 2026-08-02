@@ -250,9 +250,9 @@ function PaymentsPage() {
         .eq("instructor_id", userId).is("deleted_at", null)
         .order("created_at", { ascending: false }),
       supabase.from("lessons")
-        .select("amount_due")
+        .select("amount_due, paid_amount, payment_status")
         .eq("instructor_id", userId)
-        .eq("payment_status", "unpaid")
+        .in("payment_status", ["unpaid", "partial"])
         .is("deleted_at", null),
     ]);
     setAllPupils((pupilRows ?? []) as PupilLite[]);
