@@ -400,6 +400,64 @@ function PaymentsPage() {
         />
       </div>
 
+      {/* Paid vs outstanding breakdown */}
+      {paidBreakdown.totalDue > 0 && (
+        <div style={{ padding: "0 16px", marginBottom: 14 }}>
+          <div
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 14,
+              padding: "14px 16px",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: NAVY, ...POPPINS }}>Paid vs outstanding</div>
+              <div style={{ fontSize: 11, color: MUTED, ...POPPINS }}>
+                {paidBreakdown.paidPercent >= 1
+                  ? "Fully collected"
+                  : paidBreakdown.paidPercent > 0
+                    ? `${Math.round(paidBreakdown.paidPercent * 100)}% collected`
+                    : "None collected"}
+              </div>
+            </div>
+            <div
+              style={{
+                height: 10,
+                borderRadius: 5,
+                background: "#F3F4F6",
+                overflow: "hidden",
+                marginBottom: 12,
+                display: "flex",
+              }}
+            >
+              <div
+                style={{
+                  width: `${Math.min(100, Math.round(paidBreakdown.paidPercent * 100))}%`,
+                  background: GREEN,
+                  height: "100%",
+                }}
+              />
+              <div style={{ flex: 1, background: RED, height: "100%" }} />
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+              <div>
+                <div style={{ fontSize: 10, color: MUTED, marginBottom: 2, ...POPPINS }}>Total due</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: NAVY, ...POPPINS }}>{formatGBP(paidBreakdown.totalDue)}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 10, color: MUTED, marginBottom: 2, ...POPPINS }}>Paid</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: GREEN, ...POPPINS }}>{formatGBP(paidBreakdown.totalPaid)}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 10, color: MUTED, marginBottom: 2, ...POPPINS }}>Outstanding</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: RED, ...POPPINS }}>{formatGBP(paidBreakdown.outstanding)}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Search bar (opens existing pupil picker) */}
       <button
         type="button"
