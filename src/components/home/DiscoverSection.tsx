@@ -492,6 +492,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           if (item.type === "live") {
             const s = item.data;
             const nowLive = isLiveNow(s);
+            const urgent = item.urgent;
             const open = () =>
               navigate({
                 to: "/dsm-live/$sessionId" as never,
@@ -507,7 +508,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") open();
                 }}
-                style={cardShell}
+                style={
+                  urgent
+                    ? {
+                        ...cardShell,
+                        position: "sticky",
+                        left: 0,
+                        zIndex: 2,
+                        border: `1.5px solid ${RED}`,
+                        boxShadow: "0 2px 10px rgba(204,34,41,0.18)",
+                      }
+                    : cardShell
+                }
               >
                 <div
                   style={{
@@ -546,10 +558,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       color: "#FFFFFF",
                     }}
                   >
-                    <span className={nowLive ? "dsm-live-pulse" : undefined}>
+                    <span className={nowLive || urgent ? "dsm-live-pulse" : undefined}>
                       <Dot size={4} />
                     </span>
-                    Live
+                    {urgent ? urgentLabel(s) : "Live"}
                   </span>
                 </div>
                 <div style={cardBody}>
@@ -557,9 +569,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     {unread && <Dot size={6} />}
                     <div style={cardTitle}>{s.title}</div>
                   </div>
-                  <div style={cardSub}>
-                    {fmtTimeDay(s.session_date, s.session_time)} · DSM Live
+                  <div style={{ ...cardSub, color: urgent ? RED : MUTED, fontWeight: urgent ? 600 : 500 }}>
+                    {urgent ? urgentLabel(s) : fmtTimeDay(s.session_date, s.session_time)} · DSM Live
                   </div>
+
                 </div>
               </div>
             );
