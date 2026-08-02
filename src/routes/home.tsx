@@ -1642,6 +1642,13 @@ function HomePage() {
   const [ukRoom, setUkRoom] = useState<{ id: string; area_name: string } | null>(null);
   const [ukChatLatest, setUkChatLatest] = useState<any>(null);
   const [unreadUkChat, setUnreadUkChat] = useState(0);
+  const [joinedRoomChats, setJoinedRoomChats] = useState<Array<{
+    id: string;
+    area_name: string | null;
+    outcode: string;
+    latest: { message: string | null; created_at: string; instructors: { name: string | null } | null } | null;
+    unread: boolean;
+  }>>([]);
   const [instructorArea, setInstructorArea] = useState<string>('your area');
   const [instructorHomePostcode, setInstructorHomePostcode] = useState<string | null>(null);
   const [pupilsTab, setPupilsTab] = useState<'current' | 'passed' | 'cancelled' | 'inactive'>('current');
@@ -1698,6 +1705,47 @@ function HomePage() {
     })();
     return () => { cancelled = true; };
   }, [userId]);
+
+  // Latest message from every other room the instructor has joined
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data: subs } = await supabase
+        .from('chat_room_subscriptions')
+        .select('room_id, last_read_at')
+        .eq('instructor_id', userId);
+      if (cancelled || !subs?.length) { if (!cancelled) setJoinedRoomChats([]); return; }
+      const excluded = new Set([localRoom?.id, ukRoom?.id].filter(Boolean) as string[]);
+      const roomIds = (subs as any[]).map((s) => s.room_id).filter((id: string) => id && !excluded.has(id));
+      if (!roomIds.length) { if (!cancelled) setJoinedRoomChats([]); return; }
+      const { data: rooms } = await supabase
+        .from('local_chat_rooms')
+        .select('id, area_name, outcode')
+        .in('id', roomIds);
+      if (cancelled || !rooms?.length) { if (!cancelled) setJoinedRoomChats([]); return; }
+      const out: Array<any> = [];
+      for (const room of rooms as any[]) {
+        const sub = (subs as any[]).find((s) => s.room_id === room.id);
+        const { data: latest } = await supabase
+          .from('local_chat_messages')
+          .select('message, created_at, instructors(name)')
+          .eq('room_id', room.id)
+          .is('deleted_at', null)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (!latest) continue;
+        const unread = !sub?.last_read_at || new Date((latest as any).created_at) > new Date(sub.last_read_at);
+        out.push({ id: room.id, area_name: room.area_name, outcode: room.outcode, latest, unread });
+      }
+      out.sort((a, b) => new Date(b.latest.created_at).getTime() - new Date(a.latest.created_at).getTime());
+      if (!cancelled) setJoinedRoomChats(out);
+    })();
+    return () => { cancelled = true; };
+  }, [userId, localRoom?.id, ukRoom?.id]);
+
+
 
   useEffect(() => {
     if (!userId) return;
@@ -5015,7 +5063,7 @@ function HomePage() {
 
 
         {/* ============ LOCAL ISSUES + LOCAL CHAT (unified card) ============ */}
-        {((localAlerts !== null && localAlerts.length > 0) || localRoom) && (() => {
+        {((localAlerts !== null && localAlerts.length > 0) || localRoom || joinedRoomChats.length > 0) && (() => {
           const NAVY_C = '#0B1F3A';
           const GREY_C = '#6B7686';
           const BORDER_C = '#E4E8EF';
@@ -5152,6 +5200,39 @@ function HomePage() {
                   )}
                 </div>
               )}
+
+              {joinedRoomChats.map((room, idx) => (
+                <div
+                  key={room.id}
+                  onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '14px 16px', cursor: 'pointer',
+                    borderTop: (alerts.length > 0 || localRoom || idx > 0) ? `1px solid ${BORDER_C}` : undefined,
+                  }}
+                >
+                  {ChatIcon}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>
+                      {room.area_name || room.outcode} chat
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, minWidth: 0 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: room.unread ? '#1877D6' : GREEN_C, flexShrink: 0 }} />
+                      <span style={{
+                        fontSize: 12, fontWeight: 600, color: room.unread ? '#1877D6' : GREEN_C, fontFamily: PF_C,
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                      }}>
+                        {`${(room.latest?.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(room.latest?.message || '').substring(0, 40)}${(room.latest?.message || '').length > 40 ? '...' : ''}`}
+                      </span>
+                    </div>
+                  </div>
+                  {room.latest?.created_at && (
+                    <div style={{ fontSize: 11, color: GREY_C, fontFamily: PF_C, flexShrink: 0 }}>
+                      {timeAgo(room.latest.created_at)}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
             </>
           );
