@@ -428,7 +428,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "relative",
-                    height: 110,
+                    height: 70,
                     flexShrink: 0,
                     background: photo ? `url(${photo}) center/cover` : tone.tint,
                     borderBottom: `1px solid ${HAIRLINE}`,
