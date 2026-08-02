@@ -532,7 +532,8 @@ function RoomsTab({
 
   const myRooms = useMemo(
     () => rooms.filter((r) =>
-      subscribedIds.has(r.id) || r.outcode === instructorOutcode || r.outcode === "UK"),
+      subscribedIds.has(r.id)
+      || (!r.is_opt_in && (r.outcode === instructorOutcode || r.outcode === "UK"))),
     [rooms, subscribedIds, instructorOutcode]
   );
   const availableRooms = useMemo(() => {
