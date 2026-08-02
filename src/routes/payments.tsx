@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { recordPayment, correctPaymentRecord } from "@/lib/payments";
+import { calculateOutstandingOwed } from "@/lib/paymentsOwed";
 import { TakePaymentSheet as SharedTakePaymentSheet } from "@/components/payments/TakePaymentSheet";
 import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";
 
@@ -257,12 +258,9 @@ function PaymentsPage() {
     ]);
     setAllPupils((pupilRows ?? []) as PupilLite[]);
     setHistory((hist as unknown as HistoryRow[]) ?? []);
-    const owed = ((unpaid ?? []) as { amount_due: number | null; paid_amount: number | null }[])
-      .reduce((s, l) => {
-        const due = Number(l.amount_due || 0);
-        const paid = Number(l.paid_amount || 0);
-        return s + Math.max(0, due - paid);
-      }, 0);
+    const owed = calculateOutstandingOwed(
+      (unpaid ?? []) as { amount_due: number | null; paid_amount: number | null }[],
+    );
     setOutstanding(owed);
     setLoading(false);
   }
