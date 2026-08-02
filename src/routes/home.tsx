@@ -4645,10 +4645,9 @@ function HomePage() {
           const hStatus = (upcoming?.payment_status ?? 'unpaid').toLowerCase();
           const hAmountDue = Number(upcoming?.amount_due ?? 0);
           const isPaid = hStatus === 'paid' || hStatus === 'prepaid' || hAmountDue <= 0;
-          const isOverdue = !isPaid && d && d < todayStart;
-          const hLabel = isPaid ? 'Paid' : isOverdue ? 'Overdue' : 'Due';
-          const hPillBg = isPaid ? '#E5F4EA' : isOverdue ? '#FEECEC' : '#FEF3C7';
-          const hPillFg = isPaid ? '#1E9E5A' : isOverdue ? '#CC2229' : '#D97706';
+          const hLabel = isPaid ? 'Paid' : 'Overdue';
+          const hPillBg = isPaid ? '#E5F4EA' : '#FEF3C7';
+          const hPillFg = isPaid ? '#1E9E5A' : '#D97706';
           const priceText = `£${hAmountDue.toFixed(2)}`;
 
           // Package info
@@ -4665,6 +4664,12 @@ function HomePage() {
           const dur = upcoming?.duration_minutes ?? 0;
           const durationDecimal = dur ? (dur / 60).toFixed(dur % 60 === 0 ? 0 : 1) : '0';
           const pickup = upcoming?.pickup_location || [upcoming?.pupils?.address, upcoming?.pupils?.postcode].filter(Boolean).join(', ') || 'No pickup';
+
+          const isOverdue = !isPaid && d ? d < todayStart : false;
+          const hLabelFinal = isPaid ? 'Paid' : isOverdue ? 'Overdue' : 'Due';
+          const hPillBgFinal = isPaid ? '#E5F4EA' : isOverdue ? '#FEECEC' : '#FEF3C7';
+          const hPillFgFinal = isPaid ? '#1E9E5A' : isOverdue ? '#CC2229' : '#D97706';
+
 
 
           const openMaps = () => {
