@@ -601,7 +601,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         })}
       </div>
 
-      {allItems.length > 1 && (
+      {allItems.length > 2 && (
         <div
           style={{
             display: "flex",
@@ -611,7 +611,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             marginTop: 10,
           }}
         >
-          {allItems.map((_, i) => {
+          {Array.from({ length: Math.ceil(allItems.length / 2) }).map((_, i) => {
             const active = i === activeCard;
             return (
               <span
