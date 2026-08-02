@@ -420,9 +420,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           const marketCard = (m: MarketItem, i: number) => {
             const [amount, unit] = splitPrice(priceLabel(m));
             const ribbon = ribbonLabel(m);
-            const tone = CARD_TONES[i % 3];
-            const catName =
-              m.marketplace_categories?.name ?? ribbon ?? "Marketplace";
+            const tone = CARD_TONES[i % CARD_TONES.length];
+            const catName = ribbon ?? m.marketplace_categories?.name ?? "Marketplace";
             const photo = m.show_image === false ? null : firstImage(m.image_urls);
             return (
               <div
@@ -437,39 +436,34 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 }
                 style={cardShell}
               >
-                {photo && (
-                  <div
-                    aria-hidden="true"
-                    style={{
-                      height: 58,
-                      flexShrink: 0,
-                      background: `#EEF2F7 url(${photo}) center/cover`,
-                      borderBottom: `1px solid ${HAIRLINE}`,
-                    }}
-                  />
-                )}
                 <div
                   style={{
                     position: "relative",
-                    padding: 10,
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 6,
-                    minHeight: 0,
+                    height: 108,
+                    flexShrink: 0,
+                    background: photo
+                      ? `${tone.imgBg}, url(${photo}) center/cover`
+                      : tone.imgBg,
+                    backgroundImage: photo
+                      ? `url(${photo})`
+                      : tone.imgBg,
+                    backgroundSize: photo ? "cover" : undefined,
+                    backgroundPosition: "center",
                   }}
                 >
                   <span
                     style={{
-                      alignSelf: "flex-start",
+                      position: "absolute",
+                      top: 8,
+                      left: 8,
+                      maxWidth: "calc(100% - 16px)",
                       display: "inline-flex",
                       alignItems: "center",
                       gap: 4,
-                      maxWidth: "100%",
-                      background: tone.pillBg,
+                      background: "rgba(255,255,255,0.92)",
                       color: tone.pillFg,
                       borderRadius: 999,
-                      padding: "3px 8px",
+                      padding: "4px 9px",
                       fontSize: 10,
                       fontWeight: 700,
                       letterSpacing: "0.04em",
@@ -482,40 +476,68 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     <span style={{ fontSize: 11 }}>{categoryIcon(m)}</span>
                     {catName}
                   </span>
+                </div>
+
+                <div
+                  style={{
+                    position: "relative",
+                    padding: "10px 10px 0",
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 6,
+                    minHeight: 0,
+                  }}
+                >
                   <div style={cardTitle}>{m.title}</div>
                   <div
                     style={{
                       marginTop: "auto",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 6,
+                      marginBottom: 8,
+                      background: tone.tint,
+                      borderRadius: 10,
+                      padding: "8px 10px",
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
                     }}
                   >
-                    <span
-                      style={{
-                        minWidth: 0,
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                        background: tone.priceBg,
-                        color: tone.priceFg,
-                        borderRadius: 8,
-                        padding: "4px 8px",
-                        fontSize: 13,
-                        fontWeight: 700,
-                      }}
-                    >
+                    <span style={{ fontSize: 14, fontWeight: 700, color: tone.pillFg }}>
                       {amount}
-                      {unit && (
-                        <span style={{ fontSize: 10, fontWeight: 600, opacity: 0.75 }}>
-                          {unit}
-                        </span>
-                      )}
                     </span>
-                    <IconChevronRight size={16} stroke={2.2} color={MUTED} />
+                    {unit && (
+                      <span
+                        style={{
+                          fontSize: 11,
+                          fontWeight: 600,
+                          color: tone.pillFg,
+                          opacity: 0.8,
+                          marginLeft: 2,
+                        }}
+                      >
+                        {unit}
+                      </span>
+                    )}
                   </div>
                 </div>
+
+                <div
+                  style={{
+                    borderTop: `1px solid ${HAIRLINE}`,
+                    padding: "9px 10px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 3,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: BLUE,
+                  }}
+                >
+                  View details
+                  <IconChevronRight size={14} stroke={2.4} />
+                </div>
+
               </div>
             );
           };
