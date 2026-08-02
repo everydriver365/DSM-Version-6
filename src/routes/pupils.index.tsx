@@ -490,9 +490,7 @@ function PupilsIndexPage() {
             }}
           >
             {filtered.map((p, idx) => {
-              const b = balanceMap[p.id] || 0;
-              const credit = Number(p.account_balance) || 0;
-              const balanceOwed = b - credit;
+              const balanceOwed = balanceMap[p.id] || 0;
               const lessons = lessonCountMap[p.id] || 0;
               const prepaid = Number(p.prepaid_hours) || 0;
               const hoursUsed = hoursMap[p.id] || 0;
