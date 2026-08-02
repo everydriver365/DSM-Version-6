@@ -272,7 +272,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   };
 
   const cardTitle: React.CSSProperties = {
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: 700,
     color: NAVY,
     lineHeight: 1.25,
@@ -284,15 +284,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const pillBase: React.CSSProperties = {
     position: "absolute",
-    top: 6,
-    left: 6,
+    top: 4,
+    left: 4,
     maxWidth: "calc(100% - 12px)",
     display: "inline-flex",
     alignItems: "center",
-    gap: 4,
+    gap: 3,
     borderRadius: 999,
-    padding: "3px 7px",
-    fontSize: 9,
+    padding: "2px 5px",
+    fontSize: 8,
     fontWeight: 700,
     letterSpacing: "0.04em",
     textTransform: "uppercase",
@@ -318,19 +318,19 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const cardBody: React.CSSProperties = {
     position: "relative",
-    padding: "8px 10px 0",
+    padding: "5px 7px 0",
     flex: 1,
     display: "flex",
     flexDirection: "column",
-    gap: 4,
+    gap: 3,
     minHeight: 0,
   };
 
   const priceBox: React.CSSProperties = {
     marginTop: "auto",
-    marginBottom: 6,
-    borderRadius: 8,
-    padding: "6px 8px",
+    marginBottom: 4,
+    borderRadius: 6,
+    padding: "4px 6px",
     overflow: "hidden",
     textOverflow: "ellipsis",
   };
@@ -343,12 +343,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const cardFooter: React.CSSProperties = {
     borderTop: `1px solid ${HAIRLINE}`,
-    padding: "7px 10px",
+    padding: "5px 7px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     gap: 3,
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: 700,
     color: NAVY,
     letterSpacing: "0.02em",
@@ -429,7 +429,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "relative",
-                    height: 70,
+                    height: 47,
                     flexShrink: 0,
                     background: photo ? `url(${photo}) center/cover` : tone.tint,
                     borderBottom: `1px solid ${HAIRLINE}`,
@@ -449,13 +449,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div style={cardBody}>
                   <div style={cardTitle}>{m.title}</div>
                   <div style={{ ...priceBox, background: tone.tint }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: tone.pillFg }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: tone.pillFg }}>
                       {amount}
                     </span>
                     {unit && (
                       <span
                         style={{
-                          fontSize: 11,
+                          fontSize: 10,
                           fontWeight: 600,
                           color: tone.pillFg,
                           opacity: 0.8,
@@ -469,7 +469,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 </div>
                 <div style={cardFooter}>
                   <span>View details</span>
-                  <IconChevronRight size={14} stroke={2.4} color={NAVY} />
+                  <IconChevronRight size={12} stroke={2.4} color={NAVY} />
                 </div>
               </div>
             );
@@ -498,7 +498,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "relative",
-                    height: 70,
+                    height: 47,
                     flexShrink: 0,
                     background: s.image_url ? `${NAVY} url(${s.image_url}) center/cover` : NAVY,
                     borderBottom: `1px solid ${HAIRLINE}`,
@@ -507,7 +507,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     justifyContent: "center",
                   }}
                 >
-                  {!s.image_url && <IconBroadcast size={24} color="#FFFFFF" stroke={1.8} />}
+                  {!s.image_url && <IconBroadcast size={18} color="#FFFFFF" stroke={1.8} />}
                   <span
                     style={{
                       ...pillBase,
@@ -516,25 +516,25 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     }}
                   >
                     <span className={nowLive ? "dsm-live-pulse" : undefined}>
-                      <Dot size={5} />
+                      <Dot size={4} />
                     </span>
                     Live
                   </span>
                 </div>
                 <div style={cardBody}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    {unread && <Dot size={8} />}
+                    {unread && <Dot size={6} />}
                     <div style={cardTitle}>{s.title}</div>
                   </div>
                 <div style={{ ...livePriceBox, background: "#FFF0F0" }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: RED }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: RED }}>
                     {fmtTimeDay(s.session_date, s.session_time)}
                   </span>
                 </div>
                 </div>
                 <div style={cardFooter}>
                   <span>Join now</span>
-                  <IconChevronRight size={14} stroke={2.4} color={NAVY} />
+                  <IconChevronRight size={12} stroke={2.4} color={NAVY} />
                 </div>
               </div>
             );
@@ -561,7 +561,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               <div
                 style={{
                   position: "relative",
-                  height: 70,
+                  height: 47,
                   flexShrink: 0,
                   background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
                   borderBottom: `1px solid ${HAIRLINE}`,
@@ -570,7 +570,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   justifyContent: "center",
                 }}
               >
-                {!thumb && <IconPlayerPlay size={20} color={MUTED} stroke={2} />}
+                {!thumb && <IconPlayerPlay size={15} color={MUTED} stroke={2} />}
                 <span
                   style={{
                     ...pillBase,
@@ -583,18 +583,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               </div>
               <div style={cardBody}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  {unread && <Dot size={8} />}
+                  {unread && <Dot size={6} />}
                   <div style={cardTitle}>{v.title}</div>
                 </div>
                 <div style={{ ...priceBox, background: "#E8F6ED" }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: GREEN }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: GREEN }}>
                     {v.duration ? `${v.duration} · DSM Learn` : "Free · DSM Learn"}
                   </span>
                 </div>
               </div>
               <div style={cardFooter}>
                 <span>Watch</span>
-                <IconChevronRight size={14} stroke={2.4} color={NAVY} />
+                <IconChevronRight size={12} stroke={2.4} color={NAVY} />
               </div>
             </div>
           );
