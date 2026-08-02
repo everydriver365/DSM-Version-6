@@ -429,7 +429,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "relative",
-                    height: 70,
+                    height: 47,
                     flexShrink: 0,
                     background: photo ? `url(${photo}) center/cover` : tone.tint,
                     borderBottom: `1px solid ${HAIRLINE}`,
@@ -449,13 +449,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div style={cardBody}>
                   <div style={cardTitle}>{m.title}</div>
                   <div style={{ ...priceBox, background: tone.tint }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: tone.pillFg }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: tone.pillFg }}>
                       {amount}
                     </span>
                     {unit && (
                       <span
                         style={{
-                          fontSize: 11,
+                          fontSize: 10,
                           fontWeight: 600,
                           color: tone.pillFg,
                           opacity: 0.8,
@@ -498,7 +498,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "relative",
-                    height: 70,
+                    height: 47,
                     flexShrink: 0,
                     background: s.image_url ? `${NAVY} url(${s.image_url}) center/cover` : NAVY,
                     borderBottom: `1px solid ${HAIRLINE}`,
@@ -527,7 +527,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     <div style={cardTitle}>{s.title}</div>
                   </div>
                 <div style={{ ...livePriceBox, background: "#FFF0F0" }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: RED }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: RED }}>
                     {fmtTimeDay(s.session_date, s.session_time)}
                   </span>
                 </div>
@@ -561,7 +561,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               <div
                 style={{
                   position: "relative",
-                  height: 70,
+                  height: 47,
                   flexShrink: 0,
                   background: thumb ? `#EEF2F7 url(${thumb}) center/cover` : "#EEF2F7",
                   borderBottom: `1px solid ${HAIRLINE}`,
