@@ -2249,13 +2249,21 @@ function ChatTab({
   };
 
   const flag = async (msg: ChatMessage) => {
-    const flaggedBy = Array.from(new Set([...(msg.flagged_by ?? []), userId ?? ""])).filter(Boolean);
+    setContextMsg(null);
+    const current = msg.flagged_by ?? [];
+    if (userId && current.includes(userId)) {
+      toast.info("You've already reported this message");
+      return;
+    }
+    const flaggedBy = [...current, userId ?? ""].filter(Boolean);
     const { error } = await supabase
       .from("local_chat_messages")
       .update({ is_flagged: true, flagged_by: flaggedBy })
       .eq("id", msg.id);
-    if (!error) toast.info("Message flagged for review by DSM");
+    if (error) { toast.error("Couldn't report message"); return; }
+    toast.success("Message reported to admin");
   };
+
 
   const areaLabel = scope === "uk" ? "All UK" : (room?.area_name ?? activeAreaName);
   const memberCount = room?.instructor_count ?? 1;
