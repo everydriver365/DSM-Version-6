@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronRight, Plus, Search, X, Megaphone, Users, CreditCard, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import { getPupilBalance } from "@/lib/payments";
 import { EmptyState } from "../components/dsm/EmptyState";
 import { PageLayout } from "@/components/PageLayout";
 import {
