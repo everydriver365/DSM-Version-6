@@ -5207,23 +5207,54 @@ function HomePage() {
             </svg>
           );
 
-          const ChatIcon = (
-            <svg width={28} height={28} viewBox="0 0 28 28" style={{ flexShrink: 0, display: 'block' }} aria-hidden="true">
-              <defs>
-                <linearGradient id="dsmChatGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#63E356" />
-                  <stop offset="100%" stopColor="#2CC916" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M14 3C7.6 3 2.6 7.3 2.6 12.6c0 3 1.6 5.6 4.2 7.4.2 1.9-.8 3.6-2 4.6-.3.3-.1.8.3.8 2.7-.1 4.9-1 6.4-2.2 1 .2 1.9.3 2.5.3 6.4 0 11.4-4.3 11.4-9.6C25.4 7.3 20.4 3 14 3Z"
-                fill="url(#dsmChatGrad)"
-              />
-              <circle cx="9.2" cy="12.6" r="1.5" fill="#FFFFFF" />
-              <circle cx="14" cy="12.6" r="1.5" fill="#FFFFFF" />
-              <circle cx="18.8" cy="12.6" r="1.5" fill="#FFFFFF" />
-            </svg>
-          );
+          const ChatIcon = null; // replaced by per-room avatars below
+
+          const RoomAvatar = ({
+            imageUrl,
+            name,
+            size = 32,
+          }: {
+            imageUrl: string | null;
+            name: string | null;
+            size?: number;
+          }) => {
+            if (imageUrl) {
+              return (
+                <img
+                  src={imageUrl}
+                  alt={name || 'Chat room'}
+                  style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, display: 'block' }}
+                />
+              );
+            }
+            const initials = (name || 'C')
+              .split(' ')
+              .map((w) => w[0])
+              .filter(Boolean)
+              .slice(0, 2)
+              .join('')
+              .toUpperCase();
+            return (
+              <div
+                style={{
+                  width: size,
+                  height: size,
+                  borderRadius: '50%',
+                  background: '#1877D6',
+                  color: '#FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: size * 0.4,
+                  fontWeight: 700,
+                  flexShrink: 0,
+                  fontFamily: PF_C,
+                }}
+              >
+                {initials}
+              </div>
+            );
+          };
 
           return (
             <>
