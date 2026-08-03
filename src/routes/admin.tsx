@@ -160,21 +160,55 @@ function ChatRoomsSection() {
   const [editPrivate, setEditPrivate] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [editSaving, setEditSaving] = useState(false);
+  const [showDeleted, setShowDeleted] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchRooms();
-  }, []);
+  }, [showDeleted]);
 
   async function fetchRooms() {
-    const { data, error } = await supabase
+    let q = supabase
       .from("local_chat_rooms")
-      .select("id, area_name, outcode, instructor_count, is_opt_in, description, image_url")
-      .order("area_name", { ascending: true });
+      .select("id, area_name, outcode, instructor_count, is_opt_in, description, image_url, deleted_at");
+    q = showDeleted ? q.not("deleted_at", "is", null) : q.is("deleted_at", null);
+    const { data, error } = await q.order("area_name", { ascending: true });
     if (error) {
       console.error("[admin] fetch rooms error", error);
       return;
     }
     setRooms((data as ChatRoom[]) || []);
+  }
+
+  async function softDeleteRoom(room: ChatRoom) {
+    setDeletingId(room.id);
+    const { error } = await supabase
+      .from("local_chat_rooms")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", room.id);
+    setDeletingId(null);
+    if (error) {
+      toast.error("Could not delete room");
+      return;
+    }
+    toast.success("Room deleted");
+    if (editingId === room.id) cancelEdit();
+    await fetchRooms();
+  }
+
+  async function restoreRoom(room: ChatRoom) {
+    setDeletingId(room.id);
+    const { error } = await supabase
+      .from("local_chat_rooms")
+      .update({ deleted_at: null })
+      .eq("id", room.id);
+    setDeletingId(null);
+    if (error) {
+      toast.error("Could not restore room");
+      return;
+    }
+    toast.success("Room restored");
+    await fetchRooms();
   }
 
   function startEdit(room: ChatRoom) {
