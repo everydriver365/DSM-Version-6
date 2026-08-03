@@ -1991,7 +1991,7 @@ export function UnifiedPaymentSheet({
                 marginBottom: 14,
               }}
             >
-              {PRICING_OPTIONS.map(({ key, label, Icon }) => {
+              {PRICING_OPTIONS.map(({ key, label, sublabel, Icon }) => {
                 const active = pricingType === key;
                 const isNi = key === "national_intensives";
                 const accent = isNi ? GREEN : BLUE;
@@ -2005,7 +2005,7 @@ export function UnifiedPaymentSheet({
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "flex-start",
-                      gap: 6,
+                      gap: 4,
                       padding: 12,
                       borderRadius: 10,
                       border: `1px solid ${active ? accent : BORDER}`,
@@ -2019,6 +2019,11 @@ export function UnifiedPaymentSheet({
                     <span style={{ fontSize: 12, fontWeight: 600, color: active ? accent : NAVY }}>
                       {label}
                     </span>
+                    {sublabel && (
+                      <span style={{ fontSize: 10, color: MUTED, lineHeight: 1.2 }}>
+                        {sublabel}
+                      </span>
+                    )}
                   </button>
                 );
               })}
