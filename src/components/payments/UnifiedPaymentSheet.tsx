@@ -2215,7 +2215,7 @@ export function UnifiedPaymentSheet({
                     <div style={{ display: "flex", gap: 6, marginTop: 10 }}>
                       <button
                         type="button"
-                        onClick={() => void confirmRefund()}
+                        onClick={() => setRefundConfirmOpen(true)}
                         style={{
                           flex: 1,
                           height: 34,
