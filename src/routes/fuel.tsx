@@ -10,6 +10,8 @@ import {
   IconSettings,
   IconGasStation,
   IconLoader2,
+  IconClock,
+
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -609,6 +611,53 @@ function stationTitle(s: any) {
   return [s?.brand, s?.name].filter(Boolean).join(" ") || s?.address || "Station";
 }
 
+let gmapsPlacesPromise: Promise<void> | null = null;
+function loadGoogleMapsPlaces(): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+  if ((window as any).google?.maps?.places) return Promise.resolve();
+  if (gmapsPlacesPromise) return gmapsPlacesPromise;
+  gmapsPlacesPromise = new Promise<void>((resolve, reject) => {
+    const key = (import.meta as any).env?.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY;
+    const existing = document.querySelector<HTMLScriptElement>("script[data-dsm-gmaps]");
+    if (existing) {
+      existing.addEventListener("load", () => resolve());
+      existing.addEventListener("error", () => reject(new Error("maps failed")));
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places&loading=async`;
+    script.async = true;
+    script.setAttribute("data-dsm-gmaps", "1");
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("maps failed"));
+    document.head.appendChild(script);
+  });
+  return gmapsPlacesPromise;
+}
+
+/** Parse "Monday: 6:00 AM – 10:00 PM" → { text, open } */
+function parseTodayHours(hours: string): { text: string; open: boolean | null } {
+  const text = hours.includes(":") ? hours.slice(hours.indexOf(":") + 1).trim() : hours.trim();
+  if (/open 24 hours/i.test(text)) return { text, open: true };
+  if (/closed/i.test(text)) return { text, open: false };
+  const m = text.match(/(\d{1,2}):(\d{2})\s*([AP]M)\s*[–-]\s*(\d{1,2}):(\d{2})\s*([AP]M)/i);
+  if (!m) return { text, open: null };
+  const to24 = (h: string, mi: string, ap: string) => {
+    let hh = Number(h) % 12;
+    if (/pm/i.test(ap)) hh += 12;
+    return hh * 60 + Number(mi);
+  };
+  const start = to24(m[1], m[2], m[3]);
+  let end = to24(m[4], m[5], m[6]);
+  const now = new Date();
+  const mins = now.getHours() * 60 + now.getMinutes();
+  if (end <= start) end += 24 * 60;
+  const cur = mins < start ? mins + 24 * 60 : mins;
+  return { text, open: cur >= start && cur < end };
+}
+
+
+
 function FindCheapFuel({
   stations,
   cheapest,
@@ -635,6 +684,46 @@ function FindCheapFuel({
   retry: () => void;
 }) {
   const one = "nowrap" as const;
+  const [hoursMap, setHoursMap] = useState<Record<string, string | null>>({});
+  const [hoursLoading, setHoursLoading] = useState<string | null>(null);
+
+  async function fetchHours(station: any) {
+    const key = `${station?.lat},${station?.lng}`;
+    if (hoursMap[key] !== undefined) return;
+    setHoursLoading(key);
+    try {
+      await loadGoogleMapsPlaces();
+      const g = (window as any).google;
+      const service = new g.maps.places.PlacesService(document.createElement("div"));
+      service.nearbySearch(
+        {
+          location: { lat: Number(station?.lat), lng: Number(station?.lng) },
+          radius: 50,
+          type: "gas_station",
+        },
+        (results: any[], status: string) => {
+          if (status === "OK" && results?.[0]) {
+            service.getDetails(
+              { placeId: results[0].place_id, fields: ["opening_hours"] },
+              (detail: any) => {
+                const today = new Date().getDay();
+                const idx = today === 0 ? 6 : today - 1;
+                const todayHours = detail?.opening_hours?.weekday_text?.[idx] ?? null;
+                setHoursMap((prev) => ({ ...prev, [key]: todayHours }));
+                setHoursLoading(null);
+              }
+            );
+          } else {
+            setHoursMap((prev) => ({ ...prev, [key]: null }));
+            setHoursLoading(null);
+          }
+        }
+      );
+    } catch {
+      setHoursLoading(null);
+    }
+  }
+
   return (
     <div style={{ padding: "14px 16px 0" }}>
       {/* Fuel type pills */}
@@ -741,69 +830,113 @@ function FindCheapFuel({
               {stations.map((s, i) => {
                 const bs = brandStyle(s?.brand || s?.name || "");
                 const initial = String(s?.brand || s?.name || "?").trim().charAt(0).toUpperCase();
+                const hKey = `${s?.lat},${s?.lng}`;
+                const hours = hoursMap[hKey];
+                const isLoadingThis = hoursLoading === hKey;
+                const parsed = hours ? parseTodayHours(hours) : null;
                 return (
                   <div
                     key={s?.id ?? i}
-                    onClick={() => openDirections(s?.lat, s?.lng)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      padding: "11px 14px",
-                      borderBottom: i === stations.length - 1 ? "none" : BORDER,
-                      cursor: "pointer",
-                    }}
+                    style={{ borderBottom: i === stations.length - 1 ? "none" : BORDER }}
                   >
                     <div
+                      onClick={() => openDirections(s?.lat, s?.lng)}
                       style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: "50%",
-                        background: bs.bg,
-                        color: bs.fg,
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 13,
-                        fontWeight: 600,
-                        flexShrink: 0,
+                        gap: 10,
+                        padding: "11px 14px",
+                        cursor: "pointer",
                       }}
                     >
-                      {initial}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
                       <div
                         style={{
-                          fontSize: 12,
-                          fontWeight: 500,
-                          color: NAVY,
-                          whiteSpace: one,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
+                          width: 32,
+                          height: 32,
+                          borderRadius: "50%",
+                          background: bs.bg,
+                          color: bs.fg,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 13,
+                          fontWeight: 600,
+                          flexShrink: 0,
                         }}
                       >
-                        {stationTitle(s)}
+                        {initial}
                       </div>
-                      <div
-                        style={{
-                          fontSize: 11,
-                          color: "#6B7686",
-                          whiteSpace: one,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 500,
+                            color: NAVY,
+                            whiteSpace: one,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          {stationTitle(s)}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 11,
+                            color: "#6B7686",
+                            whiteSpace: one,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          {s?.address || ""}
+                        </div>
+                      </div>
+                      <div style={{ textAlign: "right", flexShrink: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>{fmtPrice(s?.price)}</div>
+                        <div style={{ fontSize: 10, color: "#6B7686" }}>{fmtMiles(s)}</div>
+                      </div>
+                      <button
+                        aria-label="Show opening hours"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          fetchHours(s);
                         }}
+                        style={{ background: "none", border: "none", padding: 4, cursor: "pointer", flexShrink: 0 }}
                       >
-                        {s?.address || ""}
+                        {isLoadingThis ? (
+                          <span style={{ fontSize: 10, color: "#9CA3AF" }}>…</span>
+                        ) : (
+                          <IconClock size={14} color="#9CA3AF" stroke={1.8} />
+                        )}
+                      </button>
+                      <IconChevronRight size={13} color="#9CA3AF" stroke={1.8} style={{ flexShrink: 0 }} />
+                    </div>
+                    {hours !== undefined && !isLoadingThis && (
+                      <div style={{ padding: "0 14px 9px 56px" }}>
+                        {hours === null ? (
+                          <div style={{ fontSize: 10, color: "#9CA3AF" }}>Hours not available</div>
+                        ) : parsed && /open 24 hours/i.test(parsed.text) ? (
+                          <div style={{ fontSize: 10, fontWeight: 600, color: "#15803D" }}>● Open 24 hours</div>
+                        ) : (
+                          <div style={{ fontSize: 11, color: "#6B7686" }}>
+                            <span
+                              style={{
+                                fontWeight: 600,
+                                color: parsed?.open === false ? "#CC2229" : parsed?.open ? "#15803D" : "#6B7686",
+                              }}
+                            >
+                              ● {parsed?.open === false ? "Closed" : parsed?.open ? "Open now" : ""}
+                            </span>
+                            {parsed?.open === null ? "" : " · "}
+                            {parsed?.text}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                    <div style={{ textAlign: "right", flexShrink: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>{fmtPrice(s?.price)}</div>
-                      <div style={{ fontSize: 10, color: "#6B7686" }}>{fmtMiles(s)}</div>
-                    </div>
-                    <IconChevronRight size={13} color="#9CA3AF" stroke={1.8} style={{ flexShrink: 0 }} />
+                    )}
                   </div>
                 );
               })}
+
             </div>
           )}
 
