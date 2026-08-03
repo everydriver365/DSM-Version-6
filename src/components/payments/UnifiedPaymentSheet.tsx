@@ -1132,6 +1132,7 @@ export function UnifiedPaymentSheet({
           notes: `Package cancellation — ${unusedHrs}h of ${blockTotalHrs}h unused`,
           currentAccountBalance: Number(pupil?.account_balance ?? 0),
         });
+        toast.success(`Refund of ${money(refundDue)} recorded`);
       }
       toast.success("Cancellation processed");
       onSaved?.();
