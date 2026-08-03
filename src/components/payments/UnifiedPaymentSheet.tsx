@@ -2016,6 +2016,59 @@ export function UnifiedPaymentSheet({
                     style={inputStyle}
                   />
                 </Field>
+
+                {(() => {
+                  const newPrice = packagePrice === "" ? 0 : Number(packagePrice);
+                  const prevPrice = Number(pupil?.prepaid_amount_paid ?? 0);
+                  if (!(newPrice > 0 && newPrice !== prevPrice)) return null;
+                  return (
+                    <div style={{ marginBottom: 12 }}>
+                      <div
+                        style={{
+                          border: `1px solid ${BORDER}`,
+                          background: AMBER_BG,
+                          borderRadius: 10,
+                          padding: 12,
+                        }}
+                      >
+                        <div style={{ fontSize: 12, fontWeight: 700, color: AMBER }}>
+                          Record package payment
+                        </div>
+                        <div style={{ fontSize: 11, color: AMBER, marginTop: 4 }}>
+                          This will record a {money(newPrice)} package payment for{" "}
+                          {hoursTotal === "" ? 0 : Number(hoursTotal)} hours
+                        </div>
+                      </div>
+                      <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
+                        {(["cash", "bank_transfer", "qr", "link"] as PayMethod[]).map((m) => {
+                          const active = packageMethod === m;
+                          return (
+                            <button
+                              key={m}
+                              type="button"
+                              onClick={() => setPackageMethod(m)}
+                              style={{
+                                flex: "1 1 45%",
+                                height: 34,
+                                borderRadius: 8,
+                                border: `1px solid ${active ? BLUE : BORDER}`,
+                                background: active ? "#EFF6FF" : WHITE,
+                                color: active ? BLUE : NAVY,
+                                fontSize: 12,
+                                fontWeight: 600,
+                                fontFamily: FONT,
+                                cursor: "pointer",
+                              }}
+                            >
+                              {METHOD_LABEL[m]}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 {balance && (
                   <SummaryBar
                     cells={[
