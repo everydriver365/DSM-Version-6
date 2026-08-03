@@ -5350,34 +5350,49 @@ function HomePage() {
               {/* ---- HEADER ---- */}
               <div
                 onClick={() => setCommunityExpanded((v) => !v)}
-                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', cursor: 'pointer' }}
+                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', cursor: 'pointer' }}
               >
                 <div style={{ display: 'flex', flexDirection: 'row-reverse', flexShrink: 0 }}>
-                  {[...stack].reverse().map((it, i) => (
-                    <div
-                      key={it.key}
-                      style={{
-                        width: 28, height: 28, borderRadius: '50%', background: it.bg,
-                        border: '2px solid #FFFFFF', color: '#FFFFFF',
-                        fontSize: 10, fontWeight: 700, fontFamily: PF_C,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        overflow: 'hidden', flexShrink: 0,
-                        marginLeft: i === stack.length - 1 ? 0 : -8,
-                      }}
-                    >
-                      {it.img
-                        ? <img src={it.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        : it.node}
+                  {isQuiet ? (
+                    <div style={{
+                      width: 32, height: 32, borderRadius: '50%', background: '#D1D5DB',
+                      border: '2.5px solid #FFFFFF', boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                    }}>
+                      <Users size={15} color="#6B7280" />
                     </div>
-                  ))}
+                  ) : (
+                    [...stack].reverse().map((it, i) => (
+                      <div
+                        key={it.key}
+                        style={{
+                          width: 32, height: 32, borderRadius: '50%', background: it.bg,
+                          border: '2.5px solid #FFFFFF', color: '#FFFFFF',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+                          fontSize: 11, fontWeight: 700, fontFamily: PF_C,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          overflow: 'hidden', flexShrink: 0,
+                          marginLeft: i === stack.length - 1 ? 0 : -10,
+                        }}
+                      >
+                        {it.node}
+                      </div>
+                    ))
+                  )}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={labelStyle}>Community</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>Community</div>
                   <div style={{
-                    fontSize: 11, color: GREY_C, fontFamily: PF_C,
-                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                    display: 'flex', alignItems: 'center', gap: 6, marginTop: 3,
+                    flexWrap: 'nowrap', overflow: 'hidden',
                   }}>
-                    {previewLine}
+                    <Label text="Issues" colour={RED_C} count={alerts.length} />
+                    <Sep />
+                    <Label text="Chat" colour="#7C3AED" count={totalUnreadChat} />
+                    <Sep />
+                    <Label text="Pupils" colour="#1877D6" count={pupilReplies.length} />
+                    <Sep />
+                    <Label text="Admin" colour="#92400E" count={adminUnread} />
                   </div>
                 </div>
                 {communityExpanded
