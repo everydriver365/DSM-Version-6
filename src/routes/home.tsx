@@ -5275,57 +5275,59 @@ function HomePage() {
           const initialsOf = (n: string) =>
             n.split(' ').map((w) => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
 
-          // ---- Avatar stack (max 4) ----
-          type StackItem = { key: string; bg: string; node: React.ReactNode; img?: string | null };
+          // ---- Counts ----
+          const adminRoom = visibleRooms.find((r) =>
+            /admin/i.test(r.area_name || r.outcode || ''),
+          );
+          const adminUnread = adminRoom?.unread ?? 0;
+          const totalUnreadChat =
+            unreadChat + unreadUkChat +
+            joinedRoomChats.reduce((s, r) => s + (r.unread ?? 0), 0);
+
+          // ---- Avatar stack (max 4, one per type) ----
+          type StackItem = { key: string; bg: string; node: React.ReactNode };
           const avatarItems: StackItem[] = [];
-          if (alerts.length > 0) {
+          if (!alertsHidden && alerts.length > 0) {
+            avatarItems.push({ key: 'issues', bg: RED_C, node: <AlertTriangle size={15} color="#FFFFFF" /> });
+          }
+          if (adminUnread > 0) {
+            avatarItems.push({ key: 'admin', bg: '#92400E', node: <Megaphone size={15} color="#FFFFFF" /> });
+          }
+          const firstPupil = pupilReplies[0];
+          if (firstPupil) {
             avatarItems.push({
-              key: 'alerts', bg: RED_C,
-              node: <AlertTriangle size={14} color="#FFFFFF" />,
+              key: 'pupils', bg: '#1877D6',
+              node: <>{(pupilName(firstPupil) || 'P')[0].toUpperCase()}</>,
             });
           }
-          if (pupilReplies.length > 0) {
-            const p = pupilReplies[0];
-            avatarItems.push({
-              key: 'pupil', bg: '#1877D6',
-              img: p.pupils?.profile_image_url ?? null,
-              node: <>{initialsOf(pupilName(p))}</>,
-            });
+          if (totalUnreadChat > 0) {
+            avatarItems.push({ key: 'chat', bg: '#7C3AED', node: <IconMessageCircle size={15} color="#FFFFFF" /> });
           }
-          if (!localChatHidden) {
-            avatarItems.push({
-              key: 'localchat', bg: NAVY_C,
-              img: localRoom?.image_url ?? null,
-              node: <IconMessageCircle size={14} color="#FFFFFF" />,
-            });
-          }
-          if (visibleRooms.length > 0) {
-            const r = visibleRooms[0];
-            avatarItems.push({
-              key: 'room', bg: '#7C3AED',
-              img: r.image_url ?? null,
-              node: <>{(r.area_name || r.outcode || 'C').charAt(0).toUpperCase()}</>,
-            });
-          }
+          const isQuiet = avatarItems.length === 0;
           const stack = avatarItems.slice(0, 4);
 
-          // ---- Preview line (most urgent first) ----
-          const previewBits: string[] = [];
-          if (alerts.length > 0) previewBits.push(`${alerts.length} alert${alerts.length === 1 ? '' : 's'}`);
-          if (pupilReplies.length > 0) {
-            previewBits.push(
-              pupilReplies.length === 1
-                ? `${pupilName(pupilReplies[0]).split(' ')[0]} replied`
-                : `${pupilReplies.length} pupil replies`,
-            );
-          }
-          if (!localChatHidden && localRoom) {
-            previewBits.push(unreadChat > 0 ? `${unreadChat} chat message${unreadChat === 1 ? '' : 's'}` : `${localRoom.area_name} chat`);
-          }
-          if (visibleRooms.length > 0) {
-            previewBits.push(`${visibleRooms.length} room${visibleRooms.length === 1 ? '' : 's'}`);
-          }
-          const previewLine = previewBits.slice(0, 3).join(' · ') || 'Nothing new';
+          const Badge = ({ colour, value }: { colour: string; value: number }) => (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              minWidth: 16, height: 16, borderRadius: 8, background: colour,
+              color: '#FFFFFF', fontSize: 9, fontWeight: 700, fontFamily: PF_C,
+              padding: '0 3px', marginLeft: 2,
+            }}>
+              {value}
+            </span>
+          );
+          const Label = ({ text, colour, count }: { text: string; colour: string; count: number }) => (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center',
+              fontSize: 11, fontFamily: PF_C,
+              color: count > 0 ? colour : '#9CA3AF',
+              fontWeight: count > 0 ? 600 : 400,
+            }}>
+              {text}
+              {count > 0 && <Badge colour={colour} value={count} />}
+            </span>
+          );
+          const Sep = () => <span style={{ color: BORDER_C, fontSize: 11 }}>·</span>;
 
           const hiddenCount = Math.max(0, visibleRooms.length - 1);
 
@@ -5348,34 +5350,49 @@ function HomePage() {
               {/* ---- HEADER ---- */}
               <div
                 onClick={() => setCommunityExpanded((v) => !v)}
-                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', cursor: 'pointer' }}
+                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', cursor: 'pointer' }}
               >
                 <div style={{ display: 'flex', flexDirection: 'row-reverse', flexShrink: 0 }}>
-                  {[...stack].reverse().map((it, i) => (
-                    <div
-                      key={it.key}
-                      style={{
-                        width: 28, height: 28, borderRadius: '50%', background: it.bg,
-                        border: '2px solid #FFFFFF', color: '#FFFFFF',
-                        fontSize: 10, fontWeight: 700, fontFamily: PF_C,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        overflow: 'hidden', flexShrink: 0,
-                        marginLeft: i === stack.length - 1 ? 0 : -8,
-                      }}
-                    >
-                      {it.img
-                        ? <img src={it.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        : it.node}
+                  {isQuiet ? (
+                    <div style={{
+                      width: 32, height: 32, borderRadius: '50%', background: '#D1D5DB',
+                      border: '2.5px solid #FFFFFF', boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                    }}>
+                      <Users size={15} color="#6B7280" />
                     </div>
-                  ))}
+                  ) : (
+                    [...stack].reverse().map((it, i) => (
+                      <div
+                        key={it.key}
+                        style={{
+                          width: 32, height: 32, borderRadius: '50%', background: it.bg,
+                          border: '2.5px solid #FFFFFF', color: '#FFFFFF',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+                          fontSize: 11, fontWeight: 700, fontFamily: PF_C,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          overflow: 'hidden', flexShrink: 0,
+                          marginLeft: i === stack.length - 1 ? 0 : -10,
+                        }}
+                      >
+                        {it.node}
+                      </div>
+                    ))
+                  )}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={labelStyle}>Community</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>Community</div>
                   <div style={{
-                    fontSize: 11, color: GREY_C, fontFamily: PF_C,
-                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                    display: 'flex', alignItems: 'center', gap: 6, marginTop: 3,
+                    flexWrap: 'nowrap', overflow: 'hidden',
                   }}>
-                    {previewLine}
+                    <Label text="Issues" colour={RED_C} count={alerts.length} />
+                    <Sep />
+                    <Label text="Chat" colour="#7C3AED" count={totalUnreadChat} />
+                    <Sep />
+                    <Label text="Pupils" colour="#1877D6" count={pupilReplies.length} />
+                    <Sep />
+                    <Label text="Admin" colour="#92400E" count={adminUnread} />
                   </div>
                 </div>
                 {communityExpanded
