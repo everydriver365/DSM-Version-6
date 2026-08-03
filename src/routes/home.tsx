@@ -5364,7 +5364,7 @@ function HomePage() {
                     borderTop: (!alertsHidden || !localChatHidden || idx > 0) ? `1px solid ${BORDER_C}` : undefined,
                   }}
                 >
-                  {ChatIcon}
+                  <RoomAvatar imageUrl={room.image_url} name={room.area_name || room.outcode} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 14, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>
                       {room.area_name || room.outcode} chat
