@@ -264,6 +264,128 @@ export function recordPaymentWithPackage(
   return recordPaymentCore(input, { hoursBought: input.hoursBought });
 }
 
+/** Input for reversing money already taken from a pupil. */
+export interface RecordRefundInput {
+  pupilId: string;
+  /** Positive amount being refunded. */
+  amount: number;
+  /** Original payment method, or "refund" when unknown. */
+  method?: string | null;
+  notes?: string | null;
+  /** Current `pupils.account_balance` — passed in so we don't re-fetch. */
+  currentAccountBalance?: number | null;
+  /** Optional ISO timestamp; defaults to now. */
+  createdAt?: string;
+}
+
+export interface RecordRefundResult {
+  /** Amount clawed back off paid/partial lessons. */
+  amountReversed: number;
+  /** Amount taken out of the pupil's account credit. */
+  fromAccountCredit: number;
+  /** Resulting pupils.account_balance. */
+  newAccountBalance: number;
+  /** Id of the refund audit row in lesson_history, when written. */
+  historyId: string | null;
+}
+
+/**
+ * Records a refund. Callers pass a POSITIVE amount — this helper owns the
+ * sign convention, writing negative `lesson_cost`/`amount_paid` audit rows
+ * and unwinding lesson allocations newest-first. Anything that can't be
+ * clawed back off lessons comes out of `pupils.account_balance`.
+ *
+ * Never writes `amount_due`, matching every other path in this file.
+ */
+export async function recordRefund(
+  input: RecordRefundInput,
+): Promise<RecordRefundResult> {
+  const { pupilId, amount, method, notes, currentAccountBalance } = input;
+
+  if (!(amount > 0)) {
+    throw new Error("recordRefund: amount must be > 0 (sign is applied internally)");
+  }
+
+  const { data: u } = await supabase.auth.getUser();
+  const instructorId = u?.user?.id ?? null;
+  const now = input.createdAt ?? new Date().toISOString();
+
+  // 1. Audit row — negative, so ledger sums stay correct.
+  let historyId: string | null = null;
+  if (instructorId) {
+    const { data: hRow, error: hErr } = await supabase
+      .from("lesson_history")
+      .insert({
+        instructor_id: instructorId,
+        pupil_id: pupilId,
+        lesson_cost: -amount,
+        amount_paid: -amount,
+        payment_method: method ?? "refund",
+        payment_status: "refunded",
+        notes: (notes ?? "").trim() || `Refund of £${amount.toFixed(2)}`,
+        created_at: now,
+      })
+      .select("id")
+      .single();
+    if (hErr) console.error("[recordRefund] history insert", hErr);
+    else historyId = (hRow as { id: string } | null)?.id ?? null;
+  }
+
+  // 2. Legacy payments row for reporting parity.
+  const { error: payErr } = await supabase.from("payments").insert({
+    instructor_id: instructorId,
+    pupil_id: pupilId,
+    amount: -amount,
+    notes: `refund — ${method ?? "refund"}`,
+    paid_at: now,
+    created_at: now,
+  });
+  if (payErr) console.error("[recordRefund] payments insert", payErr);
+
+  // 3. Unwind lesson allocations, newest first.
+  let remaining = amount;
+  const { data: paidLessons } = await supabase
+    .from("lessons")
+    .select("id, paid_amount")
+    .eq("pupil_id", pupilId)
+    .in("payment_status", ["paid", "partial"])
+    .is("deleted_at", null)
+    .order("lesson_date", { ascending: false });
+
+  for (const l of (paidLessons ?? []) as { id: string; paid_amount: number | null }[]) {
+    if (remaining <= 0) break;
+    const paid = Number(l.paid_amount ?? 0);
+    if (paid <= 0) continue;
+    const take = Math.min(paid, remaining);
+    const next = paid - take;
+    await supabase
+      .from("lessons")
+      .update({
+        paid_amount: next,
+        payment_status: next <= 0 ? "unpaid" : "partial",
+      })
+      .eq("id", l.id);
+    remaining -= take;
+  }
+
+  const amountReversed = amount - remaining;
+
+  // 4. Whatever's left comes out of account credit.
+  let newAccountBalance = Number(currentAccountBalance ?? 0);
+  let fromAccountCredit = 0;
+  if (remaining > 0) {
+    fromAccountCredit = Math.min(remaining, newAccountBalance);
+    newAccountBalance = Math.max(0, newAccountBalance - remaining);
+    const { error: puErr } = await supabase
+      .from("pupils")
+      .update({ account_balance: newAccountBalance })
+      .eq("id", pupilId);
+    if (puErr) console.error("[recordRefund] account_balance update", puErr);
+  }
+
+  return { amountReversed, fromAccountCredit, newAccountBalance, historyId };
+}
+
 /**
  * Corrects a single, already-recorded lesson_history entry (e.g. fixing
  * the amount/date/notes on a past payment) — NOT for applying a new
