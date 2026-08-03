@@ -498,6 +498,11 @@ function MessagesIndexPage() {
             .maybeSingle();
           setLocalMessages((prev) => {
             if (prev.some((m) => m.id === row.id)) return prev;
+            window.dispatchEvent(
+              new CustomEvent("dsm-message-received", {
+                detail: { type: "local", unreadCount: 1 },
+              }),
+            );
             return [...prev, { ...row, instructors: instructor ?? null }];
           });
         },
