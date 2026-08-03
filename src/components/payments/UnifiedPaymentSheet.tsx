@@ -103,6 +103,7 @@ interface HistoryRow {
   amount: number;
   method: string | null;
   created_at: string | null;
+  lesson_date: string | null;
   notes: string | null;
 }
 
@@ -246,10 +247,25 @@ export function UnifiedPaymentSheet({
   const [generating, setGenerating] = useState(false);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
   const [paymentSuccess, setPaymentSuccess] = useState<{
+    historyId: string;
     amount: number;
     method: string;
     pupilName: string;
   } | null>(null);
+  const [editPayment, setEditPayment] = useState<{
+    historyId: string;
+    amount: string;
+    method: PayMethod;
+    date: string;
+    notes: string;
+  } | null>(null);
+  const [deletePayment, setDeletePayment] = useState<{
+    historyId: string;
+    amount: number;
+    method: string | null;
+    date: string | null;
+  } | null>(null);
+  const [savingEdit, setSavingEdit] = useState(false);
 
   // --- pricing tab state ---
   const [pricingType, setPricingType] = useState<PricingType>("standard");
@@ -299,10 +315,10 @@ export function UnifiedPaymentSheet({
   }, []);
 
   useEffect(() => {
-    if (!paymentSuccess) return;
-    const t = setTimeout(() => handlePaymentDone(), 3000);
+    if (!paymentSuccess || editPayment || deletePayment) return;
+    const t = setTimeout(() => handlePaymentDone(), 4000);
     return () => clearTimeout(t);
-  }, [paymentSuccess, handlePaymentDone]);
+  }, [paymentSuccess, editPayment, deletePayment, handlePaymentDone]);
 
   // ---- reset on open -----------------------------------------------------
   useEffect(() => {
@@ -323,6 +339,8 @@ export function UnifiedPaymentSheet({
     setPayUrl(null);
     setRefundRow(null);
     setPaymentSuccess(null);
+    setEditPayment(null);
+    setDeletePayment(null);
   }, [open, initialPupilId]);
 
   // ---- close QR fullscreen with Escape key --------------------------------
@@ -422,7 +440,7 @@ export function UnifiedPaymentSheet({
 
       const { data: h } = await supabase
         .from("lesson_history")
-        .select("id, lesson_cost, amount_paid, payment_method, created_at, notes")
+        .select("id, lesson_cost, amount_paid, payment_method, created_at, lesson_date, notes")
         .eq("pupil_id", id)
         .is("deleted_at", null)
         .order("created_at", { ascending: false })
@@ -434,12 +452,14 @@ export function UnifiedPaymentSheet({
           amount_paid: number | null;
           payment_method: string | null;
           created_at: string | null;
+          lesson_date: string | null;
           notes: string | null;
         }[]).map((r) => ({
           id: r.id,
           amount: Number(r.amount_paid ?? r.lesson_cost ?? 0),
           method: r.payment_method,
           created_at: r.created_at,
+          lesson_date: r.lesson_date,
           notes: r.notes,
         })),
       );
@@ -482,6 +502,84 @@ export function UnifiedPaymentSheet({
     }
     await loadPupilData(pupilId);
   }, [pupilId, loadPupilData]);
+
+  // ---- edit / delete a recorded payment ----------------------------------
+  const openEditPayment = useCallback(
+    (row: { id: string; amount: number; method: string | null; lesson_date?: string | null; created_at?: string | null; notes?: string | null }) => {
+      setDeletePayment(null);
+      setEditPayment({
+        historyId: row.id,
+        amount: String(row.amount),
+        method: (row.method as PayMethod) ?? "cash",
+        date: (row.lesson_date ?? row.created_at ?? new Date().toISOString()).slice(0, 10),
+        notes: row.notes ?? "",
+      });
+    },
+    [],
+  );
+
+  const saveEditPayment = useCallback(async () => {
+    if (!editPayment) return;
+    const newAmount = Number(editPayment.amount) || 0;
+    if (newAmount <= 0) {
+      toast.error("Enter an amount first");
+      return;
+    }
+    setSavingEdit(true);
+    try {
+      const { error } = await supabase
+        .from("lesson_history")
+        .update({
+          amount_paid: newAmount,
+          payment_method: editPayment.method,
+          lesson_date: editPayment.date,
+          notes: editPayment.notes.trim() || null,
+        })
+        .eq("id", editPayment.historyId);
+      if (error) throw error;
+      if (pupilId) {
+        setBalance(await getPupilBalance(pupilId));
+        await loadPupilData(pupilId);
+      }
+      setPaymentSuccess((prev) =>
+        prev && prev.historyId === editPayment.historyId
+          ? { ...prev, amount: newAmount, method: editPayment.method }
+          : prev,
+      );
+      toast.success("Payment updated");
+      setEditPayment(null);
+      if (typeof window !== "undefined") window.dispatchEvent(new Event("dsm-payment-recorded"));
+    } catch (e) {
+      console.error("[UnifiedPaymentSheet] saveEditPayment", e);
+      toast.error("Couldn't update payment");
+    } finally {
+      setSavingEdit(false);
+    }
+  }, [editPayment, pupilId, loadPupilData]);
+
+  const confirmDeletePayment = useCallback(async () => {
+    if (!deletePayment) return;
+    setSavingEdit(true);
+    try {
+      const { error } = await supabase
+        .from("lesson_history")
+        .update({ deleted_at: new Date().toISOString() })
+        .eq("id", deletePayment.historyId);
+      if (error) throw error;
+      if (pupilId) await getPupilBalance(pupilId);
+      toast.success("Payment removed");
+      if (typeof window !== "undefined") window.dispatchEvent(new Event("dsm-payment-recorded"));
+      setDeletePayment(null);
+      setPaymentSuccess(null);
+      onSaved?.();
+      handleClose();
+    } catch (e) {
+      console.error("[UnifiedPaymentSheet] confirmDeletePayment", e);
+      toast.error("Couldn't remove payment");
+    } finally {
+      setSavingEdit(false);
+    }
+  }, [deletePayment, pupilId, onSaved, handleClose]);
 
   // ---- filtered pupil list ----------------------------------------------
   const filtered = useMemo(() => {
@@ -648,17 +746,21 @@ export function UnifiedPaymentSheet({
         const nowIso = new Date(`${paymentDate}T12:00:00`).toISOString();
 
         // 1) Audit row
-        const { error: hErr } = await supabase.from("lesson_history").insert({
-          instructor_id: instructorId,
-          pupil_id: customMode ? null : pupilId,
-          lesson_cost: amountNum,
-          amount_paid: amountNum,
-          payment_method: m,
-          payment_status: "paid",
-          lesson_date: paymentDate,
-          notes: note.trim() || null,
-          created_at: nowIso,
-        });
+        const { data: hRow, error: hErr } = await supabase
+          .from("lesson_history")
+          .insert({
+            instructor_id: instructorId,
+            pupil_id: customMode ? null : pupilId,
+            lesson_cost: amountNum,
+            amount_paid: amountNum,
+            payment_method: m,
+            payment_status: "paid",
+            lesson_date: paymentDate,
+            notes: note.trim() || null,
+            created_at: nowIso,
+          })
+          .select("id")
+          .single();
         if (hErr) throw hErr;
 
         if (!customMode && pupilId) {
@@ -698,6 +800,7 @@ export function UnifiedPaymentSheet({
           window.dispatchEvent(new Event("dsm-payment-recorded"));
         }
         setPaymentSuccess({
+          historyId: (hRow as { id: string } | null)?.id ?? "",
           amount: amountNum,
           method: m,
           pupilName: pupil?.name ?? "Custom",
@@ -930,17 +1033,28 @@ export function UnifiedPaymentSheet({
         newPrice = packagePrice === "" ? 0 : Number(packagePrice);
         isNewPackage = newPrice > 0 && newPrice !== prevPrice;
         if (isNewPackage) {
-          const { error: hErr } = await supabase.from("lesson_history").insert({
-            instructor_id: instructorId,
-            pupil_id: pupilId,
-            amount_paid: newPrice,
-            payment_method: packageMethod,
-            lesson_date: new Date().toISOString().slice(0, 10),
-            payment_status: "paid",
-            notes: `Block package: ${hoursTotal} hrs at £${newPrice}`,
-            created_at: new Date().toISOString(),
-          });
+          const { data: pkgRow, error: hErr } = await supabase
+            .from("lesson_history")
+            .insert({
+              instructor_id: instructorId,
+              pupil_id: pupilId,
+              amount_paid: newPrice,
+              payment_method: packageMethod,
+              lesson_date: new Date().toISOString().slice(0, 10),
+              payment_status: "paid",
+              notes: `Block package: ${hoursTotal} hrs at £${newPrice}`,
+              created_at: new Date().toISOString(),
+            })
+            .select("id")
+            .single();
           if (hErr) console.error("[UnifiedPaymentSheet] package history insert", hErr);
+          else
+            setPaymentSuccess({
+              historyId: (pkgRow as { id: string } | null)?.id ?? "",
+              amount: newPrice,
+              method: packageMethod,
+              pupilName: pupil?.name ?? "",
+            });
           await supabase
             .from("pupils")
             .update({ prepaid_hours: hoursTotal === "" ? 0 : Number(hoursTotal) })
@@ -970,23 +1084,34 @@ export function UnifiedPaymentSheet({
       toast.error("Enter an amount first");
       return;
     }
-    const { error } = await supabase.from("lesson_history").insert({
-      instructor_id: instructorId,
-      pupil_id: pupilId,
-      amount_paid: amount,
-      payment_method: oneOffMethod,
-      lesson_date: todayIso(),
-      payment_status: "paid",
-      notes: oneOffReason.trim() || "One-off payment",
-      created_at: new Date().toISOString(),
-    });
+    const { data: hRow, error } = await supabase
+      .from("lesson_history")
+      .insert({
+        instructor_id: instructorId,
+        pupil_id: pupilId,
+        amount_paid: amount,
+        payment_method: oneOffMethod,
+        lesson_date: todayIso(),
+        payment_status: "paid",
+        notes: oneOffReason.trim() || "One-off payment",
+        created_at: new Date().toISOString(),
+      })
+      .select("id")
+      .single();
     if (error) {
       console.error("[UnifiedPaymentSheet] recordOneOffPayment", error);
       toast.error("Couldn't record one-off payment");
       return;
     }
     toast.success("One-off payment recorded");
-    await getPupilBalance(pupilId);
+    setBalance(await getPupilBalance(pupilId));
+    await loadPupilData(pupilId);
+    setPaymentSuccess({
+      historyId: (hRow as { id: string } | null)?.id ?? "",
+      amount,
+      method: oneOffMethod,
+      pupilName: pupil?.name ?? "",
+    });
     setOneOffAmount("");
     setOneOffReason("");
     setOneOffMethod("cash");
@@ -1130,7 +1255,7 @@ export function UnifiedPaymentSheet({
       title={customMode ? "Custom payment" : "Payments"}
       subtitle={pupil?.name ?? undefined}
       onClose={handleClose}
-      footer={paymentSuccess ? null : footer}
+      footer={paymentSuccess || editPayment || deletePayment ? null : footer}
     >
       <style>{`@keyframes ups-pulse{0%,100%{opacity:1}50%{opacity:.4}}`}</style>
 
@@ -1181,7 +1306,63 @@ export function UnifiedPaymentSheet({
                 />
               </div>
             )}
-            <div style={{ display: "flex", gap: 12, marginTop: 24, width: "100%" }}>
+            <div style={{ display: "flex", gap: 8, marginTop: 16, width: "100%" }}>
+              <button
+                type="button"
+                disabled={!paymentSuccess.historyId}
+                onClick={() =>
+                  openEditPayment({
+                    id: paymentSuccess.historyId,
+                    amount: paymentSuccess.amount,
+                    method: paymentSuccess.method,
+                    notes: "",
+                  })
+                }
+                style={{
+                  flex: 1,
+                  height: 38,
+                  borderRadius: 8,
+                  border: `1px solid ${BORDER}`,
+                  background: WHITE,
+                  color: NAVY,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                  opacity: paymentSuccess.historyId ? 1 : 0.45,
+                }}
+              >
+                Edit payment
+              </button>
+              <button
+                type="button"
+                disabled={!paymentSuccess.historyId}
+                onClick={() =>
+                  setDeletePayment({
+                    historyId: paymentSuccess.historyId,
+                    amount: paymentSuccess.amount,
+                    method: paymentSuccess.method,
+                    date: new Date().toISOString(),
+                  })
+                }
+                style={{
+                  flex: 1,
+                  height: 38,
+                  borderRadius: 8,
+                  border: `1px solid ${RED}`,
+                  background: WHITE,
+                  color: RED,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                  opacity: paymentSuccess.historyId ? 1 : 0.45,
+                }}
+              >
+                Delete payment
+              </button>
+            </div>
+            <div style={{ display: "flex", gap: 12, marginTop: 12, width: "100%" }}>
               <button
                 type="button"
                 onClick={handleRecordAnother}
@@ -1198,7 +1379,7 @@ export function UnifiedPaymentSheet({
                   cursor: "pointer",
                 }}
               >
-                Record another payment
+                Record another
               </button>
               <button
                 type="button"
@@ -1221,6 +1402,175 @@ export function UnifiedPaymentSheet({
             </div>
           </div>
         )}
+        {editPayment && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              zIndex: 11,
+              background: WHITE,
+              padding: 20,
+              overflowY: "auto",
+            }}
+          >
+            <div style={{ fontSize: 16, fontWeight: 600, color: NAVY, marginBottom: 12 }}>Edit payment</div>
+            <Field label="Amount (£)">
+              <input
+                inputMode="decimal"
+                value={editPayment.amount}
+                onChange={(e) => setEditPayment({ ...editPayment, amount: e.target.value })}
+                style={inputStyle}
+              />
+            </Field>
+            <Label>Method</Label>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 10 }}>
+              {(["cash", "bank_transfer", "qr", "link"] as PayMethod[]).map((m) => {
+                const active = editPayment.method === m;
+                return (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => setEditPayment({ ...editPayment, method: m })}
+                    style={{
+                      flex: "1 1 46%",
+                      height: 36,
+                      borderRadius: 8,
+                      border: `1px solid ${active ? BLUE : BORDER}`,
+                      background: active ? BLUE : WHITE,
+                      color: active ? WHITE : BODY,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      fontFamily: FONT,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {METHOD_LABEL[m]}
+                  </button>
+                );
+              })}
+            </div>
+            <Field label="Date">
+              <input
+                type="date"
+                value={editPayment.date}
+                onChange={(e) => setEditPayment({ ...editPayment, date: e.target.value })}
+                style={inputStyle}
+              />
+            </Field>
+            <Field label="Reason / notes">
+              <input
+                value={editPayment.notes}
+                onChange={(e) => setEditPayment({ ...editPayment, notes: e.target.value })}
+                placeholder="Optional"
+                style={inputStyle}
+              />
+            </Field>
+            <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
+              <button
+                type="button"
+                onClick={() => setEditPayment(null)}
+                style={{
+                  flex: 1,
+                  height: 44,
+                  borderRadius: 8,
+                  border: `1px solid ${BORDER}`,
+                  background: WHITE,
+                  color: NAVY,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={savingEdit}
+                onClick={() => void saveEditPayment()}
+                style={{
+                  flex: 1,
+                  height: 44,
+                  borderRadius: 8,
+                  border: "none",
+                  background: BLUE,
+                  color: WHITE,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                  opacity: savingEdit ? 0.5 : 1,
+                }}
+              >
+                {savingEdit ? "Saving…" : "Save changes"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {deletePayment && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              zIndex: 12,
+              background: WHITE,
+              padding: 24,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <div style={{ fontSize: 16, fontWeight: 600, color: RED }}>Delete this payment?</div>
+            <div style={{ fontSize: 13, color: MUTED, marginTop: 6 }}>
+              {money(deletePayment.amount)} ·{" "}
+              {METHOD_LABEL[deletePayment.method as PayMethod] || deletePayment.method || "payment"} ·{" "}
+              {fmtDate(deletePayment.date)}
+            </div>
+            <div style={{ fontSize: 12, color: AMBER, marginTop: 10 }}>This cannot be undone</div>
+            <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
+              <button
+                type="button"
+                onClick={() => setDeletePayment(null)}
+                style={{
+                  flex: 1,
+                  height: 44,
+                  borderRadius: 8,
+                  border: `1px solid ${BORDER}`,
+                  background: WHITE,
+                  color: NAVY,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={savingEdit}
+                onClick={() => void confirmDeletePayment()}
+                style={{
+                  flex: 1,
+                  height: 44,
+                  borderRadius: 8,
+                  border: "none",
+                  background: RED,
+                  color: WHITE,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                  opacity: savingEdit ? 0.5 : 1,
+                }}
+              >
+                {savingEdit ? "Removing…" : "Confirm delete"}
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* ---------------- PUPIL SELECTOR ---------------- */}
         {pickerOpen && (
           <div style={{ marginBottom: 12 }}>
@@ -1976,6 +2326,49 @@ export function UnifiedPaymentSheet({
                               Refund
                             </button>
                           )}
+                          <button
+                            type="button"
+                            onClick={() => openEditPayment(r)}
+                            style={{
+                              height: 24,
+                              padding: "0 8px",
+                              borderRadius: 6,
+                              border: `1px solid ${BORDER}`,
+                              background: WHITE,
+                              color: NAVY,
+                              fontSize: 10,
+                              fontWeight: 600,
+                              fontFamily: FONT,
+                              cursor: "pointer",
+                            }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setDeletePayment({
+                                historyId: r.id,
+                                amount: r.amount,
+                                method: r.method,
+                                date: r.lesson_date ?? r.created_at,
+                              })
+                            }
+                            style={{
+                              height: 24,
+                              padding: "0 8px",
+                              borderRadius: 6,
+                              border: `1px solid ${RED}`,
+                              background: WHITE,
+                              color: RED,
+                              fontSize: 10,
+                              fontWeight: 600,
+                              fontFamily: FONT,
+                              cursor: "pointer",
+                            }}
+                          >
+                            Delete
+                          </button>
                         </div>
                       </div>
                     );
