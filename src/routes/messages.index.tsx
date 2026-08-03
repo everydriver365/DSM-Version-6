@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { MessageCircle, Search, Send, Flag, X, Briefcase, CheckCheck as Check } from "lucide-react";
+import { MessageCircle, Search, Send, Flag, X } from "lucide-react";
 import {
   IconSearch,
   IconPinFilled,
@@ -15,7 +15,6 @@ import {
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
-import BottomNav from "../components/dsm/BottomNav";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useAdminGate } from "./admin";
@@ -218,7 +217,6 @@ function MessagesIndexPage() {
   const [adminThreads, setAdminThreads] = useState<JobThreadRow[]>([]);
   const [adminLoading, setAdminLoading] = useState(false);
   const [openThreadJobId, setOpenThreadJobId] = useState<string | null>(null);
-  const [adminQuery, setAdminQuery] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [convos, setConvos] = useState<Conversation[]>([]);
