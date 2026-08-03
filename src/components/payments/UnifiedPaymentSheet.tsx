@@ -881,7 +881,6 @@ export function UnifiedPaymentSheet({
           setQrPaymentId(null);
           setQrFullscreen(false);
           await handleRecordPayment(method === "link" ? "link" : "qr");
-          handleClose();
         }
       } catch (e) {
         console.warn("[UnifiedPaymentSheet] qr poll", e);
