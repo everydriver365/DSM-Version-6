@@ -2309,19 +2309,26 @@ export function UnifiedPaymentSheet({
                           {r.amount > 0 && (
                             <button
                               type="button"
-                              onClick={() => setRefundRow(r)}
+                              onClick={() => {
+                                if (r.amount > maxRefundableAmount) {
+                                  toast.error(`Refund amount exceeds available paid/credit balance (${money(maxRefundableAmount)})`);
+                                  return;
+                                }
+                                setRefundRow(r);
+                              }}
                               style={{
                                 height: 24,
                                 padding: "0 8px",
                                 borderRadius: 6,
-                                border: `1px solid ${RED}`,
+                                border: `1px solid ${r.amount > maxRefundableAmount ? BORDER : RED}`,
                                 background: WHITE,
-                                color: RED,
+                                color: r.amount > maxRefundableAmount ? MUTED : RED,
                                 fontSize: 10,
                                 fontWeight: 600,
                                 fontFamily: FONT,
-                                cursor: "pointer",
+                                cursor: r.amount > maxRefundableAmount ? "not-allowed" : "pointer",
                               }}
+                              disabled={r.amount > maxRefundableAmount}
                             >
                               Refund
                             </button>
