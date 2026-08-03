@@ -259,9 +259,9 @@ export function UnifiedPaymentSheet({
   const [niTotal, setNiTotal] = useState("");
   const [niRef, setNiRef] = useState("");
   const [niPayer, setNiPayer] = useState<"national_intensives" | "pupil">("national_intensives");
-  const [rate60, setRate60] = useState("");
-  const [rate90, setRate90] = useState("");
-  const [rate120, setRate120] = useState("");
+  const [oneOffAmount, setOneOffAmount] = useState("");
+  const [oneOffReason, setOneOffReason] = useState("");
+  const [oneOffMethod, setOneOffMethod] = useState<PayMethod>("cash");
   const [savingPricing, setSavingPricing] = useState(false);
 
   const pupil = useMemo(() => pupils.find((p) => p.id === pupilId) ?? null, [pupils, pupilId]);
