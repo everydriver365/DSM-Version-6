@@ -927,7 +927,7 @@ export function UnifiedPaymentSheet({
       await recordRefund({
         pupilId,
         amount: refundRow.amount,
-        method: refundRow.method ?? "refund",
+        method: toDbMethod(refundRow.method ?? "refund"),
         notes: `Refund of ${money(refundRow.amount)}`,
         currentAccountBalance: Number(pupil?.account_balance ?? 0),
       });
@@ -1001,7 +1001,7 @@ export function UnifiedPaymentSheet({
           await recordPayment({
             pupilId,
             amount: newPrice,
-            method: packageMethod,
+            method: toDbMethod(packageMethod),
             notes: `Block package: ${hoursTotal} hrs at £${newPrice}`,
             currentAccountBalance: Number(pupil?.account_balance ?? 0),
           });
@@ -1066,7 +1066,7 @@ export function UnifiedPaymentSheet({
         instructor_id: instructorId,
         pupil_id: pupilId,
         amount_paid: amount,
-        payment_method: oneOffMethod,
+        payment_method: toDbMethod(oneOffMethod),
         lesson_date: todayIso(),
         payment_status: "paid",
         notes: oneOffReason.trim() || "One-off payment",
