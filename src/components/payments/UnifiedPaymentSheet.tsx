@@ -20,7 +20,7 @@ import { toast } from "sonner";
 import { IconCircleCheck, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
-import { getPupilBalance, type PupilBalance } from "@/lib/payments";
+import { recordPayment, getPupilBalance, type PupilBalance } from "@/lib/payments";
 
 // ---------------------------------------------------------------------------
 // Design tokens — Checkfront × DSM
@@ -688,92 +688,62 @@ export function UnifiedPaymentSheet({
   };
 
   // ---- payment write -----------------------------------------------------
-  const applyPaymentToLessons = useCallback(
-    async (amt: number, methodNorm: string, nowIso: string) => {
-      if (!pupilId) return 0;
-      let remaining = amt;
-      const { data: unpaid } = await supabase
-        .from("lessons")
-        .select("id, amount_due, paid_amount")
-        .eq("pupil_id", pupilId)
-        .in("payment_status", ["unpaid", "partial"])
-        .is("deleted_at", null)
-        .order("lesson_date", { ascending: true });
-      for (const l of (unpaid ?? []) as {
-        id: string;
-        amount_due: number | null;
-        paid_amount: number | null;
-      }[]) {
-        if (remaining <= 0) break;
-        const already = Number(l.paid_amount ?? 0);
-        const due = Number(l.amount_due ?? 0) - already;
-        if (due <= 0) continue;
-        if (due <= remaining) {
-          await supabase
-            .from("lessons")
-            .update({
-              payment_status: "paid",
-              payment_method: methodNorm,
-              paid_at: nowIso,
-              paid_amount: already + due,
-            })
-            .eq("id", l.id);
-          remaining -= due;
-        } else {
-          await supabase
-            .from("lessons")
-            .update({
-              payment_status: "partial",
-              payment_method: methodNorm,
-              paid_at: nowIso,
-              paid_amount: already + remaining,
-            })
-            .eq("id", l.id);
-          remaining = 0;
-        }
-      }
-      return remaining;
-    },
-    [pupilId],
-  );
-
-  const recordPayment = useCallback(
+  // All pupil payment writes go through recordPayment() in @/lib/payments —
+  // this component never touches lesson_history / lessons / account_balance
+  // for a pupil payment itself.
+  const handleRecordPayment = useCallback(
     async (overrideMethod?: PayMethod) => {
       const m = overrideMethod ?? method;
       if (!m || amountNum <= 0) return;
+      if (!customMode && !pupilId) return;
       setSaving(true);
       try {
+        const methodStr =
+          m === "bank_transfer"
+            ? "bank_transfer"
+            : m === "qr"
+              ? "card_qr"
+              : m === "link"
+                ? "card_link"
+                : m;
         const nowIso = new Date(`${paymentDate}T12:00:00`).toISOString();
+        let historyId = "";
 
-        // 1) Audit row
-        const { data: hRow, error: hErr } = await supabase
-          .from("lesson_history")
-          .insert({
-            instructor_id: instructorId,
-            pupil_id: customMode ? null : pupilId,
-            lesson_cost: amountNum,
-            amount_paid: amountNum,
-            payment_method: m,
-            payment_status: "paid",
-            lesson_date: paymentDate,
+        if (customMode || !pupilId) {
+          // No pupil linked — a standalone audit row is the only sensible write.
+          const { data: hRow, error: hErr } = await supabase
+            .from("lesson_history")
+            .insert({
+              instructor_id: instructorId,
+              pupil_id: null,
+              lesson_cost: amountNum,
+              amount_paid: amountNum,
+              payment_method: methodStr,
+              payment_status: "paid",
+              lesson_date: paymentDate,
+              notes: note.trim() || null,
+              created_at: nowIso,
+            })
+            .select("id")
+            .single();
+          if (hErr) throw hErr;
+          historyId = (hRow as { id: string } | null)?.id ?? "";
+        } else {
+          await recordPayment({
+            pupilId,
+            amount: amountNum,
+            method: methodStr,
             notes: note.trim() || null,
-            created_at: nowIso,
-          })
-          .select("id")
-          .single();
-        if (hErr) throw hErr;
+            currentAccountBalance: Number(pupil?.account_balance ?? 0),
+            createdAt: nowIso,
+          });
 
-        if (!customMode && pupilId) {
+          // NI tracking lives on the pupil row, not the payment ledger.
           const type = (pupil?.pricing_type ?? "standard") as PricingType;
-          let overage = 0;
-
-          // 2) Standard / custom — apply FIFO to lessons
-          if (type === "standard" || type === "custom") {
-            overage = await applyPaymentToLessons(amountNum, m, nowIso);
-          }
-
-          // 3) NI — track amount received from National Intensives
-          if (type === "national_intensives" && (pupil?.ni_payer ?? "national_intensives") === "national_intensives") {
+          if (
+            type === "national_intensives" &&
+            (pupil?.ni_payer ?? "national_intensives") === "national_intensives"
+          ) {
             await supabase
               .from("pupils")
               .update({
@@ -783,15 +753,20 @@ export function UnifiedPaymentSheet({
               .eq("id", pupilId);
           }
 
-          // 5) Overpayment → account credit
-          if (overage > 0) {
-            await supabase
-              .from("pupils")
-              .update({ account_balance: Number(pupil?.account_balance ?? 0) + overage })
-              .eq("id", pupilId);
-          }
+          // Pick up the audit row recordPayment just wrote so the success
+          // panel's edit/delete actions have something to target.
+          const { data: latest } = await supabase
+            .from("lesson_history")
+            .select("id")
+            .eq("pupil_id", pupilId)
+            .is("deleted_at", null)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          historyId = (latest as { id: string } | null)?.id ?? "";
 
-          // 6) Refresh summary
+          const freshBal = await getPupilBalance(pupilId);
+          setBalance(freshBal);
           await refreshPupil();
         }
 
@@ -800,12 +775,11 @@ export function UnifiedPaymentSheet({
           window.dispatchEvent(new Event("dsm-payment-recorded"));
         }
         setPaymentSuccess({
-          historyId: (hRow as { id: string } | null)?.id ?? "",
+          historyId,
           amount: amountNum,
-          method: m,
+          method: methodStr,
           pupilName: pupil?.name ?? "Custom",
         });
-        await refreshPupil();
         // Ready for the next payment — keep the pupil selected.
         setAmount("");
         setMethod("cash");
@@ -814,12 +788,9 @@ export function UnifiedPaymentSheet({
         setQrUrl(null);
         setPayUrl(null);
         setQrPaymentId(null);
-        if (pupilId) {
-          const freshBal = await getPupilBalance(pupilId);
-          setBalance(freshBal);
-        }
+        onSaved?.();
       } catch (e) {
-        console.error("[UnifiedPaymentSheet] recordPayment", e);
+        console.error("[UnifiedPaymentSheet] handleRecordPayment", e);
         toast.error("Couldn't record payment");
       } finally {
         setSaving(false);
@@ -834,10 +805,11 @@ export function UnifiedPaymentSheet({
       customMode,
       note,
       pupil,
-      applyPaymentToLessons,
       refreshPupil,
+      onSaved,
     ],
   );
+
 
   // ---- QR polling --------------------------------------------------------
   useEffect(() => {
@@ -851,7 +823,7 @@ export function UnifiedPaymentSheet({
         if (status === "succeeded" || status === "completed" || status === "paid") {
           clearInterval(t);
           setQrPaymentId(null);
-          await recordPayment(method === "link" ? "link" : "qr");
+          await handleRecordPayment(method === "link" ? "link" : "qr");
           handleClose();
         }
       } catch (e) {
@@ -859,7 +831,7 @@ export function UnifiedPaymentSheet({
       }
     }, 5000);
     return () => clearInterval(t);
-  }, [qrPaymentId, method, recordPayment, handleClose]);
+  }, [qrPaymentId, method, handleRecordPayment, handleClose]);
 
   // ---- pay link delivery -------------------------------------------------
   const copyLink = async () => {
@@ -1033,32 +1005,37 @@ export function UnifiedPaymentSheet({
         newPrice = packagePrice === "" ? 0 : Number(packagePrice);
         isNewPackage = newPrice > 0 && newPrice !== prevPrice;
         if (isNewPackage) {
-          const { data: pkgRow, error: hErr } = await supabase
-            .from("lesson_history")
-            .insert({
-              instructor_id: instructorId,
-              pupil_id: pupilId,
-              amount_paid: newPrice,
-              payment_method: packageMethod,
-              lesson_date: new Date().toISOString().slice(0, 10),
-              payment_status: "paid",
-              notes: `Block package: ${hoursTotal} hrs at £${newPrice}`,
-              created_at: new Date().toISOString(),
-            })
-            .select("id")
-            .single();
-          if (hErr) console.error("[UnifiedPaymentSheet] package history insert", hErr);
-          else
-            setPaymentSuccess({
-              historyId: (pkgRow as { id: string } | null)?.id ?? "",
-              amount: newPrice,
-              method: packageMethod,
-              pupilName: pupil?.name ?? "",
-            });
+          await recordPayment({
+            pupilId,
+            amount: newPrice,
+            method: packageMethod,
+            notes: `Block package: ${hoursTotal} hrs at £${newPrice}`,
+            currentAccountBalance: Number(pupil?.account_balance ?? 0),
+          });
+          // Package hours live on the pupil row.
           await supabase
             .from("pupils")
-            .update({ prepaid_hours: hoursTotal === "" ? 0 : Number(hoursTotal) })
+            .update({
+              prepaid_hours: hoursTotal === "" ? 0 : Number(hoursTotal),
+              block_hours_total: hoursTotal === "" ? null : Number(hoursTotal),
+              prepaid_amount_paid: newPrice,
+            })
             .eq("id", pupilId);
+          const { data: latest } = await supabase
+            .from("lesson_history")
+            .select("id")
+            .eq("pupil_id", pupilId)
+            .is("deleted_at", null)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          setPaymentSuccess({
+            historyId: (latest as { id: string } | null)?.id ?? "",
+            amount: newPrice,
+            method: packageMethod,
+            pupilName: pupil?.name ?? "",
+          });
+          setBalance(await getPupilBalance(pupilId));
         }
       }
 
@@ -1192,7 +1169,7 @@ export function UnifiedPaymentSheet({
   const onPrimary = () => {
     if (method === "qr") return void generateQr();
     if (method === "link") return void generateLink();
-    return void recordPayment();
+    return void handleRecordPayment();
   };
 
   const isNewBlockPackage =
