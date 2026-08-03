@@ -1118,6 +1118,10 @@ export function UnifiedPaymentSheet({
 
   const processCancellation = async () => {
     if (!pupilId) return;
+    if (refundDue > maxRefundableAmount) {
+      toast.error(`Cancellation refund exceeds available paid/credit balance (${money(maxRefundableAmount)})`);
+      return;
+    }
     try {
       await supabase.from("pupils").update({ prepaid_hours: 0 }).eq("id", pupilId);
       if (refundDue > 0) {
