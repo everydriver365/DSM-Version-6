@@ -704,10 +704,16 @@ export function UnifiedPaymentSheet({
         await refreshPupil();
         // Ready for the next payment — keep the pupil selected.
         setAmount("");
+        setMethod("cash");
         setNote("");
+        setPaymentDate(todayIso());
         setQrUrl(null);
         setPayUrl(null);
         setQrPaymentId(null);
+        if (pupilId) {
+          const freshBal = await getPupilBalance(pupilId);
+          setBalance(freshBal);
+        }
       } catch (e) {
         console.error("[UnifiedPaymentSheet] recordPayment", e);
         toast.error("Couldn't record payment");
