@@ -291,6 +291,7 @@ function MessagesIndexPage() {
       const area = instructor?.city || outcode || "Your area";
       setAreaName(area);
       setMyName(instructor?.name ?? null);
+      setHomeOutcode(outcode ?? null);
       if (!outcode) return;
 
       let { data: existing } = await supabase
