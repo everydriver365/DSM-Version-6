@@ -2522,13 +2522,24 @@ function ChatTab({
                       <div style={{ fontSize: 10, color: "#9CA3AF", fontWeight: 600, marginBottom: 2 }}>
                         {firstName(m.instructors?.name)}
                       </div>
-                      <div style={{
-                        background: "white", border: "0.5px solid #E2E6ED",
-                        borderRadius: "4px 16px 16px 16px", padding: "10px 14px",
-                        fontSize: 13, color: "#0F2044", whiteSpace: "pre-wrap", wordBreak: "break-word",
-                      }}>
+                      <div
+                        onTouchStart={() => startLongPress(m)}
+                        onTouchEnd={cancelLongPress}
+                        onTouchMove={cancelLongPress}
+                        onMouseDown={() => startLongPress(m)}
+                        onMouseUp={cancelLongPress}
+                        onMouseLeave={cancelLongPress}
+                        onContextMenu={(e) => { e.preventDefault(); setContextMsg(m); }}
+                        style={{
+                          background: "white", border: "0.5px solid #E2E6ED",
+                          borderRadius: "4px 16px 16px 16px", padding: "10px 14px",
+                          fontSize: 13, color: "#0F2044", whiteSpace: "pre-wrap", wordBreak: "break-word",
+                          userSelect: "none", WebkitUserSelect: "none", cursor: "pointer",
+                        }}
+                      >
                         {messageNode}
                       </div>
+
                       <div style={{ display: "flex", gap: 8, marginTop: 2, alignItems: "center" }}>
                         <span style={{ fontSize: 10, color: "#9CA3AF" }}>{time}</span>
                         <button
