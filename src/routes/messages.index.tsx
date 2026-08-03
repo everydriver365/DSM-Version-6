@@ -1020,6 +1020,8 @@ function LocalChatView(props: {
     areaName,
     room,
     myRooms,
+    joinedRoomIds,
+    homeOutcode,
     onSelectRoom,
     messages: allMessages,
     loading,
