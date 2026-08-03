@@ -963,6 +963,35 @@ export function UnifiedPaymentSheet({
     }
   };
 
+  const recordOneOffPayment = async () => {
+    if (!pupilId || !instructorId) return;
+    const amount = Number(oneOffAmount) || 0;
+    if (amount <= 0) {
+      toast.error("Enter an amount first");
+      return;
+    }
+    const { error } = await supabase.from("lesson_history").insert({
+      instructor_id: instructorId,
+      pupil_id: pupilId,
+      amount_paid: amount,
+      payment_method: oneOffMethod,
+      lesson_date: todayIso(),
+      payment_status: "paid",
+      notes: oneOffReason.trim() || "One-off payment",
+      created_at: new Date().toISOString(),
+    });
+    if (error) {
+      console.error("[UnifiedPaymentSheet] recordOneOffPayment", error);
+      toast.error("Couldn't record one-off payment");
+      return;
+    }
+    toast.success("One-off payment recorded");
+    await getPupilBalance(pupilId);
+    setOneOffAmount("");
+    setOneOffReason("");
+    setOneOffMethod("cash");
+  };
+
   // Block cancellation calculator
   const unusedHrs = Number(pupil?.prepaid_hours ?? 0);
   const blockTotalHrs = Number(pupil?.block_hours_total ?? 0);
