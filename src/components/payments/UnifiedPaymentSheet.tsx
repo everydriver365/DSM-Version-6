@@ -128,6 +128,37 @@ const METHOD_LABEL: Record<PayMethod, string> = {
   clearpay: "Clearpay",
 };
 
+/** Canonical DB value for every PayMethod variant. */
+const METHOD_DB: Record<PayMethod, string> = {
+  cash: "cash",
+  bank_transfer: "bank_transfer",
+  qr: "card_qr",
+  link: "card_link",
+  klarna: "klarna",
+  clearpay: "clearpay",
+};
+
+/** Map any UI method (or already-canonical string) to its DB value. */
+const toDbMethod = (m: string | null | undefined): string => {
+  if (!m) return "cash";
+  const key = m.trim().toLowerCase().replace(/[\s-]+/g, "_");
+  if (key in METHOD_DB) return METHOD_DB[key as PayMethod];
+  const aliases: Record<string, string> = {
+    card_qr: "card_qr",
+    qr_code: "card_qr",
+    card_link: "card_link",
+    pay_link: "card_link",
+    paylink: "card_link",
+    bacs: "bank_transfer",
+    bank: "bank_transfer",
+    transfer: "bank_transfer",
+    card: "card_link",
+    refund: "refund",
+  };
+  return aliases[key] ?? key;
+};
+
+
 // ---------------------------------------------------------------------------
 // Small presentational helpers
 // ---------------------------------------------------------------------------
@@ -698,14 +729,7 @@ export function UnifiedPaymentSheet({
       if (!customMode && !pupilId) return;
       setSaving(true);
       try {
-        const methodStr =
-          m === "bank_transfer"
-            ? "bank_transfer"
-            : m === "qr"
-              ? "card_qr"
-              : m === "link"
-                ? "card_link"
-                : m;
+        const methodStr = toDbMethod(m);
         const nowIso = new Date(`${paymentDate}T12:00:00`).toISOString();
         let historyId = "";
 
@@ -903,7 +927,7 @@ export function UnifiedPaymentSheet({
       await recordRefund({
         pupilId,
         amount: refundRow.amount,
-        method: refundRow.method ?? "refund",
+        method: toDbMethod(refundRow.method ?? "refund"),
         notes: `Refund of ${money(refundRow.amount)}`,
         currentAccountBalance: Number(pupil?.account_balance ?? 0),
       });
@@ -977,7 +1001,7 @@ export function UnifiedPaymentSheet({
           await recordPayment({
             pupilId,
             amount: newPrice,
-            method: packageMethod,
+            method: toDbMethod(packageMethod),
             notes: `Block package: ${hoursTotal} hrs at £${newPrice}`,
             currentAccountBalance: Number(pupil?.account_balance ?? 0),
           });
@@ -1042,7 +1066,7 @@ export function UnifiedPaymentSheet({
         instructor_id: instructorId,
         pupil_id: pupilId,
         amount_paid: amount,
-        payment_method: oneOffMethod,
+        payment_method: toDbMethod(oneOffMethod),
         lesson_date: todayIso(),
         payment_status: "paid",
         notes: oneOffReason.trim() || "One-off payment",
