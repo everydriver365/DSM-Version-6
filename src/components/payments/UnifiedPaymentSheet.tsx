@@ -243,6 +243,11 @@ export function UnifiedPaymentSheet({
   const [payUrl, setPayUrl] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
+  const [paymentSuccess, setPaymentSuccess] = useState<{
+    amount: number;
+    method: string;
+    pupilName: string;
+  } | null>(null);
 
   // --- pricing tab state ---
   const [pricingType, setPricingType] = useState<PricingType>("standard");
