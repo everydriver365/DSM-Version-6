@@ -382,6 +382,7 @@ function MessagesIndexPage() {
       const { data: rooms } = await supabase
         .from("local_chat_rooms")
         .select("id, outcode, area_name, instructor_count, is_opt_in, image_url, description")
+        .is("deleted_at", null)
         .neq("outcode", "UK");
       if (cancelled) return;
       const { data: subs } = await supabase
@@ -394,11 +395,22 @@ function MessagesIndexPage() {
       // Hide private (invite-only) rooms the user hasn't joined
       setMyRooms(all.filter((r) => !r.is_opt_in || subIds.has(r.id)));
       setJoinedRoomIds(subIds);
+
+      // Every public room (including brand-new admin rooms), for the room browser
+      const { data: publicRooms } = await supabase
+        .from("local_chat_rooms")
+        .select("id, outcode, area_name, instructor_count, is_opt_in, image_url, description")
+        .is("deleted_at", null)
+        .neq("outcode", "UK")
+        .or("is_opt_in.is.null,is_opt_in.eq.false")
+        .order("instructor_count", { ascending: false });
+      if (cancelled) return;
+      setAllRooms((publicRooms ?? []) as LocalChatRoom[]);
     })();
     return () => {
       cancelled = true;
     };
-  }, [userId, homeOutcode]);
+  }, [userId, homeOutcode, joinedCount]);
 
   // Pin / mute preferences (localStorage)
   const [pinned, setPinned] = useState<Set<string>>(new Set());
