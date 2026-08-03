@@ -1964,7 +1964,30 @@ function ChatTab({
   const [myRooms, setMyRooms] = useState<BrowseRoom[]>([]);
   const [msgSearch, setMsgSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [isBanned, setIsBanned] = useState(false);
+  const [contextMsg, setContextMsg] = useState<ChatMessage | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const checkBan = async (): Promise<boolean> => {
+    if (!userId || !room) return false;
+    const { data: ban } = await supabase
+      .from("chat_bans")
+      .select("id")
+      .eq("instructor_id", userId)
+      .or(`room_id.eq.${room.id},room_id.is.null`)
+      .maybeSingle();
+    return !!ban;
+  };
+
+  const startLongPress = (m: ChatMessage) => {
+    if (longPressTimer.current) clearTimeout(longPressTimer.current);
+    longPressTimer.current = setTimeout(() => setContextMsg(m), 500);
+  };
+  const cancelLongPress = () => {
+    if (longPressTimer.current) { clearTimeout(longPressTimer.current); longPressTimer.current = null; }
+  };
+
 
   const isSubscribed = subscription !== null;
   const isMuted = !!subscription?.muted_until && new Date(subscription.muted_until) > new Date();
