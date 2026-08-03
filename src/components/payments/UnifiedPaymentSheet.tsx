@@ -977,6 +977,16 @@ export function UnifiedPaymentSheet({
         currentAccountBalance: Number(pupil?.account_balance ?? 0),
       });
 
+      // Refresh pupil balance, unpaid lessons, and payment history immediately
+      if (pupilId) {
+        try {
+          await refreshPupil();
+          setBalance(await getPupilBalance(pupilId));
+        } catch (refreshErr) {
+          console.error("[UnifiedPaymentSheet] refresh after confirmRefund", refreshErr);
+        }
+      }
+
       toast.success(
         isPartial
           ? `Partial refund of ${money(amt)} recorded`
@@ -996,14 +1006,6 @@ export function UnifiedPaymentSheet({
 
     } finally {
       setRefundProcessing(false);
-      if (pupilId) {
-        try {
-          await refreshPupil();
-          setBalance(await getPupilBalance(pupilId));
-        } catch (refreshErr) {
-          console.error("[UnifiedPaymentSheet] refresh after confirmRefund", refreshErr);
-        }
-      }
     }
   };
 
@@ -1169,6 +1171,15 @@ export function UnifiedPaymentSheet({
           notes: `Package cancellation — ${unusedHrs}h of ${blockTotalHrs}h unused`,
           currentAccountBalance: Number(pupil?.account_balance ?? 0),
         });
+
+        // Refresh pupil balance, unpaid lessons, and payment history immediately
+        try {
+          await refreshPupil();
+          setBalance(await getPupilBalance(pupilId));
+        } catch (refreshErr) {
+          console.error("[UnifiedPaymentSheet] refresh after processCancellation", refreshErr);
+        }
+
         toast.success(`Refund of ${money(refundDue)} recorded`);
       }
       toast.success("Cancellation processed");
@@ -1176,15 +1187,6 @@ export function UnifiedPaymentSheet({
     } catch (e) {
       console.error("[UnifiedPaymentSheet] processCancellation", e);
       toast.error("Couldn't process cancellation");
-    } finally {
-      if (pupilId) {
-        try {
-          await refreshPupil();
-          setBalance(await getPupilBalance(pupilId));
-        } catch (refreshErr) {
-          console.error("[UnifiedPaymentSheet] refresh after processCancellation", refreshErr);
-        }
-      }
     }
   };
 
