@@ -774,7 +774,7 @@ function MessagesIndexPage() {
 
     for (const r of joinedRooms) {
       const p = roomPreviews[r.id];
-      const label = `${r.area_name || r.outcode} ADIs`;
+      const label = r.area_name || r.outcode;
       const unread = room?.id === r.id && view === "chat" ? 0 : (p?.unread ?? 0);
       list.push({
         key: `local:${r.id}`,
@@ -1622,7 +1622,7 @@ function LocalChatView(props: {
             cursor: "pointer",
           }}
         >
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{areaName} ADIs ▾</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{areaName} ▾</div>
           <div style={{ fontSize: 11, color: "#9CA3AF" }}>{room?.instructor_count ?? 1} members</div>
         </button>
         <button
@@ -1796,7 +1796,7 @@ function LocalChatView(props: {
               Be the first to chat in {areaName}!
             </div>
             <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>
-              Connect with local ADIs, share tips
+              Connect with local instructors, share tips
             </div>
           </div>
         ) : (
@@ -1952,7 +1952,7 @@ function LocalChatView(props: {
               onSend();
             }
           }}
-          placeholder={`Message ${areaName} ADIs...`}
+          placeholder={`Message ${areaName}...`}
           style={{
             flex: 1,
             background: "#F7FAFC",
