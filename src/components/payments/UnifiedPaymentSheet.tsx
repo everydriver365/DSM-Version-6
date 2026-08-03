@@ -957,6 +957,12 @@ export function UnifiedPaymentSheet({
       toast.error(`Refund amount exceeds available paid/credit balance (${money(maxRefundableAmount)})`);
       return;
     }
+    const reason = refundReason.trim().slice(0, 200);
+    if (!reason) {
+      toast.error("Enter a reason for this refund");
+      setRefundConfirmOpen(false);
+      return;
+    }
     const isPartial = amt < refundRow.amount;
     setRefundProcessing(true);
     try {
@@ -965,8 +971,8 @@ export function UnifiedPaymentSheet({
         amount: amt,
         method: toDbMethod(refundRow.method ?? "refund"),
         notes: isPartial
-          ? `Partial refund of ${money(amt)} (from ${money(refundRow.amount)} payment)`
-          : `Refund of ${money(amt)}`,
+          ? `Partial refund of ${money(amt)} (from ${money(refundRow.amount)} payment) — ${reason}`
+          : `Refund of ${money(amt)} — ${reason}`,
         currentAccountBalance: Number(pupil?.account_balance ?? 0),
       });
 
@@ -977,6 +983,7 @@ export function UnifiedPaymentSheet({
       );
       setRefundRow(null);
       setRefundAmount("");
+      setRefundReason("");
       setRefundConfirmOpen(false);
       if (typeof window !== "undefined") {
         window.dispatchEvent(new Event("dsm-payment-recorded"));
