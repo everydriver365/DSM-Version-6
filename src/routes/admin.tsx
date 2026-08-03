@@ -401,11 +401,41 @@ function ChatRoomsSection() {
       </form>
 
       <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", marginBottom: 12 }}>
-        Existing rooms
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 10,
+          marginBottom: 12,
+        }}
+      >
+        <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+          {showDeleted ? "Deleted rooms" : "Existing rooms"}
+        </div>
+        <button
+          type="button"
+          onClick={() => setShowDeleted((v) => !v)}
+          style={{
+            height: 30,
+            padding: "0 12px",
+            borderRadius: 8,
+            border: "1px solid #E4E8EF",
+            background: showDeleted ? "#EAF2FC" : "#fff",
+            color: showDeleted ? "#1877D6" : "#6B7280",
+            fontSize: 12,
+            fontWeight: 700,
+            cursor: "pointer",
+          }}
+        >
+          {showDeleted ? "Show active" : "Show deleted"}
+        </button>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {rooms.length === 0 ? (
-          <div style={{ color: "#6B7280", fontSize: 14 }}>No rooms yet.</div>
+          <div style={{ color: "#6B7280", fontSize: 14 }}>
+            {showDeleted ? "No deleted rooms." : "No rooms yet."}
+          </div>
         ) : (
           rooms.map((room) => (
             <div
