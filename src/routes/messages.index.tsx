@@ -1430,8 +1430,16 @@ function RoomBrowser({
         >
           {r.area_name || r.outcode}
         </div>
-        <div style={{ fontSize: 14, color: GREY, marginTop: 2 }}>
-          {r.instructor_count ?? 1} member{(r.instructor_count ?? 1) === 1 ? "" : "s"} · {r.outcode}
+        <div style={{ fontSize: 14, color: GREY, marginTop: 2, display: "flex", alignItems: "center", gap: 6 }}>
+          <span>
+            {r.instructor_count ?? 1} member{(r.instructor_count ?? 1) === 1 ? "" : "s"} · {r.outcode}
+          </span>
+          {joinedRoomIds.has(r.id) && (
+            <span style={{ fontSize: 11, fontWeight: 600, color: BLUE }}>Joined</span>
+          )}
+          {r.is_opt_in && (
+            <span style={{ fontSize: 11, fontWeight: 600, color: "#7C3AED" }}>Private</span>
+          )}
         </div>
       </div>
       {join ? (
