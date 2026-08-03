@@ -326,6 +326,11 @@ export function UnifiedPaymentSheet({
   const pupil = useMemo(() => pupils.find((p) => p.id === pupilId) ?? null, [pupils, pupilId]);
   const amountNum = Number(amount) || 0;
   const outstanding = balance?.outstanding ?? 0;
+  const maxRefundableAmount = useMemo(() => {
+    if (!balance) return 0;
+    return Math.max(0, balance.lessonsPaid + balance.accountCredit);
+  }, [balance]);
+
 
   // ---- sheet open/close events ------------------------------------------
   useEffect(() => {
@@ -928,6 +933,10 @@ export function UnifiedPaymentSheet({
   // ---- refunds -----------------------------------------------------------
   const confirmRefund = async () => {
     if (!refundRow || !pupilId || refundProcessing) return;
+    if (refundRow.amount > maxRefundableAmount) {
+      toast.error(`Refund amount exceeds available paid/credit balance (${money(maxRefundableAmount)})`);
+      return;
+    }
     setRefundProcessing(true);
     try {
       await recordRefund({
@@ -1109,6 +1118,10 @@ export function UnifiedPaymentSheet({
 
   const processCancellation = async () => {
     if (!pupilId) return;
+    if (refundDue > maxRefundableAmount) {
+      toast.error(`Cancellation refund exceeds available paid/credit balance (${money(maxRefundableAmount)})`);
+      return;
+    }
     try {
       await supabase.from("pupils").update({ prepaid_hours: 0 }).eq("id", pupilId);
       if (refundDue > 0) {
@@ -2296,19 +2309,26 @@ export function UnifiedPaymentSheet({
                           {r.amount > 0 && (
                             <button
                               type="button"
-                              onClick={() => setRefundRow(r)}
+                              onClick={() => {
+                                if (r.amount > maxRefundableAmount) {
+                                  toast.error(`Refund amount exceeds available paid/credit balance (${money(maxRefundableAmount)})`);
+                                  return;
+                                }
+                                setRefundRow(r);
+                              }}
                               style={{
                                 height: 24,
                                 padding: "0 8px",
                                 borderRadius: 6,
-                                border: `1px solid ${RED}`,
+                                border: `1px solid ${r.amount > maxRefundableAmount ? BORDER : RED}`,
                                 background: WHITE,
-                                color: RED,
+                                color: r.amount > maxRefundableAmount ? MUTED : RED,
                                 fontSize: 10,
                                 fontWeight: 600,
                                 fontFamily: FONT,
-                                cursor: "pointer",
+                                cursor: r.amount > maxRefundableAmount ? "not-allowed" : "pointer",
                               }}
+                              disabled={r.amount > maxRefundableAmount}
                             >
                               Refund
                             </button>

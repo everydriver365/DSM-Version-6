@@ -9,7 +9,7 @@ import WorkspaceDots from "../components/dsm/WorkspaceDots";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
+import { recordPayment, recordRefund, correctPaymentRecord, getPupilBalance, type PupilBalance } from "@/lib/payments";
 import { calculateOutstandingOwed, calculatePaidOutstandingBreakdown } from "@/lib/paymentsOwed";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";
@@ -823,12 +823,29 @@ function RefundSheet({ row, userId, onClose, onSaved }: { row: HistoryRow; userI
   const [amount, setAmount] = useState(String(originalAmount));
   const [reason, setReason] = useState("");
   const [saving, setSaving] = useState(false);
+  const [pupilBalance, setPupilBalance] = useState<PupilBalance | null>(null);
+
+  useEffect(() => {
+    if (!row.pupil_id) return;
+    getPupilBalance(row.pupil_id)
+      .then(setPupilBalance)
+      .catch((e) => console.error("[RefundSheet] getPupilBalance", e));
+  }, [row.pupil_id]);
+
+  const maxRefundableAmount = useMemo(() => {
+    if (!pupilBalance) return 0;
+    return Math.max(0, pupilBalance.lessonsPaid + pupilBalance.accountCredit);
+  }, [pupilBalance]);
 
   async function handleRefund() {
     if (!userId) return;
     const refundAmount = Number(amount);
     if (!refundAmount || refundAmount <= 0) { toast.error("Enter a refund amount"); return; }
     if (refundAmount > originalAmount) { toast.error("Refund cannot exceed original payment"); return; }
+    if (refundAmount > maxRefundableAmount) {
+      toast.error(`Refund amount exceeds available paid/credit balance (${formatGBP(maxRefundableAmount)})`);
+      return;
+    }
     setSaving(true);
     const { data: { session } } = await supabase.auth.getSession();
     const token = session?.access_token;
