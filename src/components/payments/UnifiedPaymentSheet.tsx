@@ -1051,7 +1051,7 @@ export function UnifiedPaymentSheet({
     : "Save pricing";
 
   const footer =
-    tab === "pricing" && !customMode ? (
+    tab === "pricing" && !customMode && pricingType !== "custom" ? (
       <button
         type="button"
         onClick={() => void savePricing()}
