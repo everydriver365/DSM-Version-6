@@ -904,7 +904,7 @@ function MessagesIndexPage() {
         />
       ) : view === "rooms" ? (
         <RoomBrowser
-          rooms={allPublicRooms}
+          rooms={browseRooms}
           joinedRoomIds={joinedRoomIds}
           homeOutcode={homeOutcode}
           onBack={() => setView("inbox")}
