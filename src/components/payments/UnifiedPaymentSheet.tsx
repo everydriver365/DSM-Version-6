@@ -103,6 +103,7 @@ interface HistoryRow {
   amount: number;
   method: string | null;
   created_at: string | null;
+  lesson_date: string | null;
   notes: string | null;
 }
 
@@ -246,10 +247,25 @@ export function UnifiedPaymentSheet({
   const [generating, setGenerating] = useState(false);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
   const [paymentSuccess, setPaymentSuccess] = useState<{
+    historyId: string;
     amount: number;
     method: string;
     pupilName: string;
   } | null>(null);
+  const [editPayment, setEditPayment] = useState<{
+    historyId: string;
+    amount: string;
+    method: PayMethod;
+    date: string;
+    notes: string;
+  } | null>(null);
+  const [deletePayment, setDeletePayment] = useState<{
+    historyId: string;
+    amount: number;
+    method: string | null;
+    date: string | null;
+  } | null>(null);
+  const [savingEdit, setSavingEdit] = useState(false);
 
   // --- pricing tab state ---
   const [pricingType, setPricingType] = useState<PricingType>("standard");
@@ -299,10 +315,10 @@ export function UnifiedPaymentSheet({
   }, []);
 
   useEffect(() => {
-    if (!paymentSuccess) return;
-    const t = setTimeout(() => handlePaymentDone(), 3000);
+    if (!paymentSuccess || editPayment || deletePayment) return;
+    const t = setTimeout(() => handlePaymentDone(), 4000);
     return () => clearTimeout(t);
-  }, [paymentSuccess, handlePaymentDone]);
+  }, [paymentSuccess, editPayment, deletePayment, handlePaymentDone]);
 
   // ---- reset on open -----------------------------------------------------
   useEffect(() => {
@@ -323,6 +339,8 @@ export function UnifiedPaymentSheet({
     setPayUrl(null);
     setRefundRow(null);
     setPaymentSuccess(null);
+    setEditPayment(null);
+    setDeletePayment(null);
   }, [open, initialPupilId]);
 
   // ---- close QR fullscreen with Escape key --------------------------------
@@ -422,7 +440,7 @@ export function UnifiedPaymentSheet({
 
       const { data: h } = await supabase
         .from("lesson_history")
-        .select("id, lesson_cost, amount_paid, payment_method, created_at, notes")
+        .select("id, lesson_cost, amount_paid, payment_method, created_at, lesson_date, notes")
         .eq("pupil_id", id)
         .is("deleted_at", null)
         .order("created_at", { ascending: false })
@@ -434,12 +452,14 @@ export function UnifiedPaymentSheet({
           amount_paid: number | null;
           payment_method: string | null;
           created_at: string | null;
+          lesson_date: string | null;
           notes: string | null;
         }[]).map((r) => ({
           id: r.id,
           amount: Number(r.amount_paid ?? r.lesson_cost ?? 0),
           method: r.payment_method,
           created_at: r.created_at,
+          lesson_date: r.lesson_date,
           notes: r.notes,
         })),
       );
@@ -648,17 +668,21 @@ export function UnifiedPaymentSheet({
         const nowIso = new Date(`${paymentDate}T12:00:00`).toISOString();
 
         // 1) Audit row
-        const { error: hErr } = await supabase.from("lesson_history").insert({
-          instructor_id: instructorId,
-          pupil_id: customMode ? null : pupilId,
-          lesson_cost: amountNum,
-          amount_paid: amountNum,
-          payment_method: m,
-          payment_status: "paid",
-          lesson_date: paymentDate,
-          notes: note.trim() || null,
-          created_at: nowIso,
-        });
+        const { data: hRow, error: hErr } = await supabase
+          .from("lesson_history")
+          .insert({
+            instructor_id: instructorId,
+            pupil_id: customMode ? null : pupilId,
+            lesson_cost: amountNum,
+            amount_paid: amountNum,
+            payment_method: m,
+            payment_status: "paid",
+            lesson_date: paymentDate,
+            notes: note.trim() || null,
+            created_at: nowIso,
+          })
+          .select("id")
+          .single();
         if (hErr) throw hErr;
 
         if (!customMode && pupilId) {
@@ -698,6 +722,7 @@ export function UnifiedPaymentSheet({
           window.dispatchEvent(new Event("dsm-payment-recorded"));
         }
         setPaymentSuccess({
+          historyId: (hRow as { id: string } | null)?.id ?? "",
           amount: amountNum,
           method: m,
           pupilName: pupil?.name ?? "Custom",
@@ -930,17 +955,28 @@ export function UnifiedPaymentSheet({
         newPrice = packagePrice === "" ? 0 : Number(packagePrice);
         isNewPackage = newPrice > 0 && newPrice !== prevPrice;
         if (isNewPackage) {
-          const { error: hErr } = await supabase.from("lesson_history").insert({
-            instructor_id: instructorId,
-            pupil_id: pupilId,
-            amount_paid: newPrice,
-            payment_method: packageMethod,
-            lesson_date: new Date().toISOString().slice(0, 10),
-            payment_status: "paid",
-            notes: `Block package: ${hoursTotal} hrs at £${newPrice}`,
-            created_at: new Date().toISOString(),
-          });
+          const { data: pkgRow, error: hErr } = await supabase
+            .from("lesson_history")
+            .insert({
+              instructor_id: instructorId,
+              pupil_id: pupilId,
+              amount_paid: newPrice,
+              payment_method: packageMethod,
+              lesson_date: new Date().toISOString().slice(0, 10),
+              payment_status: "paid",
+              notes: `Block package: ${hoursTotal} hrs at £${newPrice}`,
+              created_at: new Date().toISOString(),
+            })
+            .select("id")
+            .single();
           if (hErr) console.error("[UnifiedPaymentSheet] package history insert", hErr);
+          else
+            setPaymentSuccess({
+              historyId: (pkgRow as { id: string } | null)?.id ?? "",
+              amount: newPrice,
+              method: packageMethod,
+              pupilName: pupil?.name ?? "",
+            });
           await supabase
             .from("pupils")
             .update({ prepaid_hours: hoursTotal === "" ? 0 : Number(hoursTotal) })
@@ -970,23 +1006,34 @@ export function UnifiedPaymentSheet({
       toast.error("Enter an amount first");
       return;
     }
-    const { error } = await supabase.from("lesson_history").insert({
-      instructor_id: instructorId,
-      pupil_id: pupilId,
-      amount_paid: amount,
-      payment_method: oneOffMethod,
-      lesson_date: todayIso(),
-      payment_status: "paid",
-      notes: oneOffReason.trim() || "One-off payment",
-      created_at: new Date().toISOString(),
-    });
+    const { data: hRow, error } = await supabase
+      .from("lesson_history")
+      .insert({
+        instructor_id: instructorId,
+        pupil_id: pupilId,
+        amount_paid: amount,
+        payment_method: oneOffMethod,
+        lesson_date: todayIso(),
+        payment_status: "paid",
+        notes: oneOffReason.trim() || "One-off payment",
+        created_at: new Date().toISOString(),
+      })
+      .select("id")
+      .single();
     if (error) {
       console.error("[UnifiedPaymentSheet] recordOneOffPayment", error);
       toast.error("Couldn't record one-off payment");
       return;
     }
     toast.success("One-off payment recorded");
-    await getPupilBalance(pupilId);
+    setBalance(await getPupilBalance(pupilId));
+    await loadPupilData(pupilId);
+    setPaymentSuccess({
+      historyId: (hRow as { id: string } | null)?.id ?? "",
+      amount,
+      method: oneOffMethod,
+      pupilName: pupil?.name ?? "",
+    });
     setOneOffAmount("");
     setOneOffReason("");
     setOneOffMethod("cash");
@@ -1130,7 +1177,7 @@ export function UnifiedPaymentSheet({
       title={customMode ? "Custom payment" : "Payments"}
       subtitle={pupil?.name ?? undefined}
       onClose={handleClose}
-      footer={paymentSuccess ? null : footer}
+      footer={paymentSuccess || editPayment || deletePayment ? null : footer}
     >
       <style>{`@keyframes ups-pulse{0%,100%{opacity:1}50%{opacity:.4}}`}</style>
 
