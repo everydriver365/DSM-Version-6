@@ -1004,7 +1004,6 @@ export function UnifiedPaymentSheet({
             method: packageMethod,
             pupilName: pupil?.name ?? "",
           });
-          setBalance(await getPupilBalance(pupilId));
         }
       }
 
@@ -1013,12 +1012,19 @@ export function UnifiedPaymentSheet({
           ? `Block package recorded — ${hoursTotal} hrs · ${money(newPrice)}`
           : "Pricing updated",
       );
-      await refreshPupil();
       onSaved?.();
     } catch (e) {
       console.error("[UnifiedPaymentSheet] savePricing", e);
       toast.error("Couldn't save pricing");
     } finally {
+      if (pupilId) {
+        try {
+          await refreshPupil();
+          setBalance(await getPupilBalance(pupilId));
+        } catch (refreshErr) {
+          console.error("[UnifiedPaymentSheet] refresh after savePricing", refreshErr);
+        }
+      }
       setSavingPricing(false);
     }
   };
