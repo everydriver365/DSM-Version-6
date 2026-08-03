@@ -223,8 +223,18 @@ function NewLessonPage() {
     }
 
     // Block / national intensives pupils pay up front, so their lessons are
-    // always created as prepaid.
-    const pricingType = (selected?.pricing_type ?? "").toLowerCase();
+    // always created as prepaid. Read pricing_type fresh so a stale cached
+    // pupil row can't produce an "unpaid" lesson for a prepaid pupil.
+    const { data: pupilData } = await supabase
+      .from("pupils")
+      .select("pricing_type")
+      .eq("id", pupilId)
+      .maybeSingle();
+    const pricingType = (
+      (pupilData as { pricing_type?: string | null } | null)?.pricing_type ??
+      selected?.pricing_type ??
+      ""
+    ).toLowerCase();
     const isPrepaidPricing =
       pricingType === "block" || pricingType === "national_intensives";
     if (isPrepaidPricing) paymentStatus = "prepaid";
