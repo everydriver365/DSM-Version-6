@@ -216,6 +216,7 @@ function MessagesIndexPage() {
   const [room, setRoom] = useState<LocalChatRoom | null>(null);
   const [myRooms, setMyRooms] = useState<LocalChatRoom[]>([]);
   const [allRooms, setAllRooms] = useState<LocalChatRoom[]>([]);
+  const [allPublicRooms, setAllPublicRooms] = useState<LocalChatRoom[]>([]);
   const [joinedCount, setJoinedCount] = useState(0);
   const [joinedRoomIds, setJoinedRoomIds] = useState<Set<string>>(new Set());
   const [homeOutcode, setHomeOutcode] = useState<string | null>(null);
@@ -394,6 +395,8 @@ function MessagesIndexPage() {
       const all = (rooms ?? []) as LocalChatRoom[];
       // Hide private (invite-only) rooms the user hasn't joined
       setMyRooms(all.filter((r) => !r.is_opt_in || subIds.has(r.id)));
+      // Only public rooms should appear in the discovery list
+      setAllPublicRooms(all.filter((r) => !r.is_opt_in));
       setJoinedRoomIds(subIds);
 
       // Every public room (including brand-new admin rooms), for the room browser
@@ -902,7 +905,7 @@ function MessagesIndexPage() {
         />
       ) : view === "rooms" ? (
         <RoomBrowser
-          rooms={browseRooms}
+          rooms={allPublicRooms}
           joinedRoomIds={joinedRoomIds}
           homeOutcode={homeOutcode}
           onBack={() => setView("inbox")}
