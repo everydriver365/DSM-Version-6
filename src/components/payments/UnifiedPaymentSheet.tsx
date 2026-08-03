@@ -1009,7 +1009,7 @@ export function UnifiedPaymentSheet({
     if (type === "block") return `Block · ${Number(pupil.prepaid_hours ?? 0)} hrs remaining`;
     if (type === "national_intensives")
       return `National Intensives · ${Number(pupil.prepaid_hours ?? 0)} hrs remaining`;
-    if (type === "custom") return `Custom rate · ${unpaidLessons.length} unpaid`;
+    if (type === "custom") return `One-off payment pupil · ${unpaidLessons.length} unpaid`;
     return `Standard rate · ${unpaidLessons.length} unpaid`;
   })();
 
