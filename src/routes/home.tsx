@@ -4963,7 +4963,7 @@ function HomePage() {
                     </div>
                   )}
                   {isAdverseWeather && <div>⛅ {weatherCondition}</div>}
-                  {matchedAlert && <div style={{ fontSize: 11, lineHeight: 1.35, color: '#B45309' }}>⚠️ {(matchedAlert as any).description}</div>}
+                  {matchedAlert && <div style={{ fontSize: 'clamp(10px, 3vw, 11px)', lineHeight: 1.35, color: '#B45309' }}>⚠️ {(matchedAlert as any).description}</div>}
                 </div>
               )}
 
@@ -5232,7 +5232,7 @@ function HomePage() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, minWidth: 0 }}>
                       <span style={{ width: 6, height: 6, borderRadius: '50%', background: sevColor, flexShrink: 0 }} />
                       <span style={{
-                        fontSize: 11, fontWeight: 600, color: sevColor, fontFamily: PF_C,
+                        fontSize: 'clamp(10px, 3vw, 11px)', fontWeight: 600, color: sevColor, fontFamily: PF_C,
                         whiteSpace: 'normal', overflowWrap: 'break-word', wordWrap: 'break-word',
                         lineHeight: '1.35',
                       }}>
