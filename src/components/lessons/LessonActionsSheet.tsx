@@ -97,7 +97,7 @@ export function LessonActionsSheet({
   const balance = Number(lesson.amount_due ?? 0);
 
   const [messageOpen, setMessageOpen] = useState(false);
-  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
 
   const sendSms = (body: string) => {
     if (!phone) {
@@ -474,7 +474,7 @@ export function LessonActionsSheet({
             style={{ ...gridBtn, background: "#FFFFFF" }}
             onClick={(e) => {
               e.stopPropagation();
-              setPaymentOpen(true);
+              setUnifiedPayOpen(true);
             }}
           >
             <IconCreditCard size={18} stroke={1.8} color={NAVY} />
@@ -827,8 +827,8 @@ export function LessonActionsSheet({
       />
 
       <UnifiedPaymentSheet
-        open={paymentOpen}
-        onClose={() => setPaymentOpen(false)}
+        open={unifiedPayOpen}
+        onClose={() => setUnifiedPayOpen(false)}
         initialPupilId={lesson.pupil_id}
       />
     </>
