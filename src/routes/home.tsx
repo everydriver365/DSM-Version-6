@@ -5033,12 +5033,18 @@ function HomePage() {
                   }}
                 >
                   <Navigation size={16} />
-                  View route{driveData ? ` · ${driveData.durationMinutes} min` : ''}
+                  <span>View route</span>
+                  {driveData && (
+                    <>
+                      <span style={{ color: '#6B7686', margin: '0 4px' }}>·</span>
+                      <span>{driveData.durationMinutes} min</span>
+                    </>
+                  )}
                   {weatherData?.tempC != null && (
                     <>
-                      <span style={{ color: '#6B7686', margin: '0 2px' }}>·</span>
-                      <Sun size={15} color="#E0A020" />
-                      <span style={{ fontSize: 13, color: '#6B7686', fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
+                      <span style={{ color: '#6B7686', margin: '0 4px' }}>·</span>
+                      <Sun size={14} color="#E0A020" />
+                      <span style={{ fontSize: 13, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif', fontWeight: 700, marginLeft: 4 }}>
                         {Math.round(weatherData.tempC)}°
                       </span>
                     </>
