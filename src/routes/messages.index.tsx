@@ -634,6 +634,11 @@ function MessagesIndexPage() {
           const instructorName =
             (instructor as { name: string | null } | null)?.name ?? "Instructor";
           toast(`New message from ${instructorName} re: ${pupilName}`);
+          window.dispatchEvent(
+            new CustomEvent("dsm-message-received", {
+              detail: { type: "admin", unreadCount: 1 },
+            }),
+          );
           loadAdminThreads();
         },
       )
