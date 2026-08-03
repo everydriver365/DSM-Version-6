@@ -5507,7 +5507,7 @@ function HomePage() {
                   )}
 
                   {/* ROW 4 — Joined rooms */}
-                  {visibleRooms.slice(0, 1).map((room) => (
+                  {visibleRooms.map((room) => (
                     <div
                       key={room.id}
                       onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
@@ -5549,17 +5549,6 @@ function HomePage() {
                     </div>
                   ))}
 
-                  {hiddenCount > 0 && (
-                    <div
-                      onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
-                      style={{
-                        padding: '9px 14px', fontSize: 12, fontWeight: 500, color: '#1877D6',
-                        fontFamily: PF_C, cursor: 'pointer', borderTop: `0.5px solid ${BORDER_C}`,
-                      }}
-                    >
-                      and {hiddenCount} more →
-                    </div>
-                  )}
 
                   <div
                     onClick={() => navigate({ to: '/community' })}
