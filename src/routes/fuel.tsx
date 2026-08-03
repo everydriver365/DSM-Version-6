@@ -828,69 +828,113 @@ function FindCheapFuel({
               {stations.map((s, i) => {
                 const bs = brandStyle(s?.brand || s?.name || "");
                 const initial = String(s?.brand || s?.name || "?").trim().charAt(0).toUpperCase();
+                const hKey = `${s?.lat},${s?.lng}`;
+                const hours = hoursMap[hKey];
+                const isLoadingThis = hoursLoading === hKey;
+                const parsed = hours ? parseTodayHours(hours) : null;
                 return (
                   <div
                     key={s?.id ?? i}
-                    onClick={() => openDirections(s?.lat, s?.lng)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      padding: "11px 14px",
-                      borderBottom: i === stations.length - 1 ? "none" : BORDER,
-                      cursor: "pointer",
-                    }}
+                    style={{ borderBottom: i === stations.length - 1 ? "none" : BORDER }}
                   >
                     <div
+                      onClick={() => openDirections(s?.lat, s?.lng)}
                       style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: "50%",
-                        background: bs.bg,
-                        color: bs.fg,
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 13,
-                        fontWeight: 600,
-                        flexShrink: 0,
+                        gap: 10,
+                        padding: "11px 14px",
+                        cursor: "pointer",
                       }}
                     >
-                      {initial}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
                       <div
                         style={{
-                          fontSize: 12,
-                          fontWeight: 500,
-                          color: NAVY,
-                          whiteSpace: one,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
+                          width: 32,
+                          height: 32,
+                          borderRadius: "50%",
+                          background: bs.bg,
+                          color: bs.fg,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 13,
+                          fontWeight: 600,
+                          flexShrink: 0,
                         }}
                       >
-                        {stationTitle(s)}
+                        {initial}
                       </div>
-                      <div
-                        style={{
-                          fontSize: 11,
-                          color: "#6B7686",
-                          whiteSpace: one,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 500,
+                            color: NAVY,
+                            whiteSpace: one,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          {stationTitle(s)}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 11,
+                            color: "#6B7686",
+                            whiteSpace: one,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          {s?.address || ""}
+                        </div>
+                      </div>
+                      <div style={{ textAlign: "right", flexShrink: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>{fmtPrice(s?.price)}</div>
+                        <div style={{ fontSize: 10, color: "#6B7686" }}>{fmtMiles(s)}</div>
+                      </div>
+                      <button
+                        aria-label="Show opening hours"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          fetchHours(s);
                         }}
+                        style={{ background: "none", border: "none", padding: 4, cursor: "pointer", flexShrink: 0 }}
                       >
-                        {s?.address || ""}
+                        {isLoadingThis ? (
+                          <span style={{ fontSize: 10, color: "#9CA3AF" }}>…</span>
+                        ) : (
+                          <IconClock size={14} color="#9CA3AF" stroke={1.8} />
+                        )}
+                      </button>
+                      <IconChevronRight size={13} color="#9CA3AF" stroke={1.8} style={{ flexShrink: 0 }} />
+                    </div>
+                    {hours !== undefined && !isLoadingThis && (
+                      <div style={{ padding: "0 14px 9px 56px" }}>
+                        {hours === null ? (
+                          <div style={{ fontSize: 10, color: "#9CA3AF" }}>Hours not available</div>
+                        ) : parsed && /open 24 hours/i.test(parsed.text) ? (
+                          <div style={{ fontSize: 10, fontWeight: 600, color: "#15803D" }}>● Open 24 hours</div>
+                        ) : (
+                          <div style={{ fontSize: 11, color: "#6B7686" }}>
+                            <span
+                              style={{
+                                fontWeight: 600,
+                                color: parsed?.open === false ? "#CC2229" : parsed?.open ? "#15803D" : "#6B7686",
+                              }}
+                            >
+                              ● {parsed?.open === false ? "Closed" : parsed?.open ? "Open now" : ""}
+                            </span>
+                            {parsed?.open === null ? "" : " · "}
+                            {parsed?.text}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                    <div style={{ textAlign: "right", flexShrink: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>{fmtPrice(s?.price)}</div>
-                      <div style={{ fontSize: 10, color: "#6B7686" }}>{fmtMiles(s)}</div>
-                    </div>
-                    <IconChevronRight size={13} color="#9CA3AF" stroke={1.8} style={{ flexShrink: 0 }} />
+                    )}
                   </div>
                 );
               })}
+
             </div>
           )}
 
