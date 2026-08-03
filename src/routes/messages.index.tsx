@@ -170,6 +170,8 @@ function MessagesIndexPage() {
   const [myName, setMyName] = useState<string | null>(null);
   const [areaName, setAreaName] = useState<string>("Your area");
   const [room, setRoom] = useState<LocalChatRoom | null>(null);
+  const [myRooms, setMyRooms] = useState<LocalChatRoom[]>([]);
+  const [homeOutcode, setHomeOutcode] = useState<string | null>(null);
   const [localMessages, setLocalMessages] = useState<LocalMessage[]>([]);
   const [localLoading, setLocalLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
