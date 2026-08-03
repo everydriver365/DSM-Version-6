@@ -4727,17 +4727,6 @@ function HomePage() {
           const weatherCondition = weatherData?.condition ?? '';
           const isAdverseWeather = !!weatherCondition &&
             adverseKeywords.some((k) => weatherCondition.toLowerCase().includes(k));
-          let WeatherIcon: React.ReactNode = null;
-          if (weatherCondition) {
-            const w = weatherCondition.toLowerCase();
-            const commonProps = { size: 14, color: '#1877D6', style: { flexShrink: 0 } as React.CSSProperties };
-            if (w.includes('rain') || w.includes('drizzle')) WeatherIcon = <CloudRain {...commonProps} />;
-            else if (w.includes('snow') || w.includes('sleet') || w.includes('ice')) WeatherIcon = <CloudSnow {...commonProps} />;
-            else if (w.includes('storm') || w.includes('thunder')) WeatherIcon = <CloudLightning {...commonProps} />;
-            else if (w.includes('fog') || w.includes('mist')) WeatherIcon = <CloudFog {...commonProps} />;
-            else if (w.includes('sun') || w.includes('clear')) WeatherIcon = <Sun {...commonProps} />;
-            else WeatherIcon = <CloudIcon {...commonProps} />;
-          }
 
           // Community alert matched to pupil outcode
           const pupilPostcode = (upcoming?.pupils?.postcode ?? '').trim();
