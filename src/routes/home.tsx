@@ -4855,7 +4855,7 @@ function HomePage() {
                     fontFamily: 'Poppins, sans-serif', marginTop: 3,
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                   }}>
-                    {(upcoming?.lesson_type?.replace(/\s+lesson$/i, '') || 'Standard')} · {durationDecimal}hr{packageText ? ` · ${packageText}` : ''}
+                    {durationDecimal}hr{packageText ? ` · ${packageText}` : ''}
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
