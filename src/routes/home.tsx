@@ -1730,6 +1730,19 @@ function HomePage() {
 
   // Unread community chat messages across subscribed, non-muted rooms
   const [unreadChat, setUnreadChat] = useState(0);
+
+  // Community card collapse state (auto-expands when something needs attention)
+  const [communityExpanded, setCommunityExpanded] = useState(false);
+  useEffect(() => {
+    const hasUnread = unreadChat > 0 || unreadUkChat > 0;
+    const hasAlert = (localAlerts?.length ?? 0) > 0;
+    const hasUnreadRoom = joinedRoomChats.some((r) => r.unread > 0);
+    const hasPupilMessage = unreadMsgs.length > 0;
+    if (hasUnread || hasAlert || hasUnreadRoom || hasPupilMessage) {
+      setCommunityExpanded(true);
+    }
+  }, [unreadChat, unreadUkChat, localAlerts, joinedRoomChats, unreadMsgs]);
+
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
@@ -5256,6 +5269,74 @@ function HomePage() {
             );
           };
 
+          const pupilReplies = unreadMsgs.filter((m) => !m.read_at).slice(0, 2);
+          const pupilName = (m: (typeof unreadMsgs)[number]) =>
+            m.pupils?.name || m.pupils?.first_name || 'Pupil';
+          const initialsOf = (n: string) =>
+            n.split(' ').map((w) => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
+
+          // ---- Avatar stack (max 4) ----
+          type StackItem = { key: string; bg: string; node: React.ReactNode; img?: string | null };
+          const avatarItems: StackItem[] = [];
+          if (alerts.length > 0) {
+            avatarItems.push({
+              key: 'alerts', bg: RED_C,
+              node: <AlertTriangle size={14} color="#FFFFFF" />,
+            });
+          }
+          if (pupilReplies.length > 0) {
+            const p = pupilReplies[0];
+            avatarItems.push({
+              key: 'pupil', bg: '#1877D6',
+              img: p.pupils?.profile_image_url ?? null,
+              node: <>{initialsOf(pupilName(p))}</>,
+            });
+          }
+          if (!localChatHidden) {
+            avatarItems.push({
+              key: 'localchat', bg: NAVY_C,
+              img: localRoom?.image_url ?? null,
+              node: <IconMessageCircle size={14} color="#FFFFFF" />,
+            });
+          }
+          if (visibleRooms.length > 0) {
+            const r = visibleRooms[0];
+            avatarItems.push({
+              key: 'room', bg: '#7C3AED',
+              img: r.image_url ?? null,
+              node: <>{(r.area_name || r.outcode || 'C').charAt(0).toUpperCase()}</>,
+            });
+          }
+          const stack = avatarItems.slice(0, 4);
+
+          // ---- Preview line (most urgent first) ----
+          const previewBits: string[] = [];
+          if (alerts.length > 0) previewBits.push(`${alerts.length} alert${alerts.length === 1 ? '' : 's'}`);
+          if (pupilReplies.length > 0) {
+            previewBits.push(
+              pupilReplies.length === 1
+                ? `${pupilName(pupilReplies[0]).split(' ')[0]} replied`
+                : `${pupilReplies.length} pupil replies`,
+            );
+          }
+          if (!localChatHidden && localRoom) {
+            previewBits.push(unreadChat > 0 ? `${unreadChat} chat message${unreadChat === 1 ? '' : 's'}` : `${localRoom.area_name} chat`);
+          }
+          if (visibleRooms.length > 0) {
+            previewBits.push(`${visibleRooms.length} room${visibleRooms.length === 1 ? '' : 's'}`);
+          }
+          const previewLine = previewBits.slice(0, 3).join(' · ') || 'Nothing new';
+
+          const hiddenCount = Math.max(0, visibleRooms.length - 1);
+
+          const rowBase: React.CSSProperties = {
+            display: 'flex', alignItems: 'center', gap: 12,
+            padding: '11px 14px', cursor: 'pointer',
+            borderTop: `0.5px solid ${BORDER_C}`,
+          };
+          const labelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: NAVY_C, fontFamily: PF_C };
+          const timeStyle: React.CSSProperties = { fontSize: 10, color: GREY_C, fontFamily: PF_C, flexShrink: 0 };
+
           return (
             <>
               <SectionHeader style={{ margin: '16px 16px 4px' }}>Local Issues</SectionHeader>
@@ -5264,153 +5345,242 @@ function HomePage() {
                 border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
               }}>
 
-              {!alertsHidden && (
-                <div
-                  onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '14px 16px', cursor: 'pointer',
-                  }}
-                >
-                  {HazardIcon}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>
-                      Local issues
+              {/* ---- HEADER ---- */}
+              <div
+                onClick={() => setCommunityExpanded((v) => !v)}
+                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', cursor: 'pointer' }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'row-reverse', flexShrink: 0 }}>
+                  {[...stack].reverse().map((it, i) => (
+                    <div
+                      key={it.key}
+                      style={{
+                        width: 28, height: 28, borderRadius: '50%', background: it.bg,
+                        border: '2px solid #FFFFFF', color: '#FFFFFF',
+                        fontSize: 10, fontWeight: 700, fontFamily: PF_C,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        overflow: 'hidden', flexShrink: 0,
+                        marginLeft: i === stack.length - 1 ? 0 : -8,
+                      }}
+                    >
+                      {it.img
+                        ? <img src={it.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        : it.node}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, minWidth: 0 }}>
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: sevColor, flexShrink: 0 }} />
-                      <span style={{
-                        fontSize: 'clamp(10px, 3vw, 11px)', fontWeight: 600, color: sevColor, fontFamily: PF_C,
-                        whiteSpace: 'normal', overflowWrap: 'break-word', wordWrap: 'break-word',
-                        lineHeight: '1.35',
-                      }}>
-                        {alertPreview}
-                      </span>
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, flexShrink: 0 }}>
-                    <div style={{
-                      minWidth: 22, height: 22, borderRadius: 999, background: sevColor,
-                      color: '#FFFFFF', fontSize: 11, fontWeight: 700, fontFamily: PF_C,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 6px',
-                    }}>
-                      {alerts.length}
-                    </div>
-                    {topAlert?.created_at && (
-                      <div style={{ fontSize: 10, color: GREY_C, fontFamily: PF_C }}>
-                        {timeAgo(topAlert.created_at)}
-                      </div>
-                    )}
-                  </div>
-                  <MenuButton
-                    items={rowMenu('alerts', 'Local issues', topAlert?.id ? [{
-                      label: 'Dismiss this alert',
-                      onClick: () => muteRow(`alert:${topAlert.id}`, 365 * 24 * HOUR, 'Alert dismissed', 'Alert restored'),
-                    }] : [])}
-                  />
+                  ))}
                 </div>
-              )}
-
-              {!localChatHidden && localRoom && (
-                <div
-                  onClick={() => navigate({ to: '/community', search: { tab: 'local' } })}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '14px 16px', cursor: 'pointer',
-                    borderTop: !alertsHidden ? `1px solid ${BORDER_C}` : undefined,
-                    borderLeft: unreadChat > 0 ? '3px solid #7C3AED' : undefined,
-                  }}
-                >
-                  <RoomAvatar imageUrl={localRoom.image_url} name={localRoom.area_name} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>
-                      Local chat · {localRoom.area_name}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, minWidth: 0 }}>
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: unreadChat > 0 ? '#7C3AED' : GREEN_C, flexShrink: 0 }} />
-                      <span style={{
-                        fontSize: unreadChat > 0 ? 13 : 12, fontWeight: unreadChat > 0 ? 700 : 600, color: unreadChat > 0 ? '#0B1F3A' : GREEN_C, fontFamily: PF_C,
-                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                      }}>
-                        {localChatLatest
-                          ? `${(localChatLatest.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(localChatLatest.message || '').substring(0, 40)}${(localChatLatest.message || '').length > 40 ? '...' : ''}`
-                          : `Be the first to chat in ${localRoom.area_name}!`}
-                      </span>
-                    </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={labelStyle}>Community</div>
+                  <div style={{
+                    fontSize: 11, color: GREY_C, fontFamily: PF_C,
+                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                  }}>
+                    {previewLine}
                   </div>
-                  {localChatLatest?.created_at && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-                      <div style={{ fontSize: 11, color: unreadChat > 0 ? '#7C3AED' : GREY_C, fontFamily: PF_C }}>
-                        {timeAgo(localChatLatest.created_at)}
-                      </div>
-                      {unreadChat > 0 && (
-                        <span style={{ background: '#7C3AED', color: 'white', fontSize: 10, fontWeight: 600, borderRadius: 20, padding: '1px 7px', fontFamily: PF_C }}>
-                          {unreadChat}
+                </div>
+                {communityExpanded
+                  ? <ChevronUp size={14} color="#9CA3AF" style={{ flexShrink: 0 }} />
+                  : <ChevronDown size={14} color="#9CA3AF" style={{ flexShrink: 0 }} />}
+              </div>
+
+              {communityExpanded && (
+                <>
+                  {/* ROW 1 — Alerts */}
+                  {!alertsHidden && (
+                    <div onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })} style={rowBase}>
+                      <div style={{ position: 'relative', flexShrink: 0 }}>
+                        <div style={{
+                          width: 36, height: 36, borderRadius: '50%', background: '#FCE9E9',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}>
+                          <AlertTriangle size={18} color={RED_C} />
+                        </div>
+                        <span style={{
+                          position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
+                          borderRadius: 999, background: RED_C, color: '#FFFFFF',
+                          fontSize: 9, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}>
+                          {alerts.length}
                         </span>
-                      )}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={labelStyle}>Local issues</div>
+                        <div style={{
+                          fontSize: 11, fontWeight: 600, color: RED_C, fontFamily: PF_C,
+                          whiteSpace: 'normal', overflowWrap: 'break-word', lineHeight: '1.35',
+                        }}>
+                          {alertPreview}
+                        </div>
+                      </div>
+                      {topAlert?.created_at && <div style={timeStyle}>{timeAgo(topAlert.created_at)}</div>}
+                      <MenuButton
+                        items={rowMenu('alerts', 'Local issues', topAlert?.id ? [{
+                          label: 'Dismiss this alert',
+                          onClick: () => muteRow(`alert:${topAlert.id}`, 365 * 24 * HOUR, 'Alert dismissed', 'Alert restored'),
+                        }] : [])}
+                      />
                     </div>
                   )}
-                  <MenuButton items={rowMenu('localchat', 'Local chat')} />
-                </div>
-              )}
 
-              {visibleRooms.map((room, idx) => (
-                <div
-                  key={room.id}
-                  onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '14px 16px', cursor: 'pointer',
-                    borderTop: (!alertsHidden || !localChatHidden || idx > 0) ? `1px solid ${BORDER_C}` : undefined,
-                  }}
-                >
-                  <RoomAvatar imageUrl={room.image_url} name={room.area_name || room.outcode} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>
-                      {room.area_name || room.outcode} chat
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, minWidth: 0 }}>
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: room.unread > 0 ? '#1877D6' : GREEN_C, flexShrink: 0 }} />
-                      <span style={{
-                        fontSize: room.unread > 0 ? 13 : 12, fontWeight: room.unread > 0 ? 700 : 600, color: room.unread > 0 ? '#0B1F3A' : GREEN_C, fontFamily: PF_C,
-                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                      }}>
-                        {`${(room.latest?.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(room.latest?.message || '').substring(0, 40)}${(room.latest?.message || '').length > 40 ? '...' : ''}`}
-                      </span>
-                    </div>
-                  </div>
-                  {room.latest?.created_at && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-                      <div style={{ fontSize: 11, color: room.unread > 0 ? '#1877D6' : GREY_C, fontFamily: PF_C }}>
-                        {timeAgo(room.latest.created_at)}
+                  {/* ROW 2 — Pupil messages */}
+                  {pupilReplies.map((m) => (
+                    <div
+                      key={m.id}
+                      onClick={() => navigate({ to: '/messages/$pupilId', params: { pupilId: m.pupil_id } })}
+                      style={rowBase}
+                    >
+                      <div style={{ position: 'relative', flexShrink: 0 }}>
+                        <div style={{
+                          width: 36, height: 36, borderRadius: '50%', background: '#1877D6',
+                          color: '#FFFFFF', fontSize: 13, fontWeight: 700, fontFamily: PF_C,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+                        }}>
+                          {m.pupils?.profile_image_url
+                            ? <img src={m.pupils.profile_image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            : initialsOf(pupilName(m))}
+                        </div>
+                        <span style={{
+                          position: 'absolute', bottom: -1, right: -1, width: 10, height: 10,
+                          borderRadius: '50%', background: RED_C, border: '2px solid #FFFFFF',
+                        }} />
                       </div>
-                      {room.unread > 0 && (
-                        <span style={{ background: '#1877D6', color: 'white', fontSize: 10, fontWeight: 600, borderRadius: 20, padding: '1px 7px', fontFamily: PF_C }}>
-                          {room.unread}
-                        </span>
-                      )}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={labelStyle}>{pupilName(m)}</div>
+                        <div style={{
+                          fontSize: 11, fontWeight: 700, color: NAVY_C, fontFamily: PF_C,
+                          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                        }}>
+                          {(m.body || '').substring(0, 48)}{(m.body || '').length > 48 ? '…' : ''}
+                        </div>
+                      </div>
+                      <div style={timeStyle}>{timeAgo(m.created_at)}</div>
+                    </div>
+                  ))}
+
+                  {/* ROW 3 — Local chat */}
+                  {!localChatHidden && localRoom && (
+                    <div onClick={() => navigate({ to: '/community', search: { tab: 'local' } })} style={rowBase}>
+                      <div style={{ position: 'relative', flexShrink: 0 }}>
+                        <div style={{
+                          width: 36, height: 36, borderRadius: '50%', background: NAVY_C,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+                        }}>
+                          {localRoom.image_url
+                            ? <img src={localRoom.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            : <IconMessageCircle size={18} color="#FFFFFF" />}
+                        </div>
+                        {unreadChat > 0 && (
+                          <span style={{
+                            position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
+                            borderRadius: 999, background: '#7C3AED', color: '#FFFFFF',
+                            fontSize: 9, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          }}>
+                            {unreadChat}
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={labelStyle}>{localRoom.area_name} Local Chat</div>
+                        <div style={{
+                          fontSize: 11, fontWeight: unreadChat > 0 ? 700 : 500,
+                          color: unreadChat > 0 ? NAVY_C : GREY_C, fontFamily: PF_C,
+                          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                        }}>
+                          {localChatLatest
+                            ? `${(localChatLatest.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(localChatLatest.message || '').substring(0, 40)}${(localChatLatest.message || '').length > 40 ? '…' : ''}`
+                            : `Be the first to chat in ${localRoom.area_name}!`}
+                        </div>
+                      </div>
+                      {localChatLatest?.created_at && <div style={timeStyle}>{timeAgo(localChatLatest.created_at)}</div>}
+                      <MenuButton items={rowMenu('localchat', 'Local chat')} />
                     </div>
                   )}
-                  <MenuButton items={rowMenu(`room:${room.id}`, `${room.area_name || room.outcode} chat`)} />
-                </div>
-              ))}
 
-              {mutedCount > 0 && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    persistMutedRows({});
-                    toast.success('Muted items restored');
-                  }}
-                  style={{
-                    width: '100%', textAlign: 'center', padding: '10px 16px',
-                    background: '#F7F9FC', border: 'none',
-                    borderTop: `1px solid ${BORDER_C}`,
-                    fontSize: 12, fontWeight: 600, color: GREY_C, fontFamily: PF_C, cursor: 'pointer',
-                  }}
-                >
-                  {mutedCount} muted · Show all
-                </button>
+                  {/* ROW 4 — Joined rooms */}
+                  {visibleRooms.slice(0, 1).map((room) => (
+                    <div
+                      key={room.id}
+                      onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
+                      style={rowBase}
+                    >
+                      <div style={{ position: 'relative', flexShrink: 0 }}>
+                        <div style={{
+                          width: 36, height: 36, borderRadius: '50%', background: '#7C3AED',
+                          color: '#FFFFFF', fontSize: 13, fontWeight: 700, fontFamily: PF_C,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+                        }}>
+                          {room.image_url
+                            ? <img src={room.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            : initialsOf(room.area_name || room.outcode || 'C')}
+                        </div>
+                        {room.unread > 0 && (
+                          <span style={{
+                            position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
+                            borderRadius: 999, background: '#7C3AED', color: '#FFFFFF',
+                            fontSize: 9, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          }}>
+                            {room.unread}
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={labelStyle}>{room.area_name || room.outcode}</div>
+                        <div style={{
+                          fontSize: 11, fontWeight: room.unread > 0 ? 700 : 500,
+                          color: room.unread > 0 ? NAVY_C : GREY_C, fontFamily: PF_C,
+                          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                        }}>
+                          {`${(room.latest?.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(room.latest?.message || '').substring(0, 40)}${(room.latest?.message || '').length > 40 ? '…' : ''}`}
+                        </div>
+                      </div>
+                      {room.latest?.created_at && <div style={timeStyle}>{timeAgo(room.latest.created_at)}</div>}
+                      <MenuButton items={rowMenu(`room:${room.id}`, `${room.area_name || room.outcode} chat`)} />
+                    </div>
+                  ))}
+
+                  {hiddenCount > 0 && (
+                    <div
+                      onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
+                      style={{
+                        padding: '9px 14px', fontSize: 12, fontWeight: 500, color: '#1877D6',
+                        fontFamily: PF_C, cursor: 'pointer', borderTop: `0.5px solid ${BORDER_C}`,
+                      }}
+                    >
+                      and {hiddenCount} more →
+                    </div>
+                  )}
+
+                  <div
+                    onClick={() => navigate({ to: '/community' })}
+                    style={{
+                      padding: '9px 14px', fontSize: 12, fontWeight: 500, color: '#1877D6',
+                      fontFamily: PF_C, cursor: 'pointer', borderTop: `0.5px solid ${BORDER_C}`,
+                    }}
+                  >
+                    See all in Community →
+                  </div>
+
+                  {mutedCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        persistMutedRows({});
+                        toast.success('Muted items restored');
+                      }}
+                      style={{
+                        width: '100%', textAlign: 'center', padding: '10px 16px',
+                        background: '#F7F9FC', border: 'none',
+                        borderTop: `0.5px solid ${BORDER_C}`,
+                        fontSize: 12, fontWeight: 600, color: GREY_C, fontFamily: PF_C, cursor: 'pointer',
+                      }}
+                    >
+                      {mutedCount} muted · Show all
+                    </button>
+                  )}
+                </>
               )}
 
             </div>
