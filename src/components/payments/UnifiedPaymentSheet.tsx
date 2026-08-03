@@ -917,11 +917,8 @@ export function UnifiedPaymentSheet({
           ni_payer: niPayer,
         };
       } else if (pricingType === "custom") {
-        patch = {
-          custom_rate: rate60 === "" ? null : Number(rate60),
-          custom_rate_90: rate90 === "" ? null : Number(rate90),
-          custom_rate_120: rate120 === "" ? null : Number(rate120),
-        };
+        // One-off pricing has no stored fields; payments are recorded via lesson_history.
+        patch = {};
       }
       const { error } = await supabase.from("pupils").update(patch).eq("id", pupilId);
       if (error) throw error;
