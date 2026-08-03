@@ -4963,7 +4963,7 @@ function HomePage() {
                     </div>
                   )}
                   {isAdverseWeather && <div>⛅ {weatherCondition}</div>}
-                  {matchedAlert && <div style={{ color: '#B45309' }}>⚠️ {(matchedAlert as any).description}</div>}
+                  {matchedAlert && <div style={{ fontSize: 11, lineHeight: 1.35, color: '#B45309' }}>⚠️ {(matchedAlert as any).description}</div>}
                 </div>
               )}
 
