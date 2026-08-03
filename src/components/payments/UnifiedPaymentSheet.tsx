@@ -1028,7 +1028,7 @@ export function UnifiedPaymentSheet({
       title={customMode ? "Custom payment" : "Payments"}
       subtitle={pupil?.name ?? undefined}
       onClose={handleClose}
-      footer={footer}
+      footer={paymentSuccess ? null : footer}
     >
       <style>{`@keyframes ups-pulse{0%,100%{opacity:1}50%{opacity:.4}}`}</style>
 
