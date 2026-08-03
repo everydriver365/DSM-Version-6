@@ -925,10 +925,12 @@ export function UnifiedPaymentSheet({
       const { error } = await supabase.from("pupils").update(patch).eq("id", pupilId);
       if (error) throw error;
 
+      let isNewPackage = false;
+      let newPrice = 0;
       if (pricingType === "block") {
         const prevPrice = Number(pupil?.prepaid_amount_paid ?? 0);
-        const newPrice = packagePrice === "" ? 0 : Number(packagePrice);
-        const isNewPackage = newPrice > 0 && newPrice !== prevPrice;
+        newPrice = packagePrice === "" ? 0 : Number(packagePrice);
+        isNewPackage = newPrice > 0 && newPrice !== prevPrice;
         if (isNewPackage) {
           const { error: hErr } = await supabase.from("lesson_history").insert({
             instructor_id: instructorId,
@@ -948,7 +950,11 @@ export function UnifiedPaymentSheet({
         }
       }
 
-      toast.success("Pricing updated");
+      toast.success(
+        isNewPackage
+          ? `Block package recorded — ${hoursTotal} hrs · ${money(newPrice)}`
+          : "Pricing updated",
+      );
       await refreshPupil();
       onSaved?.();
     } catch (e) {
@@ -1037,6 +1043,15 @@ export function UnifiedPaymentSheet({
     return void recordPayment();
   };
 
+  const isNewBlockPackage =
+    pricingType === "block" &&
+    packagePrice !== "" &&
+    Number(packagePrice) > 0 &&
+    Number(packagePrice) !== Number(pupil?.prepaid_amount_paid ?? 0);
+  const footerLabel = isNewBlockPackage
+    ? `Save & record ${money(Number(packagePrice))} package payment`
+    : "Save pricing";
+
   const footer =
     tab === "pricing" && !customMode ? (
       <button
@@ -1057,7 +1072,7 @@ export function UnifiedPaymentSheet({
           opacity: savingPricing ? 0.5 : 1,
         }}
       >
-        {savingPricing ? "Saving…" : "Save pricing"}
+        {savingPricing ? "Saving…" : footerLabel}
       </button>
     ) : (
       <button
@@ -2032,6 +2047,20 @@ export function UnifiedPaymentSheet({
                     style={inputStyle}
                   />
                 </Field>
+
+                <div
+                  style={{
+                    fontSize: 10,
+                    color: MUTED,
+                    marginTop: 8,
+                    marginBottom: 12,
+                    lineHeight: 1.4,
+                  }}
+                >
+                  Enter the total hours purchased and the full package price.
+                  When saved, the hours will be credited to this pupil and the
+                  payment will appear in their payment history.
+                </div>
 
                 {(() => {
                   const newPrice = packagePrice === "" ? 0 : Number(packagePrice);
