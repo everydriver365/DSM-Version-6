@@ -1035,14 +1035,19 @@ function LocalChatView(props: {
   const messages = allMessages;
   const highlight = (text: string) => text;
 
-  const filteredRooms = useMemo(() => {
+  const { joined: joinedRooms, other: otherRooms } = useMemo(() => {
     const q = roomSearch.trim().toLowerCase();
-    if (!q) return myRooms;
-    return myRooms.filter(
-      (r) =>
-        (r.area_name || "").toLowerCase().includes(q) || (r.outcode || "").toLowerCase().includes(q),
-    );
-  }, [myRooms, roomSearch]);
+    const match = (r: LocalChatRoom) =>
+      !q ||
+      (r.area_name || "").toLowerCase().includes(q) ||
+      (r.outcode || "").toLowerCase().includes(q);
+    const visible = myRooms.filter(match);
+    return {
+      joined: visible.filter((r) => joinedRoomIds.has(r.id) || r.outcode === homeOutcode),
+      other: visible.filter((r) => !joinedRoomIds.has(r.id) && r.outcode !== homeOutcode),
+    };
+  }, [myRooms, roomSearch, joinedRoomIds, homeOutcode]);
+  const totalRooms = joinedRooms.length + otherRooms.length;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 60px - 45px - 64px)" }}>
