@@ -20,7 +20,7 @@ import { toast } from "sonner";
 import { IconCircleCheck, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
-import { getPupilBalance, type PupilBalance } from "@/lib/payments";
+import { recordPayment, getPupilBalance, type PupilBalance } from "@/lib/payments";
 
 // ---------------------------------------------------------------------------
 // Design tokens — Checkfront × DSM
@@ -823,7 +823,7 @@ export function UnifiedPaymentSheet({
         if (status === "succeeded" || status === "completed" || status === "paid") {
           clearInterval(t);
           setQrPaymentId(null);
-          await recordPayment(method === "link" ? "link" : "qr");
+          await handleRecordPayment(method === "link" ? "link" : "qr");
           handleClose();
         }
       } catch (e) {
@@ -831,7 +831,7 @@ export function UnifiedPaymentSheet({
       }
     }, 5000);
     return () => clearInterval(t);
-  }, [qrPaymentId, method, recordPayment, handleClose]);
+  }, [qrPaymentId, method, handleRecordPayment, handleClose]);
 
   // ---- pay link delivery -------------------------------------------------
   const copyLink = async () => {
@@ -1164,7 +1164,7 @@ export function UnifiedPaymentSheet({
   const onPrimary = () => {
     if (method === "qr") return void generateQr();
     if (method === "link") return void generateLink();
-    return void recordPayment();
+    return void handleRecordPayment();
   };
 
   const isNewBlockPackage =
