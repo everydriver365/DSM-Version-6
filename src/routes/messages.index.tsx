@@ -58,6 +58,15 @@ interface LocalChatRoom {
   area_name: string;
   outcode: string;
   instructor_count: number | null;
+  is_opt_in?: boolean | null;
+}
+
+/** "SO30 2XX" / "so302xx" -> "SO30" */
+function normaliseOutcode(pc?: string | null): string | null {
+  if (!pc) return null;
+  const clean = pc.replace(/\s+/g, "").toUpperCase();
+  if (clean.length < 3) return null;
+  return clean.slice(0, clean.length - 3) || null;
 }
 
 interface LocalMessage {
@@ -171,6 +180,7 @@ function MessagesIndexPage() {
   const [areaName, setAreaName] = useState<string>("Your area");
   const [room, setRoom] = useState<LocalChatRoom | null>(null);
   const [myRooms, setMyRooms] = useState<LocalChatRoom[]>([]);
+  const [joinedRoomIds, setJoinedRoomIds] = useState<Set<string>>(new Set());
   const [homeOutcode, setHomeOutcode] = useState<string | null>(null);
   const [localMessages, setLocalMessages] = useState<LocalMessage[]>([]);
   const [localLoading, setLocalLoading] = useState(false);
@@ -287,7 +297,7 @@ function MessagesIndexPage() {
         .select("home_postcode, city, name")
         .eq("id", uid)
         .single();
-      const outcode = instructor?.home_postcode?.substring(0, 4)?.trim().toUpperCase();
+      const outcode = normaliseOutcode(instructor?.home_postcode);
       const area = instructor?.city || outcode || "Your area";
       setAreaName(area);
       setMyName(instructor?.name ?? null);
@@ -324,7 +334,7 @@ function MessagesIndexPage() {
     (async () => {
       const { data: rooms } = await supabase
         .from("local_chat_rooms")
-        .select("id, outcode, area_name, instructor_count")
+        .select("id, outcode, area_name, instructor_count, is_opt_in")
         .neq("outcode", "UK");
       if (cancelled) return;
       const { data: subs } = await supabase
@@ -334,7 +344,9 @@ function MessagesIndexPage() {
       if (cancelled) return;
       const subIds = new Set(((subs ?? []) as { room_id: string }[]).map((s) => s.room_id));
       const all = (rooms ?? []) as LocalChatRoom[];
-      setMyRooms(all.filter((r) => subIds.has(r.id) || r.outcode === homeOutcode));
+      // Hide private (invite-only) rooms the user hasn't joined
+      setMyRooms(all.filter((r) => !r.is_opt_in || subIds.has(r.id)));
+      setJoinedRoomIds(subIds);
     })();
     return () => {
       cancelled = true;
@@ -931,6 +943,8 @@ function MessagesIndexPage() {
           areaName={areaName}
           room={room}
           myRooms={myRooms}
+          joinedRoomIds={joinedRoomIds}
+          homeOutcode={homeOutcode}
           onSelectRoom={(r) => {
             setRoom(r);
             setAreaName(r.area_name || r.outcode);
@@ -988,6 +1002,8 @@ function LocalChatView(props: {
   areaName: string;
   room: LocalChatRoom | null;
   myRooms: LocalChatRoom[];
+  joinedRoomIds: Set<string>;
+  homeOutcode: string | null;
   onSelectRoom: (r: LocalChatRoom) => void;
   messages: LocalMessage[];
   loading: boolean;
@@ -1004,6 +1020,8 @@ function LocalChatView(props: {
     areaName,
     room,
     myRooms,
+    joinedRoomIds,
+    homeOutcode,
     onSelectRoom,
     messages: allMessages,
     loading,
@@ -1023,14 +1041,19 @@ function LocalChatView(props: {
   const messages = allMessages;
   const highlight = (text: string) => text;
 
-  const filteredRooms = useMemo(() => {
+  const { joined: joinedRooms, other: otherRooms } = useMemo(() => {
     const q = roomSearch.trim().toLowerCase();
-    if (!q) return myRooms;
-    return myRooms.filter(
-      (r) =>
-        (r.area_name || "").toLowerCase().includes(q) || (r.outcode || "").toLowerCase().includes(q),
-    );
-  }, [myRooms, roomSearch]);
+    const match = (r: LocalChatRoom) =>
+      !q ||
+      (r.area_name || "").toLowerCase().includes(q) ||
+      (r.outcode || "").toLowerCase().includes(q);
+    const visible = myRooms.filter(match);
+    return {
+      joined: visible.filter((r) => joinedRoomIds.has(r.id) || r.outcode === homeOutcode),
+      other: visible.filter((r) => !joinedRoomIds.has(r.id) && r.outcode !== homeOutcode),
+    };
+  }, [myRooms, roomSearch, joinedRoomIds, homeOutcode]);
+  const totalRooms = joinedRooms.length + otherRooms.length;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 60px - 45px - 64px)" }}>
@@ -1125,38 +1148,88 @@ function LocalChatView(props: {
               )}
             </div>
             <div style={{ overflowY: "auto" }}>
-              {filteredRooms.length === 0 ? (
+              {totalRooms === 0 ? (
                 <div style={{ padding: "12px 14px", fontSize: 12, color: "#9CA3AF" }}>No rooms found</div>
               ) : (
-                filteredRooms.map((r) => (
-                  <button
-                    key={r.id}
-                    type="button"
-                    onClick={() => {
-                      onSelectRoom(r);
-                      setRoomSelectorOpen(false);
-                      setRoomSearch("");
-                    }}
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      textAlign: "left",
-                      padding: "10px 14px",
-                      background: room?.id === r.id ? "#F2F7FF" : "#FFFFFF",
-                      border: 0,
-                      borderBottom: "0.5px solid #F0F2F6",
-                      fontSize: 13,
-                      color: "#0B1F3A",
-                      cursor: "pointer",
-                      ...FONT,
-                    }}
-                  >
-                    {r.area_name || r.outcode}
-                    <span style={{ color: "#9CA3AF", fontSize: 11, marginLeft: 6 }}>{r.outcode}</span>
-                  </button>
-                ))
+                ([
+                  ["Your rooms", joinedRooms],
+                  ["All rooms", otherRooms],
+                ] as [string, LocalChatRoom[]][]).map(([label, list]) =>
+                  list.length === 0 ? null : (
+                    <div key={label}>
+                      <div
+                        style={{
+                          padding: "8px 14px 4px",
+                          fontSize: 10,
+                          fontWeight: 700,
+                          letterSpacing: 0.6,
+                          textTransform: "uppercase",
+                          color: "#9CA3AF",
+                          background: "#FAFBFC",
+                        }}
+                      >
+                        {label}
+                      </div>
+                      {list.map((r) => (
+                        <button
+                          key={r.id}
+                          type="button"
+                          onClick={() => {
+                            onSelectRoom(r);
+                            setRoomSelectorOpen(false);
+                            setRoomSearch("");
+                          }}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 6,
+                            width: "100%",
+                            textAlign: "left",
+                            padding: "10px 14px",
+                            background: room?.id === r.id ? "#F2F7FF" : "#FFFFFF",
+                            border: 0,
+                            borderBottom: "0.5px solid #F0F2F6",
+                            fontSize: 13,
+                            color: "#0B1F3A",
+                            cursor: "pointer",
+                            ...FONT,
+                          }}
+                        >
+                          <span
+                            style={{
+                              flex: 1,
+                              minWidth: 0,
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {r.area_name || r.outcode}
+                            <span style={{ color: "#9CA3AF", fontSize: 11, marginLeft: 6 }}>{r.outcode}</span>
+                          </span>
+                          {r.is_opt_in && (
+                            <span
+                              style={{
+                                background: "#F1F3F7",
+                                color: "#6B7280",
+                                fontSize: 10,
+                                fontWeight: 700,
+                                borderRadius: 999,
+                                padding: "2px 8px",
+                                flexShrink: 0,
+                              }}
+                            >
+                              Private
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  ),
+                )
               )}
             </div>
+
           </div>
         )}
       </div>
