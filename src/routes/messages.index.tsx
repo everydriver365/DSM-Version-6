@@ -297,7 +297,17 @@ function MessagesIndexPage() {
             table: "chat_messages",
             filter: `instructor_id=eq.${uid}`,
           },
-          () => {
+          (payload) => {
+            if (payload.eventType === "INSERT") {
+              const row = payload.new as { sender_type?: string | null };
+              if (row?.sender_type === "pupil") {
+                window.dispatchEvent(
+                  new CustomEvent("dsm-message-received", {
+                    detail: { type: "pupil", unreadCount: 1 },
+                  }),
+                );
+              }
+            }
             void loadConvos();
           },
         )
