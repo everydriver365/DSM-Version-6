@@ -113,6 +113,18 @@ function PrivacyPage() {
           </ul>
         </Section>
 
+        <Section title="AI Features & Google Data">
+          <p>
+            DSM by EveryDriver uses AI to power certain features including
+            coaching tips and our optional call answering service. None of these
+            AI features access, process, or use your Google account data in any
+            way. Google Calendar data obtained via our Calendar Sync feature is
+            used solely to create, read, update and delete driving lesson
+            appointments in your Google Calendar. It is never shared with or used
+            by any AI service.
+          </p>
+        </Section>
+
         <Section title="Data sharing">
           <p>
             We do not sell your data. We share only with: Supabase (database and auth), Ryft (payments), Twilio (SMS), Google (calendar sync when connected), Resend (email).
