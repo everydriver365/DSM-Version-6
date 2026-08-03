@@ -12,6 +12,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import {
   X,
   Calendar,
+  CalendarPlus,
   PoundSterling,
   CreditCard,
   CalendarCheck,
@@ -38,12 +39,13 @@ import {
   BarChart3,
   Award,
   MessageCircle,
+  Phone,
   Settings as SettingsIcon,
   RefreshCw,
   HelpCircle,
   LogOut,
 } from "lucide-react";
-import { IconLogout } from "@tabler/icons-react";
+import { IconLogout, IconMenu2 } from "@tabler/icons-react";
 
 import appCss from "../styles.css?url";
 import icon192 from "../assets/icon-192.png.asset.json";
@@ -216,13 +218,10 @@ type MenuItem = {
 };
 
 const QUICK_ACTIONS: MenuItem[] = [
-  { label: "Schedule", icon: Calendar, to: "/schedule" },
-  { label: "Take payment", icon: PoundSterling, event: "dsm-open-take-payment", fallback: "/take-payment" },
-  { label: "Payments", icon: CreditCard, to: "/payments" },
-  { label: "Availability", icon: CalendarCheck, to: "/availability" },
-  { label: "Start tracking", icon: Navigation, to: "/live" },
-  { label: "Fill slots", icon: Zap, to: "/gaps" },
-  { label: "Nearby", icon: MapPin, event: "dsm-open-nearby", fallback: "/satnav" },
+  { label: "Call a pupil", icon: Phone, to: "/messages" },
+  { label: "Live track", icon: MapPin, to: "/live" },
+  { label: "Take payment", icon: PoundSterling, event: "dsm-open-unified-payment-sheet", fallback: "/home" },
+  { label: "Add lesson", icon: CalendarPlus, event: "dsm-open-add-lesson-sheet", fallback: "/home" },
 ];
 
 const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
@@ -499,6 +498,16 @@ function RootComponent() {
     "/about",
     "/contact",
   ]);
+  const hasOwnMenu = new Set([
+    "/home",
+    "/schedule",
+    "/pupils",
+    "/payments",
+    "/messages",
+    "/more",
+    "/community",
+  ]);
+  const showFloatingMenu = !hasOwnMenu.has(pathname) && !hideNavExact.has(pathname);
   const hideNav =
     hideNavExact.has(pathname) ||
     pathname === "/courses" ||
@@ -731,6 +740,31 @@ function RootComponent() {
       <GlobalMenu isAdmin={isAdmin} />
       <EventToastController />
       <Toaster />
+      {showFloatingMenu && (
+        <button
+          type="button"
+          aria-label="Open menu"
+          onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
+          style={{
+            position: "fixed",
+            bottom: 80,
+            right: 16,
+            width: 44,
+            height: 44,
+            borderRadius: "50%",
+            background: "#0B1F3A",
+            boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
+            border: "none",
+            cursor: "pointer",
+            zIndex: 900,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <IconMenu2 size={20} color="#fff" />
+        </button>
+      )}
     </QueryClientProvider>
   );
 }
