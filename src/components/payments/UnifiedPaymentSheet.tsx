@@ -1306,7 +1306,63 @@ export function UnifiedPaymentSheet({
                 />
               </div>
             )}
-            <div style={{ display: "flex", gap: 12, marginTop: 24, width: "100%" }}>
+            <div style={{ display: "flex", gap: 8, marginTop: 16, width: "100%" }}>
+              <button
+                type="button"
+                disabled={!paymentSuccess.historyId}
+                onClick={() =>
+                  openEditPayment({
+                    id: paymentSuccess.historyId,
+                    amount: paymentSuccess.amount,
+                    method: paymentSuccess.method,
+                    notes: "",
+                  })
+                }
+                style={{
+                  flex: 1,
+                  height: 38,
+                  borderRadius: 8,
+                  border: `1px solid ${BORDER}`,
+                  background: WHITE,
+                  color: NAVY,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                  opacity: paymentSuccess.historyId ? 1 : 0.45,
+                }}
+              >
+                Edit payment
+              </button>
+              <button
+                type="button"
+                disabled={!paymentSuccess.historyId}
+                onClick={() =>
+                  setDeletePayment({
+                    historyId: paymentSuccess.historyId,
+                    amount: paymentSuccess.amount,
+                    method: paymentSuccess.method,
+                    date: new Date().toISOString(),
+                  })
+                }
+                style={{
+                  flex: 1,
+                  height: 38,
+                  borderRadius: 8,
+                  border: `1px solid ${RED}`,
+                  background: WHITE,
+                  color: RED,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                  opacity: paymentSuccess.historyId ? 1 : 0.45,
+                }}
+              >
+                Delete payment
+              </button>
+            </div>
+            <div style={{ display: "flex", gap: 12, marginTop: 12, width: "100%" }}>
               <button
                 type="button"
                 onClick={handleRecordAnother}
@@ -1323,7 +1379,7 @@ export function UnifiedPaymentSheet({
                   cursor: "pointer",
                 }}
               >
-                Record another payment
+                Record another
               </button>
               <button
                 type="button"
@@ -1346,6 +1402,175 @@ export function UnifiedPaymentSheet({
             </div>
           </div>
         )}
+        {editPayment && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              zIndex: 11,
+              background: WHITE,
+              padding: 20,
+              overflowY: "auto",
+            }}
+          >
+            <div style={{ fontSize: 16, fontWeight: 600, color: NAVY, marginBottom: 12 }}>Edit payment</div>
+            <Field label="Amount (£)">
+              <input
+                inputMode="decimal"
+                value={editPayment.amount}
+                onChange={(e) => setEditPayment({ ...editPayment, amount: e.target.value })}
+                style={inputStyle}
+              />
+            </Field>
+            <Label>Method</Label>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 10 }}>
+              {(["cash", "bank_transfer", "qr", "link"] as PayMethod[]).map((m) => {
+                const active = editPayment.method === m;
+                return (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => setEditPayment({ ...editPayment, method: m })}
+                    style={{
+                      flex: "1 1 46%",
+                      height: 36,
+                      borderRadius: 8,
+                      border: `1px solid ${active ? BLUE : BORDER}`,
+                      background: active ? BLUE : WHITE,
+                      color: active ? WHITE : BODY,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      fontFamily: FONT,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {METHOD_LABEL[m]}
+                  </button>
+                );
+              })}
+            </div>
+            <Field label="Date">
+              <input
+                type="date"
+                value={editPayment.date}
+                onChange={(e) => setEditPayment({ ...editPayment, date: e.target.value })}
+                style={inputStyle}
+              />
+            </Field>
+            <Field label="Reason / notes">
+              <input
+                value={editPayment.notes}
+                onChange={(e) => setEditPayment({ ...editPayment, notes: e.target.value })}
+                placeholder="Optional"
+                style={inputStyle}
+              />
+            </Field>
+            <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
+              <button
+                type="button"
+                onClick={() => setEditPayment(null)}
+                style={{
+                  flex: 1,
+                  height: 44,
+                  borderRadius: 8,
+                  border: `1px solid ${BORDER}`,
+                  background: WHITE,
+                  color: NAVY,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={savingEdit}
+                onClick={() => void saveEditPayment()}
+                style={{
+                  flex: 1,
+                  height: 44,
+                  borderRadius: 8,
+                  border: "none",
+                  background: BLUE,
+                  color: WHITE,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                  opacity: savingEdit ? 0.5 : 1,
+                }}
+              >
+                {savingEdit ? "Saving…" : "Save changes"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {deletePayment && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              zIndex: 12,
+              background: WHITE,
+              padding: 24,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <div style={{ fontSize: 16, fontWeight: 600, color: RED }}>Delete this payment?</div>
+            <div style={{ fontSize: 13, color: MUTED, marginTop: 6 }}>
+              {money(deletePayment.amount)} ·{" "}
+              {METHOD_LABEL[deletePayment.method as PayMethod] || deletePayment.method || "payment"} ·{" "}
+              {fmtDate(deletePayment.date)}
+            </div>
+            <div style={{ fontSize: 12, color: AMBER, marginTop: 10 }}>This cannot be undone</div>
+            <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
+              <button
+                type="button"
+                onClick={() => setDeletePayment(null)}
+                style={{
+                  flex: 1,
+                  height: 44,
+                  borderRadius: 8,
+                  border: `1px solid ${BORDER}`,
+                  background: WHITE,
+                  color: NAVY,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={savingEdit}
+                onClick={() => void confirmDeletePayment()}
+                style={{
+                  flex: 1,
+                  height: 44,
+                  borderRadius: 8,
+                  border: "none",
+                  background: RED,
+                  color: WHITE,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                  opacity: savingEdit ? 0.5 : 1,
+                }}
+              >
+                {savingEdit ? "Removing…" : "Confirm delete"}
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* ---------------- PUPIL SELECTOR ---------------- */}
         {pickerOpen && (
           <div style={{ marginBottom: 12 }}>
@@ -2101,6 +2326,49 @@ export function UnifiedPaymentSheet({
                               Refund
                             </button>
                           )}
+                          <button
+                            type="button"
+                            onClick={() => openEditPayment(r)}
+                            style={{
+                              height: 24,
+                              padding: "0 8px",
+                              borderRadius: 6,
+                              border: `1px solid ${BORDER}`,
+                              background: WHITE,
+                              color: NAVY,
+                              fontSize: 10,
+                              fontWeight: 600,
+                              fontFamily: FONT,
+                              cursor: "pointer",
+                            }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setDeletePayment({
+                                historyId: r.id,
+                                amount: r.amount,
+                                method: r.method,
+                                date: r.lesson_date ?? r.created_at,
+                              })
+                            }
+                            style={{
+                              height: 24,
+                              padding: "0 8px",
+                              borderRadius: 6,
+                              border: `1px solid ${RED}`,
+                              background: WHITE,
+                              color: RED,
+                              fontSize: 10,
+                              fontWeight: 600,
+                              fontFamily: FONT,
+                              cursor: "pointer",
+                            }}
+                          >
+                            Delete
+                          </button>
                         </div>
                       </div>
                     );
