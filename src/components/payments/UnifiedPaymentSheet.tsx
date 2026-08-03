@@ -895,7 +895,7 @@ export function UnifiedPaymentSheet({
       return;
     }
     await refreshPupil();
-    onSaved?.();
+    // No onSaved here — just update silently
   };
 
   const savePricing = async () => {
