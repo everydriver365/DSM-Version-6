@@ -18,6 +18,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { toast } from "sonner";
+import { IconCircleCheck } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { getPupilBalance, type PupilBalance } from "@/lib/payments";
