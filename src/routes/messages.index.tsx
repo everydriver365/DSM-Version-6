@@ -297,7 +297,7 @@ function MessagesIndexPage() {
         .select("home_postcode, city, name")
         .eq("id", uid)
         .single();
-      const outcode = instructor?.home_postcode?.substring(0, 4)?.trim().toUpperCase();
+      const outcode = normaliseOutcode(instructor?.home_postcode);
       const area = instructor?.city || outcode || "Your area";
       setAreaName(area);
       setMyName(instructor?.name ?? null);
