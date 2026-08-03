@@ -457,9 +457,9 @@ export function UnifiedPaymentSheet({
     setNiTotal(pupil.ni_amount_total != null ? String(pupil.ni_amount_total) : "");
     setNiRef(pupil.ni_reference ?? "");
     setNiPayer(pupil.ni_payer === "pupil" ? "pupil" : "national_intensives");
-    setRate60(pupil.custom_rate != null ? String(pupil.custom_rate) : "");
-    setRate90(pupil.custom_rate_90 != null ? String(pupil.custom_rate_90) : "");
-    setRate120(pupil.custom_rate_120 != null ? String(pupil.custom_rate_120) : "");
+    setOneOffAmount("");
+    setOneOffReason("");
+    setOneOffMethod("cash");
   }, [pupil]);
 
   useEffect(() => {
