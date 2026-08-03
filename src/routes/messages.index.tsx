@@ -1230,7 +1230,7 @@ function LocalChatView(props: {
                           wordBreak: "break-word",
                         }}
                       >
-                        {msg.message}
+                        {highlight(msg.message)}
                       </div>
                       <div style={{ fontSize: 10, color: "#9CA3AF", textAlign: "right", marginTop: 2 }}>{time}</div>
                     </div>
@@ -1278,7 +1278,7 @@ function LocalChatView(props: {
                           wordBreak: "break-word",
                         }}
                       >
-                        {msg.message}
+                        {highlight(msg.message)}
                       </div>
                       <div style={{ display: "flex", gap: 8, marginTop: 2, alignItems: "center" }}>
                         <span style={{ fontSize: 10, color: "#9CA3AF" }}>{time}</span>
