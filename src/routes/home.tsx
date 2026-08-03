@@ -1685,7 +1685,7 @@ function HomePage() {
   const [localAlerts, setLocalAlerts] = useState<any[] | null>(null);
 
   const [hasUnreadAlertComments, setHasUnreadAlertComments] = useState(false);
-  const [localRoom, setLocalRoom] = useState<{ id: string; area_name: string } | null>(null);
+  const [localRoom, setLocalRoom] = useState<{ id: string; area_name: string; image_url: string | null; description: string | null } | null>(null);
   const [localChatLatest, setLocalChatLatest] = useState<{ message: string; created_at: string; instructors: { name: string | null } | null } | null>(null);
   const [ukRoom, setUkRoom] = useState<{ id: string; area_name: string } | null>(null);
   const [ukChatLatest, setUkChatLatest] = useState<any>(null);
@@ -1694,6 +1694,8 @@ function HomePage() {
     id: string;
     area_name: string | null;
     outcode: string;
+    image_url: string | null;
+    description: string | null;
     latest: { message: string | null; created_at: string; instructors: { name: string | null } | null } | null;
     unread: number;
   }>>([]);
@@ -1769,7 +1771,7 @@ function HomePage() {
       if (!roomIds.length) { if (!cancelled) setJoinedRoomChats([]); return; }
       const { data: rooms } = await supabase
         .from('local_chat_rooms')
-        .select('id, area_name, outcode')
+        .select('id, area_name, outcode, image_url, description')
         .in('id', roomIds);
       if (cancelled || !rooms?.length) { if (!cancelled) setJoinedRoomChats([]); return; }
       const out: Array<any> = [];
@@ -1791,7 +1793,7 @@ function HomePage() {
           .eq('room_id', room.id)
           .is('deleted_at', null)
           .gt('created_at', unreadBase);
-        out.push({ id: room.id, area_name: room.area_name, outcode: room.outcode, latest, unread: unreadCount || 0 });
+        out.push({ id: room.id, area_name: room.area_name, outcode: room.outcode, image_url: room.image_url, description: room.description, latest, unread: unreadCount || 0 });
       }
       out.sort((a, b) => new Date(b.latest.created_at).getTime() - new Date(a.latest.created_at).getTime());
       if (!cancelled) setJoinedRoomChats(out);
@@ -1890,7 +1892,7 @@ function HomePage() {
         if (outcode) {
           const { data: room } = await supabase
             .from('local_chat_rooms')
-            .select('id, area_name')
+            .select('id, area_name, image_url, description')
             .eq('outcode', outcode)
             .maybeSingle();
           if (cancelled) return;
