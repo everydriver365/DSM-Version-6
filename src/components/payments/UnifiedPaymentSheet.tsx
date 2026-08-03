@@ -20,7 +20,7 @@ import { toast } from "sonner";
 import { IconCircleCheck, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
-import { recordPayment, recordRefund, getPupilBalance, type PupilBalance } from "@/lib/payments";
+import { recordPayment, recordRefund, recordStandalonePayment, getPupilBalance, type PupilBalance } from "@/lib/payments";
 
 // ---------------------------------------------------------------------------
 // Design tokens — Checkfront × DSM
