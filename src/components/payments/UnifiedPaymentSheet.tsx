@@ -482,7 +482,23 @@ export function UnifiedPaymentSheet({
     if (m === "klarna") return !!instructor?.klarna_enabled;
     if (m === "clearpay") return !!instructor?.clearpay_enabled;
     if (!accepted || accepted.length === 0) return true;
-    return accepted.includes(m);
+
+    // Normalise: lowercase and strip spaces/special chars for comparison
+    const normalised = accepted.map((a: string) =>
+      a.toLowerCase().replace(/[^a-z]/g, "")
+    );
+    const key = m.toLowerCase().replace(/[^a-z]/g, "");
+
+    // Map method keys to possible normalised values
+    const aliases: Record<string, string[]> = {
+      cash: ["cash"],
+      banktransfer: ["banktransfer", "banktransferbacs", "bacs"],
+      qr: ["qr", "qrcode", "card"],
+      link: ["link", "paylink", "paymentlink"],
+    };
+
+    const keyNorm = key.replace(/_/g, "");
+    return (aliases[keyNorm] ?? [keyNorm]).some((a) => normalised.includes(a));
   };
   const methodList: { key: PayMethod; Icon: typeof Banknote }[] = (
     [
