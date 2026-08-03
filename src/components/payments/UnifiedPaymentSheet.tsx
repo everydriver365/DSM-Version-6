@@ -2843,6 +2843,32 @@ export function UnifiedPaymentSheet({
           </div>
         </div>
       )}
+
+      {/* Refund confirmation dialog */}
+      <AlertDialog open={refundConfirmOpen} onOpenChange={setRefundConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm refund</AlertDialogTitle>
+            <AlertDialogDescription>
+              You are about to record a {money(refundRow?.amount ?? 0)} refund
+              {refundRow?.method ? ` via ${refundRow.method}` : ""} for {pupil?.name ?? "this pupil"}.
+              This will update their balance and cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={refundProcessing}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => void confirmRefund()}
+              disabled={refundProcessing}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {refundProcessing ? "Processing..." : "Confirm refund"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </BottomSheet>
   );
 }
