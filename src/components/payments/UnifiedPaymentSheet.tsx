@@ -2980,12 +2980,20 @@ export function UnifiedPaymentSheet({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm refund</AlertDialogTitle>
+            <AlertDialogTitle>
+              {refundRow && refundAmountNum > 0 && refundAmountNum < refundRow.amount
+                ? "Confirm partial refund"
+                : "Confirm refund"}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              You are about to record a {money(refundRow?.amount ?? 0)} refund
-              {refundRow?.method ? ` via ${refundRow.method}` : ""} for {pupil?.name ?? "this pupil"}.
-              This will update their balance and cannot be undone.
+              You are about to record a {money(refundAmountNum)} refund
+              {refundRow?.method ? ` via ${refundRow.method}` : ""} for {pupil?.name ?? "this pupil"}
+              {refundRow && refundAmountNum < refundRow.amount
+                ? ` (from a ${money(refundRow.amount)} payment)`
+                : ""}
+              . This will update their balance and cannot be undone.
             </AlertDialogDescription>
+
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={refundProcessing}>
