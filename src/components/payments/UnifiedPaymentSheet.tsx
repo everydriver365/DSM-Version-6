@@ -309,6 +309,8 @@ export function UnifiedPaymentSheet({
     date: string | null;
   } | null>(null);
   const [savingEdit, setSavingEdit] = useState(false);
+  const [successInteracted, setSuccessInteracted] = useState(false);
+
   const [refundConfirmOpen, setRefundConfirmOpen] = useState(false);
   const [refundProcessing, setRefundProcessing] = useState(false);
 
@@ -363,6 +365,7 @@ export function UnifiedPaymentSheet({
 
   const handleRecordAnother = useCallback(() => {
     setPaymentSuccess(null);
+    setSuccessInteracted(false);
     setAmount("");
     setMethod("cash");
     setNote("");
@@ -373,10 +376,11 @@ export function UnifiedPaymentSheet({
   }, []);
 
   useEffect(() => {
-    if (!paymentSuccess || editPayment || deletePayment) return;
+    if (!paymentSuccess || editPayment || deletePayment || successInteracted) return;
     const t = setTimeout(() => handlePaymentDone(), 4000);
     return () => clearTimeout(t);
-  }, [paymentSuccess, editPayment, deletePayment, handlePaymentDone]);
+  }, [paymentSuccess, editPayment, deletePayment, successInteracted, handlePaymentDone]);
+
 
   // ---- reset on open -----------------------------------------------------
   useEffect(() => {
@@ -400,6 +404,7 @@ export function UnifiedPaymentSheet({
     setRefundReason("");
     setRefundConfirmOpen(false);
     setRefundProcessing(false);
+    setSuccessInteracted(false);
     setPaymentSuccess(null);
     setEditPayment(null);
     setDeletePayment(null);
@@ -1302,6 +1307,8 @@ export function UnifiedPaymentSheet({
       <div style={{ fontFamily: FONT, background: WHITE, paddingBottom: 4, position: "relative" }}>
         {paymentSuccess && (
           <div
+            onPointerDown={() => setSuccessInteracted(true)}
+
             style={{
               position: "absolute",
               inset: 0,
@@ -1350,14 +1357,19 @@ export function UnifiedPaymentSheet({
               <button
                 type="button"
                 disabled={!paymentSuccess.historyId}
-                onClick={() =>
-                  openEditPayment({
-                    id: paymentSuccess.historyId,
-                    amount: paymentSuccess.amount,
-                    method: paymentSuccess.method,
-                    notes: "",
-                  })
-                }
+                onClick={() => {
+                  setSuccessInteracted(true);
+                  const row = history.find((h) => h.id === paymentSuccess.historyId);
+                  openEditPayment(
+                    row ?? {
+                      id: paymentSuccess.historyId,
+                      amount: paymentSuccess.amount,
+                      method: paymentSuccess.method,
+                      notes: "",
+                    },
+                  );
+                }}
+
                 style={{
                   flex: 1,
                   height: 38,
