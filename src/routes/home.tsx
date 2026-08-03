@@ -5337,9 +5337,9 @@ function HomePage() {
                       {room.area_name || room.outcode} chat
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, minWidth: 0 }}>
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: room.unread ? '#1877D6' : GREEN_C, flexShrink: 0 }} />
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: room.unread > 0 ? '#1877D6' : GREEN_C, flexShrink: 0 }} />
                       <span style={{
-                        fontSize: 12, fontWeight: 600, color: room.unread ? '#1877D6' : GREEN_C, fontFamily: PF_C,
+                        fontSize: room.unread > 0 ? 13 : 12, fontWeight: room.unread > 0 ? 700 : 600, color: room.unread > 0 ? '#0B1F3A' : GREEN_C, fontFamily: PF_C,
                         whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                       }}>
                         {`${(room.latest?.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(room.latest?.message || '').substring(0, 40)}${(room.latest?.message || '').length > 40 ? '...' : ''}`}
@@ -5347,8 +5347,15 @@ function HomePage() {
                     </div>
                   </div>
                   {room.latest?.created_at && (
-                    <div style={{ fontSize: 11, color: GREY_C, fontFamily: PF_C, flexShrink: 0 }}>
-                      {timeAgo(room.latest.created_at)}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                      <div style={{ fontSize: 11, color: room.unread > 0 ? '#1877D6' : GREY_C, fontFamily: PF_C }}>
+                        {timeAgo(room.latest.created_at)}
+                      </div>
+                      {room.unread > 0 && (
+                        <span style={{ background: '#1877D6', color: 'white', fontSize: 10, fontWeight: 600, borderRadius: 20, padding: '1px 7px', fontFamily: PF_C }}>
+                          {room.unread}
+                        </span>
+                      )}
                     </div>
                   )}
                   <MenuButton items={rowMenu(`room:${room.id}`, `${room.area_name || room.outcode} chat`)} />
