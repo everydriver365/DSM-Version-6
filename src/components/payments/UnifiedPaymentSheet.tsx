@@ -407,7 +407,7 @@ export function UnifiedPaymentSheet({
     async (id: string) => {
       const bal = await getPupilBalance(id);
       setBalance(bal);
-      setAmount(bal.outstanding > 0 ? bal.outstanding.toFixed(2) : "");
+      setAmount(""); // Always start blank — instructor enters amount
 
       const { data: ls } = await supabase
         .from("lessons")
@@ -704,10 +704,16 @@ export function UnifiedPaymentSheet({
         await refreshPupil();
         // Ready for the next payment — keep the pupil selected.
         setAmount("");
+        setMethod("cash");
         setNote("");
+        setPaymentDate(todayIso());
         setQrUrl(null);
         setPayUrl(null);
         setQrPaymentId(null);
+        if (pupilId) {
+          const freshBal = await getPupilBalance(pupilId);
+          setBalance(freshBal);
+        }
       } catch (e) {
         console.error("[UnifiedPaymentSheet] recordPayment", e);
         toast.error("Couldn't record payment");
