@@ -389,10 +389,10 @@ function CommunityPage() {
         display: "flex", position: "sticky", top: 0, zIndex: 10,
       }}>
         {([
-          { id: "alerts", label: "Local Alerts" },
-          { id: "local", label: "Local Chat" },
+          { id: "alerts", label: "Alerts" },
+          { id: "local", label: "Local" },
           { id: "rooms", label: "Rooms" },
-          { id: "uk", label: "All UK" },
+          { id: "uk", label: "UK Chat" },
         ] as const).map((t) => {
           const active = activeTab === t.id;
           const badge = t.id === "local" ? unread.local : t.id === "uk" ? unread.uk : 0;
@@ -402,7 +402,7 @@ function CommunityPage() {
               type="button"
               onClick={() => setActiveTab(t.id)}
               style={{
-                flex: 1, padding: "12px", textAlign: "center", fontSize: 13,
+                flex: 1, padding: "10px", textAlign: "center", fontSize: 11,
                 fontWeight: 600, background: "none", border: "none", cursor: "pointer",
                 borderBottom: active ? "2px solid #185FA5" : "2px solid transparent",
                 color: active ? "#185FA5" : "#8A93A3",
