@@ -1784,8 +1784,14 @@ function HomePage() {
           .limit(1)
           .maybeSingle();
         if (!latest) continue;
-        const unread = !sub?.last_read_at || new Date((latest as any).created_at) > new Date(sub.last_read_at);
-        out.push({ id: room.id, area_name: room.area_name, outcode: room.outcode, latest, unread });
+        const unreadBase = sub?.last_read_at || '1970-01-01T00:00:00Z';
+        const { count: unreadCount } = await supabase
+          .from('local_chat_messages')
+          .select('*', { count: 'exact', head: true })
+          .eq('room_id', room.id)
+          .is('deleted_at', null)
+          .gt('created_at', unreadBase);
+        out.push({ id: room.id, area_name: room.area_name, outcode: room.outcode, latest, unread: unreadCount || 0 });
       }
       out.sort((a, b) => new Date(b.latest.created_at).getTime() - new Date(a.latest.created_at).getTime());
       if (!cancelled) setJoinedRoomChats(out);
