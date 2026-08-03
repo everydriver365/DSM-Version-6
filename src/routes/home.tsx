@@ -1730,6 +1730,19 @@ function HomePage() {
 
   // Unread community chat messages across subscribed, non-muted rooms
   const [unreadChat, setUnreadChat] = useState(0);
+
+  // Community card collapse state (auto-expands when something needs attention)
+  const [communityExpanded, setCommunityExpanded] = useState(false);
+  useEffect(() => {
+    const hasUnread = unreadChat > 0 || unreadUkChat > 0;
+    const hasAlert = (localAlerts?.length ?? 0) > 0;
+    const hasUnreadRoom = joinedRoomChats.some((r) => r.unread > 0);
+    const hasPupilMessage = unreadMsgs.length > 0;
+    if (hasUnread || hasAlert || hasUnreadRoom || hasPupilMessage) {
+      setCommunityExpanded(true);
+    }
+  }, [unreadChat, unreadUkChat, localAlerts, joinedRoomChats, unreadMsgs]);
+
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
