@@ -326,6 +326,11 @@ export function UnifiedPaymentSheet({
   const pupil = useMemo(() => pupils.find((p) => p.id === pupilId) ?? null, [pupils, pupilId]);
   const amountNum = Number(amount) || 0;
   const outstanding = balance?.outstanding ?? 0;
+  const maxRefundableAmount = useMemo(() => {
+    if (!balance) return 0;
+    return Math.max(0, balance.lessonsPaid + balance.accountCredit);
+  }, [balance]);
+
 
   // ---- sheet open/close events ------------------------------------------
   useEffect(() => {
