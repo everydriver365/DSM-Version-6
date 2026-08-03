@@ -1089,13 +1089,19 @@ export function UnifiedPaymentSheet({
         });
       }
       toast.success("Cancellation processed");
-      await refreshPupil();
-      setBalance(await getPupilBalance(pupilId));
       onSaved?.();
-
     } catch (e) {
       console.error("[UnifiedPaymentSheet] processCancellation", e);
       toast.error("Couldn't process cancellation");
+    } finally {
+      if (pupilId) {
+        try {
+          await refreshPupil();
+          setBalance(await getPupilBalance(pupilId));
+        } catch (refreshErr) {
+          console.error("[UnifiedPaymentSheet] refresh after processCancellation", refreshErr);
+        }
+      }
     }
   };
 
