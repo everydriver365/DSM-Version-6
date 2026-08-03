@@ -1685,7 +1685,7 @@ function HomePage() {
   const [localAlerts, setLocalAlerts] = useState<any[] | null>(null);
 
   const [hasUnreadAlertComments, setHasUnreadAlertComments] = useState(false);
-  const [localRoom, setLocalRoom] = useState<{ id: string; area_name: string } | null>(null);
+  const [localRoom, setLocalRoom] = useState<{ id: string; area_name: string; image_url: string | null; description: string | null } | null>(null);
   const [localChatLatest, setLocalChatLatest] = useState<{ message: string; created_at: string; instructors: { name: string | null } | null } | null>(null);
   const [ukRoom, setUkRoom] = useState<{ id: string; area_name: string } | null>(null);
   const [ukChatLatest, setUkChatLatest] = useState<any>(null);
@@ -1694,6 +1694,8 @@ function HomePage() {
     id: string;
     area_name: string | null;
     outcode: string;
+    image_url: string | null;
+    description: string | null;
     latest: { message: string | null; created_at: string; instructors: { name: string | null } | null } | null;
     unread: number;
   }>>([]);
@@ -1769,7 +1771,7 @@ function HomePage() {
       if (!roomIds.length) { if (!cancelled) setJoinedRoomChats([]); return; }
       const { data: rooms } = await supabase
         .from('local_chat_rooms')
-        .select('id, area_name, outcode')
+        .select('id, area_name, outcode, image_url, description')
         .in('id', roomIds);
       if (cancelled || !rooms?.length) { if (!cancelled) setJoinedRoomChats([]); return; }
       const out: Array<any> = [];
@@ -1791,7 +1793,7 @@ function HomePage() {
           .eq('room_id', room.id)
           .is('deleted_at', null)
           .gt('created_at', unreadBase);
-        out.push({ id: room.id, area_name: room.area_name, outcode: room.outcode, latest, unread: unreadCount || 0 });
+        out.push({ id: room.id, area_name: room.area_name, outcode: room.outcode, image_url: room.image_url, description: room.description, latest, unread: unreadCount || 0 });
       }
       out.sort((a, b) => new Date(b.latest.created_at).getTime() - new Date(a.latest.created_at).getTime());
       if (!cancelled) setJoinedRoomChats(out);
@@ -1890,7 +1892,7 @@ function HomePage() {
         if (outcode) {
           const { data: room } = await supabase
             .from('local_chat_rooms')
-            .select('id, area_name')
+            .select('id, area_name, image_url, description')
             .eq('outcode', outcode)
             .maybeSingle();
           if (cancelled) return;
@@ -5205,23 +5207,54 @@ function HomePage() {
             </svg>
           );
 
-          const ChatIcon = (
-            <svg width={28} height={28} viewBox="0 0 28 28" style={{ flexShrink: 0, display: 'block' }} aria-hidden="true">
-              <defs>
-                <linearGradient id="dsmChatGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#63E356" />
-                  <stop offset="100%" stopColor="#2CC916" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M14 3C7.6 3 2.6 7.3 2.6 12.6c0 3 1.6 5.6 4.2 7.4.2 1.9-.8 3.6-2 4.6-.3.3-.1.8.3.8 2.7-.1 4.9-1 6.4-2.2 1 .2 1.9.3 2.5.3 6.4 0 11.4-4.3 11.4-9.6C25.4 7.3 20.4 3 14 3Z"
-                fill="url(#dsmChatGrad)"
-              />
-              <circle cx="9.2" cy="12.6" r="1.5" fill="#FFFFFF" />
-              <circle cx="14" cy="12.6" r="1.5" fill="#FFFFFF" />
-              <circle cx="18.8" cy="12.6" r="1.5" fill="#FFFFFF" />
-            </svg>
-          );
+          
+
+          const RoomAvatar = ({
+            imageUrl,
+            name,
+            size = 32,
+          }: {
+            imageUrl: string | null;
+            name: string | null;
+            size?: number;
+          }) => {
+            if (imageUrl) {
+              return (
+                <img
+                  src={imageUrl}
+                  alt={name || 'Chat room'}
+                  style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, display: 'block' }}
+                />
+              );
+            }
+            const initials = (name || 'C')
+              .split(' ')
+              .map((w) => w[0])
+              .filter(Boolean)
+              .slice(0, 2)
+              .join('')
+              .toUpperCase();
+            return (
+              <div
+                style={{
+                  width: size,
+                  height: size,
+                  borderRadius: '50%',
+                  background: '#1877D6',
+                  color: '#FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: size * 0.4,
+                  fontWeight: 700,
+                  flexShrink: 0,
+                  fontFamily: PF_C,
+                }}
+              >
+                {initials}
+              </div>
+            );
+          };
 
           return (
             <>
@@ -5288,7 +5321,7 @@ function HomePage() {
                     borderLeft: unreadChat > 0 ? '3px solid #7C3AED' : undefined,
                   }}
                 >
-                  {ChatIcon}
+                  <RoomAvatar imageUrl={localRoom.image_url} name={localRoom.area_name} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 14, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>
                       Local chat · {localRoom.area_name}
@@ -5331,7 +5364,7 @@ function HomePage() {
                     borderTop: (!alertsHidden || !localChatHidden || idx > 0) ? `1px solid ${BORDER_C}` : undefined,
                   }}
                 >
-                  {ChatIcon}
+                  <RoomAvatar imageUrl={room.image_url} name={room.area_name || room.outcode} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 14, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>
                       {room.area_name || room.outcode} chat
