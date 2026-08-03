@@ -264,6 +264,73 @@ export function recordPaymentWithPackage(
   return recordPaymentCore(input, { hoursBought: input.hoursBought });
 }
 
+/** Input for a payment that isn't linked to any pupil (custom / ad-hoc). */
+export interface RecordStandalonePaymentInput {
+  amount: number;
+  method: string;
+  notes?: string | null;
+  /** Date the payment was taken (YYYY-MM-DD). Defaults to today. */
+  paymentDate?: string;
+  /** Optional ISO timestamp for created_at / paid_at. Defaults to now. */
+  createdAt?: string;
+}
+
+export interface RecordStandalonePaymentResult {
+  /** id of the lesson_history audit row, or "" if it couldn't be written. */
+  historyId: string;
+}
+
+/**
+ * Record an ad-hoc payment with no pupil attached. There is nothing to
+ * reconcile, so this writes only the audit trail (lesson_history + the legacy
+ * payments row) — callers must never insert those rows themselves.
+ */
+export async function recordStandalonePayment(
+  input: RecordStandalonePaymentInput,
+): Promise<RecordStandalonePaymentResult> {
+  const { amount, method, notes } = input;
+  if (!(amount > 0)) {
+    throw new Error("recordStandalonePayment: amount must be > 0");
+  }
+
+  const { data: u } = await supabase.auth.getUser();
+  const instructorId = u?.user?.id ?? null;
+  if (!instructorId) throw new Error("recordStandalonePayment: not signed in");
+
+  const now = input.createdAt ?? new Date().toISOString();
+  const lessonDate = input.paymentDate ?? now.slice(0, 10);
+
+  const { data: hRow, error: hErr } = await supabase
+    .from("lesson_history")
+    .insert({
+      instructor_id: instructorId,
+      pupil_id: null,
+      lesson_cost: amount,
+      amount_paid: amount,
+      payment_method: method,
+      payment_status: "paid",
+      lesson_date: lessonDate,
+      notes: (notes ?? "").trim() || null,
+      created_at: now,
+    })
+    .select("id")
+    .single();
+  if (hErr) throw hErr;
+
+  const { error: payErr } = await supabase.from("payments").insert({
+    instructor_id: instructorId,
+    pupil_id: null,
+    amount,
+    notes: `${method} — custom payment`,
+    paid_at: now,
+    created_at: now,
+  });
+  if (payErr) console.error("[recordStandalonePayment] payments insert", payErr);
+
+  return { historyId: (hRow as { id: string } | null)?.id ?? "" };
+}
+
+
 /** Input for reversing money already taken from a pupil. */
 export interface RecordRefundInput {
   pupilId: string;

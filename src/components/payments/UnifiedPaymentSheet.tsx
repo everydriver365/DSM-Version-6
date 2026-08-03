@@ -20,7 +20,7 @@ import { toast } from "sonner";
 import { IconCircleCheck, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
-import { recordPayment, recordRefund, getPupilBalance, type PupilBalance } from "@/lib/payments";
+import { recordPayment, recordRefund, recordStandalonePayment, getPupilBalance, type PupilBalance } from "@/lib/payments";
 
 // ---------------------------------------------------------------------------
 // Design tokens — Checkfront × DSM
@@ -734,24 +734,15 @@ export function UnifiedPaymentSheet({
         let historyId = "";
 
         if (customMode || !pupilId) {
-          // No pupil linked — a standalone audit row is the only sensible write.
-          const { data: hRow, error: hErr } = await supabase
-            .from("lesson_history")
-            .insert({
-              instructor_id: instructorId,
-              pupil_id: null,
-              lesson_cost: amountNum,
-              amount_paid: amountNum,
-              payment_method: methodStr,
-              payment_status: "paid",
-              lesson_date: paymentDate,
-              notes: note.trim() || null,
-              created_at: nowIso,
-            })
-            .select("id")
-            .single();
-          if (hErr) throw hErr;
-          historyId = (hRow as { id: string } | null)?.id ?? "";
+          // No pupil linked — payments.ts owns the standalone audit write.
+          const res = await recordStandalonePayment({
+            amount: amountNum,
+            method: methodStr,
+            notes: note.trim() || null,
+            paymentDate,
+            createdAt: nowIso,
+          });
+          historyId = res.historyId;
         } else {
           await recordPayment({
             pupilId,
