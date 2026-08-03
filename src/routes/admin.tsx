@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
-import { ChevronLeft, Star, Users, BookOpen, Settings, FileText, FileCheck, ShoppingBag, Video, Mic, Briefcase, MessageCircle, PlayCircle, Pencil, Trash2 } from "lucide-react";
+import { ChevronLeft, Star, Users, BookOpen, Settings, FileText, FileCheck, ShoppingBag, Video, Mic, Briefcase, MessageCircle, PlayCircle, Pencil, Trash2, Flag, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -143,6 +143,223 @@ type ChatRoom = {
   image_url: string | null;
   deleted_at: string | null;
 };
+
+type FlaggedMessage = {
+  id: string;
+  message: string;
+  created_at: string;
+  instructor_id: string | null;
+  room_id: string | null;
+  flagged_by: string[] | null;
+  instructors: { name: string | null } | null;
+  local_chat_rooms: { area_name: string | null } | null;
+};
+
+function FlaggedMessagesSection() {
+  const [rows, setRows] = useState<FlaggedMessage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [confirmBanId, setConfirmBanId] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  const load = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("local_chat_messages")
+      .select("*, instructors(name), local_chat_rooms(area_name)")
+      .eq("is_flagged", true)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false });
+    if (error) console.error("[admin] flagged messages", error);
+    setRows((data ?? []) as unknown as FlaggedMessage[]);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const removeMessage = async (m: FlaggedMessage) => {
+    setBusyId(m.id);
+    const { error } = await supabase
+      .from("local_chat_messages")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", m.id);
+    setBusyId(null);
+    if (error) { toast.error("Couldn't remove message"); return; }
+    toast.success("Message removed");
+    load();
+  };
+
+  const dismiss = async (m: FlaggedMessage) => {
+    setBusyId(m.id);
+    const { error } = await supabase
+      .from("local_chat_messages")
+      .update({ is_flagged: false, flagged_by: [] })
+      .eq("id", m.id);
+    setBusyId(null);
+    if (error) { toast.error("Couldn't dismiss report"); return; }
+    toast.success("Report dismissed");
+    load();
+  };
+
+  const banUser = async (m: FlaggedMessage) => {
+    setBusyId(m.id);
+    const { data: userData } = await supabase.auth.getUser();
+    const { error } = await supabase.from("chat_bans").insert({
+      instructor_id: m.instructor_id,
+      room_id: m.room_id,
+      banned_by: userData?.user?.id ?? null,
+      reason: "Flagged message: " + (m.message ?? "").slice(0, 100),
+    });
+    if (error) {
+      setBusyId(null);
+      toast.error("Couldn't ban user");
+      return;
+    }
+    await supabase
+      .from("local_chat_messages")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", m.id);
+    setBusyId(null);
+    setConfirmBanId(null);
+    toast.success("User banned and message removed");
+    load();
+  };
+
+  return (
+    <div style={{ padding: "0 16px 32px" }}>
+      <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A", margin: "8px 0 12px" }}>
+        Flagged messages
+      </div>
+
+      {loading ? (
+        <div style={{ fontSize: 13, color: "#8A93A3" }}>Loading…</div>
+      ) : rows.length === 0 ? (
+        <div style={{
+          background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 12,
+          padding: 24, textAlign: "center",
+        }}>
+          <ShieldCheck size={32} color="#16A34A" style={{ margin: "0 auto 8px" }} />
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
+            No flagged messages — all clear
+          </div>
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {rows.map((m) => {
+            const reports = (m.flagged_by ?? []).length;
+            const roomName = m.local_chat_rooms?.area_name ?? "Unknown room";
+            const who = m.instructors?.name ?? "Unknown instructor";
+            const when = new Date(m.created_at).toLocaleString("en-GB", {
+              day: "numeric", month: "short", hour: "2-digit", minute: "2-digit",
+            });
+            const busy = busyId === m.id;
+            return (
+              <div
+                key={m.id}
+                style={{
+                  background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 12,
+                  padding: 14, boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A" }}>{roomName}</div>
+                  <div style={{
+                    fontSize: 11, fontWeight: 700, color: "#CC2229",
+                    background: "#FEF2F2", borderRadius: 999, padding: "2px 8px", flexShrink: 0,
+                  }}>
+                    {reports} report{reports === 1 ? "" : "s"}
+                  </div>
+                </div>
+                <div style={{ fontSize: 12, color: "#8A93A3", marginTop: 2 }}>
+                  {who} · {when}
+                </div>
+                <div style={{
+                  marginTop: 8, fontSize: 13, color: "#0B1F3A", lineHeight: 1.45,
+                  background: "#F7FAFC", borderRadius: 8, padding: "10px 12px",
+                  whiteSpace: "pre-wrap", wordBreak: "break-word",
+                }}>
+                  {m.message}
+                </div>
+
+                {confirmBanId === m.id ? (
+                  <div style={{
+                    marginTop: 10, background: "#FEF2F2", border: "0.5px solid #FCA5A5",
+                    borderRadius: 10, padding: 12,
+                  }}>
+                    <div style={{ fontSize: 12.5, color: "#7F1D1D", lineHeight: 1.45 }}>
+                      Ban {who} from {roomName}? They will no longer be able to send messages.
+                    </div>
+                    <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => banUser(m)}
+                        style={{
+                          flex: 1, height: 36, borderRadius: 8, border: "none",
+                          background: "#991B1B", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer",
+                        }}
+                      >
+                        Confirm ban
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setConfirmBanId(null)}
+                        style={{
+                          flex: 1, height: 36, borderRadius: 8, background: "#fff",
+                          border: "1px solid #D1D5DB", color: "#374151", fontSize: 13, fontWeight: 600, cursor: "pointer",
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => removeMessage(m)}
+                      style={{
+                        flex: 1, minWidth: 110, height: 36, borderRadius: 8, background: "#fff",
+                        border: "1px solid #CC2229", color: "#CC2229", fontSize: 12.5, fontWeight: 600, cursor: "pointer",
+                      }}
+                    >
+                      Remove message
+                    </button>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => dismiss(m)}
+                      style={{
+                        flex: 1, minWidth: 84, height: 36, borderRadius: 8, background: "#fff",
+                        border: "1px solid #D1D5DB", color: "#6B7280", fontSize: 12.5, fontWeight: 600, cursor: "pointer",
+                      }}
+                    >
+                      Dismiss
+                    </button>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => setConfirmBanId(m.id)}
+                      style={{
+                        flex: 1, minWidth: 84, height: 36, borderRadius: 8, border: "none",
+                        background: "#991B1B", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer",
+                      }}
+                    >
+                      Ban user
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 
 function ChatRoomsSection() {
   const [areaName, setAreaName] = useState("");
@@ -756,10 +973,16 @@ function AdminHub() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isChildRoute = pathname !== "/admin" && pathname !== "/admin/";
   const chatRoomsRef = useRef<HTMLDivElement>(null);
+  const flaggedRef = useRef<HTMLDivElement>(null);
 
   const scrollToChatRooms = () => {
     chatRoomsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  const scrollToFlagged = () => {
+    flaggedRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
 
   // Child routes (e.g. /admin/featured) have their own admin gate and layout;
   // render the Outlet unconditionally so they mount instead of the hub.
@@ -886,10 +1109,19 @@ function AdminHub() {
             label="Chat rooms"
             onClick={scrollToChatRooms}
           />
+          <AdminSectionTile
+            icon={<Flag size={18} />}
+            label="Flagged"
+            onClick={scrollToFlagged}
+          />
         </div>
         <div ref={chatRoomsRef}>
           <ChatRoomsSection />
         </div>
+        <div ref={flaggedRef}>
+          <FlaggedMessagesSection />
+        </div>
+
       </div>
     </div>
   );
