@@ -5327,7 +5327,6 @@ function HomePage() {
           }
           const previewLine = previewBits.slice(0, 3).join(' · ') || 'Nothing new';
 
-          const rowShown = (!alertsHidden ? 1 : 0) + pupilReplies.length + (!localChatHidden ? 1 : 0) + Math.min(visibleRooms.length, 1);
           const hiddenCount = Math.max(0, visibleRooms.length - 1);
 
           const rowBase: React.CSSProperties = {
