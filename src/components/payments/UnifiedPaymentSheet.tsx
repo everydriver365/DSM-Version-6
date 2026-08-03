@@ -404,6 +404,7 @@ export function UnifiedPaymentSheet({
     setRefundReason("");
     setRefundConfirmOpen(false);
     setRefundProcessing(false);
+    setSuccessInteracted(false);
     setPaymentSuccess(null);
     setEditPayment(null);
     setDeletePayment(null);
