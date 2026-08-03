@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
-import { ChevronLeft, Star, Users, BookOpen, Settings, FileText, FileCheck, ShoppingBag, Video, Mic, Briefcase, MessageCircle, PlayCircle } from "lucide-react";
+import { ChevronLeft, Star, Users, BookOpen, Settings, FileText, FileCheck, ShoppingBag, Video, Mic, Briefcase, MessageCircle, PlayCircle, Pencil } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 
 export const Route = createFileRoute("/admin")({
