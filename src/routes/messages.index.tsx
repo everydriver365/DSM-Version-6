@@ -399,12 +399,11 @@ function MessagesIndexPage() {
       setAllPublicRooms(all.filter((r) => !r.is_opt_in));
       setJoinedRoomIds(subIds);
 
-      // Every public room (including brand-new admin rooms), for the room browser
+      // Every public room (including brand-new admin rooms + national), for the room browser
       const { data: publicRooms } = await supabase
         .from("local_chat_rooms")
         .select("id, outcode, area_name, instructor_count, is_opt_in, image_url, description")
         .is("deleted_at", null)
-        .neq("outcode", "UK")
         .or("is_opt_in.is.null,is_opt_in.eq.false")
         .order("instructor_count", { ascending: false });
       if (cancelled) return;
