@@ -943,6 +943,8 @@ function MessagesIndexPage() {
           areaName={areaName}
           room={room}
           myRooms={myRooms}
+          joinedRoomIds={joinedRoomIds}
+          homeOutcode={homeOutcode}
           onSelectRoom={(r) => {
             setRoom(r);
             setAreaName(r.area_name || r.outcode);
