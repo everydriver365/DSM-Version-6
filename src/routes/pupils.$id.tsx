@@ -415,11 +415,10 @@ function PupilDetailPage() {
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
-  const [takePaymentOpen, setTakePaymentOpen] = useState(false);
+  const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
   const [sendMessageOpen, setSendMessageOpen] = useState(false);
   const [sendMessagePupilId, setSendMessagePupilId] = useState<string | undefined>();
-  const [takePaymentPupilId, setTakePaymentPupilId] = useState<string | undefined>();
-  const [pricingSheetOpen, setPricingSheetOpen] = useState(false);
+  const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
   const [instructorRate, setInstructorRate] = useState<number | null>(null);
   const [instructorBufferAfter, setInstructorBufferAfter] = useState<number | null>(null);
