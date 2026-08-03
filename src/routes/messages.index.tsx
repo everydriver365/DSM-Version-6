@@ -1018,28 +1018,19 @@ function LocalChatView(props: {
   } = props;
 
   const [roomSelectorOpen, setRoomSelectorOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [msgSearch, setMsgSearch] = useState("");
+  const [roomSearch, setRoomSearch] = useState("");
 
-  const messages = useMemo(() => {
-    const q = msgSearch.trim().toLowerCase();
-    if (!q) return allMessages;
-    return allMessages.filter((m) => (m.message || "").toLowerCase().includes(q));
-  }, [allMessages, msgSearch]);
+  const messages = allMessages;
+  const highlight = (text: string) => text;
 
-  const highlight = (text: string) => {
-    const q = msgSearch.trim();
-    if (!q) return text;
-    const idx = text.toLowerCase().indexOf(q.toLowerCase());
-    if (idx < 0) return text;
-    return (
-      <>
-        {text.slice(0, idx)}
-        <span style={{ background: "#FEF3C7", color: "#0B1F3A" }}>{text.slice(idx, idx + q.length)}</span>
-        {text.slice(idx + q.length)}
-      </>
+  const filteredRooms = useMemo(() => {
+    const q = roomSearch.trim().toLowerCase();
+    if (!q) return myRooms;
+    return myRooms.filter(
+      (r) =>
+        (r.area_name || "").toLowerCase().includes(q) || (r.outcode || "").toLowerCase().includes(q),
     );
-  };
+  }, [myRooms, roomSearch]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 60px - 45px - 64px)" }}>
@@ -1057,7 +1048,7 @@ function LocalChatView(props: {
       >
         <button
           type="button"
-          onClick={() => myRooms.length > 1 && setRoomSelectorOpen((v) => !v)}
+          onClick={() => setRoomSelectorOpen((v) => !v)}
           style={{
             flex: 1,
             minWidth: 0,
@@ -1065,24 +1056,19 @@ function LocalChatView(props: {
             background: "none",
             border: 0,
             padding: 0,
-            cursor: myRooms.length > 1 ? "pointer" : "default",
+            cursor: "pointer",
           }}
         >
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
-            {areaName} ADIs{myRooms.length > 1 ? " ▾" : ""}
-          </div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{areaName} ADIs ▾</div>
           <div style={{ fontSize: 11, color: "#9CA3AF" }}>{room?.instructor_count ?? 1} members</div>
         </button>
         <button
           type="button"
-          aria-label="Search messages"
-          onClick={() => {
-            setSearchOpen((v) => !v);
-            if (searchOpen) setMsgSearch("");
-          }}
+          aria-label="Search rooms"
+          onClick={() => setRoomSelectorOpen((v) => !v)}
           style={{ background: "none", border: 0, padding: 4, cursor: "pointer", display: "flex" }}
         >
-          <Search size={18} color={searchOpen ? "#1877D6" : "#9CA3AF"} />
+          <Search size={18} color={roomSelectorOpen ? "#1877D6" : "#9CA3AF"} />
         </button>
         {roomSelectorOpen && (
           <div
@@ -1097,76 +1083,84 @@ function LocalChatView(props: {
               border: "0.5px solid #E2E6ED",
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               overflow: "hidden",
+              maxHeight: 280,
+              display: "flex",
+              flexDirection: "column",
             }}
           >
-            {myRooms.map((r) => (
-              <button
-                key={r.id}
-                type="button"
-                onClick={() => {
-                  onSelectRoom(r);
-                  setRoomSelectorOpen(false);
-                }}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "8px 12px",
+                borderBottom: "0.5px solid #E2E6ED",
+              }}
+            >
+              <Search size={15} color="#8A93A3" />
+              <input
+                value={roomSearch}
+                onChange={(e) => setRoomSearch(e.target.value)}
+                placeholder="Search rooms..."
+                autoFocus
                 style={{
-                  display: "block",
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "10px 14px",
-                  background: room?.id === r.id ? "#F2F7FF" : "#FFFFFF",
+                  flex: 1,
                   border: 0,
-                  borderBottom: "0.5px solid #F0F2F6",
+                  outline: "none",
                   fontSize: 13,
                   color: "#0B1F3A",
-                  cursor: "pointer",
+                  background: "transparent",
                   ...FONT,
                 }}
-              >
-                {r.area_name || r.outcode}
-              </button>
-            ))}
+              />
+              {roomSearch && (
+                <button
+                  type="button"
+                  aria-label="Clear room search"
+                  onClick={() => setRoomSearch("")}
+                  style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
+                >
+                  <X size={14} color="#8A93A3" />
+                </button>
+              )}
+            </div>
+            <div style={{ overflowY: "auto" }}>
+              {filteredRooms.length === 0 ? (
+                <div style={{ padding: "12px 14px", fontSize: 12, color: "#9CA3AF" }}>No rooms found</div>
+              ) : (
+                filteredRooms.map((r) => (
+                  <button
+                    key={r.id}
+                    type="button"
+                    onClick={() => {
+                      onSelectRoom(r);
+                      setRoomSelectorOpen(false);
+                      setRoomSearch("");
+                    }}
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "10px 14px",
+                      background: room?.id === r.id ? "#F2F7FF" : "#FFFFFF",
+                      border: 0,
+                      borderBottom: "0.5px solid #F0F2F6",
+                      fontSize: 13,
+                      color: "#0B1F3A",
+                      cursor: "pointer",
+                      ...FONT,
+                    }}
+                  >
+                    {r.area_name || r.outcode}
+                    <span style={{ color: "#9CA3AF", fontSize: 11, marginLeft: 6 }}>{r.outcode}</span>
+                  </button>
+                ))
+              )}
+            </div>
           </div>
         )}
       </div>
 
-      {searchOpen && (
-        <div
-          style={{
-            background: "#FFFFFF",
-            borderBottom: "0.5px solid #E2E6ED",
-            padding: "8px 16px",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <Search size={15} color="#8A93A3" />
-          <input
-            value={msgSearch}
-            onChange={(e) => setMsgSearch(e.target.value)}
-            placeholder="Search messages..."
-            autoFocus
-            style={{
-              flex: 1,
-              border: 0,
-              outline: "none",
-              fontSize: 13,
-              color: "#0B1F3A",
-              background: "transparent",
-              ...FONT,
-            }}
-          />
-          {msgSearch && (
-            <button
-              type="button"
-              aria-label="Clear search"
-              onClick={() => setMsgSearch("")}
-              style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
-            >
-              <X size={14} color="#8A93A3" />
-            </button>
-          )}
-        </div>
-      )}
 
       {/* Messages list */}
       <div
