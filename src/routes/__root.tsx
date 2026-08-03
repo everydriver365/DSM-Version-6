@@ -740,6 +740,31 @@ function RootComponent() {
       <GlobalMenu isAdmin={isAdmin} />
       <EventToastController />
       <Toaster />
+      {showFloatingMenu && (
+        <button
+          type="button"
+          aria-label="Open menu"
+          onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
+          style={{
+            position: "fixed",
+            bottom: 80,
+            right: 16,
+            width: 44,
+            height: 44,
+            borderRadius: "50%",
+            background: "#0B1F3A",
+            boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
+            border: "none",
+            cursor: "pointer",
+            zIndex: 900,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <IconMenu2 size={20} color="#fff" />
+        </button>
+      )}
     </QueryClientProvider>
   );
 }
