@@ -859,6 +859,7 @@ function MessagesIndexPage() {
       return;
     }
     setJoinedRoomIds((prev) => new Set(prev).add(r.id));
+    setJoinedCount((n) => n + 1);
     toast.success("Joined " + (r.area_name || r.outcode));
   }
 
