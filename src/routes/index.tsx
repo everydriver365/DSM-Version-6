@@ -679,11 +679,11 @@ function FeaturesShowcase() {
                       {f.bullets.map((b) => (
                         <li
                           key={b}
-                          className="flex items-center gap-2.5 text-[14px] font-medium"
+                          className="flex items-start gap-2.5 text-[14px] font-medium"
                           style={{ color: NAVY }}
                         >
                           <span
-                            className="w-5 h-5 rounded-full grid place-items-center shrink-0"
+                            className="w-5 h-5 rounded-full grid place-items-center shrink-0 mt-0.5"
                             style={{ background: BLUE_TINT }}
                           >
                             <Check
@@ -691,9 +691,23 @@ function FeaturesShowcase() {
                               style={{ color: BLUE_DARK }}
                             />
                           </span>
-                          {b}
+                          <span>
+                            {b}
+                            {b === "AI coaching tips" && (
+                              <span
+                                style={{ fontSize: 11, color: '#6B7686', display: 'block' }}
+                              >
+                                ✓ Does not use your Google account data
+                              </span>
+                            )}
+                          </span>
                         </li>
                       ))}
+                      {f.title === "Call Answering Service" && (
+                        <li style={{ fontSize: 11, color: '#6B7686' }}>
+                          Does not access Google account data
+                        </li>
+                      )}
                     </ul>
                     <Link
                       to="/features"
