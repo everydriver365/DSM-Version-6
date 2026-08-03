@@ -2560,50 +2560,109 @@ function ChatTab({
         )}
       </div>
 
-      <div style={{
-        background: "white", borderTop: "0.5px solid #E2E6ED",
-        padding: "12px 16px",
-        paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
-        display: "flex", alignItems: "center", gap: 8, position: "sticky", bottom: 0,
-      }}>
-        <ChatAvatar
-          name={instructorProfile?.name ?? "You"}
-          photo={instructorProfile?.profile_image_url ?? null}
-          size={28}
-        />
-        <input
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              send();
-            }
-          }}
-          disabled={noRoom || !room}
-          placeholder={noRoom ? "No room available yet" : `Message ${areaLabel} ADIs...`}
-          style={{
-            flex: 1, background: "#F7FAFC", border: "0.5px solid #E2E6ED",
-            borderRadius: 20, padding: "10px 14px", fontSize: 13, outline: "none",
-            opacity: noRoom || !room ? 0.6 : 1,
-          }}
-        />
-        <button
-          type="button"
-          onClick={send}
-          disabled={noRoom || !newMessage.trim() || !room}
-          aria-label="Send"
-          style={{
-            width: 36, height: 36, borderRadius: "50%", border: "none",
-            background: !noRoom && newMessage.trim() && room ? "#0F2044" : "#E5E7EB",
-            color: "white", display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: !noRoom && newMessage.trim() && room ? "pointer" : "not-allowed", flexShrink: 0,
-          }}
-        >
-          <Send size={16} />
-        </button>
-      </div>
+      {isBanned ? (
+        <div style={{
+          background: "#FEF2F2", borderTop: "0.5px solid #FCA5A5",
+          padding: "14px 16px",
+          paddingBottom: "calc(14px + env(safe-area-inset-bottom, 0px))",
+          position: "sticky", bottom: 0,
+          color: "#CC2229", fontSize: 12.5, lineHeight: 1.45, fontWeight: 600, textAlign: "center",
+        }}>
+          You have been removed from this chat room by an admin. Contact support if you believe this is an error.
+        </div>
+      ) : (
+        <div style={{
+          background: "white", borderTop: "0.5px solid #E2E6ED",
+          padding: "12px 16px",
+          paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
+          display: "flex", alignItems: "center", gap: 8, position: "sticky", bottom: 0,
+        }}>
+          <ChatAvatar
+            name={instructorProfile?.name ?? "You"}
+            photo={instructorProfile?.profile_image_url ?? null}
+            size={28}
+          />
+          <input
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                send();
+              }
+            }}
+            disabled={noRoom || !room}
+            placeholder={noRoom ? "No room available yet" : `Message ${areaLabel} ADIs...`}
+            style={{
+              flex: 1, background: "#F7FAFC", border: "0.5px solid #E2E6ED",
+              borderRadius: 20, padding: "10px 14px", fontSize: 13, outline: "none",
+              opacity: noRoom || !room ? 0.6 : 1,
+            }}
+          />
+          <button
+            type="button"
+            onClick={send}
+            disabled={noRoom || !newMessage.trim() || !room}
+            aria-label="Send"
+            style={{
+              width: 36, height: 36, borderRadius: "50%", border: "none",
+              background: !noRoom && newMessage.trim() && room ? "#0F2044" : "#E5E7EB",
+              color: "white", display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: !noRoom && newMessage.trim() && room ? "pointer" : "not-allowed", flexShrink: 0,
+            }}
+          >
+            <Send size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* Long-press context menu */}
+      {contextMsg && (
+        <>
+          <div
+            onClick={() => setContextMsg(null)}
+            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 60 }}
+          />
+          <div style={{
+            position: "fixed", left: 16, right: 16,
+            bottom: "calc(24px + env(safe-area-inset-bottom, 0px))", zIndex: 61,
+            background: "white", borderRadius: 14, overflow: "hidden",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+          }}>
+            <div style={{
+              padding: "12px 16px", fontSize: 12, color: "#8A93A3",
+              borderBottom: "0.5px solid #F1F4F8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+            }}>
+              {contextMsg.message}
+            </div>
+            <button
+              type="button"
+              onClick={() => flag(contextMsg)}
+              style={{
+                display: "flex", alignItems: "center", gap: 8, width: "100%", textAlign: "left",
+                padding: "14px 16px", fontSize: 14, fontWeight: 600, color: "#CC2229",
+                background: "none", border: "none", borderBottom: "0.5px solid #F1F4F8", cursor: "pointer",
+              }}
+            >
+              <Flag size={15} color="#CC2229" />
+              Report message
+            </button>
+            <button
+              type="button"
+              onClick={() => setContextMsg(null)}
+              style={{
+                display: "block", width: "100%", textAlign: "center",
+                padding: "14px 16px", fontSize: 14, color: "#0F2044",
+                background: "none", border: "none", cursor: "pointer",
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </>
+      )}
     </div>
+
   );
 }
 
