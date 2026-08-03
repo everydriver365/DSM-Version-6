@@ -927,7 +927,8 @@ export function UnifiedPaymentSheet({
 
   // ---- refunds -----------------------------------------------------------
   const confirmRefund = async () => {
-    if (!refundRow || !pupilId) return;
+    if (!refundRow || !pupilId || refundProcessing) return;
+    setRefundProcessing(true);
     try {
       await recordRefund({
         pupilId,
@@ -939,6 +940,7 @@ export function UnifiedPaymentSheet({
 
       toast.success("Refund recorded");
       setRefundRow(null);
+      setRefundConfirmOpen(false);
       if (typeof window !== "undefined") {
         window.dispatchEvent(new Event("dsm-payment-recorded"));
       }
@@ -947,6 +949,7 @@ export function UnifiedPaymentSheet({
       console.error("[UnifiedPaymentSheet] confirmRefund", e);
       toast.error("Couldn't record refund");
     } finally {
+      setRefundProcessing(false);
       if (pupilId) {
         try {
           await refreshPupil();
