@@ -472,7 +472,7 @@ export function UnifiedPaymentSheet({
     const { data } = await supabase
       .from("pupils")
       .select(
-        "id, name, phone, email, pricing_type, prepaid_hours, block_hours_total, prepaid_amount_paid, ni_amount_total, ni_amount_paid, ni_payer, ni_reference, account_balance, custom_rate, custom_rate_90, custom_rate_120",
+        "id, name, phone, email, pricing_type, prepaid_hours, block_hours_total, prepaid_amount_paid, ni_amount_total, ni_amount_paid, ni_payer, ni_reference, account_balance",
       )
       .eq("id", pupilId)
       .maybeSingle();
