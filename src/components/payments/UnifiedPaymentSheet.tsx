@@ -729,14 +729,7 @@ export function UnifiedPaymentSheet({
       if (!customMode && !pupilId) return;
       setSaving(true);
       try {
-        const methodStr =
-          m === "bank_transfer"
-            ? "bank_transfer"
-            : m === "qr"
-              ? "card_qr"
-              : m === "link"
-                ? "card_link"
-                : m;
+        const methodStr = toDbMethod(m);
         const nowIso = new Date(`${paymentDate}T12:00:00`).toISOString();
         let historyId = "";
 
