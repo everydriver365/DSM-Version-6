@@ -6466,14 +6466,35 @@ function HomePage() {
                       [(l.pupils as any)?.address, (l.pupils as any)?.postcode].filter(Boolean).join(', ') ||
                       null;
 
+                    const openLessonActions = () => setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l));
+                    let lpTimer: any = null;
+                    const startLongPress = () => {
+                      if (lpTimer) clearTimeout(lpTimer);
+                      lpTimer = setTimeout(() => { lpTimer = null; openLessonActions(); }, 500);
+                    };
+                    const cancelLongPress = () => { if (lpTimer) { clearTimeout(lpTimer); lpTimer = null; } };
+
+                    const payPill = isCancelled ? null : isLive
+                      ? { label: 'Live', bg: '#E6F1FB', fg: '#1877D6' }
+                      : (isPrepaidPupil || payStatus === 'prepaid')
+                        ? { label: 'Prepaid', bg: '#E4F5EA', fg: '#2E7D4F' }
+                        : dueUnpaid
+                          ? { label: `£${amt.toFixed(0)} due`, bg: '#FCE9E9', fg: '#CC2229' }
+                          : null;
+
                     return (
                       <div key={l.id} style={{ position: 'relative', borderTop: idx === 0 ? 'none' : '1px solid #EEF2F7' }}>
                         <div
                           onClick={() => navigate({ to: '/pupils/$id', params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any })}
+                          onPointerDown={startLongPress}
+                          onPointerUp={cancelLongPress}
+                          onPointerLeave={cancelLongPress}
+                          onPointerCancel={cancelLongPress}
+                          onContextMenu={(e) => { e.preventDefault(); openLessonActions(); }}
                           role="button"
                           tabIndex={0}
                           style={{
-                            padding: '12px 16px',
+                            padding: '12px 14px',
                             display: 'flex',
                             alignItems: 'stretch',
                             gap: 12,
@@ -6506,7 +6527,7 @@ function HomePage() {
                                   {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
                                 </div>
                               )}
-                              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, minWidth: 0 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
                                 <div aria-hidden style={{ position: 'relative', flexShrink: 0 }}>
                                   {isLive && (
                                     <span
@@ -6524,174 +6545,136 @@ function HomePage() {
                                       }}
                                     />
                                   )}
-                                  <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={32} />
+                                  <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={36} />
                                 </div>
-                                <div style={{ flex: 1, minWidth: 0 }}>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
-                                    <span style={{ fontSize: 15, fontWeight: 600, color: isCancelled ? '#6B7280' : '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none' }}>
-                                      {name}
-                                    </span>
-                                    {isCancelled ? (
-                                      <span style={{
-                                        flexShrink: 0,
-                                        fontSize: 10,
-                                        fontWeight: 700,
-                                        letterSpacing: 0.4,
-                                        textTransform: 'uppercase',
-                                        color: '#CC2229',
-                                        background: '#FCEBEB',
-                                        padding: '2px 8px',
-                                        borderRadius: 999,
-                                        lineHeight: 1.4,
-                                      }}>
-                                        Cancelled
-                                      </span>
-                                     ) : priceNode ? (
-                                       <button
-                                         type="button"
-                                         onClick={(ev) => {
-                                           ev.stopPropagation();
-                                           setPaymentSheetForLesson(l);
-                                         }}
-                                         style={{
-                                           flexShrink: 0,
-                                           fontSize: 11,
-                                           fontWeight: 700,
-                                           padding: '2px 9px',
-                                           borderRadius: 999,
-                                           border: 'none',
-                                           cursor: 'pointer',
-                                           ...(isLive ? {
-                                             background: '#E6F1FB', color: '#1877D6',
-                                           } : isPrepaidPupil || isPaid ? {
-                                             background: '#E7F5EE', color: '#1E8E3E',
-                                           } : dueUnpaid ? {
-                                             background: '#FCEBEB', color: '#CC2229',
-                                           } : {
-                                             background: '#E7F5EE', color: '#1E8E3E',
-                                           }),
-                                         }}
-                                       >
-                                         {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
-                                       </button>
-                                     ) : null}
-                                  </div>
-                                  {pickupLabel && (
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3, minWidth: 0 }}>
-                                      <IconMapPin size={12} stroke={1.9} color="#8A93A3" style={{ flexShrink: 0 }} />
-                                      <span style={{ fontSize: 12, color: '#8A93A3', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                        {pickupLabel}
-                                      </span>
-                                    </div>
-                                  )}
-                                </div>
+                                <span style={{ flex: 1, minWidth: 0, fontSize: 15, fontWeight: 600, color: isCancelled ? '#6B7280' : '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none' }}>
+                                  {name}
+                                </span>
+                                {isCancelled ? (
+                                  <span style={{
+                                    flexShrink: 0,
+                                    fontSize: 10,
+                                    fontWeight: 700,
+                                    letterSpacing: 0.4,
+                                    textTransform: 'uppercase',
+                                    color: '#CC2229',
+                                    background: '#FCE9E9',
+                                    padding: '2px 8px',
+                                    borderRadius: 999,
+                                    lineHeight: 1.4,
+                                  }}>
+                                    Cancelled
+                                  </span>
+                                ) : payPill ? (
+                                  <button
+                                    type="button"
+                                    onClick={(ev) => { ev.stopPropagation(); setPaymentSheetForLesson(l); }}
+                                    style={{
+                                      flexShrink: 0,
+                                      fontSize: 11,
+                                      fontWeight: 700,
+                                      padding: '2px 9px',
+                                      borderRadius: 999,
+                                      border: 'none',
+                                      cursor: 'pointer',
+                                      whiteSpace: 'nowrap',
+                                      background: payPill.bg,
+                                      color: payPill.fg,
+                                      fontFamily: PF,
+                                    }}
+                                  >
+                                    {payPill.label}
+                                  </button>
+                                ) : null}
                               </div>
-                            </div>
-
-                            <div
-                              style={{
-                                position: 'relative',
-                                display: 'flex',
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                gap: 6,
-                                flexShrink: 0,
-                                marginLeft: 4,
-                              }}
-                            >
-                              <button
-                                type="button"
-                                data-home-lesson-actions-trigger
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l));
-                                }}
-                                aria-label="More lesson options"
-                                style={{
-                                  width: 28,
-                                  height: 28,
-                                  borderRadius: '50%',
-                                  background: '#F8F9FB',
-                                  border: '0.5px solid #E5E7EB',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  cursor: 'pointer',
-                                  padding: 0,
-                                }}
-                              >
-                                <MoreHorizontal size={14} color="#6B7280" />
-                              </button>
-                              {actionsOpenForLesson?.id === l.id && (
-                                <div
-                                  data-home-lesson-actions-popover
-                                  onClick={(ev) => ev.stopPropagation()}
-                                  style={{
-                                    position: 'absolute',
-                                    top: 44,
-                                    right: 0,
-                                    minWidth: 140,
-                                    background: '#FFFFFF',
-                                    border: '1px solid #E5E7EB',
-                                    borderRadius: 10,
-                                    boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-                                    zIndex: 40,
-                                    overflow: 'hidden',
-                                  }}
-                                >
-                                  <button
-                                    type="button"
-                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
-                                    onClick={(ev) => {
-                                      ev.stopPropagation();
-                                      setActionsOpenForLesson(null);
-                                      navigate({ to: '/lessons/edit/$id', params: { id: l.id } });
-                                    }}
-                                  >
-                                    Edit lesson
-                                  </button>
-                                  <button
-                                    type="button"
-                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
-                                    onClick={(ev) => {
-                                      ev.stopPropagation();
-                                      setActionsOpenForLesson(null);
-                                      setMovingLessonHome(l);
-                                      setMoveModeHome(true);
-                                      const firstName = (l.pupils as any)?.name?.split(' ')[0] || 'this lesson';
-                                      toast.info('Select a new time slot for ' + firstName, { duration: 10000 });
-                                    }}
-                                  >
-                                    Move
-                                  </button>
-                                  <button
-                                    type="button"
-                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
-                                    onClick={(ev) => {
-                                      ev.stopPropagation();
-                                      setActionsOpenForLesson(null);
-                                      setCancelSheetForLesson(l);
-                                    }}
-                                  >
-                                    Cancel
-                                  </button>
-                                  <button
-                                    type="button"
-                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#CC2229' }}
-                                    onClick={(ev) => {
-                                      ev.stopPropagation();
-                                      setActionsOpenForLesson(null);
-                                      setDeleteSheetForLesson(l);
-                                    }}
-                                  >
-                                    Delete
-                                  </button>
+                              {pickupLabel && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, minWidth: 0 }}>
+                                  <IconMapPin size={12} stroke={1.9} color="#6B7686" style={{ flexShrink: 0 }} />
+                                  <span style={{ fontSize: 12, color: '#6B7686', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                    {pickupLabel}
+                                  </span>
                                 </div>
                               )}
                             </div>
+
+                            <span
+                              data-home-lesson-actions-trigger
+                              role="button"
+                              aria-label="Lesson options"
+                              onClick={(e) => { e.stopPropagation(); openLessonActions(); }}
+                              style={{ flexShrink: 0, display: 'flex', alignItems: 'center', paddingLeft: 2, cursor: 'pointer' }}
+                            >
+                              <IconDotsVertical size={14} stroke={2} color="#D1D5DB" />
+                            </span>
                          </div>
+                         {actionsOpenForLesson?.id === l.id && (
+                           <div
+                             data-home-lesson-actions-popover
+                             onClick={(ev) => ev.stopPropagation()}
+                             style={{
+                               position: 'absolute',
+                               top: 40,
+                               right: 12,
+                               minWidth: 140,
+                               background: '#FFFFFF',
+                               border: '1px solid #E5E7EB',
+                               borderRadius: 10,
+                               boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                               zIndex: 40,
+                               overflow: 'hidden',
+                             }}
+                           >
+                             <button
+                               type="button"
+                               style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                               onClick={(ev) => {
+                                 ev.stopPropagation();
+                                 setActionsOpenForLesson(null);
+                                 navigate({ to: '/lessons/edit/$id', params: { id: l.id } });
+                               }}
+                             >
+                               Edit lesson
+                             </button>
+                             <button
+                               type="button"
+                               style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                               onClick={(ev) => {
+                                 ev.stopPropagation();
+                                 setActionsOpenForLesson(null);
+                                 setMovingLessonHome(l);
+                                 setMoveModeHome(true);
+                                 const firstName = (l.pupils as any)?.name?.split(' ')[0] || 'this lesson';
+                                 toast.info('Select a new time slot for ' + firstName, { duration: 10000 });
+                               }}
+                             >
+                               Move
+                             </button>
+                             <button
+                               type="button"
+                               style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                               onClick={(ev) => {
+                                 ev.stopPropagation();
+                                 setActionsOpenForLesson(null);
+                                 setCancelSheetForLesson(l);
+                               }}
+                             >
+                               Cancel
+                             </button>
+                             <button
+                               type="button"
+                               style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#CC2229' }}
+                               onClick={(ev) => {
+                                 ev.stopPropagation();
+                                 setActionsOpenForLesson(null);
+                                 setDeleteSheetForLesson(l);
+                               }}
+                             >
+                               Delete
+                             </button>
+                           </div>
+                         )}
                        </div>
-                     );
+                      );
 
                   })}
                   </div>
