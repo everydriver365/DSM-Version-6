@@ -181,7 +181,7 @@ import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
-import { TakePaymentSheet } from "@/components/payments/TakePaymentSheet";
+import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
 import { LogMileageSheet } from "@/components/mileage/LogMileageSheet";
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
@@ -1456,12 +1456,12 @@ function HomePage() {
     return () => window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
   }, []);
   const [addLessonOpen, setAddLessonOpen] = useState(false);
-  const [takePaymentOpen, setTakePaymentOpen] = useState(false);
+  const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
   const [addExpenseOpen, setAddExpenseOpen] = useState(false);
   const [logMileageOpen, setLogMileageOpen] = useState(false);
   const [sendMessageOpen, setSendMessageOpen] = useState(false);
   const [sendMessagePupilId, setSendMessagePupilId] = useState<string | undefined>();
-  const [takePaymentPupilId, setTakePaymentPupilId] = useState<string | undefined>();
+  const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
   const [lessons, setLessons] = useState<LessonRow[]>([]);
@@ -6541,7 +6541,7 @@ function HomePage() {
               const goTile = (tile: QuickTile) => {
                 if (tile.action === 'running-late') { setRunningLateOpen(true); return; }
                 else if (tile.action === 'nearby') { setNearbyOpen(true); return; }
-                else if (tile.action === 'take-payment') { setTakePaymentOpen(true); return; }
+                else if (tile.action === 'take-payment') { setUnifiedPayPupilId(undefined); setUnifiedPayOpen(true); return; }
                 else if (tile.action === 'add-expense') { setAddExpenseOpen(true); return; }
                 else if (tile.action === 'log-mileage') { setLogMileageOpen(true); return; }
                 else if (tile.action === 'send-message') { setSendMessagePupilId(undefined); setSendMessageOpen(true); return; }
@@ -7233,13 +7233,13 @@ function HomePage() {
         }}
       />
 
-      <TakePaymentSheet
-        open={takePaymentOpen}
-        onClose={() => setTakePaymentOpen(false)}
-        initialPupilId={takePaymentPupilId}
+      <UnifiedPaymentSheet
+        open={unifiedPayOpen}
+        onClose={() => setUnifiedPayOpen(false)}
+        initialPupilId={unifiedPayPupilId}
         onSaved={() => {
-          setTakePaymentOpen(false);
-          setTakePaymentPupilId(undefined);
+          setUnifiedPayOpen(false);
+          setUnifiedPayPupilId(undefined);
           setReloadKey((k) => k + 1);
         }}
       />

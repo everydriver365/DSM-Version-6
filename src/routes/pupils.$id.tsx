@@ -4,8 +4,7 @@ import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Award, BarChart3, BookOpen, Calendar, Camera, Car, ChevronDown, ChevronRight, ClipboardCheck, ClipboardList, Clock, CreditCard, ExternalLink, Flag, Heart, History, Loader2, Mail, MapPin, MessageSquare, MoreHorizontal, Palette, Pencil, Phone, Plus, PoundSterling, RefreshCw, Search, Send, Trash2, Trophy, X, Check } from "lucide-react";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
-import { TakePaymentSheet } from "@/components/payments/TakePaymentSheet";
-import { PricingPaymentSheet } from "@/components/payments/PricingPaymentSheet";
+import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
@@ -416,11 +415,10 @@ function PupilDetailPage() {
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
-  const [takePaymentOpen, setTakePaymentOpen] = useState(false);
+  const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
   const [sendMessageOpen, setSendMessageOpen] = useState(false);
   const [sendMessagePupilId, setSendMessagePupilId] = useState<string | undefined>();
-  const [takePaymentPupilId, setTakePaymentPupilId] = useState<string | undefined>();
-  const [pricingSheetOpen, setPricingSheetOpen] = useState(false);
+  const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
   const [hoursCompleted, setHoursCompleted] = useState<number>(0);
   const [instructorRate, setInstructorRate] = useState<number | null>(null);
   const [instructorBufferAfter, setInstructorBufferAfter] = useState<number | null>(null);
@@ -2645,7 +2643,7 @@ function PupilDetailPage() {
             {pupil && (<>
             {/* Pricing & payment */}
             <button
-              onClick={() => setPricingSheetOpen(true)}
+              onClick={() => { setUnifiedPayPupilId(id); setUnifiedPayOpen(true); }}
               style={{
                 display: 'flex', alignItems: 'center', gap: 8,
                 width: '100%', padding: '12px 16px',
@@ -2661,7 +2659,7 @@ function PupilDetailPage() {
             {/* Take payment */}
             <button
               type="button"
-              onClick={() => { setTakePaymentPupilId(pupil.id); setTakePaymentOpen(true); }}
+              onClick={() => { setUnifiedPayPupilId(pupil.id); setUnifiedPayOpen(true); }}
               className="mt-3 w-full flex items-center justify-center gap-2"
               style={{
                 height: 44,
@@ -4830,12 +4828,12 @@ function PupilDetailPage() {
         }}
       />
 
-      <TakePaymentSheet
-        open={takePaymentOpen}
-        onClose={() => setTakePaymentOpen(false)}
-        initialPupilId={takePaymentPupilId}
+      <UnifiedPaymentSheet
+        open={unifiedPayOpen}
+        onClose={() => setUnifiedPayOpen(false)}
+        initialPupilId={unifiedPayPupilId ?? id}
         onSaved={() => {
-          setTakePaymentOpen(false);
+          setUnifiedPayOpen(false);
           setPaymentHistoryRefresh((v) => v + 1);
         }}
       />
@@ -4847,16 +4845,7 @@ function PupilDetailPage() {
         onSent={() => setPaymentHistoryRefresh((v) => v + 1)}
       />
 
-      <PricingPaymentSheet
-        open={pricingSheetOpen}
-        onClose={() => setPricingSheetOpen(false)}
-        pupilId={id}
-        instructorId={userId ?? ''}
-        onSaved={() => {
-          setPricingSheetOpen(false);
-          setPaymentHistoryRefresh(r => r + 1);
-        }}
-      />
+
 
       <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
       </div>

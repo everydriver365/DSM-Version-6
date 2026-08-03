@@ -11,7 +11,7 @@ import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { recordPayment, correctPaymentRecord } from "@/lib/payments";
 import { calculateOutstandingOwed, calculatePaidOutstandingBreakdown } from "@/lib/paymentsOwed";
-import { TakePaymentSheet as SharedTakePaymentSheet } from "@/components/payments/TakePaymentSheet";
+import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";
 
 export const Route = createFileRoute("/payments")({
@@ -226,8 +226,8 @@ function PaymentsPage() {
   const [datePreset, setDatePreset] = useState<DatePreset>("month");
   const [methodFilter, setMethodFilter] = useState<MethodFilter>("all");
 
-  const [takePaymentOpen, setTakePaymentOpen] = useState(false);
-  const [takePaymentPupilId, setTakePaymentPupilId] = useState<string | undefined>();
+  const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
+  const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
@@ -376,7 +376,7 @@ function PaymentsPage() {
       >
         <button
           type="button"
-          onClick={() => { setTakePaymentPupilId(pupilFilter && pupilFilter !== "all" ? pupilFilter : undefined); setTakePaymentOpen(true); }}
+          onClick={() => { setUnifiedPayPupilId(pupilFilter && pupilFilter !== "all" ? pupilFilter : undefined); setUnifiedPayOpen(true); }}
           className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
           style={{ backgroundColor: TEAL }}
         >
@@ -684,12 +684,12 @@ function PaymentsPage() {
         <PupilPicker pupils={allPupils} selectedId={pupilFilter} onClose={() => setPupilPickerOpen(false)} onSelect={(id) => { setPupilFilter(id); setPupilPickerOpen(false); }} allowAll />
       )}
 
-      <SharedTakePaymentSheet
-        open={takePaymentOpen}
-        onClose={() => setTakePaymentOpen(false)}
-        initialPupilId={takePaymentPupilId}
+      <UnifiedPaymentSheet
+        open={unifiedPayOpen}
+        onClose={() => setUnifiedPayOpen(false)}
+        initialPupilId={unifiedPayPupilId}
         onSaved={async () => {
-          setTakePaymentOpen(false);
+          setUnifiedPayOpen(false);
           await refetch();
         }}
       />
