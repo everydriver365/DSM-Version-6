@@ -89,7 +89,18 @@ export default function InstructorTopBar({
           <IconBtn ariaLabel="Back" onClick={onBack!}>
             <ChevronLeft size={17} strokeWidth={1.8} color="#ffffff" />
           </IconBtn>
-          <span style={{ color: "#ffffff", fontSize: 16, fontWeight: 600 }}>
+          <span
+            style={{
+              color: "#ffffff",
+              fontSize: 16,
+              fontWeight: 600,
+              flex: 1,
+              minWidth: 0,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
             {pageTitle ?? ""}
           </span>
         </div>
@@ -126,18 +137,22 @@ export default function InstructorTopBar({
 
       {/* RIGHT */}
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <IconBtn ariaLabel="Phone" onClick={onPhone}>
-          <PhoneIcon size={17} strokeWidth={1.8} color="#ffffff" />
-        </IconBtn>
-        <IconBtn ariaLabel="Messages" onClick={() => navigate({ to: "/messages" })}>
-          <MessagesIcon size={17} strokeWidth={1.8} color="#ffffff" />
-        </IconBtn>
-        <IconBtn ariaLabel="Live track" onClick={onLiveTrack}>
-          <CarIcon size={17} strokeWidth={1.8} color="#ffffff" />
-        </IconBtn>
-        <IconBtn ariaLabel="Take payment" onClick={() => navigate({ to: "/take-payment" })}>
-          <PoundIcon size={17} strokeWidth={1.8} color="#ffffff" />
-        </IconBtn>
+        {!isSubpage && (
+          <>
+            <IconBtn ariaLabel="Phone" onClick={onPhone}>
+              <PhoneIcon size={17} strokeWidth={1.8} color="#ffffff" />
+            </IconBtn>
+            <IconBtn ariaLabel="Messages" onClick={() => navigate({ to: "/messages" })}>
+              <MessagesIcon size={17} strokeWidth={1.8} color="#ffffff" />
+            </IconBtn>
+            <IconBtn ariaLabel="Live track" onClick={onLiveTrack}>
+              <CarIcon size={17} strokeWidth={1.8} color="#ffffff" />
+            </IconBtn>
+            <IconBtn ariaLabel="Take payment" onClick={() => navigate({ to: "/take-payment" })}>
+              <PoundIcon size={17} strokeWidth={1.8} color="#ffffff" />
+            </IconBtn>
+          </>
+        )}
         <button
           type="button"
           aria-label="Notifications"
