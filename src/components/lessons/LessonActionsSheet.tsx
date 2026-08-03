@@ -19,7 +19,7 @@ import {
 
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
-import { TakePaymentSheet } from "@/components/payments/TakePaymentSheet";
+import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { supabase } from "@/lib/supabaseClient";
 import { verifyAddress } from "@/lib/geocode.functions";
 
@@ -826,7 +826,7 @@ export function LessonActionsSheet({
         initialPupilId={lesson.pupil_id}
       />
 
-      <TakePaymentSheet
+      <UnifiedPaymentSheet
         open={paymentOpen}
         onClose={() => setPaymentOpen(false)}
         initialPupilId={lesson.pupil_id}
