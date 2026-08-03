@@ -240,6 +240,7 @@ export function UnifiedPaymentSheet({
   const [saving, setSaving] = useState(false);
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [qrPaymentId, setQrPaymentId] = useState<string | null>(null);
+  const [qrFullscreen, setQrFullscreen] = useState(false);
   const [payUrl, setPayUrl] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
@@ -316,6 +317,7 @@ export function UnifiedPaymentSheet({
     setPaymentDate(todayIso());
     setQrUrl(null);
     setQrPaymentId(null);
+    setQrFullscreen(false);
     setPayUrl(null);
     setRefundRow(null);
     setPaymentSuccess(null);
@@ -563,6 +565,7 @@ export function UnifiedPaymentSheet({
     if (!res) return;
     setQrUrl(res.url);
     setQrPaymentId(res.paymentId);
+    setQrFullscreen(true);
     toast.success("QR code ready");
   };
 
@@ -1645,20 +1648,27 @@ export function UnifiedPaymentSheet({
                   textAlign: "center",
                 }}
               >
-                <QRCodeSVG value={qrUrl} size={200} />
+                <QRCodeSVG value={qrUrl} size={120} />
                 <div style={{ fontSize: 12, color: NAVY, fontWeight: 600, marginTop: 10 }}>
                   Scan to pay {money(amountNum)}
                 </div>
-                <div
+                <button
+                  type="button"
+                  onClick={() => setQrFullscreen(true)}
                   style={{
-                    fontSize: 11,
+                    marginTop: 8,
+                    fontSize: 12,
+                    fontWeight: 600,
                     color: BLUE,
-                    marginTop: 4,
-                    animation: "ups-pulse 1.6s ease-in-out infinite",
+                    background: "none",
+                    border: "none",
+                    padding: 0,
+                    fontFamily: FONT,
+                    cursor: "pointer",
                   }}
                 >
-                  ● Waiting for payment...
-                </div>
+                  Full screen
+                </button>
               </div>
             )}
 
@@ -2178,6 +2188,46 @@ export function UnifiedPaymentSheet({
           </>
         )}
       </div>
+
+      {/* QR full-screen overlay */}
+      {qrFullscreen && qrUrl && (
+        <div
+          onClick={() => setQrFullscreen(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
+            backgroundColor: "rgba(0,0,0,0.95)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 24,
+            fontFamily: FONT,
+          }}
+        >
+          <QRCodeSVG
+            value={qrUrl}
+            size={Math.min(window.innerWidth, window.innerHeight) - 80}
+          />
+          <div style={{ fontSize: 16, fontWeight: 600, color: WHITE, marginTop: 24 }}>
+            Scan to pay {money(amountNum)}
+          </div>
+          <div
+            style={{
+              fontSize: 13,
+              color: MUTED,
+              marginTop: 8,
+              animation: "ups-pulse 1.6s ease-in-out infinite",
+            }}
+          >
+            ● Waiting for payment...
+          </div>
+          <div style={{ fontSize: 12, color: MUTED, marginTop: "auto", paddingBottom: 24 }}>
+            Tap to close
+          </div>
+        </div>
+      )}
     </BottomSheet>
   );
 }
