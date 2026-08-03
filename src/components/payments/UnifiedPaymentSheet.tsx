@@ -644,8 +644,13 @@ export function UnifiedPaymentSheet({
         if (typeof window !== "undefined") {
           window.dispatchEvent(new Event("dsm-payment-recorded"));
         }
-        onSaved?.();
-        // 9) Ready for the next payment — keep the pupil selected.
+        setPaymentSuccess({
+          amount: amountNum,
+          method: m,
+          pupilName: pupil?.name ?? "Custom",
+        });
+        await refreshPupil();
+        // Ready for the next payment — keep the pupil selected.
         setAmount("");
         setNote("");
         setQrUrl(null);
