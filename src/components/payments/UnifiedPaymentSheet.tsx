@@ -925,10 +925,12 @@ export function UnifiedPaymentSheet({
       const { error } = await supabase.from("pupils").update(patch).eq("id", pupilId);
       if (error) throw error;
 
+      let isNewPackage = false;
+      let newPrice = 0;
       if (pricingType === "block") {
         const prevPrice = Number(pupil?.prepaid_amount_paid ?? 0);
-        const newPrice = packagePrice === "" ? 0 : Number(packagePrice);
-        const isNewPackage = newPrice > 0 && newPrice !== prevPrice;
+        newPrice = packagePrice === "" ? 0 : Number(packagePrice);
+        isNewPackage = newPrice > 0 && newPrice !== prevPrice;
         if (isNewPackage) {
           const { error: hErr } = await supabase.from("lesson_history").insert({
             instructor_id: instructorId,
@@ -948,7 +950,11 @@ export function UnifiedPaymentSheet({
         }
       }
 
-      toast.success("Pricing updated");
+      toast.success(
+        isNewPackage
+          ? `Block package recorded — ${hoursTotal} hrs · ${money(newPrice)}`
+          : "Pricing updated",
+      );
       await refreshPupil();
       onSaved?.();
     } catch (e) {
