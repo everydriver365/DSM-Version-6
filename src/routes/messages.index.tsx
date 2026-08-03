@@ -197,14 +197,14 @@ function formatDateSeparator(iso: string) {
 function MessagesIndexPage() {
   const navigate = useNavigate();
   const { jobOfferId: jobOfferIdParam } = Route.useSearch();
-  const [activeTab, setActiveTab] = useState<"pupils" | "local" | "admin">(
-    jobOfferIdParam ? "admin" : "pupils",
-  );
+  const [filter, setFilter] = useState<"all" | "pupils" | "local" | "admin">("all");
+  const [view, setView] = useState<"inbox" | "chat" | "rooms">("inbox");
+  const [showSearch, setShowSearch] = useState(false);
   const adminStatus = useAdminGate();
   const isAdmin = adminStatus === "allowed";
   useEffect(() => {
     if (!jobOfferIdParam || !isAdmin) return;
-    setActiveTab("admin");
+    setFilter("admin");
     setOpenThreadJobId(jobOfferIdParam);
     supabase
       .from("job_offer_messages")
