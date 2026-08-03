@@ -4739,7 +4739,9 @@ function HomePage() {
           // Payment / due
           const hStatus = (upcoming?.payment_status ?? 'unpaid').toLowerCase();
           const hAmountDue = Number(upcoming?.amount_due ?? 0);
-          const isPaid = hStatus === 'paid' || hStatus === 'prepaid' || hAmountDue <= 0;
+          const isPaid = hStatus === 'paid' || hStatus === 'prepaid'
+            || hAmountDue <= 0
+            || Number((upcoming as any)?.paid_amount ?? 0) >= hAmountDue;
           const priceText = `£${hAmountDue.toFixed(2)}`;
 
 
