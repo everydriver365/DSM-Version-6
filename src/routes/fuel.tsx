@@ -113,7 +113,9 @@ function FuelPage() {
   const [pupils, setPupils] = useState<Record<string, Pupil>>({});
 
   // --- Find cheap fuel state ---
+  const rawStations = useRef<any[]>([]);
   const [stations, setStations] = useState<any[]>([]);
+
   const [cheapest, setCheapest] = useState<any>(null);
   const [nearest, setNearest] = useState<any>(null);
   const [fuelType, setFuelType] = useState<"E10" | "E5" | "B7" | "SDV">("E10");
