@@ -756,10 +756,16 @@ function AdminHub() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isChildRoute = pathname !== "/admin" && pathname !== "/admin/";
   const chatRoomsRef = useRef<HTMLDivElement>(null);
+  const flaggedRef = useRef<HTMLDivElement>(null);
 
   const scrollToChatRooms = () => {
     chatRoomsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  const scrollToFlagged = () => {
+    flaggedRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
 
   // Child routes (e.g. /admin/featured) have their own admin gate and layout;
   // render the Outlet unconditionally so they mount instead of the hub.
