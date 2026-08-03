@@ -640,7 +640,7 @@ function MessagesIndexPage() {
         <div style={{ flex: 1, display: "flex" }}>
           {((["pupils", "local", ...(isAdmin ? ["admin"] : [])] as const) as ("pupils" | "local" | "admin")[]).map((tab) => {
             const active = activeTab === tab;
-            const label = tab === "pupils" ? "Pupils" : tab === "local" ? "Local chat" : "Admin";
+            const label = tab === "pupils" ? "Pupils" : tab === "local" ? "Local" : "Admin";
             const badge =
               tab === "local" ? unreadLocal : tab === "admin" ? unreadAdmin : 0;
             return (
@@ -649,9 +649,9 @@ function MessagesIndexPage() {
                 onClick={() => setActiveTab(tab)}
                 style={{
                   flex: 1,
-                  padding: 12,
+                  padding: 10,
                   textAlign: "center",
-                  fontSize: 13,
+                  fontSize: 11,
                   fontWeight: 600,
                   cursor: "pointer",
                   background: "transparent",
