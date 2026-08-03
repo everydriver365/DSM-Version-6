@@ -58,6 +58,15 @@ interface LocalChatRoom {
   area_name: string;
   outcode: string;
   instructor_count: number | null;
+  is_opt_in?: boolean | null;
+}
+
+/** "SO30 2XX" / "so302xx" -> "SO30" */
+function normaliseOutcode(pc?: string | null): string | null {
+  if (!pc) return null;
+  const clean = pc.replace(/\s+/g, "").toUpperCase();
+  if (clean.length < 3) return null;
+  return clean.slice(0, clean.length - 3) || null;
 }
 
 interface LocalMessage {
