@@ -1000,6 +1000,8 @@ function LocalChatView(props: {
   areaName: string;
   room: LocalChatRoom | null;
   myRooms: LocalChatRoom[];
+  joinedRoomIds: Set<string>;
+  homeOutcode: string | null;
   onSelectRoom: (r: LocalChatRoom) => void;
   messages: LocalMessage[];
   loading: boolean;
