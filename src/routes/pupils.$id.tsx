@@ -2643,7 +2643,7 @@ function PupilDetailPage() {
             {pupil && (<>
             {/* Pricing & payment */}
             <button
-              onClick={() => setPricingSheetOpen(true)}
+              onClick={() => { setUnifiedPayPupilId(id); setUnifiedPayOpen(true); }}
               style={{
                 display: 'flex', alignItems: 'center', gap: 8,
                 width: '100%', padding: '12px 16px',
@@ -2659,7 +2659,7 @@ function PupilDetailPage() {
             {/* Take payment */}
             <button
               type="button"
-              onClick={() => { setTakePaymentPupilId(pupil.id); setTakePaymentOpen(true); }}
+              onClick={() => { setUnifiedPayPupilId(pupil.id); setUnifiedPayOpen(true); }}
               className="mt-3 w-full flex items-center justify-center gap-2"
               style={{
                 height: 44,
@@ -4828,12 +4828,12 @@ function PupilDetailPage() {
         }}
       />
 
-      <TakePaymentSheet
-        open={takePaymentOpen}
-        onClose={() => setTakePaymentOpen(false)}
-        initialPupilId={takePaymentPupilId}
+      <UnifiedPaymentSheet
+        open={unifiedPayOpen}
+        onClose={() => setUnifiedPayOpen(false)}
+        initialPupilId={unifiedPayPupilId ?? id}
         onSaved={() => {
-          setTakePaymentOpen(false);
+          setUnifiedPayOpen(false);
           setPaymentHistoryRefresh((v) => v + 1);
         }}
       />
