@@ -5321,7 +5321,7 @@ function HomePage() {
                     borderLeft: unreadChat > 0 ? '3px solid #7C3AED' : undefined,
                   }}
                 >
-                  {ChatIcon}
+                  <RoomAvatar imageUrl={localRoom.image_url} name={localRoom.area_name} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 14, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>
                       Local chat · {localRoom.area_name}
