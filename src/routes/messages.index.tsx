@@ -538,9 +538,9 @@ function MessagesIndexPage() {
   };
 
   useEffect(() => {
-    if (activeTab !== "admin" || !isAdmin) return;
+    if (!isAdmin) return;
     loadAdminThreads();
-  }, [activeTab, isAdmin]);
+  }, [isAdmin]);
 
   // Admin-only realtime toast for new instructor messages on job offers
   useEffect(() => {
