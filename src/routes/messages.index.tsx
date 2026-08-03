@@ -180,6 +180,7 @@ function MessagesIndexPage() {
   const [areaName, setAreaName] = useState<string>("Your area");
   const [room, setRoom] = useState<LocalChatRoom | null>(null);
   const [myRooms, setMyRooms] = useState<LocalChatRoom[]>([]);
+  const [joinedRoomIds, setJoinedRoomIds] = useState<Set<string>>(new Set());
   const [homeOutcode, setHomeOutcode] = useState<string | null>(null);
   const [localMessages, setLocalMessages] = useState<LocalMessage[]>([]);
   const [localLoading, setLocalLoading] = useState(false);
