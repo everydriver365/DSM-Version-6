@@ -347,7 +347,7 @@ export function AddLessonSheet({
         lesson_time: `${time}:00`,
         duration_minutes: durationMinutes,
         status: "confirmed",
-        payment_status: "unpaid",
+        payment_status: isPrepaidPricing ? "prepaid" : "unpaid",
         amount_due: amountDue,
         series_id: seriesId,
       }));

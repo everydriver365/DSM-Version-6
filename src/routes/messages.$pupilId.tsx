@@ -252,7 +252,16 @@ function PupilThreadPage() {
         }
       }
 
-      // b) Insert lesson
+      // b) Insert lesson — block / national intensives pupils pay up front
+      const { data: pupilPricing } = await supabase
+        .from("pupils")
+        .select("pricing_type")
+        .eq("id", pupilId)
+        .maybeSingle();
+      const pricingType = ((pupilPricing?.pricing_type as string | null) ?? "").toLowerCase();
+      const isPrepaidPricing =
+        pricingType === "block" || pricingType === "national_intensives";
+
       const { error: lessonErr } = await supabase.from("lessons").insert({
         instructor_id: userId,
         pupil_id: pupilId,
@@ -261,7 +270,7 @@ function PupilThreadPage() {
         duration_minutes: pendingOffer.duration_minutes,
         status: "confirmed",
         amount_due: amountDue,
-        payment_status: "unpaid",
+        payment_status: isPrepaidPricing ? "prepaid" : "unpaid",
       });
       if (lessonErr) {
         console.error("[pupil-thread] lesson insert failed:", lessonErr);
