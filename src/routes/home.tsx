@@ -1695,7 +1695,7 @@ function HomePage() {
     area_name: string | null;
     outcode: string;
     latest: { message: string | null; created_at: string; instructors: { name: string | null } | null } | null;
-    unread: boolean;
+    unread: number;
   }>>([]);
   const [instructorArea, setInstructorArea] = useState<string>('your area');
   const [instructorHomePostcode, setInstructorHomePostcode] = useState<string | null>(null);
