@@ -215,6 +215,8 @@ function MessagesIndexPage() {
   const [areaName, setAreaName] = useState<string>("Your area");
   const [room, setRoom] = useState<LocalChatRoom | null>(null);
   const [myRooms, setMyRooms] = useState<LocalChatRoom[]>([]);
+  const [allRooms, setAllRooms] = useState<LocalChatRoom[]>([]);
+  const [joinedCount, setJoinedCount] = useState(0);
   const [joinedRoomIds, setJoinedRoomIds] = useState<Set<string>>(new Set());
   const [homeOutcode, setHomeOutcode] = useState<string | null>(null);
   const [localMessages, setLocalMessages] = useState<LocalMessage[]>([]);
@@ -380,6 +382,7 @@ function MessagesIndexPage() {
       const { data: rooms } = await supabase
         .from("local_chat_rooms")
         .select("id, outcode, area_name, instructor_count, is_opt_in, image_url, description")
+        .is("deleted_at", null)
         .neq("outcode", "UK");
       if (cancelled) return;
       const { data: subs } = await supabase
@@ -392,11 +395,22 @@ function MessagesIndexPage() {
       // Hide private (invite-only) rooms the user hasn't joined
       setMyRooms(all.filter((r) => !r.is_opt_in || subIds.has(r.id)));
       setJoinedRoomIds(subIds);
+
+      // Every public room (including brand-new admin rooms), for the room browser
+      const { data: publicRooms } = await supabase
+        .from("local_chat_rooms")
+        .select("id, outcode, area_name, instructor_count, is_opt_in, image_url, description")
+        .is("deleted_at", null)
+        .neq("outcode", "UK")
+        .or("is_opt_in.is.null,is_opt_in.eq.false")
+        .order("instructor_count", { ascending: false });
+      if (cancelled) return;
+      setAllRooms((publicRooms ?? []) as LocalChatRoom[]);
     })();
     return () => {
       cancelled = true;
     };
-  }, [userId, homeOutcode]);
+  }, [userId, homeOutcode, joinedCount]);
 
   // Pin / mute preferences (localStorage)
   const [pinned, setPinned] = useState<Set<string>>(new Set());
@@ -415,6 +429,14 @@ function MessagesIndexPage() {
     () => myRooms.filter((r) => joinedRoomIds.has(r.id) || r.outcode === homeOutcode),
     [myRooms, joinedRoomIds, homeOutcode],
   );
+
+  // Room browser list: every public room, plus joined private rooms
+  const browseRooms = useMemo(() => {
+    const byId = new Map<string, LocalChatRoom>();
+    for (const r of allRooms) byId.set(r.id, r);
+    for (const r of myRooms) if (!byId.has(r.id)) byId.set(r.id, r);
+    return [...byId.values()];
+  }, [allRooms, myRooms]);
 
   useEffect(() => {
     const ids = joinedRooms.map((r) => r.id);
@@ -837,6 +859,7 @@ function MessagesIndexPage() {
       return;
     }
     setJoinedRoomIds((prev) => new Set(prev).add(r.id));
+    setJoinedCount((n) => n + 1);
     toast.success("Joined " + (r.area_name || r.outcode));
   }
 
@@ -879,7 +902,7 @@ function MessagesIndexPage() {
         />
       ) : view === "rooms" ? (
         <RoomBrowser
-          rooms={myRooms}
+          rooms={browseRooms}
           joinedRoomIds={joinedRoomIds}
           homeOutcode={homeOutcode}
           onBack={() => setView("inbox")}
