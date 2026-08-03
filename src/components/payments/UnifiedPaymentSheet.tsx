@@ -1306,6 +1306,8 @@ export function UnifiedPaymentSheet({
       <div style={{ fontFamily: FONT, background: WHITE, paddingBottom: 4, position: "relative" }}>
         {paymentSuccess && (
           <div
+            onPointerDown={() => setSuccessInteracted(true)}
+
             style={{
               position: "absolute",
               inset: 0,
