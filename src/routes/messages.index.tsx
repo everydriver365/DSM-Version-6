@@ -1148,38 +1148,88 @@ function LocalChatView(props: {
               )}
             </div>
             <div style={{ overflowY: "auto" }}>
-              {filteredRooms.length === 0 ? (
+              {totalRooms === 0 ? (
                 <div style={{ padding: "12px 14px", fontSize: 12, color: "#9CA3AF" }}>No rooms found</div>
               ) : (
-                filteredRooms.map((r) => (
-                  <button
-                    key={r.id}
-                    type="button"
-                    onClick={() => {
-                      onSelectRoom(r);
-                      setRoomSelectorOpen(false);
-                      setRoomSearch("");
-                    }}
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      textAlign: "left",
-                      padding: "10px 14px",
-                      background: room?.id === r.id ? "#F2F7FF" : "#FFFFFF",
-                      border: 0,
-                      borderBottom: "0.5px solid #F0F2F6",
-                      fontSize: 13,
-                      color: "#0B1F3A",
-                      cursor: "pointer",
-                      ...FONT,
-                    }}
-                  >
-                    {r.area_name || r.outcode}
-                    <span style={{ color: "#9CA3AF", fontSize: 11, marginLeft: 6 }}>{r.outcode}</span>
-                  </button>
-                ))
+                ([
+                  ["Your rooms", joinedRooms],
+                  ["All rooms", otherRooms],
+                ] as [string, LocalChatRoom[]][]).map(([label, list]) =>
+                  list.length === 0 ? null : (
+                    <div key={label}>
+                      <div
+                        style={{
+                          padding: "8px 14px 4px",
+                          fontSize: 10,
+                          fontWeight: 700,
+                          letterSpacing: 0.6,
+                          textTransform: "uppercase",
+                          color: "#9CA3AF",
+                          background: "#FAFBFC",
+                        }}
+                      >
+                        {label}
+                      </div>
+                      {list.map((r) => (
+                        <button
+                          key={r.id}
+                          type="button"
+                          onClick={() => {
+                            onSelectRoom(r);
+                            setRoomSelectorOpen(false);
+                            setRoomSearch("");
+                          }}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 6,
+                            width: "100%",
+                            textAlign: "left",
+                            padding: "10px 14px",
+                            background: room?.id === r.id ? "#F2F7FF" : "#FFFFFF",
+                            border: 0,
+                            borderBottom: "0.5px solid #F0F2F6",
+                            fontSize: 13,
+                            color: "#0B1F3A",
+                            cursor: "pointer",
+                            ...FONT,
+                          }}
+                        >
+                          <span
+                            style={{
+                              flex: 1,
+                              minWidth: 0,
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {r.area_name || r.outcode}
+                            <span style={{ color: "#9CA3AF", fontSize: 11, marginLeft: 6 }}>{r.outcode}</span>
+                          </span>
+                          {r.is_opt_in && (
+                            <span
+                              style={{
+                                background: "#F1F3F7",
+                                color: "#6B7280",
+                                fontSize: 10,
+                                fontWeight: 700,
+                                borderRadius: 999,
+                                padding: "2px 8px",
+                                flexShrink: 0,
+                              }}
+                            >
+                              Private
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  ),
+                )
               )}
             </div>
+
           </div>
         )}
       </div>
