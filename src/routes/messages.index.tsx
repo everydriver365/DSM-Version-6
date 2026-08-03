@@ -170,6 +170,8 @@ function MessagesIndexPage() {
   const [myName, setMyName] = useState<string | null>(null);
   const [areaName, setAreaName] = useState<string>("Your area");
   const [room, setRoom] = useState<LocalChatRoom | null>(null);
+  const [myRooms, setMyRooms] = useState<LocalChatRoom[]>([]);
+  const [homeOutcode, setHomeOutcode] = useState<string | null>(null);
   const [localMessages, setLocalMessages] = useState<LocalMessage[]>([]);
   const [localLoading, setLocalLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
@@ -289,6 +291,7 @@ function MessagesIndexPage() {
       const area = instructor?.city || outcode || "Your area";
       setAreaName(area);
       setMyName(instructor?.name ?? null);
+      setHomeOutcode(outcode ?? null);
       if (!outcode) return;
 
       let { data: existing } = await supabase
@@ -313,6 +316,32 @@ function MessagesIndexPage() {
       setLastSeen(stored ? parseInt(stored, 10) : 0);
     })();
   }, []);
+
+  // Load joined local rooms for the room switcher
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data: rooms } = await supabase
+        .from("local_chat_rooms")
+        .select("id, outcode, area_name, instructor_count")
+        .neq("outcode", "UK");
+      if (cancelled) return;
+      const { data: subs } = await supabase
+        .from("chat_room_subscriptions")
+        .select("room_id")
+        .eq("instructor_id", userId);
+      if (cancelled) return;
+      const subIds = new Set(((subs ?? []) as { room_id: string }[]).map((s) => s.room_id));
+      const all = (rooms ?? []) as LocalChatRoom[];
+      setMyRooms(all.filter((r) => subIds.has(r.id) || r.outcode === homeOutcode));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, homeOutcode]);
+
+
 
   // Fetch messages + realtime once we have a room
   useEffect(() => {
@@ -901,6 +930,11 @@ function MessagesIndexPage() {
         <LocalChatView
           areaName={areaName}
           room={room}
+          myRooms={myRooms}
+          onSelectRoom={(r) => {
+            setRoom(r);
+            setAreaName(r.area_name || r.outcode);
+          }}
           messages={localMessages}
           loading={localLoading}
           userId={userId}
@@ -953,6 +987,8 @@ function MessagesIndexPage() {
 function LocalChatView(props: {
   areaName: string;
   room: LocalChatRoom | null;
+  myRooms: LocalChatRoom[];
+  onSelectRoom: (r: LocalChatRoom) => void;
   messages: LocalMessage[];
   loading: boolean;
   userId: string | null;
@@ -967,7 +1003,9 @@ function LocalChatView(props: {
   const {
     areaName,
     room,
-    messages,
+    myRooms,
+    onSelectRoom,
+    messages: allMessages,
     loading,
     userId,
     myName,
@@ -979,6 +1017,30 @@ function LocalChatView(props: {
     scrollBoxRef,
   } = props;
 
+  const [roomSelectorOpen, setRoomSelectorOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [msgSearch, setMsgSearch] = useState("");
+
+  const messages = useMemo(() => {
+    const q = msgSearch.trim().toLowerCase();
+    if (!q) return allMessages;
+    return allMessages.filter((m) => (m.message || "").toLowerCase().includes(q));
+  }, [allMessages, msgSearch]);
+
+  const highlight = (text: string) => {
+    const q = msgSearch.trim();
+    if (!q) return text;
+    const idx = text.toLowerCase().indexOf(q.toLowerCase());
+    if (idx < 0) return text;
+    return (
+      <>
+        {text.slice(0, idx)}
+        <span style={{ background: "#FEF3C7", color: "#0B1F3A" }}>{text.slice(idx, idx + q.length)}</span>
+        {text.slice(idx + q.length)}
+      </>
+    );
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 60px - 45px - 64px)" }}>
       {/* Room header */}
@@ -987,13 +1049,124 @@ function LocalChatView(props: {
           background: "#F7FAFC",
           padding: "10px 16px",
           borderBottom: "0.5px solid #E2E6ED",
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
         }}
       >
-        <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{areaName} ADIs</div>
-        <div style={{ fontSize: 11, color: "#9CA3AF" }}>
-          {room?.instructor_count ?? 1} members
-        </div>
+        <button
+          type="button"
+          onClick={() => myRooms.length > 1 && setRoomSelectorOpen((v) => !v)}
+          style={{
+            flex: 1,
+            minWidth: 0,
+            textAlign: "left",
+            background: "none",
+            border: 0,
+            padding: 0,
+            cursor: myRooms.length > 1 ? "pointer" : "default",
+          }}
+        >
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
+            {areaName} ADIs{myRooms.length > 1 ? " ▾" : ""}
+          </div>
+          <div style={{ fontSize: 11, color: "#9CA3AF" }}>{room?.instructor_count ?? 1} members</div>
+        </button>
+        <button
+          type="button"
+          aria-label="Search messages"
+          onClick={() => {
+            setSearchOpen((v) => !v);
+            if (searchOpen) setMsgSearch("");
+          }}
+          style={{ background: "none", border: 0, padding: 4, cursor: "pointer", display: "flex" }}
+        >
+          <Search size={18} color={searchOpen ? "#1877D6" : "#9CA3AF"} />
+        </button>
+        {roomSelectorOpen && (
+          <div
+            style={{
+              position: "absolute",
+              top: 48,
+              left: 16,
+              right: 16,
+              zIndex: 41,
+              background: "#FFFFFF",
+              borderRadius: 12,
+              border: "0.5px solid #E2E6ED",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              overflow: "hidden",
+            }}
+          >
+            {myRooms.map((r) => (
+              <button
+                key={r.id}
+                type="button"
+                onClick={() => {
+                  onSelectRoom(r);
+                  setRoomSelectorOpen(false);
+                }}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  textAlign: "left",
+                  padding: "10px 14px",
+                  background: room?.id === r.id ? "#F2F7FF" : "#FFFFFF",
+                  border: 0,
+                  borderBottom: "0.5px solid #F0F2F6",
+                  fontSize: 13,
+                  color: "#0B1F3A",
+                  cursor: "pointer",
+                  ...FONT,
+                }}
+              >
+                {r.area_name || r.outcode}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
+
+      {searchOpen && (
+        <div
+          style={{
+            background: "#FFFFFF",
+            borderBottom: "0.5px solid #E2E6ED",
+            padding: "8px 16px",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <Search size={15} color="#8A93A3" />
+          <input
+            value={msgSearch}
+            onChange={(e) => setMsgSearch(e.target.value)}
+            placeholder="Search messages..."
+            autoFocus
+            style={{
+              flex: 1,
+              border: 0,
+              outline: "none",
+              fontSize: 13,
+              color: "#0B1F3A",
+              background: "transparent",
+              ...FONT,
+            }}
+          />
+          {msgSearch && (
+            <button
+              type="button"
+              aria-label="Clear search"
+              onClick={() => setMsgSearch("")}
+              style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
+            >
+              <X size={14} color="#8A93A3" />
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Messages list */}
       <div
@@ -1057,7 +1230,7 @@ function LocalChatView(props: {
                           wordBreak: "break-word",
                         }}
                       >
-                        {msg.message}
+                        {highlight(msg.message)}
                       </div>
                       <div style={{ fontSize: 10, color: "#9CA3AF", textAlign: "right", marginTop: 2 }}>{time}</div>
                     </div>
@@ -1105,7 +1278,7 @@ function LocalChatView(props: {
                           wordBreak: "break-word",
                         }}
                       >
-                        {msg.message}
+                        {highlight(msg.message)}
                       </div>
                       <div style={{ display: "flex", gap: 8, marginTop: 2, alignItems: "center" }}>
                         <span style={{ fontSize: 10, color: "#9CA3AF" }}>{time}</span>
