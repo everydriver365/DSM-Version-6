@@ -503,6 +503,84 @@ export function UnifiedPaymentSheet({
     await loadPupilData(pupilId);
   }, [pupilId, loadPupilData]);
 
+  // ---- edit / delete a recorded payment ----------------------------------
+  const openEditPayment = useCallback(
+    (row: { id: string; amount: number; method: string | null; lesson_date?: string | null; created_at?: string | null; notes?: string | null }) => {
+      setDeletePayment(null);
+      setEditPayment({
+        historyId: row.id,
+        amount: String(row.amount),
+        method: (row.method as PayMethod) ?? "cash",
+        date: (row.lesson_date ?? row.created_at ?? new Date().toISOString()).slice(0, 10),
+        notes: row.notes ?? "",
+      });
+    },
+    [],
+  );
+
+  const saveEditPayment = useCallback(async () => {
+    if (!editPayment) return;
+    const newAmount = Number(editPayment.amount) || 0;
+    if (newAmount <= 0) {
+      toast.error("Enter an amount first");
+      return;
+    }
+    setSavingEdit(true);
+    try {
+      const { error } = await supabase
+        .from("lesson_history")
+        .update({
+          amount_paid: newAmount,
+          payment_method: editPayment.method,
+          lesson_date: editPayment.date,
+          notes: editPayment.notes.trim() || null,
+        })
+        .eq("id", editPayment.historyId);
+      if (error) throw error;
+      if (pupilId) {
+        setBalance(await getPupilBalance(pupilId));
+        await loadPupilData(pupilId);
+      }
+      setPaymentSuccess((prev) =>
+        prev && prev.historyId === editPayment.historyId
+          ? { ...prev, amount: newAmount, method: editPayment.method }
+          : prev,
+      );
+      toast.success("Payment updated");
+      setEditPayment(null);
+      if (typeof window !== "undefined") window.dispatchEvent(new Event("dsm-payment-recorded"));
+    } catch (e) {
+      console.error("[UnifiedPaymentSheet] saveEditPayment", e);
+      toast.error("Couldn't update payment");
+    } finally {
+      setSavingEdit(false);
+    }
+  }, [editPayment, pupilId, loadPupilData]);
+
+  const confirmDeletePayment = useCallback(async () => {
+    if (!deletePayment) return;
+    setSavingEdit(true);
+    try {
+      const { error } = await supabase
+        .from("lesson_history")
+        .update({ deleted_at: new Date().toISOString() })
+        .eq("id", deletePayment.historyId);
+      if (error) throw error;
+      if (pupilId) await getPupilBalance(pupilId);
+      toast.success("Payment removed");
+      if (typeof window !== "undefined") window.dispatchEvent(new Event("dsm-payment-recorded"));
+      setDeletePayment(null);
+      setPaymentSuccess(null);
+      onSaved?.();
+      handleClose();
+    } catch (e) {
+      console.error("[UnifiedPaymentSheet] confirmDeletePayment", e);
+      toast.error("Couldn't remove payment");
+    } finally {
+      setSavingEdit(false);
+    }
+  }, [deletePayment, pupilId, onSaved, handleClose]);
+
   // ---- filtered pupil list ----------------------------------------------
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
