@@ -254,6 +254,7 @@ export function UnifiedPaymentSheet({
   const [pricingType, setPricingType] = useState<PricingType>("standard");
   const [hoursTotal, setHoursTotal] = useState("");
   const [packagePrice, setPackagePrice] = useState("");
+  const [packageMethod, setPackageMethod] = useState<PayMethod>("cash");
   const [niTotal, setNiTotal] = useState("");
   const [niRef, setNiRef] = useState("");
   const [niPayer, setNiPayer] = useState<"national_intensives" | "pupil">("national_intensives");
