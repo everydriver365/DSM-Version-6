@@ -218,13 +218,10 @@ type MenuItem = {
 };
 
 const QUICK_ACTIONS: MenuItem[] = [
-  { label: "Schedule", icon: Calendar, to: "/schedule" },
-  { label: "Take payment", icon: PoundSterling, event: "dsm-open-take-payment", fallback: "/take-payment" },
-  { label: "Payments", icon: CreditCard, to: "/payments" },
-  { label: "Availability", icon: CalendarCheck, to: "/availability" },
-  { label: "Start tracking", icon: Navigation, to: "/live" },
-  { label: "Fill slots", icon: Zap, to: "/gaps" },
-  { label: "Nearby", icon: MapPin, event: "dsm-open-nearby", fallback: "/satnav" },
+  { label: "Call a pupil", icon: Phone, to: "/messages" },
+  { label: "Live track", icon: MapPin, to: "/live" },
+  { label: "Take payment", icon: PoundSterling, event: "dsm-open-unified-payment-sheet", fallback: "/home" },
+  { label: "Add lesson", icon: CalendarPlus, event: "dsm-open-add-lesson-sheet", fallback: "/home" },
 ];
 
 const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
