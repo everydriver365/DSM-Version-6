@@ -2405,33 +2405,41 @@ export function UnifiedPaymentSheet({
                           <span style={{ fontSize: 12, fontWeight: 600, color: r.amount < 0 ? RED : GREEN }}>
                             {money(r.amount)}
                           </span>
-                          {r.amount > 0 && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (r.amount > maxRefundableAmount) {
-                                  toast.error(`Refund amount exceeds available paid/credit balance (${money(maxRefundableAmount)})`);
-                                  return;
-                                }
-                                setRefundRow(r);
-                              }}
-                              style={{
-                                height: 24,
-                                padding: "0 8px",
-                                borderRadius: 6,
-                                border: `1px solid ${r.amount > maxRefundableAmount ? BORDER : RED}`,
-                                background: WHITE,
-                                color: r.amount > maxRefundableAmount ? MUTED : RED,
-                                fontSize: 10,
-                                fontWeight: 600,
-                                fontFamily: FONT,
-                                cursor: r.amount > maxRefundableAmount ? "not-allowed" : "pointer",
-                              }}
-                              disabled={r.amount > maxRefundableAmount}
-                            >
-                              Refund
-                            </button>
-                          )}
+                          {r.amount > 0 && (() => {
+                            const rowMax = Math.min(r.amount, maxRefundableAmount);
+                            const blocked = rowMax <= 0;
+                            return (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (blocked) {
+                                    toast.error(
+                                      `No refundable paid/credit balance available (${money(maxRefundableAmount)})`,
+                                    );
+                                    return;
+                                  }
+                                  setRefundRow(r);
+                                  setRefundAmount(String(rowMax));
+                                }}
+                                style={{
+                                  height: 24,
+                                  padding: "0 8px",
+                                  borderRadius: 6,
+                                  border: `1px solid ${blocked ? BORDER : RED}`,
+                                  background: WHITE,
+                                  color: blocked ? MUTED : RED,
+                                  fontSize: 10,
+                                  fontWeight: 600,
+                                  fontFamily: FONT,
+                                  cursor: blocked ? "not-allowed" : "pointer",
+                                }}
+                                disabled={blocked}
+                              >
+                                Refund
+                              </button>
+                            );
+                          })()}
+
                           <button
                             type="button"
                             onClick={() => openEditPayment(r)}
