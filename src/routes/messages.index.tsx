@@ -399,12 +399,11 @@ function MessagesIndexPage() {
       setAllPublicRooms(all.filter((r) => !r.is_opt_in));
       setJoinedRoomIds(subIds);
 
-      // Every public room (including brand-new admin rooms), for the room browser
+      // Every public room (including brand-new admin rooms + national), for the room browser
       const { data: publicRooms } = await supabase
         .from("local_chat_rooms")
         .select("id, outcode, area_name, instructor_count, is_opt_in, image_url, description")
         .is("deleted_at", null)
-        .neq("outcode", "UK")
         .or("is_opt_in.is.null,is_opt_in.eq.false")
         .order("instructor_count", { ascending: false });
       if (cancelled) return;
@@ -905,7 +904,7 @@ function MessagesIndexPage() {
         />
       ) : view === "rooms" ? (
         <RoomBrowser
-          rooms={allPublicRooms}
+          rooms={browseRooms}
           joinedRoomIds={joinedRoomIds}
           homeOutcode={homeOutcode}
           onBack={() => setView("inbox")}
@@ -1369,14 +1368,18 @@ function RoomBrowser({
 }) {
   const [q, setQ] = useState("");
 
-  const { mine, available } = useMemo(() => {
+  const { mine, available, results, searching } = useMemo(() => {
     const needle = q.trim().toLowerCase();
     const match = (r: LocalChatRoom) =>
       !needle ||
       (r.area_name || "").toLowerCase().includes(needle) ||
-      (r.outcode || "").toLowerCase().includes(needle);
-    const visible = rooms.filter(match);
+      (r.outcode || "").toLowerCase().includes(needle) ||
+      (r.description || "").toLowerCase().includes(needle);
+    // Hide invite-only rooms the user hasn't joined
+    const visible = rooms.filter((r) => (!r.is_opt_in || joinedRoomIds.has(r.id)) && match(r));
     return {
+      searching: needle.length > 0,
+      results: visible,
       mine: visible.filter((r) => joinedRoomIds.has(r.id) || r.outcode === homeOutcode),
       available: visible.filter(
         (r) => !joinedRoomIds.has(r.id) && r.outcode !== homeOutcode && !r.is_opt_in,
@@ -1427,8 +1430,16 @@ function RoomBrowser({
         >
           {r.area_name || r.outcode}
         </div>
-        <div style={{ fontSize: 14, color: GREY, marginTop: 2 }}>
-          {r.instructor_count ?? 1} member{(r.instructor_count ?? 1) === 1 ? "" : "s"} · {r.outcode}
+        <div style={{ fontSize: 14, color: GREY, marginTop: 2, display: "flex", alignItems: "center", gap: 6 }}>
+          <span>
+            {r.instructor_count ?? 1} member{(r.instructor_count ?? 1) === 1 ? "" : "s"} · {r.outcode}
+          </span>
+          {joinedRoomIds.has(r.id) && (
+            <span style={{ fontSize: 11, fontWeight: 600, color: BLUE }}>Joined</span>
+          )}
+          {r.is_opt_in && (
+            <span style={{ fontSize: 11, fontWeight: 600, color: "#7C3AED" }}>Private</span>
+          )}
         </div>
       </div>
       {join ? (
@@ -1503,10 +1514,13 @@ function RoomBrowser({
         </div>
       </div>
 
-      {([
-        ["Your rooms", mine, false],
-        ["Available rooms", available, true],
-      ] as [string, LocalChatRoom[], boolean][]).map(([label, list, join]) => (
+      {(searching
+        ? ([["Results", results, null]] as [string, LocalChatRoom[], boolean | null][])
+        : ([
+            ["Your rooms", mine, false],
+            ["Available rooms", available, true],
+          ] as [string, LocalChatRoom[], boolean | null][])
+      ).map(([label, list, join]) => (
         <div key={label}>
           <div
             style={{
@@ -1521,9 +1535,13 @@ function RoomBrowser({
             {label}
           </div>
           {list.length === 0 ? (
-            <div style={{ padding: "8px 16px 12px", fontSize: 13, color: GREY }}>None</div>
+            <div style={{ padding: "8px 16px 12px", fontSize: 13, color: GREY }}>
+              {searching ? "No rooms match your search" : "None"}
+            </div>
           ) : (
-            list.map((r) => <RoomRow key={r.id} r={r} join={join} />)
+            list.map((r) => (
+              <RoomRow key={r.id} r={r} join={join === null ? !joinedRoomIds.has(r.id) : join} />
+            ))
           )}
         </div>
       ))}
