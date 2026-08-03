@@ -128,6 +128,37 @@ const METHOD_LABEL: Record<PayMethod, string> = {
   clearpay: "Clearpay",
 };
 
+/** Canonical DB value for every PayMethod variant. */
+const METHOD_DB: Record<PayMethod, string> = {
+  cash: "cash",
+  bank_transfer: "bank_transfer",
+  qr: "card_qr",
+  link: "card_link",
+  klarna: "klarna",
+  clearpay: "clearpay",
+};
+
+/** Map any UI method (or already-canonical string) to its DB value. */
+const toDbMethod = (m: string | null | undefined): string => {
+  if (!m) return "cash";
+  const key = m.trim().toLowerCase().replace(/[\s-]+/g, "_");
+  if (key in METHOD_DB) return METHOD_DB[key as PayMethod];
+  const aliases: Record<string, string> = {
+    card_qr: "card_qr",
+    qr_code: "card_qr",
+    card_link: "card_link",
+    pay_link: "card_link",
+    paylink: "card_link",
+    bacs: "bank_transfer",
+    bank: "bank_transfer",
+    transfer: "bank_transfer",
+    card: "card_link",
+    refund: "refund",
+  };
+  return aliases[key] ?? key;
+};
+
+
 // ---------------------------------------------------------------------------
 // Small presentational helpers
 // ---------------------------------------------------------------------------
