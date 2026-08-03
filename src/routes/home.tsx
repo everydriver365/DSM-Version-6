@@ -4963,7 +4963,7 @@ function HomePage() {
                     </div>
                   )}
                   {isAdverseWeather && <div>⛅ {weatherCondition}</div>}
-                  {matchedAlert && <div style={{ color: '#B45309' }}>⚠️ {(matchedAlert as any).description}</div>}
+                  {matchedAlert && <div style={{ fontSize: 11, lineHeight: 1.35, color: '#B45309' }}>⚠️ {(matchedAlert as any).description}</div>}
                 </div>
               )}
 
@@ -5226,7 +5226,7 @@ function HomePage() {
                 >
                   {HazardIcon}
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>
                       Local issues
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, minWidth: 0 }}>
