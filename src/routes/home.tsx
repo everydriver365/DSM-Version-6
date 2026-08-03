@@ -7346,7 +7346,7 @@ function HomePage() {
             // corresponding payments + lesson_history rows.
             const { data: lessonRow, error: lessonFetchErr } = await supabase
               .from("lessons")
-              .select("id, pupil_id, payment_status, amount_due, paid_amount, paid_at")
+              .select("id, pupil_id, payment_status, amount_due, paid_amount, paid_at, pupils(pricing_type)")
               .eq("id", row.id)
               .maybeSingle();
             if (lessonFetchErr) {
@@ -7357,11 +7357,18 @@ function HomePage() {
 
             const restoreAmount = Number(row.amount) || 0;
             const wasPrepaid = lessonRow?.payment_status === "prepaid";
+            // Block / national intensives pupils pay up front, so their lessons
+            // revert to prepaid rather than unpaid.
+            const pricingType = (
+              ((lessonRow as any)?.pupils?.pricing_type as string | null) ?? ""
+            ).toLowerCase();
+            const isPrepaidPricing =
+              pricingType === "block" || pricingType === "national_intensives";
 
             const { error: lErr } = await supabase
               .from("lessons")
               .update({
-                payment_status: "unpaid",
+                payment_status: isPrepaidPricing ? "prepaid" : "unpaid",
                 paid_at: null,
                 paid_amount: null,
                 payment_method: null,
