@@ -11,14 +11,13 @@ import {
   Mail,
   MessageSquare,
   Package,
-  Pencil,
   QrCode,
   Search,
   Sparkles,
   CreditCard,
 } from "lucide-react";
 import { toast } from "sonner";
-import { IconCircleCheck } from "@tabler/icons-react";
+import { IconCircleCheck, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { getPupilBalance, type PupilBalance } from "@/lib/payments";
@@ -80,9 +79,6 @@ interface PupilRow {
   ni_payer: string | null;
   ni_reference: string | null;
   account_balance: number | null;
-  custom_rate: number | null;
-  custom_rate_90: number | null;
-  custom_rate_120: number | null;
 }
 
 interface InstructorRow {
@@ -110,11 +106,16 @@ interface HistoryRow {
   notes: string | null;
 }
 
-const PRICING_OPTIONS: { key: PricingType; label: string; Icon: typeof Package }[] = [
+const PRICING_OPTIONS: {
+  key: PricingType;
+  label: string;
+  sublabel?: string;
+  Icon: React.ComponentType<{ size?: number; color?: string }>;
+}[] = [
   { key: "block", label: "Block", Icon: Package },
   { key: "national_intensives", label: "National Intensives", Icon: Building2 },
   { key: "standard", label: "Standard", Icon: Clock },
-  { key: "custom", label: "Custom rate", Icon: Pencil },
+  { key: "custom", label: "One-off", sublabel: "Single occasion payment", Icon: IconReceipt },
 ];
 
 const METHOD_LABEL: Record<PayMethod, string> = {
@@ -258,9 +259,9 @@ export function UnifiedPaymentSheet({
   const [niTotal, setNiTotal] = useState("");
   const [niRef, setNiRef] = useState("");
   const [niPayer, setNiPayer] = useState<"national_intensives" | "pupil">("national_intensives");
-  const [rate60, setRate60] = useState("");
-  const [rate90, setRate90] = useState("");
-  const [rate120, setRate120] = useState("");
+  const [oneOffAmount, setOneOffAmount] = useState("");
+  const [oneOffReason, setOneOffReason] = useState("");
+  const [oneOffMethod, setOneOffMethod] = useState<PayMethod>("cash");
   const [savingPricing, setSavingPricing] = useState(false);
 
   const pupil = useMemo(() => pupils.find((p) => p.id === pupilId) ?? null, [pupils, pupilId]);
@@ -348,7 +349,7 @@ export function UnifiedPaymentSheet({
         supabase
           .from("pupils")
           .select(
-            "id, name, phone, email, pricing_type, prepaid_hours, block_hours_total, prepaid_amount_paid, ni_amount_total, ni_amount_paid, ni_payer, ni_reference, account_balance, custom_rate, custom_rate_90, custom_rate_120",
+            "id, name, phone, email, pricing_type, prepaid_hours, block_hours_total, prepaid_amount_paid, ni_amount_total, ni_amount_paid, ni_payer, ni_reference, account_balance",
           )
           .eq("instructor_id", uid)
           .is("deleted_at", null)
@@ -456,9 +457,9 @@ export function UnifiedPaymentSheet({
     setNiTotal(pupil.ni_amount_total != null ? String(pupil.ni_amount_total) : "");
     setNiRef(pupil.ni_reference ?? "");
     setNiPayer(pupil.ni_payer === "pupil" ? "pupil" : "national_intensives");
-    setRate60(pupil.custom_rate != null ? String(pupil.custom_rate) : "");
-    setRate90(pupil.custom_rate_90 != null ? String(pupil.custom_rate_90) : "");
-    setRate120(pupil.custom_rate_120 != null ? String(pupil.custom_rate_120) : "");
+    setOneOffAmount("");
+    setOneOffReason("");
+    setOneOffMethod("cash");
   }, [pupil]);
 
   useEffect(() => {
@@ -471,7 +472,7 @@ export function UnifiedPaymentSheet({
     const { data } = await supabase
       .from("pupils")
       .select(
-        "id, name, phone, email, pricing_type, prepaid_hours, block_hours_total, prepaid_amount_paid, ni_amount_total, ni_amount_paid, ni_payer, ni_reference, account_balance, custom_rate, custom_rate_90, custom_rate_120",
+        "id, name, phone, email, pricing_type, prepaid_hours, block_hours_total, prepaid_amount_paid, ni_amount_total, ni_amount_paid, ni_payer, ni_reference, account_balance",
       )
       .eq("id", pupilId)
       .maybeSingle();
@@ -916,11 +917,8 @@ export function UnifiedPaymentSheet({
           ni_payer: niPayer,
         };
       } else if (pricingType === "custom") {
-        patch = {
-          custom_rate: rate60 === "" ? null : Number(rate60),
-          custom_rate_90: rate90 === "" ? null : Number(rate90),
-          custom_rate_120: rate120 === "" ? null : Number(rate120),
-        };
+        // One-off pricing has no stored fields; payments are recorded via lesson_history.
+        patch = {};
       }
       const { error } = await supabase.from("pupils").update(patch).eq("id", pupilId);
       if (error) throw error;
@@ -963,6 +961,35 @@ export function UnifiedPaymentSheet({
     } finally {
       setSavingPricing(false);
     }
+  };
+
+  const recordOneOffPayment = async () => {
+    if (!pupilId || !instructorId) return;
+    const amount = Number(oneOffAmount) || 0;
+    if (amount <= 0) {
+      toast.error("Enter an amount first");
+      return;
+    }
+    const { error } = await supabase.from("lesson_history").insert({
+      instructor_id: instructorId,
+      pupil_id: pupilId,
+      amount_paid: amount,
+      payment_method: oneOffMethod,
+      lesson_date: todayIso(),
+      payment_status: "paid",
+      notes: oneOffReason.trim() || "One-off payment",
+      created_at: new Date().toISOString(),
+    });
+    if (error) {
+      console.error("[UnifiedPaymentSheet] recordOneOffPayment", error);
+      toast.error("Couldn't record one-off payment");
+      return;
+    }
+    toast.success("One-off payment recorded");
+    await getPupilBalance(pupilId);
+    setOneOffAmount("");
+    setOneOffReason("");
+    setOneOffMethod("cash");
   };
 
   // Block cancellation calculator
@@ -1011,7 +1038,7 @@ export function UnifiedPaymentSheet({
     if (type === "block") return `Block · ${Number(pupil.prepaid_hours ?? 0)} hrs remaining`;
     if (type === "national_intensives")
       return `National Intensives · ${Number(pupil.prepaid_hours ?? 0)} hrs remaining`;
-    if (type === "custom") return `Custom rate · ${unpaidLessons.length} unpaid`;
+    if (type === "custom") return `One-off payment pupil · ${unpaidLessons.length} unpaid`;
     return `Standard rate · ${unpaidLessons.length} unpaid`;
   })();
 
@@ -1053,7 +1080,7 @@ export function UnifiedPaymentSheet({
     : "Save pricing";
 
   const footer =
-    tab === "pricing" && !customMode ? (
+    tab === "pricing" && !customMode && pricingType !== "custom" ? (
       <button
         type="button"
         onClick={() => void savePricing()}
@@ -1993,7 +2020,7 @@ export function UnifiedPaymentSheet({
                 marginBottom: 14,
               }}
             >
-              {PRICING_OPTIONS.map(({ key, label, Icon }) => {
+              {PRICING_OPTIONS.map(({ key, label, sublabel, Icon }) => {
                 const active = pricingType === key;
                 const isNi = key === "national_intensives";
                 const accent = isNi ? GREEN : BLUE;
@@ -2007,7 +2034,7 @@ export function UnifiedPaymentSheet({
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "flex-start",
-                      gap: 6,
+                      gap: 4,
                       padding: 12,
                       borderRadius: 10,
                       border: `1px solid ${active ? accent : BORDER}`,
@@ -2021,6 +2048,11 @@ export function UnifiedPaymentSheet({
                     <span style={{ fontSize: 12, fontWeight: 600, color: active ? accent : NAVY }}>
                       {label}
                     </span>
+                    {sublabel && (
+                      <span style={{ fontSize: 10, color: MUTED, lineHeight: 1.2 }}>
+                        {sublabel}
+                      </span>
+                    )}
                   </button>
                 );
               })}
@@ -2278,34 +2310,114 @@ export function UnifiedPaymentSheet({
 
             {pricingType === "custom" && (
               <>
-                <Label>Custom rates</Label>
-                <Field label="60 min rate (£)">
+                <Label>One-off payment</Label>
+
+                <div style={{ position: "relative", marginBottom: 12 }}>
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 12,
+                      top: 12,
+                      fontSize: 20,
+                      fontWeight: 700,
+                      color: NAVY,
+                    }}
+                  >
+                    £
+                  </span>
                   <input
                     inputMode="decimal"
-                    value={rate60}
-                    onChange={(e) => setRate60(e.target.value)}
+                    value={oneOffAmount}
+                    onChange={(e) => {
+                      const v = e.target.value.replace(/[^0-9.]/g, "");
+                      if ((v.match(/\./g) ?? []).length > 1) return;
+                      const parts = v.split(".");
+                      if (parts[1] && parts[1].length > 2) return;
+                      setOneOffAmount(v);
+                    }}
                     placeholder="0.00"
+                    style={{
+                      ...inputStyle,
+                      height: 52,
+                      paddingLeft: 30,
+                      fontSize: 22,
+                      fontWeight: 700,
+                    }}
+                  />
+                </div>
+
+                <Field label="Reason (optional)">
+                  <input
+                    value={oneOffReason}
+                    onChange={(e) => setOneOffReason(e.target.value)}
+                    placeholder="e.g. cancellation fee, deposit, top-up..."
                     style={inputStyle}
                   />
                 </Field>
-                <Field label="90 min rate (£)">
-                  <input
-                    inputMode="decimal"
-                    value={rate90}
-                    onChange={(e) => setRate90(e.target.value)}
-                    placeholder="0.00"
-                    style={inputStyle}
-                  />
-                </Field>
-                <Field label="120 min rate (£)">
-                  <input
-                    inputMode="decimal"
-                    value={rate120}
-                    onChange={(e) => setRate120(e.target.value)}
-                    placeholder="0.00"
-                    style={inputStyle}
-                  />
-                </Field>
+
+                <Label>Payment method</Label>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, 1fr)",
+                    gap: 6,
+                    marginBottom: 12,
+                  }}
+                >
+                  {[
+                    { key: "cash" as const, Icon: Banknote, label: "Cash" },
+                    { key: "bank_transfer" as const, Icon: Landmark, label: "Bank transfer" },
+                    { key: "qr" as const, Icon: QrCode, label: "QR" },
+                    { key: "link" as const, Icon: Link2, label: "Pay link" },
+                  ].map(({ key, Icon, label }) => {
+                    const active = oneOffMethod === key;
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setOneOffMethod(key)}
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 4,
+                          height: 54,
+                          borderRadius: 8,
+                          border: `1px solid ${active ? BLUE : BORDER}`,
+                          background: active ? BLUE_BG : WHITE,
+                          color: active ? BLUE : BODY,
+                          fontSize: 11,
+                          fontWeight: active ? 600 : 500,
+                          fontFamily: FONT,
+                          cursor: "pointer",
+                        }}
+                      >
+                        <Icon size={15} color={active ? BLUE : MUTED} />
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => void recordOneOffPayment()}
+                  style={{
+                    width: "100%",
+                    height: 44,
+                    borderRadius: 8,
+                    border: "none",
+                    background: BLUE,
+                    color: WHITE,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    fontFamily: FONT,
+                    cursor: "pointer",
+                  }}
+                >
+                  Record one-off payment
+                </button>
               </>
             )}
           </>
