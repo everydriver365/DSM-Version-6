@@ -252,6 +252,15 @@ export function AddLessonSheet({
       }
     }
 
+    // Block / national intensives pupils pay up front, so their lessons are
+    // always created as prepaid.
+    const pricingType = (selected?.pricing_type ?? "").toLowerCase();
+    const isPrepaidPricing =
+      pricingType === "block" || pricingType === "national_intensives";
+    if (isPrepaidPricing) paymentStatus = "prepaid";
+
+
+
     // If recurring, create a lesson_series first so the initial lesson can link to it
     let seriesId: string | null = null;
     if (isRecurring) {
