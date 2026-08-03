@@ -14,7 +14,6 @@ import { verifyAddress } from "@/lib/geocode.functions";
 import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { DiscoverSection as DiscoverGrid } from "@/components/home/DiscoverSection";
-import { Cloud as CloudIcon, CloudRain, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
 import { PageLayout } from "@/components/PageLayout";
 import { SheetQueueController } from "@/components/dsm/SheetQueue";
 import { LessonActionsSheet } from "@/components/lessons/LessonActionsSheet";
