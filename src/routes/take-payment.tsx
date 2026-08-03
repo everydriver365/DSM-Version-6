@@ -180,8 +180,8 @@ function TakePaymentPage() {
   }, [recorded, navigate]);
 
   const amountNum = Number(amount) || 0;
-  const BOOKING_FEE = 1;
-  const totalNum = amountNum + (passBookingFee ? BOOKING_FEE : 0);
+  const bookingFee = amountNum * 0.01;
+  const totalNum = amountNum + (passBookingFee ? bookingFee : 0);
 
   const press = (key: string) => {
     setAmount((prev) => {
@@ -539,7 +539,7 @@ function TakePaymentPage() {
               color: "#6B7280",
             }}
           >
-            £{amountNum.toFixed(2)} + £1.00 booking fee
+            £{amountNum.toFixed(2)} + 1% fee (£{(amountNum * 0.01).toFixed(2)})
           </div>
         )}
 
@@ -973,7 +973,7 @@ function TakePaymentPage() {
             </div>
             {passBookingFee && (
               <div style={{ fontSize: 12, opacity: 0.8, marginTop: 4 }}>
-                £{amountNum.toFixed(2)} + £1.00 booking fee = £{totalNum.toFixed(2)}
+                £{amountNum.toFixed(2)} + 1% fee (£{(amountNum * 0.01).toFixed(2)}) = £{totalNum.toFixed(2)}
               </div>
             )}
             {(pupilName || description) && (

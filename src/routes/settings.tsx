@@ -918,7 +918,7 @@ function SettingsPage() {
               <div className="flex items-start gap-3 pt-3">
                 <div className="flex-1 min-w-0">
                   <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
-                    A £1 booking fee is charged per payment. Toggle on to pass this to the pupil, off to absorb it yourself.
+                    A 1% platform fee is charged on card payments. Toggle on to pass this to the pupil, off to absorb it yourself.
                   </div>
                 </div>
                 <button
