@@ -1043,6 +1043,15 @@ export function UnifiedPaymentSheet({
     return void recordPayment();
   };
 
+  const isNewBlockPackage =
+    pricingType === "block" &&
+    packagePrice !== "" &&
+    Number(packagePrice) > 0 &&
+    Number(packagePrice) !== Number(pupil?.prepaid_amount_paid ?? 0);
+  const footerLabel = isNewBlockPackage
+    ? `Save & record ${money(Number(packagePrice))} package payment`
+    : "Save pricing";
+
   const footer =
     tab === "pricing" && !customMode ? (
       <button
@@ -1063,7 +1072,7 @@ export function UnifiedPaymentSheet({
           opacity: savingPricing ? 0.5 : 1,
         }}
       >
-        {savingPricing ? "Saving…" : "Save pricing"}
+        {savingPricing ? "Saving…" : footerLabel}
       </button>
     ) : (
       <button
