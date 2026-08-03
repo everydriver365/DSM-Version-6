@@ -1115,40 +1115,43 @@ export function UnifiedPaymentSheet({
   };
 
   const recordOneOffPayment = async () => {
-    if (!pupilId || !instructorId) return;
+    if (!pupilId) return;
     const amount = Number(oneOffAmount) || 0;
     if (amount <= 0) {
       toast.error("Enter an amount first");
       return;
     }
-    const { data: hRow, error } = await supabase
-      .from("lesson_history")
-      .insert({
-        instructor_id: instructorId,
-        pupil_id: pupilId,
-        amount_paid: amount,
-        payment_method: toDbMethod(oneOffMethod),
-        lesson_date: todayIso(),
-        payment_status: "paid",
+    try {
+      await recordPayment({
+        pupilId,
+        amount,
+        method: toDbMethod(oneOffMethod),
         notes: oneOffReason.trim() || "One-off payment",
-        created_at: new Date().toISOString(),
-      })
-      .select("id")
-      .single();
-    if (error) {
-      console.error("[UnifiedPaymentSheet] recordOneOffPayment", error);
+        currentAccountBalance: Number(pupil?.account_balance ?? 0),
+      });
+    } catch (e) {
+      console.error("[UnifiedPaymentSheet] recordOneOffPayment", e);
       toast.error("Couldn't record one-off payment");
       return;
     }
     toast.success("One-off payment recorded");
     setBalance(await getPupilBalance(pupilId));
-    await loadPupilData(pupilId);
+    await refreshPupil();
+    const { data: latest } = await supabase
+      .from("lesson_history")
+      .select("id")
+      .eq("pupil_id", pupilId)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
     setPaymentSuccess({
-      historyId: (hRow as { id: string } | null)?.id ?? "",
+      historyId: (latest as { id: string } | null)?.id ?? "",
       amount,
       method: oneOffMethod,
       pupilName: pupil?.name ?? "",
     });
+
     setOneOffAmount("");
     setOneOffReason("");
     setOneOffMethod("cash");
