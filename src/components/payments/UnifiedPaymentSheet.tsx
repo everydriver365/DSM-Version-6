@@ -765,9 +765,6 @@ export function UnifiedPaymentSheet({
             .maybeSingle();
           historyId = (latest as { id: string } | null)?.id ?? "";
 
-          const freshBal = await getPupilBalance(pupilId);
-          setBalance(freshBal);
-          await refreshPupil();
         }
 
         toast.success(customMode ? "Custom payment recorded" : "Payment recorded");
