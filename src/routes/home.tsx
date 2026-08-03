@@ -14,7 +14,6 @@ import { verifyAddress } from "@/lib/geocode.functions";
 import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { DiscoverSection as DiscoverGrid } from "@/components/home/DiscoverSection";
-import { Cloud as CloudIcon, CloudRain, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
 import { PageLayout } from "@/components/PageLayout";
 import { SheetQueueController } from "@/components/dsm/SheetQueue";
 import { LessonActionsSheet } from "@/components/lessons/LessonActionsSheet";
@@ -4727,17 +4726,6 @@ function HomePage() {
           const weatherCondition = weatherData?.condition ?? '';
           const isAdverseWeather = !!weatherCondition &&
             adverseKeywords.some((k) => weatherCondition.toLowerCase().includes(k));
-          let WeatherIcon: React.ReactNode = null;
-          if (weatherCondition) {
-            const w = weatherCondition.toLowerCase();
-            const commonProps = { size: 14, color: '#1877D6', style: { flexShrink: 0 } as React.CSSProperties };
-            if (w.includes('rain') || w.includes('drizzle')) WeatherIcon = <CloudRain {...commonProps} />;
-            else if (w.includes('snow') || w.includes('sleet') || w.includes('ice')) WeatherIcon = <CloudSnow {...commonProps} />;
-            else if (w.includes('storm') || w.includes('thunder')) WeatherIcon = <CloudLightning {...commonProps} />;
-            else if (w.includes('fog') || w.includes('mist')) WeatherIcon = <CloudFog {...commonProps} />;
-            else if (w.includes('sun') || w.includes('clear')) WeatherIcon = <Sun {...commonProps} />;
-            else WeatherIcon = <CloudIcon {...commonProps} />;
-          }
 
           // Community alert matched to pupil outcode
           const pupilPostcode = (upcoming?.pupils?.postcode ?? '').trim();
@@ -4859,10 +4847,11 @@ function HomePage() {
                     {pupilFullName || 'Pupil'}
                   </div>
                   <div style={{
-                    fontSize: 12, color: '#6B7686',
+                    fontSize: 13, color: '#6B7686',
                     fontFamily: 'Poppins, sans-serif', marginTop: 3,
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                   }}>
-                    {upcoming?.lesson_type || 'Standard lesson'} · {durationDecimal}hr{packageText ? ` · ${packageText}` : ''}
+                    {(upcoming?.lesson_type?.replace(/\s+lesson$/i, '') || 'Standard')} · {durationDecimal}hr{packageText ? ` · ${packageText}` : ''}
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
@@ -4928,7 +4917,6 @@ function HomePage() {
                   }}>
                     <Clock size={12} color="#6B7686" />
                     TIME
-                    {WeatherIcon}
                   </div>
                   <div style={{
                     fontSize: 14, fontWeight: 700, color: '#0B1F3A',
@@ -4940,7 +4928,7 @@ function HomePage() {
 
                 {/* Price column */}
                 <div style={{
-                  display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                   paddingLeft: 12, gap: 4,
                 }}>
                   <div style={{
@@ -4950,16 +4938,18 @@ function HomePage() {
                   }}>
                     PRICE
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    {isPaid && (
+                      <span style={{
+                        background: '#E4F5EA', color: '#2E7D4F',
+                        fontSize: 10, fontWeight: 600, padding: '2px 6px', borderRadius: 7,
+                        fontFamily: 'Poppins, sans-serif',
+                      }}>
+                        Paid
+                      </span>
+                    )}
                     <span style={{
-                      background: hPillBgFinal, color: hPillFgFinal,
-                      fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 6,
-                      fontFamily: 'Poppins, sans-serif',
-                    }}>
-                      {hLabelFinal}
-                    </span>
-                    <span style={{
-                      fontSize: 16, fontWeight: 700, color: '#0B1F3A',
+                      fontSize: 17, fontWeight: 700, color: '#0B1F3A',
                       fontFamily: 'Poppins, sans-serif',
                     }}>
                       {priceText}
@@ -5044,6 +5034,15 @@ function HomePage() {
                 >
                   <Navigation size={16} />
                   View route{driveData ? ` · ${driveData.durationMinutes} min` : ''}
+                  {weatherData?.tempC != null && (
+                    <>
+                      <span style={{ color: '#6B7686', margin: '0 2px' }}>·</span>
+                      <Sun size={15} color="#E0A020" />
+                      <span style={{ fontSize: 13, color: '#6B7686', fontFamily: 'Poppins, sans-serif', fontWeight: 400 }}>
+                        {Math.round(weatherData.tempC)}°
+                      </span>
+                    </>
+                  )}
                 </button>
                 <button
                   type="button"
