@@ -108,6 +108,8 @@ interface LocalChatRoom {
   outcode: string;
   instructor_count: number | null;
   is_opt_in?: boolean | null;
+  image_url?: string | null;
+  description?: string | null;
 }
 
 /** "SO30 2XX" / "so302xx" -> "SO30" */
@@ -377,7 +379,7 @@ function MessagesIndexPage() {
     (async () => {
       const { data: rooms } = await supabase
         .from("local_chat_rooms")
-        .select("id, outcode, area_name, instructor_count, is_opt_in")
+        .select("id, outcode, area_name, instructor_count, is_opt_in, image_url, description")
         .neq("outcode", "UK");
       if (cancelled) return;
       const { data: subs } = await supabase
@@ -759,6 +761,7 @@ function MessagesIndexPage() {
         preview: p ? `${p.sender}: ${p.body}` : "No messages yet",
         ts: p?.created_at ?? new Date(0).toISOString(),
         unread,
+        photo: r.image_url ?? null,
         initials: nameInitials(r.area_name || r.outcode),
         bg: NAVY,
         open: () => openRoom(r),

@@ -489,6 +489,8 @@ type BrowseRoom = {
   instructor_count: number | null;
   room_type: string | null;
   is_opt_in: boolean | null;
+  image_url?: string | null;
+  description?: string | null;
 };
 
 function RoomsTab({
@@ -519,7 +521,7 @@ function RoomsTab({
       setLoading(true);
       const { data: allRooms } = await supabase
         .from("local_chat_rooms")
-        .select("id, outcode, area_name, instructor_count, room_type, is_opt_in")
+        .select("id, outcode, area_name, instructor_count, room_type, is_opt_in, image_url, description")
         .order("instructor_count", { ascending: false });
       if (cancelled) return;
       setRooms((allRooms ?? []) as BrowseRoom[]);
@@ -573,6 +575,23 @@ function RoomsTab({
   function RoomRow({ room, action }: { room: BrowseRoom; action: React.ReactNode }) {
     return (
       <div style={rowStyle}>
+        {room.image_url ? (
+          <img
+            src={room.image_url}
+            alt=""
+            style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+          />
+        ) : (
+          <div
+            style={{
+              width: 52, height: 52, borderRadius: "50%", background: "#0B1F3A", color: "white",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 17, fontWeight: 700, flexShrink: 0,
+            }}
+          >
+            {(room.area_name || room.outcode).trim().charAt(0).toUpperCase()}
+          </div>
+        )}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
@@ -593,6 +612,14 @@ function RoomsTab({
               </span>
             )}
           </div>
+          {room.description ? (
+            <div style={{
+              fontSize: 12, color: "#6B7686", marginTop: 2,
+              overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+            }}>
+              {room.description}
+            </div>
+          ) : null}
           <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 3, fontSize: 11, color: "#8A93A3" }}>
             <Users size={12} />
             {room.instructor_count ?? 0} instructors
