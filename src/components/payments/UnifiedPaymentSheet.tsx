@@ -1061,23 +1061,20 @@ export function UnifiedPaymentSheet({
     if (!pupilId) return;
     try {
       await supabase.from("pupils").update({ prepaid_hours: 0 }).eq("id", pupilId);
-      await supabase.from("lesson_history").insert({
-        instructor_id: instructorId,
-        pupil_id: pupilId,
-        lesson_cost: -refundDue,
-        amount_paid: -refundDue,
-        payment_method: "refund",
-        payment_status: "refunded",
-        notes: `Package cancellation — ${unusedHrs}h of ${blockTotalHrs}h unused`,
-        created_at: new Date().toISOString(),
-      });
-      await supabase
-        .from("pupils")
-        .update({ account_balance: Math.max(0, Number(pupil?.account_balance ?? 0) - refundDue) })
-        .eq("id", pupilId);
+      if (refundDue > 0) {
+        await recordRefund({
+          pupilId,
+          amount: refundDue,
+          method: "refund",
+          notes: `Package cancellation — ${unusedHrs}h of ${blockTotalHrs}h unused`,
+          currentAccountBalance: Number(pupil?.account_balance ?? 0),
+        });
+      }
       toast.success("Cancellation processed");
       await refreshPupil();
+      setBalance(await getPupilBalance(pupilId));
       onSaved?.();
+
     } catch (e) {
       console.error("[UnifiedPaymentSheet] processCancellation", e);
       toast.error("Couldn't process cancellation");
