@@ -324,6 +324,16 @@ export function UnifiedPaymentSheet({
     setPaymentSuccess(null);
   }, [open, initialPupilId]);
 
+  // ---- close QR fullscreen with Escape key --------------------------------
+  useEffect(() => {
+    if (!qrFullscreen || typeof window === "undefined") return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setQrFullscreen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [qrFullscreen]);
+
   // ---- load pupils + instructor -----------------------------------------
   useEffect(() => {
     if (!open) return;
