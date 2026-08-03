@@ -33,6 +33,7 @@ interface Pupil {
   custom_rate_90: number | null;
   custom_rate_120: number | null;
   prepaid_hours: number | null;
+  pricing_type: string | null;
 }
 
 const fieldBorder: React.CSSProperties = {

@@ -309,7 +309,7 @@ function NewLessonPage() {
         lesson_time: `${time}:00`,
         duration_minutes: duration,
         status: "confirmed",
-        payment_status: "unpaid",
+        payment_status: isPrepaidPricing ? "prepaid" : "unpaid",
         amount_due: amountDue,
         series_id: seriesId,
       }));
