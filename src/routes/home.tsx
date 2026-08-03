@@ -7286,7 +7286,7 @@ function HomePage() {
                                   onClick={() => { setNearbyCategory(null); setNearbyResults([]); setNearbyError(null); setNearbyLoading(null); }}
                                   style={{ width: 32, height: 32, borderRadius: 8, border: '1px solid #E2E8F0', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0, flexShrink: 0 }}
                                 >
-                                  <ArrowLeft size={16} color="#0B1F3A" />
+                                  <ChevronLeft size={16} color="#0B1F3A" />
                                 </button>
                                 <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>
                                   {activeCat.emoji} {activeCat.label}
