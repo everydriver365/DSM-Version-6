@@ -1440,6 +1440,10 @@ function HomePage() {
   const [runningLateOpen, setRunningLateOpen] = useState(false);
   const [nearbyOpen, setNearbyOpen] = useState(false);
   const [nearbyLoading, setNearbyLoading] = useState<string | null>(null);
+  const [nearbyResults, setNearbyResults] = useState<any[]>([]);
+  const [nearbyCategory, setNearbyCategory] = useState<string | null>(null);
+  const [nearbyError, setNearbyError] = useState<string | null>(null);
+  const [nearbyOrigin, setNearbyOrigin] = useState<{ lat: number; lng: number } | null>(null);
   const [quickSearchQuery, setQuickSearchQuery] = useState('');
   const qaStartX = useRef(0);
 
