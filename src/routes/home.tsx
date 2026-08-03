@@ -5207,7 +5207,7 @@ function HomePage() {
             </svg>
           );
 
-          const ChatIcon = null; // replaced by per-room avatars below
+          
 
           const RoomAvatar = ({
             imageUrl,
