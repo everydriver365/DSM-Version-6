@@ -497,6 +497,28 @@ function ChatRoomsSection() {
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                   <div style={{ color: "#6B7280", fontSize: 12 }}>{room.instructor_count ?? 0}</div>
+                  {room.deleted_at ? (
+                    <button
+                      type="button"
+                      onClick={() => void restoreRoom(room)}
+                      disabled={deletingId === room.id}
+                      style={{
+                        height: 30,
+                        padding: "0 12px",
+                        borderRadius: 8,
+                        border: "1px solid #EEF2F7",
+                        background: "#fff",
+                        color: "#1877D6",
+                        fontSize: 12,
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        opacity: deletingId === room.id ? 0.6 : 1,
+                      }}
+                    >
+                      {deletingId === room.id ? "Restoring…" : "Restore"}
+                    </button>
+                  ) : (
+                    <>
                   <button
                     type="button"
                     aria-label="Edit room"
@@ -515,6 +537,27 @@ function ChatRoomsSection() {
                     }}
                   >
                     <Pencil size={14} />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Delete room"
+                    onClick={() => void softDeleteRoom(room)}
+                    disabled={deletingId === room.id}
+                    style={{
+                      height: 30,
+                      width: 30,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 8,
+                      border: "1px solid #F3D5D7",
+                      background: "#fff",
+                      color: "#CC2229",
+                      cursor: "pointer",
+                      opacity: deletingId === room.id ? 0.6 : 1,
+                    }}
+                  >
+                    <Trash2 size={14} />
                   </button>
                   <button
                     type="button"
