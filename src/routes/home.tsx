@@ -3,6 +3,7 @@ import React from "react";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
+import { recordPayment, recordRefund } from "@/lib/payments";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { QuickActionsMenu, type QuickAction } from "@/components/dsm/QuickActionsMenu";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
@@ -3457,25 +3458,19 @@ function HomePage() {
       toast.error("Not authenticated");
       return;
     }
-    const { error } = await supabase
-      .from("lessons")
-      .update({ payment_status: "paid" })
-      .eq("id", l.id);
-    if (error) {
-      console.error("[mark paid] error", error);
+    try {
+      await recordPayment({
+        pupilId: l.pupil_id,
+        amount: Number(l.amount_due ?? 0),
+        method: "cash",
+        notes: "Gap filler payment",
+        currentAccountBalance: 0,
+        targetLessonId: l.id,
+      });
+    } catch (e) {
+      console.error("[mark paid] recordPayment error", e);
       toast.error("Could not mark lesson as paid");
       return;
-    }
-    const { error: histErr } = await supabase.from("lesson_history").insert({
-      instructor_id: userId,
-      pupil_id: l.pupil_id,
-      lesson_id: l.id,
-      lesson_cost: l.amount_due ?? 0,
-      payment_status: "paid",
-      payment_method: "manual",
-    });
-    if (histErr) {
-      console.error("[lesson_history] insert error", histErr);
     }
     setLessons((prev) =>
       prev.map((lesson) =>
@@ -7380,7 +7375,8 @@ function HomePage() {
               return;
             }
 
-            // Reverse account_balance credit if the lesson was prepaid from credit
+            // Reverse the credit through the payments API so the unwind is
+            // audited rather than a bare account_balance patch.
             if (wasPrepaid && lessonRow?.pupil_id) {
               const { data: pRow } = await supabase
                 .from("pupils")
@@ -7388,11 +7384,21 @@ function HomePage() {
                 .eq("id", lessonRow.pupil_id)
                 .maybeSingle();
               const current = Number((pRow as { account_balance?: number | null } | null)?.account_balance ?? 0);
-              await supabase
-                .from("pupils")
-                .update({ account_balance: current + restoreAmount })
-                .eq("id", lessonRow.pupil_id);
+              if (restoreAmount > 0) {
+                try {
+                  await recordRefund({
+                    pupilId: lessonRow.pupil_id,
+                    amount: restoreAmount,
+                    method: "cash",
+                    notes: "Gap filler lesson cancelled — credit restored",
+                    currentAccountBalance: current,
+                  });
+                } catch (e) {
+                  console.error("[home] recordRefund error", e);
+                }
+              }
             }
+
 
             // Soft-delete legacy payments row(s) for this lesson
             const { error: payErr } = await supabase

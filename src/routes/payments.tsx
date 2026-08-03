@@ -9,7 +9,7 @@ import WorkspaceDots from "../components/dsm/WorkspaceDots";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { recordPayment, correctPaymentRecord } from "@/lib/payments";
+import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { calculateOutstandingOwed, calculatePaidOutstandingBreakdown } from "@/lib/paymentsOwed";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";
@@ -857,7 +857,13 @@ function RefundSheet({ row, userId, onClose, onSaved }: { row: HistoryRow; userI
     } else {
       const { data: pRow } = await supabase.from("pupils").select("account_balance").eq("id", row.pupil_id).maybeSingle();
       const current = Number((pRow as { account_balance?: number | null } | null)?.account_balance ?? 0);
-      await supabase.from("pupils").update({ account_balance: Math.max(0, current - refundAmount) }).eq("id", row.pupil_id);
+      await recordRefund({
+        pupilId: row.pupil_id,
+        amount: refundAmount,
+        method: row.payment_method ?? "cash",
+        notes: "Refund issued from payments page",
+        currentAccountBalance: current,
+      });
     }
     // Recompute this pupil's outstanding balance (unpaid lessons + account credit)
     const [{ data: unpaidRows }, { data: pupilRow }] = await Promise.all([
