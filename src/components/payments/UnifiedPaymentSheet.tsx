@@ -2310,34 +2310,114 @@ export function UnifiedPaymentSheet({
 
             {pricingType === "custom" && (
               <>
-                <Label>Custom rates</Label>
-                <Field label="60 min rate (£)">
+                <Label>One-off payment</Label>
+
+                <div style={{ position: "relative", marginBottom: 12 }}>
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 12,
+                      top: 12,
+                      fontSize: 20,
+                      fontWeight: 700,
+                      color: NAVY,
+                    }}
+                  >
+                    £
+                  </span>
                   <input
                     inputMode="decimal"
-                    value={rate60}
-                    onChange={(e) => setRate60(e.target.value)}
+                    value={oneOffAmount}
+                    onChange={(e) => {
+                      const v = e.target.value.replace(/[^0-9.]/g, "");
+                      if ((v.match(/\./g) ?? []).length > 1) return;
+                      const parts = v.split(".");
+                      if (parts[1] && parts[1].length > 2) return;
+                      setOneOffAmount(v);
+                    }}
                     placeholder="0.00"
+                    style={{
+                      ...inputStyle,
+                      height: 52,
+                      paddingLeft: 30,
+                      fontSize: 22,
+                      fontWeight: 700,
+                    }}
+                  />
+                </div>
+
+                <Field label="Reason (optional)">
+                  <input
+                    value={oneOffReason}
+                    onChange={(e) => setOneOffReason(e.target.value)}
+                    placeholder="e.g. cancellation fee, deposit, top-up..."
                     style={inputStyle}
                   />
                 </Field>
-                <Field label="90 min rate (£)">
-                  <input
-                    inputMode="decimal"
-                    value={rate90}
-                    onChange={(e) => setRate90(e.target.value)}
-                    placeholder="0.00"
-                    style={inputStyle}
-                  />
-                </Field>
-                <Field label="120 min rate (£)">
-                  <input
-                    inputMode="decimal"
-                    value={rate120}
-                    onChange={(e) => setRate120(e.target.value)}
-                    placeholder="0.00"
-                    style={inputStyle}
-                  />
-                </Field>
+
+                <Label>Payment method</Label>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, 1fr)",
+                    gap: 6,
+                    marginBottom: 12,
+                  }}
+                >
+                  {[
+                    { key: "cash" as const, Icon: Banknote, label: "Cash" },
+                    { key: "bank_transfer" as const, Icon: Landmark, label: "Bank transfer" },
+                    { key: "qr" as const, Icon: QrCode, label: "QR" },
+                    { key: "link" as const, Icon: Link2, label: "Pay link" },
+                  ].map(({ key, Icon, label }) => {
+                    const active = oneOffMethod === key;
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setOneOffMethod(key)}
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 4,
+                          height: 54,
+                          borderRadius: 8,
+                          border: `1px solid ${active ? BLUE : BORDER}`,
+                          background: active ? BLUE_BG : WHITE,
+                          color: active ? BLUE : BODY,
+                          fontSize: 11,
+                          fontWeight: active ? 600 : 500,
+                          fontFamily: FONT,
+                          cursor: "pointer",
+                        }}
+                      >
+                        <Icon size={15} color={active ? BLUE : MUTED} />
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => void recordOneOffPayment()}
+                  style={{
+                    width: "100%",
+                    height: 44,
+                    borderRadius: 8,
+                    border: "none",
+                    background: BLUE,
+                    color: WHITE,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    fontFamily: FONT,
+                    cursor: "pointer",
+                  }}
+                >
+                  Record one-off payment
+                </button>
               </>
             )}
           </>
