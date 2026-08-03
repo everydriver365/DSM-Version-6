@@ -895,62 +895,18 @@ export function UnifiedPaymentSheet({
   const confirmRefund = async () => {
     if (!refundRow || !pupilId) return;
     try {
-      const nowIso = new Date().toISOString();
-      const { error } = await supabase.from("lesson_history").insert({
-        instructor_id: instructorId,
-        pupil_id: pupilId,
-        lesson_cost: -refundRow.amount,
-        amount_paid: -refundRow.amount,
-        payment_method: refundRow.method,
-        payment_status: "refunded",
+      await recordRefund({
+        pupilId,
+        amount: refundRow.amount,
+        method: refundRow.method ?? "refund",
         notes: `Refund of ${money(refundRow.amount)}`,
-        created_at: nowIso,
+        currentAccountBalance: Number(pupil?.account_balance ?? 0),
       });
-      if (error) throw error;
-
-      // Reverse the most recent paid lesson allocation where possible.
-      const { data: paidLessons } = await supabase
-        .from("lessons")
-        .select("id, amount_due, paid_amount")
-        .eq("pupil_id", pupilId)
-        .in("payment_status", ["paid", "partial"])
-        .is("deleted_at", null)
-        .order("lesson_date", { ascending: false })
-        .limit(20);
-      let remaining = refundRow.amount;
-      for (const l of (paidLessons ?? []) as {
-        id: string;
-        amount_due: number | null;
-        paid_amount: number | null;
-      }[]) {
-        if (remaining <= 0) break;
-        const paid = Number(l.paid_amount ?? 0);
-        if (paid <= 0) continue;
-        const take = Math.min(paid, remaining);
-        const next = paid - take;
-        await supabase
-          .from("lessons")
-          .update({
-            paid_amount: next,
-            payment_status: next <= 0 ? "unpaid" : "partial",
-          })
-          .eq("id", l.id);
-        remaining -= take;
-      }
-
-      // Anything left came out of account credit.
-      if (remaining > 0) {
-        await supabase
-          .from("pupils")
-          .update({
-            account_balance: Math.max(0, Number(pupil?.account_balance ?? 0) - remaining),
-          })
-          .eq("id", pupilId);
-      }
 
       toast.success("Refund recorded");
       setRefundRow(null);
       await refreshPupil();
+      setBalance(await getPupilBalance(pupilId));
       if (typeof window !== "undefined") {
         window.dispatchEvent(new Event("dsm-payment-recorded"));
       }
@@ -960,6 +916,7 @@ export function UnifiedPaymentSheet({
       toast.error("Couldn't record refund");
     }
   };
+
 
   // ---- pricing tab -------------------------------------------------------
   const selectPricingType = async (t: PricingType) => {
