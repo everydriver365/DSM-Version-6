@@ -331,6 +331,14 @@ export function UnifiedPaymentSheet({
     if (!balance) return 0;
     return Math.max(0, balance.lessonsPaid + balance.accountCredit);
   }, [balance]);
+  // Cap for the currently selected ledger row: can't refund more than the row,
+  // and can't refund more than the pupil's available paid/credit balance.
+  const refundRowMax = useMemo(() => {
+    if (!refundRow) return 0;
+    return Math.min(refundRow.amount, maxRefundableAmount);
+  }, [refundRow, maxRefundableAmount]);
+  const refundAmountNum = Number(refundAmount) || 0;
+
 
 
   // ---- sheet open/close events ------------------------------------------
