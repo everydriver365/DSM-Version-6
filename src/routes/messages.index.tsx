@@ -1368,14 +1368,18 @@ function RoomBrowser({
 }) {
   const [q, setQ] = useState("");
 
-  const { mine, available } = useMemo(() => {
+  const { mine, available, results, searching } = useMemo(() => {
     const needle = q.trim().toLowerCase();
     const match = (r: LocalChatRoom) =>
       !needle ||
       (r.area_name || "").toLowerCase().includes(needle) ||
-      (r.outcode || "").toLowerCase().includes(needle);
-    const visible = rooms.filter(match);
+      (r.outcode || "").toLowerCase().includes(needle) ||
+      (r.description || "").toLowerCase().includes(needle);
+    // Hide invite-only rooms the user hasn't joined
+    const visible = rooms.filter((r) => (!r.is_opt_in || joinedRoomIds.has(r.id)) && match(r));
     return {
+      searching: needle.length > 0,
+      results: visible,
       mine: visible.filter((r) => joinedRoomIds.has(r.id) || r.outcode === homeOutcode),
       available: visible.filter(
         (r) => !joinedRoomIds.has(r.id) && r.outcode !== homeOutcode && !r.is_opt_in,
