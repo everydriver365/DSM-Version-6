@@ -947,7 +947,7 @@ export function UnifiedPaymentSheet({
         currentAccountBalance: Number(pupil?.account_balance ?? 0),
       });
 
-      toast.success("Refund recorded");
+      toast.success(`Refund of ${money(refundRow.amount)} recorded`);
       setRefundRow(null);
       setRefundConfirmOpen(false);
       if (typeof window !== "undefined") {
@@ -956,7 +956,7 @@ export function UnifiedPaymentSheet({
       onSaved?.();
     } catch (e) {
       console.error("[UnifiedPaymentSheet] confirmRefund", e);
-      toast.error("Couldn't record refund");
+      toast.error(`Couldn't record ${money(refundRow.amount)} refund`);
     } finally {
       setRefundProcessing(false);
       if (pupilId) {
@@ -1132,6 +1132,7 @@ export function UnifiedPaymentSheet({
           notes: `Package cancellation — ${unusedHrs}h of ${blockTotalHrs}h unused`,
           currentAccountBalance: Number(pupil?.account_balance ?? 0),
         });
+        toast.success(`Refund of ${money(refundDue)} recorded`);
       }
       toast.success("Cancellation processed");
       onSaved?.();
