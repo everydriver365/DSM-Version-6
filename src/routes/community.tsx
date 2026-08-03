@@ -2049,6 +2049,20 @@ function ChatTab({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, scope, activeOutcode]);
 
+  // Ban check for this room
+  useEffect(() => {
+    if (!room || !userId) { setIsBanned(false); return; }
+    let cancelled = false;
+    (async () => {
+      const banned = await checkBan();
+      if (!cancelled) setIsBanned(banned);
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [room, userId]);
+
+
+
   // Load subscribed local rooms for the room switcher
   useEffect(() => {
     if (!userId || scope !== "local") return;
