@@ -933,6 +933,10 @@ export function UnifiedPaymentSheet({
   // ---- refunds -----------------------------------------------------------
   const confirmRefund = async () => {
     if (!refundRow || !pupilId || refundProcessing) return;
+    if (refundRow.amount > maxRefundableAmount) {
+      toast.error(`Refund amount exceeds available paid/credit balance (${money(maxRefundableAmount)})`);
+      return;
+    }
     setRefundProcessing(true);
     try {
       await recordRefund({
