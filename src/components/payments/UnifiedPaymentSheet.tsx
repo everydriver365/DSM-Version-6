@@ -407,7 +407,7 @@ export function UnifiedPaymentSheet({
     async (id: string) => {
       const bal = await getPupilBalance(id);
       setBalance(bal);
-      setAmount(bal.outstanding > 0 ? bal.outstanding.toFixed(2) : "");
+      setAmount(""); // Always start blank — instructor enters amount
 
       const { data: ls } = await supabase
         .from("lessons")
