@@ -790,6 +790,14 @@ export function UnifiedPaymentSheet({
         console.error("[UnifiedPaymentSheet] handleRecordPayment", e);
         toast.error("Couldn't record payment");
       } finally {
+        if (pupilId) {
+          try {
+            await refreshPupil();
+            setBalance(await getPupilBalance(pupilId));
+          } catch (refreshErr) {
+            console.error("[UnifiedPaymentSheet] refresh after handleRecordPayment", refreshErr);
+          }
+        }
         setSaving(false);
       }
     },
