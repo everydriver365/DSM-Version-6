@@ -79,9 +79,6 @@ interface PupilRow {
   ni_payer: string | null;
   ni_reference: string | null;
   account_balance: number | null;
-  custom_rate: number | null;
-  custom_rate_90: number | null;
-  custom_rate_120: number | null;
 }
 
 interface InstructorRow {
@@ -109,11 +106,16 @@ interface HistoryRow {
   notes: string | null;
 }
 
-const PRICING_OPTIONS: { key: PricingType; label: string; Icon: typeof Package }[] = [
+const PRICING_OPTIONS: {
+  key: PricingType;
+  label: string;
+  sublabel?: string;
+  Icon: React.ComponentType<{ size?: number; color?: string }>;
+}[] = [
   { key: "block", label: "Block", Icon: Package },
   { key: "national_intensives", label: "National Intensives", Icon: Building2 },
   { key: "standard", label: "Standard", Icon: Clock },
-  { key: "custom", label: "Custom rate", Icon: Pencil },
+  { key: "custom", label: "One-off", sublabel: "Single occasion payment", Icon: IconReceipt },
 ];
 
 const METHOD_LABEL: Record<PayMethod, string> = {
