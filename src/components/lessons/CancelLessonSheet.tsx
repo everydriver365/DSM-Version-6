@@ -125,7 +125,9 @@ export function CancelLessonSheet({
       return;
     }
 
-    // Refund prepaid balance back to pupil credit if lesson was prepaid.
+    // Prepaid lesson cancelled — routed through the payments API so the
+    // reversal is audited (lesson_history + payments) instead of silently
+    // patching account_balance here.
     if (isPrepaid && amountDue > 0) {
       const { data: pupilRow, error: readErr } = await supabase
         .from("pupils")
@@ -134,12 +136,19 @@ export function CancelLessonSheet({
         .maybeSingle();
       if (readErr) console.error("[cancel] pupil read error", readErr);
       const current = Number((pupilRow as { account_balance: number | null } | null)?.account_balance ?? 0);
-      const { error: refundErr } = await supabase
-        .from("pupils")
-        .update({ account_balance: current + amountDue })
-        .eq("id", pupilId);
-      if (refundErr) console.error("[cancel] account_balance refund error", refundErr);
+      try {
+        await recordRefund({
+          pupilId,
+          amount: amountDue,
+          method: "cash",
+          notes: "Lesson cancelled — refund to account credit",
+          currentAccountBalance: current,
+        });
+      } catch (e) {
+        console.error("[cancel] recordRefund error", e);
+      }
     }
+
 
     const { data: userRes } = await supabase.auth.getUser();
     const instructorId = userRes.user?.id ?? null;
