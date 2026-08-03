@@ -397,6 +397,7 @@ export function UnifiedPaymentSheet({
     setPayUrl(null);
     setRefundRow(null);
     setRefundAmount("");
+    setRefundReason("");
     setRefundConfirmOpen(false);
     setRefundProcessing(false);
     setPaymentSuccess(null);
@@ -2458,6 +2459,7 @@ export function UnifiedPaymentSheet({
                                   }
                                   setRefundRow(r);
                                   setRefundAmount(String(rowMax));
+                                  setRefundReason("");
                                 }}
                                 style={{
                                   height: 24,
