@@ -12,6 +12,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import {
   X,
   Calendar,
+  CalendarPlus,
   PoundSterling,
   CreditCard,
   CalendarCheck,
@@ -38,12 +39,13 @@ import {
   BarChart3,
   Award,
   MessageCircle,
+  Phone,
   Settings as SettingsIcon,
   RefreshCw,
   HelpCircle,
   LogOut,
 } from "lucide-react";
-import { IconLogout } from "@tabler/icons-react";
+import { IconLogout, IconMenu2 } from "@tabler/icons-react";
 
 import appCss from "../styles.css?url";
 import icon192 from "../assets/icon-192.png.asset.json";
