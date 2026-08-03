@@ -363,6 +363,7 @@ export function UnifiedPaymentSheet({
 
   const handleRecordAnother = useCallback(() => {
     setPaymentSuccess(null);
+    setSuccessInteracted(false);
     setAmount("");
     setMethod("cash");
     setNote("");
@@ -373,10 +374,11 @@ export function UnifiedPaymentSheet({
   }, []);
 
   useEffect(() => {
-    if (!paymentSuccess || editPayment || deletePayment) return;
+    if (!paymentSuccess || editPayment || deletePayment || successInteracted) return;
     const t = setTimeout(() => handlePaymentDone(), 4000);
     return () => clearTimeout(t);
-  }, [paymentSuccess, editPayment, deletePayment, handlePaymentDone]);
+  }, [paymentSuccess, editPayment, deletePayment, successInteracted, handlePaymentDone]);
+
 
   // ---- reset on open -----------------------------------------------------
   useEffect(() => {
