@@ -317,6 +317,32 @@ function MessagesIndexPage() {
     })();
   }, []);
 
+  // Load joined local rooms for the room switcher
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data: rooms } = await supabase
+        .from("local_chat_rooms")
+        .select("id, outcode, area_name, instructor_count")
+        .neq("outcode", "UK");
+      if (cancelled) return;
+      const { data: subs } = await supabase
+        .from("chat_room_subscriptions")
+        .select("room_id")
+        .eq("instructor_id", userId);
+      if (cancelled) return;
+      const subIds = new Set(((subs ?? []) as { room_id: string }[]).map((s) => s.room_id));
+      const all = (rooms ?? []) as LocalChatRoom[];
+      setMyRooms(all.filter((r) => subIds.has(r.id) || r.outcode === homeOutcode));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, homeOutcode]);
+
+
+
   // Fetch messages + realtime once we have a room
   useEffect(() => {
     if (!room) return;
