@@ -39,7 +39,45 @@ const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
 
-const FONT = { fontFamily: "Inter, sans-serif" } as const;
+const FONT = { fontFamily: "Poppins, Inter, sans-serif" } as const;
+
+const NAVY = "#0B1F3A";
+const BLUE = "#1877D6";
+const RED = "#CC2229";
+const GREY = "#6B7686";
+const BORDER = "#E4E8EF";
+const CANVAS = "#EEF2F7";
+
+const PIN_KEY = "dsm_msg_pinned";
+const MUTE_KEY = "dsm_msg_muted";
+
+function readKeySet(key: string): Set<string> {
+  if (typeof window === "undefined") return new Set();
+  try {
+    const raw = localStorage.getItem(key);
+    return new Set(raw ? (JSON.parse(raw) as string[]) : []);
+  } catch {
+    return new Set();
+  }
+}
+function writeKeySet(key: string, s: Set<string>) {
+  try {
+    localStorage.setItem(key, JSON.stringify(Array.from(s)));
+  } catch {
+    /* ignore */
+  }
+}
+
+/** Today -> "14:32", this week -> "Mon", older -> "28 Jul" */
+function formatStamp(iso: string) {
+  const d = new Date(iso);
+  const now = new Date();
+  if (d.toDateString() === now.toDateString())
+    return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  const diffDays = (now.getTime() - d.getTime()) / 86400000;
+  if (diffDays < 7) return d.toLocaleDateString("en-GB", { weekday: "short" });
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
 
 const AVATAR_PALETTE = ["#1877D6", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#CC2229", "#854F0B", "#185F8A"];
 function avatarColor(id: string) {
