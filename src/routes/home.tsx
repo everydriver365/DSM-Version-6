@@ -7380,7 +7380,8 @@ function HomePage() {
               return;
             }
 
-            // Reverse account_balance credit if the lesson was prepaid from credit
+            // Reverse the credit through the payments API so the unwind is
+            // audited rather than a bare account_balance patch.
             if (wasPrepaid && lessonRow?.pupil_id) {
               const { data: pRow } = await supabase
                 .from("pupils")
@@ -7388,11 +7389,21 @@ function HomePage() {
                 .eq("id", lessonRow.pupil_id)
                 .maybeSingle();
               const current = Number((pRow as { account_balance?: number | null } | null)?.account_balance ?? 0);
-              await supabase
-                .from("pupils")
-                .update({ account_balance: current + restoreAmount })
-                .eq("id", lessonRow.pupil_id);
+              if (restoreAmount > 0) {
+                try {
+                  await recordRefund({
+                    pupilId: lessonRow.pupil_id,
+                    amount: restoreAmount,
+                    method: "cash",
+                    notes: "Gap filler lesson cancelled — credit restored",
+                    currentAccountBalance: current,
+                  });
+                } catch (e) {
+                  console.error("[home] recordRefund error", e);
+                }
+              }
             }
+
 
             // Soft-delete legacy payments row(s) for this lesson
             const { error: payErr } = await supabase
