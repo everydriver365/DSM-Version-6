@@ -2039,6 +2039,20 @@ export function UnifiedPaymentSheet({
                   />
                 </Field>
 
+                <div
+                  style={{
+                    fontSize: 10,
+                    color: MUTED,
+                    marginTop: 8,
+                    marginBottom: 12,
+                    lineHeight: 1.4,
+                  }}
+                >
+                  Enter the total hours purchased and the full package price.
+                  When saved, the hours will be credited to this pupil and the
+                  payment will appear in their payment history.
+                </div>
+
                 {(() => {
                   const newPrice = packagePrice === "" ? 0 : Number(packagePrice);
                   const prevPrice = Number(pupil?.prepaid_amount_paid ?? 0);
