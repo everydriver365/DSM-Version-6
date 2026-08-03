@@ -765,9 +765,6 @@ export function UnifiedPaymentSheet({
             .maybeSingle();
           historyId = (latest as { id: string } | null)?.id ?? "";
 
-          const freshBal = await getPupilBalance(pupilId);
-          setBalance(freshBal);
-          await refreshPupil();
         }
 
         toast.success(customMode ? "Custom payment recorded" : "Payment recorded");
@@ -793,6 +790,14 @@ export function UnifiedPaymentSheet({
         console.error("[UnifiedPaymentSheet] handleRecordPayment", e);
         toast.error("Couldn't record payment");
       } finally {
+        if (pupilId) {
+          try {
+            await refreshPupil();
+            setBalance(await getPupilBalance(pupilId));
+          } catch (refreshErr) {
+            console.error("[UnifiedPaymentSheet] refresh after handleRecordPayment", refreshErr);
+          }
+        }
         setSaving(false);
       }
     },
@@ -905,8 +910,6 @@ export function UnifiedPaymentSheet({
 
       toast.success("Refund recorded");
       setRefundRow(null);
-      await refreshPupil();
-      setBalance(await getPupilBalance(pupilId));
       if (typeof window !== "undefined") {
         window.dispatchEvent(new Event("dsm-payment-recorded"));
       }
@@ -914,6 +917,15 @@ export function UnifiedPaymentSheet({
     } catch (e) {
       console.error("[UnifiedPaymentSheet] confirmRefund", e);
       toast.error("Couldn't record refund");
+    } finally {
+      if (pupilId) {
+        try {
+          await refreshPupil();
+          setBalance(await getPupilBalance(pupilId));
+        } catch (refreshErr) {
+          console.error("[UnifiedPaymentSheet] refresh after confirmRefund", refreshErr);
+        }
+      }
     }
   };
 
@@ -992,7 +1004,6 @@ export function UnifiedPaymentSheet({
             method: packageMethod,
             pupilName: pupil?.name ?? "",
           });
-          setBalance(await getPupilBalance(pupilId));
         }
       }
 
@@ -1001,12 +1012,19 @@ export function UnifiedPaymentSheet({
           ? `Block package recorded — ${hoursTotal} hrs · ${money(newPrice)}`
           : "Pricing updated",
       );
-      await refreshPupil();
       onSaved?.();
     } catch (e) {
       console.error("[UnifiedPaymentSheet] savePricing", e);
       toast.error("Couldn't save pricing");
     } finally {
+      if (pupilId) {
+        try {
+          await refreshPupil();
+          setBalance(await getPupilBalance(pupilId));
+        } catch (refreshErr) {
+          console.error("[UnifiedPaymentSheet] refresh after savePricing", refreshErr);
+        }
+      }
       setSavingPricing(false);
     }
   };
@@ -1071,13 +1089,19 @@ export function UnifiedPaymentSheet({
         });
       }
       toast.success("Cancellation processed");
-      await refreshPupil();
-      setBalance(await getPupilBalance(pupilId));
       onSaved?.();
-
     } catch (e) {
       console.error("[UnifiedPaymentSheet] processCancellation", e);
       toast.error("Couldn't process cancellation");
+    } finally {
+      if (pupilId) {
+        try {
+          await refreshPupil();
+          setBalance(await getPupilBalance(pupilId));
+        } catch (refreshErr) {
+          console.error("[UnifiedPaymentSheet] refresh after processCancellation", refreshErr);
+        }
+      }
     }
   };
 
