@@ -2136,7 +2136,7 @@ export function UnifiedPaymentSheet({
                   textAlign: "center",
                 }}
               >
-                <QRCodeSVG value={qrUrl} size={120} />
+                <QRCodeSVG value={qrUrl} size={160} />
                 <div style={{ fontSize: 12, color: NAVY, fontWeight: 600, marginTop: 10 }}>
                   Scan to pay {money(amountNum)}
                 </div>
@@ -2155,7 +2155,7 @@ export function UnifiedPaymentSheet({
                     cursor: "pointer",
                   }}
                 >
-                  Full screen
+                  Full screen ↗
                 </button>
               </div>
             )}
