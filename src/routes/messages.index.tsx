@@ -930,6 +930,11 @@ function MessagesIndexPage() {
         <LocalChatView
           areaName={areaName}
           room={room}
+          myRooms={myRooms}
+          onSelectRoom={(r) => {
+            setRoom(r);
+            setAreaName(r.area_name || r.outcode);
+          }}
           messages={localMessages}
           loading={localLoading}
           userId={userId}
