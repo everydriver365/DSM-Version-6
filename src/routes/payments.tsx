@@ -9,7 +9,7 @@ import WorkspaceDots from "../components/dsm/WorkspaceDots";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { recordPayment, correctPaymentRecord } from "@/lib/payments";
+import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { calculateOutstandingOwed, calculatePaidOutstandingBreakdown } from "@/lib/paymentsOwed";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";
