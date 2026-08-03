@@ -3029,6 +3029,7 @@ export function UnifiedPaymentSheet({
               {refundRow && refundAmountNum < refundRow.amount
                 ? ` (from a ${money(refundRow.amount)} payment)`
                 : ""}
+              {refundReason.trim() ? `. Reason: ${refundReason.trim()}` : ""}
               . This will update their balance and cannot be undone.
             </AlertDialogDescription>
 
