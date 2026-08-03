@@ -18,6 +18,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { toast } from "sonner";
+import { IconCircleCheck } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { getPupilBalance, type PupilBalance } from "@/lib/payments";
@@ -242,6 +243,11 @@ export function UnifiedPaymentSheet({
   const [payUrl, setPayUrl] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
+  const [paymentSuccess, setPaymentSuccess] = useState<{
+    amount: number;
+    method: string;
+    pupilName: string;
+  } | null>(null);
 
   // --- pricing tab state ---
   const [pricingType, setPricingType] = useState<PricingType>("standard");
@@ -273,6 +279,28 @@ export function UnifiedPaymentSheet({
     onClose();
   }, [onClose]);
 
+  const handlePaymentDone = useCallback(() => {
+    onSaved?.();
+    handleClose();
+  }, [onSaved, handleClose]);
+
+  const handleRecordAnother = useCallback(() => {
+    setPaymentSuccess(null);
+    setAmount("");
+    setMethod("cash");
+    setNote("");
+    setPartial(false);
+    setQrUrl(null);
+    setPayUrl(null);
+    setQrPaymentId(null);
+  }, []);
+
+  useEffect(() => {
+    if (!paymentSuccess) return;
+    const t = setTimeout(() => handlePaymentDone(), 3000);
+    return () => clearTimeout(t);
+  }, [paymentSuccess, handlePaymentDone]);
+
   // ---- reset on open -----------------------------------------------------
   useEffect(() => {
     if (!open) return;
@@ -290,6 +318,7 @@ export function UnifiedPaymentSheet({
     setQrPaymentId(null);
     setPayUrl(null);
     setRefundRow(null);
+    setPaymentSuccess(null);
   }, [open, initialPupilId]);
 
   // ---- load pupils + instructor -----------------------------------------
@@ -637,8 +666,13 @@ export function UnifiedPaymentSheet({
         if (typeof window !== "undefined") {
           window.dispatchEvent(new Event("dsm-payment-recorded"));
         }
-        onSaved?.();
-        // 9) Ready for the next payment — keep the pupil selected.
+        setPaymentSuccess({
+          amount: amountNum,
+          method: m,
+          pupilName: pupil?.name ?? "Custom",
+        });
+        await refreshPupil();
+        // Ready for the next payment — keep the pupil selected.
         setAmount("");
         setNote("");
         setQrUrl(null);
@@ -662,7 +696,6 @@ export function UnifiedPaymentSheet({
       pupil,
       applyPaymentToLessons,
       refreshPupil,
-      onSaved,
     ],
   );
 
@@ -995,11 +1028,97 @@ export function UnifiedPaymentSheet({
       title={customMode ? "Custom payment" : "Payments"}
       subtitle={pupil?.name ?? undefined}
       onClose={handleClose}
-      footer={footer}
+      footer={paymentSuccess ? null : footer}
     >
       <style>{`@keyframes ups-pulse{0%,100%{opacity:1}50%{opacity:.4}}`}</style>
 
-      <div style={{ fontFamily: FONT, background: WHITE, paddingBottom: 4 }}>
+      <div style={{ fontFamily: FONT, background: WHITE, paddingBottom: 4, position: "relative" }}>
+        {paymentSuccess && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              zIndex: 10,
+              background: WHITE,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              padding: 24,
+            }}
+          >
+            <IconCircleCheck size={48} color={GREEN} />
+            <div style={{ fontSize: 16, fontWeight: 600, color: NAVY, marginTop: 16 }}>Payment recorded</div>
+            <div style={{ fontSize: 13, color: MUTED, marginTop: 4 }}>
+              £{paymentSuccess.amount.toFixed(2)} {METHOD_LABEL[paymentSuccess.method as PayMethod] || paymentSuccess.method}
+            </div>
+            <div style={{ fontSize: 13, color: MUTED }}>for {paymentSuccess.pupilName}</div>
+            {balance && (
+              <div style={{ width: "100%", marginTop: 16 }}>
+                <SummaryBar
+                  cells={
+                    isPackage
+                      ? [
+                          { label: "Package", value: money(balance.packageTotal) },
+                          { label: "Paid", value: money(balance.packagePaid), color: GREEN },
+                          {
+                            label: "Outstanding",
+                            value: money(balance.packageOutstanding),
+                            color: balance.packageOutstanding > 0 ? RED : GREEN,
+                          },
+                        ]
+                      : [
+                          { label: "Total owed", value: money(balance.lessonsOwed) },
+                          { label: "Paid", value: money(balance.lessonsPaid), color: GREEN },
+                          {
+                            label: "Outstanding",
+                            value: money(balance.outstanding),
+                            color: balance.outstanding > 0 ? RED : GREEN,
+                          },
+                        ]
+                  }
+                />
+              </div>
+            )}
+            <div style={{ display: "flex", gap: 12, marginTop: 24, width: "100%" }}>
+              <button
+                type="button"
+                onClick={handleRecordAnother}
+                style={{
+                  flex: 1,
+                  height: 44,
+                  borderRadius: 8,
+                  border: `1px solid ${BORDER}`,
+                  background: WHITE,
+                  color: NAVY,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                }}
+              >
+                Record another payment
+              </button>
+              <button
+                type="button"
+                onClick={handlePaymentDone}
+                style={{
+                  flex: 1,
+                  height: 44,
+                  borderRadius: 8,
+                  border: "none",
+                  background: BLUE,
+                  color: WHITE,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                }}
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        )}
         {/* ---------------- PUPIL SELECTOR ---------------- */}
         {pickerOpen && (
           <div style={{ marginBottom: 12 }}>
