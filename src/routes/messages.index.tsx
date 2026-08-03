@@ -333,7 +333,7 @@ function MessagesIndexPage() {
     (async () => {
       const { data: rooms } = await supabase
         .from("local_chat_rooms")
-        .select("id, outcode, area_name, instructor_count")
+        .select("id, outcode, area_name, instructor_count, is_opt_in")
         .neq("outcode", "UK");
       if (cancelled) return;
       const { data: subs } = await supabase
@@ -343,7 +343,9 @@ function MessagesIndexPage() {
       if (cancelled) return;
       const subIds = new Set(((subs ?? []) as { room_id: string }[]).map((s) => s.room_id));
       const all = (rooms ?? []) as LocalChatRoom[];
-      setMyRooms(all.filter((r) => subIds.has(r.id) || r.outcode === homeOutcode));
+      // Hide private (invite-only) rooms the user hasn't joined
+      setMyRooms(all.filter((r) => !r.is_opt_in || subIds.has(r.id)));
+      setJoinedRoomIds(subIds);
     })();
     return () => {
       cancelled = true;
