@@ -2845,7 +2845,12 @@ export function UnifiedPaymentSheet({
       )}
 
       {/* Refund confirmation dialog */}
-      <AlertDialog open={refundConfirmOpen} onOpenChange={setRefundConfirmOpen}>
+      <AlertDialog
+        open={refundConfirmOpen}
+        onOpenChange={(open) => {
+          if (!refundProcessing) setRefundConfirmOpen(open);
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm refund</AlertDialogTitle>
