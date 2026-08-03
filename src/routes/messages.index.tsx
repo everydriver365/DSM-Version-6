@@ -1641,6 +1641,14 @@ function LocalChatView(props: {
       >
         <button
           type="button"
+          aria-label="Back to messages"
+          onClick={onBack}
+          style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
+        >
+          <IconChevronLeft size={20} color={NAVY} stroke={1.8} />
+        </button>
+        <button
+          type="button"
           onClick={() => setRoomSelectorOpen((v) => !v)}
           style={{
             flex: 1,
