@@ -287,6 +287,7 @@ export function UnifiedPaymentSheet({
   const [payUrl, setPayUrl] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
+  const [refundAmount, setRefundAmount] = useState("");
   const [paymentSuccess, setPaymentSuccess] = useState<{
     historyId: string;
     amount: number;
