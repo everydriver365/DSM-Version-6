@@ -2164,7 +2164,14 @@ function ChatTab({
     if (!room || !userId) return;
     const msg = newMessage.trim();
     if (!msg) return;
+    const banned = await checkBan();
+    if (banned) {
+      setIsBanned(true);
+      toast.error("You have been removed from this chat room");
+      return;
+    }
     setNewMessage("");
+
     const { error } = await supabase.from("local_chat_messages").insert({
       room_id: room.id,
       instructor_id: userId,
