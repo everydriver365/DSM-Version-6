@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
-import { ChevronLeft, Star, Users, BookOpen, Settings, FileText, FileCheck, ShoppingBag, Video, Mic, Briefcase, MessageCircle, PlayCircle, Pencil } from "lucide-react";
+import { ChevronLeft, Star, Users, BookOpen, Settings, FileText, FileCheck, ShoppingBag, Video, Mic, Briefcase, MessageCircle, PlayCircle, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -141,6 +141,7 @@ type ChatRoom = {
   is_opt_in: boolean | null;
   description: string | null;
   image_url: string | null;
+  deleted_at: string | null;
 };
 
 function ChatRoomsSection() {
@@ -160,21 +161,55 @@ function ChatRoomsSection() {
   const [editPrivate, setEditPrivate] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [editSaving, setEditSaving] = useState(false);
+  const [showDeleted, setShowDeleted] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchRooms();
-  }, []);
+  }, [showDeleted]);
 
   async function fetchRooms() {
-    const { data, error } = await supabase
+    let q = supabase
       .from("local_chat_rooms")
-      .select("id, area_name, outcode, instructor_count, is_opt_in, description, image_url")
-      .order("area_name", { ascending: true });
+      .select("id, area_name, outcode, instructor_count, is_opt_in, description, image_url, deleted_at");
+    q = showDeleted ? q.not("deleted_at", "is", null) : q.is("deleted_at", null);
+    const { data, error } = await q.order("area_name", { ascending: true });
     if (error) {
       console.error("[admin] fetch rooms error", error);
       return;
     }
     setRooms((data as ChatRoom[]) || []);
+  }
+
+  async function softDeleteRoom(room: ChatRoom) {
+    setDeletingId(room.id);
+    const { error } = await supabase
+      .from("local_chat_rooms")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", room.id);
+    setDeletingId(null);
+    if (error) {
+      toast.error("Could not delete room");
+      return;
+    }
+    toast.success("Room deleted");
+    if (editingId === room.id) cancelEdit();
+    await fetchRooms();
+  }
+
+  async function restoreRoom(room: ChatRoom) {
+    setDeletingId(room.id);
+    const { error } = await supabase
+      .from("local_chat_rooms")
+      .update({ deleted_at: null })
+      .eq("id", room.id);
+    setDeletingId(null);
+    if (error) {
+      toast.error("Could not restore room");
+      return;
+    }
+    toast.success("Room restored");
+    await fetchRooms();
   }
 
   function startEdit(room: ChatRoom) {
@@ -365,12 +400,41 @@ function ChatRoomsSection() {
         {error && <div style={{ color: "#CC2229", fontSize: 13 }}>{error}</div>}
       </form>
 
-      <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", marginBottom: 12 }}>
-        Existing rooms
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 10,
+          marginBottom: 12,
+        }}
+      >
+        <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+          {showDeleted ? "Deleted rooms" : "Existing rooms"}
+        </div>
+        <button
+          type="button"
+          onClick={() => setShowDeleted((v) => !v)}
+          style={{
+            height: 30,
+            padding: "0 12px",
+            borderRadius: 8,
+            border: "1px solid #E4E8EF",
+            background: showDeleted ? "#EAF2FC" : "#fff",
+            color: showDeleted ? "#1877D6" : "#6B7280",
+            fontSize: 12,
+            fontWeight: 700,
+            cursor: "pointer",
+          }}
+        >
+          {showDeleted ? "Show active" : "Show deleted"}
+        </button>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {rooms.length === 0 ? (
-          <div style={{ color: "#6B7280", fontSize: 14 }}>No rooms yet.</div>
+          <div style={{ color: "#6B7280", fontSize: 14 }}>
+            {showDeleted ? "No deleted rooms." : "No rooms yet."}
+          </div>
         ) : (
           rooms.map((room) => (
             <div
@@ -433,6 +497,28 @@ function ChatRoomsSection() {
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                   <div style={{ color: "#6B7280", fontSize: 12 }}>{room.instructor_count ?? 0}</div>
+                  {room.deleted_at ? (
+                    <button
+                      type="button"
+                      onClick={() => void restoreRoom(room)}
+                      disabled={deletingId === room.id}
+                      style={{
+                        height: 30,
+                        padding: "0 12px",
+                        borderRadius: 8,
+                        border: "1px solid #EEF2F7",
+                        background: "#fff",
+                        color: "#1877D6",
+                        fontSize: 12,
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        opacity: deletingId === room.id ? 0.6 : 1,
+                      }}
+                    >
+                      {deletingId === room.id ? "Restoring…" : "Restore"}
+                    </button>
+                  ) : (
+                    <>
                   <button
                     type="button"
                     aria-label="Edit room"
@@ -454,6 +540,27 @@ function ChatRoomsSection() {
                   </button>
                   <button
                     type="button"
+                    aria-label="Delete room"
+                    onClick={() => void softDeleteRoom(room)}
+                    disabled={deletingId === room.id}
+                    style={{
+                      height: 30,
+                      width: 30,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 8,
+                      border: "1px solid #F3D5D7",
+                      background: "#fff",
+                      color: "#CC2229",
+                      cursor: "pointer",
+                      opacity: deletingId === room.id ? 0.6 : 1,
+                    }}
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => toggleOptIn(room)}
                     disabled={savingId === room.id}
                     style={{
@@ -471,6 +578,8 @@ function ChatRoomsSection() {
                   >
                     {savingId === room.id ? "Saving…" : room.is_opt_in ? "Make public" : "Make private"}
                   </button>
+                    </>
+                  )}
                 </div>
               </div>
 
