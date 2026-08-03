@@ -5234,6 +5234,7 @@ function HomePage() {
                       <span style={{
                         fontSize: 11, fontWeight: 600, color: sevColor, fontFamily: PF_C,
                         whiteSpace: 'normal', overflowWrap: 'break-word', wordWrap: 'break-word',
+                        lineHeight: '1.35',
                       }}>
                         {alertPreview}
                       </span>
