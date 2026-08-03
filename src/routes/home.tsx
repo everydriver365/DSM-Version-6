@@ -1841,7 +1841,7 @@ function HomePage() {
 
         let query = supabase
           .from('local_alerts')
-          .select('id, alert_type, description, location_name, upvotes, expires_at, created_at, area, outcode, instructor_id, owner_last_read_at')
+          .select('id, alert_type, description, location_name, upvotes, expires_at, created_at, area, outcode, instructor_id, owner_last_read_at, source')
           .eq('is_active', true)
           .gt('expires_at', new Date().toISOString())
           .order('upvotes', { ascending: false })
