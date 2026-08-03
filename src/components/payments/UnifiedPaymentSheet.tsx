@@ -21,6 +21,16 @@ import { IconCircleCheck, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { recordPayment, recordRefund, recordStandalonePayment, getPupilBalance, type PupilBalance } from "@/lib/payments";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 // ---------------------------------------------------------------------------
 // Design tokens — Checkfront × DSM
@@ -297,6 +307,8 @@ export function UnifiedPaymentSheet({
     date: string | null;
   } | null>(null);
   const [savingEdit, setSavingEdit] = useState(false);
+  const [refundConfirmOpen, setRefundConfirmOpen] = useState(false);
+  const [refundProcessing, setRefundProcessing] = useState(false);
 
   // --- pricing tab state ---
   const [pricingType, setPricingType] = useState<PricingType>("standard");
@@ -369,6 +381,8 @@ export function UnifiedPaymentSheet({
     setQrFullscreen(false);
     setPayUrl(null);
     setRefundRow(null);
+    setRefundConfirmOpen(false);
+    setRefundProcessing(false);
     setPaymentSuccess(null);
     setEditPayment(null);
     setDeletePayment(null);
@@ -913,7 +927,8 @@ export function UnifiedPaymentSheet({
 
   // ---- refunds -----------------------------------------------------------
   const confirmRefund = async () => {
-    if (!refundRow || !pupilId) return;
+    if (!refundRow || !pupilId || refundProcessing) return;
+    setRefundProcessing(true);
     try {
       await recordRefund({
         pupilId,
@@ -925,6 +940,7 @@ export function UnifiedPaymentSheet({
 
       toast.success("Refund recorded");
       setRefundRow(null);
+      setRefundConfirmOpen(false);
       if (typeof window !== "undefined") {
         window.dispatchEvent(new Event("dsm-payment-recorded"));
       }
@@ -933,6 +949,7 @@ export function UnifiedPaymentSheet({
       console.error("[UnifiedPaymentSheet] confirmRefund", e);
       toast.error("Couldn't record refund");
     } finally {
+      setRefundProcessing(false);
       if (pupilId) {
         try {
           await refreshPupil();
@@ -2198,7 +2215,7 @@ export function UnifiedPaymentSheet({
                     <div style={{ display: "flex", gap: 6, marginTop: 10 }}>
                       <button
                         type="button"
-                        onClick={() => void confirmRefund()}
+                        onClick={() => setRefundConfirmOpen(true)}
                         style={{
                           flex: 1,
                           height: 34,
@@ -2826,6 +2843,37 @@ export function UnifiedPaymentSheet({
           </div>
         </div>
       )}
+
+      {/* Refund confirmation dialog */}
+      <AlertDialog
+        open={refundConfirmOpen}
+        onOpenChange={(open) => {
+          if (!refundProcessing) setRefundConfirmOpen(open);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm refund</AlertDialogTitle>
+            <AlertDialogDescription>
+              You are about to record a {money(refundRow?.amount ?? 0)} refund
+              {refundRow?.method ? ` via ${refundRow.method}` : ""} for {pupil?.name ?? "this pupil"}.
+              This will update their balance and cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={refundProcessing}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => void confirmRefund()}
+              disabled={refundProcessing}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {refundProcessing ? "Processing..." : "Confirm refund"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </BottomSheet>
   );
 }
