@@ -1400,23 +1400,32 @@ function RoomBrowser({
         background: "#FFFFFF",
       }}
     >
-      <div
-        style={{
-          width: 56,
-          height: 56,
-          borderRadius: "50%",
-          background: NAVY,
-          color: "#FFFFFF",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 18,
-          fontWeight: 500,
-          flexShrink: 0,
-        }}
-      >
-        {nameInitials(r.area_name || r.outcode)}
-      </div>
+      {r.image_url ? (
+        <img
+          src={r.image_url}
+          alt={r.area_name || r.outcode}
+          style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+        />
+      ) : (
+        <div
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: "50%",
+            background: NAVY,
+            color: "#FFFFFF",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 18,
+            fontWeight: 500,
+            flexShrink: 0,
+          }}
+        >
+          {nameInitials(r.area_name || r.outcode)}
+        </div>
+      )}
+
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
