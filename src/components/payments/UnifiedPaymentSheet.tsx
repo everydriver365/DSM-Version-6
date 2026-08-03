@@ -395,6 +395,7 @@ export function UnifiedPaymentSheet({
     setQrFullscreen(false);
     setPayUrl(null);
     setRefundRow(null);
+    setRefundAmount("");
     setRefundConfirmOpen(false);
     setRefundProcessing(false);
     setPaymentSuccess(null);
