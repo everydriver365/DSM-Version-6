@@ -1,6 +1,18 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MessageCircle, Search, Send, Flag, X, Briefcase, CheckCheck as Check } from "lucide-react";
+import {
+  IconSearch,
+  IconPinFilled,
+  IconPin,
+  IconSpeakerphone,
+  IconPlus,
+  IconChevronRight,
+  IconChevronLeft,
+  IconBellOff,
+  IconBell,
+  IconChecks,
+} from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import BottomNav from "../components/dsm/BottomNav";
