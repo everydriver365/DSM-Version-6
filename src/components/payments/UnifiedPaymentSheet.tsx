@@ -3009,12 +3009,12 @@ export function UnifiedPaymentSheet({
             value={qrUrl}
             size={Math.min(window.innerWidth, window.innerHeight) - 80}
           />
-          <div style={{ fontSize: 16, fontWeight: 600, color: WHITE, marginTop: 24 }}>
+          <div style={{ fontSize: 16, fontWeight: 600, color: WHITE, marginTop: 16 }}>
             Scan to pay {money(amountNum)}
           </div>
           <div
             style={{
-              fontSize: 13,
+              fontSize: 12,
               color: MUTED,
               marginTop: 8,
               animation: "ups-pulse 1.6s ease-in-out infinite",
@@ -3022,8 +3022,15 @@ export function UnifiedPaymentSheet({
           >
             ● Waiting for payment...
           </div>
-          <div style={{ fontSize: 12, color: MUTED, marginTop: "auto", paddingBottom: 24 }}>
-            Tap to close
+          <div
+            style={{
+              position: "absolute",
+              bottom: 32,
+              fontSize: 11,
+              color: "rgba(255,255,255,0.4)",
+            }}
+          >
+            Tap anywhere to close
           </div>
         </div>
       )}
