@@ -6528,25 +6528,6 @@ function HomePage() {
                                 </div>
                               )}
                               <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                                <div aria-hidden style={{ position: 'relative', flexShrink: 0 }}>
-                                  {isLive && (
-                                    <span
-                                      aria-label="Live"
-                                      style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        right: 0,
-                                        width: 8,
-                                        height: 8,
-                                        borderRadius: 999,
-                                        backgroundColor: '#DC2626',
-                                        boxShadow: '0 0 0 2px #FFFFFF',
-                                        zIndex: 1,
-                                      }}
-                                    />
-                                  )}
-                                  <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={36} />
-                                </div>
                                 <span style={{ flex: 1, minWidth: 0, fontSize: 15, fontWeight: 600, color: isCancelled ? '#6B7280' : '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none' }}>
                                   {name}
                                 </span>
