@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
+import { recordRefund } from "@/lib/payments";
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
