@@ -296,6 +296,7 @@ export function UnifiedPaymentSheet({
     setQrPaymentId(null);
     setPayUrl(null);
     setRefundRow(null);
+    setPaymentSuccess(null);
   }, [open, initialPupilId]);
 
   // ---- load pupils + instructor -----------------------------------------
