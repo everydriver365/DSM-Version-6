@@ -279,6 +279,28 @@ export function UnifiedPaymentSheet({
     onClose();
   }, [onClose]);
 
+  const handlePaymentDone = useCallback(() => {
+    onSaved?.();
+    handleClose();
+  }, [onSaved, handleClose]);
+
+  const handleRecordAnother = useCallback(() => {
+    setPaymentSuccess(null);
+    setAmount("");
+    setMethod("cash");
+    setNote("");
+    setPartial(false);
+    setQrUrl(null);
+    setPayUrl(null);
+    setQrPaymentId(null);
+  }, []);
+
+  useEffect(() => {
+    if (!paymentSuccess) return;
+    const t = setTimeout(() => handlePaymentDone(), 3000);
+    return () => clearTimeout(t);
+  }, [paymentSuccess, handlePaymentDone]);
+
   // ---- reset on open -----------------------------------------------------
   useEffect(() => {
     if (!open) return;
