@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   IconArrowLeft,
   IconBell,
@@ -113,7 +113,9 @@ function FuelPage() {
   const [pupils, setPupils] = useState<Record<string, Pupil>>({});
 
   // --- Find cheap fuel state ---
+  const rawStations = useRef<any[]>([]);
   const [stations, setStations] = useState<any[]>([]);
+
   const [cheapest, setCheapest] = useState<any>(null);
   const [nearest, setNearest] = useState<any>(null);
   const [fuelType, setFuelType] = useState<"E10" | "E5" | "B7" | "SDV">("E10");
@@ -206,9 +208,18 @@ function FuelPage() {
         body: { instructorId, fuelType, radiusKm, userLat, userLng },
       });
       if (fnError) throw fnError;
-      setStations(data?.stations ?? []);
-      setCheapest(data?.cheapest ?? null);
-      setNearest(data?.nearest ?? null);
+      rawStations.current = data?.stations ?? [];
+      const mapped = (data?.stations ?? []).map((s: any) => ({
+        ...s,
+        price: s.prices?.[fuelType] ?? null,
+      }));
+      setStations(mapped);
+      setCheapest(
+        data?.cheapest ? { ...data.cheapest, price: data.cheapest.prices?.[fuelType] ?? null } : null
+      );
+      setNearest(
+        data?.nearest ? { ...data.nearest, price: data.nearest.prices?.[fuelType] ?? null } : null
+      );
       setLocation(data?.location ?? null);
     } catch {
       setError("Could not fetch fuel prices. Try again.");
@@ -220,7 +231,23 @@ function FuelPage() {
   useEffect(() => {
     if (instructorId) fetchFuel();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [instructorId, fuelType, radiusKm]);
+  }, [instructorId, radiusKm]);
+
+  // Re-map prices when fuel type changes (no refetch needed)
+  useEffect(() => {
+    if (!rawStations.current.length) return;
+    const mapped = rawStations.current
+      .filter((s: any) => s.prices?.[fuelType])
+      .map((s: any) => ({ ...s, price: s.prices[fuelType] }))
+      .sort((a: any, b: any) => a.price - b.price);
+    setStations(mapped);
+    setCheapest(mapped[0] ?? null);
+    setNearest(
+      [...mapped].sort((a: any, b: any) => (a.distance_miles ?? 0) - (b.distance_miles ?? 0))[0] ?? null
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fuelType]);
+
 
   const isElectric = settings.fuel_type === "electric";
 
