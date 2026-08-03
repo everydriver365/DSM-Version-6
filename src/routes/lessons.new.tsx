@@ -219,6 +219,7 @@ function NewLessonPage() {
         }
       } catch (e) {
         console.warn("[lessons.new] prepaid check failed", e);
+      }
     }
 
     // Block / national intensives pupils pay up front, so their lessons are
@@ -227,7 +228,6 @@ function NewLessonPage() {
     const isPrepaidPricing =
       pricingType === "block" || pricingType === "national_intensives";
     if (isPrepaidPricing) paymentStatus = "prepaid";
-    }
 
     // If recurring, create a lesson_series first so the initial lesson can link to it
     let seriesId: string | null = null;
