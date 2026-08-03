@@ -1356,14 +1356,19 @@ export function UnifiedPaymentSheet({
               <button
                 type="button"
                 disabled={!paymentSuccess.historyId}
-                onClick={() =>
-                  openEditPayment({
-                    id: paymentSuccess.historyId,
-                    amount: paymentSuccess.amount,
-                    method: paymentSuccess.method,
-                    notes: "",
-                  })
-                }
+                onClick={() => {
+                  setSuccessInteracted(true);
+                  const row = history.find((h) => h.id === paymentSuccess.historyId);
+                  openEditPayment(
+                    row ?? {
+                      id: paymentSuccess.historyId,
+                      amount: paymentSuccess.amount,
+                      method: paymentSuccess.method,
+                      notes: "",
+                    },
+                  );
+                }}
+
                 style={{
                   flex: 1,
                   height: 38,
