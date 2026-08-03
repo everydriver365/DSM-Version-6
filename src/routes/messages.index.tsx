@@ -1514,10 +1514,13 @@ function RoomBrowser({
         </div>
       </div>
 
-      {([
-        ["Your rooms", mine, false],
-        ["Available rooms", available, true],
-      ] as [string, LocalChatRoom[], boolean][]).map(([label, list, join]) => (
+      {(searching
+        ? ([["Results", results, null]] as [string, LocalChatRoom[], boolean | null][])
+        : ([
+            ["Your rooms", mine, false],
+            ["Available rooms", available, true],
+          ] as [string, LocalChatRoom[], boolean | null][])
+      ).map(([label, list, join]) => (
         <div key={label}>
           <div
             style={{
@@ -1532,9 +1535,13 @@ function RoomBrowser({
             {label}
           </div>
           {list.length === 0 ? (
-            <div style={{ padding: "8px 16px 12px", fontSize: 13, color: GREY }}>None</div>
+            <div style={{ padding: "8px 16px 12px", fontSize: 13, color: GREY }}>
+              {searching ? "No rooms match your search" : "None"}
+            </div>
           ) : (
-            list.map((r) => <RoomRow key={r.id} r={r} join={join} />)
+            list.map((r) => (
+              <RoomRow key={r.id} r={r} join={join === null ? !joinedRoomIds.has(r.id) : join} />
+            ))
           )}
         </div>
       ))}
