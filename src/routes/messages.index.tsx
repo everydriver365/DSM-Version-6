@@ -451,19 +451,22 @@ function MessagesIndexPage() {
     };
   }, [room]);
 
-  // Auto-scroll to bottom when messages change and local tab active
+  // Auto-scroll to bottom when messages change and the chat view is open
   useEffect(() => {
-    if (activeTab !== "local") return;
+    if (view !== "chat") return;
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [localMessages, activeTab]);
+  }, [localMessages, view]);
 
-  // Mark as seen when switching to local tab
+  // Mark as seen when the chat view is open
   useEffect(() => {
-    if (activeTab !== "local" || !room) return;
+    if (view !== "chat" || !room) return;
     const now = Date.now();
     localStorage.setItem(`local_chat_last_seen_${room.id}`, String(now));
     setLastSeen(now);
-  }, [activeTab, room, localMessages.length]);
+    setRoomPreviews((prev) =>
+      prev[room.id] ? { ...prev, [room.id]: { ...prev[room.id], unread: 0 } } : prev,
+    );
+  }, [view, room, localMessages.length]);
 
   // Load admin job-thread inbox
   const loadAdminThreads = async () => {
