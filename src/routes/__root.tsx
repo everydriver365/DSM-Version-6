@@ -498,6 +498,16 @@ function RootComponent() {
     "/about",
     "/contact",
   ]);
+  const hasOwnMenu = new Set([
+    "/home",
+    "/schedule",
+    "/pupils",
+    "/payments",
+    "/messages",
+    "/more",
+    "/community",
+  ]);
+  const showFloatingMenu = !hasOwnMenu.has(pathname) && !hideNavExact.has(pathname);
   const hideNav =
     hideNavExact.has(pathname) ||
     pathname === "/courses" ||
