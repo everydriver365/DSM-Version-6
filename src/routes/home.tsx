@@ -1731,17 +1731,8 @@ function HomePage() {
   // Unread community chat messages across subscribed, non-muted rooms
   const [unreadChat, setUnreadChat] = useState(0);
 
-  // Community card collapse state (auto-expands when something needs attention)
+  // Community card collapse state (starts collapsed, user taps to expand)
   const [communityExpanded, setCommunityExpanded] = useState(false);
-  useEffect(() => {
-    const hasUnread = unreadChat > 0 || unreadUkChat > 0;
-    const hasAlert = (localAlerts?.length ?? 0) > 0;
-    const hasUnreadRoom = joinedRoomChats.some((r) => r.unread > 0);
-    const hasPupilMessage = unreadMsgs.length > 0;
-    if (hasUnread || hasAlert || hasUnreadRoom || hasPupilMessage) {
-      setCommunityExpanded(true);
-    }
-  }, [unreadChat, unreadUkChat, localAlerts, joinedRoomChats, unreadMsgs]);
 
   useEffect(() => {
     if (!userId) return;
@@ -5329,7 +5320,7 @@ function HomePage() {
           );
           const Sep = () => <span style={{ color: BORDER_C, fontSize: 11 }}>·</span>;
 
-          const hiddenCount = Math.max(0, visibleRooms.length - 1);
+          
 
           const rowBase: React.CSSProperties = {
             display: 'flex', alignItems: 'center', gap: 12,
