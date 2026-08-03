@@ -491,6 +491,7 @@ function RootComponent() {
     "/forgotpassword",
     "/resetpassword",
     "/search",
+    "/messages",
     "/take-payment",
     "/features",
     "/pricing",
