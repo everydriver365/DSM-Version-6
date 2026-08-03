@@ -879,6 +879,7 @@ export function UnifiedPaymentSheet({
         if (status === "succeeded" || status === "completed" || status === "paid") {
           clearInterval(t);
           setQrPaymentId(null);
+          setQrFullscreen(false);
           await handleRecordPayment(method === "link" ? "link" : "qr");
           handleClose();
         }
