@@ -430,6 +430,14 @@ function MessagesIndexPage() {
     [myRooms, joinedRoomIds, homeOutcode],
   );
 
+  // Room browser list: every public room, plus joined private rooms
+  const browseRooms = useMemo(() => {
+    const byId = new Map<string, LocalChatRoom>();
+    for (const r of allRooms) byId.set(r.id, r);
+    for (const r of myRooms) if (!byId.has(r.id)) byId.set(r.id, r);
+    return [...byId.values()];
+  }, [allRooms, myRooms]);
+
   useEffect(() => {
     const ids = joinedRooms.map((r) => r.id);
     if (ids.length === 0) {
