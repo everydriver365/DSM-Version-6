@@ -151,21 +151,6 @@ interface JobThreadRow {
 }
 
 
-function timeAgo(iso: string) {
-  const d = new Date(iso).getTime();
-  const diff = Date.now() - d;
-  const min = Math.floor(diff / 60000);
-  if (min < 1) return "now";
-  if (min < 60) return `${min}m ago`;
-  const h = Math.floor(min / 60);
-  if (h < 24) return `${h}h ago`;
-  const days = Math.floor(h / 24);
-  if (days < 7) return `${days}d ago`;
-  const weeks = Math.floor(days / 7);
-  if (weeks < 5) return `${weeks}w ago`;
-  return new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
-}
-
 function initials(p?: Pupil) {
   const n = (p?.name || p?.first_name || "?").trim();
   const parts = n.split(/\s+/);
