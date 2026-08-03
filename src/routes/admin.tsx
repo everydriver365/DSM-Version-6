@@ -892,10 +892,19 @@ function AdminHub() {
             label="Chat rooms"
             onClick={scrollToChatRooms}
           />
+          <AdminSectionTile
+            icon={<Flag size={18} />}
+            label="Flagged"
+            onClick={scrollToFlagged}
+          />
         </div>
         <div ref={chatRoomsRef}>
           <ChatRoomsSection />
         </div>
+        <div ref={flaggedRef}>
+          <FlaggedMessagesSection />
+        </div>
+
       </div>
     </div>
   );
