@@ -747,8 +747,162 @@ function MessagesIndexPage() {
     toast.info("Flagged for review");
   }
 
+  async function markRoomRead(roomId: string) {
+    const now = Date.now();
+    localStorage.setItem(`local_chat_last_seen_${roomId}`, String(now));
+    if (room?.id === roomId) setLastSeen(now);
+    setRoomPreviews((prev) =>
+      prev[roomId] ? { ...prev, [roomId]: { ...prev[roomId], unread: 0 } } : prev,
+    );
+  }
+
+  async function markPupilRead(pupilId: string) {
+    const { data: sessionRes } = await supabase.auth.getSession();
+    const uid = sessionRes.session?.user?.id;
+    if (!uid) return;
+    const now = new Date().toISOString();
+    await supabase
+      .from("chat_messages")
+      .update({ read_at: now })
+      .eq("instructor_id", uid)
+      .eq("pupil_id", pupilId)
+      .eq("sender_type", "pupil")
+      .is("read_at", null);
+    setConvos((prev) =>
+      prev.map((c) => (c.pupil_id === pupilId && !c.read_at ? { ...c, read_at: now } : c)),
+    );
+    window.dispatchEvent(new CustomEvent("dsm-messages-read"));
+  }
+
+  async function markAdminRead(jobId: string) {
+    await supabase
+      .from("job_offer_messages")
+      .update({ read_by_admin: true })
+      .eq("job_offer_id", jobId)
+      .eq("sender_type", "instructor")
+      .eq("read_by_admin", false);
+    setAdminThreads((prev) =>
+      prev.map((t) => (t.job_offer_id === jobId ? { ...t, unread: false } : t)),
+    );
+  }
+
+  function openRoom(r: LocalChatRoom) {
+    setRoom(r);
+    setAreaName(r.area_name || r.outcode);
+    setView("chat");
+  }
+
+  const items: InboxItem[] = useMemo(() => {
+    const list: InboxItem[] = [];
+
+    for (const c of convos) {
+      const name = c.pupil?.name || c.pupil?.first_name || "Pupil";
+      list.push({
+        key: `pupil:${c.pupil_id}`,
+        kind: "pupil",
+        name,
+        preview: `${c.sender_type === "instructor" ? "You: " : ""}${c.body ?? ""}`,
+        ts: c.created_at,
+        unread: c.sender_type === "pupil" && !c.read_at ? 1 : 0,
+        photo: c.pupil?.profile_image_url ?? null,
+        initials: initials(c.pupil),
+        bg: avatarColor(c.pupil_id),
+        open: () => navigate({ to: "/messages/$pupilId", params: { pupilId: c.pupil_id } }),
+        markRead: () => void markPupilRead(c.pupil_id),
+      });
+    }
+
+    for (const r of joinedRooms) {
+      const p = roomPreviews[r.id];
+      const label = `${r.area_name || r.outcode} ADIs`;
+      const unread = room?.id === r.id && view === "chat" ? 0 : (p?.unread ?? 0);
+      list.push({
+        key: `local:${r.id}`,
+        kind: "local",
+        name: label,
+        preview: p ? `${p.sender}: ${p.body}` : "No messages yet",
+        ts: p?.created_at ?? new Date(0).toISOString(),
+        unread,
+        initials: nameInitials(r.area_name || r.outcode),
+        bg: NAVY,
+        open: () => openRoom(r),
+        markRead: () => void markRoomRead(r.id),
+      });
+    }
+
+    if (isAdmin) {
+      for (const t of adminThreads) {
+        list.push({
+          key: `admin:${t.job_offer_id}`,
+          kind: "admin",
+          name: `${t.last_sender_instructor_name || "Instructor"} · ${t.pupil_name || "Job enquiry"}`,
+          preview: `${t.last_sender_type === "admin" ? "You: " : ""}${t.last_message}`,
+          ts: t.last_created_at,
+          unread: t.unread ? 1 : 0,
+          initials: "",
+          bg: RED,
+          system: true,
+          open: () => {
+            void markAdminRead(t.job_offer_id);
+            setOpenThreadJobId(t.job_offer_id);
+          },
+          markRead: () => void markAdminRead(t.job_offer_id),
+        });
+      }
+    }
+
+    return list;
+  }, [convos, joinedRooms, roomPreviews, adminThreads, isAdmin, room, view, navigate]);
+
+  const visibleItems = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return items
+      .filter((i) => (filter === "all" ? true : i.kind === filter.replace(/s$/, "") || i.kind === filter))
+      .filter((i) => !q || i.name.toLowerCase().includes(q) || i.preview.toLowerCase().includes(q))
+      .sort((a, b) => {
+        const pa = pinned.has(a.key) ? 1 : 0;
+        const pb = pinned.has(b.key) ? 1 : 0;
+        if (pa !== pb) return pb - pa;
+        return new Date(b.ts).getTime() - new Date(a.ts).getTime();
+      });
+  }, [items, filter, query, pinned]);
+
+  const [menuItem, setMenuItem] = useState<InboxItem | null>(null);
+
+  function togglePin(key: string) {
+    setPinned((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      writeKeySet(PIN_KEY, next);
+      return next;
+    });
+  }
+  function toggleMute(key: string) {
+    setMuted((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      writeKeySet(MUTE_KEY, next);
+      return next;
+    });
+  }
+
+  async function joinRoom(r: LocalChatRoom) {
+    if (!userId) return;
+    const { error } = await supabase
+      .from("chat_room_subscriptions")
+      .insert({ room_id: r.id, instructor_id: userId });
+    if (error) {
+      toast.error("Could not join room");
+      return;
+    }
+    setJoinedRoomIds((prev) => new Set(prev).add(r.id));
+    toast.success("Joined " + (r.area_name || r.outcode));
+  }
+
   return (
-    <PageLayout style={{ ...FONT, paddingBottom: 80 }}>
+    <PageLayout style={{ ...FONT, background: "#FFFFFF", paddingBottom: 24 }}>
       <InstructorTopBar
         firstName={myName ?? ""}
         pageTitle="Messages"
@@ -761,309 +915,14 @@ function MessagesIndexPage() {
       />
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
-      {/* Tab + search bar */}
-      <div
-        style={{
-          background: "#FFFFFF",
-          borderBottom: "0.5px solid #E2E6ED",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          padding: "8px 16px",
-          position: "sticky",
-          top: "calc(60px + env(safe-area-inset-top, 0px))",
-          zIndex: 9,
-        }}
-      >
-        <button
-          type="button"
-          aria-label="Search messages"
-          onClick={() => {
-            const el = document.getElementById("messages-search-input") as HTMLInputElement | null;
-            el?.focus();
-          }}
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: 8,
-            background: "#F3F8FF",
-            border: "1px solid #EEF2F7",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            flexShrink: 0,
-          }}
-        >
-          <Search size={18} color="#1877D6" />
-        </button>
-        <div style={{ flex: 1, display: "flex" }}>
-          {((["pupils", "local", ...(isAdmin ? ["admin"] : [])] as const) as ("pupils" | "local" | "admin")[]).map((tab) => {
-            const active = activeTab === tab;
-            const label = tab === "pupils" ? "Pupils" : tab === "local" ? "Local" : "Admin";
-            const badge =
-              tab === "local" ? unreadLocal : tab === "admin" ? unreadAdmin : 0;
-            return (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                style={{
-                  flex: 1,
-                  padding: 10,
-                  textAlign: "center",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  background: "transparent",
-                  border: 0,
-                  borderBottom: active ? "2px solid #0B1F3A" : "2px solid transparent",
-                  color: active ? "#0B1F3A" : "#8A93A3",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 4,
-                  ...FONT,
-                }}
-              >
-                {label}
-                {badge > 0 && (
-                  <span
-                    style={{
-                      background: "#CC2229",
-                      color: "#FFFFFF",
-                      fontSize: 10,
-                      fontWeight: 700,
-                      padding: "2px 6px",
-                      borderRadius: 999,
-                      marginLeft: 4,
-                      lineHeight: 1,
-                    }}
-                  >
-                    {badge}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {activeTab === "pupils" ? (
-        <>
-          {/* Search bar */}
-          <div style={{ padding: "16px 16px 0" }}>
-            <div
-              style={{
-                background: "#FFFFFF",
-                borderRadius: 12,
-                padding: "12px 16px",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                marginBottom: 16,
-              }}
-            >
-              <Search size={18} color="#8A93A3" />
-              <input
-                id="messages-search-input"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search messages"
-                style={{
-                  fontSize: 14,
-                  border: 0,
-                  background: "transparent",
-                  outline: "none",
-                  flex: 1,
-                  width: "100%",
-                  ...FONT,
-                  color: "#0B1F3A",
-                }}
-              />
-            </div>
-
-            {unreadPupils > 0 && (
-              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -8, marginBottom: 12 }}>
-                <button
-                  type="button"
-                  onClick={markAllPupilMessagesRead}
-                  disabled={markingAllRead}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                    padding: "8px 14px",
-                    borderRadius: 999,
-                    background: "#E6F1FB",
-                    border: "1px solid #CFE3F8",
-                    color: "#1877D6",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    cursor: markingAllRead ? "default" : "pointer",
-                    opacity: markingAllRead ? 0.6 : 1,
-                    ...FONT,
-                  }}
-                >
-                  <Check size={14} color="#1877D6" />
-                  {markingAllRead ? "Marking…" : `Mark all as read (${unreadPupils})`}
-                </button>
-              </div>
-            )}
-          </div>
-
-
-          {/* Conversation list */}
-          <div style={{ padding: "0 16px" }}>
-            {loading ? (
-              <div
-                style={{
-                  background: "#FFFFFF",
-                  borderRadius: 14,
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  padding: 24,
-                  textAlign: "center",
-                  color: "#8A93A3",
-                  fontSize: 13,
-                }}
-              >
-                Loading…
-              </div>
-            ) : filtered.length === 0 ? (
-              <div
-                style={{
-                  background: "#FFFFFF",
-                  borderRadius: 14,
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "56px 24px",
-                  gap: 6,
-                }}
-              >
-                <MessageCircle size={40} color="#D0D5DD" />
-                <div style={{ fontSize: 14, color: "#8A93A3" }}>No messages yet</div>
-                <div style={{ fontSize: 12, color: "#B0BAC9", textAlign: "center" }}>
-                  Start a conversation from a pupil's profile
-                </div>
-              </div>
-            ) : (
-              filtered.map((c) => {
-                const unread = c.sender_type === "pupil" && !c.read_at;
-                const name = c.pupil?.name || c.pupil?.first_name || "Pupil";
-                const bg = avatarColor(c.pupil_id);
-                return (
-                  <div
-                    key={c.pupil_id}
-                    onClick={() => navigate({ to: "/messages/$pupilId", params: { pupilId: c.pupil_id } })}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      padding: "14px 16px",
-                      cursor: "pointer",
-                      background: "#FFFFFF",
-                      borderRadius: 14,
-                      boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                      marginBottom: 10,
-                    }}
-                  >
-                    <div style={{ position: "relative", flexShrink: 0 }}>
-                      {c.pupil?.profile_image_url ? (
-                        <img
-                          src={c.pupil.profile_image_url}
-                          alt={name}
-                          style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover" }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: "50%",
-                            background: bg,
-                            color: "#FFFFFF",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: 16,
-                            fontWeight: 500,
-                          }}
-                        >
-                          {initials(c.pupil)}
-                        </div>
-                      )}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          marginBottom: 3,
-                          gap: 8,
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: 15,
-                            fontWeight: 500,
-                            color: "#0B1F3A",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            minWidth: 0,
-                            flex: 1,
-                          }}
-                        >
-                          {name}
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-                          <span style={{ fontSize: 12, color: "#8A93A3" }}>
-                            {timeAgo(c.created_at)}
-                          </span>
-                          {unread && (
-                            <span
-                              aria-label="unread"
-                              style={{
-                                width: 8,
-                                height: 8,
-                                borderRadius: "50%",
-                                background: "#1877D6",
-                              }}
-                            />
-                          )}
-                        </div>
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 13,
-                          color: unread ? "#0B1F3A" : "#5A6270",
-                          fontWeight: unread ? 500 : 400,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {c.sender_type === "instructor" ? "You: " : ""}
-                        {c.body}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </>
-      ) : activeTab === "local" ? (
+      {view === "chat" ? (
         <LocalChatView
           areaName={areaName}
           room={room}
           myRooms={myRooms}
           joinedRoomIds={joinedRoomIds}
           homeOutcode={homeOutcode}
+          onBack={() => setView("inbox")}
           onSelectRoom={(r) => {
             setRoom(r);
             setAreaName(r.area_name || r.outcode);
@@ -1079,25 +938,252 @@ function MessagesIndexPage() {
           messagesEndRef={messagesEndRef}
           scrollBoxRef={scrollBoxRef}
         />
-      ) : (
-        <AdminJobInbox
-          threads={filteredAdmin}
-          loading={adminLoading}
-          query={adminQuery}
-          setQuery={setAdminQuery}
-          onOpen={async (id) => {
-            await supabase
-              .from("job_offer_messages")
-              .update({ read_by_admin: true })
-              .eq("job_offer_id", id)
-              .eq("sender_type", "instructor")
-              .eq("read_by_admin", false);
-            setAdminThreads((prev) =>
-              prev.map((t) => (t.job_offer_id === id ? { ...t, unread: false } : t)),
-            );
-            setOpenThreadJobId(id);
-          }}
+      ) : view === "rooms" ? (
+        <RoomBrowser
+          rooms={myRooms}
+          joinedRoomIds={joinedRoomIds}
+          homeOutcode={homeOutcode}
+          onBack={() => setView("inbox")}
+          onOpen={openRoom}
+          onJoin={joinRoom}
         />
+      ) : (
+        <>
+          {/* Header */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "12px 16px 8px",
+            }}
+          >
+            <div style={{ fontSize: 20, fontWeight: 500, color: NAVY }}>Messages</div>
+            <button
+              type="button"
+              aria-label="Search messages"
+              onClick={() => setShowSearch((v) => !v)}
+              style={{ background: "none", border: 0, padding: 4, cursor: "pointer", display: "flex" }}
+            >
+              <IconSearch size={20} color={showSearch ? BLUE : GREY} stroke={1.8} />
+            </button>
+          </div>
+
+          {showSearch && (
+            <div style={{ padding: "0 16px 8px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  background: CANVAS,
+                  borderRadius: 10,
+                  padding: "9px 12px",
+                }}
+              >
+                <IconSearch size={17} color={GREY} stroke={1.8} />
+                <input
+                  autoFocus
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search messages"
+                  style={{
+                    flex: 1,
+                    border: 0,
+                    outline: "none",
+                    background: "transparent",
+                    fontSize: 14,
+                    color: NAVY,
+                    ...FONT,
+                  }}
+                />
+                {query && (
+                  <button
+                    type="button"
+                    aria-label="Clear search"
+                    onClick={() => setQuery("")}
+                    style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
+                  >
+                    <X size={15} color={GREY} />
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Filter chips */}
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              padding: "4px 16px 12px",
+              overflowX: "auto",
+              scrollbarWidth: "none",
+            }}
+          >
+            {(["all", "pupils", "local", ...(isAdmin ? (["admin"] as const) : [])] as const).map(
+              (f) => {
+                const active = filter === f;
+                const label = f === "all" ? "All" : f === "pupils" ? "Pupils" : f === "local" ? "Local" : "Admin";
+                return (
+                  <button
+                    key={f}
+                    type="button"
+                    onClick={() => setFilter(f)}
+                    style={{
+                      flexShrink: 0,
+                      background: active ? NAVY : "#FFFFFF",
+                      color: active ? "#FFFFFF" : NAVY,
+                      border: active ? "0.5px solid " + NAVY : `0.5px solid ${BORDER}`,
+                      borderRadius: 20,
+                      padding: "5px 14px",
+                      fontSize: 12,
+                      fontWeight: 500,
+                      cursor: "pointer",
+                      ...FONT,
+                    }}
+                  >
+                    {label}
+                  </button>
+                );
+              },
+            )}
+          </div>
+
+          {filter === "local" && (
+            <div style={{ padding: "0 16px 12px" }}>
+              <button
+                type="button"
+                onClick={() => setView("rooms")}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  background: "#FFFFFF",
+                  border: `0.5px solid ${BORDER}`,
+                  borderRadius: 20,
+                  padding: "7px 14px",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: NAVY,
+                  cursor: "pointer",
+                  ...FONT,
+                }}
+              >
+                <IconSearch size={16} color={BLUE} stroke={1.8} />
+                Find rooms
+              </button>
+            </div>
+          )}
+
+          {/* Unified list */}
+          <div>
+            {loading && items.length === 0 ? (
+              <div style={{ padding: 32, textAlign: "center", color: GREY, fontSize: 13 }}>Loading…</div>
+            ) : visibleItems.length === 0 ? (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "56px 24px",
+                }}
+              >
+                <MessageCircle size={40} color="#D0D5DD" />
+                <div style={{ fontSize: 14, color: GREY }}>No conversations</div>
+              </div>
+            ) : (
+              visibleItems.map((item) => (
+                <InboxRow
+                  key={item.key}
+                  item={item}
+                  pinned={pinned.has(item.key)}
+                  muted={muted.has(item.key)}
+                  onLongPress={() => setMenuItem(item)}
+                />
+              ))
+            )}
+          </div>
+        </>
+      )}
+
+      {menuItem && (
+        <div
+          onClick={() => setMenuItem(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(11,31,58,0.35)",
+            zIndex: 120,
+            display: "flex",
+            alignItems: "flex-end",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#FFFFFF",
+              width: "100%",
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+              padding: "8px 0 calc(8px + env(safe-area-inset-bottom, 0px))",
+              ...FONT,
+            }}
+          >
+            <div
+              style={{
+                padding: "10px 20px",
+                fontSize: 13,
+                color: GREY,
+                borderBottom: `0.5px solid ${BORDER}`,
+              }}
+            >
+              {menuItem.name}
+            </div>
+            {(
+              [
+                {
+                  label: pinned.has(menuItem.key) ? "Unpin" : "Pin",
+                  icon: pinned.has(menuItem.key) ? IconPin : IconPinFilled,
+                  run: () => togglePin(menuItem.key),
+                },
+                {
+                  label: muted.has(menuItem.key) ? "Unmute notifications" : "Mute notifications",
+                  icon: muted.has(menuItem.key) ? IconBell : IconBellOff,
+                  run: () => toggleMute(menuItem.key),
+                },
+                { label: "Mark as read", icon: IconChecks, run: () => menuItem.markRead() },
+              ] as { label: string; icon: typeof IconPin; run: () => void }[]
+            ).map((a) => (
+              <button
+                key={a.label}
+                type="button"
+                onClick={() => {
+                  a.run();
+                  setMenuItem(null);
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  width: "100%",
+                  background: "none",
+                  border: 0,
+                  padding: "14px 20px",
+                  fontSize: 15,
+                  color: NAVY,
+                  cursor: "pointer",
+                  textAlign: "left",
+                  ...FONT,
+                }}
+              >
+                <a.icon size={19} color={NAVY} stroke={1.8} />
+                {a.label}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       {openThreadJobId && (
@@ -1110,10 +1196,373 @@ function MessagesIndexPage() {
           }}
         />
       )}
-
-      <BottomNav active="messages" />
-
     </PageLayout>
+  );
+}
+
+interface InboxItem {
+  key: string;
+  kind: "pupil" | "local" | "admin";
+  name: string;
+  preview: string;
+  ts: string;
+  unread: number;
+  photo?: string | null;
+  initials: string;
+  bg: string;
+  system?: boolean;
+  open: () => void;
+  markRead: () => void;
+}
+
+function InboxRow({
+  item,
+  pinned,
+  muted,
+  onLongPress,
+}: {
+  item: InboxItem;
+  pinned: boolean;
+  muted: boolean;
+  onLongPress: () => void;
+}) {
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressed = useRef(false);
+
+  const start = () => {
+    longPressed.current = false;
+    timer.current = setTimeout(() => {
+      longPressed.current = true;
+      onLongPress();
+    }, 450);
+  };
+  const clear = () => {
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = null;
+  };
+
+  const unread = item.unread > 0;
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={() => {
+        if (longPressed.current) return;
+        item.open();
+      }}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        onLongPress();
+      }}
+      onTouchStart={start}
+      onTouchEnd={clear}
+      onTouchMove={clear}
+      onMouseDown={start}
+      onMouseUp={clear}
+      onMouseLeave={clear}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        padding: "11px 16px",
+        minHeight: 72,
+        borderBottom: `0.5px solid ${BORDER}`,
+        background: "#FFFFFF",
+        cursor: "pointer",
+        WebkitTapHighlightColor: "transparent",
+      }}
+    >
+      {/* Avatar */}
+      <div style={{ position: "relative", width: 52, height: 52, flexShrink: 0 }}>
+        {item.photo ? (
+          <img
+            src={item.photo}
+            alt={item.name}
+            style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover" }}
+          />
+        ) : (
+          <div
+            style={{
+              width: 52,
+              height: 52,
+              borderRadius: "50%",
+              background: item.bg,
+              color: "#FFFFFF",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 18,
+              fontWeight: 500,
+            }}
+          >
+            {item.system ? (
+              <IconSpeakerphone size={24} color="#FFFFFF" stroke={1.8} />
+            ) : (
+              item.initials
+            )}
+          </div>
+        )}
+        {pinned && (
+          <span
+            style={{
+              position: "absolute",
+              top: -2,
+              left: -2,
+              width: 16,
+              height: 16,
+              borderRadius: "50%",
+              background: "#FFFFFF",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <IconPinFilled size={11} color="#BA7517" />
+          </span>
+        )}
+        {unread && (
+          <span
+            style={{
+              position: "absolute",
+              bottom: -2,
+              right: -2,
+              minWidth: 18,
+              height: 18,
+              padding: "0 5px",
+              borderRadius: 9,
+              background: RED,
+              color: "#FFFFFF",
+              border: "2px solid #FFFFFF",
+              fontSize: 11,
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              lineHeight: 1,
+            }}
+          >
+            {item.unread > 99 ? "99+" : item.unread}
+          </span>
+        )}
+      </div>
+
+      {/* Content */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div
+          style={{
+            fontSize: 17,
+            fontWeight: 500,
+            color: NAVY,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {item.name}
+        </div>
+        <div
+          style={{
+            fontSize: 14,
+            fontWeight: unread ? 500 : 400,
+            color: unread ? NAVY : GREY,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            marginTop: 2,
+          }}
+        >
+          {item.preview}
+        </div>
+      </div>
+
+      {/* Timestamp */}
+      <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+        {muted && <IconBellOff size={14} color={GREY} stroke={1.8} />}
+        <span style={{ fontSize: 13, color: GREY }}>
+          {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function RoomBrowser({
+  rooms,
+  joinedRoomIds,
+  homeOutcode,
+  onBack,
+  onOpen,
+  onJoin,
+}: {
+  rooms: LocalChatRoom[];
+  joinedRoomIds: Set<string>;
+  homeOutcode: string | null;
+  onBack: () => void;
+  onOpen: (r: LocalChatRoom) => void;
+  onJoin: (r: LocalChatRoom) => void;
+}) {
+  const [q, setQ] = useState("");
+
+  const { mine, available } = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    const match = (r: LocalChatRoom) =>
+      !needle ||
+      (r.area_name || "").toLowerCase().includes(needle) ||
+      (r.outcode || "").toLowerCase().includes(needle);
+    const visible = rooms.filter(match);
+    return {
+      mine: visible.filter((r) => joinedRoomIds.has(r.id) || r.outcode === homeOutcode),
+      available: visible.filter(
+        (r) => !joinedRoomIds.has(r.id) && r.outcode !== homeOutcode && !r.is_opt_in,
+      ),
+    };
+  }, [rooms, q, joinedRoomIds, homeOutcode]);
+
+  const RoomRow = ({ r, join }: { r: LocalChatRoom; join: boolean }) => (
+    <div
+      onClick={() => (join ? onJoin(r) : onOpen(r))}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        padding: "11px 16px",
+        borderBottom: `0.5px solid ${BORDER}`,
+        cursor: "pointer",
+        background: "#FFFFFF",
+      }}
+    >
+      <div
+        style={{
+          width: 56,
+          height: 56,
+          borderRadius: "50%",
+          background: NAVY,
+          color: "#FFFFFF",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 18,
+          fontWeight: 500,
+          flexShrink: 0,
+        }}
+      >
+        {nameInitials(r.area_name || r.outcode)}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div
+          style={{
+            fontSize: 17,
+            fontWeight: 500,
+            color: NAVY,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {r.area_name || r.outcode}
+        </div>
+        <div style={{ fontSize: 14, color: GREY, marginTop: 2 }}>
+          {r.instructor_count ?? 1} member{(r.instructor_count ?? 1) === 1 ? "" : "s"} · {r.outcode}
+        </div>
+      </div>
+      {join ? (
+        <button
+          type="button"
+          aria-label={`Join ${r.area_name || r.outcode}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            onJoin(r);
+          }}
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: "50%",
+            background: BLUE,
+            border: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            flexShrink: 0,
+          }}
+        >
+          <IconPlus size={18} color="#FFFFFF" stroke={2} />
+        </button>
+      ) : (
+        <IconChevronRight size={20} color={GREY} stroke={1.8} />
+      )}
+    </div>
+  );
+
+  return (
+    <div style={{ background: "#FFFFFF", minHeight: "60vh" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 16px 4px" }}>
+        <button
+          type="button"
+          aria-label="Back"
+          onClick={onBack}
+          style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
+        >
+          <IconChevronLeft size={22} color={NAVY} stroke={1.8} />
+        </button>
+        <div style={{ fontSize: 22, fontWeight: 500, color: NAVY }}>Find rooms</div>
+      </div>
+
+      <div style={{ padding: "8px 16px 12px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            background: CANVAS,
+            borderRadius: 10,
+            padding: "10px 12px",
+          }}
+        >
+          <IconSearch size={17} color={GREY} stroke={1.8} />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search area or room name"
+            style={{
+              flex: 1,
+              border: 0,
+              outline: "none",
+              background: "transparent",
+              fontSize: 14,
+              color: NAVY,
+              ...FONT,
+            }}
+          />
+        </div>
+      </div>
+
+      {([
+        ["Your rooms", mine, false],
+        ["Available rooms", available, true],
+      ] as [string, LocalChatRoom[], boolean][]).map(([label, list, join]) => (
+        <div key={label}>
+          <div
+            style={{
+              padding: "12px 16px 6px",
+              fontSize: 12,
+              fontWeight: 600,
+              letterSpacing: 0.6,
+              textTransform: "uppercase",
+              color: GREY,
+            }}
+          >
+            {label}
+          </div>
+          {list.length === 0 ? (
+            <div style={{ padding: "8px 16px 12px", fontSize: 13, color: GREY }}>None</div>
+          ) : (
+            list.map((r) => <RoomRow key={r.id} r={r} join={join} />)
+          )}
+        </div>
+      ))}
+    </div>
   );
 }
 
