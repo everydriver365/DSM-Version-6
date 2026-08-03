@@ -2579,7 +2579,7 @@ function HomePage() {
       const { data: allLessonsRaw, error: lessonsErr } = await supabase
         .from("lessons")
         .select(
-          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, photo_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120)"
+          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, paid_amount, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, photo_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120)"
         )
         .eq("instructor_id", userId)
         .is("deleted_at", null)
@@ -2622,7 +2622,7 @@ function HomePage() {
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
         .select(
-          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, eol_completed, amount_due, pickup_location, pupils!inner(name, first_name, phone, postcode, address, prepaid_hours, pricing_type, block_hours_total, deleted_at)"
+          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, paid_amount, eol_completed, amount_due, pickup_location, pupils!inner(name, first_name, phone, postcode, address, prepaid_hours, pricing_type, block_hours_total, deleted_at)"
         )
         .eq("instructor_id", userId)
         .is("deleted_at", null)
@@ -4739,7 +4739,9 @@ function HomePage() {
           // Payment / due
           const hStatus = (upcoming?.payment_status ?? 'unpaid').toLowerCase();
           const hAmountDue = Number(upcoming?.amount_due ?? 0);
-          const isPaid = hStatus === 'paid' || hStatus === 'prepaid' || hAmountDue <= 0;
+          const isPaid = hStatus === 'paid' || hStatus === 'prepaid'
+            || hAmountDue <= 0
+            || Number((upcoming as any)?.paid_amount ?? 0) >= hAmountDue;
           const priceText = `£${hAmountDue.toFixed(2)}`;
 
 
