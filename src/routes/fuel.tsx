@@ -635,6 +635,46 @@ function FindCheapFuel({
   retry: () => void;
 }) {
   const one = "nowrap" as const;
+  const [hoursMap, setHoursMap] = useState<Record<string, string | null>>({});
+  const [hoursLoading, setHoursLoading] = useState<string | null>(null);
+
+  async function fetchHours(station: any) {
+    const key = `${station?.lat},${station?.lng}`;
+    if (hoursMap[key] !== undefined) return;
+    setHoursLoading(key);
+    try {
+      await loadGoogleMapsPlaces();
+      const g = (window as any).google;
+      const service = new g.maps.places.PlacesService(document.createElement("div"));
+      service.nearbySearch(
+        {
+          location: { lat: Number(station?.lat), lng: Number(station?.lng) },
+          radius: 50,
+          type: "gas_station",
+        },
+        (results: any[], status: string) => {
+          if (status === "OK" && results?.[0]) {
+            service.getDetails(
+              { placeId: results[0].place_id, fields: ["opening_hours"] },
+              (detail: any) => {
+                const today = new Date().getDay();
+                const idx = today === 0 ? 6 : today - 1;
+                const todayHours = detail?.opening_hours?.weekday_text?.[idx] ?? null;
+                setHoursMap((prev) => ({ ...prev, [key]: todayHours }));
+                setHoursLoading(null);
+              }
+            );
+          } else {
+            setHoursMap((prev) => ({ ...prev, [key]: null }));
+            setHoursLoading(null);
+          }
+        }
+      );
+    } catch {
+      setHoursLoading(null);
+    }
+  }
+
   return (
     <div style={{ padding: "14px 16px 0" }}>
       {/* Fuel type pills */}
