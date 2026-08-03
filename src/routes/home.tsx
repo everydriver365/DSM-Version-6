@@ -5134,14 +5134,23 @@ function HomePage() {
 
           const topAlert = alerts.length
             ? [...alerts].sort((a: any, b: any) => {
+                // Instructor alerts always beat TomTom
+                const aIsInstructor = !a.source || a.source !== 'tomtom';
+                const bIsInstructor = !b.source || b.source !== 'tomtom';
+                if (aIsInstructor !== bIsInstructor) return bIsInstructor ? 1 : -1;
+                // Then by severity
                 const d = rank(severityOf(b)) - rank(severityOf(a));
                 if (d !== 0) return d;
+                // Then by recency
                 return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
               })[0]
             : null;
           const sevColor = topAlert ? severityOf(topAlert) : GREEN_C;
           const alertPreview = topAlert
-            ? (topAlert.description || topAlert.alert_type || topAlert.location_name || 'Active issue nearby')
+            ? topAlert.source === 'tomtom'
+              ? [topAlert.alert_type, topAlert.location_name]
+                  .filter(Boolean).join(' · ') || topAlert.description || 'Traffic issue nearby'
+              : topAlert.description || topAlert.alert_type || 'Active issue nearby'
             : '';
 
           const HOUR = 3600_000;
