@@ -943,22 +943,39 @@ export function UnifiedPaymentSheet({
   // ---- refunds -----------------------------------------------------------
   const confirmRefund = async () => {
     if (!refundRow || !pupilId || refundProcessing) return;
-    if (refundRow.amount > maxRefundableAmount) {
+    const amt = Math.round(refundAmountNum * 100) / 100;
+    if (!(amt > 0)) {
+      toast.error("Enter a refund amount greater than £0");
+      return;
+    }
+    if (amt > refundRow.amount) {
+      toast.error(`Refund can't exceed the original payment (${money(refundRow.amount)})`);
+      return;
+    }
+    if (amt > maxRefundableAmount) {
       toast.error(`Refund amount exceeds available paid/credit balance (${money(maxRefundableAmount)})`);
       return;
     }
+    const isPartial = amt < refundRow.amount;
     setRefundProcessing(true);
     try {
       await recordRefund({
         pupilId,
-        amount: refundRow.amount,
+        amount: amt,
         method: toDbMethod(refundRow.method ?? "refund"),
-        notes: `Refund of ${money(refundRow.amount)}`,
+        notes: isPartial
+          ? `Partial refund of ${money(amt)} (from ${money(refundRow.amount)} payment)`
+          : `Refund of ${money(amt)}`,
         currentAccountBalance: Number(pupil?.account_balance ?? 0),
       });
 
-      toast.success(`Refund of ${money(refundRow.amount)} recorded`);
+      toast.success(
+        isPartial
+          ? `Partial refund of ${money(amt)} recorded`
+          : `Refund of ${money(amt)} recorded`,
+      );
       setRefundRow(null);
+      setRefundAmount("");
       setRefundConfirmOpen(false);
       if (typeof window !== "undefined") {
         window.dispatchEvent(new Event("dsm-payment-recorded"));
@@ -966,7 +983,8 @@ export function UnifiedPaymentSheet({
       onSaved?.();
     } catch (e) {
       console.error("[UnifiedPaymentSheet] confirmRefund", e);
-      toast.error(`Couldn't record ${money(refundRow.amount)} refund`);
+      toast.error(`Couldn't record ${money(amt)} refund`);
+
     } finally {
       setRefundProcessing(false);
       if (pupilId) {
