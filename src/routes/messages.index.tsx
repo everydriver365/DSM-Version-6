@@ -645,75 +645,8 @@ function MessagesIndexPage() {
     };
   }, [isAdmin]);
 
-  const filteredAdmin = useMemo(() => {
-    const q = adminQuery.trim().toLowerCase();
-    if (!q) return adminThreads;
-    return adminThreads.filter(
-      (t) =>
-        (t.pupil_name || "").toLowerCase().includes(q) ||
-        t.last_message.toLowerCase().includes(q),
-    );
-  }, [adminThreads, adminQuery]);
-
-  const unreadAdmin = useMemo(
-    () => adminThreads.filter((t) => t.unread).length,
-    [adminThreads],
-  );
 
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return convos;
-    return convos.filter((c) => {
-      const name = (c.pupil?.name || c.pupil?.first_name || "").toLowerCase();
-      return name.includes(q) || (c.body || "").toLowerCase().includes(q);
-    });
-  }, [convos, query]);
-
-  const unreadPupils = useMemo(
-    () => convos.filter((c) => c.sender_type === "pupil" && !c.read_at).length,
-    [convos],
-  );
-
-  const [markingAllRead, setMarkingAllRead] = useState(false);
-
-  async function markAllPupilMessagesRead() {
-    if (markingAllRead) return;
-    setMarkingAllRead(true);
-    const { data: sessionRes } = await supabase.auth.getSession();
-    const uid = sessionRes.session?.user?.id;
-    if (!uid) {
-      setMarkingAllRead(false);
-      return;
-    }
-    const now = new Date().toISOString();
-    const { error } = await supabase
-      .from("chat_messages")
-      .update({ read_at: now })
-      .eq("instructor_id", uid)
-      .eq("sender_type", "pupil")
-      .is("read_at", null);
-    setMarkingAllRead(false);
-    if (error) {
-      console.error("[messages] mark all read error", error);
-      toast.error("Could not mark messages as read");
-      return;
-    }
-    setConvos((prev) =>
-      prev.map((c) =>
-        c.sender_type === "pupil" && !c.read_at ? { ...c, read_at: now } : c,
-      ),
-    );
-    window.dispatchEvent(new CustomEvent("dsm-messages-read"));
-    toast.success("All messages marked as read");
-  }
-
-  const unreadLocal = useMemo(() => {
-    if (!userId) return 0;
-    return localMessages.filter(
-      (m) => m.instructor_id !== userId && new Date(m.created_at).getTime() > lastSeen,
-    ).length;
-  }, [localMessages, lastSeen, userId]);
 
   async function sendLocalMessage() {
     if (!room || !userId) return;
