@@ -7164,34 +7164,110 @@ function HomePage() {
                   )}
 
                   {nearbyOpen && (() => {
-                    const cats: { emoji: string; label: string; term: string }[] = [
-                      { emoji: '🚻', label: 'Toilets', term: 'public+toilets' },
-                      { emoji: '⚡', label: 'EV Chargers', term: 'EV+charging+station' },
-                      { emoji: '☕', label: 'Coffee', term: 'coffee+shop' },
-                      { emoji: '🅿️', label: 'Parking', term: 'car+park' },
-                      { emoji: '🍔', label: 'Food', term: 'restaurants' },
-                      { emoji: '⛽', label: 'Fuel', term: 'petrol+station' },
+                    const cats: { emoji: string; label: string; type: string; keyword: string }[] = [
+                      { emoji: '🚻', label: 'Toilets', type: 'tourist_attraction', keyword: 'public toilet' },
+                      { emoji: '⚡', label: 'EV Chargers', type: 'electric_vehicle_charging_station', keyword: '' },
+                      { emoji: '☕', label: 'Coffee', type: 'cafe', keyword: '' },
+                      { emoji: '🅿️', label: 'Parking', type: 'parking', keyword: '' },
+                      { emoji: '🍔', label: 'Food', type: 'restaurant', keyword: '' },
+                      { emoji: '⛽', label: 'Fuel', type: 'gas_station', keyword: '' },
                     ];
-                    const openCat = (c: { label: string; term: string }) => {
+
+                    const closeSheet = () => {
+                      if (nearbyLoading) return;
+                      setNearbyOpen(false);
+                      setNearbyCategory(null);
+                      setNearbyResults([]);
+                      setNearbyError(null);
+                    };
+
+                    const fmtDistance = (m: number) =>
+                      m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(1)} km`;
+
+                    const openCat = async (c: { emoji: string; label: string; type: string; keyword: string }) => {
                       setNearbyLoading(c.label);
-                      const done = (url: string) => {
-                        setNearbyLoading(null);
-                        setNearbyOpen(false);
-                        window.open(url, '_blank', 'noopener,noreferrer');
-                      };
-                      if (!('geolocation' in navigator)) {
-                        done(`https://www.google.com/maps/search/${c.term}`);
+                      setNearbyCategory(c.label);
+                      setNearbyResults([]);
+                      setNearbyError(null);
+
+                      const fail = (msg: string) => { setNearbyLoading(null); setNearbyError(msg); };
+
+                      if (!('geolocation' in navigator)) { fail('Location unavailable'); return; }
+
+                      let pos: GeolocationPosition;
+                      try {
+                        pos = await new Promise<GeolocationPosition>((resolve, reject) =>
+                          navigator.geolocation.getCurrentPosition(resolve, reject, {
+                            enableHighAccuracy: false, timeout: 8000, maximumAge: 60000,
+                          }),
+                        );
+                      } catch {
+                        fail('Location unavailable — allow location access to find places nearby');
                         return;
                       }
-                      navigator.geolocation.getCurrentPosition(
-                        (pos) => done(`https://www.google.com/maps/search/${c.term}/@${pos.coords.latitude},${pos.coords.longitude},15z`),
-                        () => done(`https://www.google.com/maps/search/${c.term}`),
-                        { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 },
-                      );
+
+                      const origin = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                      setNearbyOrigin(origin);
+
+                      try {
+                        await loadGoogleMapsJs();
+                      } catch {
+                        fail('Maps failed to load');
+                        return;
+                      }
+
+                      const g = (window as GMapsWindow).google;
+                      if (!g?.maps?.places) { fail('Maps failed to load'); return; }
+
+                      try {
+                        const { Place, SearchNearbyRankPreference } = await g.maps.importLibrary('places');
+                        const req: any = {
+                          fields: ['displayName', 'formattedAddress', 'location', 'rating'],
+                          locationRestriction: { center: origin, radius: 2000 },
+                          includedPrimaryTypes: [c.type],
+                          maxResultCount: 10,
+                          rankPreference: SearchNearbyRankPreference?.DISTANCE,
+                        };
+                        const { places } = await Place.searchNearby(req);
+                        setNearbyLoading(null);
+                        if (places && places.length) {
+                          const spherical = g.maps.geometry?.spherical;
+                          setNearbyResults(
+                            places.slice(0, 10).map((p: any) => {
+                              const loc = p.location;
+                              const lat = typeof loc?.lat === 'function' ? loc.lat() : loc?.lat;
+                              const lng = typeof loc?.lng === 'function' ? loc.lng() : loc?.lng;
+                              let dist: number | null = null;
+                              if (spherical && lat != null && lng != null) {
+                                try {
+                                  dist = spherical.computeDistanceBetween(
+                                    new g.maps.LatLng(origin.lat, origin.lng),
+                                    new g.maps.LatLng(lat, lng),
+                                  );
+                                } catch { dist = null; }
+                              }
+                              return {
+                                name: p.displayName ?? 'Unnamed place',
+                                address: p.formattedAddress ?? '',
+                                rating: p.rating ?? null,
+                                lat, lng, dist,
+                              };
+                            }),
+                          );
+                        } else {
+                          setNearbyError(`No ${c.label} found within 2km`);
+                        }
+                      } catch (e) {
+                        console.error('[nearby] search failed', e);
+                        fail(`No ${c.label} found within 2km`);
+                      }
                     };
+
+                    const activeCat = cats.find((c) => c.label === nearbyCategory) ?? null;
+
                     return (
                       <div
-                        onClick={() => { if (!nearbyLoading) setNearbyOpen(false); }}
+                        onClick={closeSheet}
                         style={{
                           position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100,
                           display: 'flex', alignItems: 'flex-end', fontFamily: 'Inter, sans-serif',
@@ -7199,39 +7275,119 @@ function HomePage() {
                       >
                         <div
                           onClick={(e) => e.stopPropagation()}
-                          style={{ background: '#FFFFFF', borderRadius: '20px 20px 0 0', padding: 20, width: '100%' }}
+                          style={{ background: '#FFFFFF', borderRadius: '20px 20px 0 0', padding: 20, width: '100%', maxHeight: '80vh', overflowY: 'auto' }}
                         >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                            <div style={{ width: 36, height: 36, borderRadius: 8, background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              <IconMapPin size={20} color="#1877D6" stroke={1.8} />
-                            </div>
-                            <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Find nearby</div>
-                          </div>
-                          <div style={{ fontSize: 13, color: '#5A6B85', marginBottom: 16 }}>
-                            {nearbyLoading ? `Getting location…` : 'Opens Google Maps around your current location.'}
-                          </div>
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
-                            {cats.map((c) => (
-                              <button
-                                key={c.label}
-                                type="button"
-                                disabled={!!nearbyLoading}
-                                onClick={() => openCat(c)}
-                                style={{
-                                  background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 12, height: 56,
-                                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
-                                  cursor: nearbyLoading ? 'default' : 'pointer', opacity: nearbyLoading && nearbyLoading !== c.label ? 0.5 : 1,
-                                  fontFamily: 'Inter, sans-serif', padding: 0,
-                                }}
-                              >
-                                <span style={{ fontSize: 18, lineHeight: 1 }}>{c.emoji}</span>
-                                <span style={{ fontSize: 11, fontWeight: 600, color: '#0B1F3A' }}>{c.label}</span>
-                              </button>
-                            ))}
-                          </div>
+                          {activeCat ? (
+                            <>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                                <button
+                                  type="button"
+                                  aria-label="Back to categories"
+                                  onClick={() => { setNearbyCategory(null); setNearbyResults([]); setNearbyError(null); setNearbyLoading(null); }}
+                                  style={{ width: 32, height: 32, borderRadius: 8, border: '1px solid #E2E8F0', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0, flexShrink: 0 }}
+                                >
+                                  <ArrowLeft size={16} color="#0B1F3A" />
+                                </button>
+                                <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>
+                                  {activeCat.emoji} {activeCat.label}
+                                </div>
+                              </div>
+
+                              {nearbyLoading ? (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '20px 0', fontSize: 13, color: '#5A6B85' }}>
+                                  <span
+                                    aria-hidden
+                                    style={{
+                                      width: 16, height: 16, border: '2px solid #E2E8F0', borderTopColor: '#1877D6',
+                                      borderRadius: '50%', display: 'inline-block', animation: 'nearby-spin 0.7s linear infinite',
+                                    }}
+                                  />
+                                  Finding {activeCat.label} nearby…
+                                  <style>{`@keyframes nearby-spin { to { transform: rotate(360deg); } }`}</style>
+                                </div>
+                              ) : nearbyError ? (
+                                <div style={{ padding: '20px 0', fontSize: 13, color: '#6B7686' }}>{nearbyError}</div>
+                              ) : (
+                                <div>
+                                  {nearbyResults.map((r, i) => (
+                                    <button
+                                      key={`${r.name}-${i}`}
+                                      type="button"
+                                      onClick={() => {
+                                        if (r.lat == null || r.lng == null) return;
+                                        window.open(
+                                          `https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lng}`,
+                                          '_blank', 'noopener,noreferrer',
+                                        );
+                                      }}
+                                      style={{
+                                        width: '100%', display: 'flex', alignItems: 'center', gap: 10, textAlign: 'left',
+                                        padding: '12px 14px', background: '#FFFFFF', border: 'none',
+                                        borderTop: i === 0 ? 'none' : '1px solid #EEF2F7', cursor: 'pointer',
+                                        fontFamily: 'Inter, sans-serif',
+                                      }}
+                                    >
+                                      <div style={{ flex: 1, minWidth: 0 }}>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                          {r.name}
+                                        </div>
+                                        {r.address ? (
+                                          <div style={{ fontSize: 11, color: '#6B7686', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: 2 }}>
+                                            {r.address}
+                                          </div>
+                                        ) : null}
+                                      </div>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                                        <div style={{ textAlign: 'right' }}>
+                                          {r.rating != null ? (
+                                            <div style={{ fontSize: 11, color: '#6B7686' }}>⭐ {Number(r.rating).toFixed(1)}</div>
+                                          ) : null}
+                                          {r.dist != null ? (
+                                            <div style={{ fontSize: 11, color: '#6B7686' }}>{fmtDistance(r.dist)}</div>
+                                          ) : null}
+                                        </div>
+                                        <IconChevronRight size={14} color="#9CA3AF" />
+                                      </div>
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                                <div style={{ width: 36, height: 36, borderRadius: 8, background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                  <IconMapPin size={20} color="#1877D6" stroke={1.8} />
+                                </div>
+                                <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Find nearby</div>
+                              </div>
+                              <div style={{ fontSize: 13, color: '#5A6B85', marginBottom: 16 }}>
+                                Shows places within 2km of your current location.
+                              </div>
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+                                {cats.map((c) => (
+                                  <button
+                                    key={c.label}
+                                    type="button"
+                                    disabled={!!nearbyLoading}
+                                    onClick={() => openCat(c)}
+                                    style={{
+                                      background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 12, height: 56,
+                                      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
+                                      cursor: nearbyLoading ? 'default' : 'pointer', opacity: nearbyLoading && nearbyLoading !== c.label ? 0.5 : 1,
+                                      fontFamily: 'Inter, sans-serif', padding: 0,
+                                    }}
+                                  >
+                                    <span style={{ fontSize: 18, lineHeight: 1 }}>{c.emoji}</span>
+                                    <span style={{ fontSize: 11, fontWeight: 600, color: '#0B1F3A' }}>{c.label}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            </>
+                          )}
                           <button
                             type="button"
-                            onClick={() => { if (!nearbyLoading) setNearbyOpen(false); }}
+                            onClick={closeSheet}
                             style={{ marginTop: 14, width: '100%', padding: '12px', borderRadius: 12, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: 14, fontWeight: 600, fontFamily: 'Inter, sans-serif', cursor: 'pointer' }}
                           >
                             Close
