@@ -309,6 +309,8 @@ export function UnifiedPaymentSheet({
     date: string | null;
   } | null>(null);
   const [savingEdit, setSavingEdit] = useState(false);
+  const [successInteracted, setSuccessInteracted] = useState(false);
+
   const [refundConfirmOpen, setRefundConfirmOpen] = useState(false);
   const [refundProcessing, setRefundProcessing] = useState(false);
 
