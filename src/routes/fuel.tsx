@@ -609,6 +609,53 @@ function stationTitle(s: any) {
   return [s?.brand, s?.name].filter(Boolean).join(" ") || s?.address || "Station";
 }
 
+let gmapsPlacesPromise: Promise<void> | null = null;
+function loadGoogleMapsPlaces(): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+  if ((window as any).google?.maps?.places) return Promise.resolve();
+  if (gmapsPlacesPromise) return gmapsPlacesPromise;
+  gmapsPlacesPromise = new Promise<void>((resolve, reject) => {
+    const key = (import.meta as any).env?.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY;
+    const existing = document.querySelector<HTMLScriptElement>("script[data-dsm-gmaps]");
+    if (existing) {
+      existing.addEventListener("load", () => resolve());
+      existing.addEventListener("error", () => reject(new Error("maps failed")));
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places&loading=async`;
+    script.async = true;
+    script.setAttribute("data-dsm-gmaps", "1");
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("maps failed"));
+    document.head.appendChild(script);
+  });
+  return gmapsPlacesPromise;
+}
+
+/** Parse "Monday: 6:00 AM – 10:00 PM" → { text, open } */
+function parseTodayHours(hours: string): { text: string; open: boolean | null } {
+  const text = hours.includes(":") ? hours.slice(hours.indexOf(":") + 1).trim() : hours.trim();
+  if (/open 24 hours/i.test(text)) return { text, open: true };
+  if (/closed/i.test(text)) return { text, open: false };
+  const m = text.match(/(\d{1,2}):(\d{2})\s*([AP]M)\s*[–-]\s*(\d{1,2}):(\d{2})\s*([AP]M)/i);
+  if (!m) return { text, open: null };
+  const to24 = (h: string, mi: string, ap: string) => {
+    let hh = Number(h) % 12;
+    if (/pm/i.test(ap)) hh += 12;
+    return hh * 60 + Number(mi);
+  };
+  const start = to24(m[1], m[2], m[3]);
+  let end = to24(m[4], m[5], m[6]);
+  const now = new Date();
+  const mins = now.getHours() * 60 + now.getMinutes();
+  if (end <= start) end += 24 * 60;
+  const cur = mins < start ? mins + 24 * 60 : mins;
+  return { text, open: cur >= start && cur < end };
+}
+
+
+
 function FindCheapFuel({
   stations,
   cheapest,
