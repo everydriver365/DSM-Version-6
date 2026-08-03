@@ -141,6 +141,7 @@ type ChatRoom = {
   is_opt_in: boolean | null;
   description: string | null;
   image_url: string | null;
+  deleted_at: string | null;
 };
 
 function ChatRoomsSection() {
