@@ -910,8 +910,6 @@ export function UnifiedPaymentSheet({
 
       toast.success("Refund recorded");
       setRefundRow(null);
-      await refreshPupil();
-      setBalance(await getPupilBalance(pupilId));
       if (typeof window !== "undefined") {
         window.dispatchEvent(new Event("dsm-payment-recorded"));
       }
@@ -919,6 +917,15 @@ export function UnifiedPaymentSheet({
     } catch (e) {
       console.error("[UnifiedPaymentSheet] confirmRefund", e);
       toast.error("Couldn't record refund");
+    } finally {
+      if (pupilId) {
+        try {
+          await refreshPupil();
+          setBalance(await getPupilBalance(pupilId));
+        } catch (refreshErr) {
+          console.error("[UnifiedPaymentSheet] refresh after confirmRefund", refreshErr);
+        }
+      }
     }
   };
 
