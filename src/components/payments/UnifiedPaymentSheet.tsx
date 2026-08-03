@@ -1032,7 +1032,93 @@ export function UnifiedPaymentSheet({
     >
       <style>{`@keyframes ups-pulse{0%,100%{opacity:1}50%{opacity:.4}}`}</style>
 
-      <div style={{ fontFamily: FONT, background: WHITE, paddingBottom: 4 }}>
+      <div style={{ fontFamily: FONT, background: WHITE, paddingBottom: 4, position: "relative" }}>
+        {paymentSuccess && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              zIndex: 10,
+              background: WHITE,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              padding: 24,
+            }}
+          >
+            <IconCircleCheck size={48} color={GREEN} />
+            <div style={{ fontSize: 16, fontWeight: 600, color: NAVY, marginTop: 16 }}>Payment recorded</div>
+            <div style={{ fontSize: 13, color: MUTED, marginTop: 4 }}>
+              £{paymentSuccess.amount.toFixed(2)} {METHOD_LABEL[paymentSuccess.method as PayMethod] || paymentSuccess.method}
+            </div>
+            <div style={{ fontSize: 13, color: MUTED }}>for {paymentSuccess.pupilName}</div>
+            {balance && (
+              <div style={{ width: "100%", marginTop: 16 }}>
+                <SummaryBar
+                  cells={
+                    isPackage
+                      ? [
+                          { label: "Package", value: money(balance.packageTotal) },
+                          { label: "Paid", value: money(balance.packagePaid), color: GREEN },
+                          {
+                            label: "Outstanding",
+                            value: money(balance.packageOutstanding),
+                            color: balance.packageOutstanding > 0 ? RED : GREEN,
+                          },
+                        ]
+                      : [
+                          { label: "Total owed", value: money(balance.lessonsOwed) },
+                          { label: "Paid", value: money(balance.lessonsPaid), color: GREEN },
+                          {
+                            label: "Outstanding",
+                            value: money(balance.outstanding),
+                            color: balance.outstanding > 0 ? RED : GREEN,
+                          },
+                        ]
+                  }
+                />
+              </div>
+            )}
+            <div style={{ display: "flex", gap: 12, marginTop: 24, width: "100%" }}>
+              <button
+                type="button"
+                onClick={handleRecordAnother}
+                style={{
+                  flex: 1,
+                  height: 44,
+                  borderRadius: 8,
+                  border: `1px solid ${BORDER}`,
+                  background: WHITE,
+                  color: NAVY,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                }}
+              >
+                Record another payment
+              </button>
+              <button
+                type="button"
+                onClick={handlePaymentDone}
+                style={{
+                  flex: 1,
+                  height: 44,
+                  borderRadius: 8,
+                  border: "none",
+                  background: BLUE,
+                  color: WHITE,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: FONT,
+                  cursor: "pointer",
+                }}
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        )}
         {/* ---------------- PUPIL SELECTOR ---------------- */}
         {pickerOpen && (
           <div style={{ marginBottom: 12 }}>
