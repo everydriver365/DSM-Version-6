@@ -138,6 +138,8 @@ type ChatRoom = {
   outcode: string;
   instructor_count: number;
   is_opt_in: boolean | null;
+  description: string | null;
+  image_url: string | null;
 };
 
 function ChatRoomsSection() {
@@ -149,6 +151,15 @@ function ChatRoomsSection() {
   const [savingId, setSavingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Inline edit panel state
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editDesc, setEditDesc] = useState("");
+  const [editImage, setEditImage] = useState<string | null>(null);
+  const [editPrivate, setEditPrivate] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [editSaving, setEditSaving] = useState(false);
+
   useEffect(() => {
     fetchRooms();
   }, []);
@@ -156,13 +167,66 @@ function ChatRoomsSection() {
   async function fetchRooms() {
     const { data, error } = await supabase
       .from("local_chat_rooms")
-      .select("id, area_name, outcode, instructor_count, is_opt_in")
+      .select("id, area_name, outcode, instructor_count, is_opt_in, description, image_url")
       .order("area_name", { ascending: true });
     if (error) {
       console.error("[admin] fetch rooms error", error);
       return;
     }
     setRooms((data as ChatRoom[]) || []);
+  }
+
+  function startEdit(room: ChatRoom) {
+    setEditingId(room.id);
+    setEditName(room.area_name ?? "");
+    setEditDesc(room.description ?? "");
+    setEditImage(room.image_url ?? null);
+    setEditPrivate(!!room.is_opt_in);
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setUploading(false);
+    setEditSaving(false);
+  }
+
+  async function handleImageUpload(room: ChatRoom, file: File) {
+    setUploading(true);
+    const { error: upErr } = await supabase.storage
+      .from("chat-room-images")
+      .upload(room.id + ".jpg", file, { upsert: true, contentType: file.type || "image/jpeg" });
+    if (upErr) {
+      setUploading(false);
+      toast.error("Image upload failed");
+      return;
+    }
+    const { data: urlData } = supabase.storage
+      .from("chat-room-images")
+      .getPublicUrl(room.id + ".jpg");
+    setEditImage(`${urlData.publicUrl}?t=${Date.now()}`);
+    setUploading(false);
+  }
+
+  async function saveEdit(room: ChatRoom) {
+    if (!editName.trim()) return;
+    setEditSaving(true);
+    const { error } = await supabase
+      .from("local_chat_rooms")
+      .update({
+        area_name: editName.trim(),
+        description: editDesc.trim() || null,
+        image_url: editImage,
+        is_opt_in: editPrivate,
+      })
+      .eq("id", room.id);
+    setEditSaving(false);
+    if (error) {
+      toast.error("Could not update room");
+      return;
+    }
+    toast.success("Room updated");
+    setEditingId(null);
+    await fetchRooms();
   }
 
   async function toggleOptIn(room: ChatRoom) {
