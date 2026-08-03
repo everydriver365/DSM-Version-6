@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { reverseGeocode } from "@/lib/geocode.functions";
-import { IconBell, IconBellOff } from "@tabler/icons-react";
+import { IconBell, IconBellOff, IconSearch } from "@tabler/icons-react";
 
 
 import {
@@ -1900,6 +1900,21 @@ function ReportSheet({
 
 type ChatSubscription = { id: string; muted_until: string | null; last_read_at: string | null };
 
+function escapeRegExp(s: string) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+function highlightMessage(text: string, query: string): React.ReactNode {
+  const q = query.trim();
+  if (!q) return text;
+  const pattern = new RegExp(`(${escapeRegExp(q)})`, "gi");
+  const parts = text.split(pattern);
+  return parts.map((part, i) =>
+    part.toLowerCase() === q.toLowerCase() ? (
+      <span key={i} style={{ background: "#FEF3C7" }}>{part}</span>
+    ) : part
+  );
+}
+
 function ChatTab({
   scope, userId, instructorProfile, instructorArea, instructorOutcode, onRoomRead,
 }: {
@@ -1917,11 +1932,24 @@ function ChatTab({
   const [newMessage, setNewMessage] = useState("");
   const [subscription, setSubscription] = useState<ChatSubscription | null>(null);
   const [muteMenuOpen, setMuteMenuOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState<BrowseRoom | null>(null);
+  const [roomSelectorOpen, setRoomSelectorOpen] = useState(false);
+  const [myRooms, setMyRooms] = useState<BrowseRoom[]>([]);
+  const [msgSearch, setMsgSearch] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const listRef = useRef<HTMLDivElement | null>(null);
 
   const isSubscribed = subscription !== null;
   const isMuted = !!subscription?.muted_until && new Date(subscription.muted_until) > new Date();
 
+  const activeOutcode = selectedRoom ? selectedRoom.outcode : instructorOutcode;
+  const activeAreaName = selectedRoom ? (selectedRoom.area_name ?? selectedRoom.outcode) : instructorArea;
+
+  const displayed = useMemo(() => {
+    const q = msgSearch.trim().toLowerCase();
+    if (!q) return messages;
+    return messages.filter((m) => m.message.toLowerCase().includes(q));
+  }, [messages, msgSearch]);
 
   const scrollToBottom = () => {
     requestAnimationFrame(() => {
@@ -1932,11 +1960,11 @@ function ChatTab({
 
   useEffect(() => {
     if (!userId) return;
-    if (scope === "local" && !instructorOutcode) return;
+    if (scope === "local" && !activeOutcode) return;
     let cancelled = false;
     (async () => {
-      const outcode = scope === "uk" ? "UK" : instructorOutcode!;
-      const areaName = scope === "uk" ? "All UK ADIs" : instructorArea;
+      const outcode = scope === "uk" ? "UK" : activeOutcode!;
+      const areaName = scope === "uk" ? "All UK ADIs" : activeAreaName;
 
       const { data: roomRow } = await supabase
         .from("local_chat_rooms")
@@ -1964,7 +1992,38 @@ function ChatTab({
         .limit(100);
       if (cancelled) return;
       setMessages((msgs ?? []) as ChatMessage[]);
+      setMsgSearch("");
       scrollToBottom();
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, scope, activeOutcode]);
+
+  // Load subscribed local rooms for the room switcher
+  useEffect(() => {
+    if (!userId || scope !== "local") return;
+    let cancelled = false;
+    (async () => {
+      const { data: rooms } = await supabase
+        .from("local_chat_rooms")
+        .select("id, outcode, area_name, instructor_count, room_type, is_opt_in")
+        .neq("outcode", "UK");
+      if (cancelled) return;
+      const { data: subs } = await supabase
+        .from("chat_room_subscriptions")
+        .select("room_id")
+        .eq("instructor_id", userId);
+      if (cancelled) return;
+      const subIds = new Set(((subs ?? []) as any[]).map((s) => s.room_id));
+      const all = (rooms ?? []) as BrowseRoom[];
+      const home = all.find((r) => r.outcode === instructorOutcode);
+      const my = all.filter(
+        (r) =>
+          subIds.has(r.id) ||
+          (home && r.id === home.id) ||
+          (!r.is_opt_in && r.outcode === instructorOutcode)
+      );
+      setMyRooms(my);
     })();
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -2127,12 +2186,12 @@ function ChatTab({
     if (!error) toast.info("Message flagged for review by DSM");
   };
 
-
-  const areaLabel = scope === "uk" ? "All UK" : (room?.area_name ?? instructorArea);
+  const areaLabel = scope === "uk" ? "All UK" : (room?.area_name ?? activeAreaName);
   const memberCount = room?.instructor_count ?? 1;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 130px)" }}>
+      {/* Header */}
       <div style={{
         background: "white", borderBottom: "0.5px solid #E2E6ED",
         padding: "12px 16px", position: "sticky", top: 45, zIndex: 5,
@@ -2148,7 +2207,19 @@ function ChatTab({
         </div>
 
         {room && (
-          <div style={{ position: "relative", flexShrink: 0 }}>
+          <div style={{ position: "relative", flexShrink: 0, display: "flex", alignItems: "center", gap: 4 }}>
+            <button
+              type="button"
+              aria-label="Search messages"
+              onClick={() => setSearchOpen((v) => !v)}
+              style={{
+                background: "none", border: "none", cursor: "pointer",
+                padding: 4, display: "flex", alignItems: "center",
+              }}
+            >
+              <IconSearch size={20} color={searchOpen ? "#1877D6" : "#9CA3AF"} />
+            </button>
+
             <button
               type="button"
               aria-label={!isSubscribed ? "Subscribe to notifications" : isMuted ? "Unmute notifications" : "Notification settings"}
@@ -2219,7 +2290,98 @@ function ChatTab({
         )}
       </div>
 
+      {/* Room selector (local only) */}
+      {scope === "local" && myRooms.length > 0 && (
+        <div style={{ background: "white", borderBottom: "0.5px solid #E2E6ED", padding: "8px 16px", position: "relative" }}>
+          <button
+            type="button"
+            onClick={() => setRoomSelectorOpen((v) => !v)}
+            style={{
+              display: "flex", alignItems: "center", gap: 6,
+              background: "none", border: "none", padding: 0, cursor: "pointer",
+            }}
+          >
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#0F2044" }}>
+              {areaLabel}
+            </span>
+            <ChevronDown
+              size={16}
+              color="#6B7280"
+              style={{ transform: roomSelectorOpen ? "rotate(180deg)" : "none", transition: "transform .15s" }}
+            />
+          </button>
 
+          {roomSelectorOpen && (
+            <>
+              <div
+                onClick={() => setRoomSelectorOpen(false)}
+                style={{ position: "fixed", inset: 0, zIndex: 40 }}
+              />
+              <div style={{
+                position: "absolute", top: 34, left: 16, right: 16, zIndex: 41,
+                background: "white", border: "0.5px solid #E2E6ED", borderRadius: 12,
+                boxShadow: "0 1px 3px rgba(0,0,0,0.06)", overflow: "hidden", maxHeight: 260, overflowY: "auto",
+              }}>
+                {myRooms.map((r) => (
+                  <button
+                    key={r.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedRoom(r);
+                      setRoomSelectorOpen(false);
+                    }}
+                    style={{
+                      display: "block", width: "100%", textAlign: "left",
+                      padding: "10px 14px", fontSize: 13, color: "#0F2044",
+                      background: "none", border: "none", borderBottom: "0.5px solid #F1F4F8", cursor: "pointer",
+                    }}
+                  >
+                    {r.area_name || r.outcode}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Message search */}
+      {searchOpen && (
+        <div style={{
+          background: "white", borderBottom: "0.5px solid #E2E6ED",
+          padding: "8px 16px", display: "flex", alignItems: "center", gap: 8,
+        }}>
+          <IconSearch size={16} color="#8A93A3" />
+          <input
+            value={msgSearch}
+            onChange={(e) => setMsgSearch(e.target.value)}
+            placeholder="Search messages..."
+            autoFocus
+            style={{
+              flex: 1, border: "none", outline: "none", fontSize: 13, color: "#0F2044", background: "transparent",
+            }}
+          />
+          {msgSearch && (
+            <button
+              type="button"
+              aria-label="Clear search"
+              onClick={() => setMsgSearch("")}
+              style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex" }}
+            >
+              <X size={16} color="#8A93A3" />
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => { setMsgSearch(""); setSearchOpen(false); }}
+            style={{ fontSize: 12, color: "#8A93A3", background: "none", border: "none", cursor: "pointer" }}
+          >
+            Close
+          </button>
+        </div>
+      )}
+
+      {/* Message list */}
       <div
         ref={listRef}
         style={{ flex: 1, overflowY: "auto", padding: 16, display: "flex", flexDirection: "column" }}
@@ -2234,19 +2396,22 @@ function ChatTab({
               {noRoomMessage || "Check back soon, or contact support."}
             </div>
           </div>
-        ) : messages.length === 0 ? (
+        ) : displayed.length === 0 ? (
           <div style={{ marginTop: 40, textAlign: "center" }}>
-            <div style={{ fontWeight: 600, color: "#6B7280" }}>Be the first to chat in {areaLabel}!</div>
+            <div style={{ fontWeight: 600, color: "#6B7280" }}>
+              {msgSearch.trim() ? "No messages match your search" : `Be the first to chat in ${areaLabel}!`}
+            </div>
             <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>
-              Connect with local ADIs, share tips and help each other
+              {msgSearch.trim() ? "Try a different keyword" : "Connect with local ADIs, share tips and help each other"}
             </div>
           </div>
         ) : (
-          messages.map((m, idx) => {
-            const prev = messages[idx - 1];
+          displayed.map((m, idx) => {
+            const prev = displayed[idx - 1];
             const showDateSep = !prev || new Date(prev.created_at).toDateString() !== new Date(m.created_at).toDateString();
             const isMine = m.instructor_id === userId;
             const time = new Date(m.created_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+            const messageNode = highlightMessage(m.message, msgSearch);
             return (
               <div key={m.id}>
                 {showDateSep && (
@@ -2262,7 +2427,7 @@ function ChatTab({
                         borderRadius: "16px 16px 4px 16px", padding: "10px 14px",
                         fontSize: 13, whiteSpace: "pre-wrap", wordBreak: "break-word",
                       }}>
-                        {m.message}
+                        {messageNode}
                       </div>
                       <div style={{ fontSize: 10, color: "#9CA3AF", textAlign: "right", marginTop: 2 }}>{time}</div>
                     </div>
@@ -2283,7 +2448,7 @@ function ChatTab({
                         borderRadius: "4px 16px 16px 16px", padding: "10px 14px",
                         fontSize: 13, color: "#0F2044", whiteSpace: "pre-wrap", wordBreak: "break-word",
                       }}>
-                        {m.message}
+                        {messageNode}
                       </div>
                       <div style={{ display: "flex", gap: 8, marginTop: 2, alignItems: "center" }}>
                         <span style={{ fontSize: 10, color: "#9CA3AF" }}>{time}</span>
