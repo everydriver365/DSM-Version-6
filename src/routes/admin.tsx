@@ -400,7 +400,6 @@ function ChatRoomsSection() {
         {error && <div style={{ color: "#CC2229", fontSize: 13 }}>{error}</div>}
       </form>
 
-      <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", marginBottom: 12 }}>
       <div
         style={{
           display: "flex",
