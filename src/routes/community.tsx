@@ -726,11 +726,15 @@ function AlertsTab({
       .gt("expires_at", new Date().toISOString())
       .order("created_at", { ascending: false });
     const rows = (data ?? []) as Alert[];
-    const filtered = coverageOutcodes.length > 0
-      ? rows.filter((a) => coverageOutcodes.includes((a.outcode ?? "").toUpperCase()))
-      : instructorOutcode
-        ? rows.filter((a) => (a.outcode ?? "").toUpperCase() === instructorOutcode)
-        : rows;
+    const filtered = rows.filter((a) => {
+      // Always show own alerts regardless of outcode
+      if (a.instructor_id === userId) return true;
+      // Filter others by coverage area
+      const aOutcode = (a.outcode ?? "").toUpperCase();
+      if (coverageOutcodes.length > 0) return coverageOutcodes.includes(aOutcode);
+      if (instructorOutcode) return aOutcode === instructorOutcode;
+      return true;
+    });
     setAlerts(filtered);
 
     if (filtered.length > 0) {
