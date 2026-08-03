@@ -254,6 +254,7 @@ export function UnifiedPaymentSheet({
   const [pricingType, setPricingType] = useState<PricingType>("standard");
   const [hoursTotal, setHoursTotal] = useState("");
   const [packagePrice, setPackagePrice] = useState("");
+  const [packageMethod, setPackageMethod] = useState<PayMethod>("cash");
   const [niTotal, setNiTotal] = useState("");
   const [niRef, setNiRef] = useState("");
   const [niPayer, setNiPayer] = useState<"national_intensives" | "pupil">("national_intensives");
@@ -907,6 +908,30 @@ export function UnifiedPaymentSheet({
       }
       const { error } = await supabase.from("pupils").update(patch).eq("id", pupilId);
       if (error) throw error;
+
+      if (pricingType === "block") {
+        const prevPrice = Number(pupil?.prepaid_amount_paid ?? 0);
+        const newPrice = packagePrice === "" ? 0 : Number(packagePrice);
+        const isNewPackage = newPrice > 0 && newPrice !== prevPrice;
+        if (isNewPackage) {
+          const { error: hErr } = await supabase.from("lesson_history").insert({
+            instructor_id: instructorId,
+            pupil_id: pupilId,
+            amount_paid: newPrice,
+            payment_method: packageMethod,
+            lesson_date: new Date().toISOString().slice(0, 10),
+            payment_status: "paid",
+            notes: `Block package: ${hoursTotal} hrs at £${newPrice}`,
+            created_at: new Date().toISOString(),
+          });
+          if (hErr) console.error("[UnifiedPaymentSheet] package history insert", hErr);
+          await supabase
+            .from("pupils")
+            .update({ prepaid_hours: hoursTotal === "" ? 0 : Number(hoursTotal) })
+            .eq("id", pupilId);
+        }
+      }
+
       toast.success("Pricing updated");
       await refreshPupil();
       onSaved?.();
@@ -1991,6 +2016,59 @@ export function UnifiedPaymentSheet({
                     style={inputStyle}
                   />
                 </Field>
+
+                {(() => {
+                  const newPrice = packagePrice === "" ? 0 : Number(packagePrice);
+                  const prevPrice = Number(pupil?.prepaid_amount_paid ?? 0);
+                  if (!(newPrice > 0 && newPrice !== prevPrice)) return null;
+                  return (
+                    <div style={{ marginBottom: 12 }}>
+                      <div
+                        style={{
+                          border: `1px solid ${BORDER}`,
+                          background: AMBER_BG,
+                          borderRadius: 10,
+                          padding: 12,
+                        }}
+                      >
+                        <div style={{ fontSize: 12, fontWeight: 700, color: AMBER }}>
+                          Record package payment
+                        </div>
+                        <div style={{ fontSize: 11, color: AMBER, marginTop: 4 }}>
+                          This will record a {money(newPrice)} package payment for{" "}
+                          {hoursTotal === "" ? 0 : Number(hoursTotal)} hours
+                        </div>
+                      </div>
+                      <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
+                        {(["cash", "bank_transfer", "qr", "link"] as PayMethod[]).map((m) => {
+                          const active = packageMethod === m;
+                          return (
+                            <button
+                              key={m}
+                              type="button"
+                              onClick={() => setPackageMethod(m)}
+                              style={{
+                                flex: "1 1 45%",
+                                height: 34,
+                                borderRadius: 8,
+                                border: `1px solid ${active ? BLUE : BORDER}`,
+                                background: active ? "#EFF6FF" : WHITE,
+                                color: active ? BLUE : NAVY,
+                                fontSize: 12,
+                                fontWeight: 600,
+                                fontFamily: FONT,
+                                cursor: "pointer",
+                              }}
+                            >
+                              {METHOD_LABEL[m]}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 {balance && (
                   <SummaryBar
                     cells={[
