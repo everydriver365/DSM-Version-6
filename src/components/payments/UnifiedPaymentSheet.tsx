@@ -287,6 +287,7 @@ export function UnifiedPaymentSheet({
   const [payUrl, setPayUrl] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
+  const [refundAmount, setRefundAmount] = useState("");
   const [paymentSuccess, setPaymentSuccess] = useState<{
     historyId: string;
     amount: number;
@@ -330,6 +331,14 @@ export function UnifiedPaymentSheet({
     if (!balance) return 0;
     return Math.max(0, balance.lessonsPaid + balance.accountCredit);
   }, [balance]);
+  // Cap for the currently selected ledger row: can't refund more than the row,
+  // and can't refund more than the pupil's available paid/credit balance.
+  const refundRowMax = useMemo(() => {
+    if (!refundRow) return 0;
+    return Math.min(refundRow.amount, maxRefundableAmount);
+  }, [refundRow, maxRefundableAmount]);
+  const refundAmountNum = Number(refundAmount) || 0;
+
 
 
   // ---- sheet open/close events ------------------------------------------
@@ -386,6 +395,7 @@ export function UnifiedPaymentSheet({
     setQrFullscreen(false);
     setPayUrl(null);
     setRefundRow(null);
+    setRefundAmount("");
     setRefundConfirmOpen(false);
     setRefundProcessing(false);
     setPaymentSuccess(null);
@@ -933,22 +943,39 @@ export function UnifiedPaymentSheet({
   // ---- refunds -----------------------------------------------------------
   const confirmRefund = async () => {
     if (!refundRow || !pupilId || refundProcessing) return;
-    if (refundRow.amount > maxRefundableAmount) {
+    const amt = Math.round(refundAmountNum * 100) / 100;
+    if (!(amt > 0)) {
+      toast.error("Enter a refund amount greater than £0");
+      return;
+    }
+    if (amt > refundRow.amount) {
+      toast.error(`Refund can't exceed the original payment (${money(refundRow.amount)})`);
+      return;
+    }
+    if (amt > maxRefundableAmount) {
       toast.error(`Refund amount exceeds available paid/credit balance (${money(maxRefundableAmount)})`);
       return;
     }
+    const isPartial = amt < refundRow.amount;
     setRefundProcessing(true);
     try {
       await recordRefund({
         pupilId,
-        amount: refundRow.amount,
+        amount: amt,
         method: toDbMethod(refundRow.method ?? "refund"),
-        notes: `Refund of ${money(refundRow.amount)}`,
+        notes: isPartial
+          ? `Partial refund of ${money(amt)} (from ${money(refundRow.amount)} payment)`
+          : `Refund of ${money(amt)}`,
         currentAccountBalance: Number(pupil?.account_balance ?? 0),
       });
 
-      toast.success("Refund recorded");
+      toast.success(
+        isPartial
+          ? `Partial refund of ${money(amt)} recorded`
+          : `Refund of ${money(amt)} recorded`,
+      );
       setRefundRow(null);
+      setRefundAmount("");
       setRefundConfirmOpen(false);
       if (typeof window !== "undefined") {
         window.dispatchEvent(new Event("dsm-payment-recorded"));
@@ -956,7 +983,8 @@ export function UnifiedPaymentSheet({
       onSaved?.();
     } catch (e) {
       console.error("[UnifiedPaymentSheet] confirmRefund", e);
-      toast.error("Couldn't record refund");
+      toast.error(`Couldn't record ${money(amt)} refund`);
+
     } finally {
       setRefundProcessing(false);
       if (pupilId) {
@@ -1132,6 +1160,7 @@ export function UnifiedPaymentSheet({
           notes: `Package cancellation — ${unusedHrs}h of ${blockTotalHrs}h unused`,
           currentAccountBalance: Number(pupil?.account_balance ?? 0),
         });
+        toast.success(`Refund of ${money(refundDue)} recorded`);
       }
       toast.success("Cancellation processed");
       onSaved?.();
@@ -2225,28 +2254,98 @@ export function UnifiedPaymentSheet({
                       Issue refund — {money(refundRow.amount)} —{" "}
                       {refundRow.method ?? "payment"} — {fmtDate(refundRow.created_at)}
                     </div>
+
+                    <div style={{ marginTop: 10 }}>
+                      <div style={{ fontSize: 10, color: MUTED, marginBottom: 4 }}>
+                        Refund amount (max {money(refundRowMax)})
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <span style={{ fontSize: 13, color: BODY, fontWeight: 600 }}>£</span>
+                        <input
+                          type="number"
+                          inputMode="decimal"
+                          min={0}
+                          step="0.01"
+                          max={refundRowMax}
+                          value={refundAmount}
+                          onChange={(e) => setRefundAmount(e.target.value)}
+                          style={{
+                            flex: 1,
+                            height: 34,
+                            borderRadius: 8,
+                            border: `1px solid ${BORDER}`,
+                            background: WHITE,
+                            padding: "0 10px",
+                            fontSize: 13,
+                            fontFamily: FONT,
+                            color: NAVY,
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setRefundAmount(String(refundRowMax))}
+                          style={{
+                            height: 34,
+                            padding: "0 10px",
+                            borderRadius: 8,
+                            border: `1px solid ${BORDER}`,
+                            background: WHITE,
+                            color: BODY,
+                            fontSize: 11,
+                            fontWeight: 600,
+                            fontFamily: FONT,
+                            cursor: "pointer",
+                          }}
+                        >
+                          Full
+                        </button>
+                      </div>
+                      {refundAmountNum > 0 && refundAmountNum < refundRow.amount && (
+                        <div style={{ fontSize: 10, color: MUTED, marginTop: 4 }}>
+                          Partial refund — {money(refundRow.amount - refundAmountNum)} of this
+                          payment stays on the ledger
+                        </div>
+                      )}
+                      {refundAmountNum > refundRowMax && (
+                        <div style={{ fontSize: 10, color: RED, marginTop: 4 }}>
+                          Amount exceeds the refundable maximum
+                        </div>
+                      )}
+                    </div>
+
                     <div style={{ display: "flex", gap: 6, marginTop: 10 }}>
                       <button
                         type="button"
                         onClick={() => setRefundConfirmOpen(true)}
+                        disabled={!(refundAmountNum > 0) || refundAmountNum > refundRowMax}
                         style={{
                           flex: 1,
                           height: 34,
                           borderRadius: 8,
                           border: "none",
-                          background: RED,
+                          background:
+                            !(refundAmountNum > 0) || refundAmountNum > refundRowMax ? BORDER : RED,
                           color: WHITE,
                           fontSize: 12,
                           fontWeight: 600,
                           fontFamily: FONT,
-                          cursor: "pointer",
+                          cursor:
+                            !(refundAmountNum > 0) || refundAmountNum > refundRowMax
+                              ? "not-allowed"
+                              : "pointer",
                         }}
                       >
-                        Confirm refund
+                        {refundAmountNum > 0 && refundAmountNum < refundRow.amount
+                          ? `Refund ${money(refundAmountNum)}`
+                          : "Confirm refund"}
                       </button>
                       <button
                         type="button"
-                        onClick={() => setRefundRow(null)}
+                        onClick={() => {
+                          setRefundRow(null);
+                          setRefundAmount("");
+                        }}
+
                         style={{
                           flex: 1,
                           height: 34,
@@ -2306,33 +2405,41 @@ export function UnifiedPaymentSheet({
                           <span style={{ fontSize: 12, fontWeight: 600, color: r.amount < 0 ? RED : GREEN }}>
                             {money(r.amount)}
                           </span>
-                          {r.amount > 0 && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (r.amount > maxRefundableAmount) {
-                                  toast.error(`Refund amount exceeds available paid/credit balance (${money(maxRefundableAmount)})`);
-                                  return;
-                                }
-                                setRefundRow(r);
-                              }}
-                              style={{
-                                height: 24,
-                                padding: "0 8px",
-                                borderRadius: 6,
-                                border: `1px solid ${r.amount > maxRefundableAmount ? BORDER : RED}`,
-                                background: WHITE,
-                                color: r.amount > maxRefundableAmount ? MUTED : RED,
-                                fontSize: 10,
-                                fontWeight: 600,
-                                fontFamily: FONT,
-                                cursor: r.amount > maxRefundableAmount ? "not-allowed" : "pointer",
-                              }}
-                              disabled={r.amount > maxRefundableAmount}
-                            >
-                              Refund
-                            </button>
-                          )}
+                          {r.amount > 0 && (() => {
+                            const rowMax = Math.min(r.amount, maxRefundableAmount);
+                            const blocked = rowMax <= 0;
+                            return (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (blocked) {
+                                    toast.error(
+                                      `No refundable paid/credit balance available (${money(maxRefundableAmount)})`,
+                                    );
+                                    return;
+                                  }
+                                  setRefundRow(r);
+                                  setRefundAmount(String(rowMax));
+                                }}
+                                style={{
+                                  height: 24,
+                                  padding: "0 8px",
+                                  borderRadius: 6,
+                                  border: `1px solid ${blocked ? BORDER : RED}`,
+                                  background: WHITE,
+                                  color: blocked ? MUTED : RED,
+                                  fontSize: 10,
+                                  fontWeight: 600,
+                                  fontFamily: FONT,
+                                  cursor: blocked ? "not-allowed" : "pointer",
+                                }}
+                                disabled={blocked}
+                              >
+                                Refund
+                              </button>
+                            );
+                          })()}
+
                           <button
                             type="button"
                             onClick={() => openEditPayment(r)}
@@ -2873,12 +2980,20 @@ export function UnifiedPaymentSheet({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm refund</AlertDialogTitle>
+            <AlertDialogTitle>
+              {refundRow && refundAmountNum > 0 && refundAmountNum < refundRow.amount
+                ? "Confirm partial refund"
+                : "Confirm refund"}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              You are about to record a {money(refundRow?.amount ?? 0)} refund
-              {refundRow?.method ? ` via ${refundRow.method}` : ""} for {pupil?.name ?? "this pupil"}.
-              This will update their balance and cannot be undone.
+              You are about to record a {money(refundAmountNum)} refund
+              {refundRow?.method ? ` via ${refundRow.method}` : ""} for {pupil?.name ?? "this pupil"}
+              {refundRow && refundAmountNum < refundRow.amount
+                ? ` (from a ${money(refundRow.amount)} payment)`
+                : ""}
+              . This will update their balance and cannot be undone.
             </AlertDialogDescription>
+
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={refundProcessing}>
