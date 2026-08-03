@@ -1005,32 +1005,37 @@ export function UnifiedPaymentSheet({
         newPrice = packagePrice === "" ? 0 : Number(packagePrice);
         isNewPackage = newPrice > 0 && newPrice !== prevPrice;
         if (isNewPackage) {
-          const { data: pkgRow, error: hErr } = await supabase
-            .from("lesson_history")
-            .insert({
-              instructor_id: instructorId,
-              pupil_id: pupilId,
-              amount_paid: newPrice,
-              payment_method: packageMethod,
-              lesson_date: new Date().toISOString().slice(0, 10),
-              payment_status: "paid",
-              notes: `Block package: ${hoursTotal} hrs at £${newPrice}`,
-              created_at: new Date().toISOString(),
-            })
-            .select("id")
-            .single();
-          if (hErr) console.error("[UnifiedPaymentSheet] package history insert", hErr);
-          else
-            setPaymentSuccess({
-              historyId: (pkgRow as { id: string } | null)?.id ?? "",
-              amount: newPrice,
-              method: packageMethod,
-              pupilName: pupil?.name ?? "",
-            });
+          await recordPayment({
+            pupilId,
+            amount: newPrice,
+            method: packageMethod,
+            notes: `Block package: ${hoursTotal} hrs at £${newPrice}`,
+            currentAccountBalance: Number(pupil?.account_balance ?? 0),
+          });
+          // Package hours live on the pupil row.
           await supabase
             .from("pupils")
-            .update({ prepaid_hours: hoursTotal === "" ? 0 : Number(hoursTotal) })
+            .update({
+              prepaid_hours: hoursTotal === "" ? 0 : Number(hoursTotal),
+              block_hours_total: hoursTotal === "" ? null : Number(hoursTotal),
+              prepaid_amount_paid: newPrice,
+            })
             .eq("id", pupilId);
+          const { data: latest } = await supabase
+            .from("lesson_history")
+            .select("id")
+            .eq("pupil_id", pupilId)
+            .is("deleted_at", null)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          setPaymentSuccess({
+            historyId: (latest as { id: string } | null)?.id ?? "",
+            amount: newPrice,
+            method: packageMethod,
+            pupilName: pupil?.name ?? "",
+          });
+          setBalance(await getPupilBalance(pupilId));
         }
       }
 
