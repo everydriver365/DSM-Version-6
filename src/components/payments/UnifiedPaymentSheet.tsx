@@ -2254,28 +2254,98 @@ export function UnifiedPaymentSheet({
                       Issue refund — {money(refundRow.amount)} —{" "}
                       {refundRow.method ?? "payment"} — {fmtDate(refundRow.created_at)}
                     </div>
+
+                    <div style={{ marginTop: 10 }}>
+                      <div style={{ fontSize: 10, color: MUTED, marginBottom: 4 }}>
+                        Refund amount (max {money(refundRowMax)})
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <span style={{ fontSize: 13, color: BODY, fontWeight: 600 }}>£</span>
+                        <input
+                          type="number"
+                          inputMode="decimal"
+                          min={0}
+                          step="0.01"
+                          max={refundRowMax}
+                          value={refundAmount}
+                          onChange={(e) => setRefundAmount(e.target.value)}
+                          style={{
+                            flex: 1,
+                            height: 34,
+                            borderRadius: 8,
+                            border: `1px solid ${BORDER}`,
+                            background: WHITE,
+                            padding: "0 10px",
+                            fontSize: 13,
+                            fontFamily: FONT,
+                            color: NAVY,
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setRefundAmount(String(refundRowMax))}
+                          style={{
+                            height: 34,
+                            padding: "0 10px",
+                            borderRadius: 8,
+                            border: `1px solid ${BORDER}`,
+                            background: WHITE,
+                            color: BODY,
+                            fontSize: 11,
+                            fontWeight: 600,
+                            fontFamily: FONT,
+                            cursor: "pointer",
+                          }}
+                        >
+                          Full
+                        </button>
+                      </div>
+                      {refundAmountNum > 0 && refundAmountNum < refundRow.amount && (
+                        <div style={{ fontSize: 10, color: MUTED, marginTop: 4 }}>
+                          Partial refund — {money(refundRow.amount - refundAmountNum)} of this
+                          payment stays on the ledger
+                        </div>
+                      )}
+                      {refundAmountNum > refundRowMax && (
+                        <div style={{ fontSize: 10, color: RED, marginTop: 4 }}>
+                          Amount exceeds the refundable maximum
+                        </div>
+                      )}
+                    </div>
+
                     <div style={{ display: "flex", gap: 6, marginTop: 10 }}>
                       <button
                         type="button"
                         onClick={() => setRefundConfirmOpen(true)}
+                        disabled={!(refundAmountNum > 0) || refundAmountNum > refundRowMax}
                         style={{
                           flex: 1,
                           height: 34,
                           borderRadius: 8,
                           border: "none",
-                          background: RED,
+                          background:
+                            !(refundAmountNum > 0) || refundAmountNum > refundRowMax ? BORDER : RED,
                           color: WHITE,
                           fontSize: 12,
                           fontWeight: 600,
                           fontFamily: FONT,
-                          cursor: "pointer",
+                          cursor:
+                            !(refundAmountNum > 0) || refundAmountNum > refundRowMax
+                              ? "not-allowed"
+                              : "pointer",
                         }}
                       >
-                        Confirm refund
+                        {refundAmountNum > 0 && refundAmountNum < refundRow.amount
+                          ? `Refund ${money(refundAmountNum)}`
+                          : "Confirm refund"}
                       </button>
                       <button
                         type="button"
-                        onClick={() => setRefundRow(null)}
+                        onClick={() => {
+                          setRefundRow(null);
+                          setRefundAmount("");
+                        }}
+
                         style={{
                           flex: 1,
                           height: 34,
