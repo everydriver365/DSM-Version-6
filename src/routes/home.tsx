@@ -5296,7 +5296,7 @@ function HomePage() {
             avatarItems.push({
               key: 'localchat', bg: NAVY_C,
               img: localRoom?.image_url ?? null,
-              node: <MessageCircle size={14} color="#FFFFFF" />,
+              node: <IconMessageCircle size={14} color="#FFFFFF" />,
             });
           }
           if (visibleRooms.length > 0) {
@@ -5469,7 +5469,7 @@ function HomePage() {
                         }}>
                           {localRoom.image_url
                             ? <img src={localRoom.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            : <MessageCircle size={18} color="#FFFFFF" />}
+                            : <IconMessageCircle size={18} color="#FFFFFF" />}
                         </div>
                         {unreadChat > 0 && (
                           <span style={{
