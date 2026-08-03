@@ -403,6 +403,72 @@ function MessagesIndexPage() {
     };
   }, [userId, homeOutcode]);
 
+  // Pin / mute preferences (localStorage)
+  const [pinned, setPinned] = useState<Set<string>>(new Set());
+  const [muted, setMuted] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    setPinned(readKeySet(PIN_KEY));
+    setMuted(readKeySet(MUTE_KEY));
+  }, []);
+
+  // Latest message preview + unread count for each joined room
+  const [roomPreviews, setRoomPreviews] = useState<
+    Record<string, { body: string; sender: string; created_at: string; unread: number }>
+  >({});
+
+  const joinedRooms = useMemo(
+    () => myRooms.filter((r) => joinedRoomIds.has(r.id) || r.outcode === homeOutcode),
+    [myRooms, joinedRoomIds, homeOutcode],
+  );
+
+  useEffect(() => {
+    const ids = joinedRooms.map((r) => r.id);
+    if (ids.length === 0) {
+      setRoomPreviews({});
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("local_chat_messages")
+        .select("id, room_id, instructor_id, message, created_at, instructors(name)")
+        .in("room_id", ids)
+        .is("deleted_at", null)
+        .order("created_at", { ascending: false })
+        .limit(300);
+      if (cancelled) return;
+      const map: Record<
+        string,
+        { body: string; sender: string; created_at: string; unread: number }
+      > = {};
+      for (const raw of (data ?? []) as unknown[]) {
+        const m = raw as {
+          room_id: string;
+          instructor_id: string;
+          message: string;
+          created_at: string;
+          instructors?: { name: string | null } | null;
+        };
+        if (!map[m.room_id]) {
+          map[m.room_id] = {
+            body: m.message,
+            sender: m.instructor_id === userId ? "You" : firstName(m.instructors?.name),
+            created_at: m.created_at,
+            unread: 0,
+          };
+        }
+        const seen = Number(localStorage.getItem(`local_chat_last_seen_${m.room_id}`) || 0);
+        if (m.instructor_id !== userId && new Date(m.created_at).getTime() > seen) {
+          map[m.room_id].unread += 1;
+        }
+      }
+      setRoomPreviews(map);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [joinedRooms, userId, localMessages.length]);
+
 
 
   // Fetch messages + realtime once we have a room
