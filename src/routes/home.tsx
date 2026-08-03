@@ -2941,6 +2941,15 @@ function HomePage() {
     })();
   }, [userId, todayStart, weekStart, weekEnd, reloadKey]);
 
+  // New message anywhere in the app (pupil / local chat / admin thread)
+  // -> refresh home so unread badges and previews stay in sync.
+  useEffect(() => {
+    const handler = () => setReloadKey((k) => k + 1);
+    window.addEventListener("dsm-message-received", handler);
+    return () => window.removeEventListener("dsm-message-received", handler);
+  }, []);
+
+
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;

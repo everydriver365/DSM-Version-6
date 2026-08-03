@@ -297,7 +297,17 @@ function MessagesIndexPage() {
             table: "chat_messages",
             filter: `instructor_id=eq.${uid}`,
           },
-          () => {
+          (payload) => {
+            if (payload.eventType === "INSERT") {
+              const row = payload.new as { sender_type?: string | null };
+              if (row?.sender_type === "pupil") {
+                window.dispatchEvent(
+                  new CustomEvent("dsm-message-received", {
+                    detail: { type: "pupil", unreadCount: 1 },
+                  }),
+                );
+              }
+            }
             void loadConvos();
           },
         )
@@ -488,6 +498,11 @@ function MessagesIndexPage() {
             .maybeSingle();
           setLocalMessages((prev) => {
             if (prev.some((m) => m.id === row.id)) return prev;
+            window.dispatchEvent(
+              new CustomEvent("dsm-message-received", {
+                detail: { type: "local", unreadCount: 1 },
+              }),
+            );
             return [...prev, { ...row, instructors: instructor ?? null }];
           });
         },
@@ -619,6 +634,11 @@ function MessagesIndexPage() {
           const instructorName =
             (instructor as { name: string | null } | null)?.name ?? "Instructor";
           toast(`New message from ${instructorName} re: ${pupilName}`);
+          window.dispatchEvent(
+            new CustomEvent("dsm-message-received", {
+              detail: { type: "admin", unreadCount: 1 },
+            }),
+          );
           loadAdminThreads();
         },
       )
