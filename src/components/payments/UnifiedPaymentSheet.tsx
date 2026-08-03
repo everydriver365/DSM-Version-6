@@ -674,7 +674,6 @@ export function UnifiedPaymentSheet({
       pupil,
       applyPaymentToLessons,
       refreshPupil,
-      onSaved,
     ],
   );
 
