@@ -38,6 +38,7 @@ interface Pupil {
   custom_rate_90: number | null;
   custom_rate_120: number | null;
   prepaid_hours: number | null;
+  pricing_type: string | null;
 }
 
 
@@ -99,7 +100,7 @@ function NewLessonPage() {
       if (!user) return;
       const { data } = await supabase
         .from("pupils")
-        .select("id, name, address, custom_rate, custom_rate_90, custom_rate_120, prepaid_hours")
+        .select("id, name, address, custom_rate, custom_rate_90, custom_rate_120, prepaid_hours, pricing_type")
         .eq("instructor_id", user.id)
         .is("deleted_at", null)
         .not("status", "in", "(inactive,archived,cancelled)")
@@ -221,6 +222,13 @@ function NewLessonPage() {
       }
     }
 
+    // Block / national intensives pupils pay up front, so their lessons are
+    // always created as prepaid.
+    const pricingType = (selected?.pricing_type ?? "").toLowerCase();
+    const isPrepaidPricing =
+      pricingType === "block" || pricingType === "national_intensives";
+    if (isPrepaidPricing) paymentStatus = "prepaid";
+
     // If recurring, create a lesson_series first so the initial lesson can link to it
     let seriesId: string | null = null;
     if (isRecurring) {
@@ -301,7 +309,7 @@ function NewLessonPage() {
         lesson_time: `${time}:00`,
         duration_minutes: duration,
         status: "confirmed",
-        payment_status: "unpaid",
+        payment_status: isPrepaidPricing ? "prepaid" : "unpaid",
         amount_due: amountDue,
         series_id: seriesId,
       }));
