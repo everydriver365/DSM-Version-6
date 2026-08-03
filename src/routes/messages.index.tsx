@@ -1573,6 +1573,7 @@ function LocalChatView(props: {
   joinedRoomIds: Set<string>;
   homeOutcode: string | null;
   onSelectRoom: (r: LocalChatRoom) => void;
+  onBack: () => void;
   messages: LocalMessage[];
   loading: boolean;
   userId: string | null;
