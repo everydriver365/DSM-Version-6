@@ -5270,6 +5270,7 @@ function HomePage() {
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '14px 16px', cursor: 'pointer',
                     borderTop: !alertsHidden ? `1px solid ${BORDER_C}` : undefined,
+                    borderLeft: unreadChat > 0 ? '3px solid #7C3AED' : undefined,
                   }}
                 >
                   {ChatIcon}
@@ -5278,9 +5279,9 @@ function HomePage() {
                       Local chat · {localRoom.area_name}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, minWidth: 0 }}>
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: GREEN_C, flexShrink: 0 }} />
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: unreadChat > 0 ? '#7C3AED' : GREEN_C, flexShrink: 0 }} />
                       <span style={{
-                        fontSize: 12, fontWeight: 600, color: GREEN_C, fontFamily: PF_C,
+                        fontSize: unreadChat > 0 ? 13 : 12, fontWeight: unreadChat > 0 ? 700 : 600, color: unreadChat > 0 ? '#0B1F3A' : GREEN_C, fontFamily: PF_C,
                         whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                       }}>
                         {localChatLatest
@@ -5290,8 +5291,15 @@ function HomePage() {
                     </div>
                   </div>
                   {localChatLatest?.created_at && (
-                    <div style={{ fontSize: 11, color: GREY_C, fontFamily: PF_C, flexShrink: 0 }}>
-                      {timeAgo(localChatLatest.created_at)}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                      <div style={{ fontSize: 11, color: unreadChat > 0 ? '#7C3AED' : GREY_C, fontFamily: PF_C }}>
+                        {timeAgo(localChatLatest.created_at)}
+                      </div>
+                      {unreadChat > 0 && (
+                        <span style={{ background: '#7C3AED', color: 'white', fontSize: 10, fontWeight: 600, borderRadius: 20, padding: '1px 7px', fontFamily: PF_C }}>
+                          {unreadChat}
+                        </span>
+                      )}
                     </div>
                   )}
                   <MenuButton items={rowMenu('localchat', 'Local chat')} />
