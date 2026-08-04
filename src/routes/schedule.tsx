@@ -17,7 +17,7 @@ import {
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
-import { PupilAvatar } from "@/components/PupilAvatar";
+
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
@@ -1641,89 +1641,79 @@ function SchedulePage() {
                                        <div style={{ flex: 1, minWidth: 0, paddingTop: isLessonRow ? 2 : 0 }}>
                                          {isLessonRow ? (
                                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, minWidth: 0 }}>
-                                             <div style={{ position: 'relative', flexShrink: 0 }}>
-                                               {isLive && (
-                                                 <span
-                                                   aria-label="Live"
-                                                   style={{
-                                                     position: 'absolute',
-                                                     top: 0,
-                                                     right: 0,
-                                                     width: 8,
-                                                     height: 8,
-                                                     borderRadius: 999,
-                                                     backgroundColor: '#DC2626',
-                                                     boxShadow: '0 0 0 2px #FFFFFF',
-                                                     zIndex: 1,
-                                                   }}
-                                                 />
-                                               )}
-                                               <PupilAvatar
-                                                 pupil={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil : null}
-                                                 pupilId={e.kind === "lesson" ? (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pupil_id ?? null : null}
-                                                 size={32}
-                                               />
-                                             </div>
                                              <div style={{ flex: 1, minWidth: 0 }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
-                                                 <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: cancelled ? 'line-through' : 'none' }}>
-                                                   {title}
-                                                 </span>
-                                                  {cancelled ? (
-                                                    <span style={{
-                                                      flexShrink: 0,
-                                                      display: 'inline-flex',
-                                                      alignItems: 'center',
-                                                      fontSize: 10,
-                                                      fontWeight: 700,
-                                                      letterSpacing: 0.4,
-                                                      textTransform: 'uppercase',
-                                                      color: '#CC2229',
-                                                      background: '#FCEBEB',
-                                                      padding: '2px 8px',
-                                                      borderRadius: 999,
-                                                      lineHeight: 1.4,
-                                                    }}>
-                                                      Cancelled
-                                                    </span>
-                                                    ) : (isLive || isPrepaidPupil || isPaid || dueUnpaid) ? (
-                                                      <button
-                                                        type="button"
-                                                        onClick={(ev) => {
-                                                          ev.stopPropagation();
-                                                          setPaymentSheetFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
-                                                        }}
-                                                        style={{
-                                                          flexShrink: 0,
-                                                          display: 'inline-flex',
-                                                          alignItems: 'center',
-                                                          fontSize: 10,
-                                                          fontWeight: 700,
-                                                          padding: '2px 9px',
-                                                          borderRadius: 999,
-                                                          lineHeight: 1.4,
-                                                          border: 'none',
-                                                          cursor: 'pointer',
-                                                          ...(isLive ? {
-                                                            background: '#E6F1FB', color: '#1877D6',
-                                                          } : isPrepaidPupil || isPaid ? {
-                                                            background: '#E7F5EE', color: '#1E8E3E',
-                                                          } : {
-                                                            background: '#FCEBEB', color: '#CC2229',
-                                                          }),
-                                                        }}
-                                                      >
-                                                        {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
-                                                      </button>
-                                                  ) : null}
-                                               </div>
-                                               {timeText ? (
-                                                 <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
-                                                   {timeText}
-                                                 </div>
-                                               ) : null}
-                                             </div>
-                                           </div>
+                                                  {isLive && (
+                                                    <span
+                                                      aria-label="Live"
+                                                      style={{
+                                                        width: 8,
+                                                        height: 8,
+                                                        borderRadius: 999,
+                                                        backgroundColor: '#DC2626',
+                                                        boxShadow: '0 0 0 2px #FFFFFF',
+                                                        flexShrink: 0,
+                                                      }}
+                                                    />
+                                                  )}
+                                                  <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: cancelled ? 'line-through' : 'none' }}>
+                                                    {title}
+                                                  </span>
+                                                   {cancelled ? (
+                                                     <span style={{
+                                                       flexShrink: 0,
+                                                       display: 'inline-flex',
+                                                       alignItems: 'center',
+                                                       fontSize: 10,
+                                                       fontWeight: 700,
+                                                       letterSpacing: 0.4,
+                                                       textTransform: 'uppercase',
+                                                       color: '#CC2229',
+                                                       background: '#FCEBEB',
+                                                       padding: '2px 8px',
+                                                       borderRadius: 999,
+                                                       lineHeight: 1.4,
+                                                     }}>
+                                                       Cancelled
+                                                     </span>
+                                                     ) : (isLive || isPrepaidPupil || isPaid || dueUnpaid) ? (
+                                                       <button
+                                                         type="button"
+                                                         onClick={(ev) => {
+                                                           ev.stopPropagation();
+                                                           setPaymentSheetFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
+                                                         }}
+                                                         style={{
+                                                           flexShrink: 0,
+                                                           display: 'inline-flex',
+                                                           alignItems: 'center',
+                                                           fontSize: 10,
+                                                           fontWeight: 700,
+                                                           padding: '2px 9px',
+                                                           borderRadius: 999,
+                                                           lineHeight: 1.4,
+                                                           border: 'none',
+                                                           cursor: 'pointer',
+                                                           ...(isLive ? {
+                                                             background: '#E6F1FB', color: '#1877D6',
+                                                           } : isPrepaidPupil || isPaid ? {
+                                                             background: '#E7F5EE', color: '#1E8E3E',
+                                                           } : {
+                                                             background: '#FCEBEB', color: '#CC2229',
+                                                           }),
+                                                         }}
+                                                       >
+                                                         {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
+                                                       </button>
+                                                   ) : null}
+                                                </div>
+                                                {timeText ? (
+                                                  <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
+                                                    {timeText}
+                                                  </div>
+                                                ) : null}
+                                              </div>
+                                            </div>
                                          ) : (
                                            <>
                                              <div
