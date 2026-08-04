@@ -327,6 +327,9 @@ function SchedulePage() {
   const [cancelSheetFor, setCancelSheetFor] = useState<Lesson | null>(null);
   const [deleteSheetFor, setDeleteSheetFor] = useState<Lesson | null>(null);
   const [paymentSheetFor, setPaymentSheetFor] = useState<Lesson | null>(null);
+  const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
+  const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
+
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
 
   // Close popover on outside click
