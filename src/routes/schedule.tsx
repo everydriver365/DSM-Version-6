@@ -1661,7 +1661,7 @@ function SchedulePage() {
                                                />
                                              </div>
                                              <div style={{ flex: 1, minWidth: 0 }}>
-                                               <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
                                                  <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: cancelled ? 'line-through' : 'none' }}>
                                                    {title}
                                                  </span>
