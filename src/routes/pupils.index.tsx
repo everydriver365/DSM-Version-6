@@ -724,59 +724,6 @@ function PupilsIndexPage() {
       />
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
-      {/* Action bar */}
-      <div
-        style={{
-          background: "#FFFFFF",
-          padding: "8px 16px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          borderBottom: "1px solid #EEF2F7",
-          gap: 10,
-        }}
-      >
-        {/* left spacer to balance search button */}
-        <div style={{ width: 32 }} />
-        <button
-          type="button"
-          aria-label={searchOpen ? "Close search" : "Open search"}
-          onClick={() => {
-            setSearchOpen((v) => {
-              const next = !v;
-              if (!next) setQuery("");
-              return next;
-            });
-          }}
-          className="flex items-center justify-center rounded-md"
-          style={{ width: 32, height: 32, backgroundColor: "#F3F8FF", border: "1px solid #EEF2F7" }}
-        >
-          {searchOpen ? (
-            <X size={20} color="#1877D6" />
-          ) : (
-            <Search size={20} color="#1877D6" />
-          )}
-        </button>
-      </div>
-
-      {/* Search bar */}
-      {searchOpen && (
-        <div className="px-4 pt-3">
-          <input
-            autoFocus
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search pupils..."
-            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-            style={{
-              ...POPPINS,
-              borderWidth: "0.5px",
-              borderStyle: "solid",
-              borderColor: "#EEF2F7",
-            }}
-          />
-        </div>
-      )}
 
       {/* Segmented control */}
       <div style={{ margin: "16px 16px 16px" }}>
