@@ -210,6 +210,36 @@ function PupilsIndexPage() {
     }
   }, []);
 
+  const markMessagesRead = useCallback(async (pupilId: string, name: string) => {
+    const { data: auth } = await supabase.auth.getUser();
+    const uid = auth?.user?.id;
+    if (!uid) return;
+    // Optimistic: clear the dot immediately.
+    setUnreadMap((m) => {
+      const next = { ...m };
+      delete next[pupilId];
+      return next;
+    });
+    const { error } = await supabase
+      .from("chat_messages")
+      .update({ read_at: new Date().toISOString() })
+      .eq("instructor_id", uid)
+      .eq("pupil_id", pupilId)
+      .eq("sender_type", "pupil")
+      .is("read_at", null)
+      .is("deleted_at", null);
+    if (error) {
+      console.error("[pupils] mark read failed", error);
+      toast.error("Couldn't mark messages as read");
+      refreshUnread(uid);
+      return;
+    }
+    toast.success(`${name}'s messages marked as read`);
+    window.dispatchEvent(new Event("dsm-messages-read"));
+  }, [refreshUnread]);
+
+
+
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
@@ -635,12 +665,19 @@ function PupilsIndexPage() {
             </span>
             <QuickActionsMenu
               items={[
+                { label: "View pupil details", onClick: () => navigate({ to: "/pupils/$id", params: { id: p.id } }) },
                 { label: "Send message", onClick: () => navigate({ to: "/messages/$pupilId", params: { pupilId: p.id } }) },
+                ...(unread > 0
+                  ? [{ label: `Mark ${unread} message${unread === 1 ? "" : "s"} as read`, onClick: () => markMessagesRead(p.id, displayName(p.name)) }]
+                  : []),
+                ...(p.phone
+                  ? [{ label: "Call pupil", onClick: () => { window.location.href = `tel:${p.phone}`; } }]
+                  : []),
                 { label: "Take payment", onClick: () => { setUnifiedPayPupilId(p.id); setUnifiedPayOpen(true); } },
                 { label: "Book a lesson", onClick: () => { setAddLessonPupilId(p.id); setAddLessonOpen(true); } },
-                { label: "View profile", onClick: () => navigate({ to: "/pupils/$id", params: { id: p.id } }) },
                 { label: "Archive", destructive: true, onClick: () => setArchiveTarget({ id: p.id, name: displayName(p.name) }) },
               ]}
+
               trigger={({ onClick }) => (
                 <button
                   type="button"
