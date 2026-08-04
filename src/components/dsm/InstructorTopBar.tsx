@@ -191,7 +191,10 @@ export default function InstructorTopBar({
             </span>
           )}
         </button>
-        <IconBtn ariaLabel="Menu" onClick={onMenu}>
+        <IconBtn
+          ariaLabel="Menu"
+          onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
+        >
           <MenuIcon size={17} strokeWidth={1.8} color="#ffffff" />
         </IconBtn>
       </div>
