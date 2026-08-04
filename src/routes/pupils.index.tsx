@@ -825,7 +825,7 @@ function PupilsIndexPage() {
                               padding: 0,
                             }}
                           >
-                            <MoreHorizontal size={14} color="#6B7280" />
+                            <MoreVertical size={14} color="#6B7280" />
                           </button>
                         )}
                       />
