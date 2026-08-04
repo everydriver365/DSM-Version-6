@@ -6427,13 +6427,6 @@ function HomePage() {
                       [(l.pupils as any)?.address, (l.pupils as any)?.postcode].filter(Boolean).join(', ') ||
                       null;
 
-                    const openLessonActions = () => setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l));
-                    let lpTimer: any = null;
-                    const startLongPress = () => {
-                      if (lpTimer) clearTimeout(lpTimer);
-                      lpTimer = setTimeout(() => { lpTimer = null; openLessonActions(); }, 500);
-                    };
-                    const cancelLongPress = () => { if (lpTimer) { clearTimeout(lpTimer); lpTimer = null; } };
 
                     const payPill = isCancelled ? null : isLive
                       ? { label: 'Live', bg: '#E6F1FB', fg: '#1877D6' }
