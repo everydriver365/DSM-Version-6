@@ -561,6 +561,13 @@ function RootComponent() {
         (window as any).despia(
           `setonesignalexternalid://?external_id=${uid}`
         );
+        // Register for push notifications
+        if (navigator.userAgent.toLowerCase().includes('despia')) {
+          (window as any).despia('registerpush://');
+          (window as any).despia(
+            `setonesignalplayerid://?user_id=${uid}`
+          );
+        }
       }
     });
     return () => {
