@@ -6614,53 +6614,41 @@ function HomePage() {
                                overflow: 'hidden',
                              }}
                            >
-                             <button
-                               type="button"
-                               style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
-                               onClick={(ev) => {
-                                 ev.stopPropagation();
-                                 setActionsOpenForLesson(null);
-                                 navigate({ to: '/lessons/edit/$id', params: { id: l.id } });
-                               }}
-                             >
-                               Edit lesson
-                             </button>
-                             <button
-                               type="button"
-                               style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
-                               onClick={(ev) => {
-                                 ev.stopPropagation();
-                                 setActionsOpenForLesson(null);
-                                 setMovingLessonHome(l);
-                                 setMoveModeHome(true);
-                                 const firstName = (l.pupils as any)?.name?.split(' ')[0] || 'this lesson';
-                                 toast.info('Select a new time slot for ' + firstName, { duration: 10000 });
-                               }}
-                             >
-                               Move
-                             </button>
-                             <button
-                               type="button"
-                               style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
-                               onClick={(ev) => {
-                                 ev.stopPropagation();
-                                 setActionsOpenForLesson(null);
-                                 setCancelSheetForLesson(l);
-                               }}
-                             >
-                               Cancel
-                             </button>
-                             <button
-                               type="button"
-                               style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#CC2229' }}
-                               onClick={(ev) => {
-                                 ev.stopPropagation();
-                                 setActionsOpenForLesson(null);
-                                 setDeleteSheetForLesson(l);
-                               }}
-                             >
-                               Delete
-                             </button>
+                              <button
+                                type="button"
+                                style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                                onClick={(ev) => {
+                                  ev.stopPropagation();
+                                  setActionsOpenForLesson(null);
+                                  navigate({ to: '/lessons/edit/$id', params: { id: l.id } });
+                                }}
+                              >
+                                Edit lesson
+                              </button>
+                              <button
+                                type="button"
+                                style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                                onClick={(ev) => {
+                                  ev.stopPropagation();
+                                  setActionsOpenForLesson(null);
+                                  setUnifiedPayPupilId(l.pupil_id);
+                                  setUnifiedPayOpen(true);
+                                }}
+                              >
+                                Take payment
+                              </button>
+                              <button
+                                type="button"
+                                style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, background: 'transparent', border: 'none', cursor: 'pointer', color: '#111827' }}
+                                onClick={(ev) => {
+                                  ev.stopPropagation();
+                                  setActionsOpenForLesson(null);
+                                  navigate({ to: '/pupils/$id', params: { id: l.pupil_id } });
+                                }}
+                              >
+                                Full profile
+                              </button>
+
                            </div>
                          )}
                        </div>
