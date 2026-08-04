@@ -6427,13 +6427,6 @@ function HomePage() {
                       [(l.pupils as any)?.address, (l.pupils as any)?.postcode].filter(Boolean).join(', ') ||
                       null;
 
-                    const openLessonActions = () => setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l));
-                    let lpTimer: any = null;
-                    const startLongPress = () => {
-                      if (lpTimer) clearTimeout(lpTimer);
-                      lpTimer = setTimeout(() => { lpTimer = null; openLessonActions(); }, 500);
-                    };
-                    const cancelLongPress = () => { if (lpTimer) { clearTimeout(lpTimer); lpTimer = null; } };
 
                     const payPill = isCancelled ? null : isLive
                       ? { label: 'Live', bg: '#E6F1FB', fg: '#1877D6' }
@@ -6446,12 +6439,8 @@ function HomePage() {
                     return (
                       <div key={l.id} style={{ position: 'relative', borderTop: idx === 0 ? 'none' : '1px solid #EEF2F7' }}>
                         <div
-                          onClick={() => navigate({ to: '/pupils/$id', params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any })}
-                          onPointerDown={startLongPress}
-                          onPointerUp={cancelLongPress}
-                          onPointerLeave={cancelLongPress}
-                          onPointerCancel={cancelLongPress}
-                          onContextMenu={(e) => { e.preventDefault(); openLessonActions(); }}
+                          onClick={() => setActionsOpenForLesson(l)}
+                          onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
                           role="button"
                           tabIndex={0}
                           style={{
@@ -6543,7 +6532,7 @@ function HomePage() {
                               data-home-lesson-actions-trigger
                               role="button"
                               aria-label="Lesson options"
-                              onClick={(e) => { e.stopPropagation(); openLessonActions(); }}
+                              onClick={(e) => { e.stopPropagation(); setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l)); }}
                               style={{ flexShrink: 0, display: 'flex', alignItems: 'center', paddingLeft: 2, cursor: 'pointer' }}
                             >
                               <IconDotsVertical size={14} stroke={2} color="#D1D5DB" />

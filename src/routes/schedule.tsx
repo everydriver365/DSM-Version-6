@@ -871,18 +871,6 @@ function SchedulePage() {
     }
   }, []);
 
-  const goToLesson = (id: string) => {
-    const lesson = (lessons ?? []).find((l) => l.id === id);
-    if (lesson?.pupil_id) {
-      navigate({
-        to: "/pupils/$id" as never,
-        params: { id: lesson.pupil_id } as never,
-        search: { lessonId: id } as never,
-      });
-      return;
-    }
-    navigate({ to: "/lessons/$id" as never, params: { id } as never });
-  };
 
   // Colour dots per date by entry TYPE (matches legend): blue=DSM lesson,
   // grey=Google Calendar block, orange=free slot 60+ min. Up to 3 dots.
@@ -1507,7 +1495,7 @@ function SchedulePage() {
                           const isDimmed = moveMode && !isMovingThis;
                           const onCardClick = isLessonRow
                             ? () => {
-                                goToLesson((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id);
+                                setActionsOpenFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
                               }
                             : isBlockRow
                               ? () => {
