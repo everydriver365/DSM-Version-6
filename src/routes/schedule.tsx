@@ -2018,6 +2018,12 @@ function SchedulePage() {
         open={unifiedPayOpen}
         onClose={() => { setUnifiedPayOpen(false); setUnifiedPayPupilId(undefined); }}
         initialPupilId={unifiedPayPupilId}
+        onSaved={() => {
+          setUnifiedPayOpen(false);
+          setUnifiedPayPupilId(undefined);
+          setLessonsReloadKey((k) => k + 1);
+          toast.success("Payment recorded");
+        }}
       />
 
 
