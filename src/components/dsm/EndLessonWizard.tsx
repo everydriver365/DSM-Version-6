@@ -519,9 +519,12 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
       return;
     }
 
+    toast.success("End of lesson completed");
+
     const updatedEntries = Object.entries(levels).filter(
       ([, v]) => v && v !== "not_started",
     ) as [string, ProgressLevel][];
+
     const practisedList = updatedEntries.map(([label]) => label);
 
     // Build "Skills updated: Roundabouts (4), Steering (3)" summary line.
