@@ -1,6 +1,13 @@
 import React from "react";
-import { ChevronLeft, Bell, Mic } from "lucide-react";
-import { PhoneIcon, CarIcon, MenuIcon, PoundIcon, MessagesIcon } from "@/components/icons/DrivingIcons";
+import { ChevronLeft, Mic } from "lucide-react";
+import {
+  IconHeadset,
+  IconDownload,
+  IconCar,
+  IconCurrencyPound,
+  IconBell,
+  IconAdjustmentsHorizontal,
+} from "@tabler/icons-react";
 import { useNavigate } from "@tanstack/react-router";
 import dsmLogoWhite from "@/assets/dsm-logo-white.png.asset.json";
 
@@ -8,6 +15,7 @@ export type InstructorTopBarProps = {
   firstName: string;
   avatarUrl?: string | null;
   unreadCount?: number;
+  callsActive?: boolean;
   onPhone: () => void;
   onLiveTrack: () => void;
   onBell: () => void;
@@ -19,10 +27,10 @@ export type InstructorTopBarProps = {
 };
 
 const ICON_BTN: React.CSSProperties = {
-  width: 32,
-  height: 32,
+  width: 36,
+  height: 36,
   borderRadius: "50%",
-  background: "rgba(255,255,255,0.10)",
+  background: "rgba(255,255,255,0.08)",
   border: "none",
   display: "inline-flex",
   alignItems: "center",
@@ -54,6 +62,7 @@ export default function InstructorTopBar({
   firstName,
   avatarUrl,
   unreadCount = 0,
+  callsActive = false,
   onPhone,
   onLiveTrack,
   onBell,
@@ -87,7 +96,7 @@ export default function InstructorTopBar({
       {isSubpage ? (
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <IconBtn ariaLabel="Back" onClick={onBack!}>
-            <ChevronLeft size={17} strokeWidth={1.8} color="#ffffff" />
+            <ChevronLeft size={17} strokeWidth={1.8} color="#C7D0DE" />
           </IconBtn>
           <span
             style={{
@@ -136,68 +145,68 @@ export default function InstructorTopBar({
       )}
 
       {/* RIGHT */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         {!isSubpage && (
           <>
-            <IconBtn ariaLabel="Phone" onClick={onPhone}>
-              <PhoneIcon size={17} strokeWidth={1.8} color="#ffffff" />
+            <IconBtn
+              ariaLabel="Calls answering"
+              onClick={onPhone}
+              style={
+                callsActive
+                  ? { background: "#1877D6" }
+                  : undefined
+              }
+            >
+              <IconHeadset
+                size={17}
+                stroke={1.8}
+                color={callsActive ? "#FFFFFF" : "#C7D0DE"}
+              />
             </IconBtn>
             <IconBtn ariaLabel="Messages" onClick={() => navigate({ to: "/messages" })}>
-              <MessagesIcon size={17} strokeWidth={1.8} color="#ffffff" />
+              <IconDownload size={17} stroke={1.8} color="#C7D0DE" />
             </IconBtn>
             <IconBtn ariaLabel="Live track" onClick={onLiveTrack}>
-              <CarIcon size={17} strokeWidth={1.8} color="#ffffff" />
+              <IconCar size={17} stroke={1.8} color="#C7D0DE" />
             </IconBtn>
             <IconBtn ariaLabel="Take payment" onClick={() => navigate({ to: "/take-payment" })}>
-              <PoundIcon size={17} strokeWidth={1.8} color="#ffffff" />
+              <IconCurrencyPound size={17} stroke={1.8} color="#C7D0DE" />
             </IconBtn>
           </>
         )}
-        <button
-          type="button"
-          aria-label="Notifications"
-          onClick={() => navigate({ to: '/notifications' as never })}
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: 4,
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Bell size={22} color="rgba(255,255,255,0.8)" />
+        <IconBtn ariaLabel="Notifications" onClick={onBell}>
+          <IconBell size={17} stroke={1.8} color="#C7D0DE" />
           {unreadCount > 0 && (
             <span style={{
-              position: 'absolute',
+              position: "absolute",
               top: -2,
               right: -2,
-              background: '#CC2229',
-              color: 'white',
+              background: "#CC2229",
+              color: "#ffffff",
               fontSize: 10,
-              fontWeight: 700,
-              minWidth: 16,
-              height: 16,
-              borderRadius: 8,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: '2px solid #0F2044',
-              padding: '0 3px',
-              fontFamily: 'Poppins, sans-serif',
+              fontWeight: 600,
+              minWidth: 17,
+              height: 17,
+              borderRadius: 9,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1.5px solid #0B1F3A",
+              padding: "0 3px",
+              fontFamily: "Poppins, sans-serif",
             }}>
-              {unreadCount > 99 ? '99+' : unreadCount}
+              {unreadCount > 99 ? "99+" : unreadCount}
             </span>
           )}
-        </button>
+        </IconBtn>
         <IconBtn
           ariaLabel="Menu"
           onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
         >
-          <MenuIcon size={17} strokeWidth={1.8} color="#ffffff" />
+          <IconAdjustmentsHorizontal size={17} stroke={1.8} color="#C7D0DE" />
         </IconBtn>
       </div>
     </div>
   );
 }
+
