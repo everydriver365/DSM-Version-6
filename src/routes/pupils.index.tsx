@@ -493,55 +493,12 @@ function PupilsIndexPage() {
               const hasBalance = balanceOwed > 0;
               const lp = lastPaymentMap[p.id];
               const lpDays = lp ? Math.max(0, Math.floor((Date.now() - new Date(lp.date).getTime()) / 86400000)) : null;
-              const openSheet = () => {
-                setSheetPupil({
-                  id: p.id,
-                  name: displayName(p.name),
-                  accountBalance: p.account_balance ?? 0,
-                  hoursRemaining,
-                  balanceOwed,
-                  lessons,
-                  prepaidHoursRaw: prepaid,
-                });
-              };
-              const startLongPress = (e: React.PointerEvent) => {
-                if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
-                longPressStartRef.current = { x: e.clientX, y: e.clientY };
-                longPressTimerRef.current = setTimeout(() => {
-                  suppressNextClickRef.current = true;
-                  openSheet();
-                  if (typeof navigator !== "undefined" && "vibrate" in navigator) {
-                    try { (navigator as Navigator).vibrate?.(10); } catch { /* noop */ }
-                  }
-                }, 500);
-              };
-              const cancelLongPress = () => {
-                if (longPressTimerRef.current) {
-                  clearTimeout(longPressTimerRef.current);
-                  longPressTimerRef.current = null;
-                }
-                longPressStartRef.current = null;
-              };
-              const maybeCancelOnMove = (e: React.PointerEvent) => {
-                const start = longPressStartRef.current;
-                if (!start || !longPressTimerRef.current) return;
-                const dx = e.clientX - start.x;
-                const dy = e.clientY - start.y;
-                // 8px drift threshold — anything more likely means the user is scrolling, not holding.
-                if (dx * dx + dy * dy > 64) cancelLongPress();
-              };
               return (
                 <div
                   key={p.id}
                   role="button"
                   tabIndex={0}
-                  onClick={(e) => {
-                    if (suppressNextClickRef.current) {
-                      suppressNextClickRef.current = false;
-                      e.preventDefault();
-                      e.stopPropagation();
-                      return;
-                    }
+                  onClick={() => {
                     navigate({ to: "/pupils/$id", params: { id: p.id } });
                   }}
                   onKeyDown={(e) => {
@@ -550,11 +507,7 @@ function PupilsIndexPage() {
                       navigate({ to: "/pupils/$id", params: { id: p.id } });
                     }
                   }}
-                  onPointerDown={startLongPress}
-                  onPointerMove={maybeCancelOnMove}
-                  onPointerUp={cancelLongPress}
-                  onPointerLeave={cancelLongPress}
-                  onPointerCancel={cancelLongPress}
+
                   onContextMenu={(e) => {
                     // Prevent iOS/Android context menu on long-press; we handle it.
                     e.preventDefault();
