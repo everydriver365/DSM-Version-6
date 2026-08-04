@@ -6440,7 +6440,7 @@ function HomePage() {
                       : (isPrepaidPupil || payStatus === 'prepaid')
                         ? { label: 'Prepaid', bg: '#E4F5EA', fg: '#2E7D4F' }
                         : dueUnpaid
-                          ? { label: `£${amt.toFixed(0)} due`, bg: '#FCE9E9', fg: '#CC2229' }
+                          ? { label: `£${amt.toFixed(0)} owed`, bg: '#FCE9E9', fg: '#CC2229' }
                           : null;
 
                     return (
@@ -6489,6 +6489,9 @@ function HomePage() {
                                 </div>
                               )}
                               <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                                <span style={{ flexShrink: 0, display: 'flex' }}>
+                                  <PupilAvatar pupil={(l.pupils as any) ?? null} pupilId={l.pupil_id} size={36} />
+                                </span>
                                 <span style={{ flex: 1, minWidth: 0, fontSize: 15, fontWeight: 600, color: isCancelled ? '#6B7280' : '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none' }}>
                                   {name}
                                 </span>
