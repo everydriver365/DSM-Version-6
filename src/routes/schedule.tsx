@@ -12,7 +12,9 @@ import {
   IconChevronRight,
   IconArrowLeft,
   IconArrowRight,
-  IconClockExclamation,
+  IconCheck,
+
+
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
@@ -1461,9 +1463,13 @@ function SchedulePage() {
                           if (e.kind === "lesson") {
                             const name = pupilDisplayName(e.lesson.pupil);
                             markerColor = pupilColour(e.lesson.pupil_id ?? null, e.lesson.pupil?.calendar_colour ?? null, name);
+                            title = name;
+                            // Subtitle shows the lesson type instead of a duplicated time range.
                             const typeRaw = (e.lesson.lesson_type ?? "").trim();
-                            const showType = typeRaw && typeRaw.toLowerCase() !== "standard";
-                            title = showType ? `${name} · ${typeRaw}` : name;
+                            const typeLabel = typeRaw
+                              ? typeRaw.charAt(0).toUpperCase() + typeRaw.slice(1)
+                              : "Standard";
+                            timeText = /lesson/i.test(typeLabel) ? typeLabel : `${typeLabel} lesson`;
                           } else if (e.kind === "block") {
                             markerColor = getBlockColour(e.title).border;
                             title = e.title;
@@ -1706,7 +1712,50 @@ function SchedulePage() {
                                                          {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
                                                        </button>
                                                    ) : null}
+                                                   {(() => {
+                                                     const lsn = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                                     const lst = (lsn.status ?? '').toLowerCase();
+                                                     const eolRelevant =
+                                                       (lst === 'confirmed' || lst === 'completed') &&
+                                                       lsn.lesson_date <= ymdLocal(new Date());
+                                                     if (!eolRelevant) return null;
+                                                     const eolDone = lsn.eol_completed === true;
+                                                     const pillStyle: React.CSSProperties = {
+                                                       flexShrink: 0,
+                                                       display: 'inline-flex',
+                                                       alignItems: 'center',
+                                                       gap: 3,
+                                                       fontSize: 10,
+                                                       fontWeight: 700,
+                                                       padding: '2px 8px',
+                                                       borderRadius: 8,
+                                                       lineHeight: 1.4,
+                                                       border: 'none',
+                                                       background: eolDone ? '#E4F5EA' : '#FBE7E7',
+                                                       color: eolDone ? '#2E7D4F' : '#CC2229',
+                                                       ...POPPINS,
+                                                     };
+                                                     if (eolDone) {
+                                                       return (
+                                                         <span style={pillStyle}>
+                                                           <IconCheck size={11} stroke={2.4} color="#2E7D4F" />
+                                                           EOL
+                                                         </span>
+                                                       );
+                                                     }
+                                                     return (
+                                                       <button
+                                                         type="button"
+                                                         aria-label="Complete end of lesson"
+                                                         onClick={(ev) => { ev.stopPropagation(); setEolLesson(lsn); }}
+                                                         style={{ ...pillStyle, cursor: 'pointer' }}
+                                                       >
+                                                         EOL
+                                                       </button>
+                                                     );
+                                                   })()}
                                                 </div>
+
                                                 {timeText ? (
                                                   <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
                                                     {timeText}
@@ -1770,52 +1819,6 @@ function SchedulePage() {
                                  </div>
 
                                </div>
-                               {isLessonRow && (() => {
-                                 const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
-                                 const st = (lesson.status ?? '').toLowerCase();
-                                 const eolDue =
-                                   lesson.eol_completed !== true &&
-                                   (st === 'confirmed' || st === 'completed') &&
-                                   lesson.lesson_date <= ymdLocal(new Date());
-                                 if (!eolDue) return null;
-                                 return (
-                                   <div
-                                     style={{
-                                       background: '#FFFBEB',
-                                       border: '1px solid #FDE68A',
-                                       borderRadius: 6,
-                                       padding: '6px 10px',
-                                       margin: '0 14px 8px',
-                                       display: 'flex',
-                                       alignItems: 'center',
-                                       gap: 6,
-                                       ...POPPINS,
-                                     }}
-                                   >
-                                     <IconClockExclamation size={13} stroke={1.9} color="#92400E" style={{ flexShrink: 0 }} />
-                                     <span style={{ fontSize: 11, fontWeight: 600, color: '#92400E' }}>
-                                       End of lesson not completed
-                                     </span>
-                                     <button
-                                       type="button"
-                                       onClick={(ev) => { ev.stopPropagation(); setEolLesson(lesson); }}
-                                       style={{
-                                         marginLeft: 'auto',
-                                         background: 'none',
-                                         border: 'none',
-                                         padding: 0,
-                                         cursor: 'pointer',
-                                         fontSize: 11,
-                                         fontWeight: 500,
-                                         color: '#1877D6',
-                                         whiteSpace: 'nowrap',
-                                       }}
-                                     >
-                                       Complete now →
-                                     </button>
-                                   </div>
-                                 );
-                               })()}
                                {isLessonRow && (() => {
 
                                 const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
