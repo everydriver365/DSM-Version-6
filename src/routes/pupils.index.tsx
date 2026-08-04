@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronRight, Plus, Search, X, Megaphone, Users, CreditCard, MoreVertical, ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -146,6 +146,7 @@ function PupilsIndexPage() {
   const [sortBy, setSortBy] = useState<"name" | "balance" | "next_lesson">("name");
 
   const navigate = useNavigate();
+  const pupilsLoadedRef = useRef<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
