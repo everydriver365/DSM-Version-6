@@ -598,14 +598,19 @@ function LivePage() {
   }
 
   async function startTracking(lessonId: string | null, pupilId: string | null) {
+    console.log("[live] startTracking requested", { lessonId, pupilId, tracking });
     // Enable native background GPS if running in Despia
     // This keeps GPS running when screen is locked
     if (navigator.userAgent.toLowerCase().includes("despia")) {
       (window as any).despia("backgroundlocationon://");
     }
-    if (tracking) return;
+    if (tracking) {
+      console.log("[live] startTracking ignored — already tracking");
+      return;
+    }
     if (!("geolocation" in navigator)) {
       setGeoError("GPS access required — please enable location in your browser settings");
+      toast.error("GPS not available on this device");
       return;
     }
     startedAtRef.current = Date.now();
@@ -615,29 +620,39 @@ function LivePage() {
     setOverspeedCount(0);
     setOverspeedEvents([]);
     setElapsedSec(0);
+    routeIdRef.current = null;
 
-
-    try {
-      const { data, error } = await supabase
-        .from("lesson_routes")
-        .insert({
-          instructor_id: userIdRef.current,
-          lesson_id: lessonId,
-          pupil_id: pupilId,
-          started_at: new Date().toISOString(),
-          coordinates: [],
-        })
-        .select("id")
-        .single();
-      if (error) console.warn("[live] create route failed", error);
-      routeIdRef.current = data?.id ?? null;
-    } catch (e) {
-      console.warn("[live] create route ex", e);
-    }
-
+    // Start tracking immediately — never block the UI on the route insert
     setTracking(true);
     startSilentAudio();
     startWatching();
+
+    // Create the route record in the background
+    void (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("lesson_routes")
+          .insert({
+            instructor_id: userIdRef.current,
+            lesson_id: lessonId,
+            pupil_id: pupilId,
+            started_at: new Date().toISOString(),
+            coordinates: [],
+          })
+          .select("id")
+          .single();
+        if (error) {
+          console.error("[live] create route failed", error);
+          toast.error("Tracking started, but the route couldn't be saved");
+          return;
+        }
+        console.log("[live] route created", data?.id);
+        routeIdRef.current = data?.id ?? null;
+      } catch (e) {
+        console.error("[live] create route ex", e);
+        toast.error("Tracking started, but the route couldn't be saved");
+      }
+    })();
   }
 
   function startGpsWatch() {
