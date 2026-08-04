@@ -598,7 +598,7 @@ function PupilsIndexPage() {
                       </div>
                       <QuickActionsMenu
                         items={[
-                          { label: "Send message", onClick: () => navigate({ to: "/messages", search: { pupilId: p.id } as never }) },
+                          { label: "Send message", onClick: () => navigate({ to: "/messages/$pupilId", params: { pupilId: p.id } }) },
                           { label: "Take payment", onClick: () => { setUnifiedPayPupilId(p.id); setUnifiedPayOpen(true); } },
                           { label: "Book a lesson", onClick: () => { setAddLessonPupilId(p.id); setAddLessonOpen(true); } },
                           { label: "View profile", onClick: () => navigate({ to: "/pupils/$id", params: { id: p.id } }) },
