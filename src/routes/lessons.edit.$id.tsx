@@ -256,8 +256,9 @@ function EditLessonPage() {
   }
 
   async function handleSave() {
-    if (saving) return;
+    if (saving || showCancelConfirm) return;
     setSaving(true);
+
     setError(null);
     const { error: updErr } = await supabase
       .from("lessons")
