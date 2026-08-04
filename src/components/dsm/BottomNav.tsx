@@ -28,53 +28,56 @@ function useUnreadMessages(): number {
     };
   }, []);
 
+  // Shared loader: pupil unread (conversations) + local chat unread.
+  const load = useCallback(async () => {
+    if (!uid) {
+      setCount(0);
+      return;
+    }
+
+    const { data: convos } = await supabase
+      .from("conversations")
+      .select("unread_count")
+      .eq("instructor_id", uid);
+
+    const pupilUnread = (convos ?? []).reduce(
+      (s, c) => s + (c.unread_count ?? 0),
+      0
+    );
+
+    const { data: subs } = await supabase
+      .from("chat_room_subscriptions")
+      .select("room_id, last_read_at")
+      .eq("instructor_id", uid);
+
+    let chatUnread = 0;
+    for (const sub of subs ?? []) {
+      const { count: c } = await supabase
+        .from("local_chat_messages")
+        .select("id", { count: "exact", head: true })
+        .eq("room_id", sub.room_id)
+        .neq("instructor_id", uid)
+        .gt("created_at", sub.last_read_at ?? "1970-01-01")
+        .is("deleted_at", null);
+      chatUnread += c ?? 0;
+    }
+
+    setCount(pupilUnread + chatUnread);
+  }, [uid]);
+
+  // Effect A — once per user: realtime subscription + 60s safety-net poll.
   useEffect(() => {
     if (!uid) {
       setCount(0);
       return;
     }
-    let cancelled = false;
-
-    const load = async () => {
-      // Count unread pupil messages via conversations
-      const { data: convos } = await supabase
-        .from("conversations")
-        .select("unread_count")
-        .eq("instructor_id", uid);
-
-      const pupilUnread = (convos ?? []).reduce(
-        (s, c) => s + (c.unread_count ?? 0),
-        0
-      );
-
-      // Count unread local chat messages
-      const { data: subs } = await supabase
-        .from("chat_room_subscriptions")
-        .select("room_id, last_read_at")
-        .eq("instructor_id", uid);
-
-      let chatUnread = 0;
-      for (const sub of subs ?? []) {
-        const { count: c } = await supabase
-          .from("local_chat_messages")
-          .select("id", { count: "exact", head: true })
-          .eq("room_id", sub.room_id)
-          .neq("instructor_id", uid)
-          .gt("created_at", sub.last_read_at ?? "1970-01-01")
-          .is("deleted_at", null);
-        chatUnread += c ?? 0;
-      }
-
-      if (!cancelled) setCount(pupilUnread + chatUnread);
-    };
 
     load();
 
-    // Safety net only — realtime below is the primary trigger.
-    const interval = window.setInterval(load, 60000);
-    const onPing = () => load();
-    window.addEventListener("dsm-messages-read", onPing);
+    const interval = window.setInterval(() => { load(); }, 60000);
+    const onPing = () => { load(); };
     window.addEventListener("dsm-message-received", onPing);
+    window.addEventListener("dsm-messages-read", onPing);
 
     const channel = supabase
       .channel(`unread-badge-${uid}`)
@@ -104,19 +107,18 @@ function useUnreadMessages(): number {
       .subscribe();
 
     return () => {
-      cancelled = true;
       window.clearInterval(interval);
-      window.removeEventListener("dsm-messages-read", onPing);
       window.removeEventListener("dsm-message-received", onPing);
+      window.removeEventListener("dsm-messages-read", onPing);
       supabase.removeChannel(channel);
     };
-  }, [uid]);
+  }, [uid, load]);
 
-  // Cheap refresh on navigation without tearing down the realtime channel.
+  // Effect B — refresh on route change only. No subscription, no cleanup.
   useEffect(() => {
     if (!uid) return;
-    window.dispatchEvent(new Event("dsm-messages-read"));
-  }, [pathname, uid]);
+    load();
+  }, [pathname]);
 
   return count;
 }
