@@ -551,6 +551,34 @@ function PupilsIndexPage() {
         </div>
       </div>
 
+      {/* Sort control */}
+      <div style={{ margin: "0 16px 10px", display: "flex", justifyContent: "flex-end" }}>
+        <button
+          type="button"
+          onClick={() =>
+            setSortBy((s) => (s === "name" ? "balance" : s === "balance" ? "next_lesson" : "name"))
+          }
+          aria-label={`Sort by ${SORT_LABELS[sortBy]}. Tap to change.`}
+          className="inline-flex items-center"
+          style={{
+            gap: 5,
+            height: 28,
+            padding: "0 10px",
+            borderRadius: 20,
+            background: "#FFFFFF",
+            border: "0.5px solid #EEF2F7",
+            color: "#6B7686",
+            fontSize: 11,
+            fontWeight: 600,
+            cursor: "pointer",
+            ...POPPINS,
+          }}
+        >
+          <ArrowUpDown size={13} color="#6B7686" />
+          Sort: {SORT_LABELS[sortBy]}
+        </button>
+      </div>
+
 
       {/* List */}
       <div>
