@@ -247,7 +247,6 @@ export function SheetQueueController({ userId }: { userId: string | null }) {
         onDismiss={() => {
           setCatchUpHandled(true);
           setActive("none");
-          navigate({ to: "/whats-changed" as never });
         }}
         onRowClick={(to) => {
           setCatchUpHandled(true);
