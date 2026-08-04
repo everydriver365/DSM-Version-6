@@ -757,6 +757,22 @@ function PupilsIndexPage() {
                             £{balanceOwed.toFixed(2)} owed
                           </span>
                         )}
+                        <span style={{ ...PILL_BASE, backgroundColor: pricing.bg, color: pricing.fg }}>
+                          {pricing.label}
+                        </span>
+                        {testSoon && testDate ? (
+                          <span style={{ ...PILL_BASE, backgroundColor: "#FEF3C7", color: "#92400E" }}>
+                            🎯 Test {formatShortDate(testDate)}
+                          </span>
+                        ) : nextLesson ? (
+                          <span style={{ fontSize: 11, color: "#B0BAC9", ...POPPINS }}>
+                            · Next: {formatShortDate(nextLesson)}
+                          </span>
+                        ) : lp ? (
+                          <span style={{ fontSize: 11, color: "#B0BAC9", ...POPPINS }}>
+                            · Last seen: {formatRelativeDate(lp.date)}
+                          </span>
+                        ) : null}
                         {lp && lpDays !== null && (
                           <span
                             style={{ fontSize: 11, color: "#B0BAC9", ...POPPINS }}
