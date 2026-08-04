@@ -38,6 +38,8 @@ interface Pupil {
   ni_amount_paid: number | null;
   lead_source: string | null;
   status: string | null;
+  pricing_type: string | null;
+  test_date: string | null;
   profile_image_url: string | null;
   calendar_colour: string | null;
 }
