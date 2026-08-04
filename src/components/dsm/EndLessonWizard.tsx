@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
+import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import {
   Banknote,
   ArrowLeftRight,
   Gift,
   CheckCircle2,
   PartyPopper,
-  X,
   QrCode,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
