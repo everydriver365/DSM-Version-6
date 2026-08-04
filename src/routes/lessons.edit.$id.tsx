@@ -259,6 +259,10 @@ function EditLessonPage() {
     if (saving || showCancelConfirm) return;
     setSaving(true);
 
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     setError(null);
     const { error: updErr } = await supabase
       .from("lessons")
@@ -277,6 +281,21 @@ function EditLessonPage() {
       setError(updErr.message);
       setSaving(false);
       return;
+    }
+    // Sync to Google Calendar after save
+    const { data: lessonRow } = await supabase
+      .from("lessons")
+      .select("google_event_id")
+      .eq("id", id)
+      .maybeSingle();
+    if (lessonRow?.google_event_id) {
+      void supabase.functions.invoke("google-calendar-sync", {
+        body: {
+          lesson_id: id,
+          instructor_id: user?.id ?? "",
+          action: "update",
+        },
+      });
     }
     toast.success("Lesson updated");
     navigate({ to: "/lessons/$id", params: { id } });
@@ -484,6 +503,22 @@ function EditLessonPage() {
                         toast.error("Could not cancel lesson");
                         setSaving(false);
                         return;
+                      }
+                      // Sync to Google Calendar after cancel
+                      const { data: userRes } = await supabase.auth.getUser();
+                      const { data: lessonRow } = await supabase
+                        .from("lessons")
+                        .select("google_event_id")
+                        .eq("id", id)
+                        .maybeSingle();
+                      if (lessonRow?.google_event_id) {
+                        void supabase.functions.invoke("google-calendar-sync", {
+                          body: {
+                            lesson_id: id,
+                            instructor_id: userRes.user?.id ?? "",
+                            action: "delete",
+                          },
+                        });
                       }
                       if (paymentStatus === "paid" || paymentStatus === "partial") {
                         const { recordRefund } = await import("@/lib/payments");
