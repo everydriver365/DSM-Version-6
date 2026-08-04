@@ -20,6 +20,8 @@ import { PupilAvatar } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
+import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
+
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { filterEchoedBlocks } from "@/lib/calendarDedupe";
