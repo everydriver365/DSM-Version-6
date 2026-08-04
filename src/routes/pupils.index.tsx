@@ -792,30 +792,70 @@ function PupilsIndexPage() {
             <span className="text-[11px] font-medium" style={{ color: "#1877D6", ...POPPINS }}>Message all</span>
           </Link>
         </div>
-        <button
-          type="button"
-          onClick={() =>
-            setSortBy((s) => (s === "name" ? "balance" : s === "balance" ? "next_lesson" : "name"))
-          }
-          aria-label={`Sort by ${SORT_LABELS[sortBy]}. Tap to change.`}
-          className="inline-flex items-center"
-          style={{
-            gap: 5,
-            height: 28,
-            padding: 0,
-            background: "transparent",
-            border: "none",
-            color: "#1877D6",
-            fontSize: 12,
-            fontWeight: 600,
-            cursor: "pointer",
-            ...POPPINS,
-          }}
-        >
-          <ArrowUpDown size={13} color="#1877D6" />
-          Sort: {SORT_LABELS[sortBy]}
-        </button>
+        <div className="flex items-center" style={{ gap: 8 }}>
+          <button
+            type="button"
+            aria-label={searchOpen ? "Close search" : "Open search"}
+            onClick={() => {
+              setSearchOpen((v) => {
+                const next = !v;
+                if (!next) setQuery("");
+                return next;
+              });
+            }}
+            className="flex items-center justify-center rounded-md"
+            style={{ width: 28, height: 28, backgroundColor: "#F3F8FF", border: "1px solid #EEF2F7" }}
+          >
+            {searchOpen ? (
+              <X size={16} color="#1877D6" />
+            ) : (
+              <Search size={16} color="#1877D6" />
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              setSortBy((s) => (s === "name" ? "balance" : s === "balance" ? "next_lesson" : "name"))
+            }
+            aria-label={`Sort by ${SORT_LABELS[sortBy]}. Tap to change.`}
+            className="inline-flex items-center"
+            style={{
+              gap: 5,
+              height: 28,
+              padding: 0,
+              background: "transparent",
+              border: "none",
+              color: "#1877D6",
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: "pointer",
+              ...POPPINS,
+            }}
+          >
+            <ArrowUpDown size={13} color="#1877D6" />
+            Sort: {SORT_LABELS[sortBy]}
+          </button>
+        </div>
       </div>
+
+      {/* Search input */}
+      {searchOpen && (
+        <div className="px-4 pb-3" style={{ marginTop: -6 }}>
+          <input
+            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search pupils..."
+            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
+            style={{
+              ...POPPINS,
+              borderWidth: "0.5px",
+              borderStyle: "solid",
+              borderColor: "#EEF2F7",
+            }}
+          />
+        </div>
+      )}
 
 
 
