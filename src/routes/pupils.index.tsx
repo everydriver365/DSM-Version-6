@@ -640,29 +640,40 @@ function PupilsIndexPage() {
                         </span>
                         <ChevronRight size={15} color="#B0BAC9" />
                       </div>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openSheet();
-                        }}
-                        aria-label={`Quick actions for ${displayName(p.name)}`}
-                        style={{
-                          width: 28,
-                          height: 28,
-                          borderRadius: "50%",
-                          background: "#F8F9FB",
-                          border: "0.5px solid #E5E7EB",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          cursor: "pointer",
-                          padding: 0,
-                          zIndex: 60,
-                        }}
-                      >
-                        <MoreHorizontal size={14} color="#6B7280" />
-                      </button>
+                      <QuickActionsMenu
+                        items={[
+                          { label: "Send message", onClick: () => navigate({ to: "/messages", search: { pupilId: p.id } as never }) },
+                          { label: "Take payment", onClick: () => { setUnifiedPayPupilId(p.id); setUnifiedPayOpen(true); } },
+                          { label: "Book a lesson", onClick: () => { setAddLessonPupilId(p.id); setAddLessonOpen(true); } },
+                          { label: "View profile", onClick: () => navigate({ to: "/pupils/$id", params: { id: p.id } }) },
+                          { label: "Archive", destructive: true, onClick: () => setArchiveTarget({ id: p.id, name: displayName(p.name) }) },
+                        ]}
+                        trigger={({ onClick }) => (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onClick();
+                            }}
+                            aria-label={`Quick actions for ${displayName(p.name)}`}
+                            style={{
+                              width: 28,
+                              height: 28,
+                              borderRadius: "50%",
+                              background: "#F8F9FB",
+                              border: "0.5px solid #E5E7EB",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              cursor: "pointer",
+                              padding: 0,
+                            }}
+                          >
+                            <MoreHorizontal size={14} color="#6B7280" />
+                          </button>
+                        )}
+                      />
+
                     </div>
                   </div>
                 </div>
