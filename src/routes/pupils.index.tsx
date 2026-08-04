@@ -6,10 +6,11 @@ import { supabase } from "../lib/supabaseClient";
 import { getPupilBalance } from "@/lib/payments";
 import { EmptyState } from "../components/dsm/EmptyState";
 import { PageLayout } from "@/components/PageLayout";
-import {
-  PupilQuickActionsSheet,
-  type PupilQuickActionsPupil,
-} from "@/components/pupils/PupilQuickActionsSheet";
+import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";
+import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
+import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+
 import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
