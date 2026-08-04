@@ -1030,14 +1030,21 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               type="button"
               onClick={recordPayment}
               disabled={paymentSaving}
-              className="mt-5 w-full h-11 rounded-lg text-[14px] font-semibold text-white"
+              className="mt-5 w-full h-11 rounded-lg text-[14px] font-semibold text-white flex items-center justify-center gap-2"
               style={{
                 backgroundColor: "#1877D6",
                 border: "none",
                 opacity: paymentSaving ? 0.7 : 1,
               }}
             >
-              {paymentSaving ? "Saving…" : "Record payment"}
+              {paymentSaving ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  Saving…
+                </>
+              ) : (
+                "Record payment"
+              )}
             </button>
             <button
               type="button"
