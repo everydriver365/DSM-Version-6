@@ -215,6 +215,7 @@ function LivePage() {
   const speedLimitFetchedRef = useRef<{ key: string; at: number } | null>(null);
   const speedLimitRef = useRef<number | null>(null);
   const roadNameRef = useRef<string | null>(null);
+  const lastRoadFetchRef = useRef<{ lat: number; lng: number } | null>(null);
 
   const [tracking, setTracking] = useState(false);
   const [coordinates, setCoordinates] = useState<Coord[]>([]);
@@ -391,6 +392,9 @@ function LivePage() {
       if (watchIdRef.current != null && "geolocation" in navigator) {
         navigator.geolocation.clearWatch(watchIdRef.current);
         watchIdRef.current = null;
+      }
+      if (navigator.userAgent.toLowerCase().includes("despia")) {
+        (window as any).despia("backgroundlocationoff://");
       }
       try {
         silentAudioRef.current?.pause();
@@ -594,6 +598,11 @@ function LivePage() {
   }
 
   async function startTracking(lessonId: string | null, pupilId: string | null) {
+    // Enable native background GPS if running in Despia
+    // This keeps GPS running when screen is locked
+    if (navigator.userAgent.toLowerCase().includes("despia")) {
+      (window as any).despia("backgroundlocationon://");
+    }
     if (tracking) return;
     if (!("geolocation" in navigator)) {
       setGeoError("GPS access required — please enable location in your browser settings");
@@ -628,17 +637,37 @@ function LivePage() {
 
     setTracking(true);
     startSilentAudio();
-    startGpsWatch();
+    startWatching();
   }
 
   function startGpsWatch() {
+    startWatching();
+  }
+
+  function startWatching() {
     if (!("geolocation" in navigator)) return;
     console.log("[live] starting geolocation watch");
     watchIdRef.current = navigator.geolocation.watchPosition(
       (pos) => handlePosition(pos),
       (err) => {
-        console.error("[live] geolocation error:", err.code, err.message);
-        setGeoError("GPS access required — please enable location in your browser settings");
+        console.error("[live] geo error:", err.code, err.message);
+        if (err.code === 2) {
+          // Signal lost temporarily — reconnect in 3s
+          setTimeout(() => {
+            if (watchIdRef.current !== null) {
+              navigator.geolocation.clearWatch(watchIdRef.current);
+              watchIdRef.current = null;
+            }
+            startWatching();
+          }, 3000);
+          return;
+        }
+        // Permission denied — permanent error
+        setGeoError("GPS access required — tap here to open settings");
+        // Open Despia settings if available
+        if (navigator.userAgent.toLowerCase().includes("despia")) {
+          (window as any).despia("settingsapp://");
+        }
       },
       { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 },
     );
@@ -721,7 +750,28 @@ function LivePage() {
       }
     }
 
-    ensureSpeedLimit(lat, lng);
+    const distMetres = (
+      a: { lat: number; lng: number },
+      b: { lat: number; lng: number },
+    ) => {
+      const R = 6371000;
+      const dLat = ((b.lat - a.lat) * Math.PI) / 180;
+      const dLng = ((b.lng - a.lng) * Math.PI) / 180;
+      const aa =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos((a.lat * Math.PI) / 180) *
+          Math.cos((b.lat * Math.PI) / 180) *
+          Math.sin(dLng / 2) *
+          Math.sin(dLng / 2);
+      return R * 2 * Math.atan2(Math.sqrt(aa), Math.sqrt(1 - aa));
+    };
+
+    const last = lastRoadFetchRef.current;
+    const movedEnough = !last || distMetres(last, { lat, lng }) > 50;
+    if (movedEnough) {
+      lastRoadFetchRef.current = { lat, lng };
+      ensureSpeedLimit(lat, lng);
+    }
 
     const currentLimit = speedLimitRef.current;
     const currentRoad = roadNameRef.current;
@@ -762,6 +812,9 @@ function LivePage() {
       if (watchIdRef.current != null && "geolocation" in navigator) {
         navigator.geolocation.clearWatch(watchIdRef.current);
         watchIdRef.current = null;
+      }
+      if (navigator.userAgent.toLowerCase().includes("despia")) {
+        (window as any).despia("backgroundlocationoff://");
       }
       stopSilentAudio();
       await saveCoordinates(true);
