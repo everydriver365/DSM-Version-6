@@ -1920,7 +1920,29 @@ function SchedulePage() {
 
       </div>
 
+      {eolLesson && (
+        <EndLessonWizard
+          open={!!eolLesson}
+          onClose={() => {
+            setEolLesson(null);
+            setLessonsReloadKey((k) => k + 1);
+          }}
+          lessonId={eolLesson.id}
+          pupilId={eolLesson.pupil_id ?? ""}
+          pupilName={pupilDisplayName(eolLesson.pupil)}
+          instructorId={userId ?? ""}
+          durationMinutes={eolLesson.duration_minutes ?? 60}
+          lessonDate={eolLesson.lesson_date}
+          startTime={eolLesson.lesson_time}
+          onCompleted={() => {
+            setEolLesson(null);
+            setLessonsReloadKey((k) => k + 1);
+          }}
+        />
+      )}
+
       {cancelSheetFor && (
+
         <CancelLessonSheet
           open={true}
           onClose={() => setCancelSheetFor(null)}
