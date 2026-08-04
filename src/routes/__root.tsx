@@ -53,6 +53,7 @@ import icon512 from "../assets/icon-512.png.asset.json";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
+import { PushPermissionSheet } from "../components/dsm/PushPermissionSheet";
 import { supabase } from "../lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
