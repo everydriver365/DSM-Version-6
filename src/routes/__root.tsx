@@ -553,7 +553,14 @@ function RootComponent() {
       if (mounted) setUserId(data.user?.id ?? null);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
-      setUserId(session?.user?.id ?? null);
+      const uid = session?.user?.id ?? null;
+      setUserId(uid);
+      // Register device with OneSignal for push notifications
+      if (uid && typeof window !== 'undefined' && (window as any).despia) {
+        (window as any).despia(
+          `setonesignalexternalid://?external_id=${uid}`
+        );
+      }
     });
     return () => {
       mounted = false;
