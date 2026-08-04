@@ -208,25 +208,65 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   });
   const lessonCost = pricing.total;
 
-  // Reset when opening
+  // Draft persistence: keep notes/payment inputs while the wizard is open so
+  // briefly closing + reopening the sheet doesn't lose progress.
+  const draftKey = `dsm-eol-draft-${lessonId}`;
+
+  const clearDraft = () => {
+    try {
+      sessionStorage.removeItem(draftKey);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  // Reset when opening (restoring any saved draft for this lesson)
   useEffect(() => {
     if (!open) return;
-    setStep(1);
-    setNotes("");
-    setPaymentMethod("cash");
+
+    let draft: Record<string, unknown> | null = null;
+    try {
+      const raw = sessionStorage.getItem(draftKey);
+      if (raw) draft = JSON.parse(raw) as Record<string, unknown>;
+    } catch {
+      draft = null;
+    }
+
+    setStep((draft?.step as 1 | 2 | 3) ?? 1);
+    setNotes(typeof draft?.notes === "string" ? (draft.notes as string) : "");
+    setPaymentMethod((draft?.paymentMethod as PaymentMethod) ?? "cash");
+    setAmount(typeof draft?.amount === "string" ? (draft.amount as string) : "");
+    setLevels((draft?.levels as Record<string, ProgressLevel>) ?? {});
+    setProgressComments(
+      typeof draft?.progressComments === "string" ? (draft.progressComments as string) : "",
+    );
     setPaymentRecorded(false);
     setPaymentSaving(false);
     setQrUrl(null);
     setQrPaymentId(null);
     setQrGenerating(false);
-    setLevels({});
-    setProgressComments("");
     setCompleting(false);
     setDone(false);
     setCourseComplete(false);
     setFinalDistance(null);
     setFinalPaymentLabel("Skipped");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, lessonId]);
+
+  // Save draft as the user types
+  useEffect(() => {
+    if (!open || done) return;
+    try {
+      sessionStorage.setItem(
+        draftKey,
+        JSON.stringify({ step, notes, amount, paymentMethod, levels, progressComments }),
+      );
+    } catch {
+      /* ignore */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, done, step, notes, amount, paymentMethod, levels, progressComments, draftKey]);
+
 
   // Load route + instructor rate + pupil balance
   useEffect(() => {
