@@ -913,18 +913,6 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               </div>
             )}
 
-            <button
-              type="button"
-              disabled={!notes.trim()}
-              onClick={() => setStep(2)}
-              className="mt-5 w-full h-11 rounded-lg text-[14px] font-semibold text-white"
-              style={{
-                backgroundColor: notes.trim() ? "#1877D6" : "#9CA3AF",
-                border: "none",
-              }}
-            >
-              Next: Payment →
-            </button>
           </div>
         )}
 
@@ -1094,15 +1082,6 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               </div>
             )}
 
-            <button
-              type="button"
-              onClick={skipPayment}
-              disabled={paymentSaving}
-              className="mt-2 w-full h-10 text-[13px]"
-              style={{ color: "#6B7280", backgroundColor: "transparent", fontWeight: 500 }}
-            >
-              Skip payment
-            </button>
           </div>
         )}
 
@@ -1234,19 +1213,6 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               }}
             />
 
-            <button
-              type="button"
-              onClick={completeEol}
-              disabled={completing}
-              className="mt-5 w-full h-11 rounded-lg text-[14px] font-semibold text-white"
-              style={{
-                backgroundColor: "#1877D6",
-                border: "none",
-                opacity: completing ? 0.7 : 1,
-              }}
-            >
-              {completing ? "Completing…" : "Complete EOL"}
-            </button>
           </div>
         )}
 
@@ -1315,14 +1281,6 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={finish}
-              className="mt-5 w-full h-11 rounded-lg text-[14px] font-semibold text-white"
-              style={{ backgroundColor: "#1877D6", border: "none" }}
-            >
-              Done
-            </button>
           </div>
         )}
 
