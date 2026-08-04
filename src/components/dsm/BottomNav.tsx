@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState, type ComponentType, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { Home, CalendarDays, Users, MessageCircle, LayoutGrid } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
