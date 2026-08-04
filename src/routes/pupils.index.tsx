@@ -665,12 +665,19 @@ function PupilsIndexPage() {
             </span>
             <QuickActionsMenu
               items={[
+                { label: "View pupil details", onClick: () => navigate({ to: "/pupils/$id", params: { id: p.id } }) },
                 { label: "Send message", onClick: () => navigate({ to: "/messages/$pupilId", params: { pupilId: p.id } }) },
+                ...(unread > 0
+                  ? [{ label: `Mark ${unread} message${unread === 1 ? "" : "s"} as read`, onClick: () => markMessagesRead(p.id, displayName(p.name)) }]
+                  : []),
+                ...(p.phone
+                  ? [{ label: "Call pupil", onClick: () => { window.location.href = `tel:${p.phone}`; } }]
+                  : []),
                 { label: "Take payment", onClick: () => { setUnifiedPayPupilId(p.id); setUnifiedPayOpen(true); } },
                 { label: "Book a lesson", onClick: () => { setAddLessonPupilId(p.id); setAddLessonOpen(true); } },
-                { label: "View profile", onClick: () => navigate({ to: "/pupils/$id", params: { id: p.id } }) },
                 { label: "Archive", destructive: true, onClick: () => setArchiveTarget({ id: p.id, name: displayName(p.name) }) },
               ]}
+
               trigger={({ onClick }) => (
                 <button
                   type="button"
