@@ -701,12 +701,43 @@ function PupilsIndexPage() {
         <Plus size={24} color="#FFFFFF" />
       </Link>
 
-      <PupilQuickActionsSheet
-        open={sheetPupil !== null}
-        pupil={sheetPupil}
-        onClose={() => setSheetPupil(null)}
-        onDirtyClose={() => setReloadKey((k) => k + 1)}
+      <UnifiedPaymentSheet
+        open={unifiedPayOpen}
+        onClose={() => { setUnifiedPayOpen(false); setUnifiedPayPupilId(undefined); }}
+        onSaved={() => setReloadKey((k) => k + 1)}
+        initialPupilId={unifiedPayPupilId}
       />
+
+      <AddLessonSheet
+        open={addLessonOpen}
+        onClose={() => { setAddLessonOpen(false); setAddLessonPupilId(undefined); }}
+        onSaved={() => { setAddLessonOpen(false); setAddLessonPupilId(undefined); setReloadKey((k) => k + 1); }}
+        initialPupilId={addLessonPupilId}
+      />
+
+      <ConfirmDialog
+        open={archiveTarget !== null}
+        title={`Archive ${archiveTarget?.name ?? ""}?`}
+        message="They'll be moved to the Archived tab. You can still view their history."
+        confirmLabel="Archive"
+        onCancel={() => setArchiveTarget(null)}
+        onConfirm={async () => {
+          const target = archiveTarget;
+          setArchiveTarget(null);
+          if (!target) return;
+          const { error } = await supabase
+            .from("pupils")
+            .update({ status: "archived" })
+            .eq("id", target.id);
+          if (error) {
+            toast.error("Couldn't archive pupil");
+            return;
+          }
+          toast.success(`${target.name} archived`);
+          setReloadKey((k) => k + 1);
+        }}
+      />
+
     </PageLayout>
   );
 }
