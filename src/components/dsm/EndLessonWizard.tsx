@@ -5,6 +5,7 @@ import {
   ArrowLeftRight,
   Gift,
   CheckCircle2,
+  Loader2,
   PartyPopper,
   QrCode,
 } from "lucide-react";
