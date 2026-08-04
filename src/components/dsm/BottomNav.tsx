@@ -8,7 +8,7 @@ import { supabase } from "@/lib/supabaseClient";
  * badge without prop drilling. Refreshes on route change, on a 60s interval,
  * and when a screen broadcasts `dsm-messages-read` after marking messages read.
  */
-function useUnreadPupilMessages(): number {
+function useUnreadMessages(): number {
   const [count, setCount] = useState(0);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -22,14 +22,37 @@ function useUnreadPupilMessages(): number {
         if (!cancelled) setCount(0);
         return;
       }
-      const { count: c, error } = await supabase
-        .from("chat_messages")
-        .select("id", { count: "exact", head: true })
-        .eq("instructor_id", uid)
-        .eq("sender_type", "pupil")
-        .is("read_at", null)
-        .is("deleted_at", null);
-      if (!cancelled && !error) setCount(c ?? 0);
+
+      // Count unread pupil messages via conversations
+      const { data: convos } = await supabase
+        .from("conversations")
+        .select("unread_count")
+        .eq("instructor_id", uid);
+
+      const pupilUnread = (convos ?? []).reduce(
+        (s, c) => s + (c.unread_count ?? 0),
+        0
+      );
+
+      // Count unread local chat messages
+      const { data: subs } = await supabase
+        .from("chat_room_subscriptions")
+        .select("room_id, last_read_at")
+        .eq("instructor_id", uid);
+
+      let chatUnread = 0;
+      for (const sub of subs ?? []) {
+        const { count: c } = await supabase
+          .from("local_chat_messages")
+          .select("id", { count: "exact", head: true })
+          .eq("room_id", sub.room_id)
+          .neq("instructor_id", uid)
+          .gt("created_at", sub.last_read_at ?? "1970-01-01")
+          .is("deleted_at", null);
+        chatUnread += c ?? 0;
+      }
+
+      if (!cancelled) setCount(pupilUnread + chatUnread);
     };
 
     load();
@@ -125,7 +148,7 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
     return () => window.removeEventListener('dsm-workspace-change', handler as EventListener);
   }, []);
   const currentWs = listenerWs;
-  const unreadMessages = useUnreadPupilMessages();
+  const unreadMessages = useUnreadMessages();
 
   const renderCustomItems = (list: BottomNavItem[], offset: number) =>
     list.map((it, i) => {
