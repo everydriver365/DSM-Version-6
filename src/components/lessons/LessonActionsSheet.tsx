@@ -494,6 +494,55 @@ export function LessonActionsSheet({
           </button>
         </div>
 
+        {/* Row 4 — Reschedule / Duration / Add note */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 8 }}>
+          <button
+            type="button"
+            style={{ ...gridBtn, background: "#FFFFFF" }}
+            onClick={() => setInlineView("reschedule")}
+          >
+            <IconCalendar size={18} stroke={1.8} color={NAVY} />
+            <span style={pillLabel}>Reschedule</span>
+          </button>
+          <button
+            type="button"
+            style={{ ...gridBtn, background: "#FFFFFF" }}
+            onClick={() => setInlineView("duration")}
+          >
+            <IconClock size={18} stroke={1.8} color={NAVY} />
+            <span style={pillLabel}>Duration</span>
+          </button>
+          <button
+            type="button"
+            style={{ ...gridBtn, background: "#FFFFFF" }}
+            onClick={() => setInlineView("note")}
+          >
+            <IconNotes size={18} stroke={1.8} color={NAVY} />
+            <span style={pillLabel}>Add note</span>
+          </button>
+        </div>
+
+        {/* Row 5 — destructive */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 8 }}>
+          <button
+            type="button"
+            style={{ ...gridBtnDanger, fontWeight: 600 }}
+            onClick={() => setInlineView("cancel")}
+          >
+            <IconX size={18} stroke={1.8} color="#CC2229" />
+            <span style={{ ...pillLabel, fontWeight: 600, color: "#CC2229" }}>Cancel lesson</span>
+          </button>
+          <button
+            type="button"
+            style={{ ...gridBtnDanger, fontWeight: 600 }}
+            onClick={() => setInlineView("delete")}
+          >
+            <IconTrash size={18} stroke={1.8} color="#CC2229" />
+            <span style={{ ...pillLabel, fontWeight: 600, color: "#CC2229" }}>Delete lesson</span>
+          </button>
+        </div>
+
+
         {/* End of lesson — full width */}
         <button
           type="button"
