@@ -1712,7 +1712,50 @@ function SchedulePage() {
                                                          {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
                                                        </button>
                                                    ) : null}
+                                                   {(() => {
+                                                     const lsn = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                                     const lst = (lsn.status ?? '').toLowerCase();
+                                                     const eolRelevant =
+                                                       (lst === 'confirmed' || lst === 'completed') &&
+                                                       lsn.lesson_date <= ymdLocal(new Date());
+                                                     if (!eolRelevant) return null;
+                                                     const eolDone = lsn.eol_completed === true;
+                                                     const pillStyle: React.CSSProperties = {
+                                                       flexShrink: 0,
+                                                       display: 'inline-flex',
+                                                       alignItems: 'center',
+                                                       gap: 3,
+                                                       fontSize: 10,
+                                                       fontWeight: 700,
+                                                       padding: '2px 8px',
+                                                       borderRadius: 8,
+                                                       lineHeight: 1.4,
+                                                       border: 'none',
+                                                       background: eolDone ? '#E4F5EA' : '#FBE7E7',
+                                                       color: eolDone ? '#2E7D4F' : '#CC2229',
+                                                       ...POPPINS,
+                                                     };
+                                                     if (eolDone) {
+                                                       return (
+                                                         <span style={pillStyle}>
+                                                           <IconCheck size={11} stroke={2.4} color="#2E7D4F" />
+                                                           EOL
+                                                         </span>
+                                                       );
+                                                     }
+                                                     return (
+                                                       <button
+                                                         type="button"
+                                                         aria-label="Complete end of lesson"
+                                                         onClick={(ev) => { ev.stopPropagation(); setEolLesson(lsn); }}
+                                                         style={{ ...pillStyle, cursor: 'pointer' }}
+                                                       >
+                                                         EOL
+                                                       </button>
+                                                     );
+                                                   })()}
                                                 </div>
+
                                                 {timeText ? (
                                                   <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
                                                     {timeText}
