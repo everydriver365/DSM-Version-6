@@ -353,8 +353,7 @@ function PupilsIndexPage() {
     });
 
     const withIndex = base.map((p, i) => ({ p, i }));
-    const sortKey = (x: { p: Pupil; i: number }) => x;
-    void sortKey;
+
 
     withIndex.sort((a, b) => {
       // Unread messages always float to the top.
