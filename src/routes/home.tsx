@@ -2151,62 +2151,29 @@ function HomePage() {
         return;
       }
       if (!latest || latest.id === lastSeenNotifIdRef.current) return;
-      const lastId = lastSeenNotifIdRef.current;
-      const newOnes: typeof rows = [];
-      for (const r of rows) {
-        if (r.id === lastId) break;
-        newOnes.push(r);
-      }
       lastSeenNotifIdRef.current = latest.id;
+      // Alerts themselves are shown once, globally, by the toast controller in
+      // __root.tsx. Here we only keep the bell count in sync so the same
+      // notification can never surface twice.
       const { count } = await supabase
         .from("instructor_notifications")
         .select("id", { count: "exact", head: true })
         .eq("instructor_id", user.id)
         .eq("read", false);
       if (!cancelled) setNotifCount(count || 0);
-      for (const n of newOnes.slice(0, 3).reverse()) {
-        const raw = n.body || "";
-        const body = raw.length > 60 ? raw.slice(0, 60) + "…" : raw;
-        toast.custom((t) => (
-          <div
-            onClick={() => { toast.dismiss(t); navigate({ to: "/notifications" }); }}
-            style={{
-              background: "#0B1F3A",
-              color: "#FFFFFF",
-              borderRadius: 10,
-              padding: "12px 14px",
-              display: "flex",
-              gap: 10,
-              alignItems: "flex-start",
-              minWidth: 280,
-              maxWidth: 360,
-              cursor: "pointer",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
-              fontFamily: "Inter, sans-serif",
-            }}
-          >
-            <div style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <Bell size={16} color="#FFFFFF" />
-            </div>
-            <div style={{ minWidth: 0, flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 600, lineHeight: 1.3 }}>{n.title}</div>
-              {body && <div style={{ fontSize: 12, opacity: 0.85, marginTop: 2, lineHeight: 1.35 }}>{body}</div>}
-            </div>
-          </div>
-        ), { duration: 5000, position: "top-center" });
-      }
     }
     poll();
     const id = setInterval(poll, 30000);
     return () => { cancelled = true; clearInterval(id); };
   }, [navigate]);
 
-  // Realtime: show a slide-down banner immediately when a new
-  // instructor_notifications row is inserted for this user.
+  // Realtime: keep the bell count live. The visible alert for a new
+  // instructor_notifications row is owned by the global toast controller in
+  // __root.tsx, so we deliberately do NOT show a second banner here.
   useEffect(() => {
     if (!userId) return;
     const channel = supabase
-      .channel(`home-notif-banner-${userId}`)
+      .channel(`home-notif-count-${userId}`)
       .on(
         "postgres_changes",
         {
@@ -2215,15 +2182,7 @@ function HomePage() {
           table: "instructor_notifications",
           filter: `instructor_id=eq.${userId}`,
         },
-        (payload: any) => {
-          const n = payload.new || {};
-          setToastNotif({
-            id: String(n.id ?? Date.now()),
-            title: n.title || "New notification",
-            body: n.body || "",
-            type: (n.type || "default") as string,
-          });
-          setToastVisible(true);
+        () => {
           setNotifCount((c) => c + 1);
         },
       )

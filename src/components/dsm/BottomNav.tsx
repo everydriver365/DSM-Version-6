@@ -10,12 +10,32 @@ import { supabase } from "@/lib/supabaseClient";
  */
 function useUnreadMessages(): number {
   const [count, setCount] = useState(0);
+  const [uid, setUid] = useState<string | null>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
+  // Resolve the signed-in user once, and follow auth changes.
   useEffect(() => {
     let cancelled = false;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!cancelled) setUid(data.session?.user?.id ?? null);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUid(session?.user?.id ?? null);
+    });
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
 
-    const load = async (uid: string) => {
+  useEffect(() => {
+    if (!uid) {
+      setCount(0);
+      return;
+    }
+    let cancelled = false;
+
+    const load = async () => {
       // Count unread pupil messages via conversations
       const { data: convos } = await supabase
         .from("conversations")
@@ -48,48 +68,55 @@ function useUnreadMessages(): number {
       if (!cancelled) setCount(pupilUnread + chatUnread);
     };
 
-    const init = async () => {
-      const { data: sessionRes } = await supabase.auth.getSession();
-      const uid = sessionRes.session?.user?.id;
-      if (!uid) {
-        setCount(0);
-        return;
-      }
+    load();
 
-      load(uid);
-      const interval = window.setInterval(() => load(uid), 60000);
-      const onRead = () => load(uid);
-      window.addEventListener("dsm-messages-read", onRead);
+    // Safety net only — realtime below is the primary trigger.
+    const interval = window.setInterval(load, 60000);
+    const onPing = () => load();
+    window.addEventListener("dsm-messages-read", onPing);
+    window.addEventListener("dsm-message-received", onPing);
 
-      const channel = supabase
-        .channel('unread-badge')
-        .on('postgres_changes', {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'chat_messages',
-          filter: `instructor_id=eq.${uid}`,
-        }, () => { load(uid); })
-        .on('postgres_changes', {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'conversations',
-          filter: `instructor_id=eq.${uid}`,
-        }, () => { load(uid); })
-        .subscribe();
+    const channel = supabase
+      .channel(`unread-badge-${uid}`)
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "chat_messages",
+        filter: `instructor_id=eq.${uid}`,
+      }, () => { load(); })
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "conversations",
+        filter: `instructor_id=eq.${uid}`,
+      }, () => { load(); })
+      .on("postgres_changes", {
+        event: "UPDATE",
+        schema: "public",
+        table: "conversations",
+        filter: `instructor_id=eq.${uid}`,
+      }, () => { load(); })
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "local_chat_messages",
+      }, () => { load(); })
+      .subscribe();
 
-      return () => {
-        cancelled = true;
-        window.clearInterval(interval);
-        window.removeEventListener("dsm-messages-read", onRead);
-        supabase.removeChannel(channel);
-      };
-    };
-
-    const cleanupPromise = init();
     return () => {
-      cleanupPromise.then((cleanup) => cleanup?.());
+      cancelled = true;
+      window.clearInterval(interval);
+      window.removeEventListener("dsm-messages-read", onPing);
+      window.removeEventListener("dsm-message-received", onPing);
+      supabase.removeChannel(channel);
     };
-  }, [pathname]);
+  }, [uid]);
+
+  // Cheap refresh on navigation without tearing down the realtime channel.
+  useEffect(() => {
+    if (!uid) return;
+    window.dispatchEvent(new Event("dsm-messages-read"));
+  }, [pathname, uid]);
 
   return count;
 }
