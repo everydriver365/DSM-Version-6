@@ -88,10 +88,12 @@ function PupilsIndexPage() {
   const [query, setQuery] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
-  const [sheetPupil, setSheetPupil] = useState<PupilQuickActionsPupil | null>(null);
-  const suppressNextClickRef = useRef(false);
-  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const longPressStartRef = useRef<{ x: number; y: number } | null>(null);
+  const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
+  const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
+  const [addLessonOpen, setAddLessonOpen] = useState(false);
+  const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
+  const [archiveTarget, setArchiveTarget] = useState<{ id: string; name: string } | null>(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
