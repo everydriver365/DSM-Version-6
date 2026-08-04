@@ -4760,6 +4760,7 @@ function HomePage() {
           const pHours = Number(upcoming?.pupils?.prepaid_hours ?? 0);
           const isOnPackage = pType === 'block' || pType === 'national_intensives' || (pType === '' && pHours > 0);
           const packageText = isOnPackage && pTotal > 0 ? `${Math.round(pHours)}/${Math.round(pTotal)} lessons` : null;
+          const packageRunningLow = isOnPackage && pTotal > 0 && pHours <= 2;
 
           // Date / time / duration
           const d = upcoming ? lessonDateTime(upcoming) : null;
@@ -4855,7 +4856,11 @@ function HomePage() {
                     fontFamily: 'Poppins, sans-serif', marginTop: 3,
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                   }}>
-                    {durationDecimal}hr{packageText ? ` · ${packageText}` : ''}
+                    {durationDecimal}hr{packageText ? (
+                      <span style={{ color: packageRunningLow ? '#CC2229' : undefined }}>
+                        {' · '}{packageText}
+                      </span>
+                    ) : null}
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
