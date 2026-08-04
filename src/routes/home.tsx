@@ -6543,7 +6543,54 @@ function HomePage() {
                               <IconDotsVertical size={14} stroke={2} color="#D1D5DB" />
                             </span>
                          </div>
+                         {(() => {
+                           const st = (l.status ?? '').toLowerCase();
+                           const eolDue =
+                             (l as any).eol_completed !== true &&
+                             (st === 'confirmed' || st === 'completed') &&
+                             end.getTime() <= nowT.getTime() &&
+                             l.lesson_date <= todayISO;
+                           if (!eolDue) return null;
+                           return (
+                             <div
+                               style={{
+                                 background: '#FFFBEB',
+                                 border: '1px solid #FDE68A',
+                                 borderRadius: 6,
+                                 padding: '6px 10px',
+                                 margin: '0 14px 8px',
+                                 display: 'flex',
+                                 alignItems: 'center',
+                                 gap: 6,
+                               }}
+                             >
+                               <IconClockExclamation size={13} stroke={1.9} color="#92400E" style={{ flexShrink: 0 }} />
+                               <span style={{ fontSize: 11, fontWeight: 600, color: '#92400E', fontFamily: PF }}>
+                                 End of lesson not completed
+                               </span>
+                               <button
+                                 type="button"
+                                 onClick={(ev) => { ev.stopPropagation(); setEolLesson(l); }}
+                                 style={{
+                                   marginLeft: 'auto',
+                                   background: 'none',
+                                   border: 'none',
+                                   padding: 0,
+                                   cursor: 'pointer',
+                                   fontSize: 11,
+                                   fontWeight: 500,
+                                   color: '#1877D6',
+                                   fontFamily: PF,
+                                   whiteSpace: 'nowrap',
+                                 }}
+                               >
+                                 Complete now →
+                               </button>
+                             </div>
+                           );
+                         })()}
                          {actionsOpenForLesson?.id === l.id && (
+
                            <div
                              data-home-lesson-actions-popover
                              onClick={(ev) => ev.stopPropagation()}

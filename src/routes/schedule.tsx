@@ -12,11 +12,13 @@ import {
   IconChevronRight,
   IconArrowLeft,
   IconArrowRight,
+  IconClockExclamation,
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
 import { PupilAvatar } from "@/components/PupilAvatar";
+import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
@@ -188,6 +190,7 @@ interface Lesson {
   lesson_type?: string | null;
   payment_status?: string | null;
   amount_due?: number | null;
+  eol_completed?: boolean | null;
   pupil: Pupil | null;
 }
 
@@ -324,6 +327,7 @@ function SchedulePage() {
   const [allPupils, setAllPupils] = useState<Array<{ id: string; name: string | null; first_name: string | null; last_name?: string | null; calendar_colour: string | null }>>([]);
   const [allAvailability, setAllAvailability] = useState<any[]>([]);
   const [actionsOpenFor, setActionsOpenFor] = useState<Lesson | null>(null);
+  const [eolLesson, setEolLesson] = useState<any | null>(null);
   const [sendMessageOpen, setSendMessageOpen] = useState(false);
   const [sendMessagePupilId, setSendMessagePupilId] = useState<string | undefined>();
   const [cancelSheetFor, setCancelSheetFor] = useState<Lesson | null>(null);
@@ -437,7 +441,7 @@ function SchedulePage() {
       const { data, error } = await supabase
         .from("lessons")
         .select(
-          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, pupil:pupils!inner(id, name, first_name, last_name, calendar_colour, prepaid_hours, status, deleted_at)",
+          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, pupil:pupils!inner(id, name, first_name, last_name, calendar_colour, prepaid_hours, status, deleted_at)",
         )
         .is("deleted_at", null)
         .eq("pupil.status", "active")
@@ -1773,10 +1777,57 @@ function SchedulePage() {
                                             )}
                                      </>
                                   )}
-                                </div>
+                                 </div>
 
-                              </div>
-                              {isLessonRow && (() => {
+                               </div>
+                               {isLessonRow && (() => {
+                                 const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                 const st = (lesson.status ?? '').toLowerCase();
+                                 const eolDue =
+                                   lesson.eol_completed !== true &&
+                                   (st === 'confirmed' || st === 'completed') &&
+                                   lesson.lesson_date <= ymdLocal(new Date());
+                                 if (!eolDue) return null;
+                                 return (
+                                   <div
+                                     style={{
+                                       background: '#FFFBEB',
+                                       border: '1px solid #FDE68A',
+                                       borderRadius: 6,
+                                       padding: '6px 10px',
+                                       margin: '0 14px 8px',
+                                       display: 'flex',
+                                       alignItems: 'center',
+                                       gap: 6,
+                                       ...POPPINS,
+                                     }}
+                                   >
+                                     <IconClockExclamation size={13} stroke={1.9} color="#92400E" style={{ flexShrink: 0 }} />
+                                     <span style={{ fontSize: 11, fontWeight: 600, color: '#92400E' }}>
+                                       End of lesson not completed
+                                     </span>
+                                     <button
+                                       type="button"
+                                       onClick={(ev) => { ev.stopPropagation(); setEolLesson(lesson); }}
+                                       style={{
+                                         marginLeft: 'auto',
+                                         background: 'none',
+                                         border: 'none',
+                                         padding: 0,
+                                         cursor: 'pointer',
+                                         fontSize: 11,
+                                         fontWeight: 500,
+                                         color: '#1877D6',
+                                         whiteSpace: 'nowrap',
+                                       }}
+                                     >
+                                       Complete now →
+                                     </button>
+                                   </div>
+                                 );
+                               })()}
+                               {isLessonRow && (() => {
+
                                 const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
                                 return actionsOpenFor?.id === lesson.id ? (
                                   <div
@@ -1869,7 +1920,29 @@ function SchedulePage() {
 
       </div>
 
+      {eolLesson && (
+        <EndLessonWizard
+          open={!!eolLesson}
+          onClose={() => {
+            setEolLesson(null);
+            setLessonsReloadKey((k) => k + 1);
+          }}
+          lessonId={eolLesson.id}
+          pupilId={eolLesson.pupil_id ?? ""}
+          pupilName={pupilDisplayName(eolLesson.pupil)}
+          instructorId={userId ?? ""}
+          durationMinutes={eolLesson.duration_minutes ?? 60}
+          lessonDate={eolLesson.lesson_date}
+          startTime={eolLesson.lesson_time}
+          onCompleted={() => {
+            setEolLesson(null);
+            setLessonsReloadKey((k) => k + 1);
+          }}
+        />
+      )}
+
       {cancelSheetFor && (
+
         <CancelLessonSheet
           open={true}
           onClose={() => setCancelSheetFor(null)}
