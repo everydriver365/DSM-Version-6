@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronRight, Plus, Search, X, Megaphone, Users, CreditCard, MoreHorizontal } from "lucide-react";
+import { ChevronRight, Plus, Search, X, Megaphone, Users, CreditCard, MoreVertical, ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { getPupilBalance } from "@/lib/payments";
@@ -38,6 +38,8 @@ interface Pupil {
   ni_amount_paid: number | null;
   lead_source: string | null;
   status: string | null;
+  pricing_type: string | null;
+  test_date: string | null;
   profile_image_url: string | null;
   calendar_colour: string | null;
 }
@@ -64,6 +66,50 @@ function accentColor(status: StatusKey) {
   if (status === "archived") return "#9CA3AF";
   return "#9CA3AF";
 }
+
+const PILL_BASE = {
+  fontSize: 9,
+  fontWeight: 600,
+  borderRadius: 20,
+  padding: "2px 7px",
+  fontFamily: "Inter, sans-serif",
+  whiteSpace: "nowrap" as const,
+};
+
+function pricingPill(pricingType: string | null | undefined, prepaidHours: number) {
+  const t = (pricingType ?? "standard").toLowerCase();
+  if (t === "block") {
+    return { label: `Block · ${prepaidHours} hrs`, bg: "#E6F1FB", fg: "#1877D6" };
+  }
+  if (t === "national_intensives" || t === "national intensives" || t === "ni") {
+    return { label: "NI", bg: "#DDEFE1", fg: "#15803D" };
+  }
+  if (t === "custom") {
+    return { label: "Custom", bg: "#F1F5F9", fg: "#6B7686" };
+  }
+  return { label: "Standard", bg: "#F1F5F9", fg: "#6B7686" };
+}
+
+function formatShortDate(dateString: string) {
+  const d = new Date(dateString);
+  if (Number.isNaN(d.getTime())) return dateString;
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+function daysUntil(dateString: string) {
+  const [y, m, d] = dateString.slice(0, 10).split("-").map(Number);
+  if (!y || !m || !d) return Infinity;
+  const target = new Date(y, m - 1, d);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return Math.round((target.getTime() - today.getTime()) / 86400000);
+}
+
+const SORT_LABELS: Record<"name" | "balance" | "next_lesson", string> = {
+  name: "Name",
+  balance: "Balance",
+  next_lesson: "Next lesson",
+};
 
 function formatRelativeDate(dateString: string) {
   const date = new Date(dateString);
@@ -94,6 +140,10 @@ function PupilsIndexPage() {
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [archiveTarget, setArchiveTarget] = useState<{ id: string; name: string } | null>(null);
+  const [unreadMap, setUnreadMap] = useState<Record<string, number>>({});
+  const [nextLessonMap, setNextLessonMap] = useState<Record<string, string>>({});
+  const [testDateMap, setTestDateMap] = useState<Record<string, string>>({});
+  const [sortBy, setSortBy] = useState<"name" | "balance" | "next_lesson">("name");
 
   const navigate = useNavigate();
 
@@ -155,7 +205,7 @@ function PupilsIndexPage() {
       }
       let q = supabase
         .from("pupils")
-        .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120, profile_image_url, photo_url, calendar_colour")
+        .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, pricing_type, test_date, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120, profile_image_url, photo_url, calendar_colour")
         .eq("instructor_id", uid)
         .order("name", { ascending: true, nullsFirst: false });
 
@@ -187,15 +237,62 @@ function PupilsIndexPage() {
       console.log("[pupils] first pupil prepaid_hours:", normalized[0]?.prepaid_hours, normalized[0]?.name);
       const joseph = normalized.find((p) => /joseph/i.test(p.name) && /thorne/i.test(p.name));
       console.log("[pupils] Joseph Thorne row:", joseph);
-
+      // Test dates straight off the pupil rows
+      const tdMap: Record<string, string> = {};
+      normalized.forEach((p) => {
+        if (p.test_date) tdMap[p.id] = p.test_date as string;
+      });
+      setTestDateMap(tdMap);
 
       const pupilIds = normalized.map((p) => p.id);
       if (pupilIds.length === 0) {
         setLessonCountMap({});
         setBalanceMap({});
         setHoursMap({});
+        setUnreadMap({});
+        setNextLessonMap({});
         return;
       }
+
+      try {
+        const { data: unreads } = await supabase
+          .from("chat_messages")
+          .select("pupil_id")
+          .eq("instructor_id", uid)
+          .eq("sender_type", "pupil")
+          .is("read_at", null)
+          .is("deleted_at", null);
+        const uMap: Record<string, number> = {};
+        (unreads ?? []).forEach((r: any) => {
+          if (!r.pupil_id) return;
+          uMap[r.pupil_id] = (uMap[r.pupil_id] ?? 0) + 1;
+        });
+        setUnreadMap(uMap);
+      } catch (e) {
+        console.error("[pupils] unread fetch crashed", e);
+        setUnreadMap({});
+      }
+
+      try {
+        const { data: nextLessons } = await supabase
+          .from("lessons")
+          .select("pupil_id, lesson_date")
+          .eq("instructor_id", uid)
+          .gte("lesson_date", new Date().toISOString().slice(0, 10))
+          .in("status", ["confirmed", "pending"])
+          .is("deleted_at", null)
+          .order("lesson_date", { ascending: true });
+        const nlMap: Record<string, string> = {};
+        (nextLessons ?? []).forEach((l: any) => {
+          if (!l.pupil_id) return;
+          if (!nlMap[l.pupil_id]) nlMap[l.pupil_id] = l.lesson_date;
+        });
+        setNextLessonMap(nlMap);
+      } catch (e) {
+        console.error("[pupils] next lesson fetch crashed", e);
+        setNextLessonMap({});
+      }
+
 
       try {
         const { data: lessonRows, error: lcErr } = await supabase
@@ -294,11 +391,46 @@ function PupilsIndexPage() {
   const filtered = useMemo(() => {
     if (!pupils) return null;
     const q = query.trim().toLowerCase();
-    return pupils.filter((p) => {
+    const base = pupils.filter((p) => {
       if (q && !p.name.toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [pupils, query]);
+
+    const withIndex = base.map((p, i) => ({ p, i }));
+
+
+    withIndex.sort((a, b) => {
+      // Unread messages always float to the top.
+      const ua = (unreadMap[a.p.id] ?? 0) > 0 ? 1 : 0;
+      const ub = (unreadMap[b.p.id] ?? 0) > 0 ? 1 : 0;
+      if (ua !== ub) return ub - ua;
+
+      if (sortBy === "balance") {
+        const diff = (balanceMap[b.p.id] || 0) - (balanceMap[a.p.id] || 0);
+        if (diff !== 0) return diff;
+        return a.i - b.i;
+      }
+      if (sortBy === "next_lesson") {
+        const na = nextLessonMap[a.p.id];
+        const nb = nextLessonMap[b.p.id];
+        if (na && nb) {
+          if (na !== nb) return na < nb ? -1 : 1;
+          return a.i - b.i;
+        }
+        if (na) return -1;
+        if (nb) return 1;
+        return a.i - b.i;
+      }
+      // name
+      const cmp = displayName(a.p.name).localeCompare(displayName(b.p.name), "en-GB", {
+        sensitivity: "base",
+      });
+      return cmp !== 0 ? cmp : a.i - b.i;
+    });
+
+    return withIndex.map((x) => x.p);
+  }, [pupils, query, unreadMap, sortBy, balanceMap, nextLessonMap]);
+
 
   return (
     <PageLayout className="pb-24 pb-safe relative" style={POPPINS}>
@@ -419,6 +551,34 @@ function PupilsIndexPage() {
         </div>
       </div>
 
+      {/* Sort control */}
+      <div style={{ margin: "0 16px 10px", display: "flex", justifyContent: "flex-end" }}>
+        <button
+          type="button"
+          onClick={() =>
+            setSortBy((s) => (s === "name" ? "balance" : s === "balance" ? "next_lesson" : "name"))
+          }
+          aria-label={`Sort by ${SORT_LABELS[sortBy]}. Tap to change.`}
+          className="inline-flex items-center"
+          style={{
+            gap: 5,
+            height: 28,
+            padding: "0 10px",
+            borderRadius: 20,
+            background: "#FFFFFF",
+            border: "0.5px solid #EEF2F7",
+            color: "#6B7686",
+            fontSize: 11,
+            fontWeight: 600,
+            cursor: "pointer",
+            ...POPPINS,
+          }}
+        >
+          <ArrowUpDown size={13} color="#6B7686" />
+          Sort: {SORT_LABELS[sortBy]}
+        </button>
+      </div>
+
 
       {/* List */}
       <div>
@@ -496,6 +656,13 @@ function PupilsIndexPage() {
               const hasBalance = balanceOwed > 0;
               const lp = lastPaymentMap[p.id];
               const lpDays = lp ? Math.max(0, Math.floor((Date.now() - new Date(lp.date).getTime()) / 86400000)) : null;
+              const unread = unreadMap[p.id] ?? 0;
+              const pricing = pricingPill(p.pricing_type, prepaid);
+              const testDate = testDateMap[p.id];
+              const testDays = testDate ? daysUntil(testDate) : null;
+              const testSoon = testDays !== null && testDays >= 0 && testDays <= 7;
+              const nextLesson = nextLessonMap[p.id];
+
               return (
                 <div
                   key={p.id}
@@ -526,7 +693,24 @@ function PupilsIndexPage() {
                     className="flex items-center"
                     style={{ gap: 12, padding: "13px 16px" }}
                   >
-                    <PupilAvatar pupil={p} size={40} />
+                    <div style={{ position: "relative", flexShrink: 0 }}>
+                      <PupilAvatar pupil={p} size={40} />
+                      {unread > 0 && (
+                        <span
+                          aria-label={`${unread} unread messages`}
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            width: 11,
+                            height: 11,
+                            borderRadius: "50%",
+                            background: "#CC2229",
+                            border: "2px solid #fff",
+                          }}
+                        />
+                      )}
+                    </div>
                     <div
                       style={{
                         width: 3,
@@ -573,6 +757,22 @@ function PupilsIndexPage() {
                             £{balanceOwed.toFixed(2)} owed
                           </span>
                         )}
+                        <span style={{ ...PILL_BASE, backgroundColor: pricing.bg, color: pricing.fg }}>
+                          {pricing.label}
+                        </span>
+                        {testSoon && testDate ? (
+                          <span style={{ ...PILL_BASE, backgroundColor: "#FEF3C7", color: "#92400E" }}>
+                            🎯 Test {formatShortDate(testDate)}
+                          </span>
+                        ) : nextLesson ? (
+                          <span style={{ fontSize: 11, color: "#B0BAC9", ...POPPINS }}>
+                            · Next: {formatShortDate(nextLesson)}
+                          </span>
+                        ) : lp ? (
+                          <span style={{ fontSize: 11, color: "#B0BAC9", ...POPPINS }}>
+                            · Last seen: {formatRelativeDate(lp.date)}
+                          </span>
+                        ) : null}
                         {lp && lpDays !== null && (
                           <span
                             style={{ fontSize: 11, color: "#B0BAC9", ...POPPINS }}
@@ -625,7 +825,7 @@ function PupilsIndexPage() {
                               padding: 0,
                             }}
                           >
-                            <MoreHorizontal size={14} color="#6B7280" />
+                            <MoreVertical size={14} color="#6B7280" />
                           </button>
                         )}
                       />
