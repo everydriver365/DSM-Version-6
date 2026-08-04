@@ -693,7 +693,24 @@ function PupilsIndexPage() {
                     className="flex items-center"
                     style={{ gap: 12, padding: "13px 16px" }}
                   >
-                    <PupilAvatar pupil={p} size={40} />
+                    <div style={{ position: "relative", flexShrink: 0 }}>
+                      <PupilAvatar pupil={p} size={40} />
+                      {unread > 0 && (
+                        <span
+                          aria-label={`${unread} unread messages`}
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            width: 11,
+                            height: 11,
+                            borderRadius: "50%",
+                            background: "#CC2229",
+                            border: "2px solid #fff",
+                          }}
+                        />
+                      )}
+                    </div>
                     <div
                       style={{
                         width: 3,
