@@ -67,6 +67,50 @@ function accentColor(status: StatusKey) {
   return "#9CA3AF";
 }
 
+const PILL_BASE = {
+  fontSize: 9,
+  fontWeight: 600,
+  borderRadius: 20,
+  padding: "2px 7px",
+  fontFamily: "Inter, sans-serif",
+  whiteSpace: "nowrap" as const,
+};
+
+function pricingPill(pricingType: string | null | undefined, prepaidHours: number) {
+  const t = (pricingType ?? "standard").toLowerCase();
+  if (t === "block") {
+    return { label: `Block · ${prepaidHours} hrs`, bg: "#E6F1FB", fg: "#1877D6" };
+  }
+  if (t === "national_intensives" || t === "national intensives" || t === "ni") {
+    return { label: "NI", bg: "#DDEFE1", fg: "#15803D" };
+  }
+  if (t === "custom") {
+    return { label: "Custom", bg: "#F1F5F9", fg: "#6B7686" };
+  }
+  return { label: "Standard", bg: "#F1F5F9", fg: "#6B7686" };
+}
+
+function formatShortDate(dateString: string) {
+  const d = new Date(dateString);
+  if (Number.isNaN(d.getTime())) return dateString;
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+function daysUntil(dateString: string) {
+  const [y, m, d] = dateString.slice(0, 10).split("-").map(Number);
+  if (!y || !m || !d) return Infinity;
+  const target = new Date(y, m - 1, d);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return Math.round((target.getTime() - today.getTime()) / 86400000);
+}
+
+const SORT_LABELS: Record<"name" | "balance" | "next_lesson", string> = {
+  name: "Name",
+  balance: "Balance",
+  next_lesson: "Next lesson",
+};
+
 function formatRelativeDate(dateString: string) {
   const date = new Date(dateString);
   const now = new Date();
