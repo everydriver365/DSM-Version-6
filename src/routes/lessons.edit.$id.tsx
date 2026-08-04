@@ -504,6 +504,22 @@ function EditLessonPage() {
                         setSaving(false);
                         return;
                       }
+                      // Sync to Google Calendar after cancel
+                      const { data: userRes } = await supabase.auth.getUser();
+                      const { data: lessonRow } = await supabase
+                        .from("lessons")
+                        .select("google_event_id")
+                        .eq("id", id)
+                        .maybeSingle();
+                      if (lessonRow?.google_event_id) {
+                        void supabase.functions.invoke("google-calendar-sync", {
+                          body: {
+                            lesson_id: id,
+                            instructor_id: userRes.user?.id ?? "",
+                            action: "delete",
+                          },
+                        });
+                      }
                       if (paymentStatus === "paid" || paymentStatus === "partial") {
                         const { recordRefund } = await import("@/lib/payments");
                         await recordRefund({
