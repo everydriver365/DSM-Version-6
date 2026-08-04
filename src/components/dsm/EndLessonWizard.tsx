@@ -560,6 +560,8 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     }
 
     toast.success("End of lesson completed");
+    clearDraft();
+
 
     const updatedEntries = Object.entries(levels).filter(
       ([, v]) => v && v !== "not_started",
