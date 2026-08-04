@@ -1463,9 +1463,13 @@ function SchedulePage() {
                           if (e.kind === "lesson") {
                             const name = pupilDisplayName(e.lesson.pupil);
                             markerColor = pupilColour(e.lesson.pupil_id ?? null, e.lesson.pupil?.calendar_colour ?? null, name);
+                            title = name;
+                            // Subtitle shows the lesson type instead of a duplicated time range.
                             const typeRaw = (e.lesson.lesson_type ?? "").trim();
-                            const showType = typeRaw && typeRaw.toLowerCase() !== "standard";
-                            title = showType ? `${name} · ${typeRaw}` : name;
+                            const typeLabel = typeRaw
+                              ? typeRaw.charAt(0).toUpperCase() + typeRaw.slice(1)
+                              : "Standard";
+                            timeText = /lesson/i.test(typeLabel) ? typeLabel : `${typeLabel} lesson`;
                           } else if (e.kind === "block") {
                             markerColor = getBlockColour(e.title).border;
                             title = e.title;
