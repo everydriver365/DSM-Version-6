@@ -210,6 +210,36 @@ function PupilsIndexPage() {
     }
   }, []);
 
+  const markMessagesRead = useCallback(async (pupilId: string, name: string) => {
+    const { data: auth } = await supabase.auth.getUser();
+    const uid = auth?.user?.id;
+    if (!uid) return;
+    // Optimistic: clear the dot immediately.
+    setUnreadMap((m) => {
+      const next = { ...m };
+      delete next[pupilId];
+      return next;
+    });
+    const { error } = await supabase
+      .from("chat_messages")
+      .update({ read_at: new Date().toISOString() })
+      .eq("instructor_id", uid)
+      .eq("pupil_id", pupilId)
+      .eq("sender_type", "pupil")
+      .is("read_at", null)
+      .is("deleted_at", null);
+    if (error) {
+      console.error("[pupils] mark read failed", error);
+      toast.error("Couldn't mark messages as read");
+      refreshUnread(uid);
+      return;
+    }
+    toast.success(`${name}'s messages marked as read`);
+    window.dispatchEvent(new Event("dsm-messages-read"));
+  }, [refreshUnread]);
+
+
+
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
