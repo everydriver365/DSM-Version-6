@@ -151,10 +151,69 @@ function PupilsIndexPage() {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
   }, []);
 
+  // Lightweight refreshers so realtime events don't re-trigger the full skeleton load.
+  const refreshUnread = useCallback(async (uid: string) => {
+    try {
+      const { data: unreads } = await supabase
+        .from("chat_messages")
+        .select("pupil_id")
+        .eq("instructor_id", uid)
+        .eq("sender_type", "pupil")
+        .is("read_at", null)
+        .is("deleted_at", null);
+      const uMap: Record<string, number> = {};
+      (unreads ?? []).forEach((r: any) => {
+        if (!r.pupil_id) return;
+        uMap[r.pupil_id] = (uMap[r.pupil_id] ?? 0) + 1;
+      });
+      setUnreadMap(uMap);
+    } catch (e) {
+      console.error("[pupils] unread refresh crashed", e);
+    }
+  }, []);
+
+  const refreshNextLessons = useCallback(async (uid: string) => {
+    try {
+      const { data: nextLessons } = await supabase
+        .from("lessons")
+        .select("pupil_id, lesson_date")
+        .eq("instructor_id", uid)
+        .gte("lesson_date", new Date().toISOString().slice(0, 10))
+        .in("status", ["confirmed", "pending"])
+        .is("deleted_at", null)
+        .order("lesson_date", { ascending: true });
+      const nlMap: Record<string, string> = {};
+      (nextLessons ?? []).forEach((l: any) => {
+        if (!l.pupil_id) return;
+        if (!nlMap[l.pupil_id]) nlMap[l.pupil_id] = l.lesson_date;
+      });
+      setNextLessonMap(nlMap);
+    } catch (e) {
+      console.error("[pupils] next lesson refresh crashed", e);
+    }
+  }, []);
+
+  const refreshTestDates = useCallback(async (uid: string) => {
+    try {
+      const { data } = await supabase
+        .from("pupils")
+        .select("id, test_date")
+        .eq("instructor_id", uid);
+      const tdMap: Record<string, string> = {};
+      (data ?? []).forEach((p: any) => {
+        if (p.test_date) tdMap[p.id] = p.test_date as string;
+      });
+      setTestDateMap(tdMap);
+    } catch (e) {
+      console.error("[pupils] test date refresh crashed", e);
+    }
+  }, []);
+
   useEffect(() => {
     if (!userId) return;
     let cancelled = false;
-    const channelName = `payment-updates-pupils-${userId}`;
+    const uid = userId;
+    const channelName = `pupils-index-realtime-${uid}`;
     console.log('[realtime] pupils.index subscribing:', channelName);
     const channel = supabase
       .channel(channelName)
@@ -162,27 +221,60 @@ function PupilsIndexPage() {
         event: '*',
         schema: 'public',
         table: 'lessons',
-        filter: `instructor_id=eq.${userId}`,
+        filter: `instructor_id=eq.${uid}`,
       }, () => {
         if (cancelled) return;
-        console.log('[realtime] lessons changed, refetching pupils balances...');
+        refreshNextLessons(uid);
         setReloadKey((k) => k + 1);
       })
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
         table: 'lesson_history',
-        filter: `instructor_id=eq.${userId}`,
+        filter: `instructor_id=eq.${uid}`,
       }, () => {
         if (cancelled) return;
-        console.log('[realtime] lesson_history changed, refetching pupils balances...');
+        setReloadKey((k) => k + 1);
+      })
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'chat_messages',
+        filter: `instructor_id=eq.${uid}`,
+      }, () => {
+        if (cancelled) return;
+        refreshUnread(uid);
+      })
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'pupils',
+        filter: `instructor_id=eq.${uid}`,
+      }, () => {
+        if (cancelled) return;
+        refreshTestDates(uid);
         setReloadKey((k) => k + 1);
       })
       .subscribe((status, err) => {
         console.log('[realtime] pupils.index channel status:', status, err ?? '');
       });
+
+    // Safety net: refresh when the tab regains focus and on the app-wide read event.
+    const onFocus = () => {
+      if (cancelled) return;
+      refreshUnread(uid);
+      refreshNextLessons(uid);
+    };
+    const onRead = () => { if (!cancelled) refreshUnread(uid); };
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("dsm-messages-read", onRead as EventListener);
+    window.addEventListener("dsm-message-received", onRead as EventListener);
+
     return () => {
       cancelled = true;
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("dsm-messages-read", onRead as EventListener);
+      window.removeEventListener("dsm-message-received", onRead as EventListener);
       console.log('[realtime] pupils.index unsubscribing:', channelName);
       try {
         supabase.removeChannel(channel);
@@ -190,10 +282,12 @@ function PupilsIndexPage() {
         console.warn('[realtime] pupils.index removeChannel failed:', e);
       }
     };
-  }, [userId]);
+  }, [userId, refreshUnread, refreshNextLessons, refreshTestDates]);
 
   useEffect(() => {
-    setPupils(null);
+    if (pupilsLoadedRef.current !== tab) setPupils(null);
+    pupilsLoadedRef.current = tab;
+
     (async () => {
       const { data: auth, error: authErr } = await supabase.auth.getUser();
       if (authErr) console.error("[pupils] auth error", authErr);
