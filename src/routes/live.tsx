@@ -746,7 +746,28 @@ function LivePage() {
       }
     }
 
-    ensureSpeedLimit(lat, lng);
+    const distMetres = (
+      a: { lat: number; lng: number },
+      b: { lat: number; lng: number },
+    ) => {
+      const R = 6371000;
+      const dLat = ((b.lat - a.lat) * Math.PI) / 180;
+      const dLng = ((b.lng - a.lng) * Math.PI) / 180;
+      const aa =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos((a.lat * Math.PI) / 180) *
+          Math.cos((b.lat * Math.PI) / 180) *
+          Math.sin(dLng / 2) *
+          Math.sin(dLng / 2);
+      return R * 2 * Math.atan2(Math.sqrt(aa), Math.sqrt(1 - aa));
+    };
+
+    const last = lastRoadFetchRef.current;
+    const movedEnough = !last || distMetres(last, { lat, lng }) > 50;
+    if (movedEnough) {
+      lastRoadFetchRef.current = { lat, lng };
+      ensureSpeedLimit(lat, lng);
+    }
 
     const currentLimit = speedLimitRef.current;
     const currentRoad = roadNameRef.current;
