@@ -15,14 +15,7 @@ function useUnreadMessages(): number {
   useEffect(() => {
     let cancelled = false;
 
-    const load = async () => {
-      const { data: sessionRes } = await supabase.auth.getSession();
-      const uid = sessionRes.session?.user?.id;
-      if (!uid) {
-        if (!cancelled) setCount(0);
-        return;
-      }
-
+    const load = async (uid: string) => {
       // Count unread pupil messages via conversations
       const { data: convos } = await supabase
         .from("conversations")
@@ -55,14 +48,46 @@ function useUnreadMessages(): number {
       if (!cancelled) setCount(pupilUnread + chatUnread);
     };
 
-    load();
-    const interval = window.setInterval(load, 60000);
-    const onRead = () => load();
-    window.addEventListener("dsm-messages-read", onRead);
+    const init = async () => {
+      const { data: sessionRes } = await supabase.auth.getSession();
+      const uid = sessionRes.session?.user?.id;
+      if (!uid) {
+        setCount(0);
+        return;
+      }
+
+      load(uid);
+      const interval = window.setInterval(() => load(uid), 60000);
+      const onRead = () => load(uid);
+      window.addEventListener("dsm-messages-read", onRead);
+
+      const channel = supabase
+        .channel('unread-badge')
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'chat_messages',
+          filter: `instructor_id=eq.${uid}`,
+        }, () => { load(uid); })
+        .on('postgres_changes', {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'conversations',
+          filter: `instructor_id=eq.${uid}`,
+        }, () => { load(uid); })
+        .subscribe();
+
+      return () => {
+        cancelled = true;
+        window.clearInterval(interval);
+        window.removeEventListener("dsm-messages-read", onRead);
+        supabase.removeChannel(channel);
+      };
+    };
+
+    const cleanupPromise = init();
     return () => {
-      cancelled = true;
-      window.clearInterval(interval);
-      window.removeEventListener("dsm-messages-read", onRead);
+      cleanupPromise.then((cleanup) => cleanup?.());
     };
   }, [pathname]);
 
