@@ -1830,11 +1830,11 @@ function SchedulePage() {
                                             onClick={(ev) => {
                                               ev.stopPropagation();
                                               setActionsOpenFor(null);
-                                              setSendMessagePupilId(lesson.pupil_id ?? undefined);
-                                              setSendMessageOpen(true);
+                                              setUnifiedPayPupilId(lesson.pupil_id ?? undefined);
+                                              setUnifiedPayOpen(true);
                                             }}
                                           >
-                                            Message pupil
+                                            Take payment
                                           </button>
                                           <button
                                             type="button"
@@ -1842,38 +1842,14 @@ function SchedulePage() {
                                             onClick={(ev) => {
                                               ev.stopPropagation();
                                               setActionsOpenFor(null);
-                                              setMovingLesson(lesson);
-                                              setMoveMode(true);
-                                              const firstName = (lesson as any).pupil?.first_name || (lesson as any).pupils?.first_name || 'this lesson';
-                                              toast.info('Select a new time slot for ' + firstName, { duration: 10000 });
+                                              if (lesson.pupil_id) navigate({ to: '/pupils/$id', params: { id: lesson.pupil_id } });
                                             }}
                                           >
-                                            Move
-                                          </button>
-                                          <button
-                                            type="button"
-                                            style={itemStyle}
-                                            onClick={(ev) => {
-                                              ev.stopPropagation();
-                                              setActionsOpenFor(null);
-                                              setCancelSheetFor(lesson);
-                                            }}
-                                          >
-                                            Cancel
-                                          </button>
-                                          <button
-                                            type="button"
-                                            style={{ ...itemStyle, color: '#CC2229' }}
-                                            onClick={(ev) => {
-                                              ev.stopPropagation();
-                                              setActionsOpenFor(null);
-                                              setDeleteSheetFor(lesson);
-                                            }}
-                                          >
-                                            Delete
+                                            Full profile
                                           </button>
                                         </>
                                       );
+
                                     })()}
                                   </div>
                                 ) : null;
