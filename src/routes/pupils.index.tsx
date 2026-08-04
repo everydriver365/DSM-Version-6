@@ -96,6 +96,10 @@ function PupilsIndexPage() {
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [archiveTarget, setArchiveTarget] = useState<{ id: string; name: string } | null>(null);
+  const [unreadMap, setUnreadMap] = useState<Record<string, number>>({});
+  const [nextLessonMap, setNextLessonMap] = useState<Record<string, string>>({});
+  const [testDateMap, setTestDateMap] = useState<Record<string, string>>({});
+  const [sortBy, setSortBy] = useState<"name" | "balance" | "next_lesson">("name");
 
   const navigate = useNavigate();
 
