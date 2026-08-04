@@ -6484,6 +6484,8 @@ function HomePage() {
                                 {isCancelled ? (
                                   <span style={{
                                     flexShrink: 0,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
                                     fontSize: 10,
                                     fontWeight: 700,
                                     letterSpacing: 0.4,
@@ -6502,6 +6504,8 @@ function HomePage() {
                                     onClick={(ev) => { ev.stopPropagation(); setPaymentSheetForLesson(l); }}
                                     style={{
                                       flexShrink: 0,
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
                                       fontSize: 11,
                                       fontWeight: 700,
                                       padding: '2px 9px',
@@ -6512,6 +6516,7 @@ function HomePage() {
                                       background: payPill.bg,
                                       color: payPill.fg,
                                       fontFamily: PF,
+                                      lineHeight: 1.4,
                                     }}
                                   >
                                     {payPill.label}
