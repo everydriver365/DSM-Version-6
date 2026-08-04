@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronRight, Plus, Search, X, Megaphone, Users, CreditCard, MoreHorizontal } from "lucide-react";
+import { ChevronRight, Plus, Search, X, Megaphone, Users, CreditCard, MoreVertical, ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { getPupilBalance } from "@/lib/payments";
