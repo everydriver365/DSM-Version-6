@@ -166,7 +166,7 @@ function WhatsChangedPage() {
           .select("id, pupil_id, lesson_date, lesson_time, pupils(name, first_name)")
           .eq("instructor_id", userId)
           .eq("status", "cancelled")
-          .gte("updated_at", sinceIso),
+          .gte("created_at", sinceIso),
         supabase
           .from("chat_messages")
           .select("id, pupil_id, body, created_at, pupils(name, first_name)")
@@ -181,13 +181,13 @@ function WhatsChangedPage() {
           )
           .eq("instructor_id", userId)
           .eq("payment_status", "paid")
-          .gte("updated_at", sinceIso),
+          .gte("created_at", sinceIso),
         supabase
           .from("gap_filler_offers")
           .select("id, pupil_id, slot_date, slot_time, duration_minutes, pupils(name, first_name)")
           .eq("instructor_id", userId)
           .eq("status", "accepted")
-          .gte("updated_at", sinceIso),
+          .gte("created_at", sinceIso),
         supabase
           .from("enquiries")
           .select("id, name, message, created_at")
