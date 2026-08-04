@@ -1242,7 +1242,8 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
           }
         `}</style>
       </div>
-    </div>
+    </BottomSheet>
+
   );
 }
 
