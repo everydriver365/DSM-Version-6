@@ -818,7 +818,10 @@ export function LessonActionsSheet({
         >
           View full pupil profile →
         </button>
+        </>
+        )}
       </BottomSheet>
+
 
       <SendMessageSheet
         open={messageOpen}
