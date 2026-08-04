@@ -1956,6 +1956,13 @@ function SchedulePage() {
         initialPupilId={sendMessagePupilId}
       />
 
+      <UnifiedPaymentSheet
+        open={unifiedPayOpen}
+        onClose={() => { setUnifiedPayOpen(false); setUnifiedPayPupilId(undefined); }}
+        initialPupilId={unifiedPayPupilId}
+      />
+
+
 
 
 
