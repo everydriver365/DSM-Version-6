@@ -2167,12 +2167,13 @@ function HomePage() {
     return () => { cancelled = true; clearInterval(id); };
   }, [navigate]);
 
-  // Realtime: show a slide-down banner immediately when a new
-  // instructor_notifications row is inserted for this user.
+  // Realtime: keep the bell count live. The visible alert for a new
+  // instructor_notifications row is owned by the global toast controller in
+  // __root.tsx, so we deliberately do NOT show a second banner here.
   useEffect(() => {
     if (!userId) return;
     const channel = supabase
-      .channel(`home-notif-banner-${userId}`)
+      .channel(`home-notif-count-${userId}`)
       .on(
         "postgres_changes",
         {
@@ -2181,15 +2182,7 @@ function HomePage() {
           table: "instructor_notifications",
           filter: `instructor_id=eq.${userId}`,
         },
-        (payload: any) => {
-          const n = payload.new || {};
-          setToastNotif({
-            id: String(n.id ?? Date.now()),
-            title: n.title || "New notification",
-            body: n.body || "",
-            type: (n.type || "default") as string,
-          });
-          setToastVisible(true);
+        () => {
           setNotifCount((c) => c + 1);
         },
       )
