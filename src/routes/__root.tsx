@@ -746,6 +746,7 @@ function RootComponent() {
       <CommandPalette />
       <GlobalMenu isAdmin={isAdmin} />
       <EventToastController />
+      <PushPermissionSheet userId={userId} />
       <Toaster />
       {showFloatingMenu && (
         <button
