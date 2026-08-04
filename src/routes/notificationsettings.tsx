@@ -35,6 +35,8 @@ export const Route = createFileRoute("/notificationsettings")({
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 
 type SettingsState = {
+  sms_enabled: boolean;
+  push_enabled: boolean;
   lesson_booked: boolean;
   lesson_reminder_24h: boolean;
   lesson_reminder_1h: boolean;
@@ -49,6 +51,8 @@ type SettingsState = {
 };
 
 const DEFAULTS: SettingsState = {
+  sms_enabled: true,
+  push_enabled: true,
   lesson_booked: true,
   lesson_reminder_24h: true,
   lesson_reminder_1h: true,
@@ -111,6 +115,8 @@ function NotificationSettingsPage() {
       if (rowErr) console.error("[notificationsettings] fetch error", rowErr);
       if (row) {
         setState({
+          sms_enabled: row.sms_enabled ?? true,
+          push_enabled: row.push_enabled ?? true,
           lesson_booked: row.lesson_booked ?? true,
           lesson_reminder_24h: row.lesson_reminder_24h ?? true,
           lesson_reminder_1h: row.lesson_reminder_1h ?? true,
@@ -134,10 +140,19 @@ function NotificationSettingsPage() {
   async function save() {
     if (!userId) return;
     setSaving(true);
-    const { error } = await supabase.from("notification_settings").upsert(
+    let { error } = await supabase.from("notification_settings").upsert(
       { instructor_id: userId, ...state, updated_at: new Date().toISOString() },
       { onConflict: "instructor_id" },
     );
+    if (error && /sms_enabled|push_enabled/.test(error.message)) {
+      // Channel columns not migrated yet — save the rest so nothing is lost.
+      const { sms_enabled: _s, push_enabled: _p, ...rest } = state;
+      ({ error } = await supabase.from("notification_settings").upsert(
+        { instructor_id: userId, ...rest, updated_at: new Date().toISOString() },
+        { onConflict: "instructor_id" },
+      ));
+      if (!error) toast.error("SMS/push preferences could not be saved yet.");
+    }
     setSaving(false);
     if (error) {
       console.error("[notificationsettings] save error", error);
@@ -162,6 +177,23 @@ function NotificationSettingsPage() {
 
 
       <div className="px-4">
+        <SectionHeader>DELIVERY CHANNELS</SectionHeader>
+        <Card className="!p-0">
+          <ToggleRow
+            label="Push notifications"
+            sublabel="App alerts on your phone and desktop"
+            value={state.push_enabled}
+            onChange={(v) => setKey("push_enabled", v)}
+            isFirst
+          />
+          <ToggleRow
+            label="SMS notifications"
+            sublabel="Text message alerts to your mobile"
+            value={state.sms_enabled}
+            onChange={(v) => setKey("sms_enabled", v)}
+          />
+        </Card>
+
         <SectionHeader>PUSH NOTIFICATIONS</SectionHeader>
         <Card>
           <div className="flex items-center gap-3">
@@ -330,11 +362,13 @@ function NotificationSettingsPage() {
 
 function ToggleRow({
   label,
+  sublabel,
   value,
   onChange,
   isFirst,
 }: {
   label: string;
+  sublabel?: string;
   value: boolean;
   onChange: (v: boolean) => void;
   isFirst?: boolean;
@@ -344,7 +378,12 @@ function ToggleRow({
       className="flex items-center justify-between px-4 py-3"
       style={isFirst ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
     >
-      <span className="flex-1 text-[14px] text-[#0B1F3A] pr-3" style={POPPINS}>{label}</span>
+      <span className="flex-1 pr-3">
+        <span className="block text-[14px] text-[#0B1F3A]" style={POPPINS}>{label}</span>
+        {sublabel && (
+          <span className="block text-[12px] text-[#6B7280] mt-0.5" style={POPPINS}>{sublabel}</span>
+        )}
+      </span>
       <button
         type="button"
         role="switch"
