@@ -347,11 +347,47 @@ function PupilsIndexPage() {
   const filtered = useMemo(() => {
     if (!pupils) return null;
     const q = query.trim().toLowerCase();
-    return pupils.filter((p) => {
+    const base = pupils.filter((p) => {
       if (q && !p.name.toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [pupils, query]);
+
+    const withIndex = base.map((p, i) => ({ p, i }));
+    const sortKey = (x: { p: Pupil; i: number }) => x;
+    void sortKey;
+
+    withIndex.sort((a, b) => {
+      // Unread messages always float to the top.
+      const ua = (unreadMap[a.p.id] ?? 0) > 0 ? 1 : 0;
+      const ub = (unreadMap[b.p.id] ?? 0) > 0 ? 1 : 0;
+      if (ua !== ub) return ub - ua;
+
+      if (sortBy === "balance") {
+        const diff = (balanceMap[b.p.id] || 0) - (balanceMap[a.p.id] || 0);
+        if (diff !== 0) return diff;
+        return a.i - b.i;
+      }
+      if (sortBy === "next_lesson") {
+        const na = nextLessonMap[a.p.id];
+        const nb = nextLessonMap[b.p.id];
+        if (na && nb) {
+          if (na !== nb) return na < nb ? -1 : 1;
+          return a.i - b.i;
+        }
+        if (na) return -1;
+        if (nb) return 1;
+        return a.i - b.i;
+      }
+      // name
+      const cmp = displayName(a.p.name).localeCompare(displayName(b.p.name), "en-GB", {
+        sensitivity: "base",
+      });
+      return cmp !== 0 ? cmp : a.i - b.i;
+    });
+
+    return withIndex.map((x) => x.p);
+  }, [pupils, query, unreadMap, sortBy, balanceMap, nextLessonMap]);
+
 
   return (
     <PageLayout className="pb-24 pb-safe relative" style={POPPINS}>
