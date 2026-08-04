@@ -675,6 +675,7 @@ function PupilsIndexPage() {
                   : []),
                 { label: "Take payment", onClick: () => { setUnifiedPayPupilId(p.id); setUnifiedPayOpen(true); } },
                 { label: "Book a lesson", onClick: () => { setAddLessonPupilId(p.id); setAddLessonOpen(true); } },
+                { label: "View profile", onClick: () => navigate({ to: "/pupils/$id", params: { id: p.id } }) },
                 { label: "Archive", destructive: true, onClick: () => setArchiveTarget({ id: p.id, name: displayName(p.name) }) },
               ]}
 
