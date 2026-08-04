@@ -215,6 +215,7 @@ function LivePage() {
   const speedLimitFetchedRef = useRef<{ key: string; at: number } | null>(null);
   const speedLimitRef = useRef<number | null>(null);
   const roadNameRef = useRef<string | null>(null);
+  const lastRoadFetchRef = useRef<{ lat: number; lng: number } | null>(null);
 
   const [tracking, setTracking] = useState(false);
   const [coordinates, setCoordinates] = useState<Coord[]>([]);
