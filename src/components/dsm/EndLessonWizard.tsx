@@ -5,6 +5,7 @@ import {
   ArrowLeftRight,
   Gift,
   CheckCircle2,
+  Loader2,
   PartyPopper,
   QrCode,
 } from "lucide-react";
@@ -808,14 +809,21 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
           type="button"
           onClick={completeEol}
           disabled={completing}
-          className="flex-1 h-11 rounded-lg text-[14px] font-semibold text-white"
+          className="flex-1 h-11 rounded-lg text-[14px] font-semibold text-white flex items-center justify-center gap-2"
           style={{
             backgroundColor: "#1877D6",
             border: "none",
             opacity: completing ? 0.7 : 1,
           }}
         >
-          {completing ? "Completing…" : "Complete EOL"}
+          {completing ? (
+            <>
+              <Loader2 size={16} className="animate-spin" />
+              Completing…
+            </>
+          ) : (
+            "Complete EOL"
+          )}
         </button>
       </div>
     );
@@ -1029,14 +1037,21 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               type="button"
               onClick={recordPayment}
               disabled={paymentSaving}
-              className="mt-5 w-full h-11 rounded-lg text-[14px] font-semibold text-white"
+              className="mt-5 w-full h-11 rounded-lg text-[14px] font-semibold text-white flex items-center justify-center gap-2"
               style={{
                 backgroundColor: "#1877D6",
                 border: "none",
                 opacity: paymentSaving ? 0.7 : 1,
               }}
             >
-              {paymentSaving ? "Saving…" : "Record payment"}
+              {paymentSaving ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  Saving…
+                </>
+              ) : (
+                "Record payment"
+              )}
             </button>
             <button
               type="button"
@@ -1050,7 +1065,11 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 opacity: qrGenerating || !!qrUrl ? 0.7 : 1,
               }}
             >
-              <QrCode size={16} />
+              {qrGenerating ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <QrCode size={16} />
+              )}
               {qrGenerating ? "Generating…" : qrUrl ? "QR code ready" : "Show QR code"}
             </button>
 
