@@ -12,8 +12,8 @@ import {
   IconChevronRight,
   IconArrowLeft,
   IconArrowRight,
-  IconClockExclamation,
   IconCheck,
+
 
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
