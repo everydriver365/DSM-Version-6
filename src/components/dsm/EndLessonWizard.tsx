@@ -809,14 +809,21 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
           type="button"
           onClick={completeEol}
           disabled={completing}
-          className="flex-1 h-11 rounded-lg text-[14px] font-semibold text-white"
+          className="flex-1 h-11 rounded-lg text-[14px] font-semibold text-white flex items-center justify-center gap-2"
           style={{
             backgroundColor: "#1877D6",
             border: "none",
             opacity: completing ? 0.7 : 1,
           }}
         >
-          {completing ? "Completing…" : "Complete EOL"}
+          {completing ? (
+            <>
+              <Loader2 size={16} className="animate-spin" />
+              Completing…
+            </>
+          ) : (
+            "Complete EOL"
+          )}
         </button>
       </div>
     );
