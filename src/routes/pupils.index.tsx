@@ -736,15 +736,8 @@ function PupilsIndexPage() {
           gap: 10,
         }}
       >
-        <Link
-          to="/broadcast"
-          aria-label="Message all pupils"
-          className="flex items-center gap-1 px-2 h-8 rounded-md"
-          style={{ backgroundColor: "#F3F8FF", border: "1px solid #EEF2F7" }}
-        >
-          <Megaphone size={16} color="#1877D6" />
-          <span className="text-[12px] font-medium" style={{ color: "#1877D6", ...POPPINS }}>Message all</span>
-        </Link>
+        {/* left spacer to balance search button */}
+        <div style={{ width: 32 }} />
         <button
           type="button"
           aria-label={searchOpen ? "Close search" : "Open search"}
