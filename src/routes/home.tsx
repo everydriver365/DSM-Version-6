@@ -2167,28 +2167,12 @@ function HomePage() {
     return () => { cancelled = true; clearInterval(id); };
   }, [navigate]);
 
-  // Realtime: keep the bell count live. The visible alert for a new
-  // instructor_notifications row is owned by the global toast controller in
-  // __root.tsx, so we deliberately do NOT show a second banner here.
-  useEffect(() => {
-    if (!userId) return;
-    const channel = supabase
-      .channel(`home-notif-count-${userId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "instructor_notifications",
-          filter: `instructor_id=eq.${userId}`,
-        },
-        () => {
-          setNotifCount((c) => c + 1);
-        },
-      )
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [userId]);
+  // NOTE: there is deliberately no realtime instructor_notifications
+  // subscription here. The single alert path for new notifications is the
+  // global toast controller in __root.tsx; a second banner here caused
+  // duplicate alerts. The 30s poll above keeps the bell count in sync.
+
+
 
   // Auto-dismiss the banner after 5s.
   useEffect(() => {
