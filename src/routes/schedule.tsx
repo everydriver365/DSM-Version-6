@@ -1507,7 +1507,7 @@ function SchedulePage() {
                           const isDimmed = moveMode && !isMovingThis;
                           const onCardClick = isLessonRow
                             ? () => {
-                                goToLesson((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id);
+                                setActionsOpenFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
                               }
                             : isBlockRow
                               ? () => {
