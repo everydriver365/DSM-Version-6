@@ -126,6 +126,22 @@ export function CancelLessonSheet({
       return;
     }
 
+    // Sync to Google Calendar after cancel
+    const { data: lessonRow } = await supabase
+      .from("lessons")
+      .select("google_event_id, instructor_id")
+      .eq("id", lessonId)
+      .maybeSingle();
+    if (lessonRow?.google_event_id) {
+      void supabase.functions.invoke("google-calendar-sync", {
+        body: {
+          lesson_id: lessonId,
+          instructor_id: (lessonRow as { instructor_id?: string }).instructor_id ?? "",
+          action: "delete",
+        },
+      });
+    }
+
     // Prepaid lesson cancelled — routed through the payments API so the
     // reversal is audited (lesson_history + payments) instead of silently
     // patching account_balance here.
