@@ -301,12 +301,13 @@ function EditLessonPage() {
           type="button"
           aria-label="Save"
           onClick={handleSave}
-          disabled={saving || loading}
+          disabled={saving || loading || showCancelConfirm}
           className="text-[13px] font-semibold"
-          style={{ color: "#1877D6", background: "none", border: "none", opacity: saving || loading ? 0.5 : 1 }}
+          style={{ color: "#1877D6", background: "none", border: "none", opacity: saving || loading || showCancelConfirm ? 0.5 : 1 }}
         >
           {saving ? "Saving…" : "Save"}
         </button>
+
       </div>
 
       {loading ? (
