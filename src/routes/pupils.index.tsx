@@ -656,6 +656,13 @@ function PupilsIndexPage() {
               const hasBalance = balanceOwed > 0;
               const lp = lastPaymentMap[p.id];
               const lpDays = lp ? Math.max(0, Math.floor((Date.now() - new Date(lp.date).getTime()) / 86400000)) : null;
+              const unread = unreadMap[p.id] ?? 0;
+              const pricing = pricingPill(p.pricing_type, prepaid);
+              const testDate = testDateMap[p.id];
+              const testDays = testDate ? daysUntil(testDate) : null;
+              const testSoon = testDays !== null && testDays >= 0 && testDays <= 7;
+              const nextLesson = nextLessonMap[p.id];
+
               return (
                 <div
                   key={p.id}
