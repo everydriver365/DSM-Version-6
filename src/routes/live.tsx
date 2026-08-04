@@ -813,6 +813,9 @@ function LivePage() {
         navigator.geolocation.clearWatch(watchIdRef.current);
         watchIdRef.current = null;
       }
+      if (navigator.userAgent.toLowerCase().includes("despia")) {
+        (window as any).despia("backgroundlocationoff://");
+      }
       stopSilentAudio();
       await saveCoordinates(true);
 
