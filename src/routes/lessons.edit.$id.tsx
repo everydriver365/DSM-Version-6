@@ -107,6 +107,10 @@ function EditLessonPage() {
   const [payNotes, setPayNotes] = useState("");
   const [savingPayment, setSavingPayment] = useState(false);
 
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [previousStatus, setPreviousStatus] = useState<string>("confirmed");
+
+
   useEffect(() => {
     (async () => {
       const {
