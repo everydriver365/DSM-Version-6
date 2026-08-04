@@ -431,6 +431,152 @@ function PupilsIndexPage() {
     return withIndex.map((x) => x.p);
   }, [pupils, query, unreadMap, sortBy, balanceMap, nextLessonMap]);
 
+  const unreadPupils = useMemo(
+    () => (filtered ?? []).filter((p) => (unreadMap[p.id] ?? 0) > 0),
+    [filtered, unreadMap],
+  );
+  const otherPupils = useMemo(
+    () => (filtered ?? []).filter((p) => (unreadMap[p.id] ?? 0) === 0),
+    [filtered, unreadMap],
+  );
+
+  const renderRow = (p: any, idx: number, total: number) => {
+    const balanceOwed = balanceMap[p.id] || 0;
+    const lessons = lessonCountMap[p.id] || 0;
+    const prepaid = Number(p.prepaid_hours) || 0;
+    const lp = lastPaymentMap[p.id];
+    const unread = unreadMap[p.id] ?? 0;
+    const pricing = pricingPill(p.pricing_type, prepaid);
+    const testDate = testDateMap[p.id];
+    const testDays = testDate ? daysUntil(testDate) : null;
+    const testSoon = testDays !== null && testDays >= 0 && testDays <= 7;
+    const nextLesson = nextLessonMap[p.id];
+    const hasBalance = balanceOwed > 0;
+
+    return (
+      <div
+        key={p.id}
+        role="button"
+        tabIndex={0}
+        onClick={() => navigate({ to: "/pupils/$id", params: { id: p.id } })}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            navigate({ to: "/pupils/$id", params: { id: p.id } });
+          }
+        }}
+        onContextMenu={(e) => e.preventDefault()}
+        className="block cursor-pointer select-none"
+        style={{
+          backgroundColor: "#FFFFFF",
+          borderBottom: idx < total - 1 ? "0.5px solid #EEF2F7" : "none",
+          WebkitTouchCallout: "none",
+        }}
+      >
+        <div className="flex items-center" style={{ gap: 12, padding: "13px 16px" }}>
+          <div style={{ position: "relative", flexShrink: 0 }}>
+            <PupilAvatar pupil={p} size={44} />
+            {unread > 0 && (
+              <span
+                aria-label={`${unread} unread messages`}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  width: 11,
+                  height: 11,
+                  borderRadius: "50%",
+                  background: "#CC2229",
+                  border: "2px solid #fff",
+                }}
+              />
+            )}
+          </div>
+
+          <div className="min-w-0 flex-1 flex flex-col">
+            <div
+              className="truncate"
+              style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}
+            >
+              {displayName(p.name)}
+            </div>
+            <div className="flex flex-wrap items-center" style={{ gap: 6, marginTop: 4 }}>
+              {hasBalance ? (
+                <span style={{ ...PILL_BASE, backgroundColor: "#FCEBEB", color: "#CC2229" }}>
+                  £{balanceOwed.toFixed(2)} owed
+                </span>
+              ) : (
+                <span style={{ ...PILL_BASE, backgroundColor: "#DDEFE1", color: "#15803D" }}>
+                  All paid
+                </span>
+              )}
+              {testSoon && testDate && (
+                <span style={{ ...PILL_BASE, backgroundColor: "#FEF3C7", color: "#92400E" }}>
+                  🎯 Test {formatShortDate(testDate)}
+                </span>
+              )}
+              <span style={{ ...PILL_BASE, backgroundColor: pricing.bg, color: pricing.fg }}>
+                {pricing.label}
+              </span>
+            </div>
+            {!testSoon && (nextLesson || lp) && (
+              <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 3, ...POPPINS }}>
+                {nextLesson
+                  ? `· Next: ${formatShortDate(nextLesson)}`
+                  : `· Last seen: ${formatRelativeDate(lp!.date)}`}
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center shrink-0" style={{ gap: 8 }}>
+            <span
+              style={{
+                fontSize: 12,
+                color: lessons > 0 ? "#8A94A6" : "#B0BAC9",
+                ...POPPINS,
+              }}
+            >
+              {lessons} {lessons === 1 ? "lesson" : "lessons"}
+            </span>
+            <QuickActionsMenu
+              items={[
+                { label: "Send message", onClick: () => navigate({ to: "/messages/$pupilId", params: { pupilId: p.id } }) },
+                { label: "Take payment", onClick: () => { setUnifiedPayPupilId(p.id); setUnifiedPayOpen(true); } },
+                { label: "Book a lesson", onClick: () => { setAddLessonPupilId(p.id); setAddLessonOpen(true); } },
+                { label: "View profile", onClick: () => navigate({ to: "/pupils/$id", params: { id: p.id } }) },
+                { label: "Archive", destructive: true, onClick: () => setArchiveTarget({ id: p.id, name: displayName(p.name) }) },
+              ]}
+              trigger={({ onClick }) => (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClick();
+                  }}
+                  aria-label={`Quick actions for ${displayName(p.name)}`}
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: "50%",
+                    background: "#F8F9FB",
+                    border: "0.5px solid #E5E7EB",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    padding: 0,
+                  }}
+                >
+                  <MoreVertical size={14} color="#6B7280" />
+                </button>
+              )}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
 
   return (
     <PageLayout className="pb-24 pb-safe relative" style={POPPINS}>
