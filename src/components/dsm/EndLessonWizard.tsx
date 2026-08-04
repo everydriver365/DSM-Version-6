@@ -722,13 +722,113 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     </div>
   );
 
+  const footer = (() => {
+    if (done) {
+      return (
+        <div>
+          <button
+            type="button"
+            onClick={finish}
+            className="w-full h-11 rounded-lg text-[14px] font-semibold text-white"
+            style={{ backgroundColor: "#1877D6", border: "none" }}
+          >
+            Done
+          </button>
+        </div>
+      );
+    }
+    if (step === 1) {
+      return (
+        <div>
+          <button
+            type="button"
+            disabled={!notes.trim()}
+            onClick={() => setStep(2)}
+            className="w-full h-11 rounded-lg text-[14px] font-semibold text-white"
+            style={{
+              backgroundColor: notes.trim() ? "#1877D6" : "#9CA3AF",
+              border: "none",
+            }}
+          >
+            Next: Payment →
+          </button>
+        </div>
+      );
+    }
+    if (step === 2) {
+      return (
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setStep(1)}
+            disabled={paymentSaving}
+            className="flex-1 h-11 rounded-lg text-[14px] font-semibold"
+            style={{
+              backgroundColor: "#F8F9FB",
+              color: "#0B1F3A",
+              border: "1px solid #EEF2F7",
+              opacity: paymentSaving ? 0.7 : 1,
+            }}
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            onClick={skipPayment}
+            disabled={paymentSaving}
+            className="flex-1 h-11 rounded-lg text-[14px] font-semibold text-white"
+            style={{
+              backgroundColor: "#1877D6",
+              border: "none",
+              opacity: paymentSaving ? 0.7 : 1,
+            }}
+          >
+            Next: Skills →
+          </button>
+        </div>
+      );
+    }
+    return (
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => setStep(2)}
+          disabled={completing}
+          className="flex-1 h-11 rounded-lg text-[14px] font-semibold"
+          style={{
+            backgroundColor: "#F8F9FB",
+            color: "#0B1F3A",
+            border: "1px solid #EEF2F7",
+            opacity: completing ? 0.7 : 1,
+          }}
+        >
+          Back
+        </button>
+        <button
+          type="button"
+          onClick={completeEol}
+          disabled={completing}
+          className="flex-1 h-11 rounded-lg text-[14px] font-semibold text-white"
+          style={{
+            backgroundColor: "#1877D6",
+            border: "none",
+            opacity: completing ? 0.7 : 1,
+          }}
+        >
+          {completing ? "Completing…" : "Complete EOL"}
+        </button>
+      </div>
+    );
+  })();
+
   return (
     <BottomSheet
       title="End of lesson"
       subtitle={pupilName ?? undefined}
       onClose={() => !completing && !paymentSaving && onClose()}
+      footer={footer}
     >
-      <div style={{ ...POPPINS, paddingBottom: "env(safe-area-inset-bottom)" }}>
+      <div style={{ ...POPPINS, paddingBottom: 0 }}>
 
 
         {!done && <ProgressBar current={step} />}
