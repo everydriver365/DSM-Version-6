@@ -723,58 +723,13 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   );
 
   return (
-    <div
-      className="fixed inset-0 z-[90] flex items-end"
-      style={{ backgroundColor: "rgba(11,31,58,0.4)", ...POPPINS }}
-      role="dialog"
-      aria-modal="true"
+    <BottomSheet
+      title="End of lesson"
+      subtitle={pupilName ?? undefined}
+      onClose={() => !completing && !paymentSaving && onClose()}
     >
-      <div
-        className="absolute inset-0"
-        aria-hidden
-        onClick={() => !completing && !paymentSaving && onClose()}
-      />
-      <div
-        className="relative w-full bg-white"
-        style={{
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          padding: 20,
-          maxHeight: "92vh",
-          overflowY: "auto",
-          boxShadow: "0 -10px 30px rgba(11,31,58,0.18)",
-          paddingBottom: "calc(20px + env(safe-area-inset-bottom))",
-        }}
-      >
-        <div
-          style={{
-            width: 36,
-            height: 4,
-            borderRadius: 999,
-            backgroundColor: "#EEF2F7",
-            margin: "0 auto 12px",
-          }}
-        />
+      <div style={{ ...POPPINS, paddingBottom: "env(safe-area-inset-bottom)" }}>
 
-        {!done && (
-          <button
-            type="button"
-            aria-label="Close"
-            onClick={() => !completing && !paymentSaving && onClose()}
-            style={{
-              position: "absolute",
-              top: 16,
-              right: 16,
-              width: 28,
-              height: 28,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <X size={18} color="#6B7280" />
-          </button>
-        )}
 
         {!done && <ProgressBar current={step} />}
 
