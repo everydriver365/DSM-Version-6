@@ -1935,11 +1935,12 @@ function LivePage() {
                     key={p.id}
                     type="button"
                     onClick={() => {
-                      setPupilPickerOpen(false);
-                      setPupilSearchQuery("");
+                      console.log("[live] pupil selected", p.id, display);
                       setActivePupilId(p.id);
                       setTrackingPupilName(display);
-                      startTracking(null, p.id);
+                      void startTracking(null, p.id);
+                      setPupilPickerOpen(false);
+                      setPupilSearchQuery("");
                     }}
                     className="w-full flex items-center gap-3 px-3 py-3 rounded-xl active:bg-black/5"
                     style={{ background: "transparent", border: "none", textAlign: "left" }}
