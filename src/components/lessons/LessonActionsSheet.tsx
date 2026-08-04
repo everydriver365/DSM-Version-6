@@ -4,7 +4,13 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { MapPin, Pencil } from "lucide-react";
 import {
+  IconAlertCircle,
   IconAlertTriangle,
+  IconCalendar,
+  IconClock,
+  IconNotes,
+  IconTrash,
+  IconX,
   IconCircleCheck,
   IconClipboardList,
   IconClockExclamation,
@@ -98,6 +104,66 @@ export function LessonActionsSheet({
 
   const [messageOpen, setMessageOpen] = useState(false);
   const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
+
+  // --- Inline editing views ---
+  type InlineView = "main" | "reschedule" | "duration" | "note" | "cancel" | "delete";
+  const [inlineView, setInlineView] = useState<InlineView>("main");
+  const [newDate, setNewDate] = useState(lesson.lesson_date);
+  const [newTime, setNewTime] = useState((lesson.lesson_time ?? "").slice(0, 5));
+  const [newDuration, setNewDuration] = useState(lesson.duration_minutes ?? 60);
+  const [noteText, setNoteText] = useState(lesson.notes ?? "");
+  const [saving, setSaving] = useState(false);
+
+  const formatDate = (d: string) =>
+    new Date(`${d}T00:00:00`).toLocaleDateString("en-GB", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    });
+
+  const backLink: React.CSSProperties = {
+    fontSize: 12,
+    color: "#1877D6",
+    background: "none",
+    border: "none",
+    padding: "8px 0",
+    cursor: "pointer",
+    fontFamily: "Inter, sans-serif",
+  };
+  const inlineHeading: React.CSSProperties = {
+    fontSize: 14,
+    fontWeight: 600,
+    color: NAVY,
+    fontFamily: "Inter, sans-serif",
+    margin: "4px 0 10px",
+  };
+  const primaryBtn: React.CSSProperties = {
+    marginTop: 12,
+    width: "100%",
+    background: "#1877D6",
+    color: "#FFFFFF",
+    border: "none",
+    borderRadius: 10,
+    padding: "12px 0",
+    fontFamily: "Inter, sans-serif",
+    fontSize: 13,
+    fontWeight: 600,
+    cursor: "pointer",
+  };
+  const greyBtn: React.CSSProperties = {
+    marginTop: 8,
+    width: "100%",
+    background: "#F5F7FA",
+    color: NAVY,
+    border: "1px solid #E2E8F0",
+    borderRadius: 10,
+    padding: "12px 0",
+    fontFamily: "Inter, sans-serif",
+    fontSize: 13,
+    fontWeight: 600,
+    cursor: "pointer",
+  };
+
 
   const sendSms = (body: string) => {
     if (!phone) {
@@ -393,7 +459,246 @@ export function LessonActionsSheet({
           </div>
         </div>
 
+        {inlineView !== "main" && (
+          <button type="button" onClick={() => setInlineView("main")} style={backLink}>
+            ← Back
+          </button>
+        )}
+
+        {inlineView === "reschedule" && (
+          <div style={{ paddingBottom: 12 }}>
+            <div style={inlineHeading}>Reschedule lesson</div>
+            <input
+              type="date"
+              value={newDate}
+              onChange={(e) => setNewDate(e.target.value)}
+              style={{ ...fieldInput, width: "100%", marginBottom: 8 }}
+            />
+            <input
+              type="time"
+              value={newTime}
+              onChange={(e) => setNewTime(e.target.value)}
+              style={{ ...fieldInput, width: "100%" }}
+            />
+            <button
+              type="button"
+              disabled={saving}
+              style={primaryBtn}
+              onClick={async () => {
+                setSaving(true);
+                await supabase
+                  .from("lessons")
+                  .update({ lesson_date: newDate, lesson_time: newTime })
+                  .eq("id", lesson.id);
+                toast.success(`Lesson moved to ${formatDate(newDate)} at ${newTime}`);
+                setSaving(false);
+                onClose();
+              }}
+            >
+              {saving ? "Saving…" : "Save changes"}
+            </button>
+          </div>
+        )}
+
+        {inlineView === "duration" && (
+          <div style={{ paddingBottom: 12 }}>
+            <div style={inlineHeading}>Change duration</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8 }}>
+              {[45, 60, 90, 120].map((d) => {
+                const sel = newDuration === d;
+                return (
+                  <button
+                    key={d}
+                    type="button"
+                    onClick={() => setNewDuration(d)}
+                    style={{
+                      ...gridBtn,
+                      padding: "10px 2px",
+                      background: sel ? "#1877D6" : "#FFFFFF",
+                      border: `1px solid ${sel ? "#1877D6" : "#E2E8F0"}`,
+                      color: sel ? "#FFFFFF" : NAVY,
+                    }}
+                  >
+                    <span style={pillLabel}>{d} min</span>
+                  </button>
+                );
+              })}
+            </div>
+            <button
+              type="button"
+              disabled={saving}
+              style={primaryBtn}
+              onClick={async () => {
+                setSaving(true);
+                await supabase
+                  .from("lessons")
+                  .update({ duration_minutes: newDuration })
+                  .eq("id", lesson.id);
+                toast.success(`Duration updated to ${newDuration} mins`);
+                setSaving(false);
+                onClose();
+              }}
+            >
+              {saving ? "Saving…" : "Save"}
+            </button>
+          </div>
+        )}
+
+        {inlineView === "note" && (
+          <div style={{ paddingBottom: 12 }}>
+            <div style={inlineHeading}>Add note</div>
+            <textarea
+              rows={4}
+              value={noteText}
+              onChange={(e) => setNoteText(e.target.value)}
+              placeholder="Add a note about this lesson..."
+              style={{
+                width: "100%",
+                border: "1px solid #E4E8EF",
+                borderRadius: 8,
+                fontFamily: "Poppins, sans-serif",
+                fontSize: 13,
+                padding: 10,
+                color: NAVY,
+                outline: "none",
+                resize: "vertical",
+              }}
+            />
+            <button
+              type="button"
+              disabled={saving}
+              style={primaryBtn}
+              onClick={async () => {
+                setSaving(true);
+                await supabase
+                  .from("lessons")
+                  .update({ notes: noteText.trim() })
+                  .eq("id", lesson.id);
+                toast.success("Note saved");
+                setSaving(false);
+                onClose();
+              }}
+            >
+              {saving ? "Saving…" : "Save note"}
+            </button>
+          </div>
+        )}
+
+        {inlineView === "cancel" && (
+          <div style={{ paddingBottom: 12, textAlign: "center" }}>
+            <IconAlertCircle size={24} stroke={1.8} color="#CC2229" />
+            <div style={{ ...inlineHeading, color: "#CC2229", textAlign: "center" }}>
+              Cancel this lesson?
+            </div>
+            <div style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#6B7280" }}>
+              with {pupilName}
+            </div>
+            <div style={{ marginTop: 10 }}>
+              {payStatus === "paid" || payStatus === "partial" ? (
+                <span
+                  style={{
+                    display: "inline-block",
+                    background: "#FEF3D7",
+                    color: "#8A5A00",
+                    borderRadius: 999,
+                    padding: "6px 12px",
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: 12,
+                    fontWeight: 600,
+                  }}
+                >
+                  £{balance.toFixed(2)} will be added as account credit
+                </span>
+              ) : payStatus === "prepaid" ? (
+                <span
+                  style={{
+                    display: "inline-block",
+                    background: "#FEF3D7",
+                    color: "#8A5A00",
+                    borderRadius: 999,
+                    padding: "6px 12px",
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: 12,
+                    fontWeight: 600,
+                  }}
+                >
+                  1 lesson will be returned to {pupilName}'s prepaid hours
+                </span>
+              ) : (
+                <span style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#8E8E93" }}>
+                  No payment taken — no refund needed
+                </span>
+              )}
+            </div>
+            <button
+              type="button"
+              disabled={saving}
+              style={{ ...primaryBtn, background: "#CC2229" }}
+              onClick={async () => {
+                setSaving(true);
+                await supabase
+                  .from("lessons")
+                  .update({ status: "cancelled", payment_status: "cancelled" })
+                  .eq("id", lesson.id);
+                if (payStatus === "paid" || payStatus === "partial") {
+                  const { recordRefund } = await import("@/lib/payments");
+                  await recordRefund({
+                    pupilId: lesson.pupil_id,
+                    amount: Number(lesson.amount_due ?? 0),
+                    method: "cash",
+                    notes: "Lesson cancelled — credit added",
+                    currentAccountBalance: 0,
+                  });
+                }
+                toast.success("Lesson cancelled");
+                setSaving(false);
+                onClose();
+              }}
+            >
+              {saving ? "Cancelling…" : "Confirm cancellation"}
+            </button>
+            <button type="button" style={greyBtn} onClick={() => setInlineView("main")}>
+              Keep lesson
+            </button>
+          </div>
+        )}
+
+        {inlineView === "delete" && (
+          <div style={{ paddingBottom: 12, textAlign: "center" }}>
+            <IconTrash size={24} stroke={1.8} color="#CC2229" />
+            <div style={{ ...inlineHeading, color: "#CC2229", textAlign: "center" }}>
+              Delete this lesson?
+            </div>
+            <div style={{ fontFamily: "Inter, sans-serif", fontSize: 11, color: "#9CA3AF" }}>
+              This cannot be undone
+            </div>
+            <button
+              type="button"
+              disabled={saving}
+              style={{ ...primaryBtn, background: "#CC2229" }}
+              onClick={async () => {
+                setSaving(true);
+                await supabase
+                  .from("lessons")
+                  .update({ deleted_at: new Date().toISOString() })
+                  .eq("id", lesson.id);
+                toast.success("Lesson deleted");
+                setSaving(false);
+                onClose();
+              }}
+            >
+              {saving ? "Deleting…" : "Confirm delete"}
+            </button>
+            <button type="button" style={greyBtn} onClick={() => setInlineView("main")}>
+              Cancel
+            </button>
+          </div>
+        )}
+
+        {inlineView === "main" && (
+        <>
         {/* Quick Actions */}
+
         <div style={sectionLabel}>Quick Actions</div>
 
         {/* Row 1 — Navigate / Message / Call */}
@@ -493,6 +798,55 @@ export function LessonActionsSheet({
             <span style={pillLabel}>Edit</span>
           </button>
         </div>
+
+        {/* Row 4 — Reschedule / Duration / Add note */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 8 }}>
+          <button
+            type="button"
+            style={{ ...gridBtn, background: "#FFFFFF" }}
+            onClick={() => setInlineView("reschedule")}
+          >
+            <IconCalendar size={18} stroke={1.8} color={NAVY} />
+            <span style={pillLabel}>Reschedule</span>
+          </button>
+          <button
+            type="button"
+            style={{ ...gridBtn, background: "#FFFFFF" }}
+            onClick={() => setInlineView("duration")}
+          >
+            <IconClock size={18} stroke={1.8} color={NAVY} />
+            <span style={pillLabel}>Duration</span>
+          </button>
+          <button
+            type="button"
+            style={{ ...gridBtn, background: "#FFFFFF" }}
+            onClick={() => setInlineView("note")}
+          >
+            <IconNotes size={18} stroke={1.8} color={NAVY} />
+            <span style={pillLabel}>Add note</span>
+          </button>
+        </div>
+
+        {/* Row 5 — destructive */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 8 }}>
+          <button
+            type="button"
+            style={{ ...gridBtnDanger, fontWeight: 600 }}
+            onClick={() => setInlineView("cancel")}
+          >
+            <IconX size={18} stroke={1.8} color="#CC2229" />
+            <span style={{ ...pillLabel, fontWeight: 600, color: "#CC2229" }}>Cancel lesson</span>
+          </button>
+          <button
+            type="button"
+            style={{ ...gridBtnDanger, fontWeight: 600 }}
+            onClick={() => setInlineView("delete")}
+          >
+            <IconTrash size={18} stroke={1.8} color="#CC2229" />
+            <span style={{ ...pillLabel, fontWeight: 600, color: "#CC2229" }}>Delete lesson</span>
+          </button>
+        </div>
+
 
         {/* End of lesson — full width */}
         <button
@@ -818,7 +1172,10 @@ export function LessonActionsSheet({
         >
           View full pupil profile →
         </button>
+        </>
+        )}
       </BottomSheet>
+
 
       <SendMessageSheet
         open={messageOpen}
