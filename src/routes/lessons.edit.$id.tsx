@@ -107,6 +107,10 @@ function EditLessonPage() {
   const [payNotes, setPayNotes] = useState("");
   const [savingPayment, setSavingPayment] = useState(false);
 
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [previousStatus, setPreviousStatus] = useState<string>("confirmed");
+
+
   useEffect(() => {
     (async () => {
       const {
@@ -252,8 +256,9 @@ function EditLessonPage() {
   }
 
   async function handleSave() {
-    if (saving) return;
+    if (saving || showCancelConfirm) return;
     setSaving(true);
+
     setError(null);
     const { error: updErr } = await supabase
       .from("lessons")
@@ -297,12 +302,13 @@ function EditLessonPage() {
           type="button"
           aria-label="Save"
           onClick={handleSave}
-          disabled={saving || loading}
+          disabled={saving || loading || showCancelConfirm}
           className="text-[13px] font-semibold"
-          style={{ color: "#1877D6", background: "none", border: "none", opacity: saving || loading ? 0.5 : 1 }}
+          style={{ color: "#1877D6", background: "none", border: "none", opacity: saving || loading || showCancelConfirm ? 0.5 : 1 }}
         >
           {saving ? "Saving…" : "Save"}
         </button>
+
       </div>
 
       {loading ? (
@@ -370,7 +376,17 @@ function EditLessonPage() {
             <select
               id="status"
               value={status}
-              onChange={(e) => setStatus(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === "cancelled") {
+                  setPreviousStatus(status);
+                  setStatus("cancelled");
+                  setShowCancelConfirm(true);
+                } else {
+                  setShowCancelConfirm(false);
+                  setStatus(val);
+                }
+              }}
               className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
               style={fieldBorder}
             >
@@ -380,6 +396,160 @@ function EditLessonPage() {
                 </option>
               ))}
             </select>
+
+            {showCancelConfirm && (
+              <div
+                className="mt-2"
+                style={{
+                  background: "#FCE9E9",
+                  border: "1px solid #FECACA",
+                  borderRadius: 10,
+                  padding: 14,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: "#CC2229",
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  Cancel this lesson?
+                </div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "#6B7280",
+                    marginTop: 4,
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  with {pupils.find((p) => p.id === pupilId)?.name ?? "Pupil"}
+                </div>
+                {paymentStatus === "paid" || paymentStatus === "partial" ? (
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: "#92400E",
+                      background: "#FFFBEB",
+                      borderRadius: 999,
+                      padding: "4px 10px",
+                      display: "inline-block",
+                      marginTop: 8,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    £{amountDue?.toFixed(2) ?? "0.00"} will be added as account credit
+                  </div>
+                ) : paymentStatus === "prepaid" ? (
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: "#92400E",
+                      background: "#FFFBEB",
+                      borderRadius: 999,
+                      padding: "4px 10px",
+                      display: "inline-block",
+                      marginTop: 8,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    1 lesson will be returned to {pupils.find((p) => p.id === pupilId)?.name ?? "Pupil"}'s
+                    prepaid hours
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "#6B7280",
+                      marginTop: 8,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    No payment has been taken — no refund needed
+                  </div>
+                )}
+                <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setSaving(true);
+                      const { error: updErr } = await supabase
+                        .from("lessons")
+                        .update({ status: "cancelled", payment_status: "cancelled" })
+                        .eq("id", id);
+                      if (updErr) {
+                        console.error("[edit-lesson] cancel error", updErr);
+                        toast.error("Could not cancel lesson");
+                        setSaving(false);
+                        return;
+                      }
+                      if (paymentStatus === "paid" || paymentStatus === "partial") {
+                        const { recordRefund } = await import("@/lib/payments");
+                        await recordRefund({
+                          pupilId,
+                          amount: Number(amountDue ?? 0),
+                          method: "cash",
+                          notes: "Lesson cancelled — credit added",
+                          currentAccountBalance: 0,
+                        });
+                      }
+                      if (paymentStatus === "prepaid") {
+                        const { data: pRow } = await supabase
+                          .from("pupils")
+                          .select("prepaid_hours")
+                          .eq("id", pupilId)
+                          .maybeSingle();
+                        const currentHours = Number(
+                          (pRow as { prepaid_hours?: number | null } | null)?.prepaid_hours ?? 0,
+                        );
+                        await supabase
+                          .from("pupils")
+                          .update({ prepaid_hours: currentHours + 1 })
+                          .eq("id", pupilId);
+                      }
+                      toast.success("Lesson cancelled");
+                      navigate({ to: "/schedule" });
+                    }}
+                    style={{
+                      background: "#CC2229",
+                      color: "#fff",
+                      borderRadius: 8,
+                      padding: 10,
+                      flex: 1,
+                      fontSize: 13,
+                      fontWeight: 500,
+                      fontFamily: "Poppins, sans-serif",
+                      border: "none",
+                    }}
+                  >
+                    Confirm cancellation
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStatus(previousStatus);
+                      setShowCancelConfirm(false);
+                    }}
+                    style={{
+                      background: "#F3F4F6",
+                      color: "#374151",
+                      borderRadius: 8,
+                      padding: 10,
+                      flex: 1,
+                      fontSize: 13,
+                      fontWeight: 500,
+                      fontFamily: "Poppins, sans-serif",
+                      border: "none",
+                    }}
+                  >
+                    Keep lesson
+                  </button>
+                </div>
+              </div>
+            )}
+
           </div>
 
           <div>
