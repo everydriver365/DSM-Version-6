@@ -4871,7 +4871,11 @@ function HomePage() {
                   </button>
                   <button
                     type="button"
-                    onClick={(e) => { e.stopPropagation(); navigate({ to: '/pupils/$id', params: { id: upcoming?.pupil_id ?? '' }, search: { lessonId: upcoming?.id } as any }); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSendMessagePupilId(upcoming?.pupil_id ?? undefined);
+                      setSendMessageOpen(true);
+                    }}
                     style={{
                       width: 32, height: 32, borderRadius: '50%', background: '#EEF2F7', border: 'none',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
