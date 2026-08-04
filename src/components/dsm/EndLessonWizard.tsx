@@ -1058,7 +1058,11 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 opacity: qrGenerating || !!qrUrl ? 0.7 : 1,
               }}
             >
-              <QrCode size={16} />
+              {qrGenerating ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <QrCode size={16} />
+              )}
               {qrGenerating ? "Generating…" : qrUrl ? "QR code ready" : "Show QR code"}
             </button>
 
