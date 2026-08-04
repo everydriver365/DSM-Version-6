@@ -1775,7 +1775,7 @@ function SchedulePage() {
                                                     padding: 0,
                                                   }}
                                                 >
-                                                  <MoreHorizontal size={14} color="#6B7280" />
+                                                  <MoreHorizontal size={14} color="#D1D5DB" />
                                                 </button>
                                               </div>
                                             )}
@@ -1811,10 +1811,11 @@ function SchedulePage() {
                                         textAlign: 'left',
                                         padding: '10px 14px',
                                         fontSize: 13,
+                                        fontFamily: 'Poppins, sans-serif',
                                         background: 'transparent',
                                         border: 'none',
                                         cursor: 'pointer',
-                                        color: '#111827',
+                                        color: '#0B1F3A',
                                       };
                                       return (
                                         <>
