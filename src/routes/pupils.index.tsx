@@ -193,15 +193,62 @@ function PupilsIndexPage() {
       console.log("[pupils] first pupil prepaid_hours:", normalized[0]?.prepaid_hours, normalized[0]?.name);
       const joseph = normalized.find((p) => /joseph/i.test(p.name) && /thorne/i.test(p.name));
       console.log("[pupils] Joseph Thorne row:", joseph);
-
+      // Test dates straight off the pupil rows
+      const tdMap: Record<string, string> = {};
+      normalized.forEach((p) => {
+        if (p.test_date) tdMap[p.id] = p.test_date as string;
+      });
+      setTestDateMap(tdMap);
 
       const pupilIds = normalized.map((p) => p.id);
       if (pupilIds.length === 0) {
         setLessonCountMap({});
         setBalanceMap({});
         setHoursMap({});
+        setUnreadMap({});
+        setNextLessonMap({});
         return;
       }
+
+      try {
+        const { data: unreads } = await supabase
+          .from("chat_messages")
+          .select("pupil_id")
+          .eq("instructor_id", uid)
+          .eq("sender_type", "pupil")
+          .is("read_at", null)
+          .is("deleted_at", null);
+        const uMap: Record<string, number> = {};
+        (unreads ?? []).forEach((r: any) => {
+          if (!r.pupil_id) return;
+          uMap[r.pupil_id] = (uMap[r.pupil_id] ?? 0) + 1;
+        });
+        setUnreadMap(uMap);
+      } catch (e) {
+        console.error("[pupils] unread fetch crashed", e);
+        setUnreadMap({});
+      }
+
+      try {
+        const { data: nextLessons } = await supabase
+          .from("lessons")
+          .select("pupil_id, lesson_date")
+          .eq("instructor_id", uid)
+          .gte("lesson_date", new Date().toISOString().slice(0, 10))
+          .in("status", ["confirmed", "pending"])
+          .is("deleted_at", null)
+          .order("lesson_date", { ascending: true });
+        const nlMap: Record<string, string> = {};
+        (nextLessons ?? []).forEach((l: any) => {
+          if (!l.pupil_id) return;
+          if (!nlMap[l.pupil_id]) nlMap[l.pupil_id] = l.lesson_date;
+        });
+        setNextLessonMap(nlMap);
+      } catch (e) {
+        console.error("[pupils] next lesson fetch crashed", e);
+        setNextLessonMap({});
+      }
+
 
       try {
         const { data: lessonRows, error: lcErr } = await supabase
