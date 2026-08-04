@@ -594,6 +594,11 @@ function LivePage() {
   }
 
   async function startTracking(lessonId: string | null, pupilId: string | null) {
+    // Enable native background GPS if running in Despia
+    // This keeps GPS running when screen is locked
+    if (navigator.userAgent.toLowerCase().includes("despia")) {
+      (window as any).despia("backgroundlocationon://");
+    }
     if (tracking) return;
     if (!("geolocation" in navigator)) {
       setGeoError("GPS access required — please enable location in your browser settings");
@@ -628,17 +633,37 @@ function LivePage() {
 
     setTracking(true);
     startSilentAudio();
-    startGpsWatch();
+    startWatching();
   }
 
   function startGpsWatch() {
+    startWatching();
+  }
+
+  function startWatching() {
     if (!("geolocation" in navigator)) return;
     console.log("[live] starting geolocation watch");
     watchIdRef.current = navigator.geolocation.watchPosition(
       (pos) => handlePosition(pos),
       (err) => {
-        console.error("[live] geolocation error:", err.code, err.message);
-        setGeoError("GPS access required — please enable location in your browser settings");
+        console.error("[live] geo error:", err.code, err.message);
+        if (err.code === 2) {
+          // Signal lost temporarily — reconnect in 3s
+          setTimeout(() => {
+            if (watchIdRef.current !== null) {
+              navigator.geolocation.clearWatch(watchIdRef.current);
+              watchIdRef.current = null;
+            }
+            startWatching();
+          }, 3000);
+          return;
+        }
+        // Permission denied — permanent error
+        setGeoError("GPS access required — tap here to open settings");
+        // Open Despia settings if available
+        if (navigator.userAgent.toLowerCase().includes("despia")) {
+          (window as any).despia("settingsapp://");
+        }
       },
       { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 },
     );
