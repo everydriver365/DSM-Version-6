@@ -20,6 +20,8 @@ import { PupilAvatar } from "@/components/PupilAvatar";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
+import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
+
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { filterEchoedBlocks } from "@/lib/calendarDedupe";
@@ -327,6 +329,9 @@ function SchedulePage() {
   const [cancelSheetFor, setCancelSheetFor] = useState<Lesson | null>(null);
   const [deleteSheetFor, setDeleteSheetFor] = useState<Lesson | null>(null);
   const [paymentSheetFor, setPaymentSheetFor] = useState<Lesson | null>(null);
+  const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
+  const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
+
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
 
   // Close popover on outside click
@@ -1830,11 +1835,11 @@ function SchedulePage() {
                                             onClick={(ev) => {
                                               ev.stopPropagation();
                                               setActionsOpenFor(null);
-                                              setSendMessagePupilId(lesson.pupil_id ?? undefined);
-                                              setSendMessageOpen(true);
+                                              setUnifiedPayPupilId(lesson.pupil_id ?? undefined);
+                                              setUnifiedPayOpen(true);
                                             }}
                                           >
-                                            Message pupil
+                                            Take payment
                                           </button>
                                           <button
                                             type="button"
@@ -1842,38 +1847,14 @@ function SchedulePage() {
                                             onClick={(ev) => {
                                               ev.stopPropagation();
                                               setActionsOpenFor(null);
-                                              setMovingLesson(lesson);
-                                              setMoveMode(true);
-                                              const firstName = (lesson as any).pupil?.first_name || (lesson as any).pupils?.first_name || 'this lesson';
-                                              toast.info('Select a new time slot for ' + firstName, { duration: 10000 });
+                                              if (lesson.pupil_id) navigate({ to: '/pupils/$id', params: { id: lesson.pupil_id } });
                                             }}
                                           >
-                                            Move
-                                          </button>
-                                          <button
-                                            type="button"
-                                            style={itemStyle}
-                                            onClick={(ev) => {
-                                              ev.stopPropagation();
-                                              setActionsOpenFor(null);
-                                              setCancelSheetFor(lesson);
-                                            }}
-                                          >
-                                            Cancel
-                                          </button>
-                                          <button
-                                            type="button"
-                                            style={{ ...itemStyle, color: '#CC2229' }}
-                                            onClick={(ev) => {
-                                              ev.stopPropagation();
-                                              setActionsOpenFor(null);
-                                              setDeleteSheetFor(lesson);
-                                            }}
-                                          >
-                                            Delete
+                                            Full profile
                                           </button>
                                         </>
                                       );
+
                                     })()}
                                   </div>
                                 ) : null;
@@ -1976,6 +1957,13 @@ function SchedulePage() {
         onClose={() => { setSendMessageOpen(false); setSendMessagePupilId(undefined); }}
         initialPupilId={sendMessagePupilId}
       />
+
+      <UnifiedPaymentSheet
+        open={unifiedPayOpen}
+        onClose={() => { setUnifiedPayOpen(false); setUnifiedPayPupilId(undefined); }}
+        initialPupilId={unifiedPayPupilId}
+      />
+
 
 
 

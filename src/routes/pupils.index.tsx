@@ -6,10 +6,11 @@ import { supabase } from "../lib/supabaseClient";
 import { getPupilBalance } from "@/lib/payments";
 import { EmptyState } from "../components/dsm/EmptyState";
 import { PageLayout } from "@/components/PageLayout";
-import {
-  PupilQuickActionsSheet,
-  type PupilQuickActionsPupil,
-} from "@/components/pupils/PupilQuickActionsSheet";
+import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";
+import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
+import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+
 import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
@@ -88,10 +89,12 @@ function PupilsIndexPage() {
   const [query, setQuery] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
-  const [sheetPupil, setSheetPupil] = useState<PupilQuickActionsPupil | null>(null);
-  const suppressNextClickRef = useRef(false);
-  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const longPressStartRef = useRef<{ x: number; y: number } | null>(null);
+  const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
+  const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
+  const [addLessonOpen, setAddLessonOpen] = useState(false);
+  const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
+  const [archiveTarget, setArchiveTarget] = useState<{ id: string; name: string } | null>(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -493,55 +496,12 @@ function PupilsIndexPage() {
               const hasBalance = balanceOwed > 0;
               const lp = lastPaymentMap[p.id];
               const lpDays = lp ? Math.max(0, Math.floor((Date.now() - new Date(lp.date).getTime()) / 86400000)) : null;
-              const openSheet = () => {
-                setSheetPupil({
-                  id: p.id,
-                  name: displayName(p.name),
-                  accountBalance: p.account_balance ?? 0,
-                  hoursRemaining,
-                  balanceOwed,
-                  lessons,
-                  prepaidHoursRaw: prepaid,
-                });
-              };
-              const startLongPress = (e: React.PointerEvent) => {
-                if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
-                longPressStartRef.current = { x: e.clientX, y: e.clientY };
-                longPressTimerRef.current = setTimeout(() => {
-                  suppressNextClickRef.current = true;
-                  openSheet();
-                  if (typeof navigator !== "undefined" && "vibrate" in navigator) {
-                    try { (navigator as Navigator).vibrate?.(10); } catch { /* noop */ }
-                  }
-                }, 500);
-              };
-              const cancelLongPress = () => {
-                if (longPressTimerRef.current) {
-                  clearTimeout(longPressTimerRef.current);
-                  longPressTimerRef.current = null;
-                }
-                longPressStartRef.current = null;
-              };
-              const maybeCancelOnMove = (e: React.PointerEvent) => {
-                const start = longPressStartRef.current;
-                if (!start || !longPressTimerRef.current) return;
-                const dx = e.clientX - start.x;
-                const dy = e.clientY - start.y;
-                // 8px drift threshold — anything more likely means the user is scrolling, not holding.
-                if (dx * dx + dy * dy > 64) cancelLongPress();
-              };
               return (
                 <div
                   key={p.id}
                   role="button"
                   tabIndex={0}
-                  onClick={(e) => {
-                    if (suppressNextClickRef.current) {
-                      suppressNextClickRef.current = false;
-                      e.preventDefault();
-                      e.stopPropagation();
-                      return;
-                    }
+                  onClick={() => {
                     navigate({ to: "/pupils/$id", params: { id: p.id } });
                   }}
                   onKeyDown={(e) => {
@@ -550,11 +510,7 @@ function PupilsIndexPage() {
                       navigate({ to: "/pupils/$id", params: { id: p.id } });
                     }
                   }}
-                  onPointerDown={startLongPress}
-                  onPointerMove={maybeCancelOnMove}
-                  onPointerUp={cancelLongPress}
-                  onPointerLeave={cancelLongPress}
-                  onPointerCancel={cancelLongPress}
+
                   onContextMenu={(e) => {
                     // Prevent iOS/Android context menu on long-press; we handle it.
                     e.preventDefault();
@@ -640,29 +596,40 @@ function PupilsIndexPage() {
                         </span>
                         <ChevronRight size={15} color="#B0BAC9" />
                       </div>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openSheet();
-                        }}
-                        aria-label={`Quick actions for ${displayName(p.name)}`}
-                        style={{
-                          width: 28,
-                          height: 28,
-                          borderRadius: "50%",
-                          background: "#F8F9FB",
-                          border: "0.5px solid #E5E7EB",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          cursor: "pointer",
-                          padding: 0,
-                          zIndex: 60,
-                        }}
-                      >
-                        <MoreHorizontal size={14} color="#6B7280" />
-                      </button>
+                      <QuickActionsMenu
+                        items={[
+                          { label: "Send message", onClick: () => navigate({ to: "/messages/$pupilId", params: { pupilId: p.id } }) },
+                          { label: "Take payment", onClick: () => { setUnifiedPayPupilId(p.id); setUnifiedPayOpen(true); } },
+                          { label: "Book a lesson", onClick: () => { setAddLessonPupilId(p.id); setAddLessonOpen(true); } },
+                          { label: "View profile", onClick: () => navigate({ to: "/pupils/$id", params: { id: p.id } }) },
+                          { label: "Archive", destructive: true, onClick: () => setArchiveTarget({ id: p.id, name: displayName(p.name) }) },
+                        ]}
+                        trigger={({ onClick }) => (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onClick();
+                            }}
+                            aria-label={`Quick actions for ${displayName(p.name)}`}
+                            style={{
+                              width: 28,
+                              height: 28,
+                              borderRadius: "50%",
+                              background: "#F8F9FB",
+                              border: "0.5px solid #E5E7EB",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              cursor: "pointer",
+                              padding: 0,
+                            }}
+                          >
+                            <MoreHorizontal size={14} color="#6B7280" />
+                          </button>
+                        )}
+                      />
+
                     </div>
                   </div>
                 </div>
@@ -701,12 +668,43 @@ function PupilsIndexPage() {
         <Plus size={24} color="#FFFFFF" />
       </Link>
 
-      <PupilQuickActionsSheet
-        open={sheetPupil !== null}
-        pupil={sheetPupil}
-        onClose={() => setSheetPupil(null)}
-        onDirtyClose={() => setReloadKey((k) => k + 1)}
+      <UnifiedPaymentSheet
+        open={unifiedPayOpen}
+        onClose={() => { setUnifiedPayOpen(false); setUnifiedPayPupilId(undefined); }}
+        onSaved={() => setReloadKey((k) => k + 1)}
+        initialPupilId={unifiedPayPupilId}
       />
+
+      <AddLessonSheet
+        open={addLessonOpen}
+        onClose={() => { setAddLessonOpen(false); setAddLessonPupilId(undefined); }}
+        onSaved={() => { setAddLessonOpen(false); setAddLessonPupilId(undefined); setReloadKey((k) => k + 1); }}
+        initialPupilId={addLessonPupilId}
+      />
+
+      <ConfirmDialog
+        open={archiveTarget !== null}
+        title={`Archive ${archiveTarget?.name ?? ""}?`}
+        message="They'll be moved to the Archived tab. You can still view their history."
+        confirmLabel="Archive"
+        onCancel={() => setArchiveTarget(null)}
+        onConfirm={async () => {
+          const target = archiveTarget;
+          setArchiveTarget(null);
+          if (!target) return;
+          const { error } = await supabase
+            .from("pupils")
+            .update({ status: "archived" })
+            .eq("id", target.id);
+          if (error) {
+            toast.error("Couldn't archive pupil");
+            return;
+          }
+          toast.success(`${target.name} archived`);
+          setReloadKey((k) => k + 1);
+        }}
+      />
+
     </PageLayout>
   );
 }
