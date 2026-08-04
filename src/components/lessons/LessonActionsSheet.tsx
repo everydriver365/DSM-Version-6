@@ -99,6 +99,66 @@ export function LessonActionsSheet({
   const [messageOpen, setMessageOpen] = useState(false);
   const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
 
+  // --- Inline editing views ---
+  type InlineView = "main" | "reschedule" | "duration" | "note" | "cancel" | "delete";
+  const [inlineView, setInlineView] = useState<InlineView>("main");
+  const [newDate, setNewDate] = useState(lesson.lesson_date);
+  const [newTime, setNewTime] = useState((lesson.lesson_time ?? "").slice(0, 5));
+  const [newDuration, setNewDuration] = useState(lesson.duration_minutes ?? 60);
+  const [noteText, setNoteText] = useState(lesson.notes ?? "");
+  const [saving, setSaving] = useState(false);
+
+  const formatDate = (d: string) =>
+    new Date(`${d}T00:00:00`).toLocaleDateString("en-GB", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    });
+
+  const backLink: React.CSSProperties = {
+    fontSize: 12,
+    color: "#1877D6",
+    background: "none",
+    border: "none",
+    padding: "8px 0",
+    cursor: "pointer",
+    fontFamily: "Inter, sans-serif",
+  };
+  const inlineHeading: React.CSSProperties = {
+    fontSize: 14,
+    fontWeight: 600,
+    color: NAVY,
+    fontFamily: "Inter, sans-serif",
+    margin: "4px 0 10px",
+  };
+  const primaryBtn: React.CSSProperties = {
+    marginTop: 12,
+    width: "100%",
+    background: "#1877D6",
+    color: "#FFFFFF",
+    border: "none",
+    borderRadius: 10,
+    padding: "12px 0",
+    fontFamily: "Inter, sans-serif",
+    fontSize: 13,
+    fontWeight: 600,
+    cursor: "pointer",
+  };
+  const greyBtn: React.CSSProperties = {
+    marginTop: 8,
+    width: "100%",
+    background: "#F5F7FA",
+    color: NAVY,
+    border: "1px solid #E2E8F0",
+    borderRadius: 10,
+    padding: "12px 0",
+    fontFamily: "Inter, sans-serif",
+    fontSize: 13,
+    fontWeight: 600,
+    cursor: "pointer",
+  };
+
+
   const sendSms = (body: string) => {
     if (!phone) {
       toast("No phone number");
