@@ -551,8 +551,18 @@ function PupilsIndexPage() {
         </div>
       </div>
 
-      {/* Sort control */}
-      <div style={{ margin: "0 16px 10px", display: "flex", justifyContent: "flex-end" }}>
+      {/* Count + sort control */}
+      <div
+        style={{
+          margin: "0 16px 10px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7686", ...POPPINS }}>
+          {filtered === null ? "" : `${filtered.length} ${filtered.length === 1 ? "pupil" : "pupils"}`}
+        </span>
         <button
           type="button"
           onClick={() =>
@@ -563,21 +573,21 @@ function PupilsIndexPage() {
           style={{
             gap: 5,
             height: 28,
-            padding: "0 10px",
-            borderRadius: 20,
-            background: "#FFFFFF",
-            border: "0.5px solid #EEF2F7",
-            color: "#6B7686",
-            fontSize: 11,
+            padding: 0,
+            background: "transparent",
+            border: "none",
+            color: "#1877D6",
+            fontSize: 12,
             fontWeight: 600,
             cursor: "pointer",
             ...POPPINS,
           }}
         >
-          <ArrowUpDown size={13} color="#6B7686" />
+          <ArrowUpDown size={13} color="#1877D6" />
           Sort: {SORT_LABELS[sortBy]}
         </button>
       </div>
+
 
 
       {/* List */}
