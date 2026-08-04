@@ -6440,7 +6440,7 @@ function HomePage() {
                       : (isPrepaidPupil || payStatus === 'prepaid')
                         ? { label: 'Prepaid', bg: '#E4F5EA', fg: '#2E7D4F' }
                         : dueUnpaid
-                          ? { label: `£${amt.toFixed(0)} due`, bg: '#FCE9E9', fg: '#CC2229' }
+                          ? { label: `£${amt.toFixed(0)} owed`, bg: '#FCE9E9', fg: '#CC2229' }
                           : null;
 
                     return (
