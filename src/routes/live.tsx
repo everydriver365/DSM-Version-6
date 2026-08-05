@@ -1556,6 +1556,32 @@ function LivePage() {
                   Road not identified
                 </span>
               )}
+            {/* Road type legend row */}
+            <div
+              className="flex items-center justify-center"
+              style={{ padding: "0 14px", height: 20, gap: 10, minWidth: 0 }}
+            >
+              {[
+                { label: "Motorway", color: "#1877D6" },
+                { label: "A Road", color: "#1A9C56" },
+                { label: "B Road", color: "#fff", textColor: "#0B1F3A" },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center" style={{ gap: 4 }}>
+                  <span
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: item.color,
+                      border: item.color === "#fff" ? "1px solid rgba(255,255,255,0.5)" : "none",
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span style={{ fontSize: 9, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>
+                    {item.label}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         );
