@@ -109,6 +109,10 @@ function EditLessonPage() {
 
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [previousStatus, setPreviousStatus] = useState<string>("confirmed");
+  const [cancelReason, setCancelReason] = useState<string>("");
+  const [cancelNote, setCancelNote] = useState("");
+  const [chargeOption, setChargeOption] = useState<"none" | "fee" | "full">("none");
+  const [cancelFee, setCancelFee] = useState("");
 
 
   useEffect(() => {
