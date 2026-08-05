@@ -11,6 +11,8 @@ import {
   Paperclip,
   Search,
   X,
+  Check,
+  CheckCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
