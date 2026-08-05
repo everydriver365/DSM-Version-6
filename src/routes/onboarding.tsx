@@ -178,7 +178,7 @@ function OnboardingPage() {
         .eq("id", userId);
       if (whErr) console.warn("[onboarding] instructors update error", whErr);
 
-      navigate({ to: "/home", replace: true });
+      navigate({ to: dest, replace: true } as never);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Could not save your details";
       setError(msg);
