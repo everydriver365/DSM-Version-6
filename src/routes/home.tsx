@@ -5033,18 +5033,30 @@ function HomePage() {
               {/* Address row */}
               <div style={{
                 padding: '12px 16px',
-                display: 'flex', alignItems: 'center', gap: 8,
+                display: 'flex', alignItems: 'flex-start', gap: 8,
                 borderBottom: '1px solid #E4E8EF',
               }}>
-                <MapPin size={16} color="#6B7686" style={{ flexShrink: 0 }} />
-                <span style={{
-                  flex: 1, fontSize: 12, color: '#6B7686',
-                  fontFamily: 'Poppins, sans-serif',
-                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                }}>
-                  {pickup}
-                </span>
+                <MapPin size={16} color="#6B7686" style={{ flexShrink: 0, marginTop: 2 }} />
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
+                  <span style={{
+                    fontSize: 12, color: '#6B7686',
+                    fontFamily: 'Poppins, sans-serif',
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  }}>
+                    {pickupParts.address}
+                  </span>
+                  {pickupParts.postcode && (
+                    <span style={{
+                      fontSize: 12, color: '#6B7686', fontWeight: 500,
+                      fontFamily: 'Poppins, sans-serif',
+                      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    }}>
+                      {pickupParts.postcode}
+                    </span>
+                  )}
+                </div>
               </div>
+
 
               {/* Footer / More */}
               <div style={{
