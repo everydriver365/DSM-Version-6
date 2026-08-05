@@ -483,54 +483,33 @@ interface PupilReadySetting {
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 /** Standard DSM section eyebrow header used above every home section. */
-function SectionEyebrow({
-  title,
-  linkLabel,
-  onLink,
-}: {
-  title: string;
-  linkLabel?: string;
-  onLink?: () => void;
-}) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8,
-        padding: '0 16px',
-      }}
-    >
-      <span
-        style={{
-          fontSize: 10,
-          fontWeight: 600,
-          color: '#9CA3AF',
-          textTransform: 'uppercase',
-          letterSpacing: '0.08em',
-          fontFamily: 'Poppins, sans-serif',
-        }}
-      >
-        {title}
-      </span>
-      {linkLabel ? (
-        <span
-          onClick={onLink}
-          style={{
-            fontSize: 12,
-            fontWeight: 500,
-            color: '#1877D6',
-            fontFamily: 'Poppins, sans-serif',
-            cursor: 'pointer',
-          }}
-        >
-          {linkLabel}
-        </span>
-      ) : null}
-    </div>
-  );
-}
+const SECTION_HEADER_STYLE: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: 14,
+};
+
+const SECTION_TITLE_STYLE: React.CSSProperties = {
+  fontSize: 18,
+  fontWeight: 700,
+  color: '#0B1F3A',
+  fontFamily: 'Poppins, sans-serif',
+};
+
+const SECTION_LINK_STYLE: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 4,
+  fontSize: 13,
+  fontWeight: 600,
+  color: '#1877D6',
+  background: 'none',
+  border: 'none',
+  padding: 0,
+  cursor: 'pointer',
+  fontFamily: 'Poppins, sans-serif',
+};
 // Default weekly goals — should come from instructor settings
 // (instructors.weekly_lesson_goal / weekly_earnings_goal). We fall back to
 // these defaults if the columns don't exist or the row hasn't been populated.
@@ -4851,50 +4830,15 @@ function HomePage() {
 
           return (
             <>
-              {/* Header matching Discover SectionHeader style */}
-              <div style={{
-                padding: '12px 12px 10px',
-                borderRadius: '16px 16px 0 0',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span
-                    aria-hidden
-                    style={{
-                      display: 'inline-block',
-                      width: 3,
-                      height: 12,
-                      borderRadius: 2,
-                      backgroundColor: '#1877D6',
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 600,
-                      color: '#1877D6',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.12em',
-                      fontFamily: 'Poppins, sans-serif',
-                    }}
-                  >
-                    Next Lesson
-                  </span>
-                </div>
-                <span
+              <div style={{ ...SECTION_HEADER_STYLE, padding: '12px 16px 0' }}>
+                <span style={SECTION_TITLE_STYLE}>Next lesson</span>
+                <button
+                  type="button"
                   onClick={() => navigate({ to: '/schedule' })}
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: '#1877D6',
-                    fontFamily: 'Poppins, sans-serif',
-                    cursor: 'pointer',
-                  }}
+                  style={SECTION_LINK_STYLE}
                 >
-                  Full schedule ›
-                </span>
+                  Full schedule <ArrowRight size={14} />
+                </button>
               </div>
 
               {/* Map header */}
@@ -5620,7 +5564,9 @@ function HomePage() {
 
           return (
             <>
-              <SectionEyebrow title="Community" />
+              <div style={{ ...SECTION_HEADER_STYLE, padding: '0 16px' }}>
+                <span style={SECTION_TITLE_STYLE}>Community</span>
+              </div>
               <div style={{
                 margin: '0 16px 20px', background: '#FFFFFF', borderRadius: 16,
                 border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
@@ -6309,7 +6255,9 @@ function HomePage() {
 
 
             {/* 3. TIMELINE with TABS */}
-            <SectionEyebrow title="Teaching schedule" />
+            <div style={{ ...SECTION_HEADER_STYLE, padding: '0 16px' }}>
+              <span style={SECTION_TITLE_STYLE}>Teaching schedule</span>
+            </div>
 
 
             {(() => {
@@ -7160,7 +7108,9 @@ function HomePage() {
 
               return (
                 <>
-        <SectionEyebrow title="Upcoming tests" />
+        <div style={{ ...SECTION_HEADER_STYLE, padding: '0 16px' }}>
+          <span style={SECTION_TITLE_STYLE}>Upcoming tests</span>
+        </div>
         {/* ============ UPCOMING TESTS CARD ============ */}
         {(() => {
           const parseDate = (iso: string) => {
@@ -7321,8 +7271,8 @@ function HomePage() {
                     .qa-card:active::after { animation: qaRipple 0.5s ease-out; }
                   `}</style>
                     <div style={{ background: PAGE_BACKGROUND, margin: '0 -16px 0', padding: '0 16px 0', borderRadius: 0 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                        <span style={{ fontSize: 10, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'Poppins, sans-serif' }}>Quick access</span>
+                      <div style={SECTION_HEADER_STYLE}>
+                        <span style={SECTION_TITLE_STYLE}>Quick access</span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{ display: 'flex', gap: 4 }}>
                           {Array.from({ length: totalPages }).map((_, i) => (
