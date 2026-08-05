@@ -693,7 +693,7 @@ function PupilThreadPage() {
                 setSearchOpen(false);
                 setSearchQuery("");
               } else {
-                navigate({ to: "/pupils/$id", params: { id: pupilId } } as never);
+                navigate({ to: "/messages" } as never);
               }
             }}
             style={{ background: "none", border: "none", padding: 0, display: "flex", flexShrink: 0 }}
