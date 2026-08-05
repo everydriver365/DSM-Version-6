@@ -85,7 +85,7 @@ function OnboardingPage() {
     setStep((s) => Math.min(TOTAL_STEPS, s + 1));
   }
 
-  async function finish() {
+  async function finish(dest: string = "/home") {
     if (!userId) return;
     setSaving(true);
     setError(null);
