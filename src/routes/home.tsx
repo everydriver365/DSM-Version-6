@@ -4724,13 +4724,7 @@ function HomePage() {
       </div>
 
 
-      {/* Next lesson section header */}
       {/* ============ NEXT LESSON CARD ============ */}
-      <SectionEyebrow
-        title="Next lesson"
-        linkLabel="Full schedule →"
-        onLink={() => navigate({ to: '/schedule' })}
-      />
 
       <div
         style={{
