@@ -5169,15 +5169,46 @@ function HomePage() {
                     </>
                   )}
 
-                  {weatherData && (
-                    <>
-                      <span style={{ color: '#C7CDD6', fontSize: 12 }}>·</span>
-                      <span style={{ fontSize: 14 }}>{weatherData.icon || '⛅'}</span>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A' }}>
-                        {Math.round(weatherData.tempC)}°
-                      </span>
-                    </>
-                  )}
+                  {weatherData && (() => {
+                    const raw = weatherData.icon || '';
+                    const iconUrl = /^https?:\/\//.test(raw)
+                      ? (raw.endsWith('.svg') || raw.endsWith('.png') ? raw : `${raw}.svg`)
+                      : '';
+                    const cond = (weatherData.condition || '').toLowerCase();
+                    const emoji = cond.includes('thunder') || cond.includes('storm') ? '⛈️'
+                      : cond.includes('snow') || cond.includes('sleet') || cond.includes('hail') ? '🌨️'
+                      : cond.includes('rain') || cond.includes('shower') || cond.includes('drizzle') ? '🌧️'
+                      : cond.includes('fog') || cond.includes('mist') || cond.includes('haze') ? '🌫️'
+                      : cond.includes('wind') ? '💨'
+                      : cond.includes('clear') || cond.includes('sunny') ? '☀️'
+                      : cond.includes('cloud') || cond.includes('overcast') ? '☁️'
+                      : '⛅';
+                    return (
+                      <>
+                        <span style={{ color: '#C7CDD6', fontSize: 12 }}>·</span>
+                        {iconUrl ? (
+                          <img
+                            src={iconUrl}
+                            alt={weatherData.condition || 'Weather'}
+                            width={18}
+                            height={18}
+                            style={{ display: 'block', flexShrink: 0 }}
+                            onError={(e) => {
+                              const el = e.currentTarget;
+                              el.style.display = 'none';
+                              const sib = el.nextElementSibling as HTMLElement | null;
+                              if (sib) sib.style.display = 'inline';
+                            }}
+                          />
+                        ) : null}
+                        <span style={{ fontSize: 14, display: iconUrl ? 'none' : 'inline' }}>{emoji}</span>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A' }}>
+                          {Math.round(weatherData.tempC)}°
+                        </span>
+                      </>
+                    );
+                  })()}
+
                 </div>
 
                 <button
