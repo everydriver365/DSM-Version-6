@@ -835,62 +835,90 @@ function PupilThreadPage() {
         </div>
       )}
 
-      {/* Input bar */}
-<div style={{
-  position: 'fixed',
-  bottom: 64,
-  left: 0,
-  right: 0,
-  zIndex: 50,
-  background: 'white',
-  borderTop: '0.5px solid #E2E6ED',
-  padding: '10px 16px',
-  display: 'flex',
-  gap: 8,
-  alignItems: 'flex-end',
-  maxWidth: 480,
-  margin: '0 auto',
-}}>
-  <textarea
-    value={messageText}
-    onChange={e => setMessageText(e.target.value)}
-    onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-    placeholder="Message..."
-    rows={1}
-    style={{
-      flex: 1,
-      background: '#F7FAFC',
-      border: '0.5px solid #E2E6ED',
-      borderRadius: 20,
-      padding: '10px 16px',
-      fontSize: 14,
-      fontFamily: 'Inter, sans-serif',
-      resize: 'none',
-      outline: 'none',
-      maxHeight: 120,
-      overflowY: 'auto',
-    }}
-  />
-  <button
-    type="button"
-    onClick={handleSend}
-    disabled={!messageText.trim()}
-    style={{
-      width: 40,
-      height: 40,
-      borderRadius: '50%',
-      background: messageText.trim() ? '#0F2044' : '#E2E6ED',
-      border: 'none',
-      cursor: messageText.trim() ? 'pointer' : 'default',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0,
-    }}
-  >
-    <Send size={16} color="white" />
-  </button>
-</div>
+      {/* Composer bar */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: 64,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          background: "#FFFFFF",
+          borderTop: "0.5px solid #E4E8EF",
+          padding: "10px 12px",
+          display: "flex",
+          gap: 8,
+          alignItems: "flex-end",
+          maxWidth: 480,
+          margin: "0 auto",
+        }}
+      >
+        <button
+          type="button"
+          aria-label="Attach"
+          onClick={() => toast.info("Attachments coming soon!")}
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: "50%",
+            background: "transparent",
+            border: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+            cursor: "pointer",
+          }}
+        >
+          <Paperclip size={18} color="#6B7686" />
+        </button>
+        <textarea
+          value={messageText}
+          onChange={(e) => setMessageText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              handleSend();
+            }
+          }}
+          placeholder="Message..."
+          rows={1}
+          style={{
+            flex: 1,
+            background: "#EEF2F7",
+            border: "none",
+            borderRadius: 22,
+            padding: "10px 16px",
+            fontSize: 13,
+            color: "#0B1F3A",
+            resize: "none",
+            outline: "none",
+            maxHeight: 120,
+            overflowY: "auto",
+            ...POPPINS,
+          }}
+        />
+        <button
+          type="button"
+          onClick={handleSend}
+          disabled={!messageText.trim()}
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: "50%",
+            background: messageText.trim() ? "#1877D6" : "#C7D0DE",
+            border: "none",
+            cursor: messageText.trim() ? "pointer" : "default",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <Send size={16} color="#FFFFFF" />
+        </button>
+      </div>
+
     </PageLayout>
   );
 }
