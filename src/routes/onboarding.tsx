@@ -320,6 +320,84 @@ function OnboardingPage() {
 
         {step === 5 && (
           <div className="flex flex-col gap-4">
+            <h2 className="text-[20px] font-semibold text-[#0B1F3A]">Your rates &amp; location</h2>
+            <p className="text-[14px] text-[#6B7280]">
+              Used for payments, gap filling and finding local jobs
+            </p>
+            <div>
+              <Field
+                label="Hourly rate (£)"
+                type="number"
+                placeholder="35.00"
+                value={hourlyRate}
+                onChange={setHourlyRate}
+              />
+              <p className="mt-1 text-[12px] text-[#6B7280]">Most instructors charge £32-£45/hr in 2026</p>
+            </div>
+            <div>
+              <Field
+                label="Home postcode"
+                placeholder="SO30 2TD"
+                value={homePostcode}
+                onChange={setHomePostcode}
+              />
+              <p className="mt-1 text-[12px] text-[#6B7280]">
+                Used for gap filler and nearby features — never shared publicly
+              </p>
+            </div>
+            <Button onClick={next} className="h-12" disabled={!hourlyRate.trim()}>
+              Next
+            </Button>
+          </div>
+        )}
+
+        {step === 6 && (
+          <div className="flex flex-col gap-4">
+            <h2 className="text-[20px] font-semibold text-[#0B1F3A]">Your ADI licence</h2>
+            <p className="text-[14px] text-[#6B7280]">Shown on your profile to build trust with learners</p>
+            <Field
+              label="ADI licence number"
+              placeholder="123456"
+              value={adiNumber}
+              onChange={setAdiNumber}
+            />
+            <div>
+              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">Grade</label>
+              <div className="flex gap-2">
+                {(["A", "B"] as const).map((g) => {
+                  const sel = adiGrade === g;
+                  return (
+                    <button
+                      key={g}
+                      type="button"
+                      onClick={() => setAdiGrade(sel ? "" : g)}
+                      className="flex-1 h-10 rounded-full text-[13px] font-semibold"
+                      style={{
+                        ...POPPINS,
+                        background: sel ? "#1877D6" : "#F1F5F9",
+                        color: sel ? "#FFFFFF" : "#6B7686",
+                      }}
+                    >
+                      Grade {g}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={next}
+              className="text-[13px] text-[#6B7280] underline self-start"
+              style={POPPINS}
+            >
+              Skip for now →
+            </button>
+            <Button onClick={next} className="h-12">Next</Button>
+          </div>
+        )}
+
+        {step === 7 && (
+          <div className="flex flex-col gap-4">
             <h2 className="text-[24px] font-bold text-[#0B1F3A]">Want a free website?</h2>
             <p className="text-[14px] text-[#6B7280]">
               Every instructor gets a free booking page on EveryDriver. You can also connect your own domain later.
