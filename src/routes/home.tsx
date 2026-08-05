@@ -4836,42 +4836,157 @@ function HomePage() {
                 </button>
               </div>
 
-              {/* Pupil row */}
+              {/* Map header */}
+              {(() => {
+                const GMAPS_KEY = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined;
+                const staticMapUrl = (driveData?.destLat && driveData?.destLng && GMAPS_KEY)
+                  ? `https://maps.googleapis.com/maps/api/staticmap`
+                    + `?center=${driveData.destLat},${driveData.destLng}`
+                    + `&zoom=15&size=800x260&scale=2`
+                    + `&markers=color:red%7C${driveData.destLat},${driveData.destLng}`
+                    + `&style=feature:poi%7Cvisibility:off`
+                    + `&style=feature:transit%7Cvisibility:off`
+                    + `&key=${GMAPS_KEY}`
+                  : null;
+                return (
+                  <div
+                    onClick={() => openMaps()}
+                    style={{
+                      height: 130,
+                      borderRadius: '14px 14px 0 0',
+                      overflow: 'hidden',
+                      position: 'relative',
+                      cursor: 'pointer',
+                      background: 'linear-gradient(135deg, #1e3a5f, #0B1F3A)',
+                    }}
+                  >
+                    {staticMapUrl ? (
+                      <img
+                        src={staticMapUrl}
+                        alt="Pickup location map"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                      />
+                    ) : (
+                      <>
+                        <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0, opacity: 0.15 }}>
+                          <defs>
+                            <pattern id="nlDots" width="20" height="20" patternUnits="userSpaceOnUse">
+                              <circle cx="1" cy="1" r="1" fill="white" />
+                            </pattern>
+                          </defs>
+                          <rect width="100%" height="100%" fill="url(#nlDots)" />
+                        </svg>
+                        <div style={{
+                          position: 'absolute', inset: 0,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}>
+                          <MapPin size={36} color="#CC2229" fill="#CC2229" style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.4))' }} />
+                        </div>
+                      </>
+                    )}
+
+                    {/* Bottom gradient */}
+                    <div style={{
+                      position: 'absolute', bottom: 0, left: 0, right: 0, height: 50,
+                      background: 'linear-gradient(transparent, rgba(0,0,0,0.3))',
+                      pointerEvents: 'none',
+                    }} />
+
+                    {/* Price badge */}
+                    <div style={{
+                      position: 'absolute', top: 10, right: 10,
+                      background: '#FFFFFF', borderRadius: 20, padding: '4px 10px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                      display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5,
+                    }}>
+                      <span style={{
+                        width: 7, height: 7, borderRadius: '50%',
+                        background: isPaid ? '#15803D' : '#CC2229',
+                      }} />
+                      <span style={{ fontSize: 13, fontWeight: 800, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+                        {priceText}
+                      </span>
+                      {hAmountDue > 0 && (
+                        <span style={{
+                          fontSize: 10, fontWeight: 600,
+                          color: isPaid ? '#15803D' : '#CC2229',
+                          fontFamily: 'Poppins, sans-serif',
+                        }}>
+                          {isPaid ? 'Paid' : 'Unpaid'}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* ETA badge */}
+                    {driveData && (
+                      <div style={{
+                        position: 'absolute', bottom: 10, left: 10,
+                        background: '#FFFFFF', borderRadius: 20, padding: '4px 10px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                        display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5,
+                      }}>
+                        <Car size={13} color="#1877D6" />
+                        <span style={{ fontSize: 12, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+                          {driveData.durationMinutes} min
+                        </span>
+                        {driveData.distanceText && (
+                          <span style={{ fontSize: 11, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>
+                            · {driveData.distanceText}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Directions badge */}
+                    <div style={{
+                      position: 'absolute', bottom: 10, right: 10,
+                      background: 'rgba(0,0,0,0.45)', borderRadius: 20, padding: '3px 8px',
+                      display: 'flex', alignItems: 'center', gap: 4,
+                    }}>
+                      <Navigation size={11} color="#FFFFFF" />
+                      <span style={{ fontSize: 10, color: '#FFFFFF', fontFamily: 'Poppins, sans-serif' }}>Directions</span>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Info strip */}
               <div style={{
-                padding: '14px 16px',
-                display: 'flex', alignItems: 'flex-start', gap: 12,
-                borderBottom: '1px solid #E4E8EF',
+                padding: '12px 14px',
+                display: 'flex', alignItems: 'center', gap: 10,
+                borderTop: '0.5px solid #E4E8EF',
               }}>
-                <PupilAvatar pupil={upcoming?.pupils ?? null} pupilId={upcoming?.pupil_id ?? null} size={36} />
-                <div style={{ flex: 1, minWidth: 0, paddingTop: 1 }}>
+                <PupilAvatar pupil={upcoming?.pupils ?? null} pupilId={upcoming?.pupil_id ?? null} size={40} />
+
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{
-                    fontSize: 18, fontWeight: 700, color: '#0B1F3A',
-                    fontFamily: 'Poppins, sans-serif', lineHeight: 1.25,
+                    fontSize: 14, fontWeight: 700, color: '#0B1F3A',
+                    fontFamily: 'Poppins, sans-serif',
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                   }}>
                     {pupilFullName || 'Pupil'}
                   </div>
                   <div style={{
-                    fontSize: 13, color: '#6B7686',
-                    fontFamily: 'Poppins, sans-serif', marginTop: 3,
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    fontSize: 11, color: '#6B7686',
+                    fontFamily: 'Poppins, sans-serif',
+                    display: 'flex', alignItems: 'center', gap: 3, marginTop: 2,
+                    overflow: 'hidden', whiteSpace: 'nowrap',
                   }}>
-                    {durationDecimal}hr{packageText ? (
-                      <span style={{ color: packageRunningLow ? '#CC2229' : undefined }}>
-                        {' · '}{packageText}
-                      </span>
-                    ) : null}
+                    <MapPin size={10} color="#6B7686" style={{ flexShrink: 0 }} />
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{pickup}</span>
                   </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+
+                <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'row', gap: 6 }}>
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); const phone = upcoming?.pupils?.phone; if (phone) window.location.href = `tel:${phone}`; }}
                     style={{
-                      width: 32, height: 32, borderRadius: '50%', background: '#EEF2F7', border: 'none',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+                      width: 30, height: 30, borderRadius: '50%', background: '#F1F5F9', border: 'none',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0,
                     }}
                   >
-                    <Phone size={16} color="#0B1F3A" />
+                    <Phone size={14} color="#6B7686" />
                   </button>
                   <button
                     type="button"
@@ -4882,44 +4997,32 @@ function HomePage() {
                     }}
                     style={{
                       position: 'relative',
-                      width: 32, height: 32, borderRadius: '50%', background: '#EEF2F7', border: 'none',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+                      width: 30, height: 30, borderRadius: '50%', background: '#F1F5F9', border: 'none',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0,
                     }}
                   >
-                    <MessageSquare size={16} color="#0B1F3A" />
+                    <MessageSquare size={14} color="#6B7686" />
                     {(upcomingSmsCount > 0 || upcomingAppCount > 0) && (
                       <div style={{
-                        position: 'absolute',
-                        top: -4, right: -4,
-                        display: 'flex', flexDirection: 'column', gap: 2,
-                        alignItems: 'flex-end',
+                        position: 'absolute', top: -4, right: -4,
+                        display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'flex-end',
                       }}>
                         {upcomingSmsCount > 0 && (
                           <span style={{
-                            minWidth: 14, height: 14,
-                            borderRadius: '50%',
-                            background: '#CC2229',
-                            color: '#FFFFFF',
-                            fontSize: 9, fontWeight: 700,
-                            fontFamily: 'Poppins, sans-serif',
+                            minWidth: 14, height: 14, borderRadius: '50%', background: '#CC2229',
+                            color: '#FFFFFF', fontSize: 9, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            padding: '0 3px',
-                            boxSizing: 'border-box',
+                            padding: '0 3px', boxSizing: 'border-box',
                           }}>
                             {upcomingSmsCount > 9 ? '9+' : upcomingSmsCount}
                           </span>
                         )}
                         {upcomingAppCount > 0 && (
                           <span style={{
-                            minWidth: 14, height: 14,
-                            borderRadius: '50%',
-                            background: '#1877D6',
-                            color: '#FFFFFF',
-                            fontSize: 9, fontWeight: 700,
-                            fontFamily: 'Poppins, sans-serif',
+                            minWidth: 14, height: 14, borderRadius: '50%', background: '#1877D6',
+                            color: '#FFFFFF', fontSize: 9, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            padding: '0 3px',
-                            boxSizing: 'border-box',
+                            padding: '0 3px', boxSizing: 'border-box',
                           }}>
                             {upcomingAppCount > 9 ? '9+' : upcomingAppCount}
                           </span>
@@ -4927,90 +5030,37 @@ function HomePage() {
                       </div>
                     )}
                   </button>
-
-                </div>
-              </div>
-
-              {/* Date / Time / Price grid */}
-              <div style={{
-                display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
-                alignItems: 'stretch', padding: '12px 16px',
-                borderBottom: '1px solid #E4E8EF',
-              }}>
-                {/* Date column */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingRight: 12, borderRight: '1px solid #E4E8EF' }}>
-                  <span style={{ width: 3, height: 32, borderRadius: 2, background: '#1877D6' }} />
-                  <div>
-                    <div style={{
-                      fontSize: 28, fontWeight: 700, color: '#0B1F3A', lineHeight: 1,
-                      fontFamily: 'Poppins, sans-serif',
-                    }}>
-                      {railDay}
-                    </div>
-                    <div style={{
-                      fontSize: 10, fontWeight: 600, color: '#6B7686',
-                      textTransform: 'uppercase', letterSpacing: '0.04em', marginTop: 2,
-                      fontFamily: 'Poppins, sans-serif',
-                    }}>
-                      {railDow}, {railMon}
-                    </div>
-                  </div>
                 </div>
 
-                {/* Time column */}
-                <div style={{
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                  padding: '0 12px', borderRight: '1px solid #E4E8EF', gap: 3,
-                }}>
-                  <div style={{
-                    display: 'flex', alignItems: 'center', gap: 4,
-                    fontSize: 10, fontWeight: 600, color: '#6B7686',
-                    textTransform: 'uppercase', letterSpacing: '0.04em',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}>
-                    <Clock size={12} color="#6B7686" />
-                    TIME
-                  </div>
-                  <div style={{
-                    fontSize: 14, fontWeight: 700, color: '#0B1F3A',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}>
+                <div style={{ flexShrink: 0, textAlign: 'right' }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
                     {startText}
                   </div>
-                </div>
-
-                {/* Price column */}
-                <div style={{
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                  paddingLeft: 12, gap: 4,
-                }}>
                   <div style={{
-                    fontSize: 10, fontWeight: 600, color: '#6B7686',
-                    textTransform: 'uppercase', letterSpacing: '0.04em',
-                    fontFamily: 'Poppins, sans-serif',
+                    fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase',
+                    letterSpacing: '0.06em', fontFamily: 'Poppins, sans-serif',
                   }}>
-                    PRICE
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    {isPaid && (
-                      <span style={{
-                        background: '#E4F5EA', color: '#2E7D4F',
-                        fontSize: 10, fontWeight: 600, padding: '2px 6px', borderRadius: 7,
-                        fontFamily: 'Poppins, sans-serif',
-                      }}>
-                        Paid
-                      </span>
-                    )}
-                    <span style={{
-                      fontSize: 17, fontWeight: 700, color: '#0B1F3A',
-                      fontFamily: 'Poppins, sans-serif',
-                    }}>
-                      {priceText}
-                    </span>
+                    {railDow} {railDay} {railMon}
                   </div>
                 </div>
 
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!upcoming?.pupil_id) return;
+                    navigate({ to: '/pupils/$id', params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any });
+                  }}
+                  style={{
+                    flexShrink: 0, background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                    display: 'flex', alignItems: 'center',
+                  }}
+                  aria-label="Open lesson"
+                >
+                  <ChevronRight size={16} color="#D1D5DB" />
+                </button>
               </div>
+
 
               {/* Reasons row */}
               {anyReason && (
