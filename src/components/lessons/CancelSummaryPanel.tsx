@@ -1,4 +1,4 @@
-import { describeChargeOption, type ChargeOption } from "@/lib/cancelCharge";
+import { describeChargeOption, normalizePayState, type ChargeOption } from "@/lib/cancelCharge";
 
 export function CancelSummaryPanel({
   reason,
