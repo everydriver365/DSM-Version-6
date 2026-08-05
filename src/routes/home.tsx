@@ -4677,15 +4677,20 @@ function HomePage() {
 
       {/* Next lesson section header */}
       {/* ============ NEXT LESSON CARD ============ */}
+      <SectionEyebrow
+        title="Next lesson"
+        linkLabel="Full schedule →"
+        onLink={() => navigate({ to: '/schedule' })}
+      />
 
       <div
         style={{
-          margin: '0 16px 0',
+          margin: '0 16px 20px',
           background: '#FFFFFF',
           borderRadius: upcoming && heroExpanded ? '16px 16px 0 0' : 16,
           boxShadow: '0 4px 16px rgba(11,31,58,0.08)',
           overflow: 'hidden',
-          fontFamily: 'Inter, sans-serif',
+          fontFamily: 'Poppins, sans-serif',
           position: 'relative',
         }}
       >
@@ -4803,38 +4808,8 @@ function HomePage() {
 
           return (
             <>
-              {/* Header strip */}
-              <div style={{
-                background: '#EEF2F7',
-                padding: '10px 14px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: 8,
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ width: 3, height: 12, borderRadius: 2, background: '#1877D6' }} />
-                  <span style={{
-                    fontSize: 11, fontWeight: 700, color: '#1877D6',
-                    letterSpacing: '0.06em', textTransform: 'uppercase',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}>
-                    NEXT LESSON
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: '/schedule' })}
-                  style={{
-                    background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', gap: 2,
-                    fontSize: 12, fontWeight: 600, color: '#1877D6',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}
-                >
-                  Full schedule <ChevronRight size={14} />
-                </button>
-              </div>
+              {/* Header strip moved to standard section eyebrow above the card */}
+
 
               {/* Map header */}
               {(() => {
