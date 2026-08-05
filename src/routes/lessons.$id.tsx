@@ -138,6 +138,8 @@ function LessonDetailPage() {
   const [deleting, setDeleting] = useState(false);
   const [insightDismissed, setInsightDismissed] = useState(false);
   const [autoCancelHandled, setAutoCancelHandled] = useState(false);
+  const [cancelOutcome, setCancelOutcome] = useState<string | null>(null);
+
 
   useEffect(() => {
     if (autoCancelHandled) return;
