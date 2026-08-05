@@ -24,6 +24,17 @@ const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 const GOOGLE_MAPS_KEY = "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
 const TOMTOM_API_KEY = "sU3STzRmGy7LHNUyIuTP6noG7vqqoISH";
 
+/** Derive a road classification from a road name / route number string. */
+function deriveRoadType(name?: string | null): string | null {
+  if (!name) return null;
+  const tag = name.trim().match(/^([MAB])\s?\d/i);
+  if (tag) {
+    const p = tag[1].toUpperCase();
+    return p === "M" ? "Motorway" : p === "A" ? "A Road" : "B Road";
+  }
+  return "Local road";
+}
+
 interface LessonRow {
   id: string;
   lesson_time: string;
