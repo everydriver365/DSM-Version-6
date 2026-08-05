@@ -1354,16 +1354,57 @@ function LivePage() {
             background: "#fff",
             padding: "16px 20px",
             borderRadius: 12,
-            maxWidth: 280,
+            maxWidth: 300,
+            width: "calc(100% - 40px)",
             textAlign: "center",
             color: "#0B1F3A",
             fontSize: 14,
             boxShadow: "0 8px 30px rgba(0,0,0,0.3)",
           }}
         >
-          {geoError}
+          <div style={{ marginBottom: 12, lineHeight: 1.4 }}>{geoError}</div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              type="button"
+              onClick={() => despiaCall("settingsapp://")}
+              style={{
+                flex: 1,
+                height: 42,
+                borderRadius: 10,
+                background: "#fff",
+                border: "1px solid #E2E8F0",
+                color: "#0B1F3A",
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Open settings
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setGeoError(null);
+                void startTracking(activeLessonId, activePupilId);
+              }}
+              style={{
+                flex: 1,
+                height: 42,
+                borderRadius: 10,
+                background: "#1877D6",
+                border: "none",
+                color: "#fff",
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Try again
+            </button>
+          </div>
         </div>
       )}
+
 
       {/* UNIFIED SPEED PILL */}
       {(() => {
