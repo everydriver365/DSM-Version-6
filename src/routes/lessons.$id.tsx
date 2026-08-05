@@ -173,7 +173,7 @@ function LessonDetailPage() {
     supabase
       .from("lessons")
       .select(
-        "id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_address, pupil_id, payment_status, amount_due, pupils(id, name, phone)",
+        "id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_address, pupil_id, payment_status, amount_due, cancellation_reason, cancellation_notes, cancelled_at, pupils(id, name, phone)",
       )
       .eq("id", id)
       .is("deleted_at", null)
@@ -190,6 +190,32 @@ function LessonDetailPage() {
         setLoading(false);
       });
   }, [id]);
+
+  // Charge outcome recorded at cancellation time
+  useEffect(() => {
+    if (!lesson || lesson.status !== "cancelled") {
+      setCancelOutcome(null);
+      return;
+    }
+    let stop = false;
+    (async () => {
+      const { data } = await supabase
+        .from("lesson_history")
+        .select("notes, created_at")
+        .eq("pupil_id", lesson.pupil_id)
+        .eq("payment_method", "cancellation")
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (stop) return;
+      const note = (data as { notes: string | null }[] | null)?.[0]?.notes ?? "";
+      const parts = note.split(" · ");
+      setCancelOutcome(parts.length > 1 ? parts[parts.length - 1] : null);
+    })();
+    return () => {
+      stop = true;
+    };
+  }, [lesson]);
+
 
 
   useEffect(() => {
