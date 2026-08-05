@@ -137,9 +137,7 @@ function WhatsChangedPage() {
         ? new Date(Date.now() - 24 * 60 * 60 * 1000)
         : since
       ).toISOString();
-      try {
-        localStorage.setItem(key, new Date().toISOString());
-      } catch {}
+      // Do NOT update lastLogin here — update after queries
 
       const [
         lessonsNew,
@@ -348,6 +346,9 @@ function WhatsChangedPage() {
 
       setSections(built);
       setLoading(false);
+      try {
+        localStorage.setItem(key, new Date().toISOString());
+      } catch {}
     })();
     return () => {
       cancelled = true;
