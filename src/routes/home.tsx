@@ -490,17 +490,28 @@ const SECTION_HEADER_STYLE: React.CSSProperties = {
   marginBottom: 14,
 };
 
-const SECTION_TITLE_STYLE: React.CSSProperties = {
-  fontSize: 18,
-  fontWeight: 700,
-  color: '#0B1F3A',
+const SECTION_TITLE_BAR_STYLE: React.CSSProperties = {
+  display: 'inline-block',
+  width: 3,
+  height: 12,
+  borderRadius: 2,
+  backgroundColor: '#1877D6',
+  flexShrink: 0,
+};
+
+const SECTION_TITLE_TEXT_STYLE: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 600,
+  color: '#1877D6',
+  textTransform: 'uppercase',
+  letterSpacing: '0.12em',
   fontFamily: 'Poppins, sans-serif',
 };
 
 const SECTION_LINK_STYLE: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
-  gap: 4,
+  gap: 2,
   fontSize: 13,
   fontWeight: 600,
   color: '#1877D6',
