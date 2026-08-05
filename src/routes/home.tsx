@@ -5579,7 +5579,10 @@ function HomePage() {
           return (
             <>
               <div style={{ ...SECTION_HEADER_STYLE, padding: '0 16px' }}>
-                <span style={SECTION_TITLE_STYLE}>Community</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+                  <span style={SECTION_TITLE_TEXT_STYLE}>Community</span>
+                </div>
               </div>
               <div style={{
                 margin: '0 16px 20px', background: '#FFFFFF', borderRadius: 16,
@@ -6270,7 +6273,10 @@ function HomePage() {
 
             {/* 3. TIMELINE with TABS */}
             <div style={{ ...SECTION_HEADER_STYLE, padding: '0 16px' }}>
-              <span style={SECTION_TITLE_STYLE}>Teaching schedule</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+                <span style={SECTION_TITLE_TEXT_STYLE}>Teaching schedule</span>
+              </div>
             </div>
 
 
@@ -7123,7 +7129,10 @@ function HomePage() {
               return (
                 <>
         <div style={{ ...SECTION_HEADER_STYLE, padding: '0 16px' }}>
-          <span style={SECTION_TITLE_STYLE}>Upcoming tests</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+            <span style={SECTION_TITLE_TEXT_STYLE}>Upcoming tests</span>
+          </div>
         </div>
         {/* ============ UPCOMING TESTS CARD ============ */}
         {(() => {
