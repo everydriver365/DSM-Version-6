@@ -747,7 +747,18 @@ export function LessonActionsSheet({
                   <div style={chargeSub}>No refund — full payment retained</div>
                 </button>
               )}
-            </div>
+            {/* SECTION 4 — Summary */}
+            {cancelReason && (
+              <CancelSummaryPanel
+                reason={cancelReason}
+                notes={cancelNote}
+                chargeOption={chargeOption}
+                cancelFee={cancelFee}
+                amountDue={lesson.amount_due}
+                paymentStatus={payStatus}
+              />
+            )}
+
 
             <button
               type="button"
