@@ -64,6 +64,12 @@ function OnboardingPage() {
 
   const [hours, setHours] = useState<Record<Day, DayHours>>(DEFAULT_HOURS);
 
+  const [hourlyRate, setHourlyRate] = useState("");
+  const [homePostcode, setHomePostcode] = useState("");
+
+  const [adiNumber, setAdiNumber] = useState("");
+  const [adiGrade, setAdiGrade] = useState<"" | "A" | "B">("");
+
   const [websiteChoice, setWebsiteChoice] = useState<WebsiteChoice>(null);
   const [wantsCustomDomain, setWantsCustomDomain] = useState(false);
   const [existingWebsiteUrl, setExistingWebsiteUrl] = useState("");
