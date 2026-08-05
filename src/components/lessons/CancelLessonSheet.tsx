@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
+import { CancelSummaryPanel } from "@/components/lessons/CancelSummaryPanel";
 import { recordRefund } from "@/lib/payments";
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
@@ -299,6 +300,19 @@ export function CancelLessonSheet({
                 </>
               )}
             </div>
+
+            {/* Summary */}
+            <div className="px-4">
+              <CancelSummaryPanel
+                reason={reason}
+                notes={notes}
+                chargeOption={chargeAmount > 0 ? "fee" : "none"}
+                cancelFee={chargeAmount > 0 ? chargeAmount : undefined}
+                amountDue={amountDue}
+                paymentStatus={paymentStatus}
+              />
+            </div>
+
 
             <div className="px-4 mt-4 flex flex-col gap-2">
               {chargeAmount > 0 && (

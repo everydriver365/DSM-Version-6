@@ -26,6 +26,7 @@ import {
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
+import { CancelSummaryPanel } from "@/components/lessons/CancelSummaryPanel";
 import { supabase } from "@/lib/supabaseClient";
 import { verifyAddress } from "@/lib/geocode.functions";
 
@@ -747,7 +748,19 @@ export function LessonActionsSheet({
                   <div style={chargeSub}>No refund — full payment retained</div>
                 </button>
               )}
+            {/* SECTION 4 — Summary */}
+            {cancelReason && (
+              <CancelSummaryPanel
+                reason={cancelReason}
+                notes={cancelNote}
+                chargeOption={chargeOption}
+                cancelFee={cancelFee}
+                amountDue={lesson.amount_due}
+                paymentStatus={payStatus}
+              />
+            )}
             </div>
+
 
             <button
               type="button"

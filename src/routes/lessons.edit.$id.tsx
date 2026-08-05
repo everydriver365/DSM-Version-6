@@ -8,6 +8,7 @@ import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { recordPayment } from "@/lib/payments";
+import { CancelSummaryPanel } from "@/components/lessons/CancelSummaryPanel";
 
 export const Route = createFileRoute("/lessons/edit/$id")({
   head: () => ({
@@ -597,6 +598,18 @@ function EditLessonPage() {
                     </button>
                   )}
                 </div>
+
+                {/* Summary */}
+                {cancelReason && (
+                  <CancelSummaryPanel
+                    reason={cancelReason}
+                    notes={cancelNote}
+                    chargeOption={chargeOption}
+                    cancelFee={cancelFee}
+                    amountDue={amountDue}
+                    paymentStatus={paymentStatus}
+                  />
+                )}
 
                 <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14 }}>
                   <button
