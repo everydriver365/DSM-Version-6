@@ -1093,14 +1093,18 @@ function PupilThreadPage() {
                     </div>
                     <div
                       style={{
-                        fontSize: 10,
-                        color: mine ? "#9CA3AF" : "#9CA3AF",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
                         marginTop: 3,
                         alignSelf: mine ? "flex-end" : "flex-start",
                         ...POPPINS,
                       }}
                     >
-                      {formatTime(m.created_at)}
+                      <span style={{ fontSize: 10, color: "#9CA3AF" }}>
+                        {formatTime(m.created_at)}
+                      </span>
+                      {mine && <MessageStatus message={m} />}
                     </div>
                   </div>
                 </div>
