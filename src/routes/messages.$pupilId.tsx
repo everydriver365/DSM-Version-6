@@ -1,10 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { Phone, Send, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { Phone, Send, AlertTriangle, CheckCircle2, ChevronLeft, Paperclip } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+
 
 export const Route = createFileRoute("/messages/$pupilId")({
   head: () => ({
