@@ -508,10 +508,13 @@ function LivePage() {
         }
       }
 
-      // Prefer route number (A31, M27) over street name
+      // Prefer route number (A31, M27) plus street name when both exist
       const routeNumbers: string[] | undefined = addr?.routeNumbers;
-      if (routeNumbers?.length) road = routeNumbers[0];
-      else if (addr?.streetName) road = addr.streetName;
+      const routeNum = routeNumbers?.[0]?.trim();
+      const streetName = addr?.streetName?.trim();
+      if (routeNum && streetName) road = `${routeNum} · ${streetName}`;
+      else if (routeNum) road = routeNum;
+      else if (streetName) road = streetName;
       else if (addr?.street) road = addr.street;
       else if (addr?.municipalitySubdivision) road = addr.municipalitySubdivision;
 
@@ -1402,7 +1405,7 @@ function LivePage() {
       {/* UNIFIED SPEED PILL */}
       {(() => {
         const rn = roadName ?? "";
-        const m = rn.match(/^([AB]\s?\d+)\b[\s,·-]*(.*)$/i);
+        const m = rn.match(/^([MABE]\s?\d+[A-Z]*)\b[\s,·-]*(.*)$/i);
         const roadTag = m ? m[1].replace(/\s/g, "").toUpperCase() : null;
         const roadLabel = m ? (m[2] || "").trim() || null : rn || null;
         const over = isOverSpeeding && speedLimit != null && currentSpeed != null;
@@ -1425,7 +1428,7 @@ function LivePage() {
             {/* Top row */}
             <div
               className="flex items-center justify-between"
-              style={{ padding: "8px 14px", height: 53 }}
+              style={{ padding: "8px 14px", height: 54 }}
             >
               <div className="flex items-end" style={{ gap: 10 }}>
                 {/* Speed limit circle + overspeed badge */}
@@ -1469,39 +1472,19 @@ function LivePage() {
                   )}
                 </div>
 
-                {/* Current speed, baseline aligned */}
-                <div className="flex items-center" style={{ gap: 8 }}>
-                  <div className="flex items-baseline" style={{ gap: 4 }}>
-                    <span
-                      style={{
-                        fontSize: 28,
-                        fontWeight: 800,
-                        lineHeight: 1,
-                        color: over ? "#FF6B6B" : speedColor,
-                      }}
-                    >
-                      {currentSpeed ?? 0}
-                    </span>
-                    <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>mph</span>
-                  </div>
-                  {roadType && (
-                    <span
-                      style={{
-                        flexShrink: 0,
-                        background:
-                          roadType === "Motorway" ? "#1877D6" : roadType === "A Road" ? "#1A9C56" : "#fff",
-                        color:
-                          roadType === "B Road" ? "#0B1F3A" : "#fff",
-                        fontSize: 9,
-                        fontWeight: 700,
-                        padding: "2px 7px",
-                        borderRadius: 20,
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {roadType}
-                    </span>
-                  )}
+                {/* Current speed */}
+                <div className="flex items-baseline" style={{ gap: 4 }}>
+                  <span
+                    style={{
+                      fontSize: 28,
+                      fontWeight: 800,
+                      lineHeight: 1,
+                      color: over ? "#FF6B6B" : speedColor,
+                    }}
+                  >
+                    {currentSpeed ?? 0}
+                  </span>
+                  <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>mph</span>
                 </div>
               </div>
 
@@ -1522,11 +1505,28 @@ function LivePage() {
             {/* Divider */}
             <div style={{ height: 1, background: "rgba(255,255,255,0.12)", width: "100%" }} />
 
-            {/* Road info row */}
+            {/* Road info row — centred, side-by-side pills */}
             <div
-              className="flex items-center"
+              className="flex items-center justify-center"
               style={{ padding: "0 14px", height: 32, gap: 8, minWidth: 0 }}
             >
+              {roadType && (
+                <span
+                  style={{
+                    flexShrink: 0,
+                    background:
+                      roadType === "Motorway" ? "#1877D6" : roadType === "A Road" ? "#1A9C56" : "#fff",
+                    color: roadType === "B Road" ? "#0B1F3A" : "#fff",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    padding: "2px 7px",
+                    borderRadius: 20,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {roadType}
+                </span>
+              )}
               {roadTag && (
                 <span
                   style={{
@@ -1541,22 +1541,21 @@ function LivePage() {
                     lineHeight: 1.2,
                   }}
                 >
-                  {roadTag}
+                  {roadLabel ? `${roadTag} · ${roadLabel}` : roadTag}
                 </span>
               )}
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: roadLabel ? "#fff" : "rgba(255,255,255,0.4)",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  minWidth: 0,
-                }}
-              >
-                {roadLabel ?? (roadTag ? "" : "Road not identified")}
-              </span>
+              {!roadType && !roadTag && (
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "rgba(255,255,255,0.4)",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Road not identified
+                </span>
+              )}
             </div>
           </div>
         );
