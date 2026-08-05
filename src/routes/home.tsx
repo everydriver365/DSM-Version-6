@@ -4940,8 +4940,8 @@ function HomePage() {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSendMessagePupilId(upcoming?.pupil_id ?? undefined);
-                      setSendMessageOpen(true);
+                      if (!upcoming?.pupil_id) return;
+                      setLessonMsgsPupil({ id: upcoming.pupil_id, name: pupilFullName || 'Pupil' });
                     }}
                     style={{
                       position: 'relative',
