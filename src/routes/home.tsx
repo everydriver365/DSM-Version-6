@@ -55,7 +55,9 @@ import {
   HelpCircle,
   Calculator,
   ClipboardList,
+  Copy,
   ClipboardCheck,
+
   Fuel,
   Heart,
   FolderOpen,
