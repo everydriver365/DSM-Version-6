@@ -1837,7 +1837,7 @@ function HomePage() {
       } catch {}
     })();
     return () => { cancelled = true; };
-  }, [userId]);
+  }, [userId, reloadKey]);
 
   // Local alerts (community issues) — filtered by instructor's outcode.
   useEffect(() => {
@@ -1955,7 +1955,7 @@ function HomePage() {
       }
     })();
     return () => { cancelled = true; };
-  }, [userId]);
+  }, [userId, localRoom?.id, ukRoom?.id, reloadKey]);
 
 
   // Pupil cancellations (last 24h) + unread reschedule requests
