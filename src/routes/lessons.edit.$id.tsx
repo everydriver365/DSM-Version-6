@@ -623,8 +623,10 @@ function EditLessonPage() {
                         .update({
                           status: "cancelled",
                           payment_status: "cancelled",
-                          notes: [notes, cancelReason, cancelNote].filter(Boolean).join(" · "),
-                        })
+                          cancellation_reason: cancelReason,
+                          cancellation_notes: cancelNote || null,
+                          cancelled_at: new Date().toISOString(),
+                        } as never)
                         .eq("id", id);
                       if (updErr) {
                         console.error("[edit-lesson] cancel error", updErr);
@@ -649,6 +651,10 @@ function EditLessonPage() {
                       }
 
                       const { recordRefund } = await import("@/lib/payments");
+                      const feeAmt = Number(cancelFee) || 0;
+                      let outcome = "No charge";
+                      if (chargeOption === "fee") outcome = `Cancellation fee £${feeAmt.toFixed(2)} retained`;
+                      if (chargeOption === "full") outcome = "Full charge retained";
                       if (
                         chargeOption === "none" &&
                         (paymentStatus === "paid" || paymentStatus === "partial")
@@ -661,14 +667,13 @@ function EditLessonPage() {
                           currentAccountBalance: 0,
                         });
                       } else if (chargeOption === "fee") {
-                        const fee = Number(cancelFee) || 0;
-                        const refund = Number(amountDue ?? 0) - fee;
+                        const refund = Number(amountDue ?? 0) - feeAmt;
                         if (refund > 0) {
                           await recordRefund({
                             pupilId,
                             amount: refund,
                             method: "cash",
-                            notes: `Partial refund — cancellation fee £${fee} retained`,
+                            notes: `Partial refund — cancellation fee £${feeAmt} retained`,
                             currentAccountBalance: 0,
                           });
                         }
@@ -683,6 +688,21 @@ function EditLessonPage() {
                           created_at: new Date().toISOString(),
                         } as never);
                       }
+
+                      // Audit row capturing the cancellation reason, notes and outcome
+                      await supabase.from("lesson_history").insert({
+                        instructor_id: userRes.user?.id ?? "",
+                        pupil_id: pupilId,
+                        amount_paid:
+                          chargeOption === "full"
+                            ? Number(amountDue ?? 0)
+                            : chargeOption === "fee" ? feeAmt : 0,
+                        payment_method: "cancellation",
+                        payment_status: "cancelled",
+                        notes: `Cancelled — ${cancelReason}${cancelNote ? ` — ${cancelNote}` : ""} · ${outcome}`,
+                        created_at: new Date().toISOString(),
+                      } as never);
+
 
                       if (chargeOption === "none" && paymentStatus === "prepaid") {
                         const { data: pRow } = await supabase
