@@ -38,4 +38,14 @@ describe("buildPickup", () => {
   test("matches postcode despite casing differences", () => {
     expect(buildPickup(null, "1 HIGH STREET SO52 9EW", "so52 9ew")).toBe("1 HIGH STREET SO52 9EW");
   });
+
+  test("removes trailing commas from address before appending postcode", () => {
+    expect(buildPickup(null, "1 High Street,", "SO52 9EW")).toBe("1 High Street, SO52 9EW");
+    expect(buildPickup(null, "1 High Street,,  ", "SO52 9EW")).toBe("1 High Street, SO52 9EW");
+  });
+
+  test("removes trailing commas when postcode is already in address", () => {
+    expect(buildPickup(null, "1 High Street, SO52 9EW,", "SO52 9EW")).toBe("1 High Street, SO52 9EW");
+  });
+
 });
