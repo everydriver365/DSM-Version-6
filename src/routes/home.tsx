@@ -1860,7 +1860,7 @@ function HomePage() {
       try {
         const { data, error } = await supabase
           .from('chat_messages')
-          .select('id, pupil_id, source, body, created_at, read_at, pupils(name, first_name, profile_image_url, photo_url)')
+          .select('id, pupil_id, body, created_at, read_at, pupils(name, first_name, profile_image_url, photo_url)')
           .eq('instructor_id', userId)
           .eq('sender_type', 'pupil')
           .is('read_at', null)
