@@ -858,9 +858,31 @@ function LivePage() {
     console.log("[live] position update:", pos.coords.latitude, pos.coords.longitude, "speed:", pos.coords.speed);
     const mph = speedMs != null && speedMs > 0 ? Math.round(speedMs * 2.23694) : 0;
     const heading = pos.coords.heading ?? null;
-    const point: Coord = { lat, lng, speed_mph: mph, heading, timestamp: Date.now(), road_name: roadNameRef.current, speed_limit_mph: speedLimitRef.current };
-
+    const accuracy = pos.coords.accuracy ?? 999;
+    if (accuracy > 50) {
+      // GPS accuracy worse than 50m — skip this point
+      console.log("[live] skipping low accuracy point:", accuracy + "m");
+      return;
+    }
     const prev = coordsRef.current[coordsRef.current.length - 1];
+    if (prev) {
+      const dMetres = haversineKm(prev, { lat, lng }) * 1000;
+      if (dMetres < 5) {
+        // Less than 5 metres from last point — skip (stationary jitter)
+        return;
+      }
+    }
+    if (prev && mph > 0) {
+      const timeDiff = (Date.now() - prev.timestamp) / 1000;
+      const prevMph = prev.speed_mph ?? 0;
+      const speedJump = Math.abs(mph - prevMph);
+      if (timeDiff < 2 && speedJump > 40) {
+        // Speed jumped more than 40mph in under 2 seconds — GPS glitch, skip this point
+        console.log("[live] skipping speed anomaly:", speedJump + "mph jump");
+        return;
+      }
+    }
+    const point: Coord = { lat, lng, speed_mph: mph, heading, timestamp: Date.now(), road_name: roadNameRef.current, speed_limit_mph: speedLimitRef.current };
     if (prev) {
       const dKm = haversineKm(prev, { lat, lng });
       if (dKm < 5) setDistanceKm((d) => d + dKm);
