@@ -71,7 +71,11 @@ interface Lesson {
   pupil_id: string;
   payment_status: string | null;
   amount_due: number | null;
+  cancellation_reason?: string | null;
+  cancellation_notes?: string | null;
+  cancelled_at?: string | null;
   pupils: { id: string; name: string; phone: string | null } | null;
+
 }
 
 interface RouteRow {
