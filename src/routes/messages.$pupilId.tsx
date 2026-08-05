@@ -958,7 +958,10 @@ function PupilThreadPage() {
         </button>
         <textarea
           value={messageText}
-          onChange={(e) => setMessageText(e.target.value)}
+          onChange={(e) => {
+            setMessageText(e.target.value);
+            if (e.target.value.trim()) notifyTyping();
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
