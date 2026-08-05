@@ -7305,14 +7305,15 @@ function HomePage() {
         })()}
 
 
-                  <style>{`
-                    .qa-card:active { transform: scale(0.975); }
-                    .qa-card:active .qa-icon { transform: scale(0.92); }
-                    @keyframes qaRipple { 0% { transform: scale(0); opacity: 0.35; } 100% { transform: scale(2.6); opacity: 0; } }
-                    .qa-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at center, rgba(15,32,68,0.18) 0%, transparent 60%); opacity: 0; pointer-events: none; }
-                    .qa-card:active::after { animation: qaRipple 0.5s ease-out; }
-                  `}</style>
-                    <div style={{ background: PAGE_BACKGROUND, margin: '0 -16px 0', padding: '0 16px 0', borderRadius: 0 }}>
+            <div style={SECTION_WRAPPER_STYLE}>
+              <style>{`
+                .qa-card:active { transform: scale(0.975); }
+                .qa-card:active .qa-icon { transform: scale(0.92); }
+                @keyframes qaRipple { 0% { transform: scale(0); opacity: 0.35; } 100% { transform: scale(2.6); opacity: 0; } }
+                .qa-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at center, rgba(15,32,68,0.18) 0%, transparent 60%); opacity: 0; pointer-events: none; }
+                .qa-card:active::after { animation: qaRipple 0.5s ease-out; }
+              `}</style>
+                <div style={{ background: PAGE_BACKGROUND, margin: 0, padding: 0, borderRadius: 0 }}>
                       <div style={SECTION_HEADER_STYLE}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                           <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
