@@ -4830,50 +4830,15 @@ function HomePage() {
 
           return (
             <>
-              {/* Header matching Discover SectionHeader style */}
-              <div style={{
-                padding: '12px 12px 10px',
-                borderRadius: '16px 16px 0 0',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span
-                    aria-hidden
-                    style={{
-                      display: 'inline-block',
-                      width: 3,
-                      height: 12,
-                      borderRadius: 2,
-                      backgroundColor: '#1877D6',
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 600,
-                      color: '#1877D6',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.12em',
-                      fontFamily: 'Poppins, sans-serif',
-                    }}
-                  >
-                    Next Lesson
-                  </span>
-                </div>
-                <span
+              <div style={{ ...SECTION_HEADER_STYLE, padding: '12px 16px 0' }}>
+                <span style={SECTION_TITLE_STYLE}>Next lesson</span>
+                <button
+                  type="button"
                   onClick={() => navigate({ to: '/schedule' })}
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: '#1877D6',
-                    fontFamily: 'Poppins, sans-serif',
-                    cursor: 'pointer',
-                  }}
+                  style={SECTION_LINK_STYLE}
                 >
-                  Full schedule ›
-                </span>
+                  Full schedule <ArrowRight size={14} />
+                </button>
               </div>
 
               {/* Map header */}
