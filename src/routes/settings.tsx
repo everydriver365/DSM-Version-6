@@ -41,6 +41,11 @@ import {
   writeMinGapMinutes,
   DEFAULT_MIN_GAP_MINUTES,
 } from "../lib/gapPrefs";
+import {
+  readBadgePrefs,
+  writeBadgePrefs,
+  DEFAULT_BADGE_PREFS,
+} from "../lib/badgePrefs";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
