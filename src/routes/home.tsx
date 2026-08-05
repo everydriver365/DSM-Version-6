@@ -5564,7 +5564,9 @@ function HomePage() {
 
           return (
             <>
-              <SectionEyebrow title="Community" />
+              <div style={{ ...SECTION_HEADER_STYLE, padding: '0 16px' }}>
+                <span style={SECTION_TITLE_STYLE}>Community</span>
+              </div>
               <div style={{
                 margin: '0 16px 20px', background: '#FFFFFF', borderRadius: 16,
                 border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
@@ -6253,7 +6255,9 @@ function HomePage() {
 
 
             {/* 3. TIMELINE with TABS */}
-            <SectionEyebrow title="Teaching schedule" />
+            <div style={{ ...SECTION_HEADER_STYLE, padding: '0 16px' }}>
+              <span style={SECTION_TITLE_STYLE}>Teaching schedule</span>
+            </div>
 
 
             {(() => {
@@ -7104,7 +7108,9 @@ function HomePage() {
 
               return (
                 <>
-        <SectionEyebrow title="Upcoming tests" />
+        <div style={{ ...SECTION_HEADER_STYLE, padding: '0 16px' }}>
+          <span style={SECTION_TITLE_STYLE}>Upcoming tests</span>
+        </div>
         {/* ============ UPCOMING TESTS CARD ============ */}
         {(() => {
           const parseDate = (iso: string) => {
