@@ -1955,7 +1955,7 @@ function HomePage() {
       }
     })();
     return () => { cancelled = true; };
-  }, [userId, localRoom?.id, ukRoom?.id, reloadKey]);
+  }, [userId, reloadKey]);
 
 
   // Pupil cancellations (last 24h) + unread reschedule requests
