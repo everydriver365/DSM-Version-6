@@ -2903,10 +2903,31 @@ function HomePage() {
   // New message anywhere in the app (pupil / local chat / admin thread)
   // -> refresh home so unread badges and previews stay in sync.
   useEffect(() => {
+    if (!userId) return;
+
+    // Listen for window event (from messages page)
     const handler = () => setReloadKey((k) => k + 1);
     window.addEventListener("dsm-message-received", handler);
-    return () => window.removeEventListener("dsm-message-received", handler);
-  }, []);
+
+    // Also subscribe directly to chat_messages
+    // so home updates even when messages page isn't open
+    const channel = supabase
+      .channel(`home-messages-${userId}`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'chat_messages',
+        filter: `instructor_id=eq.${userId}`,
+      }, () => {
+        setReloadKey((k) => k + 1);
+      })
+      .subscribe();
+
+    return () => {
+      window.removeEventListener("dsm-message-received", handler);
+      supabase.removeChannel(channel);
+    };
+  }, [userId]);
 
 
   useEffect(() => {
