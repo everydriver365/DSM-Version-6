@@ -89,6 +89,37 @@ function formatTime(iso: string) {
   });
 }
 
+function dayKey(iso: string) {
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+function dayLabel(iso: string) {
+  const d = new Date(iso);
+  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+  if (dayKey(iso) === dayKey(today.toISOString())) return "TODAY";
+  if (dayKey(iso) === dayKey(yesterday.toISOString())) return "YESTERDAY";
+  return d
+    .toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })
+    .toUpperCase();
+}
+
+function initialsOf(name: string) {
+  return (
+    name
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((p) => p.charAt(0).toUpperCase())
+      .join("") || "?"
+  );
+}
+
+const SYSTEM_TYPES = ["call", "missed_call", "sms_event", "system", "event"];
+
+
 function PupilThreadPage() {
   const { pupilId } = Route.useParams();
   const navigate = useNavigate();
