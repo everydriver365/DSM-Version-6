@@ -1607,7 +1607,7 @@ function LivePage() {
             {/* Road info row — left justified, sign then name */}
             <div
               className="flex items-center justify-start"
-              style={{ padding: "0 14px", height: 34, gap: 12, minWidth: 0 }}
+              style={{ padding: "0 14px", height: 40, gap: 12, minWidth: 0 }}
             >
               {roadType && roadType !== "Local road" && (
                 <span className="flex items-center" style={{ flexShrink: 0, gap: 6 }}>
