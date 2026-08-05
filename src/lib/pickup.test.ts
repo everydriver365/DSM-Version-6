@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { buildPickup } from "./pickup";
+import { buildPickup, getPickupParts } from "./pickup";
+
 
 describe("buildPickup", () => {
   test("uses explicit pickup location when provided", () => {
