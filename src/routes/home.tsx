@@ -171,7 +171,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../components/ui/dialog";
-import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 import { PushPermissionCard } from "../components/dsm/PushPermissionCard";
 import {
@@ -481,7 +480,57 @@ interface PupilReadySetting {
   short_notice_opt_in: boolean | null;
 }
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+
+/** Standard DSM section eyebrow header used above every home section. */
+function SectionEyebrow({
+  title,
+  linkLabel,
+  onLink,
+}: {
+  title: string;
+  linkLabel?: string;
+  onLink?: () => void;
+}) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 8,
+        padding: '0 16px',
+      }}
+    >
+      <span
+        style={{
+          fontSize: 10,
+          fontWeight: 600,
+          color: '#9CA3AF',
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em',
+          fontFamily: 'Poppins, sans-serif',
+        }}
+      >
+        {title}
+      </span>
+      {linkLabel ? (
+        <span
+          onClick={onLink}
+          style={{
+            fontSize: 12,
+            fontWeight: 500,
+            color: '#1877D6',
+            fontFamily: 'Poppins, sans-serif',
+            cursor: 'pointer',
+          }}
+        >
+          {linkLabel}
+        </span>
+      ) : null}
+    </div>
+  );
+}
 // Default weekly goals — should come from instructor settings
 // (instructors.weekly_lesson_goal / weekly_earnings_goal). We fall back to
 // these defaults if the columns don't exist or the row hasn't been populated.
@@ -592,10 +641,10 @@ function NeedsAttentionRow({ item }: { item: NAItem }) {
         <Icon size={18} color={accent} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 500, color: '#12142B', fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <div style={{ fontSize: 13, fontWeight: 500, color: '#12142B', fontFamily: 'Poppins, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {item.primary}
         </div>
-        <div style={{ fontSize: 11, color: '#8A94A6', marginTop: 1, fontFamily: 'Inter, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <div style={{ fontSize: 11, color: '#8A94A6', marginTop: 1, fontFamily: 'Poppins, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {item.subtitle}
         </div>
       </div>
@@ -611,8 +660,8 @@ function NeedsAttentionAllClear() {
         <IconCircleCheck size={18} color="#2E9E5B" />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 500, color: '#12142B', fontFamily: 'Inter, sans-serif' }}>All clear</div>
-        <div style={{ fontSize: 11, color: '#8A94A6', marginTop: 1, fontFamily: 'Inter, sans-serif' }}>Nothing needs your attention</div>
+        <div style={{ fontSize: 13, fontWeight: 500, color: '#12142B', fontFamily: 'Poppins, sans-serif' }}>All clear</div>
+        <div style={{ fontSize: 11, color: '#8A94A6', marginTop: 1, fontFamily: 'Poppins, sans-serif' }}>Nothing needs your attention</div>
       </div>
     </div>
   );
@@ -634,8 +683,8 @@ function NeedsAttentionSection({ items }: { items: NAItem[] }) {
   return (
     <div style={{ margin: '0 16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-        <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Inter, sans-serif' }}>Needs attention</div>
-        <div style={{ background: '#FCEBEB', color: '#CC2229', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 999, fontFamily: 'Inter, sans-serif' }}>
+        <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>Needs attention</div>
+        <div style={{ background: '#FCEBEB', color: '#CC2229', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 999, fontFamily: 'Poppins, sans-serif' }}>
           {active.length} urgent
         </div>
       </div>
@@ -796,7 +845,7 @@ function TodayLessonsTile({
         gap: 12,
         cursor: "pointer",
         textAlign: "left",
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Poppins, sans-serif",
       }}
     >
       <span
@@ -1113,7 +1162,7 @@ function TileCard({
         justifyContent: "flex-start",
         cursor: "pointer",
         textAlign: "left",
-        fontFamily: "Poppins, Inter, sans-serif",
+        fontFamily: "Poppins, sans-serif",
         transition: "transform 0.15s ease, box-shadow 0.2s ease",
         overflow: "hidden",
         boxShadow: "0 2px 10px -4px rgba(11, 31, 58, 0.10)",
@@ -1199,7 +1248,7 @@ function TileCard({
           whiteSpace: "nowrap",
           maxWidth: "calc(100% - 56px)",
           marginLeft: 20,
-          fontFamily: "Poppins, Inter, sans-serif",
+          fontFamily: "Poppins, sans-serif",
         }}
       >
         {title}
@@ -1215,7 +1264,7 @@ function TileCard({
           marginLeft: 20,
           whiteSpace: subtitle.includes("\n") ? "pre-line" : "nowrap",
           lineHeight: 1.3,
-          fontFamily: "Poppins, Inter, sans-serif",
+          fontFamily: "Poppins, sans-serif",
         }}
       >
         {subtitle}
@@ -1243,7 +1292,7 @@ function TileCard({
 
 
 function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
-  const PF = "Inter, sans-serif";
+  const PF = "Poppins, sans-serif";
   const NAVY = '#12142B';
   const [page, setPage] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -2269,7 +2318,7 @@ function HomePage() {
           gap: 12,
           cursor: "pointer",
           boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Poppins, sans-serif",
           pointerEvents: toastVisible ? "auto" : "none",
         }}
       >
@@ -3822,7 +3871,7 @@ function HomePage() {
               fontSize: 12,
               fontWeight: 700,
               color: timeColor,
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
               flexShrink: 0,
               minWidth: 48,
             }}
@@ -3830,7 +3879,7 @@ function HomePage() {
             {formatTime(l)}
           </span>
         )}
-        <div style={{ minWidth: 0, fontSize: 13, fontWeight: 600, color: nameColor, fontFamily: "Inter, sans-serif" }} className="truncate flex-1">
+        <div style={{ minWidth: 0, fontSize: 13, fontWeight: 600, color: nameColor, fontFamily: "Poppins, sans-serif" }} className="truncate flex-1">
           {pupilName(l)}
         </div>
         <div className="flex items-center" style={{ gap: 4, flexShrink: 0 }}>
@@ -3850,7 +3899,7 @@ function HomePage() {
                   backgroundColor: b.bg,
                   color: b.color,
                   fontWeight: 700,
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Poppins, sans-serif",
                   lineHeight: 1.4,
                   border: "none",
                   cursor: "pointer",
@@ -3868,7 +3917,7 @@ function HomePage() {
                   backgroundColor: b.bg,
                   color: b.color,
                   fontWeight: 700,
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Poppins, sans-serif",
                   lineHeight: 1.4,
                 }}
               >
@@ -3928,7 +3977,7 @@ function HomePage() {
               color: timeColor,
               textDecoration: isPast ? "line-through" : "none",
               zIndex: 1,
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
             }}
           >
             {formatTime(l)}
@@ -4152,13 +4201,13 @@ function HomePage() {
     const viewAllLink: React.CSSProperties = {
       fontSize: 13, fontWeight: 600, color: "#1877D6",
       background: "none", border: "none", cursor: "pointer",
-      fontFamily: "Inter, sans-serif", padding: 0,
+      fontFamily: "Poppins, sans-serif", padding: 0,
     };
     const quickBtn: React.CSSProperties = {
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
       gap: 6, padding: "14px 8px", borderRadius: 10,
       border: "0.5px solid #E2E6ED", background: "#F8FAFF",
-      cursor: "pointer", fontFamily: "Inter, sans-serif",
+      cursor: "pointer", fontFamily: "Poppins, sans-serif",
       fontSize: 12, fontWeight: 600, color: "#0B1F3A",
     };
     return (
@@ -4178,10 +4227,10 @@ function HomePage() {
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
           {/* HEADER */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-            <h1 style={{ fontSize: 24, fontWeight: 900, color: "#0B1F3A", margin: 0, fontFamily: "Inter, sans-serif" }}>
+            <h1 style={{ fontSize: 24, fontWeight: 900, color: "#0B1F3A", margin: 0, fontFamily: "Poppins, sans-serif" }}>
               Good morning, {firstName} 👋
             </h1>
-            <div style={{ fontSize: 14, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>
+            <div style={{ fontSize: 14, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>
               {dateHeader}
             </div>
           </div>
@@ -4223,7 +4272,7 @@ function HomePage() {
               <div style={cardStyle}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
                   <div style={panelHeading}>Today's schedule</div>
-                  <div style={{ fontSize: 12, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>{dateHeader}</div>
+                  <div style={{ fontSize: 12, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>{dateHeader}</div>
                 </div>
                 {todayLessons.length === 0 ? (
                   (() => {
@@ -4247,7 +4296,7 @@ function HomePage() {
                       <div style={{
                         background: "#FFFFFF", border: "0.5px solid #E2E6ED",
                         borderRadius: 10, overflow: "hidden", margin: "12px 16px 0",
-                        fontFamily: "Inter, sans-serif",
+                        fontFamily: "Poppins, sans-serif",
                       }}>
                         <div style={{ height: 4, background: "linear-gradient(90deg, #00B5A5, #1877D6)" }} />
                         <div style={{ padding: 20 }}>
@@ -4307,14 +4356,14 @@ function HomePage() {
                             <button onClick={() => navigate({ to: "/gaps" })} style={{
                               flex: 1, background: "#0B1F3A", color: "#FFFFFF",
                               padding: "12px 0", borderRadius: 12, fontWeight: 600, fontSize: 14,
-                              border: "none", cursor: "pointer", fontFamily: "Inter, sans-serif",
+                              border: "none", cursor: "pointer", fontFamily: "Poppins, sans-serif",
                             }}>Fill My Slots →</button>
                             <button onClick={() => {
                               window.location.href = `sms:?body=${encodeURIComponent("Hi everyone, I have lesson availability today. Reply to book!")}`;
                             }} style={{
                               flex: 1, background: "#00B5A5", color: "#FFFFFF",
                               padding: "12px 0", borderRadius: 12, fontWeight: 600, fontSize: 14,
-                              border: "none", cursor: "pointer", fontFamily: "Inter, sans-serif",
+                              border: "none", cursor: "pointer", fontFamily: "Poppins, sans-serif",
                             }}>Broadcast message</button>
                           </div>
                         </div>
@@ -4338,7 +4387,7 @@ function HomePage() {
                             gap: 12, alignItems: "center", padding: "10px 12px",
                             borderRadius: 10, border: "0.5px solid #E2E6ED",
                             background: "#FFFFFF", cursor: "pointer", textAlign: "left",
-                            fontFamily: "Inter, sans-serif",
+                            fontFamily: "Poppins, sans-serif",
                           }}
                         >
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{formatTime(l)}</span>
@@ -4379,7 +4428,7 @@ function HomePage() {
                       borderRadius: 10, border: "1px dashed #1877D6",
                       background: "transparent", color: "#1877D6",
                       fontSize: 13, fontWeight: 600, cursor: "pointer",
-                      fontFamily: "Inter, sans-serif",
+                      fontFamily: "Poppins, sans-serif",
                     }}
                   >Add lesson +</button>
                   <button
@@ -4396,7 +4445,7 @@ function HomePage() {
                       fontSize: 11,
                       fontWeight: 600,
                       color: '#1877D6',
-                      fontFamily: 'Inter, sans-serif',
+                      fontFamily: 'Poppins, sans-serif',
                     }}
                   >
                     <CalendarIcon size={12} color="#1877D6" />
@@ -4413,7 +4462,7 @@ function HomePage() {
                   <button onClick={() => navigate({ to: "/payments" })} style={viewAllLink}>View all →</button>
                 </div>
                 {outstandingBreakdown.length === 0 ? (
-                  <div style={{ fontSize: 13, color: "#6B7280", padding: "12px 0", fontFamily: "Inter, sans-serif" }}>
+                  <div style={{ fontSize: 13, color: "#6B7280", padding: "12px 0", fontFamily: "Poppins, sans-serif" }}>
                     All pupils paid up.
                   </div>
                 ) : (
@@ -4424,7 +4473,7 @@ function HomePage() {
                           display: "grid", gridTemplateColumns: "1fr auto auto",
                           gap: 12, alignItems: "center", padding: "10px 12px",
                           borderRadius: 10, border: "0.5px solid #E2E6ED",
-                          fontFamily: "Inter, sans-serif",
+                          fontFamily: "Poppins, sans-serif",
                         }}
                       >
                         <div style={{ minWidth: 0 }}>
@@ -4460,7 +4509,7 @@ function HomePage() {
                   <button onClick={() => navigate({ to: "/notifications" })} style={viewAllLink}>View all →</button>
                 </div>
                 {recentActivity.length === 0 ? (
-                  <div style={{ fontSize: 13, color: "#6B7280", padding: "12px 0", fontFamily: "Inter, sans-serif" }}>
+                  <div style={{ fontSize: 13, color: "#6B7280", padding: "12px 0", fontFamily: "Poppins, sans-serif" }}>
                     No recent activity.
                   </div>
                 ) : (
@@ -4472,7 +4521,7 @@ function HomePage() {
                           padding: "10px 12px", borderRadius: 10,
                           border: "0.5px solid #E2E6ED",
                           background: n.read ? "#FFFFFF" : "#F0F7FF",
-                          fontFamily: "Inter, sans-serif",
+                          fontFamily: "Poppins, sans-serif",
                         }}
                       >
                         <div style={{
@@ -4501,7 +4550,7 @@ function HomePage() {
               <div style={{ ...cardStyle, marginTop: 16 }}>
                 <div style={panelHeading}>Upcoming tests</div>
                 {upcomingTests30.length === 0 ? (
-                  <div style={{ fontSize: 13, color: "#6B7280", padding: "12px 0", fontFamily: "Inter, sans-serif" }}>
+                  <div style={{ fontSize: 13, color: "#6B7280", padding: "12px 0", fontFamily: "Poppins, sans-serif" }}>
                     No tests in the next 30 days.
                   </div>
                 ) : (
@@ -4512,7 +4561,7 @@ function HomePage() {
                           display: "grid", gridTemplateColumns: "1fr auto",
                           gap: 12, alignItems: "center", padding: "10px 12px",
                           borderRadius: 10, border: "0.5px solid #E2E6ED",
-                          fontFamily: "Inter, sans-serif",
+                          fontFamily: "Poppins, sans-serif",
                         }}
                       >
                         <div style={{ minWidth: 0 }}>
@@ -4616,7 +4665,7 @@ function HomePage() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          fontFamily: 'Inter, sans-serif',
+          fontFamily: 'Poppins, sans-serif',
           borderRadius: '0 0 24px 24px',
         }}
       >
@@ -4636,7 +4685,7 @@ function HomePage() {
             fontSize: 13, fontWeight: 600,
             border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', overflow: 'hidden', padding: 0, flexShrink: 0,
-            fontFamily: 'Inter, sans-serif',
+            fontFamily: 'Poppins, sans-serif',
           }}
         >
           {avatarUrl
@@ -4647,7 +4696,7 @@ function HomePage() {
 
       {/* ============ OVERLAPPING STAT TILES ============ */}
       {/* NOTE: naCalls (callbacks) and naJobs (open jobs) are not yet wired to a real table — showing 0 as placeholder. naEnquiries is derived from pendingSwapCount today. */}
-      <div style={{ padding: '0 16px', marginTop: -22, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Inter, sans-serif' }}>
+      <div style={{ padding: '0 16px', marginTop: -22, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
         {[
           { label: 'Calls', value: String(naCalls), sub: 'Need callback', color: '#CC2229', route: '/messages' },
           { label: "Jobs", value: String(naJobs), sub: 'Open', color: '#B5661E', route: '/jobs' },
@@ -4660,7 +4709,7 @@ function HomePage() {
             style={{
               flex: 1, background: '#FFFFFF', borderRadius: 10,
               boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 12, minWidth: 0,
-              border: 'none', textAlign: 'left', cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+              border: 'none', textAlign: 'left', cursor: 'pointer', fontFamily: 'Poppins, sans-serif',
             }}
           >
             <div style={{ fontSize: 10, fontWeight: 700, color: s.color, textTransform: 'uppercase', letterSpacing: 0.3 }}>{s.label}</div>
@@ -4677,15 +4726,20 @@ function HomePage() {
 
       {/* Next lesson section header */}
       {/* ============ NEXT LESSON CARD ============ */}
+      <SectionEyebrow
+        title="Next lesson"
+        linkLabel="Full schedule →"
+        onLink={() => navigate({ to: '/schedule' })}
+      />
 
       <div
         style={{
-          margin: '0 16px 0',
+          margin: '0 16px 20px',
           background: '#FFFFFF',
           borderRadius: upcoming && heroExpanded ? '16px 16px 0 0' : 16,
           boxShadow: '0 4px 16px rgba(11,31,58,0.08)',
           overflow: 'hidden',
-          fontFamily: 'Inter, sans-serif',
+          fontFamily: 'Poppins, sans-serif',
           position: 'relative',
         }}
       >
@@ -4795,7 +4849,7 @@ function HomePage() {
 
           if (!upcoming) {
             return (
-              <div style={{ padding: '14px 12px 20px', textAlign: 'center', color: '#8A93A3', fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
+              <div style={{ padding: '14px 12px 20px', textAlign: 'center', color: '#8A93A3', fontSize: 12, fontFamily: 'Poppins, sans-serif' }}>
                 No upcoming lessons
               </div>
             );
@@ -4803,38 +4857,8 @@ function HomePage() {
 
           return (
             <>
-              {/* Header strip */}
-              <div style={{
-                background: '#EEF2F7',
-                padding: '10px 14px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: 8,
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ width: 3, height: 12, borderRadius: 2, background: '#1877D6' }} />
-                  <span style={{
-                    fontSize: 11, fontWeight: 700, color: '#1877D6',
-                    letterSpacing: '0.06em', textTransform: 'uppercase',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}>
-                    NEXT LESSON
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: '/schedule' })}
-                  style={{
-                    background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', gap: 2,
-                    fontSize: 12, fontWeight: 600, color: '#1877D6',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}
-                >
-                  Full schedule <ChevronRight size={14} />
-                </button>
-              </div>
+              {/* Header strip moved to standard section eyebrow above the card */}
+
 
               {/* Map header */}
               {(() => {
@@ -5255,7 +5279,7 @@ function HomePage() {
         <Dialog open={lateOpen} onOpenChange={setLateOpen}>
           <DialogContent className="max-w-[320px]">
             <DialogHeader>
-              <DialogTitle style={{ fontFamily: 'Inter, sans-serif' }}>How many minutes late?</DialogTitle>
+              <DialogTitle style={{ fontFamily: 'Poppins, sans-serif' }}>How many minutes late?</DialogTitle>
             </DialogHeader>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginTop: 8 }}>
               {[5, 10, 15, 20].map((m) => (
@@ -5286,7 +5310,7 @@ function HomePage() {
                     }
                     setLateOpen(false);
                   }}
-                  style={{ height: 44, borderRadius: 10, border: '1px solid #e3e6ec', background: '#fff', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}
+                  style={{ height: 44, borderRadius: 10, border: '1px solid #e3e6ec', background: '#fff', fontFamily: 'Poppins, sans-serif', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}
                 >{m}m</button>
               ))}
             </div>
@@ -5524,9 +5548,9 @@ function HomePage() {
 
           return (
             <>
-              <SectionHeader style={{ margin: '16px 16px 4px' }}>Local Issues</SectionHeader>
+              <SectionEyebrow title="Community" />
               <div style={{
-                margin: '0 16px', background: '#FFFFFF', borderRadius: 16,
+                margin: '0 16px 20px', background: '#FFFFFF', borderRadius: 16,
                 border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
               }}>
 
@@ -5862,7 +5886,7 @@ function HomePage() {
 
       {/* ============ REDESIGNED HOME BODY (Poppins, Tabler, light) ============ */}
       {(() => {
-        const PF = 'Inter, sans-serif';
+        const PF = 'Poppins, sans-serif';
         const BORDER = 'rgba(15,32,68,0.10)';
         const MUTED = '#64748B';
         const NAVY = '#0B1F3A';
@@ -6213,7 +6237,7 @@ function HomePage() {
 
 
             {/* 3. TIMELINE with TABS */}
-            <SectionHeader>Teaching Schedule</SectionHeader>
+            <SectionEyebrow title="Teaching schedule" />
 
 
             {(() => {
@@ -6232,12 +6256,12 @@ function HomePage() {
                       <div style={{ width: 44, height: 44, borderRadius: 8, background: 'linear-gradient(135deg, #1877D6, #0B1F3A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <IconBolt size={22} color="#FFFFFF" stroke={2} />
                       </div>
-                      <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontFamily: 'Inter, sans-serif' }}>Your day is wide open</div>
-                      <div style={{ fontSize: 13, color: '#6B7280', fontFamily: 'Inter, sans-serif' }}>{hours} hours free {dayLabel} — fill a gap before it goes to waste.</div>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>Your day is wide open</div>
+                      <div style={{ fontSize: 13, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>{hours} hours free {dayLabel} — fill a gap before it goes to waste.</div>
                       <button
                         type="button"
                         onClick={() => navigate({ to: '/gaps' })}
-                        style={{ marginTop: 4, width: '100%', background: '#0B1F3A', color: '#FFFFFF', border: 'none', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer' }}
+                        style={{ marginTop: 4, width: '100%', background: '#0B1F3A', color: '#FFFFFF', border: 'none', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer' }}
                       >
                         <IconBolt size={16} color="#FFFFFF" stroke={2} />
                         Open gap filler
@@ -7013,7 +7037,7 @@ function HomePage() {
                       gap: 8,
                       cursor: 'pointer',
                       textAlign: 'left',
-                      fontFamily: "Poppins, Inter, sans-serif",
+                      fontFamily: "Poppins, sans-serif",
                       transition: 'transform 0.15s ease, box-shadow 0.2s ease',
                       overflow: 'hidden',
                       boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
@@ -7047,8 +7071,8 @@ function HomePage() {
                       <Icon size={16} color={tile.iconStroke} strokeWidth={2} />
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, maxWidth: '100%' }}>
-                      <span style={{ fontSize: 11, fontWeight: 500, color: '#0B1F3A', lineHeight: 1.25, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: "Poppins, Inter, sans-serif" }}>{tile.label}</span>
-                      <span style={{ marginTop: 1, fontSize: 10, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: 1.3, fontFamily: "Poppins, Inter, sans-serif" }}>{tile.sub}</span>
+                      <span style={{ fontSize: 11, fontWeight: 500, color: '#0B1F3A', lineHeight: 1.25, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: "Poppins, sans-serif" }}>{tile.label}</span>
+                      <span style={{ marginTop: 1, fontSize: 10, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: 1.3, fontFamily: "Poppins, sans-serif" }}>{tile.sub}</span>
                     </div>
                   </button>
                 );
@@ -7064,7 +7088,7 @@ function HomePage() {
 
               return (
                 <>
-        <SectionHeader>Upcoming Tests</SectionHeader>
+        <SectionEyebrow title="Upcoming tests" />
         {/* ============ UPCOMING TESTS CARD ============ */}
         {(() => {
           const parseDate = (iso: string) => {
@@ -7100,7 +7124,7 @@ function HomePage() {
                 borderRadius: 14,
                 padding: '14px 16px',
                 cursor: 'pointer',
-                fontFamily: 'Inter, sans-serif',
+                fontFamily: 'Poppins, sans-serif',
               }}
             >
               {/* Row 1: next test */}
@@ -7226,7 +7250,7 @@ function HomePage() {
                   `}</style>
                     <div style={{ background: PAGE_BACKGROUND, margin: '0 -16px 0', padding: '0 16px 0', borderRadius: 0 }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                        <SectionHeader>Quick Access</SectionHeader>
+                        <span style={{ fontSize: 10, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'Poppins, sans-serif' }}>Quick access</span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{ display: 'flex', gap: 4 }}>
                           {Array.from({ length: totalPages }).map((_, i) => (
@@ -7284,7 +7308,7 @@ function HomePage() {
                         zIndex: 100,
                         display: 'flex',
                         alignItems: 'flex-end',
-                        fontFamily: 'Inter, sans-serif',
+                        fontFamily: 'Poppins, sans-serif',
                       }}
                     >
                       <div
@@ -7333,7 +7357,7 @@ function HomePage() {
                               background: 'transparent',
                               fontSize: 14,
                               color: '#0B1F3A',
-                              fontFamily: 'Inter, sans-serif',
+                              fontFamily: 'Poppins, sans-serif',
                             }}
                           />
                         </div>
@@ -7355,7 +7379,7 @@ function HomePage() {
                       onClick={() => setRunningLateOpen(false)}
                       style={{
                         position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100,
-                        display: 'flex', alignItems: 'flex-end', fontFamily: 'Inter, sans-serif',
+                        display: 'flex', alignItems: 'flex-end', fontFamily: 'Poppins, sans-serif',
                       }}
                     >
                       <div
@@ -7375,14 +7399,14 @@ function HomePage() {
                           <button
                             type="button"
                             onClick={() => setRunningLateOpen(false)}
-                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: 14, fontWeight: 600, fontFamily: 'Inter, sans-serif', cursor: 'pointer' }}
+                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
                           >
                             Cancel
                           </button>
                           <button
                             type="button"
                             onClick={() => { setRunningLateOpen(false); navigate({ to: '/broadcast' as never }); }}
-                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: 'none', background: '#C23B3B', color: '#FFFFFF', fontSize: 14, fontWeight: 600, fontFamily: 'Inter, sans-serif', cursor: 'pointer' }}
+                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: 'none', background: '#C23B3B', color: '#FFFFFF', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
                           >
                             Notify pupils
                           </button>
@@ -7498,7 +7522,7 @@ function HomePage() {
                         onClick={closeSheet}
                         style={{
                           position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100,
-                          display: 'flex', alignItems: 'flex-end', fontFamily: 'Inter, sans-serif',
+                          display: 'flex', alignItems: 'flex-end', fontFamily: 'Poppins, sans-serif',
                         }}
                       >
                         <div
@@ -7552,7 +7576,7 @@ function HomePage() {
                                         width: '100%', display: 'flex', alignItems: 'center', gap: 10, textAlign: 'left',
                                         padding: '12px 14px', background: '#FFFFFF', border: 'none',
                                         borderTop: i === 0 ? 'none' : '1px solid #EEF2F7', cursor: 'pointer',
-                                        fontFamily: 'Inter, sans-serif',
+                                        fontFamily: 'Poppins, sans-serif',
                                       }}
                                     >
                                       <div style={{ flex: 1, minWidth: 0 }}>
@@ -7603,7 +7627,7 @@ function HomePage() {
                                       background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 12, height: 56,
                                       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
                                       cursor: nearbyLoading ? 'default' : 'pointer', opacity: nearbyLoading && nearbyLoading !== c.label ? 0.5 : 1,
-                                      fontFamily: 'Inter, sans-serif', padding: 0,
+                                      fontFamily: 'Poppins, sans-serif', padding: 0,
                                     }}
                                   >
                                     <span style={{ fontSize: 18, lineHeight: 1 }}>{c.emoji}</span>
@@ -7616,7 +7640,7 @@ function HomePage() {
                           <button
                             type="button"
                             onClick={closeSheet}
-                            style={{ marginTop: 14, width: '100%', padding: '12px', borderRadius: 12, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: 14, fontWeight: 600, fontFamily: 'Inter, sans-serif', cursor: 'pointer' }}
+                            style={{ marginTop: 14, width: '100%', padding: '12px', borderRadius: 12, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
                           >
                             Close
                           </button>
@@ -8110,7 +8134,7 @@ function HomePage() {
 
 
       {birthdaySheetOpen && (
-        <div className="fixed inset-0 z-[70] flex flex-col justify-end" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div className="fixed inset-0 z-[70] flex flex-col justify-end" style={{ fontFamily: 'Poppins, sans-serif' }}>
           <div className="absolute inset-0 bg-black/40" onClick={() => setBirthdaySheetOpen(false)} />
           <div className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl pt-5 pb-6 max-h-[85vh] overflow-y-auto" style={{ animation: 'slideUp 0.25s ease-out' }}>
             <div className="flex items-center justify-between px-4 mb-3">
@@ -8257,7 +8281,7 @@ function HeroExpandedPanel({
     justifyContent: 'center',
     gap: 3,
     cursor: 'pointer',
-    fontFamily: 'Inter, sans-serif',
+    fontFamily: 'Poppins, sans-serif',
     fontSize: 11,
     fontWeight: 500,
     color: '#0B1F3A',
@@ -8270,7 +8294,7 @@ function HeroExpandedPanel({
     textTransform: 'uppercase',
     letterSpacing: 0.2,
     marginBottom: 6,
-    fontFamily: 'Inter, sans-serif',
+    fontFamily: 'Poppins, sans-serif',
   };
 
   // --- Pickup address (home address default, editable alternative) ---
@@ -8409,7 +8433,7 @@ function HeroExpandedPanel({
     justifyContent: 'center',
     gap: 5,
     cursor: 'pointer',
-    fontFamily: 'Inter, sans-serif',
+    fontFamily: 'Poppins, sans-serif',
     fontSize: 11,
     fontWeight: 500,
     color: '#0B1F3A',
@@ -8427,7 +8451,7 @@ function HeroExpandedPanel({
     border: '1px solid #E2E8F0',
     borderRadius: 10,
     padding: '9px 12px',
-    fontFamily: 'Inter, sans-serif',
+    fontFamily: 'Poppins, sans-serif',
     fontSize: 13,
     color: '#0B1F3A',
     outline: 'none',
@@ -8439,24 +8463,24 @@ function HeroExpandedPanel({
     badText: string,
   ) => {
     if (state === 'checking') {
-      return <div style={{ marginTop: 6, fontSize: 11, color: '#8E8E93', fontFamily: 'Inter, sans-serif' }}>Checking…</div>;
+      return <div style={{ marginTop: 6, fontSize: 11, color: '#8E8E93', fontFamily: 'Poppins, sans-serif' }}>Checking…</div>;
     }
     if (state === 'ok') {
       return (
-        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#1F6B2E', fontFamily: 'Inter, sans-serif' }}>
+        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#1F6B2E', fontFamily: 'Poppins, sans-serif' }}>
           <IconCircleCheck size={14} stroke={1.8} /> {okText}
         </div>
       );
     }
     if (state === 'bad') {
       return (
-        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#B45309', fontFamily: 'Inter, sans-serif' }}>
+        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#B45309', fontFamily: 'Poppins, sans-serif' }}>
           <IconAlertTriangle size={14} stroke={1.8} /> {badText}
         </div>
       );
     }
     return (
-      <div style={{ marginTop: 6, fontSize: 11, color: '#8E8E93', fontFamily: 'Inter, sans-serif' }}>Not yet verified</div>
+      <div style={{ marginTop: 6, fontSize: 11, color: '#8E8E93', fontFamily: 'Poppins, sans-serif' }}>Not yet verified</div>
     );
   };
 
@@ -8576,7 +8600,7 @@ function HeroExpandedPanel({
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 10, padding: '9px 12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
               <MapPin size={14} color="#8E8E93" />
-              <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 13, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <span style={{ fontFamily: 'Poppins, sans-serif', fontSize: 13, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {pickupValue || 'No address set'}
               </span>
             </div>
@@ -8602,7 +8626,7 @@ function HeroExpandedPanel({
       <div style={{ marginTop: 14 }}>
         <div style={sectionLabel}>what3words</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ color: '#E11F26', fontWeight: 700, fontFamily: 'Inter, sans-serif', fontSize: 15 }}>///</span>
+          <span style={{ color: '#E11F26', fontWeight: 700, fontFamily: 'Poppins, sans-serif', fontSize: 15 }}>///</span>
           {[0, 1, 2].map((i) => (
             <Fragment key={i}>
               {i > 0 && <span style={{ color: '#0B1F3A', fontWeight: 700 }}>.</span>}
@@ -8652,17 +8676,17 @@ function HeroExpandedPanel({
         return (
           <div style={{ marginTop: 14 }}>
             <div style={sectionLabel}>Account</div>
-            <div style={{ background: bg, borderRadius: 9, padding: '11px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, fontFamily: 'Inter, sans-serif' }}>
+            <div style={{ background: bg, borderRadius: 9, padding: '11px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
               <span style={{ fontSize: 14, fontWeight: 600, color: fg }}>{label}</span>
               {showActions && (
                 <div style={{ display: 'flex', gap: 6 }}>
                   <button
                     onClick={() => sendSms(`Hi ${firstName}, just a quick reminder that £${amount.toFixed(2)} is outstanding on your lesson account. Thanks!`)}
-                    style={{ background: '#FFFFFF', color: '#0B1F3A', fontSize: 11, fontWeight: 500, padding: '0 10px', height: 26, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
+                    style={{ background: '#FFFFFF', color: '#0B1F3A', fontSize: 11, fontWeight: 500, padding: '0 10px', height: 26, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
                   >Chase</button>
                   <button
                     onClick={() => navigateTo('/payments')}
-                    style={{ background: '#3B6D11', color: '#FFFFFF', fontSize: 11, fontWeight: 500, padding: '0 10px', height: 26, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
+                    style={{ background: '#3B6D11', color: '#FFFFFF', fontSize: 11, fontWeight: 500, padding: '0 10px', height: 26, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
                   >Mark paid</button>
                 </div>
               )}
@@ -8675,7 +8699,7 @@ function HeroExpandedPanel({
       <div style={{ marginTop: 14 }}>
         <div style={sectionLabel}>Last Lesson</div>
         {prev ? (
-          <div style={{ background: '#F2F2F7', borderRadius: 9, padding: '10px 12px', fontFamily: 'Inter, sans-serif' }}>
+          <div style={{ background: '#F2F2F7', borderRadius: 9, padding: '10px 12px', fontFamily: 'Poppins, sans-serif' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontSize: 12, fontWeight: 600, color: '#0B1F3A' }}>
                 {new Date(prev.lesson_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
@@ -8689,7 +8713,7 @@ function HeroExpandedPanel({
             )}
           </div>
         ) : (
-          <div style={{ background: '#F2F2F7', borderRadius: 9, padding: '10px 12px', color: '#8A93A3', fontFamily: 'Inter, sans-serif', fontSize: 12 }}>No previous lesson</div>
+          <div style={{ background: '#F2F2F7', borderRadius: 9, padding: '10px 12px', color: '#8A93A3', fontFamily: 'Poppins, sans-serif', fontSize: 12 }}>No previous lesson</div>
         )}
       </div>
 
@@ -8704,7 +8728,7 @@ function HeroExpandedPanel({
           background: 'none',
           border: 'none',
           color: '#1877D6',
-          fontFamily: 'Inter, sans-serif',
+          fontFamily: 'Poppins, sans-serif',
           fontSize: 12,
           fontWeight: 600,
           cursor: 'pointer',
@@ -8776,7 +8800,7 @@ function TabBtn({
         padding: "8px 6px",
         fontWeight: 500,
         fontSize: 13,
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Poppins, sans-serif",
         lineHeight: 1.2,
         border: "none",
         cursor: "pointer",
@@ -8889,7 +8913,7 @@ function EndOfDayBanner() {
         border: "1px solid #BFDBFE",
         padding: "10px 16px",
         borderRadius: 10,
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Poppins, sans-serif",
       }}
     >
       <Moon size={16} color="#1877D6" />
@@ -8906,7 +8930,7 @@ function EndOfDayBanner() {
           color: "#1877D6",
           background: "transparent",
           cursor: "pointer",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Poppins, sans-serif",
         }}
       >
         View summary →
@@ -8958,7 +8982,7 @@ function TodayTile({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        fontFamily: 'Inter, sans-serif',
+        fontFamily: 'Poppins, sans-serif',
       }}
     >
       <div style={{ fontSize: valueSize, fontWeight: 700, color: valueColor, lineHeight: 1.1 }}>
@@ -9031,7 +9055,7 @@ function OutstandingBreakdownModal({
         style={{
           maxWidth: 480,
           padding: 0,
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Poppins, sans-serif",
           maxHeight: "85vh",
           display: "flex",
           flexDirection: "column",
@@ -9247,7 +9271,7 @@ function EarningsBreakdownModal({
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
-        style={{ maxWidth: 480, padding: 0, fontFamily: "Inter, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
+        style={{ maxWidth: 480, padding: 0, fontFamily: "Poppins, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
       >
         <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
           <DialogTitle style={{ fontSize: 16, fontWeight: 700, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -9487,7 +9511,7 @@ function LessonsBreakdownModal({
     <>
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
-        style={{ maxWidth: 480, padding: 0, fontFamily: "Inter, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
+        style={{ maxWidth: 480, padding: 0, fontFamily: "Poppins, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
       >
         <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
           <DialogTitle style={{ fontSize: 16, fontWeight: 700 }}>Lessons this week</DialogTitle>
@@ -9584,7 +9608,7 @@ function LessonsBreakdownModal({
     </Dialog>
 
     <Dialog open={confirmId !== null} onOpenChange={(v) => !v && !deleting && closeConfirm()}>
-      <DialogContent style={{ maxWidth: 400, padding: 0, fontFamily: "Inter, sans-serif" }}>
+      <DialogContent style={{ maxWidth: 400, padding: 0, fontFamily: "Poppins, sans-serif" }}>
         <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
           <DialogTitle style={{ fontSize: 16, fontWeight: 700 }}>Delete this lesson?</DialogTitle>
         </DialogHeader>
@@ -9687,7 +9711,7 @@ function TestsBreakdownModal({
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
-        style={{ maxWidth: 480, padding: 0, fontFamily: "Inter, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
+        style={{ maxWidth: 480, padding: 0, fontFamily: "Poppins, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
       >
         <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
           <DialogTitle style={{ fontSize: 16, fontWeight: 700 }}>Tests</DialogTitle>
@@ -9922,7 +9946,7 @@ function DiscoverSection() {
     fontSize: 18,
     fontWeight: 700,
     color: "#0B1F3A",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Poppins, sans-serif",
   } as const;
 
   const viewAllBtn = {
@@ -9936,7 +9960,7 @@ function DiscoverSection() {
     border: "none",
     padding: 0,
     cursor: "pointer",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Poppins, sans-serif",
   } as const;
 
   const cardShell: React.CSSProperties = {
@@ -9957,7 +9981,7 @@ function DiscoverSection() {
   };
 
   return (
-    <div style={{ margin: "20px -16px 0", padding: "0 16px", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ margin: "20px -16px 0", padding: "0 16px", fontFamily: "Poppins, sans-serif" }}>
 
       {hasLive && (
         <div>
