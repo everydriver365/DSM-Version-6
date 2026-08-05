@@ -4853,7 +4853,7 @@ function HomePage() {
             <>
               {/* Header matching Discover SectionHeader style */}
               <div style={{
-                padding: '12px 12px 0',
+                padding: '12px 12px 10px',
                 borderRadius: '16px 16px 0 0',
                 display: 'flex',
                 justifyContent: 'space-between',
