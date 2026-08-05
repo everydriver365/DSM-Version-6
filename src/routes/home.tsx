@@ -4,6 +4,7 @@ import { Fragment, useCallback, useEffect, useMemo, useRef, useState, isValidEle
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { recordPayment, recordRefund } from "@/lib/payments";
+import { buildPickup } from "@/lib/pickup";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { QuickActionsMenu, type QuickAction } from "@/components/dsm/QuickActionsMenu";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
@@ -4777,12 +4778,11 @@ function HomePage() {
           const startText = d ? fmt(d) : '—';
           const dur = upcoming?.duration_minutes ?? 0;
           const durationDecimal = dur ? (dur / 60).toFixed(dur % 60 === 0 ? 0 : 1) : '0';
-          const rawAddress = (upcoming?.pupils?.address ?? '').trim().replace(/\s+/g, ' ');
-          const rawPostcode = (upcoming?.pupils?.postcode ?? '').trim().replace(/\s+/g, ' ');
-          const normalisedAddress = rawAddress.toLowerCase().replace(/\s/g, '');
-          const normalisedPostcode = rawPostcode.toLowerCase().replace(/\s/g, '');
-          const addressHasPostcode = normalisedPostcode && normalisedAddress.includes(normalisedPostcode);
-          const pickup = upcoming?.pickup_location || [rawAddress, !addressHasPostcode ? rawPostcode : null].filter(Boolean).join(', ') || 'No pickup';
+          const pickup = buildPickup(
+            upcoming?.pickup_location,
+            upcoming?.pupils?.address,
+            upcoming?.pupils?.postcode,
+          );
 
           const isOverdue = !isPaid && d ? d < todayStart : false;
           const hLabelFinal = isPaid ? 'Paid' : isOverdue ? 'Overdue' : 'Due';
