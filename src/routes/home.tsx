@@ -5059,7 +5059,47 @@ function HomePage() {
                 >
                   <ChevronRight size={16} color="#D1D5DB" />
                 </button>
+
+              {/* Weather + View route */}
+              <div style={{
+                padding: '10px 14px',
+                borderTop: '1px solid #E4E8EF',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
+              }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 6, minWidth: 0,
+                  fontSize: 12, color: '#5A6270', fontFamily: 'Poppins, sans-serif',
+                }}>
+                  {weatherData ? (
+                    <>
+                      <span style={{ fontSize: 15 }}>{weatherData.icon || '⛅'}</span>
+                      <span style={{ fontWeight: 700, color: '#0B1F3A' }}>{Math.round(weatherData.tempC)}°C</span>
+                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {weatherData.condition}
+                      </span>
+                    </>
+                  ) : (
+                    <span style={{ color: '#9CA3AF' }}>{weatherLoading ? 'Loading weather…' : 'Weather unavailable'}</span>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); openMaps(); }}
+                  style={{
+                    flexShrink: 0,
+                    background: '#FFFFFF', border: '1px solid #1877D6', color: '#1877D6',
+                    borderRadius: 10, padding: '6px 12px', cursor: 'pointer',
+                    fontSize: 12, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
+                    display: 'flex', alignItems: 'center', gap: 6,
+                  }}
+                >
+                  <Navigation size={13} color="#1877D6" />
+                  View route
+                </button>
               </div>
+
+
 
 
               {/* Reasons row */}
