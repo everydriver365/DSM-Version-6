@@ -1981,10 +1981,13 @@ function HomePage() {
             .eq('instructor_id', userId)
             .eq('room_id', (ukRoomData as any).id)
             .maybeSingle();
-          if (!cancelled && (ukSub as any)?.last_read_at && (ukLatest as any)?.created_at) {
-            const isUnread = new Date((ukLatest as any).created_at) > new Date((ukSub as any).last_read_at);
+          if (!cancelled) {
+            const lastReadAt = (ukSub as any)?.last_read_at ?? null;
+            const latestAt = (ukLatest as any)?.created_at ?? null;
+            const isUnread = !!latestAt && (!lastReadAt || new Date(latestAt) > new Date(lastReadAt));
             setUnreadUkChat(isUnread ? 1 : 0);
           }
+
         }
       } catch {
         if (!cancelled) setLocalAlerts([]);
