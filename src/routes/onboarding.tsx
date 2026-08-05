@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { Check, CheckCircle, Globe, Clock } from "lucide-react";
+import { Check, CheckCircle, Globe, Clock, UserPlus, CalendarDays } from "lucide-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/onboarding")({
 });
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 9;
 
 type WebsiteChoice = "yes" | "existing" | "later" | null;
 
@@ -64,6 +64,12 @@ function OnboardingPage() {
 
   const [hours, setHours] = useState<Record<Day, DayHours>>(DEFAULT_HOURS);
 
+  const [hourlyRate, setHourlyRate] = useState("");
+  const [homePostcode, setHomePostcode] = useState("");
+
+  const [adiNumber, setAdiNumber] = useState("");
+  const [adiGrade, setAdiGrade] = useState<"" | "A" | "B">("");
+
   const [websiteChoice, setWebsiteChoice] = useState<WebsiteChoice>(null);
   const [wantsCustomDomain, setWantsCustomDomain] = useState(false);
   const [existingWebsiteUrl, setExistingWebsiteUrl] = useState("");
@@ -85,7 +91,7 @@ function OnboardingPage() {
     setStep((s) => Math.min(TOTAL_STEPS, s + 1));
   }
 
-  async function finish() {
+  async function finish(dest: string = "/home") {
     if (!userId) return;
     setSaving(true);
     setError(null);
@@ -133,6 +139,10 @@ function OnboardingPage() {
         transmission: transmission || null,
         app_slug: uniqueSlug,
         website_published: false,
+        hourly_rate: hourlyRate.trim() ? Number(hourlyRate) : null,
+        home_postcode: homePostcode.trim().toUpperCase() || null,
+        adi_licence_number: adiNumber.trim() || null,
+        adi_grade: adiGrade || null,
         wants_custom_domain: websiteChoice === "yes" && wantsCustomDomain,
         existing_website_url:
           websiteChoice === "existing" && existingWebsiteUrl.trim()
@@ -178,7 +188,7 @@ function OnboardingPage() {
         .eq("id", userId);
       if (whErr) console.warn("[onboarding] instructors update error", whErr);
 
-      navigate({ to: "/home", replace: true });
+      navigate({ to: dest, replace: true } as never);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Could not save your details";
       setError(msg);
@@ -320,6 +330,84 @@ function OnboardingPage() {
 
         {step === 5 && (
           <div className="flex flex-col gap-4">
+            <h2 className="text-[20px] font-semibold text-[#0B1F3A]">Your rates &amp; location</h2>
+            <p className="text-[14px] text-[#6B7280]">
+              Used for payments, gap filling and finding local jobs
+            </p>
+            <div>
+              <Field
+                label="Hourly rate (£)"
+                type="number"
+                placeholder="35.00"
+                value={hourlyRate}
+                onChange={setHourlyRate}
+              />
+              <p className="mt-1 text-[12px] text-[#6B7280]">Most instructors charge £32-£45/hr in 2026</p>
+            </div>
+            <div>
+              <Field
+                label="Home postcode"
+                placeholder="SO30 2TD"
+                value={homePostcode}
+                onChange={setHomePostcode}
+              />
+              <p className="mt-1 text-[12px] text-[#6B7280]">
+                Used for gap filler and nearby features — never shared publicly
+              </p>
+            </div>
+            <Button onClick={next} className="h-12" disabled={!hourlyRate.trim()}>
+              Next
+            </Button>
+          </div>
+        )}
+
+        {step === 6 && (
+          <div className="flex flex-col gap-4">
+            <h2 className="text-[20px] font-semibold text-[#0B1F3A]">Your ADI licence</h2>
+            <p className="text-[14px] text-[#6B7280]">Shown on your profile to build trust with learners</p>
+            <Field
+              label="ADI licence number"
+              placeholder="123456"
+              value={adiNumber}
+              onChange={setAdiNumber}
+            />
+            <div>
+              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">Grade</label>
+              <div className="flex gap-2">
+                {(["A", "B"] as const).map((g) => {
+                  const sel = adiGrade === g;
+                  return (
+                    <button
+                      key={g}
+                      type="button"
+                      onClick={() => setAdiGrade(sel ? "" : g)}
+                      className="flex-1 h-10 rounded-full text-[13px] font-semibold"
+                      style={{
+                        ...POPPINS,
+                        background: sel ? "#1877D6" : "#F1F5F9",
+                        color: sel ? "#FFFFFF" : "#6B7686",
+                      }}
+                    >
+                      Grade {g}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={next}
+              className="text-[13px] text-[#6B7280] underline self-start"
+              style={POPPINS}
+            >
+              Skip for now →
+            </button>
+            <Button onClick={next} className="h-12">Next</Button>
+          </div>
+        )}
+
+        {step === 7 && (
+          <div className="flex flex-col gap-4">
             <h2 className="text-[24px] font-bold text-[#0B1F3A]">Want a free website?</h2>
             <p className="text-[14px] text-[#6B7280]">
               Every instructor gets a free booking page on EveryDriver. You can also connect your own domain later.
@@ -390,7 +478,7 @@ function OnboardingPage() {
           </div>
         )}
 
-        {step === 6 && (
+        {step === 8 && (
           <div className="flex flex-col items-center gap-4">
             <div
               className="h-16 w-16 rounded-full bg-[#E6F1FB] flex items-center justify-center"
@@ -412,7 +500,7 @@ function OnboardingPage() {
           </div>
         )}
 
-        {step === 7 && (
+        {step === 9 && (
           <div className="flex flex-col items-center gap-4">
             <div
               className="h-16 w-16 rounded-full bg-[#10B981] flex items-center justify-center animate-bounce"
@@ -426,12 +514,28 @@ function OnboardingPage() {
               <p className="text-[13px] text-[#1877D6] text-center" role="alert">{error}</p>
             )}
             <div className="w-full mt-2">
-              <Button onClick={finish} disabled={saving} className="h-12">
+              <Button onClick={() => finish("/home")} disabled={saving} className="h-12">
                 {saving ? "Saving…" : "Go to dashboard"}
               </Button>
             </div>
+
+            <div className="w-full flex flex-col gap-2 mt-1">
+              <ActionCard
+                icon={<UserPlus size={20} color="#1877D6" />}
+                label="Add your first pupil →"
+                disabled={saving}
+                onClick={() => finish("/pupils/new")}
+              />
+              <ActionCard
+                icon={<CalendarDays size={20} color="#1877D6" />}
+                label="Connect Google Calendar →"
+                disabled={saving}
+                onClick={() => finish("/settings/calendar")}
+              />
+            </div>
           </div>
         )}
+
       </div>
     </div>
   );
@@ -496,6 +600,31 @@ function ChoiceCard({
         <div className="text-[14px] font-semibold text-[#0B1F3A]">{title}</div>
         <div className="text-[12px] text-[#6B7280] mt-0.5">{subtitle}</div>
       </div>
+    </button>
+  );
+}
+
+function ActionCard({
+  icon,
+  label,
+  onClick,
+  disabled,
+}: {
+  icon: ReactNode;
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="w-full flex items-center gap-3 p-3 text-left disabled:opacity-50"
+      style={{ ...POPPINS, borderRadius: 10, background: "#E6F1FB", border: "1px solid #D3E4F7" }}
+    >
+      {icon}
+      <span className="text-[14px] font-semibold text-[#0B1F3A]">{label}</span>
     </button>
   );
 }
