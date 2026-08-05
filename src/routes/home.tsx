@@ -1765,7 +1765,7 @@ function HomePage() {
       if (!cancelled) setUnreadChat(total);
     })();
     return () => { cancelled = true; };
-  }, [userId]);
+  }, [userId, reloadKey]);
 
   // Latest message from every other room the instructor has joined
   useEffect(() => {
