@@ -488,51 +488,44 @@ function LivePage() {
     let limit: number | null = null;
     let road: string | null = null;
     try {
-      // TomTom Snap to Roads API. Their docs primarily show multi-point
-      // routes; to be safe we pass the same coordinate twice as a 2-point
-      // "route" so speedLimits reliably populates for a single location.
-      // measurementSystem=imperial → speed limits returned in mph.
-      const pt = `${lng},${lat}`;
-      const points = `${pt};${pt}`;
-      const fields = encodeURIComponent(
-        "{route{properties{speedLimits{value,unit},address{roadName,routeNumbers,speedLimit},roadClass}}}",
-      );
-      const url = `https://api.tomtom.com/snapToRoads/1?key=${TOMTOM_API_KEY}&points=${points}&fields=${fields}&measurementSystem=imperial`;
+      // TomTom Reverse Geocode returns the snapped street name, its route
+      // numbers, an optional posted speed limit ("40.00MPH") and roadUse.
+      const url =
+        `https://api.tomtom.com/search/2/reverseGeocode/${lat},${lng}.json` +
+        `?key=${TOMTOM_API_KEY}&returnSpeedLimit=true&returnRoadUse=true&radius=100`;
       const r = await fetch(url);
+      if (!r.ok) throw new Error(`TomTom ${r.status}`);
       const j = await r.json();
-      const props = j?.route?.[0]?.properties;
-      // TomTom returns speedLimits as either an object {value,unit} or an array of them.
-      const slRaw = Array.isArray(props?.speedLimits) ? props?.speedLimits?.[0] : props?.speedLimits;
-      const sl = slRaw?.value;
-      const unit = slRaw?.unit;
-      if (typeof sl === "number") {
-        // imperial requested → expect mph; convert if API returns km/h.
-        limit =
-          unit && String(unit).toLowerCase().startsWith("k")
-            ? Math.round(sl / 1.609)
-            : Math.round(sl);
+      const entry = j?.addresses?.[0];
+      const addr = entry?.address;
+
+      // Speed limit e.g. "40.00MPH" or "50.00KMPH"
+      const slRaw: string | undefined = addr?.speedLimit;
+      if (typeof slRaw === "string") {
+        const num = parseFloat(slRaw);
+        if (!Number.isNaN(num)) {
+          limit = /kmph|km\/h/i.test(slRaw) ? Math.round(num / 1.609) : Math.round(num);
+        }
       }
-      const roadName = props?.address?.roadName;
-      const roadClass = props?.roadClass;
-      const routeNumbers = props?.address?.routeNumbers;
-      // Build display name — prefer route number for major roads
-      // e.g. "A3" or "M3" over a local road name
-      if (routeNumbers?.length) {
-        road = routeNumbers[0]; // e.g. "A3", "M3", "A31"
-      } else if (roadName) {
-        road = roadName;
-      }
-      // Build road type label
-      let roadType: string | null = null;
-      if (roadClass === 'Motorway') roadType = 'Motorway';
-      else if (roadClass === 'Trunk') roadType = 'A Road';
-      else if (roadClass === 'Primary') roadType = 'A Road';
-      else if (roadClass === 'Secondary') roadType = 'B Road';
-      else if (roadClass === 'LocalRoad') roadType = null; // don't show
-      // Store roadType in state
-      setRoadType(roadType);
+
+      // Prefer route number (A31, M27) over street name
+      const routeNumbers: string[] | undefined = addr?.routeNumbers;
+      if (routeNumbers?.length) road = routeNumbers[0];
+      else if (addr?.streetName) road = addr.streetName;
+      else if (addr?.street) road = addr.street;
+      else if (addr?.municipalitySubdivision) road = addr.municipalitySubdivision;
+
+      // Road type from roadUse / route number prefix
+      const roadUse: string[] = Array.isArray(entry?.roadUse) ? entry.roadUse : [];
+      let rt: string | null = null;
+      const rn = routeNumbers?.[0] ?? "";
+      if (roadUse.includes("Motorway") || /^M\d/i.test(rn)) rt = "Motorway";
+      else if (/^A\d/i.test(rn) || roadUse.includes("Arterial") || roadUse.includes("LimitedAccess"))
+        rt = "A Road";
+      else if (/^B\d/i.test(rn) || roadUse.includes("Terminal")) rt = "B Road";
+      setRoadType(rt);
     } catch (e) {
-      console.warn("[live] speed limit fetch failed", e);
+      console.warn("[live] road/speed limit fetch failed", e);
     }
 
 
