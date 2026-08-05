@@ -5080,6 +5080,22 @@ function HomePage() {
                       {pickupParts.postcode}
                     </span>
                   )}
+                  {pickupParts.full && pickupParts.full !== 'No pickup' && (
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickupParts.full)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      style={{
+                        fontSize: 12, fontWeight: 600, color: '#1877D6',
+                        fontFamily: 'Poppins, sans-serif',
+                        textDecoration: 'none',
+                        marginTop: 2,
+                      }}
+                    >
+                      View on map
+                    </a>
+                  )}
                 </div>
                 {pickupParts.hasBoth && (
                   <button
@@ -5107,6 +5123,7 @@ function HomePage() {
                   </button>
                 )}
               </div>
+
 
 
 
