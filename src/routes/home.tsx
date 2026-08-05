@@ -4992,15 +4992,6 @@ function HomePage() {
                   }}>
                     {pupilFullName || 'Pupil'}
                   </div>
-                  <div style={{
-                    fontSize: 11, color: '#6B7686',
-                    fontFamily: 'Poppins, sans-serif',
-                    display: 'flex', alignItems: 'center', gap: 3, marginTop: 2,
-                    overflow: 'hidden', whiteSpace: 'nowrap',
-                  }}>
-                    <MapPin size={10} color="#6B7686" style={{ flexShrink: 0 }} />
-                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{pickup}</span>
-                  </div>
                 </div>
 
                 <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'row', gap: 6 }}>
@@ -5087,64 +5078,20 @@ function HomePage() {
                 </button>
                </div>
 
-
-              {/* Weather + View route strip (separate from map header) */}
+              {/* Address row */}
               <div style={{
-                padding: '10px 14px',
-                borderTop: '0.5px solid #E4E8EF',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: 8,
+                padding: '12px 16px',
+                borderTop: '1px solid #E4E8EF',
+                display: 'flex', alignItems: 'center', gap: 10, minWidth: 0,
               }}>
-                {/* Weather left */}
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: 6,
-                  minWidth: 0, fontSize: 12, color: '#5A6270',
-                  fontFamily: 'Poppins, sans-serif',
+                <MapPin size={18} color="#6B7686" style={{ flexShrink: 0 }} />
+                <span style={{
+                  fontSize: 13, color: '#5A6270', fontFamily: 'Poppins, sans-serif',
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                 }}>
-                  {weatherData ? (
-                    <>
-                      <span style={{ fontSize: 15 }}>{weatherData.icon || '⛅'}</span>
-                      <span style={{ fontWeight: 700, color: '#0B1F3A' }}>
-                        {Math.round(weatherData.tempC)}°C
-                      </span>
-                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {weatherData.condition}
-                      </span>
-                    </>
-                  ) : (
-                    <span style={{ color: '#9CA3AF' }}>
-                      {weatherLoading ? 'Loading weather…' : 'Weather unavailable'}
-                    </span>
-                  )}
-                </div>
-
-                {/* View route right */}
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); openMaps(); }}
-                  style={{
-                    flexShrink: 0,
-                    background: '#FFFFFF',
-                    border: '1px solid #1877D6',
-                    color: '#1877D6',
-                    borderRadius: 10,
-                    padding: '6px 12px',
-                    cursor: 'pointer',
-                    fontSize: 12,
-                    fontWeight: 700,
-                    fontFamily: 'Poppins, sans-serif',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                  }}
-                >
-                  <Navigation size={13} color="#1877D6" />
-                  View route
-                </button>
+                  {pickup}
+                </span>
               </div>
-
 
 
               {/* Reasons row */}
@@ -5189,16 +5136,55 @@ function HomePage() {
                 </div>
               )}
 
-              {/* Footer / More */}
+              {/* Footer: View route · ETA · weather + More */}
               <div style={{
                 padding: '11px 16px',
-                display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10,
+                borderTop: '1px solid #E4E8EF',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
               }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 8, minWidth: 0,
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); openMaps(); }}
+                    style={{
+                      background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      fontSize: 13, fontWeight: 700, color: '#1877D6',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    <Navigation size={15} color="#1877D6" />
+                    View route
+                  </button>
+
+                  {driveData?.durationMinutes != null && (
+                    <>
+                      <span style={{ color: '#C7CDD6', fontSize: 12 }}>·</span>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: '#1877D6' }}>
+                        {driveData.durationMinutes} min
+                      </span>
+                    </>
+                  )}
+
+                  {weatherData && (
+                    <>
+                      <span style={{ color: '#C7CDD6', fontSize: 12 }}>·</span>
+                      <span style={{ fontSize: 14 }}>{weatherData.icon || '⛅'}</span>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A' }}>
+                        {Math.round(weatherData.tempC)}°
+                      </span>
+                    </>
+                  )}
+                </div>
 
                 <button
                   type="button"
                   onClick={() => setHeroExpandedWithEvent((v) => !v)}
                   style={{
+                    flexShrink: 0,
                     background: 'none', border: 'none', padding: 0, cursor: 'pointer',
                     display: 'flex', alignItems: 'center', gap: 4,
                     fontSize: 13, fontWeight: 600, color: '#0B1F3A',
@@ -5208,6 +5194,7 @@ function HomePage() {
                   More {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </button>
               </div>
+
             </>
           );
 
