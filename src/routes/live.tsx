@@ -1622,15 +1622,13 @@ function LivePage() {
                     border:
                       roadType === "B Road"
                         ? "1px solid rgba(255,255,255,0.35)"
-                        : roadType === "Local road"
-                        ? "1px solid rgba(255,255,255,0.25)"
                         : "none",
                     textShadow: roadType === "B Road" ? "none" : "0 1px 1px rgba(0,0,0,0.15)",
                   }}
                 >
                   {roadType}
                 </span>
-              ) : roadTag || roadLabel ? (
+              ) : !roadType && (roadTag || roadLabel) ? (
                 <span
                   style={{
                     flexShrink: 0,
