@@ -458,39 +458,99 @@ function PupilThreadPage() {
 
   return (
     <PageLayout className="flex flex-col" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle={pupilName}
-        onBack={() => navigate({ to: "/pupils/$id", params: { id: pupilId } } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
-
-      {/* Actions row */}
-      <div className="flex justify-end px-3 pt-2">
-        <a
-          href={phone ? `tel:${phone}` : undefined}
-          aria-label="Call"
-          className="inline-flex items-center gap-2 text-[13px] font-semibold"
+      {/* Header */}
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 60,
+          maxWidth: 480,
+          margin: "0 auto",
+          background: "#0B1F3A",
+          paddingTop: "env(safe-area-inset-top, 0px)",
+        }}
+      >
+        <div
           style={{
-            height: 34,
+            height: 56,
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
             padding: "0 12px",
-            borderRadius: 10,
-            border: "1px solid #E2E8F0",
-            background: "#FFFFFF",
-            color: "#0B1F3A",
-            opacity: phone ? 1 : 0.4,
-            textDecoration: "none",
           }}
         >
-          <Phone size={15} />
-          Call
-        </a>
+          <button
+            type="button"
+            aria-label="Back"
+            onClick={() => navigate({ to: "/pupils/$id", params: { id: pupilId } } as never)}
+            style={{ background: "none", border: "none", padding: 0, display: "flex" }}
+          >
+            <ChevronLeft size={20} color="#C7D0DE" />
+          </button>
+          {pupil?.profile_image_url ? (
+            <img
+              src={pupil.profile_image_url}
+              alt=""
+              style={{ width: 30, height: 30, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+            />
+          ) : (
+            <div
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: "50%",
+                background: "#D9E6F5",
+                color: "#0B1F3A",
+                fontSize: 11,
+                fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                ...POPPINS,
+              }}
+            >
+              {initialsOf(pupilName)}
+            </div>
+          )}
+          <div
+            style={{
+              flex: 1,
+              minWidth: 0,
+              color: "#FFFFFF",
+              fontSize: 14,
+              fontWeight: 600,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              ...POPPINS,
+            }}
+          >
+            {pupilName}
+          </div>
+          <a
+            href={phone ? `tel:${phone}` : undefined}
+            aria-label="Call"
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 8,
+              background: "rgba(255,255,255,0.1)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              opacity: phone ? 1 : 0.4,
+            }}
+          >
+            <Phone size={15} color="#C7D0DE" />
+          </a>
+        </div>
       </div>
+      <div style={{ height: "calc(56px + env(safe-area-inset-top, 0px))" }} />
+
 
       {noAccount && (
         <div
