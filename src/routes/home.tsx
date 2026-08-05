@@ -2948,9 +2948,9 @@ function HomePage() {
     const handler = () => setReloadKey((k) => k + 1);
     window.addEventListener("dsm-message-received", handler);
 
-    // Read current badge preferences so the right realtime subscriptions are active
-    const currentPrefs = readBadgePrefs(userId);
-    setBadgePrefs(currentPrefs);
+    // Use the flags already in state; they are refreshed separately (mount + focus).
+    const currentPrefs = badgePrefs;
+
 
     // Also subscribe directly so home updates even when messages page isn't open
     let channel = supabase.channel(`home-messages-${userId}`);
