@@ -8,6 +8,7 @@ import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { recordPayment } from "@/lib/payments";
+import { cancelLessonWithUndo, UNDO_WINDOW_MS } from "@/lib/cancelLesson";
 import { CancelSummaryPanel } from "@/components/lessons/CancelSummaryPanel";
 
 export const Route = createFileRoute("/lessons/edit/$id")({
