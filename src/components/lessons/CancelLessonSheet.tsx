@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { CancelSummaryPanel } from "@/components/lessons/CancelSummaryPanel";
 import { recordRefund } from "@/lib/payments";
+import { describeChargeOption } from "@/lib/cancelCharge";
 import { cancelLessonWithUndo, UNDO_WINDOW_MS } from "@/lib/cancelLesson";
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
@@ -156,9 +157,12 @@ export function CancelLessonSheet({
         // Audit row capturing the cancellation reason, notes and outcome
         const outcome = waived
           ? "Charge waived"
-          : feeAmount > 0
-            ? `Cancellation fee £${feeAmount.toFixed(2)} retained`
-            : "No charge";
+          : describeChargeOption(feeAmount > 0 ? "fee" : "none", {
+              paymentStatus,
+              amountDue: lessonValue,
+              fee: feeAmount,
+            }).outcomeText;
+
         const { error: histErr } = await supabase.from("lesson_history").insert({
           instructor_id: instructorId,
           pupil_id: pupilId,

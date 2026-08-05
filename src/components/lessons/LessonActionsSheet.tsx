@@ -28,6 +28,15 @@ import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { CancelSummaryPanel } from "@/components/lessons/CancelSummaryPanel";
 import { cancelLessonWithUndo, UNDO_WINDOW_MS } from "@/lib/cancelLesson";
+import {
+  availableChargeOptions,
+  clampFee,
+  coerceChargeOption,
+  describeChargeOption,
+  feeCap,
+  normalizePayState,
+} from "@/lib/cancelCharge";
+
 import { supabase } from "@/lib/supabaseClient";
 import { verifyAddress } from "@/lib/geocode.functions";
 
@@ -119,6 +128,13 @@ export function LessonActionsSheet({
   const [cancelNote, setCancelNote] = useState("");
   const [chargeOption, setChargeOption] = useState<"none" | "fee" | "full">("none");
   const [cancelFee, setCancelFee] = useState("");
+
+  // Keep the selected charge option valid for the lesson's payment state
+  useEffect(() => {
+    setChargeOption((prev) => coerceChargeOption(prev, lesson.payment_status));
+  }, [lesson.payment_status, inlineView]);
+
+
 
   const CANCEL_REASONS: string[] = [
     "Pupil cancelled",
@@ -455,6 +471,14 @@ export function LessonActionsSheet({
 
   // --- Header payment pill ---
   const payStatus = (lesson.payment_status ?? "unpaid").toLowerCase();
+  const payState = normalizePayState(payStatus);
+  const chargeOptions = availableChargeOptions(payStatus);
+  const cancelFeeCap = feeCap(lesson.amount_due);
+  const chargeCtx = { paymentStatus: payStatus, amountDue: lesson.amount_due, fee: cancelFee };
+  const noneDesc = describeChargeOption("none", chargeCtx);
+  const feeDesc = describeChargeOption("fee", chargeCtx);
+  const activeDesc = describeChargeOption(chargeOption, chargeCtx);
+
   const payPill = (() => {
     if (payStatus === "paid") return { label: "Paid", fg: "#1F6B2E", bg: "#E8F5E9" };
     if (payStatus === "prepaid") return { label: "Prepaid", fg: "#1F6B2E", bg: "#E8F5E9" };
@@ -698,48 +722,67 @@ export function LessonActionsSheet({
                 style={chargeRow(chargeOption === "none", "#E6F1FB", "#1877D6")}
               >
                 <div style={chargeTitle}>No charge</div>
-                <div style={chargeSub}>
-                  {payStatus === "paid" || payStatus === "partial"
-                    ? `£${balance.toFixed(2)} refunded as account credit`
-                    : payStatus === "prepaid"
-                      ? "1 lesson returned to prepaid hours"
-                      : "No payment to refund"}
-                </div>
+                <div style={chargeSub}>{noneDesc.subtitle}</div>
               </button>
 
-              <div>
-                <button
-                  type="button"
-                  onClick={() => setChargeOption("fee")}
-                  style={chargeRow(chargeOption === "fee", "#FEF3C7", "#D97706")}
-                >
-                  <div style={chargeTitle}>Charge cancellation fee</div>
-                  <div style={chargeSub}>Remainder refunded to account credit</div>
-                </button>
-                {chargeOption === "fee" && (
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8 }}>
-                    <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 13, color: "#6B7686" }}>£</span>
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      value={cancelFee}
-                      onChange={(e) => setCancelFee(e.target.value)}
-                      placeholder="e.g. 20.00"
-                      style={{
-                        flex: 1,
-                        border: "1px solid #E4E8EF",
-                        borderRadius: 8,
-                        padding: "10px 12px",
-                        fontFamily: "Poppins, sans-serif",
-                        fontSize: 13,
-                        boxSizing: "border-box",
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
+              {chargeOptions.includes("fee") && (
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setChargeOption("fee")}
+                    style={chargeRow(chargeOption === "fee", "#FEF3C7", "#D97706")}
+                  >
+                    <div style={chargeTitle}>Charge cancellation fee</div>
+                    <div style={chargeSub}>{feeDesc.subtitle}</div>
+                  </button>
+                  {chargeOption === "fee" && (
+                    <>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8 }}>
+                        <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 13, color: "#6B7686" }}>£</span>
+                        <input
+                          type="number"
+                          inputMode="decimal"
+                          min={0}
+                          max={cancelFeeCap ?? undefined}
+                          value={cancelFee}
+                          onChange={(e) => {
+                            const raw = e.target.value;
+                            if (raw === "") return setCancelFee("");
+                            const clamped = clampFee(raw, lesson.amount_due);
+                            setCancelFee(
+                              cancelFeeCap != null && Number(raw) > cancelFeeCap ? String(clamped) : raw,
+                            );
+                          }}
+                          placeholder="e.g. 20.00"
+                          style={{
+                            flex: 1,
+                            border: "1px solid #E4E8EF",
+                            borderRadius: 8,
+                            padding: "10px 12px",
+                            fontFamily: "Poppins, sans-serif",
+                            fontSize: 13,
+                            boxSizing: "border-box",
+                          }}
+                        />
+                      </div>
+                      {(feeDesc.error || cancelFeeCap != null) && (
+                        <div
+                          style={{
+                            fontFamily: "Poppins, sans-serif",
+                            fontSize: 11,
+                            marginTop: 6,
+                            color: feeDesc.error ? "#CC2229" : "#6B7686",
+                          }}
+                        >
+                          {feeDesc.error ?? `Maximum £${cancelFeeCap!.toFixed(2)} (lesson value)`}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
 
-              {(payStatus === "paid" || payStatus === "partial") && (
+              {chargeOptions.includes("full") && (
                 <button
                   type="button"
                   onClick={() => setChargeOption("full")}
@@ -749,6 +792,7 @@ export function LessonActionsSheet({
                   <div style={chargeSub}>No refund — full payment retained</div>
                 </button>
               )}
+
             {/* SECTION 4 — Summary */}
             {cancelReason && (
               <CancelSummaryPanel
@@ -765,33 +809,38 @@ export function LessonActionsSheet({
 
             <button
               type="button"
-              disabled={saving || !cancelReason}
+              disabled={saving || !cancelReason || !activeDesc.valid}
               style={{
                 ...primaryBtn,
                 background: "#CC2229",
-                opacity: !cancelReason || saving ? 0.5 : 1,
+                opacity: !cancelReason || !activeDesc.valid || saving ? 0.5 : 1,
               }}
               onClick={async () => {
                 setSaving(true);
 
-                const feeAmt = Number(cancelFee) || 0;
-                let outcome = "No charge";
-                if (chargeOption === "fee") outcome = `Cancellation fee £${feeAmt.toFixed(2)} retained`;
-                if (chargeOption === "full") outcome = "Full charge retained";
+                const feeAmt = clampFee(cancelFee, lesson.amount_due);
+                const outcome = activeDesc.outcomeText;
+
+                const patch: Record<string, unknown> = {
+                  status: "cancelled",
+                  payment_status: "cancelled",
+                  cancellation_reason: cancelReason,
+                  cancellation_notes: cancelNote || null,
+                  cancelled_at: new Date().toISOString(),
+                };
+                if (chargeOption === "fee" && payState === "unpaid") {
+                  patch.amount_due = feeAmt;
+                } else if (chargeOption === "none" && payState === "unpaid") {
+                  patch.amount_due = 0;
+                }
 
                 const handle = await cancelLessonWithUndo({
                   lessonId: lesson.id,
-                  patch: {
-                    status: "cancelled",
-                    payment_status: "cancelled",
-                    cancellation_reason: cancelReason,
-                    cancellation_notes: cancelNote || null,
-                    cancelled_at: new Date().toISOString(),
-                  },
+                  patch,
                   financials: async () => {
                     const { recordRefund } = await import("@/lib/payments");
 
-                    if (chargeOption === "none" && (payStatus === "paid" || payStatus === "partial")) {
+                    if (chargeOption === "none" && (payState === "paid" || payState === "partial")) {
                       await recordRefund({
                         pupilId: lesson.pupil_id,
                         amount: Number(lesson.amount_due ?? 0),
@@ -799,14 +848,27 @@ export function LessonActionsSheet({
                         notes: `Cancellation refund — ${cancelReason}`,
                         currentAccountBalance: 0,
                       });
-                    } else if (chargeOption === "fee") {
+                    } else if (chargeOption === "none" && payState === "prepaid") {
+                      const { data: pRow } = await supabase
+                        .from("pupils")
+                        .select("prepaid_hours")
+                        .eq("id", lesson.pupil_id)
+                        .maybeSingle();
+                      const currentHours = Number(
+                        (pRow as { prepaid_hours?: number | null } | null)?.prepaid_hours ?? 0,
+                      );
+                      await supabase
+                        .from("pupils")
+                        .update({ prepaid_hours: currentHours + 1 } as never)
+                        .eq("id", lesson.pupil_id);
+                    } else if (chargeOption === "fee" && (payState === "paid" || payState === "partial")) {
                       const refund = Number(lesson.amount_due ?? 0) - feeAmt;
                       if (refund > 0) {
                         await recordRefund({
                           pupilId: lesson.pupil_id,
                           amount: refund,
                           method: "cash",
-                          notes: `Partial refund — cancellation fee £${feeAmt} retained`,
+                          notes: `Partial refund — cancellation fee £${feeAmt.toFixed(2)} retained`,
                           currentAccountBalance: 0,
                         });
                       }
@@ -821,6 +883,7 @@ export function LessonActionsSheet({
                         created_at: new Date().toISOString(),
                       } as never);
                     }
+
 
                     // Audit row capturing the cancellation reason, notes and outcome
                     await supabase.from("lesson_history").insert({
@@ -861,7 +924,7 @@ export function LessonActionsSheet({
               }}
 
             >
-              {saving ? "Cancelling…" : "Confirm cancellation"}
+              {saving ? "Cancelling…" : activeDesc.confirmLabel}
             </button>
             <button
               type="button"
