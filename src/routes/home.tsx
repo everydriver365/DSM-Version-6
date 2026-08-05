@@ -511,7 +511,7 @@ const SECTION_TITLE_TEXT_STYLE: React.CSSProperties = {
   color: '#1877D6',
   textTransform: 'uppercase',
   letterSpacing: '0.12em',
-  fontFamily: 'Poppins, sans-serif',
+  fontFamily: 'Inter, sans-serif',
 };
 
 const SECTION_LINK_STYLE: React.CSSProperties = {
@@ -4729,6 +4729,19 @@ function HomePage() {
       {/* ============ NEXT LESSON CARD ============ */}
 
       <div style={SECTION_WRAPPER_STYLE}>
+        <div style={SECTION_HEADER_STYLE}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+            <span style={SECTION_TITLE_TEXT_STYLE}>Next lesson</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate({ to: '/schedule' })}
+            style={SECTION_LINK_STYLE}
+          >
+            Full schedule <IconChevronRight size={14} stroke={2.2} />
+          </button>
+        </div>
         <div
           style={{
             margin: 0,
@@ -4854,20 +4867,6 @@ function HomePage() {
 
           return (
             <>
-              <div style={{ ...SECTION_HEADER_STYLE, padding: '12px 16px 0' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
-                  <span style={SECTION_TITLE_TEXT_STYLE}>Next lesson</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: '/schedule' })}
-                  style={SECTION_LINK_STYLE}
-                >
-                  Full schedule <IconChevronRight size={14} stroke={2.2} />
-                </button>
-              </div>
-
               {/* Map header */}
               {(() => {
                 const GMAPS_KEY = (import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined)
