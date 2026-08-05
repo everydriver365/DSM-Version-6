@@ -4851,26 +4851,38 @@ function HomePage() {
 
           return (
             <>
-              {/* Original header strip */}
+              {/* Header matching Discover SectionHeader style */}
               <div style={{
-                background: '#EEF2F7',
+                padding: '12px 12px 0',
                 borderRadius: '16px 16px 0 0',
-                borderLeft: '3px solid #1877D6',
-                padding: '10px 12px',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
               }}>
-                <span style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  color: '#1877D6',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.06em',
-                  fontFamily: 'Poppins, sans-serif',
-                }}>
-                  NEXT LESSON
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span
+                    aria-hidden
+                    style={{
+                      display: 'inline-block',
+                      width: 3,
+                      height: 12,
+                      borderRadius: 2,
+                      backgroundColor: '#1877D6',
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: '#1877D6',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.12em',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    Next Lesson
+                  </span>
+                </div>
                 <span
                   onClick={() => navigate({ to: '/schedule' })}
                   style={{
