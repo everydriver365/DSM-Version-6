@@ -481,7 +481,57 @@ interface PupilReadySetting {
   short_notice_opt_in: boolean | null;
 }
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+
+/** Standard DSM section eyebrow header used above every home section. */
+function SectionEyebrow({
+  title,
+  linkLabel,
+  onLink,
+}: {
+  title: string;
+  linkLabel?: string;
+  onLink?: () => void;
+}) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 8,
+        padding: '0 16px',
+      }}
+    >
+      <span
+        style={{
+          fontSize: 10,
+          fontWeight: 600,
+          color: '#9CA3AF',
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em',
+          fontFamily: 'Poppins, sans-serif',
+        }}
+      >
+        {title}
+      </span>
+      {linkLabel ? (
+        <span
+          onClick={onLink}
+          style={{
+            fontSize: 12,
+            fontWeight: 500,
+            color: '#1877D6',
+            fontFamily: 'Poppins, sans-serif',
+            cursor: 'pointer',
+          }}
+        >
+          {linkLabel}
+        </span>
+      ) : null}
+    </div>
+  );
+}
 // Default weekly goals — should come from instructor settings
 // (instructors.weekly_lesson_goal / weekly_earnings_goal). We fall back to
 // these defaults if the columns don't exist or the row hasn't been populated.
