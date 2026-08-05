@@ -1556,6 +1556,8 @@ function LivePage() {
                   Road not identified
                 </span>
               )}
+            </div>
+
             {/* Road type legend row */}
             <div
               className="flex items-center justify-center"
