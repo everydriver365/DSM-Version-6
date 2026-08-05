@@ -1596,99 +1596,38 @@ function LivePage() {
             {/* Divider */}
             <div style={{ height: 1, background: "rgba(255,255,255,0.12)", width: "100%" }} />
 
-            {/* Road info row — centred, side-by-side pills */}
+            {/* Road info row — left justified, sign then name */}
             <div
-              className="flex items-center justify-center"
+              className="flex items-center justify-start"
               style={{ padding: "0 14px", height: 34, gap: 12, minWidth: 0 }}
             >
-              {roadType && roadType !== "Local road" ? (
-                <span
-                  style={{
-                    flexShrink: 0,
-                    background:
-                      roadType === "Motorway"
-                        ? "#1877D6"
-                        : roadType === "A Road"
-                        ? "#1A9C56"
-                        : roadType === "B Road"
-                        ? "#F8FAFC"
-                        : "rgba(255,255,255,0.15)",
-                    color: roadType === "B Road" ? "#0B1F3A" : "#fff",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    padding: "3px 9px",
-                    borderRadius: 20,
-                    lineHeight: 1.2,
-                    border:
-                      roadType === "B Road"
-                        ? "1px solid rgba(255,255,255,0.35)"
-                        : "none",
-                    textShadow: roadType === "B Road" ? "none" : "0 1px 1px rgba(0,0,0,0.15)",
-                  }}
-                >
-                  {roadType}
+              {roadType && roadType !== "Local road" && (
+                <span className="flex items-center" style={{ flexShrink: 0, gap: 6 }}>
+                  {roadType === "Motorway" && <MotorwaySymbol />}
+                  {roadType === "A Road" && roadTag && <ARoadPlate tag={roadTag} />}
+                  {roadType === "B Road" && roadTag && <BRoadPlate tag={roadTag} />}
                 </span>
-              ) : !roadType && (roadTag || roadLabel) ? (
-                <span
-                  style={{
-                    flexShrink: 0,
-                    background: "rgba(255,255,255,0.15)",
-                    color: "rgba(255,255,255,0.85)",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    padding: "3px 9px",
-                    borderRadius: 20,
-                    lineHeight: 1.2,
-                    border: "1px solid rgba(255,255,255,0.25)",
-                  }}
-                >
-                  Unknown road
-                </span>
-              ) : null}
-              {(roadTag || roadLabel) && (
+              )}
+              {roadTag || roadLabel ? (
                 <span
                   style={{
                     flexShrink: 1,
                     minWidth: 0,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
                     overflow: "hidden",
                     color: "#fff",
                     fontWeight: 700,
                     fontSize: 11,
                     lineHeight: 1.2,
                     textShadow: "0 1px 1px rgba(0,0,0,0.15)",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
                   }}
                 >
-                  {roadType === "Motorway" && <MotorwaySymbol />}
-                  {roadType === "A Road" && roadTag && <ARoadPlate tag={roadTag} />}
-                  {roadType === "B Road" && roadTag && <BRoadPlate tag={roadTag} />}
-                  {(
-                    (roadType === "A Road" || roadType === "B Road") && roadTag
-                      ? !!roadLabel
-                      : !!(roadTag || roadLabel)
-                  ) && (
-                    <span
-                      style={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        minWidth: 0,
-                      }}
-                    >
-                      {roadTag && roadLabel
-                        ? roadType === "A Road" || roadType === "B Road"
-                          ? roadLabel
-                          : `${roadTag} · ${roadLabel}`
-                        : roadTag || roadLabel}
-                    </span>
-                  )}
+                  {roadType === "Motorway" && roadTag && roadLabel
+                    ? `${roadTag} · ${roadLabel}`
+                    : roadLabel || roadTag}
                 </span>
-              )}
-
-
-              {!roadType && !roadTag && !roadLabel && (
+              ) : (
                 <span
                   style={{
                     fontSize: 12,
