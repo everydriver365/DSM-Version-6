@@ -128,6 +128,38 @@ function initialsOf(name: string) {
   );
 }
 
+function HighlightedBody({ body, query }: { body: string; query: string }) {
+  const q = query.trim();
+  if (!q) return <>{body}</>;
+  const lowerQ = q.toLowerCase();
+  const parts: React.ReactNode[] = [];
+  let remaining = body;
+  let key = 0;
+  while (remaining.length > 0) {
+    const idx = remaining.toLowerCase().indexOf(lowerQ);
+    if (idx === -1) {
+      parts.push(<span key={key++}>{remaining}</span>);
+      break;
+    }
+    if (idx > 0) parts.push(<span key={key++}>{remaining.slice(0, idx)}</span>);
+    parts.push(
+      <span
+        key={key++}
+        style={{
+          backgroundColor: "#FACC15",
+          color: "#0B1F3A",
+          borderRadius: 2,
+          padding: "0 1px",
+        }}
+      >
+        {remaining.slice(idx, idx + q.length)}
+      </span>,
+    );
+    remaining = remaining.slice(idx + q.length);
+  }
+  return <>{parts}</>;
+}
+
 const SYSTEM_TYPES = ["call", "missed_call", "sms_event", "system", "event"];
 
 
