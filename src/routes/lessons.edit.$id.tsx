@@ -562,55 +562,74 @@ function EditLessonPage() {
                   <button
                     type="button"
                     onClick={() => setChargeOption("none")}
-                    style={chargeRow(chargeOption === "none", "#E6F1FB", "#1877D6")}
+                    style={chargeRow(activeOption === "none", "#E6F1FB", "#1877D6")}
                   >
                     <div style={chargeTitle}>No charge</div>
-                    <div style={chargeSub}>
-                      {paymentStatus === "paid" || paymentStatus === "partial"
-                        ? `£${balance.toFixed(2)} refunded as account credit`
-                        : paymentStatus === "prepaid"
-                          ? "1 lesson returned to prepaid hours"
-                          : "No payment to refund"}
-                    </div>
+                    <div style={chargeSub}>{noneDesc.subtitle}</div>
                   </button>
 
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() => setChargeOption("fee")}
-                      style={chargeRow(chargeOption === "fee", "#FEF3C7", "#D97706")}
-                    >
-                      <div style={chargeTitle}>Charge cancellation fee</div>
-                      <div style={chargeSub}>Remainder refunded to account credit</div>
-                    </button>
-                    {chargeOption === "fee" && (
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8 }}>
-                        <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 13, color: "#6B7686" }}>£</span>
-                        <input
-                          type="number"
-                          inputMode="decimal"
-                          value={cancelFee}
-                          onChange={(e) => setCancelFee(e.target.value)}
-                          placeholder="e.g. 20.00"
-                          style={{
-                            flex: 1,
-                            border: "1px solid #E4E8EF",
-                            borderRadius: 8,
-                            padding: "10px 12px",
-                            fontFamily: "Poppins, sans-serif",
-                            fontSize: 13,
-                            boxSizing: "border-box",
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
+                  {chargeOptions.includes("fee") && (
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => setChargeOption("fee")}
+                        style={chargeRow(activeOption === "fee", "#FEF3C7", "#D97706")}
+                      >
+                        <div style={chargeTitle}>Charge cancellation fee</div>
+                        <div style={chargeSub}>{feeDesc.subtitle}</div>
+                      </button>
+                      {activeOption === "fee" && (
+                        <>
+                          <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8 }}>
+                            <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 13, color: "#6B7686" }}>£</span>
+                            <input
+                              type="number"
+                              inputMode="decimal"
+                              min={0}
+                              max={cancelFeeCap ?? undefined}
+                              value={cancelFee}
+                              onChange={(e) => {
+                                const raw = e.target.value;
+                                if (raw === "") return setCancelFee("");
+                                const clamped = clampFee(raw, amountDue);
+                                setCancelFee(
+                                  cancelFeeCap != null && Number(raw) > cancelFeeCap ? String(clamped) : raw,
+                                );
+                              }}
+                              placeholder="e.g. 20.00"
+                              style={{
+                                flex: 1,
+                                border: "1px solid #E4E8EF",
+                                borderRadius: 8,
+                                padding: "10px 12px",
+                                fontFamily: "Poppins, sans-serif",
+                                fontSize: 13,
+                                boxSizing: "border-box",
+                              }}
+                            />
+                          </div>
+                          {(feeDesc.error || cancelFeeCap != null) && (
+                            <div
+                              style={{
+                                fontFamily: "Poppins, sans-serif",
+                                fontSize: 11,
+                                marginTop: 6,
+                                color: feeDesc.error ? "#CC2229" : "#6B7686",
+                              }}
+                            >
+                              {feeDesc.error ?? `Maximum £${cancelFeeCap!.toFixed(2)} (lesson value)`}
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
 
-                  {(paymentStatus === "paid" || paymentStatus === "partial") && (
+                  {chargeOptions.includes("full") && (
                     <button
                       type="button"
                       onClick={() => setChargeOption("full")}
-                      style={chargeRow(chargeOption === "full", "#FCE9E9", "#CC2229")}
+                      style={chargeRow(activeOption === "full", "#FCE9E9", "#CC2229")}
                     >
                       <div style={chargeTitle}>Charge full lesson</div>
                       <div style={chargeSub}>No refund — full payment retained</div>
@@ -623,12 +642,13 @@ function EditLessonPage() {
                   <CancelSummaryPanel
                     reason={cancelReason}
                     notes={cancelNote}
-                    chargeOption={chargeOption}
+                    chargeOption={activeOption}
                     cancelFee={cancelFee}
                     amountDue={amountDue}
                     paymentStatus={paymentStatus}
                   />
                 )}
+
 
                 <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14 }}>
                   <button
