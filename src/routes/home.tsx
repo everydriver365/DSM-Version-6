@@ -4729,6 +4729,19 @@ function HomePage() {
       {/* ============ NEXT LESSON CARD ============ */}
 
       <div style={SECTION_WRAPPER_STYLE}>
+        <div style={SECTION_HEADER_STYLE}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+            <span style={SECTION_TITLE_TEXT_STYLE}>Next lesson</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate({ to: '/schedule' })}
+            style={SECTION_LINK_STYLE}
+          >
+            Full schedule <IconChevronRight size={14} stroke={2.2} />
+          </button>
+        </div>
         <div
           style={{
             margin: 0,
