@@ -222,6 +222,7 @@ function LivePage() {
   const [currentSpeed, setCurrentSpeed] = useState<number | null>(null);
   const [speedLimit, setSpeedLimit] = useState<number | null>(null);
   const [roadName, setRoadName] = useState<string | null>(null);
+  const [roadType, setRoadType] = useState<string | null>(null);
   const [isOverSpeeding, setIsOverSpeeding] = useState(false);
   const [overspeedCount, setOverspeedCount] = useState(0);
   const [overspeedEvents, setOverspeedEvents] = useState<
@@ -485,7 +486,7 @@ function LivePage() {
       const pt = `${lng},${lat}`;
       const points = `${pt};${pt}`;
       const fields = encodeURIComponent(
-        "{route{properties{speedLimits{value,unit},address{roadName}}}}",
+        "{route{properties{speedLimits{value,unit},address{roadName,routeNumbers,speedLimit},roadClass}}}",
       );
       const url = `https://api.tomtom.com/snapToRoads/1?key=${TOMTOM_API_KEY}&points=${points}&fields=${fields}&measurementSystem=imperial`;
       const r = await fetch(url);
@@ -503,7 +504,24 @@ function LivePage() {
             : Math.round(sl);
       }
       const roadName = props?.address?.roadName;
-      if (roadName) road = roadName;
+      const roadClass = props?.roadClass;
+      const routeNumbers = props?.address?.routeNumbers;
+      // Build display name — prefer route number for major roads
+      // e.g. "A3" or "M3" over a local road name
+      if (routeNumbers?.length) {
+        road = routeNumbers[0]; // e.g. "A3", "M3", "A31"
+      } else if (roadName) {
+        road = roadName;
+      }
+      // Build road type label
+      let roadType: string | null = null;
+      if (roadClass === 'Motorway') roadType = 'Motorway';
+      else if (roadClass === 'Trunk') roadType = 'A Road';
+      else if (roadClass === 'Primary') roadType = 'A Road';
+      else if (roadClass === 'Secondary') roadType = 'B Road';
+      else if (roadClass === 'LocalRoad') roadType = null; // don't show
+      // Store roadType in state
+      setRoadType(roadType);
     } catch (e) {
       console.warn("[live] speed limit fetch failed", e);
     }
@@ -1451,6 +1469,24 @@ function LivePage() {
               >
                 {roadLabel ?? (roadTag ? "" : "Road not identified")}
               </span>
+              {roadType && (
+                <span
+                  style={{
+                    flexShrink: 0,
+                    background:
+                      roadType === 'Motorway' ? '#0B1F3A' : roadType === 'A Road' ? '#1877D6' : '#6B7686',
+                    color: '#fff',
+                    fontSize: 9,
+                    fontWeight: 700,
+                    padding: '2px 7px',
+                    borderRadius: 20,
+                    marginLeft: 6,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {roadType}
+                </span>
+              )}
             </div>
           </div>
         );
