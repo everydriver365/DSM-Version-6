@@ -119,95 +119,93 @@ export function CancelLessonSheet({
       payment_status: feeAmount > 0 ? "unpaid" : "cancelled",
       amount_due: feeAmount > 0 ? feeAmount : 0,
     };
-    const { error } = await supabase.from("lessons").update(lessonPatch).eq("id", lessonId);
-    if (error) {
-      console.error("[cancel] update lesson error", error);
+
+    const handle = await cancelLessonWithUndo({
+      lessonId,
+      patch: lessonPatch,
+      financials: async () => {
+        // Prepaid lesson cancelled — routed through the payments API so the
+        // reversal is audited (lesson_history + payments) instead of silently
+        // patching account_balance here.
+        if (isPrepaid && amountDue > 0) {
+          const { data: pupilRow, error: readErr } = await supabase
+            .from("pupils")
+            .select("account_balance")
+            .eq("id", pupilId)
+            .maybeSingle();
+          if (readErr) console.error("[cancel] pupil read error", readErr);
+          const current = Number((pupilRow as { account_balance: number | null } | null)?.account_balance ?? 0);
+          try {
+            await recordRefund({
+              pupilId,
+              amount: amountDue,
+              method: "cash",
+              notes: "Lesson cancelled — refund to account credit",
+              currentAccountBalance: current,
+            });
+          } catch (e) {
+            console.error("[cancel] recordRefund error", e);
+          }
+        }
+
+        const { data: userRes } = await supabase.auth.getUser();
+        const instructorId = userRes.user?.id ?? null;
+        if (!instructorId) return;
+
+        // Audit row capturing the cancellation reason, notes and outcome
+        const outcome = waived
+          ? "Charge waived"
+          : feeAmount > 0
+            ? `Cancellation fee £${feeAmount.toFixed(2)} retained`
+            : "No charge";
+        const { error: histErr } = await supabase.from("lesson_history").insert({
+          instructor_id: instructorId,
+          pupil_id: pupilId,
+          amount_paid: waived ? 0 : feeAmount,
+          payment_method: "cancellation",
+          payment_status: "cancelled",
+          notes: `Cancelled — ${reason}${notes ? ` — ${notes}` : ""} · ${outcome}`,
+          created_at: new Date().toISOString(),
+        } as never);
+        if (histErr) console.error("[cancel] history insert error", histErr);
+
+        const body = feeAmount > 0
+          ? `Cancellation fee of £${feeAmount.toFixed(2)} added for ${pupilName}`
+          : `${pupilName}'s lesson on ${when} was cancelled${waived ? " (charge waived)" : ""}`;
+        const { error: notifErr } = await supabase.from("instructor_notifications").insert({
+          instructor_id: instructorId,
+          title: feeAmount > 0 ? "Cancellation fee added" : "Lesson cancelled",
+          body,
+          type: "lesson",
+          read: false,
+        });
+        if (notifErr) console.error("[cancel] notification error", notifErr);
+      },
+    });
+
+    if (!handle) {
       toast.error("Couldn't cancel lesson");
       setSubmitting(false);
       return;
     }
 
-    // Sync to Google Calendar after cancel
-    const { data: lessonRow } = await supabase
-      .from("lessons")
-      .select("google_event_id, instructor_id")
-      .eq("id", lessonId)
-      .maybeSingle();
-    if (lessonRow?.google_event_id) {
-      void supabase.functions.invoke("google-calendar-sync", {
-        body: {
-          lesson_id: lessonId,
-          instructor_id: (lessonRow as { instructor_id?: string }).instructor_id ?? "",
-          action: "delete",
+    toast.success("Lesson cancelled", {
+      duration: UNDO_WINDOW_MS,
+      action: {
+        label: "Undo",
+        onClick: () => {
+          void handle
+            .undo()
+            .then(() => toast.success("Cancellation undone"))
+            .catch(() => toast.error("Couldn't undo cancellation"));
         },
-      });
-    }
-
-    // Prepaid lesson cancelled — routed through the payments API so the
-    // reversal is audited (lesson_history + payments) instead of silently
-    // patching account_balance here.
-    if (isPrepaid && amountDue > 0) {
-      const { data: pupilRow, error: readErr } = await supabase
-        .from("pupils")
-        .select("account_balance")
-        .eq("id", pupilId)
-        .maybeSingle();
-      if (readErr) console.error("[cancel] pupil read error", readErr);
-      const current = Number((pupilRow as { account_balance: number | null } | null)?.account_balance ?? 0);
-      try {
-        await recordRefund({
-          pupilId,
-          amount: amountDue,
-          method: "cash",
-          notes: "Lesson cancelled — refund to account credit",
-          currentAccountBalance: current,
-        });
-      } catch (e) {
-        console.error("[cancel] recordRefund error", e);
-      }
-    }
-
-
-    const { data: userRes } = await supabase.auth.getUser();
-    const instructorId = userRes.user?.id ?? null;
-
-    // Audit row capturing the cancellation reason, notes and outcome
-    if (instructorId) {
-      const outcome = waived
-        ? "Charge waived"
-        : feeAmount > 0
-          ? `Cancellation fee £${feeAmount.toFixed(2)} retained`
-          : "No charge";
-      const { error: histErr } = await supabase.from("lesson_history").insert({
-        instructor_id: instructorId,
-        pupil_id: pupilId,
-        amount_paid: waived ? 0 : feeAmount,
-        payment_method: "cancellation",
-        payment_status: "cancelled",
-        notes: `Cancelled — ${reason}${notes ? ` — ${notes}` : ""} · ${outcome}`,
-        created_at: new Date().toISOString(),
-      } as never);
-      if (histErr) console.error("[cancel] history insert error", histErr);
-    }
-
-    if (instructorId) {
-
-      const body = feeAmount > 0
-        ? `Cancellation fee of £${feeAmount.toFixed(2)} added for ${pupilName}`
-        : `${pupilName}'s lesson on ${when} was cancelled${waived ? " (charge waived)" : ""}`;
-      const { error: notifErr } = await supabase.from("instructor_notifications").insert({
-        instructor_id: instructorId,
-        title: feeAmount > 0 ? "Cancellation fee added" : "Lesson cancelled",
-        body,
-        type: "lesson",
-        read: false,
-      });
-      if (notifErr) console.error("[cancel] notification error", notifErr);
-    }
+      },
+    });
 
     setSubmitting(false);
     onCancelled();
   }
+
 
   if (!open) return null;
 
