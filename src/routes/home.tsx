@@ -1810,7 +1810,7 @@ function HomePage() {
       if (!cancelled) setJoinedRoomChats(out);
     })();
     return () => { cancelled = true; };
-  }, [userId, localRoom?.id, ukRoom?.id]);
+  }, [userId, localRoom?.id, ukRoom?.id, reloadKey]);
 
 
 
