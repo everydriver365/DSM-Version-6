@@ -35,74 +35,50 @@ function deriveRoadType(name?: string | null): string | null {
   return "Local road";
 }
 
-/** UK motorway badge: white-outlined blue plate with the motorway bridge glyph. */
-function MotorwaySymbol({ size = 32 }: { size?: number }) {
+/** UK motorway sign plate. */
+function MotorwaySymbol({ tag, over = false }: { tag?: string | null; over?: boolean }) {
+  const bg = over ? "#CC2229" : "#003399";
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      style={{ flexShrink: 0, display: "block" }}
-    >
-      <rect x="1" y="1" width="22" height="22" rx="4" fill="#1877D6" stroke="#fff" strokeWidth="1.5" />
-      <path
-        d="M6 16V9.5h3L12 13.5l3-4H18V16h-2.5v-4L12 16l-3.5-4v4H6z"
-        fill="#fff"
-      />
+    <svg width={38} height={46} viewBox="0 0 44 52" aria-hidden="true" style={{ flexShrink: 0, display: "block" }}>
+      <rect x="0" y="0" width="44" height="52" rx="3" fill={bg} />
+      <rect x="2" y="2" width="40" height="48" rx="2" fill="none" stroke="#fff" strokeWidth="1.2" />
+      <rect x="8" y="8" width="12" height="16" rx="1" fill={over ? "#CC2229" : "#fff"} stroke={over ? "#fff" : "none"} strokeWidth={over ? 1 : 0} />
+      <rect x="24" y="8" width="12" height="16" rx="1" fill={over ? "#CC2229" : "#fff"} stroke={over ? "#fff" : "none"} strokeWidth={over ? 1 : 0} />
+      <rect x="20" y="8" width="4" height="16" fill={bg} />
+      <line x1="4" y1="27" x2="40" y2="27" stroke="#fff" strokeWidth="1.2" />
+      <text x="22" y="43" textAnchor="middle" fill="#fff" fontSize="13" fontWeight="800">
+        {tag ?? ""}
+      </text>
     </svg>
   );
 }
 
-/** UK A-road sign: green plate with white border and yellow route number. */
-function ARoadPlate({ tag }: { tag: string }) {
+/** UK A-road sign plate. */
+function ARoadPlate({ tag, over = false }: { tag: string; over?: boolean }) {
   return (
-    <span
-      style={{
-        flexShrink: 0,
-        display: "inline-flex",
-        alignItems: "center",
-        background: "#106B3F",
-        border: "1.5px solid #fff",
-        borderRadius: 5,
-        color: "#FFCC00",
-        fontWeight: 800,
-        fontSize: 11,
-        letterSpacing: 0.3,
-        lineHeight: 1,
-        padding: "3px 6px",
-        textShadow: "none",
-      }}
-    >
-      {tag}
-    </span>
+    <svg width={40} height={26} viewBox="0 0 40 26" aria-hidden="true" style={{ flexShrink: 0, display: "block" }}>
+      <rect x="0" y="0" width="40" height="26" rx="3" fill={over ? "#CC2229" : "#00703C"} />
+      <rect x="2" y="2" width="36" height="22" rx="2" fill="none" stroke="#fff" strokeWidth="1.2" />
+      <text x="20" y="18" textAnchor="middle" fill="#fff" fontSize="13" fontWeight="800">
+        {tag}
+      </text>
+    </svg>
   );
 }
 
-/** UK B-road sign: cream/white plate with black border and black text. */
-function BRoadPlate({ tag }: { tag: string }) {
+/** UK B-road sign plate. */
+function BRoadPlate({ tag, over = false }: { tag: string; over?: boolean }) {
   return (
-    <span
-      style={{
-        flexShrink: 0,
-        display: "inline-flex",
-        alignItems: "center",
-        background: "#F6F3E8",
-        border: "1.5px solid #111",
-        borderRadius: 5,
-        color: "#111",
-        fontWeight: 800,
-        fontSize: 11,
-        letterSpacing: 0.3,
-        lineHeight: 1,
-        padding: "3px 6px",
-        textShadow: "none",
-      }}
-    >
-      {tag}
-    </span>
+    <svg width={46} height={26} viewBox="0 0 46 26" aria-hidden="true" style={{ flexShrink: 0, display: "block" }}>
+      <rect x="0" y="0" width="46" height="26" rx="3" fill={over ? "#CC2229" : "#D4C48A"} />
+      <rect x="2" y="2" width="42" height="22" rx="2" fill="none" stroke={over ? "#fff" : "#555"} strokeWidth={over ? 1.2 : 0.8} />
+      <text x="23" y="18" textAnchor="middle" fill={over ? "#fff" : "#1a1a1a"} fontSize="12" fontWeight="800">
+        {tag}
+      </text>
+    </svg>
   );
 }
+
 
 
 
@@ -1521,8 +1497,20 @@ function LivePage() {
         const m = rn.match(/^([MABE]\s?\d+[A-Z]*)\b[\s,·-]*(.*)$/i);
         const roadTag = m ? m[1].replace(/\s/g, "").toUpperCase() : null;
         const roadLabel = m ? (m[2] || "").trim() || null : rn || null;
-        const over = isOverSpeeding && speedLimit != null && currentSpeed != null;
+        const over = !!(isOverSpeeding && speedLimit != null && currentSpeed != null);
         const excess = over ? Math.max(0, (currentSpeed ?? 0) - (speedLimit ?? 0)) : 0;
+        const zone20 = speedLimit === 20 && !over;
+        const maxSpeedMph = Math.max(
+          currentSpeed ?? 0,
+          ...coordsRef.current.map((c) => c.speed_mph ?? 0),
+          0,
+        );
+        const roadNameText =
+          roadTag && roadLabel ? `${roadTag} · ${roadLabel}` : roadLabel || roadTag || "Road not identified";
+        const hasSign =
+          (roadType === "Motorway") ||
+          (roadType === "A Road" && !!roadTag) ||
+          (roadType === "B Road" && !!roadTag);
         return (
           <div
             className="absolute z-[1000]"
@@ -1530,152 +1518,130 @@ function LivePage() {
               left: 16,
               right: 16,
               bottom: "calc(env(safe-area-inset-bottom, 0px) + 100px)",
-              height: 111,
-              background: "rgba(10,22,40,0.85)",
+              background: "rgba(10,22,40,0.9)",
               backdropFilter: "blur(8px)",
-              borderRadius: 14,
-              overflow: "hidden",
-              fontFamily: "Poppins, Inter, sans-serif",
+              borderRadius: 16,
+              padding: "14px 16px",
+              fontFamily: "Poppins, sans-serif",
             }}
           >
             {/* Top row */}
-            <div
-              className="grid items-center"
-              style={{
-                gridTemplateColumns: "48px 1fr auto",
-                padding: "8px 14px",
-                height: 54,
-                gap: 8,
-              }}
-            >
-              {/* Speed limit badge */}
-              <div style={{ position: "relative", flexShrink: 0 }}>
-                <div
-                  className="flex items-center justify-center"
+            <div className="flex items-center">
+              {/* Speed limit roundel */}
+              <div
+                className="flex items-center justify-center"
+                style={{
+                  flexShrink: 0,
+                  width: 48,
+                  height: 48,
+                  borderRadius: "50%",
+                  background: over ? "#CC2229" : zone20 ? "#FEF3C7" : "#fff",
+                  border: `4px solid ${over ? "#FF6B6B" : zone20 ? "#F59E0B" : "#CC2229"}`,
+                }}
+              >
+                <span
                   style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: "50%",
-                    background: "#fff",
-                    border: "4px solid #CC2229",
-                    animation: isOverSpeeding ? "overspeedFlash 0.6s ease-in-out infinite" : undefined,
-                    transition: "background 0.15s ease-out",
+                    fontSize: 18,
+                    fontWeight: 800,
+                    lineHeight: 1,
+                    color: speedLimit == null ? "#6B7686" : over ? "#fff" : zone20 ? "#92400E" : "#0B1F3A",
                   }}
                 >
-                  <span style={{ fontSize: 17, fontWeight: 800, color: "#0B1F3A", lineHeight: 1 }}>
-                    {speedLimit ?? "—"}
-                  </span>
-                </div>
-                {overspeedCount > 0 && (
-                  <span
-                    className="flex items-center justify-center"
-                    style={{
-                      position: "absolute",
-                      top: -5,
-                      right: -5,
-                      width: 18,
-                      height: 18,
-                      borderRadius: "50%",
-                      background: "#CC2229",
-                      border: "2px solid #0A1628",
-                      color: "#fff",
-                      fontSize: 10,
-                      fontWeight: 800,
-                      lineHeight: 1,
-                    }}
-                  >
-                    {overspeedCount}
-                  </span>
-                )}
+                  {speedLimit ?? "—"}
+                </span>
               </div>
 
-              {/* Current speed — centered */}
-              <div className="flex flex-col items-center justify-center" style={{ minWidth: 0 }}>
-                <div className="flex items-baseline" style={{ gap: 4 }}>
-                  <span
-                    style={{
-                      fontSize: 32,
-                      fontWeight: 800,
-                      lineHeight: 1,
-                      color: over ? "#FF6B6B" : speedColor,
-                    }}
-                  >
+              {/* Centre: speed + road name */}
+              <div style={{ flex: 1, minWidth: 0, textAlign: "center", padding: "0 12px" }}>
+                <div className="flex items-baseline justify-center" style={{ gap: 4 }}>
+                  <span style={{ fontSize: 36, fontWeight: 800, lineHeight: 1, color: over ? "#FF6B6B" : "#fff" }}>
                     {currentSpeed ?? 0}
                   </span>
-                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>mph</span>
+                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", paddingBottom: 3 }}>mph</span>
+                </div>
+                <div
+                  style={{
+                    marginTop: 4,
+                    fontSize: 12,
+                    fontWeight: over ? 600 : 400,
+                    color: over ? "#FF6B6B" : "rgba(255,255,255,0.45)",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {over ? `${excess} mph over` : roadNameText}
                 </div>
               </div>
 
-              {/* Status pill */}
-              {(over || speedLimit != null) && (
-                <div
-                  className="flex items-center justify-center"
+              {/* Right: road sign */}
+              {hasSign ? (
+                <span style={{ flexShrink: 0 }}>
+                  {roadType === "Motorway" && <MotorwaySymbol tag={roadTag} over={over} />}
+                  {roadType === "A Road" && roadTag && <ARoadPlate tag={roadTag} over={over} />}
+                  {roadType === "B Road" && roadTag && <BRoadPlate tag={roadTag} over={over} />}
+                </span>
+              ) : zone20 ? (
+                <span
                   style={{
-                    padding: "4px 10px",
-                    borderRadius: 999,
-                    backgroundColor: over ? "#CC2229" : "#22C55E",
-                    color: "#fff",
+                    flexShrink: 0,
+                    background: "#F59E0B",
+                    color: "#92400E",
                     fontSize: 11,
                     fontWeight: 700,
+                    padding: "4px 8px",
+                    borderRadius: 6,
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {over ? `${excess} mph over` : "Within limit"}
-                </div>
+                  20 zone
+                </span>
+              ) : (
+                <div style={{ width: 46, flexShrink: 0 }} />
               )}
             </div>
 
             {/* Divider */}
-            <div style={{ height: 1, background: "rgba(255,255,255,0.12)", width: "100%" }} />
+            <div style={{ height: 1, background: "rgba(255,255,255,0.1)", margin: "12px 0" }} />
 
-            {/* Road info row — left justified, sign then name */}
-            <div
-              className="flex items-center justify-start"
-              style={{ padding: "0 14px", height: 40, gap: 12, minWidth: 0 }}
-            >
-              {roadType && roadType !== "Local road" && (
-                <span className="flex items-center" style={{ flexShrink: 0, gap: 6 }}>
-                  {roadType === "Motorway" && <MotorwaySymbol size={32} />}
-                  {roadType === "A Road" && roadTag && <ARoadPlate tag={roadTag} />}
-                  {roadType === "B Road" && roadTag && <BRoadPlate tag={roadTag} />}
-                </span>
-              )}
-              {roadTag || roadLabel ? (
-                <span
-                  style={{
-                    flexShrink: 1,
-                    minWidth: 0,
-                    overflow: "hidden",
-                    color: "#fff",
-                    fontWeight: 700,
-                    fontSize: 13,
-                    lineHeight: 1.2,
-                    textShadow: "0 1px 1px rgba(0,0,0,0.15)",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {roadType === "Motorway" && roadTag && roadLabel
-                    ? `${roadTag} · ${roadLabel}`
-                    : roadLabel || roadTag}
-                </span>
-              ) : (
-                <span
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: "rgba(255,255,255,0.4)",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  Road not identified
-                </span>
-              )}
+            {/* Bottom stats */}
+            <div className="flex" style={{ justifyContent: "space-between" }}>
+              {[
+                { v: distanceMiles.toFixed(1), l: "miles", c: "#fff", lc: "#6B7686" },
+                {
+                  v: `${elapsedMin}:${String(elapsedSecRem).padStart(2, "0")}`,
+                  l: "elapsed",
+                  c: "#fff",
+                  lc: "#6B7686",
+                },
+                { v: String(Math.round(maxSpeedMph)), l: "max mph", c: "#fff", lc: "#6B7686" },
+                {
+                  v: String(overspeedCount),
+                  l: "overspeed",
+                  c: overspeedCount > 0 ? "#CC2229" : "#15803D",
+                  lc: overspeedCount > 0 ? "#CC2229" : "#15803D",
+                },
+              ].map((s) => (
+                <div key={s.l} style={{ flex: 1, textAlign: "center" }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: s.c, lineHeight: 1.1 }}>{s.v}</div>
+                  <div
+                    style={{
+                      fontSize: 9,
+                      color: s.lc,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      marginTop: 2,
+                    }}
+                  >
+                    {s.l}
+                  </div>
+                </div>
+              ))}
             </div>
-
           </div>
         );
       })()}
+
 
 
 
