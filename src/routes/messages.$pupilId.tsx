@@ -1,6 +1,17 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import { Phone, Send, AlertTriangle, CheckCircle2, ChevronLeft, Paperclip } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Phone,
+  Send,
+  AlertTriangle,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronUp,
+  ChevronDown,
+  Paperclip,
+  Search,
+  X,
+} from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
