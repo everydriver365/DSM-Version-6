@@ -538,6 +538,7 @@ function LivePage() {
       else if (/^A\d/i.test(rn) || roadUse.includes("Arterial") || roadUse.includes("LimitedAccess"))
         rt = "A Road";
       else if (/^B\d/i.test(rn) || roadUse.includes("Terminal")) rt = "B Road";
+      else if (road) rt = "Local road";
       setRoadType(rt);
     } catch (e) {
       console.warn("[live] road/speed limit fetch failed", e);
