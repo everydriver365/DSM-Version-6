@@ -133,6 +133,10 @@ function OnboardingPage() {
         transmission: transmission || null,
         app_slug: uniqueSlug,
         website_published: false,
+        hourly_rate: hourlyRate.trim() ? Number(hourlyRate) : null,
+        home_postcode: homePostcode.trim().toUpperCase() || null,
+        adi_licence_number: adiNumber.trim() || null,
+        adi_grade: adiGrade || null,
         wants_custom_domain: websiteChoice === "yes" && wantsCustomDomain,
         existing_website_url:
           websiteChoice === "existing" && existingWebsiteUrl.trim()
