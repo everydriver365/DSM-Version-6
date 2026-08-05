@@ -15,11 +15,13 @@ export function CancelSummaryPanel({
   amountDue?: number | null;
   paymentStatus?: string | null;
 }) {
+  const payState = normalizePayState(paymentStatus);
   const outcomeText = describeChargeOption(chargeOption, {
     paymentStatus,
     amountDue,
     fee: cancelFee,
   }).outcomeText;
+
 
 
   const row = (label: string, value: string) => (
