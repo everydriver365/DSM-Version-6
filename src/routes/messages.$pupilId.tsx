@@ -11,6 +11,8 @@ import {
   Paperclip,
   Search,
   X,
+  Check,
+  CheckCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -161,6 +163,71 @@ function HighlightedBody({ body, query }: { body: string; query: string }) {
 }
 
 const SYSTEM_TYPES = ["call", "missed_call", "sms_event", "system", "event"];
+
+function MessageStatus({ message }: { message: ChatMessage }) {
+  if (message.sender_type !== "instructor") return null;
+  const isRead = !!message.read_at;
+  const isSent = typeof message.id === "string" && message.id.startsWith("tmp-");
+
+  if (isRead) {
+    return (
+      <span
+        title="Read"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 3,
+          fontSize: 10,
+          fontWeight: 500,
+          color: "#1877D6",
+          ...POPPINS,
+        }}
+      >
+        <CheckCheck size={12} />
+        Read
+      </span>
+    );
+  }
+
+  if (isSent) {
+    return (
+      <span
+        title="Sent"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 3,
+          fontSize: 10,
+          fontWeight: 500,
+          color: "#9CA3AF",
+          ...POPPINS,
+        }}
+      >
+        <Check size={12} />
+        Sent
+      </span>
+    );
+  }
+
+  // Confirmed by server but not yet read
+  return (
+    <span
+      title="Delivered"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 3,
+        fontSize: 10,
+        fontWeight: 500,
+        color: "#9CA3AF",
+        ...POPPINS,
+      }}
+    >
+      <CheckCheck size={12} />
+      Delivered
+    </span>
+  );
+}
 
 
 function PupilThreadPage() {
@@ -1026,14 +1093,18 @@ function PupilThreadPage() {
                     </div>
                     <div
                       style={{
-                        fontSize: 10,
-                        color: mine ? "#9CA3AF" : "#9CA3AF",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
                         marginTop: 3,
                         alignSelf: mine ? "flex-end" : "flex-start",
                         ...POPPINS,
                       }}
                     >
-                      {formatTime(m.created_at)}
+                      <span style={{ fontSize: 10, color: "#9CA3AF" }}>
+                        {formatTime(m.created_at)}
+                      </span>
+                      {mine && <MessageStatus message={m} />}
                     </div>
                   </div>
                 </div>
