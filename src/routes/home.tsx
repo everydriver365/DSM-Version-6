@@ -2998,18 +2998,26 @@ function HomePage() {
       window.removeEventListener("dsm-message-received", handler);
       supabase.removeChannel(channel);
     };
-  }, [userId, badgePrefs]);
+  }, [userId, badgePrefs.chat, badgePrefs.issues, badgePrefs.admin]);
 
-  // Re-read badge preferences when the window regains focus (e.g. returning from settings)
+  // Re-read badge preferences on mount and when the window regains focus
+  // (e.g. returning from settings). Only update state when the flags actually
+  // change, so the realtime channel isn't torn down and resubscribed in a loop.
   useEffect(() => {
     if (!userId) return;
-    const onFocus = () => {
+    const sync = () => {
       const next = readBadgePrefs(userId);
-      setBadgePrefs(next);
+      setBadgePrefs((prev) =>
+        prev.chat === next.chat && prev.issues === next.issues && prev.admin === next.admin
+          ? prev
+          : next,
+      );
     };
-    window.addEventListener("focus", onFocus);
-    return () => window.removeEventListener("focus", onFocus);
+    sync();
+    window.addEventListener("focus", sync);
+    return () => window.removeEventListener("focus", sync);
   }, [userId]);
+
 
 
   useEffect(() => {
