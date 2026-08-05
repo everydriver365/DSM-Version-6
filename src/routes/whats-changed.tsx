@@ -115,13 +115,16 @@ function formatLastUpdated(iso: string | null): string {
   if (!iso) return "Never checked";
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "Never checked";
-  return d.toLocaleString("en-GB", {
-    weekday: "short",
-    day: "numeric",
+  const datePart = d.toLocaleDateString("en-US", {
     month: "short",
-    hour: "2-digit",
+    day: "numeric",
+    year: "numeric",
+  });
+  const timePart = d.toLocaleTimeString("en-US", {
+    hour: "numeric",
     minute: "2-digit",
   });
+  return `${datePart} ${timePart}`;
 }
 
 function WhatsChangedPage() {
