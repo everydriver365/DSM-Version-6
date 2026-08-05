@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { Check, CheckCircle, Globe, Clock } from "lucide-react";
+import { Check, CheckCircle, Globe, Clock, UserPlus, CalendarDays } from "lucide-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/onboarding")({
 });
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 9;
 
 type WebsiteChoice = "yes" | "existing" | "later" | null;
 
@@ -600,6 +600,31 @@ function ChoiceCard({
         <div className="text-[14px] font-semibold text-[#0B1F3A]">{title}</div>
         <div className="text-[12px] text-[#6B7280] mt-0.5">{subtitle}</div>
       </div>
+    </button>
+  );
+}
+
+function ActionCard({
+  icon,
+  label,
+  onClick,
+  disabled,
+}: {
+  icon: ReactNode;
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="w-full flex items-center gap-3 p-3 text-left disabled:opacity-50"
+      style={{ ...POPPINS, borderRadius: 10, background: "#E6F1FB", border: "1px solid #D3E4F7" }}
+    >
+      {icon}
+      <span className="text-[14px] font-semibold text-[#0B1F3A]">{label}</span>
     </button>
   );
 }
