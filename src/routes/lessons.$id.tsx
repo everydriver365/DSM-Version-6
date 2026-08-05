@@ -534,6 +534,42 @@ function LessonDetailPage() {
               <DetailRow label="Notes" value={lesson.notes || "—"} multiline />
             </Card>
 
+            {lesson.status === "cancelled" && (
+              <div
+                style={{
+                  ...POPPINS,
+                  marginTop: 12,
+                  background: "#FDF2F2",
+                  border: "1px solid #F3C9CB",
+                  borderRadius: 10,
+                  padding: 12,
+                }}
+              >
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.4, color: "#CC2229" }}>
+                  CANCELLED
+                  {lesson.cancelled_at
+                    ? ` · ${new Date(lesson.cancelled_at).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}`
+                    : ""}
+                </div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", marginTop: 6 }}>
+                  {lesson.cancellation_reason || "No reason recorded"}
+                </div>
+                {lesson.cancellation_notes ? (
+                  <div style={{ fontSize: 13, color: "#4A5568", marginTop: 4, lineHeight: 1.4 }}>
+                    {lesson.cancellation_notes}
+                  </div>
+                ) : null}
+                {cancelOutcome ? (
+                  <div style={{ fontSize: 12, color: "#6B7686", marginTop: 8 }}>{cancelOutcome}</div>
+                ) : null}
+              </div>
+            )}
+
+
             {route && (
               <>
                 <SectionHeader>ROUTE & TRACKING</SectionHeader>
