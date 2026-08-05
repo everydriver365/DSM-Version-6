@@ -1857,26 +1857,23 @@ function HomePage() {
     if (!userId) return;
     let cancelled = false;
     (async () => {
-      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
-      const SUPABASE_ANON_KEY =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
       try {
-        const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/chat_messages?instructor_id=eq.${userId}&sender_type=eq.pupil&read_at=is.null&deleted_at=is.null&order=created_at.desc&limit=10&select=id,pupil_id,source,body,created_at,read_at,pupils(name,first_name,profile_image_url,photo_url)`,
-          {
-            headers: {
-              apikey: SUPABASE_ANON_KEY,
-              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-            },
-          }
-        );
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!cancelled) setUnreadMsgs(Array.isArray(data) ? data : []);
+        const { data, error } = await supabase
+          .from('chat_messages')
+          .select('id, pupil_id, source, body, created_at, read_at, pupils(name, first_name, profile_image_url, photo_url)')
+          .eq('instructor_id', userId)
+          .eq('sender_type', 'pupil')
+          .is('read_at', null)
+          .is('deleted_at', null)
+          .order('created_at', { ascending: false })
+          .limit(10);
+        if (cancelled || error) return;
+        setUnreadMsgs(Array.isArray(data) ? (data as any) : []);
       } catch {}
     })();
     return () => { cancelled = true; };
   }, [userId, reloadKey]);
+
 
   // Local alerts (community issues) — filtered by instructor's outcode.
   useEffect(() => {
@@ -1984,10 +1981,13 @@ function HomePage() {
             .eq('instructor_id', userId)
             .eq('room_id', (ukRoomData as any).id)
             .maybeSingle();
-          if (!cancelled && (ukSub as any)?.last_read_at && (ukLatest as any)?.created_at) {
-            const isUnread = new Date((ukLatest as any).created_at) > new Date((ukSub as any).last_read_at);
+          if (!cancelled) {
+            const lastReadAt = (ukSub as any)?.last_read_at ?? null;
+            const latestAt = (ukLatest as any)?.created_at ?? null;
+            const isUnread = !!latestAt && (!lastReadAt || new Date(latestAt) > new Date(lastReadAt));
             setUnreadUkChat(isUnread ? 1 : 0);
           }
+
         }
       } catch {
         if (!cancelled) setLocalAlerts([]);
@@ -2951,9 +2951,9 @@ function HomePage() {
     const handler = () => setReloadKey((k) => k + 1);
     window.addEventListener("dsm-message-received", handler);
 
-    // Read current badge preferences so the right realtime subscriptions are active
-    const currentPrefs = readBadgePrefs(userId);
-    setBadgePrefs(currentPrefs);
+    // Use the flags already in state; they are refreshed separately (mount + focus).
+    const currentPrefs = badgePrefs;
+
 
     // Also subscribe directly so home updates even when messages page isn't open
     let channel = supabase.channel(`home-messages-${userId}`);
@@ -3001,18 +3001,26 @@ function HomePage() {
       window.removeEventListener("dsm-message-received", handler);
       supabase.removeChannel(channel);
     };
-  }, [userId, badgePrefs]);
+  }, [userId, badgePrefs.chat, badgePrefs.issues, badgePrefs.admin]);
 
-  // Re-read badge preferences when the window regains focus (e.g. returning from settings)
+  // Re-read badge preferences on mount and when the window regains focus
+  // (e.g. returning from settings). Only update state when the flags actually
+  // change, so the realtime channel isn't torn down and resubscribed in a loop.
   useEffect(() => {
     if (!userId) return;
-    const onFocus = () => {
+    const sync = () => {
       const next = readBadgePrefs(userId);
-      setBadgePrefs(next);
+      setBadgePrefs((prev) =>
+        prev.chat === next.chat && prev.issues === next.issues && prev.admin === next.admin
+          ? prev
+          : next,
+      );
     };
-    window.addEventListener("focus", onFocus);
-    return () => window.removeEventListener("focus", onFocus);
+    sync();
+    window.addEventListener("focus", sync);
+    return () => window.removeEventListener("focus", sync);
   }, [userId]);
+
 
 
   useEffect(() => {
