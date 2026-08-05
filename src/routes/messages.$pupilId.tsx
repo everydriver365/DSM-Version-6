@@ -621,86 +621,207 @@ function PupilThreadPage() {
           <button
             type="button"
             aria-label="Back"
-            onClick={() => navigate({ to: "/pupils/$id", params: { id: pupilId } } as never)}
-            style={{ background: "none", border: "none", padding: 0, display: "flex" }}
+            onClick={() => {
+              if (searchOpen) {
+                setSearchOpen(false);
+                setSearchQuery("");
+              } else {
+                navigate({ to: "/pupils/$id", params: { id: pupilId } } as never);
+              }
+            }}
+            style={{ background: "none", border: "none", padding: 0, display: "flex", flexShrink: 0 }}
           >
             <ChevronLeft size={20} color="#C7D0DE" />
           </button>
-          {pupil?.profile_image_url ? (
-            <img
-              src={pupil.profile_image_url}
-              alt=""
-              style={{ width: 30, height: 30, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
-            />
-          ) : (
-            <div
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: "50%",
-                background: "#D9E6F5",
-                color: "#0B1F3A",
-                fontSize: 11,
-                fontWeight: 600,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                ...POPPINS,
-              }}
-            >
-              {initialsOf(pupilName)}
-            </div>
-          )}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                color: "#FFFFFF",
-                fontSize: 14,
-                fontWeight: 600,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                ...POPPINS,
-              }}
-            >
-              {pupilName}
-            </div>
-            {pupilTyping && (
+
+          {searchOpen ? (
+            <>
               <div
                 style={{
-                  color: "#7FB6F2",
-                  fontSize: 11,
+                  flex: 1,
+                  minWidth: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  background: "rgba(255,255,255,0.1)",
+                  borderRadius: 10,
+                  padding: "0 10px",
+                  height: 36,
+                }}
+              >
+                <Search size={16} color="#C7D0DE" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") {
+                      setSearchOpen(false);
+                      setSearchQuery("");
+                    }
+                  }}
+                  placeholder="Search messages..."
+                  autoFocus
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    background: "transparent",
+                    border: "none",
+                    color: "#FFFFFF",
+                    fontSize: 14,
+                    outline: "none",
+                    ...POPPINS,
+                  }}
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    style={{ background: "none", border: "none", padding: 0, display: "flex", flexShrink: 0 }}
+                  >
+                    <X size={16} color="#C7D0DE" />
+                  </button>
+                )}
+              </div>
+              <div
+                style={{
+                  color: "#C7D0DE",
+                  fontSize: 12,
                   fontWeight: 500,
-                  lineHeight: "14px",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  minWidth: 28,
+                  textAlign: "center",
                   ...POPPINS,
                 }}
               >
-                typing…
+                {matches.length > 0 ? `${matchIndex + 1}/${matches.length}` : "0/0"}
               </div>
-            )}
-          </div>
+              <div style={{ display: "flex", flexDirection: "column", flexShrink: 0 }}>
+                <button
+                  type="button"
+                  aria-label="Previous match"
+                  onClick={() => setMatchIndex((i) => Math.max(0, i - 1))}
+                  disabled={matchIndex === 0 || matches.length === 0}
+                  style={{ background: "none", border: "none", padding: 0, lineHeight: 0 }}
+                >
+                  <ChevronUp
+                    size={16}
+                    color={matchIndex === 0 || matches.length === 0 ? "#5A6A85" : "#C7D0DE"}
+                  />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next match"
+                  onClick={() => setMatchIndex((i) => Math.min(matches.length - 1, i + 1))}
+                  disabled={matchIndex >= matches.length - 1 || matches.length === 0}
+                  style={{ background: "none", border: "none", padding: 0, lineHeight: 0 }}
+                >
+                  <ChevronDown
+                    size={16}
+                    color={matchIndex >= matches.length - 1 || matches.length === 0 ? "#5A6A85" : "#C7D0DE"}
+                  />
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              {pupil?.profile_image_url ? (
+                <img
+                  src={pupil.profile_image_url}
+                  alt=""
+                  style={{ width: 30, height: 30, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: "50%",
+                    background: "#D9E6F5",
+                    color: "#0B1F3A",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    ...POPPINS,
+                  }}
+                >
+                  {initialsOf(pupilName)}
+                </div>
+              )}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    color: "#FFFFFF",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    ...POPPINS,
+                  }}
+                >
+                  {pupilName}
+                </div>
+                {pupilTyping && (
+                  <div
+                    style={{
+                      color: "#7FB6F2",
+                      fontSize: 11,
+                      fontWeight: 500,
+                      lineHeight: "14px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      ...POPPINS,
+                    }}
+                  >
+                    typing…
+                  </div>
+                )}
+              </div>
 
-          <a
-            href={phone ? `tel:${phone}` : undefined}
-            aria-label="Call"
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: 8,
-              background: "rgba(255,255,255,0.1)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              opacity: phone ? 1 : 0.4,
-            }}
-          >
-            <Phone size={15} color="#C7D0DE" />
-          </a>
+              <button
+                type="button"
+                aria-label="Search messages"
+                onClick={() => setSearchOpen(true)}
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 8,
+                  background: "rgba(255,255,255,0.1)",
+                  border: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  cursor: "pointer",
+                }}
+              >
+                <Search size={15} color="#C7D0DE" />
+              </button>
+
+              <a
+                href={phone ? `tel:${phone}` : undefined}
+                aria-label="Call"
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 8,
+                  background: "rgba(255,255,255,0.1)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  opacity: phone ? 1 : 0.4,
+                }}
+              >
+                <Phone size={15} color="#C7D0DE" />
+              </a>
+            </>
+          )}
         </div>
       </div>
       <div style={{ height: "calc(56px + env(safe-area-inset-top, 0px))" }} />
