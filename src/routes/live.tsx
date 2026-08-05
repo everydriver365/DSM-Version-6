@@ -1818,11 +1818,20 @@ function LivePage() {
                   lineHeight: 1.2,
                 }}
               >
-                Tracking
+                {coordinates.length === 0 ? "Acquiring GPS signal…" : "Tracking"}
               </div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.2 }}>
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: "#0B1F3A",
+                  lineHeight: 1.2,
+                  opacity: coordinates.length === 0 ? 0.6 : 1,
+                }}
+              >
                 {trackingPupilName ?? "Manual journey"}
               </div>
+
             </div>
 
             {/* Compact stats chip */}
