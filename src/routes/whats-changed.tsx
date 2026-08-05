@@ -111,11 +111,25 @@ function truncate(s: string, n = 70): string {
   return t.length > n ? `${t.slice(0, n)}…` : t;
 }
 
+function formatLastUpdated(iso: string | null): string {
+  if (!iso) return "Never checked";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "Never checked";
+  return d.toLocaleString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 function WhatsChangedPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [sections, setSections] = useState<Section[]>([]);
   const [selected, setSelected] = useState<Item | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -132,6 +146,7 @@ function WhatsChangedPage() {
       try {
         last = localStorage.getItem(key);
       } catch {}
+      setLastUpdated(last);
       const since = last ? new Date(last) : new Date(Date.now() - 24 * 60 * 60 * 1000);
       const sinceIso = (Number.isNaN(since.getTime())
         ? new Date(Date.now() - 24 * 60 * 60 * 1000)
@@ -374,7 +389,11 @@ function WhatsChangedPage() {
       />
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
-      <div style={{ padding: "16px 16px 0" }}>
+      <div style={{ padding: "8px 16px 12px", fontSize: 12, color: GRAY, textAlign: "right" }}>
+        Last updated: {formatLastUpdated(lastUpdated)}
+      </div>
+
+      <div style={{ padding: "0 16px" }}>
         {loading ? (
           <div style={{ padding: "40px 0", textAlign: "center", color: GRAY, fontSize: 13 }}>
             Loading…
