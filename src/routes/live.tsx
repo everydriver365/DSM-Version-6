@@ -1675,7 +1675,11 @@ function LivePage() {
                   {roadType === "Motorway" && <MotorwaySymbol />}
                   {roadType === "A Road" && roadTag && <ARoadPlate tag={roadTag} />}
                   {roadType === "B Road" && roadTag && <BRoadPlate tag={roadTag} />}
-                  {(roadType !== "A Road" || !roadTag ? true : !!roadLabel) && (
+                  {(
+                    (roadType === "A Road" || roadType === "B Road") && roadTag
+                      ? !!roadLabel
+                      : !!(roadTag || roadLabel)
+                  ) && (
                     <span
                       style={{
                         overflow: "hidden",
@@ -1684,13 +1688,11 @@ function LivePage() {
                         minWidth: 0,
                       }}
                     >
-                      {roadType === "A Road" && roadTag
-                        ? roadLabel
-                        : roadTag
-                        ? roadLabel
-                          ? `${roadTag} · ${roadLabel}`
-                          : roadTag
-                        : roadLabel}
+                      {roadTag && roadLabel
+                        ? roadType === "A Road" || roadType === "B Road"
+                          ? roadLabel
+                          : `${roadTag} · ${roadLabel}`
+                        : roadTag || roadLabel}
                     </span>
                   )}
                 </span>
