@@ -292,7 +292,7 @@ function weekRangeLabel(d: Date) {
   return `Week of ${s} – ${e}`;
 }
 
-const PAST_DAYS = 0;
+const PAST_DAYS = 60;
 const FUTURE_DAYS = 180;
 
 function SchedulePage() {
