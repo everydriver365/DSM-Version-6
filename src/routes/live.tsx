@@ -1624,7 +1624,7 @@ function LivePage() {
                     overflow: "hidden",
                     color: "#fff",
                     fontWeight: 700,
-                    fontSize: 11,
+                    fontSize: 13,
                     lineHeight: 1.2,
                     textShadow: "0 1px 1px rgba(0,0,0,0.15)",
                     textOverflow: "ellipsis",
