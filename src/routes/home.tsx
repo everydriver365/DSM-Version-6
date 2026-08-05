@@ -1482,6 +1482,30 @@ function HomePage() {
     source: string | null;
     read_at: string | null;
   }>>([]);
+  useEffect(() => {
+    const pid = lessonMsgsPupil?.id;
+    if (!pid) { setLessonMsgs([]); return; }
+    let cancelled = false;
+    setLessonMsgsLoading(true);
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from('chat_messages')
+          .select('id, body, created_at, sender_type, source, read_at')
+          .eq('pupil_id', pid)
+          .is('deleted_at', null)
+          .order('created_at', { ascending: false })
+          .limit(20);
+        if (!cancelled) setLessonMsgs(Array.isArray(data) ? (data as any) : []);
+      } catch {
+        if (!cancelled) setLessonMsgs([]);
+      } finally {
+        if (!cancelled) setLessonMsgsLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [lessonMsgsPupil?.id, reloadKey]);
+
   const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
