@@ -1463,9 +1463,15 @@ function HomePage() {
   const [reloadKey, setReloadKey] = useState(0);
   useEffect(() => {
     const onPaymentRecorded = () => setReloadKey((k) => k + 1);
+    const onMessagesRead = () => setReloadKey((k) => k + 1);
     window.addEventListener("dsm-payment-recorded", onPaymentRecorded);
-    return () => window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
+    window.addEventListener("dsm-messages-read", onMessagesRead);
+    return () => {
+      window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
+      window.removeEventListener("dsm-messages-read", onMessagesRead);
+    };
   }, []);
+
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
   const [addExpenseOpen, setAddExpenseOpen] = useState(false);
