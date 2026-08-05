@@ -599,6 +599,20 @@ function EditLessonPage() {
                   )}
                 </div>
 
+                {/* Summary */}
+                {cancelReason && (
+                  <CancelSummaryPanel
+                    reason={cancelReason}
+                    notes={cancelNote}
+                    chargeOption={chargeOption}
+                    cancelFee={cancelFee}
+                    amountDue={amountDue}
+                    paymentStatus={paymentStatus}
+                  />
+                )}
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14 }}>
+
                 <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14 }}>
                   <button
                     type="button"
