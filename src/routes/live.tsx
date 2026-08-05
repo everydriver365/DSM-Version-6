@@ -488,6 +488,7 @@ function LivePage() {
           if (cached.road_name) {
             setRoadName(cached.road_name);
             roadNameRef.current = cached.road_name;
+            setRoadType(deriveRoadType(cached.road_name));
           }
           return;
         }
