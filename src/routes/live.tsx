@@ -1459,7 +1459,7 @@ function LivePage() {
 
 
       {/* MANUAL START OVERLAY — shown when no active lesson and not yet tracking */}
-      {lessonsLoaded && !tracking && !activeLessonId && !geoError && (
+      {lessonsLoaded && !tracking && !activeLessonId && !activePupilId && !geoError && (
         <div
           className="absolute z-[1050]"
           style={{
@@ -1936,11 +1936,11 @@ function LivePage() {
                     type="button"
                     onClick={() => {
                       console.log("[live] pupil selected", p.id, display);
+                      setPupilPickerOpen(false);
+                      setPupilSearchQuery("");
                       setActivePupilId(p.id);
                       setTrackingPupilName(display);
                       void startTracking(null, p.id);
-                      setPupilPickerOpen(false);
-                      setPupilSearchQuery("");
                     }}
                     className="w-full flex items-center gap-3 px-3 py-3 rounded-xl active:bg-black/5"
                     style={{ background: "transparent", border: "none", textAlign: "left" }}
