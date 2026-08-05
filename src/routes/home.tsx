@@ -5155,7 +5155,7 @@ function HomePage() {
                         marginTop: 2,
                       }}
                     >
-                      View on map
+                      map
                     </a>
                   )}
                 </div>
