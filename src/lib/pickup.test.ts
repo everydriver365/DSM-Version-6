@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { buildPickup } from "./pickup";
+import { buildPickup, getPickupParts } from "./pickup";
+
 
 describe("buildPickup", () => {
   test("uses explicit pickup location when provided", () => {
@@ -47,5 +48,36 @@ describe("buildPickup", () => {
   test("removes trailing commas when postcode is already in address", () => {
     expect(buildPickup(null, "1 High Street, SO52 9EW,", "SO52 9EW")).toBe("1 High Street, SO52 9EW");
   });
-
 });
+
+describe("getPickupParts", () => {
+  test("returns both address and postcode separately when available", () => {
+    const parts = getPickupParts(null, "1 High Street", "SO52 9EW");
+    expect(parts.address).toBe("1 High Street");
+    expect(parts.postcode).toBe("SO52 9EW");
+    expect(parts.full).toBe("1 High Street, SO52 9EW");
+    expect(parts.hasBoth).toBe(true);
+  });
+
+  test("returns postcode as null when it is already in the address", () => {
+    const parts = getPickupParts(null, "1 High Street, SO52 9EW", "SO52 9EW");
+    expect(parts.address).toBe("1 High Street, SO52 9EW");
+    expect(parts.postcode).toBeNull();
+    expect(parts.hasBoth).toBe(false);
+  });
+
+  test("returns only pickup location when provided", () => {
+    const parts = getPickupParts("School gate", "1 High Street", "SO52 9EW");
+    expect(parts.address).toBe("School gate");
+    expect(parts.postcode).toBeNull();
+    expect(parts.hasBoth).toBe(false);
+  });
+
+  test("returns No pickup when both fields are empty", () => {
+    const parts = getPickupParts(null, "", "");
+    expect(parts.address).toBe("No pickup");
+    expect(parts.postcode).toBeNull();
+    expect(parts.hasBoth).toBe(false);
+  });
+});
+
