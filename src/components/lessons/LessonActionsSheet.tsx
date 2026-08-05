@@ -129,6 +129,13 @@ export function LessonActionsSheet({
   const [chargeOption, setChargeOption] = useState<"none" | "fee" | "full">("none");
   const [cancelFee, setCancelFee] = useState("");
 
+  // Keep the selected charge option valid for the lesson's payment state
+  useEffect(() => {
+    setChargeOption((prev) => coerceChargeOption(prev, lesson.payment_status));
+  }, [lesson.payment_status, inlineView]);
+
+
+
   const CANCEL_REASONS: string[] = [
     "Pupil cancelled",
     "Instructor cancelled",
