@@ -55,7 +55,9 @@ import {
   HelpCircle,
   Calculator,
   ClipboardList,
+  Copy,
   ClipboardCheck,
+
   Fuel,
   Heart,
   FolderOpen,
@@ -5079,7 +5081,33 @@ function HomePage() {
                     </span>
                   )}
                 </div>
+                {pickupParts.hasBoth && (
+                  <button
+                    type="button"
+                    aria-label="Copy address"
+                    title="Copy address"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigator.clipboard.writeText(pickupParts.full)
+                        .then(() => toast('Copied address to clipboard'))
+                        .catch(() => toast('Could not copy address'));
+                    }}
+                    style={{
+                      flexShrink: 0,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      width: 28, height: 28,
+                      background: '#FFFFFF',
+                      border: '1px solid #E4E8EF',
+                      borderRadius: 6,
+                      cursor: 'pointer',
+                      padding: 0,
+                    }}
+                  >
+                    <Copy size={14} color="#6B7686" />
+                  </button>
+                )}
               </div>
+
 
 
               {/* Footer / More */}
