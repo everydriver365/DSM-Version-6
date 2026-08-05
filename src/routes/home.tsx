@@ -7364,6 +7364,7 @@ function HomePage() {
                       {currentTiles.map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
                     </div>
                   </div>
+            </div>
 
 
                   {quickSearchOpen && (
