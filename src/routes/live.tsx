@@ -54,6 +54,32 @@ function MotorwaySymbol() {
   );
 }
 
+/** UK A-road sign: green plate with white border and yellow route number. */
+function ARoadPlate({ tag }: { tag: string }) {
+  return (
+    <span
+      style={{
+        flexShrink: 0,
+        display: "inline-flex",
+        alignItems: "center",
+        background: "#106B3F",
+        border: "1.5px solid #fff",
+        borderRadius: 5,
+        color: "#FFCC00",
+        fontWeight: 800,
+        fontSize: 11,
+        letterSpacing: 0.3,
+        lineHeight: 1,
+        padding: "3px 6px",
+        textShadow: "none",
+      }}
+    >
+      {tag}
+    </span>
+  );
+}
+
+
 
 interface LessonRow {
   id: string;
@@ -1601,6 +1627,8 @@ function LivePage() {
                     background:
                       roadType === "Motorway"
                         ? "#1877D6"
+                        : roadType === "A Road" && roadTag
+                        ? "rgba(255,255,255,0.15)"
                         : roadType === "A Road"
                         ? "#1A9C56"
                         : roadType === "B Road"
@@ -1620,18 +1648,28 @@ function LivePage() {
                   }}
                 >
                   {roadType === "Motorway" && <MotorwaySymbol />}
-                  <span
-                    style={{
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      minWidth: 0,
-                    }}
-                  >
-                    {roadTag ? (roadLabel ? `${roadTag} · ${roadLabel}` : roadTag) : roadLabel}
-                  </span>
+                  {roadType === "A Road" && roadTag && <ARoadPlate tag={roadTag} />}
+                  {(roadType !== "A Road" || !roadTag ? true : !!roadLabel) && (
+                    <span
+                      style={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        minWidth: 0,
+                      }}
+                    >
+                      {roadType === "A Road" && roadTag
+                        ? roadLabel
+                        : roadTag
+                        ? roadLabel
+                          ? `${roadTag} · ${roadLabel}`
+                          : roadTag
+                        : roadLabel}
+                    </span>
+                  )}
                 </span>
               )}
+
 
               {!roadType && !roadTag && !roadLabel && (
                 <span
