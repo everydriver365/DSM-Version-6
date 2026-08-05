@@ -776,10 +776,11 @@ function EditLessonPage() {
                       fontWeight: 600,
                       fontFamily: "Poppins, sans-serif",
                       border: "none",
-                      opacity: saving || !cancelReason ? 0.5 : 1,
+                      opacity: saving || !cancelReason || !activeDesc.valid ? 0.5 : 1,
                     }}
                   >
-                    {saving ? "Cancelling…" : "Confirm cancellation"}
+                    {saving ? "Cancelling…" : activeDesc.confirmLabel}
+
                   </button>
                   <button
                     type="button"
