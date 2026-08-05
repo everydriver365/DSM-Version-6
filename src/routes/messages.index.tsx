@@ -12,11 +12,12 @@ import {
   IconBellOff,
   IconBell,
   IconChecks,
+  IconHeadset,
+  IconAdjustmentsHorizontal,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useAdminGate } from "./admin";
 
 
