@@ -54,6 +54,32 @@ function MotorwaySymbol() {
   );
 }
 
+/** UK A-road sign: green plate with white border and yellow route number. */
+function ARoadPlate({ tag }: { tag: string }) {
+  return (
+    <span
+      style={{
+        flexShrink: 0,
+        display: "inline-flex",
+        alignItems: "center",
+        background: "#106B3F",
+        border: "1.5px solid #fff",
+        borderRadius: 5,
+        color: "#FFCC00",
+        fontWeight: 800,
+        fontSize: 11,
+        letterSpacing: 0.3,
+        lineHeight: 1,
+        padding: "3px 6px",
+        textShadow: "none",
+      }}
+    >
+      {tag}
+    </span>
+  );
+}
+
+
 
 interface LessonRow {
   id: string;
