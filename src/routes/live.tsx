@@ -1627,6 +1627,8 @@ function LivePage() {
                     background:
                       roadType === "Motorway"
                         ? "#1877D6"
+                        : roadType === "A Road" && roadTag
+                        ? "rgba(255,255,255,0.15)"
                         : roadType === "A Road"
                         ? "#1A9C56"
                         : roadType === "B Road"
@@ -1646,18 +1648,28 @@ function LivePage() {
                   }}
                 >
                   {roadType === "Motorway" && <MotorwaySymbol />}
-                  <span
-                    style={{
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      minWidth: 0,
-                    }}
-                  >
-                    {roadTag ? (roadLabel ? `${roadTag} · ${roadLabel}` : roadTag) : roadLabel}
-                  </span>
+                  {roadType === "A Road" && roadTag && <ARoadPlate tag={roadTag} />}
+                  {(roadType !== "A Road" || !roadTag ? true : !!roadLabel) && (
+                    <span
+                      style={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        minWidth: 0,
+                      }}
+                    >
+                      {roadType === "A Road" && roadTag
+                        ? roadLabel
+                        : roadTag
+                        ? roadLabel
+                          ? `${roadTag} · ${roadLabel}`
+                          : roadTag
+                        : roadLabel}
+                    </span>
+                  )}
                 </span>
               )}
+
 
               {!roadType && !roadTag && !roadLabel && (
                 <span
