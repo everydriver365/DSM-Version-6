@@ -508,10 +508,13 @@ function LivePage() {
         }
       }
 
-      // Prefer route number (A31, M27) over street name
+      // Prefer route number (A31, M27) plus street name when both exist
       const routeNumbers: string[] | undefined = addr?.routeNumbers;
-      if (routeNumbers?.length) road = routeNumbers[0];
-      else if (addr?.streetName) road = addr.streetName;
+      const routeNum = routeNumbers?.[0]?.trim();
+      const streetName = addr?.streetName?.trim();
+      if (routeNum && streetName) road = `${routeNum} · ${streetName}`;
+      else if (routeNum) road = routeNum;
+      else if (streetName) road = streetName;
       else if (addr?.street) road = addr.street;
       else if (addr?.municipalitySubdivision) road = addr.municipalitySubdivision;
 
