@@ -109,6 +109,10 @@ function EditLessonPage() {
 
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [previousStatus, setPreviousStatus] = useState<string>("confirmed");
+  const [cancelReason, setCancelReason] = useState<string>("");
+  const [cancelNote, setCancelNote] = useState("");
+  const [chargeOption, setChargeOption] = useState<"none" | "fee" | "full">("none");
+  const [cancelFee, setCancelFee] = useState("");
 
 
   useEffect(() => {
@@ -416,11 +420,59 @@ function EditLessonPage() {
               ))}
             </select>
 
-            {showCancelConfirm && (
+            {showCancelConfirm && (() => {
+              const pupilName = pupils.find((p) => p.id === pupilId)?.name ?? "Pupil";
+              const balance = Number(amountDue ?? 0);
+              const CANCEL_REASONS = [
+                "Pupil cancelled",
+                "Instructor cancelled",
+                "Weather",
+                "Vehicle issue",
+                "Pupil no show",
+                "Admin",
+                "Other",
+              ];
+              const labelStyle: React.CSSProperties = {
+                fontFamily: "Poppins, sans-serif",
+                fontSize: 10,
+                fontWeight: 600,
+                color: "#9CA3AF",
+                textTransform: "uppercase",
+                letterSpacing: 0.6,
+                margin: "14px 0 8px",
+              };
+              const chargeRow = (sel: boolean, bg: string, bc: string): React.CSSProperties => ({
+                width: "100%",
+                textAlign: "left",
+                background: sel ? bg : "#fff",
+                border: `1px solid ${sel ? bc : "#E4E8EF"}`,
+                borderRadius: 8,
+                padding: "10px 14px",
+                cursor: "pointer",
+              });
+              const chargeTitle: React.CSSProperties = {
+                fontFamily: "Poppins, sans-serif",
+                fontSize: 13,
+                fontWeight: 600,
+                color: "#0B1F3A",
+              };
+              const chargeSub: React.CSSProperties = {
+                fontFamily: "Poppins, sans-serif",
+                fontSize: 11,
+                color: "#6B7686",
+                marginTop: 2,
+              };
+              const resetCancel = () => {
+                setCancelReason("");
+                setCancelNote("");
+                setChargeOption("none");
+                setCancelFee("");
+              };
+              return (
               <div
                 className="mt-2"
                 style={{
-                  background: "#FCE9E9",
+                  background: "#fff",
                   border: "1px solid #FECACA",
                   borderRadius: 10,
                   padding: 14,
@@ -434,69 +486,132 @@ function EditLessonPage() {
                     fontFamily: "Poppins, sans-serif",
                   }}
                 >
-                  Cancel this lesson?
+                  Cancel lesson with {pupilName}
                 </div>
-                <div
+
+                {/* Reason */}
+                <div style={labelStyle}>Reason for cancellation</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {CANCEL_REASONS.map((r) => {
+                    const sel = cancelReason === r;
+                    return (
+                      <button
+                        key={r}
+                        type="button"
+                        onClick={() => setCancelReason(r)}
+                        style={{
+                          background: sel ? "#0B1F3A" : "#F1F5F9",
+                          color: sel ? "#fff" : "#6B7686",
+                          borderRadius: 20,
+                          padding: "6px 14px",
+                          fontFamily: "Poppins, sans-serif",
+                          fontSize: 12,
+                          fontWeight: sel ? 600 : 500,
+                          border: "none",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {r}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Notes */}
+                <div style={labelStyle}>Notes</div>
+                <textarea
+                  rows={3}
+                  value={cancelNote}
+                  onChange={(e) => setCancelNote(e.target.value)}
+                  placeholder="Add any additional notes..."
                   style={{
-                    fontSize: 12,
-                    color: "#6B7280",
-                    marginTop: 4,
+                    width: "100%",
+                    border: "1px solid #E4E8EF",
+                    borderRadius: 8,
                     fontFamily: "Poppins, sans-serif",
+                    fontSize: 13,
+                    padding: 10,
+                    boxSizing: "border-box",
+                    resize: "vertical",
                   }}
-                >
-                  with {pupils.find((p) => p.id === pupilId)?.name ?? "Pupil"}
-                </div>
-                {paymentStatus === "paid" || paymentStatus === "partial" ? (
-                  <div
-                    style={{
-                      fontSize: 12,
-                      color: "#92400E",
-                      background: "#FFFBEB",
-                      borderRadius: 999,
-                      padding: "4px 10px",
-                      display: "inline-block",
-                      marginTop: 8,
-                      fontFamily: "Poppins, sans-serif",
-                    }}
-                  >
-                    £{amountDue?.toFixed(2) ?? "0.00"} will be added as account credit
-                  </div>
-                ) : paymentStatus === "prepaid" ? (
-                  <div
-                    style={{
-                      fontSize: 12,
-                      color: "#92400E",
-                      background: "#FFFBEB",
-                      borderRadius: 999,
-                      padding: "4px 10px",
-                      display: "inline-block",
-                      marginTop: 8,
-                      fontFamily: "Poppins, sans-serif",
-                    }}
-                  >
-                    1 lesson will be returned to {pupils.find((p) => p.id === pupilId)?.name ?? "Pupil"}'s
-                    prepaid hours
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      fontSize: 11,
-                      color: "#6B7280",
-                      marginTop: 8,
-                      fontFamily: "Poppins, sans-serif",
-                    }}
-                  >
-                    No payment has been taken — no refund needed
-                  </div>
-                )}
-                <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                />
+
+                {/* Charge */}
+                <div style={labelStyle}>Charge</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   <button
                     type="button"
+                    onClick={() => setChargeOption("none")}
+                    style={chargeRow(chargeOption === "none", "#E6F1FB", "#1877D6")}
+                  >
+                    <div style={chargeTitle}>No charge</div>
+                    <div style={chargeSub}>
+                      {paymentStatus === "paid" || paymentStatus === "partial"
+                        ? `£${balance.toFixed(2)} refunded as account credit`
+                        : paymentStatus === "prepaid"
+                          ? "1 lesson returned to prepaid hours"
+                          : "No payment to refund"}
+                    </div>
+                  </button>
+
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => setChargeOption("fee")}
+                      style={chargeRow(chargeOption === "fee", "#FEF3C7", "#D97706")}
+                    >
+                      <div style={chargeTitle}>Charge cancellation fee</div>
+                      <div style={chargeSub}>Remainder refunded to account credit</div>
+                    </button>
+                    {chargeOption === "fee" && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8 }}>
+                        <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 13, color: "#6B7686" }}>£</span>
+                        <input
+                          type="number"
+                          inputMode="decimal"
+                          value={cancelFee}
+                          onChange={(e) => setCancelFee(e.target.value)}
+                          placeholder="e.g. 20.00"
+                          style={{
+                            flex: 1,
+                            border: "1px solid #E4E8EF",
+                            borderRadius: 8,
+                            padding: "10px 12px",
+                            fontFamily: "Poppins, sans-serif",
+                            fontSize: 13,
+                            boxSizing: "border-box",
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {(paymentStatus === "paid" || paymentStatus === "partial") && (
+                    <button
+                      type="button"
+                      onClick={() => setChargeOption("full")}
+                      style={chargeRow(chargeOption === "full", "#FCE9E9", "#CC2229")}
+                    >
+                      <div style={chargeTitle}>Charge full lesson</div>
+                      <div style={chargeSub}>No refund — full payment retained</div>
+                    </button>
+                  )}
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14 }}>
+                  <button
+                    type="button"
+                    disabled={saving || !cancelReason}
                     onClick={async () => {
                       setSaving(true);
+                      const { data: userRes } = await supabase.auth.getUser();
                       const { error: updErr } = await supabase
                         .from("lessons")
-                        .update({ status: "cancelled", payment_status: "cancelled" })
+                        .update({
+                          status: "cancelled",
+                          payment_status: "cancelled",
+                          notes: [notes, cancelReason, cancelNote].filter(Boolean).join(" · "),
+                        })
                         .eq("id", id);
                       if (updErr) {
                         console.error("[edit-lesson] cancel error", updErr);
@@ -505,7 +620,6 @@ function EditLessonPage() {
                         return;
                       }
                       // Sync to Google Calendar after cancel
-                      const { data: userRes } = await supabase.auth.getUser();
                       const { data: lessonRow } = await supabase
                         .from("lessons")
                         .select("google_event_id")
@@ -520,17 +634,44 @@ function EditLessonPage() {
                           },
                         });
                       }
-                      if (paymentStatus === "paid" || paymentStatus === "partial") {
-                        const { recordRefund } = await import("@/lib/payments");
+
+                      const { recordRefund } = await import("@/lib/payments");
+                      if (
+                        chargeOption === "none" &&
+                        (paymentStatus === "paid" || paymentStatus === "partial")
+                      ) {
                         await recordRefund({
                           pupilId,
                           amount: Number(amountDue ?? 0),
                           method: "cash",
-                          notes: "Lesson cancelled — credit added",
+                          notes: `Cancellation refund — ${cancelReason}`,
                           currentAccountBalance: 0,
                         });
+                      } else if (chargeOption === "fee") {
+                        const fee = Number(cancelFee) || 0;
+                        const refund = Number(amountDue ?? 0) - fee;
+                        if (refund > 0) {
+                          await recordRefund({
+                            pupilId,
+                            amount: refund,
+                            method: "cash",
+                            notes: `Partial refund — cancellation fee £${fee} retained`,
+                            currentAccountBalance: 0,
+                          });
+                        }
+                      } else if (chargeOption === "full") {
+                        await supabase.from("lesson_history").insert({
+                          instructor_id: userRes.user?.id ?? "",
+                          pupil_id: pupilId,
+                          amount_paid: Number(amountDue ?? 0),
+                          payment_method: "cash",
+                          payment_status: "paid",
+                          notes: `Full charge retained — ${cancelReason}`,
+                          created_at: new Date().toISOString(),
+                        } as never);
                       }
-                      if (paymentStatus === "prepaid") {
+
+                      if (chargeOption === "none" && paymentStatus === "prepaid") {
                         const { data: pRow } = await supabase
                           .from("pupils")
                           .select("prepaid_hours")
@@ -551,29 +692,31 @@ function EditLessonPage() {
                       background: "#CC2229",
                       color: "#fff",
                       borderRadius: 8,
-                      padding: 10,
-                      flex: 1,
-                      fontSize: 13,
-                      fontWeight: 500,
+                      padding: 12,
+                      width: "100%",
+                      fontSize: 14,
+                      fontWeight: 600,
                       fontFamily: "Poppins, sans-serif",
                       border: "none",
+                      opacity: saving || !cancelReason ? 0.5 : 1,
                     }}
                   >
-                    Confirm cancellation
+                    {saving ? "Cancelling…" : "Confirm cancellation"}
                   </button>
                   <button
                     type="button"
                     onClick={() => {
                       setStatus(previousStatus);
                       setShowCancelConfirm(false);
+                      resetCancel();
                     }}
                     style={{
                       background: "#F3F4F6",
                       color: "#374151",
                       borderRadius: 8,
-                      padding: 10,
-                      flex: 1,
-                      fontSize: 13,
+                      padding: 12,
+                      width: "100%",
+                      fontSize: 14,
                       fontWeight: 500,
                       fontFamily: "Poppins, sans-serif",
                       border: "none",
@@ -583,7 +726,8 @@ function EditLessonPage() {
                   </button>
                 </div>
               </div>
-            )}
+              );
+            })()}
 
           </div>
 
