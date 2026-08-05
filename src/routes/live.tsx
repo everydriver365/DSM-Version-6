@@ -453,7 +453,7 @@ function LivePage() {
     if (
       speedLimitFetchedRef.current &&
       speedLimitFetchedRef.current.key === key &&
-      now - speedLimitFetchedRef.current.at < 30_000
+      now - speedLimitFetchedRef.current.at < 5_000
     ) {
       return;
     }
@@ -835,7 +835,7 @@ function LivePage() {
     };
 
     const last = lastRoadFetchRef.current;
-    const movedEnough = !last || distMetres(last, { lat, lng }) > 50;
+    const movedEnough = !last || distMetres(last, { lat, lng }) > 20;
     if (movedEnough) {
       lastRoadFetchRef.current = { lat, lng };
       ensureSpeedLimit(lat, lng);
