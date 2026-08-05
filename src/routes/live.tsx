@@ -36,18 +36,18 @@ function deriveRoadType(name?: string | null): string | null {
 }
 
 /** UK motorway badge: white-outlined blue plate with the motorway bridge glyph. */
-function MotorwaySymbol() {
+function MotorwaySymbol({ size = 32 }: { size?: number }) {
   return (
     <svg
-      width="16"
-      height="16"
+      width={size}
+      height={size}
       viewBox="0 0 24 24"
       aria-hidden="true"
       style={{ flexShrink: 0, display: "block" }}
     >
-      <rect x="1" y="1" width="22" height="22" rx="5" fill="#1877D6" stroke="#fff" strokeWidth="2" />
+      <rect x="1" y="1" width="22" height="22" rx="4" fill="#1877D6" stroke="#fff" strokeWidth="1.5" />
       <path
-        d="M6 17V9.5h3.2L12 13.4l2.8-3.9H18V17h-2.6v-4.2L12 17l-3.4-4.2V17H6z"
+        d="M6 16V9.5h3L12 13.5l3-4H18V16h-2.5v-4L12 16l-3.5-4v4H6z"
         fill="#fff"
       />
     </svg>
@@ -1518,56 +1518,61 @@ function LivePage() {
           >
             {/* Top row */}
             <div
-              className="flex items-center justify-between"
-              style={{ padding: "8px 14px", height: 54 }}
+              className="grid items-center"
+              style={{
+                gridTemplateColumns: "48px 1fr auto",
+                padding: "8px 14px",
+                height: 54,
+                gap: 8,
+              }}
             >
-              <div className="flex items-end" style={{ gap: 10 }}>
-                {/* Speed limit circle + overspeed badge */}
-                <div style={{ position: "relative", flexShrink: 0 }}>
-                  <div
+              {/* Speed limit badge */}
+              <div style={{ position: "relative", flexShrink: 0 }}>
+                <div
+                  className="flex items-center justify-center"
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: "50%",
+                    background: "#fff",
+                    border: "4px solid #CC2229",
+                    animation: isOverSpeeding ? "overspeedFlash 0.6s ease-in-out infinite" : undefined,
+                    transition: "background 0.15s ease-out",
+                  }}
+                >
+                  <span style={{ fontSize: 17, fontWeight: 800, color: "#0B1F3A", lineHeight: 1 }}>
+                    {speedLimit ?? "—"}
+                  </span>
+                </div>
+                {overspeedCount > 0 && (
+                  <span
                     className="flex items-center justify-center"
                     style={{
-                      width: 40,
-                      height: 40,
+                      position: "absolute",
+                      top: -5,
+                      right: -5,
+                      width: 18,
+                      height: 18,
                       borderRadius: "50%",
-                      background: "#fff",
-                      border: "4px solid #CC2229",
-                      animation: isOverSpeeding ? "overspeedFlash 0.6s ease-in-out infinite" : undefined,
-                      transition: "background 0.15s ease-out",
+                      background: "#CC2229",
+                      border: "2px solid #0A1628",
+                      color: "#fff",
+                      fontSize: 10,
+                      fontWeight: 800,
+                      lineHeight: 1,
                     }}
                   >
-                    <span style={{ fontSize: 17, fontWeight: 800, color: "#0B1F3A", lineHeight: 1 }}>
-                      {speedLimit ?? "—"}
-                    </span>
-                  </div>
-                  {overspeedCount > 0 && (
-                    <span
-                      className="flex items-center justify-center"
-                      style={{
-                        position: "absolute",
-                        top: -5,
-                        right: -5,
-                        width: 18,
-                        height: 18,
-                        borderRadius: "50%",
-                        background: "#CC2229",
-                        border: "2px solid #0A1628",
-                        color: "#fff",
-                        fontSize: 10,
-                        fontWeight: 800,
-                        lineHeight: 1,
-                      }}
-                    >
-                      {overspeedCount}
-                    </span>
-                  )}
-                </div>
+                    {overspeedCount}
+                  </span>
+                )}
+              </div>
 
-                {/* Current speed */}
+              {/* Current speed — centered */}
+              <div className="flex flex-col items-center justify-center" style={{ minWidth: 0 }}>
                 <div className="flex items-baseline" style={{ gap: 4 }}>
                   <span
                     style={{
-                      fontSize: 28,
+                      fontSize: 32,
                       fontWeight: 800,
                       lineHeight: 1,
                       color: over ? "#FF6B6B" : speedColor,
@@ -1575,22 +1580,27 @@ function LivePage() {
                   >
                     {currentSpeed ?? 0}
                   </span>
-                  <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>mph</span>
+                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>mph</span>
                 </div>
               </div>
 
-              {/* Status text */}
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  textAlign: "right",
-                  color: over ? "#FF6B6B" : "#8CA1C2",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {over ? `${excess} mph over` : speedLimit != null ? "Within limit" : ""}
-              </div>
+              {/* Status pill */}
+              {(over || speedLimit != null) && (
+                <div
+                  className="flex items-center justify-center"
+                  style={{
+                    padding: "4px 10px",
+                    borderRadius: 999,
+                    backgroundColor: over ? "#CC2229" : "#22C55E",
+                    color: "#fff",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {over ? `${excess} mph over` : "Within limit"}
+                </div>
+              )}
             </div>
 
             {/* Divider */}
@@ -1599,11 +1609,11 @@ function LivePage() {
             {/* Road info row — left justified, sign then name */}
             <div
               className="flex items-center justify-start"
-              style={{ padding: "0 14px", height: 34, gap: 12, minWidth: 0 }}
+              style={{ padding: "0 14px", height: 40, gap: 12, minWidth: 0 }}
             >
               {roadType && roadType !== "Local road" && (
                 <span className="flex items-center" style={{ flexShrink: 0, gap: 6 }}>
-                  {roadType === "Motorway" && <MotorwaySymbol />}
+                  {roadType === "Motorway" && <MotorwaySymbol size={32} />}
                   {roadType === "A Road" && roadTag && <ARoadPlate tag={roadTag} />}
                   {roadType === "B Road" && roadTag && <BRoadPlate tag={roadTag} />}
                 </span>
@@ -1616,7 +1626,7 @@ function LivePage() {
                     overflow: "hidden",
                     color: "#fff",
                     fontWeight: 700,
-                    fontSize: 11,
+                    fontSize: 13,
                     lineHeight: 1.2,
                     textShadow: "0 1px 1px rgba(0,0,0,0.15)",
                     textOverflow: "ellipsis",
