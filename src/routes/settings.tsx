@@ -41,6 +41,11 @@ import {
   writeMinGapMinutes,
   DEFAULT_MIN_GAP_MINUTES,
 } from "../lib/gapPrefs";
+import {
+  readBadgePrefs,
+  writeBadgePrefs,
+  DEFAULT_BADGE_PREFS,
+} from "../lib/badgePrefs";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -96,9 +101,17 @@ function SettingsPage() {
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
   const [minGapMinutes, setMinGapMinutes] = useState<number>(DEFAULT_MIN_GAP_MINUTES);
   const [bufferAfter, setBufferAfter] = useState<number>(15);
+  const [badgePrefs, setBadgePrefs] = useState<{
+    issues: boolean;
+    chat: boolean;
+    admin: boolean;
+  }>(DEFAULT_BADGE_PREFS);
 
   useEffect(() => {
     setMinGapMinutes(readMinGapMinutes());
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user?.id) setBadgePrefs(readBadgePrefs(data.user.id));
+    });
   }, []);
   const [savingRates, setSavingRates] = useState(false);
   const [homePostcode, setHomePostcode] = useState<string>("");
@@ -313,6 +326,7 @@ function SettingsPage() {
       if (!user) return;
       setUserId(user.id);
       setEmail(user.email ?? "");
+      setBadgePrefs(readBadgePrefs(user.id));
 
       // Coverage areas count for the settings row
       supabase
@@ -900,6 +914,57 @@ function SettingsPage() {
             isLast
           />
         </div>
+
+        <Label>REALTIME BADGES</Label>
+        <SectionCard>
+          <div className="px-4 py-4 flex flex-col gap-4">
+            <div className="flex items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Issues</div>
+                <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>Show red badge on the home screen for new local issues</div>
+              </div>
+              <ToggleSwitch
+                checked={badgePrefs.issues}
+                onChange={(val) => {
+                  if (!userId) return;
+                  const next = { ...badgePrefs, issues: val };
+                  setBadgePrefs(next);
+                  writeBadgePrefs(userId, next);
+                }}
+              />
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Chat</div>
+                <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>Show badge on the home screen for local chat messages</div>
+              </div>
+              <ToggleSwitch
+                checked={badgePrefs.chat}
+                onChange={(val) => {
+                  if (!userId) return;
+                  const next = { ...badgePrefs, chat: val };
+                  setBadgePrefs(next);
+                  writeBadgePrefs(userId, next);
+                }}
+              />
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Admin</div>
+                <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>Show badge on the home screen for admin notifications</div>
+              </div>
+              <ToggleSwitch
+                checked={badgePrefs.admin}
+                onChange={(val) => {
+                  if (!userId) return;
+                  const next = { ...badgePrefs, admin: val };
+                  setBadgePrefs(next);
+                  writeBadgePrefs(userId, next);
+                }}
+              />
+            </div>
+          </div>
+        </SectionCard>
 
         <Label>PAYMENTS</Label>
         <div style={{ backgroundColor: 'white', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
