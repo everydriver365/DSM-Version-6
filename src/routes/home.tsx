@@ -5059,8 +5059,10 @@ function HomePage() {
                 >
                   <ChevronRight size={16} color="#D1D5DB" />
                 </button>
+              </div>
 
               {/* Weather + View route */}
+
               <div style={{
                 padding: '10px 14px',
                 borderTop: '1px solid #E4E8EF',
