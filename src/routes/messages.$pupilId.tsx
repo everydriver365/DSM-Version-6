@@ -242,6 +242,47 @@ function PupilThreadPage() {
     });
   }, [messages]);
 
+  // ---- Typing indicator -------------------------------------------------
+  // Lightweight realtime broadcast: each side pings "typing" while composing.
+  // The other side shows "typing…" in the header until 3s of silence.
+  const [pupilTyping, setPupilTyping] = useState(false);
+  const typingChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const typingOffRef = useRef<number | null>(null);
+  const lastSentTypingRef = useRef(0);
+
+  useEffect(() => {
+    if (!userId) return;
+    const ch = supabase
+      .channel(`typing:${userId}:${pupilId}`, { config: { broadcast: { self: false } } })
+      .on("broadcast", { event: "typing" }, (payload) => {
+        if ((payload as { payload?: { from?: string } })?.payload?.from === "instructor") return;
+        setPupilTyping(true);
+        if (typingOffRef.current) window.clearTimeout(typingOffRef.current);
+        typingOffRef.current = window.setTimeout(() => setPupilTyping(false), 3000);
+      })
+      .subscribe();
+    typingChannelRef.current = ch;
+    return () => {
+      if (typingOffRef.current) window.clearTimeout(typingOffRef.current);
+      typingChannelRef.current = null;
+      supabase.removeChannel(ch);
+    };
+  }, [userId, pupilId]);
+
+  // Clear the indicator as soon as a message actually lands.
+  useEffect(() => {
+    setPupilTyping(false);
+  }, [messages.length]);
+
+  const notifyTyping = () => {
+    const ch = typingChannelRef.current;
+    if (!ch) return;
+    const now = Date.now();
+    if (now - lastSentTypingRef.current < 1500) return; // throttle
+    lastSentTypingRef.current = now;
+    ch.send({ type: "broadcast", event: "typing", payload: { from: "instructor" } });
+  };
+
 
   // Detect likely acceptance on the most recent pupil message and look up a pending offer.
   useEffect(() => {
@@ -541,21 +582,38 @@ function PupilThreadPage() {
               {initialsOf(pupilName)}
             </div>
           )}
-          <div
-            style={{
-              flex: 1,
-              minWidth: 0,
-              color: "#FFFFFF",
-              fontSize: 14,
-              fontWeight: 600,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              ...POPPINS,
-            }}
-          >
-            {pupilName}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                color: "#FFFFFF",
+                fontSize: 14,
+                fontWeight: 600,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                ...POPPINS,
+              }}
+            >
+              {pupilName}
+            </div>
+            {pupilTyping && (
+              <div
+                style={{
+                  color: "#7FB6F2",
+                  fontSize: 11,
+                  fontWeight: 500,
+                  lineHeight: "14px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  ...POPPINS,
+                }}
+              >
+                typing…
+              </div>
+            )}
           </div>
+
           <a
             href={phone ? `tel:${phone}` : undefined}
             aria-label="Call"
@@ -900,7 +958,10 @@ function PupilThreadPage() {
         </button>
         <textarea
           value={messageText}
-          onChange={(e) => setMessageText(e.target.value)}
+          onChange={(e) => {
+            setMessageText(e.target.value);
+            if (e.target.value.trim()) notifyTyping();
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
