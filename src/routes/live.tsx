@@ -695,12 +695,13 @@ function LivePage() {
           }, 3000);
           return;
         }
-        // Permission denied — permanent error
-        setGeoError("GPS access required — tap here to open settings");
-        // Open Despia settings if available
-        if (navigator.userAgent.toLowerCase().includes("despia")) {
-          (window as any).despia("settingsapp://");
-        }
+        // Permission denied / unavailable — permanent error
+        setGeoError(
+          err.code === 1
+            ? "Location permission is off — tap to open settings, then try again"
+            : "GPS unavailable — tap to open settings, then try again",
+        );
+
       },
       { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 },
     );
