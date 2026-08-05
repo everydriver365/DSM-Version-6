@@ -193,6 +193,8 @@ interface Lesson {
   payment_status?: string | null;
   amount_due?: number | null;
   eol_completed?: boolean | null;
+  cancellation_reason?: string | null;
+
   pupil: Pupil | null;
 }
 
