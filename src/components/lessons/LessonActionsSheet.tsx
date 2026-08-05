@@ -589,71 +589,175 @@ export function LessonActionsSheet({
         )}
 
         {inlineView === "cancel" && (
-          <div style={{ paddingBottom: 12, textAlign: "center" }}>
-            <IconAlertCircle size={24} stroke={1.8} color="#CC2229" />
-            <div style={{ ...inlineHeading, color: "#CC2229", textAlign: "center" }}>
-              Cancel this lesson?
+          <div style={{ paddingBottom: 12, textAlign: "left" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <IconAlertCircle size={20} stroke={1.8} color="#CC2229" />
+              <div style={{ ...inlineHeading, color: "#CC2229", margin: 0 }}>
+                Cancel lesson with {pupilName}
+              </div>
             </div>
-            <div style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#6B7280" }}>
-              with {pupilName}
+
+            {/* SECTION 1 — Reason */}
+            <div style={cancelLabel}>Reason for cancellation</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {CANCEL_REASONS.map((r) => {
+                const sel = cancelReason === r;
+                return (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => setCancelReason(r)}
+                    style={{
+                      background: sel ? "#0B1F3A" : "#F1F5F9",
+                      color: sel ? "#fff" : "#6B7686",
+                      borderRadius: 20,
+                      padding: "6px 14px",
+                      fontFamily: "Poppins, sans-serif",
+                      fontSize: 12,
+                      fontWeight: sel ? 600 : 500,
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {r}
+                  </button>
+                );
+              })}
             </div>
-            <div style={{ marginTop: 10 }}>
-              {payStatus === "paid" || payStatus === "partial" ? (
-                <span
-                  style={{
-                    display: "inline-block",
-                    background: "#FEF3D7",
-                    color: "#8A5A00",
-                    borderRadius: 999,
-                    padding: "6px 12px",
-                    fontFamily: "Inter, sans-serif",
-                    fontSize: 12,
-                    fontWeight: 600,
-                  }}
+
+            {/* SECTION 2 — Notes */}
+            <div style={cancelLabel}>Notes</div>
+            <textarea
+              rows={3}
+              value={cancelNote}
+              onChange={(e) => setCancelNote(e.target.value)}
+              placeholder="Add any additional notes..."
+              style={{
+                width: "100%",
+                border: "1px solid #E4E8EF",
+                borderRadius: 8,
+                fontFamily: "Poppins, sans-serif",
+                fontSize: 13,
+                padding: 10,
+                boxSizing: "border-box",
+                resize: "vertical",
+              }}
+            />
+
+            {/* SECTION 3 — Charge */}
+            <div style={cancelLabel}>Charge</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <button
+                type="button"
+                onClick={() => setChargeOption("none")}
+                style={chargeRow(chargeOption === "none", "#E6F1FB", "#1877D6")}
+              >
+                <div style={chargeTitle}>No charge</div>
+                <div style={chargeSub}>
+                  {payStatus === "paid" || payStatus === "partial"
+                    ? `£${balance.toFixed(2)} refunded as account credit`
+                    : payStatus === "prepaid"
+                      ? "1 lesson returned to prepaid hours"
+                      : "No payment to refund"}
+                </div>
+              </button>
+
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setChargeOption("fee")}
+                  style={chargeRow(chargeOption === "fee", "#FEF3C7", "#D97706")}
                 >
-                  £{balance.toFixed(2)} will be added as account credit
-                </span>
-              ) : payStatus === "prepaid" ? (
-                <span
-                  style={{
-                    display: "inline-block",
-                    background: "#FEF3D7",
-                    color: "#8A5A00",
-                    borderRadius: 999,
-                    padding: "6px 12px",
-                    fontFamily: "Inter, sans-serif",
-                    fontSize: 12,
-                    fontWeight: 600,
-                  }}
+                  <div style={chargeTitle}>Charge cancellation fee</div>
+                  <div style={chargeSub}>Remainder refunded to account credit</div>
+                </button>
+                {chargeOption === "fee" && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8 }}>
+                    <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 13, color: "#6B7686" }}>£</span>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      value={cancelFee}
+                      onChange={(e) => setCancelFee(e.target.value)}
+                      placeholder="e.g. 20.00"
+                      style={{
+                        flex: 1,
+                        border: "1px solid #E4E8EF",
+                        borderRadius: 8,
+                        padding: "10px 12px",
+                        fontFamily: "Poppins, sans-serif",
+                        fontSize: 13,
+                        boxSizing: "border-box",
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {(payStatus === "paid" || payStatus === "partial") && (
+                <button
+                  type="button"
+                  onClick={() => setChargeOption("full")}
+                  style={chargeRow(chargeOption === "full", "#FCE9E9", "#CC2229")}
                 >
-                  1 lesson will be returned to {pupilName}'s prepaid hours
-                </span>
-              ) : (
-                <span style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#8E8E93" }}>
-                  No payment taken — no refund needed
-                </span>
+                  <div style={chargeTitle}>Charge full lesson</div>
+                  <div style={chargeSub}>No refund — full payment retained</div>
+                </button>
               )}
             </div>
+
             <button
               type="button"
-              disabled={saving}
-              style={{ ...primaryBtn, background: "#CC2229" }}
+              disabled={saving || !cancelReason}
+              style={{
+                ...primaryBtn,
+                background: "#CC2229",
+                opacity: !cancelReason || saving ? 0.5 : 1,
+              }}
               onClick={async () => {
                 setSaving(true);
                 await supabase
                   .from("lessons")
-                  .update({ status: "cancelled", payment_status: "cancelled" })
+                  .update({
+                    status: "cancelled",
+                    payment_status: "cancelled",
+                    notes: [lesson.notes, cancelReason, cancelNote].filter(Boolean).join(" · "),
+                  })
                   .eq("id", lesson.id);
-                if (payStatus === "paid" || payStatus === "partial") {
-                  const { recordRefund } = await import("@/lib/payments");
+
+                const { recordRefund } = await import("@/lib/payments");
+                if (chargeOption === "none" && (payStatus === "paid" || payStatus === "partial")) {
                   await recordRefund({
                     pupilId: lesson.pupil_id,
                     amount: Number(lesson.amount_due ?? 0),
                     method: "cash",
-                    notes: "Lesson cancelled — credit added",
+                    notes: `Cancellation refund — ${cancelReason}`,
                     currentAccountBalance: 0,
                   });
+                } else if (chargeOption === "fee") {
+                  const fee = Number(cancelFee) || 0;
+                  const refund = Number(lesson.amount_due ?? 0) - fee;
+                  if (refund > 0) {
+                    await recordRefund({
+                      pupilId: lesson.pupil_id,
+                      amount: refund,
+                      method: "cash",
+                      notes: `Partial refund — cancellation fee £${fee} retained`,
+                      currentAccountBalance: 0,
+                    });
+                  }
+                } else if (chargeOption === "full") {
+                  await supabase.from("lesson_history").insert({
+                    instructor_id: (lesson as any).instructor_id,
+                    pupil_id: lesson.pupil_id,
+                    amount_paid: Number(lesson.amount_due ?? 0),
+                    payment_method: (lesson as any).payment_method ?? "cash",
+                    payment_status: "paid",
+                    notes: `Full charge retained — ${cancelReason}`,
+                    created_at: new Date().toISOString(),
+                  } as never);
                 }
+
                 toast.success("Lesson cancelled");
                 setSaving(false);
                 onClose();
@@ -661,7 +765,17 @@ export function LessonActionsSheet({
             >
               {saving ? "Cancelling…" : "Confirm cancellation"}
             </button>
-            <button type="button" style={greyBtn} onClick={() => setInlineView("main")}>
+            <button
+              type="button"
+              style={greyBtn}
+              onClick={() => {
+                setInlineView("main");
+                setCancelReason("");
+                setCancelNote("");
+                setChargeOption("none");
+                setCancelFee("");
+              }}
+            >
               Keep lesson
             </button>
           </div>
