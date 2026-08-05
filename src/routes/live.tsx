@@ -1528,14 +1528,25 @@ function LivePage() {
                   style={{
                     flexShrink: 0,
                     background:
-                      roadType === "Motorway" ? "#1877D6" : roadType === "A Road" ? "#1A9C56" : "#F8FAFC",
+                      roadType === "Motorway"
+                        ? "#1877D6"
+                        : roadType === "A Road"
+                        ? "#1A9C56"
+                        : roadType === "B Road"
+                        ? "#F8FAFC"
+                        : "rgba(255,255,255,0.15)",
                     color: roadType === "B Road" ? "#0B1F3A" : "#fff",
                     fontSize: 11,
                     fontWeight: 700,
                     padding: "3px 9px",
                     borderRadius: 20,
                     lineHeight: 1.2,
-                    border: roadType === "B Road" ? "1px solid rgba(255,255,255,0.35)" : "none",
+                    border:
+                      roadType === "B Road"
+                        ? "1px solid rgba(255,255,255,0.35)"
+                        : roadType === "Local road"
+                        ? "1px solid rgba(255,255,255,0.25)"
+                        : "none",
                     textShadow: roadType === "B Road" ? "none" : "0 1px 1px rgba(0,0,0,0.15)",
                   }}
                 >
@@ -1558,10 +1569,14 @@ function LivePage() {
                   Unknown road
                 </span>
               ) : null}
-              {roadTag && (
+              {(roadTag || roadLabel) && (
                 <span
                   style={{
-                    flexShrink: 0,
+                    flexShrink: 1,
+                    minWidth: 0,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
                     background:
                       roadType === "Motorway"
                         ? "#1877D6"
@@ -1569,16 +1584,13 @@ function LivePage() {
                         ? "#1A9C56"
                         : roadType === "B Road"
                         ? "#F8FAFC"
-                        : "#1877D6",
+                        : "rgba(255,255,255,0.15)",
                     border:
                       roadType === "B Road"
                         ? "1px solid rgba(255,255,255,0.35)"
                         : "1px solid rgba(255,255,255,0.5)",
                     borderRadius: 20,
-                    color:
-                      roadType === "B Road"
-                        ? "#0B1F3A"
-                        : "#fff",
+                    color: roadType === "B Road" ? "#0B1F3A" : "#fff",
                     fontWeight: 700,
                     fontSize: 11,
                     padding: "3px 9px",
@@ -1586,7 +1598,7 @@ function LivePage() {
                     textShadow: roadType === "B Road" ? "none" : "0 1px 1px rgba(0,0,0,0.15)",
                   }}
                 >
-                  {roadLabel ? `${roadTag} · ${roadLabel}` : roadTag}
+                  {roadTag ? (roadLabel ? `${roadTag} · ${roadLabel}` : roadTag) : roadLabel}
                 </span>
               )}
               {!roadType && !roadTag && !roadLabel && (
