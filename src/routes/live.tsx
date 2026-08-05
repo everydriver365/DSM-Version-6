@@ -79,7 +79,17 @@ function formatDurationMs(ms: number) {
 }
 
 
+function despiaCall(cmd: string) {
+  try {
+    const w = window as any;
+    if (typeof w?.despia === "function") w.despia(cmd);
+  } catch (e) {
+    console.warn("[live] native bridge call failed", cmd, e);
+  }
+}
+
 let gmapsPromise: Promise<any> | null = null;
+
 function loadGoogleMaps(): Promise<any> {
   if (typeof window === "undefined") return Promise.reject(new Error("no window"));
   const w = window as any;
