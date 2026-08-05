@@ -394,9 +394,8 @@ function LivePage() {
         navigator.geolocation.clearWatch(watchIdRef.current);
         watchIdRef.current = null;
       }
-      if (navigator.userAgent.toLowerCase().includes("despia")) {
-        (window as any).despia("backgroundlocationoff://");
-      }
+      despiaCall("backgroundlocationoff://");
+
       try {
         silentAudioRef.current?.pause();
       } catch {
