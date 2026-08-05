@@ -2911,45 +2911,67 @@ function HomePage() {
     const handler = () => setReloadKey((k) => k + 1);
     window.addEventListener("dsm-message-received", handler);
 
+    // Read current badge preferences so the right realtime subscriptions are active
+    const currentPrefs = readBadgePrefs(userId);
+    setBadgePrefs(currentPrefs);
+
     // Also subscribe directly so home updates even when messages page isn't open
-    const channel = supabase
-      .channel(`home-messages-${userId}`)
-      .on('postgres_changes', {
+    let channel = supabase.channel(`home-messages-${userId}`);
+    if (currentPrefs.chat) {
+      channel = channel.on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
         table: 'chat_messages',
         filter: `instructor_id=eq.${userId}`,
       }, () => {
         setReloadKey((k) => k + 1);
-      })
-      .on('postgres_changes', {
+      });
+    }
+    if (currentPrefs.issues) {
+      channel = channel.on('postgres_changes', {
         event: '*',
         schema: 'public',
         table: 'local_alerts',
       }, () => {
         setReloadKey((k) => k + 1);
-      })
-      .on('postgres_changes', {
+      });
+    }
+    if (currentPrefs.chat) {
+      channel = channel.on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
         table: 'local_chat_messages',
       }, () => {
         setReloadKey((k) => k + 1);
-      })
-      .on('postgres_changes', {
+      });
+    }
+    if (currentPrefs.admin) {
+      channel = channel.on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
         table: 'instructor_notifications',
         filter: `instructor_id=eq.${userId}`,
       }, () => {
         setReloadKey((k) => k + 1);
-      })
-      .subscribe();
+      });
+    }
+    channel.subscribe();
 
     return () => {
       window.removeEventListener("dsm-message-received", handler);
       supabase.removeChannel(channel);
     };
+  }, [userId, badgePrefs]);
+
+  // Re-read badge preferences when the window regains focus (e.g. returning from settings)
+  useEffect(() => {
+    if (!userId) return;
+    const onFocus = () => {
+      const next = readBadgePrefs(userId);
+      setBadgePrefs(next);
+    };
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
   }, [userId]);
 
 
