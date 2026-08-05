@@ -7,7 +7,7 @@ import { buildTripReport } from "../lib/tripReport";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/live")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { autostart?: string; lessonId?: string; pupilId?: string } => ({
     autostart: typeof search.autostart === "string" ? search.autostart : undefined,
     lessonId: typeof search.lessonId === "string" ? search.lessonId : undefined,
     pupilId: typeof search.pupilId === "string" ? search.pupilId : undefined,
