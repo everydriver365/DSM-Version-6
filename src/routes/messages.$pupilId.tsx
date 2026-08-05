@@ -1012,6 +1012,9 @@ function PupilThreadPage() {
                       </div>
                     )}
                     <div
+                      ref={(el) => {
+                        matchRefs.current[i] = el;
+                      }}
                       style={{
                         background: mine ? "#1877D6" : "#EEF2F7",
                         color: mine ? "#FFFFFF" : "#0B1F3A",
@@ -1024,7 +1027,7 @@ function PupilThreadPage() {
                         ...POPPINS,
                       }}
                     >
-                      {m.body}
+                      <HighlightedBody body={m.body ?? ""} query={searchQuery} />
                     </div>
                     <div
                       style={{
