@@ -5136,16 +5136,55 @@ function HomePage() {
                 </div>
               )}
 
-              {/* Footer / More */}
+              {/* Footer: View route · ETA · weather + More */}
               <div style={{
                 padding: '11px 16px',
-                display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10,
+                borderTop: '1px solid #E4E8EF',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
               }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 8, minWidth: 0,
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); openMaps(); }}
+                    style={{
+                      background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      fontSize: 13, fontWeight: 700, color: '#1877D6',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    <Navigation size={15} color="#1877D6" />
+                    View route
+                  </button>
+
+                  {driveData?.durationMinutes != null && (
+                    <>
+                      <span style={{ color: '#C7CDD6', fontSize: 12 }}>·</span>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: '#1877D6' }}>
+                        {driveData.durationMinutes} min
+                      </span>
+                    </>
+                  )}
+
+                  {weatherData && (
+                    <>
+                      <span style={{ color: '#C7CDD6', fontSize: 12 }}>·</span>
+                      <span style={{ fontSize: 14 }}>{weatherData.icon || '⛅'}</span>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A' }}>
+                        {Math.round(weatherData.tempC)}°
+                      </span>
+                    </>
+                  )}
+                </div>
 
                 <button
                   type="button"
                   onClick={() => setHeroExpandedWithEvent((v) => !v)}
                   style={{
+                    flexShrink: 0,
                     background: 'none', border: 'none', padding: 0, cursor: 'pointer',
                     display: 'flex', alignItems: 'center', gap: 4,
                     fontSize: 13, fontWeight: 600, color: '#0B1F3A',
@@ -5155,6 +5194,7 @@ function HomePage() {
                   More {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </button>
               </div>
+
             </>
           );
 
