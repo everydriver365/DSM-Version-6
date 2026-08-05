@@ -1,6 +1,14 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useCallback, useEffect, useState, type ComponentType, type ReactNode } from "react";
-import { Home, CalendarDays, Users, MessageCircle, LayoutGrid } from "lucide-react";
+import {
+  IconHome,
+  IconHomeFilled,
+  IconCalendar,
+  IconCalendarFilled,
+  IconUsers,
+  IconMessageCircle,
+  IconDots,
+} from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 
 /**
@@ -123,6 +131,10 @@ function useUnreadMessages(): number {
   return count;
 }
 
+const ACTIVE = "#1877D6";
+const INACTIVE = "#9AA5B5";
+const POPPINS = { fontFamily: "Poppins, sans-serif" };
+
 function UnreadBadge({ count }: { count: number }) {
   if (count <= 0) return null;
   return (
@@ -130,18 +142,19 @@ function UnreadBadge({ count }: { count: number }) {
       aria-label={`${count} unread messages`}
       className="absolute flex items-center justify-center"
       style={{
-        top: 4,
-        left: "calc(50% + 6px)",
+        top: -4,
+        right: -4,
         minWidth: 16,
         height: 16,
         padding: "0 4px",
-        borderRadius: 999,
+        borderRadius: 8,
         background: "#CC2229",
         color: "#FFFFFF",
         fontSize: 9,
         fontWeight: 700,
         lineHeight: 1,
-        border: "1.5px solid #FFFFFF",
+        border: "2px solid #FFFFFF",
+        ...POPPINS,
       }}
     >
       {count > 9 ? "9+" : count}
@@ -154,7 +167,7 @@ export type NavKey = "home" | "schedule" | "pupils" | "messages" | "more" | "set
 export interface BottomNavItem {
   key: string;
   label: string;
-  Icon: ComponentType<{ size?: number; color?: string }>;
+  Icon: ComponentType<{ size?: number; color?: string; stroke?: number }>;
   to?: string;
   onClick?: () => void;
   /** Optional workspace index (0-7) this tab maps to. Enables event-driven active state. */
@@ -177,17 +190,59 @@ const defaultItems: {
   key: NavKey;
   to: string;
   label: string;
-  Icon: ComponentType<{ size?: number; color?: string }>;
+  Icon: ComponentType<{ size?: number; color?: string; stroke?: number }>;
   onClick?: () => void;
 }[] = [
-  { key: "home", to: "/home", label: "Home", Icon: Home },
-  { key: "schedule", to: "/schedule", label: "Schedule", Icon: CalendarDays },
-  { key: "pupils", to: "/pupils", label: "Pupils", Icon: Users },
-  { key: "messages", to: "/messages", label: "Messages", Icon: MessageCircle },
-  { key: "more", to: "/more", label: "More", Icon: LayoutGrid },
+  { key: "home", to: "/home", label: "Home", Icon: IconHome },
+  { key: "schedule", to: "/schedule", label: "Schedule", Icon: IconCalendar },
+  { key: "pupils", to: "/pupils", label: "Pupils", Icon: IconUsers },
+  { key: "messages", to: "/messages", label: "Messages", Icon: IconMessageCircle },
+  { key: "more", to: "/more", label: "More", Icon: IconDots },
 ];
 
-export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5", inactiveColor = "#8A93A3", activeWs, onSelectWs }: Props) {
+function TabIcon({
+  Icon,
+  size = 22,
+  color,
+  stroke = 1.8,
+}: {
+  Icon: ComponentType<{ size?: number; color?: string; stroke?: number }>;
+  size?: number;
+  color: string;
+  stroke?: number;
+}) {
+  return <Icon size={size} color={color} stroke={stroke} />;
+}
+
+function ActiveIcon({
+  keyName,
+  color,
+  size = 22,
+  stroke = 1.8,
+}: {
+  keyName: string;
+  color: string;
+  size?: number;
+  stroke?: number;
+}) {
+  if (keyName === "home") {
+    return <IconHomeFilled size={size} color={color} stroke={stroke} />;
+  }
+  if (keyName === "schedule") {
+    return <IconCalendarFilled size={size} color={color} stroke={stroke} />;
+  }
+  return null;
+}
+
+export function BottomNav({
+  active,
+  items,
+  activeIndex,
+  activeColor = ACTIVE,
+  inactiveColor = INACTIVE,
+  activeWs,
+  onSelectWs,
+}: Props) {
   const useCustom = Array.isArray(items) && items.length > 0;
   // Track workspace changes broadcast by the home carousel so BottomNav stays
   // in sync without prop drilling (see home.tsx `dsm-workspace-change` event).
@@ -204,6 +259,17 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
   const currentWs = listenerWs;
   const unreadMessages = useUnreadMessages();
 
+  const renderIcon = (
+    icon: ComponentType<{ size?: number; color?: string; stroke?: number }>,
+    keyName: string,
+    isActive: boolean,
+    color: string
+  ) => {
+    const filled = ActiveIcon({ keyName, color, size: 22, stroke: 1.8 });
+    if (filled && isActive) return filled;
+    return <TabIcon Icon={icon} size={22} color={color} stroke={1.8} />;
+  };
+
   const renderCustomItems = (list: BottomNavItem[], offset: number) =>
     list.map((it, i) => {
       const realIndex = offset + i;
@@ -216,20 +282,37 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
       };
       const showBadge = it.key === "messages" || it.to === "/messages";
       const inner: ReactNode = (
-        <>
-          {isActive && (
-            <span
-              aria-hidden
-              className="absolute top-0 left-1/2 -translate-x-1/2 h-[3px] w-8 rounded-b-full"
-              style={{ backgroundColor: activeColor }}
-            />
-          )}
-          <it.Icon size={22} color={color} />
-          {showBadge && <UnreadBadge count={unreadMessages} />}
-          <span className="text-[9px] whitespace-nowrap" style={{ color }}>{it.label}</span>
-        </>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 2,
+            padding: "6px 12px",
+            borderRadius: 14,
+            background: isActive ? "#E6F1FB" : "transparent",
+          }}
+        >
+          <div style={{ position: "relative", display: "inline-flex" }}>
+            {renderIcon(it.Icon, it.key, isActive, color)}
+            {showBadge && <UnreadBadge count={unreadMessages} />}
+          </div>
+          <span
+            style={{
+              ...POPPINS,
+              fontSize: 11,
+              fontWeight: isActive ? 600 : 400,
+              color,
+              lineHeight: 1,
+              whiteSpace: "nowrap",
+            }}
+          >
+            {it.label}
+          </span>
+        </div>
       );
-      const cls = "flex flex-col items-center justify-center gap-1 select-none relative";
+      const cls = "flex flex-col items-center justify-center select-none relative";
       if (it.to && !it.onClick && typeof it.ws !== 'number') {
         return (
           <Link key={it.key} to={it.to} className={cls} style={{ color }}>
@@ -259,24 +342,38 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
       else if (key === "messages") isActive = active === "messages";
       else if (key === "more") isActive = active === "more";
       const color = isActive ? activeColor : inactiveColor;
-      const labelClass = `text-[9px] whitespace-nowrap mt-[1px] ${isActive ? "font-semibold" : "font-medium"}`;
       const inner: ReactNode = (
-        <>
-          {isActive && (
-            <span
-              aria-hidden
-              className="absolute top-0 left-1/2 -translate-x-1/2 h-[3px] w-8 rounded-b-full"
-              style={{ backgroundColor: activeColor }}
-            />
-          )}
-          <Icon size={22} color={color} />
-          {key === "messages" && <UnreadBadge count={unreadMessages} />}
-          <span className={labelClass} style={{ color }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 2,
+            padding: "6px 12px",
+            borderRadius: 14,
+            background: isActive ? "#E6F1FB" : "transparent",
+          }}
+        >
+          <div style={{ position: "relative", display: "inline-flex" }}>
+            {renderIcon(Icon, key, isActive, color)}
+            {key === "messages" && <UnreadBadge count={unreadMessages} />}
+          </div>
+          <span
+            style={{
+              ...POPPINS,
+              fontSize: 11,
+              fontWeight: isActive ? 600 : 400,
+              color,
+              lineHeight: 1,
+              whiteSpace: "nowrap",
+            }}
+          >
             {label}
           </span>
-        </>
+        </div>
       );
-      const cls = "flex flex-col items-center justify-center gap-1 select-none relative";
+      const cls = "flex flex-col items-center justify-center select-none relative";
       if (to) {
         return (
           <Link key={key} to={to} className={cls} style={{ color }}>
@@ -299,11 +396,13 @@ export function BottomNav({ active, items, activeIndex, activeColor = "#185FA5",
 
   return (
     <nav
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-16 bg-white flex items-center justify-around z-50 pb-safe"
+      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white flex items-center justify-around"
       style={{
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Poppins, sans-serif",
         borderRadius: "20px 20px 0 0",
         boxShadow: "0 -2px 12px rgba(0,0,0,0.08)",
+        paddingTop: 8,
+        paddingBottom: "max(env(safe-area-inset-bottom), 8px)",
       }}
     >
       {useCustom ? renderCustomItems(items!, 0) : renderDefaultItems(defaultItems, 0)}
