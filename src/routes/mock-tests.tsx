@@ -240,7 +240,7 @@ function MockTestsPage() {
       {addOpen && (
         <NewMockTestSheet
           pupils={pupils}
-          initialPupilId={search.pupilId}
+          initialPupilId={search.pupilId ?? ""}
           onClose={() => setAddOpen(false)}
           onStart={({ pupilId, testDate }) => {
             setAddOpen(false);
