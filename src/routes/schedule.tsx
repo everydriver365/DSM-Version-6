@@ -1763,7 +1763,13 @@ function SchedulePage() {
                                                     {timeText}
                                                   </div>
                                                 ) : null}
+                                                {cancelled && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.cancellation_reason ? (
+                                                  <div style={{ fontSize: 11, color: "#CC2229", marginTop: 2 }}>
+                                                    {(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.cancellation_reason}
+                                                  </div>
+                                                ) : null}
                                               </div>
+
                                             </div>
                                          ) : (
                                            <>
