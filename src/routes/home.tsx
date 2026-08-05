@@ -482,6 +482,12 @@ interface PupilReadySetting {
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
+/** Standard wrapper for every top-level home section: consistent spacing and horizontal padding. */
+const SECTION_WRAPPER_STYLE: React.CSSProperties = {
+  marginBottom: 24,
+  padding: '0 16px',
+};
+
 /** Standard DSM section eyebrow header used above every home section. */
 const SECTION_HEADER_STYLE: React.CSSProperties = {
   display: 'flex',
@@ -4722,17 +4728,18 @@ function HomePage() {
 
       {/* ============ NEXT LESSON CARD ============ */}
 
-      <div
-        style={{
-          margin: '0 16px 20px',
-          background: '#FFFFFF',
-          borderRadius: upcoming && heroExpanded ? '16px 16px 0 0' : 16,
-          boxShadow: '0 4px 16px rgba(11,31,58,0.08)',
-          overflow: 'hidden',
-          fontFamily: 'Poppins, sans-serif',
-          position: 'relative',
-        }}
-      >
+      <div style={SECTION_WRAPPER_STYLE}>
+        <div
+          style={{
+            margin: 0,
+            background: '#FFFFFF',
+            borderRadius: upcoming && heroExpanded ? '16px 16px 0 0' : 16,
+            boxShadow: '0 4px 16px rgba(11,31,58,0.08)',
+            overflow: 'hidden',
+            fontFamily: 'Poppins, sans-serif',
+            position: 'relative',
+          }}
+        >
         {(() => {
 
           // ETA calculation
@@ -5292,6 +5299,7 @@ function HomePage() {
 
         })()}
       </div>
+      </div>
 
 
 
@@ -5583,15 +5591,15 @@ function HomePage() {
           const timeStyle: React.CSSProperties = { fontSize: 10, color: GREY_C, fontFamily: PF_C, flexShrink: 0 };
 
           return (
-            <>
-              <div style={{ ...SECTION_HEADER_STYLE, padding: '0 16px' }}>
+            <div style={SECTION_WRAPPER_STYLE}>
+              <div style={{ ...SECTION_HEADER_STYLE, padding: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
                   <span style={SECTION_TITLE_TEXT_STYLE}>Community</span>
                 </div>
               </div>
               <div style={{
-                margin: '0 16px 20px', background: '#FFFFFF', borderRadius: 16,
+                margin: 0, background: '#FFFFFF', borderRadius: 16,
                 border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
               }}>
 
@@ -5855,23 +5863,24 @@ function HomePage() {
               )}
 
             </div>
-            </>
+            </div>
           );
         })()}
 
 
         {/* ============ NATIONAL CHAT ============ */}
         {ukRoom && (
-          <div
-            onClick={() => navigate({ to: '/community', search: { tab: 'uk' } })}
-            style={{
-              margin: '8px 16px 0', background: 'white', borderRadius: 14,
-              boxShadow: '0 2px 8px rgba(11,31,58,0.06)', padding: '13px 14px',
-              display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
-              fontFamily: 'Poppins, sans-serif',
-              border: unreadUkChat > 0 ? '1.5px solid #1877D6' : '1px solid transparent',
-            }}
-          >
+          <div style={SECTION_WRAPPER_STYLE}>
+            <div
+              onClick={() => navigate({ to: '/community', search: { tab: 'uk' } })}
+              style={{
+                margin: 0, background: 'white', borderRadius: 14,
+                boxShadow: '0 2px 8px rgba(11,31,58,0.06)', padding: '13px 14px',
+                display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
+                fontFamily: 'Poppins, sans-serif',
+                border: unreadUkChat > 0 ? '1.5px solid #1877D6' : '1px solid transparent',
+              }}
+            >
             <div style={{ position: 'relative', flexShrink: 0 }}>
               <div style={{
                 width: 36, height: 36, borderRadius: 11,
@@ -5918,6 +5927,7 @@ function HomePage() {
               </div>
             )}
             <ChevronRight size={17} color="#C7CDD9" style={{ flexShrink: 0 }} />
+          </div>
           </div>
         )}
 
@@ -6223,7 +6233,7 @@ function HomePage() {
         ) || null;
 
         return (
-          <div style={{ fontFamily: PF, padding: '14px 16px 0' }}>
+          <div style={{ fontFamily: PF, padding: '14px 0 0' }}>
 
 
 
@@ -6278,12 +6288,13 @@ function HomePage() {
 
 
             {/* 3. TIMELINE with TABS */}
-            <div style={{ ...SECTION_HEADER_STYLE, padding: '0 16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
-                <span style={SECTION_TITLE_TEXT_STYLE}>Teaching schedule</span>
+            <div style={SECTION_WRAPPER_STYLE}>
+              <div style={{ ...SECTION_HEADER_STYLE, padding: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+                  <span style={SECTION_TITLE_TEXT_STYLE}>Teaching schedule</span>
+                </div>
               </div>
-            </div>
 
 
             {(() => {
@@ -6987,6 +6998,7 @@ function HomePage() {
                 </div>
               );
             })()}
+            </div>
 
 
 
@@ -7134,13 +7146,6 @@ function HomePage() {
 
               return (
                 <>
-        <div style={{ ...SECTION_HEADER_STYLE, padding: '0 16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
-            <span style={SECTION_TITLE_TEXT_STYLE}>Upcoming tests</span>
-          </div>
-        </div>
-        {/* ============ UPCOMING TESTS CARD ============ */}
         {(() => {
           const parseDate = (iso: string) => {
             const d = new Date(iso + 'T00:00:00');
@@ -7167,6 +7172,13 @@ function HomePage() {
             : '';
           const brandColors = ['#0B1F3A', '#0F6E56', '#185FA5'];
           return (
+            <div style={SECTION_WRAPPER_STYLE}>
+              <div style={{ ...SECTION_HEADER_STYLE, padding: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+                  <span style={SECTION_TITLE_TEXT_STYLE}>Upcoming tests</span>
+                </div>
+              </div>
             <div
               onClick={() => navigate({ to: '/tests' as never })}
               style={{
@@ -7288,18 +7300,20 @@ function HomePage() {
                 </span>
               </div>
             </div>
+            </div>
           );
         })()}
 
 
-                  <style>{`
-                    .qa-card:active { transform: scale(0.975); }
-                    .qa-card:active .qa-icon { transform: scale(0.92); }
-                    @keyframes qaRipple { 0% { transform: scale(0); opacity: 0.35; } 100% { transform: scale(2.6); opacity: 0; } }
-                    .qa-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at center, rgba(15,32,68,0.18) 0%, transparent 60%); opacity: 0; pointer-events: none; }
-                    .qa-card:active::after { animation: qaRipple 0.5s ease-out; }
-                  `}</style>
-                    <div style={{ background: PAGE_BACKGROUND, margin: '0 -16px 0', padding: '0 16px 0', borderRadius: 0 }}>
+            <div style={SECTION_WRAPPER_STYLE}>
+              <style>{`
+                .qa-card:active { transform: scale(0.975); }
+                .qa-card:active .qa-icon { transform: scale(0.92); }
+                @keyframes qaRipple { 0% { transform: scale(0); opacity: 0.35; } 100% { transform: scale(2.6); opacity: 0; } }
+                .qa-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at center, rgba(15,32,68,0.18) 0%, transparent 60%); opacity: 0; pointer-events: none; }
+                .qa-card:active::after { animation: qaRipple 0.5s ease-out; }
+              `}</style>
+                <div style={{ background: PAGE_BACKGROUND, margin: 0, padding: 0, borderRadius: 0 }}>
                       <div style={SECTION_HEADER_STYLE}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                           <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
@@ -7350,6 +7364,7 @@ function HomePage() {
                       {currentTiles.map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
                     </div>
                   </div>
+            </div>
 
 
                   {quickSearchOpen && (
@@ -7706,7 +7721,9 @@ function HomePage() {
               );
             })()}
 
-            <DiscoverGrid />
+            <div style={SECTION_WRAPPER_STYLE}>
+              <DiscoverGrid />
+            </div>
 
 
 
