@@ -101,6 +101,11 @@ function SettingsPage() {
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
   const [minGapMinutes, setMinGapMinutes] = useState<number>(DEFAULT_MIN_GAP_MINUTES);
   const [bufferAfter, setBufferAfter] = useState<number>(15);
+  const [badgePrefs, setBadgePrefs] = useState<{
+    issues: boolean;
+    chat: boolean;
+    admin: boolean;
+  }>(DEFAULT_BADGE_PREFS);
 
   useEffect(() => {
     setMinGapMinutes(readMinGapMinutes());
