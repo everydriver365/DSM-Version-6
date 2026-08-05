@@ -1579,13 +1579,16 @@ function LivePage() {
                 </div>
               </div>
 
-              {/* Status text */}
+              {/* Status pill */}
               <div
+                className="flex items-center justify-center"
                 style={{
+                  padding: "4px 10px",
+                  borderRadius: 999,
+                  backgroundColor: over ? "#CC2229" : "#22C55E",
+                  color: "#fff",
                   fontSize: 11,
-                  fontWeight: 600,
-                  textAlign: "right",
-                  color: over ? "#FF6B6B" : "#8CA1C2",
+                  fontWeight: 700,
                   whiteSpace: "nowrap",
                 }}
               >
