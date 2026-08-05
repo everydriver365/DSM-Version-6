@@ -1606,7 +1606,7 @@ function LivePage() {
             >
               {roadType && roadType !== "Local road" && (
                 <span className="flex items-center" style={{ flexShrink: 0, gap: 6 }}>
-                  {roadType === "Motorway" && <MotorwaySymbol />}
+                  {roadType === "Motorway" && <MotorwaySymbol size={32} />}
                   {roadType === "A Road" && roadTag && <ARoadPlate tag={roadTag} />}
                   {roadType === "B Road" && roadTag && <BRoadPlate tag={roadTag} />}
                 </span>
