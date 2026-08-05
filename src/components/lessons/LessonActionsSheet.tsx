@@ -118,6 +118,46 @@ export function LessonActionsSheet({
   const [chargeOption, setChargeOption] = useState<"none" | "fee" | "full">("none");
   const [cancelFee, setCancelFee] = useState("");
 
+  const CANCEL_REASONS: string[] = [
+    "Pupil cancelled",
+    "Instructor cancelled",
+    "Weather",
+    "Vehicle issue",
+    "Pupil no show",
+    "Admin",
+    "Other",
+  ];
+  const cancelLabel: React.CSSProperties = {
+    fontFamily: "Poppins, sans-serif",
+    fontSize: 10,
+    fontWeight: 600,
+    color: "#9CA3AF",
+    textTransform: "uppercase",
+    letterSpacing: 0.6,
+    margin: "14px 0 8px",
+  };
+  const chargeRow = (sel: boolean, bg: string, bc: string): React.CSSProperties => ({
+    width: "100%",
+    textAlign: "left",
+    background: sel ? bg : "#fff",
+    border: `1px solid ${sel ? bc : "#E4E8EF"}`,
+    borderRadius: 8,
+    padding: "10px 14px",
+    cursor: "pointer",
+  });
+  const chargeTitle: React.CSSProperties = {
+    fontFamily: "Poppins, sans-serif",
+    fontSize: 13,
+    fontWeight: 600,
+    color: "#0B1F3A",
+  };
+  const chargeSub: React.CSSProperties = {
+    fontFamily: "Poppins, sans-serif",
+    fontSize: 11,
+    color: "#6B7686",
+    marginTop: 2,
+  };
+
   const formatDate = (d: string) =>
     new Date(`${d}T00:00:00`).toLocaleDateString("en-GB", {
       weekday: "short",
