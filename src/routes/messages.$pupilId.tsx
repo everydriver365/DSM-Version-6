@@ -582,21 +582,38 @@ function PupilThreadPage() {
               {initialsOf(pupilName)}
             </div>
           )}
-          <div
-            style={{
-              flex: 1,
-              minWidth: 0,
-              color: "#FFFFFF",
-              fontSize: 14,
-              fontWeight: 600,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              ...POPPINS,
-            }}
-          >
-            {pupilName}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                color: "#FFFFFF",
+                fontSize: 14,
+                fontWeight: 600,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                ...POPPINS,
+              }}
+            >
+              {pupilName}
+            </div>
+            {pupilTyping && (
+              <div
+                style={{
+                  color: "#7FB6F2",
+                  fontSize: 11,
+                  fontWeight: 500,
+                  lineHeight: "14px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  ...POPPINS,
+                }}
+              >
+                typing…
+              </div>
+            )}
           </div>
+
           <a
             href={phone ? `tel:${phone}` : undefined}
             aria-label="Call"
