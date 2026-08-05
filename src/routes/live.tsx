@@ -1594,7 +1594,7 @@ function LivePage() {
               className="flex items-center justify-center"
               style={{ padding: "0 14px", height: 34, gap: 12, minWidth: 0 }}
             >
-              {roadType ? (
+              {roadType && roadType !== "Local road" ? (
                 <span
                   style={{
                     flexShrink: 0,
