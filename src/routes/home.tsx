@@ -4724,13 +4724,7 @@ function HomePage() {
       </div>
 
 
-      {/* Next lesson section header */}
       {/* ============ NEXT LESSON CARD ============ */}
-      <SectionEyebrow
-        title="Next lesson"
-        linkLabel="Full schedule →"
-        onLink={() => navigate({ to: '/schedule' })}
-      />
 
       <div
         style={{
@@ -4857,8 +4851,39 @@ function HomePage() {
 
           return (
             <>
-              {/* Header strip moved to standard section eyebrow above the card */}
-
+              {/* Original header strip */}
+              <div style={{
+                background: '#EEF2F7',
+                borderRadius: '16px 16px 0 0',
+                borderLeft: '3px solid #1877D6',
+                padding: '10px 12px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+                <span style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: '#1877D6',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
+                  NEXT LESSON
+                </span>
+                <span
+                  onClick={() => navigate({ to: '/schedule' })}
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: '#1877D6',
+                    fontFamily: 'Poppins, sans-serif',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Full schedule ›
+                </span>
+              </div>
 
               {/* Map header */}
               {(() => {
