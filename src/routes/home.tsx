@@ -7295,7 +7295,10 @@ function HomePage() {
                   `}</style>
                     <div style={{ background: PAGE_BACKGROUND, margin: '0 -16px 0', padding: '0 16px 0', borderRadius: 0 }}>
                       <div style={SECTION_HEADER_STYLE}>
-                        <span style={SECTION_TITLE_STYLE}>Quick access</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+                          <span style={SECTION_TITLE_TEXT_STYLE}>Quick access</span>
+                        </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{ display: 'flex', gap: 4 }}>
                           {Array.from({ length: totalPages }).map((_, i) => (
