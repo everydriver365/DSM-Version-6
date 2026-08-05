@@ -113,6 +113,10 @@ export function LessonActionsSheet({
   const [newDuration, setNewDuration] = useState(lesson.duration_minutes ?? 60);
   const [noteText, setNoteText] = useState(lesson.notes ?? "");
   const [saving, setSaving] = useState(false);
+  const [cancelReason, setCancelReason] = useState<string>("");
+  const [cancelNote, setCancelNote] = useState("");
+  const [chargeOption, setChargeOption] = useState<"none" | "fee" | "full">("none");
+  const [cancelFee, setCancelFee] = useState("");
 
   const formatDate = (d: string) =>
     new Date(`${d}T00:00:00`).toLocaleDateString("en-GB", {
