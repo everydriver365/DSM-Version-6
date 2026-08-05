@@ -1564,25 +1564,27 @@ function LivePage() {
             {/* Road type legend row */}
             <div
               className="flex items-center justify-center"
-              style={{ padding: "0 14px", height: 20, gap: 10, minWidth: 0 }}
+              style={{ padding: "0 14px", height: 22, gap: 14, minWidth: 0 }}
             >
               {[
-                { label: "Motorway", color: "#1877D6" },
-                { label: "A Road", color: "#1A9C56" },
-                { label: "B Road", color: "#fff", textColor: "#0B1F3A" },
+                { label: "Motorway", bg: "#1877D6", color: "#fff" },
+                { label: "A Road", bg: "#1A9C56", color: "#fff" },
+                { label: "B Road", bg: "#F8FAFC", color: "#0B1F3A" },
               ].map((item) => (
-                <div key={item.label} className="flex items-center" style={{ gap: 4 }}>
+                <div key={item.label} className="flex items-center" style={{ gap: 6 }}>
                   <span
                     style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: "50%",
-                      background: item.color,
-                      border: item.color === "#fff" ? "1px solid rgba(255,255,255,0.5)" : "none",
                       flexShrink: 0,
+                      fontSize: 9,
+                      fontWeight: 700,
+                      color: item.color,
+                      background: item.bg,
+                      padding: "1px 6px",
+                      borderRadius: 20,
+                      lineHeight: 1.2,
+                      border: item.label === "B Road" ? "1px solid rgba(255,255,255,0.35)" : "none",
                     }}
-                  />
-                  <span style={{ fontSize: 9, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>
+                  >
                     {item.label}
                   </span>
                 </div>
