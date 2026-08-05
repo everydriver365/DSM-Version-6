@@ -363,9 +363,11 @@ function WhatsChangedPage() {
       ] as Section[]).filter((s) => s.items.length > 0);
 
       setSections(built);
+      const nowIso = new Date().toISOString();
+      setLastUpdated(nowIso);
       setLoading(false);
       try {
-        localStorage.setItem(key, new Date().toISOString());
+        localStorage.setItem(key, nowIso);
       } catch {}
     })();
     return () => {
