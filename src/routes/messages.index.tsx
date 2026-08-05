@@ -12,11 +12,12 @@ import {
   IconBellOff,
   IconBell,
   IconChecks,
+  IconHeadset,
+  IconAdjustmentsHorizontal,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useAdminGate } from "./admin";
 
 
@@ -865,18 +866,75 @@ function MessagesIndexPage() {
     toast.success("Joined " + (r.area_name || r.outcode));
   }
 
+  const iconBtnStyle: React.CSSProperties = {
+    width: 36,
+    height: 36,
+    borderRadius: "50%",
+    background: "rgba(255,255,255,0.08)",
+    border: "none",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    position: "relative",
+    padding: 0,
+  };
+
   return (
     <PageLayout style={{ ...FONT, background: "#FFFFFF", paddingBottom: 24 }}>
-      <InstructorTopBar
-        firstName={myName ?? ""}
-        pageTitle="Messages"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 40,
+          background: "#0B1F3A",
+          padding: "calc(env(safe-area-inset-top, 0px) + 12px) 18px 16px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderBottom: "none",
+          boxShadow: "inset 0 -1px 0 rgba(255,255,255,0.04)",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "Poppins, sans-serif",
+            fontSize: 18,
+            fontWeight: 600,
+            color: "#FFFFFF",
+          }}
+        >
+          Messages
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button
+            type="button"
+            aria-label="Calls"
+            onClick={() => navigate({ to: "/enquiries" as never })}
+            style={iconBtnStyle}
+          >
+            <IconHeadset size={17} stroke={1.8} color="#C7D0DE" />
+          </button>
+          <button
+            type="button"
+            aria-label="Notifications"
+            onClick={() => navigate({ to: "/notifications" as never })}
+            style={iconBtnStyle}
+          >
+            <IconBell size={17} stroke={1.8} color="#C7D0DE" />
+          </button>
+          <button
+            type="button"
+            aria-label="Menu"
+            onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
+            style={iconBtnStyle}
+          >
+            <IconAdjustmentsHorizontal size={17} stroke={1.8} color="#C7D0DE" />
+          </button>
+        </div>
+      </div>
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       {view === "chat" ? (
@@ -913,23 +971,72 @@ function MessagesIndexPage() {
         />
       ) : (
         <>
-          {/* Header */}
+          {/* Filter chips + search */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
-              padding: "12px 16px 8px",
+              gap: 8,
+              padding: "8px 16px",
+              background: "#FFFFFF",
+              borderBottom: "0.5px solid #E4E8EF",
             }}
           >
-            <div style={{ fontSize: 20, fontWeight: 500, color: NAVY }}>Messages</div>
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                overflowX: "auto",
+                scrollbarWidth: "none",
+                flex: 1,
+              }}
+            >
+              {(["all", "pupils", "local", ...(isAdmin ? (["admin"] as const) : [])] as const).map(
+                (f) => {
+                  const active = filter === f;
+                  const label = f === "all" ? "All" : f === "pupils" ? "Pupils" : f === "local" ? "Local" : "Admin";
+                  return (
+                    <button
+                      key={f}
+                      type="button"
+                      onClick={() => setFilter(f)}
+                      style={{
+                        flexShrink: 0,
+                        background: active ? NAVY : "#FFFFFF",
+                        color: active ? "#FFFFFF" : NAVY,
+                        border: active ? "0.5px solid " + NAVY : `0.5px solid ${BORDER}`,
+                        borderRadius: 20,
+                        padding: "5px 14px",
+                        fontSize: 12,
+                        fontWeight: 500,
+                        cursor: "pointer",
+                        ...FONT,
+                      }}
+                    >
+                      {label}
+                    </button>
+                  );
+                },
+              )}
+            </div>
             <button
               type="button"
               aria-label="Search messages"
               onClick={() => setShowSearch((v) => !v)}
-              style={{ background: "none", border: 0, padding: 4, cursor: "pointer", display: "flex" }}
+              style={{
+                width: 32,
+                height: 32,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                background: "none",
+                border: 0,
+                padding: 0,
+                cursor: "pointer",
+              }}
             >
-              <IconSearch size={20} color={showSearch ? BLUE : GREY} stroke={1.8} />
+              <IconSearch size={18} color="#6B7686" stroke={1.8} />
             </button>
           </div>
 
@@ -974,45 +1081,6 @@ function MessagesIndexPage() {
               </div>
             </div>
           )}
-
-          {/* Filter chips */}
-          <div
-            style={{
-              display: "flex",
-              gap: 8,
-              padding: "4px 16px 12px",
-              overflowX: "auto",
-              scrollbarWidth: "none",
-            }}
-          >
-            {(["all", "pupils", "local", ...(isAdmin ? (["admin"] as const) : [])] as const).map(
-              (f) => {
-                const active = filter === f;
-                const label = f === "all" ? "All" : f === "pupils" ? "Pupils" : f === "local" ? "Local" : "Admin";
-                return (
-                  <button
-                    key={f}
-                    type="button"
-                    onClick={() => setFilter(f)}
-                    style={{
-                      flexShrink: 0,
-                      background: active ? NAVY : "#FFFFFF",
-                      color: active ? "#FFFFFF" : NAVY,
-                      border: active ? "0.5px solid " + NAVY : `0.5px solid ${BORDER}`,
-                      borderRadius: 20,
-                      padding: "5px 14px",
-                      fontSize: 12,
-                      fontWeight: 500,
-                      cursor: "pointer",
-                      ...FONT,
-                    }}
-                  >
-                    {label}
-                  </button>
-                );
-              },
-            )}
-          </div>
 
           {filter === "local" && (
             <div style={{ padding: "0 16px 12px" }}>
