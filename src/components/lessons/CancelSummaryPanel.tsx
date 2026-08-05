@@ -92,7 +92,7 @@ export function CancelSummaryPanel({
             style={{
               fontFamily: "Poppins, sans-serif",
               fontSize: 13,
-              color: chargeOption === "none" && (normalized === "paid" || normalized === "partial" || normalized === "prepaid")
+              color: chargeOption === "none" && payState !== "unpaid"
                 ? "#16A34A"
                 : chargeOption === "full" || chargeOption === "fee"
                   ? "#CC2229"
