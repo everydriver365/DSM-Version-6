@@ -152,6 +152,9 @@ function PupilThreadPage() {
         .eq("sender_type", "pupil")
         .is("read_at", null);
 
+      // Tell home screen and bottom nav to refresh unread counts
+      window.dispatchEvent(new Event("dsm-messages-read"));
+
       channel = supabase
         .channel(`chat:${uid}:${pupilId}`)
         .on(
