@@ -928,12 +928,7 @@ function PupilThreadPage() {
             }
 
             return (
-              <div
-                key={m.id}
-                ref={(el) => {
-                  matchRefs.current[i] = el;
-                }}
-              >
+              <div key={m.id}>
                 {separator}
                 <div
                   style={{
