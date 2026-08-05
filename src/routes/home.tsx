@@ -490,17 +490,28 @@ const SECTION_HEADER_STYLE: React.CSSProperties = {
   marginBottom: 14,
 };
 
-const SECTION_TITLE_STYLE: React.CSSProperties = {
-  fontSize: 18,
-  fontWeight: 700,
-  color: '#0B1F3A',
+const SECTION_TITLE_BAR_STYLE: React.CSSProperties = {
+  display: 'inline-block',
+  width: 3,
+  height: 12,
+  borderRadius: 2,
+  backgroundColor: '#1877D6',
+  flexShrink: 0,
+};
+
+const SECTION_TITLE_TEXT_STYLE: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 600,
+  color: '#1877D6',
+  textTransform: 'uppercase',
+  letterSpacing: '0.12em',
   fontFamily: 'Poppins, sans-serif',
 };
 
 const SECTION_LINK_STYLE: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
-  gap: 4,
+  gap: 2,
   fontSize: 13,
   fontWeight: 600,
   color: '#1877D6',
@@ -660,10 +671,13 @@ function NeedsAttentionSection({ items }: { items: NAItem[] }) {
     return NA_CATEGORY_ORDER.indexOf(a.key) - NA_CATEGORY_ORDER.indexOf(b.key);
   }).slice(0, 6);
   return (
-    <div style={{ margin: '0 16px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-        <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>Needs attention</div>
-        <div style={{ background: '#FCEBEB', color: '#CC2229', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 999, fontFamily: 'Poppins, sans-serif' }}>
+      <div style={{ margin: '0 16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+            <span style={SECTION_TITLE_TEXT_STYLE}>Needs attention</span>
+          </div>
+          <div style={{ background: '#FCEBEB', color: '#CC2229', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 999, fontFamily: 'Poppins, sans-serif' }}>
           {active.length} urgent
         </div>
       </div>
@@ -1348,7 +1362,10 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
   return (
     <div style={{ fontFamily: PF }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-        <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>Quick actions</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+          <span style={SECTION_TITLE_TEXT_STYLE}>Quick actions</span>
+        </div>
         <button
           type="button"
           aria-label="Search actions"
@@ -4831,13 +4848,16 @@ function HomePage() {
           return (
             <>
               <div style={{ ...SECTION_HEADER_STYLE, padding: '12px 16px 0' }}>
-                <span style={SECTION_TITLE_STYLE}>Next lesson</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+                  <span style={SECTION_TITLE_TEXT_STYLE}>Next lesson</span>
+                </div>
                 <button
                   type="button"
                   onClick={() => navigate({ to: '/schedule' })}
                   style={SECTION_LINK_STYLE}
                 >
-                  Full schedule <ArrowRight size={14} />
+                  Full schedule <IconChevronRight size={14} stroke={2.2} />
                 </button>
               </div>
 
@@ -5565,7 +5585,10 @@ function HomePage() {
           return (
             <>
               <div style={{ ...SECTION_HEADER_STYLE, padding: '0 16px' }}>
-                <span style={SECTION_TITLE_STYLE}>Community</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+                  <span style={SECTION_TITLE_TEXT_STYLE}>Community</span>
+                </div>
               </div>
               <div style={{
                 margin: '0 16px 20px', background: '#FFFFFF', borderRadius: 16,
@@ -6256,7 +6279,10 @@ function HomePage() {
 
             {/* 3. TIMELINE with TABS */}
             <div style={{ ...SECTION_HEADER_STYLE, padding: '0 16px' }}>
-              <span style={SECTION_TITLE_STYLE}>Teaching schedule</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+                <span style={SECTION_TITLE_TEXT_STYLE}>Teaching schedule</span>
+              </div>
             </div>
 
 
@@ -7109,7 +7135,10 @@ function HomePage() {
               return (
                 <>
         <div style={{ ...SECTION_HEADER_STYLE, padding: '0 16px' }}>
-          <span style={SECTION_TITLE_STYLE}>Upcoming tests</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+            <span style={SECTION_TITLE_TEXT_STYLE}>Upcoming tests</span>
+          </div>
         </div>
         {/* ============ UPCOMING TESTS CARD ============ */}
         {(() => {
@@ -7272,7 +7301,10 @@ function HomePage() {
                   `}</style>
                     <div style={{ background: PAGE_BACKGROUND, margin: '0 -16px 0', padding: '0 16px 0', borderRadius: 0 }}>
                       <div style={SECTION_HEADER_STYLE}>
-                        <span style={SECTION_TITLE_STYLE}>Quick access</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+                          <span style={SECTION_TITLE_TEXT_STYLE}>Quick access</span>
+                        </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{ display: 'flex', gap: 4 }}>
                           {Array.from({ length: totalPages }).map((_, i) => (
