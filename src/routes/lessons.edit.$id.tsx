@@ -10,6 +10,15 @@ import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { recordPayment } from "@/lib/payments";
 import { cancelLessonWithUndo, UNDO_WINDOW_MS } from "@/lib/cancelLesson";
 import { CancelSummaryPanel } from "@/components/lessons/CancelSummaryPanel";
+import {
+  availableChargeOptions,
+  clampFee,
+  coerceChargeOption,
+  describeChargeOption,
+  feeCap,
+  normalizePayState,
+} from "@/lib/cancelCharge";
+
 
 export const Route = createFileRoute("/lessons/edit/$id")({
   head: () => ({
