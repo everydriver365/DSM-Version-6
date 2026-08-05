@@ -326,6 +326,7 @@ function SettingsPage() {
       if (!user) return;
       setUserId(user.id);
       setEmail(user.email ?? "");
+      setBadgePrefs(readBadgePrefs(user.id));
 
       // Coverage areas count for the settings row
       supabase
