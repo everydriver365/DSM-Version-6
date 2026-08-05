@@ -1471,6 +1471,17 @@ function HomePage() {
   const [logMileageOpen, setLogMileageOpen] = useState(false);
   const [sendMessageOpen, setSendMessageOpen] = useState(false);
   const [sendMessagePupilId, setSendMessagePupilId] = useState<string | undefined>();
+  // Messages drawer for the next-lesson pupil
+  const [lessonMsgsPupil, setLessonMsgsPupil] = useState<{ id: string; name: string } | null>(null);
+  const [lessonMsgsLoading, setLessonMsgsLoading] = useState(false);
+  const [lessonMsgs, setLessonMsgs] = useState<Array<{
+    id: string;
+    body: string | null;
+    created_at: string;
+    sender_type: string | null;
+    source: string | null;
+    read_at: string | null;
+  }>>([]);
   const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
