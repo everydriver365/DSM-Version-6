@@ -537,6 +537,7 @@ export function LessonActionsSheet({
                 toast.success(`Lesson moved to ${formatDate(newDate)} at ${newTime}`);
                 setSaving(false);
                 onClose();
+                navigate({ to: "/home" });
               }}
             >
               {saving ? "Saving…" : "Save changes"}
@@ -581,6 +582,7 @@ export function LessonActionsSheet({
                 toast.success(`Duration updated to ${newDuration} mins`);
                 setSaving(false);
                 onClose();
+                navigate({ to: "/home" });
               }}
             >
               {saving ? "Saving…" : "Save"}
@@ -621,6 +623,7 @@ export function LessonActionsSheet({
                 toast.success("Note saved");
                 setSaving(false);
                 onClose();
+                navigate({ to: "/home" });
               }}
             >
               {saving ? "Saving…" : "Save note"}
@@ -801,6 +804,7 @@ export function LessonActionsSheet({
                 toast.success("Lesson cancelled");
                 setSaving(false);
                 onClose();
+                navigate({ to: "/home" });
               }}
             >
               {saving ? "Cancelling…" : "Confirm cancellation"}
@@ -843,6 +847,7 @@ export function LessonActionsSheet({
                 toast.success("Lesson deleted");
                 setSaving(false);
                 onClose();
+                navigate({ to: "/home" });
               }}
             >
               {saving ? "Deleting…" : "Confirm delete"}
