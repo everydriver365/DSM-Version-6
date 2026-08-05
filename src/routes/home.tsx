@@ -4862,20 +4862,45 @@ function HomePage() {
                     }}
                   >
                     {staticMapUrl ? (
-                      <img
-                        src={staticMapUrl}
-                        alt="Pickup location map"
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                      />
+                      <>
+                        <img
+                          src={staticMapUrl}
+                          alt="Pickup location"
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                          onError={(e) => {
+                            const el = e.currentTarget;
+                            el.style.display = 'none';
+                            const fallback = el.nextElementSibling as HTMLElement | null;
+                            if (fallback) fallback.style.display = 'flex';
+                          }}
+                        />
+                        <div style={{
+                          display: 'none',
+                          position: 'absolute', inset: 0,
+                          background: 'linear-gradient(135deg, #1e3a5f, #0B1F3A)',
+                          alignItems: 'center', justifyContent: 'center',
+                          flexDirection: 'column', gap: 8,
+                        }}>
+                          <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0, opacity: 0.15 }}>
+                            <defs>
+                              <pattern id="nlDots" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <circle cx="1" cy="1" r="1" fill="white" />
+                              </pattern>
+                            </defs>
+                            <rect width="100%" height="100%" fill="url(#nlDots)" />
+                          </svg>
+                          <MapPin size={36} color="#CC2229" fill="#CC2229" style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.4))', position: 'relative', zIndex: 1 }} />
+                        </div>
+                      </>
                     ) : (
                       <>
                         <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0, opacity: 0.15 }}>
                           <defs>
-                            <pattern id="nlDots" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <pattern id="nlDotsFb" width="20" height="20" patternUnits="userSpaceOnUse">
                               <circle cx="1" cy="1" r="1" fill="white" />
                             </pattern>
                           </defs>
-                          <rect width="100%" height="100%" fill="url(#nlDots)" />
+                          <rect width="100%" height="100%" fill="url(#nlDotsFb)" />
                         </svg>
                         <div style={{
                           position: 'absolute', inset: 0,
@@ -5063,134 +5088,63 @@ function HomePage() {
                </div>
 
 
-              {/* Weather + View route strip */}
+              {/* Weather + View route strip (separate from map header) */}
               <div style={{
-
                 padding: '10px 14px',
-
                 borderTop: '0.5px solid #E4E8EF',
-
                 display: 'flex',
-
                 alignItems: 'center',
-
                 justifyContent: 'space-between',
-
                 gap: 8,
-
               }}>
-
                 {/* Weather left */}
-
                 <div style={{
-
                   display: 'flex', alignItems: 'center', gap: 6,
-
                   minWidth: 0, fontSize: 12, color: '#5A6270',
-
                   fontFamily: 'Poppins, sans-serif',
-
                 }}>
-
                   {weatherData ? (
-
                     <>
-
-                      <span style={{ fontSize: 15 }}>
-
-                        {weatherData.icon || '⛅'}
-
-                      </span>
-
-                      <span style={{
-
-                        fontWeight: 700, color: '#0B1F3A'
-
-                      }}>
-
+                      <span style={{ fontSize: 15 }}>{weatherData.icon || '⛅'}</span>
+                      <span style={{ fontWeight: 700, color: '#0B1F3A' }}>
                         {Math.round(weatherData.tempC)}°C
-
                       </span>
-
-                      <span style={{
-
-                        overflow: 'hidden',
-
-                        textOverflow: 'ellipsis',
-
-                        whiteSpace: 'nowrap',
-
-                      }}>
-
+                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {weatherData.condition}
-
                       </span>
-
                     </>
-
                   ) : (
-
                     <span style={{ color: '#9CA3AF' }}>
-
-                      {weatherLoading
-
-                        ? 'Loading weather…'
-
-                        : 'Weather unavailable'}
-
+                      {weatherLoading ? 'Loading weather…' : 'Weather unavailable'}
                     </span>
-
                   )}
-
                 </div>
 
                 {/* View route right */}
-
                 <button
-
                   type="button"
-
                   onClick={(e) => { e.stopPropagation(); openMaps(); }}
-
                   style={{
-
                     flexShrink: 0,
-
                     background: '#FFFFFF',
-
                     border: '1px solid #1877D6',
-
                     color: '#1877D6',
-
                     borderRadius: 10,
-
                     padding: '6px 12px',
-
                     cursor: 'pointer',
-
                     fontSize: 12,
-
                     fontWeight: 700,
-
                     fontFamily: 'Poppins, sans-serif',
-
                     display: 'flex',
-
                     alignItems: 'center',
-
                     gap: 6,
-
                   }}
-
                 >
-
                   <Navigation size={13} color="#1877D6" />
-
                   View route
-
                 </button>
-
               </div>
+
 
 
               {/* Reasons row */}
