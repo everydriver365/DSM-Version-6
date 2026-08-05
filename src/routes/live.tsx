@@ -35,74 +35,50 @@ function deriveRoadType(name?: string | null): string | null {
   return "Local road";
 }
 
-/** UK motorway badge: white-outlined blue plate with the motorway bridge glyph. */
-function MotorwaySymbol({ size = 32 }: { size?: number }) {
+/** UK motorway sign plate. */
+function MotorwaySymbol({ tag, over = false }: { tag?: string | null; over?: boolean }) {
+  const bg = over ? "#CC2229" : "#003399";
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      style={{ flexShrink: 0, display: "block" }}
-    >
-      <rect x="1" y="1" width="22" height="22" rx="4" fill="#1877D6" stroke="#fff" strokeWidth="1.5" />
-      <path
-        d="M6 16V9.5h3L12 13.5l3-4H18V16h-2.5v-4L12 16l-3.5-4v4H6z"
-        fill="#fff"
-      />
+    <svg width={38} height={46} viewBox="0 0 44 52" aria-hidden="true" style={{ flexShrink: 0, display: "block" }}>
+      <rect x="0" y="0" width="44" height="52" rx="3" fill={bg} />
+      <rect x="2" y="2" width="40" height="48" rx="2" fill="none" stroke="#fff" strokeWidth="1.2" />
+      <rect x="8" y="8" width="12" height="16" rx="1" fill={over ? "#CC2229" : "#fff"} stroke={over ? "#fff" : "none"} strokeWidth={over ? 1 : 0} />
+      <rect x="24" y="8" width="12" height="16" rx="1" fill={over ? "#CC2229" : "#fff"} stroke={over ? "#fff" : "none"} strokeWidth={over ? 1 : 0} />
+      <rect x="20" y="8" width="4" height="16" fill={bg} />
+      <line x1="4" y1="27" x2="40" y2="27" stroke="#fff" strokeWidth="1.2" />
+      <text x="22" y="43" textAnchor="middle" fill="#fff" fontSize="13" fontWeight="800">
+        {tag ?? ""}
+      </text>
     </svg>
   );
 }
 
-/** UK A-road sign: green plate with white border and yellow route number. */
-function ARoadPlate({ tag }: { tag: string }) {
+/** UK A-road sign plate. */
+function ARoadPlate({ tag, over = false }: { tag: string; over?: boolean }) {
   return (
-    <span
-      style={{
-        flexShrink: 0,
-        display: "inline-flex",
-        alignItems: "center",
-        background: "#106B3F",
-        border: "1.5px solid #fff",
-        borderRadius: 5,
-        color: "#FFCC00",
-        fontWeight: 800,
-        fontSize: 11,
-        letterSpacing: 0.3,
-        lineHeight: 1,
-        padding: "3px 6px",
-        textShadow: "none",
-      }}
-    >
-      {tag}
-    </span>
+    <svg width={40} height={26} viewBox="0 0 40 26" aria-hidden="true" style={{ flexShrink: 0, display: "block" }}>
+      <rect x="0" y="0" width="40" height="26" rx="3" fill={over ? "#CC2229" : "#00703C"} />
+      <rect x="2" y="2" width="36" height="22" rx="2" fill="none" stroke="#fff" strokeWidth="1.2" />
+      <text x="20" y="18" textAnchor="middle" fill="#fff" fontSize="13" fontWeight="800">
+        {tag}
+      </text>
+    </svg>
   );
 }
 
-/** UK B-road sign: cream/white plate with black border and black text. */
-function BRoadPlate({ tag }: { tag: string }) {
+/** UK B-road sign plate. */
+function BRoadPlate({ tag, over = false }: { tag: string; over?: boolean }) {
   return (
-    <span
-      style={{
-        flexShrink: 0,
-        display: "inline-flex",
-        alignItems: "center",
-        background: "#F6F3E8",
-        border: "1.5px solid #111",
-        borderRadius: 5,
-        color: "#111",
-        fontWeight: 800,
-        fontSize: 11,
-        letterSpacing: 0.3,
-        lineHeight: 1,
-        padding: "3px 6px",
-        textShadow: "none",
-      }}
-    >
-      {tag}
-    </span>
+    <svg width={46} height={26} viewBox="0 0 46 26" aria-hidden="true" style={{ flexShrink: 0, display: "block" }}>
+      <rect x="0" y="0" width="46" height="26" rx="3" fill={over ? "#CC2229" : "#D4C48A"} />
+      <rect x="2" y="2" width="42" height="22" rx="2" fill="none" stroke={over ? "#fff" : "#555"} strokeWidth={over ? 1.2 : 0.8} />
+      <text x="23" y="18" textAnchor="middle" fill={over ? "#fff" : "#1a1a1a"} fontSize="12" fontWeight="800">
+        {tag}
+      </text>
+    </svg>
   );
 }
+
 
 
 
