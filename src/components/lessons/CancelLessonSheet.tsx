@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { CancelSummaryPanel } from "@/components/lessons/CancelSummaryPanel";
 import { recordRefund } from "@/lib/payments";
+import { describeChargeOption } from "@/lib/cancelCharge";
 import { cancelLessonWithUndo, UNDO_WINDOW_MS } from "@/lib/cancelLesson";
 
 const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
