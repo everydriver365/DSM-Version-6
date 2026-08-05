@@ -98,34 +98,31 @@ function OnboardingPage() {
     try {
       const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
 
-      let uniqueSlug: string | null = null;
-      if (websiteChoice === "yes") {
-        // Generate a unique app_slug from the name
-        const base =
-          fullName
-            .toLowerCase()
-            .replace(/\s+/g, "-")
-            .replace(/[^a-z0-9-]/g, "")
-            .replace(/-+/g, "-")
-            .replace(/^-|-$/g, "") || "instructor";
+      // Always generate a slug — used for profile, job postings and test swap links
+      const base =
+        fullName
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/g, "")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "") || "instructor";
 
-        uniqueSlug = base;
-        let suffix = 1;
-        // eslint-disable-next-line no-constant-condition
-        while (true) {
-          const { data: existing, error: slugErr } = await supabase
-            .from("instructors")
-            .select("id")
-            .eq("app_slug", uniqueSlug)
-            .maybeSingle();
-          if (slugErr) {
-            console.warn("[onboarding] slug lookup error", slugErr);
-            break;
-          }
-          if (!existing || existing.id === userId) break;
-          suffix += 1;
-          uniqueSlug = `${base}-${suffix}`;
+      let uniqueSlug = base;
+      let suffix = 1;
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const { data: existing, error: slugErr } = await supabase
+          .from("instructors")
+          .select("id")
+          .eq("app_slug", uniqueSlug)
+          .maybeSingle();
+        if (slugErr) {
+          console.warn("[onboarding] slug lookup error", slugErr);
+          break;
         }
+        if (!existing || existing.id === userId) break;
+        suffix += 1;
+        uniqueSlug = `${base}-${suffix}`;
       }
 
       const { error: instErr } = await supabase.from("instructors").upsert({
@@ -138,7 +135,8 @@ function OnboardingPage() {
         vehicle_year: carYear.trim() ? Number(carYear.trim()) : null,
         transmission: transmission || null,
         app_slug: uniqueSlug,
-        website_published: false,
+        website_published: websiteChoice !== "later",
+        website_bio: "Driving instructor based in the UK.",
         hourly_rate: hourlyRate.trim() ? Number(hourlyRate) : null,
         home_postcode: homePostcode.trim().toUpperCase() || null,
         adi_licence_number: adiNumber.trim() || null,
