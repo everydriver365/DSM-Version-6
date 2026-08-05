@@ -1,6 +1,17 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import { Phone, Send, AlertTriangle, CheckCircle2, ChevronLeft, Paperclip } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Phone,
+  Send,
+  AlertTriangle,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronUp,
+  ChevronDown,
+  Paperclip,
+  Search,
+  X,
+} from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -117,6 +128,38 @@ function initialsOf(name: string) {
   );
 }
 
+function HighlightedBody({ body, query }: { body: string; query: string }) {
+  const q = query.trim();
+  if (!q) return <>{body}</>;
+  const lowerQ = q.toLowerCase();
+  const parts: React.ReactNode[] = [];
+  let remaining = body;
+  let key = 0;
+  while (remaining.length > 0) {
+    const idx = remaining.toLowerCase().indexOf(lowerQ);
+    if (idx === -1) {
+      parts.push(<span key={key++}>{remaining}</span>);
+      break;
+    }
+    if (idx > 0) parts.push(<span key={key++}>{remaining.slice(0, idx)}</span>);
+    parts.push(
+      <span
+        key={key++}
+        style={{
+          backgroundColor: "#FACC15",
+          color: "#0B1F3A",
+          borderRadius: 2,
+          padding: "0 1px",
+        }}
+      >
+        {remaining.slice(idx, idx + q.length)}
+      </span>,
+    );
+    remaining = remaining.slice(idx + q.length);
+  }
+  return <>{parts}</>;
+}
+
 const SYSTEM_TYPES = ["call", "missed_call", "sms_event", "system", "event"];
 
 
@@ -131,6 +174,10 @@ function PupilThreadPage() {
   const [pendingOffer, setPendingOffer] = useState<PendingOffer | null>(null);
   const [booking, setBooking] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [matchIndex, setMatchIndex] = useState(0);
+  const matchRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     let channel: ReturnType<typeof supabase.channel> | null = null;
@@ -282,6 +329,29 @@ function PupilThreadPage() {
     lastSentTypingRef.current = now;
     ch.send({ type: "broadcast", event: "typing", payload: { from: "instructor" } });
   };
+
+
+  // ---- Search messages --------------------------------------------------
+  const matches = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [];
+    return messages
+      .map((m, i) => (m.body?.toLowerCase().includes(q) ? i : -1))
+      .filter((i) => i !== -1);
+  }, [messages, searchQuery]);
+
+  useEffect(() => {
+    setMatchIndex(0);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (!searchOpen || matches.length === 0) return;
+    const targetIdx = matches[matchIndex];
+    const el = matchRefs.current[targetIdx];
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [matchIndex, matches, searchOpen]);
 
 
   // Detect likely acceptance on the most recent pupil message and look up a pending offer.
@@ -551,86 +621,207 @@ function PupilThreadPage() {
           <button
             type="button"
             aria-label="Back"
-            onClick={() => navigate({ to: "/pupils/$id", params: { id: pupilId } } as never)}
-            style={{ background: "none", border: "none", padding: 0, display: "flex" }}
+            onClick={() => {
+              if (searchOpen) {
+                setSearchOpen(false);
+                setSearchQuery("");
+              } else {
+                navigate({ to: "/pupils/$id", params: { id: pupilId } } as never);
+              }
+            }}
+            style={{ background: "none", border: "none", padding: 0, display: "flex", flexShrink: 0 }}
           >
             <ChevronLeft size={20} color="#C7D0DE" />
           </button>
-          {pupil?.profile_image_url ? (
-            <img
-              src={pupil.profile_image_url}
-              alt=""
-              style={{ width: 30, height: 30, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
-            />
-          ) : (
-            <div
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: "50%",
-                background: "#D9E6F5",
-                color: "#0B1F3A",
-                fontSize: 11,
-                fontWeight: 600,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                ...POPPINS,
-              }}
-            >
-              {initialsOf(pupilName)}
-            </div>
-          )}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                color: "#FFFFFF",
-                fontSize: 14,
-                fontWeight: 600,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                ...POPPINS,
-              }}
-            >
-              {pupilName}
-            </div>
-            {pupilTyping && (
+
+          {searchOpen ? (
+            <>
               <div
                 style={{
-                  color: "#7FB6F2",
-                  fontSize: 11,
+                  flex: 1,
+                  minWidth: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  background: "rgba(255,255,255,0.1)",
+                  borderRadius: 10,
+                  padding: "0 10px",
+                  height: 36,
+                }}
+              >
+                <Search size={16} color="#C7D0DE" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") {
+                      setSearchOpen(false);
+                      setSearchQuery("");
+                    }
+                  }}
+                  placeholder="Search messages..."
+                  autoFocus
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    background: "transparent",
+                    border: "none",
+                    color: "#FFFFFF",
+                    fontSize: 14,
+                    outline: "none",
+                    ...POPPINS,
+                  }}
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    style={{ background: "none", border: "none", padding: 0, display: "flex", flexShrink: 0 }}
+                  >
+                    <X size={16} color="#C7D0DE" />
+                  </button>
+                )}
+              </div>
+              <div
+                style={{
+                  color: "#C7D0DE",
+                  fontSize: 12,
                   fontWeight: 500,
-                  lineHeight: "14px",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  minWidth: 28,
+                  textAlign: "center",
                   ...POPPINS,
                 }}
               >
-                typing…
+                {matches.length > 0 ? `${matchIndex + 1}/${matches.length}` : "0/0"}
               </div>
-            )}
-          </div>
+              <div style={{ display: "flex", flexDirection: "column", flexShrink: 0 }}>
+                <button
+                  type="button"
+                  aria-label="Previous match"
+                  onClick={() => setMatchIndex((i) => Math.max(0, i - 1))}
+                  disabled={matchIndex === 0 || matches.length === 0}
+                  style={{ background: "none", border: "none", padding: 0, lineHeight: 0 }}
+                >
+                  <ChevronUp
+                    size={16}
+                    color={matchIndex === 0 || matches.length === 0 ? "#5A6A85" : "#C7D0DE"}
+                  />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next match"
+                  onClick={() => setMatchIndex((i) => Math.min(matches.length - 1, i + 1))}
+                  disabled={matchIndex >= matches.length - 1 || matches.length === 0}
+                  style={{ background: "none", border: "none", padding: 0, lineHeight: 0 }}
+                >
+                  <ChevronDown
+                    size={16}
+                    color={matchIndex >= matches.length - 1 || matches.length === 0 ? "#5A6A85" : "#C7D0DE"}
+                  />
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              {pupil?.profile_image_url ? (
+                <img
+                  src={pupil.profile_image_url}
+                  alt=""
+                  style={{ width: 30, height: 30, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: "50%",
+                    background: "#D9E6F5",
+                    color: "#0B1F3A",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    ...POPPINS,
+                  }}
+                >
+                  {initialsOf(pupilName)}
+                </div>
+              )}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    color: "#FFFFFF",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    ...POPPINS,
+                  }}
+                >
+                  {pupilName}
+                </div>
+                {pupilTyping && (
+                  <div
+                    style={{
+                      color: "#7FB6F2",
+                      fontSize: 11,
+                      fontWeight: 500,
+                      lineHeight: "14px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      ...POPPINS,
+                    }}
+                  >
+                    typing…
+                  </div>
+                )}
+              </div>
 
-          <a
-            href={phone ? `tel:${phone}` : undefined}
-            aria-label="Call"
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: 8,
-              background: "rgba(255,255,255,0.1)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              opacity: phone ? 1 : 0.4,
-            }}
-          >
-            <Phone size={15} color="#C7D0DE" />
-          </a>
+              <button
+                type="button"
+                aria-label="Search messages"
+                onClick={() => setSearchOpen(true)}
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 8,
+                  background: "rgba(255,255,255,0.1)",
+                  border: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  cursor: "pointer",
+                }}
+              >
+                <Search size={15} color="#C7D0DE" />
+              </button>
+
+              <a
+                href={phone ? `tel:${phone}` : undefined}
+                aria-label="Call"
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 8,
+                  background: "rgba(255,255,255,0.1)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  opacity: phone ? 1 : 0.4,
+                }}
+              >
+                <Phone size={15} color="#C7D0DE" />
+              </a>
+            </>
+          )}
         </div>
       </div>
       <div style={{ height: "calc(56px + env(safe-area-inset-top, 0px))" }} />
@@ -702,7 +893,12 @@ function PupilThreadPage() {
 
             if (isSystem) {
               return (
-                <div key={m.id}>
+                <div
+                  key={m.id}
+                  ref={(el) => {
+                    matchRefs.current[i] = el;
+                  }}
+                >
                   {separator}
                   <div style={{ display: "flex", justifyContent: "center" }}>
                     <div
@@ -720,9 +916,11 @@ function PupilThreadPage() {
                       }}
                     >
                       <Phone size={13} color="#B8791A" />
-                      {m.body?.trim()
-                        ? m.body
-                        : `You called ${pupilName} · ${formatTime(m.created_at)}`}
+                      {m.body?.trim() ? (
+                        <HighlightedBody body={m.body} query={searchQuery} />
+                      ) : (
+                        `You called ${pupilName} · ${formatTime(m.created_at)}`
+                      )}
                     </div>
                   </div>
                 </div>
@@ -809,6 +1007,9 @@ function PupilThreadPage() {
                       </div>
                     )}
                     <div
+                      ref={(el) => {
+                        matchRefs.current[i] = el;
+                      }}
                       style={{
                         background: mine ? "#1877D6" : "#EEF2F7",
                         color: mine ? "#FFFFFF" : "#0B1F3A",
@@ -821,7 +1022,7 @@ function PupilThreadPage() {
                         ...POPPINS,
                       }}
                     >
-                      {m.body}
+                      <HighlightedBody body={m.body ?? ""} query={searchQuery} />
                     </div>
                     <div
                       style={{
