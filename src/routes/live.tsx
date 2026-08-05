@@ -1585,20 +1585,22 @@ function LivePage() {
               </div>
 
               {/* Status pill */}
-              <div
-                className="flex items-center justify-center"
-                style={{
-                  padding: "4px 10px",
-                  borderRadius: 999,
-                  backgroundColor: over ? "#CC2229" : "#22C55E",
-                  color: "#fff",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {over ? `${excess} mph over` : speedLimit != null ? "Within limit" : ""}
-              </div>
+              {(over || speedLimit != null) && (
+                <div
+                  className="flex items-center justify-center"
+                  style={{
+                    padding: "4px 10px",
+                    borderRadius: 999,
+                    backgroundColor: over ? "#CC2229" : "#22C55E",
+                    color: "#fff",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {over ? `${excess} mph over` : "Within limit"}
+                </div>
+              )}
             </div>
 
             {/* Divider */}
