@@ -4778,11 +4778,13 @@ function HomePage() {
           const startText = d ? fmt(d) : '—';
           const dur = upcoming?.duration_minutes ?? 0;
           const durationDecimal = dur ? (dur / 60).toFixed(dur % 60 === 0 ? 0 : 1) : '0';
-          const pickup = buildPickup(
+          const pickupParts = getPickupParts(
             upcoming?.pickup_location,
             upcoming?.pupils?.address,
             upcoming?.pupils?.postcode,
           );
+          const pickup = pickupParts.full;
+
 
           const isOverdue = !isPaid && d ? d < todayStart : false;
           const hLabelFinal = isPaid ? 'Paid' : isOverdue ? 'Overdue' : 'Due';
