@@ -5153,6 +5153,7 @@ function HomePage() {
                         fontFamily: 'Poppins, sans-serif',
                         textDecoration: 'none',
                         marginTop: 2,
+                        whiteSpace: 'nowrap',
                       }}
                     >
                       map
