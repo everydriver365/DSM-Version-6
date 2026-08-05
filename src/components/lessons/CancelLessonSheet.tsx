@@ -170,7 +170,28 @@ export function CancelLessonSheet({
 
     const { data: userRes } = await supabase.auth.getUser();
     const instructorId = userRes.user?.id ?? null;
+
+    // Audit row capturing the cancellation reason, notes and outcome
     if (instructorId) {
+      const outcome = waived
+        ? "Charge waived"
+        : feeAmount > 0
+          ? `Cancellation fee £${feeAmount.toFixed(2)} retained`
+          : "No charge";
+      const { error: histErr } = await supabase.from("lesson_history").insert({
+        instructor_id: instructorId,
+        pupil_id: pupilId,
+        amount_paid: waived ? 0 : feeAmount,
+        payment_method: "cancellation",
+        payment_status: "cancelled",
+        notes: `Cancelled — ${reason}${notes ? ` — ${notes}` : ""} · ${outcome}`,
+        created_at: new Date().toISOString(),
+      } as never);
+      if (histErr) console.error("[cancel] history insert error", histErr);
+    }
+
+    if (instructorId) {
+
       const body = feeAmount > 0
         ? `Cancellation fee of £${feeAmount.toFixed(2)} added for ${pupilName}`
         : `${pupilName}'s lesson on ${when} was cancelled${waived ? " (charge waived)" : ""}`;
