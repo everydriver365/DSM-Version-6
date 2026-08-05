@@ -1518,56 +1518,61 @@ function LivePage() {
           >
             {/* Top row */}
             <div
-              className="flex items-center justify-between"
-              style={{ padding: "8px 14px", height: 54 }}
+              className="grid items-center"
+              style={{
+                gridTemplateColumns: "48px 1fr auto",
+                padding: "8px 14px",
+                height: 54,
+                gap: 8,
+              }}
             >
-              <div className="flex items-end" style={{ gap: 10 }}>
-                {/* Speed limit circle + overspeed badge */}
-                <div style={{ position: "relative", flexShrink: 0 }}>
-                  <div
+              {/* Speed limit badge */}
+              <div style={{ position: "relative", flexShrink: 0 }}>
+                <div
+                  className="flex items-center justify-center"
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: "50%",
+                    background: "#fff",
+                    border: "4px solid #CC2229",
+                    animation: isOverSpeeding ? "overspeedFlash 0.6s ease-in-out infinite" : undefined,
+                    transition: "background 0.15s ease-out",
+                  }}
+                >
+                  <span style={{ fontSize: 17, fontWeight: 800, color: "#0B1F3A", lineHeight: 1 }}>
+                    {speedLimit ?? "—"}
+                  </span>
+                </div>
+                {overspeedCount > 0 && (
+                  <span
                     className="flex items-center justify-center"
                     style={{
-                      width: 40,
-                      height: 40,
+                      position: "absolute",
+                      top: -5,
+                      right: -5,
+                      width: 18,
+                      height: 18,
                       borderRadius: "50%",
-                      background: "#fff",
-                      border: "4px solid #CC2229",
-                      animation: isOverSpeeding ? "overspeedFlash 0.6s ease-in-out infinite" : undefined,
-                      transition: "background 0.15s ease-out",
+                      background: "#CC2229",
+                      border: "2px solid #0A1628",
+                      color: "#fff",
+                      fontSize: 10,
+                      fontWeight: 800,
+                      lineHeight: 1,
                     }}
                   >
-                    <span style={{ fontSize: 17, fontWeight: 800, color: "#0B1F3A", lineHeight: 1 }}>
-                      {speedLimit ?? "—"}
-                    </span>
-                  </div>
-                  {overspeedCount > 0 && (
-                    <span
-                      className="flex items-center justify-center"
-                      style={{
-                        position: "absolute",
-                        top: -5,
-                        right: -5,
-                        width: 18,
-                        height: 18,
-                        borderRadius: "50%",
-                        background: "#CC2229",
-                        border: "2px solid #0A1628",
-                        color: "#fff",
-                        fontSize: 10,
-                        fontWeight: 800,
-                        lineHeight: 1,
-                      }}
-                    >
-                      {overspeedCount}
-                    </span>
-                  )}
-                </div>
+                    {overspeedCount}
+                  </span>
+                )}
+              </div>
 
-                {/* Current speed */}
+              {/* Current speed — centered */}
+              <div className="flex flex-col items-center justify-center" style={{ minWidth: 0 }}>
                 <div className="flex items-baseline" style={{ gap: 4 }}>
                   <span
                     style={{
-                      fontSize: 28,
+                      fontSize: 32,
                       fontWeight: 800,
                       lineHeight: 1,
                       color: over ? "#FF6B6B" : speedColor,
@@ -1575,7 +1580,7 @@ function LivePage() {
                   >
                     {currentSpeed ?? 0}
                   </span>
-                  <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>mph</span>
+                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>mph</span>
                 </div>
               </div>
 
