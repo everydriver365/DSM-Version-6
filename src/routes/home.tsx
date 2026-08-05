@@ -4786,7 +4786,12 @@ function HomePage() {
           const pickup = pickupParts.full;
 
 
+          const upcomingMsgCount = upcoming?.pupil_id
+            ? unreadMsgs.filter((m) => m.pupil_id === upcoming.pupil_id && !m.read_at).length
+            : 0;
+
           const isOverdue = !isPaid && d ? d < todayStart : false;
+
           const hLabelFinal = isPaid ? 'Paid' : isOverdue ? 'Overdue' : 'Due';
           const hPillBgFinal = isPaid ? '#E5F4EA' : isOverdue ? '#FEECEC' : '#FEF3C7';
           const hPillFgFinal = isPaid ? '#1E9E5A' : isOverdue ? '#CC2229' : '#D97706';
