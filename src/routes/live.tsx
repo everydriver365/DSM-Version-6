@@ -467,7 +467,7 @@ function LivePage() {
         .eq("latitude", Number(lat.toFixed(3)))
         .eq("longitude", Number(lng.toFixed(3)))
         .maybeSingle();
-      if (cached && cached.fetched_at) {
+      if (cached && cached.fetched_at && (cached.road_name || cached.speed_limit_mph != null)) {
         const age = now - new Date(cached.fetched_at).getTime();
         if (age < 24 * 60 * 60 * 1000) {
           if (cached.speed_limit_mph != null) {
