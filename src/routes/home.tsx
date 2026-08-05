@@ -4,6 +4,7 @@ import { Fragment, useCallback, useEffect, useMemo, useRef, useState, isValidEle
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { recordPayment, recordRefund } from "@/lib/payments";
+import { buildPickup } from "@/lib/pickup";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { QuickActionsMenu, type QuickAction } from "@/components/dsm/QuickActionsMenu";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
