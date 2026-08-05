@@ -193,6 +193,8 @@ interface Lesson {
   payment_status?: string | null;
   amount_due?: number | null;
   eol_completed?: boolean | null;
+  cancellation_reason?: string | null;
+
   pupil: Pupil | null;
 }
 
@@ -443,7 +445,7 @@ function SchedulePage() {
       const { data, error } = await supabase
         .from("lessons")
         .select(
-          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, pupil:pupils!inner(id, name, first_name, last_name, calendar_colour, prepaid_hours, status, deleted_at)",
+          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, pupil:pupils!inner(id, name, first_name, last_name, calendar_colour, prepaid_hours, status, deleted_at)",
         )
         .is("deleted_at", null)
         .eq("pupil.status", "active")
@@ -1761,7 +1763,13 @@ function SchedulePage() {
                                                     {timeText}
                                                   </div>
                                                 ) : null}
+                                                {cancelled && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.cancellation_reason ? (
+                                                  <div style={{ fontSize: 11, color: "#CC2229", marginTop: 2 }}>
+                                                    {(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.cancellation_reason}
+                                                  </div>
+                                                ) : null}
                                               </div>
+
                                             </div>
                                          ) : (
                                            <>
@@ -2232,7 +2240,13 @@ function EntryRow({
         <div style={rowSub}>
           {fmtTime(entry.start)} – {fmtTime(entry.end)}
         </div>
+        {cancelled && l.cancellation_reason ? (
+          <div style={{ fontSize: 11, color: "#CC2229", marginTop: 2, textDecoration: "none" }}>
+            {l.cancellation_reason}
+          </div>
+        ) : null}
       </button>
+
     );
   }
   if (entry.kind === "block") {

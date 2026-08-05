@@ -71,7 +71,11 @@ interface Lesson {
   pupil_id: string;
   payment_status: string | null;
   amount_due: number | null;
+  cancellation_reason?: string | null;
+  cancellation_notes?: string | null;
+  cancelled_at?: string | null;
   pupils: { id: string; name: string; phone: string | null } | null;
+
 }
 
 interface RouteRow {
@@ -134,6 +138,8 @@ function LessonDetailPage() {
   const [deleting, setDeleting] = useState(false);
   const [insightDismissed, setInsightDismissed] = useState(false);
   const [autoCancelHandled, setAutoCancelHandled] = useState(false);
+  const [cancelOutcome, setCancelOutcome] = useState<string | null>(null);
+
 
   useEffect(() => {
     if (autoCancelHandled) return;
@@ -169,7 +175,7 @@ function LessonDetailPage() {
     supabase
       .from("lessons")
       .select(
-        "id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_address, pupil_id, payment_status, amount_due, pupils(id, name, phone)",
+        "id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_address, pupil_id, payment_status, amount_due, cancellation_reason, cancellation_notes, cancelled_at, pupils(id, name, phone)",
       )
       .eq("id", id)
       .is("deleted_at", null)
@@ -186,6 +192,32 @@ function LessonDetailPage() {
         setLoading(false);
       });
   }, [id]);
+
+  // Charge outcome recorded at cancellation time
+  useEffect(() => {
+    if (!lesson || lesson.status !== "cancelled") {
+      setCancelOutcome(null);
+      return;
+    }
+    let stop = false;
+    (async () => {
+      const { data } = await supabase
+        .from("lesson_history")
+        .select("notes, created_at")
+        .eq("pupil_id", lesson.pupil_id)
+        .eq("payment_method", "cancellation")
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (stop) return;
+      const note = (data as { notes: string | null }[] | null)?.[0]?.notes ?? "";
+      const parts = note.split(" · ");
+      setCancelOutcome(parts.length > 1 ? parts[parts.length - 1] : null);
+    })();
+    return () => {
+      stop = true;
+    };
+  }, [lesson]);
+
 
 
   useEffect(() => {
@@ -501,6 +533,42 @@ function LessonDetailPage() {
               <DetailRow label="Pupil" value={pupilName} />
               <DetailRow label="Notes" value={lesson.notes || "—"} multiline />
             </Card>
+
+            {lesson.status === "cancelled" && (
+              <div
+                style={{
+                  ...POPPINS,
+                  marginTop: 12,
+                  background: "#FDF2F2",
+                  border: "1px solid #F3C9CB",
+                  borderRadius: 10,
+                  padding: 12,
+                }}
+              >
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.4, color: "#CC2229" }}>
+                  CANCELLED
+                  {lesson.cancelled_at
+                    ? ` · ${new Date(lesson.cancelled_at).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}`
+                    : ""}
+                </div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", marginTop: 6 }}>
+                  {lesson.cancellation_reason || "No reason recorded"}
+                </div>
+                {lesson.cancellation_notes ? (
+                  <div style={{ fontSize: 13, color: "#4A5568", marginTop: 4, lineHeight: 1.4 }}>
+                    {lesson.cancellation_notes}
+                  </div>
+                ) : null}
+                {cancelOutcome ? (
+                  <div style={{ fontSize: 12, color: "#6B7686", marginTop: 8 }}>{cancelOutcome}</div>
+                ) : null}
+              </div>
+            )}
+
 
             {route && (
               <>
