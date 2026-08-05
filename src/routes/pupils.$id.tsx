@@ -27,7 +27,7 @@ import { buildTripReport, type ReportSegment, type Coord } from "@/lib/tripRepor
 import { formatCountdown } from "@/lib/dateHelpers";
 
 export const Route = createFileRoute("/pupils/$id")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { lessonId?: string } => ({
     lessonId: typeof search.lessonId === "string" ? search.lessonId : undefined,
   }),
   head: () => ({

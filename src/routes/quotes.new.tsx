@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/quotes/new")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { name?: string; email?: string; phone?: string; course?: string; courseType?: string; hours?: string; price?: string; message?: string; revised?: string; originalId?: string } => ({
     name: typeof search.name === "string" ? search.name : undefined,
     email: typeof search.email === "string" ? search.email : undefined,
     phone: typeof search.phone === "string" ? search.phone : undefined,

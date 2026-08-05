@@ -23,7 +23,7 @@ export const Route = createFileRoute("/lessons/new")({
   head: () => ({
     meta: [{ title: "Add lesson — DSM by EveryDriver" }],
   }),
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { date?: string; pupilId?: string } => ({
     date: typeof search.date === "string" ? search.date : "",
     pupilId: typeof search.pupilId === "string" ? search.pupilId : "",
   }),

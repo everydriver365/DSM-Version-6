@@ -11,7 +11,7 @@ const RYFT_PUBLIC_KEY =
 
 export const Route = createFileRoute("/take-payment")({
   head: () => ({ meta: [{ title: "Take payment" }] }),
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { lessonId?: string; pupilId?: string } => ({
     lessonId: typeof search.lessonId === "string" ? (search.lessonId as string) : undefined,
     pupilId: typeof search.pupilId === "string" ? (search.pupilId as string) : undefined,
   }),

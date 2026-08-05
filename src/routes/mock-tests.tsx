@@ -16,7 +16,7 @@ export const Route = createFileRoute("/mock-tests")({
   head: () => ({
     meta: [{ title: "Mock tests — DSM by EveryDriver" }],
   }),
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { pupilId?: string } => ({
     pupilId: typeof search.pupilId === "string" ? search.pupilId : "",
   }),
   component: MockTestsPage,
