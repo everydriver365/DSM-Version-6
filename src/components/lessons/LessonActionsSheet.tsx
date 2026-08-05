@@ -28,6 +28,15 @@ import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { CancelSummaryPanel } from "@/components/lessons/CancelSummaryPanel";
 import { cancelLessonWithUndo, UNDO_WINDOW_MS } from "@/lib/cancelLesson";
+import {
+  availableChargeOptions,
+  clampFee,
+  coerceChargeOption,
+  describeChargeOption,
+  feeCap,
+  normalizePayState,
+} from "@/lib/cancelCharge";
+
 import { supabase } from "@/lib/supabaseClient";
 import { verifyAddress } from "@/lib/geocode.functions";
 
