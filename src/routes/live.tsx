@@ -1574,9 +1574,10 @@ function LivePage() {
                   style={{
                     flexShrink: 1,
                     minWidth: 0,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
                     overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
                     background:
                       roadType === "Motorway"
                         ? "#1877D6"
@@ -1598,9 +1599,20 @@ function LivePage() {
                     textShadow: roadType === "B Road" ? "none" : "0 1px 1px rgba(0,0,0,0.15)",
                   }}
                 >
-                  {roadTag ? (roadLabel ? `${roadTag} · ${roadLabel}` : roadTag) : roadLabel}
+                  {roadType === "Motorway" && <MotorwaySymbol />}
+                  <span
+                    style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      minWidth: 0,
+                    }}
+                  >
+                    {roadTag ? (roadLabel ? `${roadTag} · ${roadLabel}` : roadTag) : roadLabel}
+                  </span>
                 </span>
               )}
+
               {!roadType && !roadTag && !roadLabel && (
                 <span
                   style={{
