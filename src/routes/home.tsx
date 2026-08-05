@@ -4992,15 +4992,6 @@ function HomePage() {
                   }}>
                     {pupilFullName || 'Pupil'}
                   </div>
-                  <div style={{
-                    fontSize: 11, color: '#6B7686',
-                    fontFamily: 'Poppins, sans-serif',
-                    display: 'flex', alignItems: 'center', gap: 3, marginTop: 2,
-                    overflow: 'hidden', whiteSpace: 'nowrap',
-                  }}>
-                    <MapPin size={10} color="#6B7686" style={{ flexShrink: 0 }} />
-                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{pickup}</span>
-                  </div>
                 </div>
 
                 <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'row', gap: 6 }}>
