@@ -389,7 +389,11 @@ function WhatsChangedPage() {
       />
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
-      <div style={{ padding: "16px 16px 0" }}>
+      <div style={{ padding: "8px 16px 12px", fontSize: 12, color: GRAY, textAlign: "right" }}>
+        Last updated: {formatLastUpdated(lastUpdated)}
+      </div>
+
+      <div style={{ padding: "0 16px" }}>
         {loading ? (
           <div style={{ padding: "40px 0", textAlign: "center", color: GRAY, fontSize: 13 }}>
             Loading…
