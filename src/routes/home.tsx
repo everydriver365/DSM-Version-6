@@ -1492,7 +1492,7 @@ function HomePage() {
       try {
         const { data } = await supabase
           .from('chat_messages')
-          .select('id, body, created_at, sender_type, source, read_at')
+          .select('id, body, created_at, sender_type, read_at')
           .eq('pupil_id', pid)
           .is('deleted_at', null)
           .order('created_at', { ascending: false })
