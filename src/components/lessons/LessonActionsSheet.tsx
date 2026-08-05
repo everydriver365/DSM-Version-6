@@ -464,6 +464,14 @@ export function LessonActionsSheet({
 
   // --- Header payment pill ---
   const payStatus = (lesson.payment_status ?? "unpaid").toLowerCase();
+  const payState = normalizePayState(payStatus);
+  const chargeOptions = availableChargeOptions(payStatus);
+  const cancelFeeCap = feeCap(lesson.amount_due);
+  const chargeCtx = { paymentStatus: payStatus, amountDue: lesson.amount_due, fee: cancelFee };
+  const noneDesc = describeChargeOption("none", chargeCtx);
+  const feeDesc = describeChargeOption("fee", chargeCtx);
+  const activeDesc = describeChargeOption(chargeOption, chargeCtx);
+
   const payPill = (() => {
     if (payStatus === "paid") return { label: "Paid", fg: "#1F6B2E", bg: "#E8F5E9" };
     if (payStatus === "prepaid") return { label: "Prepaid", fg: "#1F6B2E", bg: "#E8F5E9" };
