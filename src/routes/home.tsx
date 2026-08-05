@@ -488,12 +488,18 @@ const SECTION_WRAPPER_STYLE: React.CSSProperties = {
   padding: '0 16px',
 };
 
-/** Standard DSM section eyebrow header used above every home section. */
+/**
+ * Standard DSM section eyebrow header used above every home section.
+ * Matches <SectionHeader /> (Discover) exactly: mt-6 (24px) / mb-2 (8px),
+ * gap-2 (8px) between the 3px accent bar and the label.
+ * marginTop is 0 here because SECTION_WRAPPER_STYLE owns the 24px section gap.
+ */
 const SECTION_HEADER_STYLE: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  marginBottom: 14,
+  marginTop: 0,
+  marginBottom: 8,
 };
 
 const SECTION_TITLE_BAR_STYLE: React.CSSProperties = {
