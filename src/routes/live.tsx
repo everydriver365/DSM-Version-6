@@ -79,7 +79,17 @@ function formatDurationMs(ms: number) {
 }
 
 
+function despiaCall(cmd: string) {
+  try {
+    const w = window as any;
+    if (typeof w?.despia === "function") w.despia(cmd);
+  } catch (e) {
+    console.warn("[live] native bridge call failed", cmd, e);
+  }
+}
+
 let gmapsPromise: Promise<any> | null = null;
+
 function loadGoogleMaps(): Promise<any> {
   if (typeof window === "undefined") return Promise.reject(new Error("no window"));
   const w = window as any;
@@ -394,9 +404,8 @@ function LivePage() {
         navigator.geolocation.clearWatch(watchIdRef.current);
         watchIdRef.current = null;
       }
-      if (navigator.userAgent.toLowerCase().includes("despia")) {
-        (window as any).despia("backgroundlocationoff://");
-      }
+      despiaCall("backgroundlocationoff://");
+
       try {
         silentAudioRef.current?.pause();
       } catch {
@@ -617,20 +626,44 @@ function LivePage() {
 
   async function startTracking(lessonId: string | null, pupilId: string | null) {
     console.log("[live] startTracking requested", { lessonId, pupilId, tracking });
-    // Enable native background GPS if running in Despia
-    // This keeps GPS running when screen is locked
-    if (navigator.userAgent.toLowerCase().includes("despia")) {
-      (window as any).despia("backgroundlocationon://");
-    }
     if (tracking) {
       console.log("[live] startTracking ignored — already tracking");
       return;
     }
     if (!("geolocation" in navigator)) {
-      setGeoError("GPS access required — please enable location in your browser settings");
+      setGeoError("GPS access required — please enable location in your settings");
       toast.error("GPS not available on this device");
+      setActivePupilId(null);
+      setTrackingPupilName(null);
       return;
     }
+
+    // Enable native background GPS if running in the app wrapper.
+    // Guarded — a missing/throwing bridge must never abort tracking.
+    despiaCall("backgroundlocationon://");
+
+    // Ask for a one-shot fix first so the native permission prompt appears
+    // and we know immediately whether GPS is usable.
+    const ok = await new Promise<boolean>((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        () => resolve(true),
+        (err) => {
+          console.error("[live] initial fix failed", err.code, err.message);
+          resolve(err.code === 1 ? false : true);
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 5000 },
+      );
+    });
+    if (!ok) {
+      despiaCall("backgroundlocationoff://");
+      setGeoError("Location permission is off — tap to open settings, then try again");
+      toast.error("Location permission is off");
+      setActivePupilId(null);
+      setTrackingPupilName(null);
+      return;
+    }
+
+    setGeoError(null);
     startedAtRef.current = Date.now();
     coordsRef.current = [];
     setCoordinates([]);
@@ -644,6 +677,7 @@ function LivePage() {
     setTracking(true);
     startSilentAudio();
     startWatching();
+
 
     // Create the route record in the background
     void (async () => {
@@ -695,12 +729,13 @@ function LivePage() {
           }, 3000);
           return;
         }
-        // Permission denied — permanent error
-        setGeoError("GPS access required — tap here to open settings");
-        // Open Despia settings if available
-        if (navigator.userAgent.toLowerCase().includes("despia")) {
-          (window as any).despia("settingsapp://");
-        }
+        // Permission denied / unavailable — permanent error
+        setGeoError(
+          err.code === 1
+            ? "Location permission is off — tap to open settings, then try again"
+            : "GPS unavailable — tap to open settings, then try again",
+        );
+
       },
       { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 },
     );
@@ -846,9 +881,8 @@ function LivePage() {
         navigator.geolocation.clearWatch(watchIdRef.current);
         watchIdRef.current = null;
       }
-      if (navigator.userAgent.toLowerCase().includes("despia")) {
-        (window as any).despia("backgroundlocationoff://");
-      }
+      despiaCall("backgroundlocationoff://");
+
       stopSilentAudio();
       await saveCoordinates(true);
 
@@ -1320,16 +1354,57 @@ function LivePage() {
             background: "#fff",
             padding: "16px 20px",
             borderRadius: 12,
-            maxWidth: 280,
+            maxWidth: 300,
+            width: "calc(100% - 40px)",
             textAlign: "center",
             color: "#0B1F3A",
             fontSize: 14,
             boxShadow: "0 8px 30px rgba(0,0,0,0.3)",
           }}
         >
-          {geoError}
+          <div style={{ marginBottom: 12, lineHeight: 1.4 }}>{geoError}</div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              type="button"
+              onClick={() => despiaCall("settingsapp://")}
+              style={{
+                flex: 1,
+                height: 42,
+                borderRadius: 10,
+                background: "#fff",
+                border: "1px solid #E2E8F0",
+                color: "#0B1F3A",
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Open settings
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setGeoError(null);
+                void startTracking(activeLessonId, activePupilId);
+              }}
+              style={{
+                flex: 1,
+                height: 42,
+                borderRadius: 10,
+                background: "#1877D6",
+                border: "none",
+                color: "#fff",
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Try again
+            </button>
+          </div>
         </div>
       )}
+
 
       {/* UNIFIED SPEED PILL */}
       {(() => {
@@ -1743,11 +1818,20 @@ function LivePage() {
                   lineHeight: 1.2,
                 }}
               >
-                Tracking
+                {coordinates.length === 0 ? "Acquiring GPS signal…" : "Tracking"}
               </div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.2 }}>
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: "#0B1F3A",
+                  lineHeight: 1.2,
+                  opacity: coordinates.length === 0 ? 0.6 : 1,
+                }}
+              >
                 {trackingPupilName ?? "Manual journey"}
               </div>
+
             </div>
 
             {/* Compact stats chip */}
