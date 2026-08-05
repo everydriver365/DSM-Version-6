@@ -302,7 +302,7 @@ function EditLessonPage() {
       });
     }
     toast.success("Lesson updated");
-    navigate({ to: "/lessons/$id", params: { id } });
+    navigate({ to: "/home" });
   }
 
   return (
@@ -686,7 +686,7 @@ function EditLessonPage() {
                           .eq("id", pupilId);
                       }
                       toast.success("Lesson cancelled");
-                      navigate({ to: "/schedule" });
+                      navigate({ to: "/home" });
                     }}
                     style={{
                       background: "#CC2229",
