@@ -4786,7 +4786,12 @@ function HomePage() {
           const pickup = pickupParts.full;
 
 
+          const upcomingMsgCount = upcoming?.pupil_id
+            ? unreadMsgs.filter((m) => m.pupil_id === upcoming.pupil_id && !m.read_at).length
+            : 0;
+
           const isOverdue = !isPaid && d ? d < todayStart : false;
+
           const hLabelFinal = isPaid ? 'Paid' : isOverdue ? 'Overdue' : 'Due';
           const hPillBgFinal = isPaid ? '#E5F4EA' : isOverdue ? '#FEECEC' : '#FEF3C7';
           const hPillFgFinal = isPaid ? '#1E9E5A' : isOverdue ? '#CC2229' : '#D97706';
@@ -4898,12 +4903,31 @@ function HomePage() {
                       setSendMessageOpen(true);
                     }}
                     style={{
+                      position: 'relative',
                       width: 32, height: 32, borderRadius: '50%', background: '#EEF2F7', border: 'none',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
                     }}
                   >
                     <MessageSquare size={16} color="#0B1F3A" />
+                    {upcomingMsgCount > 0 && (
+                      <span style={{
+                        position: 'absolute',
+                        top: -2, right: -2,
+                        minWidth: 16, height: 16,
+                        borderRadius: '50%',
+                        background: '#CC2229',
+                        color: '#FFFFFF',
+                        fontSize: 10, fontWeight: 700,
+                        fontFamily: 'Poppins, sans-serif',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        padding: '0 4px',
+                        boxSizing: 'border-box',
+                      }}>
+                        {upcomingMsgCount > 9 ? '9+' : upcomingMsgCount}
+                      </span>
+                    )}
                   </button>
+
                 </div>
               </div>
 
