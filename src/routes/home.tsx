@@ -1731,6 +1731,7 @@ function HomePage() {
   const [unreadMsgs, setUnreadMsgs] = useState<Array<{
     id: string;
     pupil_id: string;
+    source: string | null;
     body: string | null;
     created_at: string;
     read_at: string | null;
@@ -1825,7 +1826,7 @@ function HomePage() {
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
       try {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/chat_messages?instructor_id=eq.${userId}&sender_type=eq.pupil&read_at=is.null&deleted_at=is.null&order=created_at.desc&limit=10&select=id,pupil_id,body,created_at,read_at,pupils(name,first_name,profile_image_url,photo_url)`,
+          `${SUPABASE_URL}/rest/v1/chat_messages?instructor_id=eq.${userId}&sender_type=eq.pupil&read_at=is.null&deleted_at=is.null&order=created_at.desc&limit=10&select=id,pupil_id,source,body,created_at,read_at,pupils(name,first_name,profile_image_url,photo_url)`,
           {
             headers: {
               apikey: SUPABASE_ANON_KEY,
@@ -4788,8 +4789,11 @@ function HomePage() {
           const pickup = pickupParts.full;
 
 
-          const upcomingMsgCount = upcoming?.pupil_id
-            ? unreadMsgs.filter((m) => m.pupil_id === upcoming.pupil_id && !m.read_at).length
+          const upcomingSmsCount = upcoming?.pupil_id
+            ? unreadMsgs.filter((m) => m.pupil_id === upcoming.pupil_id && !m.read_at && m.source === 'sms').length
+            : 0;
+          const upcomingAppCount = upcoming?.pupil_id
+            ? unreadMsgs.filter((m) => m.pupil_id === upcoming.pupil_id && !m.read_at && m.source !== 'sms').length
             : 0;
 
           const isOverdue = !isPaid && d ? d < todayStart : false;
@@ -4911,22 +4915,44 @@ function HomePage() {
                     }}
                   >
                     <MessageSquare size={16} color="#0B1F3A" />
-                    {upcomingMsgCount > 0 && (
-                      <span style={{
+                    {(upcomingSmsCount > 0 || upcomingAppCount > 0) && (
+                      <div style={{
                         position: 'absolute',
-                        top: -2, right: -2,
-                        minWidth: 16, height: 16,
-                        borderRadius: '50%',
-                        background: '#CC2229',
-                        color: '#FFFFFF',
-                        fontSize: 10, fontWeight: 700,
-                        fontFamily: 'Poppins, sans-serif',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        padding: '0 4px',
-                        boxSizing: 'border-box',
+                        top: -4, right: -4,
+                        display: 'flex', flexDirection: 'column', gap: 2,
+                        alignItems: 'flex-end',
                       }}>
-                        {upcomingMsgCount > 9 ? '9+' : upcomingMsgCount}
-                      </span>
+                        {upcomingSmsCount > 0 && (
+                          <span style={{
+                            minWidth: 14, height: 14,
+                            borderRadius: '50%',
+                            background: '#CC2229',
+                            color: '#FFFFFF',
+                            fontSize: 9, fontWeight: 700,
+                            fontFamily: 'Poppins, sans-serif',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            padding: '0 3px',
+                            boxSizing: 'border-box',
+                          }}>
+                            {upcomingSmsCount > 9 ? '9+' : upcomingSmsCount}
+                          </span>
+                        )}
+                        {upcomingAppCount > 0 && (
+                          <span style={{
+                            minWidth: 14, height: 14,
+                            borderRadius: '50%',
+                            background: '#1877D6',
+                            color: '#FFFFFF',
+                            fontSize: 9, fontWeight: 700,
+                            fontFamily: 'Poppins, sans-serif',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            padding: '0 3px',
+                            boxSizing: 'border-box',
+                          }}>
+                            {upcomingAppCount > 9 ? '9+' : upcomingAppCount}
+                          </span>
+                        )}
+                      </div>
                     )}
                   </button>
 

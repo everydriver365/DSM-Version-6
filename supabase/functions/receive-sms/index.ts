@@ -151,6 +151,7 @@ Deno.serve(async (req) => {
     instructor_id: matched.instructor_id,
     sender_type: "pupil",
     sender_id: matched.id,
+    source: "sms",
     body,
   });
 
