@@ -5,7 +5,7 @@ export function buildPickup(
 ): string {
   if (pickupLocation) return pickupLocation;
 
-  const rawAddress = (address ?? "").trim().replace(/\s+/g, " ");
+  const rawAddress = (address ?? "").trim().replace(/\s+/g, " ").replace(/,+$/, "").trim();
   const rawPostcode = (postcode ?? "").trim().replace(/\s+/g, " ");
 
   const normalisedAddress = rawAddress.toLowerCase().replace(/\s/g, "");
@@ -13,6 +13,10 @@ export function buildPickup(
 
   const addressHasPostcode = normalisedPostcode && normalisedAddress.includes(normalisedPostcode);
 
-  const parts = [rawAddress, !addressHasPostcode ? rawPostcode : null].filter(Boolean);
-  return parts.join(", ") || "No pickup";
+  if (!rawAddress && !rawPostcode) return "No pickup";
+  if (!rawPostcode) return rawAddress;
+  if (!rawAddress) return rawPostcode;
+  if (addressHasPostcode) return rawAddress;
+  return `${rawAddress}, ${rawPostcode}`;
+
 }
