@@ -671,10 +671,13 @@ function NeedsAttentionSection({ items }: { items: NAItem[] }) {
     return NA_CATEGORY_ORDER.indexOf(a.key) - NA_CATEGORY_ORDER.indexOf(b.key);
   }).slice(0, 6);
   return (
-    <div style={{ margin: '0 16px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-        <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>Needs attention</div>
-        <div style={{ background: '#FCEBEB', color: '#CC2229', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 999, fontFamily: 'Poppins, sans-serif' }}>
+      <div style={{ margin: '0 16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+            <span style={SECTION_TITLE_TEXT_STYLE}>Needs attention</span>
+          </div>
+          <div style={{ background: '#FCEBEB', color: '#CC2229', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 999, fontFamily: 'Poppins, sans-serif' }}>
           {active.length} urgent
         </div>
       </div>
