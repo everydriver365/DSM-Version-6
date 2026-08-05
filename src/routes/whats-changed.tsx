@@ -111,6 +111,19 @@ function truncate(s: string, n = 70): string {
   return t.length > n ? `${t.slice(0, n)}…` : t;
 }
 
+function formatLastUpdated(iso: string | null): string {
+  if (!iso) return "Never checked";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "Never checked";
+  return d.toLocaleString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 function WhatsChangedPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
