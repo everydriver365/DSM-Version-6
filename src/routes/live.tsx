@@ -1508,20 +1508,22 @@ function LivePage() {
             {/* Road info row — centred, side-by-side pills */}
             <div
               className="flex items-center justify-center"
-              style={{ padding: "0 14px", height: 32, gap: 8, minWidth: 0 }}
+              style={{ padding: "0 14px", height: 34, gap: 12, minWidth: 0 }}
             >
               {roadType && (
                 <span
                   style={{
                     flexShrink: 0,
                     background:
-                      roadType === "Motorway" ? "#1877D6" : roadType === "A Road" ? "#1A9C56" : "#fff",
+                      roadType === "Motorway" ? "#1877D6" : roadType === "A Road" ? "#1A9C56" : "#F8FAFC",
                     color: roadType === "B Road" ? "#0B1F3A" : "#fff",
-                    fontSize: 10,
+                    fontSize: 11,
                     fontWeight: 700,
-                    padding: "2px 7px",
+                    padding: "3px 9px",
                     borderRadius: 20,
                     lineHeight: 1.2,
+                    border: roadType === "B Road" ? "1px solid rgba(255,255,255,0.35)" : "none",
+                    textShadow: roadType === "B Road" ? "none" : "0 1px 1px rgba(0,0,0,0.15)",
                   }}
                 >
                   {roadType}
@@ -1533,12 +1535,13 @@ function LivePage() {
                     flexShrink: 0,
                     background: "#1877D6",
                     border: "1px solid rgba(255,255,255,0.5)",
-                    borderRadius: 6,
+                    borderRadius: 20,
                     color: "#fff",
                     fontWeight: 700,
-                    fontSize: 10,
-                    padding: "2px 6px",
+                    fontSize: 11,
+                    padding: "3px 9px",
                     lineHeight: 1.2,
+                    textShadow: "0 1px 1px rgba(0,0,0,0.15)",
                   }}
                 >
                   {roadLabel ? `${roadTag} · ${roadLabel}` : roadTag}
