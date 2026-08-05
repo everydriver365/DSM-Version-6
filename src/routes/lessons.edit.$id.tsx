@@ -470,6 +470,15 @@ function EditLessonPage() {
                 setChargeOption("none");
                 setCancelFee("");
               };
+              const payState = normalizePayState(paymentStatus);
+              const chargeOptions = availableChargeOptions(paymentStatus);
+              const cancelFeeCap = feeCap(amountDue);
+              const chargeCtx = { paymentStatus, amountDue, fee: cancelFee };
+              const noneDesc = describeChargeOption("none", chargeCtx);
+              const feeDesc = describeChargeOption("fee", chargeCtx);
+              const activeOption = coerceChargeOption(chargeOption, paymentStatus);
+              const activeDesc = describeChargeOption(activeOption, chargeCtx);
+
               return (
               <div
                 className="mt-2"
