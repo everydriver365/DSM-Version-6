@@ -1428,7 +1428,7 @@ function LivePage() {
             {/* Top row */}
             <div
               className="flex items-center justify-between"
-              style={{ padding: "8px 14px", height: 53 }}
+              style={{ padding: "8px 14px", height: 54 }}
             >
               <div className="flex items-end" style={{ gap: 10 }}>
                 {/* Speed limit circle + overspeed badge */}
@@ -1472,39 +1472,19 @@ function LivePage() {
                   )}
                 </div>
 
-                {/* Current speed, baseline aligned */}
-                <div className="flex items-center" style={{ gap: 8 }}>
-                  <div className="flex items-baseline" style={{ gap: 4 }}>
-                    <span
-                      style={{
-                        fontSize: 28,
-                        fontWeight: 800,
-                        lineHeight: 1,
-                        color: over ? "#FF6B6B" : speedColor,
-                      }}
-                    >
-                      {currentSpeed ?? 0}
-                    </span>
-                    <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>mph</span>
-                  </div>
-                  {roadType && (
-                    <span
-                      style={{
-                        flexShrink: 0,
-                        background:
-                          roadType === "Motorway" ? "#1877D6" : roadType === "A Road" ? "#1A9C56" : "#fff",
-                        color:
-                          roadType === "B Road" ? "#0B1F3A" : "#fff",
-                        fontSize: 9,
-                        fontWeight: 700,
-                        padding: "2px 7px",
-                        borderRadius: 20,
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {roadType}
-                    </span>
-                  )}
+                {/* Current speed */}
+                <div className="flex items-baseline" style={{ gap: 4 }}>
+                  <span
+                    style={{
+                      fontSize: 28,
+                      fontWeight: 800,
+                      lineHeight: 1,
+                      color: over ? "#FF6B6B" : speedColor,
+                    }}
+                  >
+                    {currentSpeed ?? 0}
+                  </span>
+                  <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>mph</span>
                 </div>
               </div>
 
@@ -1525,11 +1505,28 @@ function LivePage() {
             {/* Divider */}
             <div style={{ height: 1, background: "rgba(255,255,255,0.12)", width: "100%" }} />
 
-            {/* Road info row */}
+            {/* Road info row — centred, side-by-side pills */}
             <div
-              className="flex items-center"
+              className="flex items-center justify-center"
               style={{ padding: "0 14px", height: 32, gap: 8, minWidth: 0 }}
             >
+              {roadType && (
+                <span
+                  style={{
+                    flexShrink: 0,
+                    background:
+                      roadType === "Motorway" ? "#1877D6" : roadType === "A Road" ? "#1A9C56" : "#fff",
+                    color: roadType === "B Road" ? "#0B1F3A" : "#fff",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    padding: "2px 7px",
+                    borderRadius: 20,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {roadType}
+                </span>
+              )}
               {roadTag && (
                 <span
                   style={{
@@ -1544,22 +1541,21 @@ function LivePage() {
                     lineHeight: 1.2,
                   }}
                 >
-                  {roadTag}
+                  {roadLabel ? `${roadTag} · ${roadLabel}` : roadTag}
                 </span>
               )}
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: roadLabel ? "#fff" : "rgba(255,255,255,0.4)",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  minWidth: 0,
-                }}
-              >
-                {roadLabel ?? (roadTag ? "" : "Road not identified")}
-              </span>
+              {!roadType && !roadTag && (
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "rgba(255,255,255,0.4)",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Road not identified
+                </span>
+              )}
             </div>
           </div>
         );
