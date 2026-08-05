@@ -917,7 +917,7 @@ export function LessonActionsSheet({
               }}
 
             >
-              {saving ? "Cancelling…" : "Confirm cancellation"}
+              {saving ? "Cancelling…" : activeDesc.confirmLabel}
             </button>
             <button
               type="button"
