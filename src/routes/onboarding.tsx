@@ -412,7 +412,7 @@ function OnboardingPage() {
           </div>
         )}
 
-        {step === 7 && (
+        {step === 9 && (
           <div className="flex flex-col items-center gap-4">
             <div
               className="h-16 w-16 rounded-full bg-[#10B981] flex items-center justify-center animate-bounce"
@@ -426,12 +426,28 @@ function OnboardingPage() {
               <p className="text-[13px] text-[#1877D6] text-center" role="alert">{error}</p>
             )}
             <div className="w-full mt-2">
-              <Button onClick={finish} disabled={saving} className="h-12">
+              <Button onClick={() => finish("/home")} disabled={saving} className="h-12">
                 {saving ? "Saving…" : "Go to dashboard"}
               </Button>
             </div>
+
+            <div className="w-full flex flex-col gap-2 mt-1">
+              <ActionCard
+                icon={<UserPlus size={20} color="#1877D6" />}
+                label="Add your first pupil →"
+                disabled={saving}
+                onClick={() => finish("/pupils/new")}
+              />
+              <ActionCard
+                icon={<CalendarDays size={20} color="#1877D6" />}
+                label="Connect Google Calendar →"
+                disabled={saving}
+                onClick={() => finish("/settings/calendar")}
+              />
+            </div>
           </div>
         )}
+
       </div>
     </div>
   );
