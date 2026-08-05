@@ -4777,12 +4777,11 @@ function HomePage() {
           const startText = d ? fmt(d) : '—';
           const dur = upcoming?.duration_minutes ?? 0;
           const durationDecimal = dur ? (dur / 60).toFixed(dur % 60 === 0 ? 0 : 1) : '0';
-          const rawAddress = (upcoming?.pupils?.address ?? '').trim().replace(/\s+/g, ' ');
-          const rawPostcode = (upcoming?.pupils?.postcode ?? '').trim().replace(/\s+/g, ' ');
-          const normalisedAddress = rawAddress.toLowerCase().replace(/\s/g, '');
-          const normalisedPostcode = rawPostcode.toLowerCase().replace(/\s/g, '');
-          const addressHasPostcode = normalisedPostcode && normalisedAddress.includes(normalisedPostcode);
-          const pickup = upcoming?.pickup_location || [rawAddress, !addressHasPostcode ? rawPostcode : null].filter(Boolean).join(', ') || 'No pickup';
+          const pickup = buildPickup(
+            upcoming?.pickup_location,
+            upcoming?.pupils?.address,
+            upcoming?.pupils?.postcode,
+          );
 
           const isOverdue = !isPaid && d ? d < todayStart : false;
           const hLabelFinal = isPaid ? 'Paid' : isOverdue ? 'Overdue' : 'Due';
