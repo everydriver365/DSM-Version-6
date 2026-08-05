@@ -24,6 +24,17 @@ const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
 const GOOGLE_MAPS_KEY = "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
 const TOMTOM_API_KEY = "sU3STzRmGy7LHNUyIuTP6noG7vqqoISH";
 
+/** Derive a road classification from a road name / route number string. */
+function deriveRoadType(name?: string | null): string | null {
+  if (!name) return null;
+  const tag = name.trim().match(/^([MAB])\s?\d/i);
+  if (tag) {
+    const p = tag[1].toUpperCase();
+    return p === "M" ? "Motorway" : p === "A" ? "A Road" : "B Road";
+  }
+  return "Local road";
+}
+
 interface LessonRow {
   id: string;
   lesson_time: string;
@@ -477,6 +488,7 @@ function LivePage() {
           if (cached.road_name) {
             setRoadName(cached.road_name);
             roadNameRef.current = cached.road_name;
+            setRoadType(deriveRoadType(cached.road_name));
           }
           return;
         }
@@ -526,6 +538,7 @@ function LivePage() {
       else if (/^A\d/i.test(rn) || roadUse.includes("Arterial") || roadUse.includes("LimitedAccess"))
         rt = "A Road";
       else if (/^B\d/i.test(rn) || roadUse.includes("Terminal")) rt = "B Road";
+      else if (road) rt = "Local road";
       setRoadType(rt);
     } catch (e) {
       console.warn("[live] road/speed limit fetch failed", e);
@@ -1515,14 +1528,25 @@ function LivePage() {
                   style={{
                     flexShrink: 0,
                     background:
-                      roadType === "Motorway" ? "#1877D6" : roadType === "A Road" ? "#1A9C56" : "#F8FAFC",
+                      roadType === "Motorway"
+                        ? "#1877D6"
+                        : roadType === "A Road"
+                        ? "#1A9C56"
+                        : roadType === "B Road"
+                        ? "#F8FAFC"
+                        : "rgba(255,255,255,0.15)",
                     color: roadType === "B Road" ? "#0B1F3A" : "#fff",
                     fontSize: 11,
                     fontWeight: 700,
                     padding: "3px 9px",
                     borderRadius: 20,
                     lineHeight: 1.2,
-                    border: roadType === "B Road" ? "1px solid rgba(255,255,255,0.35)" : "none",
+                    border:
+                      roadType === "B Road"
+                        ? "1px solid rgba(255,255,255,0.35)"
+                        : roadType === "Local road"
+                        ? "1px solid rgba(255,255,255,0.25)"
+                        : "none",
                     textShadow: roadType === "B Road" ? "none" : "0 1px 1px rgba(0,0,0,0.15)",
                   }}
                 >
@@ -1545,10 +1569,14 @@ function LivePage() {
                   Unknown road
                 </span>
               ) : null}
-              {roadTag && (
+              {(roadTag || roadLabel) && (
                 <span
                   style={{
-                    flexShrink: 0,
+                    flexShrink: 1,
+                    minWidth: 0,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
                     background:
                       roadType === "Motorway"
                         ? "#1877D6"
@@ -1556,16 +1584,13 @@ function LivePage() {
                         ? "#1A9C56"
                         : roadType === "B Road"
                         ? "#F8FAFC"
-                        : "#1877D6",
+                        : "rgba(255,255,255,0.15)",
                     border:
                       roadType === "B Road"
                         ? "1px solid rgba(255,255,255,0.35)"
                         : "1px solid rgba(255,255,255,0.5)",
                     borderRadius: 20,
-                    color:
-                      roadType === "B Road"
-                        ? "#0B1F3A"
-                        : "#fff",
+                    color: roadType === "B Road" ? "#0B1F3A" : "#fff",
                     fontWeight: 700,
                     fontSize: 11,
                     padding: "3px 9px",
@@ -1573,7 +1598,7 @@ function LivePage() {
                     textShadow: roadType === "B Road" ? "none" : "0 1px 1px rgba(0,0,0,0.15)",
                   }}
                 >
-                  {roadLabel ? `${roadTag} · ${roadLabel}` : roadTag}
+                  {roadTag ? (roadLabel ? `${roadTag} · ${roadLabel}` : roadTag) : roadLabel}
                 </span>
               )}
               {!roadType && !roadTag && !roadLabel && (
