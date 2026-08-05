@@ -5550,7 +5550,7 @@ function HomePage() {
             <>
               <SectionEyebrow title="Community" />
               <div style={{
-                margin: '0 16px', background: '#FFFFFF', borderRadius: 16,
+                margin: '0 16px 20px', background: '#FFFFFF', borderRadius: 16,
                 border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
               }}>
 
