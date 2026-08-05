@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MessageCircle, Search, Send, Flag, X } from "lucide-react";
 import {
@@ -12,9 +12,8 @@ import {
   IconBellOff,
   IconBell,
   IconChecks,
-  IconHeadset,
-  IconAdjustmentsHorizontal,
 } from "@tabler/icons-react";
+import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
