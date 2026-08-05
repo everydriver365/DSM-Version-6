@@ -802,33 +802,38 @@ export function LessonActionsSheet({
 
             <button
               type="button"
-              disabled={saving || !cancelReason}
+              disabled={saving || !cancelReason || !activeDesc.valid}
               style={{
                 ...primaryBtn,
                 background: "#CC2229",
-                opacity: !cancelReason || saving ? 0.5 : 1,
+                opacity: !cancelReason || !activeDesc.valid || saving ? 0.5 : 1,
               }}
               onClick={async () => {
                 setSaving(true);
 
-                const feeAmt = Number(cancelFee) || 0;
-                let outcome = "No charge";
-                if (chargeOption === "fee") outcome = `Cancellation fee £${feeAmt.toFixed(2)} retained`;
-                if (chargeOption === "full") outcome = "Full charge retained";
+                const feeAmt = clampFee(cancelFee, lesson.amount_due);
+                const outcome = activeDesc.outcomeText;
+
+                const patch: Record<string, unknown> = {
+                  status: "cancelled",
+                  payment_status: "cancelled",
+                  cancellation_reason: cancelReason,
+                  cancellation_notes: cancelNote || null,
+                  cancelled_at: new Date().toISOString(),
+                };
+                if (chargeOption === "fee" && payState === "unpaid") {
+                  patch.amount_due = feeAmt;
+                } else if (chargeOption === "none" && payState === "unpaid") {
+                  patch.amount_due = 0;
+                }
 
                 const handle = await cancelLessonWithUndo({
                   lessonId: lesson.id,
-                  patch: {
-                    status: "cancelled",
-                    payment_status: "cancelled",
-                    cancellation_reason: cancelReason,
-                    cancellation_notes: cancelNote || null,
-                    cancelled_at: new Date().toISOString(),
-                  },
+                  patch,
                   financials: async () => {
                     const { recordRefund } = await import("@/lib/payments");
 
-                    if (chargeOption === "none" && (payStatus === "paid" || payStatus === "partial")) {
+                    if (chargeOption === "none" && (payState === "paid" || payState === "partial")) {
                       await recordRefund({
                         pupilId: lesson.pupil_id,
                         amount: Number(lesson.amount_due ?? 0),
@@ -836,14 +841,27 @@ export function LessonActionsSheet({
                         notes: `Cancellation refund — ${cancelReason}`,
                         currentAccountBalance: 0,
                       });
-                    } else if (chargeOption === "fee") {
+                    } else if (chargeOption === "none" && payState === "prepaid") {
+                      const { data: pRow } = await supabase
+                        .from("pupils")
+                        .select("prepaid_hours")
+                        .eq("id", lesson.pupil_id)
+                        .maybeSingle();
+                      const currentHours = Number(
+                        (pRow as { prepaid_hours?: number | null } | null)?.prepaid_hours ?? 0,
+                      );
+                      await supabase
+                        .from("pupils")
+                        .update({ prepaid_hours: currentHours + 1 } as never)
+                        .eq("id", lesson.pupil_id);
+                    } else if (chargeOption === "fee" && (payState === "paid" || payState === "partial")) {
                       const refund = Number(lesson.amount_due ?? 0) - feeAmt;
                       if (refund > 0) {
                         await recordRefund({
                           pupilId: lesson.pupil_id,
                           amount: refund,
                           method: "cash",
-                          notes: `Partial refund — cancellation fee £${feeAmt} retained`,
+                          notes: `Partial refund — cancellation fee £${feeAmt.toFixed(2)} retained`,
                           currentAccountBalance: 0,
                         });
                       }
@@ -858,6 +876,7 @@ export function LessonActionsSheet({
                         created_at: new Date().toISOString(),
                       } as never);
                     }
+
 
                     // Audit row capturing the cancellation reason, notes and outcome
                     await supabase.from("lesson_history").insert({
