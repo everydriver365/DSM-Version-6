@@ -7271,8 +7271,8 @@ function HomePage() {
                     .qa-card:active::after { animation: qaRipple 0.5s ease-out; }
                   `}</style>
                     <div style={{ background: PAGE_BACKGROUND, margin: '0 -16px 0', padding: '0 16px 0', borderRadius: 0 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                        <span style={{ fontSize: 10, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'Poppins, sans-serif' }}>Quick access</span>
+                      <div style={SECTION_HEADER_STYLE}>
+                        <span style={SECTION_TITLE_STYLE}>Quick access</span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{ display: 'flex', gap: 4 }}>
                           {Array.from({ length: totalPages }).map((_, i) => (
