@@ -893,7 +893,12 @@ function PupilThreadPage() {
 
             if (isSystem) {
               return (
-                <div key={m.id}>
+                <div
+                  key={m.id}
+                  ref={(el) => {
+                    matchRefs.current[i] = el;
+                  }}
+                >
                   {separator}
                   <div style={{ display: "flex", justifyContent: "center" }}>
                     <div
@@ -911,9 +916,11 @@ function PupilThreadPage() {
                       }}
                     >
                       <Phone size={13} color="#B8791A" />
-                      {m.body?.trim()
-                        ? m.body
-                        : `You called ${pupilName} · ${formatTime(m.created_at)}`}
+                      {m.body?.trim() ? (
+                        <HighlightedBody body={m.body} query={searchQuery} />
+                      ) : (
+                        `You called ${pupilName} · ${formatTime(m.created_at)}`
+                      )}
                     </div>
                   </div>
                 </div>
@@ -921,7 +928,12 @@ function PupilThreadPage() {
             }
 
             return (
-              <div key={m.id}>
+              <div
+                key={m.id}
+                ref={(el) => {
+                  matchRefs.current[i] = el;
+                }}
+              >
                 {separator}
                 <div
                   style={{
