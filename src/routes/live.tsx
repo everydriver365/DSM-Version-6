@@ -1405,7 +1405,7 @@ function LivePage() {
       {/* UNIFIED SPEED PILL */}
       {(() => {
         const rn = roadName ?? "";
-        const m = rn.match(/^([AB]\s?\d+)\b[\s,·-]*(.*)$/i);
+        const m = rn.match(/^([MABE]\s?\d+[A-Z]*)\b[\s,·-]*(.*)$/i);
         const roadTag = m ? m[1].replace(/\s/g, "").toUpperCase() : null;
         const roadLabel = m ? (m[2] || "").trim() || null : rn || null;
         const over = isOverSpeeding && speedLimit != null && currentSpeed != null;
