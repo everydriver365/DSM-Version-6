@@ -79,6 +79,31 @@ function ARoadPlate({ tag }: { tag: string }) {
   );
 }
 
+/** UK B-road sign: cream/white plate with black border and black text. */
+function BRoadPlate({ tag }: { tag: string }) {
+  return (
+    <span
+      style={{
+        flexShrink: 0,
+        display: "inline-flex",
+        alignItems: "center",
+        background: "#F6F3E8",
+        border: "1.5px solid #111",
+        borderRadius: 5,
+        color: "#111",
+        fontWeight: 800,
+        fontSize: 11,
+        letterSpacing: 0.3,
+        lineHeight: 1,
+        padding: "3px 6px",
+        textShadow: "none",
+      }}
+    >
+      {tag}
+    </span>
+  );
+}
+
 
 
 interface LessonRow {
