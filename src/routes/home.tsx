@@ -511,7 +511,7 @@ const SECTION_TITLE_TEXT_STYLE: React.CSSProperties = {
   color: '#1877D6',
   textTransform: 'uppercase',
   letterSpacing: '0.12em',
-  fontFamily: 'Poppins, sans-serif',
+  fontFamily: 'Inter, sans-serif',
 };
 
 const SECTION_LINK_STYLE: React.CSSProperties = {
