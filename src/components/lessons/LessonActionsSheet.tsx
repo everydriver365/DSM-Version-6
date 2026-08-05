@@ -758,6 +758,7 @@ export function LessonActionsSheet({
                 paymentStatus={payStatus}
               />
             )}
+            </div>
 
 
             <button
