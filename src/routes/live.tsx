@@ -1549,15 +1549,28 @@ function LivePage() {
                 <span
                   style={{
                     flexShrink: 0,
-                    background: "#1877D6",
-                    border: "1px solid rgba(255,255,255,0.5)",
+                    background:
+                      roadType === "Motorway"
+                        ? "#1877D6"
+                        : roadType === "A Road"
+                        ? "#1A9C56"
+                        : roadType === "B Road"
+                        ? "#F8FAFC"
+                        : "#1877D6",
+                    border:
+                      roadType === "B Road"
+                        ? "1px solid rgba(255,255,255,0.35)"
+                        : "1px solid rgba(255,255,255,0.5)",
                     borderRadius: 20,
-                    color: "#fff",
+                    color:
+                      roadType === "B Road"
+                        ? "#0B1F3A"
+                        : "#fff",
                     fontWeight: 700,
                     fontSize: 11,
                     padding: "3px 9px",
                     lineHeight: 1.2,
-                    textShadow: "0 1px 1px rgba(0,0,0,0.15)",
+                    textShadow: roadType === "B Road" ? "none" : "0 1px 1px rgba(0,0,0,0.15)",
                   }}
                 >
                   {roadLabel ? `${roadTag} · ${roadLabel}` : roadTag}
