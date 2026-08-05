@@ -142,6 +142,10 @@ function PupilThreadPage() {
   const [pendingOffer, setPendingOffer] = useState<PendingOffer | null>(null);
   const [booking, setBooking] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [matchIndex, setMatchIndex] = useState(0);
+  const matchRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     let channel: ReturnType<typeof supabase.channel> | null = null;
