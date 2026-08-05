@@ -1362,7 +1362,10 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
   return (
     <div style={{ fontFamily: PF }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-        <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>Quick actions</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+          <span style={SECTION_TITLE_TEXT_STYLE}>Quick actions</span>
+        </div>
         <button
           type="button"
           aria-label="Search actions"
