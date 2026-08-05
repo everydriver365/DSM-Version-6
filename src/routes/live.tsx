@@ -1674,6 +1674,7 @@ function LivePage() {
                 >
                   {roadType === "Motorway" && <MotorwaySymbol />}
                   {roadType === "A Road" && roadTag && <ARoadPlate tag={roadTag} />}
+                  {roadType === "B Road" && roadTag && <BRoadPlate tag={roadTag} />}
                   {(roadType !== "A Road" || !roadTag ? true : !!roadLabel) && (
                     <span
                       style={{
