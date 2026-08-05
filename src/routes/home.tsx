@@ -4942,6 +4942,29 @@ function HomePage() {
                       pointerEvents: 'none',
                     }} />
 
+                    {/* Date / time badge */}
+                    <div style={{
+                      position: 'absolute', top: 10, left: 10,
+                      background: 'rgba(255,255,255,0.55)',
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255,255,255,0.6)',
+                      borderRadius: 20, padding: '4px 10px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                      display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5,
+                    }}>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+                        {isLessonToday ? 'TODAY' : `${railDow} ${railDay} ${railMon}`}
+                      </span>
+                      <span style={{ width: 1, height: 12, background: 'rgba(11,31,58,0.12)' }} />
+                      <span style={{ fontSize: 11, fontWeight: 600, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+                        {startText}{endText ? ` - ${endText}` : ''}
+                      </span>
+                      <span style={{ fontSize: 10, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>
+                        · {durationDecimal}h
+                      </span>
+                    </div>
+
                     {/* Price badge */}
                     <div style={{
                       position: 'absolute', top: 10, right: 10,
