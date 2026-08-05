@@ -1656,27 +1656,11 @@ function LivePage() {
                     alignItems: "center",
                     gap: 6,
                     overflow: "hidden",
-                    background:
-                      roadType === "Motorway"
-                        ? "#1877D6"
-                        : roadType === "A Road" && roadTag
-                        ? "rgba(255,255,255,0.15)"
-                        : roadType === "A Road"
-                        ? "#1A9C56"
-                        : roadType === "B Road"
-                        ? "#F8FAFC"
-                        : "rgba(255,255,255,0.15)",
-                    border:
-                      roadType === "B Road"
-                        ? "1px solid rgba(255,255,255,0.35)"
-                        : "1px solid rgba(255,255,255,0.5)",
-                    borderRadius: 20,
-                    color: roadType === "B Road" ? "#0B1F3A" : "#fff",
+                    color: "#fff",
                     fontWeight: 700,
                     fontSize: 11,
-                    padding: "3px 9px",
                     lineHeight: 1.2,
-                    textShadow: roadType === "B Road" ? "none" : "0 1px 1px rgba(0,0,0,0.15)",
+                    textShadow: "0 1px 1px rgba(0,0,0,0.15)",
                   }}
                 >
                   {roadType === "Motorway" && <MotorwaySymbol />}
