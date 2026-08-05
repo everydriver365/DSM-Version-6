@@ -5477,17 +5477,40 @@ function HomePage() {
               {value}
             </span>
           );
-          const Label = ({ text, colour, count }: { text: string; colour: string; count: number }) => (
-            <span style={{
-              display: 'inline-flex', alignItems: 'center',
-              fontSize: 11, fontFamily: PF_C,
-              color: count > 0 ? colour : '#9CA3AF',
-              fontWeight: count > 0 ? 600 : 400,
-            }}>
-              {text}
-              {count > 0 && <Badge colour={colour} value={count} />}
-            </span>
-          );
+          const Label = ({
+            text, colour, count, onClick,
+          }: { text: string; colour: string; count: number; onClick?: () => void }) => {
+            const active = count > 0 && !!onClick;
+            return (
+              <span
+                {...(active
+                  ? {
+                      role: 'button' as const,
+                      tabIndex: 0,
+                      onClick: (e: React.MouseEvent) => { e.stopPropagation(); onClick!(); },
+                      onKeyDown: (e: React.KeyboardEvent) => {
+                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); onClick!(); }
+                      },
+                    }
+                  : {})}
+                style={{
+                  display: 'inline-flex', alignItems: 'center',
+                  fontSize: 11, fontFamily: PF_C,
+                  color: count > 0 ? colour : '#9CA3AF',
+                  fontWeight: count > 0 ? 600 : 400,
+                  padding: active ? '2px 4px' : 0,
+                  margin: active ? '-2px -4px' : 0,
+                  borderRadius: 6,
+                  cursor: active ? 'pointer' : 'inherit',
+                  WebkitTapHighlightColor: 'transparent',
+                }}
+              >
+                {text}
+                {count > 0 && <Badge colour={colour} value={count} />}
+              </span>
+            );
+          };
+
           const Sep = () => <span style={{ color: BORDER_C, fontSize: 11 }}>·</span>;
 
           
@@ -5547,13 +5570,30 @@ function HomePage() {
                     display: 'flex', alignItems: 'center', gap: 6, marginTop: 3,
                     flexWrap: 'nowrap', overflow: 'hidden',
                   }}>
-                    <Label text="Issues" colour={RED_C} count={alerts.length} />
+                    <Label
+                      text="Issues" colour={RED_C} count={alerts.length}
+                      onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })}
+                    />
                     <Sep />
-                    <Label text="Chat" colour="#7C3AED" count={totalUnreadChat} />
+                    <Label
+                      text="Chat" colour="#7C3AED" count={totalUnreadChat}
+                      onClick={() => navigate({ to: '/community', search: { tab: unreadChat > 0 ? 'local' : 'rooms' } })}
+                    />
                     <Sep />
-                    <Label text="Pupils" colour="#1877D6" count={pupilReplies.length} />
+                    <Label
+                      text="Pupils" colour="#1877D6" count={pupilReplies.length}
+                      onClick={() => {
+                        const p = pupilReplies[0];
+                        if (p?.pupil_id) navigate({ to: '/messages/$pupilId', params: { pupilId: p.pupil_id } });
+                        else navigate({ to: '/messages' });
+                      }}
+                    />
                     <Sep />
-                    <Label text="Admin" colour="#92400E" count={adminUnread} />
+                    <Label
+                      text="Admin" colour="#92400E" count={adminUnread}
+                      onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
+                    />
+
                   </div>
                 </div>
                 {communityExpanded
