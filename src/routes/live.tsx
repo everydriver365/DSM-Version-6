@@ -1470,18 +1470,38 @@ function LivePage() {
                 </div>
 
                 {/* Current speed, baseline aligned */}
-                <div className="flex items-baseline" style={{ gap: 4 }}>
-                  <span
-                    style={{
-                      fontSize: 28,
-                      fontWeight: 800,
-                      lineHeight: 1,
-                      color: over ? "#FF6B6B" : speedColor,
-                    }}
-                  >
-                    {currentSpeed ?? 0}
-                  </span>
-                  <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>mph</span>
+                <div className="flex items-center" style={{ gap: 8 }}>
+                  <div className="flex items-baseline" style={{ gap: 4 }}>
+                    <span
+                      style={{
+                        fontSize: 28,
+                        fontWeight: 800,
+                        lineHeight: 1,
+                        color: over ? "#FF6B6B" : speedColor,
+                      }}
+                    >
+                      {currentSpeed ?? 0}
+                    </span>
+                    <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>mph</span>
+                  </div>
+                  {roadType && (
+                    <span
+                      style={{
+                        flexShrink: 0,
+                        background:
+                          roadType === "Motorway" ? "#1877D6" : roadType === "A Road" ? "#1A9C56" : "#fff",
+                        color:
+                          roadType === "B Road" ? "#0B1F3A" : "#fff",
+                        fontSize: 9,
+                        fontWeight: 700,
+                        padding: "2px 7px",
+                        borderRadius: 20,
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      {roadType}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -1537,24 +1557,6 @@ function LivePage() {
               >
                 {roadLabel ?? (roadTag ? "" : "Road not identified")}
               </span>
-              {roadType && (
-                <span
-                  style={{
-                    flexShrink: 0,
-                    background:
-                      roadType === 'Motorway' ? '#0B1F3A' : roadType === 'A Road' ? '#1877D6' : '#6B7686',
-                    color: '#fff',
-                    fontSize: 9,
-                    fontWeight: 700,
-                    padding: '2px 7px',
-                    borderRadius: 20,
-                    marginLeft: 6,
-                    lineHeight: 1.2,
-                  }}
-                >
-                  {roadType}
-                </span>
-              )}
             </div>
           </div>
         );
