@@ -212,10 +212,36 @@ function PupilThreadPage() {
     };
   }, [pupilId]);
 
+  // Auto-scroll to the latest message. Jump instantly on first load, then
+  // smooth-scroll for new arrivals — but only if the user is already near the
+  // bottom, so reading older messages isn't interrupted.
+  const didInitialScrollRef = useRef(false);
+  const prevCountRef = useRef(0);
   useEffect(() => {
     const el = scrollerRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
+    if (!el) return;
+    const count = messages.length;
+    if (count === 0) return;
+
+    if (!didInitialScrollRef.current) {
+      didInitialScrollRef.current = true;
+      prevCountRef.current = count;
+      el.scrollTop = el.scrollHeight;
+      return;
+    }
+
+    const grew = count > prevCountRef.current;
+    prevCountRef.current = count;
+    if (!grew) return;
+
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    if (distanceFromBottom > 160) return;
+
+    requestAnimationFrame(() => {
+      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    });
   }, [messages]);
+
 
   // Detect likely acceptance on the most recent pupil message and look up a pending offer.
   useEffect(() => {
