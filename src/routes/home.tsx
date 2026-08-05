@@ -5078,10 +5078,20 @@ function HomePage() {
                 </button>
                </div>
 
-
-
-
-
+              {/* Address row */}
+              <div style={{
+                padding: '12px 16px',
+                borderTop: '1px solid #E4E8EF',
+                display: 'flex', alignItems: 'center', gap: 10, minWidth: 0,
+              }}>
+                <MapPin size={18} color="#6B7686" style={{ flexShrink: 0 }} />
+                <span style={{
+                  fontSize: 13, color: '#5A6270', fontFamily: 'Poppins, sans-serif',
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                }}>
+                  {pickup}
+                </span>
+              </div>
 
 
               {/* Reasons row */}
