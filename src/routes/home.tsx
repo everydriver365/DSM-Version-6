@@ -4838,7 +4838,8 @@ function HomePage() {
 
               {/* Map header */}
               {(() => {
-                const GMAPS_KEY = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined;
+                const GMAPS_KEY = (import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined)
+                  || "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
                 const staticMapUrl = (driveData?.destLat && driveData?.destLng && GMAPS_KEY)
                   ? `https://maps.googleapis.com/maps/api/staticmap`
                     + `?center=${driveData.destLat},${driveData.destLng}`
