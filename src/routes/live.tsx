@@ -36,18 +36,18 @@ function deriveRoadType(name?: string | null): string | null {
 }
 
 /** UK motorway badge: white-outlined blue plate with the motorway bridge glyph. */
-function MotorwaySymbol() {
+function MotorwaySymbol({ size = 32 }: { size?: number }) {
   return (
     <svg
-      width="16"
-      height="16"
+      width={size}
+      height={size}
       viewBox="0 0 24 24"
       aria-hidden="true"
       style={{ flexShrink: 0, display: "block" }}
     >
-      <rect x="1" y="1" width="22" height="22" rx="5" fill="#1877D6" stroke="#fff" strokeWidth="2" />
+      <rect x="1" y="1" width="22" height="22" rx="4" fill="#1877D6" stroke="#fff" strokeWidth="1.5" />
       <path
-        d="M6 17V9.5h3.2L12 13.4l2.8-3.9H18V17h-2.6v-4.2L12 17l-3.4-4.2V17H6z"
+        d="M6 16V9.5h3L12 13.5l3-4H18V16h-2.5v-4L12 16l-3.5-4v4H6z"
         fill="#fff"
       />
     </svg>
