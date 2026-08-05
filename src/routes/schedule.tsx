@@ -2240,7 +2240,13 @@ function EntryRow({
         <div style={rowSub}>
           {fmtTime(entry.start)} – {fmtTime(entry.end)}
         </div>
+        {cancelled && l.cancellation_reason ? (
+          <div style={{ fontSize: 11, color: "#CC2229", marginTop: 2, textDecoration: "none" }}>
+            {l.cancellation_reason}
+          </div>
+        ) : null}
       </button>
+
     );
   }
   if (entry.kind === "block") {
