@@ -331,6 +331,29 @@ function PupilThreadPage() {
   };
 
 
+  // ---- Search messages --------------------------------------------------
+  const matches = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [];
+    return messages
+      .map((m, i) => (m.body?.toLowerCase().includes(q) ? i : -1))
+      .filter((i) => i !== -1);
+  }, [messages, searchQuery]);
+
+  useEffect(() => {
+    setMatchIndex(0);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (!searchOpen || matches.length === 0) return;
+    const targetIdx = matches[matchIndex];
+    const el = matchRefs.current[targetIdx];
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [matchIndex, matches, searchOpen]);
+
+
   // Detect likely acceptance on the most recent pupil message and look up a pending offer.
   useEffect(() => {
     let cancelled = false;
