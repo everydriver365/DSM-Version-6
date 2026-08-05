@@ -1765,7 +1765,7 @@ function HomePage() {
       if (!cancelled) setUnreadChat(total);
     })();
     return () => { cancelled = true; };
-  }, [userId]);
+  }, [userId, reloadKey]);
 
   // Latest message from every other room the instructor has joined
   useEffect(() => {
@@ -1810,7 +1810,7 @@ function HomePage() {
       if (!cancelled) setJoinedRoomChats(out);
     })();
     return () => { cancelled = true; };
-  }, [userId, localRoom?.id, ukRoom?.id]);
+  }, [userId, localRoom?.id, ukRoom?.id, reloadKey]);
 
 
 
@@ -1837,7 +1837,7 @@ function HomePage() {
       } catch {}
     })();
     return () => { cancelled = true; };
-  }, [userId]);
+  }, [userId, reloadKey]);
 
   // Local alerts (community issues) — filtered by instructor's outcode.
   useEffect(() => {
@@ -1955,7 +1955,7 @@ function HomePage() {
       }
     })();
     return () => { cancelled = true; };
-  }, [userId]);
+  }, [userId, reloadKey]);
 
 
   // Pupil cancellations (last 24h) + unread reschedule requests
