@@ -390,7 +390,7 @@ function OnboardingPage() {
           </div>
         )}
 
-        {step === 6 && (
+        {step === 8 && (
           <div className="flex flex-col items-center gap-4">
             <div
               className="h-16 w-16 rounded-full bg-[#E6F1FB] flex items-center justify-center"
