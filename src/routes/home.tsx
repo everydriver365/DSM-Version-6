@@ -483,54 +483,33 @@ interface PupilReadySetting {
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 /** Standard DSM section eyebrow header used above every home section. */
-function SectionEyebrow({
-  title,
-  linkLabel,
-  onLink,
-}: {
-  title: string;
-  linkLabel?: string;
-  onLink?: () => void;
-}) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8,
-        padding: '0 16px',
-      }}
-    >
-      <span
-        style={{
-          fontSize: 10,
-          fontWeight: 600,
-          color: '#9CA3AF',
-          textTransform: 'uppercase',
-          letterSpacing: '0.08em',
-          fontFamily: 'Poppins, sans-serif',
-        }}
-      >
-        {title}
-      </span>
-      {linkLabel ? (
-        <span
-          onClick={onLink}
-          style={{
-            fontSize: 12,
-            fontWeight: 500,
-            color: '#1877D6',
-            fontFamily: 'Poppins, sans-serif',
-            cursor: 'pointer',
-          }}
-        >
-          {linkLabel}
-        </span>
-      ) : null}
-    </div>
-  );
-}
+const SECTION_HEADER_STYLE: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: 14,
+};
+
+const SECTION_TITLE_STYLE: React.CSSProperties = {
+  fontSize: 18,
+  fontWeight: 700,
+  color: '#0B1F3A',
+  fontFamily: 'Poppins, sans-serif',
+};
+
+const SECTION_LINK_STYLE: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 4,
+  fontSize: 13,
+  fontWeight: 600,
+  color: '#1877D6',
+  background: 'none',
+  border: 'none',
+  padding: 0,
+  cursor: 'pointer',
+  fontFamily: 'Poppins, sans-serif',
+};
 // Default weekly goals — should come from instructor settings
 // (instructors.weekly_lesson_goal / weekly_earnings_goal). We fall back to
 // these defaults if the columns don't exist or the row hasn't been populated.
