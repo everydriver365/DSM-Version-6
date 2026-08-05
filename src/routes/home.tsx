@@ -4789,8 +4789,11 @@ function HomePage() {
           const pickup = pickupParts.full;
 
 
-          const upcomingMsgCount = upcoming?.pupil_id
-            ? unreadMsgs.filter((m) => m.pupil_id === upcoming.pupil_id && !m.read_at).length
+          const upcomingSmsCount = upcoming?.pupil_id
+            ? unreadMsgs.filter((m) => m.pupil_id === upcoming.pupil_id && !m.read_at && m.source === 'sms').length
+            : 0;
+          const upcomingAppCount = upcoming?.pupil_id
+            ? unreadMsgs.filter((m) => m.pupil_id === upcoming.pupil_id && !m.read_at && m.source !== 'sms').length
             : 0;
 
           const isOverdue = !isPaid && d ? d < todayStart : false;
