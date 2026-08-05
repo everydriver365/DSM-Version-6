@@ -4903,12 +4903,31 @@ function HomePage() {
                       setSendMessageOpen(true);
                     }}
                     style={{
+                      position: 'relative',
                       width: 32, height: 32, borderRadius: '50%', background: '#EEF2F7', border: 'none',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
                     }}
                   >
                     <MessageSquare size={16} color="#0B1F3A" />
+                    {upcomingMsgCount > 0 && (
+                      <span style={{
+                        position: 'absolute',
+                        top: -2, right: -2,
+                        minWidth: 16, height: 16,
+                        borderRadius: '50%',
+                        background: '#CC2229',
+                        color: '#FFFFFF',
+                        fontSize: 10, fontWeight: 700,
+                        fontFamily: 'Poppins, sans-serif',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        padding: '0 4px',
+                        boxSizing: 'border-box',
+                      }}>
+                        {upcomingMsgCount > 9 ? '9+' : upcomingMsgCount}
+                      </span>
+                    )}
                   </button>
+
                 </div>
               </div>
 
