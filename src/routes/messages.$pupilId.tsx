@@ -582,8 +582,8 @@ function PupilThreadPage() {
       {/* Messages */}
       <div
         ref={scrollerRef}
-        className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-2"
-        style={{ paddingBottom: 120 }}
+        className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3"
+        style={{ paddingBottom: 150, background: "#FFFFFF" }}
       >
         {messages.length === 0 ? (
           <div className="flex-1 flex items-center justify-center py-12">
@@ -592,38 +592,172 @@ function PupilThreadPage() {
             </div>
           </div>
         ) : (
-          messages.map((m) => {
+          messages.map((m, i) => {
+            const prev = i > 0 ? messages[i - 1] : null;
+            const showDate = !prev || dayKey(prev.created_at) !== dayKey(m.created_at);
+            const isSystem = SYSTEM_TYPES.includes(m.sender_type);
             const mine = m.sender_type === "instructor";
-            return (
-              <div
-                key={m.id}
-                className="flex flex-col"
-                style={{ alignItems: mine ? "flex-end" : "flex-start" }}
-              >
+
+            const separator = showDate ? (
+              <div key={`sep-${m.id}`} style={{ display: "flex", alignItems: "center", gap: 8, margin: "6px 0" }}>
+                <div style={{ flex: 1, height: 0.5, background: "#E4E8EF" }} />
                 <div
-                  className="max-w-[78%] px-3 py-2 text-[14px]"
                   style={{
-                    backgroundColor: mine ? "#0F2044" : "#FFFFFF",
-                    color: mine ? "#FFFFFF" : "#0B1F3A",
-                    borderRadius: mine ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                    borderWidth: mine ? 0 : 1,
-                    borderStyle: "solid",
-                    borderColor: "#E2E6ED",
+                    fontSize: 10,
+                    fontWeight: 600,
+                    color: "#9CA3AF",
+                    letterSpacing: "0.05em",
                     ...POPPINS,
-                    whiteSpace: "pre-wrap",
-                    wordBreak: "break-word",
                   }}
                 >
-                  {m.body}
+                  {dayLabel(m.created_at)}
                 </div>
-                <div className="text-[10px] text-[#6B7280] mt-1" style={POPPINS}>
-                  {formatTime(m.created_at)}
+                <div style={{ flex: 1, height: 0.5, background: "#E4E8EF" }} />
+              </div>
+            ) : null;
+
+            if (isSystem) {
+              return (
+                <div key={m.id}>
+                  {separator}
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <div
+                      style={{
+                        background: "#F5F0E8",
+                        borderRadius: 8,
+                        padding: "7px 12px",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        fontSize: 11,
+                        fontWeight: 600,
+                        color: "#8A5A0F",
+                        ...POPPINS,
+                      }}
+                    >
+                      <Phone size={13} color="#B8791A" />
+                      {m.body?.trim()
+                        ? m.body
+                        : `You called ${pupilName} · ${formatTime(m.created_at)}`}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <div key={m.id}>
+                {separator}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: mine ? "row-reverse" : "row",
+                    gap: 8,
+                    alignItems: "flex-start",
+                  }}
+                >
+                  {mine ? (
+                    <div
+                      style={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: "50%",
+                        background: "#0B1F3A",
+                        color: "#FFFFFF",
+                        fontSize: 10,
+                        fontWeight: 600,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                        ...POPPINS,
+                      }}
+                    >
+                      ME
+                    </div>
+                  ) : pupil?.profile_image_url ? (
+                    <img
+                      src={pupil.profile_image_url}
+                      alt=""
+                      style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: "50%",
+                        background: "#D9E6F5",
+                        color: "#0B1F3A",
+                        fontSize: 10,
+                        fontWeight: 600,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                        ...POPPINS,
+                      }}
+                    >
+                      {initialsOf(pupilName)}
+                    </div>
+                  )}
+
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: mine ? "flex-end" : "flex-start",
+                      maxWidth: "75%",
+                      minWidth: 0,
+                    }}
+                  >
+                    {!mine && (
+                      <div
+                        style={{
+                          fontSize: 11,
+                          fontWeight: 600,
+                          color: "#6B7686",
+                          marginBottom: 3,
+                          ...POPPINS,
+                        }}
+                      >
+                        {pupil?.first_name ?? pupilName}
+                      </div>
+                    )}
+                    <div
+                      style={{
+                        background: mine ? "#1877D6" : "#EEF2F7",
+                        color: mine ? "#FFFFFF" : "#0B1F3A",
+                        borderRadius: mine ? "16px 4px 16px 16px" : "4px 16px 16px 16px",
+                        padding: "9px 12px",
+                        fontSize: 13,
+                        fontWeight: 400,
+                        whiteSpace: "pre-wrap",
+                        wordBreak: "break-word",
+                        ...POPPINS,
+                      }}
+                    >
+                      {m.body}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 10,
+                        color: mine ? "#9CA3AF" : "#9CA3AF",
+                        marginTop: 3,
+                        alignSelf: mine ? "flex-end" : "flex-start",
+                        ...POPPINS,
+                      }}
+                    >
+                      {formatTime(m.created_at)}
+                    </div>
+                  </div>
                 </div>
               </div>
             );
           })
         )}
       </div>
+
 
       {/* Likely-acceptance banner */}
       {pendingOffer && (
