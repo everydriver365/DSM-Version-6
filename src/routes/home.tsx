@@ -5104,94 +5104,12 @@ function HomePage() {
                 </div>
               )}
 
-              {/* Address row */}
-              <div style={{
-                padding: '12px 16px',
-                display: 'flex', alignItems: 'flex-start', gap: 8,
-                borderBottom: '1px solid #E4E8EF',
-              }}>
-                <MapPin size={16} color="#6B7686" style={{ flexShrink: 0, marginTop: 2 }} />
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
-                  <span style={{
-                    fontSize: 12, color: '#6B7686',
-                    fontFamily: 'Poppins, sans-serif',
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                  }}>
-                    {pickupParts.address}
-                  </span>
-                  {pickupParts.postcode && (
-                    <span style={{
-                      fontSize: 12, color: '#6B7686', fontWeight: 500,
-                      fontFamily: 'Poppins, sans-serif',
-                      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                    }}>
-                      {pickupParts.postcode}
-                    </span>
-                  )}
-                </div>
-                {pickupParts.hasBoth && (
-                  <button
-                    type="button"
-                    aria-label="Copy address"
-                    title="Copy address"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigator.clipboard.writeText(pickupParts.full)
-                        .then(() => toast('Copied address to clipboard'))
-                        .catch(() => toast('Could not copy address'));
-                    }}
-                    style={{
-                      flexShrink: 0,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      width: 28, height: 28,
-                      background: '#FFFFFF',
-                      border: '1px solid #E4E8EF',
-                      borderRadius: 6,
-                      cursor: 'pointer',
-                      padding: 0,
-                    }}
-                  >
-                    <Copy size={14} color="#6B7686" />
-                  </button>
-                )}
-              </div>
-
-
-
-
               {/* Footer / More */}
               <div style={{
                 padding: '11px 16px',
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
+                display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10,
               }}>
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); openMaps(); }}
-                  style={{
-                    background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', gap: 4,
-                    fontSize: 13, fontWeight: 600, color: '#1877D6',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}
-                >
-                  <Navigation size={16} />
-                  <span>View route</span>
-                  {driveData && (
-                    <>
-                      <span style={{ color: '#6B7686', margin: '0 4px' }}>·</span>
-                      <span>{driveData.durationMinutes} min</span>
-                    </>
-                  )}
-                  {weatherData?.tempC != null && (
-                    <>
-                      <span style={{ color: '#6B7686', margin: '0 4px' }}>·</span>
-                      <Sun size={14} color="#E0A020" />
-                      <span style={{ fontSize: 13, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif', fontWeight: 700, marginLeft: 4 }}>
-                        {Math.round(weatherData.tempC)}°
-                      </span>
-                    </>
-                  )}
-                </button>
+
                 <button
                   type="button"
                   onClick={() => setHeroExpandedWithEvent((v) => !v)}
