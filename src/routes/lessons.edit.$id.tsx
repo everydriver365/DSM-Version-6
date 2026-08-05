@@ -618,109 +618,108 @@ function EditLessonPage() {
                     onClick={async () => {
                       setSaving(true);
                       const { data: userRes } = await supabase.auth.getUser();
-                      const { error: updErr } = await supabase
-                        .from("lessons")
-                        .update({
+                      const feeAmt = Number(cancelFee) || 0;
+                      let outcome = "No charge";
+                      if (chargeOption === "fee") outcome = `Cancellation fee £${feeAmt.toFixed(2)} retained`;
+                      if (chargeOption === "full") outcome = "Full charge retained";
+
+                      const handle = await cancelLessonWithUndo({
+                        lessonId: id,
+                        patch: {
                           status: "cancelled",
                           payment_status: "cancelled",
                           cancellation_reason: cancelReason,
                           cancellation_notes: cancelNote || null,
                           cancelled_at: new Date().toISOString(),
-                        } as never)
-                        .eq("id", id);
-                      if (updErr) {
-                        console.error("[edit-lesson] cancel error", updErr);
+                        },
+                        financials: async () => {
+                          const { recordRefund } = await import("@/lib/payments");
+                          if (
+                            chargeOption === "none" &&
+                            (paymentStatus === "paid" || paymentStatus === "partial")
+                          ) {
+                            await recordRefund({
+                              pupilId,
+                              amount: Number(amountDue ?? 0),
+                              method: "cash",
+                              notes: `Cancellation refund — ${cancelReason}`,
+                              currentAccountBalance: 0,
+                            });
+                          } else if (chargeOption === "fee") {
+                            const refund = Number(amountDue ?? 0) - feeAmt;
+                            if (refund > 0) {
+                              await recordRefund({
+                                pupilId,
+                                amount: refund,
+                                method: "cash",
+                                notes: `Partial refund — cancellation fee £${feeAmt} retained`,
+                                currentAccountBalance: 0,
+                              });
+                            }
+                          } else if (chargeOption === "full") {
+                            await supabase.from("lesson_history").insert({
+                              instructor_id: userRes.user?.id ?? "",
+                              pupil_id: pupilId,
+                              amount_paid: Number(amountDue ?? 0),
+                              payment_method: "cash",
+                              payment_status: "paid",
+                              notes: `Full charge retained — ${cancelReason}`,
+                              created_at: new Date().toISOString(),
+                            } as never);
+                          }
+
+                          // Audit row capturing the cancellation reason, notes and outcome
+                          await supabase.from("lesson_history").insert({
+                            instructor_id: userRes.user?.id ?? "",
+                            pupil_id: pupilId,
+                            amount_paid:
+                              chargeOption === "full"
+                                ? Number(amountDue ?? 0)
+                                : chargeOption === "fee" ? feeAmt : 0,
+                            payment_method: "cancellation",
+                            payment_status: "cancelled",
+                            notes: `Cancelled — ${cancelReason}${cancelNote ? ` — ${cancelNote}` : ""} · ${outcome}`,
+                            created_at: new Date().toISOString(),
+                          } as never);
+
+                          if (chargeOption === "none" && paymentStatus === "prepaid") {
+                            const { data: pRow } = await supabase
+                              .from("pupils")
+                              .select("prepaid_hours")
+                              .eq("id", pupilId)
+                              .maybeSingle();
+                            const currentHours = Number(
+                              (pRow as { prepaid_hours?: number | null } | null)?.prepaid_hours ?? 0,
+                            );
+                            await supabase
+                              .from("pupils")
+                              .update({ prepaid_hours: currentHours + 1 })
+                              .eq("id", pupilId);
+                          }
+                        },
+                      });
+
+                      if (!handle) {
                         toast.error("Could not cancel lesson");
                         setSaving(false);
                         return;
                       }
-                      // Sync to Google Calendar after cancel
-                      const { data: lessonRow } = await supabase
-                        .from("lessons")
-                        .select("google_event_id")
-                        .eq("id", id)
-                        .maybeSingle();
-                      if (lessonRow?.google_event_id) {
-                        void supabase.functions.invoke("google-calendar-sync", {
-                          body: {
-                            lesson_id: id,
-                            instructor_id: userRes.user?.id ?? "",
-                            action: "delete",
+
+                      toast.success("Lesson cancelled", {
+                        duration: UNDO_WINDOW_MS,
+                        action: {
+                          label: "Undo",
+                          onClick: () => {
+                            void handle
+                              .undo()
+                              .then(() => toast.success("Cancellation undone"))
+                              .catch(() => toast.error("Couldn't undo cancellation"));
                           },
-                        });
-                      }
-
-                      const { recordRefund } = await import("@/lib/payments");
-                      const feeAmt = Number(cancelFee) || 0;
-                      let outcome = "No charge";
-                      if (chargeOption === "fee") outcome = `Cancellation fee £${feeAmt.toFixed(2)} retained`;
-                      if (chargeOption === "full") outcome = "Full charge retained";
-                      if (
-                        chargeOption === "none" &&
-                        (paymentStatus === "paid" || paymentStatus === "partial")
-                      ) {
-                        await recordRefund({
-                          pupilId,
-                          amount: Number(amountDue ?? 0),
-                          method: "cash",
-                          notes: `Cancellation refund — ${cancelReason}`,
-                          currentAccountBalance: 0,
-                        });
-                      } else if (chargeOption === "fee") {
-                        const refund = Number(amountDue ?? 0) - feeAmt;
-                        if (refund > 0) {
-                          await recordRefund({
-                            pupilId,
-                            amount: refund,
-                            method: "cash",
-                            notes: `Partial refund — cancellation fee £${feeAmt} retained`,
-                            currentAccountBalance: 0,
-                          });
-                        }
-                      } else if (chargeOption === "full") {
-                        await supabase.from("lesson_history").insert({
-                          instructor_id: userRes.user?.id ?? "",
-                          pupil_id: pupilId,
-                          amount_paid: Number(amountDue ?? 0),
-                          payment_method: "cash",
-                          payment_status: "paid",
-                          notes: `Full charge retained — ${cancelReason}`,
-                          created_at: new Date().toISOString(),
-                        } as never);
-                      }
-
-                      // Audit row capturing the cancellation reason, notes and outcome
-                      await supabase.from("lesson_history").insert({
-                        instructor_id: userRes.user?.id ?? "",
-                        pupil_id: pupilId,
-                        amount_paid:
-                          chargeOption === "full"
-                            ? Number(amountDue ?? 0)
-                            : chargeOption === "fee" ? feeAmt : 0,
-                        payment_method: "cancellation",
-                        payment_status: "cancelled",
-                        notes: `Cancelled — ${cancelReason}${cancelNote ? ` — ${cancelNote}` : ""} · ${outcome}`,
-                        created_at: new Date().toISOString(),
-                      } as never);
-
-
-                      if (chargeOption === "none" && paymentStatus === "prepaid") {
-                        const { data: pRow } = await supabase
-                          .from("pupils")
-                          .select("prepaid_hours")
-                          .eq("id", pupilId)
-                          .maybeSingle();
-                        const currentHours = Number(
-                          (pRow as { prepaid_hours?: number | null } | null)?.prepaid_hours ?? 0,
-                        );
-                        await supabase
-                          .from("pupils")
-                          .update({ prepaid_hours: currentHours + 1 })
-                          .eq("id", pupilId);
-                      }
-                      toast.success("Lesson cancelled");
+                        },
+                      });
                       navigate({ to: "/home" });
                     }}
+
                     style={{
                       background: "#CC2229",
                       color: "#fff",
