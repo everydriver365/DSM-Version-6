@@ -612,8 +612,6 @@ function EditLessonPage() {
                 )}
 
                 <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14 }}>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14 }}>
                   <button
                     type="button"
                     disabled={saving || !cancelReason}
