@@ -7721,7 +7721,9 @@ function HomePage() {
               );
             })()}
 
-            <DiscoverGrid />
+            <div style={SECTION_WRAPPER_STYLE}>
+              <DiscoverGrid />
+            </div>
 
 
 
