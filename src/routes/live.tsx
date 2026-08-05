@@ -793,6 +793,13 @@ function LivePage() {
 
   function startWatching() {
     if (!("geolocation" in navigator)) return;
+
+    // Guard — clear any existing watch before starting new one
+    if (watchIdRef.current !== null) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+      watchIdRef.current = null;
+    }
+
     console.log("[live] starting geolocation watch");
     watchIdRef.current = navigator.geolocation.watchPosition(
       (pos) => handlePosition(pos),
