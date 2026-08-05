@@ -190,6 +190,7 @@ import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
 import { LogMileageSheet } from "@/components/mileage/LogMileageSheet";
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
+import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { filterEchoedBlocks } from "@/lib/calendarDedupe";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
@@ -1471,6 +1472,41 @@ function HomePage() {
   const [logMileageOpen, setLogMileageOpen] = useState(false);
   const [sendMessageOpen, setSendMessageOpen] = useState(false);
   const [sendMessagePupilId, setSendMessagePupilId] = useState<string | undefined>();
+  // Messages drawer for the next-lesson pupil
+  const [lessonMsgsPupil, setLessonMsgsPupil] = useState<{ id: string; name: string } | null>(null);
+  const [lessonMsgsLoading, setLessonMsgsLoading] = useState(false);
+  const [lessonMsgs, setLessonMsgs] = useState<Array<{
+    id: string;
+    body: string | null;
+    created_at: string;
+    sender_type: string | null;
+    source: string | null;
+    read_at: string | null;
+  }>>([]);
+  useEffect(() => {
+    const pid = lessonMsgsPupil?.id;
+    if (!pid) { setLessonMsgs([]); return; }
+    let cancelled = false;
+    setLessonMsgsLoading(true);
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from('chat_messages')
+          .select('id, body, created_at, sender_type, source, read_at')
+          .eq('pupil_id', pid)
+          .is('deleted_at', null)
+          .order('created_at', { ascending: false })
+          .limit(20);
+        if (!cancelled) setLessonMsgs(Array.isArray(data) ? (data as any) : []);
+      } catch {
+        if (!cancelled) setLessonMsgs([]);
+      } finally {
+        if (!cancelled) setLessonMsgsLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [lessonMsgsPupil?.id, reloadKey]);
+
   const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
@@ -4905,8 +4941,8 @@ function HomePage() {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSendMessagePupilId(upcoming?.pupil_id ?? undefined);
-                      setSendMessageOpen(true);
+                      if (!upcoming?.pupil_id) return;
+                      setLessonMsgsPupil({ id: upcoming.pupil_id, name: pupilFullName || 'Pupil' });
                     }}
                     style={{
                       position: 'relative',
@@ -7780,6 +7816,111 @@ function HomePage() {
         onClose={() => setLogMileageOpen(false)}
         onSaved={() => setReloadKey((k) => k + 1)}
       />
+
+      {lessonMsgsPupil && (
+        <BottomSheet
+          title="Recent messages"
+          subtitle={lessonMsgsPupil.name}
+          onClose={() => setLessonMsgsPupil(null)}
+          footer={
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button
+                type="button"
+                onClick={() => {
+                  const pid = lessonMsgsPupil.id;
+                  setLessonMsgsPupil(null);
+                  navigate({ to: '/messages/$pupilId', params: { pupilId: pid } });
+                }}
+                style={{
+                  flex: 1, padding: '12px 14px', borderRadius: 10,
+                  border: '1px solid #D9E0EA', background: '#FFFFFF',
+                  color: '#0B1F3A', fontSize: 14, fontWeight: 600,
+                  fontFamily: 'Poppins, sans-serif', cursor: 'pointer',
+                }}
+              >
+                Open conversation
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSendMessagePupilId(lessonMsgsPupil.id);
+                  setLessonMsgsPupil(null);
+                  setSendMessageOpen(true);
+                }}
+                style={{
+                  flex: 1, padding: '12px 14px', borderRadius: 10,
+                  border: 'none', background: '#1877D6',
+                  color: '#FFFFFF', fontSize: 14, fontWeight: 600,
+                  fontFamily: 'Poppins, sans-serif', cursor: 'pointer',
+                }}
+              >
+                Send message
+              </button>
+            </div>
+          }
+        >
+          {lessonMsgsLoading ? (
+            <div style={{ padding: '18px 4px', textAlign: 'center', color: '#8A93A3', fontSize: 13, fontFamily: 'Poppins, sans-serif' }}>
+              Loading messages…
+            </div>
+          ) : lessonMsgs.length === 0 ? (
+            <div style={{ padding: '18px 4px', textAlign: 'center', color: '#8A93A3', fontSize: 13, fontFamily: 'Poppins, sans-serif' }}>
+              No messages yet with {lessonMsgsPupil.name}.
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {lessonMsgs.map((m) => {
+                const fromPupil = m.sender_type === 'pupil';
+                const isSms = (m.source ?? '') === 'sms';
+                const unread = fromPupil && !m.read_at;
+                const when = new Date(m.created_at);
+                return (
+                  <div
+                    key={m.id}
+                    style={{
+                      background: '#FFFFFF',
+                      border: '1px solid #E4E8EF',
+                      borderLeft: `3px solid ${fromPupil ? (isSms ? '#CC2229' : '#1877D6') : '#D9E0EA'}`,
+                      borderRadius: 10,
+                      padding: '10px 12px',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                      <span style={{
+                        fontSize: 11, fontWeight: 700, letterSpacing: '0.04em',
+                        textTransform: 'uppercase', fontFamily: 'Poppins, sans-serif',
+                        color: fromPupil ? '#0B1F3A' : '#6B7686',
+                      }}>
+                        {fromPupil ? lessonMsgsPupil.name : 'You'}
+                      </span>
+                      <span style={{
+                        fontSize: 10, fontWeight: 600, padding: '1px 6px', borderRadius: 999,
+                        background: isSms ? '#FEECEC' : '#E8F1FC',
+                        color: isSms ? '#CC2229' : '#1877D6',
+                        fontFamily: 'Poppins, sans-serif',
+                      }}>
+                        {isSms ? 'SMS' : 'In-app'}
+                      </span>
+                      {unread && (
+                        <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#CC2229' }} />
+                      )}
+                      <span style={{ marginLeft: 'auto', fontSize: 11, color: '#8A93A3', fontFamily: 'Poppins, sans-serif' }}>
+                        {when.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                        {' · '}
+                        {when.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: 13, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif', lineHeight: 1.4 }}>
+                      {m.body || '—'}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </BottomSheet>
+      )}
 
       <SendMessageSheet
         open={sendMessageOpen}
