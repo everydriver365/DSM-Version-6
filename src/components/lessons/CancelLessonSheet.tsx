@@ -301,6 +301,19 @@ export function CancelLessonSheet({
               )}
             </div>
 
+            {/* Summary */}
+            <div className="px-4">
+              <CancelSummaryPanel
+                reason={reason}
+                notes={notes}
+                chargeOption={chargeAmount > 0 ? "fee" : "none"}
+                cancelFee={chargeAmount > 0 ? chargeAmount : undefined}
+                amountDue={amountDue}
+                paymentStatus={paymentStatus}
+              />
+            </div>
+
+
             <div className="px-4 mt-4 flex flex-col gap-2">
               {chargeAmount > 0 && (
                 <button
