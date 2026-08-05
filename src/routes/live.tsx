@@ -617,20 +617,44 @@ function LivePage() {
 
   async function startTracking(lessonId: string | null, pupilId: string | null) {
     console.log("[live] startTracking requested", { lessonId, pupilId, tracking });
-    // Enable native background GPS if running in Despia
-    // This keeps GPS running when screen is locked
-    if (navigator.userAgent.toLowerCase().includes("despia")) {
-      (window as any).despia("backgroundlocationon://");
-    }
     if (tracking) {
       console.log("[live] startTracking ignored — already tracking");
       return;
     }
     if (!("geolocation" in navigator)) {
-      setGeoError("GPS access required — please enable location in your browser settings");
+      setGeoError("GPS access required — please enable location in your settings");
       toast.error("GPS not available on this device");
+      setActivePupilId(null);
+      setTrackingPupilName(null);
       return;
     }
+
+    // Enable native background GPS if running in the app wrapper.
+    // Guarded — a missing/throwing bridge must never abort tracking.
+    despiaCall("backgroundlocationon://");
+
+    // Ask for a one-shot fix first so the native permission prompt appears
+    // and we know immediately whether GPS is usable.
+    const ok = await new Promise<boolean>((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        () => resolve(true),
+        (err) => {
+          console.error("[live] initial fix failed", err.code, err.message);
+          resolve(err.code === 1 ? false : true);
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 5000 },
+      );
+    });
+    if (!ok) {
+      despiaCall("backgroundlocationoff://");
+      setGeoError("Location permission is off — tap to open settings, then try again");
+      toast.error("Location permission is off");
+      setActivePupilId(null);
+      setTrackingPupilName(null);
+      return;
+    }
+
+    setGeoError(null);
     startedAtRef.current = Date.now();
     coordsRef.current = [];
     setCoordinates([]);
@@ -644,6 +668,7 @@ function LivePage() {
     setTracking(true);
     startSilentAudio();
     startWatching();
+
 
     // Create the route record in the background
     void (async () => {
