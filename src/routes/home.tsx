@@ -4945,7 +4945,11 @@ function HomePage() {
                     {/* Price badge */}
                     <div style={{
                       position: 'absolute', top: 10, right: 10,
-                      background: '#FFFFFF', borderRadius: 20, padding: '4px 10px',
+                      background: 'rgba(255,255,255,0.55)',
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255,255,255,0.6)',
+                      borderRadius: 20, padding: '4px 10px',
                       boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
                       display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5,
                     }}>
@@ -4971,7 +4975,11 @@ function HomePage() {
                     {driveData && (
                       <div style={{
                         position: 'absolute', bottom: 10, left: 10,
-                        background: '#FFFFFF', borderRadius: 20, padding: '4px 10px',
+                        background: 'rgba(255,255,255,0.55)',
+                        backdropFilter: 'blur(10px)',
+                        WebkitBackdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(255,255,255,0.6)',
+                        borderRadius: 20, padding: '4px 10px',
                         boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
                         display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5,
                       }}>
@@ -4990,11 +4998,15 @@ function HomePage() {
                     {/* Directions badge */}
                     <div style={{
                       position: 'absolute', bottom: 10, right: 10,
-                      background: 'rgba(0,0,0,0.45)', borderRadius: 20, padding: '3px 8px',
+                      background: 'rgba(255,255,255,0.55)',
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255,255,255,0.6)',
+                      borderRadius: 20, padding: '3px 8px',
                       display: 'flex', alignItems: 'center', gap: 4,
                     }}>
-                      <Navigation size={11} color="#FFFFFF" />
-                      <span style={{ fontSize: 10, color: '#FFFFFF', fontFamily: 'Poppins, sans-serif' }}>Directions</span>
+                      <Navigation size={11} color="#0B1F3A" />
+                      <span style={{ fontSize: 10, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>Directions</span>
                     </div>
                   </div>
                 );
