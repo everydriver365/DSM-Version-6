@@ -1024,7 +1024,7 @@ function MessagesIndexPage() {
       <InstructorTopBar
         firstName={myName ?? ""}
         pageTitle="Messages"
-        onBack={() => router.history.back()}
+        onBack={() => navigate({ to: '/home' as never, replace: true })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
         onLiveTrack={() => navigate({ to: "/live" as never })}
         onBell={() => navigate({ to: "/notifications" as never })}
