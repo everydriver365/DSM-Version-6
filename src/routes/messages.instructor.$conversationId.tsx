@@ -221,12 +221,7 @@ function InstructorDMThread() {
         setLoading(false);
       }
 
-      await supabase
-        .from("instructor_messages")
-        .update({ read_at: new Date().toISOString() })
-        .eq("conversation_id", conversationId)
-        .eq("to_instructor_id", userId)
-        .is("read_at", null);
+      await markConversationRead(conversationId, userId);
 
       setTimeout(() => {
         window.dispatchEvent(
@@ -238,6 +233,7 @@ function InstructorDMThread() {
           new Event('dsm-messages-read')
         );
       }, 1500);
+
     })();
 
     const channel = supabase
