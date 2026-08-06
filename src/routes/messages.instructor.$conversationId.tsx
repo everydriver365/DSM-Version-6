@@ -280,23 +280,20 @@ function InstructorDMThread() {
             prev.some((m) => m.id === row.id) ? prev : [...prev, row],
           );
           if (row.from_instructor_id !== userId) {
-            supabase
-              .from("instructor_messages")
-              .update({ read_at: new Date().toISOString() })
-              .eq("id", row.id)
-              .then(() => {
-                setTimeout(() => {
-                  window.dispatchEvent(
-                    new Event('dsm-messages-read')
-                  );
-                }, 300);
-                setTimeout(() => {
-                  window.dispatchEvent(
-                    new Event('dsm-messages-read')
-                  );
-                }, 1500);
-              });
+            void markConversationRead(conversationId, userId).then(() => {
+              setTimeout(() => {
+                window.dispatchEvent(
+                  new Event('dsm-messages-read')
+                );
+              }, 300);
+              setTimeout(() => {
+                window.dispatchEvent(
+                  new Event('dsm-messages-read')
+                );
+              }, 1500);
+            });
           }
+
         },
       )
       .subscribe();
