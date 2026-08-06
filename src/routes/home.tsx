@@ -5141,17 +5141,6 @@ function HomePage() {
                   </button>
                 </div>
 
-                <div style={{ flexShrink: 0, textAlign: 'right' }}>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
-                    {startText}
-                  </div>
-                  <div style={{
-                    fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase',
-                    letterSpacing: '0.06em', fontFamily: 'Poppins, sans-serif',
-                  }}>
-                    {railDow} {railDay} {railMon}
-                  </div>
-                </div>
 
                 <button
                   type="button"
