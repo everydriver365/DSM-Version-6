@@ -227,6 +227,10 @@ function InstructorDMThread() {
         .eq("conversation_id", conversationId)
         .eq("to_instructor_id", userId)
         .is("read_at", null);
+
+      window.dispatchEvent(
+        new Event('dsm-messages-read')
+      );
     })();
 
     const channel = supabase
@@ -245,10 +249,15 @@ function InstructorDMThread() {
             prev.some((m) => m.id === row.id) ? prev : [...prev, row],
           );
           if (row.from_instructor_id !== userId) {
-            void supabase
+            supabase
               .from("instructor_messages")
               .update({ read_at: new Date().toISOString() })
-              .eq("id", row.id);
+              .eq("id", row.id)
+              .then(() => {
+                window.dispatchEvent(
+                  new Event('dsm-messages-read')
+                );
+              });
           }
         },
       )
