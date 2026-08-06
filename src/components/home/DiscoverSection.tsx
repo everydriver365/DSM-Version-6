@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   IconPlayerPlay,
   IconBroadcast,
   IconChevronRight,
+  IconRadio,
+  IconBook,
 } from "@tabler/icons-react";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { supabase } from "@/lib/supabaseClient";
+
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
@@ -374,38 +377,50 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   ];
 
 
+  const stripRef = useRef<HTMLDivElement | null>(null);
+  const hasLiveNow = live.some(isLiveNow);
+
+  const tileShell: React.CSSProperties = {
+    background: "#FFFFFF",
+    border: "0.5px solid #E4E8EF",
+    borderRadius: 14,
+    overflow: "hidden",
+    cursor: "pointer",
+    fontFamily: FONT,
+  };
+
+  const tileImage = (bg: string): React.CSSProperties => ({
+    position: "relative",
+    height: 80,
+    background: bg,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  });
+
+  const tileBadge: React.CSSProperties = {
+    position: "absolute",
+    top: 6,
+    right: 6,
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 3,
+    borderRadius: 999,
+    padding: "2px 6px",
+    fontSize: 7,
+    fontWeight: 700,
+    letterSpacing: "0.06em",
+    color: "#FFFFFF",
+  };
+
+  const tileLabelWrap: React.CSSProperties = { padding: "8px 10px 10px" };
+  const tileTitle: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: NAVY };
+  const tileSub: React.CSSProperties = { fontSize: 10, color: "#6B7686", marginTop: 1 };
+
   return (
     <div style={{ margin: "0 -16px 0", padding: "0 16px 2px", borderRadius: 0, fontFamily: FONT }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 8,
-          margin: "16px 0 10px",
-        }}
-      >
+      <div style={{ margin: "16px 0 10px" }}>
         <SectionHeader style={{ margin: 0 }}>Discover</SectionHeader>
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/discover" as never })}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 2,
-            background: "none",
-            border: "none",
-            padding: 0,
-            fontFamily: FONT,
-            fontSize: 13,
-            fontWeight: 600,
-            color: BLUE,
-            cursor: "pointer",
-          }}
-        >
-          See more
-          <IconChevronRight size={14} stroke={2.2} />
-        </button>
       </div>
 
       <style>
@@ -413,9 +428,83 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       </style>
 
       <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: 10,
+          marginBottom: 16,
+        }}
+      >
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => stripRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })}
+          style={tileShell}
+        >
+          <div style={tileImage("linear-gradient(135deg, #1877D6, #0B1F3A)")}>
+            <IconRadio size={28} color="rgba(255,255,255,0.9)" stroke={1.8} />
+            {hasLiveNow && (
+              <span style={{ ...tileBadge, background: RED }}>
+                <span className="dsm-live-pulse" style={{ display: "inline-flex" }}>
+                  <span
+                    style={{
+                      width: 4,
+                      height: 4,
+                      borderRadius: "50%",
+                      background: "#FFFFFF",
+                      display: "inline-block",
+                    }}
+                  />
+                </span>
+                LIVE
+              </span>
+            )}
+          </div>
+          <div style={tileLabelWrap}>
+            <div style={tileTitle}>DSM Live</div>
+            <div style={tileSub}>Events &amp; webinars</div>
+          </div>
+        </div>
+
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate({ to: "/bitesize" as never })}
+          style={tileShell}
+        >
+          <div style={tileImage("linear-gradient(135deg, #7C3AED, #4F1D96)")}>
+            <IconBook size={28} color="rgba(255,255,255,0.9)" stroke={1.8} />
+            <span style={{ ...tileBadge, background: "rgba(255,255,255,0.2)" }}>CPD</span>
+          </div>
+          <div style={tileLabelWrap}>
+            <div style={tileTitle}>Bitesize</div>
+            <div style={tileSub}>Learn &amp; develop</div>
+          </div>
+        </div>
+
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate({ to: "/reels" as never })}
+          style={tileShell}
+        >
+          <div style={tileImage("linear-gradient(135deg, #CC2229, #7C1D1D)")}>
+            <IconPlayerPlay size={28} color="rgba(255,255,255,0.9)" stroke={1.8} />
+            <span style={{ ...tileBadge, background: "rgba(255,255,255,0.2)" }}>NEW</span>
+          </div>
+          <div style={tileLabelWrap}>
+            <div style={tileTitle}>DSM Reels</div>
+            <div style={tileSub}>Fun clips</div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        ref={stripRef}
         className="dsm-discover-scroll"
         style={stripStyle}
       >
+
         {allItems.map((item, i) => {
           if (item.type === "market") {
             const m = item.data;
