@@ -1549,8 +1549,6 @@ function HomePage() {
     read_at: string | null;
   }>>([]);
   const [newsArticles, setNewsArticles] = useState<any[]>([]);
-  const [activeNewsIndex, setActiveNewsIndex] = useState(0);
-  const newsScrollRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const pid = lessonMsgsPupil?.id;
     if (!pid) { setLessonMsgs([]); return; }
@@ -7783,15 +7781,7 @@ function HomePage() {
                   .news-scroll::-webkit-scrollbar { display: none }
                 `}</style>
                 <div
-                  ref={newsScrollRef}
                   className="news-scroll"
-                  onScroll={() => {
-                    const el = newsScrollRef.current;
-                    if (!el) return;
-                    const tileWidth = el.offsetWidth - 32;
-                    const index = Math.round(el.scrollLeft / (tileWidth + 10));
-                    setActiveNewsIndex(index);
-                  }}
                   style={{
                     display: 'flex',
                     overflowX: 'auto',
@@ -7937,29 +7927,6 @@ function HomePage() {
                       </div>
                     );
                   })}
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    gap: 5,
-                    marginTop: 10,
-                  }}
-                >
-                  {newsArticles.map((_, i) => (
-                    <div
-                      key={`news-dot-${i}`}
-                      style={{
-                        height: 5,
-                        borderRadius: 3,
-                        background: i === activeNewsIndex ? '#1877D6' : '#E4E8EF',
-                        width: i === activeNewsIndex ? 14 : 5,
-                        transition: 'all 0.2s ease',
-                        flexShrink: 0,
-                      }}
-                    />
-                  ))}
                 </div>
               </div>
               </div>
