@@ -7834,7 +7834,7 @@ function HomePage() {
                       'linear-gradient(135deg, #CC2229, #0B1F3A)',
                       'linear-gradient(135deg, #15803D, #0B1F3A)',
                     ];
-                    const gradient = gradients[article.id?.length % 4 ?? 0] || gradients[0];
+                    const gradient = gradients[article.id.length % 4];
                     return (
                       <div
                         key={article.id}
