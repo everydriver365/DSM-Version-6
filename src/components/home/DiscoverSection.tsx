@@ -112,6 +112,64 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const [live, setLive] = useState<LiveItem[]>([]);
   const [learn, setLearn] = useState<LearnItem[]>([]);
   const [market, setMarket] = useState<MarketItem[]>([]);
+  const [reelCount, setReelCount] = useState<number | null>(null);
+  const [listingCount, setListingCount] = useState<number | null>(null);
+  const [newsCount, setNewsCount] = useState<number | null>(null);
+  const [newsUnread, setNewsUnread] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      // Reels view count (table may not exist yet)
+      try {
+        const { data, error } = await supabase.from("reels" as never).select("views");
+        if (!cancelled && !error && Array.isArray(data)) {
+          const total = (data as { views?: number | null }[]).reduce(
+            (sum, r) => sum + (r.views ?? 0),
+            0,
+          );
+          setReelCount(total);
+        }
+      } catch {
+        /* table may not exist */
+      }
+
+      try {
+        const { count, error } = await supabase
+          .from("marketplace_listings")
+          .select("id", { count: "exact", head: true })
+          .eq("is_active", true)
+          .is("deleted_at", null);
+        if (!cancelled && !error && count != null) setListingCount(count);
+      } catch {
+        /* ignore */
+      }
+
+      try {
+        const { count, error } = await supabase
+          .from("news_articles" as never)
+          .select("id", { count: "exact", head: true });
+        if (!cancelled && !error && count != null) setNewsCount(count);
+        const lastVisit = localStorage.getItem("dsm_news_last_visit");
+        if (lastVisit) {
+          const { count: unread } = await supabase
+            .from("news_articles" as never)
+            .select("id", { count: "exact", head: true })
+            .gt("fetched_at", lastVisit);
+          if (!cancelled) setNewsUnread((unread ?? 0) > 0);
+        } else if (!cancelled && (count ?? 0) > 0) {
+          setNewsUnread(true);
+        }
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+
 
   useEffect(() => {
     let cancelled = false;
