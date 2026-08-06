@@ -233,6 +233,72 @@ function MessagesIndexPage() {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const scrollBoxRef = useRef<HTMLDivElement | null>(null);
 
+  useEffect(() => {
+    if (!userId) return;
+    supabase
+      .from("instructor_conversations")
+      .select(
+        "id, instructor_a_id, instructor_b_id, last_message, last_message_at, instructor_a:instructors!instructor_a_id(id, name, profile_image_url), instructor_b:instructors!instructor_b_id(id, name, profile_image_url)",
+      )
+      .or(`instructor_a_id.eq.${userId},instructor_b_id.eq.${userId}`)
+      .order("last_message_at", { ascending: false })
+      .then(({ data }) => {
+        setInstructorDMs((data as any[]) ?? []);
+      });
+  }, [userId]);
+
+  useEffect(() => {
+    if (!searchOpen) return;
+    const q = searchQuery.trim();
+    if (q.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+    const t = setTimeout(() => {
+      supabase
+        .from("instructors")
+        .select("id, name, profile_image_url, home_postcode")
+        .neq("id", userId ?? "")
+        .ilike("name", `%${q}%`)
+        .limit(10)
+        .then(({ data }) => setSearchResults((data as any[]) ?? []));
+    }, 300);
+    return () => clearTimeout(t);
+  }, [searchQuery, searchOpen, userId]);
+
+  async function startConversation(otherInstructorId: string) {
+    if (!userId) return;
+    const { data: existing } = await supabase
+      .from("instructor_conversations")
+      .select("id")
+      .or(
+        `and(instructor_a_id.eq.${userId},instructor_b_id.eq.${otherInstructorId}),and(instructor_a_id.eq.${otherInstructorId},instructor_b_id.eq.${userId})`,
+      )
+      .maybeSingle();
+    if (existing) {
+      setSearchOpen(false);
+      navigate({
+        to: "/messages/instructor/$conversationId" as never,
+        params: { conversationId: (existing as any).id } as never,
+      });
+      return;
+    }
+    const { data: created, error } = await supabase
+      .from("instructor_conversations")
+      .insert({ instructor_a_id: userId, instructor_b_id: otherInstructorId } as any)
+      .select("id")
+      .single();
+    if (error || !created) {
+      toast.error("Could not start conversation");
+      return;
+    }
+    setSearchOpen(false);
+    navigate({
+      to: "/messages/instructor/$conversationId" as never,
+      params: { conversationId: (created as any).id } as never,
+    });
+  }
+
   const loadConvos = useCallback(async () => {
     {
       const { data: sessionRes } = await supabase.auth.getSession();
