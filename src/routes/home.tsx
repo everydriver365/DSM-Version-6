@@ -7749,47 +7749,54 @@ function HomePage() {
             </div>
 
             {newsArticles.length > 0 && (
-              <div style={{ marginBottom: 24 }}>
+              <div
+                style={{
+                  margin: '0 -16px 24px',
+                  padding: '0 16px 22px',
+                  borderRadius: 0,
+                  fontFamily: 'Poppins, Inter, sans-serif',
+                }}
+              >
                 <div
                   style={{
                     display: 'flex',
-                    justifyContent: 'space-between',
                     alignItems: 'center',
-                    padding: '0 16px',
-                    marginBottom: 8,
+                    justifyContent: 'space-between',
+                    gap: 8,
+                    margin: '16px 0 10px',
                   }}
                 >
-                  <span
-                    style={{
-                      fontSize: 18,
-                      fontWeight: 700,
-                      color: '#0B1F3A',
-                      fontFamily: 'Poppins, sans-serif',
-                    }}
-                  >
-                    Industry news
-                  </span>
+                  <SectionHeader style={{ margin: 0 }}>Industry news</SectionHeader>
                   <button
                     type="button"
                     onClick={() => navigate({ to: '/news' as never })}
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: 4,
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: '#1877D6',
+                      gap: 2,
                       background: 'none',
                       border: 'none',
                       padding: 0,
+                      fontFamily: 'Poppins, Inter, sans-serif',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: '#1877D6',
                       cursor: 'pointer',
-                      fontFamily: 'Poppins, sans-serif',
                     }}
                   >
-                    See all <ChevronRight size={14} strokeWidth={2.2} />
+                    See all <IconChevronRight size={14} stroke={2.2} />
                   </button>
                 </div>
                 <div
+                  ref={newsStripRef}
+                  onScroll={() => {
+                    const el = newsStripRef.current;
+                    if (!el) return;
+                    const page = el.offsetWidth / 2;
+                    const idx = Math.round(el.scrollLeft / page);
+                    const pages = Math.max(1, Math.ceil(newsArticles.length / 2));
+                    setNewsActiveCard(Math.max(0, Math.min(pages - 1, idx)));
+                  }}
                   style={{
                     display: 'flex',
                     flexWrap: 'nowrap',
@@ -7802,7 +7809,7 @@ function HomePage() {
                     overscrollBehaviorX: 'contain',
                     scrollbarWidth: 'none',
                     msOverflowStyle: 'none',
-                    padding: '0 16px 4px',
+                    padding: '0 0 4px',
                   }}
                 >
                   {newsArticles.map((article) => (
