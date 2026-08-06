@@ -514,7 +514,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             <div style={iconLayer}>
               <IconRadio size={38} color="rgba(255,255,255,0.7)" stroke={1.6} />
             </div>
-            {allItems.some((i) => i.type === "live" && isLiveNow(i.data)) && (
+            {liveSorted.some((s) => isLiveNow(s)) && (
               <span style={{ ...tileBadge, background: RED }}>
                 <span className="dsm-live-pulse" style={{ display: "inline-flex" }}>
                   <span
