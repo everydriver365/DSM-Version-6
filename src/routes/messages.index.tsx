@@ -248,6 +248,50 @@ function MessagesIndexPage() {
       });
   }, [userId]);
 
+  // Unread instructor DMs: instructor_messages addressed to me with no read_at.
+  const [dmUnread, setDmUnread] = useState<Record<string, number>>({});
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    const load = async () => {
+      const { data } = await supabase
+        .from("instructor_messages")
+        .select("conversation_id")
+        .eq("to_instructor_id", userId)
+        .is("read_at", null);
+      if (cancelled) return;
+      const map: Record<string, number> = {};
+      for (const m of ((data as any[]) ?? [])) {
+        const cid = m.conversation_id as string;
+        map[cid] = (map[cid] ?? 0) + 1;
+      }
+      setDmUnread(map);
+      // Let the bottom nav badge include instructor DMs in its total.
+      window.dispatchEvent(
+        new CustomEvent("dsm-instructor-dm-unread", {
+          detail: { count: Object.values(map).reduce((a, b) => a + b, 0) },
+        }),
+      );
+    };
+    void load();
+    const onPing = () => void load();
+    window.addEventListener("dsm-messages-read", onPing);
+    const ch = supabase
+      .channel(`instructor-dm-unread-${userId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "instructor_messages" },
+        () => void load(),
+      )
+      .subscribe();
+    return () => {
+      cancelled = true;
+      window.removeEventListener("dsm-messages-read", onPing);
+      void supabase.removeChannel(ch);
+    };
+  }, [userId]);
+
+
   useEffect(() => {
     if (!searchOpen) return;
     const q = searchQuery.trim();
