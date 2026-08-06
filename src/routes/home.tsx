@@ -2626,6 +2626,19 @@ function HomePage() {
 
   useEffect(() => {
     if (!userId) return;
+    supabase
+      .from('news_articles')
+      .select('id, title, description, image_url, published_at, read_time_mins, source, link')
+      .eq('is_hidden', false)
+      .order('published_at', { ascending: false })
+      .limit(3)
+      .then(({ data }) => {
+        if (data) setNewsArticles(data);
+      });
+  }, [userId]);
+
+  useEffect(() => {
+    if (!userId) return;
     (async () => {
       const todayYmd = ymd(todayStart);
       const yesterdayYmd = ymd(addDays(todayStart, -1));
