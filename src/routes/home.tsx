@@ -7860,29 +7860,31 @@ function HomePage() {
                         style={{
                           flex: '0 0 calc(50% - 4px)',
                           minWidth: 'calc(50% - 4px)',
-                          borderRadius: 16,
+                          borderRadius: 14,
                           border: '1px solid #E4E8EF',
                           background: '#FFFFFF',
                           overflow: 'hidden',
                           cursor: 'pointer',
+                          fontFamily: 'Poppins, sans-serif',
                           scrollSnapAlign: 'start',
                           scrollSnapStop: 'always',
                           display: 'flex',
                           flexDirection: 'column',
-                          fontFamily: 'Poppins, sans-serif',
                         }}
                       >
                         <div
                           style={{
                             position: 'relative',
-                            height: 150,
+                            height: 124,
+                            flexShrink: 0,
                             overflow: 'hidden',
-                            background: article.image_url
-                              ? undefined
-                              : 'linear-gradient(135deg, #1e3a5f 0%, #0B1F3A 100%)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
+                            borderBottom: '1px solid #E4E8EF',
+                            background: article.image_url
+                              ? undefined
+                              : 'linear-gradient(135deg, #1e3a5f 0%, #0B1F3A 100%)',
                           }}
                         >
                           {article.image_url ? (
@@ -7898,43 +7900,52 @@ function HomePage() {
                         </div>
                         <div
                           style={{
-                            padding: '10px 12px 12px',
+                            position: 'relative',
+                            padding: '8px 10px 10px',
+                            flex: 1,
                             display: 'flex',
                             flexDirection: 'column',
-                            gap: 6,
+                            gap: 3,
                             minHeight: 0,
-                            flex: 1,
                           }}
                         >
                           <div
                             style={{
+                              position: 'absolute',
+                              top: 4,
+                              left: 4,
+                              maxWidth: 'calc(100% - 12px)',
                               display: 'inline-flex',
-                              alignSelf: 'flex-start',
-                              background: '#1877D6',
-                              color: '#FFFFFF',
-                              fontSize: 9,
+                              alignItems: 'center',
+                              gap: 3,
+                              borderRadius: 999,
+                              padding: '2px 5px',
+                              fontSize: 8,
                               fontWeight: 700,
                               fontFamily: 'Poppins, sans-serif',
+                              letterSpacing: '0.04em',
                               textTransform: 'uppercase',
-                              letterSpacing: '0.06em',
-                              borderRadius: 20,
-                              padding: '3px 8px',
+                              background: '#E6F1FB',
+                              color: '#1877D6',
+                              overflow: 'hidden',
+                              whiteSpace: 'nowrap',
+                              textOverflow: 'ellipsis',
                             }}
                           >
                             {article.source || 'News'}
                           </div>
                           <div
                             style={{
+                              marginTop: 14,
                               fontSize: 13,
                               fontWeight: 700,
                               color: '#0B1F3A',
                               fontFamily: 'Poppins, sans-serif',
-                              lineHeight: 1.3,
+                              lineHeight: 1.25,
                               display: '-webkit-box',
                               WebkitLineClamp: 2,
                               WebkitBoxOrient: 'vertical',
                               overflow: 'hidden',
-                              flex: 1,
                             }}
                           >
                             {article.title}
@@ -7942,12 +7953,11 @@ function HomePage() {
                           <div
                             style={{
                               display: 'flex',
+                              justifyContent: 'space-between',
                               alignItems: 'center',
-                              gap: 10,
                               marginTop: 'auto',
-                              color: '#6B7686',
                               fontSize: 11,
-                              fontWeight: 500,
+                              color: '#9CA3AF',
                               fontFamily: 'Poppins, sans-serif',
                             }}
                           >
