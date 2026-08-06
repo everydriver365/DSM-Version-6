@@ -7860,7 +7860,7 @@ function HomePage() {
                           <IconNews size={28} color="#FFFFFF" stroke={1.5} />
                         )}
                       </div>
-                      <div style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+                      <div style={{ padding: '8px 10px 10px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
                         <div
                           style={{
                             display: 'inline-flex',
