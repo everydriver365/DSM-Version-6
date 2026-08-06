@@ -1980,11 +1980,11 @@ function HomePage() {
         );
         const { data: instructors } = await supabase
           .from('instructors')
-          .select('id, name')
+          .select('id, name, profile_image_url')
           .in('id', otherIds);
 
-        const nameMap = Object.fromEntries(
-          (instructors ?? []).map((i) => [i.id, i.name])
+        const instructorMap = Object.fromEntries(
+          (instructors ?? []).map((i) => [i.id, { name: i.name, profile_image_url: i.profile_image_url }])
         );
 
         if (!cancelled) {
@@ -1993,10 +1993,12 @@ function HomePage() {
               const otherId = c.instructor_a_id === userId
                 ? c.instructor_b_id
                 : c.instructor_a_id;
+              const other = instructorMap[otherId];
               return {
                 ...c,
                 other_id: otherId,
-                other_name: nameMap[otherId] ?? 'DSM Instructor',
+                other_name: other?.name ?? 'DSM Instructor',
+                other_image: other?.profile_image_url ?? null,
               };
             })
           );
@@ -5709,7 +5711,7 @@ function HomePage() {
                     ...(unreadDMs > 0 ? dmPreviews.map((dm) => ({
                       type: 'instructor' as const,
                       name: dm.other_name || 'DSM Instructor',
-                      image: null,
+                      image: dm.other_image || null,
                       colour: '#1877D6',
                     })) : []),
                     ...(alerts.length > 0 ? [{
