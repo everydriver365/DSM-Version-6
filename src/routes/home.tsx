@@ -7745,6 +7745,154 @@ function HomePage() {
               <DiscoverGrid />
             </div>
 
+            {newsArticles.length > 0 && (
+              <div style={SECTION_WRAPPER_STYLE}>
+                <div style={SECTION_HEADER_STYLE}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+                    <span style={SECTION_TITLE_TEXT_STYLE}>Industry news</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: '/news' as never })}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 4,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: '#1877D6',
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                      cursor: 'pointer',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    See all <ChevronRight size={14} strokeWidth={2.2} />
+                  </button>
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: 12,
+                    overflowX: 'auto',
+                    padding: '0 0 4px',
+                    scrollSnapType: 'x mandatory',
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
+                  }}
+                >
+                  {newsArticles.map((article) => (
+                    <div
+                      key={article.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => {
+                        if (article.link) window.open(article.link, '_blank', 'noopener,noreferrer');
+                      }}
+                      onKeyDown={(e) => {
+                        if ((e.key === 'Enter' || e.key === ' ') && article.link) {
+                          window.open(article.link, '_blank', 'noopener,noreferrer');
+                        }
+                      }}
+                      style={{
+                        width: 240,
+                        flexShrink: 0,
+                        scrollSnapAlign: 'start',
+                        background: '#FFFFFF',
+                        borderRadius: 12,
+                        border: '0.5px solid #E4E8EF',
+                        overflow: 'hidden',
+                        cursor: article.link ? 'pointer' : 'default',
+                        fontFamily: 'Poppins, sans-serif',
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: 'relative',
+                          height: 110,
+                          overflow: 'hidden',
+                          background: article.image_url
+                            ? undefined
+                            : 'linear-gradient(135deg, #0B1F3A 0%, #1a3a6b 100%)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        {article.image_url ? (
+                          <img
+                            src={article.image_url}
+                            alt=""
+                            loading="lazy"
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                        ) : (
+                          <IconNews size={32} color="#FFFFFF" stroke={1.5} />
+                        )}
+                      </div>
+                      <div style={{ padding: '10px 12px' }}>
+                        <div
+                          style={{
+                            display: 'inline-block',
+                            fontSize: 8,
+                            fontWeight: 700,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.04em',
+                            color: '#1877D6',
+                            background: '#E6F1FB',
+                            borderRadius: 20,
+                            padding: '2px 7px',
+                            marginBottom: 6,
+                          }}
+                        >
+                          {article.source || 'News'}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 600,
+                            color: '#0B1F3A',
+                            lineHeight: 1.35,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            marginBottom: 6,
+                          }}
+                        >
+                          {article.title}
+                        </div>
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <IconClock size={11} color="#9CA3AF" stroke={2} />
+                            <span style={{ fontSize: 11, color: '#9CA3AF' }}>
+                              {article.read_time_mins ? `${article.read_time_mins} min read` : 'News'}
+                            </span>
+                          </div>
+                          <span style={{ fontSize: 11, color: '#9CA3AF' }}>
+                            {article.published_at
+                              ? new Date(article.published_at).toLocaleDateString('en-GB', {
+                                  day: 'numeric',
+                                  month: 'short',
+                                })
+                              : ''}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
 
 
 
