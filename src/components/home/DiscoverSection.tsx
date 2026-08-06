@@ -59,7 +59,7 @@ function isLiveNow(s: LiveItem) {
 export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {}) {
   const navigate = useNavigate();
   const [live, setLive] = useState<LiveItem[]>([]);
-  const [learn, setLearn] = useState<LearnItem[]>([]);
+  
   
   const [reelCount, setReelCount] = useState<number | null>(null);
   const [listingCount, setListingCount] = useState<number | null>(null);
@@ -142,14 +142,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     })();
 
 
-    (async () => {
-      const { data, error } = await supabase
-        .from("learn_videos")
-        .select("id, title, duration, url, thumbnail_url")
-        .not("url", "is", null)
-        .order("sort_order", { ascending: true });
-      if (!cancelled && !error && data) setLearn(data as LearnItem[]);
-    })();
 
     return () => {
       cancelled = true;
