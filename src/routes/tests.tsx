@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Plus, X } from "lucide-react";
+import { IconDotsVertical, IconPencil, IconX as IconClose } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -10,6 +11,7 @@ import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import { formatCountdown } from "@/lib/dateHelpers";
 import { PageLayout } from "@/components/PageLayout";
+import { BottomSheet as BottomSheetV2 } from "@/components/dsm/BottomSheetV2";
 
 export const Route = createFileRoute("/tests")({
   head: () => ({
