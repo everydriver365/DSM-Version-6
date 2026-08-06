@@ -235,7 +235,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     fontFamily: FONT,
   };
 
-  const tileImageWrap: React.CSSProperties = { position: "relative", height: 100 };
+  const tileImageWrap: React.CSSProperties = { position: "relative", height: 100, overflow: "hidden" };
   const layerFill: React.CSSProperties = { position: "absolute", inset: 0 };
   const iconLayer: React.CSSProperties = {
     position: "absolute",
