@@ -222,21 +222,19 @@ function PupilThreadPage() {
       setMessages(m);
 
       // Mark inbound messages read
-      await supabase
+      const { data: marked } = await supabase
         .from("chat_messages")
         .update({ read_at: new Date().toISOString() })
         .eq("pupil_id", pupilId)
         .eq("instructor_id", uid)
         .eq("sender_type", "pupil")
-        .is("read_at", null);
+        .is("read_at", null)
+        .select("id");
 
-      // Tell home screen and bottom nav to refresh unread counts
-      setTimeout(() => {
-        window.dispatchEvent(new Event("dsm-messages-read"));
-      }, 300);
-      setTimeout(() => {
-        window.dispatchEvent(new Event("dsm-messages-read"));
-      }, 1500);
+      // Tell home screen and bottom nav to refresh unread counts. The first
+      // event carries how many messages were just read so the badge drops
+      // immediately; the later ones reconcile after the write commits.
+      broadcastRead(marked?.length ?? 0);
 
       channel = supabase
         .channel(`chat:${uid}:${pupilId}`)
@@ -254,9 +252,18 @@ function PupilThreadPage() {
             setMessages((prev) =>
               prev.some((x) => x.id === row.id) ? prev : [...prev, row],
             );
+            // Thread is open — treat inbound arrivals as read right away.
+            if (row.sender_type === "pupil" && !row.read_at) {
+              void supabase
+                .from("chat_messages")
+                .update({ read_at: new Date().toISOString() })
+                .eq("id", row.id)
+                .then(() => broadcastRead(1));
+            }
           },
         )
         .subscribe();
+
     })();
 
     return () => {
