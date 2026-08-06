@@ -7812,145 +7812,141 @@ function HomePage() {
                     padding: '0 0 4px',
                   }}
                 >
-                  {newsArticles.map((article) => (
-                    <div
-                      key={article.id}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() =>
-                        navigate({
-                          to: '/news/$articleId' as never,
-                          params: { articleId: article.id } as never,
+                  {newsArticles.map((article) => {
+                    const articleDate = article.published_at
+                      ? new Date(article.published_at).toLocaleDateString('en-GB', {
+                          day: 'numeric',
+                          month: 'short',
                         })
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
+                      : '';
+                    return (
+                      <div
+                        key={article.id}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() =>
                           navigate({
                             to: '/news/$articleId' as never,
                             params: { articleId: article.id } as never,
-                          });
+                          })
                         }
-                      }}
-                      style={{
-                        flex: '0 0 calc(50% - 4px)',
-                        minWidth: 'calc(50% - 4px)',
-                        borderRadius: 14,
-                        border: '1px solid #E4E8EF',
-                        background: '#FFFFFF',
-                        overflow: 'hidden',
-                        cursor: 'pointer',
-                        scrollSnapAlign: 'start',
-                        scrollSnapStop: 'always',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        fontFamily: 'Poppins, sans-serif',
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: 'relative',
-                          height: 124,
-                          overflow: 'hidden',
-                          background: article.image_url
-                            ? undefined
-                            : 'linear-gradient(135deg, #1e3a5f 0%, #0B1F3A 100%)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            navigate({
+                              to: '/news/$articleId' as never,
+                              params: { articleId: article.id } as never,
+                            });
+                          }
                         }}
-                      >
-                        {article.image_url ? (
-                          <img
-                            src={article.image_url}
-                            alt=""
-                            loading="lazy"
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          />
-                        ) : (
-                          <IconNews size={28} color="#FFFFFF" stroke={1.5} />
-                        )}
-                      </div>
-                      <div
                         style={{
-                          padding: '8px 10px 10px',
+                          flex: '0 0 calc(50% - 4px)',
+                          minWidth: 'calc(50% - 4px)',
+                          borderRadius: 16,
+                          border: '1px solid #E4E8EF',
+                          background: '#FFFFFF',
+                          overflow: 'hidden',
+                          cursor: 'pointer',
+                          scrollSnapAlign: 'start',
+                          scrollSnapStop: 'always',
                           display: 'flex',
                           flexDirection: 'column',
-                          gap: 3,
-                          minHeight: 0,
+                          fontFamily: 'Poppins, sans-serif',
                         }}
                       >
                         <div
                           style={{
-                            display: 'inline-flex',
-                            alignSelf: 'flex-start',
-                            background: '#E6F1FB',
-                            color: '#1877D6',
-                            fontSize: 8,
-                            fontWeight: 700,
-                            fontFamily: 'Poppins, sans-serif',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.06em',
-                            borderRadius: 20,
-                            padding: '2px 7px',
-                          }}
-                        >
-                          {article.source || 'News'}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: 13,
-                            fontWeight: 700,
-                            color: '#0B1F3A',
-                            fontFamily: 'Poppins, sans-serif',
-                            lineHeight: 1.25,
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
+                            position: 'relative',
+                            height: 150,
                             overflow: 'hidden',
+                            background: article.image_url
+                              ? undefined
+                              : 'linear-gradient(135deg, #1e3a5f 0%, #0B1F3A 100%)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
                           }}
                         >
-                          {article.title}
+                          {article.image_url ? (
+                            <img
+                              src={article.image_url}
+                              alt=""
+                              loading="lazy"
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                          ) : (
+                            <IconNews size={32} color="#FFFFFF" stroke={1.5} />
+                          )}
                         </div>
                         <div
                           style={{
+                            padding: '10px 12px 12px',
                             display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            marginTop: 'auto',
+                            flexDirection: 'column',
+                            gap: 6,
+                            minHeight: 0,
+                            flex: 1,
                           }}
                         >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                            <IconClock size={11} color="#9CA3AF" stroke={2} />
-                            <span
-                              style={{
-                                fontSize: 11,
-                                fontWeight: 500,
-                                color: '#9CA3AF',
-                                fontFamily: 'Poppins, sans-serif',
-                              }}
-                            >
-                              {article.read_time_mins ? `${article.read_time_mins} min read` : 'News'}
-                            </span>
-                          </div>
-                          <span
+                          <div
                             style={{
+                              display: 'inline-flex',
+                              alignSelf: 'flex-start',
+                              background: '#1877D6',
+                              color: '#FFFFFF',
+                              fontSize: 9,
+                              fontWeight: 700,
+                              fontFamily: 'Poppins, sans-serif',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.06em',
+                              borderRadius: 20,
+                              padding: '3px 8px',
+                            }}
+                          >
+                            {article.source || 'News'}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 700,
+                              color: '#0B1F3A',
+                              fontFamily: 'Poppins, sans-serif',
+                              lineHeight: 1.3,
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                              flex: 1,
+                            }}
+                          >
+                            {article.title}
+                          </div>
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 10,
+                              marginTop: 'auto',
+                              color: '#6B7686',
                               fontSize: 11,
                               fontWeight: 500,
-                              color: '#9CA3AF',
                               fontFamily: 'Poppins, sans-serif',
                             }}
                           >
-                            {article.published_at
-                              ? new Date(article.published_at).toLocaleDateString('en-GB', {
-                                  day: 'numeric',
-                                  month: 'short',
-                                })
-                              : ''}
-                          </span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                              <IconClock size={11} stroke={2} />
+                              <span>{article.read_time_mins ? `${article.read_time_mins} min` : 'News'}</span>
+                            </span>
+                            {articleDate && (
+                              <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                                <IconCalendar size={11} stroke={2} />
+                                <span>{articleDate}</span>
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
                 {newsArticles.length > 2 && (
                   <div
