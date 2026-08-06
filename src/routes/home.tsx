@@ -8084,7 +8084,7 @@ function HomePage() {
               <div
                 style={{
                   margin: '0 -16px 0',
-                  padding: '0 16px 12px',
+                  padding: '0 16px 2px',
                   borderRadius: 0,
                   fontFamily: 'Poppins, Inter, sans-serif',
                 }}
