@@ -36,13 +36,6 @@ type LiveItem = {
   image_url: string | null;
 };
 
-type LearnItem = {
-  id?: string;
-  title: string;
-  duration: string | null;
-  url: string | null;
-  thumbnail_url: string | null;
-};
 
 function startMs(d: string, t: string) {
   try {
