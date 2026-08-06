@@ -655,12 +655,7 @@ function SessionCard({
     return parts.join(" · ");
   })();
 
-  const metaLabel = [
-    s.duration_minutes && s.duration_minutes > 0 ? `${s.duration_minutes} min` : null,
-    deliveryLabel,
-  ]
-    .filter(Boolean)
-    .join(" · ");
+  const metaLabel = s.duration_minutes && s.duration_minutes > 0 ? `${s.duration_minutes} min` : null;
 
   const priceLabel = (() => {
     if (s.price_display) return s.price_display;
@@ -707,19 +702,52 @@ function SessionCard({
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
         <div
           style={{
-            fontSize: 14,
-            fontWeight: 500,
-            color: "#0B1F3A",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
             marginBottom: 4,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
+            minWidth: 0,
           }}
         >
-          {s.title}
+          <div
+            style={{
+              fontSize: 14,
+              fontWeight: 500,
+              color: "#0B1F3A",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              flex: 1,
+              minWidth: 0,
+            }}
+          >
+            {s.title}
+          </div>
+          <span
+            style={{
+              fontSize: 9,
+              fontWeight: 700,
+              letterSpacing: "0.02em",
+              padding: "3px 7px",
+              borderRadius: 7,
+              background: "#E6F1FB",
+              color: "#1877D6",
+              flexShrink: 0,
+              textTransform: "uppercase",
+            }}
+          >
+            {deliveryLabel.toUpperCase()}
+          </span>
         </div>
-        <div style={{ fontSize: 12, color: "#8792A2", marginBottom: 2 }}>{dateTimeLabel}</div>
-        <div style={{ fontSize: 12, color: "#8792A2", marginBottom: "auto" }}>{metaLabel}</div>
+        <div style={{ fontSize: 12, color: "#8792A2", marginBottom: "auto" }}>
+          {dateTimeLabel}
+          {metaLabel ? (
+            <>
+              <br />
+              {metaLabel}
+            </>
+          ) : null}
+        </div>
 
         <div
           style={{
@@ -758,9 +786,13 @@ function SessionCard({
               border: 0,
               cursor: "pointer",
               fontFamily: poppins,
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
             }}
           >
             {booked ? "Booked" : "Book"}
+            <span aria-hidden="true">›</span>
           </button>
         </div>
       </div>
