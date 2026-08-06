@@ -1840,6 +1840,8 @@ function HomePage() {
     pupils: { name: string | null; first_name: string | null; profile_image_url: string | null } | null;
   }>>([]);
 
+  const [unreadDMs, setUnreadDMs] = useState(0);
+
   // Unread community chat messages across subscribed, non-muted rooms
   const [unreadChat, setUnreadChat] = useState(0);
 
@@ -1935,6 +1937,24 @@ function HomePage() {
           .limit(10);
         if (cancelled || error) return;
         setUnreadMsgs(Array.isArray(data) ? (data as any) : []);
+      } catch {}
+    })();
+    return () => { cancelled = true; };
+  }, [userId, reloadKey]);
+
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { count, error } = await supabase
+          .from('instructor_messages')
+          .select('id', { count: 'exact', head: true })
+          .eq('to_instructor_id', userId)
+          .is('read_at', null)
+          .is('deleted_at', null);
+        if (cancelled || error) return;
+        setUnreadDMs(count ?? 0);
       } catch {}
     })();
     return () => { cancelled = true; };
@@ -3076,6 +3096,14 @@ function HomePage() {
         setReloadKey((k) => k + 1);
       });
     }
+    channel = channel.on('postgres_changes', {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'instructor_messages',
+      filter: `to_instructor_id=eq.${userId}`,
+    }, () => {
+      setReloadKey((k) => k + 1);
+    });
     channel.subscribe();
 
     return () => {
@@ -5676,6 +5704,14 @@ function HomePage() {
                     <Label
                       text="Admin" colour="#92400E" count={adminUnread}
                       onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
+                    />
+                    <Sep />
+                    <Label
+                      text="DSM" colour="#1877D6" count={unreadDMs}
+                      onClick={() => navigate({
+                        to: '/messages' as never,
+                        search: { filter: 'instructors' } as never,
+                      })}
                     />
 
                   </div>
