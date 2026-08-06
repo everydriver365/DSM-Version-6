@@ -326,7 +326,7 @@ function InstructorDMThread() {
           <button
             type="button"
             aria-label="Back to messages"
-            onClick={() => navigate({ to: "/messages" as never })}
+            onClick={() => navigate({ to: "/messages" as never, replace: true })}
             style={{
               background: "none",
               border: 0,
