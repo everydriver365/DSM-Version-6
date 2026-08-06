@@ -1092,6 +1092,26 @@ function MessagesIndexPage() {
             >
               <IconSearch size={18} color="#6B7686" stroke={1.8} />
             </button>
+            <button
+              type="button"
+              aria-label="New message"
+              onClick={() => setSearchOpen(true)}
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                background: "#F1F5F9",
+                border: 0,
+                padding: 0,
+                cursor: "pointer",
+              }}
+            >
+              <IconEdit size={16} color={NAVY} stroke={1.8} />
+            </button>
           </div>
 
           {showSearch && (
