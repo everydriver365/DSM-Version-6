@@ -1562,9 +1562,9 @@ function LivePage() {
                 <div
                   style={{
                     marginTop: 4,
-                    fontSize: 12,
+                    fontSize: 16,
                     fontWeight: over ? 600 : 400,
-                    color: over ? "#FF6B6B" : "rgba(255,255,255,0.45)",
+                    color: over ? "#FF6B6B" : "#fff",
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
