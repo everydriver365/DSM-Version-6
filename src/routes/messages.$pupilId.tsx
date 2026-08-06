@@ -868,6 +868,14 @@ function PupilThreadPage() {
           </div>
         ) : (
           messages.map((m, i) => {
+            const lastReadSentIndex = messages
+              .map((m, i) => ({ m, i }))
+              .filter(({ m }) => m.sender_type === 'instructor' && m.read_at)
+              .pop()?.i ?? -1;
+            const lastSentIndex = messages
+              .map((m, i) => ({ m, i }))
+              .filter(({ m }) => m.sender_type === 'instructor')
+              .pop()?.i ?? -1;
             const prev = i > 0 ? messages[i - 1] : null;
             const showDate = !prev || dayKey(prev.created_at) !== dayKey(m.created_at);
             const isSystem = SYSTEM_TYPES.includes(m.sender_type);
