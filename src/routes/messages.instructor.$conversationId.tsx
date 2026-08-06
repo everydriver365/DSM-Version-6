@@ -228,9 +228,16 @@ function InstructorDMThread() {
         .eq("to_instructor_id", userId)
         .is("read_at", null);
 
-      window.dispatchEvent(
-        new Event('dsm-messages-read')
-      );
+      setTimeout(() => {
+        window.dispatchEvent(
+          new Event('dsm-messages-read')
+        );
+      }, 300);
+      setTimeout(() => {
+        window.dispatchEvent(
+          new Event('dsm-messages-read')
+        );
+      }, 1500);
     })();
 
     const channel = supabase
