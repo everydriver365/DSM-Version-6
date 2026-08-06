@@ -145,6 +145,33 @@ function Avatar({
   );
 }
 
+/**
+ * Mark every unread DM addressed to me in this conversation as read.
+ * The direct UPDATE can silently affect 0 rows if row-level security only
+ * allows the sender to update the row, so we verify how many rows came back
+ * and fall back to the security-definer RPC when nothing was updated.
+ */
+async function markConversationRead(conversationId: string, userId: string) {
+  const { data, error } = await supabase
+    .from("instructor_messages")
+    .update({ read_at: new Date().toISOString() })
+    .eq("conversation_id", conversationId)
+    .eq("to_instructor_id", userId)
+    .is("read_at", null)
+    .select("id");
+
+  if (!error && (data?.length ?? 0) > 0) return;
+
+  const { error: rpcError } = await supabase.rpc(
+    "mark_instructor_messages_read" as never,
+    { _conversation_id: conversationId } as never,
+  );
+  if (rpcError && error) {
+    console.warn("[dm] could not mark messages read", error.message, rpcError.message);
+  }
+}
+
+
 function InstructorDMThread() {
   const { conversationId } = Route.useParams();
   const navigate = useNavigate();
