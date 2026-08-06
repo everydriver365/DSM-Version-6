@@ -6,8 +6,6 @@ import {
   IconChevronRight,
   IconRadio,
   IconBook,
-  IconShoppingBag,
-  IconNews,
 } from "@tabler/icons-react";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { supabase } from "@/lib/supabaseClient";
@@ -112,62 +110,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const [live, setLive] = useState<LiveItem[]>([]);
   const [learn, setLearn] = useState<LearnItem[]>([]);
   const [market, setMarket] = useState<MarketItem[]>([]);
-  const [reelCount, setReelCount] = useState<number | null>(null);
-  const [listingCount, setListingCount] = useState<number | null>(null);
-  const [newsCount, setNewsCount] = useState<number | null>(null);
-  const [newsUnread, setNewsUnread] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      // Reels view count (table may not exist yet)
-      try {
-        const { data, error } = await supabase.from("reels" as never).select("views");
-        if (!cancelled && !error && Array.isArray(data)) {
-          const total = (data as { views?: number | null }[]).reduce(
-            (sum, r) => sum + (r.views ?? 0),
-            0,
-          );
-          setReelCount(total);
-        }
-      } catch {
-        /* table may not exist */
-      }
-
-      try {
-        const { count, error } = await supabase
-          .from("marketplace_listings")
-          .select("id", { count: "exact", head: true })
-          .eq("is_active", true)
-          .is("deleted_at", null);
-        if (!cancelled && !error && count != null) setListingCount(count);
-      } catch {
-        /* ignore */
-      }
-
-      try {
-        const { count, error } = await supabase
-          .from("news_articles" as never)
-          .select("id", { count: "exact", head: true });
-        if (!cancelled && !error && count != null) setNewsCount(count);
-        const lastVisit = localStorage.getItem("dsm_news_last_visit");
-        if (lastVisit) {
-          const { count: unread } = await supabase
-            .from("news_articles" as never)
-            .select("id", { count: "exact", head: true })
-            .gt("fetched_at", lastVisit);
-          if (!cancelled) setNewsUnread((unread ?? 0) > 0);
-        } else if (!cancelled && (count ?? 0) > 0) {
-          setNewsUnread(true);
-        }
-      } catch {
-        /* ignore */
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
 
 
@@ -462,33 +404,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     color: "#FFFFFF",
   };
 
-  const tileStat: React.CSSProperties = {
-    position: "absolute",
-    left: 8,
-    bottom: 7,
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 3,
-    fontSize: 9,
-    fontWeight: 600,
-    color: "rgba(255,255,255,0.72)",
-  };
-
   const tileLabelWrap: React.CSSProperties = { padding: "9px 11px 11px" };
   const tileTitle: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: NAVY };
   const tileSub: React.CSSProperties = { fontSize: 10, color: "#6B7686", marginTop: 1 };
-
-  const newsPill: React.CSSProperties = {
-    background: "rgba(255,255,255,0.15)",
-    backdropFilter: "blur(4px)",
-    WebkitBackdropFilter: "blur(4px)",
-    fontSize: 7,
-    fontWeight: 700,
-    color: "#FFFFFF",
-    borderRadius: 20,
-    padding: "2px 7px",
-    lineHeight: 1.4,
-  };
 
   return (
     <div style={{ margin: "0 -16px 0", padding: "0 16px 2px", borderRadius: 0, fontFamily: FONT }}>
@@ -569,127 +487,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             <div style={tileTitle}>Bitesize</div>
             <div style={tileSub}>Learn &amp; develop</div>
           </div>
-        </div>
-
-        {/* TILE 3 — DSM Reels */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => navigate({ to: "/reels" as never })}
-          style={tileShell}
-        >
-          <div style={tileImageWrap}>
-            <div
-              style={{ ...layerFill, background: "linear-gradient(135deg,#CC2229,#7C1D1D)" }}
-            />
-            <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
-            <div style={iconLayer}>
-              <IconPlayerPlay size={38} color="rgba(255,255,255,0.7)" stroke={1.6} />
-            </div>
-            <span style={{ ...tileBadge, background: "rgba(255,255,255,0.2)" }}>NEW</span>
-            {reelCount != null && (
-              <span style={tileStat}>
-                <i className="ti ti-eye" style={{ fontSize: 9 }} />
-                {reelCount} views
-              </span>
-            )}
-          </div>
-          <div style={tileLabelWrap}>
-            <div style={tileTitle}>DSM Reels</div>
-            <div style={tileSub}>Fun clips</div>
-          </div>
-        </div>
-
-        {/* TILE 4 — Marketplace */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => navigate({ to: "/marketplace" as never })}
-          style={tileShell}
-        >
-          <div style={tileImageWrap}>
-            <div
-              style={{ ...layerFill, background: "linear-gradient(135deg,#15803D,#064E3B)" }}
-            />
-            <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
-            <div style={iconLayer}>
-              <IconShoppingBag size={38} color="rgba(255,255,255,0.7)" stroke={1.6} />
-            </div>
-            <span style={{ ...tileBadge, background: "rgba(255,255,255,0.2)" }}>SHOP</span>
-            {listingCount != null && (
-              <span style={tileStat}>
-                <i className="ti ti-tag" style={{ fontSize: 9 }} />
-                {listingCount} listings
-              </span>
-            )}
-          </div>
-          <div style={tileLabelWrap}>
-            <div style={tileTitle}>Marketplace</div>
-            <div style={tileSub}>Services &amp; deals</div>
-          </div>
-        </div>
-      </div>
-
-      {/* TILE 5 — Industry News (full width) */}
-      <div
-        role="button"
-        tabIndex={0}
-        onClick={() => navigate({ to: "/news" as never })}
-        style={{ ...tileShell, marginBottom: 16 }}
-      >
-        <div style={tileImageWrap}>
-          <div style={{ ...layerFill, background: "linear-gradient(135deg,#0B1F3A,#1e3a5f)" }} />
-          <div style={{ ...layerFill, background: "rgba(0,0,0,0.25)" }} />
-          <div style={iconLayer}>
-            <IconNews size={38} color="rgba(255,255,255,0.65)" stroke={1.6} />
-          </div>
-          <div
-            style={{
-              position: "absolute",
-              top: 8,
-              left: 8,
-              display: "flex",
-              gap: 4,
-              alignItems: "center",
-            }}
-          >
-            <span style={newsPill}>DVSA</span>
-            <span style={newsPill}>DIA</span>
-            <span style={newsPill}>+ 2 more</span>
-          </div>
-          {newsUnread && (
-            <span
-              style={{
-                position: "absolute",
-                top: 8,
-                right: 8,
-                width: 10,
-                height: 10,
-                borderRadius: "50%",
-                background: RED,
-              }}
-            />
-          )}
-          {newsCount != null && (
-            <span style={{ ...tileStat, color: "rgba(255,255,255,0.6)" }}>
-              <i className="ti ti-file-text" style={{ fontSize: 9 }} />
-              {newsCount} articles
-            </span>
-          )}
-        </div>
-        <div
-          style={{
-            ...tileLabelWrap,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div>
-            <div style={tileTitle}>Industry News</div>
-            <div style={tileSub}>DVSA · DIA · Intelligent Instructor</div>
-          </div>
-          <i className="ti ti-chevron-right" style={{ fontSize: 16, color: "#E4E8EF" }} />
         </div>
       </div>
 
