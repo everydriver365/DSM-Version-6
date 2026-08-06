@@ -185,7 +185,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       .maybeSingle()
       .then(({ data }) => setLiveHero(data?.image_url ?? null));
 
-    // DSM Reels — latest reel thumbnail
+    // DSM Showcase — latest reel thumbnail
     supabase
       .from("reels")
       .select("thumbnail_url")
@@ -194,7 +194,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       .order("created_at", { ascending: false })
       .limit(1)
       .single()
-      .then(({ data }) => setReelsHero(data?.thumbnail_url ?? null));
+      .then(({ data }) => setShowcaseHero(data?.thumbnail_url ?? null));
 
     // Marketplace — latest listing image
     supabase
