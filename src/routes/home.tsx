@@ -7789,12 +7789,17 @@ function HomePage() {
                 <div
                   style={{
                     display: 'flex',
-                    gap: 12,
+                    flexWrap: 'nowrap',
+                    gap: 8,
+                    alignItems: 'stretch',
                     overflowX: 'auto',
-                    padding: '0 16px 4px',
+                    WebkitOverflowScrolling: 'touch',
                     scrollSnapType: 'x mandatory',
+                    scrollPadding: '0px',
+                    overscrollBehaviorX: 'contain',
                     scrollbarWidth: 'none',
                     msOverflowStyle: 'none',
+                    padding: '0 16px 4px',
                   }}
                 >
                   {newsArticles.map((article) => (
