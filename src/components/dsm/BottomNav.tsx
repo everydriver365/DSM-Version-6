@@ -103,6 +103,12 @@ function useUnreadMessages(): number {
         filter: `instructor_id=eq.${uid}`,
       }, () => { load(); })
       .on("postgres_changes", {
+        event: "UPDATE",
+        schema: "public",
+        table: "chat_messages",
+        filter: `instructor_id=eq.${uid}`,
+      }, () => { load(); })
+      .on("postgres_changes", {
         event: "INSERT",
         schema: "public",
         table: "conversations",
@@ -120,12 +126,13 @@ function useUnreadMessages(): number {
         table: "local_chat_messages",
       }, () => { load(); })
       .on("postgres_changes", {
-        event: "INSERT",
+        event: "*",
         schema: "public",
         table: "instructor_messages",
         filter: `to_instructor_id=eq.${uid}`,
       }, () => { load(); })
       .subscribe();
+
 
     return () => {
       window.clearInterval(interval);
