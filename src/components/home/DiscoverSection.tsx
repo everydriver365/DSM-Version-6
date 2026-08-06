@@ -226,7 +226,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     return startMs(a.session_date, a.session_time) - startMs(b.session_date, b.session_time);
   });
 
-  const playable = learn.filter((v) => !!v.url);
 
   const fmtTimeDay = (d: string, t: string) => {
     const ms = startMs(d, t);
