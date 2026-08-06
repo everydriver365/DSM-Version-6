@@ -418,15 +418,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const urgentLive = liveSorted.filter(isUrgentLive);
   const otherLive = liveSorted.filter((s) => !isUrgentLive(s));
 
-  const allItems = [
-    ...urgentLive.map((s) => ({ type: "live" as const, data: s, urgent: true })),
-    ...market.map((m, i) => ({ type: "market" as const, marketIndex: i, data: m })),
-    ...otherLive.map((s) => ({ type: "live" as const, data: s, urgent: false })),
-    ...playable.map((v) => ({ type: "learn" as const, data: v })),
-  ];
-
-
-  const stripRef = useRef<HTMLDivElement | null>(null);
 
   const tileShell: React.CSSProperties = {
     background: "#fff",
