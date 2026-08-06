@@ -486,7 +486,7 @@ const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 /** Standard wrapper for every top-level home section: consistent spacing and horizontal padding. */
 const SECTION_WRAPPER_STYLE: React.CSSProperties = {
-  marginBottom: 24,
+  marginBottom: 16,
   padding: '0 16px',
 };
 
