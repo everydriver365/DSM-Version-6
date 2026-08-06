@@ -442,8 +442,25 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           style={tileShell}
         >
           <div style={tileImageWrap}>
+            {marketplaceHero && (
+              <img
+                src={marketplaceHero}
+                alt=""
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            )}
             <div
-              style={{ ...layerFill, background: "linear-gradient(135deg,#15803D,#064E3B)" }}
+              style={{
+                ...layerFill,
+                background: "linear-gradient(135deg,#15803D,#064E3B)",
+                opacity: marketplaceHero ? 0.4 : 1,
+              }}
             />
             <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
             <div style={iconLayer}>
