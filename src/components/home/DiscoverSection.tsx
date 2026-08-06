@@ -153,6 +153,57 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     };
   }, []);
 
+  useEffect(() => {
+    // DSM Live — latest session image
+    supabase
+      .from("live_sessions")
+      .select("image_url")
+      .not("image_url", "is", null)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single()
+      .then(({ data }) => setLiveHero(data?.image_url ?? null));
+
+    // DSM Reels — latest reel thumbnail
+    supabase
+      .from("reels")
+      .select("thumbnail_url")
+      .not("thumbnail_url", "is", null)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single()
+      .then(({ data }) => setReelsHero(data?.thumbnail_url ?? null));
+
+    // Marketplace — latest listing image
+    supabase
+      .from("marketplace_listings")
+      .select("image_urls")
+      .not("image_urls", "is", null)
+      .eq("is_active", true)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single()
+      .then(({ data }) => {
+        const imgs = data?.image_urls;
+        setMarketplaceHero(
+          Array.isArray(imgs) && imgs.length > 0 ? imgs[0] : null,
+        );
+      });
+
+    // Industry News — latest article image
+    supabase
+      .from("news_articles")
+      .select("image_url")
+      .not("image_url", "is", null)
+      .eq("is_hidden", false)
+      .order("published_at", { ascending: false })
+      .limit(1)
+      .single()
+      .then(({ data }) => setNewsHero(data?.image_url ?? null));
+  }, []);
+
   const liveSorted = [...live].sort((a, b) => {
     const la = isLiveNow(a) ? 1 : 0;
     const lb = isLiveNow(b) ? 1 : 0;
