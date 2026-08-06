@@ -505,7 +505,7 @@ function TestRow({
             cursor: "pointer",
           }}
         >
-          <IconDotsVertical size={14} color="#D1D5DB" />
+          <IconDotsVertical size={16} color="#9CA3AF" />
         </button>
 
         {menuOpen && (
