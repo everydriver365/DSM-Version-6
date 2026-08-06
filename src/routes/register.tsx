@@ -32,6 +32,8 @@ function RegisterPage() {
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    setEmailExists(false);
+
 
     if (password.length < 8) {
       setError("Password must be at least 8 characters.");
