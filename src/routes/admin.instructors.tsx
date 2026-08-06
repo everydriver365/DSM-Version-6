@@ -54,7 +54,7 @@ function AdminInstructorsPage() {
     const { data, error } = await supabase
       .from("instructors")
       .select(
-        "id, name, email, phone, created_at, home_postcode, hourly_rate, adi_grade, website_published, deleted_at",
+        "id, name, phone, created_at, home_postcode, hourly_rate, adi_grade, website_published, deleted_at",
       )
       .order("created_at", { ascending: false });
     if (error) {
@@ -73,8 +73,7 @@ function AdminInstructorsPage() {
   const filtered = instructors.filter(
     (i) =>
       !search ||
-      i.name?.toLowerCase().includes(search.toLowerCase()) ||
-      i.email?.toLowerCase().includes(search.toLowerCase()),
+      i.name?.toLowerCase().includes(search.toLowerCase()),
   );
 
   function openEdit(inst: any) {
@@ -164,7 +163,7 @@ function AdminInstructorsPage() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name or email..."
+            placeholder="Search by name..."
             className="flex-1 bg-transparent outline-none"
             style={{ fontSize: 13, color: NAVY }}
           />
@@ -218,7 +217,7 @@ function AdminInstructorsPage() {
                   )}
                 </div>
                 <div className="truncate" style={{ fontSize: 12, color: MUTED }}>
-                  {[inst.email, inst.phone].filter(Boolean).join(" · ") || "—"}
+                  {inst.phone || "—"}
                 </div>
                 <div style={{ fontSize: 11, color: "#9CA3AF" }}>Joined {fmtDate(inst.created_at)}</div>
               </div>
