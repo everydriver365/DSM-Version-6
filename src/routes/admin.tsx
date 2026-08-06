@@ -1092,7 +1092,7 @@ function AdminHub() {
           <AdminSectionTile
             icon={<Users size={18} />}
             label="All instructors"
-            onClick={() => navigate({ to: "/admin/applications" as never })}
+            onClick={() => navigate({ to: "/admin/instructors" as never })}
           />
           <AdminSectionTile
             icon={<BookOpen size={18} />}
