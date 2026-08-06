@@ -161,6 +161,17 @@ function InstructorDMThread() {
   const [sending, setSending] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
+  // Hide the global bottom nav while this chat thread is open, restore on unmount.
+  useEffect(() => {
+    const nav = (document.querySelector("[data-bottom-nav]") ??
+      document.querySelector("nav")) as HTMLElement | null;
+    if (nav) nav.style.display = "none";
+    return () => {
+      if (nav) nav.style.display = "";
+    };
+  }, []);
+
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
