@@ -97,17 +97,6 @@ function urgentLabel(s: LiveItem) {
   return `Starts in ${hrs} hr${hrs === 1 ? "" : "s"}`;
 }
 
-function firstImage(v: string[] | string | null): string | null {
-  if (!v) return null;
-  if (Array.isArray(v)) return v[0] ?? null;
-  try {
-    const parsed = JSON.parse(v);
-    if (Array.isArray(parsed)) return parsed[0] ?? null;
-  } catch {
-    /* not json */
-  }
-  return typeof v === "string" && v.startsWith("http") ? v : null;
-}
 
 function youtubeThumb(url: string | null | undefined): string | null {
   if (!url) return null;
@@ -529,7 +518,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             const tone = CARD_TONES[item.marketIndex % CARD_TONES.length];
             const ribbon = ribbonLabel(m);
             const catName = ribbon ?? m.marketplace_categories?.name ?? "Marketplace";
-            const photo = m.show_image === false ? null : firstImage(m.image_urls);
             const [amount, unit] = splitPrice(priceLabel(m));
             return (
               <div
@@ -557,20 +545,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     justifyContent: "center",
                   }}
                 >
-                  {photo && (
-                    <img
-                      src={photo}
-                      alt=""
-                      loading="lazy"
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  )}
                   <span
                     style={{
                       ...pillBase,
