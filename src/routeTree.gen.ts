@@ -155,6 +155,7 @@ import { Route as PupilsProgressIdRouteImport } from './routes/pupils.progress.$
 import { Route as PupilsPaymentsIdRouteImport } from './routes/pupils.payments.$id'
 import { Route as PupilsHistoryIdRouteImport } from './routes/pupils.history.$id'
 import { Route as PupilsEditIdRouteImport } from './routes/pupils.edit.$id'
+import { Route as MessagesInstructorConversationIdRouteImport } from './routes/messages.instructor.$conversationId'
 import { Route as LessonsRescheduleIdRouteImport } from './routes/lessons.reschedule.$id'
 import { Route as LessonsFeedbackIdRouteImport } from './routes/lessons.feedback.$id'
 import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
@@ -889,6 +890,12 @@ const PupilsEditIdRoute = PupilsEditIdRouteImport.update({
   path: '/pupils/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MessagesInstructorConversationIdRoute =
+  MessagesInstructorConversationIdRouteImport.update({
+    id: '/instructor/$conversationId',
+    path: '/instructor/$conversationId',
+    getParentRoute: () => MessagesRoute,
+  } as any)
 const LessonsRescheduleIdRoute = LessonsRescheduleIdRouteImport.update({
   id: '/lessons/reschedule/$id',
   path: '/lessons/reschedule/$id',
@@ -1054,6 +1061,7 @@ export interface FileRoutesByFullPath {
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
   '/lessons/reschedule/$id': typeof LessonsRescheduleIdRoute
+  '/messages/instructor/$conversationId': typeof MessagesInstructorConversationIdRoute
   '/pupils/edit/$id': typeof PupilsEditIdRoute
   '/pupils/history/$id': typeof PupilsHistoryIdRoute
   '/pupils/payments/$id': typeof PupilsPaymentsIdRoute
@@ -1202,6 +1210,7 @@ export interface FileRoutesByTo {
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
   '/lessons/reschedule/$id': typeof LessonsRescheduleIdRoute
+  '/messages/instructor/$conversationId': typeof MessagesInstructorConversationIdRoute
   '/pupils/edit/$id': typeof PupilsEditIdRoute
   '/pupils/history/$id': typeof PupilsHistoryIdRoute
   '/pupils/payments/$id': typeof PupilsPaymentsIdRoute
@@ -1355,6 +1364,7 @@ export interface FileRoutesById {
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
   '/lessons/reschedule/$id': typeof LessonsRescheduleIdRoute
+  '/messages/instructor/$conversationId': typeof MessagesInstructorConversationIdRoute
   '/pupils/edit/$id': typeof PupilsEditIdRoute
   '/pupils/history/$id': typeof PupilsHistoryIdRoute
   '/pupils/payments/$id': typeof PupilsPaymentsIdRoute
@@ -1508,6 +1518,7 @@ export interface FileRouteTypes {
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
     | '/lessons/reschedule/$id'
+    | '/messages/instructor/$conversationId'
     | '/pupils/edit/$id'
     | '/pupils/history/$id'
     | '/pupils/payments/$id'
@@ -1656,6 +1667,7 @@ export interface FileRouteTypes {
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
     | '/lessons/reschedule/$id'
+    | '/messages/instructor/$conversationId'
     | '/pupils/edit/$id'
     | '/pupils/history/$id'
     | '/pupils/payments/$id'
@@ -1808,6 +1820,7 @@ export interface FileRouteTypes {
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
     | '/lessons/reschedule/$id'
+    | '/messages/instructor/$conversationId'
     | '/pupils/edit/$id'
     | '/pupils/history/$id'
     | '/pupils/payments/$id'
@@ -2970,6 +2983,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PupilsEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/messages/instructor/$conversationId': {
+      id: '/messages/instructor/$conversationId'
+      path: '/instructor/$conversationId'
+      fullPath: '/messages/instructor/$conversationId'
+      preLoaderRoute: typeof MessagesInstructorConversationIdRouteImport
+      parentRoute: typeof MessagesRoute
+    }
     '/lessons/reschedule/$id': {
       id: '/lessons/reschedule/$id'
       path: '/lessons/reschedule/$id'
@@ -3065,11 +3085,13 @@ const DsmLiveRouteWithChildren =
 interface MessagesRouteChildren {
   MessagesPupilIdRoute: typeof MessagesPupilIdRoute
   MessagesIndexRoute: typeof MessagesIndexRoute
+  MessagesInstructorConversationIdRoute: typeof MessagesInstructorConversationIdRoute
 }
 
 const MessagesRouteChildren: MessagesRouteChildren = {
   MessagesPupilIdRoute: MessagesPupilIdRoute,
   MessagesIndexRoute: MessagesIndexRoute,
+  MessagesInstructorConversationIdRoute: MessagesInstructorConversationIdRoute,
 }
 
 const MessagesRouteWithChildren = MessagesRoute._addFileChildren(
