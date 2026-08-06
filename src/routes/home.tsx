@@ -7952,6 +7952,34 @@ function HomePage() {
                     </div>
                   ))}
                 </div>
+                {newsArticles.length > 2 && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 6,
+                      marginTop: 10,
+                    }}
+                  >
+                    {Array.from({ length: Math.ceil(newsArticles.length / 2) }).map((_, i) => {
+                      const active = i === newsActiveCard;
+                      return (
+                        <span
+                          key={`news-dot-${i}`}
+                          aria-hidden="true"
+                          style={{
+                            width: active ? 8 : 6,
+                            height: active ? 8 : 6,
+                            borderRadius: '50%',
+                            background: active ? '#1877D6' : '#D7DCE3',
+                            transition: 'all .18s ease',
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             )}
 
