@@ -661,7 +661,7 @@ function PaymentsPage() {
                       {isOpen && (
                         <div style={{ margin: "0 16px 12px", paddingTop: 10, borderTop: `0.5px solid #EEF2F7` }}>
                           {editingId === row.id ? (
-                            <EditPaymentForm row={row} onCancel={() => setEditingId(null)} onSaved={async () => { setEditingId(null); await refetch(); }} />
+                            <EditPaymentForm row={row} onCancel={() => setEditingId(null)} onSaved={async () => { setEditingId(null); await refetch(); setTimeout(() => { window.dispatchEvent(new Event('dsm-payment-recorded')); }, 300); }} />
                           ) : (
                             <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 13, color: NAVY }}>
                               {row.lesson_id && <div><span style={{ color: MUTED }}>Lesson:</span> {row.lesson_id.slice(0,8)}…</div>}
@@ -696,7 +696,7 @@ function PaymentsPage() {
 
 
       {refundRow && (
-        <RefundSheet row={refundRow} userId={userId} onClose={() => setRefundRow(null)} onSaved={async () => { setRefundRow(null); await refetch(); }} />
+        <RefundSheet row={refundRow} userId={userId} onClose={() => setRefundRow(null)} onSaved={async () => { setRefundRow(null); await refetch(); setTimeout(() => { window.dispatchEvent(new Event('dsm-payment-recorded')); }, 300); }} />
       )}
 
       <style>{`.no-scrollbar::-webkit-scrollbar{display:none} .no-scrollbar{scrollbar-width:none}`}</style>

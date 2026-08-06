@@ -2016,6 +2016,9 @@ function SchedulePage() {
         onSaved={() => {
           setAddLessonOpen(false);
           setLessonsReloadKey((k) => k + 1);
+          setTimeout(() => {
+            window.dispatchEvent(new Event('dsm-payment-recorded'));
+          }, 300);
         }}
       />
 
@@ -2034,6 +2037,9 @@ function SchedulePage() {
           setUnifiedPayPupilId(undefined);
           setLessonsReloadKey((k) => k + 1);
           toast.success("Payment recorded");
+          setTimeout(() => {
+            window.dispatchEvent(new Event('dsm-payment-recorded'));
+          }, 300);
         }}
       />
 
