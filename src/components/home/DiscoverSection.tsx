@@ -431,7 +431,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
+          gridTemplateColumns: "repeat(2, 1fr)",
           gap: 10,
           marginBottom: 16,
         }}
@@ -439,12 +439,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         <div
           role="button"
           tabIndex={0}
-          onClick={() => stripRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })}
+          onClick={() =>
+            stripRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
+          }
           style={tileShell}
         >
           <div style={tileImage("linear-gradient(135deg, #1877D6, #0B1F3A)")}>
             <IconRadio size={28} color="rgba(255,255,255,0.9)" stroke={1.8} />
-            {hasLiveNow && (
+            {allItems.some((i) => i.type === "live" && isLiveNow(i.data)) && (
               <span style={{ ...tileBadge, background: RED }}>
                 <span className="dsm-live-pulse" style={{ display: "inline-flex" }}>
                   <span
@@ -496,6 +498,22 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           <div style={tileLabelWrap}>
             <div style={tileTitle}>DSM Reels</div>
             <div style={tileSub}>Fun clips</div>
+          </div>
+        </div>
+
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate({ to: "/marketplace" as never })}
+          style={tileShell}
+        >
+          <div style={tileImage("linear-gradient(135deg, #3C9B5A, #1E5E34)")}>
+            <IconShoppingBag size={28} color="rgba(255,255,255,0.9)" stroke={1.8} />
+            <span style={{ ...tileBadge, background: "rgba(255,255,255,0.2)" }}>SHOP</span>
+          </div>
+          <div style={tileLabelWrap}>
+            <div style={tileTitle}>Marketplace</div>
+            <div style={tileSub}>Services &amp; deals</div>
           </div>
         </div>
       </div>
