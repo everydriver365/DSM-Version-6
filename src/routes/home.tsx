@@ -2635,7 +2635,9 @@ function HomePage() {
       .eq('is_hidden', false)
       .order('published_at', { ascending: false })
       .limit(3)
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (error) console.error('[home] news_articles query failed:', error);
+        console.info('[home] news_articles fetched:', data?.length ?? 0);
         if (data) setNewsArticles(data);
       });
   }, [userId]);
@@ -7748,7 +7750,7 @@ function HomePage() {
               <DiscoverGrid />
             </div>
 
-            {newsArticles.length > 0 && (
+            {true && (
               <div
                 style={{
                   margin: '0 -16px 24px',
@@ -7812,6 +7814,23 @@ function HomePage() {
                     padding: '0 0 4px',
                   }}
                 >
+                  {newsArticles.length === 0 && (
+                    <div
+                      style={{
+                        flex: '1 0 100%',
+                        border: '1px solid #E5E7EB',
+                        borderRadius: 10,
+                        background: '#fff',
+                        padding: 20,
+                        textAlign: 'center',
+                        color: '#6B7280',
+                        fontSize: 12,
+                        fontWeight: 500,
+                      }}
+                    >
+                      No industry news yet — check back soon.
+                    </div>
+                  )}
                   {newsArticles.map((article) => {
                     const articleDate = article.published_at
                       ? new Date(article.published_at).toLocaleDateString('en-GB', {
