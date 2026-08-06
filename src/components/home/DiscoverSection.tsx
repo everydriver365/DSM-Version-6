@@ -66,6 +66,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const [newsCount, setNewsCount] = useState<number | null>(null);
   const [newsUnread, setNewsUnread] = useState(false);
 
+  const [liveHero, setLiveHero] = useState<string | null>(null);
+  const [reelsHero, setReelsHero] = useState<string | null>(null);
+  const [marketplaceHero, setMarketplaceHero] = useState<string | null>(null);
+  const [newsHero, setNewsHero] = useState<string | null>(null);
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
