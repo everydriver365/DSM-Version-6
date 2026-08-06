@@ -1963,26 +1963,49 @@ function HomePage() {
 
   useEffect(() => {
     if (!userId) return;
-    supabase
-      .from('instructor_conversations')
-      .select(`
-        id,
-        last_message,
-        last_message_at,
-        instructor_a_id,
-        instructor_b_id,
-        instructor_a:instructors!instructor_a_id(
-          id, name),
-        instructor_b:instructors!instructor_b_id(
-          id, name)
-      `)
-      .or(`instructor_a_id.eq.${userId},instructor_b_id.eq.${userId}`)
-      .not('last_message', 'is', null)
-      .order('last_message_at', { ascending: false })
-      .limit(3)
-      .then(({ data }) => {
-        setDmPreviews(data ?? []);
-      });
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data: convs } = await supabase
+          .from('instructor_conversations')
+          .select('id, last_message, last_message_at, instructor_a_id, instructor_b_id')
+          .or(`instructor_a_id.eq.${userId},instructor_b_id.eq.${userId}`)
+          .not('last_message', 'is', null)
+          .order('last_message_at', { ascending: false })
+          .limit(3);
+        if (!convs?.length || cancelled) return;
+
+        const otherIds = convs.map((c) =>
+          c.instructor_a_id === userId ? c.instructor_b_id : c.instructor_a_id
+        );
+        const { data: instructors } = await supabase
+          .from('instructors')
+          .select('id, name')
+          .in('id', otherIds);
+
+        const nameMap = Object.fromEntries(
+          (instructors ?? []).map((i) => [i.id, i.name])
+        );
+
+        if (!cancelled) {
+          setDmPreviews(
+            convs.map((c) => {
+              const otherId = c.instructor_a_id === userId
+                ? c.instructor_b_id
+                : c.instructor_a_id;
+              return {
+                ...c,
+                other_id: otherId,
+                other_name: nameMap[otherId] ?? 'DSM Instructor',
+              };
+            })
+          );
+        }
+      } catch (e) {
+        console.error('[home] dmPreviews fetch error', e);
+      }
+    })();
+    return () => { cancelled = true; };
   }, [userId, reloadKey]);
 
 
