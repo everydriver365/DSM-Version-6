@@ -1840,6 +1840,8 @@ function HomePage() {
     pupils: { name: string | null; first_name: string | null; profile_image_url: string | null } | null;
   }>>([]);
 
+  const [unreadDMs, setUnreadDMs] = useState(0);
+
   // Unread community chat messages across subscribed, non-muted rooms
   const [unreadChat, setUnreadChat] = useState(0);
 
