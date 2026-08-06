@@ -87,7 +87,7 @@ Deno.serve(async (req) => {
     });
   }
 
-  const { instructor_id, title, body, url } = payload;
+  const { instructor_id, title, body, url, type, data } = payload;
   if (!instructor_id || !title || !body) {
     return new Response(
       JSON.stringify({ error: "instructor_id, title and body are required" }),
