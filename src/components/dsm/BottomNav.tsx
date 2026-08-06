@@ -90,7 +90,11 @@ function useUnreadMessages(): number {
     load();
 
     const interval = window.setInterval(() => { load(); }, 60000);
-    const onPing = () => { load(); };
+    const onPing = () => {
+      load();
+      setTimeout(() => { load(); }, 500);
+      setTimeout(() => { load(); }, 1500);
+    };
     window.addEventListener("dsm-message-received", onPing);
     window.addEventListener("dsm-messages-read", onPing);
 
