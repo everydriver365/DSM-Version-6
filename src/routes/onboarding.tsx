@@ -149,6 +149,13 @@ function OnboardingPage() {
       });
       if (instErr) throw instErr;
 
+      // Fire welcome email (non-blocking)
+      supabase.functions.invoke('send-welcome-email', {
+        body: { instructor_id: userId },
+      }).catch(err =>
+        console.warn('[onboarding] welcome email error', err)
+      );
+
       if (websiteChoice === "yes" && wantsCustomDomain) {
         const { error: csErr } = await supabase.from("contact_submissions").insert({
           name: fullName,
