@@ -6082,23 +6082,36 @@ function HomePage() {
                             }}
                           >
                             {/* Avatar */}
-                            <div style={{
-                              width: 28, height: 28,
-                              borderRadius: '50%',
-                              background: '#1877D6',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              flexShrink: 0,
-                            }}>
-                              <span style={{
-                                fontSize: 10, fontWeight: 700,
-                                color: '#fff',
-                                fontFamily: 'Poppins, sans-serif',
+                            {dm.other_image ? (
+                              <img
+                                src={dm.other_image}
+                                alt=""
+                                style={{
+                                  width: 28, height: 28,
+                                  borderRadius: '50%',
+                                  objectFit: 'cover',
+                                  flexShrink: 0,
+                                }}
+                              />
+                            ) : (
+                              <div style={{
+                                width: 28, height: 28,
+                                borderRadius: '50%',
+                                background: '#1877D6',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexShrink: 0,
                               }}>
-                                {initials}
-                              </span>
-                            </div>
+                                <span style={{
+                                  fontSize: 10, fontWeight: 700,
+                                  color: '#fff',
+                                  fontFamily: 'Poppins, sans-serif',
+                                }}>
+                                  {initials}
+                                </span>
+                              </div>
+                            )}
                             {/* Content */}
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={{
