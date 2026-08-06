@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { formatCountdown } from "@/lib/dateHelpers";
 import { PageLayout } from "@/components/PageLayout";
-import { BottomSheetV2 } from "@/components/dsm/BottomSheetV2";
+import { BottomSheet as BottomSheetV2 } from "@/components/dsm/BottomSheetV2";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 
 export const Route = createFileRoute("/upcoming-tests")({
