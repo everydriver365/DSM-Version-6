@@ -4907,11 +4907,20 @@ function HomePage() {
           const anyReason = isLate && (showTraffic || isAdverseWeather || !!matchedAlert);
 
           // Payment / due
-          const hStatus = (upcoming?.payment_status ?? 'unpaid').toLowerCase();
           const hAmountDue = Number(upcoming?.amount_due ?? 0);
-          const isPaid = hStatus === 'paid' || hStatus === 'prepaid'
-            || hAmountDue <= 0
-            || Number((upcoming as any)?.paid_amount ?? 0) >= hAmountDue;
+          const pupil = upcoming?.pupils as any;
+          const pricingType = pupil?.pricing_type;
+          const prepaidHours = pupil?.prepaid_hours ?? 0;
+          const blockTotal = pupil?.block_hours_total ?? 0;
+          const isPaid =
+            (upcoming?.payment_status === 'paid' ||
+            upcoming?.payment_status === 'partial') ||
+            // Block pupils with hours remaining are paid
+            (pricingType === 'block' && prepaidHours > 0) ||
+            // NI pupils with hours remaining are paid
+            (pricingType === 'national_intensives' && prepaidHours > 0) ||
+            hAmountDue <= 0 ||
+            Number((upcoming as any)?.paid_amount ?? 0) >= hAmountDue;
           const priceText = `£${hAmountDue.toFixed(2)}`;
 
 
