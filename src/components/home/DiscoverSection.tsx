@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   IconPlayerPlay,
   IconBroadcast,
   IconChevronRight,
+  IconRadio,
+  IconBook,
 } from "@tabler/icons-react";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { supabase } from "@/lib/supabaseClient";
+
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
