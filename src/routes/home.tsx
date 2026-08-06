@@ -20,6 +20,7 @@ import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { PageLayout } from "@/components/PageLayout";
 import { SheetQueueController } from "@/components/dsm/SheetQueue";
 import { LessonActionsSheet } from "@/components/lessons/LessonActionsSheet";
+import { WelcomeOverlay } from "@/components/dsm/WelcomeOverlay";
 
 
 import {
@@ -1516,7 +1517,22 @@ function HomePage() {
   const [firstName, setFirstName] = useState("there");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [showWelcome, setShowWelcome] = useState(false);
   const [badgePrefs, setBadgePrefs] = useState(DEFAULT_BADGE_PREFS);
+
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await (supabase as any)
+        .from("instructors")
+        .select("welcome_seen_at, name")
+        .eq("id", userId)
+        .single();
+      if (!cancelled && data && !data.welcome_seen_at) setShowWelcome(true);
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
   const [allPupils, setAllPupils] = useState<PreviewPupil[]>([]);
   const [allAvailability, setAllAvailability] = useState<PupilReadySetting[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
@@ -4719,6 +4735,13 @@ function HomePage() {
 
   return (
     <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
+      {showWelcome && userId && (
+        <WelcomeOverlay
+          userId={userId}
+          instructorName={instructorFullName || firstName || null}
+          onDismiss={() => setShowWelcome(false)}
+        />
+      )}
       {notifBanner}
       <SheetQueueController userId={userId} />
       <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.carousel-hide-scrollbar::-webkit-scrollbar{display:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}@keyframes chipShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
