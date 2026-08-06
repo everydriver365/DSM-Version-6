@@ -175,12 +175,12 @@ function UpcomingTestsPage() {
       </div>
 
       {/* Edit sheet */}
-      <BottomSheetV2
-        isOpen={!!editTest}
-        onClose={() => setEditTest(null)}
-        title="Edit test"
-        subtitle={editTest?.name ?? undefined}
-      >
+      {editTest && (
+        <BottomSheetV2
+          onClose={() => setEditTest(null)}
+          title="Edit test"
+          subtitle={editTest?.name ?? undefined}
+        >
         <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "0 4px 8px" }}>
           {/* Date */}
           <div>
