@@ -498,7 +498,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       {unit}
                     </span>
                   </div>
-
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 'auto' }}>
+                    <IconChevronRight size={14} color={MUTED} stroke={2} />
+                  </div>
                 </div>
               </div>
             );
@@ -587,7 +589,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   <div style={{ ...cardSub, color: urgent ? RED : MUTED, fontWeight: urgent ? 600 : 500 }}>
                     {urgent ? urgentLabel(s) : fmtTimeDay(s.session_date, s.session_time)} · DSM Live
                   </div>
-
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 'auto' }}>
+                    <IconChevronRight size={14} color={MUTED} stroke={2} />
+                  </div>
                 </div>
               </div>
             );
@@ -659,41 +663,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div style={cardSub}>
                   {v.duration ? `${v.duration} · DSM Learn` : "Free · DSM Learn"}
                 </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 'auto' }}>
+                  <IconChevronRight size={14} color={MUTED} stroke={2} />
+                </div>
               </div>
             </div>
           );
         })}
       </div>
 
-      {allItems.length > 2 && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 6,
-            marginTop: 10,
-          }}
-        >
-          {Array.from({ length: Math.ceil(allItems.length / 2) }).map((_, i) => {
-            const active = i === activeCard;
-            return (
-              <div
-                key={`dot-${i}`}
-                aria-hidden="true"
-                style={{
-                  height: 5,
-                  borderRadius: 3,
-                  background: active ? '#1877D6' : '#E4E8EF',
-                  width: active ? 14 : 5,
-                  transition: 'all 0.2s ease',
-                  flexShrink: 0,
-                }}
-              />
-            );
-          })}
-        </div>
-      )}
     </div>
   );
 }
