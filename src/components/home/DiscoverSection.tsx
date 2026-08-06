@@ -343,65 +343,44 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onClick={() => navigate({ to: "/dsm-live" as never })}
           style={{
             ...tileShell,
-            border: liveActive
-              ? "2px solid #CC2229"
-              : "0.5px solid #E4E8EF",
+            border: liveActive ? "2px solid #CC2229" : `0.5px solid ${HAIRLINE}`,
             boxShadow: liveActive
               ? "0 0 0 3px rgba(204,34,41,0.15), 0 4px 16px rgba(204,34,41,0.2)"
               : "none",
-            animation: liveActive
-              ? "livePulse 2s ease-in-out infinite"
-              : "none",
+            animation: liveActive ? "livePulse 2s ease-in-out infinite" : "none",
           }}
         >
-          <div style={tileImageWrap}>
-            {liveHero && (
-              <img
-                src={liveHero}
-                alt=""
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-              />
-            )}
-            <div
-              style={{
-                ...layerFill,
-                background: "linear-gradient(135deg,#1877D6,#0B1F3A)",
-                opacity: liveHero ? 0.4 : 1,
-              }}
-            />
-            <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
-            <div style={iconLayer}>
-              <IconRadio size={38} color="rgba(255,255,255,0.7)" stroke={1.6} />
-            </div>
-            {liveActive && (
-              <span style={{ ...tileBadge, background: RED }}>
+          <div style={strip("#EAF0F8")}>
+            {liveActive ? (
+              <span style={stripPill(RED)}>
                 <span className="dsm-live-dot-pulse" style={{ display: "inline-flex" }}>
                   <span
                     style={{
                       width: 4,
                       height: 4,
                       borderRadius: "50%",
-                      background: "#FFFFFF",
+                      background: RED,
                       display: "inline-block",
                     }}
                   />
                 </span>
-                LIVE
+                Live
               </span>
+            ) : (
+              <span style={stripPill(BLUE)}>Live</span>
             )}
+            <IconRadio size={20} color={BLUE} stroke={1.8} style={{ opacity: 0.55 }} />
           </div>
           <div style={tileLabelWrap}>
-            <div style={tileTitle}>DSM Live</div>
-            <div style={tileSub}>Events &amp; webinars</div>
+            <div style={bodyRow}>
+              <div style={{ minWidth: 0 }}>
+                <div style={tileTitle}>DSM Live</div>
+                <div style={tileSub}>Events &amp; webinars</div>
+              </div>
+              <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
+            </div>
           </div>
         </div>
-
 
         {/* TILE 2 — Bitesize */}
         <div
@@ -410,23 +389,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onClick={() => navigate({ to: "/bitesize" as never })}
           style={tileShell}
         >
-          <div style={tileImageWrap}>
-            <div
-              style={{
-                ...layerFill,
-                background: "linear-gradient(135deg,#7C3AED,#4F1D96)",
-                opacity: 1,
-              }}
-            />
-            <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
-            <div style={iconLayer}>
-              <IconBook size={38} color="rgba(255,255,255,0.7)" stroke={1.6} />
-            </div>
-            <span style={{ ...tileBadge, background: "rgba(255,255,255,0.2)" }}>CPD</span>
+          <div style={strip("#F1EDFB")}>
+            <span style={stripPill("#7C3AED")}>CPD</span>
+            <IconBook size={20} color="#7C3AED" stroke={1.8} style={{ opacity: 0.55 }} />
           </div>
           <div style={tileLabelWrap}>
-            <div style={tileTitle}>Bitesize</div>
-            <div style={tileSub}>Learn &amp; develop</div>
+            <div style={bodyRow}>
+              <div style={{ minWidth: 0 }}>
+                <div style={tileTitle}>Bitesize</div>
+                <div style={tileSub}>Learn &amp; develop</div>
+              </div>
+              <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
+            </div>
           </div>
         </div>
 
@@ -437,42 +411,20 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onClick={() => navigate({ to: "/reels" as never })}
           style={tileShell}
         >
-          <div style={tileImageWrap}>
-            {reelsHero && (
-              <img
-                src={reelsHero}
-                alt=""
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-              />
-            )}
-            <div
-              style={{
-                ...layerFill,
-                background: "linear-gradient(135deg,#CC2229,#7C1D1D)",
-                opacity: reelsHero ? 0.4 : 1,
-              }}
-            />
-            <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
-            <div style={iconLayer}>
-              <IconPlayerPlay size={38} color="rgba(255,255,255,0.7)" stroke={1.6} />
-            </div>
-            <span style={{ ...tileBadge, background: "rgba(255,255,255,0.2)" }}>NEW</span>
-            {reelCount != null && (
-              <span style={tileStat}>
-                <i className="ti ti-eye" style={{ fontSize: 9 }} />
-                {reelCount} views
-              </span>
-            )}
+          <div style={strip("#FBEBEA")}>
+            <span style={stripPill(RED)}>New</span>
+            <IconPlayerPlay size={20} color={RED} stroke={1.8} style={{ opacity: 0.55 }} />
           </div>
           <div style={tileLabelWrap}>
-            <div style={tileTitle}>DSM Reels</div>
-            <div style={tileSub}>Fun clips</div>
+            <div style={bodyRow}>
+              <div style={{ minWidth: 0 }}>
+                <div style={tileTitle}>DSM Reels</div>
+                <div style={tileSub}>
+                  {reelCount != null ? `${reelCount} views` : "Fun clips"}
+                </div>
+              </div>
+              <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
+            </div>
           </div>
         </div>
 
@@ -483,42 +435,20 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onClick={() => navigate({ to: "/marketplace" as never })}
           style={tileShell}
         >
-          <div style={tileImageWrap}>
-            {marketplaceHero && (
-              <img
-                src={marketplaceHero}
-                alt=""
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-              />
-            )}
-            <div
-              style={{
-                ...layerFill,
-                background: "linear-gradient(135deg,#15803D,#064E3B)",
-                opacity: marketplaceHero ? 0.4 : 1,
-              }}
-            />
-            <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
-            <div style={iconLayer}>
-              <IconShoppingBag size={38} color="rgba(255,255,255,0.7)" stroke={1.6} />
-            </div>
-            <span style={{ ...tileBadge, background: "rgba(255,255,255,0.2)" }}>SHOP</span>
-            {listingCount != null && (
-              <span style={tileStat}>
-                <i className="ti ti-tag" style={{ fontSize: 9 }} />
-                {listingCount} listings
-              </span>
-            )}
+          <div style={strip("#E9F5EE")}>
+            <span style={stripPill(GREEN)}>Shop</span>
+            <IconShoppingBag size={20} color={GREEN} stroke={1.8} style={{ opacity: 0.55 }} />
           </div>
           <div style={tileLabelWrap}>
-            <div style={tileTitle}>Marketplace</div>
-            <div style={tileSub}>Services &amp; deals</div>
+            <div style={bodyRow}>
+              <div style={{ minWidth: 0 }}>
+                <div style={tileTitle}>Marketplace</div>
+                <div style={tileSub}>
+                  {listingCount != null ? `${listingCount} listings` : "Services & deals"}
+                </div>
+              </div>
+              <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
+            </div>
           </div>
         </div>
       </div>
@@ -530,123 +460,61 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         onClick={() => navigate({ to: "/news" as never })}
         style={{ ...tileShell, marginBottom: 16 }}
       >
-        <div style={tileImageWrap}>
-          {newsHero && (
-            <img
-              src={newsHero}
-              alt=""
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            />
-          )}
-          <div
-            style={{
-              ...layerFill,
-              background: "linear-gradient(135deg,#0B1F3A,#1e3a5f)",
-              opacity: newsHero ? 0.4 : 1,
-            }}
-          />
-          <div style={{ ...layerFill, background: "rgba(0,0,0,0.25)" }} />
-          <div style={iconLayer}>
-            <IconNews size={38} color="rgba(255,255,255,0.65)" stroke={1.6} />
+        <div style={strip("#EAECF0")}>
+          <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
+            <span style={stripPill(NAVY)}>DVSA</span>
+            <span style={stripPill(NAVY)}>DIA</span>
+            <span style={stripPill(NAVY)}>+ 2 more</span>
           </div>
-          <div
-            style={{
-              position: "absolute",
-              top: 8,
-              left: 8,
-              display: "flex",
-              gap: 4,
-              alignItems: "center",
-            }}
-          >
-            <span style={newsPill}>DVSA</span>
-            <span style={newsPill}>DIA</span>
-            <span style={newsPill}>+ 2 more</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            {newsUnread && (
+              <span
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: RED,
+                  display: "inline-block",
+                }}
+              />
+            )}
+            <IconNews size={20} color={NAVY} stroke={1.8} style={{ opacity: 0.55 }} />
           </div>
-          {newsUnread && (
-            <span
-              style={{
-                position: "absolute",
-                top: 8,
-                right: 8,
-                width: 10,
-                height: 10,
-                borderRadius: "50%",
-                background: RED,
-              }}
-            />
-          )}
-          {newsCount != null && (
-            <span style={{ ...tileStat, color: "rgba(255,255,255,0.6)" }}>
-              <i className="ti ti-file-text" style={{ fontSize: 9 }} />
-              {newsCount} articles
-            </span>
-          )}
         </div>
-        <div style={{ padding: "9px 11px 11px" }}>
-          {/* Title row */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: latestNewsTitle ? 6 : 0,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 12,
-                fontWeight: 700,
-                color: "#0B1F3A",
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              Industry News
+        <div style={{ padding: "9px 12px 11px" }}>
+          <div style={bodyRow}>
+            <div style={{ minWidth: 0 }}>
+              <div style={tileTitle}>Industry News</div>
+              {latestNewsTitle && (
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: NAVY,
+                    lineHeight: 1.3,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    marginTop: 4,
+                  }}
+                >
+                  {latestNewsTitle}
+                </div>
+              )}
+              <div style={tileSub}>
+                {latestNewsSource
+                  ? `${latestNewsSource} · ${latestNewsDate ?? ""}`
+                  : newsCount != null
+                    ? `${newsCount} articles`
+                    : "Latest updates"}
+              </div>
             </div>
-            <IconChevronRight size={14} color="#E4E8EF" stroke={2} />
+            <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
           </div>
-
-          {/* Latest headline */}
-          {latestNewsTitle && (
-            <div
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                color: "#0B1F3A",
-                lineHeight: 1.3,
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-                marginBottom: 4,
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              {latestNewsTitle}
-            </div>
-          )}
-
-          {/* Source + date */}
-          {latestNewsSource && (
-            <div
-              style={{
-                fontSize: 10,
-                color: "#9CA3AF",
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              {latestNewsSource} · {latestNewsDate}
-            </div>
-          )}
         </div>
-
       </div>
+
 
 
 
