@@ -397,6 +397,7 @@ function UpcomingTestsPage() {
           </button>
         </div>
       </BottomSheetV2>
+      )}
     </PageLayout>
   );
 }
