@@ -847,7 +847,12 @@ function MessagesIndexPage() {
     setConvos((prev) =>
       prev.map((c) => (c.pupil_id === pupilId && !c.read_at ? { ...c, read_at: now } : c)),
     );
-    window.dispatchEvent(new CustomEvent("dsm-messages-read"));
+    setTimeout(() => {
+      window.dispatchEvent(new Event("dsm-messages-read"));
+    }, 300);
+    setTimeout(() => {
+      window.dispatchEvent(new Event("dsm-messages-read"));
+    }, 1500);
   }
 
   async function markAdminRead(jobId: string) {
