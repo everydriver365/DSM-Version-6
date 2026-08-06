@@ -1293,6 +1293,119 @@ function MessagesIndexPage() {
         </div>
       )}
 
+      {searchOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "#FFFFFF",
+            zIndex: 100,
+            display: "flex",
+            flexDirection: "column",
+            paddingTop: "env(safe-area-inset-top, 0px)",
+            ...FONT,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "14px 16px",
+              borderBottom: `0.5px solid ${BORDER}`,
+            }}
+          >
+            <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>New message</div>
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => {
+                setSearchOpen(false);
+                setSearchQuery("");
+                setSearchResults([]);
+              }}
+              style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
+            >
+              <X size={20} color={GREY} />
+            </button>
+          </div>
+          <div style={{ padding: "12px 16px" }}>
+            <input
+              autoFocus
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search instructors..."
+              style={{
+                width: "100%",
+                boxSizing: "border-box",
+                border: `1px solid ${BORDER}`,
+                borderRadius: 8,
+                outline: "none",
+                padding: "10px 12px",
+                fontSize: 14,
+                color: NAVY,
+                ...FONT,
+              }}
+            />
+          </div>
+          <div style={{ flex: 1, overflowY: "auto" }}>
+            {searchResults.map((r) => (
+              <div
+                key={r.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => void startConversation(r.id)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "10px 16px",
+                  borderBottom: `0.5px solid ${BORDER}`,
+                  cursor: "pointer",
+                }}
+              >
+                {r.profile_image_url ? (
+                  <img
+                    src={r.profile_image_url}
+                    alt={r.name ?? "Instructor"}
+                    style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: "50%",
+                      background: BLUE,
+                      color: "#FFFFFF",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 15,
+                      fontWeight: 600,
+                      flexShrink: 0,
+                    }}
+                  >
+                    {nameInitials(r.name ?? "Instructor")}
+                  </div>
+                )}
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>{r.name}</div>
+                  {r.home_postcode && (
+                    <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>{r.home_postcode}</div>
+                  )}
+                </div>
+              </div>
+            ))}
+            {searchQuery.trim().length >= 2 && searchResults.length === 0 && (
+              <div style={{ padding: "40px 24px", textAlign: "center", fontSize: 14, color: GREY }}>
+                No instructors found
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {openThreadJobId && (
         <AdminJobThreadSheet
           jobId={openThreadJobId}
