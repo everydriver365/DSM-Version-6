@@ -2634,7 +2634,7 @@ function HomePage() {
       .select('id, title, description, image_url, published_at, read_time_mins, source, link')
       .eq('is_hidden', false)
       .order('published_at', { ascending: false })
-      .limit(3)
+      .limit(10)
       .then(({ data, error }) => {
         if (error) console.error('[home] news_articles query failed:', error);
         console.info('[home] news_articles fetched:', data?.length ?? 0);
