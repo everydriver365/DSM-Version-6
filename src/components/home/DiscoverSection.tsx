@@ -198,8 +198,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     return `${time} ${day}`;
   };
 
-  const stripRef = useRef<HTMLDivElement | null>(null);
-  const [activeCard, setActiveCard] = useState(0);
 
   // Re-render each minute so "Starts in X min" and the live window stay accurate.
   const [, setTick] = useState(0);
@@ -209,14 +207,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   }, []);
 
 
-  const onStripScroll = () => {
-    const el = stripRef.current;
-    if (!el) return;
-    const page = el.offsetWidth / 2;
-    const idx = Math.round(el.scrollLeft / page);
-    const pages = Math.max(1, Math.ceil(allItems.length / 2));
-    setActiveCard(Math.max(0, Math.min(pages - 1, idx)));
-  };
 
   const CATEGORY_ICONS: Record<string, string> = {
     dashcam: "📹",
@@ -425,8 +415,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       <div
         className="dsm-discover-scroll"
         style={stripStyle}
-        ref={stripRef}
-        onScroll={onStripScroll}
       >
         {allItems.map((item, i) => {
           if (item.type === "market") {
