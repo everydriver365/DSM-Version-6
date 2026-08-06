@@ -1549,8 +1549,6 @@ function HomePage() {
     read_at: string | null;
   }>>([]);
   const [newsArticles, setNewsArticles] = useState<any[]>([]);
-  const [activeNewsIndex, setActiveNewsIndex] = useState(0);
-  const newsScrollRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const pid = lessonMsgsPupil?.id;
     if (!pid) { setLessonMsgs([]); return; }
@@ -7783,15 +7781,7 @@ function HomePage() {
                   .news-scroll::-webkit-scrollbar { display: none }
                 `}</style>
                 <div
-                  ref={newsScrollRef}
                   className="news-scroll"
-                  onScroll={() => {
-                    const el = newsScrollRef.current;
-                    if (!el) return;
-                    const tileWidth = el.offsetWidth - 32;
-                    const index = Math.round(el.scrollLeft / (tileWidth + 10));
-                    setActiveNewsIndex(index);
-                  }}
                   style={{
                     display: 'flex',
                     overflowX: 'auto',
