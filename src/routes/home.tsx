@@ -1549,8 +1549,8 @@ function HomePage() {
     read_at: string | null;
   }>>([]);
   const [newsArticles, setNewsArticles] = useState<any[]>([]);
-  const [newsActiveCard, setNewsActiveCard] = useState(0);
-  const newsStripRef = useRef<HTMLDivElement | null>(null);
+  const [activeNewsIndex, setActiveNewsIndex] = useState(0);
+  const newsScrollRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const pid = lessonMsgsPupil?.id;
     if (!pid) { setLessonMsgs([]); return; }
