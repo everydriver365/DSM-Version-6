@@ -58,6 +58,7 @@ import { supabase } from "../lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { EventToastController, emitLiveEvent, type LiveEventKind } from "../components/dsm/EventToast";
+import { MessageAlert } from "../components/dsm/MessageAlert";
 import { Toaster } from "@/components/ui/sonner";
 
 
@@ -754,6 +755,7 @@ function RootComponent() {
       <CommandPalette />
       <GlobalMenu isAdmin={isAdmin} />
       <EventToastController />
+      <MessageAlert userId={userId} />
       <PushPermissionSheet userId={userId} />
       <Toaster />
       {showFloatingMenu && (
