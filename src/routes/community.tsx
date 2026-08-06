@@ -277,7 +277,7 @@ function AlertSignIcon({ type, size = 28 }: { type: string; size?: number }) {
 function CommunityPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const [activeTab, setActiveTab] = useState<"alerts" | "local" | "rooms" | "uk">("alerts");
+  const [activeTab, setActiveTab] = useState<"alerts" | "local" | "rooms" | "uk" | "dsm">("alerts");
   const [userId, setUserId] = useState<string | null>(null);
   const [instructorFirstName, setInstructorFirstNameState] = useState<string>("");
   const [instructorArea, setInstructorArea] = useState<string>("Your area");
@@ -286,12 +286,56 @@ function CommunityPage() {
   const [instructorProfile, setInstructorProfile] = useState<{ name: string | null; profile_image_url: string | null } | null>(null);
   const [unread, setUnread] = useState<{ local: number; uk: number }>({ local: 0, uk: 0 });
   const [selectedRoom, setSelectedRoom] = useState<{ outcode: string; area_name: string } | null>(null);
+  const [dmConversations, setDmConversations] = useState<any[]>([]);
+  const [unreadDMs, setUnreadDMs] = useState(0);
+  const [dmSearch, setDmSearch] = useState("");
+  const [dmSearchResults, setDmSearchResults] = useState<any[]>([]);
+  const [dmSearchOpen, setDmSearchOpen] = useState(false);
 
   useEffect(() => {
     if (search?.tab === "local") setActiveTab("local");
     else if (search?.tab === "uk") setActiveTab("uk");
     else if (search?.tab === "rooms") setActiveTab("rooms");
+    else if (search?.tab === "dsm") setActiveTab("dsm");
   }, []);
+
+  // Instructor-to-instructor DM conversations
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const { data: convs } = await supabase
+        .from("instructor_conversations")
+        .select("id, last_message, last_message_at, instructor_a_id, instructor_b_id")
+        .or(`instructor_a_id.eq.${userId},instructor_b_id.eq.${userId}`)
+        .order("last_message_at", { ascending: false })
+        .limit(20);
+      if (!convs?.length) {
+        setDmConversations([]);
+        return;
+      }
+      const otherIds = (convs as any[]).map((c) =>
+        c.instructor_a_id === userId ? c.instructor_b_id : c.instructor_a_id
+      );
+      const { data: instructors } = await supabase
+        .from("instructors")
+        .select("id, name, profile_image_url")
+        .in("id", otherIds);
+      const nameMap = Object.fromEntries(((instructors ?? []) as any[]).map((i) => [i.id, i]));
+      setDmConversations((convs as any[]).map((c) => ({
+        ...c,
+        other: nameMap[c.instructor_a_id === userId ? c.instructor_b_id : c.instructor_a_id],
+      })));
+
+      const { count } = await supabase
+        .from("instructor_messages")
+        .select("id", { count: "exact", head: true })
+        .eq("to_instructor_id", userId)
+        .is("read_at", null)
+        .is("deleted_at", null);
+      setUnreadDMs(count ?? 0);
+    })();
+  }, [userId, activeTab]);
+
 
   // Unread counts per subscribed room
   useEffect(() => {
