@@ -183,6 +183,9 @@ export function PupilQuickActionsSheet({
       setPayMethod("cash");
       setPanel("none");
       setDirty(true);
+      setTimeout(() => {
+        window.dispatchEvent(new Event('dsm-payment-recorded'));
+      }, 300);
     } catch (e) {
       console.error("[quick-actions] payment failed", e);
       toast.error("Couldn't record payment");
