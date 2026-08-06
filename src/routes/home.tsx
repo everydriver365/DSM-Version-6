@@ -5961,7 +5961,7 @@ function HomePage() {
                           >
                             {/* Avatar */}
                             <div style={{
-                              width: 36, height: 36,
+                              width: 28, height: 28,
                               borderRadius: '50%',
                               background: '#1877D6',
                               display: 'flex',
@@ -5970,7 +5970,7 @@ function HomePage() {
                               flexShrink: 0,
                             }}>
                               <span style={{
-                                fontSize: 12, fontWeight: 700,
+                                fontSize: 10, fontWeight: 700,
                                 color: '#fff',
                                 fontFamily: 'Poppins, sans-serif',
                               }}>
