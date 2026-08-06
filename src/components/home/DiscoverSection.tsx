@@ -16,7 +16,7 @@ const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 const RED = "#CC2229";
 const GREEN = "#3C9B5A";
-const HAIRLINE = "#E1E7EF";
+
 const MUTED = "#8A94A3";
 const FONT = "Poppins, Inter, sans-serif";
 
