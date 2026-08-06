@@ -199,13 +199,26 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     // Industry News — latest article image
     supabase
       .from("news_articles")
-      .select("image_url")
+      .select("image_url, title, source, published_at")
       .not("image_url", "is", null)
       .eq("is_hidden", false)
       .order("published_at", { ascending: false })
       .limit(1)
       .single()
-      .then(({ data }) => setNewsHero(data?.image_url ?? null));
+      .then(({ data }) => {
+        setNewsHero(data?.image_url ?? null);
+        setLatestNewsTitle(data?.title ?? null);
+        setLatestNewsSource(data?.source ?? null);
+        setLatestNewsDate(
+          data?.published_at
+            ? new Date(data.published_at).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+              })
+            : null,
+        );
+      });
+
   }, []);
 
   const liveSorted = [...live].sort((a, b) => {
