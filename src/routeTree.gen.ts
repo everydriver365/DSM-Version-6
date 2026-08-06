@@ -140,6 +140,7 @@ import { Route as AdminPodcastsRouteImport } from './routes/admin.podcasts'
 import { Route as AdminListingsRouteImport } from './routes/admin.listings'
 import { Route as AdminLearnVideosRouteImport } from './routes/admin.learn-videos'
 import { Route as AdminJobOffersRouteImport } from './routes/admin.job-offers'
+import { Route as AdminInstructorsRouteImport } from './routes/admin.instructors'
 import { Route as AdminFeaturedRouteImport } from './routes/admin.featured'
 import { Route as AdminDsmLiveRouteImport } from './routes/admin.dsm-live'
 import { Route as AdminChatRoomsRouteImport } from './routes/admin.chat-rooms'
@@ -815,6 +816,11 @@ const AdminJobOffersRoute = AdminJobOffersRouteImport.update({
   path: '/job-offers',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminInstructorsRoute = AdminInstructorsRouteImport.update({
+  id: '/instructors',
+  path: '/instructors',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminFeaturedRoute = AdminFeaturedRouteImport.update({
   id: '/featured',
   path: '/featured',
@@ -1022,6 +1028,7 @@ export interface FileRoutesByFullPath {
   '/admin/chat-rooms': typeof AdminChatRoomsRoute
   '/admin/dsm-live': typeof AdminDsmLiveRoute
   '/admin/featured': typeof AdminFeaturedRoute
+  '/admin/instructors': typeof AdminInstructorsRoute
   '/admin/job-offers': typeof AdminJobOffersRoute
   '/admin/learn-videos': typeof AdminLearnVideosRoute
   '/admin/listings': typeof AdminListingsRoute
@@ -1171,6 +1178,7 @@ export interface FileRoutesByTo {
   '/admin/chat-rooms': typeof AdminChatRoomsRoute
   '/admin/dsm-live': typeof AdminDsmLiveRoute
   '/admin/featured': typeof AdminFeaturedRoute
+  '/admin/instructors': typeof AdminInstructorsRoute
   '/admin/job-offers': typeof AdminJobOffersRoute
   '/admin/learn-videos': typeof AdminLearnVideosRoute
   '/admin/listings': typeof AdminListingsRoute
@@ -1325,6 +1333,7 @@ export interface FileRoutesById {
   '/admin/chat-rooms': typeof AdminChatRoomsRoute
   '/admin/dsm-live': typeof AdminDsmLiveRoute
   '/admin/featured': typeof AdminFeaturedRoute
+  '/admin/instructors': typeof AdminInstructorsRoute
   '/admin/job-offers': typeof AdminJobOffersRoute
   '/admin/learn-videos': typeof AdminLearnVideosRoute
   '/admin/listings': typeof AdminListingsRoute
@@ -1479,6 +1488,7 @@ export interface FileRouteTypes {
     | '/admin/chat-rooms'
     | '/admin/dsm-live'
     | '/admin/featured'
+    | '/admin/instructors'
     | '/admin/job-offers'
     | '/admin/learn-videos'
     | '/admin/listings'
@@ -1628,6 +1638,7 @@ export interface FileRouteTypes {
     | '/admin/chat-rooms'
     | '/admin/dsm-live'
     | '/admin/featured'
+    | '/admin/instructors'
     | '/admin/job-offers'
     | '/admin/learn-videos'
     | '/admin/listings'
@@ -1781,6 +1792,7 @@ export interface FileRouteTypes {
     | '/admin/chat-rooms'
     | '/admin/dsm-live'
     | '/admin/featured'
+    | '/admin/instructors'
     | '/admin/job-offers'
     | '/admin/learn-videos'
     | '/admin/listings'
@@ -2878,6 +2890,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminJobOffersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/instructors': {
+      id: '/admin/instructors'
+      path: '/instructors'
+      fullPath: '/admin/instructors'
+      preLoaderRoute: typeof AdminInstructorsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/featured': {
       id: '/admin/featured'
       path: '/featured'
@@ -3046,6 +3065,7 @@ interface AdminRouteChildren {
   AdminChatRoomsRoute: typeof AdminChatRoomsRoute
   AdminDsmLiveRoute: typeof AdminDsmLiveRoute
   AdminFeaturedRoute: typeof AdminFeaturedRoute
+  AdminInstructorsRoute: typeof AdminInstructorsRoute
   AdminJobOffersRoute: typeof AdminJobOffersRoute
   AdminLearnVideosRoute: typeof AdminLearnVideosRoute
   AdminListingsRoute: typeof AdminListingsRoute
@@ -3058,6 +3078,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminChatRoomsRoute: AdminChatRoomsRoute,
   AdminDsmLiveRoute: AdminDsmLiveRoute,
   AdminFeaturedRoute: AdminFeaturedRoute,
+  AdminInstructorsRoute: AdminInstructorsRoute,
   AdminJobOffersRoute: AdminJobOffersRoute,
   AdminLearnVideosRoute: AdminLearnVideosRoute,
   AdminListingsRoute: AdminListingsRoute,
@@ -3265,3 +3286,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
