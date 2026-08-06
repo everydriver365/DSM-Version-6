@@ -488,21 +488,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </div>
         </div>
 
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => navigate({ to: "/marketplace" as never })}
-          style={tileShell}
-        >
-          <div style={tileImage("linear-gradient(135deg, #3C9B5A, #1E5E34)")}>
-            <IconShoppingBag size={28} color="rgba(255,255,255,0.9)" stroke={1.8} />
-            <span style={{ ...tileBadge, background: "rgba(255,255,255,0.2)" }}>SHOP</span>
-          </div>
-          <div style={tileLabelWrap}>
-            <div style={tileTitle}>Marketplace</div>
-            <div style={tileSub}>Services &amp; deals</div>
-          </div>
-        </div>
       </div>
 
       <div
