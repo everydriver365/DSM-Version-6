@@ -7747,11 +7747,17 @@ function HomePage() {
 
             {newsArticles.length > 0 && (
               <div style={SECTION_WRAPPER_STYLE}>
-                <div style={SECTION_HEADER_STYLE}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
-                    <span style={SECTION_TITLE_TEXT_STYLE}>Industry news</span>
-                  </div>
+                <div style={{ ...SECTION_HEADER_STYLE, alignItems: 'flex-end' }}>
+                  <span
+                    style={{
+                      fontSize: 18,
+                      fontWeight: 700,
+                      color: '#0B1F3A',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    Industry news
+                  </span>
                   <button
                     type="button"
                     onClick={() => navigate({ to: '/news' as never })}
