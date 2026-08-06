@@ -142,7 +142,6 @@ import {
   IconCalendar,
   IconMapPin,
   IconClock,
-  IconNews,
   IconDots,
   IconDotsVertical,
   IconSearch,
@@ -1565,8 +1564,6 @@ function HomePage() {
     read_at: string | null;
   }>>([]);
   const [newsArticles, setNewsArticles] = useState<any[]>([]);
-  const newsScrollRef = useRef<HTMLDivElement>(null);
-  const [activeNewsIndex, setActiveNewsIndex] = useState(0);
   useEffect(() => {
     const pid = lessonMsgsPupil?.id;
     if (!pid) { setLessonMsgs([]); return; }
@@ -2713,20 +2710,6 @@ function HomePage() {
     })();
   }, [userId]);
 
-  useEffect(() => {
-    if (!userId) return;
-    supabase
-      .from('news_articles')
-      .select('id, title, description, image_url, published_at, read_time_mins, source, link')
-      .eq('is_hidden', false)
-      .order('published_at', { ascending: false })
-      .limit(10)
-      .then(({ data, error }) => {
-        if (error) console.error('[home] news_articles query failed:', error);
-        console.info('[home] news_articles fetched:', data?.length ?? 0);
-        if (data) setNewsArticles(data);
-      });
-  }, [userId]);
 
   useEffect(() => {
     if (!userId) return;
