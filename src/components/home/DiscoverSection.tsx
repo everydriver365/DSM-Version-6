@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   IconPlayerPlay,
@@ -198,8 +198,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     return `${time} ${day}`;
   };
 
-  const stripRef = useRef<HTMLDivElement | null>(null);
-  const [activeCard, setActiveCard] = useState(0);
 
   // Re-render each minute so "Starts in X min" and the live window stay accurate.
   const [, setTick] = useState(0);
@@ -209,14 +207,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   }, []);
 
 
-  const onStripScroll = () => {
-    const el = stripRef.current;
-    if (!el) return;
-    const page = el.offsetWidth / 2;
-    const idx = Math.round(el.scrollLeft / page);
-    const pages = Math.max(1, Math.ceil(allItems.length / 2));
-    setActiveCard(Math.max(0, Math.min(pages - 1, idx)));
-  };
 
   const CATEGORY_ICONS: Record<string, string> = {
     dashcam: "📹",
@@ -425,8 +415,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       <div
         className="dsm-discover-scroll"
         style={stripStyle}
-        ref={stripRef}
-        onScroll={onStripScroll}
       >
         {allItems.map((item, i) => {
           if (item.type === "market") {
@@ -498,7 +486,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       {unit}
                     </span>
                   </div>
-
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 'auto' }}>
+                    <IconChevronRight size={14} color={MUTED} stroke={2} />
+                  </div>
                 </div>
               </div>
             );
@@ -587,7 +577,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   <div style={{ ...cardSub, color: urgent ? RED : MUTED, fontWeight: urgent ? 600 : 500 }}>
                     {urgent ? urgentLabel(s) : fmtTimeDay(s.session_date, s.session_time)} · DSM Live
                   </div>
-
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 'auto' }}>
+                    <IconChevronRight size={14} color={MUTED} stroke={2} />
+                  </div>
                 </div>
               </div>
             );
@@ -659,41 +651,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div style={cardSub}>
                   {v.duration ? `${v.duration} · DSM Learn` : "Free · DSM Learn"}
                 </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 'auto' }}>
+                  <IconChevronRight size={14} color={MUTED} stroke={2} />
+                </div>
               </div>
             </div>
           );
         })}
       </div>
 
-      {allItems.length > 2 && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 6,
-            marginTop: 10,
-          }}
-        >
-          {Array.from({ length: Math.ceil(allItems.length / 2) }).map((_, i) => {
-            const active = i === activeCard;
-            return (
-              <div
-                key={`dot-${i}`}
-                aria-hidden="true"
-                style={{
-                  height: 5,
-                  borderRadius: 3,
-                  background: active ? '#1877D6' : '#E4E8EF',
-                  width: active ? 14 : 5,
-                  transition: 'all 0.2s ease',
-                  flexShrink: 0,
-                }}
-              />
-            );
-          })}
-        </div>
-      )}
     </div>
   );
 }
