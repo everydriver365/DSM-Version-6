@@ -520,6 +520,182 @@ function CommunityPage() {
           onRoomRead={(s) => setUnread((u) => ({ ...u, [s]: 0 }))}
         />
       )}
+      {activeTab === "dsm" && (
+        <div style={{ flex: 1, overflowY: "auto" }}>
+          {/* New message button */}
+          <div style={{ padding: "12px 16px", borderBottom: "0.5px solid #E4E8EF", background: "#fff" }}>
+            <button
+              type="button"
+              onClick={() => setDmSearchOpen(true)}
+              style={{
+                width: "100%", padding: "10px 14px", background: "#1877D6", color: "#fff",
+                border: "none", borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: "pointer",
+                fontFamily: "Poppins, sans-serif", display: "flex", alignItems: "center",
+                justifyContent: "center", gap: 8,
+              }}
+            >
+              <i className="ti ti-edit" style={{ fontSize: 16 }} />
+              New message
+            </button>
+          </div>
+
+          {/* Conversation list */}
+          {dmConversations.length === 0 ? (
+            <div style={{
+              padding: "40px 24px", textAlign: "center", fontSize: 14,
+              color: "#6B7686", fontFamily: "Poppins, sans-serif",
+            }}>
+              No messages yet — start a conversation with another DSM instructor
+            </div>
+          ) : (
+            dmConversations.map((dm) => {
+              const other = dm.other;
+              const initials = (other?.name ?? "DM")
+                .split(" ")
+                .map((n: string) => n[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase();
+              return (
+                <div
+                  key={dm.id}
+                  onClick={() => navigate({
+                    to: "/messages/instructor/$conversationId" as never,
+                    params: { conversationId: dm.id } as never,
+                  })}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
+                    borderBottom: "0.5px solid #E4E8EF", cursor: "pointer", background: "#fff",
+                  }}
+                >
+                  <div style={{
+                    width: 44, height: 44, borderRadius: "50%", background: "#1877D6",
+                    display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                  }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>{initials}</span>
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", marginBottom: 2 }}>
+                      {other?.name ?? "DSM Instructor"}
+                    </div>
+                    <div style={{
+                      fontSize: 12, color: "#6B7686", whiteSpace: "nowrap",
+                      overflow: "hidden", textOverflow: "ellipsis",
+                    }}>
+                      {dm.last_message ?? "New conversation"}
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 11, color: "#9CA3AF", flexShrink: 0 }}>
+                    {dm.last_message_at
+                      ? new Date(dm.last_message_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })
+                      : ""}
+                  </div>
+                </div>
+              );
+            })
+          )}
+
+          {/* Instructor search modal */}
+          {dmSearchOpen && (
+            <div style={{
+              position: "fixed", inset: 0, background: "#fff", zIndex: 200,
+              display: "flex", flexDirection: "column",
+              paddingTop: "env(safe-area-inset-top, 0px)",
+            }}>
+              <div style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                padding: "14px 16px", borderBottom: "0.5px solid #E4E8EF",
+              }}>
+                <div style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A" }}>New message</div>
+                <button
+                  type="button"
+                  onClick={() => { setDmSearchOpen(false); setDmSearch(""); setDmSearchResults([]); }}
+                  style={{ background: "none", border: 0, cursor: "pointer", padding: 0 }}
+                >
+                  <i className="ti ti-x" style={{ fontSize: 20, color: "#6B7686" }} />
+                </button>
+              </div>
+              <div style={{ padding: "12px 16px" }}>
+                <input
+                  autoFocus
+                  value={dmSearch}
+                  onChange={async (e) => {
+                    const q = e.target.value;
+                    setDmSearch(q);
+                    const { data } = await supabase
+                      .from("instructors")
+                      .select("id, name, profile_image_url, home_postcode")
+                      .neq("id", userId ?? "")
+                      .ilike("name", q.length >= 2 ? `%${q}%` : "%%")
+                      .order("name", { ascending: true })
+                      .limit(20);
+                    setDmSearchResults((data as any[]) ?? []);
+                  }}
+                  placeholder="Search instructors..."
+                  style={{
+                    width: "100%", boxSizing: "border-box", border: "1px solid #E4E8EF",
+                    borderRadius: 8, padding: "10px 12px", fontSize: 14, color: "#0B1F3A", outline: "none",
+                  }}
+                />
+              </div>
+              <div style={{ flex: 1, overflowY: "auto" }}>
+                {dmSearchResults.map((r) => (
+                  <div
+                    key={r.id}
+                    onClick={async () => {
+                      const { data: existing } = await supabase
+                        .from("instructor_conversations")
+                        .select("id")
+                        .or(
+                          `and(instructor_a_id.eq.${userId},instructor_b_id.eq.${r.id}),` +
+                          `and(instructor_a_id.eq.${r.id},instructor_b_id.eq.${userId})`
+                        )
+                        .maybeSingle();
+                      let convId = (existing as any)?.id;
+                      if (!convId) {
+                        const { data: created } = await supabase
+                          .from("instructor_conversations")
+                          .insert({ instructor_a_id: userId, instructor_b_id: r.id } as any)
+                          .select("id")
+                          .single();
+                        convId = (created as any)?.id;
+                      }
+                      if (convId) {
+                        setDmSearchOpen(false);
+                        navigate({
+                          to: "/messages/instructor/$conversationId" as never,
+                          params: { conversationId: convId } as never,
+                        });
+                      }
+                    }}
+                    style={{
+                      display: "flex", alignItems: "center", gap: 12, padding: "10px 16px",
+                      borderBottom: "0.5px solid #E4E8EF", cursor: "pointer",
+                    }}
+                  >
+                    <div style={{
+                      width: 44, height: 44, borderRadius: "50%", background: "#1877D6",
+                      display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                    }}>
+                      <span style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>
+                        {(r.name ?? "DM").split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()}
+                      </span>
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{r.name}</div>
+                      {r.home_postcode && (
+                        <div style={{ fontSize: 12, color: "#6B7686", marginTop: 2 }}>{r.home_postcode}</div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+
 
     </div>
   );
