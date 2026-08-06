@@ -160,7 +160,7 @@ async function markConversationRead(conversationId: string, userId: string) {
     .is("read_at", null)
     .select("id");
 
-  if (!error && (data?.length ?? 0) > 0) return;
+  if (!error && (data?.length ?? 0) > 0) return data?.length ?? 0;
 
   const { error: rpcError } = await supabase.rpc(
     "mark_instructor_messages_read" as never,
@@ -168,8 +168,27 @@ async function markConversationRead(conversationId: string, userId: string) {
   );
   if (rpcError && error) {
     console.warn("[dm] could not mark messages read", error.message, rpcError.message);
+    return 0;
   }
+  return data?.length ?? 0;
 }
+
+/**
+ * Tell the bottom nav / home badge that messages were read. `delta` lets the
+ * badge drop immediately; the repeats reconcile once the write has committed.
+ */
+function broadcastRead(delta: number) {
+  const fire = (withDelta: boolean) =>
+    window.dispatchEvent(
+      new CustomEvent("dsm-messages-read", {
+        detail: withDelta ? { delta } : undefined,
+      }),
+    );
+  fire(true);
+  setTimeout(() => fire(false), 300);
+  setTimeout(() => fire(false), 1500);
+}
+
 
 
 function InstructorDMThread() {
@@ -249,19 +268,8 @@ function InstructorDMThread() {
         setLoading(false);
       }
 
-      await markConversationRead(conversationId, userId);
-
-      setTimeout(() => {
-        window.dispatchEvent(
-          new Event('dsm-messages-read')
-        );
-      }, 300);
-      setTimeout(() => {
-        window.dispatchEvent(
-          new Event('dsm-messages-read')
-        );
-      }, 1500);
-
+      const marked = await markConversationRead(conversationId, userId);
+      broadcastRead(marked);
     })();
 
     const channel = supabase
@@ -279,20 +287,15 @@ function InstructorDMThread() {
           setMessages((prev) =>
             prev.some((m) => m.id === row.id) ? prev : [...prev, row],
           );
+          // Thread is open, so an inbound message is read on arrival — mark it
+          // and drop the badge straight away instead of letting it flash.
           if (row.from_instructor_id !== userId) {
-            void markConversationRead(conversationId, userId).then(() => {
-              setTimeout(() => {
-                window.dispatchEvent(
-                  new Event('dsm-messages-read')
-                );
-              }, 300);
-              setTimeout(() => {
-                window.dispatchEvent(
-                  new Event('dsm-messages-read')
-                );
-              }, 1500);
-            });
+            void markConversationRead(conversationId, userId).then((n) =>
+              broadcastRead(n),
+            );
           }
+
+
 
         },
       )
