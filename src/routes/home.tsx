@@ -1563,7 +1563,7 @@ function HomePage() {
     source: string | null;
     read_at: string | null;
   }>>([]);
-  const [newsArticles, setNewsArticles] = useState<any[]>([]);
+  
   useEffect(() => {
     const pid = lessonMsgsPupil?.id;
     if (!pid) { setLessonMsgs([]); return; }
