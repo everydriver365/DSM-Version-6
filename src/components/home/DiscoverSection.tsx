@@ -44,18 +44,6 @@ type LearnItem = {
   thumbnail_url: string | null;
 };
 
-type MarketItem = {
-  id: string;
-  title: string;
-  price_display: string | null;
-  price_amount: number | null;
-  image_urls: string[] | string | null;
-  show_image?: boolean | null;
-  is_featured?: boolean | null;
-  created_at?: string | null;
-  marketplace_categories?: { name: string | null; slug: string | null } | null;
-};
-
 function startMs(d: string, t: string) {
   try {
     return new Date(`${d}T${(t || "00:00:00").slice(0, 8)}`).getTime();
