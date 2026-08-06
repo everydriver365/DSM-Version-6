@@ -1045,8 +1045,33 @@ function PupilThreadPage() {
                       <span style={{ fontSize: 10, color: "#9CA3AF" }}>
                         {formatTime(m.created_at)}
                       </span>
-                      {mine && <MessageStatus message={m} />}
                     </div>
+                    {mine && i === lastReadSentIndex && m.read_at && (
+                      <div
+                        style={{
+                          fontSize: 10,
+                          color: "rgba(255,255,255,0.5)",
+                          textAlign: "right",
+                          marginTop: 2,
+                          fontFamily: "Poppins, sans-serif",
+                        }}
+                      >
+                        Read
+                      </div>
+                    )}
+                    {mine && i === lastSentIndex && !m.read_at && (
+                      <div
+                        style={{
+                          fontSize: 10,
+                          color: "rgba(255,255,255,0.35)",
+                          textAlign: "right",
+                          marginTop: 2,
+                          fontFamily: "Poppins, sans-serif",
+                        }}
+                      >
+                        Delivered
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
