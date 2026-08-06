@@ -490,9 +490,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div style={cardBody}>
                   <div style={cardTitle}>{m.title}</div>
                   <div style={cardSub}>
-                    {amount}
-                    {unit}
+                    <span style={{ fontWeight: 700, color: '#0B1F3A' }}>
+                      {amount}
+                    </span>
+                    <span style={{ fontWeight: 500 }}>
+                      {unit}
+                    </span>
                   </div>
+
                 </div>
               </div>
             );
