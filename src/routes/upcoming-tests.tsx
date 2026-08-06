@@ -1,11 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CalendarDays, MapPin, Clock, Bell } from "lucide-react";
+import { IconDotsVertical, IconPencil, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { formatCountdown } from "@/lib/dateHelpers";
 import { PageLayout } from "@/components/PageLayout";
+import { BottomSheetV2 } from "@/components/dsm/BottomSheetV2";
+import { AddressLookup } from "@/components/dsm/AddressLookup";
 
 export const Route = createFileRoute("/upcoming-tests")({
   head: () => ({
@@ -69,19 +72,29 @@ function UpcomingTestsPage() {
   const navigate = useNavigate();
   const [tests, setTests] = useState<PupilTestRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  const [editTest, setEditTest] = useState<PupilTestRow | null>(null);
+  const [editDate, setEditDate] = useState("");
+  const [editTime, setEditTime] = useState("");
+  const [editCentre, setEditCentre] = useState("");
+  const [cancelTest, setCancelTest] = useState<PupilTestRow | null>(null);
+  const [cancelReason, setCancelReason] = useState("");
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     (async () => {
       const { data: userData } = await supabase.auth.getUser();
-      const userId = userData.user?.id;
-      if (!userId) {
+      const uid = userData.user?.id ?? null;
+      setUserId(uid);
+      if (!uid) {
         setLoading(false);
         return;
       }
       const { data, error } = await supabase
         .from("pupils")
         .select("id, name, first_name, test_date, test_time, test_centre")
-        .eq("instructor_id", userId)
+        .eq("instructor_id", uid)
         .not("test_date", "is", null)
         .gte("test_date", todayYmd())
         .order("test_date", { ascending: true });
@@ -130,7 +143,6 @@ function UpcomingTestsPage() {
         </button>
       </div>
 
-
       <div className="px-4 pt-4">
         {loading ? (
           <div className="py-8 text-center text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>
@@ -146,22 +158,279 @@ function UpcomingTestsPage() {
         ) : (
           <div className="flex flex-col" style={{ gap: 10 }}>
             {tests.map((t) => (
-              <TestRow key={t.id} test={t} />
+              <TestRow
+                key={t.id}
+                test={t}
+                onEdit={() => {
+                  setEditDate(t.test_date);
+                  setEditTime(t.test_time ?? "");
+                  setEditCentre(t.test_centre ?? "");
+                  setEditTest(t);
+                }}
+                onCancel={() => setCancelTest(t)}
+              />
             ))}
           </div>
         )}
       </div>
+
+      {/* Edit sheet */}
+      <BottomSheetV2
+        isOpen={!!editTest}
+        onClose={() => setEditTest(null)}
+        title="Edit test"
+        subtitle={editTest?.name ?? undefined}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "0 4px 8px" }}>
+          {/* Date */}
+          <div>
+            <label className="block" style={{ fontSize: 12, color: "#6B7280", marginBottom: 6, ...POPPINS }}>
+              Test date
+            </label>
+            <input
+              type="date"
+              value={editDate}
+              onChange={(e) => setEditDate(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "10px 12px",
+                border: "1px solid #E4E8EF",
+                borderRadius: 8,
+                fontSize: 14,
+                fontFamily: "Poppins, sans-serif",
+                color: "#0B1F3A",
+              }}
+            />
+          </div>
+
+          {/* Time */}
+          <div>
+            <label className="block" style={{ fontSize: 12, color: "#6B7280", marginBottom: 6, ...POPPINS }}>
+              Test time
+            </label>
+            <input
+              type="time"
+              value={editTime}
+              onChange={(e) => setEditTime(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "10px 12px",
+                border: "1px solid #E4E8EF",
+                borderRadius: 8,
+                fontSize: 14,
+                fontFamily: "Poppins, sans-serif",
+                color: "#0B1F3A",
+              }}
+            />
+          </div>
+
+          {/* Test centre — searchable */}
+          <div>
+            <label className="block" style={{ fontSize: 12, color: "#6B7280", marginBottom: 6, ...POPPINS }}>
+              Test centre
+            </label>
+            <AddressLookup
+              initialAddress={editCentre}
+              onAddressFound={(r) => setEditCentre(r.address)}
+              showSearchButton
+            />
+          </div>
+
+          {/* Save button */}
+          <button
+            disabled={saving}
+            onClick={async () => {
+              if (!editTest) return;
+              setSaving(true);
+              await supabase.from("pupils").update({
+                test_date: editDate || null,
+                test_time: editTime || null,
+                test_centre: editCentre || null,
+              }).eq("id", editTest.id);
+              setTests((prev) =>
+                prev.map((t) =>
+                  t.id === editTest.id
+                    ? { ...t, test_date: editDate, test_time: editTime, test_centre: editCentre }
+                    : t,
+                ),
+              );
+              toast.success("Test updated");
+              setSaving(false);
+              setEditTest(null);
+            }}
+            style={{
+              width: "100%",
+              padding: 13,
+              background: saving ? "#9CA3AF" : "#1877D6",
+              color: "#fff",
+              border: "none",
+              borderRadius: 10,
+              fontSize: 14,
+              fontWeight: 700,
+              cursor: saving ? "not-allowed" : "pointer",
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            {saving ? "Saving..." : "Save changes"}
+          </button>
+        </div>
+      </BottomSheetV2>
+
+      {/* Cancel sheet */}
+      <BottomSheetV2
+        isOpen={!!cancelTest}
+        onClose={() => {
+          setCancelTest(null);
+          setCancelReason("");
+        }}
+        title="Cancel test"
+        subtitle={cancelTest?.name ?? undefined}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "0 4px 8px" }}>
+          {/* Warning */}
+          <div
+            style={{
+              display: "flex",
+              gap: 12,
+              padding: 14,
+              background: "#FEF3C7",
+              borderRadius: 10,
+              color: "#92400E",
+            }}
+          >
+            <span style={{ fontSize: 18, lineHeight: 1 }}>⚠️</span>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, ...POPPINS }}>
+                Cancel test for {cancelTest?.name}?
+              </div>
+              <div style={{ fontSize: 13, ...POPPINS }}>
+                This will clear the test date, time and centre from the pupil&apos;s record.
+              </div>
+            </div>
+          </div>
+
+          {/* Reason */}
+          <div>
+            <label className="block" style={{ fontSize: 12, color: "#6B7280", marginBottom: 6, ...POPPINS }}>
+              Reason (optional)
+            </label>
+            <textarea
+              rows={3}
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "10px 12px",
+                border: "1px solid #E4E8EF",
+                borderRadius: 8,
+                fontSize: 13,
+                fontFamily: "Poppins, sans-serif",
+                color: "#0B1F3A",
+                resize: "none",
+              }}
+            />
+          </div>
+
+          {/* Confirm cancel */}
+          <button
+            disabled={saving}
+            onClick={async () => {
+              if (!cancelTest) return;
+              setSaving(true);
+              await supabase.from("pupils").update({
+                test_date: null,
+                test_time: null,
+                test_centre: null,
+                test_status: "cancelled",
+              }).eq("id", cancelTest.id);
+              if (cancelReason.trim() && userId) {
+                await supabase.from("lesson_history").insert({
+                  instructor_id: userId,
+                  pupil_id: cancelTest.id,
+                  notes: `Test cancelled: ${cancelReason.trim()}`,
+                  payment_status: "note",
+                  created_at: new Date().toISOString(),
+                });
+              }
+              setTests((prev) => prev.filter((t) => t.id !== cancelTest.id));
+              toast.success("Test cancelled");
+              setSaving(false);
+              setCancelTest(null);
+              setCancelReason("");
+            }}
+            style={{
+              width: "100%",
+              padding: 13,
+              background: "#CC2229",
+              color: "#fff",
+              border: "none",
+              borderRadius: 10,
+              fontSize: 14,
+              fontWeight: 700,
+              cursor: "pointer",
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            {saving ? "Cancelling..." : "Confirm cancellation"}
+          </button>
+
+          {/* Keep test */}
+          <button
+            onClick={() => {
+              setCancelTest(null);
+              setCancelReason("");
+            }}
+            style={{
+              width: "100%",
+              padding: 13,
+              background: "#F1F5F9",
+              color: "#6B7686",
+              border: "none",
+              borderRadius: 10,
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: "pointer",
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            Keep test
+          </button>
+        </div>
+      </BottomSheetV2>
     </PageLayout>
   );
 }
 
-function TestRow({ test }: { test: PupilTestRow }) {
+function TestRow({
+  test,
+  onEdit,
+  onCancel,
+}: {
+  test: PupilTestRow;
+  onEdit: () => void;
+  onCancel: () => void;
+}) {
   const days = daysUntil(test.test_date);
   const daysLabel = days === 0 ? "Today" : days === 1 ? "Tomorrow" : `${days} days away`;
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [menuOpen]);
 
   return (
     <div
       style={{
+        position: "relative",
         background: "#FFFFFF",
         borderRadius: 18,
         border: "1px solid #E2E8F0",
@@ -216,6 +485,96 @@ function TestRow({ test }: { test: PupilTestRow }) {
             {formatCountdown(test.test_date, test.test_time) ?? "Overdue"}
           </div>
         </div>
+      </div>
+
+      {/* Dots menu trigger */}
+      <div ref={menuRef} style={{ position: "absolute", top: 12, right: 12 }}>
+        <button
+          type="button"
+          onClick={() => setMenuOpen((v) => !v)}
+          style={{
+            display: "grid",
+            placeItems: "center",
+            width: 28,
+            height: 28,
+            borderRadius: 8,
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          <IconDotsVertical size={14} color="#D1D5DB" />
+        </button>
+
+        {menuOpen && (
+          <div
+            style={{
+              position: "absolute",
+              top: "100%",
+              right: 0,
+              marginTop: 4,
+              minWidth: 150,
+              background: "#fff",
+              border: "1px solid #E2E8F0",
+              borderRadius: 10,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+              zIndex: 20,
+              overflow: "hidden",
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setMenuOpen(false);
+                onEdit();
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                width: "100%",
+                padding: "10px 12px",
+                background: "#fff",
+                border: "none",
+                fontSize: 13,
+                fontWeight: 600,
+                color: "#0B1F3A",
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+                textAlign: "left",
+              }}
+            >
+              <IconPencil size={14} color="#0B1F3A" />
+              Edit test
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMenuOpen(false);
+                onCancel();
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                width: "100%",
+                padding: "10px 12px",
+                background: "#fff",
+                border: "none",
+                borderTop: "1px solid #F1F5F9",
+                fontSize: 13,
+                fontWeight: 600,
+                color: "#CC2229",
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+                textAlign: "left",
+              }}
+            >
+              <IconX size={14} color="#CC2229" />
+              Cancel test
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
