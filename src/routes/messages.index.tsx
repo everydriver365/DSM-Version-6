@@ -295,19 +295,16 @@ function MessagesIndexPage() {
   useEffect(() => {
     if (!searchOpen) return;
     const q = searchQuery.trim();
-    if (q.length < 2) {
-      setSearchResults([]);
-      return;
-    }
     const t = setTimeout(() => {
       supabase
         .from("instructors")
         .select("id, name, profile_image_url, home_postcode")
         .neq("id", userId ?? "")
-        .ilike("name", `%${q}%`)
-        .limit(10)
+        .ilike("name", q.length >= 2 ? `%${q}%` : "%%")
+        .order("name", { ascending: true })
+        .limit(20)
         .then(({ data }) => setSearchResults((data as any[]) ?? []));
-    }, 300);
+    }, q.length >= 2 ? 300 : 0);
     return () => clearTimeout(t);
   }, [searchQuery, searchOpen, userId]);
 
