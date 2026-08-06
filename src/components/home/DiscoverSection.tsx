@@ -63,13 +63,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   
   
-  const [reelCount, setReelCount] = useState<number | null>(null);
+  const [showcaseCount, setShowcaseCount] = useState<number | null>(null);
   const [listingCount, setListingCount] = useState<number | null>(null);
   const [newsCount, setNewsCount] = useState<number | null>(null);
   const [newsUnread, setNewsUnread] = useState(false);
 
   const [liveHero, setLiveHero] = useState<string | null>(null);
-  const [reelsHero, setReelsHero] = useState<string | null>(null);
+  const [showcaseHero, setShowcaseHero] = useState<string | null>(null);
   const [marketplaceHero, setMarketplaceHero] = useState<string | null>(null);
   const [newsHero, setNewsHero] = useState<string | null>(null);
   const [latestNewsTitle, setLatestNewsTitle] = useState<string | null>(null);
@@ -80,7 +80,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      // Reels view count (table may not exist yet)
+      // Showcase view count (table may not exist yet)
       try {
         const { data, error } = await supabase.from("reels" as never).select("views");
         if (!cancelled && !error && Array.isArray(data)) {
@@ -88,7 +88,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             (sum, r) => sum + (r.views ?? 0),
             0,
           );
-          setReelCount(total);
+          setShowcaseCount(total);
         }
       } catch {
         /* table may not exist */
