@@ -1961,6 +1961,30 @@ function HomePage() {
     return () => { cancelled = true; };
   }, [userId, reloadKey]);
 
+  useEffect(() => {
+    if (!userId) return;
+    supabase
+      .from('instructor_conversations')
+      .select(`
+        id,
+        last_message,
+        last_message_at,
+        instructor_a_id,
+        instructor_b_id,
+        instructor_a:instructors!instructor_a_id(
+          id, name),
+        instructor_b:instructors!instructor_b_id(
+          id, name)
+      `)
+      .or(`instructor_a_id.eq.${userId},instructor_b_id.eq.${userId}`)
+      .not('last_message', 'is', null)
+      .order('last_message_at', { ascending: false })
+      .limit(3)
+      .then(({ data }) => {
+        setDmPreviews(data ?? []);
+      });
+  }, [userId, reloadKey]);
+
 
   // Local alerts (community issues) — filtered by instructor's outcode.
   useEffect(() => {
