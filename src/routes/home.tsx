@@ -1565,6 +1565,8 @@ function HomePage() {
     read_at: string | null;
   }>>([]);
   const [newsArticles, setNewsArticles] = useState<any[]>([]);
+  const newsScrollRef = useRef<HTMLDivElement>(null);
+  const [activeNewsIndex, setActiveNewsIndex] = useState(0);
   useEffect(() => {
     const pid = lessonMsgsPupil?.id;
     if (!pid) { setLessonMsgs([]); return; }
