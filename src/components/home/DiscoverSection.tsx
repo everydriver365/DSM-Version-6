@@ -678,15 +678,16 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           {Array.from({ length: Math.ceil(allItems.length / 2) }).map((_, i) => {
             const active = i === activeCard;
             return (
-              <span
+              <div
                 key={`dot-${i}`}
                 aria-hidden="true"
                 style={{
-                  width: active ? 8 : 6,
-                  height: active ? 8 : 6,
-                  borderRadius: "50%",
-                  background: active ? BLUE : "#D7DCE3",
-                  transition: "all .18s ease",
+                  height: 5,
+                  borderRadius: 3,
+                  background: active ? '#1877D6' : '#E4E8EF',
+                  width: active ? 14 : 5,
+                  transition: 'all 0.2s ease',
+                  flexShrink: 0,
                 }}
               />
             );
