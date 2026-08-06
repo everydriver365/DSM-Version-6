@@ -309,10 +309,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     color: NAVY,
     lineHeight: 1.25,
     display: "-webkit-box",
-    WebkitLineClamp: 1,
+    WebkitLineClamp: 2,
     WebkitBoxOrient: "vertical",
     overflow: "hidden",
   };
+
 
   const cardSub: React.CSSProperties = {
     fontSize: 11,
