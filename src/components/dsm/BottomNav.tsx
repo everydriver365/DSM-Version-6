@@ -90,7 +90,14 @@ function useUnreadMessages(): number {
     load();
 
     const interval = window.setInterval(() => { load(); }, 60000);
-    const onPing = () => {
+    // `dsm-messages-read` may carry `{ delta }` — the number of messages the
+    // open conversation just marked read. Applying it optimistically drops the
+    // badge instantly; the reloads below reconcile with the database.
+    const onPing = (e: Event) => {
+      const delta = (e as CustomEvent<{ delta?: number }>).detail?.delta;
+      if (typeof delta === "number" && delta > 0) {
+        setCount((c) => Math.max(0, c - delta));
+      }
       load();
       setTimeout(() => { load(); }, 500);
       setTimeout(() => { load(); }, 1500);
@@ -130,12 +137,25 @@ function useUnreadMessages(): number {
         table: "local_chat_messages",
       }, () => { load(); })
       .on("postgres_changes", {
+        event: "UPDATE",
+        schema: "public",
+        table: "local_chat_messages",
+      }, () => { load(); })
+      // Local-chat read state lives in the subscription row's last_read_at.
+      .on("postgres_changes", {
+        event: "*",
+        schema: "public",
+        table: "chat_room_subscriptions",
+        filter: `instructor_id=eq.${uid}`,
+      }, () => { load(); })
+      .on("postgres_changes", {
         event: "*",
         schema: "public",
         table: "instructor_messages",
         filter: `to_instructor_id=eq.${uid}`,
       }, () => { load(); })
       .subscribe();
+
 
 
     return () => {
