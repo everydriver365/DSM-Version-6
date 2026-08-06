@@ -1942,6 +1942,24 @@ function HomePage() {
     return () => { cancelled = true; };
   }, [userId, reloadKey]);
 
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { count, error } = await supabase
+          .from('instructor_messages')
+          .select('id', { count: 'exact', head: true })
+          .eq('to_instructor_id', userId)
+          .is('read_at', null)
+          .is('deleted_at', null);
+        if (cancelled || error) return;
+        setUnreadDMs(count ?? 0);
+      } catch {}
+    })();
+    return () => { cancelled = true; };
+  }, [userId, reloadKey]);
+
 
   // Local alerts (community issues) — filtered by instructor's outcode.
   useEffect(() => {
