@@ -4835,6 +4835,11 @@ function PupilDetailPage() {
         onSaved={() => {
           setUnifiedPayOpen(false);
           setPaymentHistoryRefresh((v) => v + 1);
+          setTimeout(() => {
+            window.dispatchEvent(
+              new Event('dsm-payment-recorded')
+            );
+          }, 300);
         }}
       />
 
