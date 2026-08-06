@@ -404,7 +404,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </div>
         </div>
 
-        {/* TILE 3 — DSM Reels */}
+        {/* TILE 3 — DSM Showcase */}
         <div
           role="button"
           tabIndex={0}
@@ -420,7 +420,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               <div style={{ minWidth: 0 }}>
                 <div style={tileTitle}>DSM Showcase</div>
                 <div style={tileSub}>
-                  {reelCount != null ? `${reelCount} views` : "Fun clips"}
+                  {showcaseCount != null ? `${showcaseCount} views` : "Fun clips"}
                 </div>
               </div>
               <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
