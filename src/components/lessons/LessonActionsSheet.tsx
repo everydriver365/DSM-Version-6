@@ -918,6 +918,9 @@ export function LessonActionsSheet({
                     },
                   },
                 });
+                setTimeout(() => {
+                  window.dispatchEvent(new Event('dsm-payment-recorded'));
+                }, 300);
                 setSaving(false);
                 onClose();
                 navigate({ to: "/home" });
