@@ -143,6 +143,9 @@ function TestsPage() {
   const [pupils, setPupils] = useState<Pupil[]>([]);
   const [addOpen, setAddOpen] = useState(false);
   const [resultFor, setResultFor] = useState<DrivingTest | null>(null);
+  const [editFor, setEditFor] = useState<DrivingTest | null>(null);
+  const [cancelFor, setCancelFor] = useState<DrivingTest | null>(null);
+  const [cancelReason, setCancelReason] = useState("");
 
   useEffect(() => {
     (async () => {
