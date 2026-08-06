@@ -120,7 +120,7 @@ function useUnreadMessages(): number {
         table: "local_chat_messages",
       }, () => { load(); })
       .on("postgres_changes", {
-        event: "INSERT",
+        event: "*",
         schema: "public",
         table: "instructor_messages",
         filter: `to_instructor_id=eq.${uid}`,
