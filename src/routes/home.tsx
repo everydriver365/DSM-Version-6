@@ -5705,6 +5705,14 @@ function HomePage() {
                       text="Admin" colour="#92400E" count={adminUnread}
                       onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
                     />
+                    <Sep />
+                    <Label
+                      text="DSM" colour="#1877D6" count={unreadDMs}
+                      onClick={() => navigate({
+                        to: '/messages' as never,
+                        search: { filter: 'instructors' } as never,
+                      })}
+                    />
 
                   </div>
                 </div>
