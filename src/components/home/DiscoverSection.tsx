@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   IconPlayerPlay,
-  IconBroadcast,
   IconChevronRight,
   IconRadio,
   IconBook,
@@ -37,25 +36,6 @@ type LiveItem = {
   image_url: string | null;
 };
 
-type LearnItem = {
-  id?: string;
-  title: string;
-  duration: string | null;
-  url: string | null;
-  thumbnail_url: string | null;
-};
-
-type MarketItem = {
-  id: string;
-  title: string;
-  price_display: string | null;
-  price_amount: number | null;
-  image_urls: string[] | string | null;
-  show_image?: boolean | null;
-  is_featured?: boolean | null;
-  created_at?: string | null;
-  marketplace_categories?: { name: string | null; slug: string | null } | null;
-};
 
 function startMs(d: string, t: string) {
   try {
@@ -74,44 +54,13 @@ function isLiveNow(s: LiveItem) {
   return now >= start && now < end;
 }
 
-const URGENT_WINDOW_MIN = 180;
 
-/** Minutes from now until a session starts (negative once it has started). */
-function minsUntil(s: LiveItem) {
-  const start = startMs(s.session_date, s.session_time);
-  if (!start) return Number.POSITIVE_INFINITY;
-  return Math.round((start - Date.now()) / 60000);
-}
-
-/** Live right now, or starting within the next few hours. */
-function isUrgentLive(s: LiveItem) {
-  if (isLiveNow(s)) return true;
-  const m = minsUntil(s);
-  return m > 0 && m <= URGENT_WINDOW_MIN;
-}
-
-function urgentLabel(s: LiveItem) {
-  if (isLiveNow(s)) return "Live now";
-  const m = minsUntil(s);
-  if (m < 60) return `Starts in ${m} min`;
-  const hrs = Math.round(m / 60);
-  return `Starts in ${hrs} hr${hrs === 1 ? "" : "s"}`;
-}
-
-
-function youtubeThumb(url: string | null | undefined): string | null {
-  if (!url) return null;
-  const m = url.match(
-    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
-  );
-  return m ? `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg` : null;
-}
 
 export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {}) {
   const navigate = useNavigate();
   const [live, setLive] = useState<LiveItem[]>([]);
-  const [learn, setLearn] = useState<LearnItem[]>([]);
-  const [market, setMarket] = useState<MarketItem[]>([]);
+  
+  
   const [reelCount, setReelCount] = useState<number | null>(null);
   const [listingCount, setListingCount] = useState<number | null>(null);
   const [newsCount, setNewsCount] = useState<number | null>(null);
@@ -192,27 +141,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       }
     })();
 
-    (async () => {
-      try {
-        const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,price_amount,image_urls,show_image,is_featured,created_at,marketplace_categories(name,slug)&order=is_featured.desc,created_at.desc&limit=10`,
-          { headers },
-        );
-        const data = (await res.json()) as MarketItem[];
-        if (!cancelled && Array.isArray(data)) setMarket(data);
-      } catch {
-        /* ignore */
-      }
-    })();
 
-    (async () => {
-      const { data, error } = await supabase
-        .from("learn_videos")
-        .select("id, title, duration, url, thumbnail_url")
-        .not("url", "is", null)
-        .order("sort_order", { ascending: true });
-      if (!cancelled && !error && data) setLearn(data as LearnItem[]);
-    })();
 
     return () => {
       cancelled = true;
@@ -226,29 +155,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     return startMs(a.session_date, a.session_time) - startMs(b.session_date, b.session_time);
   });
 
-  const playable = learn.filter((v) => !!v.url);
 
-  const fmtTimeDay = (d: string, t: string) => {
-    const ms = startMs(d, t);
-    if (!ms) return "";
-    const date = new Date(ms);
-    const time = date
-      .toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true })
-      .replace(/\s?(AM|PM|am|pm)$/i, (m) => m.trim().toLowerCase());
-    const today = new Date();
-    const tomorrow = new Date();
-    tomorrow.setDate(today.getDate() + 1);
-    const same = (a: Date, b: Date) =>
-      a.getFullYear() === b.getFullYear() &&
-      a.getMonth() === b.getMonth() &&
-      a.getDate() === b.getDate();
-    const day = same(date, today)
-      ? "today"
-      : same(date, tomorrow)
-        ? "tomorrow"
-        : date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-    return `${time} ${day}`;
-  };
 
 
   // Re-render each minute so "Starts in X min" and the live window stay accurate.
@@ -260,173 +167,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
 
 
-  const CATEGORY_ICONS: Record<string, string> = {
-    dashcam: "📹",
-    dashcams: "📹",
-    websites: "🌐",
-    website: "🌐",
-    marketing: "📣",
-    insurance: "🛡️",
-    finance: "💷",
-    vehicles: "🚗",
-    cars: "🚗",
-    training: "🎓",
-    software: "💻",
-    equipment: "🧰",
-    accessories: "🧰",
-  };
-
-  const categoryIcon = (m: MarketItem) => {
-    const slug = (m.marketplace_categories?.slug ?? "").toLowerCase();
-    const name = (m.marketplace_categories?.name ?? "").toLowerCase();
-    return CATEGORY_ICONS[slug] ?? CATEGORY_ICONS[name] ?? "🏷️";
-  };
-
-  const ribbonLabel = (m: MarketItem): string | null => {
-    if (m.is_featured) return "Popular";
-    if (m.created_at) {
-      const age = Date.now() - new Date(m.created_at).getTime();
-      if (age >= 0 && age < 14 * 24 * 60 * 60 * 1000) return "New";
-    }
-    return null;
-  };
-
-  const CARD_TONES = [
-    { pillFg: BLUE, tint: "#EAF3FB" },
-    { pillFg: "#067647", tint: "#E7F8EF" },
-    { pillFg: "#6D3BD1", tint: "#F0EBFB" },
-    { pillFg: "#B45309", tint: "#FDF1DF" },
-  ];
-
-  const priceLabel = (m: MarketItem) => {
-    const raw = (m.price_display ?? "").trim();
-    const hasDigit = /\d/.test(raw);
-    if (hasDigit) {
-      return raw.toLowerCase().startsWith("from") ? raw : `From ${raw}`;
-    }
-    if (m.price_amount != null) {
-      const unit = raw ? `/${raw}` : "";
-      return `£${m.price_amount}${unit}`;
-    }
-    return "Price on request";
-  };
-
-  const splitPrice = (label: string): [string, string] => {
-    const idx = label.indexOf("/");
-    if (idx === -1) return [label, ""];
-    return [label.slice(0, idx).trim(), label.slice(idx)];
-  };
-
-  const Dot = ({ size }: { size: number }) => (
-    <span
-      style={{
-        display: "inline-block",
-        width: size,
-        height: size,
-        borderRadius: "50%",
-        background: RED,
-        flexShrink: 0,
-      }}
-    />
-  );
-
-  const cardShell: React.CSSProperties = {
-    flex: "0 0 calc(50% - 4px)",
-    minWidth: "calc(50% - 4px)",
-    borderRadius: 14,
-    border: "1px solid #E4E8EF",
-    background: "#FFFFFF",
-    overflow: "hidden",
-    cursor: "pointer",
-    fontFamily: FONT,
-    scrollSnapAlign: "start",
-    scrollSnapStop: "always",
-    display: "flex",
-    flexDirection: "column",
-  };
-
-  const cardTitle: React.CSSProperties = {
-    fontSize: 13,
-    fontWeight: 700,
-    color: NAVY,
-    lineHeight: 1.25,
-    display: "-webkit-box",
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: "vertical",
-    overflow: "hidden",
-  };
 
 
-  const cardSub: React.CSSProperties = {
-    fontSize: 11,
-    fontWeight: 500,
-    color: MUTED,
-    lineHeight: 1.35,
-    display: "-webkit-box",
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: "vertical",
-    overflow: "hidden",
-  };
-
-  const pillBase: React.CSSProperties = {
-    position: "absolute",
-    top: 4,
-    left: 4,
-    maxWidth: "calc(100% - 12px)",
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 3,
-    borderRadius: 999,
-    padding: "2px 5px",
-    fontSize: 8,
-    fontWeight: 700,
-    letterSpacing: "0.04em",
-    textTransform: "uppercase",
-    whiteSpace: "normal",
-    overflow: "visible",
-    wordBreak: "break-word",
-
-  };
-
-  const stripStyle: React.CSSProperties = {
-    display: "flex",
-    flexWrap: "nowrap",
-    gap: 8,
-    alignItems: "stretch",
-    overflowX: "auto",
-    WebkitOverflowScrolling: "touch",
-    scrollSnapType: "x mandatory",
-    scrollPadding: "0px",
-    overscrollBehaviorX: "contain",
-    scrollbarWidth: "none",
-    msOverflowStyle: "none",
-    padding: "0 0 4px",
-  };
-
-  const cardBody: React.CSSProperties = {
-    position: "relative",
-    padding: "8px 10px 10px",
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    gap: 3,
-    minHeight: 0,
-  };
-
-  // Sessions that are live now, or starting within the next 3 hours, jump to
-  // the front of the strip and stick to the left edge while the user scrolls.
-  const urgentLive = liveSorted.filter(isUrgentLive);
-  const otherLive = liveSorted.filter((s) => !isUrgentLive(s));
-
-  const allItems = [
-    ...urgentLive.map((s) => ({ type: "live" as const, data: s, urgent: true })),
-    ...market.map((m, i) => ({ type: "market" as const, marketIndex: i, data: m })),
-    ...otherLive.map((s) => ({ type: "live" as const, data: s, urgent: false })),
-    ...playable.map((v) => ({ type: "learn" as const, data: v })),
-  ];
-
-
-  const stripRef = useRef<HTMLDivElement | null>(null);
 
   const tileShell: React.CSSProperties = {
     background: "#fff",
@@ -512,9 +254,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         <div
           role="button"
           tabIndex={0}
-          onClick={() =>
-            stripRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
-          }
+          onClick={() => navigate({ to: "/dsm-live" as never })}
           style={tileShell}
         >
           <div style={tileImageWrap}>
@@ -525,7 +265,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             <div style={iconLayer}>
               <IconRadio size={38} color="rgba(255,255,255,0.7)" stroke={1.6} />
             </div>
-            {allItems.some((i) => i.type === "live" && isLiveNow(i.data)) && (
+            {liveSorted.some((s) => isLiveNow(s)) && (
               <span style={{ ...tileBadge, background: RED }}>
                 <span className="dsm-live-pulse" style={{ display: "inline-flex" }}>
                   <span
@@ -694,248 +434,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       </div>
 
 
-      <div
-        ref={stripRef}
-        className="dsm-discover-scroll"
-        style={stripStyle}
-      >
-
-        {allItems.map((item, i) => {
-          if (item.type === "market") {
-            const m = item.data;
-            const tone = CARD_TONES[item.marketIndex % CARD_TONES.length];
-            const ribbon = ribbonLabel(m);
-            const catName = ribbon ?? m.marketplace_categories?.name ?? "Marketplace";
-            const [amount, unit] = splitPrice(priceLabel(m));
-            return (
-              <div
-                key={`market-${m.id}`}
-                role="button"
-                tabIndex={0}
-                onClick={() =>
-                  navigate({
-                    to: "/marketplace/$listingId" as never,
-                    params: { listingId: m.id } as never,
-                  })
-                }
-                style={cardShell}
-              >
-                <div
-                  style={{
-                    position: "relative",
-                    height: 124,
-                    flexShrink: 0,
-                    background: tone.tint,
-                    borderBottom: `1px solid ${HAIRLINE}`,
-                    overflow: "hidden",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <span
-                    style={{
-                      ...pillBase,
-                      zIndex: 1,
-                      background: "rgba(255,255,255,0.95)",
-                      color: tone.pillFg,
-                    }}
-                  >
-                    <span style={{ fontSize: 11 }}>{categoryIcon(m)}</span>
-                    {catName}
-                  </span>
-                </div>
-                <div style={cardBody}>
-                  <div style={cardTitle}>{m.title}</div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      gap: 8,
-                      marginTop: 'auto',
-                    }}
-                  >
-                    <div style={cardSub}>
-                      <span style={{ fontWeight: 700, color: '#0B1F3A' }}>
-                        {amount}
-                      </span>
-                      <span style={{ fontWeight: 500 }}>
-                        {unit}
-                      </span>
-                    </div>
-                    <IconChevronRight size={14} color={MUTED} stroke={2} />
-                  </div>
-                </div>
-              </div>
-            );
-          }
-
-          if (item.type === "live") {
-            const s = item.data;
-            const nowLive = isLiveNow(s);
-            const urgent = item.urgent;
-            const open = () =>
-              navigate({
-                to: "/dsm-live/$sessionId" as never,
-                params: { sessionId: s.id } as never,
-              });
-            const unread = unreadIds.includes(s.id);
-            return (
-              <div
-                key={`live-${s.id}`}
-                role="button"
-                tabIndex={0}
-                onClick={open}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") open();
-                }}
-                style={
-                  urgent
-                    ? {
-                        ...cardShell,
-                        position: "sticky",
-                        left: 0,
-                        zIndex: 2,
-                        border: `1.5px solid ${RED}`,
-                        boxShadow: "0 2px 10px rgba(204,34,41,0.18)",
-                      }
-                    : cardShell
-                }
-              >
-                <div
-                  style={{
-                    position: "relative",
-                    height: 124,
-                    flexShrink: 0,
-                    background: NAVY,
-                    borderBottom: `1px solid ${HAIRLINE}`,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    overflow: "hidden",
-                  }}
-                >
-                  {s.image_url ? (
-                    <img
-                      src={s.image_url}
-                      alt=""
-                      loading="lazy"
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  ) : (
-                    <IconBroadcast size={18} color="#FFFFFF" stroke={1.8} />
-                  )}
-                  <span
-                    style={{
-                      ...pillBase,
-                      zIndex: 1,
-                      background: RED,
-                      color: "#FFFFFF",
-                    }}
-                  >
-                    <span className={nowLive || urgent ? "dsm-live-pulse" : undefined}>
-                      <Dot size={4} />
-                    </span>
-                    {urgent ? urgentLabel(s) : "Live"}
-                  </span>
-                </div>
-                <div style={cardBody}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    {unread && <Dot size={6} />}
-                    <div style={cardTitle}>{s.title}</div>
-                  </div>
-                  <div style={{ ...cardSub, color: urgent ? RED : MUTED, fontWeight: urgent ? 600 : 500 }}>
-                    {urgent ? urgentLabel(s) : fmtTimeDay(s.session_date, s.session_time)} · DSM Live
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 'auto' }}>
-                    <IconChevronRight size={14} color={MUTED} stroke={2} />
-                  </div>
-                </div>
-              </div>
-            );
-          }
-
-          const v = item.data;
-          const thumb = v.thumbnail_url || youtubeThumb(v.url);
-          const open = () => {
-            if (v.url) window.open(v.url, "_blank", "noopener,noreferrer");
-            else navigate({ to: "/learn" as never });
-          };
-          const unread = v.id ? unreadIds.includes(v.id) : false;
-          return (
-            <div
-              key={`learn-${v.id ?? i}`}
-              role="button"
-              tabIndex={0}
-              onClick={open}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") open();
-              }}
-              style={cardShell}
-            >
-              <div
-                style={{
-                  position: "relative",
-                  height: 124,
-                  flexShrink: 0,
-                  background: "#EEF2F7",
-                  borderBottom: `1px solid ${HAIRLINE}`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                }}
-              >
-                {thumb ? (
-                  <img
-                    src={thumb}
-                    alt=""
-                    loading="lazy"
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                ) : (
-                  <IconPlayerPlay size={15} color={MUTED} stroke={2} />
-                )}
-                <span
-                  style={{
-                    ...pillBase,
-                    zIndex: 1,
-                    background: GREEN,
-                    color: "#FFFFFF",
-                  }}
-                >
-                  Learn
-                </span>
-              </div>
-              <div style={cardBody}>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  {unread && <Dot size={6} />}
-                  <div style={cardTitle}>{v.title}</div>
-                </div>
-                <div style={cardSub}>
-                  {v.duration ? `${v.duration} · DSM Learn` : "Free · DSM Learn"}
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 'auto' }}>
-                  <IconChevronRight size={14} color={MUTED} stroke={2} />
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
 
     </div>
   );
