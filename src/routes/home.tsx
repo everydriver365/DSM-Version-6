@@ -7779,29 +7779,29 @@ function HomePage() {
                     See all <IconChevronRight size={14} stroke={2.2} />
                   </button>
                 </div>
+                <style>{`
+                  .news-scroll::-webkit-scrollbar { display: none }
+                `}</style>
                 <div
-                  ref={newsStripRef}
+                  ref={newsScrollRef}
+                  className="news-scroll"
                   onScroll={() => {
-                    const el = newsStripRef.current;
+                    const el = newsScrollRef.current;
                     if (!el) return;
-                    const page = el.offsetWidth / 2;
-                    const idx = Math.round(el.scrollLeft / page);
-                    const pages = Math.max(1, Math.ceil(newsArticles.length / 2));
-                    setNewsActiveCard(Math.max(0, Math.min(pages - 1, idx)));
+                    const tileWidth = el.offsetWidth - 32;
+                    const index = Math.round(el.scrollLeft / (tileWidth + 10));
+                    setActiveNewsIndex(index);
                   }}
                   style={{
                     display: 'flex',
-                    flexWrap: 'nowrap',
-                    gap: 8,
-                    alignItems: 'stretch',
                     overflowX: 'auto',
-                    WebkitOverflowScrolling: 'touch',
                     scrollSnapType: 'x mandatory',
-                    scrollPadding: '0px',
-                    overscrollBehaviorX: 'contain',
+                    WebkitOverflowScrolling: 'touch',
                     scrollbarWidth: 'none',
                     msOverflowStyle: 'none',
-                    padding: '0 0 4px',
+                    gap: 10,
+                    padding: '0 16px 4px',
+                    position: 'relative',
                   }}
                 >
                   {newsArticles.length === 0 && (
@@ -7828,6 +7828,13 @@ function HomePage() {
                           month: 'short',
                         })
                       : '';
+                    const gradients = [
+                      'linear-gradient(135deg, #1e3a5f, #0B1F3A)',
+                      'linear-gradient(135deg, #1877D6, #0B1F3A)',
+                      'linear-gradient(135deg, #CC2229, #0B1F3A)',
+                      'linear-gradient(135deg, #15803D, #0B1F3A)',
+                    ];
+                    const gradient = gradients[article.id?.length % 4 ?? 0] || gradients[0];
                     return (
                       <div
                         key={article.id}
@@ -7848,33 +7855,32 @@ function HomePage() {
                           }
                         }}
                         style={{
-                          flex: '0 0 calc(50% - 4px)',
-                          minWidth: 'calc(50% - 4px)',
-                          borderRadius: 14,
-                          border: '1px solid #E4E8EF',
-                          background: '#FFFFFF',
-                          overflow: 'hidden',
-                          cursor: 'pointer',
-                          fontFamily: 'Poppins, sans-serif',
+                          width: 'calc(100% - 32px)',
+                          flexShrink: 0,
                           scrollSnapAlign: 'start',
                           scrollSnapStop: 'always',
+                          background: '#fff',
+                          border: '1px solid #E4E8EF',
+                          borderRadius: 16,
+                          padding: '13px 14px',
+                          boxShadow: '0 2px 6px rgba(11,31,58,0.05)',
+                          cursor: 'pointer',
                           display: 'flex',
-                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: 12,
                         }}
                       >
                         <div
                           style={{
-                            position: 'relative',
-                            height: 124,
-                            flexShrink: 0,
+                            width: 48,
+                            height: 48,
+                            borderRadius: 10,
                             overflow: 'hidden',
+                            flexShrink: 0,
+                            background: article.image_url ? undefined : gradient,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            borderBottom: '1px solid #E4E8EF',
-                            background: article.image_url
-                              ? undefined
-                              : 'linear-gradient(135deg, #1e3a5f 0%, #0B1F3A 100%)',
                           }}
                         >
                           {article.image_url ? (
@@ -7885,116 +7891,76 @@ function HomePage() {
                               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             />
                           ) : (
-                            <IconNews size={32} color="#FFFFFF" stroke={1.5} />
+                            <IconNews size={18} color="#FFFFFF" stroke={1.5} />
                           )}
                         </div>
-                        <div
-                          style={{
-                            position: 'relative',
-                            padding: '8px 10px 10px',
-                            flex: 1,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 3,
-                            minHeight: 0,
-                          }}
-                        >
+                        <div style={{ flex: 1, minWidth: 0 }}>
                           <div
                             style={{
-                              position: 'absolute',
-                              top: 4,
-                              left: 4,
-                              maxWidth: 'calc(100% - 12px)',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: 3,
-                              borderRadius: 999,
-                              padding: '2px 5px',
-                              fontSize: 8,
+                              fontSize: 9,
                               fontWeight: 700,
-                              fontFamily: 'Poppins, sans-serif',
-                              letterSpacing: '0.04em',
-                              textTransform: 'uppercase',
-                              background: '#E6F1FB',
                               color: '#1877D6',
-                              overflow: 'hidden',
-                              whiteSpace: 'nowrap',
-                              textOverflow: 'ellipsis',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.05em',
+                              marginBottom: 3,
+                              fontFamily: 'Poppins, sans-serif',
                             }}
                           >
                             {article.source || 'News'}
                           </div>
                           <div
                             style={{
-                              marginTop: 14,
                               fontSize: 13,
                               fontWeight: 700,
                               color: '#0B1F3A',
-                              fontFamily: 'Poppins, sans-serif',
-                              lineHeight: 1.25,
-                              display: '-webkit-box',
-                              WebkitLineClamp: 2,
-                              WebkitBoxOrient: 'vertical',
+                              whiteSpace: 'nowrap',
                               overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              marginBottom: 3,
+                              fontFamily: 'Poppins, sans-serif',
                             }}
                           >
                             {article.title}
                           </div>
                           <div
                             style={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
-                              marginTop: 'auto',
-                              fontSize: 11,
+                              fontSize: 10,
                               color: '#9CA3AF',
                               fontFamily: 'Poppins, sans-serif',
                             }}
                           >
-                            <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                              <IconClock size={11} stroke={2} />
-                              <span>{article.read_time_mins ? `${article.read_time_mins} min` : 'News'}</span>
-                            </span>
-                            {articleDate && (
-                              <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                                <IconCalendar size={11} stroke={2} />
-                                <span>{articleDate}</span>
-                              </span>
-                            )}
+                            {article.read_time_mins ? `${article.read_time_mins} min read` : 'News'}
+                            {articleDate ? ` · ${articleDate}` : ''}
                           </div>
                         </div>
+                        <IconChevronRight size={16} color="#E4E8EF" stroke={2.2} />
                       </div>
                     );
                   })}
                 </div>
-                {newsArticles.length > 2 && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: 6,
-                      marginTop: 10,
-                    }}
-                  >
-                    {Array.from({ length: Math.ceil(newsArticles.length / 2) }).map((_, i) => {
-                      const active = i === newsActiveCard;
-                      return (
-                        <span
-                          key={`news-dot-${i}`}
-                          aria-hidden="true"
-                          style={{
-                            width: active ? 8 : 6,
-                            height: active ? 8 : 6,
-                            borderRadius: '50%',
-                            background: active ? '#1877D6' : '#D7DCE3',
-                            transition: 'all .18s ease',
-                          }}
-                        />
-                      );
-                    })}
-                  </div>
-                )}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: 5,
+                    marginTop: 10,
+                  }}
+                >
+                  {newsArticles.map((_, i) => (
+                    <div
+                      key={`news-dot-${i}`}
+                      style={{
+                        height: 5,
+                        borderRadius: 3,
+                        background: i === activeNewsIndex ? '#1877D6' : '#E4E8EF',
+                        width: i === activeNewsIndex ? 14 : 5,
+                        transition: 'all 0.2s ease',
+                        flexShrink: 0,
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
               </div>
             )}
