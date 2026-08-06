@@ -59,6 +59,8 @@ function isLiveNow(s: LiveItem) {
 export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {}) {
   const navigate = useNavigate();
   const [live, setLive] = useState<LiveItem[]>([]);
+  const [liveActive, setLiveActive] = useState(false);
+
   
   
   const [reelCount, setReelCount] = useState<number | null>(null);
