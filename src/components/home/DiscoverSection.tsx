@@ -70,6 +70,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const [reelsHero, setReelsHero] = useState<string | null>(null);
   const [marketplaceHero, setMarketplaceHero] = useState<string | null>(null);
   const [newsHero, setNewsHero] = useState<string | null>(null);
+  const [latestNewsTitle, setLatestNewsTitle] = useState<string | null>(null);
+  const [latestNewsSource, setLatestNewsSource] = useState<string | null>(null);
+  const [latestNewsDate, setLatestNewsDate] = useState<string | null>(null);
+
 
   useEffect(() => {
     let cancelled = false;
