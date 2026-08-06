@@ -7746,8 +7746,16 @@ function HomePage() {
             </div>
 
             {newsArticles.length > 0 && (
-              <div style={SECTION_WRAPPER_STYLE}>
-                <div style={{ ...SECTION_HEADER_STYLE, alignItems: 'flex-end' }}>
+              <div style={{ marginBottom: 24 }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '0 16px',
+                    marginBottom: 8,
+                  }}
+                >
                   <span
                     style={{
                       fontSize: 18,
@@ -7783,7 +7791,7 @@ function HomePage() {
                     display: 'flex',
                     gap: 12,
                     overflowX: 'auto',
-                    padding: '0 0 4px',
+                    padding: '0 16px 4px',
                     scrollSnapType: 'x mandatory',
                     scrollbarWidth: 'none',
                     msOverflowStyle: 'none',
@@ -7794,12 +7802,18 @@ function HomePage() {
                       key={article.id}
                       role="button"
                       tabIndex={0}
-                      onClick={() => {
-                        if (article.link) window.open(article.link, '_blank', 'noopener,noreferrer');
-                      }}
+                      onClick={() =>
+                        navigate({
+                          to: '/news/$articleId' as never,
+                          params: { articleId: article.id } as never,
+                        })
+                      }
                       onKeyDown={(e) => {
-                        if ((e.key === 'Enter' || e.key === ' ') && article.link) {
-                          window.open(article.link, '_blank', 'noopener,noreferrer');
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          navigate({
+                            to: '/news/$articleId' as never,
+                            params: { articleId: article.id } as never,
+                          });
                         }
                       }}
                       style={{
@@ -7810,7 +7824,7 @@ function HomePage() {
                         borderRadius: 12,
                         border: '0.5px solid #E4E8EF',
                         overflow: 'hidden',
-                        cursor: article.link ? 'pointer' : 'default',
+                        cursor: 'pointer',
                         fontFamily: 'Poppins, sans-serif',
                       }}
                     >
@@ -7821,7 +7835,7 @@ function HomePage() {
                           overflow: 'hidden',
                           background: article.image_url
                             ? undefined
-                            : 'linear-gradient(135deg, #0B1F3A 0%, #1a3a6b 100%)',
+                            : 'linear-gradient(135deg, #1e3a5f 0%, #0B1F3A 100%)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -7835,22 +7849,23 @@ function HomePage() {
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                           />
                         ) : (
-                          <IconNews size={32} color="#FFFFFF" stroke={1.5} />
+                          <IconNews size={28} color="#FFFFFF" stroke={1.5} />
                         )}
                       </div>
-                      <div style={{ padding: '10px 12px' }}>
+                      <div style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
                         <div
                           style={{
-                            display: 'inline-block',
+                            display: 'inline-flex',
+                            marginBottom: 6,
+                            background: '#E6F1FB',
+                            color: '#1877D6',
                             fontSize: 8,
                             fontWeight: 700,
+                            fontFamily: 'Poppins, sans-serif',
                             textTransform: 'uppercase',
-                            letterSpacing: '0.04em',
-                            color: '#1877D6',
-                            background: '#E6F1FB',
+                            letterSpacing: '0.06em',
                             borderRadius: 20,
                             padding: '2px 7px',
-                            marginBottom: 6,
                           }}
                         >
                           {article.source || 'News'}
@@ -7860,6 +7875,7 @@ function HomePage() {
                             fontSize: 13,
                             fontWeight: 600,
                             color: '#0B1F3A',
+                            fontFamily: 'Poppins, sans-serif',
                             lineHeight: 1.35,
                             display: '-webkit-box',
                             WebkitLineClamp: 2,
@@ -7875,15 +7891,16 @@ function HomePage() {
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
+                            marginTop: 'auto',
                           }}
                         >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                             <IconClock size={11} color="#9CA3AF" stroke={2} />
-                            <span style={{ fontSize: 11, color: '#9CA3AF' }}>
+                            <span style={{ fontSize: 11, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>
                               {article.read_time_mins ? `${article.read_time_mins} min read` : 'News'}
                             </span>
                           </div>
-                          <span style={{ fontSize: 11, color: '#9CA3AF' }}>
+                          <span style={{ fontSize: 11, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>
                             {article.published_at
                               ? new Date(article.published_at).toLocaleDateString('en-GB', {
                                   day: 'numeric',
