@@ -261,9 +261,16 @@ function InstructorDMThread() {
               .update({ read_at: new Date().toISOString() })
               .eq("id", row.id)
               .then(() => {
-                window.dispatchEvent(
-                  new Event('dsm-messages-read')
-                );
+                setTimeout(() => {
+                  window.dispatchEvent(
+                    new Event('dsm-messages-read')
+                  );
+                }, 300);
+                setTimeout(() => {
+                  window.dispatchEvent(
+                    new Event('dsm-messages-read')
+                  );
+                }, 1500);
               });
           }
         },
