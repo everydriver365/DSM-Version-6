@@ -108,6 +108,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as QuotesIndexRouteImport } from './routes/quotes.index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
 import { Route as NotesIndexRouteImport } from './routes/notes.index'
+import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as MessagesIndexRouteImport } from './routes/messages.index'
 import { Route as DsmLiveIndexRouteImport } from './routes/dsm-live.index'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
@@ -653,6 +654,11 @@ const NotesIndexRoute = NotesIndexRouteImport.update({
   path: '/notes/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsIndexRoute = NewsIndexRouteImport.update({
+  id: '/news/',
+  path: '/news/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MessagesIndexRoute = MessagesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -1040,6 +1046,7 @@ export interface FileRoutesByFullPath {
   '/courses/': typeof CoursesIndexRoute
   '/dsm-live/': typeof DsmLiveIndexRoute
   '/messages/': typeof MessagesIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
@@ -1187,6 +1194,7 @@ export interface FileRoutesByTo {
   '/courses': typeof CoursesIndexRoute
   '/dsm-live': typeof DsmLiveIndexRoute
   '/messages': typeof MessagesIndexRoute
+  '/news': typeof NewsIndexRoute
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
   '/quotes': typeof QuotesIndexRoute
@@ -1339,6 +1347,7 @@ export interface FileRoutesById {
   '/courses/': typeof CoursesIndexRoute
   '/dsm-live/': typeof DsmLiveIndexRoute
   '/messages/': typeof MessagesIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
@@ -1491,6 +1500,7 @@ export interface FileRouteTypes {
     | '/courses/'
     | '/dsm-live/'
     | '/messages/'
+    | '/news/'
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
@@ -1638,6 +1648,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/dsm-live'
     | '/messages'
+    | '/news'
     | '/notes'
     | '/pupils'
     | '/quotes'
@@ -1789,6 +1800,7 @@ export interface FileRouteTypes {
     | '/courses/'
     | '/dsm-live/'
     | '/messages/'
+    | '/news/'
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
@@ -1921,6 +1933,7 @@ export interface RootRouteChildren {
   ReflectiveLogPupilIdRoute: typeof ReflectiveLogPupilIdRoute
   TestDayPupilIdRoute: typeof TestDayPupilIdRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
+  NewsIndexRoute: typeof NewsIndexRoute
   NotesIndexRoute: typeof NotesIndexRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
   LessonsEditIdRoute: typeof LessonsEditIdRoute
@@ -2628,6 +2641,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/news/': {
+      id: '/news/'
+      path: '/news'
+      fullPath: '/news/'
+      preLoaderRoute: typeof NewsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/messages/': {
       id: '/messages/'
       path: '/'
@@ -3208,6 +3228,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReflectiveLogPupilIdRoute: ReflectiveLogPupilIdRoute,
   TestDayPupilIdRoute: TestDayPupilIdRoute,
   CoursesIndexRoute: CoursesIndexRoute,
+  NewsIndexRoute: NewsIndexRoute,
   NotesIndexRoute: NotesIndexRoute,
   PupilsIndexRoute: PupilsIndexRoute,
   LessonsEditIdRoute: LessonsEditIdRoute,
