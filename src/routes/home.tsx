@@ -2635,7 +2635,9 @@ function HomePage() {
       .eq('is_hidden', false)
       .order('published_at', { ascending: false })
       .limit(3)
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (error) console.error('[home] news_articles query failed:', error);
+        console.info('[home] news_articles fetched:', data?.length ?? 0);
         if (data) setNewsArticles(data);
       });
   }, [userId]);
