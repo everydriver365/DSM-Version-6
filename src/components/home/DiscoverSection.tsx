@@ -63,13 +63,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   
   
-  const [reelCount, setReelCount] = useState<number | null>(null);
+  const [showcaseCount, setShowcaseCount] = useState<number | null>(null);
   const [listingCount, setListingCount] = useState<number | null>(null);
   const [newsCount, setNewsCount] = useState<number | null>(null);
   const [newsUnread, setNewsUnread] = useState(false);
 
   const [liveHero, setLiveHero] = useState<string | null>(null);
-  const [reelsHero, setReelsHero] = useState<string | null>(null);
+  const [showcaseHero, setShowcaseHero] = useState<string | null>(null);
   const [marketplaceHero, setMarketplaceHero] = useState<string | null>(null);
   const [newsHero, setNewsHero] = useState<string | null>(null);
   const [latestNewsTitle, setLatestNewsTitle] = useState<string | null>(null);
@@ -80,7 +80,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      // Reels view count (table may not exist yet)
+      // Showcase view count (table may not exist yet)
       try {
         const { data, error } = await supabase.from("reels" as never).select("views");
         if (!cancelled && !error && Array.isArray(data)) {
@@ -88,7 +88,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             (sum, r) => sum + (r.views ?? 0),
             0,
           );
-          setReelCount(total);
+          setShowcaseCount(total);
         }
       } catch {
         /* table may not exist */
@@ -185,7 +185,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       .maybeSingle()
       .then(({ data }) => setLiveHero(data?.image_url ?? null));
 
-    // DSM Reels — latest reel thumbnail
+    // DSM Showcase — latest reel thumbnail
     supabase
       .from("reels")
       .select("thumbnail_url")
@@ -194,7 +194,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       .order("created_at", { ascending: false })
       .limit(1)
       .single()
-      .then(({ data }) => setReelsHero(data?.thumbnail_url ?? null));
+      .then(({ data }) => setShowcaseHero(data?.thumbnail_url ?? null));
 
     // Marketplace — latest listing image
     supabase
@@ -404,7 +404,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </div>
         </div>
 
-        {/* TILE 3 — DSM Reels */}
+        {/* TILE 3 — DSM Showcase */}
         <div
           role="button"
           tabIndex={0}
@@ -420,7 +420,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               <div style={{ minWidth: 0 }}>
                 <div style={tileTitle}>DSM Showcase</div>
                 <div style={tileSub}>
-                  {reelCount != null ? `${reelCount} views` : "Fun clips"}
+                  {showcaseCount != null ? `${showcaseCount} views` : "Fun clips"}
                 </div>
               </div>
               <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
