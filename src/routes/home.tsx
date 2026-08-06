@@ -5945,10 +5945,8 @@ function HomePage() {
                       </div>
                       {/* DM rows */}
                       {dmPreviews.map((dm, i) => {
-                        const other = dm.instructor_a_id === userId
-                          ? dm.instructor_b
-                          : dm.instructor_a;
-                        const initials = (other?.name ?? 'DM')
+                        const other = { name: dm.other_name, id: dm.other_id };
+                        const initials = (dm.other_name ?? 'DM')
                           .split(' ')
                           .map((n: string) => n[0])
                           .join('')
