@@ -1841,6 +1841,7 @@ function HomePage() {
   }>>([]);
 
   const [unreadDMs, setUnreadDMs] = useState(0);
+  const [dmPreviews, setDmPreviews] = useState<any[]>([]);
 
   // Unread community chat messages across subscribed, non-muted rooms
   const [unreadChat, setUnreadChat] = useState(0);
@@ -1958,6 +1959,30 @@ function HomePage() {
       } catch {}
     })();
     return () => { cancelled = true; };
+  }, [userId, reloadKey]);
+
+  useEffect(() => {
+    if (!userId) return;
+    supabase
+      .from('instructor_conversations')
+      .select(`
+        id,
+        last_message,
+        last_message_at,
+        instructor_a_id,
+        instructor_b_id,
+        instructor_a:instructors!instructor_a_id(
+          id, name),
+        instructor_b:instructors!instructor_b_id(
+          id, name)
+      `)
+      .or(`instructor_a_id.eq.${userId},instructor_b_id.eq.${userId}`)
+      .not('last_message', 'is', null)
+      .order('last_message_at', { ascending: false })
+      .limit(3)
+      .then(({ data }) => {
+        setDmPreviews(data ?? []);
+      });
   }, [userId, reloadKey]);
 
 
@@ -5879,6 +5904,165 @@ function HomePage() {
                     </div>
                   ))}
 
+                  {/* ROW 5 — DSM messages */}
+                  {dmPreviews.length > 0 && (
+                    <div style={{ marginTop: 12 }}>
+                      {/* Section header */}
+                      <div style={{
+                        fontSize: 9, fontWeight: 700,
+                        color: '#9CA3AF',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.06em',
+                        marginBottom: 6,
+                        paddingTop: 10,
+                        borderTop: '0.5px solid #E4E8EF',
+                        fontFamily: 'Poppins, sans-serif',
+                      }}>
+                        DSM messages
+                      </div>
+                      {/* DM rows */}
+                      {dmPreviews.map((dm, i) => {
+                        const other = dm.instructor_a_id === userId
+                          ? dm.instructor_b
+                          : dm.instructor_a;
+                        const initials = (other?.name ?? 'DM')
+                          .split(' ')
+                          .map((n: string) => n[0])
+                          .join('')
+                          .slice(0, 2)
+                          .toUpperCase();
+                        const timeAgo = dm.last_message_at
+                          ? (() => {
+                              const diff = Date.now() -
+                                new Date(dm.last_message_at).getTime();
+                              const mins = Math.floor(diff / 60000);
+                              if (mins < 60) return `${mins}m ago`;
+                              const hrs = Math.floor(mins / 60);
+                              if (hrs < 24) return `${hrs}h ago`;
+                              return `${Math.floor(hrs / 24)}d ago`;
+                            })()
+                          : '';
+                        return (
+                          <div
+                            key={dm.id}
+                            onClick={() => navigate({
+                              to: '/messages/instructor/$conversationId' as never,
+                              params: { conversationId: dm.id } as never,
+                            })}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 10,
+                              padding: '8px 0',
+                              borderBottom: i < dmPreviews.length - 1
+                                ? '0.5px solid #E4E8EF' : 'none',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            {/* Avatar */}
+                            <div style={{
+                              width: 36, height: 36,
+                              borderRadius: '50%',
+                              background: '#1877D6',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              flexShrink: 0,
+                            }}>
+                              <span style={{
+                                fontSize: 12, fontWeight: 700,
+                                color: '#fff',
+                                fontFamily: 'Poppins, sans-serif',
+                              }}>
+                                {initials}
+                              </span>
+                            </div>
+                            {/* Content */}
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 6,
+                                marginBottom: 2,
+                              }}>
+                                <span style={{
+                                  fontSize: 13, fontWeight: 600,
+                                  color: '#0B1F3A',
+                                  fontFamily: 'Poppins, sans-serif',
+                                }}>
+                                  {other?.name ?? 'DSM Instructor'}
+                                </span>
+                                <span style={{
+                                  background: '#E6F1FB',
+                                  color: '#1877D6',
+                                  fontSize: 8, fontWeight: 700,
+                                  padding: '1px 5px',
+                                  borderRadius: 20,
+                                  textTransform: 'uppercase',
+                                  letterSpacing: '0.04em',
+                                  fontFamily: 'Poppins, sans-serif',
+                                }}>
+                                  DSM
+                                </span>
+                              </div>
+                              <div style={{
+                                fontSize: 11,
+                                color: '#6B7686',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                fontFamily: 'Poppins, sans-serif',
+                              }}>
+                                {dm.last_message}
+                              </div>
+                            </div>
+                            {/* Time + unread dot */}
+                            <div style={{
+                              flexShrink: 0,
+                              textAlign: 'right',
+                            }}>
+                              <div style={{
+                                fontSize: 10,
+                                color: '#9CA3AF',
+                                fontFamily: 'Poppins, sans-serif',
+                              }}>
+                                {timeAgo}
+                              </div>
+                              {unreadDMs > 0 && (
+                                <div style={{
+                                  width: 8, height: 8,
+                                  borderRadius: '50%',
+                                  background: '#1877D6',
+                                  marginLeft: 'auto',
+                                  marginTop: 4,
+                                }} />
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                      {/* See all link */}
+                      <div style={{
+                        textAlign: 'center',
+                        marginTop: 8,
+                        paddingTop: 8,
+                        borderTop: '0.5px solid #E4E8EF',
+                      }}>
+                        <span
+                          onClick={() => navigate({
+                            to: '/messages' as never,
+                          })}
+                          style={{
+                            fontSize: 12, fontWeight: 600,
+                            color: '#1877D6', cursor: 'pointer',
+                            fontFamily: 'Poppins, sans-serif',
+                          }}
+                        >
+                          See all in Messages →
+                        </span>
+                      </div>
+                    </div>
+                  )}
 
                   <div
                     onClick={() => navigate({ to: '/community' })}
