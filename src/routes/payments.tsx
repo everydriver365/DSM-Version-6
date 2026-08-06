@@ -696,7 +696,7 @@ function PaymentsPage() {
 
 
       {refundRow && (
-        <RefundSheet row={refundRow} userId={userId} onClose={() => setRefundRow(null)} onSaved={async () => { setRefundRow(null); await refetch(); setTimeout(() => { window.dispatchEvent(new Event('dsm-payment-recorded')); }, 300); }} /> />
+        <RefundSheet row={refundRow} userId={userId} onClose={() => setRefundRow(null)} onSaved={async () => { setRefundRow(null); await refetch(); setTimeout(() => { window.dispatchEvent(new Event('dsm-payment-recorded')); }, 300); }} />
       )}
 
       <style>{`.no-scrollbar::-webkit-scrollbar{display:none} .no-scrollbar{scrollbar-width:none}`}</style>
