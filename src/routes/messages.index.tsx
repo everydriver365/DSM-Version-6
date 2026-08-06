@@ -183,7 +183,11 @@ function formatDateSeparator(iso: string) {
 function MessagesIndexPage() {
   const navigate = useNavigate();
   const { jobOfferId: jobOfferIdParam } = Route.useSearch();
-  const [filter, setFilter] = useState<"all" | "pupils" | "local" | "admin">("all");
+  const [filter, setFilter] = useState<Filter>("all");
+  const [instructorDMs, setInstructorDMs] = useState<any[]>([]);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const [view, setView] = useState<"inbox" | "chat" | "rooms">("inbox");
   const [showSearch, setShowSearch] = useState(false);
   const adminStatus = useAdminGate();
