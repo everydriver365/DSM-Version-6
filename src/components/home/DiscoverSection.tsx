@@ -70,6 +70,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const [reelsHero, setReelsHero] = useState<string | null>(null);
   const [marketplaceHero, setMarketplaceHero] = useState<string | null>(null);
   const [newsHero, setNewsHero] = useState<string | null>(null);
+  const [latestNewsTitle, setLatestNewsTitle] = useState<string | null>(null);
+  const [latestNewsSource, setLatestNewsSource] = useState<string | null>(null);
+  const [latestNewsDate, setLatestNewsDate] = useState<string | null>(null);
+
 
   useEffect(() => {
     let cancelled = false;
@@ -195,13 +199,26 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     // Industry News — latest article image
     supabase
       .from("news_articles")
-      .select("image_url")
+      .select("image_url, title, source, published_at")
       .not("image_url", "is", null)
       .eq("is_hidden", false)
       .order("published_at", { ascending: false })
       .limit(1)
       .single()
-      .then(({ data }) => setNewsHero(data?.image_url ?? null));
+      .then(({ data }) => {
+        setNewsHero(data?.image_url ?? null);
+        setLatestNewsTitle(data?.title ?? null);
+        setLatestNewsSource(data?.source ?? null);
+        setLatestNewsDate(
+          data?.published_at
+            ? new Date(data.published_at).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+              })
+            : null,
+        );
+      });
+
   }, []);
 
   const liveSorted = [...live].sort((a, b) => {
@@ -547,20 +564,63 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             </span>
           )}
         </div>
-        <div
-          style={{
-            ...tileLabelWrap,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div>
-            <div style={tileTitle}>Industry News</div>
-            <div style={tileSub}>DVSA · DIA · Intelligent Instructor</div>
+        <div style={{ padding: "9px 11px 11px" }}>
+          {/* Title row */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: latestNewsTitle ? 6 : 0,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                color: "#0B1F3A",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              Industry News
+            </div>
+            <IconChevronRight size={14} color="#E4E8EF" stroke={2} />
           </div>
-          <i className="ti ti-chevron-right" style={{ fontSize: 16, color: "#E4E8EF" }} />
+
+          {/* Latest headline */}
+          {latestNewsTitle && (
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: "#0B1F3A",
+                lineHeight: 1.3,
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                marginBottom: 4,
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              {latestNewsTitle}
+            </div>
+          )}
+
+          {/* Source + date */}
+          {latestNewsSource && (
+            <div
+              style={{
+                fontSize: 10,
+                color: "#9CA3AF",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              {latestNewsSource} · {latestNewsDate}
+            </div>
+          )}
         </div>
+
       </div>
 
 
