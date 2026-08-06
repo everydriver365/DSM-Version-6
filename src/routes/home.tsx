@@ -4914,8 +4914,8 @@ function HomePage() {
           const prepaidHours = pupil?.prepaid_hours ?? 0;
           const blockTotal = pupil?.block_hours_total ?? 0;
           const isPaid =
-            nextLesson.payment_status === 'paid' ||
-            nextLesson.payment_status === 'partial' ||
+            (upcoming?.payment_status === 'paid' ||
+            upcoming?.payment_status === 'partial') ||
             // Block pupils with hours remaining are paid
             (pricingType === 'block' && prepaidHours > 0) ||
             // NI pupils with hours remaining are paid
