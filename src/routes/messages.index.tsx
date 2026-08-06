@@ -12,6 +12,7 @@ import {
   IconBellOff,
   IconBell,
   IconChecks,
+  IconEdit,
 } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
@@ -39,6 +40,8 @@ const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
 
 const FONT = { fontFamily: "Poppins, Inter, sans-serif" } as const;
+
+type Filter = "all" | "pupils" | "local" | "admin" | "instructors";
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
@@ -183,7 +186,11 @@ function formatDateSeparator(iso: string) {
 function MessagesIndexPage() {
   const navigate = useNavigate();
   const { jobOfferId: jobOfferIdParam } = Route.useSearch();
-  const [filter, setFilter] = useState<"all" | "pupils" | "local" | "admin">("all");
+  const [filter, setFilter] = useState<Filter>("all");
+  const [instructorDMs, setInstructorDMs] = useState<any[]>([]);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const [view, setView] = useState<"inbox" | "chat" | "rooms">("inbox");
   const [showSearch, setShowSearch] = useState(false);
   const adminStatus = useAdminGate();
@@ -226,6 +233,72 @@ function MessagesIndexPage() {
   const [lastSeen, setLastSeen] = useState<number>(0);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const scrollBoxRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+    supabase
+      .from("instructor_conversations")
+      .select(
+        "id, instructor_a_id, instructor_b_id, last_message, last_message_at, instructor_a:instructors!instructor_a_id(id, name, profile_image_url), instructor_b:instructors!instructor_b_id(id, name, profile_image_url)",
+      )
+      .or(`instructor_a_id.eq.${userId},instructor_b_id.eq.${userId}`)
+      .order("last_message_at", { ascending: false })
+      .then(({ data }) => {
+        setInstructorDMs((data as any[]) ?? []);
+      });
+  }, [userId]);
+
+  useEffect(() => {
+    if (!searchOpen) return;
+    const q = searchQuery.trim();
+    if (q.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+    const t = setTimeout(() => {
+      supabase
+        .from("instructors")
+        .select("id, name, profile_image_url, home_postcode")
+        .neq("id", userId ?? "")
+        .ilike("name", `%${q}%`)
+        .limit(10)
+        .then(({ data }) => setSearchResults((data as any[]) ?? []));
+    }, 300);
+    return () => clearTimeout(t);
+  }, [searchQuery, searchOpen, userId]);
+
+  async function startConversation(otherInstructorId: string) {
+    if (!userId) return;
+    const { data: existing } = await supabase
+      .from("instructor_conversations")
+      .select("id")
+      .or(
+        `and(instructor_a_id.eq.${userId},instructor_b_id.eq.${otherInstructorId}),and(instructor_a_id.eq.${otherInstructorId},instructor_b_id.eq.${userId})`,
+      )
+      .maybeSingle();
+    if (existing) {
+      setSearchOpen(false);
+      navigate({
+        to: "/messages/instructor/$conversationId" as never,
+        params: { conversationId: (existing as any).id } as never,
+      });
+      return;
+    }
+    const { data: created, error } = await supabase
+      .from("instructor_conversations")
+      .insert({ instructor_a_id: userId, instructor_b_id: otherInstructorId } as any)
+      .select("id")
+      .single();
+    if (error || !created) {
+      toast.error("Could not start conversation");
+      return;
+    }
+    setSearchOpen(false);
+    navigate({
+      to: "/messages/instructor/$conversationId" as never,
+      params: { conversationId: (created as any).id } as never,
+    });
+  }
 
   const loadConvos = useCallback(async () => {
     {
@@ -814,6 +887,29 @@ function MessagesIndexPage() {
       }
     }
 
+    for (const dm of instructorDMs) {
+      const other = dm.instructor_a_id === userId ? dm.instructor_b : dm.instructor_a;
+      if (!other) continue;
+      list.push({
+        key: `instructor:${dm.id}`,
+        kind: "instructor",
+        name: other.name ?? "Instructor",
+        preview: dm.last_message ?? "No messages yet",
+        ts: dm.last_message_at ?? new Date(0).toISOString(),
+        unread: 0,
+        photo: other.profile_image_url ?? null,
+        initials: nameInitials(other.name ?? "Instructor"),
+        bg: BLUE,
+        badge: "DSM",
+        open: () =>
+          navigate({
+            to: "/messages/instructor/$conversationId" as never,
+            params: { conversationId: dm.id } as never,
+          }),
+        markRead: () => {},
+      });
+    }
+
     return list;
   }, [convos, joinedRooms, roomPreviews, adminThreads, isAdmin, room, view, navigate]);
 
@@ -935,10 +1031,25 @@ function MessagesIndexPage() {
                 flex: 1,
               }}
             >
-              {(["all", "pupils", "local", ...(isAdmin ? (["admin"] as const) : [])] as const).map(
+              {([
+                "all",
+                "pupils",
+                "local",
+                ...(isAdmin ? (["admin"] as const) : []),
+                "instructors",
+              ] as const).map(
                 (f) => {
                   const active = filter === f;
-                  const label = f === "all" ? "All" : f === "pupils" ? "Pupils" : f === "local" ? "Local" : "Admin";
+                  const label =
+                    f === "all"
+                      ? "All"
+                      : f === "pupils"
+                        ? "Pupils"
+                        : f === "local"
+                          ? "Local"
+                          : f === "instructors"
+                            ? "Instructors"
+                            : "Admin";
                   return (
                     <button
                       key={f}
@@ -981,6 +1092,26 @@ function MessagesIndexPage() {
               }}
             >
               <IconSearch size={18} color="#6B7686" stroke={1.8} />
+            </button>
+            <button
+              type="button"
+              aria-label="New message"
+              onClick={() => setSearchOpen(true)}
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                background: "#F1F5F9",
+                border: 0,
+                padding: 0,
+                cursor: "pointer",
+              }}
+            >
+              <IconEdit size={16} color={NAVY} stroke={1.8} />
             </button>
           </div>
 
@@ -1162,6 +1293,119 @@ function MessagesIndexPage() {
         </div>
       )}
 
+      {searchOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "#FFFFFF",
+            zIndex: 100,
+            display: "flex",
+            flexDirection: "column",
+            paddingTop: "env(safe-area-inset-top, 0px)",
+            ...FONT,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "14px 16px",
+              borderBottom: `0.5px solid ${BORDER}`,
+            }}
+          >
+            <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>New message</div>
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => {
+                setSearchOpen(false);
+                setSearchQuery("");
+                setSearchResults([]);
+              }}
+              style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
+            >
+              <X size={20} color={GREY} />
+            </button>
+          </div>
+          <div style={{ padding: "12px 16px" }}>
+            <input
+              autoFocus
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search instructors..."
+              style={{
+                width: "100%",
+                boxSizing: "border-box",
+                border: `1px solid ${BORDER}`,
+                borderRadius: 8,
+                outline: "none",
+                padding: "10px 12px",
+                fontSize: 14,
+                color: NAVY,
+                ...FONT,
+              }}
+            />
+          </div>
+          <div style={{ flex: 1, overflowY: "auto" }}>
+            {searchResults.map((r) => (
+              <div
+                key={r.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => void startConversation(r.id)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "10px 16px",
+                  borderBottom: `0.5px solid ${BORDER}`,
+                  cursor: "pointer",
+                }}
+              >
+                {r.profile_image_url ? (
+                  <img
+                    src={r.profile_image_url}
+                    alt={r.name ?? "Instructor"}
+                    style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: "50%",
+                      background: BLUE,
+                      color: "#FFFFFF",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 15,
+                      fontWeight: 600,
+                      flexShrink: 0,
+                    }}
+                  >
+                    {nameInitials(r.name ?? "Instructor")}
+                  </div>
+                )}
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>{r.name}</div>
+                  {r.home_postcode && (
+                    <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>{r.home_postcode}</div>
+                  )}
+                </div>
+              </div>
+            ))}
+            {searchQuery.trim().length >= 2 && searchResults.length === 0 && (
+              <div style={{ padding: "40px 24px", textAlign: "center", fontSize: 14, color: GREY }}>
+                No instructors found
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {openThreadJobId && (
         <AdminJobThreadSheet
           jobId={openThreadJobId}
@@ -1178,7 +1422,8 @@ function MessagesIndexPage() {
 
 interface InboxItem {
   key: string;
-  kind: "pupil" | "local" | "admin";
+  kind: "pupil" | "local" | "admin" | "instructor";
+  badge?: string;
   name: string;
   preview: string;
   ts: string;
@@ -1325,17 +1570,35 @@ function InboxRow({
 
       {/* Content */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            fontSize: 17,
-            fontWeight: 500,
-            color: NAVY,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {item.name}
+        <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+          <div
+            style={{
+              fontSize: 17,
+              fontWeight: 500,
+              color: NAVY,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {item.name}
+          </div>
+          {item.badge && (
+            <span
+              style={{
+                flexShrink: 0,
+                fontSize: 8,
+                fontWeight: 700,
+                color: BLUE,
+                background: "#E6F1FB",
+                borderRadius: 4,
+                padding: "2px 5px",
+                letterSpacing: 0.4,
+              }}
+            >
+              {item.badge}
+            </span>
+          )}
         </div>
         <div
           style={{
