@@ -262,6 +262,8 @@ function TestsPage() {
                     showDaysBadge={section.showDaysBadge}
                     pastProminent={section.pastProminent}
                     onLogResult={section.showDaysBadge ? () => setResultFor(t) : undefined}
+                    onEdit={section.showDaysBadge ? () => setEditFor(t) : undefined}
+                    onCancel={section.showDaysBadge ? () => setCancelFor(t) : undefined}
                   />
                 ))}
               </div>
@@ -290,6 +292,36 @@ function TestsPage() {
           onSaved={() => {
             setResultFor(null);
             if (userId) loadTests(userId);
+          }}
+        />
+      )}
+
+      {editFor && userId && (
+        <EditTestSheet
+          test={editFor}
+          userId={userId}
+          onClose={() => setEditFor(null)}
+          onSaved={() => {
+            setEditFor(null);
+            loadTests(userId);
+          }}
+        />
+      )}
+
+      {cancelFor && userId && (
+        <CancelTestSheet
+          test={cancelFor}
+          userId={userId}
+          reason={cancelReason}
+          onReasonChange={setCancelReason}
+          onClose={() => {
+            setCancelFor(null);
+            setCancelReason("");
+          }}
+          onCancelled={() => {
+            setCancelFor(null);
+            setCancelReason("");
+            loadTests(userId);
           }}
         />
       )}
