@@ -156,27 +156,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   });
 
 
-  const fmtTimeDay = (d: string, t: string) => {
-    const ms = startMs(d, t);
-    if (!ms) return "";
-    const date = new Date(ms);
-    const time = date
-      .toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true })
-      .replace(/\s?(AM|PM|am|pm)$/i, (m) => m.trim().toLowerCase());
-    const today = new Date();
-    const tomorrow = new Date();
-    tomorrow.setDate(today.getDate() + 1);
-    const same = (a: Date, b: Date) =>
-      a.getFullYear() === b.getFullYear() &&
-      a.getMonth() === b.getMonth() &&
-      a.getDate() === b.getDate();
-    const day = same(date, today)
-      ? "today"
-      : same(date, tomorrow)
-        ? "tomorrow"
-        : date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-    return `${time} ${day}`;
-  };
 
 
   // Re-render each minute so "Starts in X min" and the live window stay accurate.
