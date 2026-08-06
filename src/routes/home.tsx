@@ -8191,7 +8191,7 @@ function HomePage() {
                       No industry news yet — check back soon.
                     </div>
                   )}
-                  {newsArticles.map((article) => {
+                  {newsArticles.map((article, index) => {
                     const articleDate = article.published_at
                       ? new Date(article.published_at).toLocaleDateString('en-GB', {
                           day: 'numeric',
@@ -8204,7 +8204,7 @@ function HomePage() {
                       'linear-gradient(135deg, #CC2229, #0B1F3A)',
                       'linear-gradient(135deg, #15803D, #0B1F3A)',
                     ];
-                    const gradient = gradients[article.id.length % 4];
+                    const gradient = gradients[index % 4];
                     return (
                       <div
                         key={article.id}
@@ -8230,20 +8230,20 @@ function HomePage() {
                           scrollSnapAlign: 'start',
                           scrollSnapStop: 'always',
                           background: '#fff',
-                          border: '1px solid #E4E8EF',
-                          borderRadius: 16,
-                          padding: '13px 14px',
-                          boxShadow: '0 2px 6px rgba(11,31,58,0.05)',
+                          border: '0.5px solid #E4E8EF',
+                          borderRadius: 14,
+                          overflow: 'hidden',
                           cursor: 'pointer',
                           display: 'flex',
                           alignItems: 'center',
                           gap: 12,
+                          padding: '12px 14px',
                         }}
                       >
                         <div
                           style={{
-                            width: 48,
-                            height: 48,
+                            width: 52,
+                            height: 52,
                             borderRadius: 10,
                             overflow: 'hidden',
                             flexShrink: 0,
@@ -8261,19 +8261,23 @@ function HomePage() {
                               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             />
                           ) : (
-                            <IconNews size={18} color="#FFFFFF" stroke={1.5} />
+                            <IconNews size={20} color="#FFFFFF" stroke={1.5} />
                           )}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div
                             style={{
-                              fontSize: 9,
-                              fontWeight: 700,
+                              display: 'inline-flex',
+                              marginBottom: 5,
+                              background: '#E6F1FB',
                               color: '#1877D6',
-                              textTransform: 'uppercase',
-                              letterSpacing: '0.05em',
-                              marginBottom: 3,
+                              fontSize: 8,
+                              fontWeight: 700,
                               fontFamily: 'Poppins, sans-serif',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.04em',
+                              borderRadius: 20,
+                              padding: '2px 6px',
                             }}
                           >
                             {article.source || 'News'}
@@ -8281,29 +8285,31 @@ function HomePage() {
                           <div
                             style={{
                               fontSize: 13,
-                              fontWeight: 700,
+                              fontWeight: 600,
                               color: '#0B1F3A',
-                              whiteSpace: 'nowrap',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              marginBottom: 3,
                               fontFamily: 'Poppins, sans-serif',
+                              lineHeight: 1.3,
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                              marginBottom: 4,
                             }}
                           >
                             {article.title}
                           </div>
                           <div
                             style={{
-                              fontSize: 10,
+                              fontSize: 11,
                               color: '#9CA3AF',
                               fontFamily: 'Poppins, sans-serif',
                             }}
                           >
-                            {article.read_time_mins ? `${article.read_time_mins} min read` : 'News'}
+                            {article.read_time_mins ? `${article.read_time_mins} min` : '—'}
                             {articleDate ? ` · ${articleDate}` : ''}
                           </div>
                         </div>
-                        <IconChevronRight size={16} color="#E4E8EF" stroke={2.2} />
+                        <IconChevronRight size={16} color="#E4E8EF" stroke={2} />
                       </div>
                     );
                   })}
