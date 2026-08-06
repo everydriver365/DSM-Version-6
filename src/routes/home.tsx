@@ -140,6 +140,7 @@ import {
   IconCalendar,
   IconMapPin,
   IconClock,
+  IconNews,
   IconDots,
   IconDotsVertical,
   IconSearch,
