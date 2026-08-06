@@ -529,7 +529,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             const tone = CARD_TONES[item.marketIndex % CARD_TONES.length];
             const ribbon = ribbonLabel(m);
             const catName = ribbon ?? m.marketplace_categories?.name ?? "Marketplace";
-            const photo = m.show_image === false ? null : firstImage(m.image_urls);
             const [amount, unit] = splitPrice(priceLabel(m));
             return (
               <div
@@ -557,20 +556,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     justifyContent: "center",
                   }}
                 >
-                  {photo && (
-                    <img
-                      src={photo}
-                      alt=""
-                      loading="lazy"
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  )}
                   <span
                     style={{
                       ...pillBase,
