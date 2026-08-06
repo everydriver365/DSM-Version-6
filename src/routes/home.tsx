@@ -1837,7 +1837,7 @@ function HomePage() {
     body: string | null;
     created_at: string;
     read_at: string | null;
-    pupils: { name: string | null; first_name: string | null; profile_image_url: string | null } | null;
+    pupils: { name: string | null; first_name: string | null; profile_image_url: string | null; photo_url: string | null; calendar_colour: string | null } | null;
   }>>([]);
 
   const [unreadDMs, setUnreadDMs] = useState(0);
@@ -1929,7 +1929,7 @@ function HomePage() {
       try {
         const { data, error } = await supabase
           .from('chat_messages')
-          .select('id, pupil_id, body, created_at, read_at, pupils(name, first_name, profile_image_url, photo_url)')
+          .select('id, pupil_id, body, created_at, read_at, pupils(name, first_name, profile_image_url, photo_url, calendar_colour)')
           .eq('instructor_id', userId)
           .eq('sender_type', 'pupil')
           .is('read_at', null)
@@ -5699,16 +5699,28 @@ function HomePage() {
                 style={{ padding: '12px 14px', cursor: 'pointer' }}
               >
                 {(() => {
-                  const unreadSenders = unreadMsgs
-                    .filter((m) => !m.read_at)
-                    .reduce<{ name: string; initials: string; colour: string }[]>((acc, m) => {
-                      const name = pupilName(m);
-                      if (!name || acc.some((a) => a.name === name)) return acc;
-                      const colours = ['#CC2229', '#1877D6', '#15803D', '#7C3AED'];
-                      return acc.length < 4
-                        ? [...acc, { name, initials: initialsOf(name), colour: colours[acc.length] }]
-                        : acc;
-                    }, []);
+                  const avatarSources = [
+                    ...unreadMsgs.slice(0, 2).map((m, i) => ({
+                      type: 'pupil' as const,
+                      name: pupilName(m),
+                      image: m.pupils?.profile_image_url || null,
+                      colour: m.pupils?.calendar_colour ?? ['#0B1F3A', '#CC2229', '#1877D6', '#15803D'][i % 4],
+                    })),
+                    ...(unreadDMs > 0 ? dmPreviews.slice(0, 1).map((dm) => ({
+                      type: 'instructor' as const,
+                      name: dm.other_name || 'DSM Instructor',
+                      image: null,
+                      colour: '#1877D6',
+                    })) : []),
+                    ...(alerts.length > 0 ? [{
+                      type: 'alert' as const,
+                      name: null,
+                      image: null,
+                      colour: '#FCE9E9',
+                    }] : []),
+                  ];
+                  const extraAvatarCount = avatarSources.length > 4 ? avatarSources.length - 4 : 0;
+                  const visibleAvatars = avatarSources.slice(0, 4);
                   const totalActive = alerts.length + totalUnreadChat + pupilReplies.length + adminUnread + unreadDMs;
                   const latestActivity = [
                     localAlerts?.[0]?.created_at,
@@ -5743,7 +5755,7 @@ function HomePage() {
                       {/* Row 2 — avatar stack + active count + updated time */}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          {unreadSenders.length === 0 ? (
+                          {visibleAvatars.length === 0 ? (
                             <div style={{
                               width: 32, height: 32, borderRadius: '50%', background: '#E6F1FB',
                               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
@@ -5751,20 +5763,62 @@ function HomePage() {
                               <Users size={16} color="#1877D6" />
                             </div>
                           ) : (
-                            unreadSenders.map((s, i) => (
-                              <div
-                                key={s.name}
-                                style={{
-                                  width: 28, height: 28, borderRadius: '50%', background: s.colour,
-                                  border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8,
-                                  fontSize: 10, fontWeight: 700, color: '#fff',
-                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                  overflow: 'hidden', flexShrink: 0,
-                                }}
-                              >
-                                {s.initials}
-                              </div>
-                            ))
+                            <>
+                              {visibleAvatars.map((s, i) => {
+                                const key = `${s.type}-${s.name ?? i}`;
+                                if (s.image) {
+                                  return (
+                                    <img
+                                      key={key}
+                                      src={s.image}
+                                      alt=""
+                                      style={{
+                                        width: 28, height: 28, borderRadius: '50%', objectFit: 'cover',
+                                        border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8, flexShrink: 0,
+                                      }}
+                                    />
+                                  );
+                                }
+                                if (s.type === 'alert') {
+                                  return (
+                                    <div
+                                      key={key}
+                                      style={{
+                                        width: 28, height: 28, borderRadius: '50%', background: '#FCE9E9',
+                                        border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8,
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                                      }}
+                                    >
+                                      <AlertTriangle size={14} color="#CC2229" />
+                                    </div>
+                                  );
+                                }
+                                return (
+                                  <div
+                                    key={key}
+                                    style={{
+                                      width: 28, height: 28, borderRadius: '50%', background: s.colour,
+                                      border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8,
+                                      fontSize: 10, fontWeight: 700, color: '#fff',
+                                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                      overflow: 'hidden', flexShrink: 0,
+                                    }}
+                                  >
+                                    {s.name ? initialsOf(s.name) : ''}
+                                  </div>
+                                );
+                              })}
+                              {extraAvatarCount > 0 && (
+                                <div style={{
+                                  width: 28, height: 28, borderRadius: '50%', background: '#E5E7EB',
+                                  border: '2px solid #fff', marginLeft: -8,
+                                  fontSize: 10, fontWeight: 600, color: '#6B7280',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                                }}>
+                                  +{extraAvatarCount}
+                                </div>
+                              )}
+                            </>
                           )}
                           <span style={{ fontSize: 11, color: '#6B7686', fontFamily: PF_C }}>{totalActive} active</span>
                         </div>
