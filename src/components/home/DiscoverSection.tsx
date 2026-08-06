@@ -146,11 +146,25 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           { headers },
         );
         const data = (await res.json()) as LiveItem[];
-        if (!cancelled && Array.isArray(data)) setLive(data);
+        if (!cancelled && Array.isArray(data)) {
+          setLive(data);
+          const now = new Date();
+          const twoHoursFromNow = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+          const isHighlighted = data.some((s) => {
+            if (!s.session_date || !s.session_time) return false;
+            const start = new Date(`${s.session_date}T${s.session_time}`);
+            const end = new Date(start.getTime() + (s.duration_minutes ?? 60) * 60000);
+            const isLive = now >= start && now <= end;
+            const isSoon = start <= twoHoursFromNow && start >= now;
+            return isLive || isSoon;
+          });
+          setLiveActive(isHighlighted);
+        }
       } catch {
         /* ignore */
       }
     })();
+
 
 
 
