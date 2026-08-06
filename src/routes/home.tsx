@@ -3096,6 +3096,14 @@ function HomePage() {
         setReloadKey((k) => k + 1);
       });
     }
+    channel = channel.on('postgres_changes', {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'instructor_messages',
+      filter: `to_instructor_id=eq.${userId}`,
+    }, () => {
+      setReloadKey((k) => k + 1);
+    });
     channel.subscribe();
 
     return () => {
