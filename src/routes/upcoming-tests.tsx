@@ -277,15 +277,15 @@ function UpcomingTestsPage() {
       </BottomSheetV2>
 
       {/* Cancel sheet */}
-      <BottomSheetV2
-        isOpen={!!cancelTest}
-        onClose={() => {
-          setCancelTest(null);
-          setCancelReason("");
-        }}
-        title="Cancel test"
-        subtitle={cancelTest?.name ?? undefined}
-      >
+      {cancelTest && (
+        <BottomSheetV2
+          onClose={() => {
+            setCancelTest(null);
+            setCancelReason("");
+          }}
+          title="Cancel test"
+          subtitle={cancelTest?.name ?? undefined}
+        >
         <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "0 4px 8px" }}>
           {/* Warning */}
           <div
