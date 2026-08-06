@@ -1980,11 +1980,11 @@ function HomePage() {
         );
         const { data: instructors } = await supabase
           .from('instructors')
-          .select('id, name')
+          .select('id, name, profile_image_url')
           .in('id', otherIds);
 
-        const nameMap = Object.fromEntries(
-          (instructors ?? []).map((i) => [i.id, i.name])
+        const instructorMap = Object.fromEntries(
+          (instructors ?? []).map((i) => [i.id, { name: i.name, profile_image_url: i.profile_image_url }])
         );
 
         if (!cancelled) {
@@ -1993,10 +1993,12 @@ function HomePage() {
               const otherId = c.instructor_a_id === userId
                 ? c.instructor_b_id
                 : c.instructor_a_id;
+              const other = instructorMap[otherId];
               return {
                 ...c,
                 other_id: otherId,
-                other_name: nameMap[otherId] ?? 'DSM Instructor',
+                other_name: other?.name ?? 'DSM Instructor',
+                other_image: other?.profile_image_url ?? null,
               };
             })
           );
@@ -5709,7 +5711,7 @@ function HomePage() {
                     ...(unreadDMs > 0 ? dmPreviews.map((dm) => ({
                       type: 'instructor' as const,
                       name: dm.other_name || 'DSM Instructor',
-                      image: null,
+                      image: dm.other_image || null,
                       colour: '#1877D6',
                     })) : []),
                     ...(alerts.length > 0 ? [{
@@ -6080,23 +6082,36 @@ function HomePage() {
                             }}
                           >
                             {/* Avatar */}
-                            <div style={{
-                              width: 28, height: 28,
-                              borderRadius: '50%',
-                              background: '#1877D6',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              flexShrink: 0,
-                            }}>
-                              <span style={{
-                                fontSize: 10, fontWeight: 700,
-                                color: '#fff',
-                                fontFamily: 'Poppins, sans-serif',
+                            {dm.other_image ? (
+                              <img
+                                src={dm.other_image}
+                                alt=""
+                                style={{
+                                  width: 28, height: 28,
+                                  borderRadius: '50%',
+                                  objectFit: 'cover',
+                                  flexShrink: 0,
+                                }}
+                              />
+                            ) : (
+                              <div style={{
+                                width: 28, height: 28,
+                                borderRadius: '50%',
+                                background: '#1877D6',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexShrink: 0,
                               }}>
-                                {initials}
-                              </span>
-                            </div>
+                                <span style={{
+                                  fontSize: 10, fontWeight: 700,
+                                  color: '#fff',
+                                  fontFamily: 'Poppins, sans-serif',
+                                }}>
+                                  {initials}
+                                </span>
+                              </div>
+                            )}
                             {/* Content */}
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={{
