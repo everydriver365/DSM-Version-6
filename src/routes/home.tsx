@@ -7839,7 +7839,7 @@ function HomePage() {
                       <div
                         style={{
                           position: 'relative',
-                          height: 110,
+                          height: 124,
                           overflow: 'hidden',
                           background: article.image_url
                             ? undefined
@@ -7860,11 +7860,19 @@ function HomePage() {
                           <IconNews size={28} color="#FFFFFF" stroke={1.5} />
                         )}
                       </div>
-                      <div style={{ padding: '8px 10px 10px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+                      <div
+                        style={{
+                          padding: '8px 10px 10px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 3,
+                          minHeight: 0,
+                        }}
+                      >
                         <div
                           style={{
                             display: 'inline-flex',
-                            marginBottom: 6,
+                            alignSelf: 'flex-start',
                             background: '#E6F1FB',
                             color: '#1877D6',
                             fontSize: 8,
@@ -7881,15 +7889,14 @@ function HomePage() {
                         <div
                           style={{
                             fontSize: 13,
-                            fontWeight: 600,
+                            fontWeight: 700,
                             color: '#0B1F3A',
                             fontFamily: 'Poppins, sans-serif',
-                            lineHeight: 1.35,
+                            lineHeight: 1.25,
                             display: '-webkit-box',
                             WebkitLineClamp: 2,
                             WebkitBoxOrient: 'vertical',
                             overflow: 'hidden',
-                            marginBottom: 6,
                           }}
                         >
                           {article.title}
@@ -7904,11 +7911,25 @@ function HomePage() {
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                             <IconClock size={11} color="#9CA3AF" stroke={2} />
-                            <span style={{ fontSize: 11, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>
+                            <span
+                              style={{
+                                fontSize: 11,
+                                fontWeight: 500,
+                                color: '#9CA3AF',
+                                fontFamily: 'Poppins, sans-serif',
+                              }}
+                            >
                               {article.read_time_mins ? `${article.read_time_mins} min read` : 'News'}
                             </span>
                           </div>
-                          <span style={{ fontSize: 11, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>
+                          <span
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 500,
+                              color: '#9CA3AF',
+                              fontFamily: 'Poppins, sans-serif',
+                            }}
+                          >
                             {article.published_at
                               ? new Date(article.published_at).toLocaleDateString('en-GB', {
                                   day: 'numeric',
