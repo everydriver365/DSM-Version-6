@@ -61,38 +61,7 @@ function isLiveNow(s: LiveItem) {
   return now >= start && now < end;
 }
 
-const URGENT_WINDOW_MIN = 180;
 
-/** Minutes from now until a session starts (negative once it has started). */
-function minsUntil(s: LiveItem) {
-  const start = startMs(s.session_date, s.session_time);
-  if (!start) return Number.POSITIVE_INFINITY;
-  return Math.round((start - Date.now()) / 60000);
-}
-
-/** Live right now, or starting within the next few hours. */
-function isUrgentLive(s: LiveItem) {
-  if (isLiveNow(s)) return true;
-  const m = minsUntil(s);
-  return m > 0 && m <= URGENT_WINDOW_MIN;
-}
-
-function urgentLabel(s: LiveItem) {
-  if (isLiveNow(s)) return "Live now";
-  const m = minsUntil(s);
-  if (m < 60) return `Starts in ${m} min`;
-  const hrs = Math.round(m / 60);
-  return `Starts in ${hrs} hr${hrs === 1 ? "" : "s"}`;
-}
-
-
-function youtubeThumb(url: string | null | undefined): string | null {
-  if (!url) return null;
-  const m = url.match(
-    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
-  );
-  return m ? `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg` : null;
-}
 
 export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {}) {
   const navigate = useNavigate();
