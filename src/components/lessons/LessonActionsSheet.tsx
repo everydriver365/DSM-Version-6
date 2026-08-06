@@ -1467,6 +1467,11 @@ export function LessonActionsSheet({
         open={unifiedPayOpen}
         onClose={() => setUnifiedPayOpen(false)}
         initialPupilId={lesson.pupil_id}
+        onSaved={() => {
+          setTimeout(() => {
+            window.dispatchEvent(new Event('dsm-payment-recorded'));
+          }, 300);
+        }}
       />
     </>
   );
