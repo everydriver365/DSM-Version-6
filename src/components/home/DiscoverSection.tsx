@@ -314,8 +314,25 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           style={tileShell}
         >
           <div style={tileImageWrap}>
+            {liveHero && (
+              <img
+                src={liveHero}
+                alt=""
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            )}
             <div
-              style={{ ...layerFill, background: "linear-gradient(135deg,#1877D6,#0B1F3A)" }}
+              style={{
+                ...layerFill,
+                background: "linear-gradient(135deg,#1877D6,#0B1F3A)",
+                opacity: liveHero ? 0.4 : 1,
+              }}
             />
             <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
             <div style={iconLayer}>
