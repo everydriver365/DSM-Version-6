@@ -110,7 +110,15 @@ Deno.serve(async (req) => {
     });
   }
 
-  const notificationPayload = JSON.stringify({ title, body, url: url ?? "/" });
+  // `type` and `data` are optional passthrough (e.g. instructor_dm carries
+  // conversation_id so the client can deep-link into the DM thread).
+  const notificationPayload = JSON.stringify({
+    title,
+    body,
+    url: url ?? "/",
+    ...(type ? { type } : {}),
+    ...(data ? { data } : {}),
+  });
   let sent = 0;
   let failed = 0;
   const staleIds: string[] = [];
