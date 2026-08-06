@@ -5946,10 +5946,8 @@ function HomePage() {
                           <div
                             key={dm.id}
                             onClick={() => navigate({
-                              to: '/messages/instructor/$conversationId'
-                                as never,
-                              params: { conversationId: dm.id }
-                                as never,
+                              to: '/messages/instructor/$conversationId' as never,
+                              params: { conversationId: dm.id } as never,
                             })}
                             style={{
                               display: 'flex',
