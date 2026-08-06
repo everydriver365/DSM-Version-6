@@ -1421,17 +1421,35 @@ function InboxRow({
 
       {/* Content */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            fontSize: 17,
-            fontWeight: 500,
-            color: NAVY,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {item.name}
+        <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+          <div
+            style={{
+              fontSize: 17,
+              fontWeight: 500,
+              color: NAVY,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {item.name}
+          </div>
+          {item.badge && (
+            <span
+              style={{
+                flexShrink: 0,
+                fontSize: 8,
+                fontWeight: 700,
+                color: BLUE,
+                background: "#E6F1FB",
+                borderRadius: 4,
+                padding: "2px 5px",
+                letterSpacing: 0.4,
+              }}
+            >
+              {item.badge}
+            </span>
+          )}
         </div>
         <div
           style={{
