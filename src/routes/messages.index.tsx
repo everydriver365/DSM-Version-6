@@ -1030,10 +1030,25 @@ function MessagesIndexPage() {
                 flex: 1,
               }}
             >
-              {(["all", "pupils", "local", ...(isAdmin ? (["admin"] as const) : [])] as const).map(
+              {([
+                "all",
+                "pupils",
+                "local",
+                ...(isAdmin ? (["admin"] as const) : []),
+                "instructors",
+              ] as const).map(
                 (f) => {
                   const active = filter === f;
-                  const label = f === "all" ? "All" : f === "pupils" ? "Pupils" : f === "local" ? "Local" : "Admin";
+                  const label =
+                    f === "all"
+                      ? "All"
+                      : f === "pupils"
+                        ? "Pupils"
+                        : f === "local"
+                          ? "Local"
+                          : f === "instructors"
+                            ? "Instructors"
+                            : "Admin";
                   return (
                     <button
                       key={f}
