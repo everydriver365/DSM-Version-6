@@ -268,19 +268,8 @@ function InstructorDMThread() {
         setLoading(false);
       }
 
-      await markConversationRead(conversationId, userId);
-
-      setTimeout(() => {
-        window.dispatchEvent(
-          new Event('dsm-messages-read')
-        );
-      }, 300);
-      setTimeout(() => {
-        window.dispatchEvent(
-          new Event('dsm-messages-read')
-        );
-      }, 1500);
-
+      const marked = await markConversationRead(conversationId, userId);
+      broadcastRead(marked);
     })();
 
     const channel = supabase
@@ -298,20 +287,15 @@ function InstructorDMThread() {
           setMessages((prev) =>
             prev.some((m) => m.id === row.id) ? prev : [...prev, row],
           );
+          // Thread is open, so an inbound message is read on arrival — mark it
+          // and drop the badge straight away instead of letting it flash.
           if (row.from_instructor_id !== userId) {
-            void markConversationRead(conversationId, userId).then(() => {
-              setTimeout(() => {
-                window.dispatchEvent(
-                  new Event('dsm-messages-read')
-                );
-              }, 300);
-              setTimeout(() => {
-                window.dispatchEvent(
-                  new Event('dsm-messages-read')
-                );
-              }, 1500);
-            });
+            void markConversationRead(conversationId, userId).then((n) =>
+              broadcastRead(n),
+            );
           }
+
+
 
         },
       )
