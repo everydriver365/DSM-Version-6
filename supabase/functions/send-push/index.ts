@@ -1,5 +1,36 @@
 // Supabase Edge Function: send-push
 // Sends Web Push notifications via VAPID to all push_subscriptions for an instructor.
+//
+// ─────────────────────────────────────────────────────────────
+// SUPPORTED NOTIFICATION TYPES
+// ─────────────────────────────────────────────────────────────
+// The function is type-agnostic: any caller that supplies
+// instructor_id + title + body gets a push delivered to every
+// registered device for that instructor. `type` and `data` are
+// optional passthrough fields for the service worker / client.
+//
+// 1. Pupil messages
+//    { instructor_id, title: "New message from Sam",
+//      body: "...", url: "/messages/<pupilId>", type: "pupil_message" }
+//
+// 2. Payments
+//    { instructor_id, title: "Payment received",
+//      body: "£45.00 from Sam", url: "/payments", type: "payment" }
+//
+// 3. Instructor-to-instructor DMs  (added Aug 2026)
+//    { instructor_id: "<recipient instructor id>",
+//      title: "New message from <name>",
+//      body: "<message preview>",
+//      url: "/messages",
+//      type: "instructor_dm",
+//      data: { conversation_id, from_instructor_id } }
+//
+//    No logic change was required for instructor DMs — the existing
+//    instructor_id + title + body path already handles them. The DM
+//    notification row is produced by the `notify_on_instructor_dm()`
+//    trigger on `instructor_messages` INSERT, which writes to
+//    `instructor_notifications`; that row is then dispatched here.
+// ─────────────────────────────────────────────────────────────
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import webPush from "https://esm.sh/web-push@3.6.6";
@@ -10,11 +41,17 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+type NotificationType = "pupil_message" | "payment" | "instructor_dm" | (string & {});
+
 interface Payload {
   instructor_id: string;
   title: string;
   body: string;
   url?: string;
+  /** Optional category, echoed to the client so the SW can group/route. */
+  type?: NotificationType;
+  /** Optional extra context, e.g. { conversation_id, from_instructor_id }. */
+  data?: Record<string, unknown>;
 }
 
 Deno.serve(async (req) => {
@@ -50,7 +87,7 @@ Deno.serve(async (req) => {
     });
   }
 
-  const { instructor_id, title, body, url } = payload;
+  const { instructor_id, title, body, url, type, data } = payload;
   if (!instructor_id || !title || !body) {
     return new Response(
       JSON.stringify({ error: "instructor_id, title and body are required" }),
@@ -73,7 +110,15 @@ Deno.serve(async (req) => {
     });
   }
 
-  const notificationPayload = JSON.stringify({ title, body, url: url ?? "/" });
+  // `type` and `data` are optional passthrough (e.g. instructor_dm carries
+  // conversation_id so the client can deep-link into the DM thread).
+  const notificationPayload = JSON.stringify({
+    title,
+    body,
+    url: url ?? "/",
+    ...(type ? { type } : {}),
+    ...(data ? { data } : {}),
+  });
   let sent = 0;
   let failed = 0;
   const staleIds: string[] = [];
