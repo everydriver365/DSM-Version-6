@@ -97,17 +97,6 @@ function urgentLabel(s: LiveItem) {
   return `Starts in ${hrs} hr${hrs === 1 ? "" : "s"}`;
 }
 
-function firstImage(v: string[] | string | null): string | null {
-  if (!v) return null;
-  if (Array.isArray(v)) return v[0] ?? null;
-  try {
-    const parsed = JSON.parse(v);
-    if (Array.isArray(parsed)) return parsed[0] ?? null;
-  } catch {
-    /* not json */
-  }
-  return typeof v === "string" && v.startsWith("http") ? v : null;
-}
 
 function youtubeThumb(url: string | null | undefined): string | null {
   if (!url) return null;
