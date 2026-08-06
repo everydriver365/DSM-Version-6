@@ -5710,6 +5710,25 @@ function HomePage() {
                         : acc;
                     }, []);
                   const totalActive = alerts.length + totalUnreadChat + pupilReplies.length + adminUnread + unreadDMs;
+                  const latestActivity = [
+                    localAlerts?.[0]?.created_at,
+                    unreadMsgs?.[0]?.created_at,
+                    localChatLatest?.created_at,
+                    ukChatLatest?.created_at,
+                  ].filter(Boolean)
+                    .map((t) => new Date(t as string).getTime())
+                    .sort((a, b) => b - a)[0];
+                  const timeAgo = latestActivity
+                    ? (() => {
+                        const diff = Date.now() - latestActivity;
+                        const mins = Math.floor(diff / 60000);
+                        if (mins < 1) return 'just now';
+                        if (mins < 60) return `${mins}m ago`;
+                        const hrs = Math.floor(mins / 60);
+                        if (hrs < 24) return `${hrs}h ago`;
+                        return `${Math.floor(hrs / 24)}d ago`;
+                      })()
+                    : null;
 
                   return (
                     <>
@@ -5721,32 +5740,39 @@ function HomePage() {
                           : <ChevronDown size={14} color="#9CA3AF" />}
                       </div>
 
-                      {/* Row 2 — avatar stack + active count */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-                        {unreadSenders.length === 0 ? (
-                          <div style={{
-                            width: 32, height: 32, borderRadius: '50%', background: '#E6F1FB',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                          }}>
-                            <Users size={16} color="#1877D6" />
-                          </div>
-                        ) : (
-                          unreadSenders.map((s, i) => (
-                            <div
-                              key={s.name}
-                              style={{
-                                width: 28, height: 28, borderRadius: '50%', background: s.colour,
-                                border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8,
-                                fontSize: 10, fontWeight: 700, color: '#fff',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                overflow: 'hidden', flexShrink: 0,
-                              }}
-                            >
-                              {s.initials}
+                      {/* Row 2 — avatar stack + active count + updated time */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          {unreadSenders.length === 0 ? (
+                            <div style={{
+                              width: 32, height: 32, borderRadius: '50%', background: '#E6F1FB',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                            }}>
+                              <Users size={16} color="#1877D6" />
                             </div>
-                          ))
+                          ) : (
+                            unreadSenders.map((s, i) => (
+                              <div
+                                key={s.name}
+                                style={{
+                                  width: 28, height: 28, borderRadius: '50%', background: s.colour,
+                                  border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8,
+                                  fontSize: 10, fontWeight: 700, color: '#fff',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                  overflow: 'hidden', flexShrink: 0,
+                                }}
+                              >
+                                {s.initials}
+                              </div>
+                            ))
+                          )}
+                          <span style={{ fontSize: 11, color: '#6B7686', fontFamily: PF_C }}>{totalActive} active</span>
+                        </div>
+                        {timeAgo && (
+                          <span style={{ fontSize: 11, color: '#9CA3AF', fontFamily: PF_C }}>
+                            Updated {timeAgo}
+                          </span>
                         )}
-                        <span style={{ fontSize: 11, color: '#6B7686', fontFamily: PF_C }}>{totalActive} active</span>
                       </div>
 
                       {/* Row 3 — labels */}
