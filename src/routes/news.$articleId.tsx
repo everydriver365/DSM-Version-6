@@ -20,6 +20,37 @@ function formatDate(iso: string | null | undefined) {
   return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
+function cleanContent(raw: string): string {
+  if (!raw) return "";
+  return raw
+    .split("\n")
+    .filter((line) => {
+      const trimmed = line.trim();
+      if (!trimmed) return true;
+      if (/^https?:\/\/\S+$/.test(trimmed)) return false;
+      if (trimmed.length < 3) return false;
+      const navTerms = [
+        "skip to main content",
+        "gov.uk",
+        "home",
+        "search",
+        "menu",
+        "navigation",
+        "cookie",
+        "accept",
+        "reject",
+        "sign in",
+        "log in",
+      ];
+      if (navTerms.some((t) => trimmed.toLowerCase() === t)) return false;
+      return true;
+    })
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+
 function NewsArticlePage() {
   const { articleId } = Route.useParams();
   const navigate = useNavigate();
@@ -205,7 +236,7 @@ function NewsArticlePage() {
             ...POPPINS,
           }}
         >
-          {article.content}
+          {cleanContent(article.content)}
         </div>
 
         {/* Attribution footer */}
