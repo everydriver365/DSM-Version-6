@@ -7751,9 +7751,10 @@ function HomePage() {
             </div>
 
             {true && (
+              <div style={SECTION_WRAPPER_STYLE}>
               <div
                 style={{
-                  margin: '0 -16px 24px',
+                  margin: '0 -16px 0',
                   padding: '0 16px 22px',
                   borderRadius: 0,
                   fontFamily: 'Poppins, Inter, sans-serif',
