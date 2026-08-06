@@ -4825,6 +4825,7 @@ function HomePage() {
           </button>
         ))}
       </div>
+      </div>
 
 
       {/* ============ NEXT LESSON CARD ============ */}
