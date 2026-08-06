@@ -328,8 +328,22 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       </div>
 
       <style>
-        {`.dsm-discover-scroll::-webkit-scrollbar{display:none}@keyframes dsmLivePulse{0%{opacity:1}50%{opacity:.3}100%{opacity:1}}.dsm-live-pulse{animation:dsmLivePulse 1.4s ease infinite}`}
+        {`
+          .dsm-discover-scroll::-webkit-scrollbar{display:none}
+          @keyframes dsmLivePulse{0%{opacity:1}50%{opacity:.3}100%{opacity:1}}
+          .dsm-live-pulse{animation:dsmLivePulse 1.4s ease infinite}
+          @keyframes livePulse {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(204,34,41,0.15), 0 4px 16px rgba(204,34,41,0.2); }
+            50% { box-shadow: 0 0 0 6px rgba(204,34,41,0.08), 0 4px 20px rgba(204,34,41,0.3); }
+          }
+          @keyframes dotPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+          }
+          .dsm-live-dot-pulse { animation: dotPulse 1s ease-in-out infinite; }
+        `}
       </style>
+
 
       <div
         style={{
