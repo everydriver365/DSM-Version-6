@@ -6,6 +6,7 @@ import {
   IconChevronRight,
   IconRadio,
   IconBook,
+  IconShoppingBag,
 } from "@tabler/icons-react";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { supabase } from "@/lib/supabaseClient";
