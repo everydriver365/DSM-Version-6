@@ -5696,79 +5696,96 @@ function HomePage() {
               {/* ---- HEADER ---- */}
               <div
                 onClick={() => setCommunityExpanded((v) => !v)}
-                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', cursor: 'pointer' }}
+                style={{ padding: '12px 14px', cursor: 'pointer' }}
               >
-                <div style={{ display: 'flex', flexDirection: 'row-reverse', flexShrink: 0 }}>
-                  {isQuiet ? (
-                    <div style={{
-                      width: 32, height: 32, borderRadius: '50%', background: '#D1D5DB',
-                      border: '2.5px solid #FFFFFF', boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                    }}>
-                      <Users size={15} color="#6B7280" />
-                    </div>
-                  ) : (
-                    [...stack].reverse().map((it, i) => (
-                      <div
-                        key={it.key}
-                        style={{
-                          width: 32, height: 32, borderRadius: '50%', background: it.bg,
-                          border: '2.5px solid #FFFFFF', color: '#FFFFFF',
-                          boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
-                          fontSize: 11, fontWeight: 700, fontFamily: PF_C,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          overflow: 'hidden', flexShrink: 0,
-                          marginLeft: i === stack.length - 1 ? 0 : -10,
-                        }}
-                      >
-                        {it.node}
-                      </div>
-                    ))
-                  )}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>Community</div>
-                  <div style={{
-                    display: 'flex', alignItems: 'center', gap: 6, marginTop: 3,
-                    flexWrap: 'nowrap', overflow: 'hidden',
-                  }}>
-                    <Label
-                      text="Issues" colour={RED_C} count={alerts.length}
-                      onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })}
-                    />
-                    <Sep />
-                    <Label
-                      text="Chat" colour="#7C3AED" count={totalUnreadChat}
-                      onClick={() => navigate({ to: '/community', search: { tab: unreadChat > 0 ? 'local' : 'rooms' } })}
-                    />
-                    <Sep />
-                    <Label
-                      text="Pupils" colour="#1877D6" count={pupilReplies.length}
-                      onClick={() => {
-                        const p = pupilReplies[0];
-                        if (p?.pupil_id) navigate({ to: '/messages/$pupilId', params: { pupilId: p.pupil_id } });
-                        else navigate({ to: '/messages' });
-                      }}
-                    />
-                    <Sep />
-                    <Label
-                      text="Admin" colour="#92400E" count={adminUnread}
-                      onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
-                    />
-                    <Sep />
-                    <Label
-                      text="DSM" colour="#1877D6" count={unreadDMs}
-                      onClick={() => navigate({
-                        to: '/messages' as never,
-                        search: { filter: 'instructors' } as never,
-                      })}
-                    />
+                {(() => {
+                  const unreadSenders = unreadMsgs
+                    .filter((m) => !m.read_at)
+                    .reduce<{ name: string; initials: string; colour: string }[]>((acc, m) => {
+                      const name = pupilName(m);
+                      if (!name || acc.some((a) => a.name === name)) return acc;
+                      const colours = ['#CC2229', '#1877D6', '#15803D', '#7C3AED'];
+                      return acc.length < 4
+                        ? [...acc, { name, initials: initialsOf(name), colour: colours[acc.length] }]
+                        : acc;
+                    }, []);
+                  const totalActive = alerts.length + totalUnreadChat + pupilReplies.length + adminUnread + unreadDMs;
 
-                  </div>
-                </div>
-                {communityExpanded
-                  ? <ChevronUp size={14} color="#9CA3AF" style={{ flexShrink: 0 }} />
-                  : <ChevronDown size={14} color="#9CA3AF" style={{ flexShrink: 0 }} />}
+                  return (
+                    <>
+                      {/* Row 1 — title + chevron */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>Community</span>
+                        {communityExpanded
+                          ? <ChevronUp size={14} color="#9CA3AF" />
+                          : <ChevronDown size={14} color="#9CA3AF" />}
+                      </div>
+
+                      {/* Row 2 — avatar stack + active count */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+                        {unreadSenders.length === 0 ? (
+                          <div style={{
+                            width: 32, height: 32, borderRadius: '50%', background: '#E6F1FB',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                          }}>
+                            <Users size={16} color="#1877D6" />
+                          </div>
+                        ) : (
+                          unreadSenders.map((s, i) => (
+                            <div
+                              key={s.name}
+                              style={{
+                                width: 28, height: 28, borderRadius: '50%', background: s.colour,
+                                border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8,
+                                fontSize: 10, fontWeight: 700, color: '#fff',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                overflow: 'hidden', flexShrink: 0,
+                              }}
+                            >
+                              {s.initials}
+                            </div>
+                          ))
+                        )}
+                        <span style={{ fontSize: 11, color: '#6B7686', fontFamily: PF_C }}>{totalActive} active</span>
+                      </div>
+
+                      {/* Row 3 — labels */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap' }}>
+                        <Label
+                          text="Issues" colour={RED_C} count={alerts.length}
+                          onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })}
+                        />
+                        <Sep />
+                        <Label
+                          text="Chat" colour="#7C3AED" count={totalUnreadChat}
+                          onClick={() => navigate({ to: '/community', search: { tab: unreadChat > 0 ? 'local' : 'rooms' } })}
+                        />
+                        <Sep />
+                        <Label
+                          text="Pupils" colour="#1877D6" count={pupilReplies.length}
+                          onClick={() => {
+                            const p = pupilReplies[0];
+                            if (p?.pupil_id) navigate({ to: '/messages/$pupilId', params: { pupilId: p.pupil_id } });
+                            else navigate({ to: '/messages' });
+                          }}
+                        />
+                        <Sep />
+                        <Label
+                          text="Admin" colour="#92400E" count={adminUnread}
+                          onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
+                        />
+                        <Sep />
+                        <Label
+                          text="DSM" colour="#1877D6" count={unreadDMs}
+                          onClick={() => navigate({
+                            to: '/messages' as never,
+                            search: { filter: 'instructors' } as never,
+                          })}
+                        />
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
 
               {communityExpanded && (
