@@ -4907,7 +4907,6 @@ function HomePage() {
           const anyReason = isLate && (showTraffic || isAdverseWeather || !!matchedAlert);
 
           // Payment / due
-          const hStatus = (upcoming?.payment_status ?? 'unpaid').toLowerCase();
           const hAmountDue = Number(upcoming?.amount_due ?? 0);
           const pupil = upcoming?.pupils as any;
           const pricingType = pupil?.pricing_type;
