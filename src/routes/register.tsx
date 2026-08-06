@@ -26,10 +26,14 @@ function RegisterPage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [emailExists, setEmailExists] = useState(false);
+
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    setEmailExists(false);
+
 
     if (password.length < 8) {
       setError("Password must be at least 8 characters.");
@@ -54,9 +58,21 @@ function RegisterPage() {
     setLoading(false);
 
     if (signUpError) {
-      setError(signUpError.message);
+      const msg = signUpError.message?.toLowerCase() || "";
+      const code = (signUpError as { code?: string }).code;
+      if (
+        msg.includes("already registered") ||
+        msg.includes("already exists") ||
+        code === "email_exists"
+      ) {
+        setEmailExists(true);
+        setError("An account with this email already exists.");
+      } else {
+        setError(signUpError.message);
+      }
       return;
     }
+
 
     const userId = data.user?.id;
     if (!userId) {
@@ -257,6 +273,25 @@ function RegisterPage() {
             </button>
           </div>
 
+          <div
+            style={{
+              textAlign: 'center',
+              marginTop: 16,
+              fontSize: 13,
+              color: '#6B7686',
+              fontFamily: 'Poppins, sans-serif',
+            }}
+          >
+            Already have an account?{' '}
+            <a href="/login" style={{
+              color: '#1877D6',
+              fontWeight: 600,
+              textDecoration: 'none',
+            }}>
+              Log in
+            </a>
+          </div>
+
           <div>
             <Button
               type="submit"
@@ -267,15 +302,29 @@ function RegisterPage() {
             </Button>
           </div>
 
+
           {error && (
             <p
               className="text-[13px] text-[#1877D6] text-center"
               role="alert"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
-              {error}
+              {error}{" "}
+              {emailExists && (
+                <Link
+                  to="/login"
+                  style={{
+                    color: "#1877D6",
+                    fontWeight: 600,
+                    textDecoration: "none",
+                  }}
+                >
+                  Log in instead →
+                </Link>
+              )}
             </p>
           )}
+
         </div>
       </form>
 
