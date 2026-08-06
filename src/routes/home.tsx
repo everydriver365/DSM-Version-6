@@ -7938,29 +7938,6 @@ function HomePage() {
                     );
                   })}
                 </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    gap: 5,
-                    marginTop: 10,
-                  }}
-                >
-                  {newsArticles.map((_, i) => (
-                    <div
-                      key={`news-dot-${i}`}
-                      style={{
-                        height: 5,
-                        borderRadius: 3,
-                        background: i === activeNewsIndex ? '#1877D6' : '#E4E8EF',
-                        width: i === activeNewsIndex ? 14 : 5,
-                        transition: 'all 0.2s ease',
-                        flexShrink: 0,
-                      }}
-                    />
-                  ))}
-                </div>
               </div>
               </div>
             )}
