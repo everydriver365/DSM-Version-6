@@ -8115,9 +8115,211 @@ function HomePage() {
               );
             })()}
 
+            {/* ===== DISCOVER SECTION ===== */}
+            <div style={SECTION_WRAPPER_STYLE}>
+              <DiscoverGrid />
+            </div>
 
+            {/* ===== INDUSTRY NEWS ===== */}
+            {newsArticles.length > 0 && (
+              <div style={SECTION_WRAPPER_STYLE}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 8,
+                    margin: '0 0 10px',
+                  }}
+                >
+                  <SectionHeader style={{ margin: 0 }}>Industry News</SectionHeader>
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: '/news' as never })}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 4,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: '#1877D6',
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                      cursor: 'pointer',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    See all →
+                  </button>
+                </div>
 
+                {/* Swipeable news strip */}
+                <style>{`.news-scroll::-webkit-scrollbar{display:none}`}</style>
+                <div
+                  ref={newsScrollRef}
+                  className="news-scroll"
+                  onScroll={() => {
+                    const el = newsScrollRef.current;
+                    if (!el) return;
+                    const tileWidth = el.offsetWidth - 32;
+                    const index = Math.round(el.scrollLeft / (tileWidth + 10));
+                    setActiveNewsIndex(index);
+                  }}
+                  style={{
+                    display: 'flex',
+                    overflowX: 'auto',
+                    scrollSnapType: 'x mandatory',
+                    WebkitOverflowScrolling: 'touch',
+                    scrollbarWidth: 'none',
+                    gap: 10,
+                    margin: '0 -16px',
+                    padding: '0 16px 4px',
+                  }}
+                >
+                  {newsArticles.map((article, index) => {
+                    const gradients = [
+                      'linear-gradient(135deg,#1e3a5f,#0B1F3A)',
+                      'linear-gradient(135deg,#1877D6,#0B1F3A)',
+                      'linear-gradient(135deg,#CC2229,#0B1F3A)',
+                      'linear-gradient(135deg,#15803D,#0B1F3A)',
+                    ];
+                    const gradient = gradients[index % 4];
+                    const articleDate = article.published_at
+                      ? new Date(article.published_at).toLocaleDateString('en-GB', {
+                          day: 'numeric',
+                          month: 'short',
+                        })
+                      : '';
+                    return (
+                      <div
+                        key={article.id}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() =>
+                          navigate({
+                            to: '/news/$articleId' as never,
+                            params: { articleId: article.id } as never,
+                          })
+                        }
+                        style={{
+                          width: 'calc(100% - 32px)',
+                          flexShrink: 0,
+                          scrollSnapAlign: 'start',
+                          scrollSnapStop: 'always',
+                          background: '#fff',
+                          border: '0.5px solid #E4E8EF',
+                          borderRadius: 14,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 12,
+                          padding: '12px 14px',
+                        }}
+                      >
+                        {/* Thumbnail */}
+                        <div
+                          style={{
+                            width: 52,
+                            height: 52,
+                            borderRadius: 10,
+                            overflow: 'hidden',
+                            flexShrink: 0,
+                            background: article.image_url ? undefined : gradient,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          {article.image_url ? (
+                            <img
+                              src={article.image_url}
+                              alt=""
+                              loading="lazy"
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                          ) : (
+                            <IconNews size={20} color="#FFFFFF" stroke={1.5} />
+                          )}
+                        </div>
 
+                        {/* Text */}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div
+                            style={{
+                              display: 'inline-flex',
+                              marginBottom: 5,
+                              background: '#E6F1FB',
+                              color: '#1877D6',
+                              fontSize: 8,
+                              fontWeight: 700,
+                              fontFamily: 'Poppins, sans-serif',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.04em',
+                              borderRadius: 20,
+                              padding: '2px 6px',
+                            }}
+                          >
+                            {article.source || 'News'}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 600,
+                              color: '#0B1F3A',
+                              fontFamily: 'Poppins, sans-serif',
+                              lineHeight: 1.3,
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                              marginBottom: 4,
+                            }}
+                          >
+                            {article.title}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 11,
+                              color: '#9CA3AF',
+                              fontFamily: 'Poppins, sans-serif',
+                            }}
+                          >
+                            {article.read_time_mins ? `${article.read_time_mins} min` : '—'}
+                            {articleDate ? ` · ${articleDate}` : ''}
+                          </div>
+                        </div>
+
+                        <IconChevronRight size={16} color="#E4E8EF" stroke={2} />
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Dot indicators */}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: 5,
+                    marginTop: 8,
+                  }}
+                >
+                  {newsArticles.map((_, i) => (
+                    <span
+                      key={i}
+                      style={{
+                        width: i === activeNewsIndex ? 16 : 5,
+                        height: 5,
+                        borderRadius: 999,
+                        background: i === activeNewsIndex ? '#1877D6' : '#DDE3EC',
+                        transition: 'width .2s ease, background .2s ease',
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
 
 
           </div>
