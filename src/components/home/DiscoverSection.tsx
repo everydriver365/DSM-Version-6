@@ -429,7 +429,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const stripRef = useRef<HTMLDivElement | null>(null);
 
   const tileShell: React.CSSProperties = {
-    background: "#FFFFFF",
+    background: "#fff",
     border: "0.5px solid #E4E8EF",
     borderRadius: 14,
     overflow: "hidden",
@@ -437,14 +437,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     fontFamily: FONT,
   };
 
-  const tileImage = (bg: string): React.CSSProperties => ({
-    position: "relative",
-    height: 80,
-    background: bg,
+  const tileImageWrap: React.CSSProperties = { position: "relative", height: 100 };
+  const layerFill: React.CSSProperties = { position: "absolute", inset: 0 };
+  const iconLayer: React.CSSProperties = {
+    position: "absolute",
+    inset: 0,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-  });
+  };
 
   const tileBadge: React.CSSProperties = {
     position: "absolute",
@@ -461,9 +462,33 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     color: "#FFFFFF",
   };
 
-  const tileLabelWrap: React.CSSProperties = { padding: "8px 10px 10px" };
+  const tileStat: React.CSSProperties = {
+    position: "absolute",
+    left: 8,
+    bottom: 7,
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 3,
+    fontSize: 9,
+    fontWeight: 600,
+    color: "rgba(255,255,255,0.72)",
+  };
+
+  const tileLabelWrap: React.CSSProperties = { padding: "9px 11px 11px" };
   const tileTitle: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: NAVY };
   const tileSub: React.CSSProperties = { fontSize: 10, color: "#6B7686", marginTop: 1 };
+
+  const newsPill: React.CSSProperties = {
+    background: "rgba(255,255,255,0.15)",
+    backdropFilter: "blur(4px)",
+    WebkitBackdropFilter: "blur(4px)",
+    fontSize: 7,
+    fontWeight: 700,
+    color: "#FFFFFF",
+    borderRadius: 20,
+    padding: "2px 7px",
+    lineHeight: 1.4,
+  };
 
   return (
     <div style={{ margin: "0 -16px 0", padding: "0 16px 2px", borderRadius: 0, fontFamily: FONT }}>
@@ -478,11 +503,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
+          gridTemplateColumns: "1fr 1fr",
           gap: 10,
-          marginBottom: 16,
+          marginBottom: 10,
         }}
       >
+        {/* TILE 1 — DSM Live */}
         <div
           role="button"
           tabIndex={0}
@@ -491,8 +517,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           }
           style={tileShell}
         >
-          <div style={tileImage("linear-gradient(135deg, #1877D6, #0B1F3A)")}>
-            <IconRadio size={28} color="rgba(255,255,255,0.9)" stroke={1.8} />
+          <div style={tileImageWrap}>
+            <div
+              style={{ ...layerFill, background: "linear-gradient(135deg,#1877D6,#0B1F3A)" }}
+            />
+            <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
+            <div style={iconLayer}>
+              <IconRadio size={38} color="rgba(255,255,255,0.7)" stroke={1.6} />
+            </div>
             {allItems.some((i) => i.type === "live" && isLiveNow(i.data)) && (
               <span style={{ ...tileBadge, background: RED }}>
                 <span className="dsm-live-pulse" style={{ display: "inline-flex" }}>
@@ -516,14 +548,21 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </div>
         </div>
 
+        {/* TILE 2 — Bitesize */}
         <div
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/bitesize" as never })}
           style={tileShell}
         >
-          <div style={tileImage("linear-gradient(135deg, #7C3AED, #4F1D96)")}>
-            <IconBook size={28} color="rgba(255,255,255,0.9)" stroke={1.8} />
+          <div style={tileImageWrap}>
+            <div
+              style={{ ...layerFill, background: "linear-gradient(135deg,#7C3AED,#4F1D96)" }}
+            />
+            <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
+            <div style={iconLayer}>
+              <IconBook size={38} color="rgba(255,255,255,0.7)" stroke={1.6} />
+            </div>
             <span style={{ ...tileBadge, background: "rgba(255,255,255,0.2)" }}>CPD</span>
           </div>
           <div style={tileLabelWrap}>
@@ -532,15 +571,28 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </div>
         </div>
 
+        {/* TILE 3 — DSM Reels */}
         <div
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/reels" as never })}
           style={tileShell}
         >
-          <div style={tileImage("linear-gradient(135deg, #CC2229, #7C1D1D)")}>
-            <IconPlayerPlay size={28} color="rgba(255,255,255,0.9)" stroke={1.8} />
+          <div style={tileImageWrap}>
+            <div
+              style={{ ...layerFill, background: "linear-gradient(135deg,#CC2229,#7C1D1D)" }}
+            />
+            <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
+            <div style={iconLayer}>
+              <IconPlayerPlay size={38} color="rgba(255,255,255,0.7)" stroke={1.6} />
+            </div>
             <span style={{ ...tileBadge, background: "rgba(255,255,255,0.2)" }}>NEW</span>
+            {reelCount != null && (
+              <span style={tileStat}>
+                <i className="ti ti-eye" style={{ fontSize: 9 }} />
+                {reelCount} views
+              </span>
+            )}
           </div>
           <div style={tileLabelWrap}>
             <div style={tileTitle}>DSM Reels</div>
@@ -548,7 +600,99 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </div>
         </div>
 
+        {/* TILE 4 — Marketplace */}
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate({ to: "/marketplace" as never })}
+          style={tileShell}
+        >
+          <div style={tileImageWrap}>
+            <div
+              style={{ ...layerFill, background: "linear-gradient(135deg,#15803D,#064E3B)" }}
+            />
+            <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
+            <div style={iconLayer}>
+              <IconShoppingBag size={38} color="rgba(255,255,255,0.7)" stroke={1.6} />
+            </div>
+            <span style={{ ...tileBadge, background: "rgba(255,255,255,0.2)" }}>SHOP</span>
+            {listingCount != null && (
+              <span style={tileStat}>
+                <i className="ti ti-tag" style={{ fontSize: 9 }} />
+                {listingCount} listings
+              </span>
+            )}
+          </div>
+          <div style={tileLabelWrap}>
+            <div style={tileTitle}>Marketplace</div>
+            <div style={tileSub}>Services &amp; deals</div>
+          </div>
+        </div>
       </div>
+
+      {/* TILE 5 — Industry News (full width) */}
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => navigate({ to: "/news" as never })}
+        style={{ ...tileShell, marginBottom: 16 }}
+      >
+        <div style={tileImageWrap}>
+          <div style={{ ...layerFill, background: "linear-gradient(135deg,#0B1F3A,#1e3a5f)" }} />
+          <div style={{ ...layerFill, background: "rgba(0,0,0,0.25)" }} />
+          <div style={iconLayer}>
+            <IconNews size={38} color="rgba(255,255,255,0.65)" stroke={1.6} />
+          </div>
+          <div
+            style={{
+              position: "absolute",
+              top: 8,
+              left: 8,
+              display: "flex",
+              gap: 4,
+              alignItems: "center",
+            }}
+          >
+            <span style={newsPill}>DVSA</span>
+            <span style={newsPill}>DIA</span>
+            <span style={newsPill}>+ 2 more</span>
+          </div>
+          {newsUnread && (
+            <span
+              style={{
+                position: "absolute",
+                top: 8,
+                right: 8,
+                width: 10,
+                height: 10,
+                borderRadius: "50%",
+                background: RED,
+              }}
+            />
+          )}
+          {newsCount != null && (
+            <span style={{ ...tileStat, color: "rgba(255,255,255,0.6)" }}>
+              <i className="ti ti-file-text" style={{ fontSize: 9 }} />
+              {newsCount} articles
+            </span>
+          )}
+        </div>
+        <div
+          style={{
+            ...tileLabelWrap,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            <div style={tileTitle}>Industry News</div>
+            <div style={tileSub}>DVSA · DIA · Intelligent Instructor</div>
+          </div>
+          <i className="ti ti-chevron-right" style={{ fontSize: 16, color: "#E4E8EF" }} />
+        </div>
+      </div>
+
 
       <div
         ref={stripRef}
