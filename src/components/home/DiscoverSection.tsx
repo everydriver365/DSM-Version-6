@@ -512,9 +512,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         <div
           role="button"
           tabIndex={0}
-          onClick={() =>
-            stripRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
-          }
+          onClick={() => navigate({ to: "/dsm-live" as never })}
           style={tileShell}
         >
           <div style={tileImageWrap}>
