@@ -11,8 +11,6 @@ import {
   Paperclip,
   Search,
   X,
-  Check,
-  CheckCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -163,71 +161,6 @@ function HighlightedBody({ body, query }: { body: string; query: string }) {
 }
 
 const SYSTEM_TYPES = ["call", "missed_call", "sms_event", "system", "event"];
-
-function MessageStatus({ message }: { message: ChatMessage }) {
-  if (message.sender_type !== "instructor") return null;
-  const isRead = !!message.read_at;
-  const isSent = typeof message.id === "string" && message.id.startsWith("tmp-");
-
-  if (isRead) {
-    return (
-      <span
-        title="Read"
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 3,
-          fontSize: 10,
-          fontWeight: 500,
-          color: "#1877D6",
-          ...POPPINS,
-        }}
-      >
-        <CheckCheck size={12} />
-        Read
-      </span>
-    );
-  }
-
-  if (isSent) {
-    return (
-      <span
-        title="Sent"
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 3,
-          fontSize: 10,
-          fontWeight: 500,
-          color: "#9CA3AF",
-          ...POPPINS,
-        }}
-      >
-        <Check size={12} />
-        Sent
-      </span>
-    );
-  }
-
-  // Confirmed by server but not yet read
-  return (
-    <span
-      title="Delivered"
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 3,
-        fontSize: 10,
-        fontWeight: 500,
-        color: "#9CA3AF",
-        ...POPPINS,
-      }}
-    >
-      <CheckCheck size={12} />
-      Delivered
-    </span>
-  );
-}
 
 
 function PupilThreadPage() {
@@ -935,6 +868,14 @@ function PupilThreadPage() {
           </div>
         ) : (
           messages.map((m, i) => {
+            const lastReadSentIndex = messages
+              .map((m, i) => ({ m, i }))
+              .filter(({ m }) => m.sender_type === 'instructor' && m.read_at)
+              .pop()?.i ?? -1;
+            const lastSentIndex = messages
+              .map((m, i) => ({ m, i }))
+              .filter(({ m }) => m.sender_type === 'instructor')
+              .pop()?.i ?? -1;
             const prev = i > 0 ? messages[i - 1] : null;
             const showDate = !prev || dayKey(prev.created_at) !== dayKey(m.created_at);
             const isSystem = SYSTEM_TYPES.includes(m.sender_type);
@@ -1104,8 +1045,33 @@ function PupilThreadPage() {
                       <span style={{ fontSize: 10, color: "#9CA3AF" }}>
                         {formatTime(m.created_at)}
                       </span>
-                      {mine && <MessageStatus message={m} />}
                     </div>
+                    {mine && i === lastReadSentIndex && m.read_at && (
+                      <div
+                        style={{
+                          fontSize: 10,
+                          color: "rgba(255,255,255,0.5)",
+                          textAlign: "right",
+                          marginTop: 2,
+                          fontFamily: "Poppins, sans-serif",
+                        }}
+                      >
+                        Read
+                      </div>
+                    )}
+                    {mine && i === lastSentIndex && !m.read_at && (
+                      <div
+                        style={{
+                          fontSize: 10,
+                          color: "rgba(255,255,255,0.35)",
+                          textAlign: "right",
+                          marginTop: 2,
+                          fontFamily: "Poppins, sans-serif",
+                        }}
+                      >
+                        Delivered
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
