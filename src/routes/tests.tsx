@@ -477,19 +477,38 @@ function TestCard({
   showDaysBadge,
   pastProminent,
   onLogResult,
+  onEdit,
+  onCancel,
 }: {
   test: DrivingTest;
   showDaysBadge?: boolean;
   pastProminent?: boolean;
   onLogResult?: () => void;
+  onEdit?: () => void;
+  onCancel?: () => void;
 }) {
   const name = test.pupils?.name ?? "Unknown pupil";
   const days = daysUntil(test.test_date);
   const daysLabel = days === 0 ? "Today" : days === 1 ? "Tomorrow" : `${days} days`;
   const resultColor = test.result === "Pass" ? "#1877D6" : test.result === "Fail" ? "#1877D6" : null;
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const showMenu = !!(onEdit || onCancel);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [menuOpen]);
 
   return (
-    <Card>
+    <Card style={{ position: "relative" }}>
       <div className="flex items-start" style={{ gap: 12 }}>
         <div
           className="flex items-center justify-center text-white text-[13px] font-semibold shrink-0"
@@ -497,7 +516,7 @@ function TestCard({
         >
           {initials(name)}
         </div>
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0" style={{ paddingRight: showMenu ? 28 : 0 }}>
           <div className="flex items-start justify-between" style={{ gap: 8 }}>
             <div className="text-[14px] font-semibold truncate" style={{ color: "#0B1F3A", ...POPPINS }}>
               {name}
@@ -584,6 +603,102 @@ function TestCard({
           )}
         </div>
       </div>
+
+      {/* Dots menu */}
+      {showMenu && (
+        <div ref={menuRef} style={{ position: "absolute", top: 12, right: 12 }}>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((v) => !v)}
+            style={{
+              display: "grid",
+              placeItems: "center",
+              width: 28,
+              height: 28,
+              borderRadius: 8,
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            <IconDotsVertical size={16} color="#9CA3AF" />
+          </button>
+
+          {menuOpen && (
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                right: 0,
+                marginTop: 4,
+                minWidth: 150,
+                background: "#fff",
+                border: "1px solid #E2E8F0",
+                borderRadius: 10,
+                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                zIndex: 20,
+                overflow: "hidden",
+              }}
+            >
+              {onEdit && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    onEdit();
+                  }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    width: "100%",
+                    padding: "10px 12px",
+                    background: "#fff",
+                    border: "none",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: "#0B1F3A",
+                    cursor: "pointer",
+                    fontFamily: "Poppins, sans-serif",
+                    textAlign: "left",
+                  }}
+                >
+                  <IconPencil size={14} color="#0B1F3A" />
+                  Edit test
+                </button>
+              )}
+              {onCancel && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    onCancel();
+                  }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    width: "100%",
+                    padding: "10px 12px",
+                    background: "#fff",
+                    border: "none",
+                    borderTop: onEdit ? "1px solid #F1F5F9" : "none",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: "#CC2229",
+                    cursor: "pointer",
+                    fontFamily: "Poppins, sans-serif",
+                    textAlign: "left",
+                  }}
+                >
+                  <IconClose size={14} color="#CC2229" />
+                  Cancel test
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </Card>
   );
 }
