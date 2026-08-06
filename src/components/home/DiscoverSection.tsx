@@ -260,29 +260,38 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
 
 
-  const tileShell: React.CSSProperties = {
-    background: "#fff",
-    border: `0.5px solid ${HAIRLINE}`,
+  const tileShell = (accent: string, tint: string): React.CSSProperties => ({
+    position: "relative",
+    background: tint,
+    border: `1px solid ${accent}1F`,
     borderRadius: 14,
     overflow: "hidden",
     cursor: "pointer",
     fontFamily: FONT,
-  };
+    padding: "12px 12px 11px",
+    minHeight: 118,
+    display: "flex",
+    flexDirection: "column",
+  });
 
-  const strip = (tint: string): React.CSSProperties => ({
-    height: 46,
-    background: tint,
+  const medallion = (accent: string): React.CSSProperties => ({
+    position: "absolute",
+    top: 10,
+    right: 10,
+    width: 42,
+    height: 42,
+    borderRadius: "50%",
+    background: accent,
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between",
-    padding: "0 10px",
+    justifyContent: "center",
   });
 
   const stripPill = (accent: string): React.CSSProperties => ({
     display: "inline-flex",
     alignItems: "center",
     gap: 3,
-    background: "#FFFFFF",
+    background: "rgba(255,255,255,0.9)",
     color: accent,
     fontSize: 9,
     fontWeight: 700,
@@ -293,7 +302,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     lineHeight: 1.2,
   });
 
-  const tileLabelWrap: React.CSSProperties = { padding: "9px 12px 11px" };
+  const tileLabelWrap: React.CSSProperties = { marginTop: "auto", paddingTop: 22 };
   const tileTitle: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: NAVY };
   const tileSub: React.CSSProperties = { fontSize: 10, color: "#6B7686", marginTop: 1 };
   const bodyRow: React.CSSProperties = {
@@ -302,6 +311,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     justifyContent: "space-between",
     gap: 8,
   };
+  const CHEV = "rgba(11,31,58,0.28)";
+
 
 
   return (
