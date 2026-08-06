@@ -16,7 +16,7 @@ const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 const RED = "#CC2229";
 const GREEN = "#3C9B5A";
-const HAIRLINE = "#E1E7EF";
+
 const MUTED = "#8A94A3";
 const FONT = "Poppins, Inter, sans-serif";
 
@@ -260,29 +260,38 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
 
 
-  const tileShell: React.CSSProperties = {
-    background: "#fff",
-    border: `0.5px solid ${HAIRLINE}`,
+  const tileShell = (accent: string, tint: string): React.CSSProperties => ({
+    position: "relative",
+    background: tint,
+    border: `1px solid ${accent}1F`,
     borderRadius: 14,
     overflow: "hidden",
     cursor: "pointer",
     fontFamily: FONT,
-  };
+    padding: "12px 12px 11px",
+    minHeight: 118,
+    display: "flex",
+    flexDirection: "column",
+  });
 
-  const strip = (tint: string): React.CSSProperties => ({
-    height: 46,
-    background: tint,
+  const medallion = (accent: string): React.CSSProperties => ({
+    position: "absolute",
+    top: 10,
+    right: 10,
+    width: 42,
+    height: 42,
+    borderRadius: "50%",
+    background: accent,
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between",
-    padding: "0 10px",
+    justifyContent: "center",
   });
 
   const stripPill = (accent: string): React.CSSProperties => ({
     display: "inline-flex",
     alignItems: "center",
     gap: 3,
-    background: "#FFFFFF",
+    background: "rgba(255,255,255,0.9)",
     color: accent,
     fontSize: 9,
     fontWeight: 700,
@@ -293,7 +302,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     lineHeight: 1.2,
   });
 
-  const tileLabelWrap: React.CSSProperties = { padding: "9px 12px 11px" };
+  const tileLabelWrap: React.CSSProperties = { marginTop: "auto", paddingTop: 22 };
   const tileTitle: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: NAVY };
   const tileSub: React.CSSProperties = { fontSize: 10, color: "#6B7686", marginTop: 1 };
   const bodyRow: React.CSSProperties = {
@@ -302,6 +311,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     justifyContent: "space-between",
     gap: 8,
   };
+  const CHEV = "rgba(11,31,58,0.28)";
+
 
 
   return (
@@ -342,34 +353,35 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           tabIndex={0}
           onClick={() => navigate({ to: "/dsm-live" as never })}
           style={{
-            ...tileShell,
-            border: liveActive ? "2px solid #CC2229" : `0.5px solid ${HAIRLINE}`,
-            boxShadow: liveActive
-              ? "0 0 0 3px rgba(204,34,41,0.15), 0 4px 16px rgba(204,34,41,0.2)"
-              : "none",
-            animation: liveActive ? "livePulse 2s ease-in-out infinite" : "none",
+            ...tileShell(BLUE, "#EAF0F8"),
+            ...(liveActive
+              ? {
+                  border: "2px solid #CC2229",
+                  boxShadow:
+                    "0 0 0 3px rgba(204,34,41,0.15), 0 4px 16px rgba(204,34,41,0.2)",
+                  animation: "livePulse 2s ease-in-out infinite",
+                }
+              : null),
           }}
         >
-          <div style={strip("#EAF0F8")}>
-            {liveActive ? (
-              <span style={stripPill(RED)}>
-                <span className="dsm-live-dot-pulse" style={{ display: "inline-flex" }}>
-                  <span
-                    style={{
-                      width: 4,
-                      height: 4,
-                      borderRadius: "50%",
-                      background: RED,
-                      display: "inline-block",
-                    }}
-                  />
-                </span>
-                Live
+          {liveActive && (
+            <span style={stripPill(RED)}>
+              <span className="dsm-live-dot-pulse" style={{ display: "inline-flex" }}>
+                <span
+                  style={{
+                    width: 4,
+                    height: 4,
+                    borderRadius: "50%",
+                    background: RED,
+                    display: "inline-block",
+                  }}
+                />
               </span>
-            ) : (
-              <span style={stripPill(BLUE)}>Live</span>
-            )}
-            <IconRadio size={20} color={BLUE} stroke={1.8} style={{ opacity: 0.55 }} />
+              Live
+            </span>
+          )}
+          <div style={medallion(BLUE)}>
+            <IconRadio size={22} color="#FFFFFF" stroke={1.8} />
           </div>
           <div style={tileLabelWrap}>
             <div style={bodyRow}>
@@ -377,7 +389,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div style={tileTitle}>DSM Live</div>
                 <div style={tileSub}>Events &amp; webinars</div>
               </div>
-              <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
+              <IconChevronRight size={14} color={CHEV} stroke={2} />
             </div>
           </div>
         </div>
@@ -387,11 +399,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/bitesize" as never })}
-          style={tileShell}
+          style={tileShell("#7C3AED", "#F1EDFB")}
         >
-          <div style={strip("#F1EDFB")}>
-            <span style={stripPill("#7C3AED")}>CPD</span>
-            <IconBook size={20} color="#7C3AED" stroke={1.8} style={{ opacity: 0.55 }} />
+          <span style={stripPill("#7C3AED")}>CPD</span>
+          <div style={medallion("#7C3AED")}>
+            <IconBook size={22} color="#FFFFFF" stroke={1.8} />
           </div>
           <div style={tileLabelWrap}>
             <div style={bodyRow}>
@@ -399,7 +411,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div style={tileTitle}>Bitesize</div>
                 <div style={tileSub}>Learn &amp; develop</div>
               </div>
-              <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
+              <IconChevronRight size={14} color={CHEV} stroke={2} />
             </div>
           </div>
         </div>
@@ -409,11 +421,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/reels" as never })}
-          style={tileShell}
+          style={tileShell(RED, "#FBEBEA")}
         >
-          <div style={strip("#FBEBEA")}>
-            <span style={stripPill(RED)}>New</span>
-            <IconPlayerPlay size={20} color={RED} stroke={1.8} style={{ opacity: 0.55 }} />
+          <span style={stripPill(RED)}>New</span>
+          <div style={medallion(RED)}>
+            <IconPlayerPlay size={22} color="#FFFFFF" stroke={1.8} />
           </div>
           <div style={tileLabelWrap}>
             <div style={bodyRow}>
@@ -423,7 +435,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   {showcaseCount != null ? `${showcaseCount} views` : "Fun clips"}
                 </div>
               </div>
-              <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
+              <IconChevronRight size={14} color={CHEV} stroke={2} />
             </div>
           </div>
         </div>
@@ -433,11 +445,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/marketplace" as never })}
-          style={tileShell}
+          style={tileShell(GREEN, "#E9F5EE")}
         >
-          <div style={strip("#E9F5EE")}>
-            <span style={stripPill(GREEN)}>Shop</span>
-            <IconShoppingBag size={20} color={GREEN} stroke={1.8} style={{ opacity: 0.55 }} />
+          <span style={stripPill(GREEN)}>Shop</span>
+          <div style={medallion(GREEN)}>
+            <IconShoppingBag size={22} color="#FFFFFF" stroke={1.8} />
           </div>
           <div style={tileLabelWrap}>
             <div style={bodyRow}>
@@ -447,7 +459,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   {listingCount != null ? `${listingCount} listings` : "Services & deals"}
                 </div>
               </div>
-              <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
+              <IconChevronRight size={14} color={CHEV} stroke={2} />
             </div>
           </div>
         </div>
@@ -458,30 +470,31 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         role="button"
         tabIndex={0}
         onClick={() => navigate({ to: "/news" as never })}
-        style={{ ...tileShell, marginBottom: 16 }}
+        style={{ ...tileShell(NAVY, "#EAECF0"), marginBottom: 16 }}
       >
-        <div style={strip("#EAECF0")}>
-          <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
-            <span style={stripPill(NAVY)}>DVSA</span>
-            <span style={stripPill(NAVY)}>DIA</span>
-            <span style={stripPill(NAVY)}>+ 2 more</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            {newsUnread && (
-              <span
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: RED,
-                  display: "inline-block",
-                }}
-              />
-            )}
-            <IconNews size={20} color={NAVY} stroke={1.8} style={{ opacity: 0.55 }} />
-          </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0, paddingRight: 60 }}>
+          <span style={stripPill(NAVY)}>DVSA</span>
+          <span style={stripPill(NAVY)}>DIA</span>
+          <span style={stripPill(NAVY)}>+ 2 more</span>
         </div>
-        <div style={{ padding: "9px 12px 11px" }}>
+        {newsUnread && (
+          <span
+            style={{
+              position: "absolute",
+              top: 26,
+              right: 60,
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              background: RED,
+              display: "inline-block",
+            }}
+          />
+        )}
+        <div style={medallion(NAVY)}>
+          <IconNews size={22} color="#FFFFFF" stroke={1.8} />
+        </div>
+        <div style={{ ...tileLabelWrap, paddingTop: 14 }}>
           <div style={bodyRow}>
             <div style={{ minWidth: 0 }}>
               <div style={tileTitle}>Industry News</div>
@@ -510,10 +523,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     : "Latest updates"}
               </div>
             </div>
-            <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
+            <IconChevronRight size={14} color={CHEV} stroke={2} />
           </div>
         </div>
       </div>
+
 
 
 
