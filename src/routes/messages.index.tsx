@@ -886,6 +886,29 @@ function MessagesIndexPage() {
       }
     }
 
+    for (const dm of instructorDMs) {
+      const other = dm.instructor_a_id === userId ? dm.instructor_b : dm.instructor_a;
+      if (!other) continue;
+      list.push({
+        key: `instructor:${dm.id}`,
+        kind: "instructor",
+        name: other.name ?? "Instructor",
+        preview: dm.last_message ?? "No messages yet",
+        ts: dm.last_message_at ?? new Date(0).toISOString(),
+        unread: 0,
+        photo: other.profile_image_url ?? null,
+        initials: nameInitials(other.name ?? "Instructor"),
+        bg: BLUE,
+        badge: "DSM",
+        open: () =>
+          navigate({
+            to: "/messages/instructor/$conversationId" as never,
+            params: { conversationId: dm.id } as never,
+          }),
+        markRead: () => {},
+      });
+    }
+
     return list;
   }, [convos, joinedRooms, roomPreviews, adminThreads, isAdmin, room, view, navigate]);
 
