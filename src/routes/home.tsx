@@ -7786,140 +7786,201 @@ function HomePage() {
                     See all <ChevronRight size={14} strokeWidth={2.2} />
                   </button>
                 </div>
+                <style>
+                  {`.news-strip::-webkit-scrollbar{display:none}`}
+                </style>
                 <div
+                  className="news-strip"
                   style={{
                     display: 'flex',
                     flexWrap: 'nowrap',
-                    gap: 8,
-                    alignItems: 'stretch',
+                    gap: 14,
                     overflowX: 'auto',
                     WebkitOverflowScrolling: 'touch',
-                    scrollSnapType: 'x mandatory',
-                    scrollPadding: '0px',
+                    scrollSnapType: 'x proximity',
                     overscrollBehaviorX: 'contain',
                     scrollbarWidth: 'none',
-                    msOverflowStyle: 'none',
                     padding: '0 16px 4px',
+                    alignItems: 'flex-start',
                   }}
                 >
-                  {newsArticles.map((article) => (
-                    <div
-                      key={article.id}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() =>
-                        navigate({
-                          to: '/news/$articleId' as never,
-                          params: { articleId: article.id } as never,
-                        })
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
+                  {newsArticles.map((article, idx) => {
+                    const gradient = [
+                      'linear-gradient(135deg, #1e3a5f, #0B1F3A)',
+                      'linear-gradient(135deg, #1877D6, #0B1F3A)',
+                      'linear-gradient(135deg, #CC2229, #0B1F3A)',
+                      'linear-gradient(135deg, #15803D, #0B1F3A)',
+                    ][idx % 4];
+                    return (
+                      <div
+                        key={article.id}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() =>
                           navigate({
                             to: '/news/$articleId' as never,
                             params: { articleId: article.id } as never,
-                          });
+                          })
                         }
-                      }}
-                      style={{
-                        flex: '0 0 calc(50% - 4px)',
-                        minWidth: 'calc(50% - 4px)',
-                        borderRadius: 14,
-                        border: '1px solid #E4E8EF',
-                        background: '#FFFFFF',
-                        overflow: 'hidden',
-                        cursor: 'pointer',
-                        scrollSnapAlign: 'start',
-                        scrollSnapStop: 'always',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        fontFamily: 'Poppins, sans-serif',
-                      }}
-                    >
-                      <div
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            navigate({
+                              to: '/news/$articleId' as never,
+                              params: { articleId: article.id } as never,
+                            });
+                          }
+                        }}
                         style={{
-                          position: 'relative',
-                          height: 110,
-                          overflow: 'hidden',
-                          background: article.image_url
-                            ? undefined
-                            : 'linear-gradient(135deg, #1e3a5f 0%, #0B1F3A 100%)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
+                          width: 132,
+                          flexShrink: 0,
+                          scrollSnapAlign: 'start',
+                          cursor: 'pointer',
                         }}
                       >
-                        {article.image_url ? (
-                          <img
-                            src={article.image_url}
-                            alt=""
-                            loading="lazy"
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          />
-                        ) : (
-                          <IconNews size={28} color="#FFFFFF" stroke={1.5} />
-                        )}
-                      </div>
-                      <div style={{ padding: '8px 10px 10px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
                         <div
                           style={{
-                            display: 'inline-flex',
-                            marginBottom: 6,
-                            background: '#E6F1FB',
-                            color: '#1877D6',
-                            fontSize: 8,
-                            fontWeight: 700,
-                            fontFamily: 'Poppins, sans-serif',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.06em',
-                            borderRadius: 20,
-                            padding: '2px 7px',
+                            width: 132,
+                            height: 132,
+                            borderRadius: 12,
+                            boxShadow: '0 3px 10px rgba(11,31,58,0.10)',
+                            overflow: 'hidden',
+                            position: 'relative',
+                            marginBottom: 8,
+                            background: article.image_url ? undefined : gradient,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
                           }}
                         >
-                          {article.source || 'News'}
+                          {article.image_url ? (
+                            <img
+                              src={article.image_url}
+                              alt=""
+                              loading="lazy"
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                          ) : (
+                            <IconNews size={24} color="#FFFFFF" stroke={1.5} />
+                          )}
+                          <span
+                            style={{
+                              position: 'absolute',
+                              top: 6,
+                              left: 6,
+                              background: 'rgba(255,255,255,0.92)',
+                              color: '#0B1F3A',
+                              fontSize: 8,
+                              fontWeight: 700,
+                              fontFamily: 'Poppins, sans-serif',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.05em',
+                              borderRadius: 20,
+                              padding: '2px 6px',
+                              maxWidth: 'calc(100% - 12px)',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {article.source || 'News'}
+                          </span>
+                          <span
+                            style={{
+                              position: 'absolute',
+                              bottom: 6,
+                              right: 6,
+                              background: 'rgba(11,31,58,0.55)',
+                              color: '#FFFFFF',
+                              fontSize: 9,
+                              fontWeight: 600,
+                              fontFamily: 'Poppins, sans-serif',
+                              borderRadius: 20,
+                              padding: '2px 6px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 3,
+                            }}
+                          >
+                            <IconClock size={9} color="#FFFFFF" stroke={2} />
+                            {article.read_time_mins ? `${article.read_time_mins} min` : '—'}
+                          </span>
                         </div>
                         <div
                           style={{
-                            fontSize: 13,
-                            fontWeight: 600,
+                            fontSize: 12,
+                            fontWeight: 700,
                             color: '#0B1F3A',
                             fontFamily: 'Poppins, sans-serif',
-                            lineHeight: 1.35,
                             display: '-webkit-box',
                             WebkitLineClamp: 2,
                             WebkitBoxOrient: 'vertical',
                             overflow: 'hidden',
-                            marginBottom: 6,
+                            wordBreak: 'break-word',
+                            marginBottom: 3,
+                            lineHeight: 1.25,
                           }}
                         >
                           {article.title}
                         </div>
                         <div
                           style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            marginTop: 'auto',
+                            fontSize: 10,
+                            fontWeight: 400,
+                            color: '#6B7686',
+                            fontFamily: 'Poppins, sans-serif',
                           }}
                         >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                            <IconClock size={11} color="#9CA3AF" stroke={2} />
-                            <span style={{ fontSize: 11, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>
-                              {article.read_time_mins ? `${article.read_time_mins} min read` : 'News'}
-                            </span>
-                          </div>
-                          <span style={{ fontSize: 11, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>
-                            {article.published_at
-                              ? new Date(article.published_at).toLocaleDateString('en-GB', {
-                                  day: 'numeric',
-                                  month: 'short',
-                                })
-                              : ''}
-                          </span>
+                          {article.published_at
+                            ? new Date(article.published_at).toLocaleDateString('en-GB', {
+                                day: 'numeric',
+                                month: 'short',
+                              })
+                            : ''}
                         </div>
                       </div>
+                    );
+                  })}
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => navigate({ to: '/news' as never })}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') navigate({ to: '/news' as never });
+                    }}
+                    style={{
+                      width: 132,
+                      flexShrink: 0,
+                      cursor: 'pointer',
+                      scrollSnapAlign: 'start',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 132,
+                        height: 132,
+                        borderRadius: 12,
+                        border: '1.5px dashed #E4E8EF',
+                        background: '#fff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginBottom: 8,
+                      }}
+                    >
+                      <IconChevronRight size={28} color="#1877D6" stroke={2} />
                     </div>
-                  ))}
+                    <div
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: '#1877D6',
+                        fontFamily: 'Poppins, sans-serif',
+                        textAlign: 'center',
+                      }}
+                    >
+                      See all
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
