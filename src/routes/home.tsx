@@ -7750,7 +7750,7 @@ function HomePage() {
               <DiscoverGrid />
             </div>
 
-            {newsArticles.length > 0 && (
+            {true && (
               <div
                 style={{
                   margin: '0 -16px 24px',
