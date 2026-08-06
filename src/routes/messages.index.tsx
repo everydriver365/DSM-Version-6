@@ -1273,7 +1273,8 @@ function MessagesIndexPage() {
 
 interface InboxItem {
   key: string;
-  kind: "pupil" | "local" | "admin";
+  kind: "pupil" | "local" | "admin" | "instructor";
+  badge?: string;
   name: string;
   preview: string;
   ts: string;
