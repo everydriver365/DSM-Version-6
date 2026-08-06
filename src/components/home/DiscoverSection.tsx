@@ -370,7 +370,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         >
           <div style={tileImageWrap}>
             <div
-              style={{ ...layerFill, background: "linear-gradient(135deg,#7C3AED,#4F1D96)" }}
+              style={{
+                ...layerFill,
+                background: "linear-gradient(135deg,#7C3AED,#4F1D96)",
+                opacity: 1,
+              }}
             />
             <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
             <div style={iconLayer}>
