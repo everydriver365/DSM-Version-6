@@ -111,7 +111,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const navigate = useNavigate();
   const [live, setLive] = useState<LiveItem[]>([]);
   const [learn, setLearn] = useState<LearnItem[]>([]);
-  const [market, setMarket] = useState<MarketItem[]>([]);
+  
   const [reelCount, setReelCount] = useState<number | null>(null);
   const [listingCount, setListingCount] = useState<number | null>(null);
   const [newsCount, setNewsCount] = useState<number | null>(null);
@@ -192,18 +192,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       }
     })();
 
-    (async () => {
-      try {
-        const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/marketplace_listings?is_active=eq.true&deleted_at=is.null&select=id,title,price_display,price_amount,image_urls,show_image,is_featured,created_at,marketplace_categories(name,slug)&order=is_featured.desc,created_at.desc&limit=10`,
-          { headers },
-        );
-        const data = (await res.json()) as MarketItem[];
-        if (!cancelled && Array.isArray(data)) setMarket(data);
-      } catch {
-        /* ignore */
-      }
-    })();
 
     (async () => {
       const { data, error } = await supabase
@@ -259,62 +247,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
 
 
-  const CATEGORY_ICONS: Record<string, string> = {
-    dashcam: "📹",
-    dashcams: "📹",
-    websites: "🌐",
-    website: "🌐",
-    marketing: "📣",
-    insurance: "🛡️",
-    finance: "💷",
-    vehicles: "🚗",
-    cars: "🚗",
-    training: "🎓",
-    software: "💻",
-    equipment: "🧰",
-    accessories: "🧰",
-  };
-
-  const categoryIcon = (m: MarketItem) => {
-    const slug = (m.marketplace_categories?.slug ?? "").toLowerCase();
-    const name = (m.marketplace_categories?.name ?? "").toLowerCase();
-    return CATEGORY_ICONS[slug] ?? CATEGORY_ICONS[name] ?? "🏷️";
-  };
-
-  const ribbonLabel = (m: MarketItem): string | null => {
-    if (m.is_featured) return "Popular";
-    if (m.created_at) {
-      const age = Date.now() - new Date(m.created_at).getTime();
-      if (age >= 0 && age < 14 * 24 * 60 * 60 * 1000) return "New";
-    }
-    return null;
-  };
-
-  const CARD_TONES = [
-    { pillFg: BLUE, tint: "#EAF3FB" },
-    { pillFg: "#067647", tint: "#E7F8EF" },
-    { pillFg: "#6D3BD1", tint: "#F0EBFB" },
-    { pillFg: "#B45309", tint: "#FDF1DF" },
-  ];
-
-  const priceLabel = (m: MarketItem) => {
-    const raw = (m.price_display ?? "").trim();
-    const hasDigit = /\d/.test(raw);
-    if (hasDigit) {
-      return raw.toLowerCase().startsWith("from") ? raw : `From ${raw}`;
-    }
-    if (m.price_amount != null) {
-      const unit = raw ? `/${raw}` : "";
-      return `£${m.price_amount}${unit}`;
-    }
-    return "Price on request";
-  };
-
-  const splitPrice = (label: string): [string, string] => {
-    const idx = label.indexOf("/");
-    if (idx === -1) return [label, ""];
-    return [label.slice(0, idx).trim(), label.slice(idx)];
-  };
 
   const Dot = ({ size }: { size: number }) => (
     <span
