@@ -377,6 +377,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   ];
 
 
+  const stripRef = useRef<HTMLDivElement | null>(null);
   const hasLiveNow = live.some(isLiveNow);
 
   const tileShell: React.CSSProperties = {
