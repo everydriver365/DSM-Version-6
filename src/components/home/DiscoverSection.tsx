@@ -176,12 +176,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   useEffect(() => {
     // DSM Live — latest session image
     supabase
-      .from("live_sessions")
+      .from("dsm_live_sessions")
       .select("image_url")
       .not("image_url", "is", null)
-      .order("created_at", { ascending: false })
+      .is("deleted_at", null)
+      .order("session_date", { ascending: false })
       .limit(1)
-      .single()
+      .maybeSingle()
       .then(({ data }) => setLiveHero(data?.image_url ?? null));
 
     // DSM Reels — latest reel thumbnail
