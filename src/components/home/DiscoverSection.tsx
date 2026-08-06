@@ -339,9 +339,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     fontWeight: 700,
     letterSpacing: "0.04em",
     textTransform: "uppercase",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
+    whiteSpace: "normal",
+    overflow: "visible",
+    wordBreak: "break-word",
+
   };
 
   const stripStyle: React.CSSProperties = {
