@@ -236,7 +236,7 @@ function NewsArticlePage() {
             ...POPPINS,
           }}
         >
-          {article.content}
+          {cleanContent(article.content)}
         </div>
 
         {/* Attribution footer */}
