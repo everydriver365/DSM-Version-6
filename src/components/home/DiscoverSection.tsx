@@ -59,6 +59,8 @@ function isLiveNow(s: LiveItem) {
 export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {}) {
   const navigate = useNavigate();
   const [live, setLive] = useState<LiveItem[]>([]);
+  const [liveActive, setLiveActive] = useState(false);
+
   
   
   const [reelCount, setReelCount] = useState<number | null>(null);
@@ -144,11 +146,25 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           { headers },
         );
         const data = (await res.json()) as LiveItem[];
-        if (!cancelled && Array.isArray(data)) setLive(data);
+        if (!cancelled && Array.isArray(data)) {
+          setLive(data);
+          const now = new Date();
+          const twoHoursFromNow = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+          const isHighlighted = data.some((s) => {
+            if (!s.session_date || !s.session_time) return false;
+            const start = new Date(`${s.session_date}T${s.session_time}`);
+            const end = new Date(start.getTime() + (s.duration_minutes ?? 60) * 60000);
+            const isLive = now >= start && now <= end;
+            const isSoon = start <= twoHoursFromNow && start >= now;
+            return isLive || isSoon;
+          });
+          setLiveActive(isHighlighted);
+        }
       } catch {
         /* ignore */
       }
     })();
+
 
 
 
@@ -312,8 +328,22 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       </div>
 
       <style>
-        {`.dsm-discover-scroll::-webkit-scrollbar{display:none}@keyframes dsmLivePulse{0%{opacity:1}50%{opacity:.3}100%{opacity:1}}.dsm-live-pulse{animation:dsmLivePulse 1.4s ease infinite}`}
+        {`
+          .dsm-discover-scroll::-webkit-scrollbar{display:none}
+          @keyframes dsmLivePulse{0%{opacity:1}50%{opacity:.3}100%{opacity:1}}
+          .dsm-live-pulse{animation:dsmLivePulse 1.4s ease infinite}
+          @keyframes livePulse {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(204,34,41,0.15), 0 4px 16px rgba(204,34,41,0.2); }
+            50% { box-shadow: 0 0 0 6px rgba(204,34,41,0.08), 0 4px 20px rgba(204,34,41,0.3); }
+          }
+          @keyframes dotPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+          }
+          .dsm-live-dot-pulse { animation: dotPulse 1s ease-in-out infinite; }
+        `}
       </style>
+
 
       <div
         style={{
@@ -328,7 +358,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/dsm-live" as never })}
-          style={tileShell}
+          style={{
+            ...tileShell,
+            border: liveActive
+              ? "2px solid #CC2229"
+              : "0.5px solid #E4E8EF",
+            boxShadow: liveActive
+              ? "0 0 0 3px rgba(204,34,41,0.15), 0 4px 16px rgba(204,34,41,0.2)"
+              : "none",
+            animation: liveActive
+              ? "livePulse 2s ease-in-out infinite"
+              : "none",
+          }}
         >
           <div style={tileImageWrap}>
             {liveHero && (
@@ -355,9 +396,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             <div style={iconLayer}>
               <IconRadio size={38} color="rgba(255,255,255,0.7)" stroke={1.6} />
             </div>
-            {liveSorted.some((s) => isLiveNow(s)) && (
+            {liveActive && (
               <span style={{ ...tileBadge, background: RED }}>
-                <span className="dsm-live-pulse" style={{ display: "inline-flex" }}>
+                <span className="dsm-live-dot-pulse" style={{ display: "inline-flex" }}>
                   <span
                     style={{
                       width: 4,
@@ -377,6 +418,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             <div style={tileSub}>Events &amp; webinars</div>
           </div>
         </div>
+
 
         {/* TILE 2 — Bitesize */}
         <div
