@@ -7789,12 +7789,17 @@ function HomePage() {
                 <div
                   style={{
                     display: 'flex',
-                    gap: 12,
+                    flexWrap: 'nowrap',
+                    gap: 8,
+                    alignItems: 'stretch',
                     overflowX: 'auto',
-                    padding: '0 16px 4px',
+                    WebkitOverflowScrolling: 'touch',
                     scrollSnapType: 'x mandatory',
+                    scrollPadding: '0px',
+                    overscrollBehaviorX: 'contain',
                     scrollbarWidth: 'none',
                     msOverflowStyle: 'none',
+                    padding: '0 16px 4px',
                   }}
                 >
                   {newsArticles.map((article) => (
@@ -7817,14 +7822,17 @@ function HomePage() {
                         }
                       }}
                       style={{
-                        width: 240,
-                        flexShrink: 0,
-                        scrollSnapAlign: 'start',
+                        flex: '0 0 calc(50% - 4px)',
+                        minWidth: 'calc(50% - 4px)',
+                        borderRadius: 14,
+                        border: '1px solid #E4E8EF',
                         background: '#FFFFFF',
-                        borderRadius: 12,
-                        border: '0.5px solid #E4E8EF',
                         overflow: 'hidden',
                         cursor: 'pointer',
+                        scrollSnapAlign: 'start',
+                        scrollSnapStop: 'always',
+                        display: 'flex',
+                        flexDirection: 'column',
                         fontFamily: 'Poppins, sans-serif',
                       }}
                     >
@@ -7852,7 +7860,7 @@ function HomePage() {
                           <IconNews size={28} color="#FFFFFF" stroke={1.5} />
                         )}
                       </div>
-                      <div style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+                      <div style={{ padding: '8px 10px 10px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
                         <div
                           style={{
                             display: 'inline-flex',
