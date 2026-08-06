@@ -5622,7 +5622,7 @@ function HomePage() {
             avatarItems.push({ key: 'chat', bg: '#7C3AED', node: <IconMessageCircle size={15} color="#FFFFFF" /> });
           }
           const isQuiet = avatarItems.length === 0;
-          const stack = avatarItems.slice(0, 4);
+          const stack = avatarItems.slice(0, 6);
 
           const Badge = ({ colour, value }: { colour: string; value: number }) => (
             <span style={{
@@ -5700,13 +5700,13 @@ function HomePage() {
               >
                 {(() => {
                   const avatarSources = [
-                    ...unreadMsgs.slice(0, 2).map((m, i) => ({
+                    ...unreadMsgs.map((m, i) => ({
                       type: 'pupil' as const,
                       name: pupilName(m),
                       image: m.pupils?.profile_image_url || null,
                       colour: m.pupils?.calendar_colour ?? ['#0B1F3A', '#CC2229', '#1877D6', '#15803D'][i % 4],
                     })),
-                    ...(unreadDMs > 0 ? dmPreviews.slice(0, 1).map((dm) => ({
+                    ...(unreadDMs > 0 ? dmPreviews.map((dm) => ({
                       type: 'instructor' as const,
                       name: dm.other_name || 'DSM Instructor',
                       image: null,
@@ -5719,8 +5719,8 @@ function HomePage() {
                       colour: '#FCE9E9',
                     }] : []),
                   ];
-                  const extraAvatarCount = avatarSources.length > 4 ? avatarSources.length - 4 : 0;
-                  const visibleAvatars = avatarSources.slice(0, 4);
+                  const extraAvatarCount = avatarSources.length > 6 ? avatarSources.length - 6 : 0;
+                  const visibleAvatars = avatarSources.slice(0, 6);
                   const totalActive = alerts.length + totalUnreadChat + pupilReplies.length + adminUnread + unreadDMs;
                   const latestActivity = [
                     localAlerts?.[0]?.created_at,
@@ -5810,9 +5810,9 @@ function HomePage() {
                               })}
                               {extraAvatarCount > 0 && (
                                 <div style={{
-                                  width: 28, height: 28, borderRadius: '50%', background: '#E5E7EB',
+                                  width: 28, height: 28, borderRadius: '50%', background: '#E4E8EF',
                                   border: '2px solid #fff', marginLeft: -8,
-                                  fontSize: 10, fontWeight: 600, color: '#6B7280',
+                                  fontSize: 9, fontWeight: 600, color: '#6B7686',
                                   display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                                 }}>
                                   +{extraAvatarCount}
