@@ -938,9 +938,9 @@ function MessagesIndexPage() {
         key: `instructor:${dm.id}`,
         kind: "instructor",
         name: other.name ?? "Instructor",
-        preview: dm.last_message ?? "No messages yet",
-        ts: dm.last_message_at ?? new Date(0).toISOString(),
-        unread: 0,
+        preview: dm.last_message ?? "New conversation",
+        ts: dm.last_message_at ?? dm.created_at ?? new Date(0).toISOString(),
+        unread: dmUnread[dm.id] ?? 0,
         photo: other.profile_image_url ?? null,
         initials: nameInitials(other.name ?? "Instructor"),
         bg: BLUE,
@@ -950,12 +950,27 @@ function MessagesIndexPage() {
             to: "/messages/instructor/$conversationId" as never,
             params: { conversationId: dm.id } as never,
           }),
-        markRead: () => {},
+        markRead: () => {
+          setDmUnread((prev) => (prev[dm.id] ? { ...prev, [dm.id]: 0 } : prev));
+        },
       });
     }
 
     return list;
-  }, [convos, joinedRooms, roomPreviews, adminThreads, isAdmin, room, view, navigate]);
+  }, [
+    convos,
+    joinedRooms,
+    roomPreviews,
+    adminThreads,
+    isAdmin,
+    room,
+    view,
+    navigate,
+    instructorDMs,
+    dmUnread,
+    userId,
+  ]);
+
 
   const visibleItems = useMemo(() => {
     const q = query.trim().toLowerCase();
