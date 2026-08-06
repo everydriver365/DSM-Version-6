@@ -404,33 +404,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     color: "#FFFFFF",
   };
 
-  const tileStat: React.CSSProperties = {
-    position: "absolute",
-    left: 8,
-    bottom: 7,
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 3,
-    fontSize: 9,
-    fontWeight: 600,
-    color: "rgba(255,255,255,0.72)",
-  };
-
   const tileLabelWrap: React.CSSProperties = { padding: "9px 11px 11px" };
   const tileTitle: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: NAVY };
   const tileSub: React.CSSProperties = { fontSize: 10, color: "#6B7686", marginTop: 1 };
-
-  const newsPill: React.CSSProperties = {
-    background: "rgba(255,255,255,0.15)",
-    backdropFilter: "blur(4px)",
-    WebkitBackdropFilter: "blur(4px)",
-    fontSize: 7,
-    fontWeight: 700,
-    color: "#FFFFFF",
-    borderRadius: 20,
-    padding: "2px 7px",
-    lineHeight: 1.4,
-  };
 
   return (
     <div style={{ margin: "0 -16px 0", padding: "0 16px 2px", borderRadius: 0, fontFamily: FONT }}>
