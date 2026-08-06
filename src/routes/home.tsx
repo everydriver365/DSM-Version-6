@@ -1841,6 +1841,7 @@ function HomePage() {
   }>>([]);
 
   const [unreadDMs, setUnreadDMs] = useState(0);
+  const [dmPreviews, setDmPreviews] = useState<any[]>([]);
 
   // Unread community chat messages across subscribed, non-muted rooms
   const [unreadChat, setUnreadChat] = useState(0);
