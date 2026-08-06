@@ -418,7 +418,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           <div style={tileLabelWrap}>
             <div style={bodyRow}>
               <div style={{ minWidth: 0 }}>
-                <div style={tileTitle}>DSM Reels</div>
+                <div style={tileTitle}>DSM Showcase</div>
                 <div style={tileSub}>
                   {reelCount != null ? `${reelCount} views` : "Fun clips"}
                 </div>
