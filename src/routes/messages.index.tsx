@@ -40,6 +40,8 @@ const SUPABASE_ANON_KEY =
 
 const FONT = { fontFamily: "Poppins, Inter, sans-serif" } as const;
 
+type Filter = "all" | "pupils" | "local" | "admin" | "instructors";
+
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 const RED = "#CC2229";
