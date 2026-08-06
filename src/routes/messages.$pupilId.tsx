@@ -162,6 +162,24 @@ function HighlightedBody({ body, query }: { body: string; query: string }) {
 
 const SYSTEM_TYPES = ["call", "missed_call", "sms_event", "system", "event"];
 
+/**
+ * Tell the bottom nav / home badge that messages were read. `delta` lets the
+ * badge drop immediately; the repeats reconcile once the write has committed.
+ */
+function broadcastRead(delta: number) {
+  const fire = (withDelta: boolean) =>
+    window.dispatchEvent(
+      new CustomEvent("dsm-messages-read", {
+        detail: withDelta ? { delta } : undefined,
+      }),
+    );
+  fire(true);
+  setTimeout(() => fire(false), 300);
+  setTimeout(() => fire(false), 1500);
+}
+
+
+
 
 function PupilThreadPage() {
   const { pupilId } = Route.useParams();
