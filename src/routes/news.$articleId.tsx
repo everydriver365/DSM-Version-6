@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ChevronLeft, ExternalLink, User, Clock, Calendar } from "lucide-react";
+import { IconNews, IconChevronRight } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 
@@ -56,6 +57,7 @@ function NewsArticlePage() {
   const navigate = useNavigate();
 
   const [article, setArticle] = useState<any>(null);
+  const [nextArticle, setNextArticle] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -70,6 +72,22 @@ function NewsArticlePage() {
         setLoading(false);
       });
   }, [articleId]);
+
+  // After article is loaded, fetch next article
+  useEffect(() => {
+    if (!article?.published_at) return;
+    supabase
+      .from("news_articles")
+      .select("id, title, source, image_url, published_at, read_time_mins")
+      .eq("is_hidden", false)
+      .lt("published_at", article.published_at)
+      .order("published_at", { ascending: false })
+      .limit(1)
+      .single()
+      .then(({ data }) => {
+        if (data) setNextArticle(data);
+      });
+  }, [article?.published_at]);
 
   if (loading) {
     return (
@@ -262,6 +280,126 @@ function NewsArticlePage() {
             <ExternalLink size={14} />
           </button>
         </div>
+
+        {/* Next article */}
+        {nextArticle && (
+          <div
+            onClick={() =>
+              navigate({
+                to: "/news/$articleId",
+                params: { articleId: nextArticle.id },
+              })
+            }
+            style={{
+              marginTop: 24,
+              borderTop: "0.5px solid #E4E8EF",
+              paddingTop: 16,
+              cursor: "pointer",
+            }}
+          >
+            {/* Label */}
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                color: "#1877D6",
+                letterSpacing: "0.06em",
+                marginBottom: 12,
+                ...INTER,
+              }}
+            >
+              Next article
+            </div>
+
+            {/* Card */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                background: "#F8F9FB",
+                borderRadius: 10,
+                padding: 12,
+                border: "1px solid #E4E8EF",
+              }}
+            >
+              {/* Thumbnail */}
+              <div
+                style={{
+                  width: 64,
+                  height: 64,
+                  borderRadius: 8,
+                  overflow: "hidden",
+                  flexShrink: 0,
+                  background: "#E4E8EF",
+                }}
+              >
+                {nextArticle.image_url ? (
+                  <img
+                    src={nextArticle.image_url}
+                    alt={nextArticle.title}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#1877D6",
+                    }}
+                  >
+                    <IconNews size={24} />
+                  </div>
+                )}
+              </div>
+
+              {/* Text */}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    fontSize: 9,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    color: "#1877D6",
+                    letterSpacing: "0.06em",
+                    marginBottom: 4,
+                    ...INTER,
+                  }}
+                >
+                  {nextArticle.source}
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: "#0B1F3A",
+                    lineHeight: 1.3,
+                    marginBottom: 4,
+                    ...POPPINS,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {nextArticle.title}
+                </div>
+                <div style={{ fontSize: 11, color: "#9CA3AF", ...INTER }}>
+                  {nextArticle.read_time_mins} min read
+                </div>
+              </div>
+
+              {/* Chevron */}
+              <div style={{ color: "#1877D6", flexShrink: 0 }}>
+                <IconChevronRight size={20} />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </PageLayout>
   );
