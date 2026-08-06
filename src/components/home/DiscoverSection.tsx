@@ -478,15 +478,23 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 </div>
                 <div style={cardBody}>
                   <div style={cardTitle}>{m.title}</div>
-                  <div style={cardSub}>
-                    <span style={{ fontWeight: 700, color: '#0B1F3A' }}>
-                      {amount}
-                    </span>
-                    <span style={{ fontWeight: 500 }}>
-                      {unit}
-                    </span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 'auto' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: 8,
+                      marginTop: 'auto',
+                    }}
+                  >
+                    <div style={cardSub}>
+                      <span style={{ fontWeight: 700, color: '#0B1F3A' }}>
+                        {amount}
+                      </span>
+                      <span style={{ fontWeight: 500 }}>
+                        {unit}
+                      </span>
+                    </div>
                     <IconChevronRight size={14} color={MUTED} stroke={2} />
                   </div>
                 </div>
