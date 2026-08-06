@@ -248,6 +248,50 @@ function MessagesIndexPage() {
       });
   }, [userId]);
 
+  // Unread instructor DMs: instructor_messages addressed to me with no read_at.
+  const [dmUnread, setDmUnread] = useState<Record<string, number>>({});
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    const load = async () => {
+      const { data } = await supabase
+        .from("instructor_messages")
+        .select("conversation_id")
+        .eq("to_instructor_id", userId)
+        .is("read_at", null);
+      if (cancelled) return;
+      const map: Record<string, number> = {};
+      for (const m of ((data as any[]) ?? [])) {
+        const cid = m.conversation_id as string;
+        map[cid] = (map[cid] ?? 0) + 1;
+      }
+      setDmUnread(map);
+      // Let the bottom nav badge include instructor DMs in its total.
+      window.dispatchEvent(
+        new CustomEvent("dsm-instructor-dm-unread", {
+          detail: { count: Object.values(map).reduce((a, b) => a + b, 0) },
+        }),
+      );
+    };
+    void load();
+    const onPing = () => void load();
+    window.addEventListener("dsm-messages-read", onPing);
+    const ch = supabase
+      .channel(`instructor-dm-unread-${userId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "instructor_messages" },
+        () => void load(),
+      )
+      .subscribe();
+    return () => {
+      cancelled = true;
+      window.removeEventListener("dsm-messages-read", onPing);
+      void supabase.removeChannel(ch);
+    };
+  }, [userId]);
+
+
   useEffect(() => {
     if (!searchOpen) return;
     const q = searchQuery.trim();
@@ -894,9 +938,9 @@ function MessagesIndexPage() {
         key: `instructor:${dm.id}`,
         kind: "instructor",
         name: other.name ?? "Instructor",
-        preview: dm.last_message ?? "No messages yet",
-        ts: dm.last_message_at ?? new Date(0).toISOString(),
-        unread: 0,
+        preview: dm.last_message ?? "New conversation",
+        ts: dm.last_message_at ?? dm.created_at ?? new Date(0).toISOString(),
+        unread: dmUnread[dm.id] ?? 0,
         photo: other.profile_image_url ?? null,
         initials: nameInitials(other.name ?? "Instructor"),
         bg: BLUE,
@@ -906,12 +950,27 @@ function MessagesIndexPage() {
             to: "/messages/instructor/$conversationId" as never,
             params: { conversationId: dm.id } as never,
           }),
-        markRead: () => {},
+        markRead: () => {
+          setDmUnread((prev) => (prev[dm.id] ? { ...prev, [dm.id]: 0 } : prev));
+        },
       });
     }
 
     return list;
-  }, [convos, joinedRooms, roomPreviews, adminThreads, isAdmin, room, view, navigate]);
+  }, [
+    convos,
+    joinedRooms,
+    roomPreviews,
+    adminThreads,
+    isAdmin,
+    room,
+    view,
+    navigate,
+    instructorDMs,
+    dmUnread,
+    userId,
+  ]);
+
 
   const visibleItems = useMemo(() => {
     const q = query.trim().toLowerCase();
