@@ -118,6 +118,7 @@ import { Route as QuoteTokenRouteImport } from './routes/quote.$token'
 import { Route as PupilsNewRouteImport } from './routes/pupils.new'
 import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
 import { Route as NotesIdRouteImport } from './routes/notes.$id'
+import { Route as NewsArticleIdRouteImport } from './routes/news.$articleId'
 import { Route as MockTestsPupilIdRouteImport } from './routes/mock-tests.$pupilId'
 import { Route as MessagesPupilIdRouteImport } from './routes/messages.$pupilId'
 import { Route as MarketplaceListRouteImport } from './routes/marketplace_.list'
@@ -702,6 +703,11 @@ const NotesIdRoute = NotesIdRouteImport.update({
   path: '/notes/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsArticleIdRoute = NewsArticleIdRouteImport.update({
+  id: '/news/$articleId',
+  path: '/news/$articleId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MockTestsPupilIdRoute = MockTestsPupilIdRouteImport.update({
   id: '/$pupilId',
   path: '/$pupilId',
@@ -1023,6 +1029,7 @@ export interface FileRoutesByFullPath {
   '/marketplace/list': typeof MarketplaceListRoute
   '/messages/$pupilId': typeof MessagesPupilIdRoute
   '/mock-tests/$pupilId': typeof MockTestsPupilIdRoute
+  '/news/$articleId': typeof NewsArticleIdRoute
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
@@ -1169,6 +1176,7 @@ export interface FileRoutesByTo {
   '/marketplace/list': typeof MarketplaceListRoute
   '/messages/$pupilId': typeof MessagesPupilIdRoute
   '/mock-tests/$pupilId': typeof MockTestsPupilIdRoute
+  '/news/$articleId': typeof NewsArticleIdRoute
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
@@ -1320,6 +1328,7 @@ export interface FileRoutesById {
   '/marketplace_/list': typeof MarketplaceListRoute
   '/messages/$pupilId': typeof MessagesPupilIdRoute
   '/mock-tests/$pupilId': typeof MockTestsPupilIdRoute
+  '/news/$articleId': typeof NewsArticleIdRoute
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
@@ -1471,6 +1480,7 @@ export interface FileRouteTypes {
     | '/marketplace/list'
     | '/messages/$pupilId'
     | '/mock-tests/$pupilId'
+    | '/news/$articleId'
     | '/notes/$id'
     | '/pupils/$id'
     | '/pupils/new'
@@ -1617,6 +1627,7 @@ export interface FileRouteTypes {
     | '/marketplace/list'
     | '/messages/$pupilId'
     | '/mock-tests/$pupilId'
+    | '/news/$articleId'
     | '/notes/$id'
     | '/pupils/$id'
     | '/pupils/new'
@@ -1767,6 +1778,7 @@ export interface FileRouteTypes {
     | '/marketplace_/list'
     | '/messages/$pupilId'
     | '/mock-tests/$pupilId'
+    | '/news/$articleId'
     | '/notes/$id'
     | '/pupils/$id'
     | '/pupils/new'
@@ -1901,6 +1913,7 @@ export interface RootRouteChildren {
   MarketplaceApplyRoute: typeof MarketplaceApplyRoute
   MarketplaceEditRoute: typeof MarketplaceEditRoute
   MarketplaceListRoute: typeof MarketplaceListRoute
+  NewsArticleIdRoute: typeof NewsArticleIdRoute
   NotesIdRoute: typeof NotesIdRoute
   PupilsIdRoute: typeof PupilsIdRoute
   PupilsNewRoute: typeof PupilsNewRoute
@@ -2685,6 +2698,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/news/$articleId': {
+      id: '/news/$articleId'
+      path: '/news/$articleId'
+      fullPath: '/news/$articleId'
+      preLoaderRoute: typeof NewsArticleIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mock-tests/$pupilId': {
       id: '/mock-tests/$pupilId'
       path: '/$pupilId'
@@ -3180,6 +3200,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarketplaceApplyRoute: MarketplaceApplyRoute,
   MarketplaceEditRoute: MarketplaceEditRoute,
   MarketplaceListRoute: MarketplaceListRoute,
+  NewsArticleIdRoute: NewsArticleIdRoute,
   NotesIdRoute: NotesIdRoute,
   PupilsIdRoute: PupilsIdRoute,
   PupilsNewRoute: PupilsNewRoute,
@@ -3201,3 +3222,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
