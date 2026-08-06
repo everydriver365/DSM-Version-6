@@ -7822,14 +7822,17 @@ function HomePage() {
                         }
                       }}
                       style={{
-                        width: 240,
-                        flexShrink: 0,
-                        scrollSnapAlign: 'start',
+                        flex: '0 0 calc(50% - 4px)',
+                        minWidth: 'calc(50% - 4px)',
+                        borderRadius: 14,
+                        border: '1px solid #E4E8EF',
                         background: '#FFFFFF',
-                        borderRadius: 12,
-                        border: '0.5px solid #E4E8EF',
                         overflow: 'hidden',
                         cursor: 'pointer',
+                        scrollSnapAlign: 'start',
+                        scrollSnapStop: 'always',
+                        display: 'flex',
+                        flexDirection: 'column',
                         fontFamily: 'Poppins, sans-serif',
                       }}
                     >
