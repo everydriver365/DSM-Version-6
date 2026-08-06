@@ -20,6 +20,7 @@ import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { PageLayout } from "@/components/PageLayout";
 import { SheetQueueController } from "@/components/dsm/SheetQueue";
 import { LessonActionsSheet } from "@/components/lessons/LessonActionsSheet";
+import { WelcomeOverlay } from "@/components/dsm/WelcomeOverlay";
 
 
 import {
