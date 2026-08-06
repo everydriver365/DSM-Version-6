@@ -12,6 +12,7 @@ import { supabase } from "../lib/supabaseClient";
 import { formatCountdown } from "@/lib/dateHelpers";
 import { PageLayout } from "@/components/PageLayout";
 import { BottomSheet as BottomSheetV2 } from "@/components/dsm/BottomSheetV2";
+import { AddressLookup } from "@/components/dsm/AddressLookup";
 
 export const Route = createFileRoute("/tests")({
   head: () => ({
