@@ -704,6 +704,257 @@ function TestCard({
   );
 }
 
+function EditTestSheet({
+  test,
+  userId,
+  onClose,
+  onSaved,
+}: {
+  test: DrivingTest;
+  userId: string;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [date, setDate] = useState(test.test_date);
+  const [time, setTime] = useState(test.test_time ?? "");
+  const [centre, setCentre] = useState(test.test_centre ?? "");
+  const [saving, setSaving] = useState(false);
+
+  async function save() {
+    if (saving) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("pupils")
+      .update({
+        test_date: date,
+        test_time: time || null,
+        test_centre: centre || null,
+      })
+      .eq("id", test.pupil_id)
+      .eq("instructor_id", userId);
+    setSaving(false);
+    if (error) {
+      console.error("[tests] edit test error", error);
+      toast.error("Couldn't update test");
+      return;
+    }
+    toast.success("Test updated");
+    onSaved();
+  }
+
+  return (
+    <BottomSheetV2 onClose={onClose} title="Edit test" subtitle={test.pupils?.name ?? undefined}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "0 4px 8px" }}>
+        <div>
+          <label className="block" style={{ fontSize: 12, color: "#6B7280", marginBottom: 6, ...POPPINS }}>
+            Test date
+          </label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "10px 12px",
+              border: "1px solid #E4E8EF",
+              borderRadius: 8,
+              fontSize: 14,
+              fontFamily: "Poppins, sans-serif",
+              color: "#0B1F3A",
+            }}
+          />
+        </div>
+
+        <div>
+          <label className="block" style={{ fontSize: 12, color: "#6B7280", marginBottom: 6, ...POPPINS }}>
+            Test time
+          </label>
+          <input
+            type="time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "10px 12px",
+              border: "1px solid #E4E8EF",
+              borderRadius: 8,
+              fontSize: 14,
+              fontFamily: "Poppins, sans-serif",
+              color: "#0B1F3A",
+            }}
+          />
+        </div>
+
+        <div>
+          <label className="block" style={{ fontSize: 12, color: "#6B7280", marginBottom: 6, ...POPPINS }}>
+            Test centre
+          </label>
+          <AddressLookup
+            initialAddress={centre}
+            onAddressFound={(r) => setCentre(r.address)}
+            showSearchButton
+          />
+        </div>
+
+        <button
+          disabled={saving}
+          onClick={save}
+          style={{
+            width: "100%",
+            padding: 13,
+            background: saving ? "#9CA3AF" : "#1877D6",
+            color: "#fff",
+            border: "none",
+            borderRadius: 10,
+            fontSize: 14,
+            fontWeight: 700,
+            cursor: saving ? "not-allowed" : "pointer",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          {saving ? "Saving..." : "Save changes"}
+        </button>
+      </div>
+    </BottomSheetV2>
+  );
+}
+
+function CancelTestSheet({
+  test,
+  userId,
+  reason,
+  onReasonChange,
+  onClose,
+  onCancelled,
+}: {
+  test: DrivingTest;
+  userId: string;
+  reason: string;
+  onReasonChange: (v: string) => void;
+  onClose: () => void;
+  onCancelled: () => void;
+}) {
+  const [saving, setSaving] = useState(false);
+
+  async function confirm() {
+    if (saving) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("pupils")
+      .update({
+        test_date: null,
+        test_time: null,
+        test_centre: null,
+        test_status: "cancelled",
+      })
+      .eq("id", test.pupil_id)
+      .eq("instructor_id", userId);
+    if (error) {
+      console.error("[tests] cancel test error", error);
+      toast.error("Couldn't cancel test");
+      setSaving(false);
+      return;
+    }
+    if (reason.trim()) {
+      await supabase.from("lesson_history").insert({
+        instructor_id: userId,
+        pupil_id: test.pupil_id,
+        notes: `Test cancelled: ${reason.trim()}`,
+        payment_status: "note",
+        created_at: new Date().toISOString(),
+      });
+    }
+    toast.success("Test cancelled");
+    setSaving(false);
+    onCancelled();
+  }
+
+  return (
+    <BottomSheetV2 onClose={onClose} title="Cancel test" subtitle={test.pupils?.name ?? undefined}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "0 4px 8px" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 12,
+            padding: 14,
+            background: "#FEF3C7",
+            borderRadius: 10,
+            color: "#92400E",
+          }}
+        >
+          <span style={{ fontSize: 18, lineHeight: 1 }}>⚠️</span>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, ...POPPINS }}>
+              Cancel test for {test.pupils?.name ?? "this pupil"}?
+            </div>
+            <div style={{ fontSize: 13, ...POPPINS }}>
+              This will clear the test date, time and centre from the pupil&apos;s record.
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label className="block" style={{ fontSize: 12, color: "#6B7280", marginBottom: 6, ...POPPINS }}>
+            Reason (optional)
+          </label>
+          <textarea
+            rows={3}
+            value={reason}
+            onChange={(e) => onReasonChange(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "10px 12px",
+              border: "1px solid #E4E8EF",
+              borderRadius: 8,
+              fontSize: 13,
+              fontFamily: "Poppins, sans-serif",
+              color: "#0B1F3A",
+              resize: "none",
+            }}
+          />
+        </div>
+
+        <button
+          disabled={saving}
+          onClick={confirm}
+          style={{
+            width: "100%",
+            padding: 13,
+            background: "#CC2229",
+            color: "#fff",
+            border: "none",
+            borderRadius: 10,
+            fontSize: 14,
+            fontWeight: 700,
+            cursor: "pointer",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          {saving ? "Cancelling..." : "Confirm cancellation"}
+        </button>
+
+        <button
+          onClick={onClose}
+          style={{
+            width: "100%",
+            padding: 13,
+            background: "#F1F5F9",
+            color: "#6B7686",
+            border: "none",
+            borderRadius: 10,
+            fontSize: 14,
+            fontWeight: 600,
+            cursor: "pointer",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          Keep test
+        </button>
+      </div>
+    </BottomSheetV2>
+  );
+}
+
 interface ExaminerStat {
   key: string;
   name: string;
