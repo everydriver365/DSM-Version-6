@@ -4798,7 +4798,8 @@ function HomePage() {
 
       {/* ============ OVERLAPPING STAT TILES ============ */}
       {/* NOTE: naCalls (callbacks) and naJobs (open jobs) are not yet wired to a real table — showing 0 as placeholder. naEnquiries is derived from pendingSwapCount today. */}
-      <div style={{ padding: '0 16px', marginTop: -22, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
+      <div style={SECTION_WRAPPER_STYLE}>
+        <div style={{ padding: '0 16px', marginTop: -22, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
         {[
           { label: 'Calls', value: String(naCalls), sub: 'Need callback', color: '#CC2229', route: '/messages' },
           { label: "Jobs", value: String(naJobs), sub: 'Open', color: '#B5661E', route: '/jobs' },
@@ -4823,6 +4824,7 @@ function HomePage() {
             )}
           </button>
         ))}
+      </div>
       </div>
 
 
@@ -6496,42 +6498,44 @@ function HomePage() {
               const time = String(freedSlot.lesson_time || '').slice(0, 5);
               const duration = freedSlot.duration_minutes || 60;
               return (
-                <div
-                  style={{
-                    marginTop: 16,
-                    background: '#FFFBEB',
-                    border: '0.5px solid #D97706',
-                    borderLeft: '4px solid #D97706',
-                    borderRadius: 10,
-                    padding: '14px 16px',
-                    fontFamily: PF,
-                    display: 'flex',
-                    gap: 12,
-                    alignItems: 'center',
-                  }}
-                >
-                  <div style={{ width: 40, height: 40, borderRadius: 8, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Zap size={20} color="#D97706" />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: '#D97706', textTransform: 'uppercase', letterSpacing: 0.5 }}>Slot freed</div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {pupilName} cancelled their lesson
-                    </div>
-                    <div style={{ fontSize: 12, color: '#92400E', marginTop: 1 }}>
-                      {freedSlot.lesson_date} at {time} — {duration} min slot now free
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => navigate({
-                      to: '/gaps',
-                      search: { date: freedSlot.lesson_date, time, duration: String(duration) } as any,
-                    })}
-                    style={{ background: '#D97706', color: '#FFFFFF', border: 'none', borderRadius: 10, padding: '8px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
+                <div style={SECTION_WRAPPER_STYLE}>
+                  <div
+                    style={{
+                      marginTop: 16,
+                      background: '#FFFBEB',
+                      border: '0.5px solid #D97706',
+                      borderLeft: '4px solid #D97706',
+                      borderRadius: 10,
+                      padding: '14px 16px',
+                      fontFamily: PF,
+                      display: 'flex',
+                      gap: 12,
+                      alignItems: 'center',
+                    }}
                   >
-                    Fill slot →
-                  </button>
+                    <div style={{ width: 40, height: 40, borderRadius: 8, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <Zap size={20} color="#D97706" />
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: '#D97706', textTransform: 'uppercase', letterSpacing: 0.5 }}>Slot freed</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {pupilName} cancelled their lesson
+                      </div>
+                      <div style={{ fontSize: 12, color: '#92400E', marginTop: 1 }}>
+                        {freedSlot.lesson_date} at {time} — {duration} min slot now free
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => navigate({
+                        to: '/gaps',
+                        search: { date: freedSlot.lesson_date, time, duration: String(duration) } as any,
+                      })}
+                      style={{ background: '#D97706', color: '#FFFFFF', border: 'none', borderRadius: 10, padding: '8px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
+                    >
+                      Fill slot →
+                    </button>
+                  </div>
                 </div>
               );
             })()}
