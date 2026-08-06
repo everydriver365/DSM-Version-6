@@ -262,65 +262,47 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const tileShell: React.CSSProperties = {
     background: "#fff",
-    border: "0.5px solid #E4E8EF",
+    border: `0.5px solid ${HAIRLINE}`,
     borderRadius: 14,
     overflow: "hidden",
     cursor: "pointer",
     fontFamily: FONT,
   };
 
-  const tileImageWrap: React.CSSProperties = { position: "relative", height: 100, overflow: "hidden" };
-  const layerFill: React.CSSProperties = { position: "absolute", inset: 0 };
-  const iconLayer: React.CSSProperties = {
-    position: "absolute",
-    inset: 0,
+  const strip = (tint: string): React.CSSProperties => ({
+    height: 46,
+    background: tint,
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
-  };
+    justifyContent: "space-between",
+    padding: "0 10px",
+  });
 
-  const tileBadge: React.CSSProperties = {
-    position: "absolute",
-    top: 6,
-    right: 6,
+  const stripPill = (accent: string): React.CSSProperties => ({
     display: "inline-flex",
     alignItems: "center",
     gap: 3,
-    borderRadius: 999,
-    padding: "2px 6px",
-    fontSize: 7,
+    background: "#FFFFFF",
+    color: accent,
+    fontSize: 9,
     fontWeight: 700,
     letterSpacing: "0.06em",
-    color: "#FFFFFF",
-  };
+    textTransform: "uppercase",
+    borderRadius: 999,
+    padding: "3px 7px",
+    lineHeight: 1.2,
+  });
 
-  const tileStat: React.CSSProperties = {
-    position: "absolute",
-    left: 8,
-    bottom: 7,
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 3,
-    fontSize: 9,
-    fontWeight: 600,
-    color: "rgba(255,255,255,0.72)",
-  };
-
-  const tileLabelWrap: React.CSSProperties = { padding: "9px 11px 11px" };
+  const tileLabelWrap: React.CSSProperties = { padding: "9px 12px 11px" };
   const tileTitle: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: NAVY };
   const tileSub: React.CSSProperties = { fontSize: 10, color: "#6B7686", marginTop: 1 };
-
-  const newsPill: React.CSSProperties = {
-    background: "rgba(255,255,255,0.15)",
-    backdropFilter: "blur(4px)",
-    WebkitBackdropFilter: "blur(4px)",
-    fontSize: 7,
-    fontWeight: 700,
-    color: "#FFFFFF",
-    borderRadius: 20,
-    padding: "2px 7px",
-    lineHeight: 1.4,
+  const bodyRow: React.CSSProperties = {
+    display: "flex",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    gap: 8,
   };
+
 
   return (
     <div style={{ margin: "0 -16px 0", padding: "0 16px 2px", borderRadius: 0, fontFamily: FONT }}>
