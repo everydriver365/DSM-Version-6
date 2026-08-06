@@ -66,6 +66,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const [newsCount, setNewsCount] = useState<number | null>(null);
   const [newsUnread, setNewsUnread] = useState(false);
 
+  const [liveHero, setLiveHero] = useState<string | null>(null);
+  const [reelsHero, setReelsHero] = useState<string | null>(null);
+  const [marketplaceHero, setMarketplaceHero] = useState<string | null>(null);
+  const [newsHero, setNewsHero] = useState<string | null>(null);
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -148,6 +153,57 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     };
   }, []);
 
+  useEffect(() => {
+    // DSM Live — latest session image
+    supabase
+      .from("live_sessions")
+      .select("image_url")
+      .not("image_url", "is", null)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single()
+      .then(({ data }) => setLiveHero(data?.image_url ?? null));
+
+    // DSM Reels — latest reel thumbnail
+    supabase
+      .from("reels")
+      .select("thumbnail_url")
+      .not("thumbnail_url", "is", null)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single()
+      .then(({ data }) => setReelsHero(data?.thumbnail_url ?? null));
+
+    // Marketplace — latest listing image
+    supabase
+      .from("marketplace_listings")
+      .select("image_urls")
+      .not("image_urls", "is", null)
+      .eq("is_active", true)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single()
+      .then(({ data }) => {
+        const imgs = data?.image_urls;
+        setMarketplaceHero(
+          Array.isArray(imgs) && imgs.length > 0 ? imgs[0] : null,
+        );
+      });
+
+    // Industry News — latest article image
+    supabase
+      .from("news_articles")
+      .select("image_url")
+      .not("image_url", "is", null)
+      .eq("is_hidden", false)
+      .order("published_at", { ascending: false })
+      .limit(1)
+      .single()
+      .then(({ data }) => setNewsHero(data?.image_url ?? null));
+  }, []);
+
   const liveSorted = [...live].sort((a, b) => {
     const la = isLiveNow(a) ? 1 : 0;
     const lb = isLiveNow(b) ? 1 : 0;
@@ -179,7 +235,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     fontFamily: FONT,
   };
 
-  const tileImageWrap: React.CSSProperties = { position: "relative", height: 100 };
+  const tileImageWrap: React.CSSProperties = { position: "relative", height: 100, overflow: "hidden" };
   const layerFill: React.CSSProperties = { position: "absolute", inset: 0 };
   const iconLayer: React.CSSProperties = {
     position: "absolute",
@@ -258,8 +314,25 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           style={tileShell}
         >
           <div style={tileImageWrap}>
+            {liveHero && (
+              <img
+                src={liveHero}
+                alt=""
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            )}
             <div
-              style={{ ...layerFill, background: "linear-gradient(135deg,#1877D6,#0B1F3A)" }}
+              style={{
+                ...layerFill,
+                background: "linear-gradient(135deg,#1877D6,#0B1F3A)",
+                opacity: liveHero ? 0.4 : 1,
+              }}
             />
             <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
             <div style={iconLayer}>
@@ -297,7 +370,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         >
           <div style={tileImageWrap}>
             <div
-              style={{ ...layerFill, background: "linear-gradient(135deg,#7C3AED,#4F1D96)" }}
+              style={{
+                ...layerFill,
+                background: "linear-gradient(135deg,#7C3AED,#4F1D96)",
+                opacity: 1,
+              }}
             />
             <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
             <div style={iconLayer}>
@@ -319,8 +396,25 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           style={tileShell}
         >
           <div style={tileImageWrap}>
+            {reelsHero && (
+              <img
+                src={reelsHero}
+                alt=""
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            )}
             <div
-              style={{ ...layerFill, background: "linear-gradient(135deg,#CC2229,#7C1D1D)" }}
+              style={{
+                ...layerFill,
+                background: "linear-gradient(135deg,#CC2229,#7C1D1D)",
+                opacity: reelsHero ? 0.4 : 1,
+              }}
             />
             <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
             <div style={iconLayer}>
@@ -348,8 +442,25 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           style={tileShell}
         >
           <div style={tileImageWrap}>
+            {marketplaceHero && (
+              <img
+                src={marketplaceHero}
+                alt=""
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            )}
             <div
-              style={{ ...layerFill, background: "linear-gradient(135deg,#15803D,#064E3B)" }}
+              style={{
+                ...layerFill,
+                background: "linear-gradient(135deg,#15803D,#064E3B)",
+                opacity: marketplaceHero ? 0.4 : 1,
+              }}
             />
             <div style={{ ...layerFill, background: "rgba(0,0,0,0.3)" }} />
             <div style={iconLayer}>
@@ -378,7 +489,26 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         style={{ ...tileShell, marginBottom: 16 }}
       >
         <div style={tileImageWrap}>
-          <div style={{ ...layerFill, background: "linear-gradient(135deg,#0B1F3A,#1e3a5f)" }} />
+          {newsHero && (
+            <img
+              src={newsHero}
+              alt=""
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
+          )}
+          <div
+            style={{
+              ...layerFill,
+              background: "linear-gradient(135deg,#0B1F3A,#1e3a5f)",
+              opacity: newsHero ? 0.4 : 1,
+            }}
+          />
           <div style={{ ...layerFill, background: "rgba(0,0,0,0.25)" }} />
           <div style={iconLayer}>
             <IconNews size={38} color="rgba(255,255,255,0.65)" stroke={1.6} />
