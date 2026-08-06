@@ -275,6 +275,7 @@ function UpcomingTestsPage() {
           </button>
         </div>
       </BottomSheetV2>
+      )}
 
       {/* Cancel sheet */}
       {cancelTest && (
