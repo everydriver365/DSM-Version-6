@@ -455,6 +455,8 @@ function ProductCard({
   const price = listing.price_display?.trim() || null;
   const subtitle =
     listing.marketplace_suppliers?.name || cat?.name || "Marketplace";
+  const priceIsBad = price && !/\d/.test(price);
+  const priceText = priceIsBad ? "No price set" : price ?? "Price on request";
 
   return (
     <div
@@ -509,10 +511,17 @@ function ProductCard({
         >
           {listing.title}
         </div>
-        <div
+        <span
           style={{
-            fontSize: 12,
-            color: "#8792A2",
+            display: "inline-flex",
+            width: "fit-content",
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: "0.02em",
+            color: accent,
+            background: `${accent}1F`,
+            padding: "3px 8px",
+            borderRadius: 8,
             marginBottom: "auto",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -520,7 +529,7 @@ function ProductCard({
           }}
         >
           {subtitle}
-        </div>
+        </span>
 
         <div
           style={{
@@ -531,8 +540,14 @@ function ProductCard({
             gap: 8,
           }}
         >
-          <span style={{ fontSize: 12, fontWeight: 500, color: "#0B1F3A" }}>
-            {price ?? "Price on request"}
+          <span
+            style={
+              priceIsBad
+                ? { fontSize: 11, fontWeight: 500, color: "#CC2229" }
+                : { fontSize: 12, fontWeight: 500, color: "#0B1F3A" }
+            }
+          >
+            {priceText}
           </span>
           <span
             style={{
@@ -542,13 +557,17 @@ function ProductCard({
               fontWeight: 500,
               padding: "6px 12px",
               borderRadius: 8,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
             }}
           >
-            View
+            View ›
           </span>
         </div>
       </div>
     </div>
   );
 }
+
 
