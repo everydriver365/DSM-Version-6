@@ -76,7 +76,38 @@ const CATEGORIES = [
   "Funny",
 ];
 
+const REPORT_REASONS = [
+  "Inappropriate content",
+  "Dangerous driving shown",
+  "Pupil identifiable",
+  "Spam or misleading",
+  "Copyright issue",
+  "Other",
+];
+
+const AVATAR_COLORS = ["#1877D6", "#CC2229", "#0B1F3A", "#0F9D58", "#8B5CF6"];
+
+function initials(name: string) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
+function timeAgo(iso: string) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
+
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+
 const NAVY = "#0B1F3A";
 const RED = "#CC2229";
 const BLUE = "#1877D6";
