@@ -239,59 +239,62 @@ function BitesizePage() {
         v.id === video.id ? { ...v, is_published: !v.is_published } : v,
       ),
     );
-    setMenuOpenId(null);
   }
 
   async function deleteVideo(video: BitesizeVideo) {
-    if (!confirm(`Delete "${video.title}"? This cannot be undone.`)) return;
+    if (!confirm(`Delete "${video.title}"? Cannot be undone.`)) return;
     await supabase
       .from("bitesize_videos")
       .update({ deleted_at: new Date().toISOString() })
       .eq("id", video.id);
     setVideos((prev) => prev.filter((v) => v.id !== video.id));
-    setMenuOpenId(null);
+    toast.success("Video deleted");
   }
 
   function openEdit(video: BitesizeVideo) {
-    setEditTitle(video.title);
+    setEditTitle(video.title ?? "");
     setEditDescription(video.description ?? "");
-    setEditCategory(video.category ?? "");
+    setEditCategory(video.category ?? "Teaching techniques");
     setEditDuration(video.duration_mins?.toString() ?? "");
-    setEditPublished(video.is_published);
+    setEditPublished(video.is_published ?? false);
     setEditVideo(video);
-    setMenuOpenId(null);
   }
 
   async function saveEdit() {
-    if (!editVideo) return;
+    if (!editVideo || !editTitle.trim()) return;
     setSaving(true);
-    await supabase
-      .from("bitesize_videos")
-      .update({
-        title: editTitle.trim(),
-        description: editDescription.trim() || null,
-        category: editCategory || null,
-        duration_mins: editDuration ? parseInt(editDuration) : null,
-        is_published: editPublished,
-      })
-      .eq("id", editVideo.id);
-    setVideos((prev) =>
-      prev.map((v) =>
-        v.id === editVideo.id
-          ? {
-              ...v,
-              title: editTitle.trim(),
-              description: editDescription.trim() || null,
-              category: editCategory || null,
-              duration_mins: editDuration ? parseInt(editDuration) : null,
-              is_published: editPublished,
-            }
-          : v,
-      ),
-    );
-    setEditVideo(null);
-    setSaving(false);
-    toast.success("Video updated");
+    try {
+      await supabase
+        .from("bitesize_videos")
+        .update({
+          title: editTitle.trim(),
+          description: editDescription.trim() || null,
+          category: editCategory || null,
+          duration_mins: editDuration ? parseInt(editDuration) : null,
+          is_published: editPublished,
+        })
+        .eq("id", editVideo.id);
+      setVideos((prev) =>
+        prev.map((v) =>
+          v.id === editVideo.id
+            ? {
+                ...v,
+                title: editTitle.trim(),
+                description: editDescription.trim() || null,
+                category: editCategory || null,
+                duration_mins: editDuration ? parseInt(editDuration) : null,
+                is_published: editPublished,
+              }
+            : v,
+        ),
+      );
+      setEditVideo(null);
+      toast.success("Video updated");
+    } catch (err: any) {
+      toast.error(err.message ?? "Save failed");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
