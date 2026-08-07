@@ -146,6 +146,7 @@ import { Route as AdminInstructorsRouteImport } from './routes/admin.instructors
 import { Route as AdminFeaturedRouteImport } from './routes/admin.featured'
 import { Route as AdminDsmLiveRouteImport } from './routes/admin.dsm-live'
 import { Route as AdminChatRoomsRouteImport } from './routes/admin.chat-rooms'
+import { Route as AdminBitesizeRouteImport } from './routes/admin.bitesize'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
 import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricing'
 import { Route as MarketingHowItWorksRouteImport } from './routes/_marketing.how-it-works'
@@ -848,6 +849,11 @@ const AdminChatRoomsRoute = AdminChatRoomsRouteImport.update({
   path: '/chat-rooms',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBitesizeRoute = AdminBitesizeRouteImport.update({
+  id: '/bitesize',
+  path: '/bitesize',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminApplicationsRoute = AdminApplicationsRouteImport.update({
   id: '/applications',
   path: '/applications',
@@ -1039,6 +1045,7 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof MarketingHowItWorksRoute
   '/pricing': typeof MarketingPricingRoute
   '/admin/applications': typeof AdminApplicationsRoute
+  '/admin/bitesize': typeof AdminBitesizeRoute
   '/admin/chat-rooms': typeof AdminChatRoomsRoute
   '/admin/dsm-live': typeof AdminDsmLiveRoute
   '/admin/featured': typeof AdminFeaturedRoute
@@ -1191,6 +1198,7 @@ export interface FileRoutesByTo {
   '/how-it-works': typeof MarketingHowItWorksRoute
   '/pricing': typeof MarketingPricingRoute
   '/admin/applications': typeof AdminApplicationsRoute
+  '/admin/bitesize': typeof AdminBitesizeRoute
   '/admin/chat-rooms': typeof AdminChatRoomsRoute
   '/admin/dsm-live': typeof AdminDsmLiveRoute
   '/admin/featured': typeof AdminFeaturedRoute
@@ -1348,6 +1356,7 @@ export interface FileRoutesById {
   '/_marketing/how-it-works': typeof MarketingHowItWorksRoute
   '/_marketing/pricing': typeof MarketingPricingRoute
   '/admin/applications': typeof AdminApplicationsRoute
+  '/admin/bitesize': typeof AdminBitesizeRoute
   '/admin/chat-rooms': typeof AdminChatRoomsRoute
   '/admin/dsm-live': typeof AdminDsmLiveRoute
   '/admin/featured': typeof AdminFeaturedRoute
@@ -1505,6 +1514,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/pricing'
     | '/admin/applications'
+    | '/admin/bitesize'
     | '/admin/chat-rooms'
     | '/admin/dsm-live'
     | '/admin/featured'
@@ -1657,6 +1667,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/pricing'
     | '/admin/applications'
+    | '/admin/bitesize'
     | '/admin/chat-rooms'
     | '/admin/dsm-live'
     | '/admin/featured'
@@ -1813,6 +1824,7 @@ export interface FileRouteTypes {
     | '/_marketing/how-it-works'
     | '/_marketing/pricing'
     | '/admin/applications'
+    | '/admin/bitesize'
     | '/admin/chat-rooms'
     | '/admin/dsm-live'
     | '/admin/featured'
@@ -2958,6 +2970,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminChatRoomsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/bitesize': {
+      id: '/admin/bitesize'
+      path: '/bitesize'
+      fullPath: '/admin/bitesize'
+      preLoaderRoute: typeof AdminBitesizeRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/applications': {
       id: '/admin/applications'
       path: '/applications'
@@ -3102,6 +3121,7 @@ const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
 
 interface AdminRouteChildren {
   AdminApplicationsRoute: typeof AdminApplicationsRoute
+  AdminBitesizeRoute: typeof AdminBitesizeRoute
   AdminChatRoomsRoute: typeof AdminChatRoomsRoute
   AdminDsmLiveRoute: typeof AdminDsmLiveRoute
   AdminFeaturedRoute: typeof AdminFeaturedRoute
@@ -3115,6 +3135,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminApplicationsRoute: AdminApplicationsRoute,
+  AdminBitesizeRoute: AdminBitesizeRoute,
   AdminChatRoomsRoute: AdminChatRoomsRoute,
   AdminDsmLiveRoute: AdminDsmLiveRoute,
   AdminFeaturedRoute: AdminFeaturedRoute,
@@ -3328,3 +3349,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
