@@ -5111,15 +5111,6 @@ function HomePage() {
                       <span style={{ fontSize: 13, fontWeight: 800, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
                         {priceText}
                       </span>
-                      {hAmountDue > 0 && (
-                        <span style={{
-                          fontSize: 10, fontWeight: 600,
-                          color: isPaid ? '#15803D' : '#CC2229',
-                          fontFamily: 'Poppins, sans-serif',
-                        }}>
-                          {isPaid ? 'Paid' : 'Unpaid'}
-                        </span>
-                      )}
                     </div>
 
                     {/* ETA badge */}
@@ -5189,6 +5180,18 @@ function HomePage() {
                     {pupilFullName || 'Pupil'}
                   </div>
                 </div>
+
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 5,
+                  background: hPillBgFinal,
+                  color: hPillFgFinal,
+                  borderRadius: 20,
+                  padding: '4px 10px',
+                  fontSize: 11, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
+                  flexShrink: 0, whiteSpace: 'nowrap',
+                }}>
+                  {hLabelFinal}
+                </span>
 
               </div>
 
