@@ -1088,6 +1088,12 @@ function AdminHub() {
             label="Learn videos"
             onClick={() => navigate({ to: "/admin/learn-videos" as never })}
           />
+          <AdminSectionTile
+            icon={<BookOpen size={18} />}
+            label="Bitesize videos"
+            onClick={() => navigate({ to: "/admin/bitesize" as never })}
+          />
+
 
           <AdminSectionTile
             icon={<Users size={18} />}
