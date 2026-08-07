@@ -7643,8 +7643,8 @@ function HomePage() {
                       colour: '#FCE9E9',
                     }] : []),
                   ];
-                  const extraAvatarCount = avatarSources.length > 6 ? avatarSources.length - 6 : 0;
-                  const visibleAvatars = avatarSources.slice(0, 6);
+                  const extraAvatarCount = avatarSources.length > 8 ? avatarSources.length - 8 : 0;
+                  const visibleAvatars = avatarSources.slice(0, 8);
                   const totalActive = alerts.length + totalUnreadChat + pupilReplies.length + adminUnread + unreadDMs;
                   const latestActivity = [
                     localAlerts?.[0]?.created_at,
