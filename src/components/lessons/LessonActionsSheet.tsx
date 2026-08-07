@@ -1204,7 +1204,7 @@ export function LessonActionsSheet({
         <div style={{ marginTop: 14 }}>
           <div style={sectionLabel}>Pickup</div>
           {isEditingPickup ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 6px rgba(11,31,58,0.04)", padding: "9px 12px" }}>
               <MapPin size={14} color="#8E8E93" />
               <input
                 value={pickupValue}
@@ -1255,10 +1255,12 @@ export function LessonActionsSheet({
                 gap: 8,
                 background: "#FFFFFF",
                 border: "1px solid #E2E8F0",
-                borderRadius: 10,
+                borderRadius: 12,
+                boxShadow: "0 2px 6px rgba(11,31,58,0.04)",
                 padding: "9px 12px",
               }}
             >
+
               <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
                 <MapPin size={14} color="#8E8E93" />
                 <span
