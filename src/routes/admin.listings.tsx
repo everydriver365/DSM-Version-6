@@ -82,7 +82,7 @@ type NewListingDraft = {
   showImage: boolean;
   isVerified: boolean;
   isActive: boolean;
-  images: [string, string, string, string];
+  images: string[];
 };
 
 const emptyDraft: NewListingDraft = {
