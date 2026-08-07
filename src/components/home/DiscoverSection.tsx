@@ -9,6 +9,7 @@ import {
   IconNews,
 } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
+import { SectionHeader } from "@/components/dsm/SectionHeader";
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
@@ -306,9 +307,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   return (
     <div style={{ margin: "0 -16px 0", padding: "0 16px 2px", borderRadius: 0, fontFamily: FONT }}>
-      <div style={{ fontSize: 18, fontWeight: 700, color: NAVY, fontFamily: FONT, marginBottom: 10 }}>
-        Discover
-      </div>
+      <SectionHeader>Discover</SectionHeader>
 
       {/* ROW 1 — 4 COMPACT CHIPS */}
       <div
