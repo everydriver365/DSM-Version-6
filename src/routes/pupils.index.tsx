@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ChevronRight, Plus, Search, X, Megaphone, Users, CreditCard, MoreVertical, ArrowUpDown } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ChevronRight, Plus, Search, X, Megaphone, Users, MoreVertical, ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { getPupilBalance } from "@/lib/payments";
@@ -130,7 +130,6 @@ function PupilsIndexPage() {
   const [balanceMap, setBalanceMap] = useState<Record<string, number>>({});
   const [hoursMap, setHoursMap] = useState<Record<string, number>>({});
   const [lastPaymentMap, setLastPaymentMap] = useState<Record<string, { amount: number; method: string; date: string }>>({});
-  const [tab, setTab] = useState<StatusKey>("active");
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
@@ -146,7 +145,6 @@ function PupilsIndexPage() {
   const [sortBy, setSortBy] = useState<"name" | "balance" | "next_lesson">("name");
 
   const navigate = useNavigate();
-  const pupilsLoadedRef = useRef<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
@@ -316,9 +314,6 @@ function PupilsIndexPage() {
   }, [userId, refreshUnread, refreshNextLessons, refreshTestDates]);
 
   useEffect(() => {
-    if (pupilsLoadedRef.current !== tab) setPupils(null);
-    pupilsLoadedRef.current = tab;
-
     (async () => {
       const { data: auth, error: authErr } = await supabase.auth.getUser();
       if (authErr) console.error("[pupils] auth error", authErr);
@@ -332,18 +327,9 @@ function PupilsIndexPage() {
         .from("pupils")
         .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, pricing_type, test_date, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120, profile_image_url, photo_url, calendar_colour")
         .eq("instructor_id", uid)
+        .is("deleted_at", null)
+        .or("status.is.null,and(status.neq.inactive,status.neq.passed,status.neq.cancelled)")
         .order("name", { ascending: true, nullsFirst: false });
-
-      if (tab === "archived") {
-        q = q.or("deleted_at.not.is.null,status.eq.inactive,status.eq.cancelled");
-      } else if (tab === "passed") {
-        q = q.is("deleted_at", null).eq("status", "passed");
-      } else {
-        // active: not deleted and not passed/inactive/cancelled (NULL status counts as active)
-        q = q
-          .is("deleted_at", null)
-          .or("status.is.null,and(status.neq.inactive,status.neq.passed,status.neq.cancelled)");
-      }
 
       const { data, error } = await q;
       if (error) console.error("[pupils] fetch error", error);
@@ -508,7 +494,7 @@ function PupilsIndexPage() {
       setLastPaymentMap({});
     }
   })();
-  }, [tab, reloadKey]);
+  }, [reloadKey]);
 
 
 
@@ -556,14 +542,6 @@ function PupilsIndexPage() {
     return withIndex.map((x) => x.p);
   }, [pupils, query, unreadMap, sortBy, balanceMap, nextLessonMap]);
 
-  const unreadPupils = useMemo(
-    () => (filtered ?? []).filter((p) => (unreadMap[p.id] ?? 0) > 0),
-    [filtered, unreadMap],
-  );
-  const otherPupils = useMemo(
-    () => (filtered ?? []).filter((p) => (unreadMap[p.id] ?? 0) === 0),
-    [filtered, unreadMap],
-  );
 
   const renderRow = (p: any, idx: number, total: number) => {
     const balanceOwed = balanceMap[p.id] || 0;
@@ -596,7 +574,8 @@ function PupilsIndexPage() {
           backgroundColor: "#FFFFFF",
           border: "1px solid #E3E8F0",
           borderRadius: 15,
-          marginBottom: 10,
+          margin: "0 16px 10px",
+          boxShadow: "0 1px 4px rgba(11,31,58,0.05)",
           WebkitTouchCallout: "none",
         }}
       >
@@ -623,7 +602,7 @@ function PupilsIndexPage() {
           <div className="min-w-0 flex-1 flex flex-col">
             <div
               className="truncate"
-              style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}
+              style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}
             >
               {displayName(p.name)}
             </div>
@@ -646,19 +625,20 @@ function PupilsIndexPage() {
                 {pricing.label}
               </span>
             </div>
-            {!testSoon && (nextLesson || lp) && (
+            {(lp || nextLesson) && (
               <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 3, ...POPPINS }}>
-                {nextLesson
-                  ? `· Next: ${formatShortDate(nextLesson)}`
-                  : `· Last seen: ${formatRelativeDate(lp!.date)}`}
+                {lp
+                  ? `Last seen: ${formatRelativeDate(lp.date)}`
+                  : `· Next: ${formatShortDate(nextLesson)}`}
               </div>
             )}
           </div>
 
-          <div className="flex items-center shrink-0" style={{ gap: 8 }}>
+          <div className="flex flex-col items-end shrink-0" style={{ gap: 4 }}>
             <span
               style={{
-                fontSize: 12,
+                fontSize: 13,
+                fontWeight: 500,
                 color: lessons > 0 ? "#8A94A6" : "#B0BAC9",
                 ...POPPINS,
               }}
@@ -728,74 +708,34 @@ function PupilsIndexPage() {
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
 
-      {/* Segmented control */}
-      <div style={{ margin: "16px 16px 16px" }}>
-        <div
-          className="flex w-full"
-          style={{
-            backgroundColor: "#EEF2F7",
-            borderRadius: 12,
-            padding: 3,
-          }}
-        >
-          {(
-            [
-              { k: "active", label: "Active" },
-              { k: "passed", label: "Passed" },
-              { k: "archived", label: "Archived" },
-            ] as { k: StatusKey; label: string }[]
-          ).map((s) => {
-            const active = tab === s.k;
-            return (
-              <button
-                key={s.k}
-                type="button"
-                onClick={() => setTab(s.k)}
-                className="flex-1 text-[13px] transition-colors"
-                style={{
-                  ...POPPINS,
-                  padding: "9px 4px",
-                  fontSize: 13,
-                  backgroundColor: active ? "#0B1F3A" : "transparent",
-                  color: active ? "#FFFFFF" : "#8A94A6",
-                  fontWeight: 500,
-                  border: "none",
-                  borderRadius: 9,
-                  boxShadow: "none",
-                  cursor: "pointer",
-                }}
-              >
-                {s.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
 
-      {/* Count + sort control */}
+      {/* Count + actions */}
       <div
         style={{
-          margin: "0 16px 10px",
+          margin: "16px 16px 12px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
         }}
       >
-        <div className="flex items-center" style={{ gap: 10 }}>
-          <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7686", ...POPPINS }}>
-            {filtered === null ? "" : `${filtered.length} ${filtered.length === 1 ? "pupil" : "pupils"}`}
-          </span>
+        <span style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>
+          {filtered === null ? "" : `${filtered.length} ${filtered.length === 1 ? "pupil" : "pupils"}`}
+        </span>
+        <div className="flex items-center" style={{ gap: 8 }}>
           <Link
             to="/broadcast"
             aria-label="Message all pupils"
-            className="flex items-center gap-1 px-2 h-6 rounded-md"
-            style={{ backgroundColor: "#F3F8FF", border: "1px solid #EEF2F7" }}
+            className="inline-flex items-center gap-1.5"
+            style={{
+              padding: "6px 12px",
+              borderRadius: 20,
+              backgroundColor: "#F3F8FF",
+              border: "1px solid #EEF2F7",
+            }}
           >
             <Megaphone size={14} color="#1877D6" />
-            <span className="text-[11px] font-medium" style={{ color: "#1877D6", ...POPPINS }}>Message all</span>
+            <span style={{ fontSize: 12, fontWeight: 600, color: "#1877D6", ...POPPINS }}>Message all</span>
           </Link>
-        </div>
-        <div className="flex items-center" style={{ gap: 8 }}>
           <button
             type="button"
             aria-label={searchOpen ? "Close search" : "Open search"}
@@ -806,8 +746,14 @@ function PupilsIndexPage() {
                 return next;
               });
             }}
-            className="flex items-center justify-center rounded-md"
-            style={{ width: 28, height: 28, backgroundColor: "#F3F8FF", border: "1px solid #EEF2F7" }}
+            className="flex items-center justify-center"
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              backgroundColor: "#F3F8FF",
+              border: "1px solid #EEF2F7",
+            }}
           >
             {searchOpen ? (
               <X size={16} color="#1877D6" />
@@ -821,22 +767,17 @@ function PupilsIndexPage() {
               setSortBy((s) => (s === "name" ? "balance" : s === "balance" ? "next_lesson" : "name"))
             }
             aria-label={`Sort by ${SORT_LABELS[sortBy]}. Tap to change.`}
-            className="inline-flex items-center"
+            title={`Sort by ${SORT_LABELS[sortBy]}`}
+            className="flex items-center justify-center"
             style={{
-              gap: 5,
-              height: 28,
-              padding: 0,
-              background: "transparent",
-              border: "none",
-              color: "#1877D6",
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: "pointer",
-              ...POPPINS,
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              backgroundColor: "#F3F8FF",
+              border: "1px solid #EEF2F7",
             }}
           >
-            <ArrowUpDown size={13} color="#1877D6" />
-            Sort: {SORT_LABELS[sortBy]}
+            <ArrowUpDown size={16} color="#1877D6" />
           </button>
         </div>
       </div>
@@ -904,79 +845,21 @@ function PupilsIndexPage() {
         ) : filtered.length === 0 ? (
           <EmptyState
             icon={Users}
-            title={tab === "active" ? "No active pupils" : tab === "passed" ? "No passed pupils" : "No archived pupils"}
-            description={tab === "active" ? "Add your first pupil to start tracking lessons." : undefined}
+            title="No active pupils"
+            description="Add your first pupil to start tracking lessons."
             action={
-              tab === "active" ? (
-                <Link
-                  to="/pupils/new"
-                  className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
-                  style={{ backgroundColor: "#1877D6", fontFamily: "Inter, sans-serif" }}
-                >
-                  <Plus size={16} /> Add pupil
-                </Link>
-              ) : undefined
+              <Link
+                to="/pupils/new"
+                className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
+                style={{ backgroundColor: "#1877D6", fontFamily: "Inter, sans-serif" }}
+              >
+                <Plus size={16} /> Add pupil
+              </Link>
             }
           />
         ) : (
           <>
-            {unreadPupils.length > 0 && (
-              <>
-                <div
-                  style={{
-                    margin: "0 16px 8px",
-                    fontSize: 11,
-                    fontWeight: 600,
-                    letterSpacing: 0.6,
-                    color: "#8A94A6",
-                    ...POPPINS,
-                  }}
-                >
-                  UNREAD MESSAGES
-                </div>
-                <div
-                  style={{
-                    margin: "0 16px 20px",
-                    background: "#FFFFFF",
-                    borderRadius: 14,
-                    overflow: "hidden",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  }}
-                >
-                  {unreadPupils.map((p, i) => renderRow(p, i, unreadPupils.length))}
-                </div>
-              </>
-            )}
-
-            {otherPupils.length > 0 && (
-              <>
-                {unreadPupils.length > 0 && (
-                  <div
-                    style={{
-                      margin: "0 16px 8px",
-                      fontSize: 11,
-                      fontWeight: 600,
-                      letterSpacing: 0.6,
-                      color: "#8A94A6",
-                      ...POPPINS,
-                    }}
-                  >
-                    ALL PUPILS
-                  </div>
-                )}
-                <div
-                  style={{
-                    margin: "0 16px",
-                    background: "#FFFFFF",
-                    borderRadius: 14,
-                    overflow: "hidden",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  }}
-                >
-                  {otherPupils.map((p, i) => renderRow(p, i, otherPupils.length))}
-                </div>
-              </>
-            )}
+            {filtered.map((p, i) => renderRow(p, i, filtered.length))}
           </>
         )}
 
