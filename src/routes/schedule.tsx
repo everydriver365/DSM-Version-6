@@ -1507,6 +1507,27 @@ function SchedulePage() {
                           const isBlockRow = e.kind === "block";
                           const clickable = isLessonRow || isBlockRow;
                           const isMovingThis = isLessonRow && movingLesson && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id === movingLesson.id;
+                          const isTestDay = isLessonRow &&
+                            !!(e as Extract<AgendaEntry, { kind: 'lesson' }>)
+                              .lesson.notes?.trim().match(/^Test day:/i);
+                          const testDayNotes = isTestDay
+                            ? (e as Extract<AgendaEntry,
+                                { kind: 'lesson' }>).lesson.notes ?? ''
+                            : '';
+                          const testTimeMatch = testDayNotes
+                            .match(/Test at (\d{2}:\d{2})/);
+                          const testLocationMatch = testDayNotes
+                            .match(/@ (.+)$/);
+                          const testTimeParsed = testTimeMatch?.[1] ?? null;
+                          const testLocation = testLocationMatch?.[1] ?? null;
+                          const testPupilName = isTestDay
+                            ? (e as Extract<AgendaEntry,
+                                { kind: 'lesson' }>).lesson.pupil
+                                ? ((e as any).lesson.pupil.name
+                                    ?? (e as any).lesson.pupil.first_name
+                                    ?? 'Pupil')
+                                : 'Pupil'
+                            : '';
                           const isDimmed = moveMode && !isMovingThis;
                           const onCardClick = isLessonRow
                             ? () => {
@@ -1547,7 +1568,7 @@ function SchedulePage() {
                                   role={clickable ? "button" : undefined}
                                   tabIndex={clickable ? 0 : undefined}
                                   style={{
-                                    background: "#FFFFFF",
+                                    background: isTestDay ? '#FFF3E0' : '#FFFFFF',
                                     borderRadius: 12,
                                     boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                                     padding: "12px 14px",
@@ -1558,7 +1579,11 @@ function SchedulePage() {
                                     opacity: cancelled ? 0.55 : isDimmed ? 0.4 : 1,
                                     position: "relative",
                                     zIndex: 1,
-                                    border: isMovingThis ? '2px solid #1877D6' : undefined,
+                                    border: isTestDay
+                                      ? '2px solid #FF8C00'
+                                      : isMovingThis
+                                        ? '2px solid #1877D6'
+                                        : undefined,
                                     animation: isMovingThis ? 'movePulse 1.5s ease-in-out infinite' : undefined,
                                     ...POPPINS,
                                   }}
@@ -1649,8 +1674,75 @@ function SchedulePage() {
                                           }}
                                         />
                                       )}
-                                       <div style={{ flex: 1, minWidth: 0, paddingTop: isLessonRow ? 2 : 0 }}>
-                                         {isLessonRow ? (
+                                        <div style={{ flex: 1, minWidth: 0, paddingTop: isLessonRow ? 2 : 0 }}>
+                                          {isTestDay && (
+                                            <div style={{
+                                              width: '100%',
+                                              marginBottom: 8,
+                                            }}>
+                                              {/* Test day header */}
+                                              <div style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: 6,
+                                                marginBottom: 6,
+                                              }}>
+                                                <span style={{ fontSize: 16 }}>🎯</span>
+                                                <span style={{
+                                                  fontSize: 14, fontWeight: 700,
+                                                  color: '#7C3300',
+                                                  fontFamily: 'Poppins, sans-serif',
+                                                }}>
+                                                  Test Day — {testPupilName}
+                                                </span>
+                                              </div>
+                                              {/* Pills row */}
+                                              <div style={{
+                                                display: 'flex',
+                                                gap: 6,
+                                                flexWrap: 'wrap',
+                                              }}>
+                                                {testTimeParsed && (
+                                                  <div style={{
+                                                    background: '#FF8C00',
+                                                    borderRadius: 20,
+                                                    padding: '3px 10px',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: 4,
+                                                  }}>
+                                                    <span style={{
+                                                      fontSize: 11, fontWeight: 700,
+                                                      color: '#fff',
+                                                      fontFamily: 'Poppins, sans-serif',
+                                                    }}>
+                                                      🕐 Test at {testTimeParsed}
+                                                    </span>
+                                                  </div>
+                                                )}
+                                                {testLocation &&
+                                                  testLocation !== 'test centre' && (
+                                                  <div style={{
+                                                    background: 'rgba(255,140,0,0.15)',
+                                                    borderRadius: 20,
+                                                    padding: '3px 10px',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: 4,
+                                                  }}>
+                                                    <span style={{
+                                                      fontSize: 11, fontWeight: 600,
+                                                      color: '#7C3300',
+                                                      fontFamily: 'Poppins, sans-serif',
+                                                    }}>
+                                                      📍 {testLocation}
+                                                    </span>
+                                                  </div>
+                                                )}
+                                              </div>
+                                            </div>
+                                          )}
+                                          {isLessonRow ? (
                                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, minWidth: 0 }}>
                                              <div style={{ flex: 1, minWidth: 0 }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
