@@ -599,8 +599,8 @@ function ShowcasePage() {
                   >
                     <button
                       type="button"
-                      aria-label={liked ? "Unlike" : "Like"}
-                      onClick={() => toggleLike(video)}
+                      aria-label="Upvote"
+                      onClick={() => toggleVote(video.id, "up")}
                       style={{
                         display: "inline-flex",
                         alignItems: "center",
@@ -609,18 +609,38 @@ function ShowcasePage() {
                         border: "none",
                         padding: 0,
                         cursor: "pointer",
-                        color: liked ? RED : "#9CA3AF",
+                        color: upvoted ? BLUE : "#9CA3AF",
                         fontSize: 10,
                         ...POPPINS,
                       }}
                     >
-                      {liked ? (
-                        <IconHeartFilled size={13} color={RED} />
-                      ) : (
-                        <IconHeart size={13} color="#9CA3AF" />
-                      )}
-                      {likeCounts[video.id] ?? 0}
+                      <IconThumbUp size={13} color={upvoted ? BLUE : "#9CA3AF"} />
+                      {voteCounts[video.id]?.up ?? 0}
                     </button>
+                    <button
+                      type="button"
+                      aria-label="Downvote"
+                      onClick={() => toggleVote(video.id, "down")}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 3,
+                        background: "none",
+                        border: "none",
+                        padding: 0,
+                        cursor: "pointer",
+                        color: downvoted ? RED : "#9CA3AF",
+                        fontSize: 10,
+                        ...POPPINS,
+                      }}
+                    >
+                      <IconThumbDown
+                        size={13}
+                        color={downvoted ? RED : "#9CA3AF"}
+                      />
+                      {voteCounts[video.id]?.down ?? 0}
+                    </button>
+
                     <button
                       type="button"
                       aria-label="Comments"
