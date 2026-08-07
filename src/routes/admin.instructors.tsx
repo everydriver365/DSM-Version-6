@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ChevronLeft, MoreVertical, Pencil, Trash2, Search } from "lucide-react";
-import { IconArchive, IconChevronUp, IconChevronDown } from "@tabler/icons-react";
+import { IconArchive, IconChevronUp, IconChevronDown, IconChevronLeft, IconPhone, IconMapPin, IconCurrencyPound, IconId, IconCalendar, IconPencil, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
