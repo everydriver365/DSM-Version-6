@@ -399,10 +399,20 @@ export function LessonActionsSheet({
   };
   const gridBtnDanger: React.CSSProperties = {
     ...gridBtn,
-    background: "#FCE9E9",
-    border: "1px solid #F5CBCB",
+    background: "#FDF3F3",
+    border: "1px solid #F6D0D0",
     color: "#CC2229",
   };
+  const iconBg = (bg: string): React.CSSProperties => ({
+    width: 30,
+    height: 30,
+    borderRadius: 9,
+    background: bg,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  });
+
   const fieldInput: React.CSSProperties = {
     flex: 1,
     minWidth: 0,
