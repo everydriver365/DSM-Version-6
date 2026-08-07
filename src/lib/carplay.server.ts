@@ -154,9 +154,8 @@ export async function getCarPlayDashboard(accessToken: string): Promise<CarPlayD
   const { count: unreadMessages, error: msgErr } = await supabase
     .from("instructor_messages")
     .select("id", { count: "exact", head: true })
-    .eq("recipient_id", userId)
-    .eq("read", false)
-    .is("deleted_at", null);
+    .eq("to_instructor_id", userId)
+    .is("read_at", null);
   if (msgErr) console.error("[carplay] unread messages error", msgErr);
 
   // Outstanding payments
@@ -175,9 +174,9 @@ export async function getCarPlayDashboard(accessToken: string): Promise<CarPlayD
     .from("instructor_notifications")
     .select("id", { count: "exact", head: true })
     .eq("instructor_id", userId)
-    .eq("read", false)
-    .is("deleted_at", null);
+    .is("read_at", null);
   if (notifErr) console.error("[carplay] unread notifications error", notifErr);
+
 
   // Upcoming tests (today onwards) — stored on pupils table
   const { count: upcomingTests, error: testErr } = await supabase
