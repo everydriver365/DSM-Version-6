@@ -125,6 +125,7 @@ function ShowcasePage() {
   // Upload form state
   const [uploadTitle, setUploadTitle] = useState("");
   const [uploadDescription, setUploadDescription] = useState("");
+  const [uploadTags, setUploadTags] = useState("");
   const [uploadCategory, setUploadCategory] = useState("Test passes");
   const [uploadPublished, setUploadPublished] = useState(true);
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -132,6 +133,7 @@ function ShowcasePage() {
   const [thumbPreview, setThumbPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
+
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
