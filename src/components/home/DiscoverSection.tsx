@@ -350,7 +350,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             animation: liveActive ? "livePulse 2s ease-in-out infinite" : "none",
           }}
         >
-          <div style={strip("#D6E3F2")}>
+          <div style={strip("#8BB8E8")}>
             {liveActive ? (
               <span style={stripPill(RED)}>
                 <span className="dsm-live-dot-pulse" style={{ display: "inline-flex" }}>
