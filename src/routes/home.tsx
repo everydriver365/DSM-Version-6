@@ -5295,7 +5295,7 @@ function HomePage() {
                   onClick={(e) => {
                     e.stopPropagation();
                     if (!upcoming?.pupil_id) return;
-                    navigate({ to: '/pupils/$id', params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any });
+                    navigate({ to: '/pupils/$id', params: { id: upcoming.pupil_id } as any });
                   }}
                   style={{
                     flex: 1,
