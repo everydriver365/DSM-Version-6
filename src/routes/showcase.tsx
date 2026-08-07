@@ -756,7 +756,7 @@ function ShowcasePage() {
       )}
 
       {/* PLAYER */}
-      {playing && !commentsOpen && (
+      {playing && (
         <div
           style={{ position: "fixed", inset: 0, zIndex: 200, background: "#000" }}
         >
