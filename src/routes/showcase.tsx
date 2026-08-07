@@ -203,71 +203,145 @@ function ShowcasePage() {
       ? videos
       : videos.filter((v) => v.category === activeCategory);
 
-  async function toggleLike(video: ShowcaseVideo) {
+  async function incrementView(video: ShowcaseVideo) {
+    try {
+      await db
+        .from("showcase_videos")
+        .update({ views: (video.views ?? 0) + 1 })
+        .eq("id", video.id);
+    } catch {
+      /* non-critical */
+    }
+    setVideos((prev) =>
+      prev.map((v) =>
+        v.id === video.id ? { ...v, views: (v.views ?? 0) + 1 } : v,
+      ),
+    );
+  }
+
+  function openPlayer(video: ShowcaseVideo) {
+    setPlaying(video);
+    setCommentsOpen(false);
+    incrementView(video);
+  }
+
+  async function toggleVote(videoId: string, type: "up" | "down") {
     if (!userId) {
-      toast.error("Sign in to like clips");
+      toast.error("Sign in to vote");
       return;
     }
-    const liked = likedIds.includes(video.id);
-    setLikedIds((prev) =>
-      liked ? prev.filter((id) => id !== video.id) : [...prev, video.id],
-    );
-    setLikeCounts((prev) => ({
-      ...prev,
-      [video.id]: Math.max(0, (prev[video.id] ?? 0) + (liked ? -1 : 1)),
-    }));
+    const current = votes[videoId];
     try {
-      if (liked) {
+      if (current === type) {
         await db
           .from("showcase_likes")
           .delete()
-          .eq("video_id", video.id)
-          .eq("user_id", userId);
+          .eq("video_id", videoId)
+          .eq("instructor_id", userId);
+        setVotes((prev) => ({ ...prev, [videoId]: null }));
+        setVoteCounts((prev) => ({
+          ...prev,
+          [videoId]: {
+            up: prev[videoId]?.up ?? 0,
+            down: prev[videoId]?.down ?? 0,
+            [type]: Math.max(0, (prev[videoId]?.[type] ?? 1) - 1),
+          },
+        }));
       } else {
-        await db
-          .from("showcase_likes")
-          .insert({ video_id: video.id, user_id: userId });
+        if (current) {
+          await db
+            .from("showcase_likes")
+            .delete()
+            .eq("video_id", videoId)
+            .eq("instructor_id", userId);
+          setVoteCounts((prev) => ({
+            ...prev,
+            [videoId]: {
+              up: prev[videoId]?.up ?? 0,
+              down: prev[videoId]?.down ?? 0,
+              [current]: Math.max(0, (prev[videoId]?.[current] ?? 1) - 1),
+            },
+          }));
+        }
+        await db.from("showcase_likes").insert({
+          video_id: videoId,
+          instructor_id: userId,
+          vote_type: type,
+        });
+        setVotes((prev) => ({ ...prev, [videoId]: type }));
+        setVoteCounts((prev) => ({
+          ...prev,
+          [videoId]: {
+            up: prev[videoId]?.up ?? 0,
+            down: prev[videoId]?.down ?? 0,
+            [type]: (prev[videoId]?.[type] ?? 0) + 1,
+          },
+        }));
       }
     } catch (err: any) {
-      toast.error(err?.message ?? "Could not update like");
+      toast.error(err?.message ?? "Could not save vote");
     }
   }
 
-  async function openComments(video: ShowcaseVideo) {
-    setPlaying(video);
-    setCommentsOpen(true);
-    const { data } = await db
-      .from("showcase_comments")
-      .select("*")
-      .eq("video_id", video.id)
-      .order("created_at", { ascending: true });
-    setComments((data as ShowcaseComment[] | null) ?? []);
-  }
-
-  async function postComment() {
-    if (!playing || !commentBody.trim()) return;
-    if (!userId) {
-      toast.error("Sign in to comment");
-      return;
-    }
-    const body = commentBody.trim();
-    setCommentBody("");
+  async function sendComment() {
+    if (!commentBody.trim() || !userId || !playing) return;
+    setSendingComment(true);
     try {
       const { data, error } = await db
         .from("showcase_comments")
-        .insert({ video_id: playing.id, user_id: userId, body })
-        .select()
+        .insert({
+          video_id: playing.id,
+          instructor_id: userId,
+          body: commentBody.trim(),
+        })
+        .select(
+          "id, body, created_at, instructor:instructors!instructor_id(id, name)",
+        )
         .single();
       if (error) throw error;
-      if (data) setComments((prev) => [...prev, data as ShowcaseComment]);
-      setCommentCounts((prev) => ({
-        ...prev,
-        [playing.id]: (prev[playing.id] ?? 0) + 1,
-      }));
+      if (data) {
+        setComments((prev) => [
+          ...prev,
+          {
+            ...data,
+            instructor: Array.isArray((data as any).instructor)
+              ? (data as any).instructor[0]
+              : (data as any).instructor,
+          },
+        ]);
+        setCommentCounts((prev) => ({
+          ...prev,
+          [playing.id]: (prev[playing.id] ?? 0) + 1,
+        }));
+      }
+      setCommentBody("");
     } catch (err: any) {
       toast.error(err?.message ?? "Could not post comment");
+    } finally {
+      setSendingComment(false);
     }
   }
+
+  async function sendReport() {
+    if (!reportReason.trim() || !reportingId || !userId) return;
+    setSendingReport(true);
+    try {
+      await db.from("showcase_reports").insert({
+        video_id: reportingId,
+        instructor_id: userId,
+        reason: reportReason.trim(),
+      });
+      toast.success("Report sent to admin");
+    } catch (err: any) {
+      toast.error(err?.message ?? "Could not send report");
+    } finally {
+      setReportOpen(false);
+      setReportReason("");
+      setReportingId(null);
+      setSendingReport(false);
+    }
+  }
+
 
   async function handleUpload() {
     if (!videoFile || !uploadTitle.trim()) return;
