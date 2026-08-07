@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { getRequestHeader } from "@tanstack/react-start/server";
 import {
   getCarPlayDashboard,
   getCarPlayCurrentLesson,
@@ -9,18 +10,25 @@ import {
   type LessonDriveTime,
 } from "./carplay.server";
 
+function getBearerToken(): string | null {
+  const auth = getRequestHeader("Authorization");
+  if (!auth || !auth.startsWith("Bearer ")) return null;
+  return auth.slice("Bearer ".length);
+}
 
 export const getCarPlayDashboardFn = createServerFn({ method: "GET" }).handler(
   async (): Promise<CarPlayDashboard | null> => {
-    // In internal usage this should be called with an authenticated session;
-    // for native apps use the public REST endpoints below.
-    return null;
+    const token = getBearerToken();
+    if (!token) return null;
+    return getCarPlayDashboard(token);
   },
 );
 
 export const getCarPlayCurrentLessonFn = createServerFn({ method: "GET" }).handler(
   async (): Promise<CarPlayLesson | null> => {
-    return null;
+    const token = getBearerToken();
+    if (!token) return null;
+    return getCarPlayCurrentLesson(token);
   },
 );
 
@@ -33,7 +41,9 @@ const DirectionsInputSchema = z.object({
 export const getCarPlayDirectionsForLessonFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => DirectionsInputSchema.parse(data))
   .handler(async ({ data }): Promise<LessonDriveTime | null> => {
-    return null;
+    const token = getBearerToken();
+    if (!token) return null;
+    return getCarPlayDirectionsForLesson(token, data.lessonId, data.originLat, data.originLon);
   });
 
 export type { CarPlayDashboard, CarPlayLesson, LessonDriveTime };
