@@ -1199,6 +1199,7 @@ function BitesizePage() {
             overflowY: "auto",
           }}
         >
+          {/* Header */}
           <div
             style={{
               display: "flex",
@@ -1226,16 +1227,17 @@ function BitesizePage() {
               style={{
                 background: "none",
                 border: "none",
+                cursor: "pointer",
                 padding: 0,
                 display: "flex",
                 color: "#6B7686",
-                cursor: "pointer",
               }}
             >
               <IconX size={20} />
             </button>
           </div>
 
+          {/* Form */}
           <div
             style={{
               padding: 16,
@@ -1244,42 +1246,100 @@ function BitesizePage() {
               gap: 16,
             }}
           >
+            {/* Title */}
             <div>
-              <label style={labelStyle} htmlFor="bs-edit-title">
-                Title
+              <label
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#6B7686",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  display: "block",
+                  marginBottom: 6,
+                  ...POPPINS,
+                }}
+              >
+                Title *
               </label>
               <input
-                id="bs-edit-title"
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
-                style={inputStyle}
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  border: "1px solid #E4E8EF",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  ...POPPINS,
+                  color: "#0B1F3A",
+                }}
               />
             </div>
 
+            {/* Description */}
             <div>
-              <label style={labelStyle} htmlFor="bs-edit-desc">
+              <label
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#6B7686",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  display: "block",
+                  marginBottom: 6,
+                  ...POPPINS,
+                }}
+              >
                 Description
               </label>
               <textarea
-                id="bs-edit-desc"
                 rows={3}
                 value={editDescription}
                 onChange={(e) => setEditDescription(e.target.value)}
-                style={{ ...inputStyle, resize: "vertical" }}
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  border: "1px solid #E4E8EF",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  ...POPPINS,
+                  color: "#0B1F3A",
+                  resize: "none",
+                }}
               />
             </div>
 
+            {/* Category */}
             <div>
-              <label style={labelStyle} htmlFor="bs-edit-cat">
+              <label
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#6B7686",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  display: "block",
+                  marginBottom: 6,
+                  ...POPPINS,
+                }}
+              >
                 Category
               </label>
               <select
-                id="bs-edit-cat"
                 value={editCategory}
                 onChange={(e) => setEditCategory(e.target.value)}
-                style={inputStyle}
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  border: "1px solid #E4E8EF",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  ...POPPINS,
+                  color: "#0B1F3A",
+                  background: "#fff",
+                }}
               >
-                <option value="">No category</option>
                 {CATEGORIES.filter((c) => c !== "All").map((c) => (
                   <option key={c} value={c}>
                     {c}
@@ -1288,89 +1348,141 @@ function BitesizePage() {
               </select>
             </div>
 
+            {/* Duration */}
             <div>
-              <label style={labelStyle} htmlFor="bs-edit-dur">
+              <label
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#6B7686",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  display: "block",
+                  marginBottom: 6,
+                  ...POPPINS,
+                }}
+              >
                 Duration (minutes)
               </label>
               <input
-                id="bs-edit-dur"
                 type="number"
                 value={editDuration}
                 onChange={(e) => setEditDuration(e.target.value)}
-                style={inputStyle}
+                placeholder="e.g. 5"
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  border: "1px solid #E4E8EF",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  ...POPPINS,
+                  color: "#0B1F3A",
+                }}
               />
             </div>
 
+            {/* Publish toggle */}
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                gap: 12,
+                background: "#F8FAFC",
+                border: "0.5px solid #E4E8EF",
+                borderRadius: 10,
+                padding: "12px 14px",
               }}
             >
-              <div
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "#0B1F3A",
-                  ...POPPINS,
-                }}
-              >
-                Published
+              <div>
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "#0B1F3A",
+                    ...POPPINS,
+                  }}
+                >
+                  Published
+                </div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "#6B7686",
+                    ...POPPINS,
+                  }}
+                >
+                  {editPublished
+                    ? "Visible to all instructors"
+                    : "Saved as draft"}
+                </div>
               </div>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={editPublished}
-                aria-label="Published"
+              <div
                 onClick={() => setEditPublished((v) => !v)}
                 style={{
-                  width: 48,
-                  height: 28,
-                  borderRadius: 20,
-                  border: "none",
-                  cursor: "pointer",
+                  width: 44,
+                  height: 24,
+                  borderRadius: 12,
                   background: editPublished ? "#7C3AED" : "#E4E8EF",
                   position: "relative",
-                  transition: "background 0.15s ease",
+                  cursor: "pointer",
+                  transition: "background 0.2s",
                   flexShrink: 0,
                 }}
               >
-                <span
+                <div
                   style={{
                     position: "absolute",
-                    top: 3,
-                    left: editPublished ? 23 : 3,
-                    width: 22,
-                    height: 22,
+                    top: 2,
+                    left: editPublished ? 22 : 2,
+                    width: 20,
+                    height: 20,
                     borderRadius: "50%",
                     background: "#fff",
-                    transition: "left 0.15s ease",
+                    transition: "left 0.2s",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
                   }}
                 />
-              </button>
+              </div>
             </div>
 
+            {/* Save button */}
             <button
-              type="button"
-              onClick={saveEdit}
               disabled={!editTitle.trim() || saving}
+              onClick={saveEdit}
               style={{
                 width: "100%",
-                background: "#1877D6",
+                padding: 14,
+                background:
+                  saving || !editTitle.trim() ? "#9CA3AF" : "#7C3AED",
                 color: "#fff",
                 border: "none",
-                borderRadius: 12,
-                padding: "14px 16px",
-                fontSize: 15,
+                borderRadius: 10,
+                fontSize: 14,
                 fontWeight: 700,
-                cursor: !editTitle.trim() || saving ? "not-allowed" : "pointer",
-                opacity: !editTitle.trim() || saving ? 0.5 : 1,
+                cursor: saving ? "not-allowed" : "pointer",
                 ...POPPINS,
               }}
             >
               {saving ? "Saving..." : "Save changes"}
+            </button>
+
+            {/* Cancel */}
+            <button
+              onClick={() => setEditVideo(null)}
+              style={{
+                width: "100%",
+                padding: 14,
+                background: "#F1F5F9",
+                color: "#6B7686",
+                border: "none",
+                borderRadius: 10,
+                fontSize: 14,
+                fontWeight: 600,
+                cursor: "pointer",
+                ...POPPINS,
+              }}
+            >
+              Cancel
             </button>
           </div>
         </div>
