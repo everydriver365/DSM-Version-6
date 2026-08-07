@@ -450,13 +450,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         </div>
       </div>
 
-      {/* B) FOUR COMPACT CHIPS */}
+      {/* B) FOUR COMPACT CHIPS — horizontal scroll */}
       <div
+        className="dsm-discover-scroll"
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
+          display: "flex",
+          flexWrap: "nowrap",
+          overflowX: "auto",
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
           gap: 8,
           marginBottom: 16,
+          paddingBottom: 4,
         }}
       >
         {[
@@ -504,6 +509,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             onClick={chip.onClick}
             style={{
               position: "relative",
+              flex: "0 0 auto",
+              scrollSnapAlign: "start",
+              width: 84,
               background: "#fff",
               border: `1px solid ${HAIRLINE}`,
               borderRadius: 12,
