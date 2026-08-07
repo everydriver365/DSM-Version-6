@@ -956,12 +956,87 @@ function SupplierListingSheet({
             </Field>
           </Section>
 
-          <Section title="Images (up to 4 URLs)">
-            {draft.images.map((val, i) => (
-              <Field key={i} label={`Image ${i + 1}`}>
-                <input value={val} onChange={(e) => setImage(i, e.target.value)} style={inputStyle} placeholder="https://" />
-              </Field>
-            ))}
+          <Section title="Images">
+            <div>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A" }}>Images</label>
+
+              {/* Existing images */}
+              {draft.images.length > 0 && (
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8 }}>
+                  {draft.images.map((url, i) => (
+                    <div key={i} style={{ position: "relative", width: 72, height: 72, borderRadius: 8, overflow: "hidden", background: "#F8FAFC" }}>
+                      <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(i)}
+                        style={{
+                          position: "absolute",
+                          top: 2, right: 2,
+                          width: 18, height: 18,
+                          borderRadius: "50%",
+                          background: "rgba(0,0,0,0.6)",
+                          border: "none", cursor: "pointer",
+                          display: "flex", alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <IconX size={14} color="#fff" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Upload button */}
+              {draft.images.length < 5 && (
+                <button
+                  type="button"
+                  onClick={() => document.getElementById("marketplace-img-input")?.click()}
+                  style={{
+                    width: 72, height: 72,
+                    borderRadius: 8,
+                    border: "1.5px dashed #E4E8EF",
+                    display: "flex", flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 4, cursor: "pointer",
+                    background: "#F8FAFC",
+                    marginTop: draft.images.length > 0 ? 8 : 0,
+                  }}
+                >
+                  {imageUploading ? (
+                    <Loader2 size={20} className="animate-spin" color="#1877D6" />
+                  ) : (
+                    <>
+                      <IconPlus size={20} color="#1877D6" />
+                      <span style={{ fontSize: 11, color: "#6B7280", fontWeight: 500 }}>Add photo</span>
+                    </>
+                  )}
+                </button>
+              )}
+
+              <input
+                id="marketplace-img-input"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  try {
+                    setImageUploading(true);
+                    const url = await uploadImage(file, "marketplace-images");
+                    setDraft({ ...draft, images: [...draft.images, url] });
+                    toast.success("Image added");
+                  } catch (err: any) {
+                    toast.error(err.message ?? "Upload failed");
+                  } finally {
+                    setImageUploading(false);
+                    e.target.value = "";
+                  }
+                }}
+              />
+            </div>
           </Section>
 
           <Section title="Settings">
