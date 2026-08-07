@@ -1547,27 +1547,28 @@ function InboxRow({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        padding: "11px 16px",
-        minHeight: 72,
-        borderBottom: `0.5px solid ${BORDER}`,
+        padding: "11px 13px",
+        borderRadius: 14,
+        border: "1px solid #E4E8EF",
         background: "#FFFFFF",
+        marginBottom: 8,
         cursor: "pointer",
         WebkitTapHighlightColor: "transparent",
       }}
     >
       {/* Avatar */}
-      <div style={{ position: "relative", width: 52, height: 52, flexShrink: 0 }}>
+      <div style={{ position: "relative", width: 46, height: 46, flexShrink: 0 }}>
         {item.photo ? (
           <img
             src={item.photo}
             alt={item.name}
-            style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover" }}
+            style={{ width: 46, height: 46, borderRadius: "50%", objectFit: "cover" }}
           />
         ) : (
           <div
             style={{
-              width: 52,
-              height: 52,
+              width: 46,
+              height: 46,
               borderRadius: "50%",
               background: item.bg,
               color: "#FFFFFF",
@@ -1634,8 +1635,8 @@ function InboxRow({
         <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
           <div
             style={{
-              fontSize: 17,
-              fontWeight: 500,
+              fontSize: 14,
+              fontWeight: 600,
               color: NAVY,
               overflow: "hidden",
               textOverflow: "ellipsis",
