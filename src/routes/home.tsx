@@ -7589,7 +7589,7 @@ function HomePage() {
                       type: 'instructor' as const,
                       name: dm.other_name || 'DSM Instructor',
                       image: dm.other_image || null,
-                      colour: '#1877D6',
+                      colour: '#0F766E',
                     })) : []),
                     ...(alerts.length > 0 ? [{
                       type: 'alert' as const,
