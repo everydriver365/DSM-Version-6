@@ -54,7 +54,7 @@ function NewsIndexPage() {
     filter === "all" ? articles : articles.filter((a) => a.category === filter);
 
   return (
-    <PageLayout style={{ background: "#FFFFFF" }}>
+    <PageLayout style={{ background: "#DCE4F0" }}>
       {/* Header */}
       <div
         className="flex items-center justify-between px-4"
@@ -89,7 +89,7 @@ function NewsIndexPage() {
           gap: 8,
           padding: "12px 16px",
           borderBottom: "0.5px solid #E4E8EF",
-          background: "#FFFFFF",
+          background: "#DCE4F0",
         }}
       >
         {FILTERS.map((f) => {
