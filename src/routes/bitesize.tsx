@@ -9,9 +9,14 @@ import {
   IconPlus,
   IconPlayerPlay,
   IconEye,
+  IconEyeOff,
   IconUpload,
   IconX,
+  IconDotsVertical,
+  IconPencil,
+  IconTrash,
 } from "@tabler/icons-react";
+
 
 export const Route = createFileRoute("/bitesize")({
   head: () => ({
@@ -104,6 +109,16 @@ function BitesizePage() {
   const [thumbPreview, setThumbPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
+
+  // Admin card menu + edit state
+  const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
+  const [editVideo, setEditVideo] = useState<BitesizeVideo | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editDuration, setEditDuration] = useState("");
+  const [editPublished, setEditPublished] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -200,6 +215,84 @@ function BitesizePage() {
       setUploading(false);
       setUploadProgress("");
     }
+  }
+
+  async function playVideo(video: BitesizeVideo) {
+    setPlayingVideo(video);
+    await supabase
+      .from("bitesize_videos")
+      .update({ views: (video.views ?? 0) + 1 })
+      .eq("id", video.id);
+    setVideos((prev) =>
+      prev.map((v) =>
+        v.id === video.id ? { ...v, views: (v.views ?? 0) + 1 } : v,
+      ),
+    );
+  }
+
+  async function togglePublish(video: BitesizeVideo) {
+    await supabase
+      .from("bitesize_videos")
+      .update({ is_published: !video.is_published })
+      .eq("id", video.id);
+    setVideos((prev) =>
+      prev.map((v) =>
+        v.id === video.id ? { ...v, is_published: !v.is_published } : v,
+      ),
+    );
+    setMenuOpenId(null);
+  }
+
+  async function deleteVideo(video: BitesizeVideo) {
+    if (!confirm(`Delete "${video.title}"? This cannot be undone.`)) return;
+    await supabase
+      .from("bitesize_videos")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", video.id);
+    setVideos((prev) => prev.filter((v) => v.id !== video.id));
+    setMenuOpenId(null);
+  }
+
+  function openEdit(video: BitesizeVideo) {
+    setEditTitle(video.title);
+    setEditDescription(video.description ?? "");
+    setEditCategory(video.category ?? "");
+    setEditDuration(video.duration_mins?.toString() ?? "");
+    setEditPublished(video.is_published);
+    setEditVideo(video);
+    setMenuOpenId(null);
+  }
+
+  async function saveEdit() {
+    if (!editVideo) return;
+    setSaving(true);
+    await supabase
+      .from("bitesize_videos")
+      .update({
+        title: editTitle.trim(),
+        description: editDescription.trim() || null,
+        category: editCategory || null,
+        duration_mins: editDuration ? parseInt(editDuration) : null,
+        is_published: editPublished,
+      })
+      .eq("id", editVideo.id);
+    setVideos((prev) =>
+      prev.map((v) =>
+        v.id === editVideo.id
+          ? {
+              ...v,
+              title: editTitle.trim(),
+              description: editDescription.trim() || null,
+              category: editCategory || null,
+              duration_mins: editDuration ? parseInt(editDuration) : null,
+              is_published: editPublished,
+            }
+          : v,
+      ),
+    );
+    setEditVideo(null);
+    setSaving(false);
+    toast.success("Video updated");
   }
 
   return (
@@ -301,6 +394,61 @@ function BitesizePage() {
           );
         })}
       </div>
+
+      {/* ADMIN STATS ROW */}
+      {isAdmin && (
+        <div
+          style={{
+            background: "#fff",
+            padding: "10px 16px",
+            borderBottom: "0.5px solid #E4E8EF",
+            display: "flex",
+            gap: 20,
+            overflowX: "auto",
+          }}
+        >
+          {[
+            { label: "Total videos", value: videos.length },
+            {
+              label: "Published",
+              value: videos.filter((v) => v.is_published).length,
+            },
+            {
+              label: "Drafts",
+              value: videos.filter((v) => !v.is_published).length,
+            },
+            {
+              label: "Total views",
+              value: videos.reduce((a, v) => a + (v.views ?? 0), 0),
+            },
+          ].map((s) => (
+            <div key={s.label} style={{ flexShrink: 0 }}>
+              <div
+                style={{
+                  fontSize: 9,
+                  fontWeight: 600,
+                  color: "#9CA3AF",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  ...POPPINS,
+                }}
+              >
+                {s.label}
+              </div>
+              <div
+                style={{
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: "#0B1F3A",
+                  ...POPPINS,
+                }}
+              >
+                {s.value}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* CONTENT */}
       {loading ? (
