@@ -346,16 +346,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       <div
         role="button"
         tabIndex={0}
-        onClick={() =>
-          navigate(
-            featuredListing
-              ? ({
-                  to: "/marketplace/$listingId",
-                  params: { listingId: featuredListing.id },
-                } as never)
-              : ({ to: "/marketplace" } as never),
-          )
-        }
+        onClick={() => navigate({ to: "/marketplace" } as never)}
         style={{
           borderRadius: 16,
           overflow: "hidden",
@@ -432,14 +423,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              navigate(
-                featuredListing
-                  ? ({
-                      to: "/marketplace/$listingId",
-                      params: { listingId: featuredListing.id },
-                    } as never)
-                  : ({ to: "/marketplace" } as never),
-              );
+              navigate({ to: "/marketplace" } as never);
             }}
             style={{
               display: "inline-flex",
