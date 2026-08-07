@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
@@ -146,6 +146,8 @@ function ShowcasePage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [uploadOpen, setUploadOpen] = useState(false);
   const [playing, setPlaying] = useState<ShowcaseVideo | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [nextVideo, setNextVideo] = useState<ShowcaseVideo | null>(null);
 
   // Votes
   const [votes, setVotes] = useState<Record<string, "up" | "down" | null>>({});
@@ -291,6 +293,7 @@ function ShowcasePage() {
   }
 
   function openPlayer(video: ShowcaseVideo) {
+    setNextVideo(null);
     setPlaying(video);
     setCommentsOpen(false);
     incrementView(video);
