@@ -7589,7 +7589,7 @@ function HomePage() {
                       type: 'instructor' as const,
                       name: dm.other_name || 'DSM Instructor',
                       image: dm.other_image || null,
-                      colour: '#1877D6',
+                      colour: '#0F766E',
                     })) : []),
                     ...(alerts.length > 0 ? [{
                       type: 'alert' as const,
@@ -7735,7 +7735,7 @@ function HomePage() {
                         />
                         <Sep />
                         <Label
-                          text="DSM" colour="#1877D6" count={unreadDMs}
+                          text="DSM" colour="#0F766E" count={unreadDMs}
                           onClick={() => navigate({
                             to: '/messages' as never,
                             search: { filter: 'instructors' } as never,
