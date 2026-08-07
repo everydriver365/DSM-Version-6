@@ -799,126 +799,312 @@ function ShowcasePage() {
 
       {/* COMMENTS SHEET */}
       {commentsOpen && playing && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 250,
-            background: "#fff",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
+        <div style={{ position: "fixed", inset: 0, zIndex: 200 }}>
+          <div
+            onClick={() => setCommentsOpen(false)}
+            style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.5)" }}
+          />
           <div
             style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              background: "#111",
+              borderRadius: "20px 20px 0 0",
+              maxHeight: "70vh",
               display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "14px 16px",
-              paddingTop: "calc(14px + env(safe-area-inset-top, 0px))",
-              borderBottom: "0.5px solid #E4E8EF",
+              flexDirection: "column",
             }}
           >
-            <div style={{ fontSize: 16, fontWeight: 700, color: NAVY, ...POPPINS }}>
-              Comments
-            </div>
-            <button
-              type="button"
-              aria-label="Close comments"
-              onClick={() => setCommentsOpen(false)}
+            <div
               style={{
-                background: "none",
-                border: "none",
-                padding: 0,
-                display: "flex",
-                color: "#6B7686",
-                cursor: "pointer",
+                width: 36,
+                height: 4,
+                borderRadius: 4,
+                background: "#333",
+                margin: "12px auto",
+              }}
+            />
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 600,
+                color: "#fff",
+                padding: "0 16px 12px",
+                ...POPPINS,
               }}
             >
-              <IconX size={20} />
-            </button>
-          </div>
+              {comments.length} comments
+            </div>
 
-          <div style={{ flex: 1, overflowY: "auto", padding: 16 }}>
-            {comments.length === 0 ? (
+            <div style={{ flex: 1, overflowY: "auto", padding: "0 16px" }}>
+              {comments.length === 0 ? (
+                <div
+                  style={{
+                    textAlign: "center",
+                    color: "rgba(255,255,255,0.4)",
+                    fontSize: 13,
+                    padding: "30px 0",
+                    ...POPPINS,
+                  }}
+                >
+                  No comments yet — be the first
+                </div>
+              ) : (
+                comments.map((c: any, i: number) => {
+                  const name = c.instructor?.name ?? c.author_name ?? "Instructor";
+                  return (
+                    <div
+                      key={c.id}
+                      style={{ display: "flex", gap: 10, marginBottom: 14 }}
+                    >
+                      <div
+                        style={{
+                          width: 32,
+                          height: 32,
+                          flexShrink: 0,
+                          borderRadius: "50%",
+                          background: AVATAR_COLORS[i % AVATAR_COLORS.length],
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "#fff",
+                          fontSize: 11,
+                          fontWeight: 700,
+                          ...POPPINS,
+                        }}
+                      >
+                        {initials(name)}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div
+                          style={{ display: "flex", alignItems: "center", gap: 6 }}
+                        >
+                          <span
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 600,
+                              color: "#fff",
+                              ...POPPINS,
+                            }}
+                          >
+                            {name}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: 10,
+                              color: "rgba(255,255,255,0.4)",
+                              ...POPPINS,
+                            }}
+                          >
+                            {timeAgo(c.created_at)}
+                          </span>
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            color: "rgba(255,255,255,0.85)",
+                            marginTop: 3,
+                            lineHeight: 1.4,
+                            ...POPPINS,
+                          }}
+                        >
+                          {c.body}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                alignItems: "center",
+                padding: "12px 16px",
+                paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
+                borderTop: "0.5px solid rgba(255,255,255,0.1)",
+              }}
+            >
               <div
                 style={{
-                  textAlign: "center",
-                  color: "#6B7686",
-                  fontSize: 13,
-                  padding: "40px 0",
+                  width: 32,
+                  height: 32,
+                  flexShrink: 0,
+                  borderRadius: "50%",
+                  background: BLUE,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#fff",
+                  fontSize: 11,
+                  fontWeight: 700,
                   ...POPPINS,
                 }}
               >
-                No comments yet — be the first
+                {initials("Me")}
               </div>
-            ) : (
-              comments.map((c) => (
-                <div key={c.id} style={{ marginBottom: 14 }}>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 700,
-                      color: NAVY,
-                      ...POPPINS,
-                    }}
-                  >
-                    {c.author_name ?? "Instructor"}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      color: "#374151",
-                      marginTop: 2,
-                      ...POPPINS,
-                    }}
-                  >
-                    {c.body}
-                  </div>
-                </div>
-              ))
-            )}
+              <input
+                value={commentBody}
+                onChange={(e) => setCommentBody(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    sendComment();
+                  }
+                }}
+                placeholder="Add a comment..."
+                aria-label="Add a comment"
+                style={{
+                  flex: 1,
+                  background: "rgba(255,255,255,0.1)",
+                  borderRadius: 20,
+                  padding: "8px 14px",
+                  color: "#fff",
+                  border: "none",
+                  outline: "none",
+                  fontSize: 13,
+                  ...POPPINS,
+                }}
+              />
+              <button
+                type="button"
+                aria-label="Send comment"
+                onClick={sendComment}
+                disabled={sendingComment || !commentBody.trim()}
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  display: "flex",
+                  cursor: "pointer",
+                  opacity: commentBody.trim() ? 1 : 0.5,
+                }}
+              >
+                <IconSend size={18} color={BLUE} />
+              </button>
+            </div>
           </div>
+        </div>
+      )}
 
+      {/* REPORT SHEET */}
+      {reportOpen && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 300 }}>
+          <div
+            onClick={() => setReportOpen(false)}
+            style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.45)" }}
+          />
           <div
             style={{
-              display: "flex",
-              gap: 8,
-              padding: 12,
-              paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
-              borderTop: "0.5px solid #E4E8EF",
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              background: "#fff",
+              borderRadius: "20px 20px 0 0",
+              padding: "20px 16px",
+              paddingBottom: "calc(20px + env(safe-area-inset-bottom, 0px))",
             }}
           >
-            <input
-              value={commentBody}
-              onChange={(e) => setCommentBody(e.target.value)}
-              placeholder="Add a comment..."
-              aria-label="Add a comment"
-              style={{ ...inputStyle, flex: 1 }}
-            />
-            <button
-              type="button"
-              aria-label="Send comment"
-              onClick={postComment}
-              disabled={!commentBody.trim()}
+            <div style={{ fontSize: 16, fontWeight: 700, color: NAVY, ...POPPINS }}>
+              Report video
+            </div>
+            <div
+              style={{ fontSize: 13, color: "#6B7686", marginTop: 4, ...POPPINS }}
+            >
+              Help us keep DSM Showcase safe
+            </div>
+
+            <div
               style={{
-                background: BLUE,
-                border: "none",
-                borderRadius: 10,
-                width: 44,
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#fff",
-                cursor: commentBody.trim() ? "pointer" : "not-allowed",
-                opacity: commentBody.trim() ? 1 : 0.5,
+                flexWrap: "wrap",
+                gap: 8,
+                margin: "16px 0",
               }}
             >
-              <IconSend size={18} />
+              {REPORT_REASONS.map((r) => {
+                const active = reportReason === r;
+                return (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => setReportReason(r)}
+                    style={{
+                      border: active ? `1px solid ${RED}` : "1px solid transparent",
+                      borderRadius: 20,
+                      padding: "7px 12px",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      background: active ? "#FCE9E9" : "#F1F5F9",
+                      color: active ? RED : "#6B7686",
+                      ...POPPINS,
+                    }}
+                  >
+                    {r}
+                  </button>
+                );
+              })}
+            </div>
+
+            {reportReason === "Other" && (
+              <textarea
+                rows={3}
+                placeholder="Tell us more..."
+                aria-label="Report details"
+                onChange={(e) => setReportReason(e.target.value ? e.target.value : "Other")}
+                style={{ ...inputStyle, resize: "vertical", marginBottom: 12 }}
+              />
+            )}
+
+            <button
+              type="button"
+              onClick={sendReport}
+              disabled={!reportReason.trim() || sendingReport}
+              style={{
+                width: "100%",
+                background: RED,
+                color: "#fff",
+                border: "none",
+                borderRadius: 12,
+                padding: "12px 0",
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: reportReason.trim() ? "pointer" : "not-allowed",
+                opacity: reportReason.trim() && !sendingReport ? 1 : 0.6,
+                ...POPPINS,
+              }}
+            >
+              {sendingReport ? "Sending..." : "Send report"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setReportOpen(false)}
+              style={{
+                width: "100%",
+                background: "#F1F5F9",
+                color: "#6B7686",
+                border: "none",
+                borderRadius: 12,
+                padding: "12px 0",
+                fontSize: 14,
+                fontWeight: 600,
+                marginTop: 8,
+                cursor: "pointer",
+                ...POPPINS,
+              }}
+            >
+              Cancel
             </button>
           </div>
         </div>
       )}
+
 
       {/* UPLOAD SHEET */}
       {uploadOpen && (
