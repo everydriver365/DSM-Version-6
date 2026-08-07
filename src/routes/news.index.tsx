@@ -139,121 +139,149 @@ function NewsIndexPage() {
             </p>
           </div>
         ) : (
-          filtered.map((a) => (
-            <div
-              key={a.id}
-              role="button"
-              tabIndex={0}
-              onClick={() =>
-                navigate({
-                  to: "/news/$articleId",
-                  params: { articleId: a.id },
-                })
-              }
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
+          <div style={{ padding: "16px" }}>
+            {filtered.map((a) => (
+              <div
+                key={a.id}
+                role="button"
+                tabIndex={0}
+                onClick={() =>
                   navigate({
                     to: "/news/$articleId",
                     params: { articleId: a.id },
-                  });
+                  })
                 }
-              }}
-              style={{
-                display: "flex",
-                gap: 12,
-                padding: "14px 16px",
-                borderBottom: "0.5px solid #E4E8EF",
-                cursor: "pointer",
-                background: "#FFFFFF",
-              }}
-            >
-              {/* Thumbnail */}
-              <div
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    navigate({
+                      to: "/news/$articleId",
+                      params: { articleId: a.id },
+                    });
+                  }
+                }}
                 style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: 12,
-                  flexShrink: 0,
-                  overflow: "hidden",
-                  background: a.image_url ? undefined : "#0B1F3A",
                   display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  gap: 12,
+                  background: "#FFFFFF",
+                  border: "1px solid #E3E8F0",
+                  borderRadius: 16,
+                  padding: 12,
+                  marginBottom: 12,
+                  cursor: "pointer",
                 }}
               >
-                {a.image_url ? (
-                  <img
-                    src={a.image_url}
-                    alt=""
-                    loading="lazy"
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  />
-                ) : (
-                  <Newspaper size={20} color="#FFFFFF" />
-                )}
-              </div>
-
-              {/* Content */}
-              <div
-                style={{
-                  flex: 1,
-                  minWidth: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
+                {/* Thumbnail */}
                 <div
                   style={{
-                    display: "inline-flex",
-                    marginBottom: 4,
-                    background: "#E6F1FB",
-                    color: "#1877D6",
-                    fontSize: 9,
-                    fontWeight: 700,
-                    fontFamily: "Poppins, sans-serif",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
-                    borderRadius: 20,
-                    padding: "2px 7px",
-                    alignSelf: "flex-start",
-                  }}
-                >
-                  {a.source || "News"}
-                </div>
-                <div
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "#0B1F3A",
-                    fontFamily: "Poppins, sans-serif",
-                    lineHeight: 1.35,
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
+                    width: 78,
+                    height: 78,
+                    borderRadius: 12,
+                    flexShrink: 0,
                     overflow: "hidden",
-                    margin: "4px 0",
-                  }}
-                >
-                  {a.title}
-                </div>
-                <div
-                  style={{
+                    background: a.image_url ? undefined : "#0B1F3A",
                     display: "flex",
                     alignItems: "center",
-                    gap: 6,
-                    fontSize: 11,
-                    color: "#9CA3AF",
-                    ...INTER,
+                    justifyContent: "center",
                   }}
                 >
-                  <Clock size={11} />
-                  <span>{a.read_time_mins ? `${a.read_time_mins} min` : "—"}</span>
-                  <span>·</span>
-                  <span>{formatDate(a.published_at)}</span>
+                  {a.image_url ? (
+                    <img
+                      src={a.image_url}
+                      alt=""
+                      loading="lazy"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <Newspaper size={24} color="#FFFFFF" />
+                  )}
+                </div>
+
+                {/* Content */}
+                <div
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 14.5,
+                      fontWeight: 700,
+                      color: "#0B1F3A",
+                      fontFamily: "Poppins, sans-serif",
+                      lineHeight: 1.3,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      marginBottom: 6,
+                    }}
+                  >
+                    {a.title}
+                  </div>
+                  <div
+                    style={{
+                      display: "inline-flex",
+                      marginBottom: 8,
+                      background: "#E6F1FB",
+                      color: "#1877D6",
+                      fontSize: 11.5,
+                      fontWeight: 700,
+                      fontFamily: "Poppins, sans-serif",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      borderRadius: 9,
+                      padding: "5px 11px",
+                      alignSelf: "flex-start",
+                    }}
+                  >
+                    {a.source || "News"}
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        fontSize: 11,
+                        color: "#9CA3AF",
+                        ...INTER,
+                      }}
+                    >
+                      <Clock size={11} />
+                      <span>{a.read_time_mins ? `${a.read_time_mins} min` : "—"}</span>
+                      <span>·</span>
+                      <span>{formatDate(a.published_at)}</span>
+                    </div>
+                    <span
+                      style={{
+                        background: "#1877D6",
+                        color: "#fff",
+                        fontSize: 12,
+                        fontWeight: 600,
+                        fontFamily: "Poppins, sans-serif",
+                        padding: "8px 15px",
+                        borderRadius: 9,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 4,
+                      }}
+                    >
+                      Read <span style={{ fontSize: 14 }}>›</span>
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
     </PageLayout>
