@@ -986,6 +986,17 @@ function AdminHub() {
     flaggedRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  const [instructorCount, setInstructorCount] = useState<number>(0);
+
+  useEffect(() => {
+    supabase
+      .from("instructors")
+      .select("id", { count: "exact", head: true })
+      .is("deleted_at", null)
+      .then(({ count }) => setInstructorCount(count ?? 0));
+  }, []);
+
+
 
   // Child routes (e.g. /admin/featured) have their own admin gate and layout;
   // render the Outlet unconditionally so they mount instead of the hub.
