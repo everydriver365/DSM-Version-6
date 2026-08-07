@@ -1179,8 +1179,8 @@ export function LessonActionsSheet({
           style={{
             marginTop: 8,
             width: "100%",
-            background: "#DDEFE1",
-            border: "1px solid #A8D5B5",
+            background: "linear-gradient(135deg, #1C8A4B, #156B3A)",
+            border: "none",
             borderRadius: 12,
             padding: "12px 4px",
             display: "flex",
@@ -1191,12 +1191,14 @@ export function LessonActionsSheet({
             fontFamily: "Inter, sans-serif",
             fontSize: 13,
             fontWeight: 600,
-            color: "#1D8A4E",
+            color: "#FFFFFF",
+            boxShadow: "0 4px 12px rgba(28,138,75,0.25)",
           }}
         >
-          <IconCircleCheck size={18} stroke={1.8} color="#1D8A4E" />
+          <IconCircleCheck size={18} stroke={1.8} color="#FFFFFF" />
           <span>End of lesson</span>
         </button>
+
 
         {/* Pickup */}
         <div style={{ marginTop: 14 }}>
