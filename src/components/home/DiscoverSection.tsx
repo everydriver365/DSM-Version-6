@@ -71,6 +71,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const [liveHero, setLiveHero] = useState<string | null>(null);
   const [showcaseHero, setShowcaseHero] = useState<string | null>(null);
   const [marketplaceHero, setMarketplaceHero] = useState<string | null>(null);
+  const [featuredListing, setFeaturedListing] = useState<{
+    id: string;
+    title: string | null;
+    price_display: string | null;
+    category: string | null;
+  } | null>(null);
   const [newsHero, setNewsHero] = useState<string | null>(null);
   const [latestNewsTitle, setLatestNewsTitle] = useState<string | null>(null);
   const [latestNewsSource, setLatestNewsSource] = useState<string | null>(null);
