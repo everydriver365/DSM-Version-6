@@ -439,7 +439,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               cursor: "pointer",
             }}
           >
-            View listing →
+            View marketplace →
           </button>
         </div>
       </div>
