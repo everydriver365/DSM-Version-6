@@ -435,13 +435,23 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               height: "100%",
               objectFit: "cover",
               opacity: 0.2,
+              zIndex: 0,
             }}
           />
         )}
         <div
           style={{
-            position: "relative",
+            position: "absolute",
+            inset: 0,
+            backgroundColor: NAVY,
+            opacity: 0.82,
             zIndex: 1,
+          }}
+        />
+        <div
+          style={{
+            position: "relative",
+            zIndex: 2,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
