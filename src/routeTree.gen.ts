@@ -164,6 +164,10 @@ import { Route as LessonsRescheduleIdRouteImport } from './routes/lessons.resche
 import { Route as LessonsFeedbackIdRouteImport } from './routes/lessons.feedback.$id'
 import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
 import { Route as DsmLivePodcastPodcastIdRouteImport } from './routes/dsm-live.podcast.$podcastId'
+import { Route as ApiPublicCarplayV1LessonRouteImport } from './routes/api/public/carplay/v1/lesson'
+import { Route as ApiPublicCarplayV1DirectionsRouteImport } from './routes/api/public/carplay/v1/directions'
+import { Route as ApiPublicCarplayV1DevicesRouteImport } from './routes/api/public/carplay/v1/devices'
+import { Route as ApiPublicCarplayV1DashboardRouteImport } from './routes/api/public/carplay/v1/dashboard'
 
 const WhatsChangedRoute = WhatsChangedRouteImport.update({
   id: '/whats-changed',
@@ -940,6 +944,30 @@ const DsmLivePodcastPodcastIdRoute = DsmLivePodcastPodcastIdRouteImport.update({
   path: '/podcast/$podcastId',
   getParentRoute: () => DsmLiveRoute,
 } as any)
+const ApiPublicCarplayV1LessonRoute =
+  ApiPublicCarplayV1LessonRouteImport.update({
+    id: '/api/public/carplay/v1/lesson',
+    path: '/api/public/carplay/v1/lesson',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCarplayV1DirectionsRoute =
+  ApiPublicCarplayV1DirectionsRouteImport.update({
+    id: '/api/public/carplay/v1/directions',
+    path: '/api/public/carplay/v1/directions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCarplayV1DevicesRoute =
+  ApiPublicCarplayV1DevicesRouteImport.update({
+    id: '/api/public/carplay/v1/devices',
+    path: '/api/public/carplay/v1/devices',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCarplayV1DashboardRoute =
+  ApiPublicCarplayV1DashboardRouteImport.update({
+    id: '/api/public/carplay/v1/dashboard',
+    path: '/api/public/carplay/v1/dashboard',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -1096,6 +1124,10 @@ export interface FileRoutesByFullPath {
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
   '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
   '/terms/sign/$pupilId': typeof TermsSignPupilIdRoute
+  '/api/public/carplay/v1/dashboard': typeof ApiPublicCarplayV1DashboardRoute
+  '/api/public/carplay/v1/devices': typeof ApiPublicCarplayV1DevicesRoute
+  '/api/public/carplay/v1/directions': typeof ApiPublicCarplayV1DirectionsRoute
+  '/api/public/carplay/v1/lesson': typeof ApiPublicCarplayV1LessonRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -1249,6 +1281,10 @@ export interface FileRoutesByTo {
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
   '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
   '/terms/sign/$pupilId': typeof TermsSignPupilIdRoute
+  '/api/public/carplay/v1/dashboard': typeof ApiPublicCarplayV1DashboardRoute
+  '/api/public/carplay/v1/devices': typeof ApiPublicCarplayV1DevicesRoute
+  '/api/public/carplay/v1/directions': typeof ApiPublicCarplayV1DirectionsRoute
+  '/api/public/carplay/v1/lesson': typeof ApiPublicCarplayV1LessonRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -1407,6 +1443,10 @@ export interface FileRoutesById {
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
   '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
   '/terms/sign/$pupilId': typeof TermsSignPupilIdRoute
+  '/api/public/carplay/v1/dashboard': typeof ApiPublicCarplayV1DashboardRoute
+  '/api/public/carplay/v1/devices': typeof ApiPublicCarplayV1DevicesRoute
+  '/api/public/carplay/v1/directions': typeof ApiPublicCarplayV1DirectionsRoute
+  '/api/public/carplay/v1/lesson': typeof ApiPublicCarplayV1LessonRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -1565,6 +1605,10 @@ export interface FileRouteTypes {
     | '/pupils/progress/$id'
     | '/pupils/syllabus/$id'
     | '/terms/sign/$pupilId'
+    | '/api/public/carplay/v1/dashboard'
+    | '/api/public/carplay/v1/devices'
+    | '/api/public/carplay/v1/directions'
+    | '/api/public/carplay/v1/lesson'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1718,6 +1762,10 @@ export interface FileRouteTypes {
     | '/pupils/progress/$id'
     | '/pupils/syllabus/$id'
     | '/terms/sign/$pupilId'
+    | '/api/public/carplay/v1/dashboard'
+    | '/api/public/carplay/v1/devices'
+    | '/api/public/carplay/v1/directions'
+    | '/api/public/carplay/v1/lesson'
   id:
     | '__root__'
     | '/'
@@ -1875,6 +1923,10 @@ export interface FileRouteTypes {
     | '/pupils/progress/$id'
     | '/pupils/syllabus/$id'
     | '/terms/sign/$pupilId'
+    | '/api/public/carplay/v1/dashboard'
+    | '/api/public/carplay/v1/devices'
+    | '/api/public/carplay/v1/directions'
+    | '/api/public/carplay/v1/lesson'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -2007,6 +2059,10 @@ export interface RootRouteChildren {
   PupilsPaymentsIdRoute: typeof PupilsPaymentsIdRoute
   PupilsProgressIdRoute: typeof PupilsProgressIdRoute
   PupilsSyllabusIdRoute: typeof PupilsSyllabusIdRoute
+  ApiPublicCarplayV1DashboardRoute: typeof ApiPublicCarplayV1DashboardRoute
+  ApiPublicCarplayV1DevicesRoute: typeof ApiPublicCarplayV1DevicesRoute
+  ApiPublicCarplayV1DirectionsRoute: typeof ApiPublicCarplayV1DirectionsRoute
+  ApiPublicCarplayV1LessonRoute: typeof ApiPublicCarplayV1LessonRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -3096,6 +3152,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DsmLivePodcastPodcastIdRouteImport
       parentRoute: typeof DsmLiveRoute
     }
+    '/api/public/carplay/v1/lesson': {
+      id: '/api/public/carplay/v1/lesson'
+      path: '/api/public/carplay/v1/lesson'
+      fullPath: '/api/public/carplay/v1/lesson'
+      preLoaderRoute: typeof ApiPublicCarplayV1LessonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/carplay/v1/directions': {
+      id: '/api/public/carplay/v1/directions'
+      path: '/api/public/carplay/v1/directions'
+      fullPath: '/api/public/carplay/v1/directions'
+      preLoaderRoute: typeof ApiPublicCarplayV1DirectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/carplay/v1/devices': {
+      id: '/api/public/carplay/v1/devices'
+      path: '/api/public/carplay/v1/devices'
+      fullPath: '/api/public/carplay/v1/devices'
+      preLoaderRoute: typeof ApiPublicCarplayV1DevicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/carplay/v1/dashboard': {
+      id: '/api/public/carplay/v1/dashboard'
+      path: '/api/public/carplay/v1/dashboard'
+      fullPath: '/api/public/carplay/v1/dashboard'
+      preLoaderRoute: typeof ApiPublicCarplayV1DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -3345,17 +3429,11 @@ const rootRouteChildren: RootRouteChildren = {
   PupilsPaymentsIdRoute: PupilsPaymentsIdRoute,
   PupilsProgressIdRoute: PupilsProgressIdRoute,
   PupilsSyllabusIdRoute: PupilsSyllabusIdRoute,
+  ApiPublicCarplayV1DashboardRoute: ApiPublicCarplayV1DashboardRoute,
+  ApiPublicCarplayV1DevicesRoute: ApiPublicCarplayV1DevicesRoute,
+  ApiPublicCarplayV1DirectionsRoute: ApiPublicCarplayV1DirectionsRoute,
+  ApiPublicCarplayV1LessonRoute: ApiPublicCarplayV1LessonRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

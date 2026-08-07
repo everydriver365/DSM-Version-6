@@ -7,7 +7,8 @@ import {
   type CarPlayDashboard,
   type CarPlayLesson,
   type LessonDriveTime,
-} from "../carplay.server";
+} from "./carplay.server";
+
 
 export const getCarPlayDashboardFn = createServerFn({ method: "GET" }).handler(
   async (): Promise<CarPlayDashboard | null> => {
