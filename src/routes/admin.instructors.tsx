@@ -186,12 +186,12 @@ function AdminInstructorsPage() {
 
       {/* LIST */}
       <div style={{ backgroundColor: "#fff" }}>
-        {filtered.length === 0 && (
+        {active.length === 0 && (
           <div style={{ padding: 24, textAlign: "center", fontSize: 13, color: MUTED }}>
             No instructors found
           </div>
         )}
-        {filtered.map((inst) => {
+        {active.map((inst) => {
           const deleted = !!inst.deleted_at;
           return (
             <div
@@ -284,6 +284,121 @@ function AdminInstructorsPage() {
           );
         })}
       </div>
+
+      {/* ARCHIVE */}
+      {archived.length > 0 && (
+        <div style={{ marginTop: 12 }}>
+          {/* Toggle header */}
+          <div
+            onClick={() => setShowArchive((v) => !v)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "12px 16px",
+              background: "#F8FAFC",
+              border: "0.5px solid #E4E8EF",
+              borderRadius: showArchive ? "10px 10px 0 0" : 10,
+              cursor: "pointer",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <IconArchive size={18} color={NAVY} />
+              <span style={{ fontSize: 13, fontWeight: 600, color: NAVY, fontFamily: "Poppins, sans-serif" }}>
+                Archive ({archived.length})
+              </span>
+            </div>
+            {showArchive ? (
+              <IconChevronUp size={18} color={MUTED} />
+            ) : (
+              <IconChevronDown size={18} color={MUTED} />
+            )}
+          </div>
+
+          {/* Archived list */}
+          {showArchive && (
+            <div style={{ backgroundColor: "#fff", border: "0.5px solid #E4E8EF", borderTop: "none", borderRadius: "0 0 10px 10px", overflow: "hidden" }}>
+              {archived.map((instructor) => (
+                <div
+                  key={instructor.id}
+                  className="flex items-center gap-3 relative"
+                  style={{ padding: "14px 16px", borderBottom: `0.5px solid ${BORDER}` }}
+                >
+                  {/* Avatar */}
+                  <div
+                    className="flex items-center justify-center rounded-full shrink-0"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      backgroundColor: BORDER,
+                      color: "#9CA3AF",
+                      fontSize: 13,
+                      fontWeight: 600,
+                    }}
+                  >
+                    {(instructor.name ?? "X")
+                      .split(" ")
+                      .map((n: string) => n[0])
+                      .join("")
+                      .slice(0, 2)
+                      .toUpperCase()}
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <div style={{ fontSize: 14, fontWeight: 600, color: NAVY, textDecoration: "line-through" }} className="truncate">
+                      {instructor.name ?? "Unknown"}
+                    </div>
+                    <div style={{ fontSize: 12, color: MUTED }}>
+                      Removed{" "}
+                      {new Date(instructor.deleted_at).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Restore button */}
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const { error } = await supabase
+                        .from("instructors")
+                        .update({ deleted_at: null })
+                        .eq("id", instructor.id);
+                      if (error) {
+                        toast.error("Couldn't restore instructor");
+                        return;
+                      }
+                      setInstructors((prev) =>
+                        prev.map((i) =>
+                          i.id === instructor.id ? { ...i, deleted_at: null } : i
+                        )
+                      );
+                      toast.success(`${instructor.name} restored`);
+                    }}
+                    style={{
+                      background: "#E6F1FB",
+                      color: "#1877D6",
+                      border: "none",
+                      borderRadius: 8,
+                      padding: "6px 12px",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      fontFamily: "Poppins, sans-serif",
+                      flexShrink: 0,
+                    }}
+                  >
+                    Restore
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* EDIT SHEET */}
       {editInstructor && (
