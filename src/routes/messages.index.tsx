@@ -1025,7 +1025,7 @@ function MessagesIndexPage() {
   const router = useRouter();
 
   return (
-    <PageLayout style={{ ...FONT, background: "#DCE4F0", paddingBottom: 24 }}>
+    <PageLayout style={{ ...FONT, background: CANVAS, paddingBottom: 24 }}>
       <InstructorTopBar
         firstName={myName ?? ""}
         pageTitle="Messages"
@@ -1079,8 +1079,7 @@ function MessagesIndexPage() {
               alignItems: "center",
               gap: 8,
               padding: "8px 16px",
-              background: "#FFFFFF",
-              borderBottom: "0.5px solid #E4E8EF",
+              background: "transparent",
             }}
           >
             <div
@@ -1245,7 +1244,7 @@ function MessagesIndexPage() {
           )}
 
           {/* Unified list */}
-          <div>
+          <div style={{ padding: "0 16px" }}>
             {loading && items.length === 0 ? (
               <div style={{ padding: 32, textAlign: "center", color: GREY, fontSize: 13 }}>Loading…</div>
             ) : visibleItems.length === 0 ? (
