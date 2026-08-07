@@ -1372,8 +1372,9 @@ export function LessonActionsSheet({
               <div style={sectionLabel}>Account</div>
               <div
                 style={{
-                  background: bg,
-                  borderRadius: 9,
+                  background: "#FFFFFF",
+                  borderRadius: 12,
+                  boxShadow: "0 2px 6px rgba(11,31,58,0.04)",
                   padding: "11px 12px",
                   display: "flex",
                   alignItems: "center",
@@ -1383,6 +1384,7 @@ export function LessonActionsSheet({
                 }}
               >
                 <span style={{ fontSize: 14, fontWeight: 600, color: fg }}>{label}</span>
+
                 {showActions && (
                   <div style={{ display: "flex", gap: 6 }}>
                     <button
