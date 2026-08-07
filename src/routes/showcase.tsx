@@ -626,6 +626,7 @@ function ShowcasePage() {
               }}
             >
               <video
+                ref={videoRef}
                 key={playing.id}
                 src={playing.video_url}
                 poster={playing.thumbnail_url ?? undefined}
@@ -649,14 +650,21 @@ function ShowcasePage() {
                   background: "#000",
                 }}
                 onEnded={() => {
-                  const currentIndex = videos.findIndex((v) => v.id === playing.id);
-                  const next = videos[currentIndex + 1];
-                  if (next) {
-                    setPlaying(next);
-                    incrementView(next);
-                  } else {
-                    setPlaying(null);
+                  // Pause on last frame — don't black out
+                  if (videoRef.current) {
+                    videoRef.current.pause();
+                    videoRef.current.currentTime = Math.max(
+                      0,
+                      videoRef.current.duration - 0.1,
+                    );
                   }
+                  setPlaying((prev) => prev); // keep playing state
+                  // Show next up card below instead of overlay
+                  const currentIndex = videos.findIndex(
+                    (v) => v.id === playing?.id,
+                  );
+                  const next = videos[currentIndex + 1];
+                  if (next) setNextVideo(next);
                 }}
               />
 
@@ -817,49 +825,79 @@ function ShowcasePage() {
                   </button>
                 </div>
 
-                {(() => {
-                  const currentIndex = videos.findIndex((v) => v.id === playing.id);
-                  const next = videos[currentIndex + 1];
-                  if (!next) return null;
-                  return (
+                {nextVideo && (
+                  <div
+                    style={{
+                      margin: "8px 0 0",
+                      background: "#F8FAFC",
+                      border: "0.5px solid #E4E8EF",
+                      borderRadius: 10,
+                      padding: "10px 12px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      openPlayer(nextVideo);
+                    }}
+                  >
+                    {/* Thumbnail */}
                     <div
-                      onClick={() => {
-                        setPlaying(next);
-                        incrementView(next);
-                      }}
                       style={{
-                        marginTop: 8,
-                        padding: "6px 10px",
-                        background: "rgba(255,255,255,0.08)",
-                        borderRadius: 8,
+                        width: 52,
+                        height: 36,
+                        borderRadius: 6,
+                        overflow: "hidden",
+                        flexShrink: 0,
+                        background: "linear-gradient(135deg, #CC2229, #7C1D1D)",
                         display: "flex",
                         alignItems: "center",
-                        gap: 8,
-                        cursor: "pointer",
+                        justifyContent: "center",
                       }}
                     >
-                      <IconPlayerSkipForward
-                        size={14}
-                        stroke={1.5}
-                        color="rgba(255,255,255,0.6)"
-                      />
-                      <span
+                      {nextVideo.thumbnail_url ? (
+                        <img
+                          src={nextVideo.thumbnail_url}
+                          alt=""
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      ) : (
+                        <IconPlayerPlay size={16} color="#fff" stroke={1.5} />
+                      )}
+                    </div>
+                    {/* Text */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div
                         style={{
-                          fontSize: 11,
-                          color: "rgba(255,255,255,0.6)",
-                          flex: 1,
-                          minWidth: 0,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                          ...POPPINS,
+                          fontSize: 10,
+                          fontWeight: 600,
+                          color: "#9CA3AF",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.06em",
+                          fontFamily: "Poppins, sans-serif",
+                          marginBottom: 2,
                         }}
                       >
-                        Next: {next.caption ?? "Next video"}
-                      </span>
+                        Up next
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          fontFamily: "Poppins, sans-serif",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {nextVideo.caption ?? "Next video"}
+                      </div>
                     </div>
-                  );
-                })()}
+                    <IconChevronRight size={16} color="#9CA3AF" stroke={1.5} />
+                  </div>
+                )}
               </div>
             </div>
           )}
