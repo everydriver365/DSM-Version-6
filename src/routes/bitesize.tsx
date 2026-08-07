@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
+import { VideoPlayer } from "@/components/dsm/VideoPlayer";
+
 import {
   IconChevronLeft,
   IconBook,
@@ -507,7 +509,82 @@ function BitesizePage() {
             gap: 12,
           }}
         >
+          {/* INLINE VIDEO PLAYER */}
+          {playingVideo && (
+            <div style={{ gridColumn: "1 / -1" }}>
+              <VideoPlayer
+                src={playingVideo.video_url}
+                thumbnail={playingVideo.thumbnail_url}
+                title={playingVideo.title}
+                autoPlay
+                onClose={() => setPlayingVideo(null)}
+                onEnded={() => {
+                  const idx = filtered.findIndex((v) => v.id === playingVideo.id);
+                  const next = filtered[idx + 1];
+                  if (next) {
+                    playVideo(next);
+                  } else {
+                    setPlayingVideo(null);
+                  }
+                }}
+              />
+
+              {/* Info below player */}
+              <div
+                style={{
+                  background: "#fff",
+                  border: "0.5px solid #E4E8EF",
+                  borderRadius: 12,
+                  padding: 12,
+                  marginTop: 8,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 15,
+                    fontWeight: 700,
+                    color: "#0B1F3A",
+                    ...POPPINS,
+                  }}
+                >
+                  {playingVideo.title}
+                </div>
+                {playingVideo.description && (
+                  <div
+                    style={{
+                      fontSize: 13,
+                      color: "#6B7686",
+                      marginTop: 4,
+                      lineHeight: 1.45,
+                      ...POPPINS,
+                    }}
+                  >
+                    {playingVideo.description}
+                  </div>
+                )}
+                {playingVideo.category && (
+                  <div
+                    style={{
+                      display: "inline-block",
+                      marginTop: 8,
+                      padding: "3px 10px",
+                      borderRadius: 999,
+                      background: "#EAF2FD",
+                      color: "#1877D6",
+                      fontSize: 11,
+                      fontWeight: 700,
+                      ...POPPINS,
+                    }}
+                  >
+                    {playingVideo.category}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {filtered.map((video) => (
+
             <div
               key={video.id}
               onClick={() => playVideo(video)}
@@ -765,106 +842,8 @@ function BitesizePage() {
         </div>
       )}
 
-      {/* VIDEO PLAYER */}
-      {playingVideo && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 200,
-            background: "#000",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              zIndex: 2,
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
-              gap: 12,
-              padding: "8px 12px",
-              paddingTop: "calc(8px + env(safe-area-inset-top, 0px))",
-              background:
-                "linear-gradient(rgba(0,0,0,0.6), transparent)",
-            }}
-          >
-            <div
-              style={{
-                flex: 1,
-                fontSize: 14,
-                fontWeight: 600,
-                color: "#fff",
-                ...POPPINS,
-              }}
-            >
-              {playingVideo.title}
-            </div>
-            <button
-              type="button"
-              aria-label="Close"
-              onClick={() => setPlayingVideo(null)}
-              style={{
-                background: "none",
-                border: "none",
-                padding: 0,
-                display: "flex",
-                color: "#fff",
-                cursor: "pointer",
-              }}
-            >
-              <IconX size={20} />
-            </button>
-          </div>
 
-          <video
-            controls
-            autoPlay
-            playsInline
-            src={playingVideo.video_url}
-            style={{ width: "100%", height: "100%", objectFit: "contain" }}
-          />
 
-          <div
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              padding: 16,
-              background:
-                "linear-gradient(transparent, rgba(0,0,0,0.8))",
-              pointerEvents: "none",
-            }}
-          >
-            <div
-              style={{
-                fontSize: 16,
-                fontWeight: 700,
-                color: "#fff",
-                ...POPPINS,
-              }}
-            >
-              {playingVideo.title}
-            </div>
-            {playingVideo.description && (
-              <div
-                style={{
-                  fontSize: 13,
-                  color: "rgba(255,255,255,0.7)",
-                  marginTop: 4,
-                  ...POPPINS,
-                }}
-              >
-                {playingVideo.description}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* UPLOAD SHEET */}
       {uploadOpen && isAdmin && (
