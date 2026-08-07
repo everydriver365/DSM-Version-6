@@ -5221,7 +5221,7 @@ function HomePage() {
                   fontSize: 12, fontWeight: 800, fontFamily: 'Poppins, sans-serif',
                   flexShrink: 0, whiteSpace: 'nowrap',
                 }}>
-                  Cost: {priceText}
+                  <span style={{ fontWeight: 400 }}>Cost:</span> {priceText}
                 </span>
 
                 <span style={{
