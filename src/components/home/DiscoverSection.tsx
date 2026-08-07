@@ -475,10 +475,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           {
             key: "showcase",
             label: "Showcase",
-            sub: "Video clips",
+            sub: "Community clips",
             icon: <IconPlayerPlay size={14} color={RED} stroke={2} />,
             bg: "#FCE9E9",
-            onClick: () => navigate({ to: "/reels" as never }),
+            onClick: () => navigate({ to: "/showcase" as never }),
             dot: (showcaseCount ?? 0) > 0 ? RED : null,
           },
           {
