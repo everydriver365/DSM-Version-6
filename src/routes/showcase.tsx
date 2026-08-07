@@ -467,7 +467,8 @@ function ShowcasePage() {
           }}
         >
           {filtered.map((video) => {
-            const liked = likedIds.includes(video.id);
+            const upvoted = votes[video.id] === "up";
+            const downvoted = votes[video.id] === "down";
             return (
               <div
                 key={video.id}
@@ -480,7 +481,8 @@ function ShowcasePage() {
               >
                 {/* THUMBNAIL */}
                 <div
-                  onClick={() => setPlaying(video)}
+                  onClick={() => openPlayer(video)}
+
                   style={{ height: 160, position: "relative", cursor: "pointer" }}
                 >
                   {video.thumbnail_url ? (
