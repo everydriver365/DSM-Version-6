@@ -9,9 +9,14 @@ import {
   IconPlus,
   IconPlayerPlay,
   IconEye,
+  IconEyeOff,
   IconUpload,
   IconX,
+  IconDotsVertical,
+  IconPencil,
+  IconTrash,
 } from "@tabler/icons-react";
+
 
 export const Route = createFileRoute("/bitesize")({
   head: () => ({
@@ -104,6 +109,16 @@ function BitesizePage() {
   const [thumbPreview, setThumbPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
+
+  // Admin card menu + edit state
+  const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
+  const [editVideo, setEditVideo] = useState<BitesizeVideo | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editDuration, setEditDuration] = useState("");
+  const [editPublished, setEditPublished] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -200,6 +215,84 @@ function BitesizePage() {
       setUploading(false);
       setUploadProgress("");
     }
+  }
+
+  async function playVideo(video: BitesizeVideo) {
+    setPlayingVideo(video);
+    await supabase
+      .from("bitesize_videos")
+      .update({ views: (video.views ?? 0) + 1 })
+      .eq("id", video.id);
+    setVideos((prev) =>
+      prev.map((v) =>
+        v.id === video.id ? { ...v, views: (v.views ?? 0) + 1 } : v,
+      ),
+    );
+  }
+
+  async function togglePublish(video: BitesizeVideo) {
+    await supabase
+      .from("bitesize_videos")
+      .update({ is_published: !video.is_published })
+      .eq("id", video.id);
+    setVideos((prev) =>
+      prev.map((v) =>
+        v.id === video.id ? { ...v, is_published: !v.is_published } : v,
+      ),
+    );
+    setMenuOpenId(null);
+  }
+
+  async function deleteVideo(video: BitesizeVideo) {
+    if (!confirm(`Delete "${video.title}"? This cannot be undone.`)) return;
+    await supabase
+      .from("bitesize_videos")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", video.id);
+    setVideos((prev) => prev.filter((v) => v.id !== video.id));
+    setMenuOpenId(null);
+  }
+
+  function openEdit(video: BitesizeVideo) {
+    setEditTitle(video.title);
+    setEditDescription(video.description ?? "");
+    setEditCategory(video.category ?? "");
+    setEditDuration(video.duration_mins?.toString() ?? "");
+    setEditPublished(video.is_published);
+    setEditVideo(video);
+    setMenuOpenId(null);
+  }
+
+  async function saveEdit() {
+    if (!editVideo) return;
+    setSaving(true);
+    await supabase
+      .from("bitesize_videos")
+      .update({
+        title: editTitle.trim(),
+        description: editDescription.trim() || null,
+        category: editCategory || null,
+        duration_mins: editDuration ? parseInt(editDuration) : null,
+        is_published: editPublished,
+      })
+      .eq("id", editVideo.id);
+    setVideos((prev) =>
+      prev.map((v) =>
+        v.id === editVideo.id
+          ? {
+              ...v,
+              title: editTitle.trim(),
+              description: editDescription.trim() || null,
+              category: editCategory || null,
+              duration_mins: editDuration ? parseInt(editDuration) : null,
+              is_published: editPublished,
+            }
+          : v,
+      ),
+    );
+    setEditVideo(null);
+    setSaving(false);
+    toast.success("Video updated");
   }
 
   return (
@@ -302,6 +395,61 @@ function BitesizePage() {
         })}
       </div>
 
+      {/* ADMIN STATS ROW */}
+      {isAdmin && (
+        <div
+          style={{
+            background: "#fff",
+            padding: "10px 16px",
+            borderBottom: "0.5px solid #E4E8EF",
+            display: "flex",
+            gap: 20,
+            overflowX: "auto",
+          }}
+        >
+          {[
+            { label: "Total videos", value: videos.length },
+            {
+              label: "Published",
+              value: videos.filter((v) => v.is_published).length,
+            },
+            {
+              label: "Drafts",
+              value: videos.filter((v) => !v.is_published).length,
+            },
+            {
+              label: "Total views",
+              value: videos.reduce((a, v) => a + (v.views ?? 0), 0),
+            },
+          ].map((s) => (
+            <div key={s.label} style={{ flexShrink: 0 }}>
+              <div
+                style={{
+                  fontSize: 9,
+                  fontWeight: 600,
+                  color: "#9CA3AF",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  ...POPPINS,
+                }}
+              >
+                {s.label}
+              </div>
+              <div
+                style={{
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: "#0B1F3A",
+                  ...POPPINS,
+                }}
+              >
+                {s.value}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* CONTENT */}
       {loading ? (
         <div
@@ -360,15 +508,122 @@ function BitesizePage() {
           {filtered.map((video) => (
             <div
               key={video.id}
-              onClick={() => setPlayingVideo(video)}
+              onClick={() => playVideo(video)}
               style={{
                 background: "#fff",
                 border: "0.5px solid #E4E8EF",
                 borderRadius: 12,
                 overflow: "hidden",
                 cursor: "pointer",
+                position: "relative",
               }}
             >
+              {/* ADMIN MENU */}
+              {isAdmin && (
+                <div
+                  style={{ position: "absolute", top: 6, right: 6, zIndex: 5 }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    type="button"
+                    aria-label="Video options"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMenuOpenId(menuOpenId === video.id ? null : video.id);
+                    }}
+                    style={{
+                      width: 26,
+                      height: 26,
+                      borderRadius: "50%",
+                      background: "rgba(0,0,0,0.55)",
+                      border: "none",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#fff",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <IconDotsVertical size={14} />
+                  </button>
+                  {menuOpenId === video.id && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 30,
+                        right: 0,
+                        minWidth: 132,
+                        background: "#fff",
+                        border: "0.5px solid #E4E8EF",
+                        borderRadius: 10,
+                        boxShadow: "0 8px 20px rgba(11,31,58,0.15)",
+                        overflow: "hidden",
+                        zIndex: 10,
+                      }}
+                    >
+                      {[
+                        {
+                          key: "edit",
+                          label: "Edit",
+                          icon: <IconPencil size={14} color="#0B1F3A" />,
+                          color: "#0B1F3A",
+                          onClick: () => openEdit(video),
+                        },
+                        {
+                          key: "publish",
+                          label: video.is_published ? "Unpublish" : "Publish",
+                          icon: video.is_published ? (
+                            <IconEyeOff size={14} color="#0B1F3A" />
+                          ) : (
+                            <IconEye size={14} color="#0B1F3A" />
+                          ),
+                          color: "#0B1F3A",
+                          onClick: () => void togglePublish(video),
+                        },
+                        {
+                          key: "delete",
+                          label: "Delete",
+                          icon: <IconTrash size={14} color="#CC2229" />,
+                          color: "#CC2229",
+                          onClick: () => void deleteVideo(video),
+                        },
+                      ].map((item) => (
+                        <button
+                          key={item.key}
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            item.onClick();
+                          }}
+                          style={{
+                            width: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                            padding: "9px 12px",
+                            background: "none",
+                            border: "none",
+                            borderTop:
+                              item.key === "edit"
+                                ? "none"
+                                : "0.5px solid #F1F5F9",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            color: item.color,
+                            cursor: "pointer",
+                            textAlign: "left",
+                            ...POPPINS,
+                          }}
+                        >
+                          {item.icon}
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* THUMBNAIL */}
               <div style={{ height: 100, position: "relative" }}>
                 {video.thumbnail_url ? (
@@ -935,6 +1190,195 @@ function BitesizePage() {
           </div>
         </div>
       )}
+
+      {/* EDIT SHEET */}
+      {editVideo && isAdmin && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 300,
+            background: "#fff",
+            overflowY: "auto",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "14px 16px",
+              paddingTop: "calc(14px + env(safe-area-inset-top, 0px))",
+              borderBottom: "0.5px solid #E4E8EF",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 16,
+                fontWeight: 700,
+                color: "#0B1F3A",
+                ...POPPINS,
+              }}
+            >
+              Edit video
+            </div>
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => setEditVideo(null)}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                display: "flex",
+                color: "#6B7686",
+                cursor: "pointer",
+              }}
+            >
+              <IconX size={20} />
+            </button>
+          </div>
+
+          <div
+            style={{
+              padding: 16,
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}
+          >
+            <div>
+              <label style={labelStyle} htmlFor="bs-edit-title">
+                Title
+              </label>
+              <input
+                id="bs-edit-title"
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+
+            <div>
+              <label style={labelStyle} htmlFor="bs-edit-desc">
+                Description
+              </label>
+              <textarea
+                id="bs-edit-desc"
+                rows={3}
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                style={{ ...inputStyle, resize: "vertical" }}
+              />
+            </div>
+
+            <div>
+              <label style={labelStyle} htmlFor="bs-edit-cat">
+                Category
+              </label>
+              <select
+                id="bs-edit-cat"
+                value={editCategory}
+                onChange={(e) => setEditCategory(e.target.value)}
+                style={inputStyle}
+              >
+                <option value="">No category</option>
+                {CATEGORIES.filter((c) => c !== "All").map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label style={labelStyle} htmlFor="bs-edit-dur">
+                Duration (minutes)
+              </label>
+              <input
+                id="bs-edit-dur"
+                type="number"
+                value={editDuration}
+                onChange={(e) => setEditDuration(e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#0B1F3A",
+                  ...POPPINS,
+                }}
+              >
+                Published
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={editPublished}
+                aria-label="Published"
+                onClick={() => setEditPublished((v) => !v)}
+                style={{
+                  width: 48,
+                  height: 28,
+                  borderRadius: 20,
+                  border: "none",
+                  cursor: "pointer",
+                  background: editPublished ? "#7C3AED" : "#E4E8EF",
+                  position: "relative",
+                  transition: "background 0.15s ease",
+                  flexShrink: 0,
+                }}
+              >
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 3,
+                    left: editPublished ? 23 : 3,
+                    width: 22,
+                    height: 22,
+                    borderRadius: "50%",
+                    background: "#fff",
+                    transition: "left 0.15s ease",
+                  }}
+                />
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={saveEdit}
+              disabled={!editTitle.trim() || saving}
+              style={{
+                width: "100%",
+                background: "#1877D6",
+                color: "#fff",
+                border: "none",
+                borderRadius: 12,
+                padding: "14px 16px",
+                fontSize: 15,
+                fontWeight: 700,
+                cursor: !editTitle.trim() || saving ? "not-allowed" : "pointer",
+                opacity: !editTitle.trim() || saving ? 0.5 : 1,
+                ...POPPINS,
+              }}
+            >
+              {saving ? "Saving..." : "Save changes"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
