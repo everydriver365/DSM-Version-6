@@ -114,15 +114,24 @@ function ShowcasePage() {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [playing, setPlaying] = useState<ShowcaseVideo | null>(null);
 
-  // Likes
-  const [likedIds, setLikedIds] = useState<string[]>([]);
-  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
+  // Votes
+  const [votes, setVotes] = useState<Record<string, "up" | "down" | null>>({});
+  const [voteCounts, setVoteCounts] = useState<
+    Record<string, { up: number; down: number }>
+  >({});
 
   // Comments
   const [commentsOpen, setCommentsOpen] = useState(false);
-  const [comments, setComments] = useState<ShowcaseComment[]>([]);
+  const [comments, setComments] = useState<any[]>([]);
   const [commentBody, setCommentBody] = useState("");
+  const [sendingComment, setSendingComment] = useState(false);
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
+
+  // Reports
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportReason, setReportReason] = useState("");
+  const [reportingId, setReportingId] = useState<string | null>(null);
+  const [sendingReport, setSendingReport] = useState(false);
 
   // Upload form state
   const [uploadTitle, setUploadTitle] = useState("");
