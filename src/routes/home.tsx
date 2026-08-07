@@ -5146,19 +5146,28 @@ function HomePage() {
                       </div>
                     )}
 
-                    {/* Directions badge */}
-                    <div style={{
-                      position: 'absolute', bottom: 10, right: 10,
-                      background: 'rgba(255,255,255,0.55)',
-                      backdropFilter: 'blur(10px)',
-                      WebkitBackdropFilter: 'blur(10px)',
-                      border: '1px solid rgba(255,255,255,0.6)',
-                      borderRadius: 20, padding: '3px 8px',
-                      display: 'flex', alignItems: 'center', gap: 4,
-                    }}>
-                      <Navigation size={11} color="#0B1F3A" />
-                      <span style={{ fontSize: 10, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>Directions</span>
-                    </div>
+                    {/* View route button */}
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); openMaps(); }}
+                      style={{
+                        position: 'absolute', bottom: 10, right: 10,
+                        background: 'rgba(255,255,255,0.85)',
+                        backdropFilter: 'blur(10px)',
+                        WebkitBackdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(255,255,255,0.8)',
+                        borderRadius: 20,
+                        padding: '5px 10px',
+                        display: 'flex', alignItems: 'center', gap: 4,
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                      }}
+                    >
+                      <Navigation size={12} color="#1877D6" />
+                      <span style={{ fontSize: 10.5, fontWeight: 700, color: '#1877D6', fontFamily: 'Poppins, sans-serif' }}>
+                        View route
+                      </span>
+                    </button>
                   </div>
                 );
               })()}
