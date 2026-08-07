@@ -96,8 +96,11 @@ function titleFor(kind: LiveEventKind): string {
       return "New booking";
     case "call":
       return "Missed call";
+    case "payment":
+      return "Payment received";
   }
 }
+
 
 function styleFor(kind: LiveEventKind): { tint: string; color: string; icon: React.ReactNode } {
   switch (kind) {
