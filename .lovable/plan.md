@@ -10,6 +10,21 @@ Apple CarPlay cannot be built as a web/PWA page. It requires a native iOS app wr
 
 This plan therefore covers the **web-side APIs, data, and hooks** the iOS app needs, plus the native iOS work required.
 
+## How this relates to Despia
+
+Despia (the runtime bridge you already use for native GPS tracking and OneSignal registration) can act as the **native iOS container** for this app, but only if it is a full native iOS app that can hold a CarPlay entitlement. CarPlay UI itself is still rendered natively by iOS using Apple's `CarPlay` framework — it is not a web view. The web app remains the backend.
+
+If Despia is currently a web-to-native bridge for GPS and push only, you will need to extend it to:
+
+1. Implement `CPTemplateApplicationSceneDelegate` and handle CarPlay connection lifecycle.
+2. Call the web app's `/api/public/carplay/v1/*` endpoints with the instructor's JWT.
+3. Render the CarPlay templates in Swift/SwiftUI using the data returned.
+4. Hold the Apple CarPlay entitlement (requires Apple developer approval).
+
+If Despia cannot support a native iOS app with CarPlay entitlements, you will need a separate Xcode iOS project for the CarPlay experience.
+
+In short: Despia can be the delivery vehicle, but it must still be a native iOS app with CarPlay entitlement to show anything on the CarPlay screen.
+
 ## Supported CarPlay categories for this product
 
 Given the user's choices, the app fits these Apple CarPlay categories:
