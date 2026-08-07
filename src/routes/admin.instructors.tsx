@@ -90,6 +90,41 @@ function AdminInstructorsPage() {
     fetchInstructors();
   }, [status]);
 
+  useEffect(() => {
+    if (!selectedInstructor) return;
+    setLoadingStats(true);
+    (async () => {
+      const [pupils, lessons] = await Promise.all([
+        supabase
+          .from("pupils")
+          .select("id", { count: "exact", head: true })
+          .eq("instructor_id", selectedInstructor.id)
+          .is("deleted_at", null),
+        supabase
+          .from("lessons")
+          .select("amount_due", { count: "exact" })
+          .eq("instructor_id", selectedInstructor.id)
+          .is("deleted_at", null),
+      ]);
+
+      const totalEarnings = (lessons.data ?? []).reduce((sum, l) => sum + (l.amount_due ?? 0), 0);
+
+      setInstructorStats({
+        pupilCount: pupils.count ?? 0,
+        lessonCount: lessons.count ?? 0,
+        totalEarnings,
+        joinedDate: selectedInstructor.created_at
+          ? new Date(selectedInstructor.created_at).toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })
+          : "Unknown",
+      });
+      setLoadingStats(false);
+    })();
+  }, [selectedInstructor]);
+
   const filtered = instructors.filter(
     (i) =>
       !search ||
