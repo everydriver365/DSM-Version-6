@@ -110,8 +110,7 @@ function BitesizePage() {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
 
-  // Admin card menu + edit state
-  const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
+  // Admin edit state
   const [editVideo, setEditVideo] = useState<BitesizeVideo | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
