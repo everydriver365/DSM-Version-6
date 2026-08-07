@@ -562,6 +562,15 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     toast.success("End of lesson completed");
     clearDraft();
 
+    void supabase.from("instructor_notifications").insert({
+      instructor_id: instructorId,
+      title: "Lesson completed",
+      body: `${pupilName} — ${durationMinutes} min lesson completed`,
+      type: "lesson_completed",
+      read: false,
+      reference_type: "lesson",
+      reference_id: lessonId,
+    });
 
     const updatedEntries = Object.entries(levels).filter(
       ([, v]) => v && v !== "not_started",

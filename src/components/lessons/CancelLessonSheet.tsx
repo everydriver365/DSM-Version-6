@@ -147,6 +147,7 @@ export function CancelLessonSheet({
               method: "cash",
               notes: "Lesson cancelled — refund to account credit",
               currentAccountBalance: current,
+              notify: false,
             });
           } catch (e) {
             console.error("[cancel] recordRefund error", e);

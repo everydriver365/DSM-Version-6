@@ -71,6 +71,10 @@ function getNotificationUrl(notification: any): string {
   if (notification.reference_type === "job_offer" && notification.reference_id)
     return `/messages?jobOfferId=${notification.reference_id}`;
   if (notification.reference_type === "payment") return "/payments";
+  if (notification.reference_type === "lesson" && notification.reference_id)
+    return `/lessons/${notification.reference_id}`;
+  if (notification.reference_type === "pupil" && notification.reference_id)
+    return `/pupils/${notification.reference_id}`;
   if (notification.type === "rewards") return "/rewards";
   return "/notifications";
 }

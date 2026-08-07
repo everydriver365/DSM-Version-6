@@ -293,6 +293,17 @@ function NewLessonPage() {
       void supabase.functions.invoke("google-calendar-sync", {
         body: { action: "push", lesson_id: newLessonId, instructor_id: user.id },
       });
+
+      const pupilName = selected?.name ?? "Pupil";
+      void supabase.from("instructor_notifications").insert({
+        instructor_id: user.id,
+        title: "Lesson booked",
+        body: `${pupilName} booked for ${date} at ${time}`,
+        type: "lesson_created",
+        read: false,
+        reference_type: "lesson",
+        reference_id: newLessonId,
+      });
     }
 
     if (isRecurring && seriesId) {
