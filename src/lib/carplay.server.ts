@@ -179,14 +179,15 @@ export async function getCarPlayDashboard(accessToken: string): Promise<CarPlayD
     .is("deleted_at", null);
   if (notifErr) console.error("[carplay] unread notifications error", notifErr);
 
-  // Upcoming tests (today onwards)
+  // Upcoming tests (today onwards) — stored on pupils table
   const { count: upcomingTests, error: testErr } = await supabase
-    .from("pupil_tests")
+    .from("pupils")
     .select("id", { count: "exact", head: true })
     .eq("instructor_id", userId)
-    .gte("test_date", todayYmd)
-    .is("deleted_at", null);
+    .not("test_date", "is", null)
+    .gte("test_date", todayYmd);
   if (testErr) console.error("[carplay] upcoming tests error", testErr);
+
 
   return {
     userId,
