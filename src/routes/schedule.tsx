@@ -194,8 +194,10 @@ interface Lesson {
   amount_due?: number | null;
   eol_completed?: boolean | null;
   cancellation_reason?: string | null;
+  notes?: string | null;
 
   pupil: Pupil | null;
+
 }
 
 // NOTE: External calendar events, personal/block time, tasks, and public
@@ -445,8 +447,9 @@ function SchedulePage() {
       const { data, error } = await supabase
         .from("lessons")
         .select(
-          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, pupil:pupils!inner(id, name, first_name, last_name, calendar_colour, prepaid_hours, status, deleted_at)",
+          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, notes, pupil:pupils!inner(id, name, first_name, last_name, calendar_colour, prepaid_hours, status, deleted_at)",
         )
+
         .is("deleted_at", null)
         .eq("pupil.status", "active")
         .is("pupil.deleted_at", null)
