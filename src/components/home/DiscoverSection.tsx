@@ -350,7 +350,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             animation: liveActive ? "livePulse 2s ease-in-out infinite" : "none",
           }}
         >
-          <div style={strip("#D6E3F2")}>
+          <div style={strip("#8BB8E8")}>
             {liveActive ? (
               <span style={stripPill(RED)}>
                 <span className="dsm-live-dot-pulse" style={{ display: "inline-flex" }}>
@@ -460,7 +460,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         onClick={() => navigate({ to: "/news" as never })}
         style={{ ...tileShell, marginBottom: 16 }}
       >
-        <div style={strip("#DDE0E6")}>
+        <div style={strip("#8A94A3")}>
           <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
             <span style={stripPill(NAVY)}>DVSA</span>
             <span style={stripPill(NAVY)}>DIA</span>
