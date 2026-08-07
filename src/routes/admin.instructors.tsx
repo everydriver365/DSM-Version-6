@@ -511,6 +511,206 @@ function AdminInstructorsPage() {
           </div>
         </BottomSheet>
       )}
+      {/* DETAIL SHEET */}
+      {selectedInstructor && (
+        <div
+          className="fixed inset-0 z-50"
+          style={{ backgroundColor: "#F6F8FB", overflowY: "auto" }}
+        >
+          {/* Header */}
+          <div
+            className="flex items-center gap-3 px-3 py-3 sticky top-0 z-10"
+            style={{ backgroundColor: NAVY }}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedInstructor(null);
+                setInstructorStats(null);
+              }}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+                display: "flex",
+              }}
+              aria-label="Back"
+            >
+              <IconChevronLeft size={22} color="#fff" />
+            </button>
+            <div style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>Instructor Record</div>
+          </div>
+
+          {/* Profile card */}
+          <div
+            className="mx-4 mt-4 rounded-2xl p-4"
+            style={{ backgroundColor: "#fff", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+          >
+            {/* Avatar + name */}
+            <div className="flex items-center gap-3 mb-4">
+              <div
+                className="flex items-center justify-center rounded-full shrink-0 overflow-hidden"
+                style={{
+                  width: 64,
+                  height: 64,
+                  backgroundColor: BLUE,
+                  color: "#fff",
+                  fontSize: 20,
+                  fontWeight: 600,
+                }}
+              >
+                {selectedInstructor.profile_image_url ? (
+                  <img
+                    src={selectedInstructor.profile_image_url}
+                    alt={selectedInstructor.name ?? ""}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                ) : (
+                  <span>
+                    {(selectedInstructor.name ?? "X")
+                      .split(" ")
+                      .map((n: string) => n[0])
+                      .join("")
+                      .slice(0, 2)
+                      .toUpperCase()}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div
+                  style={{ fontSize: 18, fontWeight: 700, color: NAVY }}
+                  className="truncate"
+                >
+                  {selectedInstructor.name ?? "Unknown"}
+                </div>
+                <div style={{ fontSize: 13, color: MUTED }}>
+                  {selectedInstructor.adi_grade ? `Grade ${selectedInstructor.adi_grade} ADI` : "ADI"}
+                </div>
+              </div>
+            </div>
+
+            {/* Details grid */}
+            {[
+              { label: "Phone", value: selectedInstructor.phone ?? "Not set", icon: IconPhone },
+              { label: "Home postcode", value: selectedInstructor.home_postcode ?? "Not set", icon: IconMapPin },
+              { label: "Hourly rate", value: selectedInstructor.hourly_rate ? `£${selectedInstructor.hourly_rate}/hr` : "Not set", icon: IconCurrencyPound },
+              { label: "ADI licence", value: selectedInstructor.adi_licence_number ?? "Not set", icon: IconId },
+              { label: "Joined", value: instructorStats?.joinedDate ?? "—", icon: IconCalendar },
+            ].map(({ label, value, icon: Icon }) => (
+              <div
+                key={label}
+                className="flex items-center gap-3"
+                style={{ padding: "12px 0", borderBottom: `0.5px solid ${BORDER}` }}
+              >
+                <div
+                  className="flex items-center justify-center rounded-full shrink-0"
+                  style={{ width: 32, height: 32, backgroundColor: "#E6F1FB" }}
+                >
+                  <Icon size={16} color={BLUE} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div style={{ fontSize: 11, color: MUTED, fontWeight: 600 }}>{label}</div>
+                  <div style={{ fontSize: 14, color: NAVY, fontWeight: 600 }} className="truncate">
+                    {value}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Stats card */}
+          <div
+            className="mx-4 mt-4 rounded-2xl p-4"
+            style={{ backgroundColor: "#fff", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+          >
+            <div style={{ fontSize: 14, fontWeight: 700, color: NAVY, marginBottom: 12 }}>
+              Activity
+            </div>
+
+            {loadingStats ? (
+              <div style={{ textAlign: "center", padding: 24, color: MUTED, fontSize: 13 }}>
+                Loading...
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: "Pupils", value: instructorStats?.pupilCount ?? 0, color: "#1877D6", bg: "#E6F1FB" },
+                  { label: "Lessons", value: instructorStats?.lessonCount ?? 0, color: "#7C3AED", bg: "#EFE7FB" },
+                  { label: "Total revenue", value: `£${(instructorStats?.totalEarnings ?? 0).toFixed(2)}`, color: "#15803D", bg: "#DCFCE7" },
+                  { label: "ADI grade", value: selectedInstructor.adi_grade ?? "—", color: "#CC2229", bg: "#FCE9E9" },
+                ].map(({ label, value, color, bg }) => (
+                  <div
+                    key={label}
+                    className="rounded-xl p-3"
+                    style={{ backgroundColor: bg }}
+                  >
+                    <div style={{ fontSize: 11, color, fontWeight: 600, marginBottom: 4 }}>
+                      {label}
+                    </div>
+                    <div style={{ fontSize: 18, color, fontWeight: 700 }}>{value}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Actions */}
+          <div className="mx-4 mt-4 mb-6 flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setEditInstructor(selectedInstructor);
+                setSelectedInstructor(null);
+              }}
+              style={{
+                width: "100%",
+                padding: 14,
+                background: "#1877D6",
+                color: "#fff",
+                border: "none",
+                borderRadius: 10,
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+              }}
+            >
+              <IconPencil size={18} color="#fff" /> Edit details
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setConfirmDelete(selectedInstructor);
+                setSelectedInstructor(null);
+              }}
+              style={{
+                width: "100%",
+                padding: 14,
+                background: "#FCE9E9",
+                color: "#CC2229",
+                border: "none",
+                borderRadius: 10,
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+              }}
+            >
+              <IconTrash size={18} color="#CC2229" /> Remove instructor
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
