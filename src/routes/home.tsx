@@ -6067,7 +6067,7 @@ function HomePage() {
                   )}
 
                   {/* Timeline container */}
-                  <div style={{ position: 'relative', padding: '12px 12px 4px' }}>
+                  <div style={{ position: 'relative', padding: '12px 0 4px' }}>
                     {rows.map((r, idx) => {
                     if (r.kind === 'gap') {
                       const gs = r.start;
