@@ -629,6 +629,15 @@ function ShowcasePage() {
                 autoPlay
                 controls
                 playsInline
+                onCanPlay={(e) => {
+                  const v = e.currentTarget;
+                  // Attempt autoplay with audio
+                  v.play().catch(() => {
+                    // Browser blocked autoplay with audio
+                    // — user must tap play manually
+                    // Do nothing, controls are visible
+                  });
+                }}
                 style={{
                   width: "100%",
                   maxHeight: 260,
