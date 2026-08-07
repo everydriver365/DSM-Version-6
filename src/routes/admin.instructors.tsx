@@ -50,6 +50,7 @@ function AdminInstructorsPage() {
   const [editRate, setEditRate] = useState("");
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<any>(null);
+  const [showArchive, setShowArchive] = useState(false);
 
   async function fetchInstructors() {
     const BASE =
