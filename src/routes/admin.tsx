@@ -989,12 +989,21 @@ function AdminHub() {
   const [instructorCount, setInstructorCount] = useState<number>(0);
 
   useEffect(() => {
-    supabase
-      .from("instructors")
-      .select("id", { count: "exact", head: true })
-      .is("deleted_at", null)
-      .then(({ count }) => setInstructorCount(count ?? 0));
+    (async () => {
+      let { count, error } = await supabase
+        .from("instructors")
+        .select("id", { count: "exact", head: true })
+        .is("deleted_at", null);
+      if (error && (error as any).code === "42703") {
+        const retry = await supabase
+          .from("instructors")
+          .select("id", { count: "exact", head: true });
+        count = retry.count;
+      }
+      setInstructorCount(count ?? 0);
+    })();
   }, []);
+
 
 
 
