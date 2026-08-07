@@ -2236,8 +2236,9 @@ function EntryRow({
     const typeRaw = (l.lesson_type ?? "").trim();
     const showType = typeRaw && typeRaw.toLowerCase() !== "standard";
     const label = showType ? `${name} · ${typeRaw}` : name;
-    const isTestDay = (l.notes ?? '')
-      .startsWith('Test day:');
+    const isTestDay = !!(l.notes ?? '')
+      .trim()
+      .match(/^Test day:/i);
 
     const bg = isTestDay
       ? '#FF8C00'
