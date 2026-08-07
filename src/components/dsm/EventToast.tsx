@@ -30,36 +30,23 @@ const EVENT_NAME = "dsm-event-toast";
 const recent = new Map<string, number>();
 const DEDUPE_MS = 8000;
 
-function threadKeyFor(url: string): string | null {
-  const m = url.match(/^\/messages\/(?:instructor\/)?([^/?#]+)/);
-  return m ? `msgthread:${m[1]}` : null;
-}
 
 /** Returns true when this payload was already shown very recently. */
 function isDuplicate(payload: LiveEventPayload): boolean {
   const now = Date.now();
   for (const [k, t] of recent) if (now - t > DEDUPE_MS) recent.delete(k);
 
+  // Only collapse the *same* message arriving via two channels. Distinct
+  // messages — even in the same thread, seconds apart — all get a banner.
   const keys: string[] = [];
   if (payload.dedupeKey) keys.push(payload.dedupeKey);
-  if (payload.kind === "message") {
-    const tk = threadKeyFor(payload.url);
-    // A message that arrives both as a chat row and as a notification row
-    // collapses onto the same thread key.
-    keys.push(tk ?? "msgthread:any");
-    if (!tk) {
-      // Generic "/messages" notification: also matches any recent thread alert.
-      let seen = false;
-      for (const k of recent.keys()) if (k.startsWith("msgthread:")) seen = true;
-      if (seen) return true;
-    }
-  }
   keys.push(`${payload.kind}|${payload.url}|${payload.text}`);
 
   const dup = keys.some((k) => recent.has(k));
   for (const k of keys) recent.set(k, now);
   return dup;
 }
+
 
 /**
  * Fire a live event. If the app is foregrounded, the EventToastController
