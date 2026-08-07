@@ -176,7 +176,7 @@ function BitesizePage() {
           category: uploadCategory,
           duration_mins: uploadDuration ? parseInt(uploadDuration) : null,
           is_published: uploadPublished,
-          created_by: userId,
+          instructor_id: userId,
         })
         .select()
         .single();
