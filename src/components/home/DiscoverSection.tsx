@@ -82,8 +82,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     (async () => {
       try {
         const { count, error } = await supabase
-          .from("live_sessions" as never)
+          .from("dsm_live_sessions" as never)
           .select("id", { count: "exact", head: true })
+          .is("deleted_at", null)
           .gte("session_date", new Date().toISOString().split("T")[0]);
         if (!cancelled && !error && count != null) setLiveCount(count);
       } catch {
@@ -94,7 +95,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         const { count, error } = await supabase
           .from("learn_videos" as never)
           .select("id", { count: "exact", head: true })
-          .eq("is_published", true);
+          .not("url", "is", null);
         if (!cancelled && !error && count != null) setLearnCount(count);
       } catch {
         /* ignore */
@@ -115,11 +116,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         const { count, error } = await supabase
           .from("showcase_videos" as never)
           .select("id", { count: "exact", head: true })
+          .eq("is_published", true)
           .is("deleted_at", null);
         if (!cancelled && !error && count != null) setShowcaseCount(count);
       } catch {
         /* ignore */
       }
+
 
       try {
         const { count, error } = await supabase
