@@ -108,7 +108,7 @@ function NewsIndexPage() {
                 border: "none",
                 cursor: "pointer",
                 background: active ? "#1877D6" : "#F1F5F9",
-                color: active ? "#FFFFFF" : "#6B7686",
+                color: active ? "#FFFFFF" : "#5B6472",
               }}
             >
               {f.label}
