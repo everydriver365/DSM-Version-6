@@ -62,7 +62,7 @@ function AdminInstructorsPage() {
 
   async function fetchInstructors() {
     const BASE =
-      "id, name, phone, created_at, home_postcode, hourly_rate, adi_grade, website_published";
+      "id, name, phone, created_at, home_postcode, hourly_rate, adi_grade, adi_licence_number, website_published, profile_image_url";
     let { data, error } = await supabase
       .from("instructors")
       .select(`${BASE}, deleted_at`)
