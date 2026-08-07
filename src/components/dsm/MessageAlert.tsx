@@ -1,5 +1,4 @@
-import { useEffect, useRef } from "react";
-import { useRouterState } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { emitLiveEvent } from "./EventToast";
 
@@ -7,12 +6,9 @@ import { emitLiveEvent } from "./EventToast";
  * Listens for incoming pupil / instructor messages and routes them into the
  * single shared notification banner (EventToastController). This component
  * renders nothing — there is only ever one banner on screen.
+ * No alerts are suppressed: banners show even while viewing /messages.
  */
 export function MessageAlert({ userId }: { userId: string | null }) {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const pathRef = useRef(pathname);
-  pathRef.current = pathname;
-
   useEffect(() => {
     if (!userId) return;
 
@@ -23,9 +19,8 @@ export function MessageAlert({ userId }: { userId: string | null }) {
       url: string;
       avatarUrl?: string | null;
     }) => {
-      // Don't interrupt if already viewing messages.
-      if ((pathRef.current || "").startsWith("/messages")) return;
       emitLiveEvent({
+
         kind: "message",
         title: p.name,
         text: p.preview,
