@@ -176,24 +176,31 @@ function ShowcasePage() {
     loadVideos();
   }, [loadVideos]);
 
-  // Load like state + counts
+  // Load vote state + counts + comment counts
   useEffect(() => {
     if (videos.length === 0) return;
     const ids = videos.map((v) => v.id);
     (async () => {
       const { data } = await db
         .from("showcase_likes")
-        .select("video_id, user_id")
+        .select("video_id, instructor_id, vote_type")
         .in("video_id", ids);
-      const rows = (data as { video_id: string; user_id: string }[] | null) ?? [];
-      const counts: Record<string, number> = {};
-      const mine: string[] = [];
+      const rows =
+        (data as
+          | { video_id: string; instructor_id: string; vote_type: string }[]
+          | null) ?? [];
+      const counts: Record<string, { up: number; down: number }> = {};
+      const myVotes: Record<string, "up" | "down" | null> = {};
       rows.forEach((r) => {
-        counts[r.video_id] = (counts[r.video_id] ?? 0) + 1;
-        if (userId && r.user_id === userId) mine.push(r.video_id);
+        if (!counts[r.video_id]) counts[r.video_id] = { up: 0, down: 0 };
+        if (r.vote_type === "down") counts[r.video_id].down++;
+        else counts[r.video_id].up++;
+        if (userId && r.instructor_id === userId) {
+          myVotes[r.video_id] = r.vote_type === "down" ? "down" : "up";
+        }
       });
-      setLikeCounts(counts);
-      setLikedIds(mine);
+      setVoteCounts(counts);
+      setVotes(myVotes);
 
       const { data: cData } = await db
         .from("showcase_comments")
@@ -206,6 +213,28 @@ function ShowcasePage() {
       setCommentCounts(cCounts);
     })();
   }, [videos, userId]);
+
+  // Load comments for the open video
+  useEffect(() => {
+    if (!commentsOpen || !playing) return;
+    (async () => {
+      const { data } = await db
+        .from("showcase_comments")
+        .select(
+          "id, body, created_at, instructor:instructors!instructor_id(id, name)",
+        )
+        .eq("video_id", playing.id)
+        .is("deleted_at", null)
+        .order("created_at", { ascending: true });
+      setComments(
+        ((data as any[] | null) ?? []).map((c) => ({
+          ...c,
+          instructor: Array.isArray(c.instructor) ? c.instructor[0] : c.instructor,
+        })),
+      );
+    })();
+  }, [commentsOpen, playing]);
+
 
   const filtered =
     activeCategory === "All"
