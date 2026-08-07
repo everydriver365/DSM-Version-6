@@ -5955,7 +5955,7 @@ function HomePage() {
               return (
                 <div style={{ fontFamily: PF }}>
                   {/* Segmented control */}
-                  <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 3, background: '#EEF2F7', borderRadius: 999, margin: '16px 18px' }}>
+                  <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 3, background: '#EEF2F7', borderRadius: 999, margin: '16px 0' }}>
                     {(['today', 'tomorrow', 'next'] as const).map((t) => {
                       const active = tab === t;
                       const label = t === 'today' ? 'Today' : t === 'tomorrow' ? 'Tomorrow' : 'Next';
@@ -6022,7 +6022,7 @@ function HomePage() {
                         color: '#FFFFFF',
                         borderRadius: 12,
                         padding: '10px 14px',
-                        margin: '0 16px 12px',
+                        margin: '0 0 12px',
 
                         fontFamily: PF,
                       }}
@@ -6067,7 +6067,7 @@ function HomePage() {
                   )}
 
                   {/* Timeline container */}
-                  <div style={{ position: 'relative', padding: '12px 12px 4px' }}>
+                  <div style={{ position: 'relative', padding: '12px 0 4px' }}>
                     {rows.map((r, idx) => {
                     if (r.kind === 'gap') {
                       const gs = r.start;
