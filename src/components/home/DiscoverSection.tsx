@@ -202,7 +202,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       .order("created_at", { ascending: false })
       .limit(1)
       .single()
-      .then(({ data }) => setShowcaseHero(data?.thumbnail_url ?? null));
+      .then(({ data }) =>
+        setShowcaseHero(
+          (data as { thumbnail_url?: string | null } | null)?.thumbnail_url ?? null,
+        ),
+      );
 
     // Marketplace — featured/latest listing
     supabase
