@@ -5902,6 +5902,23 @@ function HomePage() {
                   <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
                   <span style={SECTION_TITLE_TEXT_STYLE}>Teaching schedule</span>
                 </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <button
+                    type="button"
+                    onClick={() => { setAddLessonPupilId(undefined); setAddLessonDate(tab === 'tomorrow' ? tomorrowISO : undefined); setAddLessonOpen(true); }}
+                    style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: '#1877D6', cursor: 'pointer', lineHeight: 1 }}
+                  >
+                    Add +
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: '/schedule' as never })}
+                    style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: '#1877D6', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, lineHeight: 1 }}
+                  >
+                    Full schedule
+                    <ArrowRight size={14} strokeWidth={2.2} />
+                  </button>
+                </div>
               </div>
 
 
@@ -6581,24 +6598,6 @@ function HomePage() {
                       );
 
                   })}
-                  </div>
-                  {/* Footer */}
-                  <div style={{ borderTop: '1px solid #E2E8F0', padding: '14px 18px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <button
-                      type="button"
-                      onClick={() => { setAddLessonPupilId(undefined); setAddLessonDate(tab === 'tomorrow' ? tomorrowISO : undefined); setAddLessonOpen(true); }}
-                      style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13.5, fontWeight: 600, color: '#1877D6', cursor: 'pointer', lineHeight: 1 }}
-                    >
-                      Add +
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => navigate({ to: '/schedule' as never })}
-                      style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13.5, fontWeight: 600, color: '#1877D6', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
-                    >
-                      Full schedule
-                      <ArrowRight size={14} strokeWidth={2.2} />
-                    </button>
                   </div>
                 </div>
               );
