@@ -5955,7 +5955,7 @@ function HomePage() {
               return (
                 <div style={{ fontFamily: PF }}>
                   {/* Segmented control */}
-                  <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 3, background: '#EEF2F7', borderRadius: 999, margin: '16px 18px' }}>
+                  <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 3, background: '#EEF2F7', borderRadius: 999, margin: '16px 0' }}>
                     {(['today', 'tomorrow', 'next'] as const).map((t) => {
                       const active = tab === t;
                       const label = t === 'today' ? 'Today' : t === 'tomorrow' ? 'Tomorrow' : 'Next';
