@@ -110,7 +110,7 @@ export function CancelLessonSheet({
     if (submitting) return;
     setSubmitting(true);
 
-    const isPrepaid = (paymentStatus ?? "").toLowerCase() === "prepaid";
+    const isPupilCancel = reason === "Pupil cancelled" || reason === "Pupil no-show";
     const lessonPatch: Record<string, unknown> = {
       status: "cancelled",
       cancellation_reason: reason,
@@ -120,6 +120,7 @@ export function CancelLessonSheet({
       cancelled_at: new Date().toISOString(),
       payment_status: feeAmount > 0 ? "unpaid" : "cancelled",
       amount_due: feeAmount > 0 ? feeAmount : 0,
+      ...(isPupilCancel ? { cancelled_by: "pupil" } : {}),
     };
 
     const handle = await cancelLessonWithUndo({
@@ -174,19 +175,23 @@ export function CancelLessonSheet({
         } as never);
         if (histErr) console.error("[cancel] history insert error", histErr);
 
-        const body = feeAmount > 0
-          ? `Cancellation fee of £${feeAmount.toFixed(2)} added for ${pupilName}`
-          : `${pupilName}'s lesson on ${when} was cancelled${waived ? " (charge waived)" : ""}`;
         const { error: notifErr } = await supabase.from("instructor_notifications").insert({
           instructor_id: instructorId,
-          title: feeAmount > 0 ? "Cancellation fee added" : "Lesson cancelled",
-          body,
-          type: "lesson",
+          title: isPupilCancel ? "Lesson cancelled by pupil" : feeAmount > 0 ? "Cancellation fee added" : "Lesson cancelled",
+          body: isPupilCancel
+            ? `${pupilName} — ${reason}`
+            : feeAmount > 0
+              ? `Cancellation fee of £${feeAmount.toFixed(2)} added for ${pupilName}`
+              : `${pupilName}'s lesson on ${when} was cancelled${waived ? " (charge waived)" : ""}`,
+          type: isPupilCancel ? "lesson_cancelled_by_pupil" : "lesson",
           read: false,
+          reference_type: "lesson",
+          reference_id: lessonId,
         });
         if (notifErr) console.error("[cancel] notification error", notifErr);
       },
     });
+
 
     if (!handle) {
       toast.error("Couldn't cancel lesson");
