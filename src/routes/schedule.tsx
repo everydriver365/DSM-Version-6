@@ -194,8 +194,10 @@ interface Lesson {
   amount_due?: number | null;
   eol_completed?: boolean | null;
   cancellation_reason?: string | null;
+  notes?: string | null;
 
   pupil: Pupil | null;
+
 }
 
 // NOTE: External calendar events, personal/block time, tasks, and public
@@ -445,8 +447,9 @@ function SchedulePage() {
       const { data, error } = await supabase
         .from("lessons")
         .select(
-          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, pupil:pupils!inner(id, name, first_name, last_name, calendar_colour, prepaid_hours, status, deleted_at)",
+          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, notes, pupil:pupils!inner(id, name, first_name, last_name, calendar_colour, prepaid_hours, status, deleted_at)",
         )
+
         .is("deleted_at", null)
         .eq("pupil.status", "active")
         .is("pupil.deleted_at", null)
@@ -2233,8 +2236,119 @@ function EntryRow({
     const typeRaw = (l.lesson_type ?? "").trim();
     const showType = typeRaw && typeRaw.toLowerCase() !== "standard";
     const label = showType ? `${name} · ${typeRaw}` : name;
-    const bg = pupilColour(l.pupil_id ?? null, l.pupil?.calendar_colour ?? null, name);
-    const cancelled = l.status === "cancelled";
+    const isTestDay = (l.notes ?? '')
+      .startsWith('Test day:');
+
+    const bg = isTestDay
+      ? '#FF8C00'
+      : pupilColour(l.pupil_id ?? null, l.pupil?.calendar_colour ?? null, name);
+    const cancelled = l.status === 'cancelled';
+
+    if (isTestDay) {
+      // Extract test time and location from notes
+      // Notes format: "Test day: Name — Test at HH:MM @ Location"
+      const noteBody = (l.notes ?? '')
+        .replace(/^Test day:\s*/, '');
+      const testAtMatch = noteBody.match(
+        /Test at (\d{2}:\d{2})/);
+      const locationMatch = noteBody.match(
+        /@ (.+)$/);
+      const testTime = testAtMatch?.[1] ?? null;
+      const location = locationMatch?.[1] ?? null;
+
+      return (
+        <button
+          type="button"
+          onClick={() => onLessonTap(l.id)}
+          style={{
+            ...rowBase('#FF8C00', cancelled),
+            background: '#FFF3E0',
+            borderLeft: '3px solid #FF8C00',
+            borderRadius: 8,
+            padding: '10px 12px',
+            width: '100%',
+            textAlign: 'left',
+            cursor: 'pointer',
+            border: 'none',
+            borderLeftWidth: 3,
+            borderLeftStyle: 'solid',
+            borderLeftColor: '#FF8C00',
+          }}
+        >
+          {/* Header row */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            marginBottom: 4,
+          }}>
+            <span style={{ fontSize: 14 }}>🎯</span>
+            <span style={{
+              fontSize: 13, fontWeight: 700,
+              color: '#7C3300',
+              fontFamily: 'Poppins, sans-serif',
+            }}>
+              Test Day — {name}
+            </span>
+          </div>
+          {/* Time row */}
+          <div style={{
+            fontSize: 11, color: '#92400E',
+            fontFamily: 'Poppins, sans-serif',
+            marginBottom: testTime || location ? 3 : 0,
+          }}>
+            {fmtTime(entry.start)} – {fmtTime(entry.end)}
+          </div>
+          {/* Test details */}
+          {(testTime || location) && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              marginTop: 4,
+              flexWrap: 'wrap',
+            }}>
+              {testTime && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 3,
+                  background: '#FF8C00',
+                  borderRadius: 20,
+                  padding: '2px 8px',
+                }}>
+                  <span style={{
+                    fontSize: 10, fontWeight: 700,
+                    color: '#fff',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    🕐 Test at {testTime}
+                  </span>
+                </div>
+              )}
+              {location && location !== 'test centre' && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 3,
+                  background: 'rgba(255,140,0,0.15)',
+                  borderRadius: 20,
+                  padding: '2px 8px',
+                }}>
+                  <span style={{
+                    fontSize: 10, fontWeight: 600,
+                    color: '#7C3300',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    📍 {location}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+        </button>
+      );
+    }
 
     return (
       <button
@@ -2252,8 +2366,8 @@ function EntryRow({
           </div>
         ) : null}
       </button>
-
     );
+
   }
   if (entry.kind === "block") {
     const c = getBlockColour(entry.title);
