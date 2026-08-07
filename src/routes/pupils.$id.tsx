@@ -995,7 +995,7 @@ function PupilDetailPage() {
   const [allCentres, setAllCentres] = useState<{ id: string; name: string; town: string | null }[]>([]);
   const [centrePickerOpen, setCentrePickerOpen] = useState(false);
   const [centreSearch, setCentreSearch] = useState("");
-  const photoRef = useRef<HTMLInputElement>(null);
+  
 
   useEffect(() => {
     let cancelled = false;
