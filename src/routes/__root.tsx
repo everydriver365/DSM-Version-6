@@ -757,6 +757,8 @@ function RootComponent() {
       <CommandPalette />
       <GlobalMenu isAdmin={isAdmin} />
       <EventToastController />
+      <MessageAlert userId={userId} />
+
       <PushPermissionSheet userId={userId} />
       <Toaster />
       {showFloatingMenu && (
