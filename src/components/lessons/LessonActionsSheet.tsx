@@ -1307,30 +1307,33 @@ export function LessonActionsSheet({
         {/* what3words */}
         <div style={{ marginTop: 14 }}>
           <div style={sectionLabel}>what3words</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ color: "#E11F26", fontWeight: 700, fontFamily: "Inter, sans-serif", fontSize: 15 }}>
-              ///
-            </span>
-            {[0, 1, 2].map((i) => (
-              <Fragment key={i}>
-                {i > 0 && <span style={{ color: NAVY, fontWeight: 700 }}>.</span>}
-                <input
-                  value={w3w[i]}
-                  onChange={(e) => {
-                    const next = [...w3w] as [string, string, string];
-                    next[i] = e.target.value.replace(/[^a-zA-Z\u00C0-\u024F-]/g, "");
-                    setW3w(next);
-                    setW3wState("idle");
-                  }}
-                  onBlur={verifyAndSaveW3w}
-                  placeholder={`word${i + 1}`}
-                  style={{ ...fieldInput, textAlign: "center", padding: "9px 6px" }}
-                />
-              </Fragment>
-            ))}
+          <div style={{ background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 6px rgba(11,31,58,0.04)", padding: "9px 12px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ color: "#E11F26", fontWeight: 700, fontFamily: "Inter, sans-serif", fontSize: 15 }}>
+                ///
+              </span>
+              {[0, 1, 2].map((i) => (
+                <Fragment key={i}>
+                  {i > 0 && <span style={{ color: NAVY, fontWeight: 700 }}>.</span>}
+                  <input
+                    value={w3w[i]}
+                    onChange={(e) => {
+                      const next = [...w3w] as [string, string, string];
+                      next[i] = e.target.value.replace(/[^a-zA-Z\u00C0-\u024F-]/g, "");
+                      setW3w(next);
+                      setW3wState("idle");
+                    }}
+                    onBlur={verifyAndSaveW3w}
+                    placeholder={`word${i + 1}`}
+                    style={{ ...fieldInput, textAlign: "center", padding: "9px 6px" }}
+                  />
+                </Fragment>
+              ))}
+            </div>
+            {statusLine(w3wState, "Verified via what3words", "Not a recognised what3words address")}
           </div>
-          {statusLine(w3wState, "Verified via what3words", "Not a recognised what3words address")}
         </div>
+
 
         {/* Account — driven by lessons.payment_status + lessons.amount_due */}
         {(() => {
