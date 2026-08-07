@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
+import { VideoPlayer } from "@/components/dsm/VideoPlayer";
+
 import {
   IconChevronLeft,
   IconBook,
