@@ -30,10 +30,6 @@ const EVENT_NAME = "dsm-event-toast";
 const recent = new Map<string, number>();
 const DEDUPE_MS = 8000;
 
-function threadKeyFor(url: string): string | null {
-  const m = url.match(/^\/messages\/(?:instructor\/)?([^/?#]+)/);
-  return m ? `msgthread:${m[1]}` : null;
-}
 
 /** Returns true when this payload was already shown very recently. */
 function isDuplicate(payload: LiveEventPayload): boolean {
