@@ -16,6 +16,7 @@ import {
   IconUpload,
   IconX,
   IconSend,
+  IconPlayerSkipForward,
 } from "@tabler/icons-react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -53,6 +54,7 @@ interface ShowcaseVideo {
   duration_secs: number | null;
   is_published: boolean;
   views: number;
+  caption?: string | null;
   likes_count?: number | null;
   created_by: string | null;
   created_at: string;
@@ -609,6 +611,247 @@ function ShowcasePage() {
             gap: 12,
           }}
         >
+          {playing && (
+            <div
+              style={{
+                gridColumn: "1 / -1",
+                background: "#000",
+                borderRadius: 12,
+                overflow: "hidden",
+                marginBottom: 12,
+                position: "relative",
+              }}
+            >
+              <video
+                key={playing.id}
+                src={playing.video_url}
+                poster={playing.thumbnail_url ?? undefined}
+                autoPlay
+                controls
+                playsInline
+                style={{
+                  width: "100%",
+                  maxHeight: 260,
+                  display: "block",
+                  objectFit: "contain",
+                  background: "#000",
+                }}
+                onEnded={() => {
+                  const currentIndex = videos.findIndex((v) => v.id === playing.id);
+                  const next = videos[currentIndex + 1];
+                  if (next) {
+                    setPlaying(next);
+                    incrementView(next);
+                  } else {
+                    setPlaying(null);
+                  }
+                }}
+              />
+
+              <div style={{ background: "#111", padding: "10px 12px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: 6,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: "#fff",
+                      flex: 1,
+                      minWidth: 0,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      ...POPPINS,
+                    }}
+                  >
+                    {playing.caption ?? playing.title}
+                  </div>
+                  <button
+                    type="button"
+                    aria-label="Close player"
+                    onClick={() => setPlaying(null)}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 4,
+                      flexShrink: 0,
+                      display: "flex",
+                    }}
+                  >
+                    <IconX size={16} color="rgba(255,255,255,0.6)" />
+                  </button>
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  <button
+                    type="button"
+                    aria-label="Upvote"
+                    onClick={() => toggleVote(playing.id, "up")}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 5,
+                    }}
+                  >
+                    <IconThumbUp
+                      size={16}
+                      stroke={1.5}
+                      color={
+                        votes[playing.id] === "up" ? BLUE : "rgba(255,255,255,0.5)"
+                      }
+                    />
+                    <span style={{ fontSize: 12, color: "#fff", ...POPPINS }}>
+                      {voteCounts[playing.id]?.up ?? 0}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    aria-label="Downvote"
+                    onClick={() => toggleVote(playing.id, "down")}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 5,
+                    }}
+                  >
+                    <IconThumbDown
+                      size={16}
+                      stroke={1.5}
+                      color={
+                        votes[playing.id] === "down" ? RED : "rgba(255,255,255,0.5)"
+                      }
+                    />
+                    <span style={{ fontSize: 12, color: "#fff", ...POPPINS }}>
+                      {voteCounts[playing.id]?.down ?? 0}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    aria-label="Comments"
+                    onClick={() => setCommentsOpen(true)}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 5,
+                    }}
+                  >
+                    <IconMessageCircle
+                      size={16}
+                      stroke={1.5}
+                      color="rgba(255,255,255,0.5)"
+                    />
+                    <span style={{ fontSize: 12, color: "#fff", ...POPPINS }}>
+                      {commentCounts[playing.id] ?? 0}
+                    </span>
+                  </button>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 5,
+                      marginLeft: "auto",
+                    }}
+                  >
+                    <IconEye size={14} stroke={1.5} color="rgba(255,255,255,0.4)" />
+                    <span
+                      style={{
+                        fontSize: 11,
+                        color: "rgba(255,255,255,0.4)",
+                        ...POPPINS,
+                      }}
+                    >
+                      {playing.views ?? 0}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    aria-label="Report video"
+                    onClick={() => {
+                      setReportingId(playing.id);
+                      setReportOpen(true);
+                    }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 0,
+                      display: "flex",
+                    }}
+                  >
+                    <IconFlag size={14} stroke={1.5} color="rgba(255,255,255,0.4)" />
+                  </button>
+                </div>
+
+                {(() => {
+                  const currentIndex = videos.findIndex((v) => v.id === playing.id);
+                  const next = videos[currentIndex + 1];
+                  if (!next) return null;
+                  return (
+                    <div
+                      onClick={() => {
+                        setPlaying(next);
+                        incrementView(next);
+                      }}
+                      style={{
+                        marginTop: 8,
+                        padding: "6px 10px",
+                        background: "rgba(255,255,255,0.08)",
+                        borderRadius: 8,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        cursor: "pointer",
+                      }}
+                    >
+                      <IconPlayerSkipForward
+                        size={14}
+                        stroke={1.5}
+                        color="rgba(255,255,255,0.6)"
+                      />
+                      <span
+                        style={{
+                          fontSize: 11,
+                          color: "rgba(255,255,255,0.6)",
+                          flex: 1,
+                          minWidth: 0,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          ...POPPINS,
+                        }}
+                      >
+                        Next: {next.caption ?? "Next video"}
+                      </span>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
+
           {filtered.map((video) => {
             const upvoted = votes[video.id] === "up";
             const downvoted = votes[video.id] === "down";
@@ -829,232 +1072,8 @@ function ShowcasePage() {
       )}
 
       {/* PLAYER */}
-      {playing && (
-        <div
-          style={{ position: "fixed", inset: 0, zIndex: 200, background: "#000" }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              zIndex: 2,
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
-              gap: 12,
-              padding: "8px 12px",
-              paddingTop: "calc(8px + env(safe-area-inset-top, 0px))",
-              background: "linear-gradient(rgba(0,0,0,0.6), transparent)",
-            }}
-          >
-            <div
-              style={{
-                flex: 1,
-                fontSize: 14,
-                fontWeight: 600,
-                color: "#fff",
-                ...POPPINS,
-              }}
-            >
-              {playing.title}
-            </div>
-            <button
-              type="button"
-              aria-label="Close"
-              onClick={() => setPlaying(null)}
-              style={{
-                background: "none",
-                border: "none",
-                padding: 0,
-                display: "flex",
-                color: "#fff",
-                cursor: "pointer",
-              }}
-            >
-              <IconX size={20} />
-            </button>
-          </div>
-
-          <video
-            controls
-            autoPlay
-            playsInline
-            src={playing.video_url}
-            style={{ width: "100%", height: "100%", objectFit: "contain" }}
-          />
-
-          <div
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              padding: 16,
-              background: "linear-gradient(transparent, rgba(0,0,0,0.8))",
-            }}
-          >
-            <div
-              style={{ fontSize: 16, fontWeight: 700, color: "#fff", ...POPPINS }}
-            >
-              {playing.title}
-            </div>
-            {playing.description && (
-              <div
-                style={{
-                  fontSize: 13,
-                  color: "rgba(255,255,255,0.7)",
-                  marginTop: 4,
-                  ...POPPINS,
-                }}
-              >
-                {playing.description}
-              </div>
-            )}
-          </div>
 
 
-          {/* RIGHT SIDE ACTIONS */}
-          <div
-            style={{
-              position: "absolute",
-              right: 12,
-              bottom: 120,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 16,
-              zIndex: 3,
-            }}
-          >
-            {/* Upvote */}
-            <div style={{ textAlign: "center" }}>
-              <button
-                type="button"
-                aria-label="Upvote"
-                onClick={() => toggleVote(playing.id, "up")}
-                style={{
-                  width: 46,
-                  height: 46,
-                  borderRadius: "50%",
-                  border: "none",
-                  background:
-                    votes[playing.id] === "up" ? BLUE : "rgba(255,255,255,0.15)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <IconThumbUp size={22} color="#fff" />
-              </button>
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: "#fff",
-                  marginTop: 4,
-                  ...POPPINS,
-                }}
-              >
-                {voteCounts[playing.id]?.up ?? 0}
-              </div>
-            </div>
-
-            {/* Downvote */}
-            <div style={{ textAlign: "center" }}>
-              <button
-                type="button"
-                aria-label="Downvote"
-                onClick={() => toggleVote(playing.id, "down")}
-                style={{
-                  width: 46,
-                  height: 46,
-                  borderRadius: "50%",
-                  border: "none",
-                  background:
-                    votes[playing.id] === "down" ? RED : "rgba(255,255,255,0.15)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <IconThumbDown size={22} color="#fff" />
-              </button>
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: "#fff",
-                  marginTop: 4,
-                  ...POPPINS,
-                }}
-              >
-                {voteCounts[playing.id]?.down ?? 0}
-              </div>
-            </div>
-
-            {/* Comments */}
-            <div style={{ textAlign: "center" }}>
-              <button
-                type="button"
-                aria-label="Comments"
-                onClick={() => setCommentsOpen(true)}
-                style={{
-                  width: 46,
-                  height: 46,
-                  borderRadius: "50%",
-                  border: "none",
-                  background: "rgba(255,255,255,0.15)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <IconMessageCircle size={22} color="#fff" />
-              </button>
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: "#fff",
-                  marginTop: 4,
-                  ...POPPINS,
-                }}
-              >
-                {commentCounts[playing.id] ?? 0}
-              </div>
-            </div>
-
-            {/* More / report */}
-            <button
-              type="button"
-              aria-label="More"
-              onClick={() => {
-                setReportingId(playing.id);
-                setReportOpen(true);
-              }}
-              style={{
-                width: 46,
-                height: 46,
-                borderRadius: "50%",
-                border: "none",
-                background: "rgba(255,255,255,0.15)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-              }}
-            >
-              <IconDots size={22} color="#fff" />
-            </button>
-          </div>
-
-        </div>
-      )}
 
       {/* COMMENTS SHEET */}
       {commentsOpen && playing && (
