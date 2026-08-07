@@ -791,11 +791,9 @@ function SupplierListingSheet({
 }) {
   const upd = <K extends keyof NewListingDraft>(k: K, v: NewListingDraft[K]) =>
     setDraft({ ...draft, [k]: v });
-  const setImage = (i: number, v: string) => {
-    const next = [...draft.images] as [string, string, string, string];
-    next[i] = v;
-    setDraft({ ...draft, images: next });
-  };
+  const [imageUploading, setImageUploading] = useState(false);
+  const removeImage = (i: number) =>
+    setDraft({ ...draft, images: draft.images.filter((_, j) => j !== i) });
   return (
     <div
       style={{
