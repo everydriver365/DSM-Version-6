@@ -972,12 +972,7 @@ function AdminHub() {
   const status = useAdminGate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isChildRoute = pathname !== "/admin" && pathname !== "/admin/";
-  const chatRoomsRef = useRef<HTMLDivElement>(null);
   const flaggedRef = useRef<HTMLDivElement>(null);
-
-  const scrollToChatRooms = () => {
-    chatRoomsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
 
   const scrollToFlagged = () => {
     flaggedRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
