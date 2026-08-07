@@ -6022,7 +6022,7 @@ function HomePage() {
                         color: '#FFFFFF',
                         borderRadius: 12,
                         padding: '10px 14px',
-                        margin: '0 16px 12px',
+                        margin: '0 0 12px',
 
                         fontFamily: PF,
                       }}
