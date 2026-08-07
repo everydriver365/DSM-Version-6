@@ -5100,24 +5100,22 @@ function HomePage() {
                       </span>
                     </div>
 
-                    {/* Price badge */}
+                    {/* Status dot */}
                     <div style={{
                       position: 'absolute', top: 10, right: 10,
                       background: 'rgba(255,255,255,0.55)',
                       backdropFilter: 'blur(10px)',
                       WebkitBackdropFilter: 'blur(10px)',
                       border: '1px solid rgba(255,255,255,0.6)',
-                      borderRadius: 20, padding: '4px 10px',
+                      borderRadius: '50%',
+                      width: 18, height: 18,
                       boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                      display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
                       <span style={{
                         width: 7, height: 7, borderRadius: '50%',
                         background: isPaid ? '#15803D' : '#CC2229',
                       }} />
-                      <span style={{ fontSize: 13, fontWeight: 800, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
-                        {priceText}
-                      </span>
                     </div>
 
                     {/* ETA badge */}
@@ -5187,6 +5185,19 @@ function HomePage() {
                     {pupilFullName || 'Pupil'}
                   </div>
                 </div>
+
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 5,
+                  background: 'rgba(255,255,255,0.55)',
+                  color: '#0B1F3A',
+                  border: '1px solid rgba(255,255,255,0.6)',
+                  borderRadius: 20,
+                  padding: '4px 10px',
+                  fontSize: 12, fontWeight: 800, fontFamily: 'Poppins, sans-serif',
+                  flexShrink: 0, whiteSpace: 'nowrap',
+                }}>
+                  {priceText}
+                </span>
 
                 <span style={{
                   display: 'inline-flex', alignItems: 'center', gap: 5,
