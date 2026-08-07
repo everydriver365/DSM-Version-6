@@ -55,6 +55,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const [live, setLive] = useState<LiveItem[]>([]);
   const [liveActive, setLiveActive] = useState(false);
 
+  const [liveCount, setLiveCount] = useState<number | null>(null);
+  const [learnCount, setLearnCount] = useState<number | null>(null);
+  const [bitesizeCount, setBitesizeCount] = useState<number | null>(null);
   const [showcaseCount, setShowcaseCount] = useState<number | null>(null);
   const [listingCount, setListingCount] = useState<number | null>(null);
   const [newsCount, setNewsCount] = useState<number | null>(null);
@@ -78,18 +81,44 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     let cancelled = false;
     (async () => {
       try {
-        const { data, error } = await supabase
-          .from("showcase_videos" as never)
-          .select("views");
-        if (!cancelled && !error && Array.isArray(data)) {
-          const total = (data as { views?: number | null }[]).reduce(
-            (sum, r) => sum + (r.views ?? 0),
-            0,
-          );
-          setShowcaseCount(total);
-        }
+        const { count, error } = await supabase
+          .from("live_sessions" as never)
+          .select("id", { count: "exact", head: true })
+          .gte("session_date", new Date().toISOString().split("T")[0]);
+        if (!cancelled && !error && count != null) setLiveCount(count);
       } catch {
-        /* table may not exist */
+        /* ignore */
+      }
+
+      try {
+        const { count, error } = await supabase
+          .from("learn_videos" as never)
+          .select("id", { count: "exact", head: true })
+          .eq("is_published", true);
+        if (!cancelled && !error && count != null) setLearnCount(count);
+      } catch {
+        /* ignore */
+      }
+
+      try {
+        const { count, error } = await supabase
+          .from("bitesize_videos" as never)
+          .select("id", { count: "exact", head: true })
+          .eq("is_published", true)
+          .is("deleted_at", null);
+        if (!cancelled && !error && count != null) setBitesizeCount(count);
+      } catch {
+        /* ignore */
+      }
+
+      try {
+        const { count, error } = await supabase
+          .from("showcase_videos" as never)
+          .select("id", { count: "exact", head: true })
+          .is("deleted_at", null);
+        if (!cancelled && !error && count != null) setShowcaseCount(count);
+      } catch {
+        /* ignore */
       }
 
       try {
@@ -321,6 +350,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </span>
           <div style={chipLabel}>Live</div>
           <div style={chipSub}>Events</div>
+          {liveCount !== null && liveCount > 0 && (
+            <div style={{ marginTop: 3, fontSize: 8, fontWeight: 700, color: BLUE, fontFamily: "Poppins, sans-serif" }}>
+              {liveCount === 1 ? "1 session" : `${liveCount} sessions`}
+            </div>
+          )}
         </div>
 
         {/* DSM Learn */}
@@ -343,6 +377,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </span>
           <div style={chipLabel}>Learn</div>
           <div style={chipSub}>Videos</div>
+          {learnCount !== null && learnCount > 0 && (
+            <div style={{ marginTop: 3, fontSize: 8, fontWeight: 700, color: "#4F46E5", fontFamily: "Poppins, sans-serif" }}>
+              {learnCount} videos
+            </div>
+          )}
         </div>
 
         {/* Bitesize */}
@@ -365,6 +404,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </span>
           <div style={chipLabel}>Bitesize</div>
           <div style={chipSub}>5 min</div>
+          {bitesizeCount !== null && bitesizeCount > 0 && (
+            <div style={{ marginTop: 3, fontSize: 8, fontWeight: 700, color: "#7C3AED", fontFamily: "Poppins, sans-serif" }}>
+              {bitesizeCount} videos
+            </div>
+          )}
         </div>
 
         {/* Showcase */}
@@ -400,6 +444,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </span>
           <div style={chipLabel}>Showcase</div>
           <div style={chipSub}>Clips</div>
+          {showcaseCount !== null && showcaseCount > 0 && (
+            <div style={{ marginTop: 3, fontSize: 8, fontWeight: 700, color: RED, fontFamily: "Poppins, sans-serif" }}>
+              {showcaseCount} clips
+            </div>
+          )}
         </div>
       </div>
 
@@ -497,7 +546,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             >
               {featuredListing
                 ? `${featuredListing.category ?? "Services"} · ${featuredListing.price_display ?? "View listing"}`
-                : "Explore all listings →"}
+                : `${listingCount ?? 0} listings available`}
             </div>
             <button
               type="button"
@@ -574,10 +623,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               fontWeight: 700,
               color: BLUE,
               textTransform: "uppercase",
-              marginBottom: 3,
+              marginBottom: 1,
             }}
           >
             DVSA · DIA · More
+          </div>
+          <div style={{ fontSize: 10, color: "#9CA3AF", fontFamily: FONT, marginBottom: 3 }}>
+            {newsCount ?? 0} articles
           </div>
           <div
             style={{
