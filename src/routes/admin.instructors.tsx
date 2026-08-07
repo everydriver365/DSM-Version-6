@@ -244,7 +244,7 @@ function AdminInstructorsPage() {
               style={{ padding: "14px 16px", borderBottom: `0.5px solid ${BORDER}`, cursor: "pointer" }}
             >
               <div
-                className="flex items-center justify-center rounded-full shrink-0"
+                className="flex items-center justify-center rounded-full shrink-0 overflow-hidden"
                 style={{
                   width: 40,
                   height: 40,
@@ -254,7 +254,15 @@ function AdminInstructorsPage() {
                   fontWeight: 600,
                 }}
               >
-                {initials(inst.name)}
+                {inst.profile_image_url ? (
+                  <img
+                    src={inst.profile_image_url}
+                    alt={inst.name ?? ""}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                ) : (
+                  initials(inst.name)
+                )}
               </div>
 
               <div className="flex-1 min-w-0">
