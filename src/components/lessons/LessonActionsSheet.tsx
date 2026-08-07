@@ -1004,7 +1004,9 @@ export function LessonActionsSheet({
               sendSms(`Hi ${firstName}, on the way!`);
             }}
           >
-            <IconNavigation size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#E6F1FB")}>
+              <IconNavigation size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Navigate</span>
           </button>
           <button
@@ -1015,7 +1017,9 @@ export function LessonActionsSheet({
               setMessageOpen(true);
             }}
           >
-            <IconMessage size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#E6F1FB")}>
+              <IconMessage size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Message</span>
           </button>
           <button
@@ -1030,10 +1034,13 @@ export function LessonActionsSheet({
               window.location.href = `tel:${phone}`;
             }}
           >
-            <IconPhone size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#E6F1FB")}>
+              <IconPhone size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Call</span>
           </button>
         </div>
+
 
         {/* Row 2 — Track / Running late / I'm here */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 8 }}>
