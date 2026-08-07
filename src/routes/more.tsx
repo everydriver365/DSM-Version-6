@@ -263,9 +263,9 @@ function MorePage() {
               </div>
               <div
                 style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: 8,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 7,
                   margin: '0 16px',
                 }}
               >
@@ -275,34 +275,38 @@ function MorePage() {
                     onClick={() => go(tool.route)}
                     style={{
                       background: 'white',
-                      borderRadius: 14,
-                      padding: '14px 10px',
+                      borderRadius: 13,
+                      padding: '10px 13px',
                       display: 'flex',
-                      flexDirection: 'column',
                       alignItems: 'center',
+                      gap: 11,
                       boxShadow: '0 2px 8px rgba(15,32,68,0.04)',
                       border: '0.5px solid #F0F0F0',
                       cursor: 'pointer',
-                      textAlign: 'center',
+                      textAlign: 'left',
+                      width: '100%',
                       fontFamily: 'Inter, sans-serif',
                     }}
                   >
                     <div
                       style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 12,
+                        width: 34,
+                        height: 34,
+                        borderRadius: 9,
                         background: tool.colour + '15',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        marginBottom: 6,
+                        flexShrink: 0,
                       }}
                     >
-                      <tool.icon size={20} color={tool.colour} />
+                      <tool.icon size={18} color={tool.colour} />
                     </div>
-                    <div style={{ fontWeight: 600, fontSize: 11, color: '#0F2044', lineHeight: 1.2 }}>{tool.label}</div>
-                    <div style={{ fontSize: 10, color: '#9CA3AF', marginTop: 1, lineHeight: 1.2 }}>{tool.sub}</div>
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: 12.5, color: '#0F2044' }}>{tool.label}</div>
+                      <div style={{ fontSize: 10.5, color: '#9CA3AF', marginTop: 1 }}>{tool.sub}</div>
+                    </div>
+                    <ChevronRight size={16} color="#C7CEDA" style={{ marginLeft: 'auto', flexShrink: 0 }} />
                   </button>
                 ))}
               </div>
