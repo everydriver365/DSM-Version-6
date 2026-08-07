@@ -243,10 +243,12 @@ export function EventToastController() {
         }}
         style={{
           pointerEvents: "auto",
-          background: NAVY,
+          background: "#FFFFFF",
           borderRadius: 14,
           overflow: "hidden",
-          boxShadow: "0 10px 30px rgba(11,31,58,0.35)",
+          boxShadow: "0 12px 40px rgba(11,31,58,0.22)",
+          border: "1px solid #E8ECF2",
+          borderTop: `3px solid ${color}`,
           opacity: shown ? 1 : 0,
           transform: shown ? `translateY(${dragY}px)` : "translateY(-20px)",
           transition:
@@ -261,7 +263,8 @@ export function EventToastController() {
             display: "flex",
             alignItems: "center",
             gap: 6,
-            borderBottom: "0.5px solid rgba(255,255,255,0.1)",
+            background: "#F8FAFC",
+            borderBottom: "0.5px solid #E8ECF2",
           }}
         >
           <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0 }} />
@@ -271,7 +274,7 @@ export function EventToastController() {
               fontWeight: 600,
               textTransform: "uppercase",
               letterSpacing: "0.06em",
-              color: "rgba(255,255,255,0.5)",
+              color: "rgba(11,31,58,0.55)",
               flex: 1,
             }}
           >
@@ -292,7 +295,7 @@ export function EventToastController() {
               cursor: "pointer",
             }}
           >
-            <X size={14} color="rgba(255,255,255,0.4)" />
+            <X size={14} color="rgba(11,31,58,0.4)" />
           </button>
         </div>
 
@@ -318,9 +321,9 @@ export function EventToastController() {
                 height: 36,
                 borderRadius: "50%",
                 flexShrink: 0,
-                background: current.kind === "message" ? NAVY : color,
+                background: current.kind === "message" ? "#E6F1FB" : color,
                 border: current.kind === "message" ? `2px solid ${BLUE}` : "none",
-                color: "#FFFFFF",
+                color: current.kind === "message" ? BLUE : "#FFFFFF",
                 fontSize: 12,
                 fontWeight: 700,
                 display: "flex",
@@ -336,7 +339,7 @@ export function EventToastController() {
               style={{
                 fontSize: 13,
                 fontWeight: 700,
-                color: "#FFFFFF",
+                color: "#0B1F3A",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -347,7 +350,7 @@ export function EventToastController() {
             <div
               style={{
                 fontSize: 11,
-                color: "rgba(255,255,255,0.55)",
+                color: "rgba(11,31,58,0.55)",
                 lineHeight: 1.35,
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
@@ -368,8 +371,8 @@ export function EventToastController() {
             }}
             style={{
               flexShrink: 0,
-              background: "#E6F1FB",
-              color: BLUE,
+              background: BLUE,
+              color: "#FFFFFF",
               fontFamily: FONT,
               fontSize: 12,
               fontWeight: 600,
