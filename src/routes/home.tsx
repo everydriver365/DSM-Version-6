@@ -5406,14 +5406,6 @@ function HomePage() {
                     View route
                   </button>
 
-                  {driveData?.durationMinutes != null && (
-                    <>
-                      <span style={{ color: '#C7CDD6', fontSize: 12 }}>·</span>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: '#1877D6' }}>
-                        {driveData.durationMinutes} min
-                      </span>
-                    </>
-                  )}
 
                   {weatherData && (() => {
                     const raw = weatherData.icon || '';
