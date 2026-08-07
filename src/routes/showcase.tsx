@@ -125,6 +125,7 @@ function ShowcasePage() {
   // Upload form state
   const [uploadTitle, setUploadTitle] = useState("");
   const [uploadDescription, setUploadDescription] = useState("");
+  const [uploadTags, setUploadTags] = useState("");
   const [uploadCategory, setUploadCategory] = useState("Test passes");
   const [uploadPublished, setUploadPublished] = useState(true);
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -132,6 +133,7 @@ function ShowcasePage() {
   const [thumbPreview, setThumbPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
+
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
@@ -282,16 +284,23 @@ function ShowcasePage() {
       const { data, error } = await db
         .from("showcase_videos")
         .insert({
-          title: uploadTitle.trim(),
-          description: uploadDescription.trim() || null,
+          instructor_id: userId,
           video_url: videoUrl,
-          thumbnail_url: thumbnailUrl,
-          category: uploadCategory,
-          is_published: uploadPublished,
-          created_by: userId,
+          thumbnail_url: thumbnailUrl ?? null,
+          caption:
+            uploadTitle.trim() +
+            (uploadDescription.trim()
+              ? " — " + uploadDescription.trim()
+              : ""),
+          category: uploadCategory || null,
+          tags: uploadTags
+            ? uploadTags.split(" ").filter((t) => t.startsWith("#"))
+            : [],
+          views: 0,
         })
         .select()
         .single();
+
 
       if (error) throw error;
       if (data) setVideos((prev) => [data as ShowcaseVideo, ...prev]);
@@ -299,11 +308,13 @@ function ShowcasePage() {
       setUploadOpen(false);
       setUploadTitle("");
       setUploadDescription("");
+      setUploadTags("");
       setUploadPublished(true);
       setVideoFile(null);
       setThumbFile(null);
       setThumbPreview(null);
       toast.success("Clip uploaded!");
+
     } catch (err: any) {
       toast.error(err?.message ?? "Upload failed");
     } finally {
@@ -995,6 +1006,20 @@ function ShowcasePage() {
                 ))}
               </select>
             </div>
+
+            <div>
+              <label style={labelStyle} htmlFor="sc-tags">
+                Tags (optional)
+              </label>
+              <input
+                id="sc-tags"
+                value={uploadTags}
+                onChange={(e) => setUploadTags(e.target.value)}
+                placeholder="#testpass #dashcam #teaching"
+                style={inputStyle}
+              />
+            </div>
+
 
             <div>
               <span style={labelStyle}>Video file</span>
