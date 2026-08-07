@@ -55,6 +55,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const [live, setLive] = useState<LiveItem[]>([]);
   const [liveActive, setLiveActive] = useState(false);
 
+  const [liveCount, setLiveCount] = useState<number | null>(null);
+  const [learnCount, setLearnCount] = useState<number | null>(null);
+  const [bitesizeCount, setBitesizeCount] = useState<number | null>(null);
   const [showcaseCount, setShowcaseCount] = useState<number | null>(null);
   const [listingCount, setListingCount] = useState<number | null>(null);
   const [newsCount, setNewsCount] = useState<number | null>(null);
