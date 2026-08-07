@@ -87,6 +87,8 @@ function AdminInstructorsPage() {
       !search ||
       i.name?.toLowerCase().includes(search.toLowerCase()),
   );
+  const active = filtered.filter((i) => !i.deleted_at);
+  const archived = filtered.filter((i) => !!i.deleted_at);
 
   function openEdit(inst: any) {
     setMenuFor(null);
