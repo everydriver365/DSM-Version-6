@@ -342,192 +342,224 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       </style>
 
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 10,
-          marginBottom: 10,
-        }}
-      >
-        {/* TILE 1 — DSM Live */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => navigate({ to: "/dsm-live" as never })}
-          style={{
-            ...tileShell,
-            border: liveActive ? "2px solid #CC2229" : `0.5px solid ${HAIRLINE}`,
-            boxShadow: liveActive
-              ? "0 0 0 3px rgba(204,34,41,0.15), 0 4px 16px rgba(204,34,41,0.2)"
-              : "none",
-            animation: liveActive ? "livePulse 2s ease-in-out infinite" : "none",
-          }}
-        >
-          <div style={strip("#8BB8E8")}>
-            {liveActive ? (
-              <span style={stripPill(RED)}>
-                <span className="dsm-live-dot-pulse" style={{ display: "inline-flex" }}>
-                  <span
-                    style={{
-                      width: 4,
-                      height: 4,
-                      borderRadius: "50%",
-                      background: RED,
-                      display: "inline-block",
-                    }}
-                  />
-                </span>
-                Live
-              </span>
-            ) : (
-              <span style={stripPill(BLUE)}>Live</span>
-            )}
-            <IconRadio size={20} color={BLUE} stroke={1.8} style={{ opacity: 0.55 }} />
-          </div>
-          <div style={tileLabelWrap}>
-            <div style={bodyRow}>
-              <div style={{ minWidth: 0 }}>
-                <div style={tileTitle}>DSM Live</div>
-                <div style={tileSub}>Events &amp; webinars</div>
-              </div>
-              <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
-            </div>
-          </div>
-        </div>
-
-        {/* TILE 2 — Bitesize */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => navigate({ to: "/bitesize" as never })}
-          style={tileShell}
-        >
-          <div style={strip("#E5DDF7")}>
-            <span style={stripPill("#7C3AED")}>CPD</span>
-            <IconBook size={20} color="#7C3AED" stroke={1.8} style={{ opacity: 0.55 }} />
-          </div>
-          <div style={tileLabelWrap}>
-            <div style={bodyRow}>
-              <div style={{ minWidth: 0 }}>
-                <div style={tileTitle}>Bitesize</div>
-                <div style={tileSub}>Learn &amp; develop</div>
-              </div>
-              <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
-            </div>
-          </div>
-        </div>
-
-        {/* TILE 3 — DSM Showcase */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => navigate({ to: "/reels" as never })}
-          style={tileShell}
-        >
-          <div style={strip("#F5DEDC")}>
-            <span style={stripPill(RED)}>New</span>
-            <IconPlayerPlay size={20} color={RED} stroke={1.8} style={{ opacity: 0.55 }} />
-          </div>
-          <div style={tileLabelWrap}>
-            <div style={bodyRow}>
-              <div style={{ minWidth: 0 }}>
-                <div style={tileTitle}>DSM Showcase</div>
-                <div style={tileSub}>
-                  {showcaseCount != null ? `${showcaseCount} views` : "Fun clips"}
-                </div>
-              </div>
-              <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
-            </div>
-          </div>
-        </div>
-
-        {/* TILE 4 — Marketplace */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => navigate({ to: "/marketplace" as never })}
-          style={tileShell}
-        >
-          <div style={strip("#D9EDE3")}>
-            <span style={stripPill(GREEN)}>Shop</span>
-            <IconShoppingBag size={20} color={GREEN} stroke={1.8} style={{ opacity: 0.55 }} />
-          </div>
-          <div style={tileLabelWrap}>
-            <div style={bodyRow}>
-              <div style={{ minWidth: 0 }}>
-                <div style={tileTitle}>Marketplace</div>
-                <div style={tileSub}>
-                  {listingCount != null ? `${listingCount} listings` : "Services & deals"}
-                </div>
-              </div>
-              <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* TILE 5 — Industry News (full width) */}
+      {/* A) MARKETPLACE BANNER */}
       <div
         role="button"
         tabIndex={0}
-        onClick={() => navigate({ to: "/news" as never })}
-        style={{ ...tileShell, marginBottom: 16 }}
+        onClick={() =>
+          navigate(
+            featuredListing
+              ? ({
+                  to: "/marketplace/$listingId",
+                  params: { listingId: featuredListing.id },
+                } as never)
+              : ({ to: "/marketplace" } as never),
+          )
+        }
+        style={{
+          borderRadius: 16,
+          overflow: "hidden",
+          cursor: "pointer",
+          position: "relative",
+          marginBottom: 10,
+          fontFamily: FONT,
+        }}
       >
-        <div style={strip("#8A94A3")}>
-          <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
-            <span style={stripPill(NAVY)}>DVSA</span>
-            <span style={stripPill(NAVY)}>DIA</span>
-            <span style={stripPill(NAVY)}>+ 2 more</span>
+        {marketplaceHero && (
+          <img
+            src={marketplaceHero}
+            alt=""
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+        )}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(120deg, rgba(28,138,75,0.92), rgba(15,110,58,0.95))",
+          }}
+        />
+        <div style={{ position: "relative", zIndex: 1, padding: 16 }}>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              background: "rgba(255,255,255,0.2)",
+              borderRadius: 20,
+              padding: "4px 10px",
+              fontSize: 9,
+              fontWeight: 700,
+              color: "#fff",
+              letterSpacing: "0.06em",
+            }}
+          >
+            🛍 MARKETPLACE
+          </span>
+          <div
+            style={{
+              marginTop: 10,
+              fontSize: 18,
+              fontWeight: 800,
+              color: "#fff",
+              display: "-webkit-box",
+              WebkitLineClamp: 1,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {featuredListing?.title ?? "Business Services"}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            {newsUnread && (
+          <div
+            style={{
+              marginTop: 4,
+              marginBottom: 14,
+              fontSize: 12,
+              color: "rgba(255,255,255,0.85)",
+            }}
+          >
+            {featuredListing
+              ? `${featuredListing.category ?? "Services"} · ${featuredListing.price_display ?? "View listing"}`
+              : "Explore listings →"}
+          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(
+                featuredListing
+                  ? ({
+                      to: "/marketplace/$listingId",
+                      params: { listingId: featuredListing.id },
+                    } as never)
+                  : ({ to: "/marketplace" } as never),
+              );
+            }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              background: "#fff",
+              color: "#0F6E3A",
+              fontSize: 12,
+              fontWeight: 700,
+              fontFamily: FONT,
+              borderRadius: 20,
+              padding: "6px 16px",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            View listing →
+          </button>
+        </div>
+      </div>
+
+      {/* B) FOUR COMPACT CHIPS */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          gap: 8,
+          marginBottom: 16,
+        }}
+      >
+        {[
+          {
+            key: "live",
+            label: "DSM Live",
+            sub: "Webinars",
+            icon: <IconRadio size={14} color={BLUE} stroke={2} />,
+            bg: "#E6F1FB",
+            onClick: () => navigate({ to: "/dsm-live" as never }),
+            dot: liveActive ? RED : null,
+          },
+          {
+            key: "bitesize",
+            label: "Bitesize",
+            sub: "CPD courses",
+            icon: <IconBook size={14} color="#7C3AED" stroke={2} />,
+            bg: "#EFE7FB",
+            onClick: () => navigate({ to: "/bitesize" as never }),
+            dot: null,
+          },
+          {
+            key: "showcase",
+            label: "Showcase",
+            sub: "Video clips",
+            icon: <IconPlayerPlay size={14} color={RED} stroke={2} />,
+            bg: "#FCE9E9",
+            onClick: () => navigate({ to: "/reels" as never }),
+            dot: (showcaseCount ?? 0) > 0 ? RED : null,
+          },
+          {
+            key: "news",
+            label: "News",
+            sub: "Industry updates",
+            icon: <IconNews size={14} color={BLUE} stroke={2} />,
+            bg: "#E6F1FB",
+            onClick: () => navigate({ to: "/news" as never }),
+            dot: newsUnread ? RED : null,
+          },
+        ].map((chip) => (
+          <div
+            key={chip.key}
+            role="button"
+            tabIndex={0}
+            onClick={chip.onClick}
+            style={{
+              position: "relative",
+              background: "#fff",
+              border: `1px solid ${HAIRLINE}`,
+              borderRadius: 12,
+              padding: "10px 4px 9px",
+              textAlign: "center",
+              cursor: "pointer",
+              fontFamily: FONT,
+            }}
+          >
+            {chip.dot && (
               <span
                 style={{
-                  width: 8,
-                  height: 8,
+                  position: "absolute",
+                  top: 6,
+                  right: 6,
+                  width: 7,
+                  height: 7,
                   borderRadius: "50%",
-                  background: RED,
-                  display: "inline-block",
+                  background: chip.dot,
                 }}
               />
             )}
-            <IconNews size={20} color={NAVY} stroke={1.8} style={{ opacity: 0.55 }} />
-          </div>
-        </div>
-        <div style={{ padding: "9px 12px 11px" }}>
-          <div style={bodyRow}>
-            <div style={{ minWidth: 0 }}>
-              <div style={tileTitle}>Industry News</div>
-              {latestNewsTitle && (
-                <div
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: NAVY,
-                    lineHeight: 1.3,
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                    marginTop: 4,
-                  }}
-                >
-                  {latestNewsTitle}
-                </div>
-              )}
-              <div style={tileSub}>
-                {latestNewsSource
-                  ? `${latestNewsSource} · ${latestNewsDate ?? ""}`
-                  : newsCount != null
-                    ? `${newsCount} articles`
-                    : "Latest updates"}
-              </div>
+            <span
+              style={{
+                width: 26,
+                height: 26,
+                borderRadius: 8,
+                margin: "0 auto 6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: chip.bg,
+              }}
+            >
+              {chip.icon}
+            </span>
+            <div style={{ fontSize: 9.5, fontWeight: 700, color: NAVY }}>
+              {chip.label}
             </div>
-            <IconChevronRight size={14} color="#C7CEDA" stroke={2} />
+            <div style={{ fontSize: 8.5, color: "#9CA3AF", marginTop: 2 }}>
+              {chip.sub}
+            </div>
           </div>
-        </div>
+        ))}
       </div>
+
 
 
 
