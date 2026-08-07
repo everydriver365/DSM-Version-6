@@ -1190,6 +1190,195 @@ function BitesizePage() {
           </div>
         </div>
       )}
+
+      {/* EDIT SHEET */}
+      {editVideo && isAdmin && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 300,
+            background: "#fff",
+            overflowY: "auto",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "14px 16px",
+              paddingTop: "calc(14px + env(safe-area-inset-top, 0px))",
+              borderBottom: "0.5px solid #E4E8EF",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 16,
+                fontWeight: 700,
+                color: "#0B1F3A",
+                ...POPPINS,
+              }}
+            >
+              Edit video
+            </div>
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => setEditVideo(null)}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                display: "flex",
+                color: "#6B7686",
+                cursor: "pointer",
+              }}
+            >
+              <IconX size={20} />
+            </button>
+          </div>
+
+          <div
+            style={{
+              padding: 16,
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}
+          >
+            <div>
+              <label style={labelStyle} htmlFor="bs-edit-title">
+                Title
+              </label>
+              <input
+                id="bs-edit-title"
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+
+            <div>
+              <label style={labelStyle} htmlFor="bs-edit-desc">
+                Description
+              </label>
+              <textarea
+                id="bs-edit-desc"
+                rows={3}
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                style={{ ...inputStyle, resize: "vertical" }}
+              />
+            </div>
+
+            <div>
+              <label style={labelStyle} htmlFor="bs-edit-cat">
+                Category
+              </label>
+              <select
+                id="bs-edit-cat"
+                value={editCategory}
+                onChange={(e) => setEditCategory(e.target.value)}
+                style={inputStyle}
+              >
+                <option value="">No category</option>
+                {CATEGORIES.filter((c) => c !== "All").map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label style={labelStyle} htmlFor="bs-edit-dur">
+                Duration (minutes)
+              </label>
+              <input
+                id="bs-edit-dur"
+                type="number"
+                value={editDuration}
+                onChange={(e) => setEditDuration(e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#0B1F3A",
+                  ...POPPINS,
+                }}
+              >
+                Published
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={editPublished}
+                aria-label="Published"
+                onClick={() => setEditPublished((v) => !v)}
+                style={{
+                  width: 48,
+                  height: 28,
+                  borderRadius: 20,
+                  border: "none",
+                  cursor: "pointer",
+                  background: editPublished ? "#7C3AED" : "#E4E8EF",
+                  position: "relative",
+                  transition: "background 0.15s ease",
+                  flexShrink: 0,
+                }}
+              >
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 3,
+                    left: editPublished ? 23 : 3,
+                    width: 22,
+                    height: 22,
+                    borderRadius: "50%",
+                    background: "#fff",
+                    transition: "left 0.15s ease",
+                  }}
+                />
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={saveEdit}
+              disabled={!editTitle.trim() || saving}
+              style={{
+                width: "100%",
+                background: "#1877D6",
+                color: "#fff",
+                border: "none",
+                borderRadius: 12,
+                padding: "14px 16px",
+                fontSize: 15,
+                fontWeight: 700,
+                cursor: !editTitle.trim() || saving ? "not-allowed" : "pointer",
+                opacity: !editTitle.trim() || saving ? 0.5 : 1,
+                ...POPPINS,
+              }}
+            >
+              {saving ? "Saving..." : "Save changes"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
