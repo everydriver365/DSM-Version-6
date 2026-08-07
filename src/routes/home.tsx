@@ -5163,7 +5163,7 @@ function HomePage() {
                     >
                       <Navigation size={12} color="#1877D6" />
                       <span style={{ fontSize: 10.5, fontWeight: 700, color: '#1877D6', fontFamily: 'Poppins, sans-serif' }}>
-                        View route
+                        View route & Navigate
                       </span>
                     </button>
                   </div>
