@@ -6926,21 +6926,24 @@ function HomePage() {
                           <span style={SECTION_TITLE_TEXT_STYLE}>Quick access</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <div style={{ display: 'flex', gap: 4 }}>
-                          {Array.from({ length: totalPages }).map((_, i) => (
-                            <div
-                              key={i}
-                              onClick={() => setQuickPage(i)}
-                              style={{
-                                width: quickPage === i ? 16 : 5,
-                                height: 5,
-                                borderRadius: 3,
-                                background: quickPage === i ? '#0B1F3A' : '#D6DCE5',
-                                transition: 'all 0.25s ease',
-                                cursor: 'pointer',
-                              }}
-                            />
-                          ))}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#FFFFFF', borderRadius: 999, padding: '5px 9px', boxShadow: '0 1px 3px rgba(11,31,58,0.08)' }}>
+                          <div style={{ display: 'flex', gap: 4 }}>
+                            {Array.from({ length: totalPages }).map((_, i) => (
+                              <div
+                                key={i}
+                                onClick={() => setQuickPage(i)}
+                                style={{
+                                  width: quickPage === i ? 16 : 5,
+                                  height: 5,
+                                  borderRadius: 3,
+                                  background: quickPage === i ? '#0B1F3A' : '#D6DCE5',
+                                  transition: 'all 0.25s ease',
+                                  cursor: 'pointer',
+                                }}
+                              />
+                            ))}
+                          </div>
+                          <span style={{ fontSize: 10, fontWeight: 600, color: '#6B7686' }}>{quickPage + 1}/{totalPages}</span>
                         </div>
                         <button
                           type="button"
