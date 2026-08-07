@@ -389,7 +389,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onClick={() => navigate({ to: "/bitesize" as never })}
           style={tileShell}
         >
-          <div style={strip("#F1EDFB")}>
+          <div style={strip("#E5DDF7")}>
             <span style={stripPill("#7C3AED")}>CPD</span>
             <IconBook size={20} color="#7C3AED" stroke={1.8} style={{ opacity: 0.55 }} />
           </div>
