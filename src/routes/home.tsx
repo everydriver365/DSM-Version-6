@@ -4985,11 +4985,11 @@ function HomePage() {
             ? unreadMsgs.filter((m) => m.pupil_id === upcoming.pupil_id && !m.read_at && m.source !== 'sms').length
             : 0;
 
-          const isOverdue = !isPaid && d ? d < todayStart : false;
+          const isOverdue = !isPaid && !hIsPartial && d ? d < todayStart : false;
 
-          const hLabelFinal = isPaid ? 'Paid' : isOverdue ? 'Overdue' : 'Due';
-          const hPillBgFinal = isPaid ? '#E5F4EA' : isOverdue ? '#FEECEC' : '#FEF3C7';
-          const hPillFgFinal = isPaid ? '#1E9E5A' : isOverdue ? '#CC2229' : '#D97706';
+          const hLabelFinal = hIsPartial ? 'Part paid' : isPaid ? 'Paid' : isOverdue ? 'Overdue' : 'Due';
+          const hPillBgFinal = hIsPartial ? '#FEF3C7' : isPaid ? '#E5F4EA' : isOverdue ? '#FEECEC' : '#FEF3C7';
+          const hPillFgFinal = hIsPartial ? '#D97706' : isPaid ? '#1E9E5A' : isOverdue ? '#CC2229' : '#D97706';
 
 
 
