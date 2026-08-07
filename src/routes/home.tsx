@@ -6706,17 +6706,6 @@ function HomePage() {
                       boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                     }}
                   >
-                    {tile.attention && (
-                      <span style={{
-                        position: 'absolute',
-                        top: 10,
-                        right: 10,
-                        width: 8,
-                        height: 8,
-                        borderRadius: 999,
-                        background: '#CC2229',
-                      }} />
-                    )}
                     <div
                       className="qa-icon"
                       style={{
@@ -6937,21 +6926,24 @@ function HomePage() {
                           <span style={SECTION_TITLE_TEXT_STYLE}>Quick access</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <div style={{ display: 'flex', gap: 4 }}>
-                          {Array.from({ length: totalPages }).map((_, i) => (
-                            <div
-                              key={i}
-                              onClick={() => setQuickPage(i)}
-                              style={{
-                                width: quickPage === i ? 16 : 5,
-                                height: 5,
-                                borderRadius: 3,
-                                background: quickPage === i ? '#0B1F3A' : '#D6DCE5',
-                                transition: 'all 0.25s ease',
-                                cursor: 'pointer',
-                              }}
-                            />
-                          ))}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#FFFFFF', borderRadius: 999, padding: '5px 9px', boxShadow: '0 1px 3px rgba(11,31,58,0.08)' }}>
+                          <div style={{ display: 'flex', gap: 4 }}>
+                            {Array.from({ length: totalPages }).map((_, i) => (
+                              <div
+                                key={i}
+                                onClick={() => setQuickPage(i)}
+                                style={{
+                                  width: quickPage === i ? 16 : 5,
+                                  height: 5,
+                                  borderRadius: 3,
+                                  background: quickPage === i ? '#0B1F3A' : '#D6DCE5',
+                                  transition: 'all 0.25s ease',
+                                  cursor: 'pointer',
+                                }}
+                              />
+                            ))}
+                          </div>
+                          <span style={{ fontSize: 10, fontWeight: 600, color: '#6B7686' }}>{quickPage + 1}/{totalPages}</span>
                         </div>
                         <button
                           type="button"
@@ -6979,6 +6971,9 @@ function HomePage() {
                       style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}
                     >
                       {currentTiles.map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
+                    </div>
+                    <div style={{ textAlign: 'center', fontSize: 10.5, color: '#6B7686', marginTop: 6 }}>
+                      ← swipe for more →
                     </div>
                   </div>
             </div>
