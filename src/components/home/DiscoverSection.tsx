@@ -623,10 +623,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               fontWeight: 700,
               color: BLUE,
               textTransform: "uppercase",
-              marginBottom: 3,
+              marginBottom: 1,
             }}
           >
             DVSA · DIA · More
+          </div>
+          <div style={{ fontSize: 10, color: "#9CA3AF", fontFamily: FONT, marginBottom: 3 }}>
+            {newsCount ?? 0} articles
           </div>
           <div
             style={{
