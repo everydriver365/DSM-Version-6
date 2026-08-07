@@ -110,8 +110,7 @@ function BitesizePage() {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
 
-  // Admin card menu + edit state
-  const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
+  // Admin edit state
   const [editVideo, setEditVideo] = useState<BitesizeVideo | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
@@ -240,59 +239,62 @@ function BitesizePage() {
         v.id === video.id ? { ...v, is_published: !v.is_published } : v,
       ),
     );
-    setMenuOpenId(null);
   }
 
   async function deleteVideo(video: BitesizeVideo) {
-    if (!confirm(`Delete "${video.title}"? This cannot be undone.`)) return;
+    if (!confirm(`Delete "${video.title}"? Cannot be undone.`)) return;
     await supabase
       .from("bitesize_videos")
       .update({ deleted_at: new Date().toISOString() })
       .eq("id", video.id);
     setVideos((prev) => prev.filter((v) => v.id !== video.id));
-    setMenuOpenId(null);
+    toast.success("Video deleted");
   }
 
   function openEdit(video: BitesizeVideo) {
-    setEditTitle(video.title);
+    setEditTitle(video.title ?? "");
     setEditDescription(video.description ?? "");
-    setEditCategory(video.category ?? "");
+    setEditCategory(video.category ?? "Teaching techniques");
     setEditDuration(video.duration_mins?.toString() ?? "");
-    setEditPublished(video.is_published);
+    setEditPublished(video.is_published ?? false);
     setEditVideo(video);
-    setMenuOpenId(null);
   }
 
   async function saveEdit() {
-    if (!editVideo) return;
+    if (!editVideo || !editTitle.trim()) return;
     setSaving(true);
-    await supabase
-      .from("bitesize_videos")
-      .update({
-        title: editTitle.trim(),
-        description: editDescription.trim() || null,
-        category: editCategory || null,
-        duration_mins: editDuration ? parseInt(editDuration) : null,
-        is_published: editPublished,
-      })
-      .eq("id", editVideo.id);
-    setVideos((prev) =>
-      prev.map((v) =>
-        v.id === editVideo.id
-          ? {
-              ...v,
-              title: editTitle.trim(),
-              description: editDescription.trim() || null,
-              category: editCategory || null,
-              duration_mins: editDuration ? parseInt(editDuration) : null,
-              is_published: editPublished,
-            }
-          : v,
-      ),
-    );
-    setEditVideo(null);
-    setSaving(false);
-    toast.success("Video updated");
+    try {
+      await supabase
+        .from("bitesize_videos")
+        .update({
+          title: editTitle.trim(),
+          description: editDescription.trim() || null,
+          category: editCategory || null,
+          duration_mins: editDuration ? parseInt(editDuration) : null,
+          is_published: editPublished,
+        })
+        .eq("id", editVideo.id);
+      setVideos((prev) =>
+        prev.map((v) =>
+          v.id === editVideo.id
+            ? {
+                ...v,
+                title: editTitle.trim(),
+                description: editDescription.trim() || null,
+                category: editCategory || null,
+                duration_mins: editDuration ? parseInt(editDuration) : null,
+                is_published: editPublished,
+              }
+            : v,
+        ),
+      );
+      setEditVideo(null);
+      toast.success("Video updated");
+    } catch (err: any) {
+      toast.error(err.message ?? "Save failed");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -518,112 +520,6 @@ function BitesizePage() {
                 position: "relative",
               }}
             >
-              {/* ADMIN MENU */}
-              {isAdmin && (
-                <div
-                  style={{ position: "absolute", top: 6, right: 6, zIndex: 5 }}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button
-                    type="button"
-                    aria-label="Video options"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setMenuOpenId(menuOpenId === video.id ? null : video.id);
-                    }}
-                    style={{
-                      width: 26,
-                      height: 26,
-                      borderRadius: "50%",
-                      background: "rgba(0,0,0,0.55)",
-                      border: "none",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "#fff",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <IconDotsVertical size={14} />
-                  </button>
-                  {menuOpenId === video.id && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: 30,
-                        right: 0,
-                        minWidth: 132,
-                        background: "#fff",
-                        border: "0.5px solid #E4E8EF",
-                        borderRadius: 10,
-                        boxShadow: "0 8px 20px rgba(11,31,58,0.15)",
-                        overflow: "hidden",
-                        zIndex: 10,
-                      }}
-                    >
-                      {[
-                        {
-                          key: "edit",
-                          label: "Edit",
-                          icon: <IconPencil size={14} color="#0B1F3A" />,
-                          color: "#0B1F3A",
-                          onClick: () => openEdit(video),
-                        },
-                        {
-                          key: "publish",
-                          label: video.is_published ? "Unpublish" : "Publish",
-                          icon: video.is_published ? (
-                            <IconEyeOff size={14} color="#0B1F3A" />
-                          ) : (
-                            <IconEye size={14} color="#0B1F3A" />
-                          ),
-                          color: "#0B1F3A",
-                          onClick: () => void togglePublish(video),
-                        },
-                        {
-                          key: "delete",
-                          label: "Delete",
-                          icon: <IconTrash size={14} color="#CC2229" />,
-                          color: "#CC2229",
-                          onClick: () => void deleteVideo(video),
-                        },
-                      ].map((item) => (
-                        <button
-                          key={item.key}
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            item.onClick();
-                          }}
-                          style={{
-                            width: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 8,
-                            padding: "9px 12px",
-                            background: "none",
-                            border: "none",
-                            borderTop:
-                              item.key === "edit"
-                                ? "none"
-                                : "0.5px solid #F1F5F9",
-                            fontSize: 12,
-                            fontWeight: 600,
-                            color: item.color,
-                            cursor: "pointer",
-                            textAlign: "left",
-                            ...POPPINS,
-                          }}
-                        >
-                          {item.icon}
-                          {item.label}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
               {/* THUMBNAIL */}
               <div style={{ height: 100, position: "relative" }}>
                 {video.thumbnail_url ? (
@@ -763,6 +659,107 @@ function BitesizePage() {
                   {video.views ?? 0} views
                 </div>
               </div>
+
+              {/* ADMIN ACTIONS */}
+              {isAdmin && (
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 6,
+                    padding: "0 10px 10px",
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Publish toggle */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      togglePublish(video);
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: "6px 0",
+                      background: video.is_published ? "#DCFCE7" : "#FEF3C7",
+                      color: video.is_published ? "#15803D" : "#92400E",
+                      border: "none",
+                      borderRadius: 8,
+                      fontSize: 10,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      ...POPPINS,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 4,
+                    }}
+                  >
+                    {video.is_published ? (
+                      <>
+                        <IconEye size={14} /> Published
+                      </>
+                    ) : (
+                      <>
+                        <IconEyeOff size={14} /> Draft
+                      </>
+                    )}
+                  </button>
+
+                  {/* Edit */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openEdit(video);
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: "6px 0",
+                      background: "#E6F1FB",
+                      color: "#1877D6",
+                      border: "none",
+                      borderRadius: 8,
+                      fontSize: 10,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      ...POPPINS,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 4,
+                    }}
+                  >
+                    <IconPencil size={14} /> Edit
+                  </button>
+
+                  {/* Delete */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteVideo(video);
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: "6px 0",
+                      background: "#FCE9E9",
+                      color: "#CC2229",
+                      border: "none",
+                      borderRadius: 8,
+                      fontSize: 10,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      ...POPPINS,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 4,
+                    }}
+                  >
+                    <IconTrash size={14} /> Delete
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -1202,6 +1199,7 @@ function BitesizePage() {
             overflowY: "auto",
           }}
         >
+          {/* Header */}
           <div
             style={{
               display: "flex",
@@ -1229,16 +1227,17 @@ function BitesizePage() {
               style={{
                 background: "none",
                 border: "none",
+                cursor: "pointer",
                 padding: 0,
                 display: "flex",
                 color: "#6B7686",
-                cursor: "pointer",
               }}
             >
               <IconX size={20} />
             </button>
           </div>
 
+          {/* Form */}
           <div
             style={{
               padding: 16,
@@ -1247,42 +1246,100 @@ function BitesizePage() {
               gap: 16,
             }}
           >
+            {/* Title */}
             <div>
-              <label style={labelStyle} htmlFor="bs-edit-title">
-                Title
+              <label
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#6B7686",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  display: "block",
+                  marginBottom: 6,
+                  ...POPPINS,
+                }}
+              >
+                Title *
               </label>
               <input
-                id="bs-edit-title"
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
-                style={inputStyle}
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  border: "1px solid #E4E8EF",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  ...POPPINS,
+                  color: "#0B1F3A",
+                }}
               />
             </div>
 
+            {/* Description */}
             <div>
-              <label style={labelStyle} htmlFor="bs-edit-desc">
+              <label
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#6B7686",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  display: "block",
+                  marginBottom: 6,
+                  ...POPPINS,
+                }}
+              >
                 Description
               </label>
               <textarea
-                id="bs-edit-desc"
                 rows={3}
                 value={editDescription}
                 onChange={(e) => setEditDescription(e.target.value)}
-                style={{ ...inputStyle, resize: "vertical" }}
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  border: "1px solid #E4E8EF",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  ...POPPINS,
+                  color: "#0B1F3A",
+                  resize: "none",
+                }}
               />
             </div>
 
+            {/* Category */}
             <div>
-              <label style={labelStyle} htmlFor="bs-edit-cat">
+              <label
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#6B7686",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  display: "block",
+                  marginBottom: 6,
+                  ...POPPINS,
+                }}
+              >
                 Category
               </label>
               <select
-                id="bs-edit-cat"
                 value={editCategory}
                 onChange={(e) => setEditCategory(e.target.value)}
-                style={inputStyle}
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  border: "1px solid #E4E8EF",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  ...POPPINS,
+                  color: "#0B1F3A",
+                  background: "#fff",
+                }}
               >
-                <option value="">No category</option>
                 {CATEGORIES.filter((c) => c !== "All").map((c) => (
                   <option key={c} value={c}>
                     {c}
@@ -1291,89 +1348,141 @@ function BitesizePage() {
               </select>
             </div>
 
+            {/* Duration */}
             <div>
-              <label style={labelStyle} htmlFor="bs-edit-dur">
+              <label
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#6B7686",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  display: "block",
+                  marginBottom: 6,
+                  ...POPPINS,
+                }}
+              >
                 Duration (minutes)
               </label>
               <input
-                id="bs-edit-dur"
                 type="number"
                 value={editDuration}
                 onChange={(e) => setEditDuration(e.target.value)}
-                style={inputStyle}
+                placeholder="e.g. 5"
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  border: "1px solid #E4E8EF",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  ...POPPINS,
+                  color: "#0B1F3A",
+                }}
               />
             </div>
 
+            {/* Publish toggle */}
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                gap: 12,
+                background: "#F8FAFC",
+                border: "0.5px solid #E4E8EF",
+                borderRadius: 10,
+                padding: "12px 14px",
               }}
             >
-              <div
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "#0B1F3A",
-                  ...POPPINS,
-                }}
-              >
-                Published
+              <div>
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "#0B1F3A",
+                    ...POPPINS,
+                  }}
+                >
+                  Published
+                </div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "#6B7686",
+                    ...POPPINS,
+                  }}
+                >
+                  {editPublished
+                    ? "Visible to all instructors"
+                    : "Saved as draft"}
+                </div>
               </div>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={editPublished}
-                aria-label="Published"
+              <div
                 onClick={() => setEditPublished((v) => !v)}
                 style={{
-                  width: 48,
-                  height: 28,
-                  borderRadius: 20,
-                  border: "none",
-                  cursor: "pointer",
+                  width: 44,
+                  height: 24,
+                  borderRadius: 12,
                   background: editPublished ? "#7C3AED" : "#E4E8EF",
                   position: "relative",
-                  transition: "background 0.15s ease",
+                  cursor: "pointer",
+                  transition: "background 0.2s",
                   flexShrink: 0,
                 }}
               >
-                <span
+                <div
                   style={{
                     position: "absolute",
-                    top: 3,
-                    left: editPublished ? 23 : 3,
-                    width: 22,
-                    height: 22,
+                    top: 2,
+                    left: editPublished ? 22 : 2,
+                    width: 20,
+                    height: 20,
                     borderRadius: "50%",
                     background: "#fff",
-                    transition: "left 0.15s ease",
+                    transition: "left 0.2s",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
                   }}
                 />
-              </button>
+              </div>
             </div>
 
+            {/* Save button */}
             <button
-              type="button"
-              onClick={saveEdit}
               disabled={!editTitle.trim() || saving}
+              onClick={saveEdit}
               style={{
                 width: "100%",
-                background: "#1877D6",
+                padding: 14,
+                background:
+                  saving || !editTitle.trim() ? "#9CA3AF" : "#7C3AED",
                 color: "#fff",
                 border: "none",
-                borderRadius: 12,
-                padding: "14px 16px",
-                fontSize: 15,
+                borderRadius: 10,
+                fontSize: 14,
                 fontWeight: 700,
-                cursor: !editTitle.trim() || saving ? "not-allowed" : "pointer",
-                opacity: !editTitle.trim() || saving ? 0.5 : 1,
+                cursor: saving ? "not-allowed" : "pointer",
                 ...POPPINS,
               }}
             >
               {saving ? "Saving..." : "Save changes"}
+            </button>
+
+            {/* Cancel */}
+            <button
+              onClick={() => setEditVideo(null)}
+              style={{
+                width: "100%",
+                padding: 14,
+                background: "#F1F5F9",
+                color: "#6B7686",
+                border: "none",
+                borderRadius: 10,
+                fontSize: 14,
+                fontWeight: 600,
+                cursor: "pointer",
+                ...POPPINS,
+              }}
+            >
+              Cancel
             </button>
           </div>
         </div>
