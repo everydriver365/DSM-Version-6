@@ -1008,6 +1008,20 @@ function ShowcasePage() {
             </div>
 
             <div>
+              <label style={labelStyle} htmlFor="sc-tags">
+                Tags (optional)
+              </label>
+              <input
+                id="sc-tags"
+                value={uploadTags}
+                onChange={(e) => setUploadTags(e.target.value)}
+                placeholder="#testpass #dashcam #teaching"
+                style={inputStyle}
+              />
+            </div>
+
+
+            <div>
               <span style={labelStyle}>Video file</span>
               <label
                 htmlFor="sc-video"
