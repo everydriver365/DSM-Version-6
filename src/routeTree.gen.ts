@@ -99,6 +99,7 @@ import { Route as CalendarsyncRouteImport } from './routes/calendarsync'
 import { Route as BulkmessageRouteImport } from './routes/bulkmessage'
 import { Route as BroadcastRouteImport } from './routes/broadcast'
 import { Route as BriefingRouteImport } from './routes/briefing'
+import { Route as BitesizeRouteImport } from './routes/bitesize'
 import { Route as AvailabilitySettingsRouteImport } from './routes/availability-settings'
 import { Route as AvailabilityRouteImport } from './routes/availability'
 import { Route as AutomationsRouteImport } from './routes/automations'
@@ -612,6 +613,11 @@ const BriefingRoute = BriefingRouteImport.update({
   path: '/briefing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BitesizeRoute = BitesizeRouteImport.update({
+  id: '/bitesize',
+  path: '/bitesize',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AvailabilitySettingsRoute = AvailabilitySettingsRouteImport.update({
   id: '/availability-settings',
   path: '/availability-settings',
@@ -929,6 +935,7 @@ export interface FileRoutesByFullPath {
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
   '/availability-settings': typeof AvailabilitySettingsRoute
+  '/bitesize': typeof BitesizeRoute
   '/briefing': typeof BriefingRoute
   '/broadcast': typeof BroadcastRoute
   '/bulkmessage': typeof BulkmessageRoute
@@ -1082,6 +1089,7 @@ export interface FileRoutesByTo {
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
   '/availability-settings': typeof AvailabilitySettingsRoute
+  '/bitesize': typeof BitesizeRoute
   '/briefing': typeof BriefingRoute
   '/broadcast': typeof BroadcastRoute
   '/bulkmessage': typeof BulkmessageRoute
@@ -1234,6 +1242,7 @@ export interface FileRoutesById {
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
   '/availability-settings': typeof AvailabilitySettingsRoute
+  '/bitesize': typeof BitesizeRoute
   '/briefing': typeof BriefingRoute
   '/broadcast': typeof BroadcastRoute
   '/bulkmessage': typeof BulkmessageRoute
@@ -1389,6 +1398,7 @@ export interface FileRouteTypes {
     | '/automations'
     | '/availability'
     | '/availability-settings'
+    | '/bitesize'
     | '/briefing'
     | '/broadcast'
     | '/bulkmessage'
@@ -1542,6 +1552,7 @@ export interface FileRouteTypes {
     | '/automations'
     | '/availability'
     | '/availability-settings'
+    | '/bitesize'
     | '/briefing'
     | '/broadcast'
     | '/bulkmessage'
@@ -1693,6 +1704,7 @@ export interface FileRouteTypes {
     | '/automations'
     | '/availability'
     | '/availability-settings'
+    | '/bitesize'
     | '/briefing'
     | '/broadcast'
     | '/bulkmessage'
@@ -1848,6 +1860,7 @@ export interface RootRouteChildren {
   AutomationsRoute: typeof AutomationsRoute
   AvailabilityRoute: typeof AvailabilityRoute
   AvailabilitySettingsRoute: typeof AvailabilitySettingsRoute
+  BitesizeRoute: typeof BitesizeRoute
   BriefingRoute: typeof BriefingRoute
   BroadcastRoute: typeof BroadcastRoute
   BulkmessageRoute: typeof BulkmessageRoute
@@ -2603,6 +2616,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BriefingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bitesize': {
+      id: '/bitesize'
+      path: '/bitesize'
+      fullPath: '/bitesize'
+      preLoaderRoute: typeof BitesizeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/availability-settings': {
       id: '/availability-settings'
       path: '/availability-settings'
@@ -3161,6 +3181,7 @@ const rootRouteChildren: RootRouteChildren = {
   AutomationsRoute: AutomationsRoute,
   AvailabilityRoute: AvailabilityRoute,
   AvailabilitySettingsRoute: AvailabilitySettingsRoute,
+  BitesizeRoute: BitesizeRoute,
   BriefingRoute: BriefingRoute,
   BroadcastRoute: BroadcastRoute,
   BulkmessageRoute: BulkmessageRoute,
