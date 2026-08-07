@@ -350,7 +350,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             animation: liveActive ? "livePulse 2s ease-in-out infinite" : "none",
           }}
         >
-          <div style={strip("#EAF0F8")}>
+          <div style={strip("#D6E3F2")}>
             {liveActive ? (
               <span style={stripPill(RED)}>
                 <span className="dsm-live-dot-pulse" style={{ display: "inline-flex" }}>
@@ -389,7 +389,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onClick={() => navigate({ to: "/bitesize" as never })}
           style={tileShell}
         >
-          <div style={strip("#F1EDFB")}>
+          <div style={strip("#E5DDF7")}>
             <span style={stripPill("#7C3AED")}>CPD</span>
             <IconBook size={20} color="#7C3AED" stroke={1.8} style={{ opacity: 0.55 }} />
           </div>
@@ -411,7 +411,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onClick={() => navigate({ to: "/reels" as never })}
           style={tileShell}
         >
-          <div style={strip("#FBEBEA")}>
+          <div style={strip("#F5DEDC")}>
             <span style={stripPill(RED)}>New</span>
             <IconPlayerPlay size={20} color={RED} stroke={1.8} style={{ opacity: 0.55 }} />
           </div>
@@ -435,7 +435,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onClick={() => navigate({ to: "/marketplace" as never })}
           style={tileShell}
         >
-          <div style={strip("#E9F5EE")}>
+          <div style={strip("#D9EDE3")}>
             <span style={stripPill(GREEN)}>Shop</span>
             <IconShoppingBag size={20} color={GREEN} stroke={1.8} style={{ opacity: 0.55 }} />
           </div>
@@ -460,7 +460,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         onClick={() => navigate({ to: "/news" as never })}
         style={{ ...tileShell, marginBottom: 16 }}
       >
-        <div style={strip("#EAECF0")}>
+        <div style={strip("#DDE0E6")}>
           <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
             <span style={stripPill(NAVY)}>DVSA</span>
             <span style={stripPill(NAVY)}>DIA</span>
