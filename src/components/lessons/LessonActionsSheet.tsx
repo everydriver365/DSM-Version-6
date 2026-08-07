@@ -1439,7 +1439,7 @@ export function LessonActionsSheet({
           <div style={sectionLabel}>Last Lesson</div>
           {prev ? (
             <div
-              style={{ background: "#F2F2F7", borderRadius: 9, padding: "10px 12px", fontFamily: "Inter, sans-serif" }}
+              style={{ background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 6px rgba(11,31,58,0.04)", padding: "10px 12px", fontFamily: "Inter, sans-serif" }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 12, fontWeight: 600, color: NAVY }}>
@@ -1458,6 +1458,7 @@ export function LessonActionsSheet({
                 >
                   {prev.status}
                 </span>
+
               </div>
               {prev.notes && (
                 <div style={{ marginTop: 5, color: "#5A6270", fontSize: 11, lineHeight: 1.4 }}>{prev.notes}</div>
