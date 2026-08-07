@@ -7735,7 +7735,7 @@ function HomePage() {
                         />
                         <Sep />
                         <Label
-                          text="DSM" colour="#1877D6" count={unreadDMs}
+                          text="DSM" colour="#0F766E" count={unreadDMs}
                           onClick={() => navigate({
                             to: '/messages' as never,
                             search: { filter: 'instructors' } as never,
