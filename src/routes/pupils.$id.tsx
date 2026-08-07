@@ -1365,54 +1365,69 @@ function PupilDetailPage() {
             >
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 relative z-10">
                 <div className="flex items-start gap-3 min-w-0">
-                  <input
-                    ref={photoRef}
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    className="hidden"
-                    onChange={onPickPupilPhoto}
-                  />
+                  {/* Current photo or placeholder */}
                   <button
                     type="button"
-                    onClick={() => !uploadingPhoto && photoRef.current?.click()}
-                    disabled={uploadingPhoto}
-                    aria-label="Upload pupil photo"
-                    className="relative flex items-center justify-center rounded-full shrink-0 overflow-hidden"
+                    onClick={() => document.getElementById('pupil-photo-input')?.click()}
                     style={{
-                      width: 80,
-                      height: 80,
-                      border: "4px solid rgba(255,255,255,0.25)",
-                      backgroundColor: "rgba(255,255,255,0.08)",
-                      color: "#FFFFFF",
-                      ...POPPINS,
+                      width: 80, height: 80,
+                      borderRadius: '50%',
+                      background: pupil.profile_image_url ? 'none' : '#E6F1FB',
+                      border: '2px dashed #1877D6',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      overflow: 'hidden',
+                      position: 'relative',
                     }}
                   >
-                    {pupil.photo_url ? (
-                      <img src={pupil.photo_url} alt="" className="w-full h-full object-cover" />
+                    {pupil.profile_image_url ? (
+                      <img src={pupil.profile_image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
-                      <span className="text-[24px] font-semibold">{initials(pupil.name)}</span>
+                      <IconCamera size={28} color="#1877D6" />
                     )}
-                    {uploadingPhoto && (
+                    {photoUploading && (
                       <span
-                        className="absolute inset-0 flex items-center justify-center"
-                        style={{ backgroundColor: "rgba(0,0,0,0.45)" }}
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: 'rgba(0,0,0,0.45)',
+                        }}
                       >
                         <Loader2 size={22} color="#FFFFFF" className="animate-spin" />
                       </span>
                     )}
-                    <span
-                      className="absolute -bottom-1 -right-1 flex items-center justify-center rounded-full"
-                      style={{
-                        width: 24,
-                        height: 24,
-                        backgroundColor: "#00B5A5",
-                        border: "2px solid #1877D6",
-                      }}
-                    >
-                      <Camera size={13} color="#FFFFFF" />
-                    </span>
                   </button>
+
+                  {/* Hidden file input */}
+                  <input
+                    id="pupil-photo-input"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      try {
+                        setPhotoUploading(true);
+                        const url = await uploadImage(file, 'avatars');
+                        await supabase.from('pupils')
+                          .update({ profile_image_url: url })
+                          .eq('id', id);
+                        setPupil(prev => prev ? { ...prev, profile_image_url: url } : prev);
+                        toast.success('Photo updated');
+                      } catch (err: any) {
+                        toast.error(err.message ?? 'Upload failed');
+                      } finally {
+                        setPhotoUploading(false);
+                        e.target.value = '';
+                      }
+                    }}
+                  />
                   <div className="text-white min-w-0 flex-1 pt-1">
                     <h1 className="text-[20px] font-bold leading-tight truncate" style={POPPINS}>
                       {pupil.name}
