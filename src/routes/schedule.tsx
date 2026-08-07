@@ -1568,7 +1568,7 @@ function SchedulePage() {
                                   role={clickable ? "button" : undefined}
                                   tabIndex={clickable ? 0 : undefined}
                                   style={{
-                                    background: "#FFFFFF",
+                                    background: isTestDay ? '#FFF3E0' : '#FFFFFF',
                                     borderRadius: 12,
                                     boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                                     padding: "12px 14px",
