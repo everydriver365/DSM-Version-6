@@ -5953,7 +5953,7 @@ function HomePage() {
               };
 
               return (
-                <div style={{ fontFamily: PF, background: '#FFFFFF', borderRadius: 18, padding: 0, boxShadow: '0 4px 16px rgba(11,31,58,0.06)', border: '1px solid #E2E8F0', overflow: 'hidden' }}>
+                <div style={{ fontFamily: PF }}>
                   {/* Segmented control */}
                   <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 3, background: '#EEF2F7', borderRadius: 999, margin: '16px 18px' }}>
                     {(['today', 'tomorrow', 'next'] as const).map((t) => {
@@ -6011,9 +6011,6 @@ function HomePage() {
                       );
                     })}
                   </div>
-                  <div style={{ height: 1, background: '#E2E8F0' }} />
-
-
                   {moveModeHome && movingLessonHome && (
                     <div
                       style={{
