@@ -1055,11 +1055,15 @@ export function LessonActionsSheet({
               } as never);
             }}
           >
-            <IconRoute size={18} stroke={1.8} color="#1877D6" />
+            <div style={iconBg("#E6F1FB")}>
+              <IconRoute size={18} stroke={1.8} color="#1877D6" />
+            </div>
             <span style={{ ...pillLabel, color: "#1877D6" }}>Track</span>
           </button>
           <button type="button" style={gridBtnDanger} onClick={onOpenLate}>
-            <IconClockExclamation size={18} stroke={1.8} color="#CC2229" />
+            <div style={iconBg("#FCE9E9")}>
+              <IconClockExclamation size={18} stroke={1.8} color="#CC2229" />
+            </div>
             <span style={{ ...pillLabel, color: "#CC2229" }}>Running late</span>
           </button>
           <button
@@ -1067,10 +1071,13 @@ export function LessonActionsSheet({
             style={{ ...gridBtn, background: "#E8F5E9" }}
             onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
           >
-            <IconCurrentLocation size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#E4F5EA")}>
+              <IconCurrentLocation size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>I'm here</span>
           </button>
         </div>
+
 
         {/* Row 3 — Payment / Prep / Edit */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 8 }}>
