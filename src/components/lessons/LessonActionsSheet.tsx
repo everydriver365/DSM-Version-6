@@ -1120,7 +1120,9 @@ export function LessonActionsSheet({
             style={{ ...gridBtn, background: "#FFFFFF" }}
             onClick={() => setInlineView("reschedule")}
           >
-            <IconCalendar size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#E6F1FB")}>
+              <IconCalendar size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Reschedule</span>
           </button>
           <button
@@ -1128,7 +1130,9 @@ export function LessonActionsSheet({
             style={{ ...gridBtn, background: "#FFFFFF" }}
             onClick={() => setInlineView("duration")}
           >
-            <IconClock size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#F1F4F8")}>
+              <IconClock size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Duration</span>
           </button>
           <button
@@ -1136,10 +1140,13 @@ export function LessonActionsSheet({
             style={{ ...gridBtn, background: "#FFFFFF" }}
             onClick={() => setInlineView("note")}
           >
-            <IconNotes size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#EFE7FB")}>
+              <IconNotes size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Add note</span>
           </button>
         </div>
+
 
         {/* Row 5 — destructive */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 8 }}>
