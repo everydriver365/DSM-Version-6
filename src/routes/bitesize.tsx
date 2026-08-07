@@ -507,7 +507,82 @@ function BitesizePage() {
             gap: 12,
           }}
         >
+          {/* INLINE VIDEO PLAYER */}
+          {playingVideo && (
+            <div style={{ gridColumn: "1 / -1" }}>
+              <VideoPlayer
+                src={playingVideo.video_url}
+                thumbnail={playingVideo.thumbnail_url}
+                title={playingVideo.title}
+                autoPlay
+                onClose={() => setPlayingVideo(null)}
+                onEnded={() => {
+                  const idx = filtered.findIndex((v) => v.id === playingVideo.id);
+                  const next = filtered[idx + 1];
+                  if (next) {
+                    playVideo(next);
+                  } else {
+                    setPlayingVideo(null);
+                  }
+                }}
+              />
+
+              {/* Info below player */}
+              <div
+                style={{
+                  background: "#fff",
+                  border: "0.5px solid #E4E8EF",
+                  borderRadius: 12,
+                  padding: 12,
+                  marginTop: 8,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 15,
+                    fontWeight: 700,
+                    color: "#0B1F3A",
+                    ...POPPINS,
+                  }}
+                >
+                  {playingVideo.title}
+                </div>
+                {playingVideo.description && (
+                  <div
+                    style={{
+                      fontSize: 13,
+                      color: "#6B7686",
+                      marginTop: 4,
+                      lineHeight: 1.45,
+                      ...POPPINS,
+                    }}
+                  >
+                    {playingVideo.description}
+                  </div>
+                )}
+                {playingVideo.category && (
+                  <div
+                    style={{
+                      display: "inline-block",
+                      marginTop: 8,
+                      padding: "3px 10px",
+                      borderRadius: 999,
+                      background: "#EAF2FD",
+                      color: "#1877D6",
+                      fontSize: 11,
+                      fontWeight: 700,
+                      ...POPPINS,
+                    }}
+                  >
+                    {playingVideo.category}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {filtered.map((video) => (
+
             <div
               key={video.id}
               onClick={() => playVideo(video)}
