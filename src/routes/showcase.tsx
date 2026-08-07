@@ -8,9 +8,11 @@ import {
   IconPlayerPlay,
   IconPlus,
   IconEye,
-  IconHeart,
-  IconHeartFilled,
+  IconThumbUp,
+  IconThumbDown,
   IconMessageCircle,
+  IconFlag,
+  IconDots,
   IconUpload,
   IconX,
   IconSend,
@@ -74,7 +76,38 @@ const CATEGORIES = [
   "Funny",
 ];
 
+const REPORT_REASONS = [
+  "Inappropriate content",
+  "Dangerous driving shown",
+  "Pupil identifiable",
+  "Spam or misleading",
+  "Copyright issue",
+  "Other",
+];
+
+const AVATAR_COLORS = ["#1877D6", "#CC2229", "#0B1F3A", "#0F9D58", "#8B5CF6"];
+
+function initials(name: string) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
+function timeAgo(iso: string) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
+
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+
 const NAVY = "#0B1F3A";
 const RED = "#CC2229";
 const BLUE = "#1877D6";
@@ -112,15 +145,24 @@ function ShowcasePage() {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [playing, setPlaying] = useState<ShowcaseVideo | null>(null);
 
-  // Likes
-  const [likedIds, setLikedIds] = useState<string[]>([]);
-  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
+  // Votes
+  const [votes, setVotes] = useState<Record<string, "up" | "down" | null>>({});
+  const [voteCounts, setVoteCounts] = useState<
+    Record<string, { up: number; down: number }>
+  >({});
 
   // Comments
   const [commentsOpen, setCommentsOpen] = useState(false);
-  const [comments, setComments] = useState<ShowcaseComment[]>([]);
+  const [comments, setComments] = useState<any[]>([]);
   const [commentBody, setCommentBody] = useState("");
+  const [sendingComment, setSendingComment] = useState(false);
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
+
+  // Reports
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportReason, setReportReason] = useState("");
+  const [reportingId, setReportingId] = useState<string | null>(null);
+  const [sendingReport, setSendingReport] = useState(false);
 
   // Upload form state
   const [uploadTitle, setUploadTitle] = useState("");
@@ -165,24 +207,31 @@ function ShowcasePage() {
     loadVideos();
   }, [loadVideos]);
 
-  // Load like state + counts
+  // Load vote state + counts + comment counts
   useEffect(() => {
     if (videos.length === 0) return;
     const ids = videos.map((v) => v.id);
     (async () => {
       const { data } = await db
         .from("showcase_likes")
-        .select("video_id, user_id")
+        .select("video_id, instructor_id, vote_type")
         .in("video_id", ids);
-      const rows = (data as { video_id: string; user_id: string }[] | null) ?? [];
-      const counts: Record<string, number> = {};
-      const mine: string[] = [];
+      const rows =
+        (data as
+          | { video_id: string; instructor_id: string; vote_type: string }[]
+          | null) ?? [];
+      const counts: Record<string, { up: number; down: number }> = {};
+      const myVotes: Record<string, "up" | "down" | null> = {};
       rows.forEach((r) => {
-        counts[r.video_id] = (counts[r.video_id] ?? 0) + 1;
-        if (userId && r.user_id === userId) mine.push(r.video_id);
+        if (!counts[r.video_id]) counts[r.video_id] = { up: 0, down: 0 };
+        if (r.vote_type === "down") counts[r.video_id].down++;
+        else counts[r.video_id].up++;
+        if (userId && r.instructor_id === userId) {
+          myVotes[r.video_id] = r.vote_type === "down" ? "down" : "up";
+        }
       });
-      setLikeCounts(counts);
-      setLikedIds(mine);
+      setVoteCounts(counts);
+      setVotes(myVotes);
 
       const { data: cData } = await db
         .from("showcase_comments")
@@ -196,76 +245,172 @@ function ShowcasePage() {
     })();
   }, [videos, userId]);
 
+  // Load comments for the open video
+  useEffect(() => {
+    if (!commentsOpen || !playing) return;
+    (async () => {
+      const { data } = await db
+        .from("showcase_comments")
+        .select(
+          "id, body, created_at, instructor:instructors!instructor_id(id, name)",
+        )
+        .eq("video_id", playing.id)
+        .is("deleted_at", null)
+        .order("created_at", { ascending: true });
+      setComments(
+        ((data as any[] | null) ?? []).map((c) => ({
+          ...c,
+          instructor: Array.isArray(c.instructor) ? c.instructor[0] : c.instructor,
+        })),
+      );
+    })();
+  }, [commentsOpen, playing]);
+
+
   const filtered =
     activeCategory === "All"
       ? videos
       : videos.filter((v) => v.category === activeCategory);
 
-  async function toggleLike(video: ShowcaseVideo) {
+  async function incrementView(video: ShowcaseVideo) {
+    try {
+      await db
+        .from("showcase_videos")
+        .update({ views: (video.views ?? 0) + 1 })
+        .eq("id", video.id);
+    } catch {
+      /* non-critical */
+    }
+    setVideos((prev) =>
+      prev.map((v) =>
+        v.id === video.id ? { ...v, views: (v.views ?? 0) + 1 } : v,
+      ),
+    );
+  }
+
+  function openPlayer(video: ShowcaseVideo) {
+    setPlaying(video);
+    setCommentsOpen(false);
+    incrementView(video);
+  }
+
+  async function toggleVote(videoId: string, type: "up" | "down") {
     if (!userId) {
-      toast.error("Sign in to like clips");
+      toast.error("Sign in to vote");
       return;
     }
-    const liked = likedIds.includes(video.id);
-    setLikedIds((prev) =>
-      liked ? prev.filter((id) => id !== video.id) : [...prev, video.id],
-    );
-    setLikeCounts((prev) => ({
-      ...prev,
-      [video.id]: Math.max(0, (prev[video.id] ?? 0) + (liked ? -1 : 1)),
-    }));
+    const current = votes[videoId];
     try {
-      if (liked) {
+      if (current === type) {
         await db
           .from("showcase_likes")
           .delete()
-          .eq("video_id", video.id)
-          .eq("user_id", userId);
+          .eq("video_id", videoId)
+          .eq("instructor_id", userId);
+        setVotes((prev) => ({ ...prev, [videoId]: null }));
+        setVoteCounts((prev) => ({
+          ...prev,
+          [videoId]: {
+            up: prev[videoId]?.up ?? 0,
+            down: prev[videoId]?.down ?? 0,
+            [type]: Math.max(0, (prev[videoId]?.[type] ?? 1) - 1),
+          },
+        }));
       } else {
-        await db
-          .from("showcase_likes")
-          .insert({ video_id: video.id, user_id: userId });
+        if (current) {
+          await db
+            .from("showcase_likes")
+            .delete()
+            .eq("video_id", videoId)
+            .eq("instructor_id", userId);
+          setVoteCounts((prev) => ({
+            ...prev,
+            [videoId]: {
+              up: prev[videoId]?.up ?? 0,
+              down: prev[videoId]?.down ?? 0,
+              [current]: Math.max(0, (prev[videoId]?.[current] ?? 1) - 1),
+            },
+          }));
+        }
+        await db.from("showcase_likes").insert({
+          video_id: videoId,
+          instructor_id: userId,
+          vote_type: type,
+        });
+        setVotes((prev) => ({ ...prev, [videoId]: type }));
+        setVoteCounts((prev) => ({
+          ...prev,
+          [videoId]: {
+            up: prev[videoId]?.up ?? 0,
+            down: prev[videoId]?.down ?? 0,
+            [type]: (prev[videoId]?.[type] ?? 0) + 1,
+          },
+        }));
       }
     } catch (err: any) {
-      toast.error(err?.message ?? "Could not update like");
+      toast.error(err?.message ?? "Could not save vote");
     }
   }
 
-  async function openComments(video: ShowcaseVideo) {
-    setPlaying(video);
-    setCommentsOpen(true);
-    const { data } = await db
-      .from("showcase_comments")
-      .select("*")
-      .eq("video_id", video.id)
-      .order("created_at", { ascending: true });
-    setComments((data as ShowcaseComment[] | null) ?? []);
-  }
-
-  async function postComment() {
-    if (!playing || !commentBody.trim()) return;
-    if (!userId) {
-      toast.error("Sign in to comment");
-      return;
-    }
-    const body = commentBody.trim();
-    setCommentBody("");
+  async function sendComment() {
+    if (!commentBody.trim() || !userId || !playing) return;
+    setSendingComment(true);
     try {
       const { data, error } = await db
         .from("showcase_comments")
-        .insert({ video_id: playing.id, user_id: userId, body })
-        .select()
+        .insert({
+          video_id: playing.id,
+          instructor_id: userId,
+          body: commentBody.trim(),
+        })
+        .select(
+          "id, body, created_at, instructor:instructors!instructor_id(id, name)",
+        )
         .single();
       if (error) throw error;
-      if (data) setComments((prev) => [...prev, data as ShowcaseComment]);
-      setCommentCounts((prev) => ({
-        ...prev,
-        [playing.id]: (prev[playing.id] ?? 0) + 1,
-      }));
+      if (data) {
+        setComments((prev) => [
+          ...prev,
+          {
+            ...data,
+            instructor: Array.isArray((data as any).instructor)
+              ? (data as any).instructor[0]
+              : (data as any).instructor,
+          },
+        ]);
+        setCommentCounts((prev) => ({
+          ...prev,
+          [playing.id]: (prev[playing.id] ?? 0) + 1,
+        }));
+      }
+      setCommentBody("");
     } catch (err: any) {
       toast.error(err?.message ?? "Could not post comment");
+    } finally {
+      setSendingComment(false);
     }
   }
+
+  async function sendReport() {
+    if (!reportReason.trim() || !reportingId || !userId) return;
+    setSendingReport(true);
+    try {
+      await db.from("showcase_reports").insert({
+        video_id: reportingId,
+        instructor_id: userId,
+        reason: reportReason.trim(),
+      });
+      toast.success("Report sent to admin");
+    } catch (err: any) {
+      toast.error(err?.message ?? "Could not send report");
+    } finally {
+      setReportOpen(false);
+      setReportReason("");
+      setReportingId(null);
+      setSendingReport(false);
+    }
+  }
+
 
   async function handleUpload() {
     if (!videoFile || !uploadTitle.trim()) return;
@@ -465,7 +610,8 @@ function ShowcasePage() {
           }}
         >
           {filtered.map((video) => {
-            const liked = likedIds.includes(video.id);
+            const upvoted = votes[video.id] === "up";
+            const downvoted = votes[video.id] === "down";
             return (
               <div
                 key={video.id}
@@ -478,7 +624,8 @@ function ShowcasePage() {
               >
                 {/* THUMBNAIL */}
                 <div
-                  onClick={() => setPlaying(video)}
+                  onClick={() => openPlayer(video)}
+
                   style={{ height: 160, position: "relative", cursor: "pointer" }}
                 >
                   {video.thumbnail_url ? (
@@ -597,8 +744,8 @@ function ShowcasePage() {
                   >
                     <button
                       type="button"
-                      aria-label={liked ? "Unlike" : "Like"}
-                      onClick={() => toggleLike(video)}
+                      aria-label="Upvote"
+                      onClick={() => toggleVote(video.id, "up")}
                       style={{
                         display: "inline-flex",
                         alignItems: "center",
@@ -607,22 +754,46 @@ function ShowcasePage() {
                         border: "none",
                         padding: 0,
                         cursor: "pointer",
-                        color: liked ? RED : "#9CA3AF",
+                        color: upvoted ? BLUE : "#9CA3AF",
                         fontSize: 10,
                         ...POPPINS,
                       }}
                     >
-                      {liked ? (
-                        <IconHeartFilled size={13} color={RED} />
-                      ) : (
-                        <IconHeart size={13} color="#9CA3AF" />
-                      )}
-                      {likeCounts[video.id] ?? 0}
+                      <IconThumbUp size={13} color={upvoted ? BLUE : "#9CA3AF"} />
+                      {voteCounts[video.id]?.up ?? 0}
                     </button>
                     <button
                       type="button"
+                      aria-label="Downvote"
+                      onClick={() => toggleVote(video.id, "down")}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 3,
+                        background: "none",
+                        border: "none",
+                        padding: 0,
+                        cursor: "pointer",
+                        color: downvoted ? RED : "#9CA3AF",
+                        fontSize: 10,
+                        ...POPPINS,
+                      }}
+                    >
+                      <IconThumbDown
+                        size={13}
+                        color={downvoted ? RED : "#9CA3AF"}
+                      />
+                      {voteCounts[video.id]?.down ?? 0}
+                    </button>
+
+                    <button
+                      type="button"
                       aria-label="Comments"
-                      onClick={() => openComments(video)}
+                      onClick={() => {
+                        openPlayer(video);
+                        setCommentsOpen(true);
+                      }}
+
                       style={{
                         display: "inline-flex",
                         alignItems: "center",
@@ -658,7 +829,7 @@ function ShowcasePage() {
       )}
 
       {/* PLAYER */}
-      {playing && !commentsOpen && (
+      {playing && (
         <div
           style={{ position: "fixed", inset: 0, zIndex: 200, background: "#000" }}
         >
@@ -741,182 +912,458 @@ function ShowcasePage() {
                 {playing.description}
               </div>
             )}
-            <div style={{ display: "flex", gap: 16, marginTop: 12 }}>
+          </div>
+
+
+          {/* RIGHT SIDE ACTIONS */}
+          <div
+            style={{
+              position: "absolute",
+              right: 12,
+              bottom: 120,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 16,
+              zIndex: 3,
+            }}
+          >
+            {/* Upvote */}
+            <div style={{ textAlign: "center" }}>
               <button
                 type="button"
-                aria-label="Like"
-                onClick={() => toggleLike(playing)}
+                aria-label="Upvote"
+                onClick={() => toggleVote(playing.id, "up")}
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "rgba(255,255,255,0.15)",
+                  width: 46,
+                  height: 46,
+                  borderRadius: "50%",
                   border: "none",
-                  borderRadius: 20,
-                  padding: "8px 14px",
-                  color: "#fff",
-                  fontSize: 13,
-                  fontWeight: 600,
+                  background:
+                    votes[playing.id] === "up" ? BLUE : "rgba(255,255,255,0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   cursor: "pointer",
+                }}
+              >
+                <IconThumbUp size={22} color="#fff" />
+              </button>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#fff",
+                  marginTop: 4,
                   ...POPPINS,
                 }}
               >
-                {likedIds.includes(playing.id) ? (
-                  <IconHeartFilled size={16} color={RED} />
-                ) : (
-                  <IconHeart size={16} color="#fff" />
-                )}
-                {likeCounts[playing.id] ?? 0}
+                {voteCounts[playing.id]?.up ?? 0}
+              </div>
+            </div>
+
+            {/* Downvote */}
+            <div style={{ textAlign: "center" }}>
+              <button
+                type="button"
+                aria-label="Downvote"
+                onClick={() => toggleVote(playing.id, "down")}
+                style={{
+                  width: 46,
+                  height: 46,
+                  borderRadius: "50%",
+                  border: "none",
+                  background:
+                    votes[playing.id] === "down" ? RED : "rgba(255,255,255,0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <IconThumbDown size={22} color="#fff" />
               </button>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#fff",
+                  marginTop: 4,
+                  ...POPPINS,
+                }}
+              >
+                {voteCounts[playing.id]?.down ?? 0}
+              </div>
+            </div>
+
+            {/* Comments */}
+            <div style={{ textAlign: "center" }}>
               <button
                 type="button"
                 aria-label="Comments"
-                onClick={() => openComments(playing)}
+                onClick={() => setCommentsOpen(true)}
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "rgba(255,255,255,0.15)",
+                  width: 46,
+                  height: 46,
+                  borderRadius: "50%",
                   border: "none",
-                  borderRadius: 20,
-                  padding: "8px 14px",
-                  color: "#fff",
-                  fontSize: 13,
-                  fontWeight: 600,
+                  background: "rgba(255,255,255,0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   cursor: "pointer",
+                }}
+              >
+                <IconMessageCircle size={22} color="#fff" />
+              </button>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#fff",
+                  marginTop: 4,
                   ...POPPINS,
                 }}
               >
-                <IconMessageCircle size={16} color="#fff" />
                 {commentCounts[playing.id] ?? 0}
-              </button>
+              </div>
             </div>
+
+            {/* More / report */}
+            <button
+              type="button"
+              aria-label="More"
+              onClick={() => {
+                setReportingId(playing.id);
+                setReportOpen(true);
+              }}
+              style={{
+                width: 46,
+                height: 46,
+                borderRadius: "50%",
+                border: "none",
+                background: "rgba(255,255,255,0.15)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              <IconDots size={22} color="#fff" />
+            </button>
           </div>
+
         </div>
       )}
 
       {/* COMMENTS SHEET */}
       {commentsOpen && playing && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 250,
-            background: "#fff",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
+        <div style={{ position: "fixed", inset: 0, zIndex: 200 }}>
+          <div
+            onClick={() => setCommentsOpen(false)}
+            style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.5)" }}
+          />
           <div
             style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              background: "#111",
+              borderRadius: "20px 20px 0 0",
+              maxHeight: "70vh",
               display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "14px 16px",
-              paddingTop: "calc(14px + env(safe-area-inset-top, 0px))",
-              borderBottom: "0.5px solid #E4E8EF",
+              flexDirection: "column",
             }}
           >
-            <div style={{ fontSize: 16, fontWeight: 700, color: NAVY, ...POPPINS }}>
-              Comments
-            </div>
-            <button
-              type="button"
-              aria-label="Close comments"
-              onClick={() => setCommentsOpen(false)}
+            <div
               style={{
-                background: "none",
-                border: "none",
-                padding: 0,
-                display: "flex",
-                color: "#6B7686",
-                cursor: "pointer",
+                width: 36,
+                height: 4,
+                borderRadius: 4,
+                background: "#333",
+                margin: "12px auto",
+              }}
+            />
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 600,
+                color: "#fff",
+                padding: "0 16px 12px",
+                ...POPPINS,
               }}
             >
-              <IconX size={20} />
-            </button>
-          </div>
+              {comments.length} comments
+            </div>
 
-          <div style={{ flex: 1, overflowY: "auto", padding: 16 }}>
-            {comments.length === 0 ? (
+            <div style={{ flex: 1, overflowY: "auto", padding: "0 16px" }}>
+              {comments.length === 0 ? (
+                <div
+                  style={{
+                    textAlign: "center",
+                    color: "rgba(255,255,255,0.4)",
+                    fontSize: 13,
+                    padding: "30px 0",
+                    ...POPPINS,
+                  }}
+                >
+                  No comments yet — be the first
+                </div>
+              ) : (
+                comments.map((c: any, i: number) => {
+                  const name = c.instructor?.name ?? c.author_name ?? "Instructor";
+                  return (
+                    <div
+                      key={c.id}
+                      style={{ display: "flex", gap: 10, marginBottom: 14 }}
+                    >
+                      <div
+                        style={{
+                          width: 32,
+                          height: 32,
+                          flexShrink: 0,
+                          borderRadius: "50%",
+                          background: AVATAR_COLORS[i % AVATAR_COLORS.length],
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "#fff",
+                          fontSize: 11,
+                          fontWeight: 700,
+                          ...POPPINS,
+                        }}
+                      >
+                        {initials(name)}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div
+                          style={{ display: "flex", alignItems: "center", gap: 6 }}
+                        >
+                          <span
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 600,
+                              color: "#fff",
+                              ...POPPINS,
+                            }}
+                          >
+                            {name}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: 10,
+                              color: "rgba(255,255,255,0.4)",
+                              ...POPPINS,
+                            }}
+                          >
+                            {timeAgo(c.created_at)}
+                          </span>
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            color: "rgba(255,255,255,0.85)",
+                            marginTop: 3,
+                            lineHeight: 1.4,
+                            ...POPPINS,
+                          }}
+                        >
+                          {c.body}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                alignItems: "center",
+                padding: "12px 16px",
+                paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
+                borderTop: "0.5px solid rgba(255,255,255,0.1)",
+              }}
+            >
               <div
                 style={{
-                  textAlign: "center",
-                  color: "#6B7686",
-                  fontSize: 13,
-                  padding: "40px 0",
+                  width: 32,
+                  height: 32,
+                  flexShrink: 0,
+                  borderRadius: "50%",
+                  background: BLUE,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#fff",
+                  fontSize: 11,
+                  fontWeight: 700,
                   ...POPPINS,
                 }}
               >
-                No comments yet — be the first
+                {initials("Me")}
               </div>
-            ) : (
-              comments.map((c) => (
-                <div key={c.id} style={{ marginBottom: 14 }}>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 700,
-                      color: NAVY,
-                      ...POPPINS,
-                    }}
-                  >
-                    {c.author_name ?? "Instructor"}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      color: "#374151",
-                      marginTop: 2,
-                      ...POPPINS,
-                    }}
-                  >
-                    {c.body}
-                  </div>
-                </div>
-              ))
-            )}
+              <input
+                value={commentBody}
+                onChange={(e) => setCommentBody(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    sendComment();
+                  }
+                }}
+                placeholder="Add a comment..."
+                aria-label="Add a comment"
+                style={{
+                  flex: 1,
+                  background: "rgba(255,255,255,0.1)",
+                  borderRadius: 20,
+                  padding: "8px 14px",
+                  color: "#fff",
+                  border: "none",
+                  outline: "none",
+                  fontSize: 13,
+                  ...POPPINS,
+                }}
+              />
+              <button
+                type="button"
+                aria-label="Send comment"
+                onClick={sendComment}
+                disabled={sendingComment || !commentBody.trim()}
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  display: "flex",
+                  cursor: "pointer",
+                  opacity: commentBody.trim() ? 1 : 0.5,
+                }}
+              >
+                <IconSend size={18} color={BLUE} />
+              </button>
+            </div>
           </div>
+        </div>
+      )}
 
+      {/* REPORT SHEET */}
+      {reportOpen && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 300 }}>
+          <div
+            onClick={() => setReportOpen(false)}
+            style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.45)" }}
+          />
           <div
             style={{
-              display: "flex",
-              gap: 8,
-              padding: 12,
-              paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
-              borderTop: "0.5px solid #E4E8EF",
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              background: "#fff",
+              borderRadius: "20px 20px 0 0",
+              padding: "20px 16px",
+              paddingBottom: "calc(20px + env(safe-area-inset-bottom, 0px))",
             }}
           >
-            <input
-              value={commentBody}
-              onChange={(e) => setCommentBody(e.target.value)}
-              placeholder="Add a comment..."
-              aria-label="Add a comment"
-              style={{ ...inputStyle, flex: 1 }}
-            />
-            <button
-              type="button"
-              aria-label="Send comment"
-              onClick={postComment}
-              disabled={!commentBody.trim()}
+            <div style={{ fontSize: 16, fontWeight: 700, color: NAVY, ...POPPINS }}>
+              Report video
+            </div>
+            <div
+              style={{ fontSize: 13, color: "#6B7686", marginTop: 4, ...POPPINS }}
+            >
+              Help us keep DSM Showcase safe
+            </div>
+
+            <div
               style={{
-                background: BLUE,
-                border: "none",
-                borderRadius: 10,
-                width: 44,
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#fff",
-                cursor: commentBody.trim() ? "pointer" : "not-allowed",
-                opacity: commentBody.trim() ? 1 : 0.5,
+                flexWrap: "wrap",
+                gap: 8,
+                margin: "16px 0",
               }}
             >
-              <IconSend size={18} />
+              {REPORT_REASONS.map((r) => {
+                const active = reportReason === r;
+                return (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => setReportReason(r)}
+                    style={{
+                      border: active ? `1px solid ${RED}` : "1px solid transparent",
+                      borderRadius: 20,
+                      padding: "7px 12px",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      background: active ? "#FCE9E9" : "#F1F5F9",
+                      color: active ? RED : "#6B7686",
+                      ...POPPINS,
+                    }}
+                  >
+                    {r}
+                  </button>
+                );
+              })}
+            </div>
+
+            {reportReason === "Other" && (
+              <textarea
+                rows={3}
+                placeholder="Tell us more..."
+                aria-label="Report details"
+                onChange={(e) => setReportReason(e.target.value ? e.target.value : "Other")}
+                style={{ ...inputStyle, resize: "vertical", marginBottom: 12 }}
+              />
+            )}
+
+            <button
+              type="button"
+              onClick={sendReport}
+              disabled={!reportReason.trim() || sendingReport}
+              style={{
+                width: "100%",
+                background: RED,
+                color: "#fff",
+                border: "none",
+                borderRadius: 12,
+                padding: "12px 0",
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: reportReason.trim() ? "pointer" : "not-allowed",
+                opacity: reportReason.trim() && !sendingReport ? 1 : 0.6,
+                ...POPPINS,
+              }}
+            >
+              {sendingReport ? "Sending..." : "Send report"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setReportOpen(false)}
+              style={{
+                width: "100%",
+                background: "#F1F5F9",
+                color: "#6B7686",
+                border: "none",
+                borderRadius: 12,
+                padding: "12px 0",
+                fontSize: 14,
+                fontWeight: 600,
+                marginTop: 8,
+                cursor: "pointer",
+                ...POPPINS,
+              }}
+            >
+              Cancel
             </button>
           </div>
         </div>
       )}
+
 
       {/* UPLOAD SHEET */}
       {uploadOpen && (
