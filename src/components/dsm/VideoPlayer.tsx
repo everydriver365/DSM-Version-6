@@ -12,32 +12,32 @@ interface VideoPlayerProps {
   src: string;
   thumbnail?: string | null;
   title?: string | null;
-  description?: string | null;
   onClose?: () => void;
   autoPlay?: boolean;
+  onEnded?: () => void;
 }
 
-export default function VideoPlayer({
+export function VideoPlayer({
   src,
   thumbnail,
   title,
-  description,
   onClose,
   autoPlay,
+  onEnded,
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [showControls, setShowControls] = useState(true);
-  const controlsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  function formatTime(secs: number): string {
-    const m = Math.floor(secs / 60);
-    const s = Math.floor(secs % 60);
-    return `${m}:${s.toString().padStart(2, '0')}`;
+  function formatTime(s: number) {
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${m}:${sec.toString().padStart(2, '0')}`;
   }
 
   function togglePlay() {
@@ -45,9 +45,8 @@ export default function VideoPlayer({
     if (playing) {
       videoRef.current.pause();
     } else {
-      videoRef.current.play();
+      videoRef.current.play().catch(() => {});
     }
-    setPlaying(!playing);
   }
 
   function handleTimeUpdate() {
@@ -65,175 +64,70 @@ export default function VideoPlayer({
     videoRef.current.currentTime = pct * (videoRef.current.duration || 0);
   }
 
-  function showControlsTemporarily() {
+  function showControlsBriefly() {
     setShowControls(true);
-    if (controlsTimer.current) {
-      clearTimeout(controlsTimer.current);
-    }
-    controlsTimer.current = setTimeout(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
       if (playing) setShowControls(false);
     }, 3000);
   }
 
   useEffect(() => {
     if (autoPlay && videoRef.current) {
-      videoRef.current
-        .play()
-        .then(() => setPlaying(true))
-        .catch(() => {});
+      videoRef.current.play().catch(() => {});
     }
     return () => {
-      if (controlsTimer.current) {
-        clearTimeout(controlsTimer.current);
-      }
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [autoPlay]);
+  }, [autoPlay, src]);
 
   return (
-    <div style={{ background: '#000', borderRadius: 12, overflow: 'hidden', position: 'relative', width: '100%' }} onClick={showControlsTemporarily}>
+    <div
+      onClick={showControlsBriefly}
+      style={{
+        position: 'relative',
+        background: '#000',
+        borderRadius: 12,
+        overflow: 'hidden',
+        width: '100%',
+      }}
+    >
       <video
         ref={videoRef}
         src={src}
         poster={thumbnail ?? undefined}
-        width="100%"
-        style={{
-          display: 'block',
-          maxHeight: 280,
-          objectFit: 'contain',
-        }}
+        playsInline
         muted={muted}
+        title={title ?? undefined}
+        style={{ display: 'block', width: '100%', maxHeight: 320, objectFit: 'contain' }}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={() => setDuration(videoRef.current?.duration ?? 0)}
-        onEnded={() => setPlaying(false)}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
+        onCanPlay={(e) => {
+          if (autoPlay) e.currentTarget.play().catch(() => {});
+        }}
+        onEnded={() => {
+          setPlaying(false);
+          setShowControls(true);
+          onEnded?.();
+        }}
       />
 
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 10,
-          opacity: showControls ? 1 : 0,
-          transition: 'opacity 0.3s',
-          background: 'linear-gradient(transparent, rgba(0,0,0,0.75))',
-          padding: 12,
-          pointerEvents: showControls ? 'auto' : 'none',
-        }}
-      >
+      {/* Big play button when paused */}
+      {!playing && (
         <div
-          style={{ marginBottom: 8, cursor: 'pointer' }}
           onClick={(e) => {
             e.stopPropagation();
-            handleSeek(e);
+            togglePlay();
           }}
-        >
-          <div style={{ height: 3, background: 'rgba(255,255,255,0.3)', borderRadius: 2 }}>
-            <div
-              style={{
-                width: `${progress}%`,
-                background: '#fff',
-                height: '100%',
-                borderRadius: 2,
-                transition: 'width 0.1s',
-              }}
-            />
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              togglePlay();
-            }}
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: '50%',
-              background: 'rgba(255,255,255,0.2)',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-            }}
-          >
-            {playing ? (
-              <IconPlayerPause size={16} color="#fff" />
-            ) : (
-              <IconPlayerPlay size={16} color="#fff" />
-            )}
-          </button>
-
-          <span
-            style={{
-              fontSize: 11,
-              color: 'rgba(255,255,255,0.8)',
-              fontFamily: 'Poppins, sans-serif',
-            }}
-          >
-            {formatTime(currentTime)} / {formatTime(duration)}
-          </span>
-
-          <div style={{ flex: 1 }} />
-
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setMuted((m) => !m);
-            }}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          >
-            {muted ? (
-              <IconVolumeOff size={16} color="#fff" />
-            ) : (
-              <IconVolume size={16} color="#fff" />
-            )}
-          </button>
-
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              videoRef.current?.requestFullscreen();
-            }}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          >
-            <IconMaximize size={16} color="#fff" />
-          </button>
-
-          {onClose && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onClose();
-              }}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            >
-              <IconX size={16} color="#fff" />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {!playing && showControls && (
-        <div
           style={{
             position: 'absolute',
             inset: 0,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            togglePlay();
+            cursor: 'pointer',
           }}
         >
           <div
@@ -253,24 +147,116 @@ export default function VideoPlayer({
         </div>
       )}
 
-      {title && (
-        <div style={{ background: '#F8FAFC', padding: '10px 12px', borderTop: '0.5px solid #E4E8EF' }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>{title}</div>
-          {description && (
-            <div
-              style={{
-                fontSize: 12,
-                color: '#6B7686',
-                fontFamily: 'Poppins, sans-serif',
-                marginTop: 4,
-                lineHeight: 1.4,
+      {/* Controls overlay */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: 12,
+          background: 'linear-gradient(transparent, rgba(0,0,0,0.75))',
+          opacity: showControls ? 1 : 0,
+          pointerEvents: showControls ? 'auto' : 'none',
+          transition: 'opacity 0.3s',
+        }}
+      >
+        {/* Progress bar */}
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            handleSeek(e);
+          }}
+          style={{
+            height: 3,
+            background: 'rgba(255,255,255,0.3)',
+            borderRadius: 2,
+            marginBottom: 8,
+            cursor: 'pointer',
+            position: 'relative',
+          }}
+        >
+          <div
+            style={{
+              width: `${progress}%`,
+              height: '100%',
+              background: '#fff',
+              borderRadius: 2,
+            }}
+          />
+        </div>
+
+        {/* Controls row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button
+            type="button"
+            aria-label={playing ? 'Pause' : 'Play'}
+            onClick={(e) => {
+              e.stopPropagation();
+              togglePlay();
+            }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}
+          >
+            {playing ? (
+              <IconPlayerPause size={18} color="#fff" />
+            ) : (
+              <IconPlayerPlay size={18} color="#fff" />
+            )}
+          </button>
+
+          <span
+            style={{
+              fontSize: 11,
+              color: 'rgba(255,255,255,0.85)',
+              fontFamily: 'Poppins, sans-serif',
+            }}
+          >
+            {formatTime(currentTime)} / {formatTime(duration)}
+          </span>
+
+          <div style={{ flex: 1 }} />
+
+          <button
+            type="button"
+            aria-label={muted ? 'Unmute' : 'Mute'}
+            onClick={(e) => {
+              e.stopPropagation();
+              setMuted((v) => !v);
+            }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}
+          >
+            {muted ? <IconVolumeOff size={18} color="#fff" /> : <IconVolume size={18} color="#fff" />}
+          </button>
+
+          <button
+            type="button"
+            aria-label="Fullscreen"
+            onClick={(e) => {
+              e.stopPropagation();
+              videoRef.current?.requestFullscreen();
+            }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}
+          >
+            <IconMaximize size={18} color="#fff" />
+          </button>
+
+          {onClose && (
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
               }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}
             >
-              {description}
-            </div>
+              <IconX size={18} color="#fff" />
+            </button>
           )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
+
+export default VideoPlayer;
