@@ -4917,18 +4917,43 @@ function HomePage() {
           const pricingType = pupil?.pricing_type;
           const prepaidHours = pupil?.prepaid_hours ?? 0;
           const blockTotal = pupil?.block_hours_total ?? 0;
-          const isPaid =
-            (upcoming?.payment_status === 'paid' ||
-            upcoming?.payment_status === 'partial') ||
+          const hStatus = (upcoming?.payment_status ?? '').toLowerCase();
+          const hIsPartial = hStatus === 'partial' && hAmountPaid > 0 && hAmountPaid < hAmountDue;
+          const isPaid = !hIsPartial && (
+            hStatus === 'paid' ||
+            hStatus === 'prepaid' ||
             // Block pupils with hours remaining are paid
             (pricingType === 'block' && prepaidHours > 0) ||
             // NI pupils with hours remaining are paid
             (pricingType === 'national_intensives' && prepaidHours > 0) ||
             hAmountDue <= 0 ||
-            hAmountPaid >= hAmountDue;
-          const priceText = isPaid
-            ? `£${hAmountPaid.toFixed(2)}`
-            : `£${hAmountDue.toFixed(2)}`;
+            hAmountPaid >= hAmountDue
+          );
+          // Lesson value: amount_due is the source of truth, then paid_amount,
+          // then the pupil's rate for this duration (prepaid/block lessons
+          // usually carry amount_due = 0 and paid_amount = 0).
+          const hDurMins = Number(upcoming?.duration_minutes ?? 0);
+          const hRateForDuration = (() => {
+            if (!pupil || !hDurMins) return 0;
+            const r60 = Number(pupil.custom_rate ?? 0);
+            const r90 = Number(pupil.custom_rate_90 ?? 0);
+            const r120 = Number(pupil.custom_rate_120 ?? 0);
+            if (hDurMins >= 120 && r120 > 0) return r120;
+            if (hDurMins >= 90 && r90 > 0) return r90;
+            if (r60 > 0) return (r60 / 60) * hDurMins;
+            return 0;
+          })();
+          const hLessonValue =
+            hAmountDue > 0 ? hAmountDue :
+            hAmountPaid > 0 ? hAmountPaid :
+            hRateForDuration;
+          const hRemaining = Math.max(0, hAmountDue - hAmountPaid);
+          const priceText = hIsPartial
+            ? `£${hRemaining.toFixed(2)}`
+            : isPaid
+              ? (hLessonValue > 0 ? `£${hLessonValue.toFixed(2)}` : '—')
+              : `£${(hAmountDue > 0 ? hAmountDue : hLessonValue).toFixed(2)}`;
+
 
 
           // Package info
@@ -4960,11 +4985,11 @@ function HomePage() {
             ? unreadMsgs.filter((m) => m.pupil_id === upcoming.pupil_id && !m.read_at && m.source !== 'sms').length
             : 0;
 
-          const isOverdue = !isPaid && d ? d < todayStart : false;
+          const isOverdue = !isPaid && !hIsPartial && d ? d < todayStart : false;
 
-          const hLabelFinal = isPaid ? 'Paid' : isOverdue ? 'Overdue' : 'Due';
-          const hPillBgFinal = isPaid ? '#E5F4EA' : isOverdue ? '#FEECEC' : '#FEF3C7';
-          const hPillFgFinal = isPaid ? '#1E9E5A' : isOverdue ? '#CC2229' : '#D97706';
+          const hLabelFinal = hIsPartial ? 'Part paid' : isPaid ? 'Paid' : isOverdue ? 'Overdue' : 'Due';
+          const hPillBgFinal = hIsPartial ? '#FEF3C7' : isPaid ? '#E5F4EA' : isOverdue ? '#FEECEC' : '#FEF3C7';
+          const hPillFgFinal = hIsPartial ? '#D97706' : isPaid ? '#1E9E5A' : isOverdue ? '#CC2229' : '#D97706';
 
 
 
