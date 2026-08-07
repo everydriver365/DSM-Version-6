@@ -51,6 +51,14 @@ function AdminInstructorsPage() {
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<any>(null);
   const [showArchive, setShowArchive] = useState(false);
+  const [selectedInstructor, setSelectedInstructor] = useState<any>(null);
+  const [instructorStats, setInstructorStats] = useState<{
+    pupilCount: number;
+    lessonCount: number;
+    totalEarnings: number;
+    joinedDate: string;
+  } | null>(null);
+  const [loadingStats, setLoadingStats] = useState(false);
 
   async function fetchInstructors() {
     const BASE =
