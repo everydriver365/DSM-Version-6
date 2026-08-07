@@ -308,11 +308,13 @@ function ShowcasePage() {
       setUploadOpen(false);
       setUploadTitle("");
       setUploadDescription("");
+      setUploadTags("");
       setUploadPublished(true);
       setVideoFile(null);
       setThumbFile(null);
       setThumbPreview(null);
       toast.success("Clip uploaded!");
+
     } catch (err: any) {
       toast.error(err?.message ?? "Upload failed");
     } finally {
