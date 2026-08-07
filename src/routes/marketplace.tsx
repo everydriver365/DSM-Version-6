@@ -456,6 +456,10 @@ function FeaturedCard({
   const price = listing.price_display?.trim() || null;
   const priceIsBad = price && !/\d/.test(price);
   const priceText = priceIsBad ? "No price set" : price ?? "Price on request";
+  const heroImage = listing.image_urls?.[0] ?? null;
+  const headerBackground = heroImage
+    ? `url(${heroImage}) center/cover no-repeat`
+    : "linear-gradient(135deg,#16305A,#0B1F3A)";
 
   return (
     <div
@@ -481,7 +485,7 @@ function FeaturedCard({
       <div
         style={{
           height: 120,
-          background: "linear-gradient(135deg,#16305A,#0B1F3A)",
+          background: headerBackground,
           position: "relative",
           padding: "12px 14px",
         }}
