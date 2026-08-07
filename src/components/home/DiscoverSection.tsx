@@ -411,7 +411,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onClick={() => navigate({ to: "/reels" as never })}
           style={tileShell}
         >
-          <div style={strip("#FBEBEA")}>
+          <div style={strip("#F5DEDC")}>
             <span style={stripPill(RED)}>New</span>
             <IconPlayerPlay size={20} color={RED} stroke={1.8} style={{ opacity: 0.55 }} />
           </div>
