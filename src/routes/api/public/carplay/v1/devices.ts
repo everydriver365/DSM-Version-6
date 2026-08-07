@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { createAuthenticatedSupabaseClient } from "@/lib/carplay-auth.server";
+import { jsonResponse, textResponse, corsOptionsResponse, extractBearer } from "@/lib/carplay-cors.server";
 
 const BodySchema = z.object({
   deviceId: z.string().min(1),
@@ -16,31 +17,28 @@ const BodySchema = z.object({
 export const Route = createFileRoute("/api/public/carplay/v1/devices")({
   server: {
     handlers: {
+      OPTIONS: corsOptionsResponse,
       POST: async ({ request }) => {
-        const auth = request.headers.get("Authorization");
-        if (!auth || !auth.startsWith("Bearer ")) {
-          return new Response("Unauthorized", { status: 401 });
+        const token = extractBearer(request);
+        if (!token) {
+          return textResponse("Unauthorized", { status: 401 });
         }
-        const token = auth.slice("Bearer ".length);
 
         let body: unknown;
         try {
           body = await request.json();
         } catch {
-          return new Response("Invalid JSON body", { status: 400 });
+          return textResponse("Invalid JSON body", { status: 400 });
         }
         const parsed = BodySchema.safeParse(body);
         if (!parsed.success) {
-          return new Response(JSON.stringify({ errors: parsed.error.flatten() }), {
-            status: 400,
-            headers: { "Content-Type": "application/json" },
-          });
+          return jsonResponse({ errors: parsed.error.flatten() }, { status: 400 });
         }
 
         const supabase = createAuthenticatedSupabaseClient(token);
         const { data: userData, error: userError } = await supabase.auth.getUser();
         if (userError || !userData?.user) {
-          return new Response("Unauthorized", { status: 401 });
+          return textResponse("Unauthorized", { status: 401 });
         }
         const userId = userData.user.id;
         const b = parsed.data;
@@ -65,9 +63,9 @@ export const Route = createFileRoute("/api/public/carplay/v1/devices")({
 
         if (error) {
           console.error("[carplay] device upsert error", error);
-          return new Response("Failed to register device", { status: 500 });
+          return textResponse("Failed to register device", { status: 500 });
         }
-        return Response.json({ ok: true });
+        return jsonResponse({ ok: true });
       },
     },
   },
