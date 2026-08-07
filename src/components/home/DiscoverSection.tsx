@@ -383,7 +383,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             position: "absolute",
             inset: 0,
             background:
-              "linear-gradient(120deg, rgba(28,138,75,0.92), rgba(15,110,58,0.95))",
+              "linear-gradient(120deg, rgba(24,119,214,0.72), rgba(11,31,58,0.78))",
           }}
         />
         <div style={{ position: "relative", zIndex: 1, padding: 16 }}>
@@ -445,7 +445,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               display: "inline-flex",
               alignItems: "center",
               background: "#fff",
-              color: "#0F6E3A",
+              color: "#1877D6",
               fontSize: 12,
               fontWeight: 700,
               fontFamily: FONT,
