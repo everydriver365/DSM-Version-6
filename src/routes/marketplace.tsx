@@ -485,7 +485,7 @@ function FeaturedCard({
       <div
         style={{
           height: 120,
-          background: "linear-gradient(135deg,#16305A,#0B1F3A)",
+          background: headerBackground,
           position: "relative",
           padding: "12px 14px",
         }}
