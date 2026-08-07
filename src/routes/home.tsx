@@ -4912,6 +4912,7 @@ function HomePage() {
 
           // Payment / due
           const hAmountDue = Number(upcoming?.amount_due ?? 0);
+          const hAmountPaid = Number((upcoming as any)?.paid_amount ?? 0);
           const pupil = upcoming?.pupils as any;
           const pricingType = pupil?.pricing_type;
           const prepaidHours = pupil?.prepaid_hours ?? 0;
@@ -4924,8 +4925,10 @@ function HomePage() {
             // NI pupils with hours remaining are paid
             (pricingType === 'national_intensives' && prepaidHours > 0) ||
             hAmountDue <= 0 ||
-            Number((upcoming as any)?.paid_amount ?? 0) >= hAmountDue;
-          const priceText = `£${hAmountDue.toFixed(2)}`;
+            hAmountPaid >= hAmountDue;
+          const priceText = isPaid
+            ? `£${hAmountPaid.toFixed(2)}`
+            : `£${hAmountDue.toFixed(2)}`;
 
 
           // Package info
