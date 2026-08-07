@@ -6706,17 +6706,6 @@ function HomePage() {
                       boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                     }}
                   >
-                    {tile.attention && (
-                      <span style={{
-                        position: 'absolute',
-                        top: 10,
-                        right: 10,
-                        width: 8,
-                        height: 8,
-                        borderRadius: 999,
-                        background: '#CC2229',
-                      }} />
-                    )}
                     <div
                       className="qa-icon"
                       style={{
