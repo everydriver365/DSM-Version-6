@@ -9,6 +9,7 @@ import {
   IconNews,
 } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
+import { SectionHeader } from "@/components/dsm/SectionHeader";
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
