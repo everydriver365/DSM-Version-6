@@ -743,8 +743,8 @@ function ShowcasePage() {
                 {playing.description}
               </div>
             )}
-            <div style={{ display: "flex", gap: 16, marginTop: 12 }}>
           </div>
+
 
           {/* RIGHT SIDE ACTIONS */}
           <div
