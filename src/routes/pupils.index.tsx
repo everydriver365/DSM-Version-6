@@ -68,10 +68,10 @@ function accentColor(status: StatusKey) {
 }
 
 const PILL_BASE = {
-  fontSize: 9,
-  fontWeight: 600,
+  fontSize: 9.5,
+  fontWeight: 700,
   borderRadius: 20,
-  padding: "2px 7px",
+  padding: "3px 8px",
   fontFamily: "Inter, sans-serif",
   whiteSpace: "nowrap" as const,
 };
@@ -594,11 +594,13 @@ function PupilsIndexPage() {
         className="block cursor-pointer select-none"
         style={{
           backgroundColor: "#FFFFFF",
-          borderBottom: idx < total - 1 ? "0.5px solid #EEF2F7" : "none",
+          border: "1px solid #E3E8F0",
+          borderRadius: 15,
+          marginBottom: 10,
           WebkitTouchCallout: "none",
         }}
       >
-        <div className="flex items-center" style={{ gap: 12, padding: "13px 16px" }}>
+        <div className="flex items-center" style={{ gap: 12, padding: "12px 13px" }}>
           <div style={{ position: "relative", flexShrink: 0 }}>
             <PupilAvatar pupil={p} size={44} />
             {unread > 0 && (
