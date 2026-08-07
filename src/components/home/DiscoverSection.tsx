@@ -546,7 +546,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             >
               {featuredListing
                 ? `${featuredListing.category ?? "Services"} · ${featuredListing.price_display ?? "View listing"}`
-                : "Explore all listings →"}
+                : `${listingCount ?? 0} listings available`}
             </div>
             <button
               type="button"
