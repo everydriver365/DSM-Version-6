@@ -3,26 +3,74 @@ import { useNavigate } from "@tanstack/react-router";
 import { Briefcase, MessageSquare, Mail, CalendarCheck, Phone, X } from "lucide-react";
 
 const FONT = "Poppins, sans-serif";
-const NAVY = "#0F2044";
+const NAVY = "#0B1F3A";
+const BLUE = "#1877D6";
 
 export type LiveEventKind = "job" | "enquiry" | "message" | "booking" | "call";
 
 export type LiveEventPayload = {
   kind: LiveEventKind;
+  /** Body / preview line. */
   text: string;
   url: string;
+  /** Optional bold heading (sender name, job title...). */
+  title?: string;
+  /** Optional avatar image for message events. */
+  avatarUrl?: string | null;
+  /** Optional explicit dedupe key. */
+  dedupeKey?: string;
 };
 
 const EVENT_NAME = "dsm-event-toast";
 
+/* ------------------------------------------------------------------ */
+/* Dedupe                                                              */
+/* ------------------------------------------------------------------ */
+
+const recent = new Map<string, number>();
+const DEDUPE_MS = 8000;
+
+function threadKeyFor(url: string): string | null {
+  const m = url.match(/^\/messages\/(?:instructor\/)?([^/?#]+)/);
+  return m ? `msgthread:${m[1]}` : null;
+}
+
+/** Returns true when this payload was already shown very recently. */
+function isDuplicate(payload: LiveEventPayload): boolean {
+  const now = Date.now();
+  for (const [k, t] of recent) if (now - t > DEDUPE_MS) recent.delete(k);
+
+  const keys: string[] = [];
+  if (payload.dedupeKey) keys.push(payload.dedupeKey);
+  if (payload.kind === "message") {
+    const tk = threadKeyFor(payload.url);
+    // A message that arrives both as a chat row and as a notification row
+    // collapses onto the same thread key.
+    keys.push(tk ?? "msgthread:any");
+    if (!tk) {
+      // Generic "/messages" notification: also matches any recent thread alert.
+      let seen = false;
+      for (const k of recent.keys()) if (k.startsWith("msgthread:")) seen = true;
+      if (seen) return true;
+    }
+  }
+  keys.push(`${payload.kind}|${payload.url}|${payload.text}`);
+
+  const dup = keys.some((k) => recent.has(k));
+  for (const k of keys) recent.set(k, now);
+  return dup;
+}
+
 /**
  * Fire a live event. If the app is foregrounded, the EventToastController
- * shows an in-app toast. If the tab is hidden, we fall back to a native
+ * shows the in-app banner. If the tab is hidden, we fall back to a native
  * notification (via the already-registered service worker) so the user
- * still gets the alert.
+ * still gets the alert. Duplicate events (same message arriving via two
+ * realtime channels) are collapsed into one.
  */
 export function emitLiveEvent(payload: LiveEventPayload) {
   if (typeof window === "undefined") return;
+  if (isDuplicate(payload)) return;
   const isVisible = document.visibilityState === "visible";
   if (isVisible) {
     window.dispatchEvent(new CustomEvent<LiveEventPayload>(EVENT_NAME, { detail: payload }));
@@ -36,7 +84,7 @@ export function emitLiveEvent(payload: LiveEventPayload) {
       "serviceWorker" in navigator
     ) {
       navigator.serviceWorker.ready.then((reg) => {
-        reg.showNotification(titleFor(payload.kind), {
+        reg.showNotification(payload.title || titleFor(payload.kind), {
           body: payload.text,
           tag: `dsm-live-${payload.kind}`,
           data: { url: payload.url },
@@ -66,29 +114,38 @@ function titleFor(kind: LiveEventKind): string {
 function styleFor(kind: LiveEventKind): { tint: string; color: string; icon: React.ReactNode } {
   switch (kind) {
     case "job":
-      return { tint: "#FBEFDF", color: "#B5661E", icon: <Briefcase size={18} color="#B5661E" /> };
+      return { tint: "#FBEFDF", color: "#E0932F", icon: <Briefcase size={17} color="#fff" /> };
     case "enquiry":
-      return { tint: "#E5EFFA", color: "#1877D6", icon: <Mail size={18} color="#1877D6" /> };
+      return { tint: "#E5EFFA", color: BLUE, icon: <Mail size={17} color="#fff" /> };
     case "message":
-      return {
-        tint: "#E5EFFA",
-        color: "#1877D6",
-        icon: <MessageSquare size={18} color="#1877D6" />,
-      };
+      return { tint: "#E5EFFA", color: BLUE, icon: <MessageSquare size={17} color="#fff" /> };
     case "booking":
-      return {
-        tint: "#E7F5EE",
-        color: "#1B7F3B",
-        icon: <CalendarCheck size={18} color="#1B7F3B" />,
-      };
+      return { tint: "#E7F5EE", color: "#1B7F3B", icon: <CalendarCheck size={17} color="#fff" /> };
     case "call":
-      return { tint: "#FBE6E7", color: "#CC2229", icon: <Phone size={18} color="#CC2229" /> };
+      return { tint: "#FBE6E7", color: "#CC2229", icon: <Phone size={17} color="#fff" /> };
   }
 }
 
+function initials(name: string): string {
+  return (
+    name
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((w) => w[0]?.toUpperCase() ?? "")
+      .join("") || "?"
+  );
+}
+
+/**
+ * The one and only in-app notification banner. Every live event — messages,
+ * jobs, enquiries, bookings, calls — is queued through here so at most one
+ * banner is ever visible.
+ */
 export function EventToastController() {
   const navigate = useNavigate();
   const [current, setCurrent] = useState<LiveEventPayload | null>(null);
+  const [shown, setShown] = useState(false);
   const queueRef = useRef<LiveEventPayload[]>([]);
   const timerRef = useRef<number | null>(null);
   const [dragY, setDragY] = useState(0);
@@ -106,12 +163,16 @@ export function EventToastController() {
     setDragY(0);
     const next = queueRef.current.shift() ?? null;
     setCurrent(next);
+    setShown(false);
     if (next) {
+      window.requestAnimationFrame(() => setShown(true));
       timerRef.current = window.setTimeout(() => {
-        setCurrent(null);
-        // Small gap between queued toasts.
-        window.setTimeout(showNext, 200);
-      }, 4000);
+        setShown(false);
+        window.setTimeout(() => {
+          setCurrent(null);
+          window.setTimeout(showNext, 120);
+        }, 220);
+      }, 5000);
     }
   };
 
@@ -119,12 +180,8 @@ export function EventToastController() {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent<LiveEventPayload>).detail;
       if (!detail) return;
-      if (current) {
-        queueRef.current.push(detail);
-      } else {
-        queueRef.current.push(detail);
-        showNext();
-      }
+      queueRef.current.push(detail);
+      if (!current) showNext();
     };
     window.addEventListener(EVENT_NAME, handler);
     return () => {
@@ -136,26 +193,31 @@ export function EventToastController() {
 
   if (!current) return null;
 
-  const { tint, icon } = styleFor(current.kind);
+  const { color, icon } = styleFor(current.kind);
 
   const dismiss = () => {
-    setCurrent(null);
-    window.setTimeout(showNext, 150);
+    clearTimer();
+    setShown(false);
+    window.setTimeout(() => {
+      setCurrent(null);
+      window.setTimeout(showNext, 120);
+    }, 200);
   };
+
+  const heading = current.title || titleFor(current.kind);
 
   return (
     <div
       style={{
         position: "fixed",
-        top: "50%",
-        marginTop: -40,
-        left: 0,
-        right: 0,
-        display: "flex",
-        justifyContent: "center",
-        zIndex: 200,
-        pointerEvents: "none",
+        top: "calc(env(safe-area-inset-top, 0px) + 12px)",
+        left: 16,
+        right: 16,
+        zIndex: 9999,
+        maxWidth: 390,
+        margin: "0 auto",
         fontFamily: FONT,
+        pointerEvents: "none",
       }}
     >
       <div
@@ -164,7 +226,7 @@ export function EventToastController() {
         onClick={() => {
           const url = current.url;
           dismiss();
-          if (url) navigate({ to: url });
+          if (url) navigate({ to: url as never });
         }}
         onTouchStart={(e) => {
           startY.current = e.touches[0].clientY;
@@ -175,81 +237,150 @@ export function EventToastController() {
           if (dy < 0) setDragY(dy);
         }}
         onTouchEnd={() => {
-          if (dragY < -40) {
-            dismiss();
-          } else {
-            setDragY(0);
-          }
+          if (dragY < -40) dismiss();
+          else setDragY(0);
           startY.current = null;
         }}
         style={{
           pointerEvents: "auto",
-          width: "calc(100% - 24px)",
-          maxWidth: 460,
-          minHeight: 64,
-          background: "white",
+          background: NAVY,
           borderRadius: 14,
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 6px 20px rgba(15,32,68,0.12)",
-          padding: "10px 14px",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          transform: `translateY(${dragY}px)`,
-          transition: dragY === 0 ? "transform 200ms ease" : "none",
+          overflow: "hidden",
+          boxShadow: "0 10px 30px rgba(11,31,58,0.35)",
+          opacity: shown ? 1 : 0,
+          transform: shown ? `translateY(${dragY}px)` : "translateY(-20px)",
+          transition:
+            dragY === 0 ? "transform 0.25s ease-out, opacity 0.25s ease-out" : "opacity 0.25s ease-out",
           cursor: "pointer",
         }}
       >
+        {/* Top bar */}
         <div
           style={{
-            width: 40,
-            height: 40,
-            borderRadius: 10,
-            background: tint,
+            padding: "6px 12px",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
+            gap: 6,
+            borderBottom: "0.5px solid rgba(255,255,255,0.1)",
           }}
         >
-          {icon}
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0 }} />
+          <span
             style={{
-              fontSize: 14,
+              fontSize: 10,
               fontWeight: 600,
-              color: NAVY,
-              lineHeight: 1.3,
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+              color: "rgba(255,255,255,0.5)",
+              flex: 1,
             }}
           >
-            {current.text}
-          </div>
-          <div style={{ fontSize: 10.5, color: "#9CA3AF", marginTop: 4, fontWeight: 500 }}>
-            Just now
-          </div>
+            DSM · {titleFor(current.kind)}
+          </span>
+          <button
+            type="button"
+            aria-label="Dismiss"
+            onClick={(e) => {
+              e.stopPropagation();
+              dismiss();
+            }}
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              lineHeight: 0,
+              cursor: "pointer",
+            }}
+          >
+            <X size={14} color="rgba(255,255,255,0.4)" />
+          </button>
         </div>
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            dismiss();
-          }}
-          style={{
-            width: 22,
-            height: 22,
-            borderRadius: "50%",
-            background: "#F1F4F8",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-            cursor: "pointer",
-          }}
-        >
-          <X size={12} color="#9CA3AF" />
+
+        {/* Main row */}
+        <div style={{ padding: "10px 12px", display: "flex", alignItems: "center", gap: 10 }}>
+          {current.avatarUrl ? (
+            <img
+              src={current.avatarUrl}
+              alt=""
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                objectFit: "cover",
+                flexShrink: 0,
+                border: `2px solid ${BLUE}`,
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                flexShrink: 0,
+                background: current.kind === "message" ? NAVY : color,
+                border: current.kind === "message" ? `2px solid ${BLUE}` : "none",
+                color: "#FFFFFF",
+                fontSize: 12,
+                fontWeight: 700,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {current.kind === "message" && current.title ? initials(current.title) : icon}
+            </div>
+          )}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 700,
+                color: "#FFFFFF",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {heading}
+            </div>
+            <div
+              style={{
+                fontSize: 11,
+                color: "rgba(255,255,255,0.55)",
+                lineHeight: 1.35,
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+            >
+              {current.text}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              const url = current.url;
+              dismiss();
+              if (url) navigate({ to: url as never });
+            }}
+            style={{
+              flexShrink: 0,
+              background: "#E6F1FB",
+              color: BLUE,
+              fontFamily: FONT,
+              fontSize: 12,
+              fontWeight: 600,
+              padding: "4px 12px",
+              borderRadius: 20,
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            {current.kind === "message" ? "Reply" : "View"}
+          </button>
         </div>
       </div>
     </div>
