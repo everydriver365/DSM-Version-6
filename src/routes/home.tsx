@@ -6972,6 +6972,9 @@ function HomePage() {
                     >
                       {currentTiles.map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
                     </div>
+                    <div style={{ textAlign: 'center', fontSize: 10.5, color: '#6B7686', marginTop: 6 }}>
+                      ← swipe for more →
+                    </div>
                   </div>
             </div>
 
