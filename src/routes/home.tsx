@@ -6070,7 +6070,7 @@ function HomePage() {
                   )}
 
                   {/* Timeline container */}
-                  <div style={{ position: 'relative' }}>
+                  <div style={{ position: 'relative', padding: '12px 12px 4px' }}>
                     {rows.map((r, idx) => {
                     if (r.kind === 'gap') {
                       const gs = r.start;
@@ -6084,20 +6084,14 @@ function HomePage() {
                       const gapStartTime = fmtT(gs);
                       const durLabel = formatMins(r.mins);
                       return (
-                        <div
-                          key={`gap-${idx}`}
-                          style={{
-                            background: moveModeHome ? '#F4F8FE' : '#FFFBF3',
-                            borderTop: idx === 0 ? 'none' : '1px solid #EEF2F7',
-                          }}
-                        >
-                          {/* FILL THIS GAP pill, flush above the row */}
-                          <div style={{ padding: '8px 16px 0' }}>
+                        <div key={`gap-${idx}`} style={{ marginBottom: 8 }}>
+                          {/* FILL THIS GAP pill, sitting above the card */}
+                          <div>
                             <span
                               style={{
                                 display: 'inline-block',
-                                background: '#FBEBD3',
-                                color: '#B5661E',
+                                background: '#0B1F3A',
+                                color: '#FFFFFF',
                                 fontSize: 11,
                                 fontWeight: 700,
                                 letterSpacing: 0.3,
@@ -6119,7 +6113,10 @@ function HomePage() {
                             role="button"
                             tabIndex={0}
                             style={{
-                              padding: '4px 16px 14px',
+                              background: moveModeHome ? '#F4F8FE' : '#FFFBF3',
+                              border: '1px dashed #F0B93A',
+                              borderRadius: '0 13px 13px 13px',
+                              padding: '12px 14px',
                               display: 'flex',
                               alignItems: 'stretch',
                               gap: 12,
@@ -6272,11 +6269,14 @@ function HomePage() {
                         <div
                           key={`cal-${idx}`}
                           style={{
+                            background: '#FFFFFF',
+                            border: '1px solid #E4E8EF',
+                            borderRadius: 13,
+                            marginBottom: 8,
                             padding: '12px 14px',
                             display: 'flex',
                             alignItems: 'stretch',
                             gap: 12,
-                            borderTop: idx === 0 ? 'none' : '1px solid #EEF2F7',
                           }}
                         >
                           <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
@@ -6373,7 +6373,7 @@ function HomePage() {
                           : null;
 
                     return (
-                      <div key={l.id} style={{ position: 'relative', borderTop: idx === 0 ? 'none' : '1px solid #EEF2F7' }}>
+                      <div key={l.id} style={{ position: 'relative', background: '#FFFFFF', border: '1px solid #E4E8EF', borderRadius: 13, marginBottom: 8 }}>
                         <div
                           onClick={() => setActionsOpenForLesson(l)}
                           onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
