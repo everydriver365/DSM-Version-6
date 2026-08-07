@@ -385,9 +385,13 @@ function MarketplacePage() {
           <div style={{ fontSize: 13, color: "#64748B" }}>No products yet.</div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {topMarketplace.map((l) => (
-              <ProductCard key={l.id} listing={l} onOpen={openListing} />
-            ))}
+            {topMarketplace.map((l, idx) =>
+              idx === 0 ? (
+                <FeaturedCard key={l.id} listing={l} onOpen={openListing} />
+              ) : (
+                <ProductCard key={l.id} listing={l} onOpen={openListing} />
+              ),
+            )}
           </div>
         )}
 
