@@ -5188,6 +5188,19 @@ function HomePage() {
 
                 <span style={{
                   display: 'inline-flex', alignItems: 'center', gap: 5,
+                  background: 'rgba(255,255,255,0.55)',
+                  color: '#0B1F3A',
+                  border: '1px solid rgba(255,255,255,0.6)',
+                  borderRadius: 20,
+                  padding: '4px 10px',
+                  fontSize: 12, fontWeight: 800, fontFamily: 'Poppins, sans-serif',
+                  flexShrink: 0, whiteSpace: 'nowrap',
+                }}>
+                  {priceText}
+                </span>
+
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 5,
                   background: hPillBgFinal,
                   color: hPillFgFinal,
                   borderRadius: 20,
