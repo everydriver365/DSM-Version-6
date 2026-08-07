@@ -1,67 +1,83 @@
-# Two message popups: what triggers each
+# One notification banner for everything (iOS style)
 
-## What's happening
+## What's happening today
 
 Two independent alert systems are mounted side by side in `src/routes/__root.tsx` (lines 757-758), and an incoming message trips both.
 
-### 1. Navy/blue card at the top — `MessageAlert`
-
-File: `src/components/dsm/MessageAlert.tsx`
-
-Triggered by a Supabase realtime subscription to raw message rows:
+**Navy card at the top — `MessageAlert`** (`src/components/dsm/MessageAlert.tsx`)
+Realtime subscription to raw message rows:
 
 ```text
 INSERT on chat_messages       where instructor_id = me   (and sender_type != 'instructor')
 INSERT on instructor_messages where to_instructor_id = me
 ```
 
-It looks up the sender's name, then shows a navy card pinned to the top
-(`position: fixed; top: safe-area + 12px`) for 5 seconds. It suppresses itself
-only while you are already on a `/messages*` route.
+Shows a navy card at the top for 5s with sender avatar, name and preview.
 
-### 2. White card halfway down — `EventToast`
-
-File: `src/components/dsm/EventToast.tsx`, driven by `EventToastController`.
-
-Triggered by a different subscription in `__root.tsx` (lines 610-646):
+**White card mid-screen — `EventToast`** (`src/components/dsm/EventToast.tsx`)
+Driven by a subscription in `__root.tsx` (lines 610-646):
 
 ```text
 INSERT on instructor_notifications where instructor_id = me
 ```
 
-Every new notification row is mapped to an event kind; anything whose `type`
-doesn't match job / enquiry / booking / lesson / call falls through to
-`"message"`, and `emitLiveEvent` shows the white toast. It now sits mid-screen
-because of the recent change to `top: 50%; marginTop: -40`.
+Every notification row maps to a kind (job / enquiry / booking / call, else
+"message") and calls `emitLiveEvent`. Admins also push `job_offer_messages`
+into the same toast (lines 649-683). It sits mid-screen after the recent
+`top: 50%` change, which is why the overlap now looks broken.
 
-Admins get a third path into the same toast: new `job_offer_messages` rows
-(lines 649-683) also call `emitLiveEvent`.
+**Why you see two:** a new message writes a message row (fires MessageAlert)
+and a matching `instructor_notifications` row (fires EventToast).
 
-### Why both fire for one message
+## The fix: one banner, one queue
 
-A new message writes a `chat_messages` / `instructor_messages` row (fires
-MessageAlert) and a matching `instructor_notifications` row is also created
-(fires EventToast). So one message = two popups, in two different places, with
-two different designs.
+Keep every notification type, but route them all through a single iOS-style
+banner that reuses the navy `MessageAlert` look.
 
-Note: no local migration in `db/` inserts the notification row for a chat
-message, so the notification is created either by a database trigger in
-Supabase or by the sender's client path. Step 1 below confirms which.
+1. **Single component.** Promote the MessageAlert visual into one
+   `NotificationBanner` — navy card, top of screen under the safe area,
+   rounded 14, small uppercase "DSM · <type>" bar, avatar or tinted type icon,
+   title + 2-line preview, dismiss X, swipe-up to dismiss, tap to deep link.
+   Sender avatar for messages; the existing `EventToast` icon/tint set
+   (job amber, enquiry blue, booking green, call red) for everything else.
 
-## Proposed fix
+2. **Single source of events.** Both subscriptions feed the same
+   `emitLiveEvent` bus instead of rendering their own UI. Nothing is dropped:
+   jobs, enquiries, bookings, calls, admin job-offer messages, pupil messages
+   and instructor messages all still fire.
 
-1. Confirm the duplication source: check whether a Supabase trigger writes an
-   `instructor_notifications` row of type `message`/`chat` when a message
-   arrives.
-2. Make message alerts single-source. Recommended: keep the navy `MessageAlert`
-   as the message UI (it has sender name, avatar, preview, deep link), and have
-   the `EventToast` subscription in `__root.tsx` skip notifications that are
-   message notifications. Every other event kind (job, enquiry, booking, call,
-   admin job-offer messages) keeps using `EventToast` unchanged.
-3. Settle the `EventToast` position, since mid-screen is what made the overlap
-   obvious.
+3. **Deduplicate.** The bus keeps a short-lived set of recently shown keys
+   (e.g. `message:<threadId>:<messageId>` and a 4s window on
+   `kind + url + text`). A message that arrives as both a chat row and a
+   notification row shows once. Message notifications prefer the richer
+   message-row payload (real sender name + avatar).
 
-## Decisions needed
+4. **Queue, don't stack.** One banner visible at a time, 5s each, later events
+   queue behind it — the iOS behaviour. No two cards on screen ever.
 
-- Which popup should win for messages: the navy top card, or the white toast?
-- Where should the surviving `EventToast` sit: top, middle, or above the bottom nav?
+5. **Position.** Always top, under the safe area. Revert the mid-screen
+   `top: 50%` change.
+
+6. **Suppression rules kept.** No banner while already viewing that thread /
+   `/messages*`; background events still fall back to the native push path
+   already in `emitLiveEvent`.
+
+## Technical notes
+
+- `src/components/dsm/EventToast.tsx` becomes the single controller: extend
+  `LiveEventPayload` with optional `title`, `avatarUrl`, `dedupeKey`, restyle
+  the card to the navy MessageAlert design, add the queue and dedupe set.
+- `src/components/dsm/MessageAlert.tsx` keeps its two realtime subscriptions
+  but calls `emitLiveEvent` instead of rendering; or its subscriptions move
+  into `__root.tsx` and the file is deleted. Either way only one component
+  renders.
+- `src/routes/__root.tsx`: keep both subscriptions, render one controller
+  (line 757-758 collapses to a single `<NotificationBanner />`).
+- No database or RLS changes; no change to what generates notifications.
+
+## Open question
+
+The duplicate `instructor_notifications` row for chat messages appears to come
+from a Supabase-side trigger (nothing in `db/` creates it). Dedupe in the app
+handles it either way, so this is not a blocker — but if you'd rather stop the
+duplicate at the source I can check the trigger and drop it instead.
