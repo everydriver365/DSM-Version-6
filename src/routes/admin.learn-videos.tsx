@@ -19,7 +19,8 @@ const RED = "#CC2229";
 interface LearnVideo {
   id: string;
   title: string;
-  duration: string | null;
+  duration: number | null;
+  description: string | null;
   url: string | null;
   thumbnail_url: string | null;
   sort_order: number | null;
@@ -180,7 +181,10 @@ function VideoForm({
   onSaved: () => void;
 }) {
   const [title, setTitle] = useState(initial?.title ?? "");
-  const [duration, setDuration] = useState(initial?.duration ?? "");
+  const [duration, setDuration] = useState<string | number>(
+    initial?.duration ?? "",
+  );
+  const [description, setDescription] = useState(initial?.description ?? "");
   const [sortOrder, setSortOrder] = useState<string>(
     initial?.sort_order != null ? String(initial.sort_order) : "0",
   );
@@ -271,7 +275,8 @@ function VideoForm({
 
       const payload = {
         title: title.trim(),
-        duration: duration.trim() || null,
+        description: description.trim() || null,
+        duration: duration && typeof duration === "string" ? parseInt(duration.trim(), 10) : null,
         url,
         thumbnail_url: thumbnailUrl,
         sort_order: Number(sortOrder) || 0,
@@ -284,6 +289,7 @@ function VideoForm({
       if (error) throw error;
 
       setUploadStatus("saved");
+      setDescription("");
       setTimeout(() => {
         onSaved();
       }, 1500);
@@ -319,6 +325,42 @@ function VideoForm({
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Set up recurring lessons"
       />
+
+      <div>
+        <label
+          htmlFor="lv-description"
+          style={{
+            fontSize: 11,
+            fontWeight: 600,
+            color: "#6B7686",
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+            display: "block",
+            marginBottom: 6,
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          Description
+        </label>
+        <textarea
+          id="lv-description"
+          rows={3}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="What will instructors learn from this video?"
+          style={{
+            width: "100%",
+            padding: "10px 12px",
+            border: "1px solid #E4E8EF",
+            borderRadius: 8,
+            fontSize: 13,
+            fontFamily: "Poppins, sans-serif",
+            color: "#0B1F3A",
+            resize: "none",
+            boxSizing: "border-box",
+          }}
+        />
+      </div>
 
       <label style={labelStyle} htmlFor="lv-duration">Duration</label>
       <input
@@ -683,7 +725,7 @@ function AdminLearnVideosPage() {
     setLoading(true);
     const { data, error } = await supabase
       .from("learn_videos")
-      .select("id, title, duration, url, thumbnail_url, sort_order")
+      .select("id, title, description, duration, url, thumbnail_url, sort_order")
       .order("sort_order", { ascending: true });
     if (error) {
       console.error("[admin/learn-videos] fetch failed", error);
