@@ -3281,10 +3281,14 @@ function HomePage() {
     if (!autoTrackLessons || !currentLesson) return;
     if (autoNavigatedLessonId.current === currentLesson.id) return;
     autoNavigatedLessonId.current = currentLesson.id;
-    navigate({
-      to: '/live',
-      search: { autostart: '1', lessonId: currentLesson.id, pupilId: currentLesson.pupil_id },
-    });
+    // Silent background track — no navigation
+    // The live page will pick up the active lesson when opened manually
+    window.dispatchEvent(new CustomEvent('dsm-auto-track-start', {
+      detail: {
+        lessonId: currentLesson.id,
+        pupilId: currentLesson.pupil_id,
+      }
+    }));
   }, [autoTrackLessons, currentLesson, navigate]);
 
   // ── Next Lesson traffic + weather chips ───────────────────────────────────

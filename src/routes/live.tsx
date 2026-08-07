@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, Map as MapIcon, Search, X } from "lucide-react";
+import { IconChevronLeft } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { PupilAvatar } from "../components/PupilAvatar";
 import { buildTripReport } from "../lib/tripReport";
@@ -1349,6 +1350,32 @@ function LivePage() {
           50% { opacity: 0.6; }
         }
       `}</style>
+
+      {/* CLOSE / BACK BUTTON — does not stop tracking */}
+      <button
+        type="button"
+        onClick={() => navigate({
+          to: '/home' as never,
+          replace: true,
+        })}
+        style={{
+          position: 'absolute',
+          top: 'calc(env(safe-area-inset-top, 0px) + 12px)',
+          left: 16,
+          zIndex: 50,
+          width: 36, height: 36,
+          borderRadius: '50%',
+          background: 'rgba(0,0,0,0.45)',
+          backdropFilter: 'blur(6px)',
+          border: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+        }}
+      >
+        <IconChevronLeft size={20} color="#fff" stroke={2} />
+      </button>
 
       {/* TOP BAR */}
       <div
