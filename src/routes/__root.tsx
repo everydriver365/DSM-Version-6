@@ -632,12 +632,15 @@ function RootComponent() {
             if (t.includes("call")) return "call";
             return "message";
           })();
-          const text = n.title
-            ? n.body
-              ? `${n.title}: ${n.body}`
-              : String(n.title)
-            : String(n.body || "New activity");
-          emitLiveEvent({ kind, text, url });
+          const title = n.title ? String(n.title) : undefined;
+          const text = n.body ? String(n.body) : title ? "" : "New activity";
+          emitLiveEvent({
+            kind,
+            title,
+            text,
+            url,
+            dedupeKey: n.id ? `notif:${n.id}` : undefined,
+          });
         },
       )
       .subscribe();
