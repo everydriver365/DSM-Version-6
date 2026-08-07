@@ -346,7 +346,7 @@ function MarketplacePage() {
             marginBottom: 14,
           }}
         >
-          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500, color: "#0F2044", fontFamily: POPPINS }}>
+          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#0B1F3A", fontFamily: POPPINS, letterSpacing: "-0.01em" }}>
             Top marketplace
           </h2>
           <button
@@ -357,9 +357,9 @@ function MarketplacePage() {
               border: "none",
               padding: 0,
               cursor: "pointer",
-              color: "#185FA5",
-              fontSize: 13,
-              fontWeight: 500,
+              color: "#1877D6",
+              fontSize: 15,
+              fontWeight: 600,
               fontFamily: POPPINS,
             }}
           >
@@ -407,7 +407,7 @@ function MarketplacePage() {
                 margin: "28px 0 14px",
               }}
             >
-              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500, color: "#0F2044", fontFamily: POPPINS }}>
+              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#0B1F3A", fontFamily: POPPINS, letterSpacing: "-0.01em" }}>
                 For sale by instructors
               </h2>
               <button
@@ -423,9 +423,9 @@ function MarketplacePage() {
                   border: "none",
                   padding: 0,
                   cursor: "pointer",
-                  color: "#185FA5",
-                  fontSize: 13,
-                  fontWeight: 500,
+                  color: "#1877D6",
+                  fontSize: 15,
+                  fontWeight: 600,
                   fontFamily: POPPINS,
                 }}
               >
@@ -484,7 +484,7 @@ function FeaturedCard({
     >
       <div
         style={{
-          height: 120,
+          height: 210,
           background: headerBackground,
           position: "relative",
           padding: "12px 14px",
@@ -495,9 +495,9 @@ function FeaturedCard({
             background: "rgba(255,255,255,0.16)",
             backdropFilter: "blur(4px)",
             color: "#fff",
-            fontSize: 9.5,
+            fontSize: 11,
             fontWeight: 700,
-            padding: "4px 10px",
+            padding: "6px 14px",
             borderRadius: 20,
             textTransform: "uppercase",
             letterSpacing: "0.04em",
@@ -509,10 +509,10 @@ function FeaturedCard({
       <div style={{ padding: "14px 16px 16px" }}>
         <div
           style={{
-            fontSize: 16,
+            fontSize: 20,
             fontWeight: 700,
             color: "#0B1F3A",
-            marginBottom: 6,
+            marginBottom: 10,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -523,13 +523,13 @@ function FeaturedCard({
         <span
           style={{
             display: "inline-flex",
-            fontSize: 10,
-            fontWeight: 700,
+            fontSize: 13,
+            fontWeight: 600,
             color: "#1877D6",
             background: "#E6F1FB",
-            padding: "3px 9px",
-            borderRadius: 8,
-            marginBottom: 12,
+            padding: "6px 12px",
+            borderRadius: 10,
+            marginBottom: 16,
           }}
         >
           {cat?.name || "Marketplace"}
@@ -545,8 +545,8 @@ function FeaturedCard({
           <span
             style={
               priceIsBad
-                ? { fontSize: 11, fontWeight: 500, color: "#CC2229" }
-                : { fontSize: 12, fontWeight: 500, color: "#0B1F3A" }
+                ? { fontSize: 15, fontWeight: 600, color: "#CC2229" }
+                : { fontSize: 15, fontWeight: 600, color: "#0B1F3A" }
             }
           >
             {priceText}
@@ -555,10 +555,10 @@ function FeaturedCard({
             style={{
               background: "#1877D6",
               color: "#FFFFFF",
-              fontSize: 11,
-              fontWeight: 500,
-              padding: "6px 12px",
-              borderRadius: 8,
+              fontSize: 15,
+              fontWeight: 600,
+              padding: "10px 18px",
+              borderRadius: 10,
               display: "inline-flex",
               alignItems: "center",
               gap: 4,
@@ -631,8 +631,8 @@ function ProductCard({
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
         <div
           style={{
-            fontSize: 14,
-            fontWeight: 500,
+            fontSize: 16,
+            fontWeight: 600,
             color: "#0B1F3A",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -646,13 +646,13 @@ function ProductCard({
           style={{
             display: "inline-flex",
             width: "fit-content",
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: "0.02em",
+            fontSize: 12,
+            fontWeight: 600,
+            letterSpacing: "0.01em",
             color: accent,
             background: `${accent}1F`,
-            padding: "3px 8px",
-            borderRadius: 8,
+            padding: "5px 11px",
+            borderRadius: 10,
             marginBottom: "auto",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -674,8 +674,8 @@ function ProductCard({
           <span
             style={
               priceIsBad
-                ? { fontSize: 11, fontWeight: 500, color: "#CC2229" }
-                : { fontSize: 12, fontWeight: 500, color: "#0B1F3A" }
+                ? { fontSize: 15, fontWeight: 600, color: "#CC2229" }
+                : { fontSize: 15, fontWeight: 600, color: "#0B1F3A" }
             }
           >
             {priceText}
@@ -684,10 +684,10 @@ function ProductCard({
             style={{
               background: "#1877D6",
               color: "#FFFFFF",
-              fontSize: 11,
-              fontWeight: 500,
-              padding: "6px 12px",
-              borderRadius: 8,
+              fontSize: 15,
+              fontWeight: 600,
+              padding: "10px 18px",
+              borderRadius: 10,
               display: "inline-flex",
               alignItems: "center",
               gap: 4,
