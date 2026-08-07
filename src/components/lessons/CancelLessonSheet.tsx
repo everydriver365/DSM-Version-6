@@ -110,7 +110,9 @@ export function CancelLessonSheet({
     if (submitting) return;
     setSubmitting(true);
 
+    const isPrepaid = (paymentStatus ?? "").toLowerCase() === "prepaid";
     const isPupilCancel = reason === "Pupil cancelled" || reason === "Pupil no-show";
+
     const lessonPatch: Record<string, unknown> = {
       status: "cancelled",
       cancellation_reason: reason,
