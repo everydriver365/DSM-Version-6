@@ -235,7 +235,7 @@ function MarketplacePage() {
     navigate({ to: "/marketplace/$listingId" as never, params: { listingId: id } as never });
 
   return (
-    <div style={{ minHeight: "100vh", background: "#FFFFFF", paddingBottom: 96, fontFamily: POPPINS }}>
+    <div style={{ minHeight: "100vh", background: "#DCE4F0", paddingBottom: 96, fontFamily: POPPINS }}>
       {/* Top bar */}
       <InstructorTopBar
         firstName=""
