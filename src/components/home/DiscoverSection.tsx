@@ -193,9 +193,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       .maybeSingle()
       .then(({ data }) => setLiveHero(data?.image_url ?? null));
 
-    // DSM Showcase — latest reel thumbnail
+    // DSM Showcase — latest clip thumbnail
     supabase
-      .from("reels")
+      .from("showcase_videos" as never)
       .select("thumbnail_url")
       .not("thumbnail_url", "is", null)
       .is("deleted_at", null)
