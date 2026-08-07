@@ -88,10 +88,12 @@ export function useAdminGate() {
 function AdminSectionTile({
   icon,
   label,
+  subtitle,
   onClick,
 }: {
   icon: React.ReactNode;
   label: string;
+  subtitle?: string;
   onClick: () => void;
 }) {
   return (
@@ -129,9 +131,15 @@ function AdminSectionTile({
         {icon}
       </div>
       <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{label}</div>
+      {subtitle && (
+        <div style={{ fontSize: 12, fontWeight: 500, color: "#8A93A3", marginTop: -6 }}>
+          {subtitle}
+        </div>
+      )}
     </button>
   );
 }
+
 
 type ChatRoom = {
   id: string;
