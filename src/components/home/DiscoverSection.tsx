@@ -460,7 +460,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         onClick={() => navigate({ to: "/news" as never })}
         style={{ ...tileShell, marginBottom: 16 }}
       >
-        <div style={strip("#EAECF0")}>
+        <div style={strip("#DDE0E6")}>
           <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
             <span style={stripPill(NAVY)}>DVSA</span>
             <span style={stripPill(NAVY)}>DIA</span>
