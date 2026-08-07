@@ -272,7 +272,8 @@ function VideoForm({
 
       const payload = {
         title: title.trim(),
-        duration: duration.trim() || null,
+        description: description.trim() || null,
+        duration: duration && typeof duration === "string" ? parseInt(duration.trim(), 10) : null,
         url,
         thumbnail_url: thumbnailUrl,
         sort_order: Number(sortOrder) || 0,
