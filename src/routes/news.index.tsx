@@ -108,7 +108,7 @@ function NewsIndexPage() {
                 border: "none",
                 cursor: "pointer",
                 background: active ? "#1877D6" : "#F1F5F9",
-                color: active ? "#FFFFFF" : "#6B7686",
+                color: active ? "#FFFFFF" : "#5B6472",
               }}
             >
               {f.label}
@@ -172,7 +172,7 @@ function NewsIndexPage() {
                 style={{
                   width: 64,
                   height: 64,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   flexShrink: 0,
                   overflow: "hidden",
                   background: a.image_url ? undefined : "#0B1F3A",
@@ -208,11 +208,11 @@ function NewsIndexPage() {
                     marginBottom: 4,
                     background: "#E6F1FB",
                     color: "#1877D6",
-                    fontSize: 8,
+                    fontSize: 9,
                     fontWeight: 700,
                     fontFamily: "Poppins, sans-serif",
                     textTransform: "uppercase",
-                    letterSpacing: "0.06em",
+                    letterSpacing: "0.05em",
                     borderRadius: 20,
                     padding: "2px 7px",
                     alignSelf: "flex-start",
