@@ -5473,847 +5473,6 @@ function HomePage() {
 
 
 
-        {/* ============ LOCAL ISSUES + LOCAL CHAT (unified card) ============ */}
-        {((localAlerts !== null && localAlerts.length > 0) || localRoom || joinedRoomChats.length > 0) && (() => {
-          const NAVY_C = '#0B1F3A';
-          const GREY_C = '#6B7686';
-          const BORDER_C = '#E4E8EF';
-          const GREEN_C = '#1E9E5A';
-          const AMBER_C = '#D97706';
-          const RED_C = '#CC2229';
-          const PF_C = 'Poppins, sans-serif';
-
-          const severityOf = (a: any): string => {
-            const txt = `${a?.alert_type ?? ''} ${a?.description ?? ''}`.toLowerCase();
-            if (/closed|closure|crash|collision|accident|blocked/.test(txt)) return RED_C;
-            if (/broken|breakdown|broken down|lane|roadworks|works|queue|delay|hazard|flood/.test(txt)) return AMBER_C;
-            return GREEN_C;
-          };
-          const rank = (c: string) => (c === RED_C ? 3 : c === AMBER_C ? 2 : 1);
-
-          const allAlerts = Array.isArray(localAlerts) ? localAlerts : [];
-          const alerts = allAlerts.filter((a: any) => !isRowMuted(`alert:${a?.id}`));
-          const alertsHidden = isRowMuted('alerts') || alerts.length === 0;
-          const localChatHidden = !localRoom || isRowMuted('localchat');
-          const visibleRooms = joinedRoomChats.filter((r) => !isRowMuted(`room:${r.id}`));
-          const mutedCount = Object.keys(mutedRows).filter((k) => isRowMuted(k)).length;
-          if (alertsHidden && localChatHidden && visibleRooms.length === 0 && mutedCount === 0) return null;
-
-          const topAlert = alerts.length
-            ? [...alerts].sort((a: any, b: any) => {
-                // Instructor alerts always beat TomTom
-                const aIsInstructor = !a.source || a.source !== 'tomtom';
-                const bIsInstructor = !b.source || b.source !== 'tomtom';
-                if (aIsInstructor !== bIsInstructor) return bIsInstructor ? 1 : -1;
-                // Then by severity
-                const d = rank(severityOf(b)) - rank(severityOf(a));
-                if (d !== 0) return d;
-                // Then by recency
-                return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
-              })[0]
-            : null;
-          const sevColor = topAlert ? severityOf(topAlert) : GREEN_C;
-          const alertPreview = topAlert
-            ? topAlert.source === 'tomtom'
-              ? [topAlert.alert_type, topAlert.location_name]
-                  .filter(Boolean).join(' · ') || topAlert.description || 'Traffic issue nearby'
-              : topAlert.description || topAlert.alert_type || 'Active issue nearby'
-            : '';
-
-          const HOUR = 3600_000;
-          const rowMenu = (key: string, name: string, extra: QuickAction[] = []): QuickAction[] => [
-            ...extra,
-            { label: 'Mute for 8 hours', onClick: () => muteRow(key, 8 * HOUR, `${name} muted for 8 hours`, `${name} unmuted`) },
-            { label: 'Mute for 7 days', onClick: () => muteRow(key, 7 * 24 * HOUR, `${name} muted for 7 days`, `${name} unmuted`) },
-            { label: 'Dismiss', onClick: () => muteRow(key, 365 * 24 * HOUR, `${name} dismissed`, `${name} restored`), destructive: true },
-          ];
-          const MenuButton = ({ items }: { items: QuickAction[] }) => (
-            <div onClick={(e) => e.stopPropagation()} style={{ flexShrink: 0 }}>
-              <QuickActionsMenu
-                items={items}
-                trigger={({ onClick }) => (
-                  <button
-                    type="button"
-                    aria-label="Row options"
-                    onClick={onClick}
-                    style={{
-                      background: 'none', border: 'none', padding: 4, cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}
-                  >
-                    <MoreHorizontal size={16} color={GREY_C} />
-                  </button>
-                )}
-              />
-            </div>
-          );
-
-
-          const HazardIcon = (
-            <svg width={26} height={26} viewBox="0 0 26 26" style={{ flexShrink: 0, display: 'block' }} aria-hidden="true">
-              <path d="M13 2.6 L24.4 22.4 H1.6 Z" fill="#FFFFFF" stroke={RED_C} strokeWidth={3} strokeLinejoin="round" />
-              <rect x="11.85" y="9.4" width="2.3" height="7.1" rx="1.15" fill="#111111" />
-              <circle cx="13" cy="18.9" r="1.35" fill="#111111" />
-            </svg>
-          );
-
-          
-
-          const RoomAvatar = ({
-            imageUrl,
-            name,
-            size = 32,
-          }: {
-            imageUrl: string | null;
-            name: string | null;
-            size?: number;
-          }) => {
-            if (imageUrl) {
-              return (
-                <img
-                  src={imageUrl}
-                  alt={name || 'Chat room'}
-                  style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, display: 'block' }}
-                />
-              );
-            }
-            const initials = (name || 'C')
-              .split(' ')
-              .map((w) => w[0])
-              .filter(Boolean)
-              .slice(0, 2)
-              .join('')
-              .toUpperCase();
-            return (
-              <div
-                style={{
-                  width: size,
-                  height: size,
-                  borderRadius: '50%',
-                  background: '#1877D6',
-                  color: '#FFFFFF',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: size * 0.4,
-                  fontWeight: 700,
-                  flexShrink: 0,
-                  fontFamily: PF_C,
-                }}
-              >
-                {initials}
-              </div>
-            );
-          };
-
-          const pupilReplies = unreadMsgs.filter((m) => !m.read_at).slice(0, 2);
-          const pupilName = (m: (typeof unreadMsgs)[number]) =>
-            m.pupils?.name || m.pupils?.first_name || 'Pupil';
-          const initialsOf = (n: string) =>
-            n.split(' ').map((w) => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
-
-          // ---- Counts ----
-          const adminRoom = visibleRooms.find((r) =>
-            /admin/i.test(r.area_name || r.outcode || ''),
-          );
-          const adminUnread = adminRoom?.unread ?? 0;
-          const totalUnreadChat =
-            unreadChat + unreadUkChat +
-            joinedRoomChats.reduce((s, r) => s + (r.unread ?? 0), 0);
-
-          // ---- Avatar stack (max 4, one per type) ----
-          type StackItem = { key: string; bg: string; node: React.ReactNode };
-          const avatarItems: StackItem[] = [];
-          if (!alertsHidden && alerts.length > 0) {
-            avatarItems.push({ key: 'issues', bg: RED_C, node: <AlertTriangle size={15} color="#FFFFFF" /> });
-          }
-          if (adminUnread > 0) {
-            avatarItems.push({ key: 'admin', bg: '#92400E', node: <Megaphone size={15} color="#FFFFFF" /> });
-          }
-          const firstPupil = pupilReplies[0];
-          if (firstPupil) {
-            avatarItems.push({
-              key: 'pupils', bg: '#1877D6',
-              node: <>{(pupilName(firstPupil) || 'P')[0].toUpperCase()}</>,
-            });
-          }
-          if (totalUnreadChat > 0) {
-            avatarItems.push({ key: 'chat', bg: '#7C3AED', node: <IconMessageCircle size={15} color="#FFFFFF" /> });
-          }
-          const isQuiet = avatarItems.length === 0;
-          const stack = avatarItems.slice(0, 6);
-
-          const Badge = ({ colour, value }: { colour: string; value: number }) => (
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              minWidth: 16, height: 16, borderRadius: 8, background: colour,
-              color: '#FFFFFF', fontSize: 9, fontWeight: 700, fontFamily: PF_C,
-              padding: '0 3px', marginLeft: 2,
-            }}>
-              {value}
-            </span>
-          );
-          const Label = ({
-            text, colour, count, onClick,
-          }: { text: string; colour: string; count: number; onClick?: () => void }) => {
-            const active = count > 0 && !!onClick;
-            return (
-              <span
-                {...(active
-                  ? {
-                      role: 'button' as const,
-                      tabIndex: 0,
-                      onClick: (e: React.MouseEvent) => { e.stopPropagation(); onClick!(); },
-                      onKeyDown: (e: React.KeyboardEvent) => {
-                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); onClick!(); }
-                      },
-                    }
-                  : {})}
-                style={{
-                  display: 'inline-flex', alignItems: 'center',
-                  fontSize: 11, fontFamily: PF_C,
-                  color: count > 0 ? colour : '#9CA3AF',
-                  fontWeight: count > 0 ? 600 : 400,
-                  padding: active ? '2px 4px' : 0,
-                  margin: active ? '-2px -4px' : 0,
-                  borderRadius: 6,
-                  cursor: active ? 'pointer' : 'inherit',
-                  WebkitTapHighlightColor: 'transparent',
-                }}
-              >
-                {text}
-                {count > 0 && <Badge colour={colour} value={count} />}
-              </span>
-            );
-          };
-
-          const Sep = () => <span style={{ color: BORDER_C, fontSize: 11 }}>·</span>;
-
-          
-
-          const rowBase: React.CSSProperties = {
-            display: 'flex', alignItems: 'center', gap: 12,
-            padding: '11px 14px', cursor: 'pointer',
-            borderTop: `0.5px solid ${BORDER_C}`,
-          };
-          const labelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: NAVY_C, fontFamily: PF_C };
-          const timeStyle: React.CSSProperties = { fontSize: 10, color: GREY_C, fontFamily: PF_C, flexShrink: 0 };
-
-          return (
-            <div style={SECTION_WRAPPER_STYLE}>
-              <div style={{ ...SECTION_HEADER_STYLE, padding: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
-                  <span style={SECTION_TITLE_TEXT_STYLE}>Community</span>
-                </div>
-              </div>
-              <div style={{
-                margin: 0, background: '#FFFFFF', borderRadius: 16,
-                border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
-              }}>
-
-              {/* ---- HEADER ---- */}
-              <div
-                onClick={() => setCommunityExpanded((v) => !v)}
-                style={{ padding: '12px 14px', cursor: 'pointer' }}
-              >
-                {(() => {
-                  const avatarSources = [
-                    ...unreadMsgs.map((m, i) => ({
-                      type: 'pupil' as const,
-                      name: pupilName(m),
-                      image: m.pupils?.profile_image_url || null,
-                      colour: m.pupils?.calendar_colour ?? ['#0B1F3A', '#CC2229', '#1877D6', '#15803D'][i % 4],
-                    })),
-                    ...(unreadDMs > 0 ? dmPreviews.map((dm) => ({
-                      type: 'instructor' as const,
-                      name: dm.other_name || 'DSM Instructor',
-                      image: dm.other_image || null,
-                      colour: '#1877D6',
-                    })) : []),
-                    ...(alerts.length > 0 ? [{
-                      type: 'alert' as const,
-                      name: null,
-                      image: null,
-                      colour: '#FCE9E9',
-                    }] : []),
-                  ];
-                  const extraAvatarCount = avatarSources.length > 6 ? avatarSources.length - 6 : 0;
-                  const visibleAvatars = avatarSources.slice(0, 6);
-                  const totalActive = alerts.length + totalUnreadChat + pupilReplies.length + adminUnread + unreadDMs;
-                  const latestActivity = [
-                    localAlerts?.[0]?.created_at,
-                    unreadMsgs?.[0]?.created_at,
-                    localChatLatest?.created_at,
-                    ukChatLatest?.created_at,
-                  ].filter(Boolean)
-                    .map((t) => new Date(t as string).getTime())
-                    .sort((a, b) => b - a)[0];
-                  const timeAgo = latestActivity
-                    ? (() => {
-                        const diff = Date.now() - latestActivity;
-                        const mins = Math.floor(diff / 60000);
-                        if (mins < 1) return 'just now';
-                        if (mins < 60) return `${mins}m ago`;
-                        const hrs = Math.floor(mins / 60);
-                        if (hrs < 24) return `${hrs}h ago`;
-                        return `${Math.floor(hrs / 24)}d ago`;
-                      })()
-                    : null;
-
-                  return (
-                    <>
-                      {/* Row 1 — title + chevron */}
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>Community</span>
-                        {communityExpanded
-                          ? <ChevronUp size={14} color="#9CA3AF" />
-                          : <ChevronDown size={14} color="#9CA3AF" />}
-                      </div>
-
-                      {/* Row 2 — avatar stack + active count + updated time */}
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          {visibleAvatars.length === 0 ? (
-                            <div style={{
-                              width: 32, height: 32, borderRadius: '50%', background: '#E6F1FB',
-                              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                            }}>
-                              <Users size={16} color="#1877D6" />
-                            </div>
-                          ) : (
-                            <>
-                              {visibleAvatars.map((s, i) => {
-                                const key = `${s.type}-${s.name ?? i}`;
-                                if (s.image) {
-                                  return (
-                                    <img
-                                      key={key}
-                                      src={s.image}
-                                      alt=""
-                                      style={{
-                                        width: 28, height: 28, borderRadius: '50%', objectFit: 'cover',
-                                        border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8, flexShrink: 0,
-                                      }}
-                                    />
-                                  );
-                                }
-                                if (s.type === 'alert') {
-                                  return (
-                                    <div
-                                      key={key}
-                                      style={{
-                                        width: 28, height: 28, borderRadius: '50%', background: '#FCE9E9',
-                                        border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8,
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                                      }}
-                                    >
-                                      <AlertTriangle size={14} color="#CC2229" />
-                                    </div>
-                                  );
-                                }
-                                return (
-                                  <div
-                                    key={key}
-                                    style={{
-                                      width: 28, height: 28, borderRadius: '50%', background: s.colour,
-                                      border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8,
-                                      fontSize: 10, fontWeight: 700, color: '#fff',
-                                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                      overflow: 'hidden', flexShrink: 0,
-                                    }}
-                                  >
-                                    {s.name ? initialsOf(s.name) : ''}
-                                  </div>
-                                );
-                              })}
-                              {extraAvatarCount > 0 && (
-                                <div style={{
-                                  width: 28, height: 28, borderRadius: '50%', background: '#E4E8EF',
-                                  border: '2px solid #fff', marginLeft: -8,
-                                  fontSize: 9, fontWeight: 600, color: '#6B7686',
-                                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                                }}>
-                                  +{extraAvatarCount}
-                                </div>
-                              )}
-                            </>
-                          )}
-                          <span style={{ fontSize: 11, color: '#6B7686', fontFamily: PF_C }}>{totalActive} active</span>
-                        </div>
-                        {timeAgo && (
-                          <span style={{ fontSize: 11, color: '#9CA3AF', fontFamily: PF_C }}>
-                            Updated {timeAgo}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Row 3 — labels */}
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, flexWrap: 'wrap' }}>
-                        <Label
-                          text="Issues" colour={RED_C} count={alerts.length}
-                          onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })}
-                        />
-                        <Sep />
-                        <Label
-                          text="Chat" colour="#7C3AED" count={totalUnreadChat}
-                          onClick={() => navigate({ to: '/community', search: { tab: unreadChat > 0 ? 'local' : 'rooms' } })}
-                        />
-                        <Sep />
-                        <Label
-                          text="Pupils" colour="#1877D6" count={pupilReplies.length}
-                          onClick={() => {
-                            const p = pupilReplies[0];
-                            if (p?.pupil_id) navigate({ to: '/messages/$pupilId', params: { pupilId: p.pupil_id } });
-                            else navigate({ to: '/messages' });
-                          }}
-                        />
-                        <Sep />
-                        <Label
-                          text="Admin" colour="#92400E" count={adminUnread}
-                          onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
-                        />
-                        <Sep />
-                        <Label
-                          text="DSM" colour="#1877D6" count={unreadDMs}
-                          onClick={() => navigate({
-                            to: '/messages' as never,
-                            search: { filter: 'instructors' } as never,
-                          })}
-                        />
-                      </div>
-                    </>
-                  );
-                })()}
-              </div>
-
-              {communityExpanded && (
-                <>
-                  {/* ROW 1 — Alerts */}
-                  {!alertsHidden && (
-                    <div onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })} style={rowBase}>
-                      <div style={{ position: 'relative', flexShrink: 0 }}>
-                        <div style={{
-                          width: 36, height: 36, borderRadius: '50%', background: '#FCE9E9',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        }}>
-                          <AlertTriangle size={18} color={RED_C} />
-                        </div>
-                        <span style={{
-                          position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
-                          borderRadius: 999, background: RED_C, color: '#FFFFFF',
-                          fontSize: 9, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        }}>
-                          {alerts.length}
-                        </span>
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={labelStyle}>Local issues</div>
-                        <div style={{
-                          fontSize: 11, fontWeight: 600, color: RED_C, fontFamily: PF_C,
-                          whiteSpace: 'normal', overflowWrap: 'break-word', lineHeight: '1.35',
-                        }}>
-                          {alertPreview}
-                        </div>
-                      </div>
-                      {topAlert?.created_at && <div style={timeStyle}>{timeAgo(topAlert.created_at)}</div>}
-                      <MenuButton
-                        items={rowMenu('alerts', 'Local issues', topAlert?.id ? [{
-                          label: 'Dismiss this alert',
-                          onClick: () => muteRow(`alert:${topAlert.id}`, 365 * 24 * HOUR, 'Alert dismissed', 'Alert restored'),
-                        }] : [])}
-                      />
-                    </div>
-                  )}
-
-                  {/* ROW 2 — Pupil messages */}
-                  {pupilReplies.map((m) => (
-                    <div
-                      key={m.id}
-                      onClick={() => navigate({ to: '/messages/$pupilId', params: { pupilId: m.pupil_id } })}
-                      style={rowBase}
-                    >
-                      <div style={{ position: 'relative', flexShrink: 0 }}>
-                        <div style={{
-                          width: 36, height: 36, borderRadius: '50%', background: '#1877D6',
-                          color: '#FFFFFF', fontSize: 13, fontWeight: 700, fontFamily: PF_C,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
-                        }}>
-                          {m.pupils?.profile_image_url
-                            ? <img src={m.pupils.profile_image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            : initialsOf(pupilName(m))}
-                        </div>
-                        <span style={{
-                          position: 'absolute', bottom: -1, right: -1, width: 10, height: 10,
-                          borderRadius: '50%', background: RED_C, border: '2px solid #FFFFFF',
-                        }} />
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={labelStyle}>{pupilName(m)}</div>
-                        <div style={{
-                          fontSize: 11, fontWeight: 700, color: NAVY_C, fontFamily: PF_C,
-                          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                        }}>
-                          {(m.body || '').substring(0, 48)}{(m.body || '').length > 48 ? '…' : ''}
-                        </div>
-                      </div>
-                      <div style={timeStyle}>{timeAgo(m.created_at)}</div>
-                    </div>
-                  ))}
-
-                  {/* ROW 3 — Local chat */}
-                  {!localChatHidden && localRoom && (
-                    <div onClick={() => navigate({ to: '/community', search: { tab: 'local' } })} style={rowBase}>
-                      <div style={{ position: 'relative', flexShrink: 0 }}>
-                        <div style={{
-                          width: 36, height: 36, borderRadius: '50%', background: NAVY_C,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
-                        }}>
-                          {localRoom.image_url
-                            ? <img src={localRoom.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            : <IconMessageCircle size={18} color="#FFFFFF" />}
-                        </div>
-                        {unreadChat > 0 && (
-                          <span style={{
-                            position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
-                            borderRadius: 999, background: '#7C3AED', color: '#FFFFFF',
-                            fontSize: 9, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          }}>
-                            {unreadChat}
-                          </span>
-                        )}
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={labelStyle}>{localRoom.area_name} Local Chat</div>
-                        <div style={{
-                          fontSize: 11, fontWeight: unreadChat > 0 ? 700 : 500,
-                          color: unreadChat > 0 ? NAVY_C : GREY_C, fontFamily: PF_C,
-                          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                        }}>
-                          {localChatLatest
-                            ? `${(localChatLatest.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(localChatLatest.message || '').substring(0, 40)}${(localChatLatest.message || '').length > 40 ? '…' : ''}`
-                            : `Be the first to chat in ${localRoom.area_name}!`}
-                        </div>
-                      </div>
-                      {localChatLatest?.created_at && <div style={timeStyle}>{timeAgo(localChatLatest.created_at)}</div>}
-                      <MenuButton items={rowMenu('localchat', 'Local chat')} />
-                    </div>
-                  )}
-
-                  {/* ROW 4 — Joined rooms */}
-                  {visibleRooms.map((room) => (
-                    <div
-                      key={room.id}
-                      onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
-                      style={rowBase}
-                    >
-                      <div style={{ position: 'relative', flexShrink: 0 }}>
-                        <div style={{
-                          width: 36, height: 36, borderRadius: '50%', background: '#7C3AED',
-                          color: '#FFFFFF', fontSize: 13, fontWeight: 700, fontFamily: PF_C,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
-                        }}>
-                          {room.image_url
-                            ? <img src={room.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            : initialsOf(room.area_name || room.outcode || 'C')}
-                        </div>
-                        {room.unread > 0 && (
-                          <span style={{
-                            position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
-                            borderRadius: 999, background: '#7C3AED', color: '#FFFFFF',
-                            fontSize: 9, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          }}>
-                            {room.unread}
-                          </span>
-                        )}
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={labelStyle}>{room.area_name || room.outcode}</div>
-                        <div style={{
-                          fontSize: 11, fontWeight: room.unread > 0 ? 700 : 500,
-                          color: room.unread > 0 ? NAVY_C : GREY_C, fontFamily: PF_C,
-                          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                        }}>
-                          {`${(room.latest?.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(room.latest?.message || '').substring(0, 40)}${(room.latest?.message || '').length > 40 ? '…' : ''}`}
-                        </div>
-                      </div>
-                      {room.latest?.created_at && <div style={timeStyle}>{timeAgo(room.latest.created_at)}</div>}
-                      <MenuButton items={rowMenu(`room:${room.id}`, `${room.area_name || room.outcode} chat`)} />
-                    </div>
-                  ))}
-
-                  {/* ROW 5 — DSM messages */}
-                  {dmPreviews.length > 0 && (
-                    <div style={{ marginTop: 12 }}>
-                      {/* Section header */}
-                      <div style={{
-                        fontSize: 9, fontWeight: 700,
-                        color: '#9CA3AF',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.06em',
-                        marginBottom: 6,
-                        paddingTop: 10,
-                        borderTop: '0.5px solid #E4E8EF',
-                        fontFamily: 'Poppins, sans-serif',
-                      }}>
-                        DSM messages
-                      </div>
-                      {/* DM rows */}
-                      {dmPreviews.map((dm, i) => {
-                        const other = { name: dm.other_name, id: dm.other_id };
-                        const initials = (dm.other_name ?? 'DM')
-                          .split(' ')
-                          .map((n: string) => n[0])
-                          .join('')
-                          .slice(0, 2)
-                          .toUpperCase();
-                        const timeAgo = dm.last_message_at
-                          ? (() => {
-                              const diff = Date.now() -
-                                new Date(dm.last_message_at).getTime();
-                              const mins = Math.floor(diff / 60000);
-                              if (mins < 60) return `${mins}m ago`;
-                              const hrs = Math.floor(mins / 60);
-                              if (hrs < 24) return `${hrs}h ago`;
-                              return `${Math.floor(hrs / 24)}d ago`;
-                            })()
-                          : '';
-                        return (
-                          <div
-                            key={dm.id}
-                            onClick={() => navigate({
-                              to: '/messages/instructor/$conversationId' as never,
-                              params: { conversationId: dm.id } as never,
-                            })}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 10,
-                              padding: '8px 0',
-                              borderBottom: i < dmPreviews.length - 1
-                                ? '0.5px solid #E4E8EF' : 'none',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            {/* Avatar */}
-                            {dm.other_image ? (
-                              <img
-                                src={dm.other_image}
-                                alt=""
-                                style={{
-                                  width: 28, height: 28,
-                                  borderRadius: '50%',
-                                  objectFit: 'cover',
-                                  flexShrink: 0,
-                                }}
-                              />
-                            ) : (
-                              <div style={{
-                                width: 28, height: 28,
-                                borderRadius: '50%',
-                                background: '#1877D6',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexShrink: 0,
-                              }}>
-                                <span style={{
-                                  fontSize: 10, fontWeight: 700,
-                                  color: '#fff',
-                                  fontFamily: 'Poppins, sans-serif',
-                                }}>
-                                  {initials}
-                                </span>
-                              </div>
-                            )}
-                            {/* Content */}
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 6,
-                                marginBottom: 2,
-                              }}>
-                                <span style={{
-                                  fontSize: 13, fontWeight: 600,
-                                  color: '#0B1F3A',
-                                  fontFamily: 'Poppins, sans-serif',
-                                }}>
-                                  {other?.name ?? 'DSM Instructor'}
-                                </span>
-                                <span style={{
-                                  background: '#E6F1FB',
-                                  color: '#1877D6',
-                                  fontSize: 8, fontWeight: 700,
-                                  padding: '1px 5px',
-                                  borderRadius: 20,
-                                  textTransform: 'uppercase',
-                                  letterSpacing: '0.04em',
-                                  fontFamily: 'Poppins, sans-serif',
-                                }}>
-                                  DSM
-                                </span>
-                              </div>
-                              <div style={{
-                                fontSize: 11,
-                                color: '#6B7686',
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                fontFamily: 'Poppins, sans-serif',
-                              }}>
-                                {dm.last_message}
-                              </div>
-                            </div>
-                            {/* Time + unread dot */}
-                            <div style={{
-                              flexShrink: 0,
-                              textAlign: 'right',
-                            }}>
-                              <div style={{
-                                fontSize: 10,
-                                color: '#9CA3AF',
-                                fontFamily: 'Poppins, sans-serif',
-                              }}>
-                                {timeAgo}
-                              </div>
-                              {unreadDMs > 0 && (
-                                <div style={{
-                                  width: 8, height: 8,
-                                  borderRadius: '50%',
-                                  background: '#1877D6',
-                                  marginLeft: 'auto',
-                                  marginTop: 4,
-                                }} />
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                      {/* See all link */}
-                      <div style={{
-                        textAlign: 'center',
-                        marginTop: 8,
-                        paddingTop: 8,
-                        borderTop: '0.5px solid #E4E8EF',
-                      }}>
-                        <span
-                          onClick={() => navigate({
-                            to: '/messages' as never,
-                          })}
-                          style={{
-                            fontSize: 12, fontWeight: 600,
-                            color: '#1877D6', cursor: 'pointer',
-                            fontFamily: 'Poppins, sans-serif',
-                          }}
-                        >
-                          See all in Messages →
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  <div
-                    onClick={() => navigate({ to: '/community' })}
-                    style={{
-                      padding: '9px 14px', fontSize: 12, fontWeight: 500, color: '#1877D6',
-                      fontFamily: PF_C, cursor: 'pointer', borderTop: `0.5px solid ${BORDER_C}`,
-                    }}
-                  >
-                    See all in Community →
-                  </div>
-
-                  {mutedCount > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        persistMutedRows({});
-                        toast.success('Muted items restored');
-                      }}
-                      style={{
-                        width: '100%', textAlign: 'center', padding: '10px 16px',
-                        background: '#F7F9FC', border: 'none',
-                        borderTop: `0.5px solid ${BORDER_C}`,
-                        fontSize: 12, fontWeight: 600, color: GREY_C, fontFamily: PF_C, cursor: 'pointer',
-                      }}
-                    >
-                      {mutedCount} muted · Show all
-                    </button>
-                  )}
-                </>
-              )}
-
-            </div>
-            </div>
-          );
-        })()}
-
-
-        {/* ============ NATIONAL CHAT ============ */}
-        {ukRoom && (
-          <div style={SECTION_WRAPPER_STYLE}>
-            <div
-              onClick={() => navigate({ to: '/community', search: { tab: 'uk' } })}
-              style={{
-                margin: 0, background: 'white', borderRadius: 14,
-                boxShadow: '0 2px 8px rgba(11,31,58,0.06)', padding: '13px 14px',
-                display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
-                fontFamily: 'Poppins, sans-serif',
-                border: unreadUkChat > 0 ? '1.5px solid #1877D6' : '1px solid transparent',
-              }}
-            >
-            <div style={{ position: 'relative', flexShrink: 0 }}>
-              <div style={{
-                width: 36, height: 36, borderRadius: 11,
-                background: unreadUkChat > 0 ? '#1877D6' : '#E6F1FB',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <Globe size={18} color={unreadUkChat > 0 ? '#FFFFFF' : '#1877D6'} />
-              </div>
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
-                DSM National Chat
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 1 }}>
-                <div style={{
-                  fontSize: unreadUkChat > 0 ? 12 : 11,
-                  fontWeight: unreadUkChat > 0 ? 600 : 400,
-                  color: unreadUkChat > 0 ? '#0B1F3A' : '#9CA3AF',
-                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, minWidth: 0,
-                  fontFamily: 'Poppins, sans-serif',
-                }}>
-                  {ukChatLatest
-                    ? `${(ukChatLatest.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(ukChatLatest.message || '').substring(0, 40)}${(ukChatLatest.message || '').length > 40 ? '...' : ''}`
-                    : 'Join the national conversation!'}
-                </div>
-                {ukChatLatest?.created_at && (
-                  <div style={{
-                    fontSize: 10, color: unreadUkChat > 0 ? '#1877D6' : '#9CA3AF', flexShrink: 0,
-                    fontFamily: 'Poppins, sans-serif',
-                  }}>
-                    {timeAgo(ukChatLatest.created_at)}
-                  </div>
-                )}
-              </div>
-            </div>
-            {unreadUkChat > 0 && (
-              <div style={{
-                width: 16, height: 16, borderRadius: 8, flexShrink: 0,
-                background: '#1877D6', color: '#FFFFFF', fontSize: 10, fontWeight: 700,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontFamily: 'Poppins, sans-serif',
-              }}>
-                {unreadUkChat}
-              </div>
-            )}
-            <ChevronRight size={17} color="#C7CDD9" style={{ flexShrink: 0 }} />
-          </div>
-          </div>
-        )}
 
 
 
@@ -8106,6 +7265,847 @@ function HomePage() {
                 </>
               );
             })()}
+
+        {/* ============ LOCAL ISSUES + LOCAL CHAT (unified card) ============ */}
+        {((localAlerts !== null && localAlerts.length > 0) || localRoom || joinedRoomChats.length > 0) && (() => {
+          const NAVY_C = '#0B1F3A';
+          const GREY_C = '#6B7686';
+          const BORDER_C = '#E4E8EF';
+          const GREEN_C = '#1E9E5A';
+          const AMBER_C = '#D97706';
+          const RED_C = '#CC2229';
+          const PF_C = 'Poppins, sans-serif';
+
+          const severityOf = (a: any): string => {
+            const txt = `${a?.alert_type ?? ''} ${a?.description ?? ''}`.toLowerCase();
+            if (/closed|closure|crash|collision|accident|blocked/.test(txt)) return RED_C;
+            if (/broken|breakdown|broken down|lane|roadworks|works|queue|delay|hazard|flood/.test(txt)) return AMBER_C;
+            return GREEN_C;
+          };
+          const rank = (c: string) => (c === RED_C ? 3 : c === AMBER_C ? 2 : 1);
+
+          const allAlerts = Array.isArray(localAlerts) ? localAlerts : [];
+          const alerts = allAlerts.filter((a: any) => !isRowMuted(`alert:${a?.id}`));
+          const alertsHidden = isRowMuted('alerts') || alerts.length === 0;
+          const localChatHidden = !localRoom || isRowMuted('localchat');
+          const visibleRooms = joinedRoomChats.filter((r) => !isRowMuted(`room:${r.id}`));
+          const mutedCount = Object.keys(mutedRows).filter((k) => isRowMuted(k)).length;
+          if (alertsHidden && localChatHidden && visibleRooms.length === 0 && mutedCount === 0) return null;
+
+          const topAlert = alerts.length
+            ? [...alerts].sort((a: any, b: any) => {
+                // Instructor alerts always beat TomTom
+                const aIsInstructor = !a.source || a.source !== 'tomtom';
+                const bIsInstructor = !b.source || b.source !== 'tomtom';
+                if (aIsInstructor !== bIsInstructor) return bIsInstructor ? 1 : -1;
+                // Then by severity
+                const d = rank(severityOf(b)) - rank(severityOf(a));
+                if (d !== 0) return d;
+                // Then by recency
+                return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+              })[0]
+            : null;
+          const sevColor = topAlert ? severityOf(topAlert) : GREEN_C;
+          const alertPreview = topAlert
+            ? topAlert.source === 'tomtom'
+              ? [topAlert.alert_type, topAlert.location_name]
+                  .filter(Boolean).join(' · ') || topAlert.description || 'Traffic issue nearby'
+              : topAlert.description || topAlert.alert_type || 'Active issue nearby'
+            : '';
+
+          const HOUR = 3600_000;
+          const rowMenu = (key: string, name: string, extra: QuickAction[] = []): QuickAction[] => [
+            ...extra,
+            { label: 'Mute for 8 hours', onClick: () => muteRow(key, 8 * HOUR, `${name} muted for 8 hours`, `${name} unmuted`) },
+            { label: 'Mute for 7 days', onClick: () => muteRow(key, 7 * 24 * HOUR, `${name} muted for 7 days`, `${name} unmuted`) },
+            { label: 'Dismiss', onClick: () => muteRow(key, 365 * 24 * HOUR, `${name} dismissed`, `${name} restored`), destructive: true },
+          ];
+          const MenuButton = ({ items }: { items: QuickAction[] }) => (
+            <div onClick={(e) => e.stopPropagation()} style={{ flexShrink: 0 }}>
+              <QuickActionsMenu
+                items={items}
+                trigger={({ onClick }) => (
+                  <button
+                    type="button"
+                    aria-label="Row options"
+                    onClick={onClick}
+                    style={{
+                      background: 'none', border: 'none', padding: 4, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}
+                  >
+                    <MoreHorizontal size={16} color={GREY_C} />
+                  </button>
+                )}
+              />
+            </div>
+          );
+
+
+          const HazardIcon = (
+            <svg width={26} height={26} viewBox="0 0 26 26" style={{ flexShrink: 0, display: 'block' }} aria-hidden="true">
+              <path d="M13 2.6 L24.4 22.4 H1.6 Z" fill="#FFFFFF" stroke={RED_C} strokeWidth={3} strokeLinejoin="round" />
+              <rect x="11.85" y="9.4" width="2.3" height="7.1" rx="1.15" fill="#111111" />
+              <circle cx="13" cy="18.9" r="1.35" fill="#111111" />
+            </svg>
+          );
+
+          
+
+          const RoomAvatar = ({
+            imageUrl,
+            name,
+            size = 32,
+          }: {
+            imageUrl: string | null;
+            name: string | null;
+            size?: number;
+          }) => {
+            if (imageUrl) {
+              return (
+                <img
+                  src={imageUrl}
+                  alt={name || 'Chat room'}
+                  style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, display: 'block' }}
+                />
+              );
+            }
+            const initials = (name || 'C')
+              .split(' ')
+              .map((w) => w[0])
+              .filter(Boolean)
+              .slice(0, 2)
+              .join('')
+              .toUpperCase();
+            return (
+              <div
+                style={{
+                  width: size,
+                  height: size,
+                  borderRadius: '50%',
+                  background: '#1877D6',
+                  color: '#FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: size * 0.4,
+                  fontWeight: 700,
+                  flexShrink: 0,
+                  fontFamily: PF_C,
+                }}
+              >
+                {initials}
+              </div>
+            );
+          };
+
+          const pupilReplies = unreadMsgs.filter((m) => !m.read_at).slice(0, 2);
+          const pupilName = (m: (typeof unreadMsgs)[number]) =>
+            m.pupils?.name || m.pupils?.first_name || 'Pupil';
+          const initialsOf = (n: string) =>
+            n.split(' ').map((w) => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
+
+          // ---- Counts ----
+          const adminRoom = visibleRooms.find((r) =>
+            /admin/i.test(r.area_name || r.outcode || ''),
+          );
+          const adminUnread = adminRoom?.unread ?? 0;
+          const totalUnreadChat =
+            unreadChat + unreadUkChat +
+            joinedRoomChats.reduce((s, r) => s + (r.unread ?? 0), 0);
+
+          // ---- Avatar stack (max 4, one per type) ----
+          type StackItem = { key: string; bg: string; node: React.ReactNode };
+          const avatarItems: StackItem[] = [];
+          if (!alertsHidden && alerts.length > 0) {
+            avatarItems.push({ key: 'issues', bg: RED_C, node: <AlertTriangle size={15} color="#FFFFFF" /> });
+          }
+          if (adminUnread > 0) {
+            avatarItems.push({ key: 'admin', bg: '#92400E', node: <Megaphone size={15} color="#FFFFFF" /> });
+          }
+          const firstPupil = pupilReplies[0];
+          if (firstPupil) {
+            avatarItems.push({
+              key: 'pupils', bg: '#1877D6',
+              node: <>{(pupilName(firstPupil) || 'P')[0].toUpperCase()}</>,
+            });
+          }
+          if (totalUnreadChat > 0) {
+            avatarItems.push({ key: 'chat', bg: '#7C3AED', node: <IconMessageCircle size={15} color="#FFFFFF" /> });
+          }
+          const isQuiet = avatarItems.length === 0;
+          const stack = avatarItems.slice(0, 6);
+
+          const Badge = ({ colour, value }: { colour: string; value: number }) => (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              minWidth: 16, height: 16, borderRadius: 8, background: colour,
+              color: '#FFFFFF', fontSize: 9, fontWeight: 700, fontFamily: PF_C,
+              padding: '0 3px', marginLeft: 2,
+            }}>
+              {value}
+            </span>
+          );
+          const Label = ({
+            text, colour, count, onClick,
+          }: { text: string; colour: string; count: number; onClick?: () => void }) => {
+            const active = count > 0 && !!onClick;
+            return (
+              <span
+                {...(active
+                  ? {
+                      role: 'button' as const,
+                      tabIndex: 0,
+                      onClick: (e: React.MouseEvent) => { e.stopPropagation(); onClick!(); },
+                      onKeyDown: (e: React.KeyboardEvent) => {
+                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); onClick!(); }
+                      },
+                    }
+                  : {})}
+                style={{
+                  display: 'inline-flex', alignItems: 'center',
+                  fontSize: 11, fontFamily: PF_C,
+                  color: count > 0 ? colour : '#9CA3AF',
+                  fontWeight: count > 0 ? 600 : 400,
+                  padding: active ? '2px 4px' : 0,
+                  margin: active ? '-2px -4px' : 0,
+                  borderRadius: 6,
+                  cursor: active ? 'pointer' : 'inherit',
+                  WebkitTapHighlightColor: 'transparent',
+                }}
+              >
+                {text}
+                {count > 0 && <Badge colour={colour} value={count} />}
+              </span>
+            );
+          };
+
+          const Sep = () => <span style={{ color: BORDER_C, fontSize: 11 }}>·</span>;
+
+          
+
+          const rowBase: React.CSSProperties = {
+            display: 'flex', alignItems: 'center', gap: 12,
+            padding: '11px 14px', cursor: 'pointer',
+            borderTop: `0.5px solid ${BORDER_C}`,
+          };
+          const labelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: NAVY_C, fontFamily: PF_C };
+          const timeStyle: React.CSSProperties = { fontSize: 10, color: GREY_C, fontFamily: PF_C, flexShrink: 0 };
+
+          return (
+            <div style={SECTION_WRAPPER_STYLE}>
+              <div style={{ ...SECTION_HEADER_STYLE, padding: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+                  <span style={SECTION_TITLE_TEXT_STYLE}>Community</span>
+                </div>
+              </div>
+              <div style={{
+                margin: 0, background: '#FFFFFF', borderRadius: 16,
+                border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
+              }}>
+
+              {/* ---- HEADER ---- */}
+              <div
+                onClick={() => setCommunityExpanded((v) => !v)}
+                style={{ padding: '12px 14px', cursor: 'pointer' }}
+              >
+                {(() => {
+                  const avatarSources = [
+                    ...unreadMsgs.map((m, i) => ({
+                      type: 'pupil' as const,
+                      name: pupilName(m),
+                      image: m.pupils?.profile_image_url || null,
+                      colour: m.pupils?.calendar_colour ?? ['#0B1F3A', '#CC2229', '#1877D6', '#15803D'][i % 4],
+                    })),
+                    ...(unreadDMs > 0 ? dmPreviews.map((dm) => ({
+                      type: 'instructor' as const,
+                      name: dm.other_name || 'DSM Instructor',
+                      image: dm.other_image || null,
+                      colour: '#1877D6',
+                    })) : []),
+                    ...(alerts.length > 0 ? [{
+                      type: 'alert' as const,
+                      name: null,
+                      image: null,
+                      colour: '#FCE9E9',
+                    }] : []),
+                  ];
+                  const extraAvatarCount = avatarSources.length > 6 ? avatarSources.length - 6 : 0;
+                  const visibleAvatars = avatarSources.slice(0, 6);
+                  const totalActive = alerts.length + totalUnreadChat + pupilReplies.length + adminUnread + unreadDMs;
+                  const latestActivity = [
+                    localAlerts?.[0]?.created_at,
+                    unreadMsgs?.[0]?.created_at,
+                    localChatLatest?.created_at,
+                    ukChatLatest?.created_at,
+                  ].filter(Boolean)
+                    .map((t) => new Date(t as string).getTime())
+                    .sort((a, b) => b - a)[0];
+                  const timeAgo = latestActivity
+                    ? (() => {
+                        const diff = Date.now() - latestActivity;
+                        const mins = Math.floor(diff / 60000);
+                        if (mins < 1) return 'just now';
+                        if (mins < 60) return `${mins}m ago`;
+                        const hrs = Math.floor(mins / 60);
+                        if (hrs < 24) return `${hrs}h ago`;
+                        return `${Math.floor(hrs / 24)}d ago`;
+                      })()
+                    : null;
+
+                  return (
+                    <>
+                      {/* Row 1 — title + chevron */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>Community</span>
+                        {communityExpanded
+                          ? <ChevronUp size={14} color="#9CA3AF" />
+                          : <ChevronDown size={14} color="#9CA3AF" />}
+                      </div>
+
+                      {/* Row 2 — avatar stack + active count + updated time */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          {visibleAvatars.length === 0 ? (
+                            <div style={{
+                              width: 32, height: 32, borderRadius: '50%', background: '#E6F1FB',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                            }}>
+                              <Users size={16} color="#1877D6" />
+                            </div>
+                          ) : (
+                            <>
+                              {visibleAvatars.map((s, i) => {
+                                const key = `${s.type}-${s.name ?? i}`;
+                                if (s.image) {
+                                  return (
+                                    <img
+                                      key={key}
+                                      src={s.image}
+                                      alt=""
+                                      style={{
+                                        width: 28, height: 28, borderRadius: '50%', objectFit: 'cover',
+                                        border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8, flexShrink: 0,
+                                      }}
+                                    />
+                                  );
+                                }
+                                if (s.type === 'alert') {
+                                  return (
+                                    <div
+                                      key={key}
+                                      style={{
+                                        width: 28, height: 28, borderRadius: '50%', background: '#FCE9E9',
+                                        border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8,
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                                      }}
+                                    >
+                                      <AlertTriangle size={14} color="#CC2229" />
+                                    </div>
+                                  );
+                                }
+                                return (
+                                  <div
+                                    key={key}
+                                    style={{
+                                      width: 28, height: 28, borderRadius: '50%', background: s.colour,
+                                      border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8,
+                                      fontSize: 10, fontWeight: 700, color: '#fff',
+                                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                      overflow: 'hidden', flexShrink: 0,
+                                    }}
+                                  >
+                                    {s.name ? initialsOf(s.name) : ''}
+                                  </div>
+                                );
+                              })}
+                              {extraAvatarCount > 0 && (
+                                <div style={{
+                                  width: 28, height: 28, borderRadius: '50%', background: '#E4E8EF',
+                                  border: '2px solid #fff', marginLeft: -8,
+                                  fontSize: 9, fontWeight: 600, color: '#6B7686',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                                }}>
+                                  +{extraAvatarCount}
+                                </div>
+                              )}
+                            </>
+                          )}
+                          <span style={{ fontSize: 11, color: '#6B7686', fontFamily: PF_C }}>{totalActive} active</span>
+                        </div>
+                        {timeAgo && (
+                          <span style={{ fontSize: 11, color: '#9CA3AF', fontFamily: PF_C }}>
+                            Updated {timeAgo}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Row 3 — labels */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, flexWrap: 'wrap' }}>
+                        <Label
+                          text="Issues" colour={RED_C} count={alerts.length}
+                          onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })}
+                        />
+                        <Sep />
+                        <Label
+                          text="Chat" colour="#7C3AED" count={totalUnreadChat}
+                          onClick={() => navigate({ to: '/community', search: { tab: unreadChat > 0 ? 'local' : 'rooms' } })}
+                        />
+                        <Sep />
+                        <Label
+                          text="Pupils" colour="#1877D6" count={pupilReplies.length}
+                          onClick={() => {
+                            const p = pupilReplies[0];
+                            if (p?.pupil_id) navigate({ to: '/messages/$pupilId', params: { pupilId: p.pupil_id } });
+                            else navigate({ to: '/messages' });
+                          }}
+                        />
+                        <Sep />
+                        <Label
+                          text="Admin" colour="#92400E" count={adminUnread}
+                          onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
+                        />
+                        <Sep />
+                        <Label
+                          text="DSM" colour="#1877D6" count={unreadDMs}
+                          onClick={() => navigate({
+                            to: '/messages' as never,
+                            search: { filter: 'instructors' } as never,
+                          })}
+                        />
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+
+              {communityExpanded && (
+                <>
+                  {/* ROW 1 — Alerts */}
+                  {!alertsHidden && (
+                    <div onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })} style={rowBase}>
+                      <div style={{ position: 'relative', flexShrink: 0 }}>
+                        <div style={{
+                          width: 36, height: 36, borderRadius: '50%', background: '#FCE9E9',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}>
+                          <AlertTriangle size={18} color={RED_C} />
+                        </div>
+                        <span style={{
+                          position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
+                          borderRadius: 999, background: RED_C, color: '#FFFFFF',
+                          fontSize: 9, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}>
+                          {alerts.length}
+                        </span>
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={labelStyle}>Local issues</div>
+                        <div style={{
+                          fontSize: 11, fontWeight: 600, color: RED_C, fontFamily: PF_C,
+                          whiteSpace: 'normal', overflowWrap: 'break-word', lineHeight: '1.35',
+                        }}>
+                          {alertPreview}
+                        </div>
+                      </div>
+                      {topAlert?.created_at && <div style={timeStyle}>{timeAgo(topAlert.created_at)}</div>}
+                      <MenuButton
+                        items={rowMenu('alerts', 'Local issues', topAlert?.id ? [{
+                          label: 'Dismiss this alert',
+                          onClick: () => muteRow(`alert:${topAlert.id}`, 365 * 24 * HOUR, 'Alert dismissed', 'Alert restored'),
+                        }] : [])}
+                      />
+                    </div>
+                  )}
+
+                  {/* ROW 2 — Pupil messages */}
+                  {pupilReplies.map((m) => (
+                    <div
+                      key={m.id}
+                      onClick={() => navigate({ to: '/messages/$pupilId', params: { pupilId: m.pupil_id } })}
+                      style={rowBase}
+                    >
+                      <div style={{ position: 'relative', flexShrink: 0 }}>
+                        <div style={{
+                          width: 36, height: 36, borderRadius: '50%', background: '#1877D6',
+                          color: '#FFFFFF', fontSize: 13, fontWeight: 700, fontFamily: PF_C,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+                        }}>
+                          {m.pupils?.profile_image_url
+                            ? <img src={m.pupils.profile_image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            : initialsOf(pupilName(m))}
+                        </div>
+                        <span style={{
+                          position: 'absolute', bottom: -1, right: -1, width: 10, height: 10,
+                          borderRadius: '50%', background: RED_C, border: '2px solid #FFFFFF',
+                        }} />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={labelStyle}>{pupilName(m)}</div>
+                        <div style={{
+                          fontSize: 11, fontWeight: 700, color: NAVY_C, fontFamily: PF_C,
+                          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                        }}>
+                          {(m.body || '').substring(0, 48)}{(m.body || '').length > 48 ? '…' : ''}
+                        </div>
+                      </div>
+                      <div style={timeStyle}>{timeAgo(m.created_at)}</div>
+                    </div>
+                  ))}
+
+                  {/* ROW 3 — Local chat */}
+                  {!localChatHidden && localRoom && (
+                    <div onClick={() => navigate({ to: '/community', search: { tab: 'local' } })} style={rowBase}>
+                      <div style={{ position: 'relative', flexShrink: 0 }}>
+                        <div style={{
+                          width: 36, height: 36, borderRadius: '50%', background: NAVY_C,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+                        }}>
+                          {localRoom.image_url
+                            ? <img src={localRoom.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            : <IconMessageCircle size={18} color="#FFFFFF" />}
+                        </div>
+                        {unreadChat > 0 && (
+                          <span style={{
+                            position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
+                            borderRadius: 999, background: '#7C3AED', color: '#FFFFFF',
+                            fontSize: 9, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          }}>
+                            {unreadChat}
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={labelStyle}>{localRoom.area_name} Local Chat</div>
+                        <div style={{
+                          fontSize: 11, fontWeight: unreadChat > 0 ? 700 : 500,
+                          color: unreadChat > 0 ? NAVY_C : GREY_C, fontFamily: PF_C,
+                          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                        }}>
+                          {localChatLatest
+                            ? `${(localChatLatest.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(localChatLatest.message || '').substring(0, 40)}${(localChatLatest.message || '').length > 40 ? '…' : ''}`
+                            : `Be the first to chat in ${localRoom.area_name}!`}
+                        </div>
+                      </div>
+                      {localChatLatest?.created_at && <div style={timeStyle}>{timeAgo(localChatLatest.created_at)}</div>}
+                      <MenuButton items={rowMenu('localchat', 'Local chat')} />
+                    </div>
+                  )}
+
+                  {/* ROW 4 — Joined rooms */}
+                  {visibleRooms.map((room) => (
+                    <div
+                      key={room.id}
+                      onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
+                      style={rowBase}
+                    >
+                      <div style={{ position: 'relative', flexShrink: 0 }}>
+                        <div style={{
+                          width: 36, height: 36, borderRadius: '50%', background: '#7C3AED',
+                          color: '#FFFFFF', fontSize: 13, fontWeight: 700, fontFamily: PF_C,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+                        }}>
+                          {room.image_url
+                            ? <img src={room.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            : initialsOf(room.area_name || room.outcode || 'C')}
+                        </div>
+                        {room.unread > 0 && (
+                          <span style={{
+                            position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
+                            borderRadius: 999, background: '#7C3AED', color: '#FFFFFF',
+                            fontSize: 9, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          }}>
+                            {room.unread}
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={labelStyle}>{room.area_name || room.outcode}</div>
+                        <div style={{
+                          fontSize: 11, fontWeight: room.unread > 0 ? 700 : 500,
+                          color: room.unread > 0 ? NAVY_C : GREY_C, fontFamily: PF_C,
+                          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                        }}>
+                          {`${(room.latest?.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(room.latest?.message || '').substring(0, 40)}${(room.latest?.message || '').length > 40 ? '…' : ''}`}
+                        </div>
+                      </div>
+                      {room.latest?.created_at && <div style={timeStyle}>{timeAgo(room.latest.created_at)}</div>}
+                      <MenuButton items={rowMenu(`room:${room.id}`, `${room.area_name || room.outcode} chat`)} />
+                    </div>
+                  ))}
+
+                  {/* ROW 5 — DSM messages */}
+                  {dmPreviews.length > 0 && (
+                    <div style={{ marginTop: 12 }}>
+                      {/* Section header */}
+                      <div style={{
+                        fontSize: 9, fontWeight: 700,
+                        color: '#9CA3AF',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.06em',
+                        marginBottom: 6,
+                        paddingTop: 10,
+                        borderTop: '0.5px solid #E4E8EF',
+                        fontFamily: 'Poppins, sans-serif',
+                      }}>
+                        DSM messages
+                      </div>
+                      {/* DM rows */}
+                      {dmPreviews.map((dm, i) => {
+                        const other = { name: dm.other_name, id: dm.other_id };
+                        const initials = (dm.other_name ?? 'DM')
+                          .split(' ')
+                          .map((n: string) => n[0])
+                          .join('')
+                          .slice(0, 2)
+                          .toUpperCase();
+                        const timeAgo = dm.last_message_at
+                          ? (() => {
+                              const diff = Date.now() -
+                                new Date(dm.last_message_at).getTime();
+                              const mins = Math.floor(diff / 60000);
+                              if (mins < 60) return `${mins}m ago`;
+                              const hrs = Math.floor(mins / 60);
+                              if (hrs < 24) return `${hrs}h ago`;
+                              return `${Math.floor(hrs / 24)}d ago`;
+                            })()
+                          : '';
+                        return (
+                          <div
+                            key={dm.id}
+                            onClick={() => navigate({
+                              to: '/messages/instructor/$conversationId' as never,
+                              params: { conversationId: dm.id } as never,
+                            })}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 10,
+                              padding: '8px 0',
+                              borderBottom: i < dmPreviews.length - 1
+                                ? '0.5px solid #E4E8EF' : 'none',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            {/* Avatar */}
+                            {dm.other_image ? (
+                              <img
+                                src={dm.other_image}
+                                alt=""
+                                style={{
+                                  width: 28, height: 28,
+                                  borderRadius: '50%',
+                                  objectFit: 'cover',
+                                  flexShrink: 0,
+                                }}
+                              />
+                            ) : (
+                              <div style={{
+                                width: 28, height: 28,
+                                borderRadius: '50%',
+                                background: '#1877D6',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexShrink: 0,
+                              }}>
+                                <span style={{
+                                  fontSize: 10, fontWeight: 700,
+                                  color: '#fff',
+                                  fontFamily: 'Poppins, sans-serif',
+                                }}>
+                                  {initials}
+                                </span>
+                              </div>
+                            )}
+                            {/* Content */}
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 6,
+                                marginBottom: 2,
+                              }}>
+                                <span style={{
+                                  fontSize: 13, fontWeight: 600,
+                                  color: '#0B1F3A',
+                                  fontFamily: 'Poppins, sans-serif',
+                                }}>
+                                  {other?.name ?? 'DSM Instructor'}
+                                </span>
+                                <span style={{
+                                  background: '#E6F1FB',
+                                  color: '#1877D6',
+                                  fontSize: 8, fontWeight: 700,
+                                  padding: '1px 5px',
+                                  borderRadius: 20,
+                                  textTransform: 'uppercase',
+                                  letterSpacing: '0.04em',
+                                  fontFamily: 'Poppins, sans-serif',
+                                }}>
+                                  DSM
+                                </span>
+                              </div>
+                              <div style={{
+                                fontSize: 11,
+                                color: '#6B7686',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                fontFamily: 'Poppins, sans-serif',
+                              }}>
+                                {dm.last_message}
+                              </div>
+                            </div>
+                            {/* Time + unread dot */}
+                            <div style={{
+                              flexShrink: 0,
+                              textAlign: 'right',
+                            }}>
+                              <div style={{
+                                fontSize: 10,
+                                color: '#9CA3AF',
+                                fontFamily: 'Poppins, sans-serif',
+                              }}>
+                                {timeAgo}
+                              </div>
+                              {unreadDMs > 0 && (
+                                <div style={{
+                                  width: 8, height: 8,
+                                  borderRadius: '50%',
+                                  background: '#1877D6',
+                                  marginLeft: 'auto',
+                                  marginTop: 4,
+                                }} />
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                      {/* See all link */}
+                      <div style={{
+                        textAlign: 'center',
+                        marginTop: 8,
+                        paddingTop: 8,
+                        borderTop: '0.5px solid #E4E8EF',
+                      }}>
+                        <span
+                          onClick={() => navigate({
+                            to: '/messages' as never,
+                          })}
+                          style={{
+                            fontSize: 12, fontWeight: 600,
+                            color: '#1877D6', cursor: 'pointer',
+                            fontFamily: 'Poppins, sans-serif',
+                          }}
+                        >
+                          See all in Messages →
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  <div
+                    onClick={() => navigate({ to: '/community' })}
+                    style={{
+                      padding: '9px 14px', fontSize: 12, fontWeight: 500, color: '#1877D6',
+                      fontFamily: PF_C, cursor: 'pointer', borderTop: `0.5px solid ${BORDER_C}`,
+                    }}
+                  >
+                    See all in Community →
+                  </div>
+
+                  {mutedCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        persistMutedRows({});
+                        toast.success('Muted items restored');
+                      }}
+                      style={{
+                        width: '100%', textAlign: 'center', padding: '10px 16px',
+                        background: '#F7F9FC', border: 'none',
+                        borderTop: `0.5px solid ${BORDER_C}`,
+                        fontSize: 12, fontWeight: 600, color: GREY_C, fontFamily: PF_C, cursor: 'pointer',
+                      }}
+                    >
+                      {mutedCount} muted · Show all
+                    </button>
+                  )}
+                </>
+              )}
+
+            </div>
+            </div>
+          );
+        })()}
+
+        {/* ============ NATIONAL CHAT ============ */}
+        {ukRoom && (
+          <div style={SECTION_WRAPPER_STYLE}>
+            <div
+              onClick={() => navigate({ to: '/community', search: { tab: 'uk' } })}
+              style={{
+                margin: 0, background: 'white', borderRadius: 14,
+                boxShadow: '0 2px 8px rgba(11,31,58,0.06)', padding: '13px 14px',
+                display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
+                fontFamily: 'Poppins, sans-serif',
+                border: unreadUkChat > 0 ? '1.5px solid #1877D6' : '1px solid transparent',
+              }}
+            >
+            <div style={{ position: 'relative', flexShrink: 0 }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: 11,
+                background: unreadUkChat > 0 ? '#1877D6' : '#E6F1FB',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Globe size={18} color={unreadUkChat > 0 ? '#FFFFFF' : '#1877D6'} />
+              </div>
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+                DSM National Chat
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 1 }}>
+                <div style={{
+                  fontSize: unreadUkChat > 0 ? 12 : 11,
+                  fontWeight: unreadUkChat > 0 ? 600 : 400,
+                  color: unreadUkChat > 0 ? '#0B1F3A' : '#9CA3AF',
+                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1, minWidth: 0,
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
+                  {ukChatLatest
+                    ? `${(ukChatLatest.instructors?.name?.split(' ')[0]) || 'Someone'}: ${(ukChatLatest.message || '').substring(0, 40)}${(ukChatLatest.message || '').length > 40 ? '...' : ''}`
+                    : 'Join the national conversation!'}
+                </div>
+                {ukChatLatest?.created_at && (
+                  <div style={{
+                    fontSize: 10, color: unreadUkChat > 0 ? '#1877D6' : '#9CA3AF', flexShrink: 0,
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    {timeAgo(ukChatLatest.created_at)}
+                  </div>
+                )}
+              </div>
+            </div>
+            {unreadUkChat > 0 && (
+              <div style={{
+                width: 16, height: 16, borderRadius: 8, flexShrink: 0,
+                background: '#1877D6', color: '#FFFFFF', fontSize: 10, fontWeight: 700,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'Poppins, sans-serif',
+              }}>
+                {unreadUkChat}
+              </div>
+            )}
+            <ChevronRight size={17} color="#C7CDD9" style={{ flexShrink: 0 }} />
+          </div>
+          </div>
+        )}
 
             {/* ===== DISCOVER SECTION ===== */}
             <div style={SECTION_WRAPPER_STYLE}>
