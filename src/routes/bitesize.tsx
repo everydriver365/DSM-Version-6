@@ -659,6 +659,107 @@ function BitesizePage() {
                   {video.views ?? 0} views
                 </div>
               </div>
+
+              {/* ADMIN ACTIONS */}
+              {isAdmin && (
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 6,
+                    padding: "0 10px 10px",
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Publish toggle */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      togglePublish(video);
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: "6px 0",
+                      background: video.is_published ? "#DCFCE7" : "#FEF3C7",
+                      color: video.is_published ? "#15803D" : "#92400E",
+                      border: "none",
+                      borderRadius: 8,
+                      fontSize: 10,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      ...POPPINS,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 4,
+                    }}
+                  >
+                    {video.is_published ? (
+                      <>
+                        <IconEye size={14} /> Published
+                      </>
+                    ) : (
+                      <>
+                        <IconEyeOff size={14} /> Draft
+                      </>
+                    )}
+                  </button>
+
+                  {/* Edit */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openEdit(video);
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: "6px 0",
+                      background: "#E6F1FB",
+                      color: "#1877D6",
+                      border: "none",
+                      borderRadius: 8,
+                      fontSize: 10,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      ...POPPINS,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 4,
+                    }}
+                  >
+                    <IconPencil size={14} /> Edit
+                  </button>
+
+                  {/* Delete */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteVideo(video);
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: "6px 0",
+                      background: "#FCE9E9",
+                      color: "#CC2229",
+                      border: "none",
+                      borderRadius: 8,
+                      fontSize: 10,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      ...POPPINS,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 4,
+                    }}
+                  >
+                    <IconTrash size={14} /> Delete
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
