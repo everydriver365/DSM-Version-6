@@ -720,7 +720,11 @@ function ShowcasePage() {
                     <button
                       type="button"
                       aria-label="Comments"
-                      onClick={() => openComments(video)}
+                      onClick={() => {
+                        openPlayer(video);
+                        setCommentsOpen(true);
+                      }}
+
                       style={{
                         display: "inline-flex",
                         alignItems: "center",
