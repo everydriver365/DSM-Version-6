@@ -5909,7 +5909,7 @@ function HomePage() {
                   <button
                     type="button"
                     onClick={() => { setAddLessonPupilId(undefined); setAddLessonDate(tab === 'tomorrow' ? tomorrowISO : undefined); setAddLessonOpen(true); }}
-                    style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: '#1877D6', cursor: 'pointer', lineHeight: 1 }}
+                    style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: '#CC2229', cursor: 'pointer', lineHeight: 1 }}
                   >
                     Add +
                   </button>
