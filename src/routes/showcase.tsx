@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
 import {
   IconChevronLeft,
+  IconChevronRight,
   IconPlayerPlay,
   IconPlus,
   IconEye,
