@@ -101,7 +101,7 @@ const emptyDraft: NewListingDraft = {
   showImage: true,
   isVerified: true,
   isActive: true,
-  images: ["", "", "", ""],
+  images: [],
 };
 
 function AdminListingsPage() {
