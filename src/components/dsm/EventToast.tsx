@@ -147,7 +147,8 @@ export function EventToastController() {
     <div
       style={{
         position: "fixed",
-        top: "calc(env(safe-area-inset-top, 0px) + 10px)",
+        top: "50%",
+        marginTop: -40,
         left: 0,
         right: 0,
         display: "flex",
