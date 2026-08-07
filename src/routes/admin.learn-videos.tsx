@@ -19,7 +19,8 @@ const RED = "#CC2229";
 interface LearnVideo {
   id: string;
   title: string;
-  duration: string | null;
+  duration: number | null;
+  description: string | null;
   url: string | null;
   thumbnail_url: string | null;
   sort_order: number | null;
