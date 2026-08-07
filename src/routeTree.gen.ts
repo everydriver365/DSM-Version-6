@@ -26,6 +26,7 @@ import { Route as TaxRouteImport } from './routes/tax'
 import { Route as TakePaymentRouteImport } from './routes/take-payment'
 import { Route as SubscriptionRouteImport } from './routes/subscription'
 import { Route as StandardsRouteImport } from './routes/standards'
+import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ScheduleRouteImport } from './routes/schedule'
@@ -246,6 +247,11 @@ const SubscriptionRoute = SubscriptionRouteImport.update({
 const StandardsRoute = StandardsRouteImport.update({
   id: '/standards',
   path: '/standards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShowcaseRoute = ShowcaseRouteImport.update({
+  id: '/showcase',
+  path: '/showcase',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -1009,6 +1015,7 @@ export interface FileRoutesByFullPath {
   '/schedule': typeof ScheduleRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/showcase': typeof ShowcaseRoute
   '/standards': typeof StandardsRoute
   '/subscription': typeof SubscriptionRoute
   '/take-payment': typeof TakePaymentRoute
@@ -1160,6 +1167,7 @@ export interface FileRoutesByTo {
   '/schedule': typeof ScheduleRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/showcase': typeof ShowcaseRoute
   '/standards': typeof StandardsRoute
   '/subscription': typeof SubscriptionRoute
   '/take-payment': typeof TakePaymentRoute
@@ -1316,6 +1324,7 @@ export interface FileRoutesById {
   '/schedule': typeof ScheduleRoute
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/showcase': typeof ShowcaseRoute
   '/standards': typeof StandardsRoute
   '/subscription': typeof SubscriptionRoute
   '/take-payment': typeof TakePaymentRoute
@@ -1472,6 +1481,7 @@ export interface FileRouteTypes {
     | '/schedule'
     | '/search'
     | '/settings'
+    | '/showcase'
     | '/standards'
     | '/subscription'
     | '/take-payment'
@@ -1623,6 +1633,7 @@ export interface FileRouteTypes {
     | '/schedule'
     | '/search'
     | '/settings'
+    | '/showcase'
     | '/standards'
     | '/subscription'
     | '/take-payment'
@@ -1778,6 +1789,7 @@ export interface FileRouteTypes {
     | '/schedule'
     | '/search'
     | '/settings'
+    | '/showcase'
     | '/standards'
     | '/subscription'
     | '/take-payment'
@@ -1934,6 +1946,7 @@ export interface RootRouteChildren {
   ScheduleRoute: typeof ScheduleRoute
   SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
+  ShowcaseRoute: typeof ShowcaseRoute
   StandardsRoute: typeof StandardsRoute
   SubscriptionRoute: typeof SubscriptionRoute
   TakePaymentRoute: typeof TakePaymentRoute
@@ -2103,6 +2116,13 @@ declare module '@tanstack/react-router' {
       path: '/standards'
       fullPath: '/standards'
       preLoaderRoute: typeof StandardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/showcase': {
+      id: '/showcase'
+      path: '/showcase'
+      fullPath: '/showcase'
+      preLoaderRoute: typeof ShowcaseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -3255,6 +3275,7 @@ const rootRouteChildren: RootRouteChildren = {
   ScheduleRoute: ScheduleRoute,
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
+  ShowcaseRoute: ShowcaseRoute,
   StandardsRoute: StandardsRoute,
   SubscriptionRoute: SubscriptionRoute,
   TakePaymentRoute: TakePaymentRoute,
@@ -3307,13 +3328,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -88,7 +88,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     (async () => {
       // Showcase view count (table may not exist yet)
       try {
-        const { data, error } = await supabase.from("reels" as never).select("views");
+        const { data, error } = await supabase
+          .from("showcase_videos" as never)
+          .select("views");
         if (!cancelled && !error && Array.isArray(data)) {
           const total = (data as { views?: number | null }[]).reduce(
             (sum, r) => sum + (r.views ?? 0),
@@ -191,16 +193,20 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       .maybeSingle()
       .then(({ data }) => setLiveHero(data?.image_url ?? null));
 
-    // DSM Showcase — latest reel thumbnail
+    // DSM Showcase — latest clip thumbnail
     supabase
-      .from("reels")
+      .from("showcase_videos" as never)
       .select("thumbnail_url")
       .not("thumbnail_url", "is", null)
       .is("deleted_at", null)
       .order("created_at", { ascending: false })
       .limit(1)
       .single()
-      .then(({ data }) => setShowcaseHero(data?.thumbnail_url ?? null));
+      .then(({ data }) =>
+        setShowcaseHero(
+          (data as { thumbnail_url?: string | null } | null)?.thumbnail_url ?? null,
+        ),
+      );
 
     // Marketplace — featured/latest listing
     supabase
