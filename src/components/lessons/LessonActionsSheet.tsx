@@ -399,10 +399,20 @@ export function LessonActionsSheet({
   };
   const gridBtnDanger: React.CSSProperties = {
     ...gridBtn,
-    background: "#FCE9E9",
-    border: "1px solid #F5CBCB",
+    background: "#FDF3F3",
+    border: "1px solid #F6D0D0",
     color: "#CC2229",
   };
+  const iconBg = (bg: string): React.CSSProperties => ({
+    width: 30,
+    height: 30,
+    borderRadius: 9,
+    background: bg,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  });
+
   const fieldInput: React.CSSProperties = {
     flex: 1,
     minWidth: 0,
@@ -994,7 +1004,9 @@ export function LessonActionsSheet({
               sendSms(`Hi ${firstName}, on the way!`);
             }}
           >
-            <IconNavigation size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#E6F1FB")}>
+              <IconNavigation size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Navigate</span>
           </button>
           <button
@@ -1005,7 +1017,9 @@ export function LessonActionsSheet({
               setMessageOpen(true);
             }}
           >
-            <IconMessage size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#E6F1FB")}>
+              <IconMessage size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Message</span>
           </button>
           <button
@@ -1020,10 +1034,13 @@ export function LessonActionsSheet({
               window.location.href = `tel:${phone}`;
             }}
           >
-            <IconPhone size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#E6F1FB")}>
+              <IconPhone size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Call</span>
           </button>
         </div>
+
 
         {/* Row 2 — Track / Running late / I'm here */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 8 }}>
@@ -1038,11 +1055,15 @@ export function LessonActionsSheet({
               } as never);
             }}
           >
-            <IconRoute size={18} stroke={1.8} color="#1877D6" />
+            <div style={iconBg("#E6F1FB")}>
+              <IconRoute size={18} stroke={1.8} color="#1877D6" />
+            </div>
             <span style={{ ...pillLabel, color: "#1877D6" }}>Track</span>
           </button>
           <button type="button" style={gridBtnDanger} onClick={onOpenLate}>
-            <IconClockExclamation size={18} stroke={1.8} color="#CC2229" />
+            <div style={iconBg("#FCE9E9")}>
+              <IconClockExclamation size={18} stroke={1.8} color="#CC2229" />
+            </div>
             <span style={{ ...pillLabel, color: "#CC2229" }}>Running late</span>
           </button>
           <button
@@ -1050,10 +1071,13 @@ export function LessonActionsSheet({
             style={{ ...gridBtn, background: "#E8F5E9" }}
             onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
           >
-            <IconCurrentLocation size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#E4F5EA")}>
+              <IconCurrentLocation size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>I'm here</span>
           </button>
         </div>
+
 
         {/* Row 3 — Payment / Prep / Edit */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 8 }}>
@@ -1065,11 +1089,15 @@ export function LessonActionsSheet({
               setUnifiedPayOpen(true);
             }}
           >
-            <IconCreditCard size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#FEF3D7")}>
+              <IconCreditCard size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Payment</span>
           </button>
           <button type="button" style={{ ...gridBtn, background: "#FFFFFF" }} onClick={onOpenLesson}>
-            <IconClipboardList size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#EFE7FB")}>
+              <IconClipboardList size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Prep</span>
           </button>
           <button
@@ -1077,10 +1105,13 @@ export function LessonActionsSheet({
             style={{ ...gridBtn, background: "#FFFFFF" }}
             onClick={() => navigate({ to: "/lessons/edit/$id", params: { id: lesson.id } })}
           >
-            <IconPencil size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#F1F4F8")}>
+              <IconPencil size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Edit</span>
           </button>
         </div>
+
 
         {/* Row 4 — Reschedule / Duration / Add note */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 8 }}>
@@ -1089,7 +1120,9 @@ export function LessonActionsSheet({
             style={{ ...gridBtn, background: "#FFFFFF" }}
             onClick={() => setInlineView("reschedule")}
           >
-            <IconCalendar size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#E6F1FB")}>
+              <IconCalendar size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Reschedule</span>
           </button>
           <button
@@ -1097,7 +1130,9 @@ export function LessonActionsSheet({
             style={{ ...gridBtn, background: "#FFFFFF" }}
             onClick={() => setInlineView("duration")}
           >
-            <IconClock size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#F1F4F8")}>
+              <IconClock size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Duration</span>
           </button>
           <button
@@ -1105,10 +1140,13 @@ export function LessonActionsSheet({
             style={{ ...gridBtn, background: "#FFFFFF" }}
             onClick={() => setInlineView("note")}
           >
-            <IconNotes size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#EFE7FB")}>
+              <IconNotes size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Add note</span>
           </button>
         </div>
+
 
         {/* Row 5 — destructive */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 8 }}>
@@ -1141,8 +1179,8 @@ export function LessonActionsSheet({
           style={{
             marginTop: 8,
             width: "100%",
-            background: "#DDEFE1",
-            border: "1px solid #A8D5B5",
+            background: "linear-gradient(135deg, #1C8A4B, #156B3A)",
+            border: "none",
             borderRadius: 12,
             padding: "12px 4px",
             display: "flex",
@@ -1153,18 +1191,20 @@ export function LessonActionsSheet({
             fontFamily: "Inter, sans-serif",
             fontSize: 13,
             fontWeight: 600,
-            color: "#1D8A4E",
+            color: "#FFFFFF",
+            boxShadow: "0 4px 12px rgba(28,138,75,0.25)",
           }}
         >
-          <IconCircleCheck size={18} stroke={1.8} color="#1D8A4E" />
+          <IconCircleCheck size={18} stroke={1.8} color="#FFFFFF" />
           <span>End of lesson</span>
         </button>
+
 
         {/* Pickup */}
         <div style={{ marginTop: 14 }}>
           <div style={sectionLabel}>Pickup</div>
           {isEditingPickup ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 6px rgba(11,31,58,0.04)", padding: "9px 12px" }}>
               <MapPin size={14} color="#8E8E93" />
               <input
                 value={pickupValue}
@@ -1215,10 +1255,12 @@ export function LessonActionsSheet({
                 gap: 8,
                 background: "#FFFFFF",
                 border: "1px solid #E2E8F0",
-                borderRadius: 10,
+                borderRadius: 12,
+                boxShadow: "0 2px 6px rgba(11,31,58,0.04)",
                 padding: "9px 12px",
               }}
             >
+
               <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
                 <MapPin size={14} color="#8E8E93" />
                 <span
@@ -1265,30 +1307,33 @@ export function LessonActionsSheet({
         {/* what3words */}
         <div style={{ marginTop: 14 }}>
           <div style={sectionLabel}>what3words</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ color: "#E11F26", fontWeight: 700, fontFamily: "Inter, sans-serif", fontSize: 15 }}>
-              ///
-            </span>
-            {[0, 1, 2].map((i) => (
-              <Fragment key={i}>
-                {i > 0 && <span style={{ color: NAVY, fontWeight: 700 }}>.</span>}
-                <input
-                  value={w3w[i]}
-                  onChange={(e) => {
-                    const next = [...w3w] as [string, string, string];
-                    next[i] = e.target.value.replace(/[^a-zA-Z\u00C0-\u024F-]/g, "");
-                    setW3w(next);
-                    setW3wState("idle");
-                  }}
-                  onBlur={verifyAndSaveW3w}
-                  placeholder={`word${i + 1}`}
-                  style={{ ...fieldInput, textAlign: "center", padding: "9px 6px" }}
-                />
-              </Fragment>
-            ))}
+          <div style={{ background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 6px rgba(11,31,58,0.04)", padding: "9px 12px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ color: "#E11F26", fontWeight: 700, fontFamily: "Inter, sans-serif", fontSize: 15 }}>
+                ///
+              </span>
+              {[0, 1, 2].map((i) => (
+                <Fragment key={i}>
+                  {i > 0 && <span style={{ color: NAVY, fontWeight: 700 }}>.</span>}
+                  <input
+                    value={w3w[i]}
+                    onChange={(e) => {
+                      const next = [...w3w] as [string, string, string];
+                      next[i] = e.target.value.replace(/[^a-zA-Z\u00C0-\u024F-]/g, "");
+                      setW3w(next);
+                      setW3wState("idle");
+                    }}
+                    onBlur={verifyAndSaveW3w}
+                    placeholder={`word${i + 1}`}
+                    style={{ ...fieldInput, textAlign: "center", padding: "9px 6px" }}
+                  />
+                </Fragment>
+              ))}
+            </div>
+            {statusLine(w3wState, "Verified via what3words", "Not a recognised what3words address")}
           </div>
-          {statusLine(w3wState, "Verified via what3words", "Not a recognised what3words address")}
         </div>
+
 
         {/* Account — driven by lessons.payment_status + lessons.amount_due */}
         {(() => {
@@ -1327,8 +1372,9 @@ export function LessonActionsSheet({
               <div style={sectionLabel}>Account</div>
               <div
                 style={{
-                  background: bg,
-                  borderRadius: 9,
+                  background: "#FFFFFF",
+                  borderRadius: 12,
+                  boxShadow: "0 2px 6px rgba(11,31,58,0.04)",
                   padding: "11px 12px",
                   display: "flex",
                   alignItems: "center",
@@ -1338,6 +1384,7 @@ export function LessonActionsSheet({
                 }}
               >
                 <span style={{ fontSize: 14, fontWeight: 600, color: fg }}>{label}</span>
+
                 {showActions && (
                   <div style={{ display: "flex", gap: 6 }}>
                     <button
@@ -1392,7 +1439,7 @@ export function LessonActionsSheet({
           <div style={sectionLabel}>Last Lesson</div>
           {prev ? (
             <div
-              style={{ background: "#F2F2F7", borderRadius: 9, padding: "10px 12px", fontFamily: "Inter, sans-serif" }}
+              style={{ background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 6px rgba(11,31,58,0.04)", padding: "10px 12px", fontFamily: "Inter, sans-serif" }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 12, fontWeight: 600, color: NAVY }}>
@@ -1411,6 +1458,7 @@ export function LessonActionsSheet({
                 >
                   {prev.status}
                 </span>
+
               </div>
               {prev.notes && (
                 <div style={{ marginTop: 5, color: "#5A6270", fontSize: 11, lineHeight: 1.4 }}>{prev.notes}</div>
@@ -1419,8 +1467,9 @@ export function LessonActionsSheet({
           ) : (
             <div
               style={{
-                background: "#F2F2F7",
-                borderRadius: 9,
+                background: "#FFFFFF",
+                borderRadius: 12,
+                boxShadow: "0 2px 6px rgba(11,31,58,0.04)",
                 padding: "10px 12px",
                 color: "#8A93A3",
                 fontFamily: "Inter, sans-serif",
@@ -1430,6 +1479,7 @@ export function LessonActionsSheet({
               No previous lesson
             </div>
           )}
+
         </div>
 
         {/* Full pupil profile link */}
