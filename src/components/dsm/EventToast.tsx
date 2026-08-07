@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Briefcase, MessageSquare, Mail, CalendarCheck, Phone } from "lucide-react";
+import { Briefcase, MessageSquare, Mail, CalendarCheck, Phone, X } from "lucide-react";
 
 const FONT = "Poppins, sans-serif";
 const NAVY = "#0F2044";
@@ -219,13 +219,36 @@ export function EventToastController() {
               fontWeight: 600,
               color: NAVY,
               lineHeight: 1.3,
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
               overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
             }}
           >
             {current.text}
           </div>
+          <div style={{ fontSize: 10.5, color: "#9CA3AF", marginTop: 4, fontWeight: 500 }}>
+            Just now
+          </div>
+        </div>
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            dismiss();
+          }}
+          style={{
+            width: 22,
+            height: 22,
+            borderRadius: "50%",
+            background: "#F1F4F8",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+            cursor: "pointer",
+          }}
+        >
+          <X size={12} color="#9CA3AF" />
         </div>
       </div>
     </div>
