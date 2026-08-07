@@ -325,6 +325,42 @@ function VideoForm({
         placeholder="Set up recurring lessons"
       />
 
+      <div>
+        <label
+          htmlFor="lv-description"
+          style={{
+            fontSize: 11,
+            fontWeight: 600,
+            color: "#6B7686",
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+            display: "block",
+            marginBottom: 6,
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          Description
+        </label>
+        <textarea
+          id="lv-description"
+          rows={3}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="What will instructors learn from this video?"
+          style={{
+            width: "100%",
+            padding: "10px 12px",
+            border: "1px solid #E4E8EF",
+            borderRadius: 8,
+            fontSize: 13,
+            fontFamily: "Poppins, sans-serif",
+            color: "#0B1F3A",
+            resize: "none",
+            boxSizing: "border-box",
+          }}
+        />
+      </div>
+
       <label style={labelStyle} htmlFor="lv-duration">Duration</label>
       <input
         id="lv-duration"
