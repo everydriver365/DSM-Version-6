@@ -765,9 +765,8 @@ function BitesizePage() {
         </div>
       )}
 
-      {/* VIDEO PLAYER — rendered inline at the top of the grid */}
 
-      )}
+
 
       {/* UPLOAD SHEET */}
       {uploadOpen && isAdmin && (
