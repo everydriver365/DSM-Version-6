@@ -738,6 +738,9 @@ function LivePage() {
     // Create the route record in the background
     void (async () => {
       try {
+        // Ensure session is fresh before insert
+        await supabase.auth.getSession();
+
         const { data, error } = await supabase
           .from("lesson_routes")
           .insert({
