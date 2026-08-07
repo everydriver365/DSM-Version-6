@@ -5146,19 +5146,28 @@ function HomePage() {
                       </div>
                     )}
 
-                    {/* Directions badge */}
-                    <div style={{
-                      position: 'absolute', bottom: 10, right: 10,
-                      background: 'rgba(255,255,255,0.55)',
-                      backdropFilter: 'blur(10px)',
-                      WebkitBackdropFilter: 'blur(10px)',
-                      border: '1px solid rgba(255,255,255,0.6)',
-                      borderRadius: 20, padding: '3px 8px',
-                      display: 'flex', alignItems: 'center', gap: 4,
-                    }}>
-                      <Navigation size={11} color="#0B1F3A" />
-                      <span style={{ fontSize: 10, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>Directions</span>
-                    </div>
+                    {/* View route button */}
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); openMaps(); }}
+                      style={{
+                        position: 'absolute', bottom: 10, right: 10,
+                        background: 'rgba(255,255,255,0.85)',
+                        backdropFilter: 'blur(10px)',
+                        WebkitBackdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(255,255,255,0.8)',
+                        borderRadius: 20,
+                        padding: '5px 10px',
+                        display: 'flex', alignItems: 'center', gap: 4,
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                      }}
+                    >
+                      <Navigation size={12} color="#1877D6" />
+                      <span style={{ fontSize: 10.5, fontWeight: 700, color: '#1877D6', fontFamily: 'Poppins, sans-serif' }}>
+                        View route
+                      </span>
+                    </button>
                   </div>
                 );
               })()}
@@ -5181,61 +5190,102 @@ function HomePage() {
                   </div>
                 </div>
 
-                <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'row', gap: 6 }}>
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); const phone = upcoming?.pupils?.phone; if (phone) window.location.href = `tel:${phone}`; }}
-                    style={{
-                      width: 30, height: 30, borderRadius: '50%', background: '#F1F5F9', border: 'none',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0,
-                    }}
-                  >
-                    <Phone size={14} color="#6B7686" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (!upcoming?.pupil_id) return;
-                      setLessonMsgsPupil({ id: upcoming.pupil_id, name: pupilFullName || 'Pupil' });
-                    }}
-                    style={{
-                      position: 'relative',
-                      width: 30, height: 30, borderRadius: '50%', background: '#F1F5F9', border: 'none',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0,
-                    }}
-                  >
-                    <MessageSquare size={14} color="#6B7686" />
-                    {(upcomingSmsCount > 0 || upcomingAppCount > 0) && (
-                      <div style={{
-                        position: 'absolute', top: -4, right: -4,
-                        display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'flex-end',
-                      }}>
-                        {upcomingSmsCount > 0 && (
-                          <span style={{
-                            minWidth: 14, height: 14, borderRadius: '50%', background: '#CC2229',
-                            color: '#FFFFFF', fontSize: 9, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            padding: '0 3px', boxSizing: 'border-box',
-                          }}>
-                            {upcomingSmsCount > 9 ? '9+' : upcomingSmsCount}
-                          </span>
-                        )}
-                        {upcomingAppCount > 0 && (
-                          <span style={{
-                            minWidth: 14, height: 14, borderRadius: '50%', background: '#1877D6',
-                            color: '#FFFFFF', fontSize: 9, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            padding: '0 3px', boxSizing: 'border-box',
-                          }}>
-                            {upcomingAppCount > 9 ? '9+' : upcomingAppCount}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </button>
-                </div>
+              </div>
 
+              {/* Action row */}
+              <div
+                style={{
+                  padding: '10px 14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!upcoming?.pupil_id) return;
+                    setLessonMsgsPupil({ id: upcoming.pupil_id, name: pupilFullName || 'Pupil' });
+                  }}
+                  style={{
+                    position: 'relative',
+                    flex: 1,
+                    height: 38,
+                    borderRadius: 10,
+                    border: 'none',
+                    background: '#1877D6',
+                    color: '#FFFFFF',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    cursor: 'pointer',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    fontFamily: 'Poppins, sans-serif',
+                    padding: 0,
+                  }}
+                >
+                  <MessageSquare size={14} color="#FFFFFF" />
+                  <span>Message</span>
+                  {(upcomingSmsCount > 0 || upcomingAppCount > 0) && (
+                    <div style={{
+                      position: 'absolute', top: -4, right: -4,
+                      display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'flex-end',
+                    }}>
+                      {upcomingSmsCount > 0 && (
+                        <span style={{
+                          minWidth: 14, height: 14, borderRadius: '50%', background: '#CC2229',
+                          color: '#FFFFFF', fontSize: 9, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          padding: '0 3px', boxSizing: 'border-box',
+                        }}>
+                          {upcomingSmsCount > 9 ? '9+' : upcomingSmsCount}
+                        </span>
+                      )}
+                      {upcomingAppCount > 0 && (
+                        <span style={{
+                          minWidth: 14, height: 14, borderRadius: '50%', background: '#1877D6',
+                          color: '#FFFFFF', fontSize: 9, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          padding: '0 3px', boxSizing: 'border-box',
+                        }}>
+                          {upcomingAppCount > 9 ? '9+' : upcomingAppCount}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const phone = upcoming?.pupils?.phone;
+                    if (phone) window.location.href = `tel:${phone}`;
+                  }}
+                  style={{
+                    flex: 1,
+                    height: 38,
+                    borderRadius: 10,
+                    border: 'none',
+                    background: '#F3F6FA',
+                    color: '#0B1F3A',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    cursor: 'pointer',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    fontFamily: 'Poppins, sans-serif',
+                    padding: 0,
+                  }}
+                >
+                  <Phone size={14} color="#0B1F3A" />
+                  <span>Call</span>
+                </button>
 
                 <button
                   type="button"
@@ -5245,14 +5295,27 @@ function HomePage() {
                     navigate({ to: '/pupils/$id', params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any });
                   }}
                   style={{
-                    flexShrink: 0, background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                    display: 'flex', alignItems: 'center',
+                    flex: 1,
+                    height: 38,
+                    borderRadius: 10,
+                    border: 'none',
+                    background: '#F3F6FA',
+                    color: '#0B1F3A',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    cursor: 'pointer',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    fontFamily: 'Poppins, sans-serif',
+                    padding: 0,
                   }}
-                  aria-label="Open lesson"
                 >
-                  <ChevronRight size={16} color="#D1D5DB" />
+                  <span>More</span>
+                  <ChevronRight size={14} color="#0B1F3A" />
                 </button>
-               </div>
+              </div>
 
               {/* Address row */}
               <div style={{
