@@ -284,16 +284,23 @@ function ShowcasePage() {
       const { data, error } = await db
         .from("showcase_videos")
         .insert({
-          title: uploadTitle.trim(),
-          description: uploadDescription.trim() || null,
+          instructor_id: userId,
           video_url: videoUrl,
-          thumbnail_url: thumbnailUrl,
-          category: uploadCategory,
-          is_published: uploadPublished,
-          created_by: userId,
+          thumbnail_url: thumbnailUrl ?? null,
+          caption:
+            uploadTitle.trim() +
+            (uploadDescription.trim()
+              ? " — " + uploadDescription.trim()
+              : ""),
+          category: uploadCategory || null,
+          tags: uploadTags
+            ? uploadTags.split(" ").filter((t) => t.startsWith("#"))
+            : [],
+          views: 0,
         })
         .select()
         .single();
+
 
       if (error) throw error;
       if (data) setVideos((prev) => [data as ShowcaseVideo, ...prev]);
