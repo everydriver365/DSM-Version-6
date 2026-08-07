@@ -1579,7 +1579,11 @@ function SchedulePage() {
                                     opacity: cancelled ? 0.55 : isDimmed ? 0.4 : 1,
                                     position: "relative",
                                     zIndex: 1,
-                                    border: isMovingThis ? '2px solid #1877D6' : undefined,
+                                    border: isTestDay
+                                      ? '2px solid #FF8C00'
+                                      : isMovingThis
+                                        ? '2px solid #1877D6'
+                                        : undefined,
                                     animation: isMovingThis ? 'movePulse 1.5s ease-in-out infinite' : undefined,
                                     ...POPPINS,
                                   }}
