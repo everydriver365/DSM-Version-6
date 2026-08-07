@@ -404,7 +404,7 @@ function PupilDetailPage() {
   const [syllabusPct, setSyllabusPct] = useState<number | null>(null);
   const [syllabusSum, setSyllabusSum] = useState<number>(0);
   const [syllabus, setSyllabus] = useState<{ level: number }[] | null>(null);
-  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoUploading, setPhotoUploading] = useState(false);
   const [liveOwed, setLiveOwed] = useState<number | null>(null);
   const [balance, setBalance] = useState<number>(0);
   const [totalCost, setTotalCost] = useState<number>(0);
