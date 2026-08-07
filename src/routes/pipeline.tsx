@@ -464,20 +464,25 @@ function LeadDetailSheet({
     const parts = trimmed.split(/\s+/);
     const first = parts[0] ?? trimmed;
     const last = parts.slice(1).join(" ") || "";
-    const { error: pErr } = await supabase.from("pupils").insert({
-      instructor_id: userId,
-      first_name: first,
-      last_name: last,
-      phone: phone.trim() || null,
-      email: email.trim() || null,
-      status: "active",
-    });
+    const { data: pRow, error: pErr } = await supabase
+      .from("pupils")
+      .insert({
+        instructor_id: userId,
+        first_name: first,
+        last_name: last,
+        phone: phone.trim() || null,
+        email: email.trim() || null,
+        status: "active",
+      })
+      .select("id")
+      .single();
     if (pErr) {
       setBusy(false);
       console.error("[pipeline] convert insert error", pErr);
       toast.error("Couldn't create pupil");
       return;
     }
+    const newPupilId = (pRow as { id?: string } | null)?.id;
     const { error: dErr } = await supabase
       .from("pipeline_leads")
       .delete()
@@ -488,6 +493,18 @@ function LeadDetailSheet({
       console.error("[pipeline] convert delete error", dErr);
       toast.error("Pupil created but lead remains");
       return;
+    }
+    if (newPupilId && userId) {
+      const pupilName = `${first} ${last}`.trim();
+      void supabase.from("instructor_notifications").insert({
+        instructor_id: userId,
+        title: "New pupil added",
+        body: `${pupilName} added to your pupils`,
+        type: "pupil_added",
+        read: false,
+        reference_type: "pupil",
+        reference_id: newPupilId,
+      });
     }
     toast.success("Converted to pupil");
     onChanged();
