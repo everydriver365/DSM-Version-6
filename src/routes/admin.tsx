@@ -1108,16 +1108,13 @@ function AdminHub() {
           <AdminSectionTile
             icon={<MessageCircle size={18} />}
             label="Chat rooms"
-            onClick={scrollToChatRooms}
+            onClick={() => navigate({ to: "/admin/chat-rooms" as never })}
           />
           <AdminSectionTile
             icon={<Flag size={18} />}
             label="Flagged"
             onClick={scrollToFlagged}
           />
-        </div>
-        <div ref={chatRoomsRef}>
-          <ChatRoomsSection />
         </div>
         <div ref={flaggedRef}>
           <FlaggedMessagesSection />
