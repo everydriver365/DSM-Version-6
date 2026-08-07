@@ -1507,6 +1507,27 @@ function SchedulePage() {
                           const isBlockRow = e.kind === "block";
                           const clickable = isLessonRow || isBlockRow;
                           const isMovingThis = isLessonRow && movingLesson && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id === movingLesson.id;
+                          const isTestDay = isLessonRow &&
+                            !!(e as Extract<AgendaEntry, { kind: 'lesson' }>)
+                              .lesson.notes?.trim().match(/^Test day:/i);
+                          const testDayNotes = isTestDay
+                            ? (e as Extract<AgendaEntry,
+                                { kind: 'lesson' }>).lesson.notes ?? ''
+                            : '';
+                          const testTimeMatch = testDayNotes
+                            .match(/Test at (\d{2}:\d{2})/);
+                          const testLocationMatch = testDayNotes
+                            .match(/@ (.+)$/);
+                          const testTimeParsed = testTimeMatch?.[1] ?? null;
+                          const testLocation = testLocationMatch?.[1] ?? null;
+                          const testPupilName = isTestDay
+                            ? (e as Extract<AgendaEntry,
+                                { kind: 'lesson' }>).lesson.pupil
+                                ? ((e as any).lesson.pupil.name
+                                    ?? (e as any).lesson.pupil.first_name
+                                    ?? 'Pupil')
+                                : 'Pupil'
+                            : '';
                           const isDimmed = moveMode && !isMovingThis;
                           const onCardClick = isLessonRow
                             ? () => {
