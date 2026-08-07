@@ -16,6 +16,7 @@ import {
   IconUpload,
   IconX,
   IconSend,
+  IconPlayerSkipForward,
 } from "@tabler/icons-react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -53,6 +54,7 @@ interface ShowcaseVideo {
   duration_secs: number | null;
   is_published: boolean;
   views: number;
+  caption?: string | null;
   likes_count?: number | null;
   created_by: string | null;
   created_at: string;
