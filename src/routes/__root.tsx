@@ -70,9 +70,11 @@ function getNotificationUrl(notification: any): string {
   if (notification.reference_type === "reflective_log") return `/reflective-log/${notification.reference_id}`;
   if (notification.reference_type === "job_offer" && notification.reference_id)
     return `/messages?jobOfferId=${notification.reference_id}`;
+  if (notification.reference_type === "payment") return "/payments";
   if (notification.type === "rewards") return "/rewards";
   return "/notifications";
 }
+
 
 function getActiveNav(pathname: string): NavKey | undefined {
   if (pathname === "/" || pathname === "/home") return "home";
@@ -629,10 +631,12 @@ function RootComponent() {
             const t = String(n.type || "").toLowerCase();
             if (t.includes("job")) return "job";
             if (t.includes("enquir")) return "enquiry";
+            if (t.includes("payment")) return "payment";
             if (t.includes("booking") || t.includes("lesson")) return "booking";
             if (t.includes("call")) return "call";
             return "message";
           })();
+
           const title = n.title ? String(n.title) : undefined;
           const text = n.body ? String(n.body) : title ? "" : "New activity";
           emitLiveEvent({

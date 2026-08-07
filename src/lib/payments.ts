@@ -197,6 +197,26 @@ async function recordPaymentCore(
   });
   if (payErr) console.error("[recordPayment] payments insert", payErr);
 
+  // 5) Live alert for payment received.
+  if (instructorId) {
+    const { data: pupilRow } = await supabase
+      .from("pupils")
+      .select("name")
+      .eq("id", pupilId)
+      .maybeSingle();
+    const pupilName = (pupilRow as { name?: string | null } | null)?.name?.trim() || "Pupil";
+    const { error: notifErr } = await supabase.from("instructor_notifications").insert({
+      instructor_id: instructorId,
+      title: "Payment received",
+      body: `£${amount.toFixed(2)} ${method} from ${pupilName}${hoursBought > 0 ? ` — ${hoursBought}h package` : ""}`,
+      type: "payment_received",
+      read: false,
+      reference_type: "payment",
+    });
+    if (notifErr) console.error("[recordPayment] notification insert", notifErr);
+  }
+
+
   // 5. Optional package top-up (full-page flow only).
   let newPrepaidHours = 0;
   if (hoursBought > 0) {

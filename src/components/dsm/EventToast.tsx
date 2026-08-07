@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Briefcase, MessageSquare, Mail, CalendarCheck, Phone, X } from "lucide-react";
+import { Briefcase, MessageSquare, Mail, CalendarCheck, Phone, CreditCard, X } from "lucide-react";
 
 const FONT = "Poppins, sans-serif";
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 
-export type LiveEventKind = "job" | "enquiry" | "message" | "booking" | "call";
+export type LiveEventKind = "job" | "enquiry" | "message" | "booking" | "call" | "payment";
 
 export type LiveEventPayload = {
   kind: LiveEventKind;
@@ -20,6 +20,7 @@ export type LiveEventPayload = {
   /** Optional explicit dedupe key. */
   dedupeKey?: string;
 };
+
 
 const EVENT_NAME = "dsm-event-toast";
 
@@ -95,8 +96,11 @@ function titleFor(kind: LiveEventKind): string {
       return "New booking";
     case "call":
       return "Missed call";
+    case "payment":
+      return "Payment received";
   }
 }
+
 
 function styleFor(kind: LiveEventKind): { tint: string; color: string; icon: React.ReactNode } {
   switch (kind) {
@@ -110,8 +114,11 @@ function styleFor(kind: LiveEventKind): { tint: string; color: string; icon: Rea
       return { tint: "#E7F5EE", color: "#1B7F3B", icon: <CalendarCheck size={17} color="#fff" /> };
     case "call":
       return { tint: "#FBE6E7", color: "#CC2229", icon: <Phone size={17} color="#fff" /> };
+    case "payment":
+      return { tint: "#E0F2F1", color: "#0F766E", icon: <CreditCard size={17} color="#fff" /> };
   }
 }
+
 
 function initials(name: string): string {
   return (
