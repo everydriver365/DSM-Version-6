@@ -181,7 +181,10 @@ function VideoForm({
   onSaved: () => void;
 }) {
   const [title, setTitle] = useState(initial?.title ?? "");
-  const [duration, setDuration] = useState(initial?.duration ?? "");
+  const [duration, setDuration] = useState<string | number>(
+    initial?.duration ?? "",
+  );
+  const [description, setDescription] = useState(initial?.description ?? "");
   const [sortOrder, setSortOrder] = useState<string>(
     initial?.sort_order != null ? String(initial.sort_order) : "0",
   );
