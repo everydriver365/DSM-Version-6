@@ -2057,7 +2057,7 @@ function HomePage() {
         if (cancelled) return;
         if (error) { setLocalAlerts([]); return; }
         const filtered = Array.isArray(data) ? data : [];
-        setLocalAlerts(filtered.slice(0, 3));
+        setLocalAlerts(filtered);
 
         // Unread comment activity on the user's own alerts
         try {
