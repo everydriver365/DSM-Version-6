@@ -196,21 +196,29 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       .single()
       .then(({ data }) => setShowcaseHero(data?.thumbnail_url ?? null));
 
-    // Marketplace — latest listing image
+    // Marketplace — featured/latest listing
     supabase
       .from("marketplace_listings")
-      .select("image_urls")
-      .not("image_urls", "is", null)
+      .select("id, title, price_display, image_urls, marketplace_categories(name)")
       .eq("is_active", true)
       .is("deleted_at", null)
+      .order("is_featured", { ascending: false })
       .order("created_at", { ascending: false })
       .limit(1)
       .single()
       .then(({ data }) => {
-        const imgs = data?.image_urls;
+        if (!data) return;
+        const imgs = (data as { image_urls?: string[] | null }).image_urls;
         setMarketplaceHero(
           Array.isArray(imgs) && imgs.length > 0 ? imgs[0] : null,
         );
+        setFeaturedListing({
+          id: data.id,
+          title: data.title ?? null,
+          price_display: data.price_display ?? null,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          category: (data.marketplace_categories as any)?.name ?? null,
+        });
       });
 
     // Industry News — latest article image
