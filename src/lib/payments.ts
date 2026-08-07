@@ -363,6 +363,8 @@ export interface RecordRefundInput {
   currentAccountBalance?: number | null;
   /** Optional ISO timestamp; defaults to now. */
   createdAt?: string;
+  /** Whether to show an in-app notification. Set false when a cancellation also alerts. */
+  notify?: boolean;
 }
 
 export interface RecordRefundResult {
@@ -468,6 +470,31 @@ export async function recordRefund(
       .update({ account_balance: newAccountBalance })
       .eq("id", pupilId);
     if (puErr) console.error("[recordRefund] account_balance update", puErr);
+  }
+
+  if (input.notify !== false && instructorId) {
+    try {
+      const { data: pupil } = await supabase
+        .from("pupils")
+        .select("first_name, last_name")
+        .eq("id", pupilId)
+        .maybeSingle();
+      const first = (pupil as { first_name?: string | null } | null)?.first_name ?? "";
+      const last = (pupil as { last_name?: string | null } | null)?.last_name ?? "";
+      const pupilName = `${first} ${last}`.trim() || "Pupil";
+      const formattedAmount = amount.toFixed(2);
+      void supabase.from("instructor_notifications").insert({
+        instructor_id: instructorId,
+        title: "Refund issued",
+        body: `£${formattedAmount} ${method ?? "refund"} refund to ${pupilName}`,
+        type: "payment_refunded",
+        read: false,
+        reference_type: "payment",
+        reference_id: historyId ?? null,
+      });
+    } catch (e) {
+      console.warn("[recordRefund] notification insert failed", e);
+    }
   }
 
   return { amountReversed, fromAccountCredit, newAccountBalance, historyId };
