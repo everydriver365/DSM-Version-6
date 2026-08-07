@@ -6830,16 +6830,28 @@ function HomePage() {
                   <div
                     style={{
                       fontSize: 14,
-                      fontWeight: 500,
+                      fontWeight: 600,
                       color: '#0B1F3A',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                     }}
                   >
-                    {next.name} · {next.test_centre || 'Test centre TBC'}
+                    {next.name}
                   </div>
-                  <div style={{ fontSize: 12, color: '#8792A2', marginTop: 2 }}>
+                  <div
+                    style={{
+                      fontSize: 12.5,
+                      color: '#4A5568',
+                      marginTop: 1,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {next.test_centre || 'Test centre TBC'}
+                  </div>
+                  <div style={{ fontSize: 11.5, color: '#8792A2', marginTop: 3 }}>
                     {fmtDateTime(next.test_date, next.test_time)}
                   </div>
                 </div>
