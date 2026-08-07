@@ -240,7 +240,8 @@ function AdminInstructorsPage() {
             <div
               key={inst.id}
               className="flex items-center gap-3 relative"
-              style={{ padding: "14px 16px", borderBottom: `0.5px solid ${BORDER}` }}
+              onClick={() => setSelectedInstructor(inst)}
+              style={{ padding: "14px 16px", borderBottom: `0.5px solid ${BORDER}`, cursor: "pointer" }}
             >
               <div
                 className="flex items-center justify-center rounded-full shrink-0"
@@ -282,7 +283,10 @@ function AdminInstructorsPage() {
               <button
                 type="button"
                 aria-label="Actions"
-                onClick={() => setMenuFor(menuFor === inst.id ? null : inst.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setMenuFor(menuFor === inst.id ? null : inst.id);
+                }}
                 className="p-1"
               >
                 <MoreVertical size={16} color="#D1D5DB" />
