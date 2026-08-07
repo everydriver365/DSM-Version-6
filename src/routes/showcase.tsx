@@ -744,56 +744,146 @@ function ShowcasePage() {
               </div>
             )}
             <div style={{ display: "flex", gap: 16, marginTop: 12 }}>
+          </div>
+
+          {/* RIGHT SIDE ACTIONS */}
+          <div
+            style={{
+              position: "absolute",
+              right: 12,
+              bottom: 120,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 16,
+              zIndex: 3,
+            }}
+          >
+            {/* Upvote */}
+            <div style={{ textAlign: "center" }}>
               <button
                 type="button"
-                aria-label="Like"
-                onClick={() => toggleLike(playing)}
+                aria-label="Upvote"
+                onClick={() => toggleVote(playing.id, "up")}
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "rgba(255,255,255,0.15)",
+                  width: 46,
+                  height: 46,
+                  borderRadius: "50%",
                   border: "none",
-                  borderRadius: 20,
-                  padding: "8px 14px",
-                  color: "#fff",
-                  fontSize: 13,
-                  fontWeight: 600,
+                  background:
+                    votes[playing.id] === "up" ? BLUE : "rgba(255,255,255,0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   cursor: "pointer",
+                }}
+              >
+                <IconThumbUp size={22} color="#fff" />
+              </button>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#fff",
+                  marginTop: 4,
                   ...POPPINS,
                 }}
               >
-                {likedIds.includes(playing.id) ? (
-                  <IconHeartFilled size={16} color={RED} />
-                ) : (
-                  <IconHeart size={16} color="#fff" />
-                )}
-                {likeCounts[playing.id] ?? 0}
+                {voteCounts[playing.id]?.up ?? 0}
+              </div>
+            </div>
+
+            {/* Downvote */}
+            <div style={{ textAlign: "center" }}>
+              <button
+                type="button"
+                aria-label="Downvote"
+                onClick={() => toggleVote(playing.id, "down")}
+                style={{
+                  width: 46,
+                  height: 46,
+                  borderRadius: "50%",
+                  border: "none",
+                  background:
+                    votes[playing.id] === "down" ? RED : "rgba(255,255,255,0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <IconThumbDown size={22} color="#fff" />
               </button>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#fff",
+                  marginTop: 4,
+                  ...POPPINS,
+                }}
+              >
+                {voteCounts[playing.id]?.down ?? 0}
+              </div>
+            </div>
+
+            {/* Comments */}
+            <div style={{ textAlign: "center" }}>
               <button
                 type="button"
                 aria-label="Comments"
-                onClick={() => openComments(playing)}
+                onClick={() => setCommentsOpen(true)}
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "rgba(255,255,255,0.15)",
+                  width: 46,
+                  height: 46,
+                  borderRadius: "50%",
                   border: "none",
-                  borderRadius: 20,
-                  padding: "8px 14px",
-                  color: "#fff",
-                  fontSize: 13,
-                  fontWeight: 600,
+                  background: "rgba(255,255,255,0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   cursor: "pointer",
+                }}
+              >
+                <IconMessageCircle size={22} color="#fff" />
+              </button>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#fff",
+                  marginTop: 4,
                   ...POPPINS,
                 }}
               >
-                <IconMessageCircle size={16} color="#fff" />
                 {commentCounts[playing.id] ?? 0}
-              </button>
+              </div>
             </div>
+
+            {/* More / report */}
+            <button
+              type="button"
+              aria-label="More"
+              onClick={() => {
+                setReportingId(playing.id);
+                setReportOpen(true);
+              }}
+              style={{
+                width: 46,
+                height: 46,
+                borderRadius: "50%",
+                border: "none",
+                background: "rgba(255,255,255,0.15)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              <IconDots size={22} color="#fff" />
+            </button>
           </div>
+
         </div>
       )}
 
