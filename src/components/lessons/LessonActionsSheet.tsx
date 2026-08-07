@@ -1467,8 +1467,9 @@ export function LessonActionsSheet({
           ) : (
             <div
               style={{
-                background: "#F2F2F7",
-                borderRadius: 9,
+                background: "#FFFFFF",
+                borderRadius: 12,
+                boxShadow: "0 2px 6px rgba(11,31,58,0.04)",
                 padding: "10px 12px",
                 color: "#8A93A3",
                 fontFamily: "Inter, sans-serif",
@@ -1478,6 +1479,7 @@ export function LessonActionsSheet({
               No previous lesson
             </div>
           )}
+
         </div>
 
         {/* Full pupil profile link */}
