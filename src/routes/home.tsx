@@ -5198,6 +5198,7 @@ function HomePage() {
                 padding: '12px 14px',
                 display: 'flex', alignItems: 'center', gap: 10,
                 borderTop: '0.5px solid #E4E8EF',
+                borderBottom: '0.5px solid #E4E8EF',
               }}>
                 <PupilAvatar pupil={upcoming?.pupils ?? null} pupilId={upcoming?.pupil_id ?? null} size={40} />
 
