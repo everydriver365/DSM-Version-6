@@ -435,7 +435,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onClick={() => navigate({ to: "/marketplace" as never })}
           style={tileShell}
         >
-          <div style={strip("#E9F5EE")}>
+          <div style={strip("#D9EDE3")}>
             <span style={stripPill(GREEN)}>Shop</span>
             <IconShoppingBag size={20} color={GREEN} stroke={1.8} style={{ opacity: 0.55 }} />
           </div>
