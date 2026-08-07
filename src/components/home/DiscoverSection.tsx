@@ -116,7 +116,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         const { count, error } = await supabase
           .from("showcase_videos" as never)
           .select("id", { count: "exact", head: true })
-          .eq("is_published", true)
           .is("deleted_at", null);
         if (!cancelled && !error && count != null) setShowcaseCount(count);
       } catch {
