@@ -1089,11 +1089,15 @@ export function LessonActionsSheet({
               setUnifiedPayOpen(true);
             }}
           >
-            <IconCreditCard size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#FEF3D7")}>
+              <IconCreditCard size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Payment</span>
           </button>
           <button type="button" style={{ ...gridBtn, background: "#FFFFFF" }} onClick={onOpenLesson}>
-            <IconClipboardList size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#EFE7FB")}>
+              <IconClipboardList size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Prep</span>
           </button>
           <button
@@ -1101,10 +1105,13 @@ export function LessonActionsSheet({
             style={{ ...gridBtn, background: "#FFFFFF" }}
             onClick={() => navigate({ to: "/lessons/edit/$id", params: { id: lesson.id } })}
           >
-            <IconPencil size={18} stroke={1.8} color={NAVY} />
+            <div style={iconBg("#F1F4F8")}>
+              <IconPencil size={18} stroke={1.8} color={NAVY} />
+            </div>
             <span style={pillLabel}>Edit</span>
           </button>
         </div>
+
 
         {/* Row 4 — Reschedule / Duration / Add note */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 8 }}>
