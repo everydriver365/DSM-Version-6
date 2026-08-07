@@ -289,6 +289,7 @@ function VideoForm({
       if (error) throw error;
 
       setUploadStatus("saved");
+      setDescription("");
       setTimeout(() => {
         onSaved();
       }, 1500);
