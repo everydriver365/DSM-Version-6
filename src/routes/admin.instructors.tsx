@@ -51,12 +51,21 @@ function AdminInstructorsPage() {
   const [confirmDelete, setConfirmDelete] = useState<any>(null);
 
   async function fetchInstructors() {
-    const { data, error } = await supabase
+    const BASE =
+      "id, name, phone, created_at, home_postcode, hourly_rate, adi_grade, website_published";
+    let { data, error } = await supabase
       .from("instructors")
-      .select(
-        "id, name, phone, created_at, home_postcode, hourly_rate, adi_grade, website_published, deleted_at",
-      )
+      .select(`${BASE}, deleted_at`)
       .order("created_at", { ascending: false });
+    // Fall back when the deleted_at column hasn't been added yet (see db/046_instructors_deleted_at.sql)
+    if (error && (error as any).code === "42703") {
+      const retry = await supabase
+        .from("instructors")
+        .select(BASE)
+        .order("created_at", { ascending: false });
+      data = retry.data as any;
+      error = retry.error as any;
+    }
     if (error) {
       console.error("[admin/instructors] fetch error", error);
       toast.error("Couldn't load instructors");
@@ -64,6 +73,7 @@ function AdminInstructorsPage() {
     }
     setInstructors(data ?? []);
   }
+
 
   useEffect(() => {
     if (status !== "allowed") return;
