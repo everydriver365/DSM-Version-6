@@ -350,6 +350,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </span>
           <div style={chipLabel}>Live</div>
           <div style={chipSub}>Events</div>
+          {liveCount !== null && liveCount > 0 && (
+            <div style={{ marginTop: 3, fontSize: 8, fontWeight: 700, color: BLUE, fontFamily: "Poppins, sans-serif" }}>
+              {liveCount === 1 ? "1 session" : `${liveCount} sessions`}
+            </div>
+          )}
         </div>
 
         {/* DSM Learn */}
@@ -372,6 +377,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </span>
           <div style={chipLabel}>Learn</div>
           <div style={chipSub}>Videos</div>
+          {learnCount !== null && learnCount > 0 && (
+            <div style={{ marginTop: 3, fontSize: 8, fontWeight: 700, color: "#4F46E5", fontFamily: "Poppins, sans-serif" }}>
+              {learnCount} videos
+            </div>
+          )}
         </div>
 
         {/* Bitesize */}
@@ -394,6 +404,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </span>
           <div style={chipLabel}>Bitesize</div>
           <div style={chipSub}>5 min</div>
+          {bitesizeCount !== null && bitesizeCount > 0 && (
+            <div style={{ marginTop: 3, fontSize: 8, fontWeight: 700, color: "#7C3AED", fontFamily: "Poppins, sans-serif" }}>
+              {bitesizeCount} videos
+            </div>
+          )}
         </div>
 
         {/* Showcase */}
@@ -429,6 +444,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </span>
           <div style={chipLabel}>Showcase</div>
           <div style={chipSub}>Clips</div>
+          {showcaseCount !== null && showcaseCount > 0 && (
+            <div style={{ marginTop: 3, fontSize: 8, fontWeight: 700, color: RED, fontFamily: "Poppins, sans-serif" }}>
+              {showcaseCount} clips
+            </div>
+          )}
         </div>
       </div>
 
