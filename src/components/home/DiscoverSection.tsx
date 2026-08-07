@@ -81,18 +81,44 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     let cancelled = false;
     (async () => {
       try {
-        const { data, error } = await supabase
-          .from("showcase_videos" as never)
-          .select("views");
-        if (!cancelled && !error && Array.isArray(data)) {
-          const total = (data as { views?: number | null }[]).reduce(
-            (sum, r) => sum + (r.views ?? 0),
-            0,
-          );
-          setShowcaseCount(total);
-        }
+        const { count, error } = await supabase
+          .from("live_sessions" as never)
+          .select("id", { count: "exact", head: true })
+          .gte("session_date", new Date().toISOString().split("T")[0]);
+        if (!cancelled && !error && count != null) setLiveCount(count);
       } catch {
-        /* table may not exist */
+        /* ignore */
+      }
+
+      try {
+        const { count, error } = await supabase
+          .from("learn_videos" as never)
+          .select("id", { count: "exact", head: true })
+          .eq("is_published", true);
+        if (!cancelled && !error && count != null) setLearnCount(count);
+      } catch {
+        /* ignore */
+      }
+
+      try {
+        const { count, error } = await supabase
+          .from("bitesize_videos" as never)
+          .select("id", { count: "exact", head: true })
+          .eq("is_published", true)
+          .is("deleted_at", null);
+        if (!cancelled && !error && count != null) setBitesizeCount(count);
+      } catch {
+        /* ignore */
+      }
+
+      try {
+        const { count, error } = await supabase
+          .from("showcase_videos" as never)
+          .select("id", { count: "exact", head: true })
+          .is("deleted_at", null);
+        if (!cancelled && !error && count != null) setShowcaseCount(count);
+      } catch {
+        /* ignore */
       }
 
       try {
