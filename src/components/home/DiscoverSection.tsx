@@ -88,7 +88,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     (async () => {
       // Showcase view count (table may not exist yet)
       try {
-        const { data, error } = await supabase.from("reels" as never).select("views");
+        const { data, error } = await supabase
+          .from("showcase_videos" as never)
+          .select("views");
         if (!cancelled && !error && Array.isArray(data)) {
           const total = (data as { views?: number | null }[]).reduce(
             (sum, r) => sum + (r.views ?? 0),
