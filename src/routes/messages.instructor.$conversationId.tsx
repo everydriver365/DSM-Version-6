@@ -4,6 +4,10 @@ import {
   IconChevronLeft,
   IconSend,
   IconPaperclip,
+  IconClock,
+  IconCheck,
+  IconChecks,
+  IconAlertCircle,
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 
@@ -51,6 +55,8 @@ interface Conversation {
   instructor_b: InstructorLite | null;
 }
 
+type DeliveryStatus = "sending" | "sent" | "failed";
+
 interface DMMessage {
   id: string;
   conversation_id: string;
@@ -59,6 +65,8 @@ interface DMMessage {
   body: string | null;
   created_at: string;
   read_at: string | null;
+  /** Client-only delivery state for messages sent from this device. */
+  delivery?: DeliveryStatus;
 }
 
 function initials(name?: string | null) {
@@ -189,6 +197,58 @@ function broadcastRead(delta: number) {
   setTimeout(() => fire(false), 1500);
 }
 
+/**
+ * Delivery state for the latest message in one of my bubble groups:
+ * sending (clock), sent (tick), read (double tick), failed (tap to retry).
+ */
+function DeliveryIndicator({
+  message,
+  onRetry,
+}: {
+  message: DMMessage;
+  onRetry: (m: DMMessage) => void;
+}) {
+  if (message.delivery === "sending") {
+    return (
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
+        <IconClock size={12} stroke={1.5} color="#B0B8C4" />
+        <span>Sending</span>
+      </span>
+    );
+  }
+
+  if (message.delivery === "failed") {
+    return (
+      <button
+        type="button"
+        onClick={() => onRetry(message)}
+        style={{
+          ...POPPINS,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 3,
+          background: "transparent",
+          border: "none",
+          padding: 0,
+          fontSize: 10,
+          fontWeight: 600,
+          color: "#CC2229",
+          cursor: "pointer",
+        }}
+      >
+        <IconAlertCircle size={12} stroke={1.5} color="#CC2229" />
+        Not sent · Tap to retry
+      </button>
+    );
+  }
+
+  return message.read_at ? (
+    <IconChecks size={13} stroke={1.5} color={BLUE} />
+  ) : (
+    <IconCheck size={13} stroke={1.5} color="#B0B8C4" />
+  );
+}
+
 
 
 function InstructorDMThread() {
@@ -284,9 +344,22 @@ function InstructorDMThread() {
         },
         (payload) => {
           const row = payload.new as unknown as DMMessage;
-          setMessages((prev) =>
-            prev.some((m) => m.id === row.id) ? prev : [...prev, row],
-          );
+          setMessages((prev) => {
+            if (prev.some((m) => m.id === row.id)) return prev;
+            // Replace the optimistic copy of our own message if it is still pending.
+            const pendingIdx = prev.findIndex(
+              (m) =>
+                m.delivery !== undefined &&
+                m.from_instructor_id === row.from_instructor_id &&
+                (m.body ?? "") === (row.body ?? ""),
+            );
+            if (pendingIdx !== -1) {
+              const next = [...prev];
+              next[pendingIdx] = { ...row, delivery: "sent" };
+              return next;
+            }
+            return [...prev, row];
+          });
           // Thread is open, so an inbound message is read on arrival — mark it
           // and drop the badge straight away instead of letting it flash.
           if (row.from_instructor_id !== userId) {
@@ -294,9 +367,6 @@ function InstructorDMThread() {
               broadcastRead(n),
             );
           }
-
-
-
         },
       )
       .subscribe();
@@ -311,6 +381,47 @@ function InstructorDMThread() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  /** Insert one message, keeping its optimistic row's delivery state in sync. */
+  async function deliver(localId: string, text: string, otherId: string) {
+    setMessages((prev) =>
+      prev.map((m) => (m.id === localId ? { ...m, delivery: "sending" } : m)),
+    );
+
+    const { data, error } = await supabase
+      .from("instructor_messages")
+      .insert({
+        conversation_id: conversationId,
+        from_instructor_id: userId,
+        to_instructor_id: otherId,
+        body: text,
+      } as never)
+      .select("*")
+      .single();
+
+    if (error || !data) {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === localId ? { ...m, delivery: "failed" } : m)),
+      );
+      return;
+    }
+
+    const row = data as unknown as DMMessage;
+    setMessages((prev) => {
+      const withoutDupe = prev.filter((m) => m.id !== row.id);
+      return withoutDupe.map((m) =>
+        m.id === localId ? { ...row, delivery: "sent" } : m,
+      );
+    });
+
+    await supabase
+      .from("instructor_conversations")
+      .update({
+        last_message: text,
+        last_message_at: new Date().toISOString(),
+      } as never)
+      .eq("id", conversationId);
+  }
+
   async function sendMessage() {
     if (!body.trim() || !conversation || !userId || sending) return;
     setSending(true);
@@ -322,23 +433,34 @@ function InstructorDMThread() {
         ? conversation.instructor_b_id
         : conversation.instructor_a_id;
 
-    await supabase.from("instructor_messages").insert({
-      conversation_id: conversationId,
-      from_instructor_id: userId,
-      to_instructor_id: otherId,
-      body: text,
-    } as never);
+    const localId = `local-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: localId,
+        conversation_id: conversationId,
+        from_instructor_id: userId,
+        to_instructor_id: otherId,
+        body: text,
+        created_at: new Date().toISOString(),
+        read_at: null,
+        delivery: "sending",
+      },
+    ]);
 
-    await supabase
-      .from("instructor_conversations")
-      .update({
-        last_message: text,
-        last_message_at: new Date().toISOString(),
-      } as never)
-      .eq("id", conversationId);
-
+    await deliver(localId, text, otherId);
     setSending(false);
   }
+
+  async function retryMessage(m: DMMessage) {
+    if (!conversation || !userId) return;
+    const otherId =
+      conversation.instructor_a_id === userId
+        ? conversation.instructor_b_id
+        : conversation.instructor_a_id;
+    await deliver(m.id, m.body ?? "", otherId);
+  }
+
 
   const other = firstName(otherInstructor?.name);
 
@@ -524,34 +646,53 @@ function InstructorDMThread() {
                         {firstName(otherInstructor?.name)}
                       </div>
                     )}
-                    {g.items.map((m, idx) => (
-                      <div
-                        key={m.id}
-                        style={{
-                          background: g.mine ? BLUE : "#EEF2F7",
-                          borderRadius:
-                            idx === 0
-                              ? 16
-                              : g.mine
-                                ? "16px 6px 16px 16px"
-                                : "6px 16px 16px 16px",
-                          padding: "9px 12px",
-                        }}
-                      >
+                    {g.items.map((m, idx) => {
+                      const failed = m.delivery === "failed";
+                      const pending = m.delivery === "sending";
+                      return (
                         <div
+                          key={m.id}
                           style={{
-                            fontSize: 13,
-                            color: g.mine ? "#FFFFFF" : NAVY,
-                            whiteSpace: "pre-wrap",
-                            wordBreak: "break-word",
+                            background: g.mine
+                              ? failed
+                                ? "#CC2229"
+                                : BLUE
+                              : "#EEF2F7",
+                            opacity: pending ? 0.65 : 1,
+                            borderRadius:
+                              idx === 0
+                                ? 16
+                                : g.mine
+                                  ? "16px 6px 16px 16px"
+                                  : "6px 16px 16px 16px",
+                            padding: "9px 12px",
                           }}
                         >
-                          {m.body}
+                          <div
+                            style={{
+                              fontSize: 13,
+                              color: g.mine ? "#FFFFFF" : NAVY,
+                              whiteSpace: "pre-wrap",
+                              wordBreak: "break-word",
+                            }}
+                          >
+                            {m.body}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                    <div style={{ fontSize: 10, color: "#B0B8C4", marginTop: 1 }}>
-                      {stamp}
+                      );
+                    })}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                        fontSize: 10,
+                        color: "#B0B8C4",
+                        marginTop: 1,
+                      }}
+                    >
+                      <span>{stamp}</span>
+                      {g.mine && <DeliveryIndicator message={last} onRetry={retryMessage} />}
                     </div>
                   </div>
                 </div>
