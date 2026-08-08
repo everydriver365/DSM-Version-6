@@ -7844,7 +7844,7 @@ function HomePage() {
                           ) : (
                             <>
                               {visibleAvatars.map((s, i) => {
-                                const key = `${s.type}-${s.name ?? i}`;
+                                const key = `${s.type}-${s.name ?? ''}-${i}`;
                                 if (s.image) {
                                   return (
                                     <img
