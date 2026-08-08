@@ -1944,60 +1944,107 @@ function PupilDetailPage() {
         <div className="px-4">
 
         {/* Quick actions row: Call · Message · Text · Add lesson · More */}
-        <div className="grid grid-cols-5 gap-2 mt-4">
-          <ActionTile
-            label="Call"
-            icon={<IconPhone stroke={1.5} size={20} />}
-            iconBg="#E7F5EE"
-            iconColor="#1E8E3E"
-            href={pupil?.phone ? `tel:${pupil.phone}` : undefined}
-          />
-          <ActionTile
-            label="Message"
-            icon={<IconMessage stroke={1.5} size={20} />}
-            iconBg="#E6F1FB"
-            iconColor="#1877D6"
-            onClick={() => { setSendMessagePupilId(pupil?.id ?? id); setSendMessageOpen(true); }}
-            badge={unreadMessages > 0 ? String(unreadMessages) : undefined}
-          />
-          <ActionTile
-            label="Text"
-            icon={<IconSend stroke={1.5} size={20} />}
-            iconBg="#F1E9FA"
-            iconColor="#7A3FC0"
-            href={pupil?.phone ? `sms:${pupil.phone}` : undefined}
-          />
-          <ActionTile
-            label="Add lesson"
-            icon={<IconPlus stroke={1.5} size={20} />}
-            iconBg="#FEF3E2"
-            iconColor="#B5661E"
-            onClick={() => { setAddLessonDate(undefined); setAddLessonPupilId(pupil?.id ?? id); setAddLessonOpen(true); }}
-          />
-          <ActionTile
-            label="More"
-            icon={<IconDots stroke={1.5} size={20} />}
-            iconBg="#F3F4F6"
-            iconColor="#6B7280"
-            onClick={() => setMoreOpen(true)}
-          />
-        </div>
+        {(() => {
+          const cellCls =
+            "relative flex flex-col items-center justify-center gap-1 py-3 active:opacity-60";
+          const cellStyle = (i: number): React.CSSProperties => ({
+            borderLeft: i === 0 ? "none" : "1px solid #E9E9EC",
+            background: "none",
+            color: "#0B1F3A",
+            textDecoration: "none",
+          });
+          const labelStyle: React.CSSProperties = {
+            fontSize: 11,
+            fontWeight: 600,
+            color: "#0B1F3A",
+            ...POPPINS,
+          };
+          const actions: {
+            label: string;
+            icon: React.ReactNode;
+            href?: string;
+            onClick?: () => void;
+            badge?: string;
+          }[] = [
+            {
+              label: "Call",
+              icon: <IconPhone stroke={1.5} size={20} />,
+              href: pupil?.phone ? `tel:${pupil.phone}` : undefined,
+            },
+            {
+              label: "Message",
+              icon: <IconMessage stroke={1.5} size={20} />,
+              onClick: () => { setSendMessagePupilId(pupil?.id ?? id); setSendMessageOpen(true); },
+              badge: unreadMessages > 0 ? String(unreadMessages) : undefined,
+            },
+            {
+              label: "Text",
+              icon: <IconSend stroke={1.5} size={20} />,
+              href: pupil?.phone ? `sms:${pupil.phone}` : undefined,
+            },
+            {
+              label: "Add lesson",
+              icon: <IconPlus stroke={1.5} size={20} />,
+              onClick: () => { setAddLessonDate(undefined); setAddLessonPupilId(pupil?.id ?? id); setAddLessonOpen(true); },
+            },
+            {
+              label: "More",
+              icon: <IconDots stroke={1.5} size={20} />,
+              onClick: () => setMoreOpen(true),
+            },
+          ];
+          return (
+            <div
+              className="grid grid-cols-5 mt-4"
+              style={{ background: "#FFFFFF", borderRadius: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.05)", overflow: "hidden" }}
+            >
+              {actions.map((a, i) => {
+                const inner = (
+                  <>
+                    {a.icon}
+                    <span style={labelStyle}>{a.label}</span>
+                    {a.badge ? (
+                      <span
+                        className="absolute top-1.5 right-2 text-[10px] font-bold"
+                        style={{ color: "#CC2229" }}
+                      >
+                        {a.badge}
+                      </span>
+                    ) : null}
+                  </>
+                );
+                if (a.href) {
+                  return (
+                    <a key={a.label} href={a.href} className={cellCls} style={cellStyle(i)}>
+                      {inner}
+                    </a>
+                  );
+                }
+                return (
+                  <button key={a.label} type="button" onClick={a.onClick} className={cellCls} style={{ ...cellStyle(i), border: "none", borderLeft: i === 0 ? "none" : "1px solid #E9E9EC" }}>
+                    {inner}
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })()}
 
-        {/* Tab bar */}
+        {/* Tab bar — iOS segmented control */}
         <div
-          className="mt-4 mb-2 flex gap-1 rounded-xl p-1"
-          style={{ background: "#EEF2F7", ...POPPINS }}
+          className="mt-4 mb-2 flex gap-1"
+          style={{ background: "#E5E5EA", borderRadius: 12, padding: 3, ...POPPINS }}
         >
           {(["overview", "lessons", "payments", "profile"] as const).map((t) => (
             <button
               key={t}
               type="button"
               onClick={() => setActiveTab(t)}
-              className="flex-1 h-9 rounded-lg text-[13px] font-semibold capitalize transition-colors"
+              className="flex-1 h-9 rounded-[9px] text-[13px] font-semibold capitalize transition-colors"
               style={{
                 background: activeTab === t ? "#FFFFFF" : "transparent",
                 color: activeTab === t ? "#0B1F3A" : "#6B7280",
-                boxShadow: activeTab === t ? "0 1px 3px rgba(0,0,0,0.06)" : "none",
+                boxShadow: activeTab === t ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
                 border: "none",
                 ...POPPINS,
               }}
