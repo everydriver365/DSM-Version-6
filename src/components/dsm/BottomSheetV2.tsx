@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Search } from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // DSM DESIGN TOKENS
@@ -8,7 +8,9 @@ const navy = "#0B1F3A";
 const blue = "#1877D6";
 const red = "#CC2229";
 const canvas = "#EEF2F7";
-const cardShadow = "0 1px 3px rgba(0,0,0,0.06)";
+const cardShadow = "0 1px 3px rgba(11,31,58,0.06)";
+const hairline = "#E4E8EF";
+const subtle = "#6B7686";
 const font = "Poppins, sans-serif";
 
 const pupilColors = [
@@ -23,6 +25,7 @@ const pupilColors = [
 ];
 
 const colorForPupil = (id: number): string => pupilColors[id % pupilColors.length];
+
 
 // ---------------------------------------------------------------------------
 // BottomSheet
