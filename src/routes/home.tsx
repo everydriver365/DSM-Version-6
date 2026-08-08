@@ -7660,13 +7660,13 @@ function HomePage() {
                     : [];
 
                   const avatarSources: AvatarSource[] = [
-                    ...unreadMsgs.map((m, i) => ({
+                    ...unreadMsgs.slice(0, 2).map((m, i) => ({
                       type: 'pupil' as const,
                       name: pupilName(m),
                       image: m.pupils?.profile_image_url || null,
                       colour: m.pupils?.calendar_colour ?? ['#0B1F3A', '#CC2229', '#1877D6', '#15803D'][i % 4],
                     })),
-                    ...dmPreviews.slice(0, 3).map((dm) => ({
+                    ...dmPreviews.slice(0, 1).map((dm) => ({
                       type: 'instructor' as const,
                       name: dm.other_name || 'DSM Instructor',
                       image: dm.other_image || null,
@@ -7678,17 +7678,17 @@ function HomePage() {
                       image: null,
                       colour: '#FDF0E3',
                     }] : []),
-                    ...chatPeople,
-                    ...alerts.slice(0, 3).map(() => ({
+                    ...chatPeople.slice(0, 2),
+                    ...alerts.slice(0, 1).map(() => ({
                       type: 'alert' as const,
                       name: null,
                       image: null,
                       colour: '#FCE9E9',
                     })),
-                    ...quietPupils,
+                    ...quietPupils.slice(0, 1),
                   ];
-                  const extraAvatarCount = avatarSources.length > 8 ? avatarSources.length - 8 : 0;
-                  const visibleAvatars = avatarSources.slice(0, 8);
+                  const extraAvatarCount = avatarSources.length > 5 ? avatarSources.length - 5 : 0;
+                  const visibleAvatars = avatarSources.slice(0, 5);
 
                   const totalActive = alerts.length + totalUnreadChat + pupilReplies.length + adminUnread + unreadDMs;
                   const latestActivity = [
