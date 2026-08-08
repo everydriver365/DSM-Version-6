@@ -485,6 +485,7 @@ function InstructorDMThread() {
     setSending(true);
     const text = body.trim();
     setBody("");
+    stopTyping();
 
     const otherId =
       conversation.instructor_a_id === userId
