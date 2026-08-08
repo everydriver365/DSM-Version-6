@@ -310,66 +310,32 @@ function BitesizePage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#DCE4F0", ...POPPINS }}>
-      {/* HEADER */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          padding: "12px 16px",
-          paddingTop: "calc(12px + env(safe-area-inset-top, 0px))",
-          background: "#0B1F3A",
-        }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" as never })}
-          style={{
-            background: "none",
-            border: "none",
-            padding: 0,
-            display: "flex",
-            color: "#fff",
-            cursor: "pointer",
-          }}
-        >
-          <IconChevronLeft size={22} />
-        </button>
-        <h1
-          style={{
-            flex: 1,
-            fontSize: 18,
-            fontWeight: 700,
-            color: "#fff",
-            margin: 0,
-            ...POPPINS,
-          }}
-        >
-          DSM Bitesize
-        </h1>
-        {isAdmin && (
-          <button
-            type="button"
-            aria-label="Upload video"
-            onClick={() => setUploadOpen(true)}
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.15)",
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#fff",
-              cursor: "pointer",
-            }}
-          >
-            <IconPlus size={20} />
-          </button>
-        )}
-      </div>
+      <PageHeader
+        title="DSM Bitesize"
+        right={
+          isAdmin ? (
+            <button
+              type="button"
+              aria-label="Upload video"
+              onClick={() => setUploadOpen(true)}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.15)",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#fff",
+                cursor: "pointer",
+              }}
+            >
+              <IconPlus size={20} />
+            </button>
+          ) : null
+        }
+      />
 
       {/* CATEGORY CHIPS */}
       <div
