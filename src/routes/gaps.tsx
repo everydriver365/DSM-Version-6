@@ -2389,24 +2389,6 @@ function GapsPage() {
             </div>
           )}
 
-          <div style={{ margin: "0 0 10px" }}>
-            <input
-              type="text"
-              placeholder="Search pupils…"
-              value={pupilSearchQuery}
-              onChange={(e) => setPupilSearchQuery(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "12px 14px",
-                borderRadius: 10,
-                border: `1px solid ${BORDER}`,
-                fontSize: 14,
-                outline: "none",
-                ...FONT,
-              }}
-            />
-          </div>
-
           {(() => {
             const q = pupilSearchQuery.trim().toLowerCase();
             const filteredRanked = q
