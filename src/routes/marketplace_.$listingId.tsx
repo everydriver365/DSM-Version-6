@@ -1,3 +1,4 @@
+import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -199,7 +200,7 @@ function ListingDetailPage() {
       </div>
 
       {loading ? (
-        <div style={{ padding: 24, color: "#6B7280", fontSize: 13 }}>Loading…</div>
+        <PageLoader />
       ) : !listing ? (
         <div style={{ padding: 40, textAlign: "center" }}>
           <div style={{ color: "#374151", fontSize: 15, marginBottom: 12 }}>

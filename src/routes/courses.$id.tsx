@@ -1,3 +1,4 @@
+import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
@@ -300,7 +301,7 @@ function CourseDetailPage() {
 
       <div style={{ padding: "12px 16px" }}>
         {loading ? (
-          <div style={{ color: "#6B7280", padding: 24, textAlign: "center" }}>Loading…</div>
+          <PageLoader />
         ) : !course || !form ? (
           <div style={{ color: "#1877D6", padding: 24, textAlign: "center" }}>
             Course not found.

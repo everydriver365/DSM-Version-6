@@ -1,3 +1,4 @@
+import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
@@ -303,7 +304,7 @@ function ExpensesPage() {
       {/* List */}
       <div style={{ padding: "0 16px" }}>
         {loading ? (
-          <div style={{ color: "#6B7280", padding: 32, textAlign: "center" }}>Loading…</div>
+          <PageLoader />
         ) : grouped.length === 0 ? (
           <EmptyState
             icon={Briefcase}

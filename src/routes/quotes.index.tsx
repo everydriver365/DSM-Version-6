@@ -1,3 +1,4 @@
+import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, Plus, FileText, Link2, Send, RefreshCw } from "lucide-react";
@@ -228,7 +229,7 @@ function QuotesPage() {
         <SectionHeader>{tab.toUpperCase()} QUOTES</SectionHeader>
 
         {loading ? (
-          <div style={{ color: "#6B7280", padding: 16 }}>Loading…</div>
+          <PageLoader />
         ) : filtered.length === 0 ? (
           <div style={{
             textAlign: "center", padding: "48px 16px", color: "#6B7280",

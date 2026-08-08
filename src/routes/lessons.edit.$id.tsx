@@ -1,3 +1,4 @@
+import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { PoundSterling } from "lucide-react";
@@ -346,7 +347,7 @@ function EditLessonPage() {
       </div>
 
       {loading ? (
-        <div className="px-4 pt-6 text-[14px] text-[#6B7280]">Loading…</div>
+        <PageLoader />
       ) : (
         <form
           onSubmit={(e) => {

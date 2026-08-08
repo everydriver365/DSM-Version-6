@@ -1,3 +1,4 @@
+import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
@@ -364,7 +365,7 @@ function CpdPage() {
       {/* LIST */}
       <div className="px-4 mt-3">
         {loading ? (
-          <div className="text-center text-[13px] text-[#6B7280] py-8">Loading…</div>
+          <PageLoader />
         ) : grouped.length === 0 ? (
           <EmptyState
             icon={GraduationCap}

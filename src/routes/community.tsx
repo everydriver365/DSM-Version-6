@@ -1,3 +1,4 @@
+import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -869,7 +870,7 @@ function RoomsTab({
           Your rooms
         </div>
         {loading ? (
-          <div style={{ fontSize: 13, color: "#8A93A3" }}>Loading…</div>
+          <PageLoader />
         ) : myRooms.length === 0 ? (
           <div style={{ fontSize: 13, color: "#8A93A3" }}>You haven’t joined any rooms yet.</div>
         ) : (

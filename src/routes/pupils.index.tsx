@@ -1,3 +1,4 @@
+import { SkeletonCard } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChevronRight, Plus, Search, X, Megaphone, Users, MoreVertical, ArrowUpDown } from "lucide-react";
@@ -817,42 +818,7 @@ function PupilsIndexPage() {
       {/* List */}
       <div>
         {filtered === null ? (
-          <div
-            style={{
-              margin: "0 16px",
-              background: "#FFFFFF",
-              borderRadius: 14,
-              overflow: "hidden",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-            }}
-          >
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div
-                key={i}
-                className="flex items-center"
-                style={{
-                  gap: 12,
-                  padding: "13px 16px",
-                  borderBottom: i < 5 ? "0.5px solid #EEF2F7" : "none",
-                }}
-              >
-                <div
-                  className="skeleton-pulse rounded-full shrink-0"
-                  style={{ width: 40, height: 40, backgroundColor: "#EEF2F7" }}
-                />
-                <div className="min-w-0 flex-1 flex flex-col gap-2">
-                  <div
-                    className="skeleton-pulse"
-                    style={{ height: 14, width: "60%", backgroundColor: "#EEF2F7", borderRadius: 4 }}
-                  />
-                  <div
-                    className="skeleton-pulse"
-                    style={{ height: 11, width: "40%", backgroundColor: "#EEF2F7", borderRadius: 4 }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
+          <SkeletonCard rows={5} />
         ) : filtered.length === 0 ? (
           <EmptyState
             icon={Users}

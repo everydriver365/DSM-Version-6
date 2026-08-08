@@ -1,3 +1,4 @@
+import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -406,7 +407,7 @@ function IntakeQuestionsPage() {
       {/* Question list */}
       <div style={{ marginTop: 12, paddingBottom: 96 }}>
         {loading ? (
-          <div style={{ padding: 16, color: "#6B7280", fontSize: 13 }}>Loading…</div>
+          <PageLoader />
         ) : (
           questions.map((q) => (
             <div
