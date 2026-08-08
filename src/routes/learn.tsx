@@ -585,6 +585,8 @@ function LearnPage() {
                     maxHeight: "80vh",
                     aspectRatio: "16 / 9",
                     border: "none",
+                    borderRadius: 16,
+                    boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                     background: "#000",
                   }}
                 />
