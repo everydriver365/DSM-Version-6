@@ -1431,7 +1431,7 @@ export function UnifiedPaymentSheet({
     >
       <style>{`@keyframes ups-pulse{0%,100%{opacity:1}50%{opacity:.4}}`}</style>
 
-      <div style={{ fontFamily: FONT, background: WHITE, paddingBottom: 4, position: "relative" }}>
+      <div style={{ fontFamily: FONT, background: "transparent", paddingBottom: 4, position: "relative" }}>
         {paymentSuccess && (
           <div
             onPointerDown={() => setSuccessInteracted(true)}
