@@ -7833,7 +7833,7 @@ function HomePage() {
 
                       {/* Row 2 — avatar stack + active count + updated time */}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
                           {visibleAvatars.length === 0 ? (
                             <div style={{
                               width: 32, height: 32, borderRadius: '50%', background: '#E6F1FB',
@@ -7845,16 +7845,19 @@ function HomePage() {
                             <>
                               {visibleAvatars.map((s, i) => {
                                 const key = `${s.type}-${s.name ?? ''}-${i}`;
+                                const stackStyle = {
+                                  width: 28, height: 28, borderRadius: '50%',
+                                  border: '2px solid #fff', marginLeft: i === 0 ? 0 : -10,
+                                  flexShrink: 0, zIndex: visibleAvatars.length - i,
+                                  position: 'relative' as const,
+                                };
                                 if (s.image) {
                                   return (
                                     <img
                                       key={key}
                                       src={s.image}
                                       alt=""
-                                      style={{
-                                        width: 28, height: 28, borderRadius: '50%', objectFit: 'cover',
-                                        border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8, flexShrink: 0,
-                                      }}
+                                      style={{ ...stackStyle, objectFit: 'cover' }}
                                     />
                                   );
                                 }
@@ -7863,9 +7866,9 @@ function HomePage() {
                                     <div
                                       key={key}
                                       style={{
-                                        width: 28, height: 28, borderRadius: '50%', background: '#FCE9E9',
-                                        border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8,
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                                        ...stackStyle,
+                                        background: '#FCE9E9',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       }}
                                     >
                                       <AlertTriangle size={14} color="#CC2229" />
@@ -7877,9 +7880,9 @@ function HomePage() {
                                     <div
                                       key={key}
                                       style={{
-                                        width: 28, height: 28, borderRadius: '50%', background: '#FDF0E3',
-                                        border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8,
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                                        ...stackStyle,
+                                        background: '#FDF0E3',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       }}
                                     >
                                       <Megaphone size={14} color="#92400E" />
@@ -7890,11 +7893,11 @@ function HomePage() {
                                   <div
                                     key={key}
                                     style={{
-                                      width: 28, height: 28, borderRadius: '50%', background: s.colour,
-                                      border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8,
+                                      ...stackStyle,
+                                      background: s.colour,
                                       fontSize: 10, fontWeight: 700, color: '#fff',
                                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                      overflow: 'hidden', flexShrink: 0,
+                                      overflow: 'hidden',
                                     }}
                                   >
                                     {s.name ? initialsOf(s.name) : ''}
@@ -7904,16 +7907,17 @@ function HomePage() {
                               {extraAvatarCount > 0 && (
                                 <div style={{
                                   width: 28, height: 28, borderRadius: '50%', background: '#E4E8EF',
-                                  border: '2px solid #fff', marginLeft: -8,
+                                  border: '2px solid #fff', marginLeft: -10, zIndex: visibleAvatars.length + 1,
+                                  position: 'relative', flexShrink: 0,
                                   fontSize: 9, fontWeight: 600, color: '#6B7686',
-                                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 }}>
                                   +{extraAvatarCount}
                                 </div>
                               )}
                             </>
                           )}
-                          <span style={{ fontSize: 11, color: '#6B7686', fontFamily: PF_C }}>{totalActive} active</span>
+                          <span style={{ fontSize: 11, color: '#6B7686', fontFamily: PF_C, marginLeft: 8 }}>{totalActive} active</span>
                         </div>
                         {timeAgo && (
                           <span style={{ fontSize: 11, color: '#9CA3AF', fontFamily: PF_C }}>
