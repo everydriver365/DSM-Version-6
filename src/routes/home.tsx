@@ -7667,6 +7667,89 @@ function HomePage() {
                       })()
                     : null;
 
+                  // ---- Latest item (which source produced the newest activity) ----
+                  const clean = (s: any) => (typeof s === 'string' ? s.replace(/\s+/g, ' ').trim() : '');
+                  const firstName = (n: any) => (clean(n).split(' ')[0] || 'Someone');
+                  const adminLatest = adminUnread > 0 ? adminRoom?.latest : null;
+                  const topRoom = visibleRooms
+                    .filter((r) => r?.latest?.created_at && r.id !== adminRoom?.id)
+                    .sort((a, b) =>
+                      new Date(b.latest?.created_at ?? 0).getTime()
+                      - new Date(a.latest?.created_at ?? 0).getTime())[0];
+                  const topDM = unreadDMs > 0 ? dmPreviews[0] : null;
+
+                  type LatestItem = {
+                    at: number; title: string; source: string; detail: string;
+                    colour: string; onClick: () => void;
+                  };
+                  const latestCandidates: (LatestItem | null)[] = [
+                    localAlerts?.[0]?.created_at ? {
+                      at: new Date(localAlerts[0].created_at).getTime(),
+                      title: 'New issue reported',
+                      source: clean(localAlerts[0].location_name) || clean(localAlerts[0].alert_type) || 'Local',
+                      detail: clean(localAlerts[0].description),
+                      colour: RED_C,
+                      onClick: () => navigate({ to: '/community', search: { tab: 'alerts' } }),
+                    } : null,
+                    pupilReplies?.[0]?.created_at ? {
+                      at: new Date(pupilReplies[0].created_at).getTime(),
+                      title: 'New pupil enquiry',
+                      source: pupilName(pupilReplies[0]),
+                      detail: clean(pupilReplies[0].body),
+                      colour: '#1877D6',
+                      onClick: () => navigate({
+                        to: '/messages/$pupilId',
+                        params: { pupilId: pupilReplies[0].pupil_id },
+                      }),
+                    } : null,
+                    localChatLatest?.created_at ? {
+                      at: new Date(localChatLatest.created_at).getTime(),
+                      title: 'New message',
+                      source: firstName(localChatLatest.instructors?.name),
+                      detail: clean(localChatLatest.message),
+                      colour: '#7C3AED',
+                      onClick: () => navigate({ to: '/community', search: { tab: 'local' } }),
+                    } : null,
+                    ukChatLatest?.created_at ? {
+                      at: new Date(ukChatLatest.created_at).getTime(),
+                      title: 'New message',
+                      source: firstName(ukChatLatest.instructors?.name),
+                      detail: clean(ukChatLatest.message),
+                      colour: '#7C3AED',
+                      onClick: () => navigate({ to: '/community', search: { tab: 'uk' } as never }),
+                    } : null,
+                    topRoom?.latest?.created_at ? {
+                      at: new Date(topRoom.latest.created_at).getTime(),
+                      title: 'New message',
+                      source: firstName(topRoom.latest.instructors?.name),
+                      detail: clean(topRoom.latest.message),
+                      colour: '#7C3AED',
+                      onClick: () => navigate({ to: '/community', search: { tab: 'rooms' } }),
+                    } : null,
+                    adminLatest?.created_at ? {
+                      at: new Date(adminLatest.created_at).getTime(),
+                      title: 'Admin update',
+                      source: 'Admin',
+                      detail: clean(adminLatest.message),
+                      colour: '#92400E',
+                      onClick: () => navigate({ to: '/community', search: { tab: 'rooms' } }),
+                    } : null,
+                    topDM?.last_message_at ? {
+                      at: new Date(topDM.last_message_at).getTime(),
+                      title: 'New DSM message',
+                      source: clean(topDM.other_name) || 'DSM Instructor',
+                      detail: clean(topDM.last_message),
+                      colour: '#0F766E',
+                      onClick: () => navigate({
+                        to: '/messages/instructor/$conversationId' as never,
+                        params: { conversationId: topDM.id } as never,
+                      }),
+                    } : null,
+                  ];
+                  const latestItem = latestCandidates
+                    .filter((c): c is LatestItem => !!c && Number.isFinite(c.at))
+                    .sort((a, b) => b.at - a.at)[0] ?? null;
+
                   return (
                     <>
                       {/* Row 1 — title + chevron */}
@@ -7676,6 +7759,41 @@ function HomePage() {
                           ? <ChevronUp size={14} color="#9CA3AF" />
                           : <ChevronDown size={14} color="#9CA3AF" />}
                       </div>
+
+                      {/* Row 1b — latest activity */}
+                      {latestItem && (
+                        <div
+                          onClick={(e) => { e.stopPropagation(); latestItem.onClick(); }}
+                          style={{
+                            display: 'flex', alignItems: 'center', gap: 8,
+                            paddingBottom: 10, marginBottom: 10,
+                            borderBottom: '0.5px solid #E4E8EF', cursor: 'pointer',
+                          }}
+                        >
+                          <span style={{
+                            width: 8, height: 8, borderRadius: '50%',
+                            background: latestItem.colour, flexShrink: 0,
+                          }} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{
+                              fontSize: 13.5, fontWeight: 700, color: NAVY_C, fontFamily: PF_C,
+                              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                            }}>
+                              {latestItem.title}
+                            </div>
+                            <div style={{
+                              fontSize: 12, color: '#6B7686', fontFamily: PF_C,
+                              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                            }}>
+                              {latestItem.detail
+                                ? `${latestItem.source} · ${latestItem.detail}`
+                                : latestItem.source}
+                            </div>
+                          </div>
+                          <ChevronRight size={14} color="#C7CEDA" style={{ flexShrink: 0 }} />
+                        </div>
+                      )}
+
 
                       {/* Row 2 — avatar stack + active count + updated time */}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
