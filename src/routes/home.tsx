@@ -5243,15 +5243,6 @@ function HomePage() {
               }}>
                 
 
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{
-                    fontSize: 14, fontWeight: 700, color: '#0B1F3A',
-                    fontFamily: 'Poppins, sans-serif',
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                  }}>
-                    {pupilFullName || 'Pupil'}
-                  </div>
-                </div>
 
                 <span style={{
                   display: 'inline-flex', alignItems: 'center', gap: 5,
