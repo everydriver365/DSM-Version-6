@@ -6,7 +6,7 @@ const Toaster = ({ ...props }) => (
     offset={12}
     gap={8}
     duration={4000}
-    swipeDirections={['up' as const]}
+    swipeDirections={['top' as const]}
     toastOptions={{
       unstyled: false,
       style: {
