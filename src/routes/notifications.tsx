@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { IconBell, IconChevronRight } from "@tabler/icons-react";
 import { toast } from "sonner";
-import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { EmptyState } from "@/components/dsm/EmptyState";
