@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { QRCodeSVG } from "qrcode.react";
 import {
@@ -15,6 +15,8 @@ import {
   Search,
   Sparkles,
   CreditCard,
+  ChevronRight,
+  StickyNote,
 } from "lucide-react";
 import { toast } from "sonner";
 import { IconCircleCheck, IconReceipt } from "@tabler/icons-react";
@@ -244,6 +246,128 @@ function SummaryBar({ cells }: { cells: { label: string; value: string; color?: 
         </div>
       ))}
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// iOS grouped-list primitives (matches BottomSheetV2 pattern)
+// ---------------------------------------------------------------------------
+const HAIRLINE = "#E4E8EF";
+const SUBTLE = "#6B7686";
+
+const cardStyle: React.CSSProperties = {
+  background: WHITE,
+  borderRadius: 16,
+  border: "none",
+  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+  overflow: "hidden",
+  marginBottom: 12,
+};
+
+function Group({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+  const items = React.Children.toArray(children).filter(Boolean);
+  if (items.length === 0) return null;
+  return (
+    <div style={{ ...cardStyle, ...style }}>
+      {items.map((child, i) => (
+        <React.Fragment key={i}>
+          {i > 0 && <div style={{ height: 1, background: HAIRLINE }} />}
+          {child}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
+
+function Row({
+  children,
+  onClick,
+  selected,
+  style,
+  disabled,
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  selected?: boolean;
+  style?: React.CSSProperties;
+  disabled?: boolean;
+}) {
+  const base: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    width: "100%",
+    padding: "15px 16px",
+    background: selected ? "#F0F7FF" : "transparent",
+    border: "none",
+    textAlign: "left",
+    fontFamily: FONT,
+    boxSizing: "border-box",
+    ...style,
+  };
+  if (!onClick) return <div style={base}>{children}</div>;
+  return (
+    <button type="button" onClick={onClick} disabled={disabled} style={{ ...base, cursor: disabled ? "not-allowed" : "pointer" }}>
+      {children}
+    </button>
+  );
+}
+
+function Radio({ selected }: { selected: boolean }) {
+  return (
+    <span
+      style={{
+        width: 22,
+        height: 22,
+        borderRadius: 999,
+        flexShrink: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        border: selected ? "none" : "2px solid #C7D0DC",
+        background: selected ? BLUE : "transparent",
+        boxSizing: "border-box",
+      }}
+    >
+      {selected && (
+        <span style={{ width: 8, height: 8, borderRadius: 999, background: WHITE, display: "block" }} />
+      )}
+    </span>
+  );
+}
+
+function RowLabel({ children }: { children: React.ReactNode }) {
+  return <span style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: 600, color: NAVY }}>{children}</span>;
+}
+
+function InitialsAvatar({ name }: { name: string }) {
+  const parts = (name || "?").trim().split(/\s+/);
+  const initials =
+    ((parts[0]?.[0] ?? "") + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase() || "?";
+  return (
+    <span
+      style={{
+        width: 36,
+        height: 36,
+        borderRadius: 999,
+        background: BLUE,
+        color: WHITE,
+        fontSize: 13,
+        fontWeight: 700,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+      }}
+    >
+      {initials}
+    </span>
+  );
+}
+
+function SectionCaption({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ fontSize: 13, color: SUBTLE, margin: "-4px 4px 12px", fontFamily: FONT }}>{children}</div>
   );
 }
 
@@ -1260,13 +1384,13 @@ export function UnifiedPaymentSheet({
         disabled={savingPricing}
         style={{
           width: "100%",
-          height: 44,
-          borderRadius: 8,
+          height: 52,
+          borderRadius: 16,
           border: "none",
           background: BLUE,
           color: WHITE,
-          fontSize: 13,
-          fontWeight: 600,
+          fontSize: 16,
+          fontWeight: 700,
           fontFamily: FONT,
           cursor: "pointer",
           opacity: savingPricing ? 0.5 : 1,
@@ -1281,13 +1405,13 @@ export function UnifiedPaymentSheet({
         disabled={primaryDisabled}
         style={{
           width: "100%",
-          height: 44,
-          borderRadius: 8,
+          height: 52,
+          borderRadius: 16,
           border: "none",
           background: BLUE,
           color: WHITE,
-          fontSize: 13,
-          fontWeight: 600,
+          fontSize: 16,
+          fontWeight: 700,
           fontFamily: FONT,
           cursor: "pointer",
           opacity: primaryDisabled ? 0.45 : 1,
@@ -1307,7 +1431,7 @@ export function UnifiedPaymentSheet({
     >
       <style>{`@keyframes ups-pulse{0%,100%{opacity:1}50%{opacity:.4}}`}</style>
 
-      <div style={{ fontFamily: FONT, background: WHITE, paddingBottom: 4, position: "relative" }}>
+      <div style={{ fontFamily: FONT, background: "transparent", paddingBottom: 4, position: "relative" }}>
         {paymentSuccess && (
           <div
             onPointerDown={() => setSuccessInteracted(true)}
@@ -1628,156 +1752,130 @@ export function UnifiedPaymentSheet({
 
         {/* ---------------- PUPIL SELECTOR ---------------- */}
         {pickerOpen && (
-          <div style={{ marginBottom: 12 }}>
-            <Label>Who is paying?</Label>
-            <div style={{ position: "relative", marginBottom: 8 }}>
-              <Search size={14} style={{ position: "absolute", left: 10, top: 13, color: MUTED }} />
+          <Group>
+            <Row>
+              <Search size={18} color={SUBTLE} />
               <input
                 autoFocus
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search pupils"
-                style={{ ...inputStyle, paddingLeft: 30 }}
-              />
-            </div>
-            <div
-              style={{
-                border: `1px solid ${BORDER}`,
-                borderRadius: 10,
-                maxHeight: 230,
-                overflowY: "auto",
-              }}
-            >
-              {filtered.length === 0 && (
-                <div style={{ padding: 12, fontSize: 12, color: MUTED }}>No pupils found</div>
-              )}
-              {filtered.map((p, i) => {
-                const owed = outstandingMap[p.id] ?? 0;
-                const t = (p.pricing_type ?? "standard") as PricingType;
-                return (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => {
-                      setCustomMode(false);
-                      setPupilId(p.id);
-                      setPickerOpen(false);
-                      setQuery("");
-                      setTab("payment");
-                    }}
-                    style={{
-                      display: "flex",
-                      width: "100%",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 8,
-                      padding: "10px 12px",
-                      background: WHITE,
-                      border: "none",
-                      borderTop: i === 0 ? "none" : `1px solid ${DIVIDER}`,
-                      cursor: "pointer",
-                      textAlign: "left",
-                      fontFamily: FONT,
-                    }}
-                  >
-                    <span style={{ minWidth: 0 }}>
-                      <span
-                        style={{
-                          display: "block",
-                          fontSize: 13,
-                          fontWeight: 600,
-                          color: NAVY,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {p.name ?? "Unnamed"}
-                      </span>
-                      <span style={{ fontSize: 11, color: MUTED }}>
-                        {t === "national_intensives"
-                          ? "National Intensives"
-                          : t.charAt(0).toUpperCase() + t.slice(1)}
-                      </span>
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        color: owed > 0 ? RED : GREEN,
-                        flexShrink: 0,
-                      }}
-                    >
-                      {owed > 0 ? money(owed) : "Paid"}
-                    </span>
-                  </button>
-                );
-              })}
-              <button
-                type="button"
-                onClick={() => {
-                  setCustomMode(true);
-                  setPupilId(null);
-                  setBalance(null);
-                  setUnpaidLessons([]);
-                  setHistory([]);
-                  setAmount("");
-                  setPickerOpen(false);
-                }}
                 style={{
-                  display: "flex",
-                  width: "100%",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "11px 12px",
-                  background: WHITE,
+                  flex: 1,
+                  minWidth: 0,
                   border: "none",
-                  borderTop: `1px solid ${DIVIDER}`,
-                  cursor: "pointer",
-                  textAlign: "left",
+                  outline: "none",
+                  background: "transparent",
+                  fontSize: 16,
+                  color: NAVY,
                   fontFamily: FONT,
                 }}
-              >
-                <Sparkles size={14} color={PURPLE} />
-                <span style={{ fontSize: 13, fontWeight: 600, color: PURPLE }}>
-                  Custom payment
-                </span>
-              </button>
-            </div>
-          </div>
+              />
+            </Row>
+            {filtered.length === 0 ? (
+              <Row>
+                <span style={{ fontSize: 13, color: SUBTLE }}>No pupils found</span>
+              </Row>
+            ) : null}
+            {filtered.map((p) => {
+              const owed = outstandingMap[p.id] ?? 0;
+              const t = (p.pricing_type ?? "standard") as PricingType;
+              return (
+                <Row
+                  key={p.id}
+                  selected={p.id === pupilId}
+                  onClick={() => {
+                    setCustomMode(false);
+                    setPupilId(p.id);
+                    setPickerOpen(false);
+                    setQuery("");
+                    setTab("payment");
+                  }}
+                >
+                  <InitialsAvatar name={p.name ?? "Unnamed"} />
+                  <span style={{ flex: 1, minWidth: 0 }}>
+                    <span
+                      style={{
+                        display: "block",
+                        fontSize: 16,
+                        fontWeight: 600,
+                        color: NAVY,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {p.name ?? "Unnamed"}
+                    </span>
+                    <span style={{ fontSize: 13, color: SUBTLE }}>
+                      {t === "national_intensives"
+                        ? "National Intensives"
+                        : t.charAt(0).toUpperCase() + t.slice(1)}
+                    </span>
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: owed > 0 ? RED : GREEN,
+                      flexShrink: 0,
+                    }}
+                  >
+                    {owed > 0 ? money(owed) : "Paid"}
+                  </span>
+                </Row>
+              );
+            })}
+            <Row
+              onClick={() => {
+                setCustomMode(true);
+                setPupilId(null);
+                setBalance(null);
+                setUnpaidLessons([]);
+                setHistory([]);
+                setAmount("");
+                setPickerOpen(false);
+              }}
+            >
+              <Sparkles size={18} color={PURPLE} />
+              <span style={{ flex: 1, fontSize: 16, fontWeight: 600, color: PURPLE }}>
+                Custom payment
+              </span>
+            </Row>
+          </Group>
         )}
 
         {/* ---------------- PUPIL HEADER ---------------- */}
         {!pickerOpen && (pupil || customMode) && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
-              gap: 8,
-              padding: "10px 12px",
-              border: `1px solid ${BORDER}`,
-              borderRadius: 10,
-              marginBottom: 12,
-              background: WHITE,
-            }}
-          >
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>
-                {customMode ? "Custom payment" : (pupil?.name ?? "")}
-              </div>
-              <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>
-                {customMode ? "No pupil linked" : pupilContext}
-              </div>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <Group>
+            <Row onClick={() => setPickerOpen(true)}>
+              <InitialsAvatar name={customMode ? "Custom" : (pupil?.name ?? "")} />
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <span
+                  style={{
+                    display: "block",
+                    fontSize: 16,
+                    fontWeight: 600,
+                    color: NAVY,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {customMode ? "Custom payment" : (pupil?.name ?? "")}
+                </span>
+                <span style={{ fontSize: 13, color: SUBTLE }}>
+                  {customMode ? "No pupil linked" : pupilContext}
+                </span>
+              </span>
               {!customMode && balance && (
                 <span
                   style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    padding: "3px 8px",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    padding: "4px 10px",
                     borderRadius: 999,
+                    flexShrink: 0,
                     color: outstanding > 0 ? RED : GREEN,
                     background: outstanding > 0 ? "#FEF2F2" : GREEN_BG,
                   }}
@@ -1785,24 +1883,9 @@ export function UnifiedPaymentSheet({
                   {outstanding > 0 ? `${money(outstanding)} due` : "Fully paid"}
                 </span>
               )}
-              <button
-                type="button"
-                onClick={() => setPickerOpen(true)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  padding: 0,
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: BLUE,
-                  cursor: "pointer",
-                  fontFamily: FONT,
-                }}
-              >
-                Change
-              </button>
-            </div>
-          </div>
+              <ChevronRight size={18} color={SUBTLE} />
+            </Row>
+          </Group>
         )}
 
         {/* ---------------- TABS ---------------- */}
@@ -1944,165 +2027,137 @@ export function UnifiedPaymentSheet({
             )}
 
             {/* Amount */}
-            <Label>Amount</Label>
-            <div style={{ position: "relative", marginBottom: 6 }}>
-              <span
-                style={{
-                  position: "absolute",
-                  left: 12,
-                  top: 12,
-                  fontSize: 20,
-                  fontWeight: 700,
-                  color: NAVY,
-                }}
-              >
-                £
-              </span>
-              <input
-                inputMode="decimal"
-                value={amount}
-                onChange={(e) => {
-                  const v = e.target.value.replace(/[^0-9.]/g, "");
-                  if ((v.match(/\./g) ?? []).length > 1) return;
-                  const parts = v.split(".");
-                  if (parts[1] && parts[1].length > 2) return;
-                  setAmount(v);
-                }}
-                placeholder="0.00"
-                style={{
-                  ...inputStyle,
-                  height: 52,
-                  paddingLeft: 30,
-                  fontSize: 22,
-                  fontWeight: 700,
-                }}
-              />
-            </div>
-
-            {!customMode && outstanding > 0 && (
-              <div style={{ fontSize: 11, color: BODY, marginBottom: 12 }}>
-                {amountNum > 0 && amountNum < outstanding
-                  ? `Partial: ${money(amountNum)} of ${money(outstanding)} · `
-                  : `Full amount: ${money(outstanding)} · `}
-                <button
-                  type="button"
-                  onClick={() => setAmount(outstanding.toFixed(2))}
+            <Group>
+              <Row>
+                <span style={{ fontSize: 28, fontWeight: 700, color: NAVY, lineHeight: 1 }}>£</span>
+                <input
+                  inputMode="decimal"
+                  value={amount}
+                  onChange={(e) => {
+                    const v = e.target.value.replace(/[^0-9.]/g, "");
+                    if ((v.match(/\./g) ?? []).length > 1) return;
+                    const parts = v.split(".");
+                    if (parts[1] && parts[1].length > 2) return;
+                    setAmount(v);
+                  }}
+                  placeholder="0.00"
                   style={{
-                    background: "none",
+                    flex: 1,
+                    minWidth: 0,
                     border: "none",
-                    padding: 0,
-                    color: BLUE,
-                    fontWeight: 600,
-                    fontSize: 11,
-                    cursor: "pointer",
+                    outline: "none",
+                    background: "transparent",
+                    fontSize: 28,
+                    fontWeight: 700,
+                    color: NAVY,
                     fontFamily: FONT,
+                    padding: 0,
                   }}
-                >
-                  Pay in full
-                </button>
-              </div>
-            )}
-
-            {/* Partial toggle */}
-            {!customMode && outstanding > 0 && (
-              <>
-                <label
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    border: `1px solid ${BORDER}`,
-                    borderRadius: 8,
-                    padding: "9px 12px",
-                    marginBottom: 6,
-                    cursor: "pointer",
-                  }}
-                >
-                  <span style={{ fontSize: 12, color: BODY }}>Partial payment</span>
+                />
+              </Row>
+              {!customMode && outstanding > 0 ? (
+                <Row>
+                  <span style={{ flex: 1, fontSize: 13, color: SUBTLE }}>
+                    {amountNum > 0 && amountNum < outstanding
+                      ? `Partial: ${money(amountNum)} of ${money(outstanding)}`
+                      : `Outstanding balance ${money(outstanding)}`}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setAmount(outstanding.toFixed(2))}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      padding: 0,
+                      color: BLUE,
+                      fontWeight: 700,
+                      fontSize: 13,
+                      cursor: "pointer",
+                      fontFamily: FONT,
+                    }}
+                  >
+                    Pay in full
+                  </button>
+                </Row>
+              ) : null}
+              {!customMode && outstanding > 0 ? (
+                <Row onClick={() => setPartial(!partial)}>
+                  <span style={{ flex: 1, fontSize: 16, fontWeight: 600, color: NAVY }}>
+                    Partial payment
+                  </span>
                   <input
                     type="checkbox"
                     checked={partial}
                     onChange={(e) => setPartial(e.target.checked)}
-                    style={{ width: 16, height: 16, accentColor: BLUE }}
+                    onClick={(e) => e.stopPropagation()}
+                    style={{ width: 18, height: 18, accentColor: BLUE }}
                   />
-                </label>
+                </Row>
+              ) : null}
+            </Group>
+
+            {!customMode && outstanding > 0 && (
+              <SectionCaption>
                 {partial ? (
-                  <div style={{ fontSize: 11, color: BODY, marginBottom: 12 }}>
+                  <>
                     Remaining after this payment:{" "}
-                    <strong style={{ color: RED }}>
-                      {money(Math.max(0, outstanding - amountNum))}
-                    </strong>
-                  </div>
+                    <strong style={{ color: RED }}>{money(Math.max(0, outstanding - amountNum))}</strong>
+                  </>
+                ) : amountNum > 0 && Math.abs(amountNum - outstanding) > 0.005 ? (
+                  <span style={{ color: AMBER }}>
+                    Amount doesn't match the full outstanding balance — turn on partial payment.
+                  </span>
                 ) : (
-                  amountNum > 0 &&
-                  Math.abs(amountNum - outstanding) > 0.005 && (
-                    <div style={{ fontSize: 11, color: AMBER, marginBottom: 12 }}>
-                      Amount doesn't match the full outstanding balance — turn on partial payment.
-                    </div>
-                  )
+                  `Account credit ${money(balance?.accountCredit ?? 0)}`
                 )}
-              </>
+              </SectionCaption>
             )}
 
-            {/* Custom note */}
-            {customMode && (
-              <div style={{ marginBottom: 12 }}>
-                <Label>Note</Label>
-                <textarea
+            {/* Notes */}
+            <Group>
+              <Row>
+                <StickyNote size={18} color={SUBTLE} />
+                <input
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  placeholder="What is this payment for?"
-                  rows={3}
-                  style={{ ...inputStyle, height: "auto", padding: 10, resize: "vertical" }}
+                  placeholder="Add a note..."
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    border: "none",
+                    outline: "none",
+                    background: "transparent",
+                    fontSize: 13,
+                    color: NAVY,
+                    fontFamily: FONT,
+                    padding: 0,
+                  }}
                 />
-              </div>
-            )}
+              </Row>
+            </Group>
 
-            {/* Method buttons */}
-            <Label>Payment method</Label>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: 6,
-                marginBottom: 12,
-              }}
-            >
+            {/* Method rows */}
+            <Group>
               {methodList.map(({ key, Icon }) => {
                 const active = method === key;
                 return (
-                  <button
+                  <Row
                     key={key}
-                    type="button"
+                    selected={active}
                     onClick={() => {
                       setMethod(key);
                       setQrUrl(null);
                       setPayUrl(null);
                       setQrPaymentId(null);
                     }}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 4,
-                      height: 54,
-                      borderRadius: 8,
-                      border: `1px solid ${active ? BLUE : BORDER}`,
-                      background: active ? BLUE_BG : WHITE,
-                      color: active ? BLUE : BODY,
-                      fontSize: 11,
-                      fontWeight: active ? 600 : 500,
-                      fontFamily: FONT,
-                      cursor: "pointer",
-                    }}
                   >
-                    <Icon size={15} color={active ? BLUE : MUTED} />
-                    {METHOD_LABEL[key]}
-                  </button>
+                    <Radio selected={active} />
+                    <Icon size={18} color={active ? BLUE : SUBTLE} />
+                    <RowLabel>{METHOD_LABEL[key]}</RowLabel>
+                  </Row>
                 );
               })}
-            </div>
+            </Group>
 
             {/* 1% fee note */}
             {feeApplies && amountNum > 0 && (
@@ -2222,15 +2277,27 @@ export function UnifiedPaymentSheet({
 
             {/* Payment date */}
             {!isRemote && (
-              <div style={{ marginBottom: 14 }}>
-                <Label>Payment date</Label>
-                <input
-                  type="date"
-                  value={paymentDate}
-                  onChange={(e) => setPaymentDate(e.target.value)}
-                  style={inputStyle}
-                />
-              </div>
+              <Group>
+                <Row>
+                  <span style={{ flex: 1, fontSize: 16, fontWeight: 600, color: NAVY }}>
+                    Payment date
+                  </span>
+                  <input
+                    type="date"
+                    value={paymentDate}
+                    onChange={(e) => setPaymentDate(e.target.value)}
+                    style={{
+                      border: "none",
+                      outline: "none",
+                      background: "transparent",
+                      fontSize: 14,
+                      color: SUBTLE,
+                      fontFamily: FONT,
+                      textAlign: "right",
+                    }}
+                  />
+                </Row>
+              </Group>
             )}
 
             {/* ---------------- PAYMENT HISTORY ---------------- */}
@@ -2269,14 +2336,14 @@ export function UnifiedPaymentSheet({
                 {refundRow && (
                   <div
                     style={{
-                      border: `1px solid ${BORDER}`,
-                      background: AMBER_BG,
-                      borderRadius: 10,
-                      padding: 12,
-                      marginBottom: 10,
+                      ...cardStyle,
+                      padding: 16,
+                      marginTop: 12,
+                      marginBottom: 12,
+                      overflow: "visible",
                     }}
                   >
-                    <div style={{ fontSize: 12, fontWeight: 600, color: AMBER }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: RED }}>
                       Issue refund — {money(refundRow.amount)} —{" "}
                       {refundRow.method ?? "payment"} — {fmtDate(refundRow.created_at)}
                     </div>
