@@ -560,9 +560,9 @@ function PaymentsPage() {
               <div
                 style={{
                   background: "#FFFFFF",
-                  borderRadius: 14,
+                  borderRadius: 16,
                   overflow: "hidden",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                   margin: "0 16px 14px",
                 }}
               >
@@ -575,7 +575,7 @@ function PaymentsPage() {
                     <div
                       key={row.id}
                       style={{
-                        borderBottom: i < g.rows.length - 1 ? "0.5px solid #EEF2F7" : "none",
+                        borderBottom: i < g.rows.length - 1 ? "1px solid #E4E8EF" : "none",
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 16px", minHeight: 66 }}>
