@@ -1,23 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { QRCodeSVG } from "qrcode.react";
-import {
-  Banknote,
-  Building2,
-  Clock,
-  Copy,
-  Landmark,
-  Link2,
-  Mail,
-  MessageSquare,
-  Package,
-  QrCode,
-  Search,
-  Sparkles,
-  CreditCard,
-  ChevronRight,
-  StickyNote,
-} from "lucide-react";
+import { IconChevronRight, IconClock, IconCopy, IconCreditCard, IconMail, IconMessage, IconPackage, IconSearch } from "@tabler/icons-react";
+import { Banknote, Building2, Landmark, Link2, QrCode, Sparkles, StickyNote } from "lucide-react";
 import { toast } from "sonner";
 import { IconCircleCheck, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
@@ -125,9 +110,9 @@ const PRICING_OPTIONS: {
   sublabel?: string;
   Icon: React.ComponentType<{ size?: number; color?: string }>;
 }[] = [
-  { key: "block", label: "Block", Icon: Package },
+  { key: "block", label: "Block", Icon: IconPackage },
   { key: "national_intensives", label: "National Intensives", Icon: Building2 },
-  { key: "standard", label: "Standard", Icon: Clock },
+  { key: "standard", label: "Standard", Icon: IconClock },
   { key: "custom", label: "One-off", sublabel: "Single occasion payment", Icon: IconReceipt },
 ];
 
@@ -809,8 +794,8 @@ export function UnifiedPaymentSheet({
       { key: "bank_transfer" as const, Icon: Landmark },
       { key: "qr" as const, Icon: QrCode },
       { key: "link" as const, Icon: Link2 },
-      { key: "klarna" as const, Icon: CreditCard },
-      { key: "clearpay" as const, Icon: CreditCard },
+      { key: "klarna" as const, Icon: IconCreditCard },
+      { key: "clearpay" as const, Icon: IconCreditCard },
     ] as { key: PayMethod; Icon: typeof Banknote }[]
   ).filter((m) => methodAllowed(m.key));
 
@@ -1020,7 +1005,7 @@ export function UnifiedPaymentSheet({
       await navigator.clipboard.writeText(payUrl);
       toast.success("Link copied");
     } catch {
-      toast.error("Copy failed");
+      toast.error("IconCopy failed");
     }
   };
 
@@ -1190,7 +1175,7 @@ export function UnifiedPaymentSheet({
             notes: `Block package: ${hoursTotal} hrs at £${newPrice}`,
             currentAccountBalance: Number(pupil?.account_balance ?? 0),
           });
-          // Package hours live on the pupil row.
+          // IconPackage hours live on the pupil row.
           await supabase
             .from("pupils")
             .update({
@@ -1300,7 +1285,7 @@ export function UnifiedPaymentSheet({
           pupilId,
           amount: refundDue,
           method: "refund",
-          notes: `Package cancellation — ${unusedHrs}h of ${blockTotalHrs}h unused`,
+          notes: `IconPackage cancellation — ${unusedHrs}h of ${blockTotalHrs}h unused`,
           currentAccountBalance: Number(pupil?.account_balance ?? 0),
         });
 
@@ -1459,7 +1444,7 @@ export function UnifiedPaymentSheet({
                   cells={
                     isPackage
                       ? [
-                          { label: "Package", value: money(balance.packageTotal) },
+                          { label: "IconPackage", value: money(balance.packageTotal) },
                           { label: "Paid", value: money(balance.packagePaid), color: GREEN },
                           {
                             label: "Outstanding",
@@ -1754,12 +1739,12 @@ export function UnifiedPaymentSheet({
         {pickerOpen && (
           <Group>
             <Row>
-              <Search size={18} color={SUBTLE} />
+              <IconSearch stroke={1.5} size={18} color={SUBTLE} />
               <input
                 autoFocus
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search pupils"
+                placeholder="IconSearch pupils"
                 style={{
                   flex: 1,
                   minWidth: 0,
@@ -1883,7 +1868,7 @@ export function UnifiedPaymentSheet({
                   {outstanding > 0 ? `${money(outstanding)} due` : "Fully paid"}
                 </span>
               )}
-              <ChevronRight size={18} color={SUBTLE} />
+              <IconChevronRight stroke={1.5} size={18} color={SUBTLE} />
             </Row>
           </Group>
         )}
@@ -1938,7 +1923,7 @@ export function UnifiedPaymentSheet({
                 cells={
                   isPackage
                     ? [
-                        { label: "Package", value: money(balance.packageTotal) },
+                        { label: "IconPackage", value: money(balance.packageTotal) },
                         { label: "Paid", value: money(balance.packagePaid), color: GREEN },
                         {
                           label: "Outstanding",
@@ -2227,9 +2212,9 @@ export function UnifiedPaymentSheet({
               >
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
                   {[
-                    { label: "Copy link", Icon: Copy, onClick: copyLink },
-                    { label: "Send SMS", Icon: MessageSquare, onClick: sendSms },
-                    { label: "Email", Icon: Mail, onClick: () => void sendEmail() },
+                    { label: "IconCopy link", Icon: IconCopy, onClick: copyLink },
+                    { label: "Send SMS", Icon: IconMessage, onClick: sendSms },
+                    { label: "Email", Icon: IconMail, onClick: () => void sendEmail() },
                   ].map(({ label, Icon, onClick }) => (
                     <button
                       key={label}
@@ -2701,7 +2686,7 @@ export function UnifiedPaymentSheet({
                     style={inputStyle}
                   />
                 </Field>
-                <Field label="Package price (£)">
+                <Field label="IconPackage price (£)">
                   <input
                     inputMode="decimal"
                     value={packagePrice}

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Copy, Check } from "lucide-react";
+import { IconCheck, IconCopy } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/lib/haptics";
@@ -24,7 +24,7 @@ export function CopyableId({
       toast.success(`${label ?? "ID"} copied`);
       setTimeout(() => setCopied(false), 1600);
     } catch {
-      toast.error("Copy failed");
+      toast.error("IconCopy failed");
     }
   };
   return (
@@ -35,13 +35,13 @@ export function CopyableId({
         "inline-flex items-center gap-1.5 rounded-md border border-[#EEF2F7] bg-[#F3F8FF] px-2 py-0.5 font-mono text-xs text-[#0B1F3A] hover:bg-[#EAF3FB] transition-colors",
         className,
       )}
-      title={`Copy ${label ?? "ID"}`}
+      title={`IconCopy ${label ?? "ID"}`}
     >
       <span className="truncate max-w-[140px]">{value}</span>
       {copied ? (
-        <Check className="h-3 w-3 text-[#067647]" />
+        <IconCheck stroke={1.5} className="h-3 w-3 text-[#067647]" />
       ) : (
-        <Copy className="h-3 w-3 text-[#5A6B82]" />
+        <IconCopy stroke={1.5} className="h-3 w-3 text-[#5A6B82]" />
       )}
     </button>
   );

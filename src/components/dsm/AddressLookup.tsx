@@ -4,7 +4,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Check, Loader2, MapPin, Search, X } from "lucide-react";
+import { IconCheck, IconLoader2, IconMapPin, IconSearch, IconX } from "@tabler/icons-react";
 
 const POPPINS = { fontFamily: "Poppins, system-ui, sans-serif" } as const;
 
@@ -442,7 +442,7 @@ export function AddressLookup({
                 pointerEvents: "none",
               }}
             >
-              <Loader2 size={18} color="#1877D6" className="animate-spin" />
+              <IconLoader2 stroke={1.5} size={18} color="#1877D6" className="animate-spin" />
             </div>
           )}
         </div>
@@ -471,8 +471,8 @@ export function AddressLookup({
               ...POPPINS,
             }}
           >
-            <Search size={14} color="#1877D6" />
-            Search now
+            <IconSearch stroke={1.5} size={14} color="#1877D6" />
+            IconSearch now
           </button>
         </div>
       )}
@@ -506,7 +506,7 @@ export function AddressLookup({
                 ...POPPINS,
               }}
             >
-              <Loader2 size={14} color="#1877D6" className="animate-spin" />
+              <IconLoader2 stroke={1.5} size={14} color="#1877D6" className="animate-spin" />
               Searching addresses…
             </div>
           )}
@@ -523,7 +523,7 @@ export function AddressLookup({
                 ...POPPINS,
               }}
             >
-              <MapPin size={14} color="#9CA3AF" />
+              <IconMapPin stroke={1.5} size={14} color="#9CA3AF" />
               No results found. Try a different address.
             </div>
           )}
@@ -555,7 +555,7 @@ export function AddressLookup({
                 (e.currentTarget.style.backgroundColor = "transparent")
               }
             >
-              <MapPin
+              <IconMapPin stroke={1.5}
                 size={14}
                 color="#1877D6"
                 style={{ marginTop: 2, flexShrink: 0 }}
@@ -616,7 +616,7 @@ export function AddressLookup({
             gap: 10,
           }}
         >
-          <Check
+          <IconCheck stroke={1.5}
             size={18}
             color="#1877D6"
             style={{ marginTop: 2, flexShrink: 0 }}
@@ -695,7 +695,7 @@ export function AddressLookup({
                 ...POPPINS,
               }}
             >
-              <X size={12} /> Change
+              <IconX stroke={1.5} size={12} /> Change
             </button>
           </div>
         </div>

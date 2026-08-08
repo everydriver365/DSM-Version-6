@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Pencil } from "lucide-react";
+import { IconPencil } from "@tabler/icons-react";
 import {
   IconAlertCircle,
   IconAlertTriangle,
@@ -1019,7 +1019,7 @@ export function LessonActionsSheet({
               aria-label="Edit pickup address"
               style={{ marginLeft: "auto", background: "none", border: "none", padding: 0, cursor: "pointer", color: "#8E8E93", display: "flex" }}
             >
-              <Pencil size={16} />
+              <IconPencil stroke={1.5} size={16} />
             </button>
           </SheetRow>
           {isEditingPickup ? (
