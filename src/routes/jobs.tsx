@@ -517,48 +517,52 @@ function JobsPage() {
 
       <div className="sticky top-0 z-30">
         <div
-          className="flex items-center justify-end"
-          style={{ background: "#FFFFFF", padding: "8px 16px" }}
-        >
-          <div className="text-[12px] font-semibold" style={{ ...POPPINS, color: "#6B7280" }}>
-            {activeTab === "open" ? `${jobs?.length ?? 0} open` : `${claimedJobs?.length ?? 0} claimed`}
-          </div>
-        </div>
-
-
-        {/* Tabs */}
-        <div
           style={{
             display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
             background: "#FFFFFF",
-            padding: "4px 12px 0",
-            gap: 16,
-            borderBottom: "1px solid #E5E7EB",
+            padding: "10px 16px 12px",
           }}
         >
-          {(["open", "claimed"] as const).map((tab) => {
-            const active = activeTab === tab;
-            return (
-              <button
-                key={tab}
-                type="button"
-                onClick={() => setActiveTab(tab)}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  borderBottom: `2px solid ${active ? BLUE : "transparent"}`,
-                  padding: "10px 4px",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: active ? BLUE : GREY,
-                  cursor: "pointer",
-                  textTransform: "capitalize",
-                }}
-              >
-                {tab}
-              </button>
-            );
-          })}
+          <div
+            style={{
+              display: "inline-flex",
+              background: "#E5E5EA",
+              borderRadius: 12,
+              padding: 3,
+            }}
+          >
+            {(["open", "claimed"] as const).map((tab) => {
+              const active = activeTab === tab;
+              return (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setActiveTab(tab)}
+                  style={{
+                    background: active ? "#fff" : "transparent",
+                    border: "none",
+                    borderRadius: 9,
+                    padding: "8px 18px",
+                    fontSize: 13.5,
+                    fontWeight: 600,
+                    color: active ? "#000" : "#6B6B6F",
+                    cursor: "pointer",
+                    textTransform: "capitalize",
+                    boxShadow: active ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
+                    ...POPPINS,
+                  }}
+                >
+                  {tab}
+                </button>
+              );
+            })}
+          </div>
+          <div style={{ fontSize: 13, fontWeight: 500, color: "#8A8A8E", ...POPPINS }}>
+            {activeTab === "open" ? `${jobs?.length ?? 0} open` : `${claimedJobs?.length ?? 0} claimed`}
+          </div>
         </div>
       </div>
 
