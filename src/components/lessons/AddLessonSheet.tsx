@@ -75,13 +75,6 @@ function ErrorText({ children }: { children: React.ReactNode }) {
 }
 
 
-function ErrorText({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
-      {children}
-    </p>
-  );
-}
 
 export interface AddLessonSheetProps {
   open: boolean;
