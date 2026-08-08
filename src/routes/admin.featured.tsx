@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Search, Star } from "lucide-react";
+import { IconChevronLeft, IconSearch, IconStar } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
 
@@ -52,7 +52,7 @@ function TopBar({ onBack }: { onBack: () => void }) {
           color: "#fff",
         }}
       >
-        <ChevronLeft size={18} />
+        <IconChevronLeft stroke={1.5} size={18} />
       </button>
       <span style={{ fontSize: 16, fontWeight: 600 }}>Featured listings</span>
     </div>
@@ -243,11 +243,11 @@ function AdminFeatured() {
               padding: "8px 12px",
             }}
           >
-            <Search size={16} color="#6B7280" />
+            <IconSearch stroke={1.5} size={16} color="#6B7280" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search instructors"
+              placeholder="IconSearch instructors"
               style={{
                 flex: 1,
                 border: "none",
@@ -304,7 +304,7 @@ function AdminFeatured() {
                           letterSpacing: "0.04em",
                         }}
                       >
-                        <Star size={10} /> Featured
+                        <IconStar stroke={1.5} size={10} /> Featured
                       </span>
                     )}
                   </div>

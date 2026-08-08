@@ -1,14 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import {
-  ArrowLeft,
-  Tag,
-  Briefcase,
-  X,
-  Upload,
-  CheckCircle2,
-} from "lucide-react";
+import { IconArrowLeft, IconBriefcase, IconCircleCheck, IconTag, IconUpload, IconX } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -211,7 +204,7 @@ function MarketplaceListPage() {
             gap: 12,
           }}
         >
-          <CheckCircle2 size={56} color="#00B5A5" />
+          <IconCircleCheck stroke={1.5} size={56} color="#00B5A5" />
           <div
             style={{ fontSize: 20, fontWeight: 700, color: "#0F2044" }}
           >
@@ -259,7 +252,7 @@ function MarketplaceListPage() {
           alignItems: "flex-start",
         }}
       >
-        <Tag size={18} color="#D97706" style={{ flexShrink: 0, marginTop: 2 }} />
+        <IconTag stroke={1.5} size={18} color="#D97706" style={{ flexShrink: 0, marginTop: 2 }} />
         <div>
           <div style={{ fontSize: 14, color: "#0F2044", fontWeight: 600 }}>
             List your product or service free. Reach thousands of driving
@@ -280,13 +273,13 @@ function MarketplaceListPage() {
             <TypePill
               active={listingType === "product"}
               onClick={() => setListingType("product")}
-              icon={<Tag size={16} />}
+              icon={<IconTag stroke={1.5} size={16} />}
               label="Product / Equipment"
             />
             <TypePill
               active={listingType === "service"}
               onClick={() => setListingType("service")}
-              icon={<Briefcase size={16} />}
+              icon={<IconBriefcase stroke={1.5} size={16} />}
               label="Service / Business"
             />
           </div>
@@ -449,7 +442,7 @@ function MarketplaceListPage() {
                     justifyContent: "center",
                   }}
                 >
-                  <X size={12} />
+                  <IconX stroke={1.5} size={12} />
                 </button>
               </div>
             ))}
@@ -467,7 +460,7 @@ function MarketplaceListPage() {
                   cursor: "pointer",
                 }}
               >
-                <Upload size={18} />
+                <IconUpload stroke={1.5} size={18} />
                 <input
                   type="file"
                   accept="image/*"
@@ -629,7 +622,7 @@ function TopBar({ onBack }: { onBack: () => void }) {
           display: "flex",
         }}
       >
-        <ArrowLeft size={22} />
+        <IconArrowLeft stroke={1.5} size={22} />
       </button>
       <div style={{ fontSize: 16, fontWeight: 700 }}>List your product</div>
     </div>
@@ -810,7 +803,7 @@ function PreviewSheet({
               display: "flex",
             }}
           >
-            <X size={20} />
+            <IconX stroke={1.5} size={20} />
           </button>
         </div>
 

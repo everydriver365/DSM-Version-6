@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, ChevronDown, ChevronUp } from "lucide-react";
+import { IconChevronDown, IconChevronLeft, IconChevronUp } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
@@ -260,7 +260,7 @@ function AdminApplicationsPage() {
             color: "#fff",
           }}
         >
-          <ChevronLeft size={18} />
+          <IconChevronLeft stroke={1.5} size={18} />
         </button>
         <span style={{ fontSize: 16, fontWeight: 600 }}>Featured applications</span>
       </div>
@@ -338,7 +338,7 @@ function AdminApplicationsPage() {
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <StatusBadge status={app.status} />
-                    {isOpen ? <ChevronUp size={16} color={MUTED} /> : <ChevronDown size={16} color={MUTED} />}
+                    {isOpen ? <IconChevronUp stroke={1.5} size={16} color={MUTED} /> : <IconChevronDown stroke={1.5} size={16} color={MUTED} />}
                   </div>
                 </div>
                 <div style={{ fontSize: 12, color: NAVY, marginTop: 6 }}>

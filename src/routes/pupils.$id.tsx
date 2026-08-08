@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { Award, BarChart3, BookOpen, Calendar, Car, ChevronDown, ChevronRight, ClipboardCheck, ClipboardList, Clock, CreditCard, ExternalLink, Flag, Heart, History, Loader2, Mail, MapPin, MessageSquare, MoreHorizontal, Palette, Pencil, Phone, Plus, PoundSterling, RefreshCw, Search, Send, Trash2, Trophy, X, Check } from "lucide-react";
+import { IconAward, IconCalendar, IconCar, IconChartBar, IconCheck, IconChevronDown, IconChevronRight, IconClipboardCheck, IconClipboardList, IconClock, IconCreditCard, IconCurrencyPound, IconDots, IconExternalLink, IconFlag, IconHeart, IconLoader2, IconMail, IconMapPin, IconMessage, IconPalette, IconPencil, IconPhone, IconPlus, IconRefresh, IconSearch, IconSend, IconTrash, IconTrophy, IconX } from "@tabler/icons-react";
+import { BookOpen, History } from "lucide-react";
 import { IconCamera } from "@tabler/icons-react";
 import { IconCar } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
@@ -1400,7 +1401,7 @@ function PupilDetailPage() {
                           backgroundColor: 'rgba(0,0,0,0.45)',
                         }}
                       >
-                        <Loader2 size={22} color="#FFFFFF" className="animate-spin" />
+                        <IconLoader2 stroke={1.5} size={22} color="#FFFFFF" className="animate-spin" />
                       </span>
                     )}
                   </button>
@@ -1445,7 +1446,7 @@ function PupilDetailPage() {
                         style={{ color: "rgba(255,255,255,0.85)", ...POPPINS }}
                       >
                         <span className="truncate">{pupil.email || "No email set"}</span>
-                        <Pencil size={12} color="rgba(255,255,255,0.7)" />
+                        <IconPencil stroke={1.5} size={12} color="rgba(255,255,255,0.7)" />
                       </button>
                     ) : (
                       <div className="mt-0.5 flex flex-col gap-1.5">
@@ -1513,7 +1514,7 @@ function PupilDetailPage() {
                       zIndex: 2,
                     }}
                   >
-                    <Pencil size={11} />
+                    <IconPencil stroke={1.5} size={11} />
                   </button>
                   <button
                     type="button"
@@ -1550,13 +1551,13 @@ function PupilDetailPage() {
                 {/* Actions row */}
                 <div className="flex items-center justify-end gap-2">
                   <a href={pupil?.phone ? `tel:${pupil.phone}` : undefined} aria-label="Call pupil" className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A", textDecoration: "none" }}>
-                    <Phone size={15} /> Call
+                    <IconPhone stroke={1.5} size={15} /> Call
                   </a>
                   <button type="button" onClick={openEditSheet} className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A", textDecoration: "none" }}>
-                    <Pencil size={15} /> Edit
+                    <IconPencil stroke={1.5} size={15} /> Edit
                   </button>
                   <button type="button" onClick={() => setRemoveOpen(true)} className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#CC2229" }}>
-                    <Trash2 size={15} /> Remove
+                    <IconTrash stroke={1.5} size={15} /> Remove
                   </button>
                 </div>
 
@@ -1795,7 +1796,7 @@ function PupilDetailPage() {
                             className="p-2 rounded-lg shrink-0 flex items-center justify-center"
                             style={{ backgroundColor: theoryPassed ? "#00B5A5" : "#94A3B8" }}
                           >
-                            {theoryPassed ? <Check size={14} color="#FFFFFF" /> : <BookOpen size={14} color="#FFFFFF" />}
+                            {theoryPassed ? <IconCheck stroke={1.5} size={14} color="#FFFFFF" /> : <BookOpen size={14} color="#FFFFFF" />}
                           </div>
                           <div className="min-w-0">
                             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider" style={POPPINS}>Theory</p>
@@ -1846,7 +1847,7 @@ function PupilDetailPage() {
                                       : "#94A3B8",
                             }}
                           >
-                            <Car size={14} color="#FFFFFF" />
+                            <IconCar stroke={1.5} size={14} color="#FFFFFF" />
                           </div>
                           <div className="min-w-0 flex-1">
                             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider" style={POPPINS}>Practical</p>
@@ -1948,7 +1949,7 @@ function PupilDetailPage() {
                               color: "#6B7280",
                             }}
                           >
-                            <X size={14} />
+                            <IconX stroke={1.5} size={14} />
                           </button>
                         </div>
                       ))}
@@ -1966,14 +1967,14 @@ function PupilDetailPage() {
         <div className="grid grid-cols-5 gap-2 mt-4">
           <ActionTile
             label="Call"
-            icon={<Phone size={20} />}
+            icon={<IconPhone stroke={1.5} size={20} />}
             iconBg="#E7F5EE"
             iconColor="#1E8E3E"
             href={pupil?.phone ? `tel:${pupil.phone}` : undefined}
           />
           <ActionTile
             label="Message"
-            icon={<MessageSquare size={20} />}
+            icon={<IconMessage stroke={1.5} size={20} />}
             iconBg="#E6F1FB"
             iconColor="#1877D6"
             onClick={() => { setSendMessagePupilId(pupil?.id ?? id); setSendMessageOpen(true); }}
@@ -1981,21 +1982,21 @@ function PupilDetailPage() {
           />
           <ActionTile
             label="Text"
-            icon={<Send size={20} />}
+            icon={<IconSend stroke={1.5} size={20} />}
             iconBg="#F1E9FA"
             iconColor="#7A3FC0"
             href={pupil?.phone ? `sms:${pupil.phone}` : undefined}
           />
           <ActionTile
             label="Add lesson"
-            icon={<Plus size={20} />}
+            icon={<IconPlus stroke={1.5} size={20} />}
             iconBg="#FEF3E2"
             iconColor="#B5661E"
             onClick={() => { setAddLessonDate(undefined); setAddLessonPupilId(pupil?.id ?? id); setAddLessonOpen(true); }}
           />
           <ActionTile
             label="More"
-            icon={<MoreHorizontal size={20} />}
+            icon={<IconDots stroke={1.5} size={20} />}
             iconBg="#F3F4F6"
             iconColor="#6B7280"
             onClick={() => setMoreOpen(true)}
@@ -2113,7 +2114,7 @@ function PupilDetailPage() {
                       className="p-1 rounded-full"
                       style={{ lineHeight: 0, color: "#64748B", flexShrink: 0 }}
                     >
-                      <MoreHorizontal size={18} />
+                      <IconDots stroke={1.5} size={18} />
                     </button>
                     {actionsOpenFor?.id === l.id && (
                       <div
@@ -2160,7 +2161,7 @@ function PupilDetailPage() {
         <div style={{ background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 12, padding: 0, overflow: "hidden", margin: "12px 0 0 0" }}>
           <div style={{ padding: "14px 16px", borderBottom: "0.5px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div className="flex items-center gap-2">
-              <RefreshCw size={14} color="#1A52A0" />
+              <IconRefresh stroke={1.5} size={14} color="#1A52A0" />
               <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Recurring lessons</span>
             </div>
             <button
@@ -2270,7 +2271,7 @@ function PupilDetailPage() {
                             className="p-1 rounded-full"
                             style={{ lineHeight: 0, color: "#64748B", flexShrink: 0 }}
                           >
-                            <MoreHorizontal size={18} />
+                            <IconDots stroke={1.5} size={18} />
                           </button>
                           {actionsOpenFor?.id === l.id && (
                             <div
@@ -2320,7 +2321,7 @@ function PupilDetailPage() {
                       {pastExpanded
                         ? "Show less"
                         : `Show ${pastLessons.length - 5} more`}
-                      <ChevronDown
+                      <IconChevronDown stroke={1.5}
                         size={14}
                         color="#1877D6"
                         style={{ transform: pastExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
@@ -2337,7 +2338,7 @@ function PupilDetailPage() {
         <div style={{ background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 12, padding: 0, overflow: "hidden" }}>
           <div style={{ padding: "14px 16px", borderBottom: "0.5px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div className="flex items-center gap-2">
-              <MapPin size={14} color="#1A52A0" />
+              <IconMapPin stroke={1.5} size={14} color="#1A52A0" />
               <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Lesson tracks</span>
             </div>
             <span
@@ -2391,7 +2392,7 @@ function PupilDetailPage() {
                         {overspeeds} overspeed
                       </span>
                     ) : null}
-                    <ChevronRight size={16} color="#9CA3AF" />
+                    <IconChevronRight stroke={1.5} size={16} color="#9CA3AF" />
                   </div>
                 </button>
               );
@@ -2406,7 +2407,7 @@ function PupilDetailPage() {
         >
           {reportLoading && !viewingReport ? (
             <div style={{ padding: 24, textAlign: "center", color: "#6B7280", ...POPPINS }}>
-              <Loader2 className="animate-spin inline mr-2" size={16} /> Loading track…
+              <IconLoader2 stroke={1.5} className="animate-spin inline mr-2" size={16} /> Loading track…
             </div>
           ) : viewingReport ? (
             <div style={{ padding: "4px 4px 16px", ...POPPINS }}>
@@ -2465,7 +2466,7 @@ function PupilDetailPage() {
                           <span style={{ fontSize: 13, fontWeight: 700, color: "#CC2229", whiteSpace: "nowrap" }}>
                             +{Math.round(ev.excess_mph)} mph
                           </span>
-                          <ChevronRight size={16} color="#CC2229" />
+                          <IconChevronRight stroke={1.5} size={16} color="#CC2229" />
                         </div>
                       </SheetRow>
                     ))}
@@ -2611,10 +2612,10 @@ function PupilDetailPage() {
                 borderRadius: 10, marginBottom: 12, cursor: 'pointer',
               }}
             >
-              <CreditCard size={16} color="#1877D6" />
+              <IconCreditCard stroke={1.5} size={16} color="#1877D6" />
               <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A',
                 flex: 1, textAlign: 'left' }}>Pricing & payment</span>
-              <ChevronRight size={14} color="#9CA3AF" />
+              <IconChevronRight stroke={1.5} size={14} color="#9CA3AF" />
             </button>
             {/* Take payment */}
             <button
@@ -2632,7 +2633,7 @@ function PupilDetailPage() {
                 ...POPPINS,
               }}
             >
-              <CreditCard size={16} color="#FFFFFF" /> Take payment
+              <IconCreditCard stroke={1.5} size={16} color="#FFFFFF" /> Take payment
             </button>
             </>)}
 
@@ -2810,7 +2811,7 @@ function PupilDetailPage() {
                   <div className="flex items-center gap-2">
                     {(centreInfo || pupil.test_centre) ? (
                       <span className="inline-flex items-center gap-1 text-[13px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>
-                        <MapPin size={14} color="#1877D6" />
+                        <IconMapPin stroke={1.5} size={14} color="#1877D6" />
                         {centreInfo
                           ? `${centreInfo.name}${centreInfo.town ? `, ${centreInfo.town}` : ""}`
                           : pupil.test_centre}
@@ -2842,14 +2843,14 @@ function PupilDetailPage() {
                 {centrePickerOpen && (
                   <div className="mt-2" style={{ position: "relative" }}>
                     <div style={{ position: "relative" }}>
-                      <Search
+                      <IconSearch stroke={1.5}
                         size={16}
                         color="#64748B"
                         style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}
                       />
                       <input
                         type="text"
-                        placeholder="Search test centres..."
+                        placeholder="IconSearch test centres..."
                         value={centreSearch}
                         onChange={(e) => setCentreSearch(e.target.value)}
                         style={{
@@ -3034,7 +3035,7 @@ function PupilDetailPage() {
           >
             <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "0.5px solid #EEF2F7" }}>
               <span className="flex items-center gap-2 text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <ClipboardCheck size={16} color="#1877D6" /> Mock tests
+                <IconClipboardCheck stroke={1.5} size={16} color="#1877D6" /> Mock tests
               </span>
               <span
                 className="text-[11px] font-semibold text-white"
@@ -3376,7 +3377,7 @@ function PupilDetailPage() {
                     />
                   ) : (
                     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#8A93A3", fontSize: 12, ...POPPINS }}>
-                      <MapPin size={16} style={{ marginRight: 6 }} /> No pickup on file
+                      <IconMapPin stroke={1.5} size={16} style={{ marginRight: 6 }} /> No pickup on file
                     </div>
                   )}
                   <span
@@ -3392,7 +3393,7 @@ function PupilDetailPage() {
                 </div>
                 <div style={{ padding: 16 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                    <Calendar size={16} color="#1877D6" />
+                    <IconCalendar stroke={1.5} size={16} color="#1877D6" />
                     <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>
                       {formatDateShort(start)} · {formatTime(focus.lesson_time)}
                     </div>
@@ -3402,7 +3403,7 @@ function PupilDetailPage() {
                   </div>
                   {pickup && (
                     <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 12 }}>
-                      <MapPin size={16} color="#64748B" style={{ marginTop: 2, flexShrink: 0 }} />
+                      <IconMapPin stroke={1.5} size={16} color="#64748B" style={{ marginTop: 2, flexShrink: 0 }} />
                       <div style={{ flex: 1, fontSize: 13, color: "#0B1F3A", ...POPPINS }}>{pickup}</div>
                       <a
                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickup)}`}
@@ -3414,15 +3415,15 @@ function PupilDetailPage() {
                   {!isPast && !isCancelled && (
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                       <button style={pillBase} onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}>
-                        <MapPin size={16} color="#0B1F3A" />
+                        <IconMapPin stroke={1.5} size={16} color="#0B1F3A" />
                         <span>Here</span>
                       </button>
                       <button style={pillBase} onClick={() => sendSms(`Hi ${firstName}, on the way!`)}>
-                        <Send size={16} color="#0B1F3A" />
+                        <IconSend stroke={1.5} size={16} color="#0B1F3A" />
                         <span>Going</span>
                       </button>
                       <button style={{ ...pillBase, background: '#1877D6', color: '#FFFFFF', borderColor: '#1877D6' }} onClick={() => { sendSms(`Hi ${firstName}, I've arrived 🚗`); toast.success("Marked as arrived"); }}>
-                        <Check size={16} color="#FFFFFF" />
+                        <IconCheck stroke={1.5} size={16} color="#FFFFFF" />
                         <span style={{ color: '#FFFFFF' }}>Arrived</span>
                       </button>
                     </div>
@@ -3435,23 +3436,23 @@ function PupilDetailPage() {
                 <div style={{ background: "#FFFFFF", borderRadius: 16, border: "0.5px solid rgba(11,31,58,0.10)", overflow: "hidden", marginTop: 12 }}>
                   <button style={rowBtn} onClick={() => navigate({ to: "/lessons/reschedule/$id", params: { id: focus!.id } })}>
                     <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <RefreshCw size={16} color="#1877D6" /> Reschedule
+                      <IconRefresh stroke={1.5} size={16} color="#1877D6" /> Reschedule
                     </span>
-                    <ChevronRight size={18} color="#64748B" />
+                    <IconChevronRight stroke={1.5} size={18} color="#64748B" />
                   </button>
                   <div style={{ height: "0.5px", background: "rgba(11,31,58,0.10)" }} />
                   <button style={rowBtn} onClick={sendPaymentLink} disabled={balance <= 0 || isPaid}>
                     <span style={{ display: "flex", alignItems: "center", gap: 10, opacity: (balance <= 0 || isPaid) ? 0.5 : 1 }}>
-                      <CreditCard size={16} color="#1877D6" /> Send payment link
+                      <IconCreditCard stroke={1.5} size={16} color="#1877D6" /> IconSend payment link
                     </span>
-                    <ChevronRight size={18} color="#64748B" />
+                    <IconChevronRight stroke={1.5} size={18} color="#64748B" />
                   </button>
                   <div style={{ height: "0.5px", background: "rgba(11,31,58,0.10)" }} />
                   <button style={rowBtn} onClick={() => navigate({ to: "/lessons/$id", params: { id: focus!.id }, search: { action: "cancel" } })}>
                     <span style={{ display: "flex", alignItems: "center", gap: 10, color: "#B42318" }}>
-                      <X size={16} color="#B42318" /> Cancel lesson
+                      <IconX stroke={1.5} size={16} color="#B42318" /> Cancel lesson
                     </span>
-                    <ChevronRight size={18} color="#64748B" />
+                    <IconChevronRight stroke={1.5} size={18} color="#64748B" />
                   </button>
                 </div>
               )}
@@ -3463,7 +3464,7 @@ function PupilDetailPage() {
               >
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <MessageSquare size={16} color="#1877D6" />
+                    <IconMessage stroke={1.5} size={16} color="#1877D6" />
                     <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Messages</span>
                     {unreadMessages > 0 && (
                       <span style={{ background: "#B42318", color: "#FFF", fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 999 }}>{unreadMessages}</span>
@@ -3518,7 +3519,7 @@ function PupilDetailPage() {
           <span className="text-[13px] truncate" style={{ color: notesDraft ? "#0B1F3A" : "#9CA3AF", ...POPPINS }}>
             {notesDraft ? notesDraft : "Add a note…"}
           </span>
-          <ChevronRight
+          <IconChevronRight stroke={1.5}
             size={16}
             color="#9CA3AF"
             style={{ transform: notesOpen ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
@@ -3565,7 +3566,7 @@ function PupilDetailPage() {
           >
             <div className="flex items-center justify-between mb-2">
               <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <MapPin size={16} color="#1A52A0" /> Address
+                <IconMapPin stroke={1.5} size={16} color="#1A52A0" /> Address
               </span>
               <button
                 type="button"
@@ -3658,7 +3659,7 @@ function PupilDetailPage() {
           >
             <div className="flex items-center justify-between mb-3">
               <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <Car size={16} color="#0B1F3A" /> Practical test
+                <IconCar stroke={1.5} size={16} color="#0B1F3A" /> Practical test
               </span>
               <button
                 type="button"
@@ -3733,7 +3734,7 @@ function PupilDetailPage() {
             }}
           >
             <div className="flex items-center gap-2 mb-3">
-              <ClipboardList size={18} color="#1877D6" />
+              <IconClipboardList stroke={1.5} size={18} color="#1877D6" />
               <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
                 Intake answers
               </div>
@@ -3766,7 +3767,7 @@ function PupilDetailPage() {
           />
         )}
 
-      {/* Calendar colour + buffer */}
+      {/* IconCalendar colour + buffer */}
       {pupil && (
         <PupilRatesAndColour
           pupil={pupil}
@@ -3808,7 +3809,7 @@ function PupilDetailPage() {
                 ...POPPINS,
               }}
             >
-              <Trash2 size={16} />
+              <IconTrash stroke={1.5} size={16} />
               {permDeleting ? "Deleting…" : "Permanently delete record"}
             </button>
           </div>
@@ -3909,7 +3910,7 @@ function PupilDetailPage() {
                       {currentTotal}
                     </div>
                   </div>
-                  <ChevronRight size={18} color="#8A93A3" />
+                  <IconChevronRight stroke={1.5} size={18} color="#8A93A3" />
                   <div className="flex-1 text-right">
                     <div className="text-[13px] font-medium" style={{ color: "#6B7686" }}>
                       New total
@@ -4060,13 +4061,13 @@ function PupilDetailPage() {
                 <span className="truncate">
                   {centreInfo?.name || pupil.test_centre || "Select a centre"}
                 </span>
-                <ChevronRight size={16} color="#6B7280" />
+                <IconChevronRight stroke={1.5} size={16} color="#6B7280" />
               </button>
               {practicalQuickCentrePickerOpen && (
                 <div className="mt-2 rounded-lg bg-white overflow-hidden" style={{ border: "0.5px solid #EEF2F7" }}>
                   <input
                     type="text"
-                    placeholder="Search centres…"
+                    placeholder="IconSearch centres…"
                     value={practicalQuickCentreSearch}
                     onChange={(e) => setPracticalQuickCentreSearch(e.target.value)}
                     className="h-10 w-full px-3 text-[13px] bg-white"
@@ -4135,11 +4136,11 @@ function PupilDetailPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Award size={20} color="#1877D6" />
+                <IconAward stroke={1.5} size={20} color="#1877D6" />
                 <div className="text-[16px] font-semibold text-[#0B1F3A]">Generate certificate</div>
               </div>
               <button type="button" onClick={() => setCertOpen(false)} aria-label="Close">
-                <X size={20} color="#6B7280" />
+                <IconX stroke={1.5} size={20} color="#6B7280" />
               </button>
             </div>
 
@@ -4251,12 +4252,12 @@ function PupilDetailPage() {
 
                 doc.save(`${pupilName} - ${milestone} - Certificate.pdf`);
                 setCertOpen(false);
-                toast.success("Certificate downloaded. Send to pupil manually.");
+                toast.success("Certificate downloaded. IconSend to pupil manually.");
               }}
               className="w-full inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white"
               style={{ height: 44, borderRadius: 8, backgroundColor: "#1877D6", ...POPPINS }}
             >
-              <Award size={16} color="#FFFFFF" />
+              <IconAward stroke={1.5} size={16} color="#FFFFFF" />
               Generate & download
             </button>
           </div>
@@ -4272,11 +4273,11 @@ function PupilDetailPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Pencil size={18} color="#1877D6" />
+                <IconPencil stroke={1.5} size={18} color="#1877D6" />
                 <div className="text-[16px] font-semibold text-[#0B1F3A]">Edit pupil</div>
               </div>
               <button type="button" onClick={() => !editSaving && setEditSheetOpen(false)} aria-label="Close">
-                <X size={20} color="#6B7280" />
+                <IconX stroke={1.5} size={20} color="#6B7280" />
               </button>
             </div>
 
@@ -4304,7 +4305,7 @@ function PupilDetailPage() {
               </label>
             </div>
             <label className="block text-[12px] text-[#6B7280] mb-3">
-              Phone
+              IconPhone
               <input
                 type="tel"
                 value={editDraft.phone}
@@ -4836,7 +4837,7 @@ function PupilExtras({
   }
 
   const smsBody = `Hi ${pupil.name}, could you please share your DVLA licence check code with me? You can get it at https://www.gov.uk/view-driving-licence — tap 'Share your licence information' and send me the code. Thanks, ${instructorName || "your instructor"}`;
-  const emailSubject = "DVLA Licence Check Code Request";
+  const emailSubject = "DVLA Licence IconCheck Code Request";
   const emailBody = `Hi ${pupil.name},\n\nAs part of your driving lessons, I need to verify your driving licence details.\n\nCould you please get your DVLA check code by visiting:\nhttps://www.gov.uk/view-driving-licence\n\nTap 'Share your licence information' and send me the 8-character code.\n\nMany thanks,\n${instructorName || "your instructor"}`;
 
   return (
@@ -4846,7 +4847,7 @@ function PupilExtras({
         <div className="flex-1 min-w-[160px]" style={{ ...EXTRAS_CARD, marginTop: 0 }}>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <Heart size={18} color="#CC2229" />
+              <IconHeart stroke={1.5} size={18} color="#CC2229" />
               <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Emergency contact</span>
             </div>
             {!editEmg && (
@@ -4876,7 +4877,7 @@ function PupilExtras({
           ) : (
             <div className="flex flex-col gap-2">
               <input style={EXTRAS_INPUT} placeholder="Name" value={emgName} onChange={(e) => setEmgName(e.target.value)} />
-              <input style={EXTRAS_INPUT} placeholder="Phone" type="tel" value={emgPhone} onChange={(e) => setEmgPhone(e.target.value)} />
+              <input style={EXTRAS_INPUT} placeholder="IconPhone" type="tel" value={emgPhone} onChange={(e) => setEmgPhone(e.target.value)} />
               <select style={EXTRAS_INPUT} value={emgRel} onChange={(e) => setEmgRel(e.target.value)}>
                 {RELATIONS.map((r) => <option key={r} value={r}>{r}</option>)}
               </select>
@@ -4895,7 +4896,7 @@ function PupilExtras({
         <div className="flex-1 min-w-[160px]" style={{ ...EXTRAS_CARD, marginTop: 0 }}>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <CreditCard size={18} color="#1877D6" />
+              <IconCreditCard stroke={1.5} size={18} color="#1877D6" />
               <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Driving licence</span>
             </div>
             {!editLic && (
@@ -4942,7 +4943,7 @@ function PupilExtras({
                 style={{ color: "#1A52A0", ...POPPINS }}
               >
                 Request DVLA check code
-                <ExternalLink size={14} />
+                <IconExternalLink stroke={1.5} size={14} />
               </button>
             </div>
           ) : (
@@ -4976,7 +4977,7 @@ function PupilExtras({
                 Request DVLA check code
               </span>
               <button type="button" onClick={() => setRequestSheetOpen(false)} aria-label="Close">
-                <X size={20} color="#0B1F3A" />
+                <IconX stroke={1.5} size={20} color="#0B1F3A" />
               </button>
             </div>
             <p className="text-[13px] mb-4" style={{ color: "#6B7280", ...POPPINS }}>
@@ -4988,9 +4989,9 @@ function PupilExtras({
               className="flex items-center gap-3 w-full mb-2 rounded-lg"
               style={{ background: "#EEF4FB", padding: "14px 16px", color: "#0B1F3A", ...POPPINS }}
             >
-              <MessageSquare size={18} color="#1A52A0" />
+              <IconMessage stroke={1.5} size={18} color="#1A52A0" />
               <div className="flex-1">
-                <div className="text-[14px] font-semibold">Send SMS</div>
+                <div className="text-[14px] font-semibold">IconSend SMS</div>
                 <div className="text-[12px]" style={{ color: "#6B7280" }}>
                   {pupil.phone ?? "No phone on file"}
                 </div>
@@ -5002,9 +5003,9 @@ function PupilExtras({
               className="flex items-center gap-3 w-full rounded-lg"
               style={{ background: "#EEF4FB", padding: "14px 16px", color: "#0B1F3A", ...POPPINS }}
             >
-              <Mail size={18} color="#1A52A0" />
+              <IconMail stroke={1.5} size={18} color="#1A52A0" />
               <div className="flex-1">
-                <div className="text-[14px] font-semibold">Send email</div>
+                <div className="text-[14px] font-semibold">IconSend email</div>
                 <div className="text-[12px]" style={{ color: "#6B7280" }}>
                   {pupil.email ?? "No email on file"}
                 </div>
@@ -5089,7 +5090,7 @@ function CustomRatesCard({
       <div style={EXTRAS_CARD}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <PoundSterling size={18} color="#1877D6" />
+            <IconCurrencyPound stroke={1.5} size={18} color="#1877D6" />
             <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Custom lesson rates</span>
           </div>
           {!editRates && (
@@ -5194,7 +5195,7 @@ function PupilRatesAndColour({
       {/* Gap after lesson */}
       <div className="flex justify-between items-center" style={{ margin: "8px 16px 0", borderRadius: 12, border: "0.5px solid #E2E6ED", padding: "14px 16px", backgroundColor: "#fff" }}>
         <div className="flex items-center gap-2">
-          <Clock size={16} color="#9CA3AF" />
+          <IconClock stroke={1.5} size={16} color="#9CA3AF" />
           <div className="flex flex-col">
             <span className="text-[13px] font-semibold text-[#0B1F3A]" style={POPPINS}>Gap after lesson</span>
             <span className="text-xs text-[#9CA3AF]" style={POPPINS}>
@@ -5221,11 +5222,11 @@ function PupilRatesAndColour({
       {/* Unavailable periods */}
       <UnavailablePeriodsCard pupilId={pupil.id} />
 
-      {/* Calendar colour */}
+      {/* IconCalendar colour */}
       <div style={EXTRAS_CARD}>
         <div className="flex items-center gap-2 mb-3">
-          <Palette size={18} color="#1877D6" />
-          <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Calendar colour</span>
+          <IconPalette stroke={1.5} size={18} color="#1877D6" />
+          <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>IconCalendar colour</span>
         </div>
         <div className="grid grid-cols-8 gap-2">
           {CAL_COLOURS.map((c) => {
@@ -5239,7 +5240,7 @@ function PupilRatesAndColour({
                 className="flex items-center justify-center rounded-full"
                 style={{ width: 32, height: 32, background: c, border: selected ? "2px solid #0B1F3A" : "0.5px solid #E2E6ED" }}
               >
-                {selected && <Check size={16} color="#fff" />}
+                {selected && <IconCheck stroke={1.5} size={16} color="#fff" />}
               </button>
             );
           })}
@@ -5290,7 +5291,7 @@ function LeadSourceSection({
             className="text-[12px] font-semibold flex items-center gap-1"
             style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
           >
-            <Pencil size={12} /> Edit
+            <IconPencil stroke={1.5} size={12} /> Edit
           </button>
         )}
       </div>
@@ -5477,10 +5478,10 @@ function PracticalEditor({
         {pickerOpen && (
           <div className="mt-2">
             <div style={{ position: "relative" }}>
-              <Search size={16} color="#64748B" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
+              <IconSearch stroke={1.5} size={16} color="#64748B" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
               <input
                 type="text"
-                placeholder="Search test centres..."
+                placeholder="IconSearch test centres..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 style={{ ...inputStyle, height: 36, padding: "0 12px 0 36px", fontSize: 13 }}
@@ -5668,7 +5669,7 @@ function UnavailablePeriodsCard({ pupilId }: { pupilId: string }) {
     <div style={EXTRAS_CARD}>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <Calendar size={18} color="#1877D6" />
+          <IconCalendar stroke={1.5} size={18} color="#1877D6" />
           <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Unavailable periods</span>
         </div>
         <button
@@ -5677,7 +5678,7 @@ function UnavailablePeriodsCard({ pupilId }: { pupilId: string }) {
           className="text-[12px] font-semibold flex items-center gap-1"
           style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
         >
-          <Plus size={12} /> Add period
+          <IconPlus stroke={1.5} size={12} /> Add period
         </button>
       </div>
 
@@ -5703,7 +5704,7 @@ function UnavailablePeriodsCard({ pupilId }: { pupilId: string }) {
                 aria-label="Delete period"
                 style={{ background: "none", border: "none", padding: 4, cursor: "pointer", color: "#6B7280" }}
               >
-                <X size={16} />
+                <IconX stroke={1.5} size={16} />
               </button>
             </div>
           ))}
@@ -5885,7 +5886,7 @@ function ReadyToLearnCard({ pupilId }: { pupilId: string }) {
     <div style={EXTRAS_CARD}>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <Clock size={18} color="#1877D6" />
+          <IconClock stroke={1.5} size={18} color="#1877D6" />
           <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Ready to Learn</span>
         </div>
         {!edit && loaded && (

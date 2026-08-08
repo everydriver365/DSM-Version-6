@@ -1,17 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Phone,
-  Send,
-  AlertTriangle,
-  CheckCircle2,
-  ChevronLeft,
-  ChevronUp,
-  ChevronDown,
-  Paperclip,
-  Search,
-  X,
-} from "lucide-react";
+import { IconAlertTriangle, IconChevronDown, IconChevronLeft, IconChevronUp, IconCircleCheck, IconPaperclip, IconPhone, IconSearch, IconSend, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -361,7 +350,7 @@ function PupilThreadPage() {
   };
 
 
-  // ---- Search messages --------------------------------------------------
+  // ---- IconSearch messages --------------------------------------------------
   const matches = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return [];
@@ -661,7 +650,7 @@ function PupilThreadPage() {
             }}
             style={{ background: "none", border: "none", padding: 0, display: "flex", flexShrink: 0 }}
           >
-            <ChevronLeft size={20} color="#C7D0DE" />
+            <IconChevronLeft stroke={1.5} size={20} color="#C7D0DE" />
           </button>
 
           {searchOpen ? (
@@ -679,7 +668,7 @@ function PupilThreadPage() {
                   height: 36,
                 }}
               >
-                <Search size={16} color="#C7D0DE" />
+                <IconSearch stroke={1.5} size={16} color="#C7D0DE" />
                 <input
                   type="text"
                   value={searchQuery}
@@ -690,7 +679,7 @@ function PupilThreadPage() {
                       setSearchQuery("");
                     }
                   }}
-                  placeholder="Search messages..."
+                  placeholder="IconSearch messages..."
                   autoFocus
                   style={{
                     flex: 1,
@@ -709,7 +698,7 @@ function PupilThreadPage() {
                     onClick={() => setSearchQuery("")}
                     style={{ background: "none", border: "none", padding: 0, display: "flex", flexShrink: 0 }}
                   >
-                    <X size={16} color="#C7D0DE" />
+                    <IconX stroke={1.5} size={16} color="#C7D0DE" />
                   </button>
                 )}
               </div>
@@ -734,7 +723,7 @@ function PupilThreadPage() {
                   disabled={matchIndex === 0 || matches.length === 0}
                   style={{ background: "none", border: "none", padding: 0, lineHeight: 0 }}
                 >
-                  <ChevronUp
+                  <IconChevronUp stroke={1.5}
                     size={16}
                     color={matchIndex === 0 || matches.length === 0 ? "#5A6A85" : "#C7D0DE"}
                   />
@@ -746,7 +735,7 @@ function PupilThreadPage() {
                   disabled={matchIndex >= matches.length - 1 || matches.length === 0}
                   style={{ background: "none", border: "none", padding: 0, lineHeight: 0 }}
                 >
-                  <ChevronDown
+                  <IconChevronDown stroke={1.5}
                     size={16}
                     color={matchIndex >= matches.length - 1 || matches.length === 0 ? "#5A6A85" : "#C7D0DE"}
                   />
@@ -815,7 +804,7 @@ function PupilThreadPage() {
 
               <button
                 type="button"
-                aria-label="Search messages"
+                aria-label="IconSearch messages"
                 onClick={() => setSearchOpen(true)}
                 style={{
                   width: 28,
@@ -830,7 +819,7 @@ function PupilThreadPage() {
                   cursor: "pointer",
                 }}
               >
-                <Search size={15} color="#C7D0DE" />
+                <IconSearch stroke={1.5} size={15} color="#C7D0DE" />
               </button>
 
               <a
@@ -848,7 +837,7 @@ function PupilThreadPage() {
                   opacity: phone ? 1 : 0.4,
                 }}
               >
-                <Phone size={15} color="#C7D0DE" />
+                <IconPhone stroke={1.5} size={15} color="#C7D0DE" />
               </a>
             </>
           )}
@@ -867,7 +856,7 @@ function PupilThreadPage() {
             borderColor: "#FCD34D",
           }}
         >
-          <AlertTriangle size={18} color="#B45309" style={{ marginTop: 2, flexShrink: 0 }} />
+          <IconAlertTriangle stroke={1.5} size={18} color="#B45309" style={{ marginTop: 2, flexShrink: 0 }} />
           <div className="flex-1 min-w-0">
             <div className="text-[13px] text-[#78350F] leading-snug" style={POPPINS}>
               This pupil hasn't set up their EveryDriver account yet. Messages won't be delivered until they do.
@@ -878,7 +867,7 @@ function PupilThreadPage() {
               className="mt-2 text-[13px] font-semibold"
               style={{ color: "#B45309", ...POPPINS }}
             >
-              Send invite →
+              IconSend invite →
             </button>
           </div>
         </div>
@@ -953,7 +942,7 @@ function PupilThreadPage() {
                         ...POPPINS,
                       }}
                     >
-                      <Phone size={13} color="#B8791A" />
+                      <IconPhone stroke={1.5} size={13} color="#B8791A" />
                       {m.body?.trim() ? (
                         <HighlightedBody body={m.body} query={searchQuery} />
                       ) : (
@@ -1138,7 +1127,7 @@ function PupilThreadPage() {
               ...POPPINS,
             }}
           >
-            <CheckCircle2 size={18} color="#059669" style={{ marginTop: 2, flexShrink: 0 }} />
+            <IconCircleCheck stroke={1.5} size={18} color="#059669" style={{ marginTop: 2, flexShrink: 0 }} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 13, color: "#064E3B", lineHeight: 1.35 }}>
                 Looks like {pupil?.first_name ?? pupil?.name ?? "this pupil"} accepted the{" "}
@@ -1222,7 +1211,7 @@ function PupilThreadPage() {
             cursor: "pointer",
           }}
         >
-          <Paperclip size={18} color="#6B7686" />
+          <IconPaperclip stroke={1.5} size={18} color="#6B7686" />
         </button>
         <textarea
           value={messageText}
@@ -1270,7 +1259,7 @@ function PupilThreadPage() {
             flexShrink: 0,
           }}
         >
-          <Send size={16} color="#FFFFFF" />
+          <IconSend stroke={1.5} size={16} color="#FFFFFF" />
         </button>
       </div>
 

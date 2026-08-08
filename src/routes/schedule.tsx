@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Plus, RefreshCw, Trash2, Calendar, Move, ArrowDown, Clock, MoreHorizontal } from "lucide-react";
+import { IconCalendar, IconClock, IconDots, IconPlus, IconRefresh, IconTrash } from "@tabler/icons-react";
+import { Move, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
@@ -610,7 +611,7 @@ function SchedulePage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success("Calendar synced — " + (data.eventsImported || 0) + " events updated");
+        toast.success("IconCalendar synced — " + (data.eventsImported || 0) + " events updated");
         setLastSynced(new Date().toISOString());
         await fetchCalendarBlocks();
       } else {
@@ -884,7 +885,7 @@ function SchedulePage() {
 
 
   // Colour dots per date by entry TYPE (matches legend): blue=DSM lesson,
-  // grey=Google Calendar block, orange=free slot 60+ min. Up to 3 dots.
+  // grey=Google IconCalendar block, orange=free slot 60+ min. Up to 3 dots.
   const dotsByDay = useMemo(() => {
     const map = new Map<string, string[]>();
     const keys = new Set<string>();
@@ -1071,7 +1072,7 @@ function SchedulePage() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <div style={{ width: 8, height: 8, borderRadius: 2, background: '#9CA3AF' }} />
-          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Google Calendar</span>
+          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Google IconCalendar</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <div style={{ width: 8, height: 8, borderRadius: 2, background: '#D97706' }} />
@@ -1445,7 +1446,7 @@ function SchedulePage() {
                                     ...POPPINS,
                                   }}
                                 >
-                                  <Clock size={14} color="#1E8E3E" />
+                                  <IconClock stroke={1.5} size={14} color="#1E8E3E" />
                                   <span style={{ fontSize: 13, fontWeight: 600, color: '#065F46', fontVariantNumeric: 'tabular-nums' }}>
                                     {e.time}
                                   </span>
@@ -1543,7 +1544,7 @@ function SchedulePage() {
                                   const blockTime = `${pad(startD.getHours())}:${pad(startD.getMinutes())}`;
                                   const blockDurationMins = Math.max(1, Math.round((endD.getTime() - startD.getTime()) / 60000));
                                   toast.info(
-                                    'This is a Google Calendar event. To manage it, open Google Calendar. To add this as a DSM lesson with payment tracking, tap "Add as lesson".',
+                                    'This is a Google IconCalendar event. To manage it, open Google IconCalendar. To add this as a DSM lesson with payment tracking, tap "Add as lesson".',
                                     {
                                       duration: 5000,
                                       action: {
@@ -1630,7 +1631,7 @@ function SchedulePage() {
                                           {title}
                                         </div>
                                         <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>
-                                          Google Calendar
+                                          Google IconCalendar
                                         </div>
                                       </div>
                                     </>
@@ -1913,7 +1914,7 @@ function SchedulePage() {
                                                     padding: 0,
                                                   }}
                                                 >
-                                                  <MoreHorizontal size={14} color="#D1D5DB" />
+                                                  <IconDots stroke={1.5} size={14} color="#D1D5DB" />
                                                 </button>
                                               </div>
                                             )}
@@ -2165,7 +2166,7 @@ function SchedulePage() {
         }}
         aria-label="Add lesson"
       >
-        <Plus size={22} color="white" />
+        <IconPlus stroke={1.5} size={22} color="white" />
       </button>
 
       {confirmMove && movingLesson && (
@@ -2918,7 +2919,7 @@ function MonthStrip({
                 color: "#1877D6",
               }}
             >
-              <RefreshCw
+              <IconRefresh stroke={1.5}
                 size={12}
                 color="#1877D6"
                 style={{ animation: syncing ? "spin 1s linear infinite" : "none" }}

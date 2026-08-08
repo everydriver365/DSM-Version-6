@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { Check, CheckCircle, Globe, Clock, UserPlus, CalendarDays } from "lucide-react";
+import { IconCalendar, IconCheck, IconCircleCheck, IconClock, IconUserPlus, IconWorld } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
 
@@ -395,7 +395,7 @@ function OnboardingPage() {
             <StepHeader title="Want a free website?" subtitle="Every instructor gets a free booking page" />
 
             <ChoiceCard
-              icon={<CheckCircle size={22} color="#10B981" />}
+              icon={<IconCircleCheck stroke={1.5} size={22} color="#10B981" />}
               title="Yes, set me up"
               subtitle="I'll get a free page at everydriver.co.uk/i/[your-name]"
               selected={websiteChoice === "yes"}
@@ -423,7 +423,7 @@ function OnboardingPage() {
             )}
 
             <ChoiceCard
-              icon={<Globe size={22} color="#1877D6" />}
+              icon={<IconWorld stroke={1.5} size={22} color="#1877D6" />}
               title="I already have a website"
               subtitle="Skip this — I'll link my existing site instead"
               selected={websiteChoice === "existing"}
@@ -445,7 +445,7 @@ function OnboardingPage() {
             )}
 
             <ChoiceCard
-              icon={<Clock size={22} color="#6B7280" />}
+              icon={<IconClock stroke={1.5} size={22} color="#6B7280" />}
               title="Not right now"
               subtitle="I can set this up later from settings"
               selected={websiteChoice === "later"}
@@ -461,7 +461,7 @@ function OnboardingPage() {
             <StepHeader title="Your free mini website" subtitle="Bio, photos and contact info — ready to publish" />
             <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 1px 3px rgba(11,31,58,0.06)", padding: 20, marginBottom: 12, textAlign: "center" }}>
               <div className="h-16 w-16 rounded-full bg-[#E6F1FB] flex items-center justify-center mx-auto mb-3">
-                <Globe size={30} color="#1877D6" />
+                <IconWorld stroke={1.5} size={30} color="#1877D6" />
               </div>
               <p className="text-[14px] text-[#6B7686]" style={POPPINS}>
                 DSM automatically gives you a simple, personal website. Customise it and publish whenever you&apos;re ready.
@@ -485,7 +485,7 @@ function OnboardingPage() {
                 className="h-16 w-16 rounded-full bg-[#10B981] flex items-center justify-center animate-bounce"
                 style={{ animationIterationCount: 1 }}
               >
-                <Check size={36} color="#fff" strokeWidth={3} />
+                <IconCheck stroke={1.5} size={36} color="#fff" strokeWidth={3} />
               </div>
             </div>
             <div style={{ marginBottom: 16, textAlign: "center" }}>
@@ -503,13 +503,13 @@ function OnboardingPage() {
             <div className="mt-3">
               <GroupCard>
                 <ActionRow
-                  icon={<UserPlus size={20} color="#1877D6" />}
+                  icon={<IconUserPlus stroke={1.5} size={20} color="#1877D6" />}
                   label="Add your first pupil"
                   disabled={saving}
                   onClick={() => finish("/pupils/new")}
                 />
                 <ActionRow
-                  icon={<CalendarDays size={20} color="#1877D6" />}
+                  icon={<IconCalendar stroke={1.5} size={20} color="#1877D6" />}
                   label="Connect Google Calendar"
                   disabled={saving}
                   onClick={() => finish("/settings/calendar")}

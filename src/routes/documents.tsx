@@ -1,21 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import {
-  ArrowLeft,
-  Plus,
-  X,
-  FolderOpen,
-  AlertTriangle,
-  BadgeCheck,
-  ShieldCheck,
-  Car,
-  FileCheck,
-  Receipt,
-  FileText,
-  Trash2,
-  Upload,
-  ExternalLink,
-} from "lucide-react";
+import { IconAlertTriangle, IconArrowLeft, IconCar, IconExternalLink, IconFileText, IconPlus, IconShieldCheck, IconTrash, IconUpload, IconX } from "@tabler/icons-react";
+import { FolderOpen, BadgeCheck, FileCheck, Receipt } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { z } from "zod";
@@ -67,14 +53,14 @@ function TypeIcon({ type, size = 18 }: { type: string; size?: number }) {
     type === "adi"
       ? BadgeCheck
       : type === "insurance"
-      ? ShieldCheck
+      ? IconShieldCheck
       : type === "mot"
-      ? Car
+      ? IconCar
       : type === "dbs"
       ? FileCheck
       : type === "tax"
       ? Receipt
-      : FileText;
+      : IconFileText;
   return <Icon size={size} color={meta.color} />;
 }
 
@@ -180,7 +166,7 @@ function DocumentsPage() {
           className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
           style={{ backgroundColor: "#1877D6" }}
         >
-          <Plus size={16} color="#fff" /> Add document
+          <IconPlus stroke={1.5} size={16} color="#fff" /> Add document
         </button>
       </div>
 
@@ -195,7 +181,7 @@ function DocumentsPage() {
             border: "0.5px solid #1877D6",
           }}
         >
-          <AlertTriangle size={18} color="#0B1F3A" />
+          <IconAlertTriangle stroke={1.5} size={18} color="#0B1F3A" />
           <span
             className="text-[13px] font-semibold"
             style={{ color: "#0B1F3A" }}
@@ -294,7 +280,7 @@ function DocumentsPage() {
                         border: "0.5px solid #CBD5E1",
                       }}
                     >
-                      <ExternalLink size={13} color="#1877D6" /> View file
+                      <IconExternalLink stroke={1.5} size={13} color="#1877D6" /> View file
                     </a>
                   )}
                 </Card>
@@ -377,7 +363,7 @@ function SheetShell({
             className="flex items-center justify-center"
             style={{ width: 32, height: 32 }}
           >
-            <X size={18} color="#6B7280" />
+            <IconX stroke={1.5} size={18} color="#6B7280" />
           </button>
         </div>
         <div className="px-4 pt-2">{children}</div>
@@ -586,8 +572,8 @@ function DocSheet({
               border: "1px dashed #1877D6",
             }}
           >
-            <Upload size={16} color="#1877D6" />
-            Upload file
+            <IconUpload stroke={1.5} size={16} color="#1877D6" />
+            IconUpload file
             <input
               type="file"
               accept={ACCEPT}
@@ -624,7 +610,7 @@ function DocSheet({
             className="flex items-center justify-center mt-1 text-[13px] font-semibold"
             style={{ gap: 6, color: "#1877D6", padding: 10 }}
           >
-            <Trash2 size={14} color="#1877D6" /> Delete document
+            <IconTrash stroke={1.5} size={14} color="#1877D6" /> Delete document
           </button>
         )}
         {confirmSheet}

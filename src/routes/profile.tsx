@@ -1,22 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import {
-  Mail,
-  Smartphone,
-  Camera,
-  Check,
-  AlertTriangle,
-  User,
-  Briefcase,
-  Car,
-  Bell,
-  Shield,
-  Puzzle,
-  ChevronDown,
-  Calendar as CalendarIcon,
-  Apple,
-  Loader2,
-} from "lucide-react";
+import { IconAlertTriangle, IconBell, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronDown, IconDeviceMobile, IconLoader2, IconMail, IconShield, IconUser } from "@tabler/icons-react";
+import { Puzzle, Apple, Calendar as CalendarIcon } from "lucide-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
 import { toast } from "sonner";
@@ -55,13 +40,13 @@ const SECTION_META: {
   icon: React.ComponentType<{ size?: number; color?: string }>;
   iconColor: string;
 }[] = [
-  { key: "personal", label: "Personal", icon: User, iconColor: "#1877D6" },
-  { key: "business", label: "Business", icon: Briefcase, iconColor: "#1877D6" },
-  { key: "vehicle", label: "Vehicle", icon: Car, iconColor: "#1877D6" },
-  { key: "notifications", label: "Notifications", icon: Bell, iconColor: "#1877D6" },
-  { key: "security", label: "Security", icon: Shield, iconColor: "#1877D6" },
+  { key: "personal", label: "Personal", icon: IconUser, iconColor: "#1877D6" },
+  { key: "business", label: "Business", icon: IconBriefcase, iconColor: "#1877D6" },
+  { key: "vehicle", label: "Vehicle", icon: IconCar, iconColor: "#1877D6" },
+  { key: "notifications", label: "Notifications", icon: IconBell, iconColor: "#1877D6" },
+  { key: "security", label: "Security", icon: IconShield, iconColor: "#1877D6" },
   { key: "integrations", label: "Integrations", icon: Puzzle, iconColor: "#1877D6" },
-  { key: "danger", label: "Danger zone", icon: AlertTriangle, iconColor: "#1877D6" },
+  { key: "danger", label: "Danger zone", icon: IconAlertTriangle, iconColor: "#1877D6" },
 ];
 
 const NOTIF_EVENTS: { key: string; label: string }[] = [
@@ -187,7 +172,7 @@ function AccordionCard({
         <span className="flex-1 text-left text-[14px] font-semibold text-[#0B1F3A]" style={POPPINS}>
           {meta.label}
         </span>
-        <ChevronDown
+        <IconChevronDown stroke={1.5}
           size={16}
           color="#C7D0DC"
           style={{
@@ -251,7 +236,7 @@ function VerifiedPill() {
       className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium"
       style={{ backgroundColor: "#EEF2F7", color: "#0B1F3A", ...POPPINS }}
     >
-      <Check size={11} color="#0B1F3A" /> Verified
+      <IconCheck stroke={1.5} size={11} color="#0B1F3A" /> Verified
     </span>
   );
 }
@@ -480,7 +465,7 @@ function ProfilePage() {
         setSaving(false);
         return;
       }
-      toast.success("Check your new email address to confirm the change");
+      toast.success("IconCheck your new email address to confirm the change");
     }
 
     setSaving(false);
@@ -730,7 +715,7 @@ function ProfilePage() {
                   className="absolute inset-0 flex items-center justify-center"
                   style={{ backgroundColor: "rgba(0,0,0,0.45)" }}
                 >
-                  <Loader2 size={24} color="#FFFFFF" className="animate-spin" />
+                  <IconLoader2 stroke={1.5} size={24} color="#FFFFFF" className="animate-spin" />
                 </div>
               )}
               <span
@@ -742,7 +727,7 @@ function ProfilePage() {
                   border: "1px solid #EEF2F7",
                 }}
               >
-                <Camera size={14} color="#1877D6" />
+                <IconCamera stroke={1.5} size={14} color="#1877D6" />
               </span>
             </button>
             <input
@@ -792,7 +777,7 @@ function ProfilePage() {
               onChange={setEmail}
               placeholder="you@example.com"
               type="email"
-              icon={<Mail size={16} color="#6B7686" />}
+              icon={<IconMail stroke={1.5} size={16} color="#6B7686" />}
               rightSlot={emailVerified ? <VerifiedPill /> : null}
             />
             <TextField
@@ -801,7 +786,7 @@ function ProfilePage() {
               onChange={setPhone}
               placeholder="07…"
               inputMode="tel"
-              icon={<Smartphone size={16} color="#6B7686" />}
+              icon={<IconDeviceMobile stroke={1.5} size={16} color="#6B7686" />}
               rightSlot={phoneVerified ? <VerifiedPill /> : null}
             />
             <SelectField
@@ -893,12 +878,12 @@ function ProfilePage() {
               <span className="flex items-center gap-2 text-[14px]" style={POPPINS}>
                 {dbsUploaded ? (
                   <>
-                    <Check size={16} color="#0B1F3A" />
+                    <IconCheck stroke={1.5} size={16} color="#0B1F3A" />
                     <span className="text-[#0B1F3A] font-medium">Uploaded</span>
                   </>
                 ) : (
                   <>
-                    <AlertTriangle size={16} color="#0B1F3A" />
+                    <IconAlertTriangle stroke={1.5} size={16} color="#0B1F3A" />
                     <span className="text-[#0B1F3A]">Upload DBS certificate</span>
                   </>
                 )}
@@ -1000,9 +985,9 @@ function ProfilePage() {
                 }}
               >
                 {uploadingVehicle ? (
-                  <Loader2 size={24} color="#1877D6" className="animate-spin" />
+                  <IconLoader2 stroke={1.5} size={24} color="#1877D6" className="animate-spin" />
                 ) : (
-                  <Car size={28} color="#1877D6" />
+                  <IconCar stroke={1.5} size={28} color="#1877D6" />
                 )}
                 <span
                   className="mt-2 text-[13px]"
@@ -1049,7 +1034,7 @@ function ProfilePage() {
                 />
                 {insuranceWarning ? (
                   <span className="inline-flex items-center gap-1 text-[12px] shrink-0" style={{ color: "#0B1F3A", ...POPPINS }}>
-                    <AlertTriangle size={14} color="#0B1F3A" /> Expiring soon
+                    <IconAlertTriangle stroke={1.5} size={14} color="#0B1F3A" /> Expiring soon
                   </span>
                 ) : null}
               </div>

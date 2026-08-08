@@ -1,17 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import {
-  Bell,
-  Calendar as CalendarIcon,
-  CheckCheck,
-  PoundSterling,
-  RefreshCw,
-  Trash2,
-  Users,
-  X,
-  XCircle,
-} from "lucide-react";
+import { IconBell, IconCircleX, IconCurrencyPound, IconRefresh, IconTrash, IconUsers, IconX } from "@tabler/icons-react";
+import { CheckCheck, Calendar as CalendarIcon } from "lucide-react";
 import { IconBell, IconChevronRight } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -65,15 +56,15 @@ function typeIcon(type: string | null) {
     case "lesson":
       return { bg: "#1877D6", node: <CalendarIcon size={18} color="#FFFFFF" /> };
     case "payment":
-      return { bg: "#1877D6", node: <PoundSterling size={18} color="#FFFFFF" /> };
+      return { bg: "#1877D6", node: <IconCurrencyPound stroke={1.5} size={18} color="#FFFFFF" /> };
     case "pupil":
-      return { bg: "#1877D6", node: <Users size={18} color="#FFFFFF" /> };
+      return { bg: "#1877D6", node: <IconUsers stroke={1.5} size={18} color="#FFFFFF" /> };
     case "lesson_cancelled_by_pupil":
-      return { bg: "#CC2229", node: <XCircle size={18} color="#FFFFFF" /> };
+      return { bg: "#CC2229", node: <IconCircleX stroke={1.5} size={18} color="#FFFFFF" /> };
     case "reschedule_request":
-      return { bg: "#D97706", node: <RefreshCw size={18} color="#FFFFFF" /> };
+      return { bg: "#D97706", node: <IconRefresh stroke={1.5} size={18} color="#FFFFFF" /> };
     default:
-      return { bg: "#6B7280", node: <Bell size={18} color="#FFFFFF" /> };
+      return { bg: "#6B7280", node: <IconBell stroke={1.5} size={18} color="#FFFFFF" /> };
   }
 }
 
@@ -201,7 +192,7 @@ function NotificationsPage() {
           style={{ color: "#6B7280", ...POPPINS }}
           aria-label="Clear read notifications"
         >
-          <Trash2 size={14} color="#6B7280" />
+          <IconTrash stroke={1.5} size={14} color="#6B7280" />
           Clear read
         </button>
         <button
@@ -419,7 +410,7 @@ function NotificationsPage() {
                               }}
                               className="flex items-center justify-center p-1 rounded hover:bg-black/5"
                             >
-                              <X size={16} color="#9CA3AF" />
+                              <IconX stroke={1.5} size={16} color="#9CA3AF" />
                             </button>
                             <IconChevronRight size={18} color="#9CA3AF" />
                           </div>

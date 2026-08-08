@@ -3,11 +3,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import {
-  ChevronDown, ChevronUp, CheckCircle2, PoundSterling,
-
-  GraduationCap, Inbox, FileText, Award, CheckSquare, UserX, Phone, Square,
-} from "lucide-react";
+import { IconAward, IconCheckbox, IconChevronDown, IconChevronUp, IconCircleCheck, IconCurrencyPound, IconFileText, IconInbox, IconPhone, IconSchool, IconSquare } from "@tabler/icons-react";
+import { UserX } from "lucide-react";
 import { Card } from "../components/dsm/Card";
 import { supabase } from "../lib/supabaseClient";
 
@@ -170,12 +167,12 @@ function OutstandingPage() {
   }, []);
 
   const sections = useMemo(() => [
-    { key: "payments", label: "Payments", icon: <PoundSterling size={18} color="#0B1F3A" />, tint: "#EEF2F7", count: debts.length },
-    { key: "tests", label: "Upcoming tests (7d)", icon: <GraduationCap size={18} color="#1E40AF" />, tint: "#DBEAFE", count: tests.length },
-    { key: "enquiries", label: "Enquiries to follow up", icon: <Inbox size={18} color="#5B21B6" />, tint: "#EDE9FE", count: enquiries.length },
-    { key: "docs", label: "Expiring documents (30d)", icon: <FileText size={18} color="#1877D6" />, tint: "#FEF2F2", count: docs.length },
-    { key: "certs", label: "Expiring certifications (60d)", icon: <Award size={18} color="#1877D6" />, tint: "#FEF2F2", count: certs.length },
-    { key: "todos", label: "Overdue todos", icon: <CheckSquare size={18} color="#0B1F3A" />, tint: "#EEF2F7", count: todos.length },
+    { key: "payments", label: "Payments", icon: <IconCurrencyPound stroke={1.5} size={18} color="#0B1F3A" />, tint: "#EEF2F7", count: debts.length },
+    { key: "tests", label: "Upcoming tests (7d)", icon: <IconSchool stroke={1.5} size={18} color="#1E40AF" />, tint: "#DBEAFE", count: tests.length },
+    { key: "enquiries", label: "Enquiries to follow up", icon: <IconInbox stroke={1.5} size={18} color="#5B21B6" />, tint: "#EDE9FE", count: enquiries.length },
+    { key: "docs", label: "Expiring documents (30d)", icon: <IconFileText stroke={1.5} size={18} color="#1877D6" />, tint: "#FEF2F2", count: docs.length },
+    { key: "certs", label: "Expiring certifications (60d)", icon: <IconAward stroke={1.5} size={18} color="#1877D6" />, tint: "#FEF2F2", count: certs.length },
+    { key: "todos", label: "Overdue todos", icon: <IconCheckbox stroke={1.5} size={18} color="#0B1F3A" />, tint: "#EEF2F7", count: todos.length },
     { key: "stale", label: "Pupils with no recent lesson (30d)", icon: <UserX size={18} color="#5B21B6" />, tint: "#EDE9FE", count: stale.length },
   ], [debts, tests, enquiries, docs, certs, todos, stale]);
 
@@ -252,7 +249,7 @@ function OutstandingPage() {
             textAlign: "center", padding: "64px 16px",
             display: "flex", flexDirection: "column", alignItems: "center", gap: 14,
           }}>
-            <CheckCircle2 size={64} color="#1877D6" />
+            <IconCircleCheck stroke={1.5} size={64} color="#1877D6" />
             <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
               All clear! Nothing needs attention
             </div>
@@ -291,7 +288,7 @@ function OutstandingPage() {
                     }}>
                       {s.count}
                     </span>
-                    {isOpen ? <ChevronUp size={18} color="#9CA3AF" /> : <ChevronDown size={18} color="#9CA3AF" />}
+                    {isOpen ? <IconChevronUp stroke={1.5} size={18} color="#9CA3AF" /> : <IconChevronDown stroke={1.5} size={18} color="#9CA3AF" />}
                   </button>
 
                   {isOpen && (
@@ -334,7 +331,7 @@ function OutstandingPage() {
                               ...actionBase, background: "#1877D6", color: "#fff",
                               textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4,
                             }}>
-                              <Phone size={12} /> Call
+                              <IconPhone stroke={1.5} size={12} /> Call
                             </a>
                           )}
                           <ActionBtn onClick={() => navigate({ to: "/enquiries" })}>Update</ActionBtn>
@@ -377,7 +374,7 @@ function OutstandingPage() {
                                 color: "#1877D6", display: "flex", padding: 0,
                               }}
                             >
-                              <Square size={20} />
+                              <IconSquare stroke={1.5} size={20} />
                             </button>
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={rowTitle}>{t.title}</div>

@@ -1,7 +1,7 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { PoundSterling } from "lucide-react";
+import { IconCurrencyPound } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { Input } from "../components/dsm/Input";
@@ -860,7 +860,7 @@ function EditLessonPage() {
                     className="flex items-center rounded-lg px-3 flex-1"
                     style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
                   >
-                    <PoundSterling size={16} color="#8A93A3" />
+                    <IconCurrencyPound stroke={1.5} size={16} color="#8A93A3" />
                     <input
                       type="number"
                       inputMode="decimal"

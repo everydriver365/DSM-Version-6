@@ -1,16 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import {
-  ArrowLeft,
-  Plus,
-  Tag,
-  Copy,
-  Share2,
-  Trash2,
-  X,
-  Percent,
-  PoundSterling,
-} from "lucide-react";
+import { IconArrowLeft, IconCopy, IconCurrencyPound, IconPercentage, IconPlus, IconShare, IconTag, IconTrash, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { BottomSheet } from "../components/dsm/BottomSheet";
@@ -149,7 +139,7 @@ function DiscountCodesPage() {
       await navigator.clipboard.writeText(text);
       toast.success("Copied");
     } catch {
-      toast.error("Copy failed");
+      toast.error("IconCopy failed");
     }
   }
 
@@ -201,7 +191,7 @@ function DiscountCodesPage() {
           className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
           style={{ backgroundColor: "#1877D6" }}
         >
-          <Plus size={16} color="#fff" /> New code
+          <IconPlus stroke={1.5} size={16} color="#fff" /> New code
         </button>
       </div>
 
@@ -216,7 +206,7 @@ function DiscountCodesPage() {
         }}
       >
         <div className="flex items-start gap-3">
-          <Tag size={20} color="#1877D6" />
+          <IconTag stroke={1.5} size={20} color="#1877D6" />
           <div className="text-[13px] text-[#1E3A8A] leading-snug">
             Offer discounts to your pupils. Share a code and they'll get money off their
             booking.
@@ -230,7 +220,7 @@ function DiscountCodesPage() {
           <div className="text-center text-[13px] text-[#6B7280] py-8">Loading…</div>
         ) : codes.length === 0 ? (
           <EmptyState
-            icon={Tag}
+            icon={IconTag}
             title="No discount codes yet"
             description='Tap "New code" to create your first offer.'
           />
@@ -309,7 +299,7 @@ function CodeCard({
             <button
               type="button"
               onClick={onCopy}
-              aria-label="Copy code"
+              aria-label="IconCopy code"
               style={{
                 width: 28,
                 height: 28,
@@ -320,7 +310,7 @@ function CodeCard({
                 justifyContent: "center",
               }}
             >
-              <Copy size={14} color="#0B1F3A" />
+              <IconCopy stroke={1.5} size={14} color="#0B1F3A" />
             </button>
           </div>
           <div className="flex items-center gap-1.5 mt-2 flex-wrap">
@@ -385,7 +375,7 @@ function CodeCard({
           className="flex-1 flex items-center justify-center gap-1 text-[12px] font-medium text-white"
           style={{ height: 34, borderRadius: 8, backgroundColor: "#1877D6" }}
         >
-          <Share2 size={13} /> Share
+          <IconShare stroke={1.5} size={13} /> Share
         </button>
         <button
           type="button"
@@ -401,7 +391,7 @@ function CodeCard({
             justifyContent: "center",
           }}
         >
-          <Trash2 size={14} color="#1877D6" />
+          <IconTrash stroke={1.5} size={14} color="#1877D6" />
         </button>
       </div>
     </div>
@@ -514,13 +504,13 @@ function AddSheet({
               <TypeBtn
                 active={type === "percentage"}
                 onClick={() => setType("percentage")}
-                icon={<Percent size={14} />}
+                icon={<IconPercentage stroke={1.5} size={14} />}
                 label="Percentage"
               />
               <TypeBtn
                 active={type === "fixed"}
                 onClick={() => setType("fixed")}
-                icon={<PoundSterling size={14} />}
+                icon={<IconCurrencyPound stroke={1.5} size={14} />}
                 label="Fixed amount"
               />
             </div>

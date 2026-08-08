@@ -1,7 +1,8 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Plus, X, Pencil, Trash2, Users as UsersIcon, Camera } from "lucide-react";
+import { IconCamera, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
+import { Users as UsersIcon } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useAdminGate } from "./admin";
@@ -596,7 +597,7 @@ function AdminDsmLive() {
             ...POPPINS,
           }}
         >
-          <Plus size={14} /> Add session
+          <IconPlus stroke={1.5} size={14} /> Add session
         </button>
       </div>
 
@@ -682,7 +683,7 @@ function AdminDsmLive() {
                 onClick={() => openEdit(s)}
                 style={actionBtn("#0B1F3A")}
               >
-                <Pencil size={12} /> Edit
+                <IconPencil stroke={1.5} size={12} /> Edit
               </button>
               <button
                 type="button"
@@ -696,7 +697,7 @@ function AdminDsmLive() {
                 onClick={() => handleDelete(s)}
                 style={actionBtn("#CC2229")}
               >
-                <Trash2 size={12} /> Delete
+                <IconTrash stroke={1.5} size={12} /> Delete
               </button>
             </div>
           </div>
@@ -738,12 +739,12 @@ function AdminDsmLive() {
             </FormField>
           </div>
           <FormField label="Price display">
-            <input style={inp} placeholder="Free for Plus & Max" value={form.price_display || ""} onChange={(e) => setForm({ ...form, price_display: e.target.value })} />
+            <input style={inp} placeholder="Free for IconPlus & Max" value={form.price_display || ""} onChange={(e) => setForm({ ...form, price_display: e.target.value })} />
           </FormField>
           <FormField label="Price amount (£, 0 = free)">
             <input type="number" style={inp} value={form.price_amount ?? 0} onChange={(e) => setForm({ ...form, price_amount: Number(e.target.value) })} />
           </FormField>
-          <Toggle label="Free for Plus/Max" checked={!!form.free_for_plus_max} onChange={(v) => setForm({ ...form, free_for_plus_max: v })} />
+          <Toggle label="Free for IconPlus/Max" checked={!!form.free_for_plus_max} onChange={(v) => setForm({ ...form, free_for_plus_max: v })} />
           <FormField label="Zoom link">
             <input style={inp} placeholder="https://zoom.us/j/…" value={form.zoom_link || ""} onChange={(e) => setForm({ ...form, zoom_link: e.target.value })} />
           </FormField>
@@ -824,7 +825,7 @@ function AdminDsmLive() {
                   fontSize: 13,
                 }}
               >
-                <Camera size={22} />
+                <IconCamera stroke={1.5} size={22} />
                 {uploadingImage ? "Uploading…" : "Tap to upload session image"}
               </button>
             )}
@@ -1327,7 +1328,7 @@ function Sheet({ title, children, onClose }: { title: string; children: React.Re
             aria-label="Close"
             style={{ background: "#F3F4F6", border: "none", borderRadius: "50%", width: 32, height: 32, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#0B1F3A" }}
           >
-            <X size={16} />
+            <IconX stroke={1.5} size={16} />
           </button>
         </div>
         {children}

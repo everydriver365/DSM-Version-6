@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, X, MoreVertical, Search, Banknote, CreditCard, Landmark, RotateCcw, Wallet, QrCode, Receipt } from "lucide-react";
+import { IconCreditCard, IconDotsVertical, IconPlus, IconRotateClockwise2, IconSearch, IconX } from "@tabler/icons-react";
+import { Banknote, Landmark, Wallet, QrCode, Receipt } from "lucide-react";
 import { IconCurrencyPound } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 
@@ -95,10 +96,10 @@ function methodLabel(m: string | null | undefined) {
 function MethodIcon({ method, refund }: { method: string | null | undefined; refund?: boolean }) {
   const size = 18;
   const color = "#fff";
-  if (refund) return <RotateCcw size={size} color={color} />;
+  if (refund) return <IconRotateClockwise2 stroke={1.5} size={size} color={color} />;
   switch (method) {
     case "cash": return <Banknote size={size} color={color} />;
-    case "card": return <CreditCard size={size} color={color} />;
+    case "card": return <IconCreditCard stroke={1.5} size={size} color={color} />;
     case "qr": return <QrCode size={size} color={color} />;
     case "bank_transfer": return <Landmark size={size} color={color} />;
     case "klarna":
@@ -383,7 +384,7 @@ function PaymentsPage() {
           className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
           style={{ backgroundColor: TEAL }}
         >
-          <Plus size={16} color="#fff" /> Take payment
+          <IconPlus stroke={1.5} size={16} color="#fff" /> Take payment
         </button>
       </div>
       <WorkspaceDots activeIndex={3} />
@@ -461,7 +462,7 @@ function PaymentsPage() {
         </div>
       )}
 
-      {/* Search bar (opens existing pupil picker) */}
+      {/* IconSearch bar (opens existing pupil picker) */}
       <button
         type="button"
         onClick={() => setPupilPickerOpen(true)}
@@ -480,7 +481,7 @@ function PaymentsPage() {
           textAlign: "left",
         }}
       >
-        <Search size={15} color="#B0BAC9" />
+        <IconSearch stroke={1.5} size={15} color="#B0BAC9" />
         <div
           style={{
             fontSize: 13,
@@ -638,7 +639,7 @@ function PaymentsPage() {
                               onClick={onClick}
                               style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: 0, cursor: "pointer" }}
                             >
-                              <MoreVertical size={16} color="#B0BAC9" />
+                              <IconDotsVertical stroke={1.5} size={16} color="#B0BAC9" />
                             </button>
                           )}
                           items={[
@@ -753,7 +754,7 @@ function PupilPicker({ pupils, selectedId, onClose, onSelect, allowAll }: { pupi
   return (
     <BottomSheet title="Select pupil" onClose={onClose}>
       <SheetGroup>
-        <SheetSearchRow value={q} onChange={setQ} placeholder="Search pupils…" />
+        <SheetSearchRow value={q} onChange={setQ} placeholder="IconSearch pupils…" />
         {allowAll && (
           <SheetRadioRow title="All pupils" selected={selectedId === ""} onSelect={() => onSelect("")} />
         )}

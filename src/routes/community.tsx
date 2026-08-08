@@ -6,28 +6,8 @@ import { reverseGeocode } from "@/lib/geocode.functions";
 import { IconBell, IconBellOff, IconSearch } from "@tabler/icons-react";
 
 
-import {
-  ArrowLeft,
-  Plus,
-  X,
-  Send,
-  Flag,
-  ThumbsUp,
-  MapPin,
-  ChevronDown,
-  AlertTriangle,
-  Car,
-  Building2 as Building,
-  Clock,
-  Info,
-  GraduationCap,
-  MessageSquare,
-  MessageCircle,
-  LayoutGrid,
-  Search,
-  Users,
-
-} from "lucide-react";
+import { IconAlertTriangle, IconArrowLeft, IconCar, IconChevronDown, IconClock, IconFlag, IconInfoCircle, IconLayoutGrid, IconMapPin, IconMessage, IconMessageCircle, IconPlus, IconSchool, IconSearch, IconSend, IconThumbUp, IconUsers, IconX } from "@tabler/icons-react";
+import { Building2 as Building } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import {
   BottomSheet,
@@ -113,14 +93,14 @@ type ChatMessage = {
 };
 
 const TYPE_CONFIG: Record<string, { label: string; bg: string; colour: string; Icon: any }> = {
-  roadworks:         { label: "Roadworks",     bg: "#FEF3C7", colour: "#D97706", Icon: Car },
-  road_closure:      { label: "Road closure",  bg: "#FEF3C7", colour: "#D97706", Icon: AlertTriangle },
-  heavy_traffic:     { label: "Heavy traffic", bg: "#FEF3C7", colour: "#D97706", Icon: Car },
-  hazard:            { label: "Hazard",        bg: "#FCEBEB", colour: "#A32D2D", Icon: AlertTriangle },
+  roadworks:         { label: "Roadworks",     bg: "#FEF3C7", colour: "#D97706", Icon: IconCar },
+  road_closure:      { label: "Road closure",  bg: "#FEF3C7", colour: "#D97706", Icon: IconAlertTriangle },
+  heavy_traffic:     { label: "Heavy traffic", bg: "#FEF3C7", colour: "#D97706", Icon: IconCar },
+  hazard:            { label: "Hazard",        bg: "#FCEBEB", colour: "#A32D2D", Icon: IconAlertTriangle },
   test_centre_busy:  { label: "TC busy",       bg: "#FCEBEB", colour: "#A32D2D", Icon: Building },
-  test_centre_delay: { label: "TC delay",      bg: "#FCEBEB", colour: "#A32D2D", Icon: Clock },
-  examiner_tip:      { label: "Examiner tip",  bg: "#F5F3FF", colour: "#6B4FD6", Icon: GraduationCap },
-  other:             { label: "Other",         bg: "#F3F4F6", colour: "#6B7280", Icon: Info },
+  test_centre_delay: { label: "TC delay",      bg: "#FCEBEB", colour: "#A32D2D", Icon: IconClock },
+  examiner_tip:      { label: "Examiner tip",  bg: "#F5F3FF", colour: "#6B4FD6", Icon: IconSchool },
+  other:             { label: "Other",         bg: "#F3F4F6", colour: "#6B7280", Icon: IconInfoCircle },
 };
 
 const TYPE_ORDER = [
@@ -428,7 +408,7 @@ function CommunityPage() {
           aria-label="Back"
           style={{ background: "none", border: "none", color: "white", cursor: "pointer", display: "flex" }}
         >
-          <ArrowLeft size={22} />
+          <IconArrowLeft stroke={1.5} size={22} />
         </button>
         <div style={{ fontWeight: 700, fontSize: 18 }}>Community</div>
         <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>{" "}</div>
@@ -461,7 +441,7 @@ function CommunityPage() {
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
               }}
             >
-              {t.id === "rooms" && <LayoutGrid size={14} />}
+              {t.id === "rooms" && <IconLayoutGrid stroke={1.5} size={14} />}
               {t.label}
               {badge > 0 && (
                 <span style={{
@@ -638,7 +618,7 @@ function CommunityPage() {
                       .limit(20);
                     setDmSearchResults((data as any[]) ?? []);
                   }}
-                  placeholder="Search instructors..."
+                  placeholder="IconSearch instructors..."
                   style={{
                     width: "100%", boxSizing: "border-box", border: "1px solid #E4E8EF",
                     borderRadius: 8, padding: "10px 12px", fontSize: 14, color: "#0B1F3A", outline: "none",
@@ -849,7 +829,7 @@ function RoomsTab({
             </div>
           ) : null}
           <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 3, fontSize: 11, color: "#8A93A3" }}>
-            <Users size={12} />
+            <IconUsers stroke={1.5} size={12} />
             {room.instructor_count ?? 0} instructors
           </div>
         </div>
@@ -898,11 +878,11 @@ function RoomsTab({
           display: "flex", alignItems: "center", gap: 8, background: "white",
           border: "0.5px solid #E2E6ED", borderRadius: 10, padding: "0 12px", height: 40, marginBottom: 10,
         }}>
-          <Search size={15} color="#8A93A3" />
+          <IconSearch stroke={1.5} size={15} color="#8A93A3" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search area or outcode"
+            placeholder="IconSearch area or outcode"
             style={{ flex: 1, border: "none", outline: "none", fontSize: 13, color: "#0F2044", background: "transparent" }}
           />
         </div>
@@ -1160,7 +1140,7 @@ function AlertsTab({
       {instructorAlerts.length === 0 ? (
         myAlerts.length === 0 && officialAlerts.length === 0 ? (
           <div style={{ padding: 40, textAlign: "center" }}>
-            <MapPin size={48} color="#D1D5DB" style={{ margin: "0 auto 12px" }} />
+            <IconMapPin stroke={1.5} size={48} color="#D1D5DB" style={{ margin: "0 auto 12px" }} />
             <div style={{ fontWeight: 600, color: "#6B7280" }}>No other alerts near {instructorArea}</div>
             <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>Be the first to report an issue</div>
             <button
@@ -1206,7 +1186,7 @@ function AlertsTab({
             <span style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A" }}>
               Traffic &amp; road data · {officialAlerts.length} incident{officialAlerts.length === 1 ? "" : "s"}
             </span>
-            <ChevronDown
+            <IconChevronDown stroke={1.5}
               size={18}
               color="#6B7280"
               style={{ transform: tomtomOpen ? "rotate(180deg)" : "none", transition: "transform .15s" }}
@@ -1342,7 +1322,7 @@ function AlertsTab({
                         }}
                         aria-label="Cancel alert"
                       >
-                        <X size={13} color="white" strokeWidth={2.4} />
+                        <IconX stroke={1.5} size={13} color="white" strokeWidth={2.4} />
                       </button>
                     )}
                   </div>
@@ -1372,7 +1352,7 @@ function AlertsTab({
           cursor: "pointer", boxShadow: "0 4px 12px rgba(204,34,41,0.4)", zIndex: 50, color: "white",
         }}
       >
-        <Plus size={24} />
+        <IconPlus stroke={1.5} size={24} />
       </button>
 
       {reportSheetOpen && (
@@ -1441,7 +1421,7 @@ function AlertsTab({
                       cursor: "pointer",
                     }}
                   >
-                    <ThumbsUp
+                    <IconThumbUp stroke={1.5}
                       size={14}
                       color={alreadyUpvoted ? "#1877D6" : "#9CA3AF"}
                       fill={alreadyUpvoted ? "#1877D6" : "none"}
@@ -1549,7 +1529,7 @@ function AlertsTab({
                   opacity: commentDraft.trim() ? 1 : 0.4, padding: 0,
                 }}
               >
-                <Send size={15} />
+                <IconSend stroke={1.5} size={15} />
               </button>
             </div>
           </BottomSheet>
@@ -1616,7 +1596,7 @@ function AlertCard({
         </div>
         {commentCount > 0 && (
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <MessageCircle size={13} color="#9CA3AF" />
+            <IconMessageCircle stroke={1.5} size={13} color="#9CA3AF" />
             <span style={{ fontSize: 12, color: "#9CA3AF" }}>{commentCount}</span>
           </div>
         )}
@@ -1629,7 +1609,7 @@ function AlertCard({
             padding: "6px 12px", cursor: "pointer",
           }}
         >
-          <ThumbsUp
+          <IconThumbUp stroke={1.5}
             size={13}
             color={alreadyUpvoted ? "#185FA5" : "#9CA3AF"}
             fill={alreadyUpvoted ? "#185FA5" : "none"}
@@ -2430,14 +2410,14 @@ function ChatTab({
           <div style={{ position: "relative", flexShrink: 0, display: "flex", alignItems: "center", gap: 4 }}>
             <button
               type="button"
-              aria-label="Search messages"
+              aria-label="IconSearch messages"
               onClick={() => setSearchOpen((v) => !v)}
               style={{
                 background: "none", border: "none", cursor: "pointer",
                 padding: 4, display: "flex", alignItems: "center",
               }}
             >
-              <IconSearch size={20} color={searchOpen ? "#1877D6" : "#9CA3AF"} />
+              <IconSearch stroke={1.5} size={20} color={searchOpen ? "#1877D6" : "#9CA3AF"} />
             </button>
 
             <button
@@ -2524,7 +2504,7 @@ function ChatTab({
             <span style={{ fontSize: 13, fontWeight: 600, color: "#0F2044" }}>
               {areaLabel}
             </span>
-            <ChevronDown
+            <IconChevronDown stroke={1.5}
               size={16}
               color="#6B7280"
               style={{ transform: roomSelectorOpen ? "rotate(180deg)" : "none", transition: "transform .15s" }}
@@ -2571,11 +2551,11 @@ function ChatTab({
           background: "white", borderBottom: "0.5px solid #E2E6ED",
           padding: "8px 16px", display: "flex", alignItems: "center", gap: 8,
         }}>
-          <IconSearch size={16} color="#8A93A3" />
+          <IconSearch stroke={1.5} size={16} color="#8A93A3" />
           <input
             value={msgSearch}
             onChange={(e) => setMsgSearch(e.target.value)}
-            placeholder="Search messages..."
+            placeholder="IconSearch messages..."
             autoFocus
             style={{
               flex: 1, border: "none", outline: "none", fontSize: 13, color: "#0F2044", background: "transparent",
@@ -2588,7 +2568,7 @@ function ChatTab({
               onClick={() => setMsgSearch("")}
               style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex" }}
             >
-              <X size={16} color="#8A93A3" />
+              <IconX stroke={1.5} size={16} color="#8A93A3" />
             </button>
           )}
           <button
@@ -2608,7 +2588,7 @@ function ChatTab({
       >
         {noRoom ? (
           <div style={{ marginTop: 60, textAlign: "center", padding: "0 24px" }}>
-            <MessageSquare size={40} color="#D1D5DB" style={{ margin: "0 auto 12px" }} />
+            <IconMessage stroke={1.5} size={40} color="#D1D5DB" style={{ margin: "0 auto 12px" }} />
             <div style={{ fontWeight: 600, color: "#6B7280" }}>
               No chat room yet for your area
             </div>
@@ -2686,10 +2666,10 @@ function ChatTab({
                         <button
                           type="button"
                           onClick={() => flag(m)}
-                          aria-label="Flag message"
+                          aria-label="IconFlag message"
                           style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex" }}
                         >
-                          <Flag size={11} color="#D1D5DB" />
+                          <IconFlag stroke={1.5} size={11} color="#D1D5DB" />
                         </button>
                       </div>
                     </div>
@@ -2744,7 +2724,7 @@ function ChatTab({
             type="button"
             onClick={send}
             disabled={noRoom || !newMessage.trim() || !room}
-            aria-label="Send"
+            aria-label="IconSend"
             style={{
               width: 36, height: 36, borderRadius: "50%", border: "none",
               background: !noRoom && newMessage.trim() && room ? "#0F2044" : "#E5E7EB",
@@ -2752,7 +2732,7 @@ function ChatTab({
               cursor: !noRoom && newMessage.trim() && room ? "pointer" : "not-allowed", flexShrink: 0,
             }}
           >
-            <Send size={16} />
+            <IconSend stroke={1.5} size={16} />
           </button>
         </div>
       )}
@@ -2785,7 +2765,7 @@ function ChatTab({
                 background: "none", border: "none", borderBottom: "0.5px solid #F1F4F8", cursor: "pointer",
               }}
             >
-              <Flag size={15} color="#CC2229" />
+              <IconFlag stroke={1.5} size={15} color="#CC2229" />
               Report message
             </button>
             <button

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
-import { ChevronLeft, Star, Users, BookOpen, Settings, FileText, FileCheck, ShoppingBag, Video, Mic, Briefcase, MessageCircle, PlayCircle, Pencil, Trash2, Flag, ShieldCheck } from "lucide-react";
+import { IconBriefcase, IconChevronLeft, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconPencil, IconSettings, IconShieldCheck, IconStar, IconTrash, IconUsers } from "@tabler/icons-react";
+import { BookOpen, FileCheck, ShoppingBag, Video, PlayCircle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -44,7 +45,7 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
           color: "#fff",
         }}
       >
-        <ChevronLeft size={18} />
+        <IconChevronLeft stroke={1.5} size={18} />
       </button>
       <span style={{ fontSize: 16, fontWeight: 600 }}>{title}</span>
     </div>
@@ -247,7 +248,7 @@ function FlaggedMessagesSection() {
           background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 12,
           padding: 24, textAlign: "center",
         }}>
-          <ShieldCheck size={32} color="#16A34A" style={{ margin: "0 auto 8px" }} />
+          <IconShieldCheck stroke={1.5} size={32} color="#16A34A" style={{ margin: "0 auto 8px" }} />
           <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
             No flagged messages — all clear
           </div>
@@ -761,7 +762,7 @@ function ChatRoomsSection() {
                       cursor: "pointer",
                     }}
                   >
-                    <Pencil size={14} />
+                    <IconPencil stroke={1.5} size={14} />
                   </button>
                   <button
                     type="button"
@@ -782,7 +783,7 @@ function ChatRoomsSection() {
                       opacity: deletingId === room.id ? 0.6 : 1,
                     }}
                   >
-                    <Trash2 size={14} />
+                    <IconTrash stroke={1.5} size={14} />
                   </button>
                   <button
                     type="button"
@@ -1072,12 +1073,12 @@ function AdminHub() {
       <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)" }}>
         <div style={{ padding: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <AdminSectionTile
-            icon={<Star size={18} />}
+            icon={<IconStar stroke={1.5} size={18} />}
             label="Featured listings"
             onClick={() => navigate({ to: "/admin/featured" })}
           />
           <AdminSectionTile
-            icon={<FileText size={18} />}
+            icon={<IconFileText stroke={1.5} size={18} />}
             label="Applications"
             onClick={() => navigate({ to: "/admin/applications" as never })}
           />
@@ -1087,7 +1088,7 @@ function AdminHub() {
             onClick={() => navigate({ to: "/admin/listings" as never })}
           />
           <AdminSectionTile
-            icon={<Briefcase size={18} />}
+            icon={<IconBriefcase stroke={1.5} size={18} />}
             label="Job offers"
             onClick={() => navigate({ to: "/admin/job-offers" as never })}
           />
@@ -1102,7 +1103,7 @@ function AdminHub() {
             onClick={() => navigate({ to: "/admin/dsm-live" as never })}
           />
           <AdminSectionTile
-            icon={<Mic size={18} />}
+            icon={<IconMicrophone stroke={1.5} size={18} />}
             label="Podcasts"
             onClick={() => navigate({ to: "/admin/podcasts" as never })}
           />
@@ -1119,7 +1120,7 @@ function AdminHub() {
 
 
           <AdminSectionTile
-            icon={<Users size={18} />}
+            icon={<IconUsers stroke={1.5} size={18} />}
             label="All instructors"
             subtitle={`${instructorCount} registered instructors`}
             onClick={() => navigate({ to: "/admin/instructors" as never })}
@@ -1130,17 +1131,17 @@ function AdminHub() {
             onClick={() => navigate({ to: "/bookings" as never })}
           />
           <AdminSectionTile
-            icon={<Settings size={18} />}
+            icon={<IconSettings stroke={1.5} size={18} />}
             label="Platform settings"
             onClick={() => navigate({ to: "/settings" as never })}
           />
           <AdminSectionTile
-            icon={<MessageCircle size={18} />}
+            icon={<IconMessageCircle stroke={1.5} size={18} />}
             label="Chat rooms"
             onClick={() => navigate({ to: "/admin/chat-rooms" as never })}
           />
           <AdminSectionTile
-            icon={<Flag size={18} />}
+            icon={<IconFlag stroke={1.5} size={18} />}
             label="Flagged"
             onClick={scrollToFlagged}
           />

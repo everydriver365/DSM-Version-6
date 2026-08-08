@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, X, FileSignature, FileText } from "lucide-react";
+import { IconFileText, IconPlus, IconX } from "@tabler/icons-react";
+import { FileSignature } from "lucide-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { Button } from "../components/dsm/Button";
@@ -151,7 +152,7 @@ function WaiversPage() {
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
           style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
-          <Plus size={15} />
+          <IconPlus stroke={1.5} size={15} />
           Create waiver
         </button>
       </div>
@@ -185,7 +186,7 @@ function WaiversPage() {
                   className="flex items-center justify-center rounded-full flex-shrink-0"
                   style={{ width: 36, height: 36, backgroundColor: "#EEF4FB" }}
                 >
-                  <FileText size={18} color="#1877D6" />
+                  <IconFileText stroke={1.5} size={18} color="#1877D6" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-[14px] font-semibold truncate" style={{ color: "#0B1F3A" }}>
@@ -338,7 +339,7 @@ function SheetShell({
             className="flex items-center justify-center"
             style={{ width: 36, height: 36 }}
           >
-            <X size={20} color="#0B1F3A" />
+            <IconX stroke={1.5} size={20} color="#0B1F3A" />
           </button>
         </div>
         <div style={{ padding: 16 }}>{children}</div>

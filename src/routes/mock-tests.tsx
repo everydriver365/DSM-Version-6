@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Search, X } from "lucide-react";
+import { IconPlus, IconSearch, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { IconClipboard } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
@@ -174,7 +174,7 @@ function MockTestsPage() {
           className="inline-flex items-center gap-1 text-[13px] font-semibold text-white"
           style={{ background: "#1877D6", borderRadius: 999, padding: "8px 14px", border: "none" }}
         >
-          <Plus size={16} color="#FFFFFF" /> New mock test
+          <IconPlus stroke={1.5} size={16} color="#FFFFFF" /> New mock test
         </button>
       </div>
 
@@ -352,7 +352,7 @@ function NewMockTestSheet({
             className="flex items-center justify-center"
             style={{ width: 32, height: 32 }}
           >
-            <X size={18} color="#6B7280" />
+            <IconX stroke={1.5} size={18} color="#6B7280" />
           </button>
         </div>
         <div className="px-4 pt-2 pb-4 overflow-y-auto" style={{ flex: 1, minHeight: 0 }}>
@@ -367,7 +367,7 @@ function NewMockTestSheet({
                   border: "0.5px solid #EEF2F7",
                 }}
               >
-                <Search size={16} color="#6B7280" style={{ marginRight: 8 }} />
+                <IconSearch stroke={1.5} size={16} color="#6B7280" style={{ marginRight: 8 }} />
                 <input
                   type="text"
                   value={selectedPupil ? selectedPupil.name : search}
@@ -392,7 +392,7 @@ function NewMockTestSheet({
                     className="flex items-center justify-center"
                     style={{ marginLeft: 8 }}
                   >
-                    <X size={16} color="#6B7280" />
+                    <IconX stroke={1.5} size={16} color="#6B7280" />
                   </button>
                 )}
               </div>
@@ -515,7 +515,7 @@ function ResultPromptSheet({
             className="flex items-center justify-center"
             style={{ width: 32, height: 32 }}
           >
-            <X size={18} color="#6B7280" />
+            <IconX stroke={1.5} size={18} color="#6B7280" />
           </button>
         </div>
         <div className="px-4 pt-2 pb-4 overflow-y-auto" style={{ flex: 1, minHeight: 0 }}>

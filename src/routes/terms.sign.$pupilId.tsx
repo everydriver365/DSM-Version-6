@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, CheckCircle2 } from "lucide-react";
+import { IconArrowLeft, IconCircleCheck } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 
@@ -324,7 +324,7 @@ function SignTermsPage() {
             cursor: "pointer",
           }}
         >
-          <ArrowLeft size={20} />
+          <IconArrowLeft stroke={1.5} size={20} />
         </button>
         <div style={{ fontSize: 16, fontWeight: 700 }}>Sign terms & conditions</div>
       </div>
@@ -357,7 +357,7 @@ function SignTermsPage() {
             }}
           >
             <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
-              <CheckCircle2 size={40} color="#1B7F3B" />
+              <IconCircleCheck stroke={1.5} size={40} color="#1B7F3B" />
             </div>
             <div style={{ fontSize: 18, fontWeight: 700, color: NAVY, marginBottom: 6 }}>
               Terms signed

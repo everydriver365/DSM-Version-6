@@ -1,7 +1,8 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, Plus, FileText, Link2, Send, RefreshCw } from "lucide-react";
+import { IconChevronLeft, IconFileText, IconPlus, IconRefresh, IconSend } from "@tabler/icons-react";
+import { Link2 } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/quotes/")({
   head: () => ({
     meta: [
       { title: "Quotes — DSM by EveryDriver" },
-      { name: "description", content: "Send and track course quotes to prospective pupils." },
+      { name: "description", content: "IconSend and track course quotes to prospective pupils." },
     ],
   }),
   component: QuotesPage,
@@ -183,13 +184,13 @@ function QuotesPage() {
         <button onClick={() => navigate({ to: "/home" })}
           style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex" }}
           aria-label="Back">
-          <ChevronLeft size={24} />
+          <IconChevronLeft stroke={1.5} size={24} />
         </button>
         <h1 style={{ color: "#fff", fontSize: 16, fontWeight: 700, margin: 0 }}>Quotes</h1>
         <button onClick={() => navigate({ to: "/quotes/new" })}
           style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex" }}
           aria-label="New quote">
-          <Plus size={24} />
+          <IconPlus stroke={1.5} size={24} />
         </button>
       </div>
 
@@ -235,7 +236,7 @@ function QuotesPage() {
             textAlign: "center", padding: "48px 16px", color: "#6B7280",
             display: "flex", flexDirection: "column", alignItems: "center", gap: 12,
           }}>
-            <FileText size={48} color="#9CA3AF" />
+            <IconFileText stroke={1.5} size={48} color="#9CA3AF" />
             <div style={{ fontSize: 14, fontWeight: 600 }}>
               No {tab} quotes yet
             </div>
@@ -358,7 +359,7 @@ function QuotesPage() {
                           cursor: "pointer", fontFamily: "Poppins, sans-serif",
                         }}
                       >
-                        <RefreshCw size={14} /> Revise & resend
+                        <IconRefresh stroke={1.5} size={14} /> Revise & resend
                       </button>
                     </div>
                   )}
@@ -439,7 +440,7 @@ function QuotesPage() {
                             cursor: "pointer", fontFamily: "Poppins, sans-serif",
                           }}
                         >
-                          <Send size={14} /> Send
+                          <IconSend stroke={1.5} size={14} /> IconSend
                         </button>
                       )}
                     </div>

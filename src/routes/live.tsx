@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft, Map as MapIcon, Search, X } from "lucide-react";
+import { IconChevronLeft, IconSearch, IconX } from "@tabler/icons-react";
+import { Map as MapIcon } from "lucide-react";
 import { IconChevronLeft } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { PupilAvatar } from "../components/PupilAvatar";
@@ -250,7 +251,7 @@ function SegmentSpeedChart({
         <text x={padding.left - 4} y={padding.top + chartH + 3} textAnchor="end" fontSize={8} fill="#6B7280">
           0
         </text>
-        {/* X-axis labels */}
+        {/* IconX-axis labels */}
         <text x={padding.left} y={height - 4} textAnchor="middle" fontSize={8} fill="#6B7280">
           {new Date(minT).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
         </text>
@@ -1986,7 +1987,7 @@ function LivePage() {
                 className="p-1 rounded-full active:bg-black/5"
                 aria-label="Close"
               >
-                <X size={20} color="#8A93A3" />
+                <IconX stroke={1.5} size={20} color="#8A93A3" />
               </button>
             </div>
             <div className="px-4 pb-3">
@@ -1998,12 +1999,12 @@ function LivePage() {
                   padding: "10px 12px",
                 }}
               >
-                <Search size={16} color="#6B7280" />
+                <IconSearch stroke={1.5} size={16} color="#6B7280" />
                 <input
                   type="text"
                   value={pupilSearchQuery}
                   onChange={(e) => setPupilSearchQuery(e.target.value)}
-                  placeholder="Search pupils"
+                  placeholder="IconSearch pupils"
                   autoFocus
                   style={{
                     border: "none",

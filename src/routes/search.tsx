@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Search as SearchIcon, Clock } from "lucide-react";
+import { IconClock } from "@tabler/icons-react";
+import { Search as SearchIcon } from "lucide-react";
 import { IconSearch } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { toast } from "sonner";
@@ -309,7 +310,7 @@ function SearchPage() {
             ) : (
               <div className="flex flex-col" style={{ gap: 8 }}>
                 {recents.map((r) => (
-                  <Row key={r.route} onClick={() => go(r.route)} icon={<Clock size={16} color="#6B7280" />}>
+                  <Row key={r.route} onClick={() => go(r.route)} icon={<IconClock stroke={1.5} size={16} color="#6B7280" />}>
                     <div className="text-[14px] text-[#0B1F3A]">{r.label}</div>
                     <div className="text-[12px] text-[#6B7280]">{r.route}</div>
                   </Row>

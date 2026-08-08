@@ -1,17 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import {
-  X,
-  Shield,
-  FileText,
-  Receipt,
-  Wrench,
-  Calendar,
-  Circle,
-  Gauge,
-  Plus,
-  AlertTriangle,
-} from "lucide-react";
+import { IconAlertTriangle, IconCalendar, IconCircle, IconFileText, IconPlus, IconShield, IconTool, IconX } from "@tabler/icons-react";
+import { Receipt, Gauge } from "lucide-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -234,7 +224,7 @@ function VehiclePage() {
             padding: "10px 12px",
           }}
         >
-          <AlertTriangle size={16} color="#1877D6" />
+          <IconAlertTriangle stroke={1.5} size={16} color="#1877D6" />
           <div className="text-[13px]" style={{ color: "#991B1B" }}>
             <span className="font-semibold">{alerts.length} vehicle check{alerts.length === 1 ? "" : "s"} due soon</span>
             <span className="ml-1">— {alerts.join(", ")}</span>
@@ -248,14 +238,14 @@ function VehiclePage() {
         style={{ gridTemplateColumns: "1fr 1fr", gap: 8, padding: 16 }}
       >
         <StatusCard
-          icon={<Shield size={16} color={NAVY} />}
+          icon={<IconShield stroke={1.5} size={16} color={NAVY} />}
           label="MOT"
           value={fmtDate(vh.mot_expiry)}
           badge={expiryBadge(vh.mot_expiry)}
           onClick={() => setEditField("mot_expiry")}
         />
         <StatusCard
-          icon={<FileText size={16} color={NAVY} />}
+          icon={<IconFileText stroke={1.5} size={16} color={NAVY} />}
           label="Insurance"
           value={fmtDate(vh.insurance_expiry)}
           badge={expiryBadge(vh.insurance_expiry)}
@@ -269,7 +259,7 @@ function VehiclePage() {
           onClick={() => setEditField("tax_expiry")}
         />
         <StatusCard
-          icon={<Wrench size={16} color={NAVY} />}
+          icon={<IconTool stroke={1.5} size={16} color={NAVY} />}
           label="Last service"
           value={fmtDate(vh.last_service_date)}
           subtle={(() => {
@@ -279,7 +269,7 @@ function VehiclePage() {
           onClick={() => setEditField("last_service_date")}
         />
         <StatusCard
-          icon={<Calendar size={16} color={NAVY} />}
+          icon={<IconCalendar stroke={1.5} size={16} color={NAVY} />}
           label="Next service"
           value={
             vh.next_service_due_date
@@ -297,7 +287,7 @@ function VehiclePage() {
           onClick={() => setEditField("next_service_due_date")}
         />
         <StatusCard
-          icon={<Circle size={16} color={NAVY} />}
+          icon={<IconCircle stroke={1.5} size={16} color={NAVY} />}
           label="Tyres"
           value={fmtDate(vh.tyre_pressure_checked)}
           subtle={(() => {
@@ -416,7 +406,7 @@ function VehiclePage() {
           boxShadow: "0 6px 16px rgba(11,31,58,0.25)",
         }}
       >
-        <Plus size={24} color="#FFFFFF" />
+        <IconPlus stroke={1.5} size={24} color="#FFFFFF" />
       </button>
 
       {editField && (
@@ -540,7 +530,7 @@ function EditFieldModal({
             style={{ width: 32, height: 32 }}
             className="flex items-center justify-center"
           >
-            <X size={18} color="#6B7280" />
+            <IconX stroke={1.5} size={18} color="#6B7280" />
           </button>
         </div>
         <div className="px-4 pt-2">
@@ -671,7 +661,7 @@ function AddJourneyModal({
             style={{ width: 32, height: 32 }}
             className="flex items-center justify-center"
           >
-            <X size={18} color="#6B7280" />
+            <IconX stroke={1.5} size={18} color="#6B7280" />
           </button>
         </div>
         <div className="px-4 pt-2 flex flex-col" style={{ gap: 12 }}>

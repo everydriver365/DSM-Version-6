@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Plus, X, Send, Search, Pencil } from "lucide-react";
+import { IconPencil, IconPlus, IconSearch, IconSend, IconX } from "@tabler/icons-react";
 import { PageHeader } from "@/components/dsm/PageHeader";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
@@ -399,7 +399,7 @@ function AdminJobOffers() {
               display: "inline-flex", alignItems: "center", gap: 6,
             }}
           >
-            <Plus size={14} /> New
+            <IconPlus stroke={1.5} size={14} /> New
           </button>
         }
       />
@@ -469,7 +469,7 @@ function AdminJobOffers() {
                       cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6,
                     }}
                   >
-                    <Pencil size={14} /> Edit
+                    <IconPencil stroke={1.5} size={14} /> Edit
                   </button>
                   {o.status === "claimed" && (
                     <button
@@ -545,7 +545,7 @@ function AdminJobOffers() {
                 onClick={() => { setShowSheet(false); setEditingOffer(null); }}
                 style={{ padding: 6, background: "transparent", border: "none", cursor: "pointer" }}
               >
-                <X size={20} color={GREY} />
+                <IconX stroke={1.5} size={20} color={GREY} />
               </button>
             </div>
 
@@ -566,20 +566,20 @@ function AdminJobOffers() {
                       onClick={clearEnquiryLink}
                       style={{ background: "transparent", border: "none", cursor: "pointer", color: BLUE }}
                     >
-                      <X size={16} />
+                      <IconX stroke={1.5} size={16} />
                     </button>
                   </div>
                 ) : (
                   <div style={{ position: "relative" }}>
                     <div style={{ position: "relative" }}>
-                      <Search
+                      <IconSearch stroke={1.5}
                         size={14}
                         style={{ position: "absolute", top: 12, left: 10, color: GREY }}
                       />
                       <input
                         value={enquiryQuery}
                         onChange={(e) => setEnquiryQuery(e.target.value)}
-                        placeholder="Search enquiries by name…"
+                        placeholder="IconSearch enquiries by name…"
                         style={inputStyle(true)}
                       />
                     </div>
@@ -995,7 +995,7 @@ function AdminJobThread({
             </div>
           </div>
           <button onClick={onClose} style={{ padding: 6, background: "transparent", border: "none", cursor: "pointer" }}>
-            <X size={20} color={GREY} />
+            <IconX stroke={1.5} size={20} color={GREY} />
           </button>
         </div>
 
@@ -1059,7 +1059,7 @@ function AdminJobThread({
               cursor: draft.trim() ? "pointer" : "not-allowed", opacity: draft.trim() ? 1 : 0.5,
             }}
           >
-            <Send size={16} />
+            <IconSend stroke={1.5} size={16} />
           </button>
         </div>
       </div>
