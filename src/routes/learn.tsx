@@ -175,7 +175,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
               opacity: 0.18,
             }}
           >
-            <Film size={64} color="#FFFFFF" />
+            <IconMovie size={64} color="#fff" stroke={1} />
           </div>
         )}
 
