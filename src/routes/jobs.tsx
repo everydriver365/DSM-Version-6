@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useState, useRef } from "react";
-import { ArrowLeft, Briefcase, X, Send } from "lucide-react";
+import { Briefcase, X, Send } from "lucide-react";
 import { IconCheck } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
