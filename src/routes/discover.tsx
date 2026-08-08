@@ -230,7 +230,7 @@ function Row({
       style={{
         background: "#FFFFFF",
         border: `1px solid ${HAIRLINE}`,
-        borderRadius: 14,
+        borderRadius: 16,
         boxShadow: SHADOW,
         padding: 10,
         display: "flex",

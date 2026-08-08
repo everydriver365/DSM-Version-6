@@ -483,7 +483,7 @@ const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string
 
 const NA_CARD_STYLE: React.CSSProperties = {
   background: '#FFFFFF',
-  borderRadius: 14,
+  borderRadius: 16,
   padding: '12px 16px',
   boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
   display: 'flex',
@@ -5060,7 +5060,7 @@ function HomePage() {
                           padding: '5px 12px',
                           borderRadius: 20,
                           border: '1px solid #E5E8EE',
-                          boxShadow: '0 1px 4px rgba(11,31,58,0.06)',
+                          boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
                           fontSize: 12,
                           fontWeight: 700,
                           cursor: 'pointer',
@@ -8180,8 +8180,8 @@ function HomePage() {
             <div
               onClick={() => navigate({ to: '/community', search: { tab: 'uk' } })}
               style={{
-                margin: 0, background: 'white', borderRadius: 14,
-                boxShadow: '0 2px 8px rgba(11,31,58,0.06)', padding: '13px 14px',
+                margin: 0, background: 'white', borderRadius: 16,
+                boxShadow: '0 1px 3px rgba(11,31,58,0.06)', padding: '13px 14px',
                 display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
                 fontFamily: 'Poppins, sans-serif',
                 border: unreadUkChat > 0 ? '1.5px solid #1877D6' : '1px solid transparent',
@@ -10551,8 +10551,8 @@ function DiscoverSection() {
 
   const cardShell: React.CSSProperties = {
     background: "#FFFFFF",
-    borderRadius: 14,
-    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+    borderRadius: 16,
+    boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
     overflow: "hidden",
     cursor: "pointer",
   };

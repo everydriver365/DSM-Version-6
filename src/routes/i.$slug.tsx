@@ -135,7 +135,7 @@ function InstructorMiniSite() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#FFFFFF", color: "#0B1F3A", fontFamily: "system-ui" }}>
+      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#FFFFFF", color: "#0B1F3A", fontFamily: "Poppins, sans-serif" }}>
         Loading…
       </div>
     );
@@ -143,7 +143,7 @@ function InstructorMiniSite() {
 
   if (!instructor) {
     return (
-      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#FFFFFF", color: "#0B1F3A", fontFamily: "system-ui", padding: 24, textAlign: "center" }}>
+      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#FFFFFF", color: "#0B1F3A", fontFamily: "Poppins, sans-serif", padding: 24, textAlign: "center" }}>
         <div>
           <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 12 }}>This page isn't available</h1>
           <p style={{ color: "#475569", marginBottom: 20 }}>

@@ -1558,7 +1558,7 @@ function SchedulePage() {
                                   tabIndex={clickable ? 0 : undefined}
                                   style={{
                                     background: isTestDay ? '#FFF3E0' : '#FFFFFF',
-                                    borderRadius: 12,
+                                    borderRadius: 16,
                                     boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                                     padding: "12px 14px",
                                     display: "flex",
@@ -2606,7 +2606,7 @@ function MonthCalendar({
         top: 0,
         zIndex: 5,
         background: "#FFFFFF",
-        borderRadius: 14,
+        borderRadius: 16,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         padding: 12,
         boxSizing: "border-box",

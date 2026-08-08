@@ -350,7 +350,7 @@ function SignTermsPage() {
             style={{
               background: "#fff",
               border: "1px solid #EEF2F7",
-              borderRadius: 12,
+              borderRadius: 16,
               padding: 20,
               textAlign: "center",
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
@@ -408,7 +408,7 @@ function SignTermsPage() {
               style={{
                 background: "#fff",
                 border: "1px solid #EEF2F7",
-                borderRadius: 12,
+                borderRadius: 16,
                 padding: 14,
                 marginBottom: 12,
                 boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
@@ -426,7 +426,7 @@ function SignTermsPage() {
               style={{
                 background: "#fff",
                 border: "1px solid #EEF2F7",
-                borderRadius: 12,
+                borderRadius: 16,
                 padding: 14,
                 marginBottom: 12,
                 boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
@@ -475,7 +475,7 @@ function SignTermsPage() {
               style={{
                 background: "#fff",
                 border: "1px solid #EEF2F7",
-                borderRadius: 12,
+                borderRadius: 16,
                 padding: 14,
                 marginBottom: 12,
                 boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
@@ -539,7 +539,7 @@ function SignTermsPage() {
               style={{
                 background: "#fff",
                 border: "1px solid #EEF2F7",
-                borderRadius: 12,
+                borderRadius: 16,
                 padding: 14,
                 marginBottom: 12,
                 boxShadow: "0 1px 3px rgba(0,0,0,0.06)",

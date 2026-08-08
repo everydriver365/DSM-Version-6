@@ -2498,7 +2498,7 @@ function SectionCard({ children, style }: { children: React.ReactNode; style?: R
     <div
       style={{
         background: "#FFFFFF",
-        borderRadius: 14,
+        borderRadius: 16,
         overflow: "hidden",
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         marginBottom: 20,

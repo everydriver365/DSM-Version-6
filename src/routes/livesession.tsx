@@ -190,7 +190,7 @@ function LiveSessionPage() {
       <div
         style={{
           background: "#ffffff",
-          borderRadius: 12,
+          borderRadius: 16,
           padding: 16,
           margin: "0 16px",
           boxShadow: "0 2px 12px rgba(0,0,0,0.10)",
