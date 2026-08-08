@@ -4,6 +4,14 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
 import {
+  BottomSheet,
+  SheetGroup,
+  SheetRow,
+  SheetRadioRow,
+  PrimaryButton,
+  GhostButton,
+} from "@/components/dsm/BottomSheetV2";
+import {
   IconChevronLeft,
   IconChevronRight,
   IconPlayerPlay,
@@ -1322,116 +1330,53 @@ function ShowcasePage() {
 
       {/* REPORT SHEET */}
       {reportOpen && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 300 }}>
-          <div
-            onClick={() => setReportOpen(false)}
-            style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.45)" }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              background: "#fff",
-              borderRadius: "20px 20px 0 0",
-              padding: "20px 16px",
-              paddingBottom: "calc(20px + env(safe-area-inset-bottom, 0px))",
-            }}
-          >
-            <div style={{ fontSize: 16, fontWeight: 700, color: NAVY, ...POPPINS }}>
-              Report video
-            </div>
-            <div
-              style={{ fontSize: 13, color: "#6B7686", marginTop: 4, ...POPPINS }}
-            >
-              Help us keep DSM Showcase safe
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 8,
-                margin: "16px 0",
-              }}
-            >
-              {REPORT_REASONS.map((r) => {
-                const active = reportReason === r;
-                return (
-                  <button
-                    key={r}
-                    type="button"
-                    onClick={() => setReportReason(r)}
-                    style={{
-                      border: active ? `1px solid ${RED}` : "1px solid transparent",
-                      borderRadius: 20,
-                      padding: "7px 12px",
-                      fontSize: 12,
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      background: active ? "#FCE9E9" : "#F1F5F9",
-                      color: active ? RED : "#6B7686",
-                      ...POPPINS,
-                    }}
-                  >
-                    {r}
-                  </button>
-                );
-              })}
-            </div>
-
-            {reportReason === "Other" && (
-              <textarea
-                rows={3}
-                placeholder="Tell us more..."
-                aria-label="Report details"
-                onChange={(e) => setReportReason(e.target.value ? e.target.value : "Other")}
-                style={{ ...inputStyle, resize: "vertical", marginBottom: 12 }}
+        <BottomSheet
+          title="Report video"
+          subtitle="Help us keep DSM Showcase safe"
+          onClose={() => setReportOpen(false)}
+          footer={
+            <>
+              <PrimaryButton
+                color={RED}
+                disabled={!reportReason.trim() || sendingReport}
+                onClick={sendReport}
+              >
+                {sendingReport ? "Sending..." : "Send report"}
+              </PrimaryButton>
+              <GhostButton color="#6B7686" bg="#F1F5F9" onClick={() => setReportOpen(false)}>
+                Cancel
+              </GhostButton>
+            </>
+          }
+        >
+          <SheetGroup>
+            {REPORT_REASONS.map((r) => (
+              <SheetRadioRow
+                key={r}
+                title={r}
+                selected={reportReason === r}
+                onSelect={() => setReportReason(r)}
               />
-            )}
+            ))}
+          </SheetGroup>
 
-            <button
-              type="button"
-              onClick={sendReport}
-              disabled={!reportReason.trim() || sendingReport}
-              style={{
-                width: "100%",
-                background: RED,
-                color: "#fff",
-                border: "none",
-                borderRadius: 12,
-                padding: "12px 0",
-                fontSize: 14,
-                fontWeight: 700,
-                cursor: reportReason.trim() ? "pointer" : "not-allowed",
-                opacity: reportReason.trim() && !sendingReport ? 1 : 0.6,
-                ...POPPINS,
-              }}
-            >
-              {sendingReport ? "Sending..." : "Send report"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setReportOpen(false)}
-              style={{
-                width: "100%",
-                background: "#F1F5F9",
-                color: "#6B7686",
-                border: "none",
-                borderRadius: 12,
-                padding: "12px 0",
-                fontSize: 14,
-                fontWeight: 600,
-                marginTop: 8,
-                cursor: "pointer",
-                ...POPPINS,
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
+          {reportReason === "Other" && (
+            <SheetGroup>
+              <SheetRow>
+                <textarea
+                  rows={3}
+                  placeholder="Tell us more..."
+                  aria-label="Report details"
+                  onChange={(e) =>
+                    setReportReason(e.target.value ? e.target.value : "Other")
+                  }
+                  className="w-full bg-transparent focus:outline-none resize-none"
+                  style={{ fontSize: 16, color: NAVY, ...POPPINS }}
+                />
+              </SheetRow>
+            </SheetGroup>
+          )}
+        </BottomSheet>
       )}
 
 

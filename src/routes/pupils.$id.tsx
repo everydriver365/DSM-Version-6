@@ -15,7 +15,7 @@ import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
-import { BottomSheet as BottomSheetV2 } from "../components/dsm/BottomSheetV2";
+import { BottomSheet as BottomSheetV2, SheetGroup, SheetRow, SheetDivider } from "../components/dsm/BottomSheetV2";
 import { DL25Sheet } from "./tests";
 import { ChangeDateTimeSheet } from "../components/lessons/ChangeDateTimeSheet";
 import { CancelLessonSheet } from "../components/lessons/CancelLessonSheet";
@@ -2408,79 +2408,66 @@ function PupilDetailPage() {
             </div>
           ) : viewingReport ? (
             <div style={{ padding: "4px 4px 16px", ...POPPINS }}>
-              <div style={{ marginBottom: 12 }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
-                  {viewingReport.started_at
-                    ? new Date(viewingReport.started_at).toLocaleString("en-GB", {
-                        weekday: "short", day: "2-digit", month: "short", year: "numeric",
-                        hour: "2-digit", minute: "2-digit",
-                      })
-                    : "—"}
-                </div>
-                <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
-                  {viewingReport.duration_minutes ? `${viewingReport.duration_minutes} min · ` : ""}
-                  Saved to {(pupil?.first_name || pupil?.name || "pupil")}'s record
-                </div>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 16 }}>
-                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Distance</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>{viewingReport.totalDistanceMiles.toFixed(2)} mi</div>
-                </div>
-                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Max speed</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>{Math.round(viewingReport.overallMaxSpeed)} mph</div>
-                </div>
-                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Overspeed</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: viewingReport.overspeedCount > 0 ? "#CC2229" : "#0B1F3A", marginTop: 2 }}>{viewingReport.overspeedCount}</div>
-                </div>
-              </div>
+              <SheetGroup>
+                <SheetRow>
+                  <div className="flex-1 min-w-0">
+                    <div style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A" }}>
+                      {viewingReport.started_at
+                        ? new Date(viewingReport.started_at).toLocaleString("en-GB", {
+                            weekday: "short", day: "2-digit", month: "short", year: "numeric",
+                            hour: "2-digit", minute: "2-digit",
+                          })
+                        : "—"}
+                    </div>
+                    <div style={{ fontSize: 13, color: "#6B7686", marginTop: 2, fontWeight: 500 }}>
+                      {viewingReport.duration_minutes ? `${viewingReport.duration_minutes} min · ` : ""}
+                      Saved to {(pupil?.first_name || pupil?.name || "pupil")}'s record
+                    </div>
+                  </div>
+                </SheetRow>
+                <SheetRow>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0, width: "100%" }}>
+                    <div style={{ textAlign: "center", borderRight: "1px solid #E4E8EF" }}>
+                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Distance</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 3 }}>{viewingReport.totalDistanceMiles.toFixed(2)} mi</div>
+                    </div>
+                    <div style={{ textAlign: "center", borderRight: "1px solid #E4E8EF" }}>
+                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Max speed</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 3 }}>{Math.round(viewingReport.overallMaxSpeed)} mph</div>
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Overspeed</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: viewingReport.overspeedCount > 0 ? "#CC2229" : "#0B1F3A", marginTop: 3 }}>{viewingReport.overspeedCount}</div>
+                    </div>
+                  </div>
+                </SheetRow>
+              </SheetGroup>
 
               {viewingReport.overspeedEvents.length > 0 && (
                 <>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
-                    Overspeed alerts
+                  <div className="px-1 pb-2 pt-1 text-xs font-semibold tracking-wide" style={{ color: "#8A93A3" }}>
+                    OVERSPEED ALERTS
                   </div>
-                  <div style={{ border: "0.5px solid #FCA5A5", borderRadius: 12, overflow: "hidden", marginBottom: 16, background: "#FEF2F2" }}>
-                    {viewingReport.overspeedEvents.map((ev, i) => (
-                      <button
-                        key={ev.id}
-                        type="button"
-                        onClick={() => setSelectedOverspeedEvent(ev)}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          borderTop: i === 0 ? "none" : "0.5px solid #FECACA",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          gap: 8,
-                          background: "transparent",
-                          border: "none",
-                          borderBottom: i === viewingReport.overspeedEvents.length - 1 ? "none" : "0.5px solid #FECACA",
-                          cursor: "pointer",
-                          textAlign: "left",
-                        }}
-                      >
+                  <SheetGroup>
+                    {viewingReport.overspeedEvents.map((ev) => (
+                      <SheetRow key={ev.id} onClick={() => setSelectedOverspeedEvent(ev)}>
                         <div style={{ minWidth: 0, flex: 1 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          <div style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                             {ev.road_name ?? "Unknown road"}
                           </div>
-                          <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>
+                          <div style={{ fontSize: 13, color: "#6B7686", marginTop: 2, fontWeight: 500 }}>
                             {new Date(ev.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })} · {Math.round(ev.speed_mph)} mph in a {ev.speed_limit_mph} mph zone
                           </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <span style={{ fontSize: 11, fontWeight: 700, color: "#CC2229", whiteSpace: "nowrap" }}>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <span style={{ fontSize: 13, fontWeight: 700, color: "#CC2229", whiteSpace: "nowrap" }}>
                             +{Math.round(ev.excess_mph)} mph
                           </span>
-                          <ChevronRight size={14} color="#CC2229" />
+                          <ChevronRight size={16} color="#CC2229" />
                         </div>
-                      </button>
+                      </SheetRow>
                     ))}
-                  </div>
+                  </SheetGroup>
                 </>
               )}
 
@@ -2494,55 +2481,47 @@ function PupilDetailPage() {
                 />
               )}
 
-              <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
-                Road segments
+              <div className="px-1 pb-2 pt-1 text-xs font-semibold tracking-wide" style={{ color: "#8A93A3" }}>
+                ROAD SEGMENTS
               </div>
-              <div style={{ border: "0.5px solid #E2E6ED", borderRadius: 12, overflow: "hidden" }}>
+              <SheetGroup>
                 {viewingReport.segments.length === 0 ? (
-                  <div style={{ padding: 14, fontSize: 12, color: "#9CA3AF" }}>No segments</div>
+                  <SheetRow>
+                    <span style={{ fontSize: 14, color: "#6B7686" }}>No segments</span>
+                  </SheetRow>
                 ) : (
                   viewingReport.segments.map((s, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        padding: "12px 14px",
-                        borderTop: i === 0 ? "none" : "0.5px solid #F3F4F6",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: 8,
-                      }}
-                    >
+                    <SheetRow key={i}>
                       <div style={{ minWidth: 0, flex: 1 }}>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        <div style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                           {s.road_name}
                         </div>
-                        <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>
+                        <div style={{ fontSize: 13, color: "#6B7686", marginTop: 2, fontWeight: 500 }}>
                           {s.distance_miles.toFixed(2)} mi · {s.speed_limit_mph != null ? `${s.speed_limit_mph} mph limit` : "no limit"} · max {Math.round(s.max_speed_mph)} mph
                         </div>
                       </div>
                       {s.exceeded && (
-                        <span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 8px", borderRadius: 999 }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 8px", borderRadius: 999 }}>
                           Exceeded
                         </span>
                       )}
-                    </div>
+                    </SheetRow>
                   ))
                 )}
-              </div>
+              </SheetGroup>
 
-              <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+              <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
                 <button
                   type="button"
                   onClick={() => setViewingReport(null)}
-                  style={{ flex: 1, padding: "12px 16px", borderRadius: 10, border: "0.5px solid #E2E6ED", background: "#FFFFFF", color: "#0B1F3A", fontSize: 14, fontWeight: 600 }}
+                  style={{ flex: 1, padding: "14px 16px", borderRadius: 16, border: "none", background: "#FFFFFF", color: "#0B1F3A", fontSize: 15, fontWeight: 700, boxShadow: "0 1px 3px rgba(11,31,58,0.06)" }}
                 >
                   Close
                 </button>
                 <button
                   type="button"
                   onClick={exportReportText}
-                  style={{ flex: 1, padding: "12px 16px", borderRadius: 10, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 14, fontWeight: 600 }}
+                  style={{ flex: 1, padding: "14px 16px", borderRadius: 16, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 15, fontWeight: 700 }}
                 >
                   Export
                 </button>
@@ -2559,28 +2538,32 @@ function PupilDetailPage() {
             subtitle={selectedOverspeedEvent.road_name ?? "Unknown road"}
           >
             <div style={{ padding: "4px 4px 16px", ...POPPINS }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
-                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Speed</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: "#CC2229", marginTop: 2 }}>{Math.round(selectedOverspeedEvent.speed_mph)} mph</div>
-                </div>
-                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Limit</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>{Math.round(selectedOverspeedEvent.speed_limit_mph)} mph</div>
-                </div>
-                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Excess</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: "#CC2229", marginTop: 2 }}>+{Math.round(selectedOverspeedEvent.excess_mph)} mph</div>
-                </div>
-                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Time</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>
-                    {new Date(selectedOverspeedEvent.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+              <SheetGroup>
+                <SheetRow>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, width: "100%" }}>
+                    <div>
+                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Speed</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#CC2229", marginTop: 3 }}>{Math.round(selectedOverspeedEvent.speed_mph)} mph</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Limit</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 3 }}>{Math.round(selectedOverspeedEvent.speed_limit_mph)} mph</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Excess</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#CC2229", marginTop: 3 }}>+{Math.round(selectedOverspeedEvent.excess_mph)} mph</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Time</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", marginTop: 3 }}>
+                        {new Date(selectedOverspeedEvent.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </SheetRow>
+              </SheetGroup>
 
-              <div style={{ border: "0.5px solid #E2E6ED", borderRadius: 12, overflow: "hidden", marginBottom: 16 }}>
+              <SheetGroup>
                 {[
                   { label: "Event ID", value: selectedOverspeedEvent.id },
                   { label: "Route ID", value: selectedOverspeedEvent.lesson_route_id },
@@ -2589,29 +2572,18 @@ function PupilDetailPage() {
                   { label: "Created at", value: new Date(selectedOverspeedEvent.created_at).toLocaleString("en-GB") },
                   { label: "Latitude", value: selectedOverspeedEvent.latitude != null ? String(selectedOverspeedEvent.latitude) : "—" },
                   { label: "Longitude", value: selectedOverspeedEvent.longitude != null ? String(selectedOverspeedEvent.longitude) : "—" },
-                ].map((row, i, arr) => (
-                  <div
-                    key={row.label}
-                    style={{
-                      padding: "10px 14px",
-                      borderTop: i === 0 ? "none" : "0.5px solid #F3F4F6",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      gap: 8,
-                      borderBottom: i === arr.length - 1 ? "none" : "0.5px solid #F3F4F6",
-                    }}
-                  >
-                    <span style={{ fontSize: 12, color: "#6B7280" }}>{row.label}</span>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A", textAlign: "right", wordBreak: "break-all" }}>{row.value}</span>
-                  </div>
+                ].map((row) => (
+                  <SheetRow key={row.label}>
+                    <span style={{ fontSize: 13, color: "#6B7686", fontWeight: 500 }}>{row.label}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", textAlign: "right", wordBreak: "break-all", marginLeft: "auto" }}>{row.value}</span>
+                  </SheetRow>
                 ))}
-              </div>
+              </SheetGroup>
 
               <button
                 type="button"
                 onClick={() => setSelectedOverspeedEvent(null)}
-                style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 14, fontWeight: 600 }}
+                style={{ width: "100%", padding: "14px 16px", borderRadius: 16, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 15, fontWeight: 700 }}
               >
                 Close
               </button>
@@ -3163,29 +3135,32 @@ function PupilDetailPage() {
                 const isPending = !mt.result || mt.result === "Pending";
                 return (
                   <>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
-                        {fmtUKDate(mt.test_date)}
-                      </div>
-                      <span style={{ fontSize: 11, fontWeight: 700, backgroundColor: resultColor.bg, color: resultColor.fg, padding: "3px 10px", borderRadius: 999 }}>
-                        {result}
-                      </span>
-                    </div>
-
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 16 }}>
-                      <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                        <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Minor</div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>{minor}</div>
-                      </div>
-                      <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                        <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Serious</div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: serious > 0 ? "#CC2229" : "#0B1F3A", marginTop: 2 }}>{serious}</div>
-                      </div>
-                      <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                        <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Dangerous</div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: dangerous > 0 ? "#CC2229" : "#0B1F3A", marginTop: 2 }}>{dangerous}</div>
-                      </div>
-                    </div>
+                    <SheetGroup>
+                      <SheetRow>
+                        <div className="flex-1" style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A" }}>
+                          {fmtUKDate(mt.test_date)}
+                        </div>
+                        <span style={{ fontSize: 12, fontWeight: 700, backgroundColor: resultColor.bg, color: resultColor.fg, padding: "3px 10px", borderRadius: 999 }}>
+                          {result}
+                        </span>
+                      </SheetRow>
+                      <SheetRow>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0, width: "100%" }}>
+                          <div style={{ textAlign: "center", borderRight: "1px solid #E4E8EF" }}>
+                            <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Minor</div>
+                            <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 3 }}>{minor}</div>
+                          </div>
+                          <div style={{ textAlign: "center", borderRight: "1px solid #E4E8EF" }}>
+                            <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Serious</div>
+                            <div style={{ fontSize: 16, fontWeight: 700, color: serious > 0 ? "#CC2229" : "#0B1F3A", marginTop: 3 }}>{serious}</div>
+                          </div>
+                          <div style={{ textAlign: "center" }}>
+                            <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Dangerous</div>
+                            <div style={{ fontSize: 16, fontWeight: 700, color: dangerous > 0 ? "#CC2229" : "#0B1F3A", marginTop: 3 }}>{dangerous}</div>
+                          </div>
+                        </div>
+                      </SheetRow>
+                    </SheetGroup>
 
                     {isPending && (
                       <div style={{ marginBottom: 16 }}>
@@ -3215,33 +3190,23 @@ function PupilDetailPage() {
 
                     {breakdown.length > 0 && (
                       <>
-                        <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
-                          Breakdown
+                        <div className="px-1 pb-2 pt-1 text-xs font-semibold tracking-wide" style={{ color: "#8A93A3" }}>
+                          BREAKDOWN
                         </div>
-                        <div style={{ border: "0.5px solid #E2E6ED", borderRadius: 12, overflow: "hidden", marginBottom: 16 }}>
-                          {breakdown.map((r, i) => (
-                            <div
-                              key={r.k}
-                              style={{
-                                padding: "10px 14px",
-                                borderTop: i === 0 ? "none" : "0.5px solid #F3F4F6",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                gap: 8,
-                              }}
-                            >
-                              <div style={{ fontSize: 13, color: "#0B1F3A", flex: 1, minWidth: 0 }}>
+                        <SheetGroup>
+                          {breakdown.map((r) => (
+                            <SheetRow key={r.k}>
+                              <div style={{ fontSize: 16, color: "#0B1F3A", fontWeight: 600, flex: 1, minWidth: 0 }}>
                                 {dl25Label(r.k)}
                               </div>
-                              <div style={{ display: "flex", gap: 6 }}>
-                                {r.f > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#F3F4F6", color: "#374151", padding: "2px 7px", borderRadius: 999 }}>{r.f}</span>)}
-                                {r.s > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#FEF3C7", color: "#92400E", padding: "2px 7px", borderRadius: 999 }}>S {r.s}</span>)}
-                                {r.d > 0 && (<span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 7px", borderRadius: 999 }}>D {r.d}</span>)}
+                              <div className="flex gap-1.5 shrink-0">
+                                {r.f > 0 && (<span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#F3F4F6", color: "#374151", padding: "2px 7px", borderRadius: 999 }}>{r.f}</span>)}
+                                {r.s > 0 && (<span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#FEF3C7", color: "#92400E", padding: "2px 7px", borderRadius: 999 }}>S {r.s}</span>)}
+                                {r.d > 0 && (<span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 7px", borderRadius: 999 }}>D {r.d}</span>)}
                               </div>
-                            </div>
+                            </SheetRow>
                           ))}
-                        </div>
+                        </SheetGroup>
                       </>
                     )}
 
@@ -3927,75 +3892,70 @@ function PupilDetailPage() {
               </button>
             }
           >
-            <div className="space-y-4 pb-2" style={POPPINS}>
-              <div
-                className="rounded-xl px-4 py-3 flex items-center justify-between"
-                style={{ background: "#fff", border: "1px solid #E3E7ED" }}
-              >
-                <div>
-                  <div className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "#8A93A3" }}>
-                    Current total
+            <div className="pb-2" style={POPPINS}>
+              <SheetGroup>
+                <SheetRow>
+                  <div className="flex-1">
+                    <div className="text-[13px] font-medium" style={{ color: "#6B7686" }}>
+                      Current total
+                    </div>
+                    <div className="text-[22px] font-bold mt-0.5" style={{ color: "#0B1F3A" }}>
+                      {currentTotal}
+                    </div>
                   </div>
-                  <div className="text-[22px] font-bold" style={{ color: "#0B1F3A" }}>
-                    {currentTotal}
+                  <ChevronRight size={18} color="#8A93A3" />
+                  <div className="flex-1 text-right">
+                    <div className="text-[13px] font-medium" style={{ color: "#6B7686" }}>
+                      New total
+                    </div>
+                    <div className="text-[22px] font-bold mt-0.5" style={{ color: "#1877D6" }}>
+                      {newTotal}
+                    </div>
                   </div>
-                </div>
-                <ChevronRight size={18} color="#8A93A3" />
-                <div className="text-right">
-                  <div className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "#8A93A3" }}>
-                    New total
-                  </div>
-                  <div className="text-[22px] font-bold" style={{ color: "#1877D6" }}>
-                    {newTotal}
-                  </div>
-                </div>
-              </div>
+                </SheetRow>
+              </SheetGroup>
 
-              <div>
-                <label className="block text-[12px] font-medium mb-1" style={{ color: "#6B7280", ...POPPINS }}>
-                  Adjustment (+/-)
-                </label>
-                <input
-                  type="number"
-                  inputMode="numeric"
-                  step="1"
-                  value={adjValue}
-                  onChange={(e) => setAdjValue(e.target.value)}
-                  className="w-full h-11 px-3 rounded-lg text-[16px]"
-                  style={{
-                    background: "#fff",
-                    border: "1px solid #E3E7ED",
-                    color: "#0B1F3A",
-                    ...POPPINS,
-                  }}
-                />
-                <div className="text-[12px] mt-2" style={{ color: delta === 0 ? "#8A93A3" : "#1877D6", ...POPPINS }}>
-                  {previewLabel}
-                </div>
-              </div>
+              <SheetGroup>
+                <SheetRow>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>
+                      Adjustment (+/-)
+                    </div>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      step="1"
+                      value={adjValue}
+                      onChange={(e) => setAdjValue(e.target.value)}
+                      className="w-full bg-transparent focus:outline-none text-[16px] font-semibold"
+                      style={{ color: "#0B1F3A", ...POPPINS }}
+                    />
+                  </div>
+                </SheetRow>
+                <SheetRow>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[13px] font-medium mb-1" style={{ color: "#6B7686" }}>
+                      Reason / note (optional)
+                    </div>
+                    <textarea
+                      value={adjNote}
+                      onChange={(e) => setAdjNote(e.target.value)}
+                      rows={3}
+                      placeholder="e.g. carried over from previous instructor"
+                      className="w-full bg-transparent focus:outline-none text-[16px] resize-none"
+                      style={{ color: "#0B1F3A", ...POPPINS }}
+                    />
+                  </div>
+                </SheetRow>
+              </SheetGroup>
 
-              <div>
-                <label className="block text-[12px] font-medium mb-1" style={{ color: "#6B7280", ...POPPINS }}>
-                  Reason / note (optional)
-                </label>
-                <textarea
-                  value={adjNote}
-                  onChange={(e) => setAdjNote(e.target.value)}
-                  rows={3}
-                  placeholder="e.g. carried over from previous instructor"
-                  className="w-full px-3 py-2 rounded-lg text-[16px] resize-none"
-                  style={{
-                    background: "#fff",
-                    border: "1px solid #E3E7ED",
-                    color: "#0B1F3A",
-                    ...POPPINS,
-                  }}
-                />
+              <div className="text-[13px] mt-1 mb-2 px-1 font-medium" style={{ color: delta === 0 ? "#8A93A3" : "#1877D6", ...POPPINS }}>
+                {previewLabel}
               </div>
 
               <div
-                className="text-[11px] leading-snug rounded-lg px-3 py-2"
-                style={{ background: "#F4F8FE", color: "#1A52A0", ...POPPINS }}
+                className="text-[12px] leading-snug rounded-2xl px-4 py-3"
+                style={{ background: "#F0F7FF", color: "#1A52A0", ...POPPINS }}
               >
                 Saves the adjustment and applies the same change to prepaid hours ({(Number(pupil.prepaid_hours ?? 0)).toFixed(1)}h → {(Number(pupil.prepaid_hours ?? 0) + deltaHours).toFixed(1)}h).
               </div>
@@ -4046,29 +4006,35 @@ function PupilDetailPage() {
             </button>
           }
         >
-          <div className="space-y-3 pb-2">
-            <div>
-              <label className="block mb-1 text-[12px] font-medium" style={{ color: "#6B7280", ...POPPINS }}>Date</label>
-              <input
-                type="date"
-                value={practicalQuickDate}
-                onChange={(e) => setPracticalQuickDate(e.target.value)}
-                className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
-                style={{ border: "0.5px solid #EEF2F7", color: "#0B1F3A", ...POPPINS }}
-              />
-            </div>
-            <div>
-              <label className="block mb-1 text-[12px] font-medium" style={{ color: "#6B7280", ...POPPINS }}>Time</label>
-              <input
-                type="time"
-                value={practicalQuickTime}
-                onChange={(e) => setPracticalQuickTime(e.target.value)}
-                className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
-                style={{ border: "0.5px solid #EEF2F7", color: "#0B1F3A", ...POPPINS }}
-              />
-            </div>
-            <div>
-              <label className="block mb-1 text-[12px] font-medium" style={{ color: "#6B7280", ...POPPINS }}>Test centre</label>
+          <div className="pb-2">
+            <SheetGroup>
+              <SheetRow>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>Date</div>
+                  <input
+                    type="date"
+                    value={practicalQuickDate}
+                    onChange={(e) => setPracticalQuickDate(e.target.value)}
+                    className="w-full bg-transparent focus:outline-none text-[16px] font-semibold"
+                    style={{ color: "#0B1F3A", ...POPPINS }}
+                  />
+                </div>
+              </SheetRow>
+              <SheetRow>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>Time</div>
+                  <input
+                    type="time"
+                    value={practicalQuickTime}
+                    onChange={(e) => setPracticalQuickTime(e.target.value)}
+                    className="w-full bg-transparent focus:outline-none text-[16px] font-semibold"
+                    style={{ color: "#0B1F3A", ...POPPINS }}
+                  />
+                </div>
+              </SheetRow>
+            </SheetGroup>
+            <div className="mb-2">
+              <label className="block mb-1 text-[13px] font-medium px-1" style={{ color: "#6B7686", ...POPPINS }}>Test centre</label>
               <button
                 type="button"
                 onClick={async () => {
@@ -5739,28 +5705,46 @@ function UnavailablePeriodsCard({ pupilId }: { pupilId: string }) {
       )}
 
       {open && (
-        <BottomSheetV2 title="Add unavailable period" onClose={() => setOpen(false)}>
-          <div className="flex flex-col gap-3 p-4">
-            <div>
-              <div className="text-[12px] mb-1" style={{ color: "#6B7280", ...POPPINS }}>Start date</div>
-              <input type="date" value={start} onChange={(e) => setStart(e.target.value)} style={inputStyle} />
-            </div>
-            <div>
-              <div className="text-[12px] mb-1" style={{ color: "#6B7280", ...POPPINS }}>End date</div>
-              <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} style={inputStyle} />
-            </div>
-            <div>
-              <div className="text-[12px] mb-1" style={{ color: "#6B7280", ...POPPINS }}>Reason</div>
-              <select value={reason} onChange={(e) => setReason(e.target.value)} style={inputStyle}>
-                {UNAVAIL_REASONS.map((r) => (
-                  <option key={r} value={r}>{r}</option>
-                ))}
-              </select>
-            </div>
-            <div className="flex justify-end gap-2 pt-2">
-              <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-              <Button variant="primary" onClick={save} disabled={saving}>{saving ? "Saving…" : "Save"}</Button>
-            </div>
+        <BottomSheetV2
+          title="Add unavailable period"
+          onClose={() => setOpen(false)}
+          footer={
+            <button
+              type="button"
+              disabled={saving}
+              onClick={save}
+              className="w-full h-[52px] rounded-2xl text-white text-[16px] font-bold"
+              style={{ background: "#1877D6", ...POPPINS, opacity: saving ? 0.6 : 1 }}
+            >
+              {saving ? "Saving…" : "Save"}
+            </button>
+          }
+        >
+          <div className="pb-2">
+            <SheetGroup>
+              <SheetRow>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>Start date</div>
+                  <input type="date" value={start} onChange={(e) => setStart(e.target.value)} className="w-full bg-transparent focus:outline-none text-[16px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }} />
+                </div>
+              </SheetRow>
+              <SheetRow>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>End date</div>
+                  <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} className="w-full bg-transparent focus:outline-none text-[16px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }} />
+                </div>
+              </SheetRow>
+              <SheetRow>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>Reason</div>
+                  <select value={reason} onChange={(e) => setReason(e.target.value)} className="w-full bg-transparent focus:outline-none text-[16px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                    {UNAVAIL_REASONS.map((r) => (
+                      <option key={r} value={r}>{r}</option>
+                    ))}
+                  </select>
+                </div>
+              </SheetRow>
+            </SheetGroup>
           </div>
         </BottomSheetV2>
       )}

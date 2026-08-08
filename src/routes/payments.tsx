@@ -13,6 +13,7 @@ import { recordPayment, recordRefund, correctPaymentRecord, getPupilBalance, typ
 import { calculateOutstandingOwed, calculatePaidOutstandingBreakdown } from "@/lib/paymentsOwed";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";
+import { BottomSheet, SheetGroup, SheetRow, SheetRadioRow, SheetSearchRow } from "@/components/dsm/BottomSheetV2";
 
 export const Route = createFileRoute("/payments")({
   head: () => ({
@@ -748,26 +749,17 @@ function PupilPicker({ pupils, selectedId, onClose, onSelect, allowAll }: { pupi
     return s ? pupils.filter((p) => p.name.toLowerCase().includes(s)) : pupils;
   }, [pupils, q]);
   return (
-    <div className="fixed inset-0 z-[70] flex items-end" style={{ backgroundColor: "rgba(11,31,58,0.4)" }} onClick={onClose}>
-      <div className="w-full bg-white p-4" style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16, maxHeight: "70vh" }} onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-3">
-          <div className="text-[16px] font-semibold" style={{ color: NAVY, ...POPPINS }}>Select pupil</div>
-          <button type="button" aria-label="Close" onClick={onClose}><X size={20} color={MUTED} /></button>
-        </div>
-        <div className="relative mb-3">
-          <Search size={14} color={MUTED} style={{ position: "absolute", left: 10, top: 12 }} />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search pupils…" className="w-full h-10 rounded-lg text-[14px] pl-8 pr-3" style={{ border: `0.5px solid ${BORDER}` }} />
-        </div>
-        <div className="overflow-y-auto" style={{ maxHeight: "50vh" }}>
-          {allowAll && (
-            <button type="button" onClick={() => onSelect("")} className="w-full text-left px-3 py-3 text-[14px]" style={{ color: selectedId === "" ? BLUE : NAVY, borderBottom: `0.5px solid ${BORDER}` }}>All pupils</button>
-          )}
-          {list.map((p) => (
-            <button key={p.id} type="button" onClick={() => onSelect(p.id)} className="w-full text-left px-3 py-3 text-[14px]" style={{ color: selectedId === p.id ? BLUE : NAVY, borderBottom: `0.5px solid ${BORDER}` }}>{p.name}</button>
-          ))}
-        </div>
-      </div>
-    </div>
+    <BottomSheet title="Select pupil" onClose={onClose}>
+      <SheetGroup>
+        <SheetSearchRow value={q} onChange={setQ} placeholder="Search pupils…" />
+        {allowAll && (
+          <SheetRadioRow title="All pupils" selected={selectedId === ""} onSelect={() => onSelect("")} />
+        )}
+        {list.map((p) => (
+          <SheetRadioRow key={p.id} title={p.name} selected={selectedId === p.id} onSelect={() => onSelect(p.id)} />
+        ))}
+      </SheetGroup>
+    </BottomSheet>
   );
 }
 
@@ -909,26 +901,51 @@ function RefundSheet({ row, userId, onClose, onSaved }: { row: HistoryRow; userI
   }
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-end" style={{ backgroundColor: "rgba(11,31,58,0.4)" }} onClick={onClose}>
-      <div className="w-full bg-white p-4" style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }} onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-3">
-          <div className="text-[16px] font-semibold" style={{ color: NAVY, ...POPPINS }}>Refund payment</div>
-          <button type="button" aria-label="Close" onClick={onClose}><X size={20} color={MUTED} /></button>
-        </div>
-        <div className="text-[13px] mb-3" style={{ color: MUTED, ...POPPINS }}>
-          Original: <strong style={{ color: NAVY }}>{formatGBP(originalAmount)}</strong> to {row.pupils?.name ?? "pupil"}
-        </div>
-        <div className="flex flex-col gap-3">
-          <Input label="Refund amount (£)" type="number" inputMode="decimal" step="0.01" min="0" max={String(originalAmount)} value={amount} onChange={(e) => setAmount(e.target.value)} />
-          <FieldLabel>Refund reason</FieldLabel>
-          <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={3} className="w-full rounded-lg px-3 py-2 text-[14px] bg-white" style={{ border: `0.5px solid ${BORDER}`, color: NAVY, ...POPPINS }} placeholder="Why is this being refunded?" />
-          <div className="flex gap-2 mt-1">
-            <Button variant="ghost" onClick={onClose} type="button">Cancel</Button>
-            <Button onClick={handleRefund} disabled={saving} type="button">{saving ? "Processing…" : "Process refund"}</Button>
+    <BottomSheet
+      title="Refund payment"
+      subtitle={`Original: ${formatGBP(originalAmount)} to ${row.pupils?.name ?? "pupil"}`}
+      onClose={onClose}
+    >
+      <SheetGroup>
+        <SheetRow>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 500, color: "#6B7686" }}>Refund amount (£)</div>
           </div>
-        </div>
-      </div>
-    </div>
+          <input
+            type="number"
+            inputMode="decimal"
+            step="0.01"
+            min="0"
+            max={String(originalAmount)}
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="text-right bg-transparent focus:outline-none"
+            style={{ fontFamily: "Poppins, sans-serif", fontSize: 16, fontWeight: 600, color: NAVY, width: 120 }}
+          />
+        </SheetRow>
+        <SheetRow>
+          <div style={{ width: "100%" }}>
+            <div style={{ fontSize: 13, fontWeight: 500, color: "#6B7686", marginBottom: 6 }}>Refund reason</div>
+            <textarea
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              rows={3}
+              className="w-full bg-transparent focus:outline-none"
+              style={{ fontFamily: "Poppins, sans-serif", fontSize: 14, color: NAVY, resize: "none" }}
+              placeholder="Why is this being refunded?"
+            />
+          </div>
+        </SheetRow>
+      </SheetGroup>
+
+      <SheetGroup>
+        <SheetRow onClick={saving ? undefined : handleRefund}>
+          <div style={{ flex: 1, textAlign: "center", fontSize: 16, fontWeight: 700, color: "#CC2229" }}>
+            {saving ? "Processing…" : "Confirm refund"}
+          </div>
+        </SheetRow>
+      </SheetGroup>
+    </BottomSheet>
   );
 }
 // ---------- tiny form primitives ----------

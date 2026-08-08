@@ -28,7 +28,13 @@ import {
 
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
-import { BottomSheet } from "@/components/dsm/BottomSheetV2";
+import {
+  BottomSheet,
+  SheetGroup,
+  SheetRow,
+  SheetRadioRow,
+  PrimaryButton,
+} from "@/components/dsm/BottomSheetV2";
 
 function commentTimeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -1649,6 +1655,20 @@ function ReportSheet({
   instructorArea: string;
   instructorOutcode: string | null;
 }) {
+  const navy = "#0B1F3A";
+  const blue = "#1877D6";
+  const RED = "#CC2229";
+  const subtle = "#6B7686";
+  const hairline = "#E4E8EF";
+  const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+  const labelStyle: React.CSSProperties = {
+    fontSize: 13,
+    fontWeight: 500,
+    color: subtle,
+    marginBottom: 4,
+    display: "block",
+    ...POPPINS,
+  };
   const [agreed, setAgreed] = useState<boolean>(() => {
     try { return typeof window !== "undefined" && localStorage.getItem("community_agreed") === "true"; } catch { return false; }
   });
@@ -1842,306 +1862,205 @@ function ReportSheet({
 
 
   return (
-    <div style={{
-      position: "fixed", inset: 0, background: "rgba(15,32,68,0.4)", zIndex: 60,
-      display: "flex", alignItems: "flex-end", justifyContent: "center",
-    }} onClick={onClose}>
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          background: "white", borderRadius: "20px 20px 0 0",
-          maxHeight: "90vh", overflowY: "auto", width: "100%", maxWidth: 560,
-        }}
-      >
-        <div style={{ width: 36, height: 4, background: "#E5E7EB", borderRadius: 999, margin: "12px auto 4px" }} />
-
-        {!agreed ? (
-          <div style={{ padding: 20 }}>
-            <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 12, color: "#0F2044" }}>Community guidelines</div>
-            <ul style={{ fontSize: 14, color: "#6B7280", lineHeight: 1.6, paddingLeft: 18, margin: 0 }}>
-              <li>Keep it relevant — driving related only</li>
-              <li>Be professional and respectful to other ADIs</li>
-              <li>No advertising or self-promotion</li>
-              <li>Examiner tips: keep anonymous, no full names</li>
-              <li>DSM moderates all content</li>
-            </ul>
-            <button
-              type="button"
-              onClick={() => {
-                try { localStorage.setItem("community_agreed", "true"); } catch {}
-                setAgreed(true);
-              }}
-              style={{
-                background: "#0F2044", color: "white", border: "none", borderRadius: 12,
-                width: "100%", padding: 12, marginTop: 16, fontWeight: 600, cursor: "pointer",
-              }}
-            >
-              I agree — report my alert
-            </button>
-          </div>
-        ) : (
-          <>
-            <div style={{
-              display: "flex", justifyContent: "space-between", alignItems: "center",
-              padding: "12px 20px",
-            }}>
-              <div style={{ fontWeight: 700, fontSize: 16, color: "#0F2044" }}>Report a local issue</div>
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label="Close"
-                style={{
-                  width: 32, height: 32, borderRadius: "50%", background: "#F3F4F6",
-                  border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
-                }}
-              >
-                <X size={16} color="#6B7280" />
-              </button>
-            </div>
-
-            <div style={{
-              display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8,
-              padding: "0 20px", marginBottom: 16,
-            }}>
-              {TYPE_ORDER.map((key) => {
-                const cfg = TYPE_CONFIG[key];
-                const Icon = cfg.Icon;
-                const selected = selectedType === key;
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => setSelectedType(key)}
-                    style={{
-                      background: selected ? cfg.bg : "#F7FAFC",
-                      border: `0.5px solid ${selected ? cfg.colour : "#E2E6ED"}`,
-                      borderRadius: 10, padding: "14px 12px", cursor: "pointer",
-                      minHeight: 72, display: "flex", flexDirection: "column",
-                      alignItems: "center", justifyContent: "center", gap: 6,
-                    }}
-                  >
-                    <Icon size={20} color={cfg.colour} />
-                    <span style={{ fontSize: 12, fontWeight: 600, color: selected ? cfg.colour : "#0F2044" }}>
-                      {cfg.label}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div style={{ padding: "0 20px", marginBottom: 12 }}>
-              <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 6 }}>Where?</div>
-              <div style={{ position: "relative" }}>
-                <MapPin size={16} color="#9CA3AF" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
-                <input
-                  ref={locationInputRef}
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-
-                  placeholder={locationLoading ? "Detecting your location..." : "Road name or location..."}
-                  disabled={locationLoading}
-                  style={{
-                    width: "100%",
-                    padding: "11px 36px 11px 34px",
-                    background: "#F7FAFC",
-                    border: "0.5px solid " + (location ? "#86EFAC" : "#E2E6ED"),
-                    borderRadius: 10,
-                    fontSize: 13,
-                    fontFamily: "Poppins, sans-serif",
-                    color: "#0F2044",
-                    outline: "none",
-                    boxSizing: "border-box",
-                    opacity: locationLoading ? 0.7 : 1,
-                  }}
+    <>
+      {!agreed ? (
+        <BottomSheet title="Community guidelines" onClose={onClose}>
+          <SheetGroup>
+            <SheetRow>
+              <ul style={{ fontSize: 14, color: subtle, lineHeight: 1.6, paddingLeft: 18, margin: 0, ...POPPINS }}>
+                <li>Keep it relevant — driving related only</li>
+                <li>Be professional and respectful to other ADIs</li>
+                <li>No advertising or self-promotion</li>
+                <li>Examiner tips: keep anonymous, no full names</li>
+                <li>DSM moderates all content</li>
+              </ul>
+            </SheetRow>
+          </SheetGroup>
+          <PrimaryButton
+            onClick={() => {
+              try { localStorage.setItem("community_agreed", "true"); } catch {}
+              setAgreed(true);
+            }}
+          >
+            I agree — report my alert
+          </PrimaryButton>
+        </BottomSheet>
+      ) : (
+        <BottomSheet
+          title="Report a local issue"
+          onClose={onClose}
+          footer={
+            <PrimaryButton color={RED} disabled={!canSubmit} onClick={submit}>
+              {submitting ? "Posting…" : "Report alert"}
+            </PrimaryButton>
+          }
+        >
+          <SheetGroup>
+            {TYPE_ORDER.map((key) => {
+              const cfg = TYPE_CONFIG[key];
+              const Icon = cfg.Icon;
+              return (
+                <SheetRadioRow
+                  key={key}
+                  title={cfg.label}
+                  selected={selectedType === key}
+                  onSelect={() => setSelectedType(key)}
+                  leading={<Icon size={20} color={cfg.colour} />}
                 />
-                {location && !locationLoading && (
-                  <button
-                    type="button"
-                    onClick={() => setLocation("")}
-                    style={{
-                      position: "absolute", right: 10, top: "50%",
-                      transform: "translateY(-50%)",
-                      background: "none", border: "none",
-                      cursor: "pointer", color: "#9CA3AF",
-                      fontSize: 16, lineHeight: 1, padding: 4,
-                    }}
-                  >
-                    ×
-                  </button>
-                )}
-                {suggestions.length > 0 && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "calc(100% + 4px)",
-                      left: 0,
-                      right: 0,
-                      background: "#FFFFFF",
-                      border: "1px solid #E2E6ED",
-                      borderRadius: 10,
-                      boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
-                      overflow: "hidden",
-                      zIndex: 20,
-                    }}
-                  >
-                    {suggestions.map((s) => (
-                      <button
-                        key={s.placeId}
-                        type="button"
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => pickSuggestion(s.placeId, s.text)}
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          textAlign: "left",
-                          padding: "10px 12px",
-                          background: "none",
-                          border: "none",
-                          borderBottom: "1px solid #F1F4F8",
-                          fontSize: 13,
-                          fontFamily: "Poppins, sans-serif",
-                          color: "#0F2044",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {s.text}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              {locationLoading && (
-                <div style={{ fontSize: 12, color: "#185FA5", marginTop: 6 }}>
-                  Getting your location...
-                </div>
-              )}
-              {!!locationError && !locationLoading && (
-                <div style={{ fontSize: 12, color: "#CC2229", marginTop: 6 }}>
-                  {locationError}
-                </div>
-              )}
+              );
+            })}
+          </SheetGroup>
 
-              {location && !locationLoading && (
-                <div style={{ fontSize: 12, color: "#22C580", marginTop: 6 }}>
-                  Location detected — edit if needed
+          <SheetGroup>
+            <SheetRow>
+              <div className="flex-1 min-w-0">
+                <label style={labelStyle}>Where?</label>
+                <div style={{ position: "relative" }}>
+                  <input
+                    ref={locationInputRef}
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder={locationLoading ? "Detecting your location..." : "Road name or location..."}
+                    disabled={locationLoading}
+                    className="w-full bg-transparent focus:outline-none"
+                    style={{ fontSize: 16, fontWeight: 600, color: navy, opacity: locationLoading ? 0.6 : 1, ...POPPINS }}
+                  />
+                  {suggestions.length > 0 && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "calc(100% + 8px)",
+                        left: -16,
+                        right: -16,
+                        background: "#FFFFFF",
+                        border: `1px solid ${hairline}`,
+                        borderRadius: 12,
+                        boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
+                        overflow: "hidden",
+                        zIndex: 20,
+                      }}
+                    >
+                      {suggestions.map((s) => (
+                        <button
+                          key={s.placeId}
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => pickSuggestion(s.placeId, s.text)}
+                          style={{
+                            display: "block",
+                            width: "100%",
+                            textAlign: "left",
+                            padding: "10px 16px",
+                            background: "none",
+                            border: "none",
+                            borderBottom: `1px solid ${hairline}`,
+                            fontSize: 14,
+                            color: navy,
+                            cursor: "pointer",
+                            ...POPPINS,
+                          }}
+                        >
+                          {s.text}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {locationLoading && (
+                    <div style={{ fontSize: 12, color: blue, marginTop: 6 }}>
+                      Getting your location...
+                    </div>
+                  )}
+                  {!!locationError && !locationLoading && (
+                    <div style={{ fontSize: 12, color: RED, marginTop: 6 }}>
+                      {locationError}
+                    </div>
+                  )}
+                  {location && !locationLoading && (
+                    <div style={{ fontSize: 12, color: "#1A9B5C", marginTop: 6 }}>
+                      Location detected — edit if needed
+                    </div>
+                  )}
                 </div>
-              )}
-              <div style={{ marginTop: 10 }}>
-                <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 6 }}>Town / area</div>
+              </div>
+            </SheetRow>
+            <SheetRow>
+              <div className="flex-1 min-w-0">
+                <label style={labelStyle}>Town / area</label>
                 <input
                   value={town}
                   onChange={(e) => setTown(e.target.value)}
                   placeholder="Town or area..."
-                  style={{
-                    width: "100%",
-                    padding: "11px 14px",
-                    background: "#F7FAFC",
-                    border: "0.5px solid " + (town ? "#86EFAC" : "#E2E6ED"),
-                    borderRadius: 10,
-                    fontSize: 13,
-                    fontFamily: "Poppins, sans-serif",
-                    color: "#0F2044",
-                    outline: "none",
-                    boxSizing: "border-box",
-                  }}
+                  className="w-full bg-transparent focus:outline-none"
+                  style={{ fontSize: 16, fontWeight: 600, color: navy, ...POPPINS }}
                 />
               </div>
-            </div>
+            </SheetRow>
+          </SheetGroup>
 
-
-            <div style={{ padding: "0 20px", marginBottom: 12 }}>
-              <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 6 }}>Details</div>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Add details to help other ADIs..."
-                style={{
-                  width: "100%", minHeight: 80, background: "#F7FAFC",
-                  border: "0.5px solid #E2E6ED", borderRadius: 10, padding: "11px 14px",
-                  fontSize: 14, outline: "none", boxSizing: "border-box", resize: "vertical",
-                  fontFamily: "inherit",
-                }}
-              />
-            </div>
-
-            <div style={{ padding: "0 20px", marginBottom: 12 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div style={{ fontSize: 14, color: "#0F2044" }}>Report anonymously</div>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={isAnonymous}
-                  onClick={() => setIsAnonymous((v) => !v)}
-                  style={{
-                    width: 40, height: 24, borderRadius: 999, border: "none", cursor: "pointer",
-                    background: isAnonymous ? "#0F2044" : "#E5E7EB", position: "relative",
-                    transition: "background 0.15s",
-                  }}
-                >
-                  <span style={{
-                    position: "absolute", top: 2, left: isAnonymous ? 18 : 2,
-                    width: 20, height: 20, borderRadius: "50%", background: "white",
-                    transition: "left 0.15s", boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-                  }} />
-                </button>
+          <SheetGroup>
+            <SheetRow>
+              <div className="flex-1 min-w-0">
+                <label style={labelStyle}>Details</label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Add details to help other ADIs..."
+                  rows={3}
+                  className="w-full bg-transparent focus:outline-none resize-none"
+                  style={{ fontSize: 16, color: navy, ...POPPINS }}
+                />
               </div>
-              <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
-                Your name won't be shown to other instructors
-              </div>
-            </div>
+            </SheetRow>
+          </SheetGroup>
 
-            <div style={{ padding: "0 20px", marginBottom: 16 }}>
-              <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 8 }}>
-                How long is this relevant?
+          <SheetGroup>
+            <SheetRow>
+              <div className="flex-1 min-w-0">
+                <div style={{ fontSize: 16, fontWeight: 600, color: navy, ...POPPINS }}>Report anonymously</div>
+                <div style={{ fontSize: 13, fontWeight: 500, color: subtle, marginTop: 2, ...POPPINS }}>
+                  Your name won't be shown to other instructors
+                </div>
               </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                {([
-                  { id: "30min", label: "30 mins" },
-                  { id: "1hour", label: "1 hour" },
-                  { id: "2hours", label: "2 hours" },
-                  { id: "allday", label: "All day" },
-                ] as const).map((opt) => {
-                  const active = expiry === opt.id;
-                  return (
-                    <button
-                      key={opt.id}
-                      type="button"
-                      onClick={() => setExpiry(opt.id)}
-                      style={{
-                        flex: 1, borderRadius: 999, padding: "8px 10px", cursor: "pointer",
-                        fontSize: 12, fontWeight: 600,
-                        background: active ? "#0F2044" : "#F7FAFC",
-                        color: active ? "white" : "#6B7280",
-                        border: active ? "0.5px solid #0F2044" : "0.5px solid #E2E6ED",
-                      }}
-                    >
-                      {opt.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div style={{ padding: "0 20px 20px" }}>
               <button
                 type="button"
-                onClick={submit}
-                disabled={!canSubmit}
+                role="switch"
+                aria-checked={isAnonymous}
+                onClick={() => setIsAnonymous((v) => !v)}
                 style={{
-                  background: canSubmit ? "#CC2229" : "#F3F4F6",
-                  color: canSubmit ? "white" : "#9CA3AF",
-                  border: "none", borderRadius: 12, width: "100%", padding: 12,
-                  fontWeight: 600, cursor: canSubmit ? "pointer" : "not-allowed",
+                  width: 40, height: 24, borderRadius: 999, border: "none", cursor: "pointer",
+                  background: isAnonymous ? navy : "#E5E7EB", position: "relative",
+                  transition: "background 0.15s", flexShrink: 0,
                 }}
               >
-                {submitting ? "Posting…" : "Report alert"}
+                <span style={{
+                  position: "absolute", top: 2, left: isAnonymous ? 18 : 2,
+                  width: 20, height: 20, borderRadius: "50%", background: "white",
+                  transition: "left 0.15s", boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                }} />
               </button>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
+            </SheetRow>
+          </SheetGroup>
+
+          <SheetGroup>
+            {([
+              { id: "30min", label: "30 mins" },
+              { id: "1hour", label: "1 hour" },
+              { id: "2hours", label: "2 hours" },
+              { id: "allday", label: "All day" },
+            ] as const).map((opt) => (
+              <SheetRadioRow
+                key={opt.id}
+                title={opt.label}
+                selected={expiry === opt.id}
+                onSelect={() => setExpiry(opt.id)}
+              />
+            ))}
+          </SheetGroup>
+        </BottomSheet>
+      )}
+    </>
   );
+
 }
 
 /* ============================================================ CHAT TAB */

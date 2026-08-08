@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { formatCountdown } from "@/lib/dateHelpers";
 import { PageLayout } from "@/components/PageLayout";
-import { BottomSheet as BottomSheetV2 } from "@/components/dsm/BottomSheetV2";
+import { BottomSheet as BottomSheetV2, SheetGroup, PrimaryButton, GhostButton } from "@/components/dsm/BottomSheetV2";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 
 export const Route = createFileRoute("/upcoming-tests")({
@@ -180,11 +180,37 @@ function UpcomingTestsPage() {
           onClose={() => setEditTest(null)}
           title="Edit test"
           subtitle={editTest?.name ?? undefined}
+          footer={
+            <PrimaryButton
+              disabled={saving}
+              onClick={async () => {
+                if (!editTest) return;
+                setSaving(true);
+                await supabase.from("pupils").update({
+                  test_date: editDate || null,
+                  test_time: editTime || null,
+                  test_centre: editCentre || null,
+                }).eq("id", editTest.id);
+                setTests((prev) =>
+                  prev.map((t) =>
+                    t.id === editTest.id
+                      ? { ...t, test_date: editDate, test_time: editTime, test_centre: editCentre }
+                      : t,
+                  ),
+                );
+                toast.success("Test updated");
+                setSaving(false);
+                setEditTest(null);
+              }}
+            >
+              {saving ? "Saving..." : "Save changes"}
+            </PrimaryButton>
+          }
         >
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "0 4px 8px" }}>
+        <SheetGroup>
           {/* Date */}
-          <div>
-            <label className="block" style={{ fontSize: 12, color: "#6B7280", marginBottom: 6, ...POPPINS }}>
+          <div style={{ padding: "13px 16px" }}>
+            <label className="block" style={{ fontSize: 13, fontWeight: 500, color: "#6B7686", marginBottom: 6, ...POPPINS }}>
               Test date
             </label>
             <input
@@ -193,19 +219,22 @@ function UpcomingTestsPage() {
               onChange={(e) => setEditDate(e.target.value)}
               style={{
                 width: "100%",
-                padding: "10px 12px",
-                border: "1px solid #E4E8EF",
-                borderRadius: 8,
-                fontSize: 14,
+                fontSize: 16,
+                fontWeight: 600,
                 fontFamily: "Poppins, sans-serif",
                 color: "#0B1F3A",
+                border: "none",
+                outline: "none",
+                background: "transparent",
               }}
             />
           </div>
 
+          <div style={{ height: 1, backgroundColor: "#E4E8EF" }} />
+
           {/* Time */}
-          <div>
-            <label className="block" style={{ fontSize: 12, color: "#6B7280", marginBottom: 6, ...POPPINS }}>
+          <div style={{ padding: "13px 16px" }}>
+            <label className="block" style={{ fontSize: 13, fontWeight: 500, color: "#6B7686", marginBottom: 6, ...POPPINS }}>
               Test time
             </label>
             <input
@@ -214,19 +243,22 @@ function UpcomingTestsPage() {
               onChange={(e) => setEditTime(e.target.value)}
               style={{
                 width: "100%",
-                padding: "10px 12px",
-                border: "1px solid #E4E8EF",
-                borderRadius: 8,
-                fontSize: 14,
+                fontSize: 16,
+                fontWeight: 600,
                 fontFamily: "Poppins, sans-serif",
                 color: "#0B1F3A",
+                border: "none",
+                outline: "none",
+                background: "transparent",
               }}
             />
           </div>
 
+          <div style={{ height: 1, backgroundColor: "#E4E8EF" }} />
+
           {/* Test centre — searchable */}
-          <div>
-            <label className="block" style={{ fontSize: 12, color: "#6B7280", marginBottom: 6, ...POPPINS }}>
+          <div style={{ padding: "13px 16px" }}>
+            <label className="block" style={{ fontSize: 13, fontWeight: 500, color: "#6B7686", marginBottom: 6, ...POPPINS }}>
               Test centre
             </label>
             <AddressLookup
@@ -235,45 +267,7 @@ function UpcomingTestsPage() {
               showSearchButton
             />
           </div>
-
-          {/* Save button */}
-          <button
-            disabled={saving}
-            onClick={async () => {
-              if (!editTest) return;
-              setSaving(true);
-              await supabase.from("pupils").update({
-                test_date: editDate || null,
-                test_time: editTime || null,
-                test_centre: editCentre || null,
-              }).eq("id", editTest.id);
-              setTests((prev) =>
-                prev.map((t) =>
-                  t.id === editTest.id
-                    ? { ...t, test_date: editDate, test_time: editTime, test_centre: editCentre }
-                    : t,
-                ),
-              );
-              toast.success("Test updated");
-              setSaving(false);
-              setEditTest(null);
-            }}
-            style={{
-              width: "100%",
-              padding: 13,
-              background: saving ? "#9CA3AF" : "#1877D6",
-              color: "#fff",
-              border: "none",
-              borderRadius: 10,
-              fontSize: 14,
-              fontWeight: 700,
-              cursor: saving ? "not-allowed" : "pointer",
-              fontFamily: "Poppins, sans-serif",
-            }}
-          >
-            {saving ? "Saving..." : "Save changes"}
-          </button>
-        </div>
+        </SheetGroup>
       </BottomSheetV2>
       )}
 
@@ -286,17 +280,60 @@ function UpcomingTestsPage() {
           }}
           title="Cancel test"
           subtitle={cancelTest?.name ?? undefined}
+          footer={
+            <div className="flex flex-col gap-2">
+              <PrimaryButton
+                color="#CC2229"
+                disabled={saving}
+                onClick={async () => {
+                  if (!cancelTest) return;
+                  setSaving(true);
+                  await supabase.from("pupils").update({
+                    test_date: null,
+                    test_time: null,
+                    test_centre: null,
+                    test_status: "cancelled",
+                  }).eq("id", cancelTest.id);
+                  if (cancelReason.trim() && userId) {
+                    await supabase.from("lesson_history").insert({
+                      instructor_id: userId,
+                      pupil_id: cancelTest.id,
+                      notes: `Test cancelled: ${cancelReason.trim()}`,
+                      payment_status: "note",
+                      created_at: new Date().toISOString(),
+                    });
+                  }
+                  setTests((prev) => prev.filter((t) => t.id !== cancelTest.id));
+                  toast.success("Test cancelled");
+                  setSaving(false);
+                  setCancelTest(null);
+                  setCancelReason("");
+                }}
+              >
+                {saving ? "Cancelling..." : "Confirm cancellation"}
+              </PrimaryButton>
+              <GhostButton
+                color="#0B1F3A"
+                bg="transparent"
+                onClick={() => {
+                  setCancelTest(null);
+                  setCancelReason("");
+                }}
+              >
+                Keep test
+              </GhostButton>
+            </div>
+          }
         >
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "0 4px 8px" }}>
           {/* Warning */}
           <div
+            className="flex gap-3 mb-3"
             style={{
-              display: "flex",
-              gap: 12,
               padding: 14,
               background: "#FEF3C7",
-              borderRadius: 10,
+              borderRadius: 16,
               color: "#92400E",
+              boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
             }}
           >
             <span style={{ fontSize: 18, lineHeight: 1 }}>⚠️</span>
@@ -311,92 +348,29 @@ function UpcomingTestsPage() {
           </div>
 
           {/* Reason */}
-          <div>
-            <label className="block" style={{ fontSize: 12, color: "#6B7280", marginBottom: 6, ...POPPINS }}>
-              Reason (optional)
-            </label>
-            <textarea
-              rows={3}
-              value={cancelReason}
-              onChange={(e) => setCancelReason(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "10px 12px",
-                border: "1px solid #E4E8EF",
-                borderRadius: 8,
-                fontSize: 13,
-                fontFamily: "Poppins, sans-serif",
-                color: "#0B1F3A",
-                resize: "none",
-              }}
-            />
-          </div>
-
-          {/* Confirm cancel */}
-          <button
-            disabled={saving}
-            onClick={async () => {
-              if (!cancelTest) return;
-              setSaving(true);
-              await supabase.from("pupils").update({
-                test_date: null,
-                test_time: null,
-                test_centre: null,
-                test_status: "cancelled",
-              }).eq("id", cancelTest.id);
-              if (cancelReason.trim() && userId) {
-                await supabase.from("lesson_history").insert({
-                  instructor_id: userId,
-                  pupil_id: cancelTest.id,
-                  notes: `Test cancelled: ${cancelReason.trim()}`,
-                  payment_status: "note",
-                  created_at: new Date().toISOString(),
-                });
-              }
-              setTests((prev) => prev.filter((t) => t.id !== cancelTest.id));
-              toast.success("Test cancelled");
-              setSaving(false);
-              setCancelTest(null);
-              setCancelReason("");
-            }}
-            style={{
-              width: "100%",
-              padding: 13,
-              background: "#CC2229",
-              color: "#fff",
-              border: "none",
-              borderRadius: 10,
-              fontSize: 14,
-              fontWeight: 700,
-              cursor: "pointer",
-              fontFamily: "Poppins, sans-serif",
-            }}
-          >
-            {saving ? "Cancelling..." : "Confirm cancellation"}
-          </button>
-
-          {/* Keep test */}
-          <button
-            onClick={() => {
-              setCancelTest(null);
-              setCancelReason("");
-            }}
-            style={{
-              width: "100%",
-              padding: 13,
-              background: "#F1F5F9",
-              color: "#6B7686",
-              border: "none",
-              borderRadius: 10,
-              fontSize: 14,
-              fontWeight: 600,
-              cursor: "pointer",
-              fontFamily: "Poppins, sans-serif",
-            }}
-          >
-            Keep test
-          </button>
-        </div>
+          <SheetGroup>
+            <div style={{ padding: "13px 16px" }}>
+              <label className="block" style={{ fontSize: 13, fontWeight: 500, color: "#6B7686", marginBottom: 6, ...POPPINS }}>
+                Reason (optional)
+              </label>
+              <textarea
+                rows={3}
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                style={{
+                  width: "100%",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  fontFamily: "Poppins, sans-serif",
+                  color: "#0B1F3A",
+                  border: "none",
+                  outline: "none",
+                  background: "transparent",
+                  resize: "none",
+                }}
+              />
+            </div>
+          </SheetGroup>
       </BottomSheetV2>
       )}
     </PageLayout>

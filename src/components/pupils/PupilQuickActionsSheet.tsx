@@ -6,6 +6,8 @@ import {
   StatRow,
   SectionLabel,
   PrimaryButton,
+  SheetGroup,
+  SheetDivider,
 } from "@/components/dsm/BottomSheetV2";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { supabase } from "@/lib/supabaseClient";
@@ -284,10 +286,7 @@ export function PupilQuickActionsSheet({
         <StatRow stats={stats} />
 
         <SectionLabel>ACTIONS</SectionLabel>
-        <div
-          className="bg-white overflow-hidden"
-          style={{ borderRadius: 16, border: "none", boxShadow: "0 1px 3px rgba(11,31,58,0.06)", marginBottom: 12 }}
-        >
+        <SheetGroup>
           <ActionRow
             icon={<MessageSquare size={18} color="#1877D6" />}
             label="Send message"
@@ -317,7 +316,7 @@ export function PupilQuickActionsSheet({
               </PrimaryButton>
             </InlinePanel>
           )}
-          <Divider />
+          <SheetDivider />
           <ActionRow
             icon={<CalendarPlus size={18} color="#1877D6" />}
             label="Book a lesson"
@@ -329,7 +328,7 @@ export function PupilQuickActionsSheet({
               });
             }}
           />
-          <Divider />
+          <SheetDivider />
           <ActionRow
             icon={<CreditCard size={18} color="#1877D6" />}
             label="Log payment"
@@ -410,7 +409,7 @@ export function PupilQuickActionsSheet({
               </PrimaryButton>
             </InlinePanel>
           )}
-          <Divider />
+          <SheetDivider />
           <ActionRow
             icon={<FileText size={18} color="#1877D6" />}
             label="Add note"
@@ -440,13 +439,10 @@ export function PupilQuickActionsSheet({
               </PrimaryButton>
             </InlinePanel>
           )}
-        </div>
+        </SheetGroup>
 
         <SectionLabel>OPEN</SectionLabel>
-        <div
-          className="bg-white overflow-hidden"
-          style={{ borderRadius: 16, border: "none", boxShadow: "0 1px 3px rgba(11,31,58,0.06)", marginBottom: 12 }}
-        >
+        <SheetGroup>
           <NavRow
             icon={<User size={18} color={muted} />}
             label="Full profile"
@@ -455,7 +451,7 @@ export function PupilQuickActionsSheet({
               navigate({ to: "/pupils/$id", params: { id: pupil.id } });
             }}
           />
-          <Divider />
+          <SheetDivider />
           <NavRow
             icon={<History size={18} color={muted} />}
             label="History"
@@ -464,7 +460,7 @@ export function PupilQuickActionsSheet({
               navigate({ to: "/pupils/history/$id", params: { id: pupil.id } });
             }}
           />
-          <Divider />
+          <SheetDivider />
           <NavRow
             icon={<CreditCard size={18} color={muted} />}
             label="Payments"
@@ -473,7 +469,7 @@ export function PupilQuickActionsSheet({
               navigate({ to: "/pupils/payments/$id", params: { id: pupil.id } });
             }}
           />
-          <Divider />
+          <SheetDivider />
           <NavRow
             icon={<TrendingUp size={18} color={muted} />}
             label="Progress"
@@ -482,7 +478,7 @@ export function PupilQuickActionsSheet({
               navigate({ to: "/pupils/progress/$id", params: { id: pupil.id } });
             }}
           />
-          <Divider />
+          <SheetDivider />
           <NavRow
             icon={<ClipboardList size={18} color={muted} />}
             label="Syllabus"
@@ -491,12 +487,9 @@ export function PupilQuickActionsSheet({
               navigate({ to: "/pupils/syllabus/$id", params: { id: pupil.id } });
             }}
           />
-        </div>
+        </SheetGroup>
 
-        <div
-          className="bg-white overflow-hidden"
-          style={{ borderRadius: 16, border: "none", boxShadow: "0 1px 3px rgba(11,31,58,0.06)", marginBottom: 12 }}
-        >
+        <SheetGroup>
           <button
             type="button"
             onClick={() => setConfirmInactive(true)}
@@ -507,7 +500,7 @@ export function PupilQuickActionsSheet({
               Mark inactive
             </div>
           </button>
-        </div>
+        </SheetGroup>
       </BottomSheet>
 
       <ConfirmDialog
@@ -591,10 +584,6 @@ function NavRow({
       <ChevronRight size={16} color={muted} />
     </button>
   );
-}
-
-function Divider() {
-  return <div style={{ height: 1, backgroundColor: "#E4E8EF" }} />;
 }
 
 function InlinePanel({ children }: { children: React.ReactNode }) {

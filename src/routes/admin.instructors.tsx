@@ -4,7 +4,7 @@ import { ChevronLeft, MoreVertical, Pencil, Trash2, Search } from "lucide-react"
 import { IconArchive, IconChevronUp, IconChevronDown, IconChevronLeft, IconPhone, IconMapPin, IconCurrencyPound, IconId, IconCalendar, IconPencil, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
-import { BottomSheet } from "@/components/dsm/BottomSheetV2";
+import { BottomSheet, SheetGroup, SheetDivider, PrimaryButton, GhostButton } from "@/components/dsm/BottomSheetV2";
 import { useAdminGate } from "./admin";
 
 export const Route = createFileRoute("/admin/instructors")({
@@ -470,23 +470,32 @@ function AdminInstructorsPage() {
           subtitle={editInstructor?.name ?? undefined}
           onClose={() => setEditInstructor(null)}
           footer={
-            <button
-              type="button"
-              disabled={saving}
-              onClick={saveEdit}
-              className="w-full rounded-xl py-3"
-              style={{ backgroundColor: BLUE, color: "#fff", fontSize: 14, fontWeight: 600, opacity: saving ? 0.6 : 1 }}
-            >
+            <PrimaryButton disabled={saving} onClick={saveEdit}>
               {saving ? "Saving..." : "Save changes"}
-            </button>
+            </PrimaryButton>
           }
         >
-          <div className="rounded-2xl bg-white p-4 mb-4" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+          <SheetGroup>
             <Field label="Name" value={editName} onChange={setEditName} />
             <Field label="Phone" value={editPhone} onChange={setEditPhone} />
             <Field label="Home postcode" value={editPostcode} onChange={setEditPostcode} />
             <Field label="Hourly rate (£)" value={editRate} onChange={setEditRate} inputMode="decimal" last />
-          </div>
+          </SheetGroup>
+
+          <SheetGroup>
+            <div className="flex items-center justify-between" style={{ padding: "15px 16px" }}>
+              <div style={{ fontSize: 13, fontWeight: 500, color: MUTED }}>Account status</div>
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: editInstructor?.deleted_at ? RED : "#1A9B5C",
+                }}
+              >
+                {editInstructor?.deleted_at ? "Archived" : "Active"}
+              </div>
+            </div>
+          </SheetGroup>
         </BottomSheet>
       )}
 
@@ -498,33 +507,37 @@ function AdminInstructorsPage() {
           onClose={() => setConfirmDelete(null)}
           footer={
             <div className="flex flex-col gap-2">
-              <button
-                type="button"
-                disabled={saving}
-                onClick={removeInstructor}
-                className="w-full rounded-xl py-3"
-                style={{ backgroundColor: RED, color: "#fff", fontSize: 14, fontWeight: 600, opacity: saving ? 0.6 : 1 }}
-              >
+              <PrimaryButton color={RED} disabled={saving} onClick={removeInstructor}>
                 {saving ? "Removing..." : "Remove instructor"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setConfirmDelete(null)}
-                className="w-full rounded-xl py-3"
-                style={{ backgroundColor: "#E4E8EF", color: NAVY, fontSize: 14, fontWeight: 600 }}
-              >
+              </PrimaryButton>
+              <GhostButton color={NAVY} bg="transparent" onClick={() => setConfirmDelete(null)}>
                 Cancel
-              </button>
+              </GhostButton>
             </div>
           }
         >
           <div
-            className="rounded-2xl p-4 mb-4"
-            style={{ backgroundColor: "#FDECEC", border: `1px solid #F6C9CB`, fontSize: 13, color: "#8A1A1F" }}
+            className="mb-3"
+            style={{
+              padding: 14,
+              borderRadius: 16,
+              backgroundColor: "#FEF3C7",
+              color: "#92400E",
+              fontSize: 13,
+              boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+            }}
           >
             This will soft-delete the instructor's account. Their data is retained but they will no
             longer be able to log in.
           </div>
+
+          <SheetGroup>
+            <div className="flex items-center justify-between" style={{ padding: "15px 16px" }}>
+              <div style={{ fontSize: 16, fontWeight: 600, color: RED }}>
+                Remove {confirmDelete?.name}
+              </div>
+            </div>
+          </SheetGroup>
         </BottomSheet>
       )}
       {/* DETAIL SHEET */}
@@ -745,15 +758,18 @@ function Field({
   last?: boolean;
 }) {
   return (
-    <div style={{ marginBottom: last ? 0 : 14 }}>
-      <div style={{ fontSize: 11, fontWeight: 600, color: MUTED, marginBottom: 5 }}>{label}</div>
-      <input
-        value={value}
-        inputMode={inputMode}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-xl px-3 outline-none"
-        style={{ height: 42, backgroundColor: "#F1F4F9", fontSize: 14, color: NAVY, border: `1px solid ${BORDER}` }}
-      />
-    </div>
+    <>
+      <div className="flex items-center justify-between gap-3" style={{ padding: "15px 16px" }}>
+        <div style={{ fontSize: 13, fontWeight: 500, color: MUTED, flexShrink: 0 }}>{label}</div>
+        <input
+          value={value}
+          inputMode={inputMode}
+          onChange={(e) => onChange(e.target.value)}
+          className="text-right outline-none bg-transparent"
+          style={{ fontSize: 16, fontWeight: 600, color: NAVY, minWidth: 0, flex: 1 }}
+        />
+      </div>
+      {!last && <SheetDivider />}
+    </>
   );
 }
