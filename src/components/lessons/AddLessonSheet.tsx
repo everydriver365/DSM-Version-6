@@ -1,10 +1,40 @@
 import { useEffect, useState } from "react";
-import { RefreshCw, Search } from "lucide-react";
+import { Search } from "lucide-react";
+import {
+  IconCalendar,
+  IconChevronRight,
+  IconClock,
+  IconCreditCard,
+  IconCurrencyPound,
+  IconHourglass,
+  IconMapPin,
+  IconNotes,
+  IconRepeat,
+  IconUser,
+} from "@tabler/icons-react";
 import { toast } from "sonner";
-import { BottomSheet as BottomSheetV2 } from "../dsm/BottomSheetV2";
+import { BottomSheet as BottomSheetV2, SheetGroup, SheetRow } from "../dsm/BottomSheetV2";
 import { supabase } from "../../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
 import { computeLessonAmount, fetchPostcodeRates } from "../../lib/pricing/resolveRate";
+
+const BLUE = "#1877D6";
+
+const labelStyle: React.CSSProperties = {
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 13,
+  fontWeight: 500,
+  color: "#6B7686",
+  whiteSpace: "nowrap",
+};
+
+const valueStyle: React.CSSProperties = {
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 16,
+  fontWeight: 600,
+  color: "#0B1F3A",
+};
+
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
