@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
-import {
-  Banknote,
-  ArrowLeftRight,
-  Gift,
-  CheckCircle2,
-  Loader2,
-  PartyPopper,
-  QrCode,
-} from "lucide-react";
+import { IconCircleCheck, IconGift, IconLoader2 } from "@tabler/icons-react";
+import { Banknote, ArrowLeftRight, PartyPopper, QrCode } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
 type ProgressLevel =
@@ -872,7 +865,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
         >
           {completing ? (
             <>
-              <Loader2 size={16} className="animate-spin" />
+              <IconLoader2 stroke={1.5} size={16} className="animate-spin" />
               Completing…
             </>
           ) : (
@@ -1038,8 +1031,8 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 [
                   { k: "cash", label: "Cash", icon: <Banknote size={20} /> },
                   { k: "bank", label: "Bank transfer", icon: <ArrowLeftRight size={20} /> },
-                  { k: "already_paid", label: "Already paid", icon: <CheckCircle2 size={20} /> },
-                  { k: "waived", label: "Waived", icon: <Gift size={20} /> },
+                  { k: "already_paid", label: "Already paid", icon: <IconCircleCheck stroke={1.5} size={20} /> },
+                  { k: "waived", label: "Waived", icon: <IconGift stroke={1.5} size={20} /> },
                 ] as { k: PaymentMethod; label: string; icon: React.ReactNode }[]
               ).map((m) => {
                 const active = paymentMethod === m.k;
@@ -1100,7 +1093,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             >
               {paymentSaving ? (
                 <>
-                  <Loader2 size={16} className="animate-spin" />
+                  <IconLoader2 stroke={1.5} size={16} className="animate-spin" />
                   Saving…
                 </>
               ) : (
@@ -1120,7 +1113,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               }}
             >
               {qrGenerating ? (
-                <Loader2 size={16} className="animate-spin" />
+                <IconLoader2 stroke={1.5} size={16} className="animate-spin" />
               ) : (
                 <QrCode size={16} />
               )}
@@ -1313,7 +1306,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               </>
             ) : (
               <>
-                <CheckCircle2 size={64} color="#1877D6" />
+                <IconCircleCheck stroke={1.5} size={64} color="#1877D6" />
                 <div
                   className="text-[20px] mt-3"
                   style={{ color: "#0B1F3A", fontWeight: 700 }}

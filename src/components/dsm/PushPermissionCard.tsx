@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Bell, BellOff, CheckCircle2, AlertTriangle } from "lucide-react";
+import { IconAlertTriangle, IconBell, IconBellOff, IconCircleCheck } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../../lib/supabaseClient";
 
@@ -119,9 +119,9 @@ export function PushPermissionCard() {
             }}
           >
             {isDenied ? (
-              <AlertTriangle size={18} color="#0B1F3A" />
+              <IconAlertTriangle stroke={1.5} size={18} color="#0B1F3A" />
             ) : (
-              <Bell size={18} color="#1877D6" />
+              <IconBell stroke={1.5} size={18} color="#1877D6" />
             )}
           </div>
           <div className="min-w-0 flex-1">

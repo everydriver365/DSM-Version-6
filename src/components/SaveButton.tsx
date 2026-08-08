@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { Check, AlertCircle } from "lucide-react";
+import { IconAlertCircle, IconCheck } from "@tabler/icons-react";
 import type { SaveState } from "@/hooks/useSaveState";
 
 interface Props {
@@ -40,7 +40,7 @@ export function SaveButton({
     color = "#3B6D11";
     content = (
       <>
-        <Check size={16} color={color} strokeWidth={2.5} />
+        <IconCheck size={16} color={color} strokeWidth={2.5} />
         <span>{successLabel}</span>
       </>
     );
@@ -49,7 +49,7 @@ export function SaveButton({
     color = "#A32D2D";
     content = (
       <>
-        <AlertCircle size={16} color={color} strokeWidth={2.5} />
+        <IconAlertCircle size={16} color={color} strokeWidth={2.5} />
         <span>{errorLabel}</span>
       </>
     );

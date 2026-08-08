@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Rocket, UserPlus, Calendar, Clock, Users, ChevronRight } from "lucide-react";
+import { IconCalendar, IconChevronRight, IconClock, IconUsers } from "@tabler/icons-react";
+import { Rocket, UserPlus } from "lucide-react";
 import { supabase } from "../../lib/supabaseClient";
 
 const POPPINS = { fontFamily: "Poppins, system-ui, sans-serif" } as const;
@@ -68,21 +69,21 @@ export function WelcomeOverlay({ userId, instructorName, onDismiss }: WelcomeOve
       to: "/pupils/new",
     },
     {
-      icon: <Calendar size={20} color="#fff" />,
+      icon: <IconCalendar stroke={1.5} size={20} color="#fff" />,
       bg: "#15803D",
-      title: "Connect Google Calendar",
+      title: "Connect Google IconCalendar",
       subtitle: "Sync lessons automatically",
       to: "/settings",
     },
     {
-      icon: <Clock size={20} color="#fff" />,
+      icon: <IconClock stroke={1.5} size={20} color="#fff" />,
       bg: "#7C3AED",
       title: "Set your availability",
       subtitle: "Let Gap Filler find lessons for you",
       to: "/availability",
     },
     {
-      icon: <Users size={20} color="#fff" />,
+      icon: <IconUsers stroke={1.5} size={20} color="#fff" />,
       bg: "#CC2229",
       title: "Explore the community",
       subtitle: "Connect with local instructors",
@@ -171,7 +172,7 @@ export function WelcomeOverlay({ userId, instructorName, onDismiss }: WelcomeOve
               <div style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>{s.title}</div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 2 }}>{s.subtitle}</div>
             </div>
-            <ChevronRight size={16} color="rgba(255,255,255,0.3)" />
+            <IconChevronRight stroke={1.5} size={16} color="rgba(255,255,255,0.3)" />
           </div>
         ))}
       </div>

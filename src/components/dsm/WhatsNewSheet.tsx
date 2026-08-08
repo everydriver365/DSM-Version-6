@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Play } from "lucide-react";
+import { IconPlayerPlay } from "@tabler/icons-react";
 import {
   APP_VERSION,
   WHATS_NEW_BY_VERSION,
@@ -40,7 +40,7 @@ function Thumb({ size = 72 }: { size?: number }) {
           boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         }}
       >
-        <Play size={size * 0.2} color={NAVY} fill={NAVY} style={{ marginLeft: 2 }} />
+        <IconPlayerPlay stroke={1.5} size={size * 0.2} color={NAVY} fill={NAVY} style={{ marginLeft: 2 }} />
       </div>
     </div>
   );

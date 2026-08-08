@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Briefcase, MessageSquare, Mail, CalendarCheck, Phone, CreditCard, X } from "lucide-react";
+import { IconBriefcase, IconCreditCard, IconMail, IconMessage, IconPhone, IconX } from "@tabler/icons-react";
+import { CalendarCheck } from "lucide-react";
 
 const FONT = "Poppins, sans-serif";
 const NAVY = "#0B1F3A";
@@ -105,17 +106,17 @@ function titleFor(kind: LiveEventKind): string {
 function styleFor(kind: LiveEventKind): { tint: string; color: string; icon: React.ReactNode } {
   switch (kind) {
     case "job":
-      return { tint: "#FBEFDF", color: "#E0932F", icon: <Briefcase size={17} color="#fff" /> };
+      return { tint: "#FBEFDF", color: "#E0932F", icon: <IconBriefcase stroke={1.5} size={17} color="#fff" /> };
     case "enquiry":
-      return { tint: "#E5EFFA", color: BLUE, icon: <Mail size={17} color="#fff" /> };
+      return { tint: "#E5EFFA", color: BLUE, icon: <IconMail stroke={1.5} size={17} color="#fff" /> };
     case "message":
-      return { tint: "#E5EFFA", color: BLUE, icon: <MessageSquare size={17} color="#fff" /> };
+      return { tint: "#E5EFFA", color: BLUE, icon: <IconMessage stroke={1.5} size={17} color="#fff" /> };
     case "booking":
       return { tint: "#E7F5EE", color: "#1B7F3B", icon: <CalendarCheck size={17} color="#fff" /> };
     case "call":
-      return { tint: "#FBE6E7", color: "#CC2229", icon: <Phone size={17} color="#fff" /> };
+      return { tint: "#FBE6E7", color: "#CC2229", icon: <IconPhone stroke={1.5} size={17} color="#fff" /> };
     case "payment":
-      return { tint: "#E0F2F1", color: "#0F766E", icon: <CreditCard size={17} color="#fff" /> };
+      return { tint: "#E0F2F1", color: "#0F766E", icon: <IconCreditCard stroke={1.5} size={17} color="#fff" /> };
   }
 }
 
@@ -289,7 +290,7 @@ export function EventToastController() {
               cursor: "pointer",
             }}
           >
-            <X size={14} color="rgba(11,31,58,0.4)" />
+            <IconX stroke={1.5} size={14} color="rgba(11,31,58,0.4)" />
           </button>
         </div>
 

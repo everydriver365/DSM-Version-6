@@ -1,5 +1,5 @@
 import React from "react";
-import { ChevronLeft, Mic } from "lucide-react";
+import { IconChevronLeft, IconMicrophone } from "@tabler/icons-react";
 import {
   IconHeadset,
   IconDownload,
@@ -96,7 +96,7 @@ export default function InstructorTopBar({
       {isSubpage ? (
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <IconBtn ariaLabel="Back" onClick={onBack!}>
-            <ChevronLeft size={17} strokeWidth={1.8} color="#C7D0DE" />
+            <IconChevronLeft size={17} strokeWidth={1.8} color="#C7D0DE" />
           </IconBtn>
           <span
             style={{
@@ -139,7 +139,7 @@ export default function InstructorTopBar({
             onClick={onMicPress}
             style={{ background: "#1877D6", width: 30, height: 30 }}
           >
-            <Mic size={16} strokeWidth={1.8} color="#ffffff" />
+            <IconMicrophone size={16} strokeWidth={1.8} color="#ffffff" />
           </IconBtn>
         </div>
       )}

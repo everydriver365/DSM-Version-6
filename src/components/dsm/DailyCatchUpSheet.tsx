@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Briefcase, MessageSquare, Mail, CalendarCheck, CalendarX, X } from "lucide-react";
+import { IconBriefcase, IconMail, IconMessage, IconX } from "@tabler/icons-react";
+import { CalendarCheck, CalendarX } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
 const NAVY = "#0F2044";
@@ -94,7 +95,7 @@ export function DailyCatchUpSheet({
             onClick={onDismiss}
             style={{ width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}
           >
-            <X size={18} color="#6B7280" />
+            <IconX stroke={1.5} size={18} color="#6B7280" />
           </button>
         </div>
 
@@ -215,9 +216,9 @@ async function buildRows(uid: string, since: Date): Promise<Row[]> {
     rows.push({ key, count: n, label: n === 1 ? labelSingular : labelPlural, icon, tint, to });
   };
 
-  push(jobs?.count, "jobs", "new job", "new jobs", <Briefcase size={18} color="#B5661E" />, "#FBEFDF", "/jobs");
-  push(enquiries?.count, "enquiries", "new enquiry", "new enquiries", <Mail size={18} color={BLUE} />, "#E5EFFA", "/enquiries");
-  push(messages?.count, "messages", "new message", "new messages", <MessageSquare size={18} color={BLUE} />, "#E5EFFA", "/messages");
+  push(jobs?.count, "jobs", "new job", "new jobs", <IconBriefcase stroke={1.5} size={18} color="#B5661E" />, "#FBEFDF", "/jobs");
+  push(enquiries?.count, "enquiries", "new enquiry", "new enquiries", <IconMail stroke={1.5} size={18} color={BLUE} />, "#E5EFFA", "/enquiries");
+  push(messages?.count, "messages", "new message", "new messages", <IconMessage stroke={1.5} size={18} color={BLUE} />, "#E5EFFA", "/messages");
   push(lessonsNew?.count, "bookings", "new booking", "new bookings", <CalendarCheck size={18} color="#1B7F3B" />, "#E7F5EE", "/schedule");
   push(lessonsCanc?.count, "cancellations", "cancellation", "cancellations", <CalendarX size={18} color="#CC2229" />, "#FBE6E7", "/schedule");
 

@@ -16,25 +16,8 @@ import {
   PaymentsIcon,
   SettingsIcon,
 } from "@/components/icons/DrivingIcons";
-import {
-  Receipt,
-  StickyNote,
-  Inbox,
-  Fuel,
-  Car,
-  BookOpen,
-  BarChart3,
-  PoundSterling,
-  MapPin,
-  Plus,
-  Search as SearchIcon,
-  Percent,
-  ClipboardList,
-  ShieldCheck,
-  Bell,
-  HelpCircle,
-  Users,
-} from "lucide-react";
+import { IconBell, IconCar, IconCurrencyPound, IconMapPin, IconPlus, IconUsers } from "@tabler/icons-react";
+import { Receipt, StickyNote, Inbox, Fuel, BookOpen, BarChart3, Search as SearchIcon, Percent, ClipboardList, ShieldCheck, HelpCircle } from "lucide-react";
 
 import { supabase } from "@/lib/supabaseClient";
 import { haptic } from "@/lib/haptics";
@@ -50,28 +33,28 @@ const NAV: Nav[] = [
   { label: "Expenses", route: "/expenses", icon: Receipt },
   { label: "Notes", route: "/notes", icon: StickyNote },
   { label: "Enquiries", route: "/enquiries", icon: Inbox },
-  { label: "Mileage", route: "/mileage", icon: MapPin },
+  { label: "Mileage", route: "/mileage", icon: IconMapPin },
   { label: "Fuel", route: "/fuel", icon: Fuel },
-  { label: "Vehicle", route: "/vehicle", icon: Car },
+  { label: "Vehicle", route: "/vehicle", icon: IconCar },
   { label: "CPD", route: "/cpd", icon: BookOpen, keywords: "learning training" },
   { label: "Reports", route: "/reports", icon: BarChart3 },
-  { label: "Earnings", route: "/earnings", icon: PoundSterling },
+  { label: "Earnings", route: "/earnings", icon: IconCurrencyPound },
   { label: "Tax report", route: "/tax-report", icon: BarChart3 },
   { label: "Discount codes", route: "/discount-codes", icon: Percent },
   { label: "Intake questions", route: "/intake-questions", icon: ClipboardList },
   { label: "Waivers", route: "/waivers", icon: ShieldCheck },
-  { label: "Notifications", route: "/notifications", icon: Bell },
+  { label: "Notifications", route: "/notifications", icon: IconBell },
   { label: "Help", route: "/help", icon: HelpCircle },
   { label: "Settings", route: "/settings", icon: SettingsIcon },
 ];
 
 
 const ACTIONS: Nav[] = [
-  { label: "New lesson", route: "/lessons/new", icon: Plus },
-  { label: "New pupil", route: "/pupils/new", icon: Plus },
-  { label: "New note", route: "/notes", icon: Plus },
-  { label: "New quote", route: "/quotes/new", icon: Plus },
-  { label: "Take payment", route: "/take-payment", icon: Plus },
+  { label: "New lesson", route: "/lessons/new", icon: IconPlus },
+  { label: "New pupil", route: "/pupils/new", icon: IconPlus },
+  { label: "New note", route: "/notes", icon: IconPlus },
+  { label: "New quote", route: "/quotes/new", icon: IconPlus },
+  { label: "Take payment", route: "/take-payment", icon: IconPlus },
 ];
 
 type PupilHit = { id: string; name: string };
@@ -171,7 +154,7 @@ export function CommandPalette() {
                 value={`pupil ${p.name}`}
                 onSelect={() => go("/pupils/$id", { id: p.id })}
               >
-                <Users />
+                <IconUsers stroke={1.5} />
                 <span>{p.name}</span>
               </CommandItem>
             ))}

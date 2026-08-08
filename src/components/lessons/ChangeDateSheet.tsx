@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { X } from "lucide-react";
+import { IconX } from "@tabler/icons-react";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
@@ -63,7 +63,7 @@ export function ChangeDateSheet({
             className="flex items-center justify-center disabled:opacity-50"
             style={{ width: 32, height: 32 }}
           >
-            <X size={18} color="#6B7280" />
+            <IconX stroke={1.5} size={18} color="#6B7280" />
           </button>
         </div>
 

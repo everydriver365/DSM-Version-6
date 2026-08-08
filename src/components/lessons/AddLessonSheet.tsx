@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Search } from "lucide-react";
+import { IconSearch } from "@tabler/icons-react";
 import {
   IconCalendar,
   IconChevronRight,
@@ -479,7 +479,7 @@ export function AddLessonSheet({
 
           {pupilListOpen && (
             <SheetRow>
-              <Search size={16} color="#9CA3AF" />
+              <IconSearch stroke={1.5} size={16} color="#9CA3AF" />
               <input
                 id="al-pupil"
                 type="text"
@@ -489,7 +489,7 @@ export function AddLessonSheet({
                   setPupilQuery(e.target.value);
                   setPupilListOpen(true);
                 }}
-                placeholder="Search pupils…"
+                placeholder="IconSearch pupils…"
                 className="flex-1 bg-transparent focus:outline-none"
                 style={{ ...valueStyle, fontWeight: 500 }}
               />

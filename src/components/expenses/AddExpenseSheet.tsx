@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Upload } from "lucide-react";
+import { IconUpload } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../../lib/supabaseClient";
 import { BottomSheet } from "../dsm/BottomSheetV2";
@@ -357,7 +357,7 @@ export default function AddExpenseSheet({ open, onClose, onSaved }: AddExpenseSh
             fontWeight: 600,
           }}
         >
-          <Upload size={16} />
+          <IconUpload stroke={1.5} size={16} />
           {receiptFile ? receiptFile.name : "Choose file"}
           <input
             type="file"

@@ -1,5 +1,5 @@
 import React from "react";
-import { X, Clock, MapPin, Phone, MessageSquare, Calendar, PoundSterling, Navigation, User } from "lucide-react";
+import { IconCalendar, IconClock, IconCurrencyPound, IconMapPin, IconMessage, IconNavigation, IconPhone, IconUser, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 
 interface LessonDetailsSheetProps {
@@ -132,7 +132,7 @@ export function LessonDetailsSheet({
               aria-label="Close"
               type="button"
             >
-              <X size={20} color="#8A93A3" />
+              <IconX stroke={1.5} size={20} color="#8A93A3" />
             </button>
           </div>
         </div>
@@ -166,7 +166,7 @@ export function LessonDetailsSheet({
               style={{ backgroundColor: "#E8F1FA", color: blue }}
               aria-label="Call pupil"
             >
-              <Phone size={18} />
+              <IconPhone stroke={1.5} size={18} />
             </button>
           </div>
 
@@ -176,7 +176,7 @@ export function LessonDetailsSheet({
             style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
           >
             <div className="flex flex-col items-center py-4 px-2">
-              <Calendar size={18} color={blue} className="mb-1.5" />
+              <IconCalendar stroke={1.5} size={18} color={blue} className="mb-1.5" />
               <div className="text-xs font-semibold text-center" style={{ color: navy }}>
                 {d.getDate()}
               </div>
@@ -188,7 +188,7 @@ export function LessonDetailsSheet({
               className="flex flex-col items-center py-4 px-2"
               style={{ borderLeft: "1px solid #EEF0F3", borderRight: "1px solid #EEF0F3" }}
             >
-              <Clock size={18} color={blue} className="mb-1.5" />
+              <IconClock stroke={1.5} size={18} color={blue} className="mb-1.5" />
               <div className="text-xs font-semibold text-center" style={{ color: navy }}>
                 {startText}
               </div>
@@ -197,7 +197,7 @@ export function LessonDetailsSheet({
               </div>
             </div>
             <div className="flex flex-col items-center py-4 px-2">
-              <PoundSterling size={18} color={paymentFg} className="mb-1.5" />
+              <IconCurrencyPound stroke={1.5} size={18} color={paymentFg} className="mb-1.5" />
               <div className="text-xs font-semibold text-center" style={{ color: paymentFg }}>
                 {priceText ?? "—"}
               </div>
@@ -216,7 +216,7 @@ export function LessonDetailsSheet({
             style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
           >
             <div className="p-2 rounded-xl shrink-0" style={{ backgroundColor: "#E8F1FA" }}>
-              <Calendar size={18} color={blue} />
+              <IconCalendar stroke={1.5} size={18} color={blue} />
             </div>
             <div className="flex-1">
               <div className="text-xs font-semibold mb-0.5" style={{ color: "#8A93A3" }}>
@@ -238,7 +238,7 @@ export function LessonDetailsSheet({
             style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
           >
             <div className="p-2 rounded-xl shrink-0" style={{ backgroundColor: "#E8F1FA" }}>
-              <MapPin size={18} color={blue} />
+              <IconMapPin stroke={1.5} size={18} color={blue} />
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-xs font-semibold mb-0.5" style={{ color: "#8A93A3" }}>
@@ -253,7 +253,7 @@ export function LessonDetailsSheet({
                 className="mt-2 text-xs font-semibold flex items-center gap-1"
                 style={{ color: blue }}
               >
-                <Navigation size={14} />
+                <IconNavigation stroke={1.5} size={14} />
                 Open in Maps
               </button>
             </div>
@@ -265,7 +265,7 @@ export function LessonDetailsSheet({
             style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
           >
             <div className="p-2 rounded-xl shrink-0" style={{ backgroundColor: "#E8F1FA" }}>
-              <PoundSterling size={18} color={blue} />
+              <IconCurrencyPound stroke={1.5} size={18} color={blue} />
             </div>
             <div className="flex-1">
               <div className="text-xs font-semibold mb-0.5" style={{ color: "#8A93A3" }}>
@@ -321,7 +321,7 @@ export function LessonDetailsSheet({
               className="py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
               style={{ backgroundColor: navy, color: "#FFFFFF" }}
             >
-              <User size={16} />
+              <IconUser stroke={1.5} size={16} />
               View pupil
             </button>
             <button
@@ -330,7 +330,7 @@ export function LessonDetailsSheet({
               className="py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
               style={{ backgroundColor: "#FFFFFF", color: navy, border: "1px solid #E2E8F0" }}
             >
-              <MessageSquare size={16} />
+              <IconMessage stroke={1.5} size={16} />
               Message
             </button>
           </div>

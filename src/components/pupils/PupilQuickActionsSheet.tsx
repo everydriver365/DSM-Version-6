@@ -12,18 +12,8 @@ import {
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { supabase } from "@/lib/supabaseClient";
 import { recordPayment } from "@/lib/payments";
-import {
-  MessageSquare,
-  CalendarPlus,
-  CreditCard,
-  FileText,
-  User,
-  History,
-  TrendingUp,
-  ClipboardList,
-  ChevronRight,
-  PoundSterling,
-} from "lucide-react";
+import { IconChevronRight, IconCreditCard, IconCurrencyPound, IconFileText, IconMessage, IconTrendingUp, IconUser } from "@tabler/icons-react";
+import { CalendarPlus, History, ClipboardList } from "lucide-react";
 
 const navy = "#0B1F3A";
 const muted = "#8A93A3";
@@ -288,7 +278,7 @@ export function PupilQuickActionsSheet({
         <SectionLabel>ACTIONS</SectionLabel>
         <SheetGroup>
           <ActionRow
-            icon={<MessageSquare size={18} color="#1877D6" />}
+            icon={<IconMessage stroke={1.5} size={18} color="#1877D6" />}
             label="Send message"
             expanded={panel === "message"}
             onClick={() => setPanel(panel === "message" ? "none" : "message")}
@@ -330,7 +320,7 @@ export function PupilQuickActionsSheet({
           />
           <SheetDivider />
           <ActionRow
-            icon={<CreditCard size={18} color="#1877D6" />}
+            icon={<IconCreditCard stroke={1.5} size={18} color="#1877D6" />}
             label="Log payment"
             expanded={panel === "payment"}
             onClick={() => setPanel(panel === "payment" ? "none" : "payment")}
@@ -345,7 +335,7 @@ export function PupilQuickActionsSheet({
                     backgroundColor: "#FFFFFF",
                   }}
                 >
-                  <PoundSterling size={16} color={muted} />
+                  <IconCurrencyPound stroke={1.5} size={16} color={muted} />
                   <input
                     type="number"
                     inputMode="decimal"
@@ -411,7 +401,7 @@ export function PupilQuickActionsSheet({
           )}
           <SheetDivider />
           <ActionRow
-            icon={<FileText size={18} color="#1877D6" />}
+            icon={<IconFileText stroke={1.5} size={18} color="#1877D6" />}
             label="Add note"
             expanded={panel === "note"}
             onClick={() => setPanel(panel === "note" ? "none" : "note")}
@@ -444,7 +434,7 @@ export function PupilQuickActionsSheet({
         <SectionLabel>OPEN</SectionLabel>
         <SheetGroup>
           <NavRow
-            icon={<User size={18} color={muted} />}
+            icon={<IconUser stroke={1.5} size={18} color={muted} />}
             label="Full profile"
             onClick={() => {
               onClose();
@@ -462,7 +452,7 @@ export function PupilQuickActionsSheet({
           />
           <SheetDivider />
           <NavRow
-            icon={<CreditCard size={18} color={muted} />}
+            icon={<IconCreditCard stroke={1.5} size={18} color={muted} />}
             label="Payments"
             onClick={() => {
               onClose();
@@ -471,7 +461,7 @@ export function PupilQuickActionsSheet({
           />
           <SheetDivider />
           <NavRow
-            icon={<TrendingUp size={18} color={muted} />}
+            icon={<IconTrendingUp stroke={1.5} size={18} color={muted} />}
             label="Progress"
             onClick={() => {
               onClose();
@@ -546,7 +536,7 @@ function ActionRow({
       >
         {label}
       </div>
-      <ChevronRight
+      <IconChevronRight stroke={1.5}
         size={16}
         color={muted}
         style={{
@@ -581,7 +571,7 @@ function NavRow({
       >
         {label}
       </div>
-      <ChevronRight size={16} color={muted} />
+      <IconChevronRight stroke={1.5} size={16} color={muted} />
     </button>
   );
 }

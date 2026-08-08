@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { X, Search } from "lucide-react";
+import { IconSearch, IconX } from "@tabler/icons-react";
 
 // ---------------------------------------------------------------------------
 // DSM DESIGN TOKENS
@@ -101,7 +101,7 @@ export function BottomSheet({ title, subtitle, onClose, children, footer }: Bott
               type="button"
               style={{ width: 30, height: 30, backgroundColor: canvas }}
             >
-              <X size={16} color={subtle} />
+              <IconX stroke={1.5} size={16} color={subtle} />
             </button>
           </div>
         </div>
@@ -408,7 +408,7 @@ export function SheetRadioRow({
 export function SheetSearchRow({
   value,
   onChange,
-  placeholder = "Search…",
+  placeholder = "IconSearch…",
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -416,7 +416,7 @@ export function SheetSearchRow({
 }) {
   return (
     <SheetRow>
-      <Search size={18} color={subtle} />
+      <IconSearch stroke={1.5} size={18} color={subtle} />
       <input
         type="text"
         value={value}
