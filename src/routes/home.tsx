@@ -5111,7 +5111,7 @@ function HomePage() {
 
                       {driveData && (
                         <div style={{
-                          position: 'absolute', bottom: 10, right: 10, zIndex: 4,
+                          position: 'absolute', top: 10, right: 10, zIndex: 4,
                           background: 'rgba(255,255,255,0.55)',
                           backdropFilter: 'blur(10px)',
                           WebkitBackdropFilter: 'blur(10px)',
