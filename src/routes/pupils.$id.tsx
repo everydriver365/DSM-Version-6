@@ -3395,15 +3395,13 @@ function PupilDetailPage() {
           return (
             <>
               {/* Lesson Details Card */}
+              <h3 style={sectionTitle}>{label}</h3>
               <div
                 ref={focusedLessonCardRef}
                 style={{
-                  background: "#FFFFFF",
-                  borderRadius: 16,
-                  border: focusLessonId ? "2px solid #1877D6" : "0.5px solid rgba(11,31,58,0.10)",
-                  overflow: "hidden",
-                  marginTop: 12,
-                  boxShadow: focusLessonId ? "0 12px 30px rgba(24,119,214,0.18)" : "none",
+                  ...groupCard,
+                  border: focusLessonId ? "2px solid #1877D6" : "none",
+                  boxShadow: focusLessonId ? "0 12px 30px rgba(24,119,214,0.18)" : "0 1px 3px rgba(0,0,0,0.05)",
                   scrollMarginTop: 64,
                 }}
               >
