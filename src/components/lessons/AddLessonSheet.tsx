@@ -170,6 +170,13 @@ export function AddLessonSheet({
   }, [pupilId, pupils, pickupTouched]);
 
   const selectedPupil = pupils.find((p) => p.id === pupilId) ?? null;
+  // Display only — the authoritative payment status is resolved in handleSave().
+  const willBePrepaid = (() => {
+    const t = (selectedPupil?.pricing_type ?? "").toLowerCase();
+    if (t === "block" || t === "national_intensives") return true;
+    return Number(selectedPupil?.prepaid_hours ?? 0) > 0;
+  })();
+
   const filteredPupils = pupilQuery.trim()
     ? pupils.filter((p) => p.name.toLowerCase().includes(pupilQuery.trim().toLowerCase()))
     : pupils;
