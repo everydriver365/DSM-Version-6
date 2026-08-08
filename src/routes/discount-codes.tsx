@@ -17,6 +17,7 @@ import { BottomSheet } from "../components/dsm/BottomSheet";
 import { EmptyState } from "../components/dsm/EmptyState";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
 // -- SQL to run manually --
 // create table if not exists public.discount_codes (
@@ -86,6 +87,7 @@ function DiscountCodesPage() {
   const [codes, setCodes] = useState<Discount[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
+  const { confirm: askConfirm, confirmSheet } = useConfirmSheet();
 
   useEffect(() => {
     (async () => {
@@ -129,7 +131,7 @@ function DiscountCodesPage() {
   }
 
   async function softDelete(id: string) {
-    if (!confirm("Delete this discount code?")) return;
+    if (!(await askConfirm({ title: "Delete discount code", message: "Delete this discount code?", confirmLabel: "Delete" }))) return;
     const { error } = await supabase
       .from("discount_codes")
       .update({ deleted_at: new Date().toISOString() })
@@ -262,6 +264,7 @@ function DiscountCodesPage() {
           />
         )}
       </BottomSheet>
+      {confirmSheet}
     </PageLayout>
   );
 }

@@ -11,6 +11,7 @@ import {
   PrimaryButton,
   GhostButton,
 } from "@/components/dsm/BottomSheetV2";
+import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
 import {
   IconChevronLeft,
@@ -106,6 +107,7 @@ function BitesizePage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [uploadOpen, setUploadOpen] = useState(false);
   const [playingVideo, setPlayingVideo] = useState<BitesizeVideo | null>(null);
+  const { confirm: askConfirm, confirmSheet } = useConfirmSheet();
 
   // Upload form state
   const [uploadTitle, setUploadTitle] = useState("");
@@ -251,7 +253,7 @@ function BitesizePage() {
   }
 
   async function deleteVideo(video: BitesizeVideo) {
-    if (!confirm(`Delete "${video.title}"? Cannot be undone.`)) return;
+    if (!(await askConfirm({ title: "Delete video", message: `Delete "${video.title}"? Cannot be undone.`, confirmLabel: "Delete" }))) return;
     await supabase
       .from("bitesize_videos")
       .update({ deleted_at: new Date().toISOString() })
@@ -1378,6 +1380,7 @@ function BitesizePage() {
           </SheetGroup>
         </BottomSheet>
       )}
+      {confirmSheet}
     </div>
   );
 }

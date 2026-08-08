@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import {
   ArrowLeft,
   Plus,
@@ -117,6 +118,7 @@ function CpdPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [logs, setLogs] = useState<CpdLog[]>([]);
   const [loading, setLoading] = useState(true);
+  const { confirm: askConfirm, confirmSheet } = useConfirmSheet();
   const [filter, setFilter] = useState<string>("All");
   const [adiRenewal, setAdiRenewal] = useState<string | null>(null);
   const [showAdd, setShowAdd] = useState(false);
@@ -226,7 +228,7 @@ function CpdPage() {
   }
 
   async function softDelete(id: string) {
-    if (!confirm("Delete this CPD entry?")) return;
+    if (!(await askConfirm({ title: "Delete CPD entry", message: "Delete this CPD entry?", confirmLabel: "Delete" }))) return;
     const { error } = await supabase
       .from("cpd_logs")
       .update({ deleted_at: new Date().toISOString() })
@@ -433,6 +435,7 @@ function CpdPage() {
           />
         )}
       </BottomSheet>
+      {confirmSheet}
     </PageLayout>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ChevronLeft, Plus, X, Pencil, Trash2, Eye, EyeOff, Music } from "lucide-react";
 import { useAdminGate } from "./admin";
+import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
 export const Route = createFileRoute("/admin/podcasts")({
   component: AdminPodcasts,
@@ -84,6 +85,7 @@ function AdminPodcasts() {
   const [showSheet, setShowSheet] = useState(false);
   const [form, setForm] = useState<Partial<Podcast> & { tagsStr?: string }>(emptyForm());
   const [saving, setSaving] = useState(false);
+  const { confirm: askConfirm, confirmSheet } = useConfirmSheet();
 
   useEffect(() => {
     if (status === "denied") navigate({ to: "/home" });
@@ -190,7 +192,7 @@ function AdminPodcasts() {
   }
 
   async function handleDelete(p: Podcast) {
-    if (!confirm(`Delete "${p.title}"?`)) return;
+    if (!(await askConfirm({ title: "Delete podcast", message: "Delete this podcast?", confirmLabel: "Delete" }))) return;
     try {
       await restFetch(`dsm_podcasts?id=eq.${p.id}`, {
         method: "PATCH",
@@ -232,6 +234,7 @@ function AdminPodcasts() {
   if (status === "denied") return null;
 
   return (
+    <>
     <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif", paddingBottom: 40 }}>
       {/* Top bar */}
       <div
@@ -589,6 +592,8 @@ function AdminPodcasts() {
         </div>
       )}
     </div>
+    {confirmSheet}
+    </>
   );
 }
 

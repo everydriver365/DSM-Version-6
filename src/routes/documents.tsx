@@ -25,6 +25,7 @@ import { Button } from "../components/dsm/Button";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
 export const Route = createFileRoute("/documents")({
   head: () => ({
@@ -405,6 +406,7 @@ function DocSheet({
   const [saving, setSaving] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [existingUrl] = useState<string | null>(doc?.file_url ?? null);
+  const { confirm: askConfirm, confirmSheet } = useConfirmSheet();
 
   const ACCEPT = "application/pdf,image/jpeg,image/png";
   const MAX_BYTES = 10 * 1024 * 1024;
@@ -485,7 +487,7 @@ function DocSheet({
 
   async function remove() {
     if (!doc) return;
-    if (!confirm("Delete this document?")) return;
+    if (!(await askConfirm({ title: "Delete document", message: "Delete this document?", confirmLabel: "Delete" }))) return;
     const { error } = await supabase.from("documents").delete().eq("id", doc.id);
     if (error) {
       console.error("[documents] delete error", error);
@@ -625,6 +627,7 @@ function DocSheet({
             <Trash2 size={14} color="#1877D6" /> Delete document
           </button>
         )}
+        {confirmSheet}
       </div>
     </SheetShell>
   );
