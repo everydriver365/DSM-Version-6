@@ -5194,18 +5194,6 @@ function HomePage() {
 
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                         <span style={{
-                          display: 'inline-flex', alignItems: 'center', gap: 4,
-                          background: '#FFFFFF',
-                          color: '#0B1F3A',
-                          border: '1px solid #E4E8EF',
-                          borderRadius: 20,
-                          padding: '3px 9px',
-                          fontSize: 12, fontWeight: 800, fontFamily: 'Poppins, sans-serif',
-                          whiteSpace: 'nowrap',
-                        }}>
-                          <span style={{ fontWeight: 400 }}>Cost:</span> {priceText}
-                        </span>
-                        <span style={{
                           display: 'inline-flex', alignItems: 'center',
                           background: hPillBgFinal,
                           color: hPillFgFinal,
