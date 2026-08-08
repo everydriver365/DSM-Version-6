@@ -482,9 +482,12 @@ function RootComponent() {
     "/more",
     "/community",
   ]);
-  const showFloatingMenu = !hasOwnMenu.has(pathname) && !hideNavExact.has(pathname);
+  const isMessageThread = pathname.startsWith("/messages/");
+  const showFloatingMenu =
+    !hasOwnMenu.has(pathname) && !hideNavExact.has(pathname) && !isMessageThread;
   const hideNav =
     hideNavExact.has(pathname) ||
+    isMessageThread ||
     pathname === "/courses" ||
     pathname.startsWith("/courses/");
 

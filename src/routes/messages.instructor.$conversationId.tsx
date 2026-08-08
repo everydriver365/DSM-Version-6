@@ -342,10 +342,24 @@ function InstructorDMThread() {
 
   const other = firstName(otherInstructor?.name);
 
+  // Group consecutive messages from the same sender (broken by day change).
+  const groups: { mine: boolean; items: DMMessage[]; showDay: boolean }[] = [];
+  for (const m of messages) {
+    const last = groups[groups.length - 1];
+    const prevMsg = last?.items[last.items.length - 1];
+    const dayChanged = !prevMsg || dayKey(prevMsg.created_at) !== dayKey(m.created_at);
+    const mine = m.from_instructor_id === userId;
+    if (!last || dayChanged || last.mine !== mine) {
+      groups.push({ mine, items: [m], showDay: dayChanged });
+    } else {
+      last.items.push(m);
+    }
+  }
+
   return (
     <div
       style={{
-        minHeight: "100vh",
+        height: "100dvh",
         background: "#FFFFFF",
         display: "flex",
         flexDirection: "column",
@@ -407,7 +421,7 @@ function InstructorDMThread() {
       </div>
 
       {/* MESSAGE LIST */}
-      <div style={{ flex: 1, padding: "16px 16px 80px" }}>
+      <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "16px 16px 12px" }}>
         {loading ? (
           <div
             style={{
@@ -447,14 +461,16 @@ function InstructorDMThread() {
             <div style={{ fontSize: 12, color: MUTED }}>Say hello 👋</div>
           </div>
         ) : (
-          messages.map((m, i) => {
-            const mine = m.from_instructor_id === userId;
-            const prev = messages[i - 1];
-            const showDay =
-              !prev || dayKey(prev.created_at) !== dayKey(m.created_at);
+          groups.map((g) => {
+            const first = g.items[0];
+            const last = g.items[g.items.length - 1];
+            const startLabel = timeLabel(first.created_at);
+            const endLabel = timeLabel(last.created_at);
+            const stamp =
+              startLabel === endLabel ? startLabel : `${startLabel} – ${endLabel}`;
             return (
-              <div key={m.id}>
-                {showDay && (
+              <div key={first.id}>
+                {g.showDay && (
                   <div
                     style={{
                       display: "flex",
@@ -472,7 +488,7 @@ function InstructorDMThread() {
                         letterSpacing: 0.4,
                       }}
                     >
-                      {dayLabel(m.created_at)}
+                      {dayLabel(first.created_at)}
                     </div>
                     <div style={{ flex: 1, height: 0.5, background: BORDER }} />
                   </div>
@@ -480,55 +496,62 @@ function InstructorDMThread() {
                 <div
                   style={{
                     display: "flex",
-                    flexDirection: mine ? "row-reverse" : "row",
-                    alignItems: "flex-end",
+                    flexDirection: g.mine ? "row-reverse" : "row",
+                    alignItems: "flex-start",
                     gap: 8,
-                    marginBottom: 10,
+                    marginBottom: 14,
                   }}
                 >
-                  <Avatar person={mine ? me : otherInstructor} bg={mine ? BLUE : NAVY} />
-                  <div style={{ maxWidth: "75%" }}>
-                    {!mine && (
+                  {!g.mine && <Avatar person={otherInstructor} bg={NAVY} />}
+                  <div
+                    style={{
+                      maxWidth: "75%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: g.mine ? "flex-end" : "flex-start",
+                      gap: 3,
+                    }}
+                  >
+                    {!g.mine && (
                       <div
                         style={{
                           fontSize: 11,
                           fontWeight: 600,
                           color: GREY,
-                          marginBottom: 3,
+                          marginBottom: 1,
                         }}
                       >
                         {firstName(otherInstructor?.name)}
                       </div>
                     )}
-                    <div
-                      style={{
-                        background: mine ? BLUE : "#EEF2F7",
-                        borderRadius: mine
-                          ? "16px 4px 16px 16px"
-                          : "4px 16px 16px 16px",
-                        padding: "9px 12px",
-                      }}
-                    >
+                    {g.items.map((m, idx) => (
                       <div
+                        key={m.id}
                         style={{
-                          fontSize: 13,
-                          color: mine ? "#FFFFFF" : NAVY,
-                          whiteSpace: "pre-wrap",
-                          wordBreak: "break-word",
+                          background: g.mine ? BLUE : "#EEF2F7",
+                          borderRadius:
+                            idx === 0
+                              ? 16
+                              : g.mine
+                                ? "16px 6px 16px 16px"
+                                : "6px 16px 16px 16px",
+                          padding: "9px 12px",
                         }}
                       >
-                        {m.body}
+                        <div
+                          style={{
+                            fontSize: 13,
+                            color: g.mine ? "#FFFFFF" : NAVY,
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-word",
+                          }}
+                        >
+                          {m.body}
+                        </div>
                       </div>
-                      <div
-                        style={{
-                          fontSize: 10,
-                          marginTop: 3,
-                          textAlign: mine ? "right" : "left",
-                          color: mine ? "rgba(255,255,255,0.6)" : MUTED,
-                        }}
-                      >
-                        {timeLabel(m.created_at)}
-                      </div>
+                    ))}
+                    <div style={{ fontSize: 10, color: "#B0B8C4", marginTop: 1 }}>
+                      {stamp}
                     </div>
                   </div>
                 </div>
@@ -542,10 +565,7 @@ function InstructorDMThread() {
       {/* COMPOSER */}
       <div
         style={{
-          position: "fixed",
-          left: 0,
-          right: 0,
-          bottom: 0,
+          flexShrink: 0,
           background: "#FFFFFF",
           borderTop: `0.5px solid ${BORDER}`,
           padding: "10px 16px",
