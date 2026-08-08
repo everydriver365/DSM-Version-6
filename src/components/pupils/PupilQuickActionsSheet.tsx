@@ -286,8 +286,8 @@ export function PupilQuickActionsSheet({
 
         <SectionLabel>ACTIONS</SectionLabel>
         <div
-          className="bg-white rounded-2xl overflow-hidden mb-4"
-          style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+          className="bg-white overflow-hidden"
+          style={{ borderRadius: 16, border: "none", boxShadow: "0 1px 3px rgba(11,31,58,0.06)", marginBottom: 12 }}
         >
           <ActionRow
             icon={<MessageSquare size={18} color="#1877D6" />}
@@ -445,8 +445,8 @@ export function PupilQuickActionsSheet({
 
         <SectionLabel>OPEN</SectionLabel>
         <div
-          className="bg-white rounded-2xl overflow-hidden mb-4"
-          style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+          className="bg-white overflow-hidden"
+          style={{ borderRadius: 16, border: "none", boxShadow: "0 1px 3px rgba(11,31,58,0.06)", marginBottom: 12 }}
         >
           <NavRow
             icon={<User size={18} color={muted} />}
@@ -494,9 +494,21 @@ export function PupilQuickActionsSheet({
           />
         </div>
 
-        <GhostButton onClick={() => setConfirmInactive(true)}>
-          Mark inactive
-        </GhostButton>
+        <div
+          className="bg-white overflow-hidden"
+          style={{ borderRadius: 16, border: "none", boxShadow: "0 1px 3px rgba(11,31,58,0.06)", marginBottom: 12 }}
+        >
+          <button
+            type="button"
+            onClick={() => setConfirmInactive(true)}
+            className="w-full flex items-center gap-3 active:bg-black/[0.03]"
+            style={{ fontFamily: font, padding: "15px 16px" }}
+          >
+            <div className="flex-1 text-left" style={{ color: "#CC2229", fontSize: 16, fontWeight: 600 }}>
+              Mark inactive
+            </div>
+          </button>
+        </div>
       </BottomSheet>
 
       <ConfirmDialog
@@ -532,13 +544,13 @@ function ActionRow({
     <button
       type="button"
       onClick={onClick}
-      className="w-full flex items-center gap-3 px-4 py-3.5 active:bg-black/[0.03]"
-      style={{ fontFamily: font }}
+      className="w-full flex items-center gap-3 active:bg-black/[0.03]"
+      style={{ fontFamily: font, padding: "15px 16px" }}
     >
       <div className="shrink-0">{icon}</div>
       <div
-        className="flex-1 text-left text-[15px] font-medium"
-        style={{ color: navy }}
+        className="flex-1 text-left"
+        style={{ color: navy, fontSize: 16, fontWeight: 600 }}
       >
         {label}
       </div>
@@ -567,13 +579,13 @@ function NavRow({
     <button
       type="button"
       onClick={onClick}
-      className="w-full flex items-center gap-3 px-4 py-3.5 active:bg-black/[0.03]"
-      style={{ fontFamily: font }}
+      className="w-full flex items-center gap-3 active:bg-black/[0.03]"
+      style={{ fontFamily: font, padding: "15px 16px" }}
     >
       <div className="shrink-0">{icon}</div>
       <div
-        className="flex-1 text-left text-[15px]"
-        style={{ color: navy }}
+        className="flex-1 text-left"
+        style={{ color: navy, fontSize: 16, fontWeight: 600 }}
       >
         {label}
       </div>
@@ -583,7 +595,7 @@ function NavRow({
 }
 
 function Divider() {
-  return <div style={{ height: 1, backgroundColor: "#EEF0F3" }} />;
+  return <div style={{ height: 1, backgroundColor: "#E4E8EF" }} />;
 }
 
 function InlinePanel({ children }: { children: React.ReactNode }) {
