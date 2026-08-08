@@ -781,18 +781,32 @@ function PupilsIndexPage() {
 
       {/* Search input */}
       {searchOpen && (
-        <div className="px-4 pb-3" style={{ marginTop: -6 }}>
+        <div
+          style={{
+            margin: '12px 16px',
+            background: '#fff',
+            borderRadius: 16,
+            boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+            padding: '10px 14px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+          }}
+        >
+          <Search size={16} color="#9CA3AF" />
           <input
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search pupils..."
-            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
             style={{
-              ...POPPINS,
-              borderWidth: "0.5px",
-              borderStyle: "solid",
-              borderColor: "#EEF2F7",
+              flex: 1,
+              border: 'none',
+              outline: 'none',
+              fontSize: 15,
+              color: '#0B1F3A',
+              fontFamily: 'Poppins, sans-serif',
+              background: 'transparent',
             }}
           />
         </div>
