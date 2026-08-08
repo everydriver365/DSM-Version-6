@@ -1,19 +1,6 @@
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { MessageCircle, Search, Send, Flag, X } from "lucide-react";
-import {
-  IconSearch,
-  IconPinFilled,
-  IconPin,
-  IconSpeakerphone,
-  IconPlus,
-  IconChevronRight,
-  IconChevronLeft,
-  IconBellOff,
-  IconBell,
-  IconChecks,
-  IconEdit,
-} from "@tabler/icons-react";
+import { IconBell, IconBellOff, IconChecks, IconChevronLeft, IconChevronRight, IconEdit, IconFlag, IconMessageCircle, IconPin, IconPinFilled, IconPlus, IconSearch, IconSend, IconSpeakerphone, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -1136,7 +1123,7 @@ function MessagesIndexPage() {
             </div>
             <button
               type="button"
-              aria-label="Search messages"
+              aria-label="IconSearch messages"
               onClick={() => setShowSearch((v) => !v)}
               style={{
                 width: 32,
@@ -1192,7 +1179,7 @@ function MessagesIndexPage() {
                   autoFocus
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search messages"
+                  placeholder="IconSearch messages"
                   style={{
                     flex: 1,
                     border: 0,
@@ -1210,7 +1197,7 @@ function MessagesIndexPage() {
                     onClick={() => setQuery("")}
                     style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
                   >
-                    <X size={15} color={GREY} />
+                    <IconX stroke={1.5} size={15} color={GREY} />
                   </button>
                 )}
               </div>
@@ -1257,7 +1244,7 @@ function MessagesIndexPage() {
                   padding: "56px 24px",
                 }}
               >
-                <MessageCircle size={40} color="#D0D5DD" />
+                <IconMessageCircle stroke={1.5} size={40} color="#D0D5DD" />
                 <div style={{ fontSize: 14, color: GREY }}>No conversations</div>
               </div>
             ) : (
@@ -1402,7 +1389,7 @@ function MessagesIndexPage() {
               }}
               style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
             >
-              <X size={20} color={GREY} />
+              <IconX stroke={1.5} size={20} color={GREY} />
             </button>
           </div>
           <div style={{ padding: "12px 16px" }}>
@@ -1410,7 +1397,7 @@ function MessagesIndexPage() {
               autoFocus
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search instructors..."
+              placeholder="IconSearch instructors..."
               style={{
                 width: "100%",
                 boxSizing: "border-box",
@@ -1858,7 +1845,7 @@ function RoomBrowser({
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search area or room name"
+            placeholder="IconSearch area or room name"
             style={{
               flex: 1,
               border: 0,
@@ -2006,11 +1993,11 @@ function LocalChatView(props: {
         </button>
         <button
           type="button"
-          aria-label="Search rooms"
+          aria-label="IconSearch rooms"
           onClick={() => setRoomSelectorOpen((v) => !v)}
           style={{ background: "none", border: 0, padding: 4, cursor: "pointer", display: "flex" }}
         >
-          <Search size={18} color={roomSelectorOpen ? "#1877D6" : "#9CA3AF"} />
+          <IconSearch stroke={1.5} size={18} color={roomSelectorOpen ? "#1877D6" : "#9CA3AF"} />
         </button>
         {roomSelectorOpen && (
           <div
@@ -2039,11 +2026,11 @@ function LocalChatView(props: {
                 borderBottom: "0.5px solid #E2E6ED",
               }}
             >
-              <Search size={15} color="#8A93A3" />
+              <IconSearch stroke={1.5} size={15} color="#8A93A3" />
               <input
                 value={roomSearch}
                 onChange={(e) => setRoomSearch(e.target.value)}
-                placeholder="Search rooms..."
+                placeholder="IconSearch rooms..."
                 autoFocus
                 style={{
                   flex: 1,
@@ -2062,7 +2049,7 @@ function LocalChatView(props: {
                   onClick={() => setRoomSearch("")}
                   style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
                 >
-                  <X size={14} color="#8A93A3" />
+                  <IconX stroke={1.5} size={14} color="#8A93A3" />
                 </button>
               )}
             </div>
@@ -2270,7 +2257,7 @@ function LocalChatView(props: {
                         <span style={{ fontSize: 10, color: "#9CA3AF" }}>{time}</span>
                         <button
                           type="button"
-                          aria-label="Flag message"
+                          aria-label="IconFlag message"
                           onClick={() => onFlag(msg.id)}
                           style={{
                             background: "transparent",
@@ -2280,7 +2267,7 @@ function LocalChatView(props: {
                             display: "flex",
                           }}
                         >
-                          <Flag size={11} color="#D1D5DB" />
+                          <IconFlag stroke={1.5} size={11} color="#D1D5DB" />
                         </button>
                       </div>
                     </div>
@@ -2346,7 +2333,7 @@ function LocalChatView(props: {
         />
         <button
           type="button"
-          aria-label="Send"
+          aria-label="IconSend"
           disabled={!newMessage.trim() || !room}
           onClick={onSend}
           style={{
@@ -2363,7 +2350,7 @@ function LocalChatView(props: {
             flexShrink: 0,
           }}
         >
-          <Send size={16} color="#FFFFFF" />
+          <IconSend stroke={1.5} size={16} color="#FFFFFF" />
         </button>
       </div>
     </div>
@@ -2490,7 +2477,7 @@ function AdminJobThreadSheet({
             style={{ padding: 6, background: "transparent", border: "none", cursor: "pointer" }}
             aria-label="Close"
           >
-            <X size={20} color="#8A93A3" />
+            <IconX stroke={1.5} size={20} color="#8A93A3" />
           </button>
         </div>
         <div
@@ -2599,7 +2586,7 @@ function AdminJobThreadSheet({
               opacity: draft.trim() ? 1 : 0.5,
             }}
           >
-            <Send size={16} />
+            <IconSend stroke={1.5} size={16} />
           </button>
         </div>
       </div>

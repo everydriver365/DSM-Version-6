@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, X, Clock, Send, Check, XCircle } from "lucide-react";
+import { IconCheck, IconCircleX, IconClock, IconPlus, IconSend, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
@@ -173,7 +173,7 @@ function WaitlistPage() {
             </div>
           ) : waiting.length === 0 ? (
             <div className="p-10 text-center" style={POPPINS}>
-              <Clock size={36} color="#9CA3AF" style={{ margin: "0 auto 12px" }} />
+              <IconClock stroke={1.5} size={36} color="#9CA3AF" style={{ margin: "0 auto 12px" }} />
               <div className="text-[14px] font-semibold text-[#0B1F3A]">No pupils waiting</div>
               <div className="text-[12px] mt-1" style={{ color: GREY }}>
                 Tap + to add a pupil to the waiting list.
@@ -210,7 +210,7 @@ function WaitlistPage() {
                         className="flex items-center gap-1 px-3 py-1.5 rounded-md text-[12px] font-semibold text-white"
                         style={{ backgroundColor: BLUE, ...POPPINS }}
                       >
-                        <Send size={12} /> Offer
+                        <IconSend stroke={1.5} size={12} /> Offer
                       </button>
                       <button
                         onClick={() => removeWaiting(w.id)}
@@ -237,7 +237,7 @@ function WaitlistPage() {
             </div>
           ) : offers.length === 0 ? (
             <div className="p-10 text-center" style={POPPINS}>
-              <Send size={36} color="#9CA3AF" style={{ margin: "0 auto 12px" }} />
+              <IconSend stroke={1.5} size={36} color="#9CA3AF" style={{ margin: "0 auto 12px" }} />
               <div className="text-[14px] font-semibold text-[#0B1F3A]">No slot offers yet</div>
               <div className="text-[12px] mt-1" style={{ color: GREY }}>
                 Offer a slot to someone on the waiting list.
@@ -311,7 +311,7 @@ function WaitlistPage() {
           }}
           aria-label="Add to waiting list"
         >
-          <Plus size={26} color="#FFFFFF" />
+          <IconPlus stroke={1.5} size={26} color="#FFFFFF" />
         </button>
       )}
 
@@ -410,7 +410,7 @@ function AddWaitlistModal({
             Add to waiting list
           </div>
           <button onClick={onClose} className="p-1">
-            <X size={20} color={GREY} />
+            <IconX stroke={1.5} size={20} color={GREY} />
           </button>
         </div>
 
@@ -585,7 +585,7 @@ function OfferSlotModal({
             Offer slot to {pupilName}
           </div>
           <button onClick={onClose} className="p-1">
-            <X size={20} color={GREY} />
+            <IconX stroke={1.5} size={20} color={GREY} />
           </button>
         </div>
 
@@ -667,7 +667,7 @@ function OfferSlotModal({
             className="flex-1 py-2.5 rounded-md text-[14px] font-semibold text-white disabled:opacity-50"
             style={{ backgroundColor: BLUE, ...POPPINS }}
           >
-            {saving ? "Sending…" : "Send offer"}
+            {saving ? "Sending…" : "IconSend offer"}
           </button>
         </div>
       </div>

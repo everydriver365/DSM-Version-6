@@ -2,24 +2,8 @@ import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import {
-  ArrowLeft,
-  MapPin,
-  CheckCircle2,
-  Package,
-  Star,
-  Camera,
-  Heart,
-  GraduationCap,
-  Wrench,
-  ShieldCheck,
-  Car,
-  BookOpen,
-  Briefcase,
-  Megaphone,
-  Tag,
-  X,
-} from "lucide-react";
+import { IconArrowLeft, IconBriefcase, IconCamera, IconCar, IconCircleCheck, IconHeart, IconMapPin, IconPackage, IconSchool, IconShieldCheck, IconStar, IconTag, IconTool, IconX } from "@tabler/icons-react";
+import { BookOpen, Megaphone } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -70,25 +54,25 @@ interface Listing {
 }
 
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ size?: number; color?: string }>> = {
-  tracking: MapPin,
-  hardware: Camera,
-  dashcams: Camera,
-  health: Heart,
-  learning: GraduationCap,
-  cpd: GraduationCap,
+  tracking: IconMapPin,
+  hardware: IconCamera,
+  dashcams: IconCamera,
+  health: IconHeart,
+  learning: IconSchool,
+  cpd: IconSchool,
   courses: BookOpen,
-  insurance: ShieldCheck,
-  vehicles: Car,
-  cars: Car,
-  maintenance: Wrench,
-  services: Briefcase,
+  insurance: IconShieldCheck,
+  vehicles: IconCar,
+  cars: IconCar,
+  maintenance: IconTool,
+  services: IconBriefcase,
   marketing: Megaphone,
-  promotion: Star,
+  promotion: IconStar,
 };
 
 function iconFor(slug?: string | null) {
-  if (!slug) return Package;
-  return CATEGORY_ICONS[slug] ?? Package;
+  if (!slug) return IconPackage;
+  return CATEGORY_ICONS[slug] ?? IconPackage;
 }
 
 async function sbGet<T>(path: string): Promise<T> {
@@ -184,7 +168,7 @@ function ListingDetailPage() {
             display: "flex",
           }}
         >
-          <ArrowLeft size={22} />
+          <IconArrowLeft stroke={1.5} size={22} />
         </button>
         <div
           style={{
@@ -301,7 +285,7 @@ function ListingDetailPage() {
                       fontWeight: 600,
                     }}
                   >
-                    <CheckCircle2 size={11} /> Verified
+                    <IconCircleCheck stroke={1.5} size={11} /> Verified
                   </span>
                 )}
               </div>
@@ -400,7 +384,7 @@ function ListingDetailPage() {
                   marginBottom: 10,
                 }}
               >
-                <MapPin size={14} />
+                <IconMapPin stroke={1.5} size={14} />
                 {listing.location}
               </div>
             )}
@@ -760,7 +744,7 @@ function EnquirySheet({
               display: "flex",
             }}
           >
-            <X size={20} />
+            <IconX stroke={1.5} size={20} />
           </button>
         </div>
 
@@ -948,5 +932,5 @@ function SimilarCard({
   );
 }
 
-// Silence unused imports lint when Tag is only imported for icon parity
-void Tag;
+// Silence unused imports lint when IconTag is only imported for icon parity
+void IconTag;

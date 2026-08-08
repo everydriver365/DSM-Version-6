@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Plus, X } from "lucide-react";
-import { IconDotsVertical, IconPencil, IconX as IconClose } from "@tabler/icons-react";
+import { IconDotsVertical, IconPencil, IconPlus, IconX, IconX as IconClose } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
@@ -241,7 +240,7 @@ function TestsPage() {
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
           style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
-          <Plus size={15} />
+          <IconPlus stroke={1.5} size={15} />
           Add test
         </button>
       </div>
@@ -1111,7 +1110,7 @@ function SheetShell({
             className="flex items-center justify-center"
             style={{ width: 32, height: 32 }}
           >
-            <X size={18} color="#6B7280" />
+            <IconX stroke={1.5} size={18} color="#6B7280" />
           </button>
         </div>
         <div className="px-4 pt-2 pb-4 overflow-y-auto" style={{ flex: 1, minHeight: 0 }}>

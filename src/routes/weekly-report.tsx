@@ -1,13 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Calendar as CalendarIcon,
-  Users,
-  Star,
-  Download,
-} from "lucide-react";
+import { IconChevronLeft, IconChevronRight, IconDownload, IconStar, IconUsers } from "@tabler/icons-react";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
@@ -394,7 +388,7 @@ function WeeklyReportPage() {
           aria-label="Previous week"
           style={{ background: "transparent", border: "none", padding: 4, cursor: "pointer", color: "#0B1F3A" }}
         >
-          <ChevronLeft size={22} />
+          <IconChevronLeft stroke={1.5} size={22} />
         </button>
         <div className="text-[14px] font-medium" style={{ ...POPPINS, color: "#0B1F3A" }}>
           Week of {DAY_LABELS[0]} {weekStart.getDate()} {MONTH_SHORT[weekStart.getMonth()]}
@@ -412,7 +406,7 @@ function WeeklyReportPage() {
             color: isCurrentWeek ? "#9CA3AF" : "#0B1F3A",
           }}
         >
-          <ChevronRight size={22} />
+          <IconChevronRight stroke={1.5} size={22} />
         </button>
       </div>
 
@@ -493,7 +487,7 @@ function WeeklyReportPage() {
       {/* Section 3 — Pupils this week */}
       <div style={{ margin: "12px 16px 0" }}>
         <CardBox>
-          <SectionHead icon={<Users size={16} color="#1877D6" />} title="Pupils this week" />
+          <SectionHead icon={<IconUsers stroke={1.5} size={16} color="#1877D6" />} title="Pupils this week" />
           {pupilRows.length === 0 ? (
             <div className="text-[13px] mt-3" style={{ ...POPPINS, color: "#6B7280" }}>
               No pupils taught this week.
@@ -614,7 +608,7 @@ function WeeklyReportPage() {
       {/* Section 4 — Highlights */}
       <div style={{ margin: "12px 16px 0" }}>
         <CardBox>
-          <SectionHead icon={<Star size={16} color="#1877D6" />} title="Week highlights" />
+          <SectionHead icon={<IconStar stroke={1.5} size={16} color="#1877D6" />} title="Week highlights" />
           {highlights.length === 0 ? (
             <div className="text-[13px] mt-3" style={{ ...POPPINS, color: "#6B7280" }}>
               No highlights yet for this week.
@@ -649,7 +643,7 @@ function WeeklyReportPage() {
             cursor: "pointer",
           }}
         >
-          <Download size={16} />
+          <IconDownload stroke={1.5} size={16} />
           Export week CSV
         </button>
       </div>

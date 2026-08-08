@@ -1,9 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { RefreshCw, Calendar, MoreHorizontal, X, Search } from "lucide-react";
+import { IconCalendar, IconDots, IconRefresh, IconSearch, IconUsers, IconX } from "@tabler/icons-react";
 import { PageHeader } from "@/components/dsm/PageHeader";
 import { toast } from "sonner";
-import { IconUsers } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { BottomSheet } from "../components/dsm/BottomSheet";
 import { supabase } from "../lib/supabaseClient";
@@ -432,7 +431,7 @@ function LessonSeriesPage() {
         }}
       >
         <div className="flex items-start gap-3">
-          <RefreshCw size={18} color="#1A52A0" />
+          <IconRefresh stroke={1.5} size={18} color="#1A52A0" />
           <div>
             <p style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>Recurring lesson series</p>
             <p style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
@@ -445,7 +444,7 @@ function LessonSeriesPage() {
       {/* List */}
       {series === null ? null : series.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center px-6 py-12">
-          <RefreshCw size={48} color="#D1D5DB" style={{ marginBottom: 12 }} />
+          <IconRefresh stroke={1.5} size={48} color="#D1D5DB" style={{ marginBottom: 12 }} />
           <p style={{ fontSize: 15, fontWeight: 600, color: "#6B7280" }}>No recurring series</p>
           <p style={{ fontSize: 13, color: "#9CA3AF", marginTop: 4 }}>
             Set up weekly lessons to save time booking
@@ -534,7 +533,7 @@ function LessonSeriesPage() {
                       className="cf-tap"
                       style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center" }}
                     >
-                      <MoreHorizontal size={18} color="#6B7280" />
+                      <IconDots stroke={1.5} size={18} color="#6B7280" />
                     </button>
                   </div>
                 </div>
@@ -587,7 +586,7 @@ function LessonSeriesPage() {
 
                 <div className="flex items-center" style={{ gap: 16, marginTop: 8 }}>
                   <div className="flex items-center gap-1">
-                    <Calendar size={12} color="#9CA3AF" />
+                    <IconCalendar stroke={1.5} size={12} color="#9CA3AF" />
                     <span style={{ fontSize: 12, color: "#6B7280" }}>Started {fmtShortDate(s.start_date)}</span>
                   </div>
                   {s.end_date ? (
@@ -712,17 +711,17 @@ function LessonSeriesPage() {
               gap: 8,
             }}
           >
-            <Search size={14} color="#9CA3AF" />
+            <IconSearch stroke={1.5} size={14} color="#9CA3AF" />
             <input
               type="text"
-              placeholder={pupilId ? pupils.find((p) => p.id === pupilId)?.name ?? "Search pupils…" : "Search pupils…"}
+              placeholder={pupilId ? pupils.find((p) => p.id === pupilId)?.name ?? "IconSearch pupils…" : "IconSearch pupils…"}
               value={pupilSearch}
               onChange={(e) => setPupilSearch(e.target.value)}
               style={{ border: "none", outline: "none", flex: 1, fontSize: 14, color: "#0F2044", background: "transparent" }}
             />
             {pupilId && (
               <button type="button" onClick={() => setPupilId("")} aria-label="Clear">
-                <X size={14} color="#9CA3AF" />
+                <IconX stroke={1.5} size={14} color="#9CA3AF" />
               </button>
             )}
           </div>

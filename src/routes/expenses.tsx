@@ -3,25 +3,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { PageHeader } from "@/components/dsm/PageHeader";
-import {
-  Plus,
-  Leaf,
-  Repeat,
-  Mic,
-  X,
-  Fuel,
-  Shield,
-  Megaphone,
-  Wrench,
-  GraduationCap,
-  Car,
-  Phone,
-  Briefcase,
-  MoreHorizontal,
-  Upload,
-  Trash2,
-  Pencil,
-} from "lucide-react";
+import { IconBriefcase, IconCar, IconDots, IconMicrophone, IconPencil, IconPhone, IconPlus, IconRepeat, IconSchool, IconShield, IconTool, IconTrash, IconUpload, IconX } from "@tabler/icons-react";
+import { Leaf, Fuel, Megaphone } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { BottomSheet } from "../components/dsm/BottomSheet";
@@ -44,7 +27,7 @@ const CATEGORIES = [
   "Equipment",
   "Training",
   "Vehicle",
-  "Phone",
+  "IconPhone",
   "Professional fees",
   "Other",
 ] as const;
@@ -58,7 +41,7 @@ const FILTERS: Array<"All" | Category> = [
   "Equipment",
   "Training",
   "Vehicle",
-  "Phone",
+  "IconPhone",
   "Other",
 ];
 
@@ -72,16 +55,16 @@ function hexToRgba(hex: string, alpha: number) {
 const categoryIcon = (category: string, size: number = 16): ReactNode => {
   const icons: Record<string, ReactNode> = {
     'Fuel': <Fuel size={size} />,
-    'Insurance': <Shield size={size} />,
+    'Insurance': <IconShield stroke={1.5} size={size} />,
     'Marketing': <Megaphone size={size} />,
-    'Equipment': <Wrench size={size} />,
-    'Training': <GraduationCap size={size} />,
-    'Vehicle': <Car size={size} />,
-    'Phone': <Phone size={size} />,
-    'Professional fees': <Briefcase size={size} />,
-    'Other': <MoreHorizontal size={size} />,
+    'Equipment': <IconTool stroke={1.5} size={size} />,
+    'Training': <IconSchool stroke={1.5} size={size} />,
+    'Vehicle': <IconCar stroke={1.5} size={size} />,
+    'IconPhone': <IconPhone stroke={1.5} size={size} />,
+    'Professional fees': <IconBriefcase stroke={1.5} size={size} />,
+    'Other': <IconDots stroke={1.5} size={size} />,
   };
-  return icons[category] || <MoreHorizontal size={size} />;
+  return icons[category] || <IconDots stroke={1.5} size={size} />;
 };
 
 const categoryColour = (category: string) => {
@@ -92,7 +75,7 @@ const categoryColour = (category: string) => {
     'Equipment': '#6B7280',
     'Training': '#10B981',
     'Vehicle': '#EF4444',
-    'Phone': '#06B6D4',
+    'IconPhone': '#06B6D4',
     'Professional fees': '#0B1F3A',
     'Other': '#9CA3AF',
   };
@@ -230,7 +213,7 @@ function ExpensesPage() {
               fontSize: 13,
             }}
           >
-            <Plus size={16} /> Add expense
+            <IconPlus stroke={1.5} size={16} /> Add expense
           </button>
         }
       />
@@ -307,7 +290,7 @@ function ExpensesPage() {
           <PageLoader />
         ) : grouped.length === 0 ? (
           <EmptyState
-            icon={Briefcase}
+            icon={IconBriefcase}
             title="No expenses yet"
             description="Track your business costs to make tax season painless."
           />
@@ -482,7 +465,7 @@ function ExpenseRow({
                     gap: 4,
                   }}
                 >
-                  <Repeat size={10} /> {row.recurring_frequency ?? "Recurring"}
+                  <IconRepeat stroke={1.5} size={10} /> {row.recurring_frequency ?? "Recurring"}
                 </span>
               )}
             </div>
@@ -518,7 +501,7 @@ function ExpenseRow({
               fontSize: 13,
             }}
           >
-            <Pencil size={14} /> Edit
+            <IconPencil stroke={1.5} size={14} /> Edit
           </button>
           <button
             type="button"
@@ -539,7 +522,7 @@ function ExpenseRow({
               fontSize: 13,
             }}
           >
-            <Trash2 size={14} /> Delete
+            <IconTrash stroke={1.5} size={14} /> Delete
           </button>
           {row.receipt_url && (
             <a
@@ -753,7 +736,7 @@ function AddEditSheet({
                 justifyContent: "center",
               }}
             >
-              <Mic size={16} />
+              <IconMicrophone stroke={1.5} size={16} />
             </button>
           </div>
         </Field>
@@ -805,7 +788,7 @@ function AddEditSheet({
               fontWeight: 600,
             }}
           >
-            <Upload size={16} />
+            <IconUpload stroke={1.5} size={16} />
             {receiptFile ? receiptFile.name : "Choose file"}
             <input
               type="file"

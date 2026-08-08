@@ -1,7 +1,8 @@
 import { SkeletonCard } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ChevronRight, Plus, Search, X, Megaphone, Users, MoreVertical, ArrowUpDown } from "lucide-react";
+import { IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconUsers, IconX } from "@tabler/icons-react";
+import { Megaphone, ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { getPupilBalance } from "@/lib/payments";
@@ -680,7 +681,7 @@ function PupilsIndexPage() {
                     padding: 0,
                   }}
                 >
-                  <MoreVertical size={14} color="#6B7280" />
+                  <IconDotsVertical stroke={1.5} size={14} color="#6B7280" />
                 </button>
               )}
             />
@@ -754,9 +755,9 @@ function PupilsIndexPage() {
             }}
           >
             {searchOpen ? (
-              <X size={16} color="#1877D6" />
+              <IconX stroke={1.5} size={16} color="#1877D6" />
             ) : (
-              <Search size={16} color="#1877D6" />
+              <IconSearch stroke={1.5} size={16} color="#1877D6" />
             )}
           </button>
           <button
@@ -780,7 +781,7 @@ function PupilsIndexPage() {
         </div>
       </div>
 
-      {/* Search input */}
+      {/* IconSearch input */}
       {searchOpen && (
         <div
           style={{
@@ -794,12 +795,12 @@ function PupilsIndexPage() {
             gap: 10,
           }}
         >
-          <Search size={16} color="#9CA3AF" />
+          <IconSearch stroke={1.5} size={16} color="#9CA3AF" />
           <input
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search pupils..."
+            placeholder="IconSearch pupils..."
             style={{
               flex: 1,
               border: 'none',
@@ -821,7 +822,7 @@ function PupilsIndexPage() {
           <SkeletonCard rows={5} />
         ) : filtered.length === 0 ? (
           <EmptyState
-            icon={Users}
+            icon={IconUsers}
             title="No active pupils"
             description="Add your first pupil to start tracking lessons."
             action={
@@ -830,7 +831,7 @@ function PupilsIndexPage() {
                 className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
                 style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
               >
-                <Plus size={16} /> Add pupil
+                <IconPlus stroke={1.5} size={16} /> Add pupil
               </Link>
             }
           />
@@ -898,7 +899,7 @@ function PupilsIndexPage() {
           bottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)",
         }}
       >
-        <Plus size={24} color="#FFFFFF" />
+        <IconPlus stroke={1.5} size={24} color="#FFFFFF" />
       </Link>
 
       <UnifiedPaymentSheet

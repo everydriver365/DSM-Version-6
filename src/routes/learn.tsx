@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronRight, Star, TrendingUp, Play, ShoppingBag, Award, CalendarOff, Zap, X, Download, Check, Film } from "lucide-react";
-import { IconPlayerPlay } from "@tabler/icons-react";
+import { IconAward, IconBolt, IconCheck, IconChevronRight, IconDownload, IconPlayerPlay, IconStar, IconTrendingUp, IconX } from "@tabler/icons-react";
+import { ShoppingBag, CalendarOff, Film } from "lucide-react";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -37,14 +37,14 @@ const GROUPS: { heading: string; items: Guide[] }[] = [
     heading: "Grow your business",
     items: [
       { icon: ShoppingBag, title: "Marketplace", description: "Sell courses, resources and services to other ADIs.", route: "/marketplace" },
-      { icon: Award, title: "Accreditations", description: "Show pupils the qualifications you've earned.", route: "/certifications" },
+      { icon: IconAward, title: "Accreditations", description: "Show pupils the qualifications you've earned.", route: "/certifications" },
     ],
   },
   {
     heading: "Organize your day",
     items: [
       { icon: CalendarOff, title: "Gap Filler", description: "Find pupils to book into empty slots automatically.", route: "/gaps" },
-      { icon: Zap, title: "Auto-booking", description: "Let pupils book themselves into your free time.", route: "/availability" },
+      { icon: IconBolt, title: "Auto-booking", description: "Let pupils book themselves into your free time.", route: "/availability" },
     ],
   },
 ];
@@ -199,7 +199,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
               justifyContent: "center",
             }}
           >
-            <Play size={18} color={NAVY} fill={NAVY} style={{ marginLeft: 2 }} />
+            <IconPlayerPlay stroke={1.5} size={18} color={NAVY} fill={NAVY} style={{ marginLeft: 2 }} />
           </div>
         </div>
         <div
@@ -222,7 +222,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
           <button
             type="button"
             onClick={handleDownload}
-            aria-label={cached ? "Available offline" : "Download for offline"}
+            aria-label={cached ? "Available offline" : "IconDownload for offline"}
             style={{
               position: "absolute",
               top: 8,
@@ -240,9 +240,9 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
             }}
           >
             {cached ? (
-              <Check size={15} color="#FFFFFF" strokeWidth={3} />
+              <IconCheck stroke={1.5} size={15} color="#FFFFFF" strokeWidth={3} />
             ) : (
-              <Download size={15} color="#FFFFFF" />
+              <IconDownload stroke={1.5} size={15} color="#FFFFFF" />
             )}
           </button>
         )}
@@ -319,7 +319,7 @@ function ArticleRow({ onGo, isLast }: { onGo: () => void; isLast: boolean }) {
           flexShrink: 0,
         }}
       >
-        <Star size={17} color={BLUE} fill={BLUE} />
+        <IconStar stroke={1.5} size={17} color={BLUE} fill={BLUE} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: 13, fontWeight: 600, color: NAVY, lineHeight: 1.3 }}>
@@ -329,7 +329,7 @@ function ArticleRow({ onGo, isLast }: { onGo: () => void; isLast: boolean }) {
           2 min read
         </div>
       </div>
-      <ChevronRight size={18} color={GRAY_SUBTITLE} />
+      <IconChevronRight stroke={1.5} size={18} color={GRAY_SUBTITLE} />
     </button>
   );
 }
@@ -376,7 +376,7 @@ function GuideRow({ g, onGo, isLast }: { g: Guide; onGo: () => void; isLast: boo
           {g.description}
         </div>
       </div>
-      <ChevronRight size={18} color={GRAY_SUBTITLE} />
+      <IconChevronRight stroke={1.5} size={18} color={GRAY_SUBTITLE} />
     </button>
   );
 }
@@ -451,7 +451,7 @@ function LearnPage() {
 
       <div style={{ marginTop: 20 }}>
         <SectionLabel
-          icon={<IconPlayerPlay size={14} color={BLUE} />}
+          icon={<IconPlayerPlay stroke={1.5} size={14} color={BLUE} />}
           label="How to"
         />
         <div
@@ -478,7 +478,7 @@ function LearnPage() {
 
       <div style={{ marginTop: 24 }}>
         <SectionLabel
-          icon={<TrendingUp size={14} color={BLUE} />}
+          icon={<IconTrendingUp stroke={1.5} size={14} color={BLUE} />}
           label="Grow your business"
         />
         <div
@@ -508,7 +508,7 @@ function LearnPage() {
       {GROUPS.slice(1).map((group) => (
         <div key={group.heading} style={{ marginTop: 24 }}>
           <SectionLabel
-            icon={<IconPlayerPlay size={14} color={BLUE} />}
+            icon={<IconPlayerPlay stroke={1.5} size={14} color={BLUE} />}
             label={group.heading}
           />
           <div
@@ -567,7 +567,7 @@ function LearnPage() {
               cursor: "pointer",
             }}
           >
-            <X size={20} color="#FFFFFF" />
+            <IconX stroke={1.5} size={20} color="#FFFFFF" />
           </button>
           {(() => {
             const embed = playing.url ? getYouTubeEmbedUrl(playing.url) : null;

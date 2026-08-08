@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { MoreVertical, Pencil, Trash2, Search } from "lucide-react";
+import { IconArchive, IconCalendar, IconChevronDown, IconChevronLeft, IconChevronUp, IconCurrencyPound, IconDotsVertical, IconId, IconMapPin, IconPencil, IconPhone, IconSearch, IconTrash } from "@tabler/icons-react";
 import { PageHeader } from "@/components/dsm/PageHeader";
-import { IconArchive, IconChevronUp, IconChevronDown, IconChevronLeft, IconPhone, IconMapPin, IconCurrencyPound, IconId, IconCalendar, IconPencil, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet, SheetGroup, SheetDivider, PrimaryButton, GhostButton } from "@/components/dsm/BottomSheetV2";
@@ -208,11 +207,11 @@ function AdminInstructorsPage() {
       {/* SEARCH */}
       <div style={{ padding: "12px 16px", borderBottom: `0.5px solid ${BORDER}`, backgroundColor: "#fff" }}>
         <div className="flex items-center gap-2 rounded-xl px-3" style={{ backgroundColor: "#F1F4F9", height: 38 }}>
-          <Search size={15} color={MUTED} />
+          <IconSearch stroke={1.5} size={15} color={MUTED} />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name..."
+            placeholder="IconSearch by name..."
             className="flex-1 bg-transparent outline-none"
             style={{ fontSize: 13, color: NAVY }}
           />
@@ -289,7 +288,7 @@ function AdminInstructorsPage() {
                 }}
                 className="p-1"
               >
-                <MoreVertical size={16} color="#D1D5DB" />
+                <IconDotsVertical stroke={1.5} size={16} color="#D1D5DB" />
               </button>
 
               {menuFor === inst.id && (
@@ -311,7 +310,7 @@ function AdminInstructorsPage() {
                       className="flex items-center gap-2 w-full text-left px-3 py-3"
                       style={{ fontSize: 13, color: NAVY }}
                     >
-                      <Pencil size={15} color={NAVY} /> Edit details
+                      <IconPencil stroke={1.5} size={15} color={NAVY} /> Edit details
                     </button>
                     <button
                       type="button"
@@ -322,7 +321,7 @@ function AdminInstructorsPage() {
                       className="flex items-center gap-2 w-full text-left px-3 py-3"
                       style={{ fontSize: 13, color: RED, borderTop: `0.5px solid ${BORDER}` }}
                     >
-                      <Trash2 size={15} color={RED} /> Remove instructor
+                      <IconTrash stroke={1.5} size={15} color={RED} /> Remove instructor
                     </button>
                   </div>
                 </>
@@ -702,7 +701,7 @@ function AdminInstructorsPage() {
                 gap: 8,
               }}
             >
-              <IconPencil size={18} color="#fff" /> Edit details
+              <IconPencil stroke={1.5} size={18} color="#fff" /> Edit details
             </button>
             <button
               type="button"
@@ -727,7 +726,7 @@ function AdminInstructorsPage() {
                 gap: 8,
               }}
             >
-              <IconTrash size={18} color="#CC2229" /> Remove instructor
+              <IconTrash stroke={1.5} size={18} color="#CC2229" /> Remove instructor
             </button>
           </div>
         </div>

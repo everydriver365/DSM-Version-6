@@ -1,7 +1,8 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Plus, X, Pencil, Trash2, Eye, EyeOff, Music } from "lucide-react";
+import { IconEye, IconEyeOff, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
+import { Music } from "lucide-react";
 import { PageHeader } from "@/components/dsm/PageHeader";
 import { useAdminGate } from "./admin";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
@@ -259,7 +260,7 @@ function AdminPodcasts() {
               gap: 4,
             }}
           >
-            <Plus size={14} /> Add episode
+            <IconPlus stroke={1.5} size={14} /> Add episode
           </button>
         }
       />
@@ -344,14 +345,14 @@ function AdminPodcasts() {
                 onClick={() => openEdit(p)}
                 style={btn("#0F2044", "#fff")}
               >
-                <Pencil size={12} /> Edit
+                <IconPencil stroke={1.5} size={12} /> Edit
               </button>
               <button
                 type="button"
                 onClick={() => togglePublish(p)}
                 style={btn(p.is_published ? "#F3F4F6" : "#16A34A", p.is_published ? "#0F2044" : "#fff")}
               >
-                {p.is_published ? <EyeOff size={12} /> : <Eye size={12} />}
+                {p.is_published ? <IconEyeOff stroke={1.5} size={12} /> : <IconEye stroke={1.5} size={12} />}
                 {p.is_published ? "Unpublish" : "Publish"}
               </button>
               <button
@@ -359,7 +360,7 @@ function AdminPodcasts() {
                 onClick={() => handleDelete(p)}
                 style={btn("#fff", "#CC2229", "#CC2229")}
               >
-                <Trash2 size={12} /> Delete
+                <IconTrash stroke={1.5} size={12} /> Delete
               </button>
             </div>
           </div>
@@ -400,7 +401,7 @@ function AdminPodcasts() {
                 onClick={() => setShowSheet(false)}
                 style={{ background: "transparent", border: 0, cursor: "pointer", color: "#6B7280" }}
               >
-                <X size={20} />
+                <IconX stroke={1.5} size={20} />
               </button>
             </div>
 

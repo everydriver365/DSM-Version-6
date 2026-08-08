@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { CalendarDays, MapPin, Clock, Bell } from "lucide-react";
-import { IconDotsVertical, IconPencil, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconClock, IconDotsVertical, IconMapPin, IconPencil, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -138,7 +137,7 @@ function UpcomingTestsPage() {
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
           style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
-          <Bell size={15} />
+          <IconBell stroke={1.5} size={15} />
           Test reminders
         </button>
       </div>
@@ -446,18 +445,18 @@ function TestRow({
 
           <div className="flex flex-wrap items-center gap-2 mt-2 text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
             <span className="inline-flex items-center gap-1">
-              <Clock size={12} strokeWidth={2} color="#6B7280" />
+              <IconClock stroke={1.5} size={12} strokeWidth={2} color="#6B7280" />
               {formatTime(test.test_time) || "Time TBC"}
             </span>
             <span style={{ color: "#E2E8F0" }}>·</span>
             <span className="inline-flex items-center gap-1">
-              <MapPin size={12} strokeWidth={2} color="#6B7280" />
+              <IconMapPin stroke={1.5} size={12} strokeWidth={2} color="#6B7280" />
               {test.test_centre || "Centre TBC"}
             </span>
           </div>
 
           <div className="text-[11px] font-medium mt-2" style={{ color: "#1877D6", ...POPPINS }}>
-            <CalendarDays size={12} strokeWidth={2} className="inline mr-1" color="#1877D6" />
+            <IconCalendar stroke={1.5} size={12} strokeWidth={2} className="inline mr-1" color="#1877D6" />
             {formatCountdown(test.test_date, test.test_time) ?? "Overdue"}
           </div>
         </div>

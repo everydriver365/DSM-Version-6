@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { toast } from "sonner";
-import { Pencil, Archive, Phone, MessageSquare, X, Loader2, MapPin, Clock, Sunrise, Sun, Moon, GraduationCap, Settings } from "lucide-react";
+import { IconArchive, IconClock, IconLoader2, IconMapPin, IconMessage, IconMoon, IconPencil, IconPhone, IconSchool, IconSettings, IconSun, IconSunrise, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 import { Card } from "../components/dsm/Card";
@@ -211,7 +211,7 @@ function CourseDetailPage() {
   }
 
   async function archive() {
-    if (!(await askConfirm({ title: "Archive course", message: "Archive this course? It will be hidden from your active list.", confirmLabel: "Archive", destructive: false }))) return;
+    if (!(await askConfirm({ title: "IconArchive course", message: "IconArchive this course? It will be hidden from your active list.", confirmLabel: "IconArchive", destructive: false }))) return;
     const { error: upErr } = await supabase
       .from("instructor_courses")
       .update({ status: "archived" })
@@ -286,16 +286,16 @@ function CourseDetailPage() {
           style={{ background: "none", border: "none", cursor: "pointer", color: "#1877D6", display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600 }}
           aria-label={editing ? "Cancel edit" : "Edit"}
         >
-          {editing ? <X size={18} /> : <Pencil size={16} />}
+          {editing ? <IconX stroke={1.5} size={18} /> : <IconPencil stroke={1.5} size={16} />}
           {editing ? "Cancel" : "Edit"}
         </button>
         <button
           onClick={archive}
           style={{ background: "none", border: "none", cursor: "pointer", color: "#1877D6", display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600 }}
-          aria-label="Archive"
+          aria-label="IconArchive"
         >
-          <Archive size={16} />
-          Archive
+          <IconArchive stroke={1.5} size={16} />
+          IconArchive
         </button>
       </div>
 
@@ -459,14 +459,14 @@ function CourseDetailPage() {
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                       {([
-                        { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#1877D6", full: false },
-                        { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: Sunrise, color: "#1877D6", full: false },
-                        { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: Sun, color: "#E8641A", full: false },
-                        { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: Moon, color: "#1877D6", full: false },
-                        { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: Sun, color: "#1877D6", full: false },
-                        { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#1877D6", full: false },
-                        { key: "custom", label: "Custom", desc: "Set your own times", Icon: Settings, color: "#6B7280", full: true },
-                      ] as Array<{ key: string; label: string; desc: string; Icon: typeof Clock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
+                        { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: IconClock, color: "#1877D6", full: false },
+                        { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: IconSunrise, color: "#1877D6", full: false },
+                        { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: IconSun, color: "#E8641A", full: false },
+                        { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: IconMoon, color: "#1877D6", full: false },
+                        { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: IconSun, color: "#1877D6", full: false },
+                        { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: IconSchool, color: "#1877D6", full: false },
+                        { key: "custom", label: "Custom", desc: "Set your own times", Icon: IconSettings, color: "#6B7280", full: true },
+                      ] as Array<{ key: string; label: string; desc: string; Icon: typeof IconClock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
                         const active = (form.lesson_time_preference || "flexible") === key;
                         return (
                           <button
@@ -595,7 +595,7 @@ function CourseDetailPage() {
                           [4, "Thu"],
                           [5, "Fri"],
                           [6, "Sat"],
-                          [0, "Sun"],
+                          [0, "IconSun"],
                         ] as const).map(([d, lbl]) => {
                           const days = form.repeat_days ?? [];
                           const active = days.includes(d);
@@ -874,7 +874,7 @@ function CourseDetailPage() {
                             style={{ flex: 1, textDecoration: "none" }}
                           >
                             <Button variant="ghost" inline style={{ width: "100%", height: 36 }}>
-                              <Phone size={14} style={{ marginRight: 6 }} />
+                              <IconPhone stroke={1.5} size={14} style={{ marginRight: 6 }} />
                               Call
                             </Button>
                           </a>
@@ -883,7 +883,7 @@ function CourseDetailPage() {
                             style={{ flex: 1, textDecoration: "none" }}
                           >
                             <Button variant="ghost" inline style={{ width: "100%", height: 36 }}>
-                              <MessageSquare size={14} style={{ marginRight: 6 }} />
+                              <IconMessage stroke={1.5} size={14} style={{ marginRight: 6 }} />
                               Text
                             </Button>
                           </a>
@@ -920,7 +920,7 @@ function CourseDetailPage() {
                 <Button variant="primary" onClick={saveChanges} disabled={saving}>
                   {saving ? (
                     <>
-                      <Loader2 size={16} className="animate-spin" style={{ marginRight: 6 }} />
+                      <IconLoader2 stroke={1.5} size={16} className="animate-spin" style={{ marginRight: 6 }} />
                       Saving…
                     </>
                   ) : (
@@ -928,7 +928,7 @@ function CourseDetailPage() {
                   )}
                 </Button>
                 <Button variant="destructive" onClick={archive}>
-                  Archive course
+                  IconArchive course
                 </Button>
               </div>
             )}
@@ -1204,13 +1204,13 @@ function AddBookingSheet({
             style={{ background: "none", border: "none", cursor: "pointer", color: LABEL, display: "flex" }}
             aria-label="Close"
           >
-            <X size={22} />
+            <IconX stroke={1.5} size={22} />
           </button>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <Input label="Pupil name" value={name} onChange={(e) => setName(e.target.value)} />
-          <Input label="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+          <Input label="IconPhone" value={phone} onChange={(e) => setPhone(e.target.value)} />
           <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           <Input
             label="Amount paid (£)"
@@ -1238,7 +1238,7 @@ function AddBookingSheet({
           <Button variant="primary" onClick={save} disabled={saving}>
             {saving ? (
               <>
-                <Loader2 size={16} className="animate-spin" style={{ marginRight: 6 }} />
+                <IconLoader2 stroke={1.5} size={16} className="animate-spin" style={{ marginRight: 6 }} />
                 Saving…
               </>
             ) : (
@@ -1355,7 +1355,7 @@ function PostcodeAutocomplete(props: {
   return (
     <div style={{ position: "relative" }}>
       <div style={{ position: "relative" }}>
-        <MapPin
+        <IconMapPin stroke={1.5}
           size={16}
           color="#6B7280"
           style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
@@ -1456,7 +1456,7 @@ function PostcodeAutocomplete(props: {
                 fontFamily: "Poppins, sans-serif",
               }}
             >
-              <MapPin size={14} color="#6B7280" />
+              <IconMapPin stroke={1.5} size={14} color="#6B7280" />
               <span style={{ fontWeight: 700, color: "#0B1F3A", fontSize: 14 }}>{s.postcode}</span>
               <span style={{ color: "#6B7280", fontSize: 13 }}>{s.area}</span>
             </div>

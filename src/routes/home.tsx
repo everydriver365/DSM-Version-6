@@ -23,147 +23,8 @@ import { LessonActionsSheet } from "@/components/lessons/LessonActionsSheet";
 import { WelcomeOverlay } from "@/components/dsm/WelcomeOverlay";
 
 
-import {
-  Phone,
-  Building2 as Building,
-  Info,
-  Car,
-  Bell,
-  Menu,
-  MessageSquare,
-  CreditCard,
-  Navigation,
-  CalendarOff,
-  Search,
-  Calendar as CalendarIcon,
-  CalendarCheck,
-  Users,
-  PoundSterling,
-  Settings as SettingsIcon,
-  RefreshCw,
-  Plus,
-  TrendingUp,
-  Receipt,
-  Clock,
-  BarChart2,
-  BarChart3,
-  CheckSquare,
-  FileText,
-  GraduationCap,
-  Star,
-  Inbox,
-  BookOpen,
-  Gift,
-  HelpCircle,
-  Calculator,
-  ClipboardList,
-  Copy,
-  ClipboardCheck,
-
-  Fuel,
-  Heart,
-  FolderOpen,
-  LayoutGrid,
-  FileSignature,
-  MapPin,
-  Map,
-  Upload,
-  Award,
-  ToggleLeft,
-  Sun,
-  Tag,
-  Zap,
-  CalendarDays,
-  Calendar,
-  Settings,
-  Crown,
-  X,
-  UserCircle,
-  PlayCircle,
-  ChevronDown,
-  ChevronUp,
-  ChevronLeft,
-  ChevronRight,
-  Send,
-  CheckCheck,
-  FileSpreadsheet,
-  AlertCircle,
-  Trophy,
-  LogOut,
-  LogIn,
-  Globe,
-  Mail,
-  User,
-  Trash2,
-  ArrowLeftRight,
-  Moon,
-  Megaphone,
-  Activity,
-  CheckCircle2,
-  Sparkles,
-
-  Laptop,
-  Package,
-  XCircle,
-  AlertTriangle,
-  FileCheck,
-  Grid,
-  ArrowRight,
-  Smartphone,
-  Headphones,
-  Infinity,
-  MoreHorizontal,
-  Move,
-  Camera,
-  Video,
-  Radio,
-  Shield,
-  ShieldAlert,
-  Mic,
-  Pencil,
-} from "lucide-react";
-import {
-  IconCurrencyPound,
-  IconCalendarStats,
-  IconClockHour4,
-  IconAlertTriangle,
-  IconBolt,
-  IconChevronRight,
-  IconSparkles,
-  IconPhone,
-  IconMessage,
-  IconPlayerPlay,
-  IconCalendarEvent,
-  IconUsers,
-  IconWallet,
-  IconMessageCircle,
-  IconLayoutGrid,
-  IconX,
-  IconCalendar,
-  IconMapPin,
-  IconClock,
-  IconDots,
-  IconDotsVertical,
-  IconSearch,
-  IconCreditCard,
-
-  IconUserPlus,
-  IconCalendarPlus,
-  IconReceipt,
-  IconSpeakerphone,
-  IconChartBar,
-  IconSteeringWheel,
-  IconMicrophone,
-  IconBriefcase,
-  IconCircleCheck,
-  IconArrowRight,
-  IconGift,
-  IconNavigation,
-  IconClipboardList,
-  IconClockExclamation,
-  IconCurrentLocation,
-  IconPencil,
-} from "@tabler/icons-react";
+import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconAward, IconBell, IconBolt, IconBriefcase, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconChartBar, IconCheckbox, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconCircleX, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDots, IconDotsVertical, IconFileText, IconGift, IconHeart, IconInbox, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPlay, IconPlus, IconRadio, IconReceipt, IconRefresh, IconSchool, IconSearch, IconSend, IconSettings, IconShield, IconSparkles, IconSpeakerphone, IconStar, IconSteeringWheel, IconSun, IconTag, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserPlus, IconUsers, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
+import { CalendarOff, Receipt, BookOpen, HelpCircle, Calculator, Fuel, FolderOpen, FileSignature, ToggleLeft, Crown, UserCircle, PlayCircle, CheckCheck, FileSpreadsheet, ArrowLeftRight, Megaphone, Sparkles, FileCheck, Headphones, Infinity, Move, Video, ShieldAlert, Building2 as Building, Calendar as CalendarIcon, Settings as SettingsIcon } from "lucide-react";
 
 
 
@@ -227,7 +88,7 @@ async function handleSyncGoogleClick() {
 }
 
 
-// -------------------- Next Lesson Google Map --------------------
+// -------------------- Next Lesson Google IconMap --------------------
 const GMAPS_SCRIPT_ID = "google-maps-js-script";
 const GMAPS_BROWSER_KEY = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined;
 
@@ -290,7 +151,7 @@ function NextLessonMap({
     let cancelled = false;
     loadGoogleMapsJs()
       .then(() => { if (!cancelled) setReady(true); })
-      .catch((e) => { if (!cancelled) setError(e?.message ?? "Map failed to load"); });
+      .catch((e) => { if (!cancelled) setError(e?.message ?? "IconMap failed to load"); });
     return () => { cancelled = true; };
   }, []);
 
@@ -412,7 +273,7 @@ function NextLessonMap({
       )}
       {error && (
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#6B7280' }}>
-          Map unavailable
+          IconMap unavailable
         </div>
       )}
     </div>
@@ -612,10 +473,10 @@ const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string
   jobs:  { chipBg: '#FBEFE1', accent: '#B5661E', Icon: IconBriefcase },
   calls: { chipBg: '#F0EBFF', accent: '#6B4FD6', Icon: IconPhone },
   enq:   { chipBg: '#EAF3DE', accent: '#2E9E5B', Icon: IconMessageCircle },
-  cancellations: { chipBg: '#FEF2F2', accent: '#CC2229', Icon: XCircle },
-  reschedules:   { chipBg: '#FFFBEB', accent: '#D97706', Icon: RefreshCw },
-  certs_expired:  { chipBg: '#FEF2F2', accent: '#CC2229', Icon: AlertCircle },
-  certs_expiring: { chipBg: '#FFFBEB', accent: '#D97706', Icon: Clock },
+  cancellations: { chipBg: '#FEF2F2', accent: '#CC2229', Icon: IconCircleX },
+  reschedules:   { chipBg: '#FFFBEB', accent: '#D97706', Icon: IconRefresh },
+  certs_expired:  { chipBg: '#FEF2F2', accent: '#CC2229', Icon: IconAlertCircle },
+  certs_expiring: { chipBg: '#FFFBEB', accent: '#D97706', Icon: IconClock },
   birthday: { chipBg: '#F0EBFF', accent: '#6B4FD6', Icon: IconGift },
 };
 
@@ -652,7 +513,7 @@ function NeedsAttentionRow({ item }: { item: NAItem }) {
           {item.subtitle}
         </div>
       </div>
-      <IconChevronRight size={15} color="#B0BAC9" />
+      <IconChevronRight stroke={1.5} size={15} color="#B0BAC9" />
     </div>
   );
 }
@@ -661,7 +522,7 @@ function NeedsAttentionAllClear() {
   return (
     <div style={NA_CARD_STYLE}>
       <div style={{ width: 36, height: 36, borderRadius: 11, background: '#EAF3DE', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <IconCircleCheck size={18} color="#2E9E5B" />
+        <IconCircleCheck stroke={1.5} size={18} color="#2E9E5B" />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: 13, fontWeight: 500, color: '#12142B', fontFamily: 'Poppins, sans-serif' }}>All clear</div>
@@ -868,7 +729,7 @@ function TodayLessonsTile({
           flexShrink: 0,
         }}
       >
-        <IconCalendar size={18} strokeWidth={1.5} />
+        <IconCalendar stroke={1.5} size={18} strokeWidth={1.5} />
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -898,7 +759,7 @@ function TodayLessonsTile({
                 padding: 0,
               }}
             >
-              <Plus size={14} strokeWidth={2.5} />
+              <IconPlus stroke={1.5} size={14} strokeWidth={2.5} />
             </button>
           )}
         </div>
@@ -1291,7 +1152,7 @@ function TileCard({
           boxShadow: "0 1px 2px rgba(11, 31, 58, 0.06)",
         }}
       >
-        <ChevronRight size={16} color="#0B1F3A" strokeWidth={2.4} />
+        <IconChevronRight stroke={1.5} size={16} color="#0B1F3A" strokeWidth={2.4} />
       </span>
     </button>
   );
@@ -1382,7 +1243,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
         </div>
         <button
           type="button"
-          aria-label="Search actions"
+          aria-label="IconSearch actions"
           onClick={() => {
             const next = !searchOpen;
             setSearchOpen(next);
@@ -1401,7 +1262,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
             cursor: 'pointer',
           }}
         >
-          <IconSearch size={16} color="#1877D6" />
+          <IconSearch stroke={1.5} size={16} color="#1877D6" />
         </button>
       </div>
 
@@ -1418,12 +1279,12 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
             marginBottom: 14,
           }}
         >
-          <IconSearch size={15} color="#B0BAC9" />
+          <IconSearch stroke={1.5} size={15} color="#B0BAC9" />
           <input
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search actions..."
+            placeholder="IconSearch actions..."
             style={{
               flex: 1,
               border: 'none',
@@ -1444,7 +1305,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
             }}
             style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'inline-flex' }}
           >
-            <IconX size={14} color="#B0BAC9" />
+            <IconX stroke={1.5} size={14} color="#B0BAC9" />
           </button>
         </div>
       )}
@@ -2379,15 +2240,15 @@ function HomePage() {
     const map: Record<string, { bg: string; Icon: any; route: string }> = {
       booking: { bg: "#1877D6", Icon: BookOpen, route: "/bookings" },
       course_booking: { bg: "#1877D6", Icon: BookOpen, route: "/bookings" },
-      payment: { bg: "#16A34A", Icon: PoundSterling, route: "/payments" },
-      message: { bg: "#00B5A5", Icon: MessageSquare, route: "/messages" },
-      rewards: { bg: "#D97706", Icon: Trophy, route: "/rewards" },
-      pupil_reply: { bg: "#00B5A5", Icon: MessageSquare, route: "/messages" },
+      payment: { bg: "#16A34A", Icon: IconCurrencyPound, route: "/payments" },
+      message: { bg: "#00B5A5", Icon: IconMessage, route: "/messages" },
+      rewards: { bg: "#D97706", Icon: IconTrophy, route: "/rewards" },
+      pupil_reply: { bg: "#00B5A5", Icon: IconMessage, route: "/messages" },
       chat_message: { bg: "#7C3AED", Icon: IconMessageCircle, route: "/community" },
 
-      gap_accepted: { bg: "#1E8E3E", Icon: Zap, route: "/gaps" },
-      gap_message_sent: { bg: "#1877D6", Icon: Send, route: "/gaps" },
-      default: { bg: "#CC2229", Icon: Bell, route: "/notifications" },
+      gap_accepted: { bg: "#1E8E3E", Icon: IconBolt, route: "/gaps" },
+      gap_message_sent: { bg: "#1877D6", Icon: IconSend, route: "/gaps" },
+      default: { bg: "#CC2229", Icon: IconBell, route: "/notifications" },
     };
     const cfg = map[type] ?? map.default;
     const Icon = cfg.Icon;
@@ -2467,7 +2328,7 @@ function HomePage() {
             flexShrink: 0,
           }}
         >
-          <X size={16} color="rgba(255,255,255,0.6)" />
+          <IconX stroke={1.5} size={16} color="rgba(255,255,255,0.6)" />
         </button>
       </div>
     );
@@ -3809,7 +3670,7 @@ function HomePage() {
               )}
             </div>
             <div className="flex items-center" style={{ gap: 4, fontSize: 12, color: postcode ? "#6B7280" : "#9CA3AF" }}>
-              <MapPin size={10} />
+              <IconMapPin stroke={1.5} size={10} />
               <span>{postcode ?? "No pickup set"}</span>
             </div>
             <div style={{ fontSize: 13, color: "#6B7280" }}>
@@ -4115,68 +3976,68 @@ function HomePage() {
   const quickAccessTiles = [
     { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Schedule", route: "/schedule" },
     
-    { icon: <Map size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Start tracking", route: "/live" },
-    { icon: <CalendarCheck size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Month end", route: "/monthend" },
-    { icon: <Users size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
-    { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
-    { icon: <PoundSterling size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Payments", route: "/payments" },
-    { icon: <MessageSquare size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Messages", route: "/messages" },
-    { icon: <TrendingUp size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Earnings", route: "/earnings" },
+    { icon: <IconMap stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Start tracking", route: "/live" },
+    { icon: <IconCalendarCheck stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Month end", route: "/monthend" },
+    { icon: <IconUsers stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
+    { icon: <IconSchool stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
+    { icon: <IconCurrencyPound stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Payments", route: "/payments" },
+    { icon: <IconMessage stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Messages", route: "/messages" },
+    { icon: <IconTrendingUp stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Earnings", route: "/earnings" },
     { icon: <Receipt size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Expenses", route: "/expenses" },
-    { icon: <Car size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Mileage", route: "/mileage" },
+    { icon: <IconCar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Mileage", route: "/mileage" },
     { icon: <Fuel size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Fuel costs", route: "/fuel" },
-    { icon: <BarChart2 size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Reports", route: "/reports" },
-    { icon: <TrendingUp size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Performance", route: "/performance" },
-    { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Tests", route: "/tests" },
+    { icon: <IconChartBar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Reports", route: "/reports" },
+    { icon: <IconTrendingUp stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Performance", route: "/performance" },
+    { icon: <IconSchool stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Tests", route: "/tests" },
     { icon: <ShieldAlert size={20} color="#FFFFFF" />, bg: "#B5661E", label: "DVSA risk", route: "/tests" },
-    { icon: <GraduationCap size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Test day", route: "/testday" },
-    { icon: <Trophy size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Rewards", route: "/rewards" },
-    { icon: <Star size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Reviews", route: "/reviews" },
-    { icon: <Inbox size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Enquiries", route: "/enquiries" },
-    { icon: <Clock size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Waiting list", route: "/waitlist" },
-    { icon: <Gift size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Referrals", route: "/referrals" },
-    { icon: <Car size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Vehicle", route: "/vehicle" },
+    { icon: <IconSchool stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Test day", route: "/testday" },
+    { icon: <IconTrophy stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Rewards", route: "/rewards" },
+    { icon: <IconStar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Reviews", route: "/reviews" },
+    { icon: <IconInbox stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Enquiries", route: "/enquiries" },
+    { icon: <IconClock stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Waiting list", route: "/waitlist" },
+    { icon: <IconGift stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Referrals", route: "/referrals" },
+    { icon: <IconCar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Vehicle", route: "/vehicle" },
     { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#1877D6", label: "CPD", route: "/cpd" },
     
-    { icon: <ClipboardCheck size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Standards", route: "/standards" },
+    { icon: <IconClipboardCheck stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Standards", route: "/standards" },
     { icon: <Calculator size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Tax", route: "/tax" },
-    { icon: <FileText size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Tax report", route: "/tax-report" },
-    { icon: <CheckSquare size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Todos", route: "/todos" },
-    { icon: <FileText size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Notes", route: "/notes" },
+    { icon: <IconFileText stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Tax report", route: "/tax-report" },
+    { icon: <IconCheckbox stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Todos", route: "/todos" },
+    { icon: <IconFileText stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Notes", route: "/notes" },
     { icon: <FolderOpen size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Documents", route: "/documents" },
-    { icon: <ClipboardList size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Manifest", route: "/manifest" },
-    { icon: <CheckSquare size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Checklist", route: "/checklist" },
-    { icon: <Bell size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Reminders", route: "/reminder" },
-    { icon: <Heart size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Health", route: "/health" },
+    { icon: <IconClipboardList stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Manifest", route: "/manifest" },
+    { icon: <IconCheckbox stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Checklist", route: "/checklist" },
+    { icon: <IconBell stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Reminders", route: "/reminder" },
+    { icon: <IconHeart stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Health", route: "/health" },
     { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Resources", route: "/resources" },
     { icon: <HelpCircle size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Help", route: "/help" },
-    { icon: <LayoutGrid size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pipeline", route: "/pipeline" },
+    { icon: <IconLayoutGrid stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pipeline", route: "/pipeline" },
     { icon: <FileSignature size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Waivers", route: "/waivers" },
-    { icon: <Zap size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Fill My Slots", route: "/gaps" },
-    { icon: <Users size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Bulk message", route: "/bulkmessage" },
-    { icon: <Navigation size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Sat Nav", route: "/satnav" },
-    { icon: <BarChart3 size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Weekly report", route: "/weekly-report" },
-    { icon: <MapPin size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Locations", route: "/locations" },
-    { icon: <Upload size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Import", route: "/dataimport" },
-    { icon: <Award size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Certifications", route: "/certifications" },
+    { icon: <IconBolt stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Fill My Slots", route: "/gaps" },
+    { icon: <IconUsers stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Bulk message", route: "/bulkmessage" },
+    { icon: <IconNavigation stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Sat Nav", route: "/satnav" },
+    { icon: <IconChartBar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Weekly report", route: "/weekly-report" },
+    { icon: <IconMapPin stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Locations", route: "/locations" },
+    { icon: <IconUpload stroke={1.5} size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Import", route: "/dataimport" },
+    { icon: <IconAward stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Certifications", route: "/certifications" },
     { icon: <ToggleLeft size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Availability", route: "/availability" },
     
-    { icon: <Moon size={20} color="#FFFFFF" />, bg: "#1877D6", label: "End of day", route: "/end-of-day" },
+    { icon: <IconMoon stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "End of day", route: "/end-of-day" },
     { icon: <Megaphone size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Broadcast", route: "/broadcast" },
-    { icon: <Zap size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Automations", route: "/automations" },
-    { icon: <CalendarDays size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Diary", route: "/diary" },
+    { icon: <IconBolt stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Automations", route: "/automations" },
+    { icon: <IconCalendar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Diary", route: "/diary" },
     { icon: <Crown size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My plan", route: "/subscription" },
     { icon: <PlayCircle size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Live session", route: "/livesession" },
-    { icon: <Search size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Search", route: "/search" },
-    { icon: <Bell size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Notifications", route: "/notifications" },
+    { icon: <IconSearch stroke={1.5} size={20} color="#FFFFFF" />, bg: "#6B7280", label: "IconSearch", route: "/search" },
+    { icon: <IconBell stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Notifications", route: "/notifications" },
     
-    { icon: <RefreshCw size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Calendar sync", route: "/calendarsync" },
+    { icon: <IconRefresh stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "IconCalendar sync", route: "/calendarsync" },
     { icon: <UserCircle size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Profile", route: "/profile" },
     { icon: <FileSpreadsheet size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "MTD", route: "/mtd" },
-    { icon: <FileText size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Quotes", route: "/quotes" },
-    { icon: <Sun size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Briefing", route: "/briefing" },
-    { icon: <AlertCircle size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Outstanding", route: "/outstanding" },
-    { icon: <Globe size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My website", route: "/minisite" },
+    { icon: <IconFileText stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Quotes", route: "/quotes" },
+    { icon: <IconSun stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Briefing", route: "/briefing" },
+    { icon: <IconAlertCircle stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Outstanding", route: "/outstanding" },
+    { icon: <IconWorld stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My website", route: "/minisite" },
     { icon: <PlayCircle size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Learn", route: "/learn" },
 
   ] as const;
@@ -4638,7 +4499,7 @@ function HomePage() {
                           background: "#E7F0FA", display: "flex",
                           alignItems: "center", justifyContent: "center", flexShrink: 0,
                         }}>
-                          <Bell size={14} color="#1877D6" />
+                          <IconBell stroke={1.5} size={14} color="#1877D6" />
                         </div>
                         <div style={{ minWidth: 0, flex: 1 }}>
                           <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3 }}>{n.title}</div>
@@ -4696,22 +4557,22 @@ function HomePage() {
                 <div style={panelHeading}>Quick actions</div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
                   <button style={quickBtn} onClick={() => navigate({ to: "/schedule" })}>
-                    <Plus size={18} color="#1877D6" /> Add lesson
+                    <IconPlus stroke={1.5} size={18} color="#1877D6" /> Add lesson
                   </button>
                   <button style={quickBtn} onClick={() => navigate({ to: "/payments" })}>
-                    <PoundSterling size={18} color="#16A34A" /> Take payment
+                    <IconCurrencyPound stroke={1.5} size={18} color="#16A34A" /> Take payment
                   </button>
                   <button style={quickBtn} onClick={() => navigate({ to: "/pupils" })}>
-                    <Users size={18} color="#1877D6" /> Add pupil
+                    <IconUsers stroke={1.5} size={18} color="#1877D6" /> Add pupil
                   </button>
                   <button style={quickBtn} onClick={() => navigate({ to: "/schedule" })}>
                     <CalendarIcon size={18} color="#1877D6" /> Schedule
                   </button>
                   <button style={quickBtn} onClick={() => navigate({ to: "/quotes" })}>
-                    <FileText size={18} color="#1877D6" /> Quotes
+                    <IconFileText stroke={1.5} size={18} color="#1877D6" /> Quotes
                   </button>
                   <button style={quickBtn} onClick={() => navigate({ to: "/reports" })}>
-                    <BarChart3 size={18} color="#1877D6" /> Reports
+                    <IconChartBar stroke={1.5} size={18} color="#1877D6" /> Reports
                   </button>
                 </div>
               </div>
@@ -4956,7 +4817,7 @@ function HomePage() {
 
 
 
-          // Package info
+          // IconPackage info
           const pType = (upcoming?.pupils?.pricing_type ?? '').toLowerCase();
           const pTotal = Number(upcoming?.pupils?.block_hours_total ?? 0);
           const pHours = Number(upcoming?.pupils?.prepaid_hours ?? 0);
@@ -5077,7 +4938,7 @@ function HomePage() {
                               </defs>
                               <rect width="100%" height="100%" fill="url(#nlDots)" />
                             </svg>
-                            <MapPin size={30} color="#CC2229" fill="#CC2229" style={{ position: 'relative', zIndex: 1 }} />
+                            <IconMapPin stroke={1.5} size={30} color="#CC2229" fill="#CC2229" style={{ position: 'relative', zIndex: 1 }} />
                           </div>
                         </>
                       ) : (
@@ -5094,7 +4955,7 @@ function HomePage() {
                             position: 'absolute', inset: 0,
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                           }}>
-                            <MapPin size={30} color="#CC2229" fill="#CC2229" />
+                            <IconMapPin stroke={1.5} size={30} color="#CC2229" fill="#CC2229" />
                           </div>
                         </>
                       )}
@@ -5135,7 +4996,7 @@ function HomePage() {
                           boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
                           display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5,
                         }}>
-                          <Car size={13} color="#1877D6" />
+                          <IconCar stroke={1.5} size={13} color="#1877D6" />
                           <span style={{ fontSize: 12, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
                             {driveData.durationMinutes} min
                           </span>
@@ -5207,7 +5068,7 @@ function HomePage() {
                           display: 'flex', alignItems: 'center', gap: 5,
                         }}
                       >
-                        <Navigation size={13} color="#1877D6" />
+                        <IconNavigation stroke={1.5} size={13} color="#1877D6" />
                         <span>Navigate</span>
                       </button>
                     </div>
@@ -5252,7 +5113,7 @@ function HomePage() {
                     padding: 0,
                   }}
                 >
-                  <MessageSquare size={14} color="#FFFFFF" />
+                  <IconMessage stroke={1.5} size={14} color="#FFFFFF" />
                   <span>Message</span>
                   {(upcomingSmsCount > 0 || upcomingAppCount > 0) && (
                     <div style={{
@@ -5308,7 +5169,7 @@ function HomePage() {
                     padding: 0,
                   }}
                 >
-                  <Phone size={14} color="#0B1F3A" />
+                  <IconPhone stroke={1.5} size={14} color="#0B1F3A" />
                   <span>Call</span>
                 </button>
 
@@ -5338,7 +5199,7 @@ function HomePage() {
                   }}
                 >
                   <span>More</span>
-                  <ChevronRight size={14} color="#0B1F3A" />
+                  <IconChevronRight stroke={1.5} size={14} color="#0B1F3A" />
                 </button>
               </div>
 
@@ -5348,7 +5209,7 @@ function HomePage() {
                 borderTop: '1px solid #E4E8EF',
                 display: 'flex', alignItems: 'center', gap: 10, minWidth: 0,
               }}>
-                <MapPin size={18} color="#6B7686" style={{ flexShrink: 0 }} />
+                <IconMapPin stroke={1.5} size={18} color="#6B7686" style={{ flexShrink: 0 }} />
                 <span style={{
                   fontSize: 13, color: '#5A6270', fontFamily: 'Poppins, sans-serif',
                   overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
@@ -5420,7 +5281,7 @@ function HomePage() {
                       fontFamily: 'Poppins, sans-serif',
                     }}
                   >
-                    <Navigation size={15} color="#1877D6" />
+                    <IconNavigation stroke={1.5} size={15} color="#1877D6" />
                     View route
                   </button>
 
@@ -5486,7 +5347,7 @@ function HomePage() {
                     fontFamily: 'Poppins, sans-serif',
                   }}
                 >
-                  More {heroExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  More {heroExpanded ? <IconChevronUp stroke={1.5} size={16} /> : <IconChevronDown stroke={1.5} size={16} />}
                 </button>
               </div>
 
@@ -5831,7 +5692,7 @@ function HomePage() {
             title: 'This week',
             subtitleTop: `${weekLessonsTotal} lessons completed`,
             subtitleBottom: weekAvg > 0 ? `avg £${weekAvg.toFixed(0)} per lesson` : 'avg —',
-            icon: <PoundSterling size={20} strokeWidth={1.75} />,
+            icon: <IconCurrencyPound stroke={1.5} size={20} strokeWidth={1.75} />,
             right: { kind: 'value', value: `£${Math.round(weekEarnings)}`, label: 'earned' },
           },
           {
@@ -5839,7 +5700,7 @@ function HomePage() {
             title: 'This month',
             subtitleTop: `${monthLessonsCompleted} lessons completed`,
             subtitleBottom: <span style={{ color: '#B0BAC9' }}>— vs last month</span>,
-            icon: <PoundSterling size={20} strokeWidth={1.75} />,
+            icon: <IconCurrencyPound stroke={1.5} size={20} strokeWidth={1.75} />,
             right: { kind: 'value', value: `£${Math.round(monthEarnings)}`, label: 'earned' },
           },
           {
@@ -5847,7 +5708,7 @@ function HomePage() {
             title: 'Year to date',
             subtitleTop: `${ytdLessonsCompleted} lessons completed`,
             subtitleBottom: <span style={{ color: '#B0BAC9' }}>— vs last year</span>,
-            icon: <BarChart3 size={20} strokeWidth={1.75} />,
+            icon: <IconChartBar stroke={1.5} size={20} strokeWidth={1.75} />,
             right: { kind: 'value', value: `£${Math.round(ytdEarnings)}`, label: 'earned' },
           },
         ];
@@ -5890,7 +5751,7 @@ function HomePage() {
                     }}
                   >
                     <div style={{ width: 40, height: 40, borderRadius: 8, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <Zap size={20} color="#D97706" />
+                      <IconBolt stroke={1.5} size={20} color="#D97706" />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 12, fontWeight: 700, color: '#D97706', textTransform: 'uppercase', letterSpacing: 0.5 }}>Slot freed</div>
@@ -5941,7 +5802,7 @@ function HomePage() {
                     style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: '#1877D6', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, lineHeight: 1 }}
                   >
                     Full schedule
-                    <ArrowRight size={14} strokeWidth={2.2} />
+                    <IconArrowRight stroke={1.5} size={14} strokeWidth={2.2} />
                   </button>
                 </div>
               </div>
@@ -6344,7 +6205,7 @@ function HomePage() {
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 3, minWidth: 0 }}>
                               <IconCalendarEvent size={13} stroke={1.8} color="#6B7686" style={{ flexShrink: 0 }} />
-                              <span style={{ fontSize: 12, color: '#6B7686', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Google Calendar</span>
+                              <span style={{ fontSize: 12, color: '#6B7686', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Google IconCalendar</span>
                             </div>
                           </div>
                         </div>
@@ -6645,41 +6506,41 @@ function HomePage() {
                 { label: 'Find Nearby', sub: 'Find places', route: null, icon: IconMapPin, iconStroke: '#1877D6', chipBg: '#E6F1FB', action: 'nearby', graphic: 'location' },
                 // Page 2 — Teaching
                 { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, iconStroke: '#6B4FA0', chipBg: '#EAE3F5', graphic: 'donut' },
-                { label: 'Courses', sub: 'List your\u00a0 courses', route: '/courses', icon: GraduationCap, iconStroke: '#DC2626', chipBg: '#FBE2E2', graphic: 'grad' },
+                { label: 'Courses', sub: 'List your\u00a0 courses', route: '/courses', icon: IconSchool, iconStroke: '#DC2626', chipBg: '#FBE2E2', graphic: 'grad' },
                 { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} owed` : 'All settled', route: '/payments', icon: IconCurrencyPound, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0, badge: outstanding > 0 ? Math.round(outstanding) : undefined, graphic: 'chart' },
                 { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#1877D6', chipBg: '#E6F1FB', attention: unreadCount > 0, graphic: 'bubbles' },
 
-                { label: 'Send message', sub: 'Quick text', route: null, icon: IconMessage, iconStroke: '#1877D6', chipBg: '#E6F1FB', action: 'send-message', graphic: 'bubbles' },
+                { label: 'IconSend message', sub: 'Quick text', route: null, icon: IconMessage, iconStroke: '#1877D6', chipBg: '#E6F1FB', action: 'send-message', graphic: 'bubbles' },
                 { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'running-late', graphic: 'alarm' },
                 { label: 'EOL', sub: 'End of lesson', route: '/pupils', icon: BookOpen, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'book' },
-                { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: Award, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'medal' },
+                { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: IconAward, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'medal' },
                 { label: 'Test swap', sub: 'Manage per pupil', route: '/pupils', icon: ArrowLeftRight, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'swap' },
-                { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: RefreshCw, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'repeat' },
-                { label: 'Syllabus', sub: 'Standards', route: '/standards', icon: GraduationCap, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'grad' },
-                { label: 'Mock tests', sub: 'Practice', route: '/mock-tests', icon: ClipboardCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
+                { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: IconRefresh, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'repeat' },
+                { label: 'Syllabus', sub: 'Standards', route: '/standards', icon: IconSchool, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'grad' },
+                { label: 'Mock tests', sub: 'Practice', route: '/mock-tests', icon: IconClipboardCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
                 // Page 3 — Business
                 { label: 'Expenses', sub: 'Track costs', route: '/expenses', icon: Receipt, iconStroke: '#C23B3B', chipBg: '#FBE2E2', graphic: 'receipt' },
                 { label: 'Log expense', sub: 'Add cost', route: null, icon: Receipt, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'add-expense', graphic: 'receipt' },
-                { label: 'Certifications', sub: 'Licences', route: '/certifications', icon: Award, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'shield' },
-                { label: 'CPD log', sub: 'Development', route: '/cpd', icon: GraduationCap, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'bars' },
-                { label: 'Mileage', sub: 'Log miles', route: null, icon: MapPin, iconStroke: '#5A6B85', chipBg: '#EEF2F7', action: 'log-mileage', graphic: 'map' },
+                { label: 'Certifications', sub: 'Licences', route: '/certifications', icon: IconAward, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'shield' },
+                { label: 'CPD log', sub: 'Development', route: '/cpd', icon: IconSchool, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'bars' },
+                { label: 'Mileage', sub: 'Log miles', route: null, icon: IconMapPin, iconStroke: '#5A6B85', chipBg: '#EEF2F7', action: 'log-mileage', graphic: 'map' },
                 { label: 'Find fuel', sub: 'Nearby', route: '/fuel', icon: Fuel, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'fuel' },
-                { label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', icon: Car, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'car' },
+                { label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', icon: IconCar, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'car' },
                 // Page 4 — Reports
-                { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: BarChart3, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'bars' },
+                { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: IconChartBar, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'bars' },
                 { label: 'Tax report', sub: 'Self assessment', route: '/tax-report', icon: Calculator, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'calc' },
                 { label: 'Weekly', sub: 'Week report', route: '/weekly-report', icon: CalendarIcon, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'bars' },
-                { label: 'End of day', sub: 'Daily wrap', route: '/end-of-day', icon: Moon, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'moon' },
-                { label: 'Invoices', sub: 'Billing', route: '/invoices', icon: FileText, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'invoice' },
-                { label: 'Forecast', sub: 'Earnings', route: '/earnings', icon: TrendingUp, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'trend' },
+                { label: 'End of day', sub: 'Daily wrap', route: '/end-of-day', icon: IconMoon, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'moon' },
+                { label: 'Invoices', sub: 'Billing', route: '/invoices', icon: IconFileText, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'invoice' },
+                { label: 'Forecast', sub: 'Earnings', route: '/earnings', icon: IconTrendingUp, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'trend' },
                 // Page 5 — Admin
-                { label: 'Settings', sub: 'Account', route: '/settings', icon: SettingsIcon, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'gear' },
-                { label: 'Availability', sub: 'Working hours', route: '/availability-settings', icon: Clock, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'clock2' },
-                { label: 'Coverage', sub: 'Service areas', route: '/coverage-areas', icon: MapPin, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'map' },
-                { label: 'Calendar', sub: 'Google sync', route: '/calendarsync', icon: CalendarIcon, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'sync' },
-                { label: 'Referrals', sub: 'Rewards', route: '/referrals', icon: Gift, iconStroke: '#00B5A5', chipBg: '#D8F1EE', graphic: 'gift' },
+                { label: 'IconSettings', sub: 'Account', route: '/settings', icon: SettingsIcon, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'gear' },
+                { label: 'Availability', sub: 'Working hours', route: '/availability-settings', icon: IconClock, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'clock2' },
+                { label: 'Coverage', sub: 'Service areas', route: '/coverage-areas', icon: IconMapPin, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'map' },
+                { label: 'IconCalendar', sub: 'Google sync', route: '/calendarsync', icon: CalendarIcon, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'sync' },
+                { label: 'Referrals', sub: 'Rewards', route: '/referrals', icon: IconGift, iconStroke: '#00B5A5', chipBg: '#D8F1EE', graphic: 'gift' },
                 { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
-                { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: Zap, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'spark' },
+                { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'spark' },
               ];
               const tilesPerPage = 6;
               const totalPages = Math.ceil(quickTiles.length / tilesPerPage);
@@ -6978,9 +6839,9 @@ function HomePage() {
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                           }}
-                          aria-label="Search quick access"
+                          aria-label="IconSearch quick access"
                         >
-                          <IconSearch size={15} color="#0B1F3A" />
+                          <IconSearch stroke={1.5} size={15} color="#0B1F3A" />
                         </button>
                       </div>
                     </div>
@@ -7028,14 +6889,14 @@ function HomePage() {
                         }}
                       >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                          <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Search tools</div>
+                          <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>IconSearch tools</div>
                           <button
                             type="button"
                             onClick={() => setQuickSearchOpen(false)}
                             style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center' }}
                             aria-label="Close search"
                           >
-                            <X size={20} color="#6B7280" />
+                            <IconX stroke={1.5} size={20} color="#6B7280" />
                           </button>
                         </div>
                         <div style={{
@@ -7048,11 +6909,11 @@ function HomePage() {
                           gap: 8,
                           marginBottom: 16,
                         }}>
-                          <Search size={16} color="#9CA3AF" />
+                          <IconSearch stroke={1.5} size={16} color="#9CA3AF" />
                           <input
                             autoFocus
                             type="text"
-                            placeholder="Search all features..."
+                            placeholder="IconSearch all features..."
                             value={quickSearchQuery}
                             onChange={(e) => setQuickSearchQuery(e.target.value)}
                             style={{
@@ -7093,7 +6954,7 @@ function HomePage() {
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                           <div style={{ width: 36, height: 36, borderRadius: 8, background: '#FBE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <IconClock size={20} color="#C23B3B" strokeWidth={1.8} />
+                            <IconClock stroke={1.5} size={20} color="#C23B3B" strokeWidth={1.8} />
                           </div>
                           <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Running late</div>
                         </div>
@@ -7243,7 +7104,7 @@ function HomePage() {
                                   onClick={() => { setNearbyCategory(null); setNearbyResults([]); setNearbyError(null); setNearbyLoading(null); }}
                                   style={{ width: 32, height: 32, borderRadius: 8, border: '1px solid #E2E8F0', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0, flexShrink: 0 }}
                                 >
-                                  <ChevronLeft size={16} color="#0B1F3A" />
+                                  <IconChevronLeft stroke={1.5} size={16} color="#0B1F3A" />
                                 </button>
                                 <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>
                                   {activeCat.emoji} {activeCat.label}
@@ -7303,7 +7164,7 @@ function HomePage() {
                                             <div style={{ fontSize: 11, color: '#6B7686' }}>{fmtDistance(r.dist)}</div>
                                           ) : null}
                                         </div>
-                                        <IconChevronRight size={14} color="#9CA3AF" />
+                                        <IconChevronRight stroke={1.5} size={14} color="#9CA3AF" />
                                       </div>
                                     </button>
                                   ))}
@@ -7425,7 +7286,7 @@ function HomePage() {
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}
                   >
-                    <MoreHorizontal size={16} color={GREY_C} />
+                    <IconDots stroke={1.5} size={16} color={GREY_C} />
                   </button>
                 )}
               />
@@ -7509,7 +7370,7 @@ function HomePage() {
           type StackItem = { key: string; bg: string; node: React.ReactNode };
           const avatarItems: StackItem[] = [];
           if (!alertsHidden && alerts.length > 0) {
-            avatarItems.push({ key: 'issues', bg: RED_C, node: <AlertTriangle size={15} color="#FFFFFF" /> });
+            avatarItems.push({ key: 'issues', bg: RED_C, node: <IconAlertTriangle stroke={1.5} size={15} color="#FFFFFF" /> });
           }
           if (adminUnread > 0) {
             avatarItems.push({ key: 'admin', bg: '#92400E', node: <Megaphone size={15} color="#FFFFFF" /> });
@@ -7810,7 +7671,7 @@ function HomePage() {
                                 : latestItem.source}
                             </div>
                           </div>
-                          <ChevronRight size={14} color="#C7CEDA" style={{ flexShrink: 0 }} />
+                          <IconChevronRight stroke={1.5} size={14} color="#C7CEDA" style={{ flexShrink: 0 }} />
                         </div>
                       )}
 
@@ -7823,7 +7684,7 @@ function HomePage() {
                               width: 32, height: 32, borderRadius: '50%', background: '#E6F1FB',
                               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                             }}>
-                              <Users size={16} color="#1877D6" />
+                              <IconUsers stroke={1.5} size={16} color="#1877D6" />
                             </div>
                           ) : (
                             <>
@@ -7855,7 +7716,7 @@ function HomePage() {
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       }}
                                     >
-                                      <AlertTriangle size={14} color="#CC2229" />
+                                      <IconAlertTriangle stroke={1.5} size={14} color="#CC2229" />
                                     </div>
                                   );
                                 }
@@ -7959,7 +7820,7 @@ function HomePage() {
                           width: 36, height: 36, borderRadius: '50%', background: '#FCE9E9',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>
-                          <AlertTriangle size={18} color={RED_C} />
+                          <IconAlertTriangle stroke={1.5} size={18} color={RED_C} />
                         </div>
                         <span style={{
                           position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
@@ -8332,7 +8193,7 @@ function HomePage() {
                 background: unreadUkChat > 0 ? '#1877D6' : '#E6F1FB',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
-                <Globe size={18} color={unreadUkChat > 0 ? '#FFFFFF' : '#1877D6'} />
+                <IconWorld stroke={1.5} size={18} color={unreadUkChat > 0 ? '#FFFFFF' : '#1877D6'} />
               </div>
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -8371,7 +8232,7 @@ function HomePage() {
                 {unreadUkChat}
               </div>
             )}
-            <ChevronRight size={17} color="#C7CDD9" style={{ flexShrink: 0 }} />
+            <IconChevronRight stroke={1.5} size={17} color="#C7CDD9" style={{ flexShrink: 0 }} />
           </div>
           </div>
         )}
@@ -8560,7 +8421,7 @@ function HomePage() {
                   fontFamily: 'Poppins, sans-serif', cursor: 'pointer',
                 }}
               >
-                Send message
+                IconSend message
               </button>
             </div>
           }
@@ -8864,13 +8725,13 @@ function HomePage() {
           <div className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl pt-5 pb-6 max-h-[85vh] overflow-y-auto" style={{ animation: 'slideUp 0.25s ease-out' }}>
             <div className="flex items-center justify-between px-4 mb-3">
               <div className="flex items-center gap-2">
-                <IconGift size={20} color="#6B4FD6" />
+                <IconGift stroke={1.5} size={20} color="#6B4FD6" />
                 <div className="text-[16px] font-semibold" style={{ color: '#0B1F3A' }}>
                   {birthdayToday.length === 1 ? 'Birthday today' : `${birthdayToday.length} birthdays today`}
                 </div>
               </div>
               <button type="button" onClick={() => setBirthdaySheetOpen(false)} aria-label="Close">
-                <IconX size={20} color="#6B7280" />
+                <IconX stroke={1.5} size={20} color="#6B7280" />
               </button>
             </div>
             {birthdayToday.map((p) => {
@@ -8902,7 +8763,7 @@ function HomePage() {
                       className="flex-1 text-center rounded-xl py-2.5 px-4 text-[13px] font-semibold"
                       style={{ background: '#7C3AED', color: '#FFFFFF', textDecoration: 'none' }}
                     >
-                      🎁 Send gift message
+                      🎁 IconSend gift message
                     </a>
                     <button
                       type="button"
@@ -8952,7 +8813,7 @@ function HomePage() {
           }}
           aria-label="Report local issue"
         >
-          <AlertTriangle size={20} color="white" />
+          <IconAlertTriangle stroke={1.5} size={20} color="white" />
         </button>
       )}
     </PageLayout>
@@ -9284,7 +9145,7 @@ function HeroExpandedPanel({
         <div style={sectionLabel}>Pickup</div>
         {isEditingPickup ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <MapPin size={14} color="#8E8E93" />
+            <IconMapPin stroke={1.5} size={14} color="#8E8E93" />
             <input
               value={pickupValue}
               onChange={(e) => { setPickupValue(e.target.value); setPickupState('idle'); verifiedForRef.current = null; }}
@@ -9324,7 +9185,7 @@ function HeroExpandedPanel({
         ) : (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 10, padding: '9px 12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-              <MapPin size={14} color="#8E8E93" />
+              <IconMapPin stroke={1.5} size={14} color="#8E8E93" />
               <span style={{ fontFamily: 'Poppins, sans-serif', fontSize: 13, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {pickupValue || 'No address set'}
               </span>
@@ -9335,7 +9196,7 @@ function HeroExpandedPanel({
               style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#8E8E93', flexShrink: 0 }}
               aria-label="Edit pickup address"
             >
-              <Pencil size={16} />
+              <IconPencil stroke={1.5} size={16} />
             </button>
           </div>
         )}
@@ -9641,7 +9502,7 @@ function EndOfDayBanner() {
         fontFamily: "Poppins, sans-serif",
       }}
     >
-      <Moon size={16} color="#1877D6" />
+      <IconMoon stroke={1.5} size={16} color="#1877D6" />
       <div style={{ fontSize: 13, color: "#0B1F3A", fontWeight: 600 }}>
         Ready to wrap up?
       </div>
@@ -9674,7 +9535,7 @@ function EndOfDayBanner() {
           marginLeft: 4,
         }}
       >
-        <X size={14} color="#6B7280" />
+        <IconX stroke={1.5} size={14} color="#6B7280" />
       </button>
     </div>
   );
@@ -9857,7 +9718,7 @@ function OutstandingBreakdownModal({
                       cursor: r.phone ? "pointer" : "not-allowed",
                     }}
                   >
-                    <MessageSquare size={12} /> Text
+                    <IconMessage stroke={1.5} size={12} /> Text
                   </button>
                   <button
                     onClick={() => openMail(r.email, msg)}
@@ -9878,7 +9739,7 @@ function OutstandingBreakdownModal({
                       cursor: r.email ? "pointer" : "not-allowed",
                     }}
                   >
-                    <Mail size={12} /> Email
+                    <IconMail stroke={1.5} size={12} /> Email
                   </button>
                   <button
                     onClick={() => onView(r.pupilId)}
@@ -9898,7 +9759,7 @@ function OutstandingBreakdownModal({
                       cursor: "pointer",
                     }}
                   >
-                    <User size={12} /> View
+                    <IconUser stroke={1.5} size={12} /> View
                   </button>
                 </div>
               </div>
@@ -9922,7 +9783,7 @@ function OutstandingBreakdownModal({
               cursor: rows.length === 0 ? "not-allowed" : "pointer",
             }}
           >
-            Send all reminders
+            IconSend all reminders
           </button>
           <button
             onClick={onClose}
@@ -10308,7 +10169,7 @@ function LessonsBreakdownModal({
                     alignItems: "center",
                   }}
                 >
-                  <Trash2 size={16} />
+                  <IconTrash stroke={1.5} size={16} />
                 </button>
               </div>
             );
@@ -10735,7 +10596,7 @@ function DiscoverSection() {
               onClick={() => navigate({ to: "/dsm-live" })}
             >
               View all
-              <ArrowRight size={14} strokeWidth={2} />
+              <IconArrowRight stroke={1.5} size={14} strokeWidth={2} />
             </button>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

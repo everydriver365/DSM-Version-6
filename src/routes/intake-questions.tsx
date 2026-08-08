@@ -2,17 +2,8 @@ import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  ArrowLeft,
-  Plus,
-  ClipboardList,
-  GripVertical,
-  Pencil,
-  Trash2,
-  Mic,
-  MicOff,
-  X,
-} from "lucide-react";
+import { IconArrowLeft, IconClipboardList, IconMicrophone, IconMicrophoneOff, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
+import { GripVertical } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { BottomSheet } from "../components/dsm/BottomSheet";
@@ -327,7 +318,7 @@ function IntakeQuestionsPage() {
             ...POPPINS,
           }}
         >
-          <Plus size={16} /> Add question
+          <IconPlus stroke={1.5} size={16} /> Add question
         </button>
       </div>
 
@@ -344,7 +335,7 @@ function IntakeQuestionsPage() {
           alignItems: "flex-start",
         }}
       >
-        <ClipboardList size={20} color="#1877D6" style={{ flexShrink: 0, marginTop: 2 }} />
+        <IconClipboardList stroke={1.5} size={20} color="#1877D6" style={{ flexShrink: 0, marginTop: 2 }} />
         <div style={{ fontSize: 13, lineHeight: 1.5, color: "#0B1F3A" }}>
           These questions are shown to new pupils when they register or book for the first
           time. Use them to gather important information upfront.
@@ -397,7 +388,7 @@ function IntakeQuestionsPage() {
                   ...POPPINS,
                 }}
               >
-                <Plus size={12} /> Add
+                <IconPlus stroke={1.5} size={12} /> Add
               </button>
             </div>
           ))}
@@ -504,7 +495,7 @@ function IntakeQuestionsPage() {
                       padding: 0,
                     }}
                   >
-                    <Pencil size={13} /> Edit
+                    <IconPencil stroke={1.5} size={13} /> Edit
                   </button>
                   <button
                     onClick={() => setConfirmDelete(q)}
@@ -521,7 +512,7 @@ function IntakeQuestionsPage() {
                       padding: 0,
                     }}
                   >
-                    <Trash2 size={13} /> Delete
+                    <IconTrash stroke={1.5} size={13} /> Delete
                   </button>
                 </div>
               </div>
@@ -779,7 +770,7 @@ function QuestionSheet({
                 cursor: "pointer",
               }}
             >
-              {listening ? <MicOff size={16} /> : <Mic size={16} />}
+              {listening ? <IconMicrophoneOff stroke={1.5} size={16} /> : <IconMicrophone stroke={1.5} size={16} />}
             </button>
           </div>
 
@@ -848,7 +839,7 @@ function QuestionSheet({
                           padding: 4,
                         }}
                       >
-                        <Trash2 size={16} />
+                        <IconTrash stroke={1.5} size={16} />
                       </button>
                     )}
                   </div>
@@ -873,7 +864,7 @@ function QuestionSheet({
                     fontFamily: "Poppins, sans-serif",
                   }}
                 >
-                  <Plus size={14} /> Add option
+                  <IconPlus stroke={1.5} size={14} /> Add option
                 </button>
               )}
             </div>

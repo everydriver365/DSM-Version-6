@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Plus, CheckSquare, Trash2 } from "lucide-react";
+import { IconCheckbox, IconPlus, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Card } from "../components/dsm/Card";
@@ -177,7 +177,7 @@ function TodosPage() {
             flexShrink: 0,
           }}
         >
-          {t.completed && <CheckSquare size={14} color="#FFFFFF" />}
+          {t.completed && <IconCheckbox stroke={1.5} size={14} color="#FFFFFF" />}
         </button>
         <div className="flex-1 min-w-0">
           <div
@@ -213,7 +213,7 @@ function TodosPage() {
           className="flex items-center justify-center"
           style={{ width: 28, height: 28, flexShrink: 0 }}
         >
-          <Trash2 size={16} color="#1877D6" />
+          <IconTrash stroke={1.5} size={16} color="#1877D6" />
         </button>
       </div>
     </Card>
@@ -242,7 +242,7 @@ function TodosPage() {
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
           style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
-          <Plus size={15} />
+          <IconPlus stroke={1.5} size={15} />
           Add to-do
         </button>
       </div>

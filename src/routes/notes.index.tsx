@@ -1,9 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Plus, FileText } from "lucide-react";
+import { IconFileText, IconNotes, IconPlus } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconNotes } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 
 import { Card } from "../components/dsm/Card";
@@ -102,7 +101,7 @@ function NotesListPage() {
           className="inline-flex items-center gap-1 text-[13px] font-semibold text-white"
           style={{ background: "#1877D6", borderRadius: 999, padding: "8px 14px", border: "none" }}
         >
-          <Plus size={16} color="#FFFFFF" /> New note
+          <IconPlus stroke={1.5} size={16} color="#FFFFFF" /> New note
         </button>
       </div>
 

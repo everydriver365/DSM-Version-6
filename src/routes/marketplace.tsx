@@ -1,21 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import type { ComponentType } from "react";
-import {
-  Search as SearchIcon,
-  Star,
-  MapPin,
-  Camera,
-  Heart,
-  GraduationCap,
-  Wrench,
-  ShieldCheck,
-  Car,
-  BookOpen,
-  Briefcase,
-  Megaphone,
-  Package,
-} from "lucide-react";
+import { IconBriefcase, IconCamera, IconCar, IconHeart, IconMapPin, IconPackage, IconSchool, IconShieldCheck, IconStar, IconTool } from "@tabler/icons-react";
+import { BookOpen, Megaphone, Search as SearchIcon } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
@@ -73,20 +60,20 @@ type IconCmp = ComponentType<{ size?: number; color?: string; strokeWidth?: numb
 
 // Reuse existing slug → icon mapping.
 const CATEGORY_ICONS: Record<string, IconCmp> = {
-  tracking: MapPin,
-  hardware: Camera,
-  dashcams: Camera,
-  health: Heart,
-  learning: GraduationCap,
-  cpd: GraduationCap,
+  tracking: IconMapPin,
+  hardware: IconCamera,
+  dashcams: IconCamera,
+  health: IconHeart,
+  learning: IconSchool,
+  cpd: IconSchool,
   courses: BookOpen,
-  insurance: ShieldCheck,
-  vehicles: Car,
-  cars: Car,
-  maintenance: Wrench,
-  services: Briefcase,
+  insurance: IconShieldCheck,
+  vehicles: IconCar,
+  cars: IconCar,
+  maintenance: IconTool,
+  services: IconBriefcase,
   marketing: Megaphone,
-  promotion: Star,
+  promotion: IconStar,
 };
 
 // Category → thumbnail background colour. Mapped from spec categories onto
@@ -109,8 +96,8 @@ const CATEGORY_COLOR: Record<string, string> = {
 };
 
 function iconFor(slug?: string | null): IconCmp {
-  if (!slug) return Package;
-  return CATEGORY_ICONS[slug] ?? Package;
+  if (!slug) return IconPackage;
+  return CATEGORY_ICONS[slug] ?? IconPackage;
 }
 
 function colorFor(slug?: string | null): string {

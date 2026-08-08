@@ -2,19 +2,7 @@ import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
-import {
-  ArrowLeft,
-  Plus,
-  Mic,
-  MicOff,
-  Upload,
-  Download,
-  X,
-  Trash2,
-  Pencil,
-  Paperclip,
-  GraduationCap,
-} from "lucide-react";
+import { IconArrowLeft, IconDownload, IconMicrophone, IconMicrophoneOff, IconPaperclip, IconPencil, IconPlus, IconSchool, IconTrash, IconUpload, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { BottomSheet } from "../components/dsm/BottomSheet";
@@ -279,7 +267,7 @@ function CpdPage() {
           className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
           style={{ backgroundColor: "#1877D6" }}
         >
-          <Plus size={16} color="#fff" /> Add CPD
+          <IconPlus stroke={1.5} size={16} color="#fff" /> Add CPD
         </button>
       </div>
 
@@ -309,7 +297,7 @@ function CpdPage() {
             }}
           >
             <div className="flex items-center gap-2">
-              <GraduationCap
+              <IconSchool stroke={1.5}
                 size={18}
                 color={
                   renewalDaysLeft > 90 ? "#1877D6" : renewalDaysLeft >= 30 ? "#0B1F3A" : "#1877D6"
@@ -368,7 +356,7 @@ function CpdPage() {
           <PageLoader />
         ) : grouped.length === 0 ? (
           <EmptyState
-            icon={GraduationCap}
+            icon={IconSchool}
             title="No CPD entries yet"
             description='Tap "Add CPD" to record your first activity.'
           />
@@ -404,7 +392,7 @@ function CpdPage() {
             className="w-full flex items-center justify-center gap-2 text-white text-[14px] font-semibold"
             style={{ backgroundColor: "#1877D6", height: 44, borderRadius: 10 }}
           >
-            <Download size={16} /> Export CPD log
+            <IconDownload stroke={1.5} size={16} /> Export CPD log
           </button>
           <div className="text-center text-[11px] text-[#6B7280] mt-2">
             Useful for DVSA submission.
@@ -548,7 +536,7 @@ function EntryCard({
             className="inline-flex items-center gap-1 mt-2 text-[12px] font-medium"
             style={{ color: "#1877D6" }}
           >
-            <Paperclip size={12} /> Certificate
+            <IconPaperclip stroke={1.5} size={12} /> Certificate
           </a>
         )}
       </button>
@@ -566,7 +554,7 @@ function EntryCard({
               color: "#0B1F3A",
             }}
           >
-            <Pencil size={13} /> Edit
+            <IconPencil stroke={1.5} size={13} /> Edit
           </button>
           <button
             type="button"
@@ -579,7 +567,7 @@ function EntryCard({
               color: "#1877D6",
             }}
           >
-            <Trash2 size={13} /> Delete
+            <IconTrash stroke={1.5} size={13} /> Delete
           </button>
         </div>
       )}
@@ -659,7 +647,7 @@ function AddSheet({
       toast.success("Certificate uploaded");
     } catch (err: any) {
       console.error("[cpd] upload error", err);
-      toast.error(err?.message ?? "Upload failed");
+      toast.error(err?.message ?? "IconUpload failed");
     } finally {
       setUploading(false);
     }
@@ -804,9 +792,9 @@ function AddSheet({
                 }}
               >
                 {listening ? (
-                  <MicOff size={16} color="#FFFFFF" />
+                  <IconMicrophoneOff stroke={1.5} size={16} color="#FFFFFF" />
                 ) : (
-                  <Mic size={16} color="#0B1F3A" />
+                  <IconMicrophone stroke={1.5} size={16} color="#0B1F3A" />
                 )}
               </button>
             </div>
@@ -843,7 +831,7 @@ function AddSheet({
                   color: "#0B1F3A",
                 }}
               >
-                <Upload size={14} /> {uploading ? "Uploading…" : "Upload certificate"}
+                <IconUpload stroke={1.5} size={14} /> {uploading ? "Uploading…" : "IconUpload certificate"}
                 <input
                   type="file"
                   accept="image/*,application/pdf"

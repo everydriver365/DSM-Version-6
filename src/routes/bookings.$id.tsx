@@ -1,13 +1,8 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import {
-  BookOpen,
-  Mail,
-  MessageSquare,
-  Phone,
-  User as UserIcon,
-} from "lucide-react";
+import { IconMail, IconMessage, IconPhone } from "@tabler/icons-react";
+import { BookOpen, User as UserIcon } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
@@ -209,7 +204,7 @@ function BookingDetailPage() {
             </div>
             <Row label="Name" value={booking.pupil_name} />
             <Row label="Email" value={booking.pupil_email} />
-            <Row label="Phone" value={booking.pupil_phone} />
+            <Row label="IconPhone" value={booking.pupil_phone} />
             <Row
               label="Address"
               value={
@@ -238,7 +233,7 @@ function BookingDetailPage() {
                   pointerEvents: booking.pupil_phone ? "auto" : "none",
                 }}
               >
-                <Phone size={15} /> Call
+                <IconPhone stroke={1.5} size={15} /> Call
               </a>
               <a
                 href={booking.pupil_email ? `mailto:${booking.pupil_email}` : undefined}
@@ -259,7 +254,7 @@ function BookingDetailPage() {
                   pointerEvents: booking.pupil_email ? "auto" : "none",
                 }}
               >
-                <Mail size={15} /> Email
+                <IconMail stroke={1.5} size={15} /> Email
               </a>
               <a
                 href={booking.pupil_phone ? `sms:${booking.pupil_phone}` : undefined}
@@ -280,7 +275,7 @@ function BookingDetailPage() {
                   pointerEvents: booking.pupil_phone ? "auto" : "none",
                 }}
               >
-                <MessageSquare size={15} /> Text
+                <IconMessage stroke={1.5} size={15} /> Text
               </a>
             </div>
           </Card>

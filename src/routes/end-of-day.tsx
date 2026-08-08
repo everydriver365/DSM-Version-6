@@ -2,19 +2,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import {
-  ArrowLeft,
-  AlertTriangle,
-  Calendar as CalendarIcon,
-  FileText,
-  Receipt,
-  ChevronRight,
-  Mic,
-  MicOff,
-  Car,
-} from "lucide-react";
+import { IconAlertTriangle, IconArrowLeft, IconCalendarOff, IconCar, IconChevronRight, IconFileText, IconMicrophone, IconMicrophoneOff } from "@tabler/icons-react";
+import { Receipt, Calendar as CalendarIcon } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
-import { IconCalendarOff } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
@@ -299,7 +289,7 @@ function EndOfDayPage() {
       {/* Section 2: Outstanding actions */}
       {(outstandingEols.length > 0 || unpaidLessons.length > 0) && (
         <Card>
-          <Heading icon={<AlertTriangle size={16} color="#0B1F3A" />} title="Actions needed" />
+          <Heading icon={<IconAlertTriangle stroke={1.5} size={16} color="#0B1F3A" />} title="Actions needed" />
           {outstandingEols.map((l) => (
             <Row key={`eol-${l.id}`}>
               <span>{pupilName(l.pupils) || "Pupil"} — EOL pending</span>
@@ -406,7 +396,7 @@ function EndOfDayPage() {
 
       {/* Section 5: Day notes */}
       <Card>
-        <Heading icon={<FileText size={16} color="#1877D6" />} title="Day notes" />
+        <Heading icon={<IconFileText stroke={1.5} size={16} color="#1877D6" />} title="Day notes" />
         <div style={{ position: "relative" }}>
           <textarea
             value={notes}
@@ -443,7 +433,7 @@ function EndOfDayPage() {
               animation: listening ? "eod-pulse 1s infinite" : undefined,
             }}
           >
-            {listening ? <MicOff size={16} color="#FFFFFF" /> : <Mic size={16} color="#0B1F3A" />}
+            {listening ? <IconMicrophoneOff stroke={1.5} size={16} color="#FFFFFF" /> : <IconMicrophone stroke={1.5} size={16} color="#0B1F3A" />}
           </button>
         </div>
         <div style={{ marginTop: 6, fontSize: 11, color: "#6B7280" }}>
@@ -486,7 +476,7 @@ function EndOfDayPage() {
             <span style={{ display: "block", fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>Log an expense</span>
             <span style={{ display: "block", fontSize: 12, color: "#6B7280" }}>Add today's costs</span>
           </span>
-          <ChevronRight size={18} color="#94A3B8" />
+          <IconChevronRight stroke={1.5} size={18} color="#94A3B8" />
         </button>
 
         {/* Log mileage row */}
@@ -518,13 +508,13 @@ function EndOfDayPage() {
               flexShrink: 0,
             }}
           >
-            <Car size={17} color="#1877D6" />
+            <IconCar stroke={1.5} size={17} color="#1877D6" />
           </span>
           <span style={{ flex: 1 }}>
             <span style={{ display: "block", fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>Log mileage</span>
             <span style={{ display: "block", fontSize: 12, color: "#6B7280" }}>Track a trip</span>
           </span>
-          <ChevronRight size={18} color="#94A3B8" />
+          <IconChevronRight stroke={1.5} size={18} color="#94A3B8" />
         </button>
       </Card>
 

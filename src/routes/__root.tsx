@@ -9,43 +9,8 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import {
-  X,
-  Calendar,
-  CalendarPlus,
-  PoundSterling,
-  CreditCard,
-  CalendarCheck,
-  Navigation,
-  Zap,
-  MapPin,
-  Sun,
-  ListTodo,
-  Moon,
-  Sparkles,
-  TrendingUp,
-  Receipt,
-  Car,
-  Calculator,
-  FileText,
-  ClipboardCheck,
-  GraduationCap,
-  FileSignature,
-  Users,
-  ShieldCheck,
-  Star,
-  Gift,
-  Megaphone,
-  BarChart3,
-  Award,
-  MessageCircle,
-  Phone,
-  Settings as SettingsIcon,
-  RefreshCw,
-  HelpCircle,
-  LogOut,
-} from "lucide-react";
-import { IconLogout, IconMenu2 } from "@tabler/icons-react";
+import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMenu2, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconX } from "@tabler/icons-react";
+import { CalendarPlus, ListTodo, Sparkles, Receipt, Calculator, FileSignature, Megaphone, HelpCircle, Settings as SettingsIcon } from "lucide-react";
 
 import appCss from "../styles.css?url";
 import icon192 from "../assets/icon-192.png.asset.json";
@@ -228,9 +193,9 @@ type MenuItem = {
 };
 
 const QUICK_ACTIONS: MenuItem[] = [
-  { label: "Call a pupil", icon: Phone, to: "/messages" },
-  { label: "Live track", icon: MapPin, to: "/live" },
-  { label: "Take payment", icon: PoundSterling, event: "dsm-open-unified-payment-sheet", fallback: "/home" },
+  { label: "Call a pupil", icon: IconPhone, to: "/messages" },
+  { label: "Live track", icon: IconMapPin, to: "/live" },
+  { label: "Take payment", icon: IconCurrencyPound, event: "dsm-open-unified-payment-sheet", fallback: "/home" },
   { label: "Add lesson", icon: CalendarPlus, event: "dsm-open-add-lesson-sheet", fallback: "/home" },
 ];
 
@@ -238,50 +203,50 @@ const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
   {
     title: "Daily",
     items: [
-      { label: "Day briefing", icon: Sun, to: "/briefing" },
+      { label: "Day briefing", icon: IconSun, to: "/briefing" },
       { label: "Outstanding", icon: ListTodo, to: "/outstanding" },
-      { label: "End of day", icon: Moon, to: "/end-of-day" },
+      { label: "End of day", icon: IconMoon, to: "/end-of-day" },
       { label: "What's changed", icon: Sparkles, to: "/whats-changed" },
     ],
   },
   {
     title: "Money",
     items: [
-      { label: "Earnings", icon: TrendingUp, to: "/earnings" },
+      { label: "Earnings", icon: IconTrendingUp, to: "/earnings" },
       { label: "Expenses", icon: Receipt, to: "/expenses" },
-      { label: "Mileage", icon: Car, to: "/mileage" },
+      { label: "Mileage", icon: IconCar, to: "/mileage" },
       { label: "Tax & MTD", icon: Calculator, to: "/mtd" },
-      { label: "Invoices", icon: FileText, to: "/invoices" },
+      { label: "Invoices", icon: IconFileText, to: "/invoices" },
     ],
   },
   {
     title: "Pupils & lessons",
     items: [
-      { label: "Tests", icon: ClipboardCheck, to: "/tests" },
-      { label: "Courses", icon: GraduationCap, to: "/courses" },
+      { label: "Tests", icon: IconClipboardCheck, to: "/tests" },
+      { label: "Courses", icon: IconSchool, to: "/courses" },
       { label: "Quotes", icon: FileSignature, to: "/quotes" },
-      { label: "Waiting list", icon: Users, to: "/waitinglist" },
-      { label: "Waivers", icon: ShieldCheck, to: "/waivers" },
+      { label: "Waiting list", icon: IconUsers, to: "/waitinglist" },
+      { label: "Waivers", icon: IconShieldCheck, to: "/waivers" },
     ],
   },
   {
     title: "Growth & business",
     items: [
-      { label: "Reviews", icon: Star, to: "/reviews" },
-      { label: "Referrals", icon: Gift, to: "/referrals" },
+      { label: "Reviews", icon: IconStar, to: "/reviews" },
+      { label: "Referrals", icon: IconGift, to: "/referrals" },
       { label: "Broadcast", icon: Megaphone, to: "/broadcast" },
-      { label: "Reports", icon: BarChart3, to: "/reports" },
-      { label: "CPD & certs", icon: Award, to: "/cpd" },
-      { label: "Community", icon: MessageCircle, to: "/community" },
+      { label: "Reports", icon: IconChartBar, to: "/reports" },
+      { label: "CPD & certs", icon: IconAward, to: "/cpd" },
+      { label: "Community", icon: IconMessageCircle, to: "/community" },
     ],
   },
   {
     title: "Account",
     items: [
       { label: "Settings", icon: SettingsIcon, to: "/settings" },
-      { label: "Calendar sync", icon: RefreshCw, to: "/calendarsync" },
+      { label: "IconCalendar sync", icon: IconRefresh, to: "/calendarsync" },
       { label: "Help", icon: HelpCircle, to: "/help" },
-      { label: "Sign out", icon: LogOut, signOut: true },
+      { label: "Sign out", icon: IconLogout, signOut: true },
     ],
   },
 ];
@@ -417,7 +382,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
               aria-label="Close menu"
               style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", display: "flex" }}
             >
-              <X size={22} />
+              <IconX stroke={1.5} size={22} />
             </button>
           </div>
         </div>
@@ -449,7 +414,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
               }}
               className="w-full h-auto min-h-[44px] justify-start px-[18px] py-2.5 text-[13px] font-medium text-[#CC2229] hover:bg-transparent hover:text-[#CC2229] font-['Poppins',sans-serif]"
             >
-              <IconLogout size={16} color="#CC2229" />
+              <IconLogout stroke={1.5} size={16} color="#CC2229" />
               Sign out
             </Button>
           </div>
