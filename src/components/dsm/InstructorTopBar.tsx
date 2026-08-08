@@ -24,6 +24,7 @@ export type InstructorTopBarProps = {
   onProfile?: () => void;
   onBack?: () => void;
   pageTitle?: string;
+  titleStyle?: React.CSSProperties;
 };
 
 const ICON_BTN: React.CSSProperties = {
