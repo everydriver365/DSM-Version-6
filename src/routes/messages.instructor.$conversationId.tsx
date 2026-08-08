@@ -51,6 +51,8 @@ interface Conversation {
   instructor_b: InstructorLite | null;
 }
 
+type DeliveryStatus = "sending" | "sent" | "failed";
+
 interface DMMessage {
   id: string;
   conversation_id: string;
@@ -59,6 +61,8 @@ interface DMMessage {
   body: string | null;
   created_at: string;
   read_at: string | null;
+  /** Client-only delivery state for messages sent from this device. */
+  delivery?: DeliveryStatus;
 }
 
 function initials(name?: string | null) {
