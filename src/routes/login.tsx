@@ -277,7 +277,7 @@ function LoginPage() {
         style={{
           borderRadius: "20px",
           padding: "32px",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+          boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
         }}
       >
         <h2
