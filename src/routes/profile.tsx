@@ -213,22 +213,24 @@ function SelectField({
   value,
   onChange,
   options,
+  last = false,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   options: { value: string; label: string }[];
+  last?: boolean;
 }) {
   return (
-    <div className="w-full">
-      <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+    <div className="flex items-center" style={{ padding: '13px 0', borderBottom: last ? 'none' : '1px solid #E4E8EF' }}>
+      <label className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0" style={POPPINS}>
         {label}
       </label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full h-10 rounded-lg bg-white px-3 text-[14px] text-[#0B1F3A] outline-none"
-        style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", ...POPPINS }}
+        className="flex-1 bg-transparent text-[15px] text-[#0B1F3A] outline-none text-right border-none"
+        style={POPPINS}
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>
