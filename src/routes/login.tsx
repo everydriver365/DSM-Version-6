@@ -219,12 +219,16 @@ function LoginPage() {
               ? onBiometric
               : () => setError("Sign in with your password first to enable Face ID")
           }
-          className="w-full max-w-[360px] h-12 rounded-lg text-[14px] font-medium flex items-center justify-center gap-2 mt-8"
+          className="w-full max-w-[360px] flex items-center justify-center gap-2 mt-8"
           style={{
             fontFamily: "Poppins, sans-serif",
-            background: enrolled ? "#1877D6" : "#1B2C4A",
-            color: enrolled ? "#FFFFFF" : "#8CA1C2",
-            border: enrolled ? "1.5px solid #1877D6" : "1.5px solid #22375A",
+            background: "rgba(255,255,255,0.1)",
+            border: "1px solid rgba(255,255,255,0.15)",
+            borderRadius: 14,
+            padding: 16,
+            color: "#fff",
+            fontSize: 15.5,
+            fontWeight: 600,
           }}
         >
           <ScanFace size={20} />
