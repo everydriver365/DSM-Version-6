@@ -4,6 +4,13 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
 import { VideoPlayer } from "@/components/dsm/VideoPlayer";
+import {
+  BottomSheet,
+  SheetGroup,
+  SheetRow,
+  PrimaryButton,
+  GhostButton,
+} from "@/components/dsm/BottomSheetV2";
 
 import {
   IconChevronLeft,
