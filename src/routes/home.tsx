@@ -5241,7 +5241,7 @@ function HomePage() {
                 borderTop: '0.5px solid #E4E8EF',
                 borderBottom: '0.5px solid #E4E8EF',
               }}>
-                <PupilAvatar pupil={upcoming?.pupils ?? null} pupilId={upcoming?.pupil_id ?? null} size={40} />
+                
 
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{
