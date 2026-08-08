@@ -1559,161 +1559,140 @@ function PupilDetailPage() {
                   </button>
                 </div>
 
-                {/* Photo consent row */}
-                <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                  <span className="text-[14px] font-medium text-slate-700" style={POPPINS}>
-                    Photo consent
-                  </span>
-                  <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                    <input
-                      type="checkbox"
-                      checked={Boolean(pupil.photo_consent)}
-                      onChange={(e) => togglePhotoConsent(e.target.checked)}
-                      className="sr-only peer"
-                    />
-                    <div
-                      className="w-11 h-6 rounded-full transition-colors"
-                      style={{ backgroundColor: pupil.photo_consent ? "#00B5A5" : "#CBD5E1" }}
-                    />
-                    <div
-                      className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
-                      style={{
-                        transform: pupil.photo_consent ? "translateX(20px)" : "translateX(0)",
-                      }}
-                    />
-                  </label>
-                </div>
-
-                {/* 3-up hero stat row: Balance | Hours remaining | Days to test */}
-                {(() => {
-                  const isBlock =
-                    pricingType === "block" || pricingType === "national_intensives";
-                  const accountCredit = Number(pupil.account_balance ?? 0);
-                  const balanceColor = isBlock
-                    ? balance > 0
-                      ? "#CC2229"
-                      : "#16A34A"
-                    : balance > 0
-                      ? "#CC2229"
-                      : accountCredit > 0
-                        ? "#16A34A"
-                        : "#0B1F3A";
-                  const hoursRemaining = Math.max(
-                    0,
-                    Number(pupil.prepaid_hours ?? 0) - hoursCompleted,
-                  );
-                  const hoursValue = hoursRemaining.toFixed(1);
-                  const balanceLabel = isBlock
-                    ? "Package"
-                    : balance > 0
-                      ? "Balance owed"
-                      : accountCredit > 0
-                        ? "In credit"
-                        : "Balance";
-                  const balanceValue = isBlock
-                    ? balance > 0
-                      ? `${hoursValue} hrs remaining · £${balance.toFixed(2)} outstanding`
-                      : `${hoursValue} hrs remaining · Fully paid`
-                    : balance > 0
-                      ? `£${balance.toFixed(2)}`
-                      : accountCredit > 0
-                        ? `£${accountCredit.toFixed(2)}`
-                        : "All paid";
-                  const today = ymd(new Date());
-                  let testValue = "Not booked";
-                  let testColor = "#6B7280";
-                  if (pupil.test_date) {
-                    const d = daysBetween(today, pupil.test_date);
-                    if (d === 0) {
-                      testValue = "Today";
-                      testColor = "#1877D6";
-                    } else if (d === 1) {
-                      testValue = "Tomorrow";
-                      testColor = "#1877D6";
-                    } else if (d < 0) {
-                      testValue = "Passed?";
-                      testColor = "#6B7280";
-                    } else {
-                      testValue = `${d} days`;
-                      testColor = "#0B1F3A";
-                    }
-                  }
-                  return (
-                    <div className="grid grid-cols-3 gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => setActiveTab("payments")}
-                        className="text-left rounded-xl p-2 border active:scale-[0.98] transition-transform min-w-0"
-                        style={{
-                          backgroundColor: "#FFFFFF",
-                          borderColor: "#E2E6ED",
-                          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                        }}
-                      >
-                        <p
-                          className="text-[9px] font-bold uppercase truncate"
-                          style={{ color: "#6B7280", letterSpacing: "0.06em", ...POPPINS }}
-                        >
-                          {balanceLabel}
-                        </p>
-                        <p
-                          className="text-[15px] font-bold mt-0.5 leading-tight truncate"
-                          style={{ color: balanceColor, ...POPPINS }}
-                        >
-                          {balanceValue}
-                        </p>
-                      </button>
+                {/* Grouped card: Photo consent + 3-up stat row */}
+                <div
+                  style={{
+                    background: "#FFFFFF",
+                    borderRadius: 16,
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                    overflow: "hidden",
+                  }}
+                >
+                  {/* Photo consent row */}
+                  <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid #E9E9EC" }}>
+                    <span className="text-[14px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>
+                      Photo consent
+                    </span>
+                    <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                      <input
+                        type="checkbox"
+                        checked={Boolean(pupil.photo_consent)}
+                        onChange={(e) => togglePhotoConsent(e.target.checked)}
+                        className="sr-only peer"
+                      />
                       <div
-                        className="rounded-xl p-2 border min-w-0"
+                        className="w-11 h-6 rounded-full transition-colors"
+                        style={{ backgroundColor: pupil.photo_consent ? "#248A3D" : "#CBD5E1" }}
+                      />
+                      <div
+                        className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
                         style={{
-                          backgroundColor: "#FFFFFF",
-                          borderColor: "#E2E6ED",
-                          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                          transform: pupil.photo_consent ? "translateX(20px)" : "translateX(0)",
                         }}
-                      >
-                        <p
-                          className="text-[9px] font-bold uppercase truncate"
-                          style={{ color: "#6B7280", letterSpacing: "0.06em", ...POPPINS }}
-                        >
-                          Hours left
-                        </p>
-                        <p
-                          className="text-[15px] font-bold mt-0.5 leading-tight truncate"
-                          style={{ color: "#0B1F3A", ...POPPINS }}
-                        >
-                          {hoursValue}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setActiveTab("profile");
-                          setPracticalEditing(true);
-                        }}
-                        className="text-left rounded-xl p-2 border active:scale-[0.98] transition-transform min-w-0"
-                        style={{
-                          backgroundColor: "#FFFFFF",
-                          borderColor: "#E2E6ED",
-                          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                        }}
-                      >
-                        <p
-                          className="text-[9px] font-bold uppercase truncate"
-                          style={{ color: "#6B7280", letterSpacing: "0.06em", ...POPPINS }}
-                        >
-                          Test in
-                        </p>
-                        <p
-                          className="text-[15px] font-bold mt-0.5 leading-tight truncate"
-                          style={{ color: testColor, ...POPPINS }}
-                        >
-                          {testValue}
-                        </p>
-                      </button>
-                    </div>
+                      />
+                    </label>
+                  </div>
 
-                  );
-                })()}
+                  {/* 3-up stat row: Balance | Hours remaining | Days to test */}
+                  {(() => {
+                    const isBlock =
+                      pricingType === "block" || pricingType === "national_intensives";
+                    const accountCredit = Number(pupil.account_balance ?? 0);
+                    const balanceColor = isBlock
+                      ? balance > 0
+                        ? "#CC2229"
+                        : "#248A3D"
+                      : balance > 0
+                        ? "#CC2229"
+                        : accountCredit > 0
+                          ? "#248A3D"
+                          : "#000000";
+                    const hoursRemaining = Math.max(
+                      0,
+                      Number(pupil.prepaid_hours ?? 0) - hoursCompleted,
+                    );
+                    const hoursValue = hoursRemaining.toFixed(1);
+                    const balanceLabel = isBlock
+                      ? "Package"
+                      : balance > 0
+                        ? "Balance owed"
+                        : accountCredit > 0
+                          ? "In credit"
+                          : "Balance";
+                    const balanceValue = isBlock
+                      ? balance > 0
+                        ? `£${balance.toFixed(2)} due`
+                        : "Fully paid"
+                      : balance > 0
+                        ? `£${balance.toFixed(2)}`
+                        : accountCredit > 0
+                          ? `£${accountCredit.toFixed(2)}`
+                          : "All paid";
+                    const today = ymd(new Date());
+                    let testValue = "Not booked";
+                    let testColor = "#8A8A8E";
+                    if (pupil.test_date) {
+                      const d = daysBetween(today, pupil.test_date);
+                      if (d === 0) {
+                        testValue = "Today";
+                        testColor = "#1877D6";
+                      } else if (d === 1) {
+                        testValue = "Tomorrow";
+                        testColor = "#1877D6";
+                      } else if (d < 0) {
+                        testValue = "Passed?";
+                        testColor = "#8A8A8E";
+                      } else {
+                        testValue = `${d} days`;
+                        testColor = "#000000";
+                      }
+                    }
+                    const colLabel: React.CSSProperties = {
+                      fontSize: 10,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.06em",
+                      color: "#8A8A8E",
+                      ...POPPINS,
+                    };
+                    const colValue: React.CSSProperties = {
+                      fontSize: 19,
+                      fontWeight: 800,
+                      lineHeight: 1.15,
+                      marginTop: 2,
+                      ...POPPINS,
+                    };
+                    return (
+                      <div className="grid grid-cols-3">
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab("payments")}
+                          className="text-left px-4 py-3 min-w-0 active:opacity-70"
+                          style={{ background: "none", border: "none" }}
+                        >
+                          <p className="truncate" style={colLabel}>{balanceLabel}</p>
+                          <p className="truncate" style={{ ...colValue, color: balanceColor }}>{balanceValue}</p>
+                        </button>
+                        <div className="px-4 py-3 min-w-0" style={{ borderLeft: "1px solid #E9E9EC", borderRight: "1px solid #E9E9EC" }}>
+                          <p className="truncate" style={colLabel}>Hours left</p>
+                          <p className="truncate" style={{ ...colValue, color: "#248A3D" }}>{hoursValue}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveTab("profile");
+                            setPracticalEditing(true);
+                          }}
+                          className="text-left px-4 py-3 min-w-0 active:opacity-70"
+                          style={{ background: "none", border: "none" }}
+                        >
+                          <p className="truncate" style={colLabel}>Test in</p>
+                          <p className="truncate" style={{ ...colValue, color: testColor }}>{testValue}</p>
+                        </button>
+                      </div>
+                    );
+                  })()}
+                </div>
 
                 {/* Readiness dashboard */}
                 {(() => {
