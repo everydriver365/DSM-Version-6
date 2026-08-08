@@ -571,15 +571,12 @@ function PupilsIndexPage() {
         onContextMenu={(e) => e.preventDefault()}
         className="block cursor-pointer select-none"
         style={{
-          backgroundColor: "#FFFFFF",
-          border: "1px solid #E3E8F0",
-          borderRadius: 15,
-          margin: "0 16px 10px",
-          boxShadow: "0 1px 4px rgba(11,31,58,0.05)",
+          background: "transparent",
+          padding: "13px 16px",
           WebkitTouchCallout: "none",
         }}
       >
-        <div className="flex items-center" style={{ gap: 12, padding: "12px 13px" }}>
+        <div className="flex items-center" style={{ gap: 12 }}>
           <div style={{ position: "relative", flexShrink: 0 }}>
             <PupilAvatar pupil={p} size={44} />
             {unread > 0 && (
@@ -784,18 +781,32 @@ function PupilsIndexPage() {
 
       {/* Search input */}
       {searchOpen && (
-        <div className="px-4 pb-3" style={{ marginTop: -6 }}>
+        <div
+          style={{
+            margin: '12px 16px',
+            background: '#fff',
+            borderRadius: 16,
+            boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+            padding: '10px 14px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+          }}
+        >
+          <Search size={16} color="#9CA3AF" />
           <input
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search pupils..."
-            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
             style={{
-              ...POPPINS,
-              borderWidth: "0.5px",
-              borderStyle: "solid",
-              borderColor: "#EEF2F7",
+              flex: 1,
+              border: 'none',
+              outline: 'none',
+              fontSize: 15,
+              color: '#0B1F3A',
+              fontFamily: 'Poppins, sans-serif',
+              background: 'transparent',
             }}
           />
         </div>
@@ -859,7 +870,37 @@ function PupilsIndexPage() {
           />
         ) : (
           <>
-            {filtered.map((p, i) => renderRow(p, i, filtered.length))}
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: '#9CA3AF',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                padding: '16px 16px 6px',
+                fontFamily: 'Poppins, sans-serif',
+              }}
+            >
+              ACTIVE · {filtered.length}
+            </div>
+            <div
+              style={{
+                margin: '0 16px',
+                background: '#fff',
+                borderRadius: 16,
+                boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+                overflow: 'hidden',
+              }}
+            >
+              {filtered.map((p, index) => (
+                <div key={p.id}>
+                  {renderRow(p, index, filtered.length)}
+                  {index < filtered.length - 1 && (
+                    <div style={{ height: 1, background: '#E4E8EF', marginLeft: 72 }} />
+                  )}
+                </div>
+              ))}
+            </div>
           </>
         )}
 
