@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, RefreshCw, Calendar, MoreHorizontal, X, Search } from "lucide-react";
+import { RefreshCw, Calendar, MoreHorizontal, X, Search } from "lucide-react";
+import { PageHeader } from "@/components/dsm/PageHeader";
 import { toast } from "sonner";
 import { IconUsers } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
@@ -418,19 +419,7 @@ function LessonSeriesPage() {
 
   return (
     <PageLayout style={{ background: "#FFFFFF", ...POPPINS }}>
-      <div style={{ background: "#0F2044", color: "#FFFFFF", padding: "16px" }}>
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            aria-label="Back"
-            onClick={() => navigate({ to: "/schedule" })}
-            className="flex items-center justify-center w-8 h-8 -ml-1"
-          >
-            <ArrowLeft size={20} color="#FFFFFF" />
-          </button>
-          <p style={{ fontSize: 18, fontWeight: 600 }}>Recurring lessons</p>
-        </div>
-      </div>
+      <PageHeader title="Lesson Series" backTo="/schedule" />
 
       {/* Intro card */}
       <div

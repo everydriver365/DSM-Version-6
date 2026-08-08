@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, MoreVertical, Pencil, Trash2, Search } from "lucide-react";
+import { MoreVertical, Pencil, Trash2, Search } from "lucide-react";
+import { PageHeader } from "@/components/dsm/PageHeader";
 import { IconArchive, IconChevronUp, IconChevronDown, IconChevronLeft, IconPhone, IconMapPin, IconCurrencyPound, IconId, IconCalendar, IconPencil, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
@@ -191,27 +192,18 @@ function AdminInstructorsPage() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F6F8FB", fontFamily: "Poppins, sans-serif" }}>
-      {/* HEADER */}
-      <div
-        className="flex items-center justify-between px-3 py-3 sticky top-0 z-20"
-        style={{ backgroundColor: NAVY }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/admin" as never })}
-          className="p-1 -ml-1"
-          aria-label="Back"
-        >
-          <ChevronLeft size={22} color="#fff" />
-        </button>
-        <div style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>Instructors</div>
-        <div
-          className="rounded-full px-2 py-0.5"
-          style={{ backgroundColor: "rgba(255,255,255,0.14)", color: "#fff", fontSize: 12, fontWeight: 600 }}
-        >
-          {instructors.length}
-        </div>
-      </div>
+      <PageHeader
+        title="Instructors"
+        backTo="/admin"
+        right={
+          <div
+            className="rounded-full px-2 py-0.5"
+            style={{ backgroundColor: "rgba(255,255,255,0.14)", color: "#fff", fontSize: 12, fontWeight: 600 }}
+          >
+            {instructors.length}
+          </div>
+        }
+      />
 
       {/* SEARCH */}
       <div style={{ padding: "12px 16px", borderBottom: `0.5px solid ${BORDER}`, backgroundColor: "#fff" }}>

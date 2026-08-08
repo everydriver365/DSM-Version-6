@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Plus, X, Pencil, Trash2, Eye, EyeOff, Music } from "lucide-react";
+import { Plus, X, Pencil, Trash2, Eye, EyeOff, Music } from "lucide-react";
+import { PageHeader } from "@/components/dsm/PageHeader";
 import { useAdminGate } from "./admin";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
@@ -236,60 +237,31 @@ function AdminPodcasts() {
   return (
     <>
     <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif", paddingBottom: 40 }}>
-      {/* Top bar */}
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 30,
-          background: "#CC2229",
-          color: "#fff",
-          padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-        }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/admin" })}
-          aria-label="Back"
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.15)",
-            border: "none",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            color: "#fff",
-          }}
-        >
-          <ChevronLeft size={18} />
-        </button>
-        <span style={{ fontSize: 16, fontWeight: 600, flex: 1 }}>DSM Podcasts</span>
-        <button
-          type="button"
-          onClick={openAdd}
-          style={{
-            background: "#fff",
-            color: "#CC2229",
-            border: 0,
-            padding: "8px 12px",
-            borderRadius: 8,
-            fontWeight: 700,
-            fontSize: 13,
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 4,
-          }}
-        >
-          <Plus size={14} /> Add episode
-        </button>
-      </div>
+      <PageHeader
+        title="Podcasts"
+        backTo="/admin"
+        right={
+          <button
+            type="button"
+            onClick={openAdd}
+            style={{
+              background: "#fff",
+              color: "#0B1F3A",
+              border: 0,
+              padding: "8px 12px",
+              borderRadius: 8,
+              fontWeight: 700,
+              fontSize: 13,
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+            }}
+          >
+            <Plus size={14} /> Add episode
+          </button>
+        }
+      />
 
       {/* Stats */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, padding: 16 }}>

@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { PageHeader } from "@/components/dsm/PageHeader";
 import {
-  IconArrowLeft,
   IconBell,
   IconMenu2,
   IconMapPin,
@@ -306,40 +306,27 @@ function FuelPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: CANVAS, ...POPPINS, paddingBottom: 32 }}>
-      {/* Top bar */}
-      <div
-        style={{
-          background: NAVY,
-          color: "#FFFFFF",
-          padding: "14px 16px",
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
-        <button
-          onClick={() => navigate({ to: "/home" })}
-          aria-label="Back"
-          style={{ background: "transparent", border: "none", color: "#FFFFFF", padding: 2, cursor: "pointer", display: "inline-flex" }}
-        >
-          <IconArrowLeft size={20} stroke={1.8} color="#FFFFFF" />
-        </button>
-        <h1 style={{ fontSize: 16, fontWeight: 600, margin: 0, flex: 1 }}>Fuel</h1>
-        <button
-          onClick={() => navigate({ to: "/notifications" })}
-          aria-label="Notifications"
-          style={{ background: "transparent", border: "none", padding: 2, cursor: "pointer", display: "inline-flex" }}
-        >
-          <IconBell size={20} stroke={1.8} color="#FFFFFF" />
-        </button>
-        <button
-          onClick={() => window.dispatchEvent(new CustomEvent("dsm-open-menu"))}
-          aria-label="Menu"
-          style={{ background: "transparent", border: "none", padding: 2, cursor: "pointer", display: "inline-flex" }}
-        >
-          <IconMenu2 size={20} stroke={1.8} color="#FFFFFF" />
-        </button>
-      </div>
+      <PageHeader
+        title="Fuel Tracker"
+        right={
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+            <button
+              onClick={() => navigate({ to: "/notifications" })}
+              aria-label="Notifications"
+              style={{ background: "transparent", border: "none", padding: 2, cursor: "pointer", display: "inline-flex" }}
+            >
+              <IconBell size={20} stroke={1.8} color="#FFFFFF" />
+            </button>
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("dsm-open-menu"))}
+              aria-label="Menu"
+              style={{ background: "transparent", border: "none", padding: 2, cursor: "pointer", display: "inline-flex" }}
+            >
+              <IconMenu2 size={20} stroke={1.8} color="#FFFFFF" />
+            </button>
+          </div>
+        }
+      />
 
       {/* Tabs */}
       <div style={{ display: "flex", background: "#FFFFFF", borderBottom: BORDER }}>
