@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { QRCodeSVG } from "qrcode.react";
 import {
@@ -15,6 +15,8 @@ import {
   Search,
   Sparkles,
   CreditCard,
+  ChevronRight,
+  StickyNote,
 } from "lucide-react";
 import { toast } from "sonner";
 import { IconCircleCheck, IconReceipt } from "@tabler/icons-react";
@@ -244,6 +246,128 @@ function SummaryBar({ cells }: { cells: { label: string; value: string; color?: 
         </div>
       ))}
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// iOS grouped-list primitives (matches BottomSheetV2 pattern)
+// ---------------------------------------------------------------------------
+const HAIRLINE = "#E4E8EF";
+const SUBTLE = "#6B7686";
+
+const cardStyle: React.CSSProperties = {
+  background: WHITE,
+  borderRadius: 16,
+  border: "none",
+  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+  overflow: "hidden",
+  marginBottom: 12,
+};
+
+function Group({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+  const items = React.Children.toArray(children).filter(Boolean);
+  if (items.length === 0) return null;
+  return (
+    <div style={{ ...cardStyle, ...style }}>
+      {items.map((child, i) => (
+        <React.Fragment key={i}>
+          {i > 0 && <div style={{ height: 1, background: HAIRLINE }} />}
+          {child}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
+
+function Row({
+  children,
+  onClick,
+  selected,
+  style,
+  disabled,
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  selected?: boolean;
+  style?: React.CSSProperties;
+  disabled?: boolean;
+}) {
+  const base: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    width: "100%",
+    padding: "15px 16px",
+    background: selected ? "#F0F7FF" : "transparent",
+    border: "none",
+    textAlign: "left",
+    fontFamily: FONT,
+    boxSizing: "border-box",
+    ...style,
+  };
+  if (!onClick) return <div style={base}>{children}</div>;
+  return (
+    <button type="button" onClick={onClick} disabled={disabled} style={{ ...base, cursor: disabled ? "not-allowed" : "pointer" }}>
+      {children}
+    </button>
+  );
+}
+
+function Radio({ selected }: { selected: boolean }) {
+  return (
+    <span
+      style={{
+        width: 22,
+        height: 22,
+        borderRadius: 999,
+        flexShrink: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        border: selected ? "none" : "2px solid #C7D0DC",
+        background: selected ? BLUE : "transparent",
+        boxSizing: "border-box",
+      }}
+    >
+      {selected && (
+        <span style={{ width: 8, height: 8, borderRadius: 999, background: WHITE, display: "block" }} />
+      )}
+    </span>
+  );
+}
+
+function RowLabel({ children }: { children: React.ReactNode }) {
+  return <span style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: 600, color: NAVY }}>{children}</span>;
+}
+
+function InitialsAvatar({ name }: { name: string }) {
+  const parts = (name || "?").trim().split(/\s+/);
+  const initials =
+    ((parts[0]?.[0] ?? "") + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase() || "?";
+  return (
+    <span
+      style={{
+        width: 36,
+        height: 36,
+        borderRadius: 999,
+        background: BLUE,
+        color: WHITE,
+        fontSize: 13,
+        fontWeight: 700,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+      }}
+    >
+      {initials}
+    </span>
+  );
+}
+
+function SectionCaption({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ fontSize: 13, color: SUBTLE, margin: "-4px 4px 12px", fontFamily: FONT }}>{children}</div>
   );
 }
 
