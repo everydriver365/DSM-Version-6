@@ -360,19 +360,32 @@ function LoginPage() {
 
           {/* Remember me + Forgot */}
           <div className="flex items-center justify-between">
-            <label className="flex items-center gap-2 text-[13px] text-[#6B7280] cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={remember}
-                onChange={(e) => {
-                  const on = e.target.checked;
-                  setRemember(on);
-                  persistRemember(email, on);
+            <button
+              type="button"
+              onClick={() => {
+                const on = !remember;
+                setRemember(on);
+                persistRemember(email, on);
+              }}
+              className="flex items-center gap-2 cursor-pointer select-none"
+              style={{ fontFamily: "Poppins, sans-serif", fontSize: 14, fontWeight: 500, color: "#000" }}
+            >
+              <div
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 6,
+                  background: remember ? "#1877D6" : "#F2F2F7",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
                 }}
-                className="h-4 w-4 rounded border-[#CBD5E1] accent-[#1877D6]"
-              />
+              >
+                {remember && <Check size={12} strokeWidth={3} color="#fff" />}
+              </div>
               Remember me
-            </label>
+            </button>
             <Link
               to="/forgotpassword"
               className="text-[13px] text-[#1877D6] hover:underline"
