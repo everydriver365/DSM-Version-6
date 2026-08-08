@@ -3135,29 +3135,32 @@ function PupilDetailPage() {
                 const isPending = !mt.result || mt.result === "Pending";
                 return (
                   <>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
-                        {fmtUKDate(mt.test_date)}
-                      </div>
-                      <span style={{ fontSize: 11, fontWeight: 700, backgroundColor: resultColor.bg, color: resultColor.fg, padding: "3px 10px", borderRadius: 999 }}>
-                        {result}
-                      </span>
-                    </div>
-
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 16 }}>
-                      <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                        <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Minor</div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>{minor}</div>
-                      </div>
-                      <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                        <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Serious</div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: serious > 0 ? "#CC2229" : "#0B1F3A", marginTop: 2 }}>{serious}</div>
-                      </div>
-                      <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                        <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Dangerous</div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: dangerous > 0 ? "#CC2229" : "#0B1F3A", marginTop: 2 }}>{dangerous}</div>
-                      </div>
-                    </div>
+                    <SheetGroup>
+                      <SheetRow>
+                        <div className="flex-1" style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A" }}>
+                          {fmtUKDate(mt.test_date)}
+                        </div>
+                        <span style={{ fontSize: 12, fontWeight: 700, backgroundColor: resultColor.bg, color: resultColor.fg, padding: "3px 10px", borderRadius: 999 }}>
+                          {result}
+                        </span>
+                      </SheetRow>
+                      <SheetRow>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0, width: "100%" }}>
+                          <div style={{ textAlign: "center", borderRight: "1px solid #E4E8EF" }}>
+                            <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Minor</div>
+                            <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 3 }}>{minor}</div>
+                          </div>
+                          <div style={{ textAlign: "center", borderRight: "1px solid #E4E8EF" }}>
+                            <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Serious</div>
+                            <div style={{ fontSize: 16, fontWeight: 700, color: serious > 0 ? "#CC2229" : "#0B1F3A", marginTop: 3 }}>{serious}</div>
+                          </div>
+                          <div style={{ textAlign: "center" }}>
+                            <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Dangerous</div>
+                            <div style={{ fontSize: 16, fontWeight: 700, color: dangerous > 0 ? "#CC2229" : "#0B1F3A", marginTop: 3 }}>{dangerous}</div>
+                          </div>
+                        </div>
+                      </SheetRow>
+                    </SheetGroup>
 
                     {isPending && (
                       <div style={{ marginBottom: 16 }}>
