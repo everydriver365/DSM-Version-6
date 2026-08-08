@@ -870,7 +870,37 @@ function PupilsIndexPage() {
           />
         ) : (
           <>
-            {filtered.map((p, i) => renderRow(p, i, filtered.length))}
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: '#9CA3AF',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                padding: '16px 16px 6px',
+                fontFamily: 'Poppins, sans-serif',
+              }}
+            >
+              ACTIVE · {filtered.length}
+            </div>
+            <div
+              style={{
+                margin: '0 16px',
+                background: '#fff',
+                borderRadius: 16,
+                boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+                overflow: 'hidden',
+              }}
+            >
+              {filtered.map((p, index) => (
+                <div key={p.id}>
+                  {renderRow(p, index, filtered.length)}
+                  {index < filtered.length - 1 && (
+                    <div style={{ height: 1, background: '#E4E8EF', marginLeft: 72 }} />
+                  )}
+                </div>
+              ))}
+            </div>
           </>
         )}
 
