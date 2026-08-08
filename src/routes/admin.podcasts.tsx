@@ -1,3 +1,4 @@
+import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Plus, X, Pencil, Trash2, Eye, EyeOff, Music } from "lucide-react";
@@ -288,7 +289,7 @@ function AdminPodcasts() {
 
       {/* List */}
       {loading ? (
-        <div style={{ padding: 24, color: "#6B7280" }}>Loading…</div>
+        <PageLoader />
       ) : items.length === 0 ? (
         <div style={{ padding: 32, textAlign: "center", color: "#6B7280" }}>
           <Music size={40} style={{ margin: "0 auto", opacity: 0.4 }} />

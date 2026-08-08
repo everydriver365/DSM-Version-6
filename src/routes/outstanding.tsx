@@ -1,3 +1,4 @@
+import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -245,7 +246,7 @@ function OutstandingPage() {
 
       <div style={{ padding: "16px" }}>
         {loading ? (
-          <div style={{ color: "#6B7280", padding: 16, textAlign: "center" }}>Loading…</div>
+          <PageLoader />
         ) : total === 0 ? (
           <div style={{
             textAlign: "center", padding: "64px 16px",

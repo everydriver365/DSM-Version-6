@@ -1,3 +1,4 @@
+import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Plus, X, Pencil, Trash2, Users as UsersIcon, Camera } from "lucide-react";
@@ -624,7 +625,7 @@ function AdminDsmLive() {
 
       {/* Sessions list */}
       {loading ? (
-        <div style={{ padding: 24, color: "#6B7280", fontSize: 13 }}>Loading…</div>
+        <PageLoader />
       ) : sessions.length === 0 ? (
         <div style={{ padding: 24, color: "#6B7280", fontSize: 13 }}>No sessions yet.</div>
       ) : (
