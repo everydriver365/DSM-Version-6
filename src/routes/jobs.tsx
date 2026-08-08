@@ -220,7 +220,7 @@ function JobCard({
       onClick={() => setDetailJob(job)}
       style={{
         background: "#FFFFFF",
-        borderRadius: 16,
+        borderRadius: 18,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         overflow: "hidden",
         cursor: "pointer",
@@ -228,37 +228,41 @@ function JobCard({
     >
       <div
         style={{
-          background: NAVY,
-          padding: "14px 16px",
+          padding: "16px 18px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          gap: 12,
         }}
       >
-        <div style={{ fontSize: 11, fontWeight: 600, color: "#B9C4D4", letterSpacing: 0.3 }}>
+        <div style={{ fontSize: 12.5, fontWeight: 500, color: "#8A8A8E", ...POPPINS }}>
           {variant === "claimed"
             ? `Job accepted · ${job.claimed_at ? relTime(job.claimed_at) : "—"}`
             : `Job offer · Posted ${relTime(job.created_at)}`}
         </div>
         {worth != null && (
-          <div style={{ fontSize: 20, fontWeight: 700, color: "#FFFFFF" }}>
+          <div
+            style={{
+              fontSize: 22,
+              fontWeight: 800,
+              color: worth === 0 ? "#C7C7CC" : "#000",
+              ...POPPINS,
+            }}
+          >
             £{worth.toFixed(2)}
           </div>
         )}
       </div>
 
-      <div style={{ padding: 16 }}>
-        <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>
-          {[titleCase(job.pupil_name) || "New pupil", job.postcode_area]
-            .filter(Boolean)
-            .join(" · ")}
+      <div style={{ padding: "0 18px" }}>
+        <div style={{ fontSize: 19, fontWeight: 800, letterSpacing: "-0.3px", color: "#000", ...POPPINS }}>
+          {titleCase(job.pupil_name) || "New pupil"}
         </div>
-        <div style={{ fontSize: 13.5, color: "#5A6B85", marginTop: 2 }}>
+        <div style={{ fontSize: 13.5, fontWeight: 500, color: "#8A8A8E", marginTop: 2, ...POPPINS }}>
           {[
             sentenceCase(job.transmission),
             job.course_hours ? `${job.course_hours} hrs` : null,
             job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : null,
-            distanceMi != null ? `${distanceMi.toFixed(1)} mi away` : null,
             sentenceCase(job.preferred_timing?.join(", ")),
           ]
             .filter(Boolean)
@@ -272,28 +276,25 @@ function JobCard({
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
-                fontSize: 10,
+                fontSize: 11.5,
                 fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: 0.3,
                 color: badge.color,
                 background: badge.bg,
-                padding: "4px 10px",
-                borderRadius: 999,
+                padding: "6px 12px",
+                borderRadius: 20,
                 whiteSpace: "nowrap",
+                ...POPPINS,
               }}
             >
-              {badge.color === "#1E9E5A" && (
-                <span style={{ width: 6, height: 6, borderRadius: 999, background: "#1E9E5A" }} />
-              )}
-              {badge.label}
+              <IconCheck size={11} stroke={2.5} color={badge.color} />
+              {sentenceCase(badge.label)}
             </div>
           </div>
         )}
 
-        <div style={{ height: 1, background: "#EDF0F5", margin: "16px 0" }} />
+        <div style={{ height: 1, background: "#E9E9EC", margin: "16px 0" }} />
 
-        <div style={{ display: "flex", gap: 8 }}>
+        <div style={{ display: "flex", gap: 10, paddingBottom: 16 }}>
           {variant === "offer" && (
             <button
               type="button"
@@ -303,16 +304,18 @@ function JobCard({
                 onDecline?.();
               }}
               style={{
-                background: "#FFFFFF",
-                color: NAVY,
-                height: 42,
-                borderRadius: 12,
-                padding: "0 16px",
-                border: "1.5px solid #DCE2EB",
-                fontSize: 13,
+                background: "#F2F2F7",
+                color: "#000",
+                height: "auto",
+                borderRadius: 14,
+                padding: 14,
+                border: "none",
+                fontSize: 14.5,
                 fontWeight: 700,
                 cursor: "pointer",
                 whiteSpace: "nowrap",
+                flex: 1,
+                ...POPPINS,
               }}
             >
               Decline
@@ -327,15 +330,16 @@ function JobCard({
             style={{
               background: BLUE,
               color: "#FFF",
-              height: 42,
-              borderRadius: 12,
-              padding: "0 12px",
+              height: "auto",
+              borderRadius: 14,
+              padding: 14,
               border: "none",
-              fontSize: 13,
+              fontSize: 14.5,
               fontWeight: 700,
               cursor: "pointer",
               whiteSpace: "nowrap",
-              flex: variant === "claimed" ? 1 : undefined,
+              flex: 1,
+              ...POPPINS,
             }}
           >
             More details
