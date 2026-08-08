@@ -72,30 +72,36 @@ export function BottomSheet({ title, subtitle, onClose, children, footer }: Bott
         </div>
 
         <div className="px-5 pt-2 pb-4 shrink-0">
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h2
+                style={{
+                  color: navy,
+                  fontSize: 26,
+                  fontWeight: 800,
+                  letterSpacing: "-0.6px",
+                  lineHeight: 1.15,
+                }}
+              >
+                {title}
+              </h2>
               {subtitle && (
                 <div
-                  className="text-xs font-medium tracking-wide"
-                  style={{ color: "#8A93A3" }}
+                  className="mt-1"
+                  style={{ color: subtle, fontSize: 14, fontWeight: 500 }}
                 >
                   {subtitle}
                 </div>
               )}
-              <h2
-                className="text-xl font-semibold mt-0.5"
-                style={{ color: navy }}
-              >
-                {title}
-              </h2>
             </div>
             <button
               onClick={onClose}
-              className="p-2 -mr-2 rounded-full active:bg-black/5"
+              className="flex items-center justify-center rounded-full shrink-0 active:opacity-80"
               aria-label="Close"
               type="button"
+              style={{ width: 30, height: 30, backgroundColor: canvas }}
             >
-              <X size={20} color="#8A93A3" />
+              <X size={16} color={subtle} />
             </button>
           </div>
         </div>
@@ -104,12 +110,15 @@ export function BottomSheet({ title, subtitle, onClose, children, footer }: Bott
 
         {footer && (
           <div
-            className="px-4 pt-3 pb-6 shrink-0"
-            style={{ borderTop: "1px solid #E3E7ED" }}
+            className="px-4 pt-6 pb-6 shrink-0"
+            style={{
+              background: `linear-gradient(to bottom, rgba(238,242,247,0), ${canvas})`,
+            }}
           >
             {footer}
           </div>
         )}
+
       </div>
     </div>
   );
