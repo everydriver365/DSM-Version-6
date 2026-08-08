@@ -12,7 +12,7 @@ import {
   X,
   XCircle,
 } from "lucide-react";
-import { IconChevronRight } from "@tabler/icons-react";
+import { IconBell, IconChevronRight } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
