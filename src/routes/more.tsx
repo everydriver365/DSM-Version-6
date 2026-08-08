@@ -6,11 +6,13 @@ import {
   BarChart3, Calculator,
 
   Moon, TrendingUp, Activity, Radio, ShoppingBag, Users, GraduationCap as GraduationCapIcon,
-  ChevronRight, PlayCircle,
+  PlayCircle,
 } from "lucide-react";
+import { IconChevronRight, IconSearch } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { PageLayout } from "@/components/PageLayout";
+import { EmptyState } from "@/components/dsm/EmptyState";
 
 // Toggle to false when Learn is no longer "new" — hides the NEW badge only.
 const LEARN_IS_NEW = true;
@@ -103,15 +105,15 @@ function MorePage() {
       {/* Search */}
       <div
         style={{
-          background: 'white',
-          border: '0.5px solid #E2E6ED',
-          borderRadius: 14,
+          background: '#fff',
+          border: 'none',
+          borderRadius: 16,
           padding: '12px 16px',
           margin: '16px 16px 4px',
           display: 'flex',
           alignItems: 'center',
           gap: 8,
-          boxShadow: '0 2px 8px rgba(15,32,68,0.04)',
+          boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
         }}
       >
         <Search size={16} color="#9CA3AF" />
@@ -145,38 +147,44 @@ function MorePage() {
       {q ? (
         // Flat list of search results
         filtered.length === 0 ? (
-          <div style={{ padding: 32, textAlign: 'center', fontSize: 14, color: '#9CA3AF' }}>
-            No features found for "{searchQuery}"
-          </div>
+          <EmptyState
+            icon={<IconSearch size={32} color="#9CA3AF" stroke={1.5} />}
+            title="No features found"
+            subtitle={`Nothing matched "${searchQuery}"`}
+          />
         ) : (
-          <div style={{ marginTop: 12, background: 'white' }}>
-            {filtered.map((tool) => (
-              <button
-                key={tool.label}
-                onClick={() => go(tool.route)}
-                style={{
-                  width: '100%',
-                  background: 'white',
-                  border: 'none',
-                  borderBottom: '0.5px solid #F3F4F6',
-                  padding: '12px 16px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  fontFamily: 'Poppins, sans-serif',
-                }}
-              >
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: tool.colour + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <tool.icon size={18} color={tool.colour} />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, fontSize: 13, color: '#0F2044' }}>{tool.label}</div>
-                  <div style={{ fontSize: 12, color: '#9CA3AF' }}>{tool.sub}</div>
-                </div>
-                <span style={{ fontSize: 10, color: '#9CA3AF', marginLeft: 'auto' }}>{tool.group}</span>
-              </button>
+          <div style={{ marginTop: 12, background: '#fff', borderRadius: 16, boxShadow: '0 1px 3px rgba(11,31,58,0.06)', margin: '0 16px', overflow: 'hidden' }}>
+            {filtered.map((tool, index) => (
+              <>
+                <button
+                  key={tool.label}
+                  onClick={() => go(tool.route)}
+                  style={{
+                    width: '100%',
+                    background: 'transparent',
+                    border: 'none',
+                    padding: '12px 16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}
+                >
+                  <div style={{ width: 36, height: 36, borderRadius: 10, background: tool.colour + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <tool.icon size={18} color={tool.colour} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 600, fontSize: 13, color: '#0F2044' }}>{tool.label}</div>
+                    <div style={{ fontSize: 12, color: '#9CA3AF' }}>{tool.sub}</div>
+                  </div>
+                  <span style={{ fontSize: 10, color: '#9CA3AF', marginLeft: 'auto' }}>{tool.group}</span>
+                </button>
+                {index < filtered.length - 1 && (
+                  <div key={`sep-${tool.label}`} style={{ height: 1, background: '#E4E8EF', marginLeft: 60 }} />
+                )}
+              </>
             ))}
           </div>
         )
@@ -245,69 +253,74 @@ function MorePage() {
                         Quick guides and how-to videos
                       </div>
                     </div>
-                    <ChevronRight size={18} color="#8592A6" />
+                    <IconChevronRight size={18} color="#8592A6" />
                   </button>
                 </div>
               )}
               <div
                 style={{
-                  fontSize: 10,
+                  fontSize: 11,
                   fontWeight: 600,
                   color: '#9CA3AF',
                   textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
-                  margin: '16px 16px 8px',
+                  letterSpacing: '0.08em',
+                  padding: '16px 16px 6px',
+                  fontFamily: 'Poppins, sans-serif',
                 }}
               >
                 {group}
               </div>
               <div
                 style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 7,
-                  margin: '0 16px',
+                  background: '#fff',
+                  borderRadius: 16,
+                  boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+                  margin: '0 16px 4px',
+                  overflow: 'hidden',
                 }}
               >
-                {items.map((tool) => (
-                  <button
-                    key={tool.label}
-                    onClick={() => go(tool.route)}
-                    style={{
-                      background: 'white',
-                      borderRadius: 13,
-                      padding: '10px 13px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 11,
-                      boxShadow: '0 2px 8px rgba(15,32,68,0.04)',
-                      border: '0.5px solid #F0F0F0',
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      width: '100%',
-                      fontFamily: 'Poppins, sans-serif',
-                    }}
-                  >
-                    <div
+                {items.map((tool, index) => (
+                  <>
+                    <button
+                      key={tool.label}
+                      onClick={() => go(tool.route)}
                       style={{
-                        width: 34,
-                        height: 34,
-                        borderRadius: 9,
-                        background: tool.colour + '15',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
+                        gap: 12,
+                        padding: '13px 16px',
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        width: '100%',
+                        fontFamily: 'Poppins, sans-serif',
                       }}
                     >
-                      <tool.icon size={18} color={tool.colour} />
-                    </div>
-                    <div>
-                      <div style={{ fontWeight: 600, fontSize: 12.5, color: '#0F2044' }}>{tool.label}</div>
-                      <div style={{ fontSize: 10.5, color: '#9CA3AF', marginTop: 1 }}>{tool.sub}</div>
-                    </div>
-                    <ChevronRight size={16} color="#C7CEDA" style={{ marginLeft: 'auto', flexShrink: 0 }} />
-                  </button>
+                      <div
+                        style={{
+                          width: 36,
+                          height: 36,
+                          borderRadius: 10,
+                          background: tool.colour + '15',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <tool.icon size={18} color={tool.colour} />
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: 500, fontSize: 15, color: '#0B1F3A' }}>{tool.label}</div>
+                        <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 1 }}>{tool.sub}</div>
+                      </div>
+                      <IconChevronRight size={14} color="#C7D0DC" style={{ marginLeft: 'auto', flexShrink: 0 }} />
+                    </button>
+                    {index < items.length - 1 && (
+                      <div key={`sep-${tool.label}`} style={{ height: 1, background: '#E4E8EF', marginLeft: 60 }} />
+                    )}
+                  </>
                 ))}
               </div>
             </div>
