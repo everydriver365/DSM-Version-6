@@ -571,15 +571,12 @@ function PupilsIndexPage() {
         onContextMenu={(e) => e.preventDefault()}
         className="block cursor-pointer select-none"
         style={{
-          backgroundColor: "#FFFFFF",
-          border: "1px solid #E3E8F0",
-          borderRadius: 15,
-          margin: "0 16px 10px",
-          boxShadow: "0 1px 4px rgba(11,31,58,0.05)",
+          background: "transparent",
+          padding: "13px 16px",
           WebkitTouchCallout: "none",
         }}
       >
-        <div className="flex items-center" style={{ gap: 12, padding: "12px 13px" }}>
+        <div className="flex items-center" style={{ gap: 12 }}>
           <div style={{ position: "relative", flexShrink: 0 }}>
             <PupilAvatar pupil={p} size={44} />
             {unread > 0 && (
