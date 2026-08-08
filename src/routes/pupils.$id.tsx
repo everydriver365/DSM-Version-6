@@ -1862,20 +1862,36 @@ function PupilDetailPage() {
 
                 {/* Recent payments */}
                 {paymentHistory.length > 0 && (
-                  <div className="pt-2 border-t border-slate-100">
-                    <div
-                      className="text-[11px] font-medium uppercase mb-2"
-                      style={{ color: "#6B7280", letterSpacing: "0.05em", ...POPPINS }}
+                  <div>
+                    <h3
+                      className="mb-2"
+                      style={{ fontSize: 20, fontWeight: 800, color: "#000000", letterSpacing: "-0.4px", ...POPPINS }}
                     >
                       Recent payments
-                    </div>
-                    <div className="flex flex-col" style={{ borderTop: "0.5px solid #EEF2F7" }}>
-                      {paymentHistory.map((p) => (
+                    </h3>
+                    <div
+                      className="flex flex-col"
+                      style={{ background: "#FFFFFF", borderRadius: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.05)", overflow: "hidden" }}
+                    >
+                      {paymentHistory.map((p, pi) => (
                         <div
                           key={p.id}
-                          className="flex items-center justify-between py-2"
-                          style={{ borderBottom: "0.5px solid #EEF2F7" }}
+                          className="flex items-center justify-between px-4 py-3"
+                          style={{ borderTop: pi === 0 ? "none" : "1px solid #E9E9EC" }}
                         >
+                          <div className="flex flex-col">
+                            <span style={{ fontSize: 16, fontWeight: 700, color: "#000000", ...POPPINS }}>
+                              £{Number(p.lesson_cost ?? 0).toFixed(2)}
+                            </span>
+                            <span style={{ fontSize: 12.5, color: "#8A8A8E", ...POPPINS }}>
+                              {new Date(p.created_at).toLocaleDateString("en-GB", {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              })}
+                              {p.payment_method ? ` · ${p.payment_method}` : ""}
+                            </span>
+                          </div>
                           <div className="flex flex-col">
                             <span className="text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
                               £{Number(p.lesson_cost ?? 0).toFixed(2)}
