@@ -1,59 +1,106 @@
-import { IconMenu2 } from "@tabler/icons-react";
-import type { ReactNode } from "react";
-
-interface Props {
-  eyebrow?: string;
-  title: string;
-  subtitle?: string;
-  action?: ReactNode;
-  onMenu?: () => void;
-}
+import * as React from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { IconChevronLeft } from "@tabler/icons-react";
 
 /**
- * Checkfront-style page header:
- * optional eyebrow (small caps blue) + Sora navy title + optional action.
+ * Shared navy page header for DSM secondary pages.
+ * Sticky, safe-area aware, with optional back button and right-hand slot.
  */
-export function PageHeader({ eyebrow, title, subtitle, action, onMenu }: Props) {
+interface PageHeaderProps {
+  title: string;
+  subtitle?: string;
+  showBack?: boolean;
+  backTo?: string;
+  onBack?: () => void;
+  right?: React.ReactNode;
+}
+
+const NAVY = "#0B1F3A";
+
+export function PageHeader({
+  title,
+  subtitle,
+  showBack = true,
+  backTo,
+  onBack,
+  right,
+}: PageHeaderProps) {
+  const navigate = useNavigate();
+
+  function handleBack() {
+    if (onBack) onBack();
+    else navigate({ to: (backTo ?? "/home") as never });
+  }
+
   return (
-    <div className="flex items-start justify-between gap-3 pt-2 pb-4">
-      <div className="min-w-0 flex-1">
-        {eyebrow ? (
-          <div className="cf-eyebrow mb-1">{eyebrow}</div>
-        ) : null}
+    <div
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 30,
+        background: NAVY,
+        color: "#fff",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px",
+      }}
+    >
+      {showBack ? (
+        <button
+          type="button"
+          aria-label="Back"
+          onClick={handleBack}
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.15)",
+            border: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#fff",
+            cursor: "pointer",
+            padding: 0,
+            flexShrink: 0,
+          }}
+        >
+          <IconChevronLeft size={18} />
+        </button>
+      ) : null}
+
+      <div style={{ flex: 1, minWidth: 0 }}>
         <h1
-          className="truncate text-[22px] font-bold leading-tight"
-          style={{ color: "#0B1F3A", fontFamily: "Sora, Poppins, sans-serif" }}
+          style={{
+            fontSize: 16,
+            fontWeight: 700,
+            color: "#fff",
+            margin: 0,
+            fontFamily: "Sora, Poppins, sans-serif",
+            lineHeight: 1.25,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
         >
           {title}
         </h1>
         {subtitle ? (
-          <p className="mt-1 text-sm text-[#4A5A73]">{subtitle}</p>
-        ) : null}
-      </div>
-      <div className="flex shrink-0 items-center gap-2">
-        {onMenu ? (
-          <button
-            type="button"
-            aria-label="Menu"
-            onClick={onMenu}
+          <div
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: "50%",
-              background: "#0B1F3A",
-              border: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              padding: 0,
+              fontSize: 12,
+              color: "rgba(255,255,255,0.7)",
+              marginTop: 2,
+              fontFamily: "Poppins, sans-serif",
             }}
           >
-            <IconMenu2 size={18} color="#ffffff" strokeWidth={1.8} />
-          </button>
+            {subtitle}
+          </div>
         ) : null}
-        {action ? <div className="shrink-0">{action}</div> : null}
       </div>
+
+      {right ? <div style={{ flexShrink: 0 }}>{right}</div> : null}
     </div>
   );
 }
