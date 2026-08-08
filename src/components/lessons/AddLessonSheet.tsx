@@ -1,10 +1,40 @@
 import { useEffect, useState } from "react";
-import { RefreshCw, Search } from "lucide-react";
+import { Search } from "lucide-react";
+import {
+  IconCalendar,
+  IconChevronRight,
+  IconClock,
+  IconCreditCard,
+  IconCurrencyPound,
+  IconHourglass,
+  IconMapPin,
+  IconNotes,
+  IconRepeat,
+  IconUser,
+} from "@tabler/icons-react";
 import { toast } from "sonner";
-import { BottomSheet as BottomSheetV2 } from "../dsm/BottomSheetV2";
+import { BottomSheet as BottomSheetV2, SheetGroup, SheetRow } from "../dsm/BottomSheetV2";
 import { supabase } from "../../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
 import { computeLessonAmount, fetchPostcodeRates } from "../../lib/pricing/resolveRate";
+
+const BLUE = "#1877D6";
+
+const labelStyle: React.CSSProperties = {
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 13,
+  fontWeight: 500,
+  color: "#6B7686",
+  whiteSpace: "nowrap",
+};
+
+const valueStyle: React.CSSProperties = {
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 16,
+  fontWeight: 600,
+  color: "#0B1F3A",
+};
+
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -36,32 +66,15 @@ interface Pupil {
   pricing_type: string | null;
 }
 
-const fieldBorder: React.CSSProperties = {
-  fontFamily: "Poppins, sans-serif",
-  borderWidth: "0.5px",
-  borderStyle: "solid",
-  borderColor: "#EEF2F7",
-};
-
-function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) {
-  return (
-    <label
-      htmlFor={htmlFor}
-      className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-      style={{ fontFamily: "Poppins, sans-serif" }}
-    >
-      {children}
-    </label>
-  );
-}
-
 function ErrorText({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
+    <p className="mb-3 -mt-1 text-[12px]" style={{ color: "#CC2229", fontFamily: "Poppins, sans-serif" }}>
       {children}
     </p>
   );
 }
+
+
 
 export interface AddLessonSheetProps {
   open: boolean;
@@ -140,6 +153,13 @@ export function AddLessonSheet({
   }, [pupilId, pupils, pickupTouched]);
 
   const selectedPupil = pupils.find((p) => p.id === pupilId) ?? null;
+  // Display only — the authoritative payment status is resolved in handleSave().
+  const willBePrepaid = (() => {
+    const t = (selectedPupil?.pricing_type ?? "").toLowerCase();
+    if (t === "block" || t === "national_intensives") return true;
+    return Number(selectedPupil?.prepaid_hours ?? 0) > 0;
+  })();
+
   const filteredPupils = pupilQuery.trim()
     ? pupils.filter((p) => p.name.toLowerCase().includes(pupilQuery.trim().toLowerCase()))
     : pupils;
@@ -398,60 +418,90 @@ export function AddLessonSheet({
 
   return (
     <BottomSheetV2
-      title="Add lesson"
-      subtitle={selectedPupil ? selectedPupil.name : undefined}
+      title="Add Lesson"
+      subtitle={selectedPupil ? selectedPupil.name : "Choose a pupil to get started"}
       onClose={onClose}
       footer={
         <button
           type="button"
           onClick={handleSave}
-          disabled={saving}
-          className="w-full py-4 rounded-full text-white font-semibold text-base active:opacity-90 disabled:opacity-40"
-          style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
+          disabled={saving || !pupilId || !date}
+          className="w-full text-white active:opacity-90 disabled:opacity-40"
+          style={{
+            backgroundColor: "#1877D6",
+            borderRadius: 16,
+            height: 52,
+            fontSize: 16,
+            fontWeight: 700,
+            fontFamily: "Poppins, sans-serif",
+          }}
         >
           {saving ? "Saving..." : "Add lesson"}
         </button>
       }
     >
-      <div
-        className="flex flex-col gap-4 px-1 pb-2"
-        style={{ fontFamily: "Poppins, sans-serif" }}
-      >
-        {/* Pupil */}
-        <div>
-          <FieldLabel htmlFor="al-pupil">Pupil</FieldLabel>
-          <div
-            className="rounded-lg bg-white flex items-center gap-2 px-3"
-            style={{ ...fieldBorder, height: 44 }}
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
+        {/* SECTION 1 — Pupil */}
+        <SheetGroup>
+          <SheetRow
+            onClick={() => {
+              setPupilQuery("");
+              setPupilListOpen((v) => !v);
+            }}
           >
-            <Search size={15} color="#9CA3AF" />
-            <input
-              id="al-pupil"
-              type="text"
-              value={pupilListOpen ? pupilQuery : selectedPupil?.name ?? ""}
-              onChange={(e) => {
-                setPupilQuery(e.target.value);
-                setPupilListOpen(true);
-              }}
-              onFocus={() => {
-                setPupilQuery("");
-                setPupilListOpen(true);
-              }}
-              placeholder="Search pupils…"
-              className="flex-1 text-[14px] text-[#0B1F3A] bg-transparent focus:outline-none"
-            />
-          </div>
+            {selectedPupil ? (
+              <span
+                className="flex items-center justify-center shrink-0"
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 999,
+                  background: "#E6F1FB",
+                  color: "#1877D6",
+                  fontSize: 13,
+                  fontWeight: 700,
+                }}
+              >
+                {selectedPupil.name.trim().charAt(0).toUpperCase()}
+              </span>
+            ) : (
+              <IconUser size={20} stroke={1.8} color={BLUE} />
+            )}
+            <span style={selectedPupil ? valueStyle : { ...valueStyle, color: "#9CA3AF" }}>
+              {selectedPupil ? selectedPupil.name : "Select pupil"}
+            </span>
+            {!selectedPupil && (
+              <span style={{ marginLeft: "auto", display: "flex" }}>
+                <IconChevronRight size={18} stroke={1.8} color="#C7D0DC" />
+              </span>
+            )}
+          </SheetRow>
+
           {pupilListOpen && (
-            <div
-              className="mt-1 rounded-lg bg-white overflow-y-auto"
-              style={{ ...fieldBorder, maxHeight: 180 }}
-            >
+            <SheetRow>
+              <Search size={16} color="#9CA3AF" />
+              <input
+                id="al-pupil"
+                type="text"
+                autoFocus
+                value={pupilQuery}
+                onChange={(e) => {
+                  setPupilQuery(e.target.value);
+                  setPupilListOpen(true);
+                }}
+                placeholder="Search pupils…"
+                className="flex-1 bg-transparent focus:outline-none"
+                style={{ ...valueStyle, fontWeight: 500 }}
+              />
+            </SheetRow>
+          )}
+
+          {pupilListOpen && (
+            <div style={{ maxHeight: 220, overflowY: "auto" }}>
               {filteredPupils.length === 0 && (
-                <div className="px-3 py-2 text-[13px]" style={{ color: "#9CA3AF" }}>
-                  No pupils found
-                </div>
+                <div style={{ ...labelStyle, padding: "15px 16px" }}>No pupils found</div>
               )}
-              {filteredPupils.map((p) => (
+              {filteredPupils.map((p, i) => (
                 <button
                   key={p.id}
                   type="button"
@@ -460,249 +510,281 @@ export function AddLessonSheet({
                     setPupilQuery("");
                     setPupilListOpen(false);
                   }}
-                  className="w-full text-left px-3 py-2 text-[14px]"
+                  className="w-full flex items-center gap-3 text-left active:bg-black/[0.03]"
                   style={{
-                    color: "#0B1F3A",
+                    padding: "15px 16px",
+                    borderTop: i === 0 ? "none" : "1px solid #E4E8EF",
                     background: p.id === pupilId ? "#F0F7FF" : "transparent",
                   }}
                 >
-                  {p.name}
+                  <span
+                    className="flex items-center justify-center shrink-0"
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 999,
+                      background: "#EEF2F7",
+                      color: "#6B7686",
+                      fontSize: 13,
+                      fontWeight: 700,
+                    }}
+                  >
+                    {p.name.trim().charAt(0).toUpperCase()}
+                  </span>
+                  <span style={valueStyle}>{p.name}</span>
                 </button>
               ))}
             </div>
           )}
-          {errors.pupil && <ErrorText>{errors.pupil}</ErrorText>}
-        </div>
+        </SheetGroup>
+        {errors.pupil && <ErrorText>{errors.pupil}</ErrorText>}
 
-        {/* Date */}
-        <div>
-          <FieldLabel htmlFor="al-date">Date</FieldLabel>
-          <input
-            id="al-date"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:outline-none"
-            style={fieldBorder}
-          />
-          {errors.date && <ErrorText>{errors.date}</ErrorText>}
-        </div>
-
-        {/* Time */}
-        <div>
-          <FieldLabel htmlFor="al-time">Time</FieldLabel>
-          <input
-            id="al-time"
-            type="time"
-            step={60}
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:outline-none"
-            style={fieldBorder}
-          />
-          {errors.time && <ErrorText>{errors.time}</ErrorText>}
-        </div>
-
-        {/* Duration */}
-        <div>
-          <FieldLabel htmlFor="al-duration">Duration</FieldLabel>
-          <div id="al-duration" role="radiogroup" className="grid grid-cols-4 gap-2">
-            {PRESET_DURATIONS.map((m) => {
-              const active = durationMode === "preset" && duration === m;
-              return (
-                <button
-                  key={m}
-                  type="button"
-                  role="radio"
-                  aria-checked={active}
-                  onClick={() => {
-                    setDurationMode("preset");
-                    setDuration(m);
-                  }}
-                  className="rounded-[12px] text-[13px] font-medium"
-                  style={{
-                    padding: "12px 2px",
-                    background: active ? "#1877D6" : "#F3F8FF",
-                    color: active ? "#FFFFFF" : "#0B1F3A",
-                    border: active ? "none" : "1px solid #EEF2F7",
-                  }}
-                >
-                  {m} min
-                </button>
-              );
-            })}
-            <button
-              type="button"
-              role="radio"
-              aria-checked={durationMode === "custom"}
-              onClick={() => setDurationMode("custom")}
-              className="rounded-[12px] text-[13px] font-medium"
-              style={{
-                padding: "12px 2px",
-                background: durationMode === "custom" ? "#1877D6" : "#F3F8FF",
-                color: durationMode === "custom" ? "#FFFFFF" : "#0B1F3A",
-                border: durationMode === "custom" ? "none" : "1px solid #EEF2F7",
-              }}
-            >
-              Custom
-            </button>
-          </div>
-          {durationMode === "custom" && (
+        {/* SECTION 2 — Date & Time */}
+        <SheetGroup>
+          <SheetRow>
+            <IconCalendar size={20} stroke={1.8} color={BLUE} />
+            <span style={labelStyle}>Date</span>
             <input
-              type="number"
-              inputMode="numeric"
-              min={15}
-              step={15}
-              value={customDuration}
-              onChange={(e) => setCustomDuration(e.target.value)}
-              placeholder="Minutes"
-              className="mt-2 h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:outline-none"
-              style={fieldBorder}
+              id="al-date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="bg-transparent focus:outline-none text-right"
+              style={{ ...valueStyle, marginLeft: "auto" }}
             />
-          )}
-        </div>
-
-        {/* Pickup */}
-        <div>
-          <FieldLabel htmlFor="al-pickup">Pickup address</FieldLabel>
-          <input
-            id="al-pickup"
-            type="text"
-            value={pickup}
-            onChange={(e) => {
-              setPickupTouched(true);
-              setPickup(e.target.value);
-            }}
-            placeholder={pupilId ? "Pupil's home address" : "Select a pupil first"}
-            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:outline-none"
-            style={fieldBorder}
-          />
-          <p className="mt-1 text-[12px] text-[#9CA3AF]">
-            Defaults to the pupil&rsquo;s home address if left blank.
-          </p>
-        </div>
-
-        {/* Notes */}
-        <div>
-          <FieldLabel htmlFor="al-notes">Notes</FieldLabel>
-          <textarea
-            id="al-notes"
-            rows={3}
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            className="w-full rounded-lg px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:outline-none"
-            style={fieldBorder}
-          />
-        </div>
-
-        {/* Recurring */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "14px 16px",
-            background: "#F7FAFC",
-            border: "0.5px solid #E2E6ED",
-            borderRadius: 10,
-          }}
-        >
-          <div className="flex items-center" style={{ flex: 1, gap: 8 }}>
-            <RefreshCw size={14} color="#9CA3AF" />
-            <span style={{ fontSize: 14, color: "#0B1F3A" }}>Make this a recurring lesson</span>
-          </div>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={isRecurring}
-            onClick={() => setIsRecurring((v) => !v)}
-            style={{
-              width: 42,
-              height: 24,
-              borderRadius: 999,
-              background: isRecurring ? "#0B1F3A" : "#D1D5DB",
-              position: "relative",
-              transition: "background 0.15s",
-            }}
-          >
-            <span
-              style={{
-                position: "absolute",
-                top: 2,
-                left: isRecurring ? 20 : 2,
-                width: 20,
-                height: 20,
-                borderRadius: 999,
-                background: "#FFFFFF",
-                transition: "left 0.15s",
-              }}
+          </SheetRow>
+          <SheetRow>
+            <IconClock size={20} stroke={1.8} color={BLUE} />
+            <span style={labelStyle}>Start time</span>
+            <input
+              id="al-time"
+              type="time"
+              step={60}
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              className="bg-transparent focus:outline-none text-right"
+              style={{ ...valueStyle, marginLeft: "auto" }}
             />
-          </button>
-        </div>
-
-        {isRecurring && (
-          <div
-            style={{
-              padding: "12px 16px",
-              background: "#FFFFFF",
-              border: "0.5px solid #E2E6ED",
-              borderRadius: 10,
-            }}
-          >
-            <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6 }}>
-              Repeat
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              {(["weekly", "fortnightly"] as const).map((f) => {
-                const active = recurringFreq === f;
+          </SheetRow>
+          <SheetRow>
+            <IconHourglass size={20} stroke={1.8} color={BLUE} />
+            <span style={labelStyle}>Duration</span>
+            <div
+              id="al-duration"
+              role="radiogroup"
+              className="flex items-center gap-1.5"
+              style={{ marginLeft: "auto" }}
+            >
+              {PRESET_DURATIONS.map((m) => {
+                const active = durationMode === "preset" && duration === m;
                 return (
                   <button
-                    key={f}
+                    key={m}
                     type="button"
-                    onClick={() => setRecurringFreq(f)}
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() => {
+                      setDurationMode("preset");
+                      setDuration(m);
+                    }}
                     style={{
-                      padding: "10px 0",
-                      borderRadius: 10,
+                      padding: "6px 10px",
+                      borderRadius: 999,
                       fontSize: 13,
                       fontWeight: 600,
-                      background: active ? "#0B1F3A" : "#F7FAFC",
+                      fontFamily: "Poppins, sans-serif",
+                      background: active ? BLUE : "#F3F6FA",
                       color: active ? "#FFFFFF" : "#0B1F3A",
-                      border: active ? "none" : "0.5px solid #E2E6ED",
-                      textTransform: "capitalize",
                     }}
                   >
-                    {f}
+                    {m === 60 ? "1hr" : m === 90 ? "1.5hr" : m === 120 ? "2hr" : `${m}m`}
                   </button>
                 );
               })}
+              <button
+                type="button"
+                role="radio"
+                aria-checked={durationMode === "custom"}
+                onClick={() => setDurationMode("custom")}
+                style={{
+                  padding: "6px 10px",
+                  borderRadius: 999,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: "Poppins, sans-serif",
+                  background: durationMode === "custom" ? BLUE : "#F3F6FA",
+                  color: durationMode === "custom" ? "#FFFFFF" : "#0B1F3A",
+                }}
+              >
+                Other
+              </button>
             </div>
-            <label
+          </SheetRow>
+          {durationMode === "custom" && (
+            <SheetRow>
+              <span style={labelStyle}>Minutes</span>
+              <input
+                type="number"
+                inputMode="numeric"
+                min={15}
+                step={15}
+                value={customDuration}
+                onChange={(e) => setCustomDuration(e.target.value)}
+                placeholder="90"
+                className="bg-transparent focus:outline-none text-right"
+                style={{ ...valueStyle, marginLeft: "auto", width: 90 }}
+              />
+            </SheetRow>
+          )}
+        </SheetGroup>
+        {(errors.date || errors.time) && <ErrorText>{errors.date ?? errors.time}</ErrorText>}
+
+        {/* SECTION 3 — Location */}
+        <SheetGroup>
+          <SheetRow>
+            <IconMapPin size={20} stroke={1.8} color={BLUE} />
+            <span style={labelStyle}>Pickup</span>
+            <input
+              id="al-pickup"
+              type="text"
+              value={pickup}
+              onChange={(e) => {
+                setPickupTouched(true);
+                setPickup(e.target.value);
+              }}
+              placeholder={pupilId ? "Pupil's home address" : "Select a pupil first"}
+              className="flex-1 bg-transparent focus:outline-none text-right"
+              style={{ ...valueStyle, marginLeft: "auto", minWidth: 0 }}
+            />
+          </SheetRow>
+        </SheetGroup>
+
+        {/* SECTION 4 — Payment (auto-priced, read only) */}
+        <SheetGroup>
+          <SheetRow>
+            <IconCurrencyPound size={20} stroke={1.8} color={BLUE} />
+            <span style={labelStyle}>Amount</span>
+            <span style={{ ...valueStyle, marginLeft: "auto", color: "#6B7686", fontWeight: 500, fontSize: 13 }}>
+              Auto from your rates
+            </span>
+          </SheetRow>
+          <SheetRow>
+            <IconCreditCard size={20} stroke={1.8} color={BLUE} />
+            <span style={labelStyle}>Payment status</span>
+            <span
               style={{
-                display: "block",
+                marginLeft: "auto",
+                fontFamily: "Poppins, sans-serif",
                 fontSize: 12,
-                color: "#9CA3AF",
-                marginBottom: 6,
-                marginTop: 12,
+                fontWeight: 600,
+                borderRadius: 999,
+                padding: "4px 12px",
+                color: willBePrepaid ? "#1F6B2E" : "#8A5A00",
+                background: willBePrepaid ? "#E8F5E9" : "#FEF3D7",
               }}
             >
-              Repeat until
-            </label>
+              {willBePrepaid ? "Prepaid" : "Unpaid"}
+            </span>
+          </SheetRow>
+        </SheetGroup>
+
+        {/* SECTION 5 — Notes */}
+        <SheetGroup>
+          <SheetRow>
+            <IconNotes size={20} stroke={1.8} color={BLUE} />
             <input
-              type="date"
-              value={recurringUntil}
-              onChange={(e) => setRecurringUntil(e.target.value)}
-              style={{
-                width: "100%",
-                height: 44,
-                borderRadius: 10,
-                border: "0.5px solid #E2E6ED",
-                padding: "0 12px",
-                fontSize: 14,
-                color: "#0B1F3A",
-              }}
+              id="al-notes"
+              type="text"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Add a note..."
+              className="flex-1 bg-transparent focus:outline-none"
+              style={{ fontFamily: "Poppins, sans-serif", fontSize: 13, color: "#0B1F3A" }}
             />
-          </div>
-        )}
+          </SheetRow>
+        </SheetGroup>
+
+        {/* SECTION 6 — Recurring */}
+        <SheetGroup>
+          <SheetRow>
+            <IconRepeat size={20} stroke={1.8} color={BLUE} />
+            <span style={valueStyle}>Recurring lesson</span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={isRecurring}
+              onClick={() => setIsRecurring((v) => !v)}
+              style={{
+                marginLeft: "auto",
+                width: 46,
+                height: 28,
+                borderRadius: 999,
+                background: isRecurring ? BLUE : "#D1D5DB",
+                position: "relative",
+                transition: "background 0.15s",
+                flexShrink: 0,
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: 2,
+                  left: isRecurring ? 20 : 2,
+                  width: 24,
+                  height: 24,
+                  borderRadius: 999,
+                  background: "#FFFFFF",
+                  boxShadow: "0 1px 3px rgba(11,31,58,0.2)",
+                  transition: "left 0.15s",
+                }}
+              />
+            </button>
+          </SheetRow>
+
+          {isRecurring ? (
+            <SheetRow>
+              <span style={labelStyle}>Repeat</span>
+              <div className="flex items-center gap-1.5" style={{ marginLeft: "auto" }}>
+                {(["weekly", "fortnightly"] as const).map((f) => {
+                  const active = recurringFreq === f;
+                  return (
+                    <button
+                      key={f}
+                      type="button"
+                      onClick={() => setRecurringFreq(f)}
+                      style={{
+                        padding: "6px 12px",
+                        borderRadius: 999,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        fontFamily: "Poppins, sans-serif",
+                        textTransform: "capitalize",
+                        background: active ? BLUE : "#F3F6FA",
+                        color: active ? "#FFFFFF" : "#0B1F3A",
+                      }}
+                    >
+                      {f}
+                    </button>
+                  );
+                })}
+              </div>
+            </SheetRow>
+          ) : null}
+
+          {isRecurring ? (
+            <SheetRow>
+              <IconCalendar size={20} stroke={1.8} color={BLUE} />
+              <span style={labelStyle}>Repeat until</span>
+              <input
+                type="date"
+                value={recurringUntil}
+                onChange={(e) => setRecurringUntil(e.target.value)}
+                className="bg-transparent focus:outline-none text-right"
+                style={{ ...valueStyle, marginLeft: "auto" }}
+              />
+            </SheetRow>
+          ) : null}
+        </SheetGroup>
 
         {errors.form && <ErrorText>{errors.form}</ErrorText>}
       </div>
