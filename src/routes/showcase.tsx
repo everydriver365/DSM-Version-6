@@ -170,6 +170,7 @@ function ShowcasePage() {
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [comments, setComments] = useState<any[]>([]);
   const [commentBody, setCommentBody] = useState("");
+  const [commentSort, setCommentSort] = useState<"newest" | "top">("newest");
   const [sendingComment, setSendingComment] = useState(false);
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
 
