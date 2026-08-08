@@ -1551,7 +1551,7 @@ function SchedulePage() {
 
                           return (
                             <div key={e.id} style={{ position: "relative", marginBottom: 16 }}>
-                              <div style={{ position: "relative", overflow: "hidden", borderRadius: 12 }}>
+                              <div style={{ position: "relative", overflow: "hidden", borderRadius: 16 }}>
                                 <div
                                   onClick={onCardClick}
                                   role={clickable ? "button" : undefined}
