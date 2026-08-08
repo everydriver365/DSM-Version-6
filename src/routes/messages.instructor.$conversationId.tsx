@@ -437,7 +437,7 @@ function InstructorDMThread() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, otherTyping]);
 
   /** Insert one message, keeping its optimistic row's delivery state in sync. */
   async function deliver(localId: string, text: string, otherId: string) {
