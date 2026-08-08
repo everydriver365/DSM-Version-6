@@ -1261,15 +1261,31 @@ function MessagesIndexPage() {
                 <div style={{ fontSize: 14, color: GREY }}>No conversations</div>
               </div>
             ) : (
-              visibleItems.map((item) => (
-                <InboxRow
-                  key={item.key}
-                  item={item}
-                  pinned={pinned.has(item.key)}
-                  muted={muted.has(item.key)}
-                  onLongPress={() => setMenuItem(item)}
-                />
-              ))
+              <div style={{
+                margin: '0 16px',
+                background: '#fff',
+                borderRadius: 16,
+                boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+                overflow: 'hidden',
+              }}>
+                {visibleItems.map((item, index) => (
+                  <div key={item.key}>
+                    <InboxRow
+                      item={item}
+                      pinned={pinned.has(item.key)}
+                      muted={muted.has(item.key)}
+                      onLongPress={() => setMenuItem(item)}
+                    />
+                    {index < visibleItems.length - 1 && (
+                      <div style={{
+                        height: 1,
+                        background: '#E4E8EF',
+                        marginLeft: 74,
+                      }} />
+                    )}
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </>
@@ -1547,10 +1563,7 @@ function InboxRow({
         alignItems: "center",
         gap: 12,
         padding: "12px 16px",
-        borderRadius: 16,
-        background: "#FFFFFF",
-        boxShadow: "0 1px 4px rgba(15,32,68,0.06)",
-        marginBottom: 8,
+        background: item.unread > 0 ? '#F0F7FF' : '#fff',
         cursor: "pointer",
         WebkitTapHighlightColor: "transparent",
       }}
