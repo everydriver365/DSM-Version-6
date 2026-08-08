@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, RefreshCw, Calendar, MoreHorizontal, X, Search } from "lucide-react";
+import { RefreshCw, Calendar, MoreHorizontal, X, Search } from "lucide-react";
+import { PageHeader } from "@/components/dsm/PageHeader";
 import { toast } from "sonner";
 import { IconUsers } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
