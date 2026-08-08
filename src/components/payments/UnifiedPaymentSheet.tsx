@@ -1752,156 +1752,130 @@ export function UnifiedPaymentSheet({
 
         {/* ---------------- PUPIL SELECTOR ---------------- */}
         {pickerOpen && (
-          <div style={{ marginBottom: 12 }}>
-            <Label>Who is paying?</Label>
-            <div style={{ position: "relative", marginBottom: 8 }}>
-              <Search size={14} style={{ position: "absolute", left: 10, top: 13, color: MUTED }} />
+          <Group>
+            <Row>
+              <Search size={18} color={SUBTLE} />
               <input
                 autoFocus
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search pupils"
-                style={{ ...inputStyle, paddingLeft: 30 }}
-              />
-            </div>
-            <div
-              style={{
-                border: `1px solid ${BORDER}`,
-                borderRadius: 10,
-                maxHeight: 230,
-                overflowY: "auto",
-              }}
-            >
-              {filtered.length === 0 && (
-                <div style={{ padding: 12, fontSize: 12, color: MUTED }}>No pupils found</div>
-              )}
-              {filtered.map((p, i) => {
-                const owed = outstandingMap[p.id] ?? 0;
-                const t = (p.pricing_type ?? "standard") as PricingType;
-                return (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => {
-                      setCustomMode(false);
-                      setPupilId(p.id);
-                      setPickerOpen(false);
-                      setQuery("");
-                      setTab("payment");
-                    }}
-                    style={{
-                      display: "flex",
-                      width: "100%",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 8,
-                      padding: "10px 12px",
-                      background: WHITE,
-                      border: "none",
-                      borderTop: i === 0 ? "none" : `1px solid ${DIVIDER}`,
-                      cursor: "pointer",
-                      textAlign: "left",
-                      fontFamily: FONT,
-                    }}
-                  >
-                    <span style={{ minWidth: 0 }}>
-                      <span
-                        style={{
-                          display: "block",
-                          fontSize: 13,
-                          fontWeight: 600,
-                          color: NAVY,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {p.name ?? "Unnamed"}
-                      </span>
-                      <span style={{ fontSize: 11, color: MUTED }}>
-                        {t === "national_intensives"
-                          ? "National Intensives"
-                          : t.charAt(0).toUpperCase() + t.slice(1)}
-                      </span>
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        color: owed > 0 ? RED : GREEN,
-                        flexShrink: 0,
-                      }}
-                    >
-                      {owed > 0 ? money(owed) : "Paid"}
-                    </span>
-                  </button>
-                );
-              })}
-              <button
-                type="button"
-                onClick={() => {
-                  setCustomMode(true);
-                  setPupilId(null);
-                  setBalance(null);
-                  setUnpaidLessons([]);
-                  setHistory([]);
-                  setAmount("");
-                  setPickerOpen(false);
-                }}
                 style={{
-                  display: "flex",
-                  width: "100%",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "11px 12px",
-                  background: WHITE,
+                  flex: 1,
+                  minWidth: 0,
                   border: "none",
-                  borderTop: `1px solid ${DIVIDER}`,
-                  cursor: "pointer",
-                  textAlign: "left",
+                  outline: "none",
+                  background: "transparent",
+                  fontSize: 16,
+                  color: NAVY,
                   fontFamily: FONT,
                 }}
-              >
-                <Sparkles size={14} color={PURPLE} />
-                <span style={{ fontSize: 13, fontWeight: 600, color: PURPLE }}>
-                  Custom payment
-                </span>
-              </button>
-            </div>
-          </div>
+              />
+            </Row>
+            {filtered.length === 0 ? (
+              <Row>
+                <span style={{ fontSize: 13, color: SUBTLE }}>No pupils found</span>
+              </Row>
+            ) : null}
+            {filtered.map((p) => {
+              const owed = outstandingMap[p.id] ?? 0;
+              const t = (p.pricing_type ?? "standard") as PricingType;
+              return (
+                <Row
+                  key={p.id}
+                  selected={p.id === pupilId}
+                  onClick={() => {
+                    setCustomMode(false);
+                    setPupilId(p.id);
+                    setPickerOpen(false);
+                    setQuery("");
+                    setTab("payment");
+                  }}
+                >
+                  <InitialsAvatar name={p.name ?? "Unnamed"} />
+                  <span style={{ flex: 1, minWidth: 0 }}>
+                    <span
+                      style={{
+                        display: "block",
+                        fontSize: 16,
+                        fontWeight: 600,
+                        color: NAVY,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {p.name ?? "Unnamed"}
+                    </span>
+                    <span style={{ fontSize: 13, color: SUBTLE }}>
+                      {t === "national_intensives"
+                        ? "National Intensives"
+                        : t.charAt(0).toUpperCase() + t.slice(1)}
+                    </span>
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: owed > 0 ? RED : GREEN,
+                      flexShrink: 0,
+                    }}
+                  >
+                    {owed > 0 ? money(owed) : "Paid"}
+                  </span>
+                </Row>
+              );
+            })}
+            <Row
+              onClick={() => {
+                setCustomMode(true);
+                setPupilId(null);
+                setBalance(null);
+                setUnpaidLessons([]);
+                setHistory([]);
+                setAmount("");
+                setPickerOpen(false);
+              }}
+            >
+              <Sparkles size={18} color={PURPLE} />
+              <span style={{ flex: 1, fontSize: 16, fontWeight: 600, color: PURPLE }}>
+                Custom payment
+              </span>
+            </Row>
+          </Group>
         )}
 
         {/* ---------------- PUPIL HEADER ---------------- */}
         {!pickerOpen && (pupil || customMode) && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
-              gap: 8,
-              padding: "10px 12px",
-              border: `1px solid ${BORDER}`,
-              borderRadius: 10,
-              marginBottom: 12,
-              background: WHITE,
-            }}
-          >
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>
-                {customMode ? "Custom payment" : (pupil?.name ?? "")}
-              </div>
-              <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>
-                {customMode ? "No pupil linked" : pupilContext}
-              </div>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <Group>
+            <Row onClick={() => setPickerOpen(true)}>
+              <InitialsAvatar name={customMode ? "Custom" : (pupil?.name ?? "")} />
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <span
+                  style={{
+                    display: "block",
+                    fontSize: 16,
+                    fontWeight: 600,
+                    color: NAVY,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {customMode ? "Custom payment" : (pupil?.name ?? "")}
+                </span>
+                <span style={{ fontSize: 13, color: SUBTLE }}>
+                  {customMode ? "No pupil linked" : pupilContext}
+                </span>
+              </span>
               {!customMode && balance && (
                 <span
                   style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    padding: "3px 8px",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    padding: "4px 10px",
                     borderRadius: 999,
+                    flexShrink: 0,
                     color: outstanding > 0 ? RED : GREEN,
                     background: outstanding > 0 ? "#FEF2F2" : GREEN_BG,
                   }}
@@ -1909,24 +1883,9 @@ export function UnifiedPaymentSheet({
                   {outstanding > 0 ? `${money(outstanding)} due` : "Fully paid"}
                 </span>
               )}
-              <button
-                type="button"
-                onClick={() => setPickerOpen(true)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  padding: 0,
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: BLUE,
-                  cursor: "pointer",
-                  fontFamily: FONT,
-                }}
-              >
-                Change
-              </button>
-            </div>
-          </div>
+              <ChevronRight size={18} color={SUBTLE} />
+            </Row>
+          </Group>
         )}
 
         {/* ---------------- TABS ---------------- */}
