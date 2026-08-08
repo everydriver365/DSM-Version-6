@@ -712,11 +712,13 @@ function ChoiceCard({
     <button
       type="button"
       onClick={onClick}
-      className="w-full flex items-start gap-3 rounded-xl p-3 text-left transition-colors"
+      className="w-full flex items-start gap-3 p-4 text-left transition-colors mb-3"
       style={{
         ...POPPINS,
-        border: selected ? "1.5px solid #1877D6" : "1px solid #EEF2F7",
-        background: selected ? "#EEF3FB" : "#FFFFFF",
+        borderRadius: 16,
+        border: selected ? "2px solid #1877D6" : "2px solid transparent",
+        boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+        background: "#FFFFFF",
       }}
     >
       <div className="mt-0.5">{icon}</div>
