@@ -404,3 +404,16 @@ time,
     background-color: #1877D6;
   }
 }
+
+/* ============================================================
+ * App-wide body type normalisation
+ * Baseline taken from the teaching-schedule event tiles:
+ *   primary line   = 14px
+ *   secondary/meta = 12px
+ * Only near-body sizes are snapped. Badges/pills (10-11px),
+ * headings and stat numbers (16px+) are deliberately untouched.
+ * Marketing routes opt out via [data-marketing].
+ * ============================================================ */
+:is(.text-\[13px\], .text-\[15px\], [style*="font-size: 13px"], [style*="font-size:13px"], [style*="font-size: 15px"], [style*="font-size:15px"]):not([data-marketing] *):not([data-marketing]) {
+  font-size: 14px !important;
+}

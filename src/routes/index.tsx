@@ -158,6 +158,7 @@ function HomePage() {
 
   return (
     <div
+      data-marketing
       className="min-h-screen antialiased"
       style={{ fontFamily: FONT, color: INK, background: BG }}
     >
