@@ -2277,15 +2277,27 @@ export function UnifiedPaymentSheet({
 
             {/* Payment date */}
             {!isRemote && (
-              <div style={{ marginBottom: 14 }}>
-                <Label>Payment date</Label>
-                <input
-                  type="date"
-                  value={paymentDate}
-                  onChange={(e) => setPaymentDate(e.target.value)}
-                  style={inputStyle}
-                />
-              </div>
+              <Group>
+                <Row>
+                  <span style={{ flex: 1, fontSize: 16, fontWeight: 600, color: NAVY }}>
+                    Payment date
+                  </span>
+                  <input
+                    type="date"
+                    value={paymentDate}
+                    onChange={(e) => setPaymentDate(e.target.value)}
+                    style={{
+                      border: "none",
+                      outline: "none",
+                      background: "transparent",
+                      fontSize: 14,
+                      color: SUBTLE,
+                      fontFamily: FONT,
+                      textAlign: "right",
+                    }}
+                  />
+                </Row>
+              </Group>
             )}
 
             {/* ---------------- PAYMENT HISTORY ---------------- */}
@@ -2324,14 +2336,14 @@ export function UnifiedPaymentSheet({
                 {refundRow && (
                   <div
                     style={{
-                      border: `1px solid ${BORDER}`,
-                      background: AMBER_BG,
-                      borderRadius: 10,
-                      padding: 12,
-                      marginBottom: 10,
+                      ...cardStyle,
+                      padding: 16,
+                      marginTop: 12,
+                      marginBottom: 12,
+                      overflow: "visible",
                     }}
                   >
-                    <div style={{ fontSize: 12, fontWeight: 600, color: AMBER }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: RED }}>
                       Issue refund — {money(refundRow.amount)} —{" "}
                       {refundRow.method ?? "payment"} — {fmtDate(refundRow.created_at)}
                     </div>
