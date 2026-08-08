@@ -1655,6 +1655,20 @@ function ReportSheet({
   instructorArea: string;
   instructorOutcode: string | null;
 }) {
+  const navy = "#0B1F3A";
+  const blue = "#1877D6";
+  const RED = "#CC2229";
+  const subtle = "#6B7686";
+  const hairline = "#E4E8EF";
+  const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+  const labelStyle: React.CSSProperties = {
+    fontSize: 13,
+    fontWeight: 500,
+    color: subtle,
+    marginBottom: 4,
+    display: "block",
+    ...POPPINS,
+  };
   const [agreed, setAgreed] = useState<boolean>(() => {
     try { return typeof window !== "undefined" && localStorage.getItem("community_agreed") === "true"; } catch { return false; }
   });
