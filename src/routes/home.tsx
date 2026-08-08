@@ -7753,8 +7753,7 @@ function HomePage() {
                   return (
                     <>
                       {/* Row 1 — title + chevron */}
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: NAVY_C, fontFamily: PF_C }}>Community</span>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 10 }}>
                         {communityExpanded
                           ? <ChevronUp size={14} color="#9CA3AF" />
                           : <ChevronDown size={14} color="#9CA3AF" />}
