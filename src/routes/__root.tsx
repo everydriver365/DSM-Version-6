@@ -752,9 +752,10 @@ function RootComponent() {
           onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
           style={{
             position: "fixed",
-            bottom: 80,
+            bottom: "calc(env(safe-area-inset-bottom, 0px) + 88px)",
             right: 16,
             width: 44,
+            height: 44,
             height: 44,
             borderRadius: "50%",
             background: "#0B1F3A",
