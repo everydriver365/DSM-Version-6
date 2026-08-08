@@ -1016,7 +1016,7 @@ function ProfilePage() {
               </button>
             )}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="flex flex-col">
             <TextField label="Make" value={vehicleMake} onChange={setVehicleMake} placeholder="Vauxhall" />
             <TextField label="Model" value={vehicleModel} onChange={setVehicleModel} placeholder="Corsa" />
             <TextField label="Year" value={vehicleYear} onChange={setVehicleYear} placeholder="2022" type="number" inputMode="numeric" />
@@ -1031,28 +1031,24 @@ function ProfilePage() {
                 { value: "Both", label: "Both" },
               ]}
             />
-            <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 sm:col-span-2"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", height: 48 }}>
-              <span className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Dual controls fitted</span>
-              <Toggle checked={dualControls} onChange={setDualControls} />
+            <div className="flex items-center" style={{ padding: '13px 0', borderBottom: '1px solid #E4E8EF' }}>
+              <span className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0" style={POPPINS}>Dual controls fitted</span>
+              <div className="flex-1 flex justify-end">
+                <Toggle checked={dualControls} onChange={setDualControls} />
+              </div>
             </div>
-            <div className="sm:col-span-2">
-              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
-                Insurance expiry
-              </label>
-              <div
-                className="flex items-center gap-2 rounded-lg bg-white px-3"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", height: 40 }}
-              >
+            <div className="flex items-center" style={{ padding: '13px 0' }}>
+              <label className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0" style={POPPINS}>Insurance expiry</label>
+              <div className="flex-1 flex items-center gap-2 justify-end">
                 <input
                   type="date"
                   value={insuranceExpiry}
                   onChange={(e) => setInsuranceExpiry(e.target.value)}
-                  className="flex-1 bg-transparent text-[14px] text-[#0B1F3A] outline-none"
+                  className="bg-transparent text-[15px] text-[#0B1F3A] outline-none border-none text-right"
                   style={POPPINS}
                 />
                 {insuranceWarning ? (
-                  <span className="inline-flex items-center gap-1 text-[12px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                  <span className="inline-flex items-center gap-1 text-[12px] shrink-0" style={{ color: "#0B1F3A", ...POPPINS }}>
                     <AlertTriangle size={14} color="#0B1F3A" /> Expiring soon
                   </span>
                 ) : null}
