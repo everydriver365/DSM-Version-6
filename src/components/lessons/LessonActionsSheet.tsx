@@ -2,11 +2,10 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { MapPin, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import {
   IconAlertCircle,
   IconAlertTriangle,
-  IconCalendar,
   IconCheck,
   IconChevronRight,
   IconClock,
@@ -25,7 +24,6 @@ import {
   IconNavigation,
   IconPencil,
   IconPhone,
-  IconCreditCard,
   IconRoute,
 } from "@tabler/icons-react";
 
