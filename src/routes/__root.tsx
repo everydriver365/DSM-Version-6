@@ -484,7 +484,12 @@ function RootComponent() {
   ]);
   const isMessageThread = pathname.startsWith("/messages/");
   const showFloatingMenu =
-    !hasOwnMenu.has(pathname) && !hideNavExact.has(pathname) && !isMessageThread;
+    !hasOwnMenu.has(pathname) &&
+    !hideNavExact.has(pathname) &&
+    !isMessageThread &&
+    // Pupil detail has its own "More" action; the FAB would float over
+    // in-page controls (delete buttons, Cancel lesson row).
+    !pathname.startsWith("/pupils/");
   const hideNav =
     hideNavExact.has(pathname) ||
     isMessageThread ||
