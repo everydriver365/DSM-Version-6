@@ -151,7 +151,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
           position: "relative",
           width: "100%",
           aspectRatio: "1 / 1",
-          borderRadius: 14,
+          borderRadius: 16,
           overflow: "hidden",
           background: color,
           ...(thumb
@@ -161,7 +161,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
                 backgroundPosition: "center",
               }
             : null),
-          boxShadow: CARD_SHADOW,
+          boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
         }}
       >
         {!thumb && (
