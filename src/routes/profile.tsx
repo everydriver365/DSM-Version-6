@@ -220,37 +220,8 @@ function SelectField({
   );
 }
 
-function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <button
-      type="button"
-      onClick={() => onChange(!checked)}
-      className="relative inline-flex items-center"
-      style={{
-        width: 40,
-        height: 22,
-        borderRadius: 999,
-        backgroundColor: checked ? "#1877D6" : "#D1D5DB",
-        transition: "background-color 120ms",
-      }}
-      aria-pressed={checked}
-    >
-      <span
-        style={{
-          position: "absolute",
-          top: 2,
-          left: checked ? 20 : 2,
-          width: 18,
-          height: 18,
-          borderRadius: 999,
-          backgroundColor: "#FFFFFF",
-          transition: "left 120ms",
-          boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-        }}
-      />
-    </button>
-  );
-}
+const Toggle = DSMToggle;
+
 
 function VerifiedPill() {
   return (
