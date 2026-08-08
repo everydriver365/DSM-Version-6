@@ -1558,8 +1558,8 @@ function SchedulePage() {
                                   tabIndex={clickable ? 0 : undefined}
                                   style={{
                                     background: isTestDay ? '#FFF3E0' : '#FFFFFF',
-                                    borderRadius: 16,
-                                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                                    borderRadius: 14,
+                                    boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                                     padding: "12px 14px",
                                     display: "flex",
                                     alignItems: (isBlockRow || isLessonRow) ? "stretch" : "center",
@@ -1572,7 +1572,7 @@ function SchedulePage() {
                                       ? '2px solid #FF8C00'
                                       : isMovingThis
                                         ? '2px solid #1877D6'
-                                        : undefined,
+                                        : '0.5px solid #E4E8EF',
                                     animation: isMovingThis ? 'movePulse 1.5s ease-in-out infinite' : undefined,
                                     ...POPPINS,
                                   }}
@@ -1643,8 +1643,8 @@ function SchedulePage() {
                                            <div
                                              aria-hidden
                                              style={{
-                                               width: 3,
-                                               borderRadius: 2,
+                                               width: 4,
+                                               borderRadius: '14px 0 0 14px',
                                                background: markerColor,
                                                flexShrink: 0,
                                                alignSelf: 'stretch',
@@ -1652,16 +1652,16 @@ function SchedulePage() {
                                            />
                                          </>
                                       ) : (
-                                        <div
-                                          aria-hidden
-                                          style={{
-                                            width: 3,
-                                            borderRadius: 2,
-                                            background: markerColor,
-                                            flexShrink: 0,
-                                            alignSelf: 'stretch',
-                                          }}
-                                        />
+                                         <div
+                                           aria-hidden
+                                           style={{
+                                             width: 4,
+                                             borderRadius: '14px 0 0 14px',
+                                             background: markerColor,
+                                             flexShrink: 0,
+                                             alignSelf: 'stretch',
+                                           }}
+                                         />
                                       )}
                                         <div style={{ flex: 1, minWidth: 0, paddingTop: isLessonRow ? 2 : 0 }}>
                                           {isTestDay && (
@@ -1751,53 +1751,55 @@ function SchedulePage() {
                                                   <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: cancelled ? 'line-through' : 'none' }}>
                                                     {title}
                                                   </span>
-                                                   {cancelled ? (
-                                                     <span style={{
-                                                       flexShrink: 0,
-                                                       display: 'inline-flex',
-                                                       alignItems: 'center',
-                                                       fontSize: 10,
-                                                       fontWeight: 700,
-                                                       letterSpacing: 0.4,
-                                                       textTransform: 'uppercase',
-                                                       color: '#CC2229',
-                                                       background: '#FCEBEB',
-                                                       padding: '2px 8px',
-                                                       borderRadius: 999,
-                                                       lineHeight: 1.4,
-                                                     }}>
-                                                       Cancelled
-                                                     </span>
-                                                     ) : (isLive || isPrepaidPupil || isPaid || dueUnpaid) ? (
-                                                       <button
-                                                         type="button"
-                                                         onClick={(ev) => {
-                                                           ev.stopPropagation();
-                                                           setPaymentSheetFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
-                                                         }}
-                                                         style={{
-                                                           flexShrink: 0,
-                                                           display: 'inline-flex',
-                                                           alignItems: 'center',
-                                                           fontSize: 10,
-                                                           fontWeight: 700,
-                                                           padding: '2px 9px',
-                                                           borderRadius: 999,
-                                                           lineHeight: 1.4,
-                                                           border: 'none',
-                                                           cursor: 'pointer',
-                                                           ...(isLive ? {
-                                                             background: '#E6F1FB', color: '#1877D6',
-                                                           } : isPrepaidPupil || isPaid ? {
-                                                             background: '#E7F5EE', color: '#1E8E3E',
-                                                           } : {
-                                                             background: '#FCEBEB', color: '#CC2229',
-                                                           }),
-                                                         }}
-                                                       >
-                                                         {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
-                                                       </button>
-                                                   ) : null}
+                                                    {cancelled ? (
+                                                      <span style={{
+                                                        flexShrink: 0,
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center',
+                                                        fontSize: 10,
+                                                        fontWeight: 700,
+                                                        borderRadius: 20,
+                                                        padding: '2px 7px',
+                                                        lineHeight: 1.4,
+                                                        fontFamily: 'Poppins, sans-serif',
+                                                        background: '#EEF2F7',
+                                                        color: '#6B7686',
+                                                      }}>
+                                                        Cancelled
+                                                      </span>
+                                                      ) : (isLive || isPrepaidPupil || isPaid || dueUnpaid || payStatus === 'partial') ? (
+                                                        <button
+                                                          type="button"
+                                                          onClick={(ev) => {
+                                                            ev.stopPropagation();
+                                                            setPaymentSheetFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
+                                                          }}
+                                                          style={{
+                                                            flexShrink: 0,
+                                                            display: 'inline-flex',
+                                                            alignItems: 'center',
+                                                            fontSize: 10,
+                                                            fontWeight: 700,
+                                                            padding: '2px 7px',
+                                                            borderRadius: 20,
+                                                            lineHeight: 1.4,
+                                                            border: 'none',
+                                                            cursor: 'pointer',
+                                                            fontFamily: 'Poppins, sans-serif',
+                                                            ...(isLive ? {
+                                                              background: '#E6F1FB', color: '#1877D6',
+                                                            } : isPrepaidPupil || isPaid ? {
+                                                              background: '#DCFCE7', color: '#15803D',
+                                                            } : payStatus === 'partial' ? {
+                                                              background: '#FEF3C7', color: '#92400E',
+                                                            } : {
+                                                              background: '#FCE9E9', color: '#CC2229',
+                                                            }),
+                                                          }}
+                                                        >
+                                                          {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : payStatus === 'partial' ? 'Partial' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
+                                                        </button>
+                                                    ) : null}
                                                    {(() => {
                                                      const lsn = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
                                                      const lst = (lsn.status ?? '').toLowerCase();
