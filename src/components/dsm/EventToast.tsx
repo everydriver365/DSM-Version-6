@@ -1,11 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { IconBriefcase, IconCreditCard, IconMail, IconMessage, IconPhone, IconX } from "@tabler/icons-react";
-import { CalendarCheck } from "lucide-react";
-
-const FONT = "Poppins, sans-serif";
-const NAVY = "#0B1F3A";
-const BLUE = "#1877D6";
+import { toast } from "sonner";
 
 export type LiveEventKind = "job" | "enquiry" | "message" | "booking" | "call" | "payment";
 
@@ -102,285 +97,48 @@ function titleFor(kind: LiveEventKind): string {
   }
 }
 
-
-function styleFor(kind: LiveEventKind): { tint: string; color: string; icon: React.ReactNode } {
+function colorFor(kind: LiveEventKind): string {
   switch (kind) {
-    case "job":
-      return { tint: "#FBEFDF", color: "#E0932F", icon: <IconBriefcase stroke={1.5} size={17} color="#fff" /> };
-    case "enquiry":
-      return { tint: "#E5EFFA", color: BLUE, icon: <IconMail stroke={1.5} size={17} color="#fff" /> };
-    case "message":
-      return { tint: "#E5EFFA", color: BLUE, icon: <IconMessage stroke={1.5} size={17} color="#fff" /> };
-    case "booking":
-      return { tint: "#E7F5EE", color: "#1B7F3B", icon: <CalendarCheck size={17} color="#fff" /> };
-    case "call":
-      return { tint: "#FBE6E7", color: "#CC2229", icon: <IconPhone stroke={1.5} size={17} color="#fff" /> };
-    case "payment":
-      return { tint: "#E0F2F1", color: "#0F766E", icon: <IconCreditCard stroke={1.5} size={17} color="#fff" /> };
+    case "job": return "#E0932F";
+    case "enquiry": return "#1877D6";
+    case "message": return "#1877D6";
+    case "booking": return "#1B7F3B";
+    case "call": return "#CC2229";
+    case "payment": return "#0F766E";
   }
 }
 
-
-function initials(name: string): string {
-  return (
-    name
-      .trim()
-      .split(/\s+/)
-      .slice(0, 2)
-      .map((w) => w[0]?.toUpperCase() ?? "")
-      .join("") || "?"
-  );
-}
-
-/**
- * The one and only in-app notification banner. Every live event — messages,
- * jobs, enquiries, bookings, calls — is queued through here so at most one
- * banner is ever visible.
- */
 export function EventToastController() {
   const navigate = useNavigate();
-  const [current, setCurrent] = useState<LiveEventPayload | null>(null);
-  const [shown, setShown] = useState(false);
-  const queueRef = useRef<LiveEventPayload[]>([]);
-  const timerRef = useRef<number | null>(null);
-  const [dragY, setDragY] = useState(0);
-  const startY = useRef<number | null>(null);
-
-  const clearTimer = () => {
-    if (timerRef.current) {
-      window.clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
-  };
-
-  const showNext = () => {
-    clearTimer();
-    setDragY(0);
-    const next = queueRef.current.shift() ?? null;
-    setCurrent(next);
-    setShown(false);
-    if (next) {
-      window.requestAnimationFrame(() => setShown(true));
-      timerRef.current = window.setTimeout(() => {
-        setShown(false);
-        window.setTimeout(() => {
-          setCurrent(null);
-          window.setTimeout(showNext, 120);
-        }, 220);
-      }, 5000);
-    }
-  };
 
   useEffect(() => {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent<LiveEventPayload>).detail;
       if (!detail) return;
-      queueRef.current.push(detail);
-      if (!current) showNext();
+
+      const color = colorFor(detail.kind);
+      const title = detail.title ?? titleFor(detail.kind);
+
+      toast(title, {
+        description: detail.text,
+        duration: 5000,
+        style: {
+          borderLeftColor: color,
+          borderLeftWidth: 4,
+          borderLeftStyle: "solid",
+        },
+        action: detail.url ? {
+          label: "View",
+          onClick: () => navigate({
+            to: detail.url as never,
+          }),
+        } : undefined,
+      });
     };
+
     window.addEventListener(EVENT_NAME, handler);
-    return () => {
-      window.removeEventListener(EVENT_NAME, handler);
-      clearTimer();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [current]);
+    return () => window.removeEventListener(EVENT_NAME, handler);
+  }, [navigate]);
 
-  if (!current) return null;
-
-  const { color, icon } = styleFor(current.kind);
-
-  const dismiss = () => {
-    clearTimer();
-    setShown(false);
-    window.setTimeout(() => {
-      setCurrent(null);
-      window.setTimeout(showNext, 120);
-    }, 200);
-  };
-
-  const heading = current.title || titleFor(current.kind);
-
-  return (
-    <div
-      style={{
-        position: "fixed",
-        top: "calc(env(safe-area-inset-top, 0px) + 12px)",
-        left: 16,
-        right: 16,
-        zIndex: 9999,
-        maxWidth: 390,
-        margin: "0 auto",
-        fontFamily: FONT,
-        pointerEvents: "none",
-      }}
-    >
-      <div
-        role="button"
-        tabIndex={0}
-        onClick={() => {
-          const url = current.url;
-          dismiss();
-          if (url) navigate({ to: url as never });
-        }}
-        onTouchStart={(e) => {
-          startY.current = e.touches[0].clientY;
-        }}
-        onTouchMove={(e) => {
-          if (startY.current == null) return;
-          const dy = e.touches[0].clientY - startY.current;
-          if (dy < 0) setDragY(dy);
-        }}
-        onTouchEnd={() => {
-          if (dragY < -40) dismiss();
-          else setDragY(0);
-          startY.current = null;
-        }}
-        style={{
-          pointerEvents: "auto",
-          background: "#FFFFFF",
-          borderRadius: 14,
-          overflow: "hidden",
-          boxShadow: "0 12px 40px rgba(11,31,58,0.22)",
-          border: "1px solid #E8ECF2",
-          borderTop: `3px solid ${color}`,
-          opacity: shown ? 1 : 0,
-          transform: shown ? `translateY(${dragY}px)` : "translateY(-20px)",
-          transition:
-            dragY === 0 ? "transform 0.25s ease-out, opacity 0.25s ease-out" : "opacity 0.25s ease-out",
-          cursor: "pointer",
-        }}
-      >
-        {/* Top bar */}
-        <div
-          style={{
-            padding: "6px 12px",
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            background: "#F8FAFC",
-            borderBottom: "0.5px solid #E8ECF2",
-          }}
-        >
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0 }} />
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              color: "rgba(11,31,58,0.55)",
-              flex: 1,
-            }}
-          >
-            DSM · {titleFor(current.kind)}
-          </span>
-          <button
-            type="button"
-            aria-label="Dismiss"
-            onClick={(e) => {
-              e.stopPropagation();
-              dismiss();
-            }}
-            style={{
-              background: "none",
-              border: "none",
-              padding: 0,
-              lineHeight: 0,
-              cursor: "pointer",
-            }}
-          >
-            <IconX stroke={1.5} size={14} color="rgba(11,31,58,0.4)" />
-          </button>
-        </div>
-
-        {/* Main row */}
-        <div style={{ padding: "10px 12px", display: "flex", alignItems: "center", gap: 10 }}>
-          {current.avatarUrl ? (
-            <img
-              src={current.avatarUrl}
-              alt=""
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: "50%",
-                objectFit: "cover",
-                flexShrink: 0,
-                border: `2px solid ${BLUE}`,
-              }}
-            />
-          ) : (
-            <div
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: "50%",
-                flexShrink: 0,
-                background: current.kind === "message" ? "#E6F1FB" : color,
-                border: current.kind === "message" ? `2px solid ${BLUE}` : "none",
-                color: current.kind === "message" ? BLUE : "#FFFFFF",
-                fontSize: 12,
-                fontWeight: 700,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {current.kind === "message" && current.title ? initials(current.title) : icon}
-            </div>
-          )}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontSize: 13,
-                fontWeight: 700,
-                color: "#0B1F3A",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {heading}
-            </div>
-            <div
-              style={{
-                fontSize: 11,
-                color: "rgba(11,31,58,0.55)",
-                lineHeight: 1.35,
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-              }}
-            >
-              {current.text}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              const url = current.url;
-              dismiss();
-              if (url) navigate({ to: url as never });
-            }}
-            style={{
-              flexShrink: 0,
-              background: BLUE,
-              color: "#FFFFFF",
-              fontFamily: FONT,
-              fontSize: 12,
-              fontWeight: 600,
-              padding: "4px 12px",
-              borderRadius: 20,
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            {current.kind === "message" ? "Reply" : "View"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+  return null;
 }
