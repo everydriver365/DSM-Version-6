@@ -404,3 +404,38 @@ time,
     background-color: #1877D6;
   }
 }
+
+/* ============================================================
+ * App-wide body type normalisation
+ * Baseline taken from the teaching-schedule event tiles:
+ *   primary line   = 14px
+ *   secondary/meta = 12px
+ * Only near-body sizes are snapped. Badges/pills (10-11px),
+ * headings and stat numbers (16px+) are deliberately untouched.
+ * Marketing routes opt out via [data-marketing].
+ * ============================================================ */
+:where(body:not(:has([data-marketing]))) {
+  /* Tailwind arbitrary sizes used across app tiles */
+}
+
+.text-\[13px\],
+.text-\[15px\] {
+  font-size: 14px !important;
+}
+
+/* Inline style="font-size: …" written directly on tiles/rows */
+[style*="font-size: 13px"],
+[style*="font-size:13px"],
+[style*="font-size: 15px"],
+[style*="font-size:15px"] {
+  font-size: 14px !important;
+}
+
+[data-marketing] .text-\[13px\],
+[data-marketing] .text-\[15px\],
+[data-marketing] [style*="font-size: 13px"],
+[data-marketing] [style*="font-size:13px"],
+[data-marketing] [style*="font-size: 15px"],
+[data-marketing] [style*="font-size:15px"] {
+  font-size: revert-layer !important;
+}
