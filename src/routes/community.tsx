@@ -1270,7 +1270,7 @@ function AlertsTab({
             }}
           >
             <span style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A" }}>
-              Traffic &amp; road data · {officialAlerts.length} incident{officialAlerts.length === 1 ? "" : "s"}
+              Official · {officialAlerts.length}
             </span>
             <IconChevronDown stroke={1.5}
               size={18}
@@ -1309,10 +1309,89 @@ function AlertsTab({
                   No matching incidents
                 </div>
               ) : (
-                <div style={{ marginTop: 8 }}>
-                  {filteredOfficialAlerts.map((a) => (
-                    <AlertCard key={a.id} alert={a} userId={userId} onUpvote={handleUpvote} onSelect={setSelectedAlert} commentCount={commentCounts[a.id] ?? 0} />
-                  ))}
+                <div style={{
+                  margin: '0 16px', background: '#fff', borderRadius: 16,
+                  boxShadow: '0 1px 3px rgba(11,31,58,0.06)', overflow: 'hidden',
+                }}>
+                  {filteredOfficialAlerts.map((a, index) => {
+                    const cfg = TYPE_CONFIG[a.alert_type] ?? TYPE_CONFIG.other;
+                    const alreadyUpvoted = !!userId && (a.upvoted_by ?? []).includes(userId);
+                    const source = a.source ?? 'manual';
+                    const reporter = firstName(a.instructors?.name);
+                    return (
+                      <div key={a.id}>
+                        <div onClick={() => setSelectedAlert(a)} style={{ cursor: 'pointer' }}>
+                          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "13px 16px" }}>
+                            <div style={{
+                              width: 28, height: 28, borderRadius: 8, background: "transparent",
+                              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                            }}>
+                              <AlertSignIcon type={a.alert_type} size={28} />
+                            </div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{
+                                fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+                                color: cfg.colour, letterSpacing: 0.3,
+                              }}>
+                                {cfg.label}
+                              </div>
+                              <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044", marginTop: 2 }}>
+                                {a.description}
+                              </div>
+                              {a.location_name && (
+                                <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 1 }}>{a.location_name}</div>
+                              )}
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2, flexShrink: 0 }}>
+                              <div style={{ fontSize: 10, color: "#9CA3AF" }}>{formatCountdown(a.expires_at)}</div>
+                              {source === 'tomtom' ? (
+                                <div style={{ background: '#E3EEFC', color: '#1877D6', fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 20 }}>
+                                  TomTom
+                                </div>
+                              ) : (
+                                <div style={{ fontSize: 10, color: "#9CA3AF" }}>{reporter}</div>
+                              )}
+                            </div>
+                          </div>
+                          <div style={{
+                            display: "flex", justifyContent: "space-between", alignItems: "center",
+                            marginTop: 10, paddingTop: 8, borderTop: "0.5px solid #F3F4F6", padding: "8px 16px 13px",
+                          }}>
+                            <div style={{ fontSize: 12, color: "#9CA3AF" }}>
+                              {source === 'tomtom' ? 'Official traffic data' : `${reporter} reported this`}
+                            </div>
+                            {(commentCounts[a.id] ?? 0) > 0 && (
+                              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                                <IconMessageCircle stroke={1.5} size={13} color="#9CA3AF" />
+                                <span style={{ fontSize: 12, color: "#9CA3AF" }}>{commentCounts[a.id] ?? 0}</span>
+                              </div>
+                            )}
+                            <button
+                              type="button"
+                              onClick={(e) => { e.stopPropagation(); handleUpvote(a); }}
+                              style={{
+                                display: "flex", alignItems: "center", gap: 4,
+                                background: "#F7FAFC", border: "0.5px solid #E2E6ED", borderRadius: 8,
+                                padding: "6px 12px", cursor: "pointer",
+                              }}
+                            >
+                              <IconThumbUp stroke={1.5}
+                                size={13}
+                                color={alreadyUpvoted ? "#185FA5" : "#9CA3AF"}
+                                fill={alreadyUpvoted ? "#185FA5" : "none"}
+                              />
+                              <span style={{ fontSize: 12, fontWeight: 600, color: alreadyUpvoted ? "#185FA5" : "#6B7280" }}>
+                                {a.upvotes} confirmed
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                        {index < filteredOfficialAlerts.length - 1 && (
+                          <div style={{ height: 1, background: '#E4E8EF', marginLeft: 60 }} />
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </>
