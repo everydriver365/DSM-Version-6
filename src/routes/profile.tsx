@@ -1096,8 +1096,8 @@ function ProfilePage() {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "space-between",
-                          padding: "12px 16px",
-                          borderTop: i === 0 ? "none" : "1px solid #E4E8EF",
+                          padding: "13px 16px",
+                          borderBottom: i === rows.length - 1 ? "none" : "1px solid #E4E8EF",
                         }}
                       >
                         <span style={{ fontSize: 15, color: "#0B1F3A" }}>{r.label}</span>
