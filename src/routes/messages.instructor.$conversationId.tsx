@@ -594,34 +594,53 @@ function InstructorDMThread() {
                         {firstName(otherInstructor?.name)}
                       </div>
                     )}
-                    {g.items.map((m, idx) => (
-                      <div
-                        key={m.id}
-                        style={{
-                          background: g.mine ? BLUE : "#EEF2F7",
-                          borderRadius:
-                            idx === 0
-                              ? 16
-                              : g.mine
-                                ? "16px 6px 16px 16px"
-                                : "6px 16px 16px 16px",
-                          padding: "9px 12px",
-                        }}
-                      >
+                    {g.items.map((m, idx) => {
+                      const failed = m.delivery === "failed";
+                      const pending = m.delivery === "sending";
+                      return (
                         <div
+                          key={m.id}
                           style={{
-                            fontSize: 13,
-                            color: g.mine ? "#FFFFFF" : NAVY,
-                            whiteSpace: "pre-wrap",
-                            wordBreak: "break-word",
+                            background: g.mine
+                              ? failed
+                                ? "#CC2229"
+                                : BLUE
+                              : "#EEF2F7",
+                            opacity: pending ? 0.65 : 1,
+                            borderRadius:
+                              idx === 0
+                                ? 16
+                                : g.mine
+                                  ? "16px 6px 16px 16px"
+                                  : "6px 16px 16px 16px",
+                            padding: "9px 12px",
                           }}
                         >
-                          {m.body}
+                          <div
+                            style={{
+                              fontSize: 13,
+                              color: g.mine ? "#FFFFFF" : NAVY,
+                              whiteSpace: "pre-wrap",
+                              wordBreak: "break-word",
+                            }}
+                          >
+                            {m.body}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                    <div style={{ fontSize: 10, color: "#B0B8C4", marginTop: 1 }}>
-                      {stamp}
+                      );
+                    })}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                        fontSize: 10,
+                        color: "#B0B8C4",
+                        marginTop: 1,
+                      }}
+                    >
+                      <span>{stamp}</span>
+                      {g.mine && <DeliveryIndicator message={last} onRetry={retryMessage} />}
                     </div>
                   </div>
                 </div>
