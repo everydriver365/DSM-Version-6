@@ -294,7 +294,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   };
 
   const chipLabel: React.CSSProperties = {
-    fontSize: 9,
+    fontSize: 14,
     fontWeight: 700,
     color: NAVY,
   };
