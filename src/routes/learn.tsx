@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { IconAward, IconBolt, IconCheck, IconChevronRight, IconDownload, IconPlayerPlay, IconStar, IconTrendingUp, IconX } from "@tabler/icons-react";
-import { ShoppingBag, CalendarOff, Film } from "lucide-react";
+import { IconAward, IconBolt, IconCheck, IconChevronRight, IconDownload, IconMovie, IconPlayerPlay, IconStar, IconTrendingUp, IconX } from "@tabler/icons-react";
+import { ShoppingBag, CalendarOff } from "lucide-react";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -151,7 +151,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
           position: "relative",
           width: "100%",
           aspectRatio: "1 / 1",
-          borderRadius: 14,
+          borderRadius: 16,
           overflow: "hidden",
           background: color,
           ...(thumb
@@ -161,7 +161,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
                 backgroundPosition: "center",
               }
             : null),
-          boxShadow: CARD_SHADOW,
+          boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
         }}
       >
         {!thumb && (
@@ -175,7 +175,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
               opacity: 0.18,
             }}
           >
-            <Film size={64} color="#FFFFFF" />
+            <IconMovie size={64} color="#fff" stroke={1} />
           </div>
         )}
 
@@ -193,13 +193,14 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
               width: 40,
               height: 40,
               borderRadius: "50%",
-              background: "white",
+              background: "#fff",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <IconPlayerPlay stroke={1.5} size={18} color={NAVY} fill={NAVY} style={{ marginLeft: 2 }} />
+            <IconPlayerPlay size={18} color={NAVY} stroke={2} style={{ marginLeft: 2 }} />
           </div>
         </div>
         <div
@@ -584,6 +585,8 @@ function LearnPage() {
                     maxHeight: "80vh",
                     aspectRatio: "16 / 9",
                     border: "none",
+                    borderRadius: 16,
+                    boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                     background: "#000",
                   }}
                 />
@@ -597,7 +600,13 @@ function LearnPage() {
                 autoPlay
                 playsInline
                 onClick={(e) => e.stopPropagation()}
-                style={{ width: "100%", maxHeight: "80vh", background: "#000" }}
+                style={{
+                  width: "100%",
+                  maxHeight: "80vh",
+                  borderRadius: 16,
+                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                  background: "#000",
+                }}
               />
             );
           })()}
