@@ -534,51 +534,60 @@ function CommunityPage() {
               No messages yet — start a conversation with another DSM instructor
             </div>
           ) : (
-            dmConversations.map((dm) => {
-              const other = dm.other;
-              const initials = (other?.name ?? "DM")
-                .split(" ")
-                .map((n: string) => n[0])
-                .join("")
-                .slice(0, 2)
-                .toUpperCase();
-              return (
-                <div
-                  key={dm.id}
-                  onClick={() => navigate({
-                    to: "/messages/instructor/$conversationId" as never,
-                    params: { conversationId: dm.id } as never,
-                  })}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
-                    borderBottom: "0.5px solid #E4E8EF", cursor: "pointer", background: "#fff",
-                  }}
-                >
-                  <div style={{
-                    width: 44, height: 44, borderRadius: "50%", background: "#1877D6",
-                    display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                  }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>{initials}</span>
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", marginBottom: 2 }}>
-                      {other?.name ?? "DSM Instructor"}
+            <div style={{
+              margin: '0 16px', background: '#fff', borderRadius: 16,
+              boxShadow: '0 1px 3px rgba(11,31,58,0.06)', overflow: 'hidden',
+            }}>
+              {dmConversations.map((dm, index) => {
+                const other = dm.other;
+                const initials = (other?.name ?? "DM")
+                  .split(" ")
+                  .map((n: string) => n[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase();
+                return (
+                  <div key={dm.id}>
+                    <div
+                      onClick={() => navigate({
+                        to: "/messages/instructor/$conversationId" as never,
+                        params: { conversationId: dm.id } as never,
+                      })}
+                      style={{
+                        display: "flex", alignItems: "center", gap: 12, padding: "13px 16px",
+                        cursor: "pointer", background: "#fff",
+                      }}
+                    >
+                      <div style={{
+                        width: 44, height: 44, borderRadius: "50%", background: "#1877D6",
+                        display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                      }}>
+                        <span style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>{initials}</span>
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", marginBottom: 2 }}>
+                          {other?.name ?? "DSM Instructor"}
+                        </div>
+                        <div style={{
+                          fontSize: 12, color: "#6B7686", whiteSpace: "nowrap",
+                          overflow: "hidden", textOverflow: "ellipsis",
+                        }}>
+                          {dm.last_message ?? "New conversation"}
+                        </div>
+                      </div>
+                      <div style={{ fontSize: 11, color: "#9CA3AF", flexShrink: 0 }}>
+                        {dm.last_message_at
+                          ? new Date(dm.last_message_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })
+                          : ""}
+                      </div>
                     </div>
-                    <div style={{
-                      fontSize: 12, color: "#6B7686", whiteSpace: "nowrap",
-                      overflow: "hidden", textOverflow: "ellipsis",
-                    }}>
-                      {dm.last_message ?? "New conversation"}
-                    </div>
+                    {index < dmConversations.length - 1 && (
+                      <div style={{ height: 1, background: '#E4E8EF', marginLeft: 68 }} />
+                    )}
                   </div>
-                  <div style={{ fontSize: 11, color: "#9CA3AF", flexShrink: 0 }}>
-                    {dm.last_message_at
-                      ? new Date(dm.last_message_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })
-                      : ""}
-                  </div>
-                </div>
-              );
-            })
+                );
+              })}
+            </div>
           )}
 
           {/* Instructor search modal */}
