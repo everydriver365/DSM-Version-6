@@ -342,10 +342,24 @@ function InstructorDMThread() {
 
   const other = firstName(otherInstructor?.name);
 
+  // Group consecutive messages from the same sender (broken by day change).
+  const groups: { mine: boolean; items: DMMessage[]; showDay: boolean }[] = [];
+  for (const m of messages) {
+    const last = groups[groups.length - 1];
+    const prevMsg = last?.items[last.items.length - 1];
+    const dayChanged = !prevMsg || dayKey(prevMsg.created_at) !== dayKey(m.created_at);
+    const mine = m.from_instructor_id === userId;
+    if (!last || dayChanged || last.mine !== mine) {
+      groups.push({ mine, items: [m], showDay: dayChanged });
+    } else {
+      last.items.push(m);
+    }
+  }
+
   return (
     <div
       style={{
-        minHeight: "100vh",
+        height: "100dvh",
         background: "#FFFFFF",
         display: "flex",
         flexDirection: "column",
