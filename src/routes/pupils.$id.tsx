@@ -3126,10 +3126,11 @@ function PupilDetailPage() {
               type="button"
               onClick={() => navigate({ to: "/mock-tests", search: { pupilId: id } as never })}
               className="w-full text-left px-4 py-3 text-[13px] font-medium"
-              style={{ color: "#1877D6", borderTop: "0.5px solid #EEF2F7", background: "none", borderRight: "none", borderLeft: "none", borderBottom: "none", ...POPPINS }}
+              style={{ color: "#1877D6", borderTop: "1px solid #E9E9EC", background: "none", borderRight: "none", borderLeft: "none", borderBottom: "none", ...POPPINS }}
             >
               New mock test
             </button>
+            </div>
           </div>
         )}
 
