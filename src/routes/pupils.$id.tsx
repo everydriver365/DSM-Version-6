@@ -1769,7 +1769,7 @@ function PupilDetailPage() {
                         <div className="grid grid-cols-3 gap-2">
                           {[
                             { label: "Syllabus", value: Math.round(readiness.syllabusPoints), max: 60 },
-                            { label: "Lessons", value: completedLessonCount, max: confirmedLessonCount },
+                            { label: "Lessons", value: completedLessonCount, max: confirmedLessonCount > 0 ? confirmedLessonCount : Math.round(Number(pupil?.prepaid_hours ?? 0)) },
                             { label: "Theory", value: readiness.theoryPoints, max: 10 },
                           ].map((s) => (
                             <div key={s.label} className="flex flex-col">
