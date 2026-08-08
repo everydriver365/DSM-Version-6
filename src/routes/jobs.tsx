@@ -306,7 +306,11 @@ function JobCard({
                 ...POPPINS,
               }}
             >
-              <IconCheck size={11} stroke={2.5} color={badge.color} />
+              {variant === "claimed" ? (
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: badge.color }} />
+              ) : (
+                <IconCheck size={11} stroke={2.5} color={badge.color} />
+              )}
               {sentenceCase(badge.label)}
             </div>
           </div>
