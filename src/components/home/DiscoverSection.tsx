@@ -494,7 +494,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             position: "absolute",
             inset: 0,
             backgroundColor: NAVY,
-            opacity: 0.82,
+            opacity: 0.62,
             zIndex: 1,
           }}
         />
