@@ -222,78 +222,78 @@ function OnboardingPage() {
         </div>
       </div>
 
-      {/* Card */}
-      <div
-        className="w-full max-w-[420px] bg-white mt-8 flex flex-col"
-        style={{ borderRadius: 20, padding: 32, boxShadow: "0 8px 32px rgba(0,0,0,0.3)" }}
-      >
+      {/* Steps */}
+      <div style={{ width: "100%", maxWidth: 420, marginTop: 24 }}>
         {step === 1 && (
-          <div className="flex flex-col items-center gap-4">
-            <img src={dsmLogoAsset.url} alt="DSM" className="h-[60px] w-auto" />
-            <h1 className="text-[24px] font-semibold text-[#0B1F3A] text-center">Welcome to DSM</h1>
-            <p className="text-[14px] text-[#6B7280] text-center">
-              Let&apos;s get you set up in 3 minutes
-            </p>
-            <div className="w-full mt-4">
-              <Button onClick={next} className="h-12">Get started</Button>
+          <div className="flex flex-col items-center">
+            <img src={dsmLogoAsset.url} alt="DSM" className="h-[60px] w-auto mb-5" />
+            <div style={{ marginBottom: 16, textAlign: "center" }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: "#fff", ...POPPINS, letterSpacing: "-0.4px", marginBottom: 4 }}>
+                Welcome to DSM
+              </div>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", ...POPPINS }}>
+                Let&apos;s get you set up in 3 minutes
+              </div>
             </div>
+            <Cta onClick={next}>Get started</Cta>
           </div>
         )}
 
         {step === 2 && (
-          <div className="flex flex-col gap-4">
-            <h2 className="text-[20px] font-semibold text-[#0B1F3A]">Tell us about yourself</h2>
-            <Field label="First name" value={firstName} onChange={setFirstName} />
-            <Field label="Last name" value={lastName} onChange={setLastName} />
-            <Field label="Phone" value={phone} onChange={setPhone} type="tel" />
-            <Button
-              onClick={next}
-              className="h-12"
-              disabled={!firstName.trim() || !lastName.trim()}
-            >
-              Next
-            </Button>
+          <div>
+            <StepHeader title="About you" subtitle="Tell us who you are" />
+            <GroupCard>
+              <FieldRow label="First name" value={firstName} onChange={setFirstName} />
+              <FieldRow label="Last name" value={lastName} onChange={setLastName} />
+              <FieldRow label="Phone" value={phone} onChange={setPhone} type="tel" last />
+            </GroupCard>
+            <Cta onClick={next} disabled={!firstName.trim() || !lastName.trim()}>Continue</Cta>
           </div>
         )}
 
         {step === 3 && (
-          <div className="flex flex-col gap-4">
-            <h2 className="text-[20px] font-semibold text-[#0B1F3A]">Your teaching vehicle</h2>
-            <Field label="Car make" placeholder="Ford" value={carMake} onChange={setCarMake} />
-            <Field label="Car model" placeholder="Fiesta" value={carModel} onChange={setCarModel} />
-            <Field label="Year" placeholder="2022" value={carYear} onChange={setCarYear} type="number" />
-            <Field label="Registration" value={carReg} onChange={setCarReg} />
-            <div>
-              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">Transmission</label>
-              <select
-                value={transmission}
-                onChange={(e) => setTransmission(e.target.value as "Manual" | "Automatic")}
-                className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:outline-none focus:border-[#1877D6]"
-                style={{ ...POPPINS, border: "1.5px solid #CBD5E1" }}
-              >
-                <option>Manual</option>
-                <option>Automatic</option>
-              </select>
-            </div>
-            <Button onClick={next} className="h-12" disabled={!carMake.trim() || !carModel.trim()}>
-              Next
-            </Button>
+          <div>
+            <StepHeader title="Your vehicle" subtitle="The car you teach in" />
+            <GroupCard>
+              <FieldRow label="Make" placeholder="Ford" value={carMake} onChange={setCarMake} />
+              <FieldRow label="Model" placeholder="Fiesta" value={carModel} onChange={setCarModel} />
+              <FieldRow label="Year" placeholder="2022" value={carYear} onChange={setCarYear} type="number" />
+              <FieldRow label="Registration" value={carReg} onChange={setCarReg} />
+              <div style={ROW_STYLE_LAST}>
+                <label style={ROW_LABEL}>Transmission</label>
+                <select
+                  value={transmission}
+                  onChange={(e) => setTransmission(e.target.value as "Manual" | "Automatic")}
+                  style={{ ...ROW_INPUT, textAlignLast: "right" as const, appearance: "none" }}
+                >
+                  <option>Manual</option>
+                  <option>Automatic</option>
+                </select>
+              </div>
+            </GroupCard>
+            <Cta onClick={next} disabled={!carMake.trim() || !carModel.trim()}>Continue</Cta>
           </div>
         )}
 
         {step === 4 && (
-          <div className="flex flex-col gap-3">
-            <h2 className="text-[20px] font-semibold text-[#0B1F3A]">When do you work?</h2>
-            <div className="flex flex-col gap-2">
-              {DAYS.map(({ key, label }) => {
+          <div>
+            <StepHeader title="Working hours" subtitle="When are you available to teach?" />
+            <GroupCard>
+              {DAYS.map(({ key, label }, i) => {
                 const h = hours[key];
                 return (
                   <div
                     key={key}
-                    className="flex items-center gap-2 p-2 rounded-lg"
-                    style={{ border: "1px solid #EEF2F7" }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      padding: "12px 16px",
+                      background: h.enabled ? "#F0F7FF" : "#fff",
+                      borderBottom: i === DAYS.length - 1 ? "none" : "1px solid #E4E8EF",
+                    }}
                   >
-                    <label className="flex items-center gap-2 w-[110px] text-[13px] text-[#0B1F3A] cursor-pointer">
+                    <label style={{ display: "flex", alignItems: "center", gap: 8, width: 110, flexShrink: 0, fontSize: 14, fontWeight: 500, color: "#0B1F3A", ...POPPINS, cursor: "pointer" }}>
                       <input
                         type="checkbox"
                         checked={h.enabled}
@@ -304,119 +304,96 @@ function OnboardingPage() {
                       />
                       {label}
                     </label>
-                    <input
-                      type="time"
-                      value={h.start}
-                      disabled={!h.enabled}
-                      onChange={(e) =>
-                        setHours((prev) => ({ ...prev, [key]: { ...prev[key], start: e.target.value } }))
-                      }
-                      className="flex-1 h-9 rounded-md px-2 text-[13px] text-[#0B1F3A] bg-white disabled:opacity-40"
-                      style={{ ...POPPINS, border: "1px solid #CBD5E1" }}
-                    />
-                    <span className="text-[#6B7280] text-[12px]">to</span>
-                    <input
-                      type="time"
-                      value={h.end}
-                      disabled={!h.enabled}
-                      onChange={(e) =>
-                        setHours((prev) => ({ ...prev, [key]: { ...prev[key], end: e.target.value } }))
-                      }
-                      className="flex-1 h-9 rounded-md px-2 text-[13px] text-[#0B1F3A] bg-white disabled:opacity-40"
-                      style={{ ...POPPINS, border: "1px solid #CBD5E1" }}
-                    />
+                    {h.enabled && (
+                      <div className="flex-1 flex items-center justify-end gap-1">
+                        <input
+                          type="time"
+                          value={h.start}
+                          onChange={(e) =>
+                            setHours((prev) => ({ ...prev, [key]: { ...prev[key], start: e.target.value } }))
+                          }
+                          style={{ ...TIME_INPUT }}
+                        />
+                        <span style={{ fontSize: 12, color: "#6B7686", ...POPPINS }}>—</span>
+                        <input
+                          type="time"
+                          value={h.end}
+                          onChange={(e) =>
+                            setHours((prev) => ({ ...prev, [key]: { ...prev[key], end: e.target.value } }))
+                          }
+                          style={{ ...TIME_INPUT }}
+                        />
+                      </div>
+                    )}
                   </div>
                 );
               })}
-            </div>
-            <Button onClick={next} className="h-12 mt-2">Next</Button>
+            </GroupCard>
+            <Cta onClick={next}>Continue</Cta>
           </div>
         )}
 
         {step === 5 && (
-          <div className="flex flex-col gap-4">
-            <h2 className="text-[20px] font-semibold text-[#0B1F3A]">Your rates &amp; location</h2>
-            <p className="text-[14px] text-[#6B7280]">
-              Used for payments, gap filling and finding local jobs
+          <div>
+            <StepHeader title="Your rates" subtitle="How much do you charge?" />
+            <GroupCard>
+              <FieldRow label="Hourly rate" prefix="£" type="number" placeholder="35.00" value={hourlyRate} onChange={setHourlyRate} />
+              <FieldRow label="Home postcode" placeholder="SO30 2TD" value={homePostcode} onChange={setHomePostcode} last />
+            </GroupCard>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", ...POPPINS, marginBottom: 12 }}>
+              Most instructors charge £32-£45/hr in 2026. Your postcode is used for gap filler and nearby features — never shared publicly.
             </p>
-            <div>
-              <Field
-                label="Hourly rate (£)"
-                type="number"
-                placeholder="35.00"
-                value={hourlyRate}
-                onChange={setHourlyRate}
-              />
-              <p className="mt-1 text-[12px] text-[#6B7280]">Most instructors charge £32-£45/hr in 2026</p>
-            </div>
-            <div>
-              <Field
-                label="Home postcode"
-                placeholder="SO30 2TD"
-                value={homePostcode}
-                onChange={setHomePostcode}
-              />
-              <p className="mt-1 text-[12px] text-[#6B7280]">
-                Used for gap filler and nearby features — never shared publicly
-              </p>
-            </div>
-            <Button onClick={next} className="h-12" disabled={!hourlyRate.trim()}>
-              Next
-            </Button>
+            <Cta onClick={next} disabled={!hourlyRate.trim()}>Continue</Cta>
           </div>
         )}
 
         {step === 6 && (
-          <div className="flex flex-col gap-4">
-            <h2 className="text-[20px] font-semibold text-[#0B1F3A]">Your ADI licence</h2>
-            <p className="text-[14px] text-[#6B7280]">Shown on your profile to build trust with learners</p>
-            <Field
-              label="ADI licence number"
-              placeholder="123456"
-              value={adiNumber}
-              onChange={setAdiNumber}
-            />
-            <div>
-              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">Grade</label>
-              <div className="flex gap-2">
-                {(["A", "B"] as const).map((g) => {
-                  const sel = adiGrade === g;
-                  return (
-                    <button
-                      key={g}
-                      type="button"
-                      onClick={() => setAdiGrade(sel ? "" : g)}
-                      className="flex-1 h-10 rounded-full text-[13px] font-semibold"
-                      style={{
-                        ...POPPINS,
-                        background: sel ? "#1877D6" : "#F1F5F9",
-                        color: sel ? "#FFFFFF" : "#6B7686",
-                      }}
-                    >
-                      Grade {g}
-                    </button>
-                  );
-                })}
+          <div>
+            <StepHeader title="Your ADI licence" subtitle="Shown on your profile to build trust" />
+            <GroupCard>
+              <FieldRow label="Licence no." placeholder="123456" value={adiNumber} onChange={setAdiNumber} />
+              <div style={ROW_STYLE_LAST}>
+                <label style={ROW_LABEL}>Grade</label>
+                <div className="flex-1 flex gap-2 justify-end">
+                  {(["A", "B"] as const).map((g) => {
+                    const sel = adiGrade === g;
+                    return (
+                      <button
+                        key={g}
+                        type="button"
+                        onClick={() => setAdiGrade(sel ? "" : g)}
+                        style={{
+                          ...POPPINS,
+                          padding: "6px 16px",
+                          borderRadius: 999,
+                          border: "none",
+                          fontSize: 13,
+                          fontWeight: 600,
+                          background: sel ? "#1877D6" : "#F1F5F9",
+                          color: sel ? "#FFFFFF" : "#6B7686",
+                        }}
+                      >
+                        Grade {g}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            </GroupCard>
+            <Cta onClick={next}>Continue</Cta>
             <button
               type="button"
               onClick={next}
-              className="text-[13px] text-[#6B7280] underline self-start"
-              style={POPPINS}
+              style={{ ...POPPINS, fontSize: 13, color: "rgba(255,255,255,0.5)", background: "none", border: "none", marginTop: 12, width: "100%" }}
             >
               Skip for now →
             </button>
-            <Button onClick={next} className="h-12">Next</Button>
           </div>
         )}
 
         {step === 7 && (
-          <div className="flex flex-col gap-4">
-            <h2 className="text-[24px] font-bold text-[#0B1F3A]">Want a free website?</h2>
-            <p className="text-[14px] text-[#6B7280]">
-              Every instructor gets a free booking page on EveryDriver. You can also connect your own domain later.
-            </p>
+          <div>
+            <StepHeader title="Want a free website?" subtitle="Every instructor gets a free booking page" />
 
             <ChoiceCard
               icon={<CheckCircle size={22} color="#10B981" />}
@@ -426,8 +403,8 @@ function OnboardingPage() {
               onClick={() => setWebsiteChoice("yes")}
             />
             {websiteChoice === "yes" && (
-              <div className="pl-2 -mt-2 flex flex-col gap-2">
-                <label className="flex items-start gap-2 text-[13px] text-[#0B1F3A] cursor-pointer">
+              <div className="flex flex-col gap-2 mb-3">
+                <label className="flex items-start gap-2 text-[13px] cursor-pointer" style={{ ...POPPINS, color: "rgba(255,255,255,0.7)" }}>
                   <input
                     type="checkbox"
                     checked={wantsCustomDomain}
@@ -439,7 +416,7 @@ function OnboardingPage() {
                   </span>
                 </label>
                 {wantsCustomDomain && (
-                  <p className="text-[12px] text-[#1877D6] bg-[#EEF3FB] rounded-md px-3 py-2">
+                  <p className="text-[12px] text-[#9EC7F5]" style={POPPINS}>
                     Our team will be in touch to help set this up
                   </p>
                 )}
@@ -454,19 +431,18 @@ function OnboardingPage() {
               onClick={() => setWebsiteChoice("existing")}
             />
             {websiteChoice === "existing" && (
-              <div className="pl-2 -mt-2">
-                <label className="block mb-1 text-[12px] font-medium text-[#6B7280]">
-                  Your website URL (optional)
-                </label>
-                <input
-                  type="url"
-                  value={existingWebsiteUrl}
-                  placeholder="https://www.mydrivingschool.co.uk"
-                  onChange={(e) => setExistingWebsiteUrl(e.target.value)}
-                  className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1877D6]"
-                  style={{ ...POPPINS, border: "1.5px solid #CBD5E1" }}
-                />
-              </div>
+              <GroupCard>
+                <div style={ROW_STYLE_LAST}>
+                  <label style={ROW_LABEL}>Website</label>
+                  <input
+                    type="url"
+                    value={existingWebsiteUrl}
+                    placeholder="https://www.mydrivingschool.co.uk"
+                    onChange={(e) => setExistingWebsiteUrl(e.target.value)}
+                    style={ROW_INPUT}
+                  />
+                </div>
+              </GroupCard>
             )}
 
             <ChoiceCard
@@ -477,72 +453,246 @@ function OnboardingPage() {
               onClick={() => setWebsiteChoice("later")}
             />
 
-            <Button onClick={next} className="h-12 mt-2" disabled={!websiteChoice}>
-              Next
-            </Button>
+            <Cta onClick={next} disabled={!websiteChoice}>Continue</Cta>
           </div>
         )}
 
         {step === 8 && (
-          <div className="flex flex-col items-center gap-4">
-            <div
-              className="h-16 w-16 rounded-full bg-[#E6F1FB] flex items-center justify-center"
+          <div>
+            <StepHeader title="Your free mini website" subtitle="Bio, photos and contact info — ready to publish" />
+            <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 1px 3px rgba(11,31,58,0.06)", padding: 20, marginBottom: 12, textAlign: "center" }}>
+              <div className="h-16 w-16 rounded-full bg-[#E6F1FB] flex items-center justify-center mx-auto mb-3">
+                <Globe size={30} color="#1877D6" />
+              </div>
+              <p className="text-[14px] text-[#6B7686]" style={POPPINS}>
+                DSM automatically gives you a simple, personal website. Customise it and publish whenever you&apos;re ready.
+              </p>
+            </div>
+            <Cta onClick={() => navigate({ to: "/minisite", replace: true })}>Set it up now</Cta>
+            <button
+              type="button"
+              onClick={next}
+              style={{ ...POPPINS, fontSize: 13, color: "rgba(255,255,255,0.5)", background: "none", border: "none", marginTop: 12, width: "100%" }}
             >
-              <Globe size={30} color="#1877D6" />
-            </div>
-            <h2 className="text-[24px] font-semibold text-[#0B1F3A] text-center">You&apos;ve got a free mini website</h2>
-            <p className="text-[14px] text-[#6B7280] text-center">
-              DSM automatically gives you a simple, personal website with your bio, photos, and contact info. Customise it and publish yourself whenever you&apos;re ready.
-            </p>
-            <div className="w-full flex flex-col gap-3 mt-2">
-              <Button onClick={() => navigate({ to: "/minisite", replace: true })} className="h-12">
-                Set it up now
-              </Button>
-              <Button variant="ghost" onClick={next} className="h-12">
-                I&apos;ll do this later
-              </Button>
-            </div>
+              I&apos;ll do this later
+            </button>
           </div>
         )}
 
         {step === 9 && (
-          <div className="flex flex-col items-center gap-4">
-            <div
-              className="h-16 w-16 rounded-full bg-[#10B981] flex items-center justify-center animate-bounce"
-              style={{ animationIterationCount: 1 }}
-            >
-              <Check size={36} color="#fff" strokeWidth={3} />
+          <div>
+            <div className="flex justify-center mb-4">
+              <div
+                className="h-16 w-16 rounded-full bg-[#10B981] flex items-center justify-center animate-bounce"
+                style={{ animationIterationCount: 1 }}
+              >
+                <Check size={36} color="#fff" strokeWidth={3} />
+              </div>
             </div>
-            <h2 className="text-[24px] font-semibold text-[#0B1F3A] text-center">You&apos;re all set!</h2>
-            <p className="text-[14px] text-[#6B7280] text-center">Your DSM account is ready</p>
+            <div style={{ marginBottom: 16, textAlign: "center" }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: "#fff", ...POPPINS, letterSpacing: "-0.4px", marginBottom: 4 }}>
+                You&apos;re all set!
+              </div>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", ...POPPINS }}>Welcome to DSM</div>
+            </div>
             {error && (
-              <p className="text-[13px] text-[#1877D6] text-center" role="alert">{error}</p>
+              <p className="text-[13px] text-[#CC2229] text-center mb-2" style={POPPINS} role="alert">{error}</p>
             )}
-            <div className="w-full mt-2">
-              <Button onClick={() => finish("/home")} disabled={saving} className="h-12">
-                {saving ? "Saving…" : "Go to dashboard"}
-              </Button>
-            </div>
-
-            <div className="w-full flex flex-col gap-2 mt-1">
-              <ActionCard
-                icon={<UserPlus size={20} color="#1877D6" />}
-                label="Add your first pupil →"
-                disabled={saving}
-                onClick={() => finish("/pupils/new")}
-              />
-              <ActionCard
-                icon={<CalendarDays size={20} color="#1877D6" />}
-                label="Connect Google Calendar →"
-                disabled={saving}
-                onClick={() => finish("/settings/calendar")}
-              />
+            <Cta onClick={() => finish("/home")} disabled={saving}>
+              {saving ? "Saving…" : "Finish setup"}
+            </Cta>
+            <div className="mt-3">
+              <GroupCard>
+                <ActionRow
+                  icon={<UserPlus size={20} color="#1877D6" />}
+                  label="Add your first pupil"
+                  disabled={saving}
+                  onClick={() => finish("/pupils/new")}
+                />
+                <ActionRow
+                  icon={<CalendarDays size={20} color="#1877D6" />}
+                  label="Connect Google Calendar"
+                  disabled={saving}
+                  onClick={() => finish("/settings/calendar")}
+                  last
+                />
+              </GroupCard>
             </div>
           </div>
         )}
-
       </div>
     </div>
+  );
+}
+
+const ROW_LABEL = {
+  fontSize: 13,
+  fontWeight: 500,
+  color: "#6B7686",
+  width: 110,
+  flexShrink: 0,
+  ...POPPINS,
+} as const;
+
+const ROW_INPUT = {
+  flex: 1,
+  border: "none",
+  outline: "none",
+  fontSize: 15,
+  fontWeight: 500,
+  color: "#0B1F3A",
+  ...POPPINS,
+  background: "transparent",
+  textAlign: "right" as const,
+  minWidth: 0,
+} as const;
+
+const ROW_STYLE = {
+  display: "flex",
+  alignItems: "center",
+  padding: "14px 16px",
+  borderBottom: "1px solid #E4E8EF",
+} as const;
+
+const ROW_STYLE_LAST = {
+  display: "flex",
+  alignItems: "center",
+  padding: "14px 16px",
+} as const;
+
+const TIME_INPUT = {
+  ...POPPINS,
+  fontSize: 13,
+  fontWeight: 500,
+  color: "#0B1F3A",
+  background: "#fff",
+  border: "1px solid #E4E8EF",
+  borderRadius: 8,
+  padding: "4px 6px",
+} as const;
+
+function StepHeader({ title, subtitle }: { title: string; subtitle: string }) {
+  return (
+    <div style={{ marginBottom: 16 }}>
+      <div style={{ fontSize: 22, fontWeight: 800, color: "#fff", ...POPPINS, letterSpacing: "-0.4px", marginBottom: 4 }}>
+        {title}
+      </div>
+      <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", ...POPPINS }}>{subtitle}</div>
+    </div>
+  );
+}
+
+function GroupCard({ children }: { children: ReactNode }) {
+  return (
+    <div
+      style={{
+        background: "#fff",
+        borderRadius: 16,
+        boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+        overflow: "hidden",
+        marginBottom: 12,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function FieldRow({
+  label,
+  value,
+  onChange,
+  type = "text",
+  placeholder,
+  prefix,
+  last,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  type?: string;
+  placeholder?: string;
+  prefix?: string;
+  last?: boolean;
+}) {
+  return (
+    <div style={last ? ROW_STYLE_LAST : ROW_STYLE}>
+      <label style={ROW_LABEL}>{label}</label>
+      {prefix && <span style={{ ...POPPINS, fontSize: 15, fontWeight: 500, color: "#0B1F3A" }}>{prefix}</span>}
+      <input
+        type={type}
+        value={value}
+        placeholder={placeholder}
+        onChange={(e) => onChange(e.target.value)}
+        style={ROW_INPUT}
+      />
+    </div>
+  );
+}
+
+function Cta({
+  children,
+  onClick,
+  disabled,
+}: {
+  children: ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        width: "100%",
+        padding: 16,
+        background: disabled ? "#9CA3AF" : "#1877D6",
+        color: "#fff",
+        border: "none",
+        borderRadius: 16,
+        fontSize: 16,
+        fontWeight: 700,
+        cursor: disabled ? "not-allowed" : "pointer",
+        ...POPPINS,
+        marginTop: 8,
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+function ActionRow({
+  icon,
+  label,
+  onClick,
+  disabled,
+  last,
+}: {
+  icon: ReactNode;
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  last?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        ...(last ? ROW_STYLE_LAST : ROW_STYLE),
+        width: "100%",
+        gap: 12,
+        background: "transparent",
+        textAlign: "left",
+        opacity: disabled ? 0.5 : 1,
+      }}
+    >
+      {icon}
+      <span style={{ ...POPPINS, fontSize: 15, fontWeight: 500, color: "#0B1F3A" }}>{label}</span>
+    </button>
   );
 }
 
