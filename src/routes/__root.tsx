@@ -756,7 +756,6 @@ function RootComponent() {
             right: 16,
             width: 44,
             height: 44,
-            height: 44,
             borderRadius: "50%",
             background: "#0B1F3A",
             boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
