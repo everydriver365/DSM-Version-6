@@ -1892,19 +1892,6 @@ function PupilDetailPage() {
                               {p.payment_method ? ` · ${p.payment_method}` : ""}
                             </span>
                           </div>
-                          <div className="flex flex-col">
-                            <span className="text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                              £{Number(p.lesson_cost ?? 0).toFixed(2)}
-                            </span>
-                            <span className="text-[11px]" style={{ color: "#6B7280", ...POPPINS }}>
-                              {new Date(p.created_at).toLocaleDateString("en-GB", {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                              })}
-                              {p.payment_method ? ` · ${p.payment_method}` : ""}
-                            </span>
-                          </div>
                           <button
                             type="button"
                             aria-label="Delete payment"
