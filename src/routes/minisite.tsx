@@ -28,11 +28,11 @@ export const Route = createFileRoute("/minisite")({
   component: MiniSitePage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const SITE_BASE = "everydriver.co.uk/i/";
 
 type Theme = "classic" | "modern" | "warm" | "bold";
-type Font = "Poppins" | "Inter" | "Playfair Display";
+type Font = "Poppins" | "Playfair Display";
 type HeaderStyle = "standard" | "centered" | "split";
 
 const THEMES: { key: Theme; label: string; swatch: string[] }[] = [
@@ -42,7 +42,7 @@ const THEMES: { key: Theme; label: string; swatch: string[] }[] = [
   { key: "bold", label: "Bold", swatch: ["#000000", "#DC2626", "#FFFFFF"] },
 ];
 
-const FONTS: Font[] = ["Poppins", "Inter", "Playfair Display"];
+const FONTS: Font[] = ["Poppins", "Playfair Display"];
 const HEADER_STYLES: { key: HeaderStyle; label: string }[] = [
   { key: "standard", label: "Standard" },
   { key: "centered", label: "Centered" },
@@ -427,7 +427,7 @@ function MiniSitePage() {
         <Card className="mb-3" style={{ background: "#fff" }}>
           <label
             className="block mb-1 text-[12px] font-medium"
-            style={{ color: "#6B7280", fontFamily: "Inter, sans-serif" }}
+            style={{ color: "#6B7280", fontFamily: "Poppins, sans-serif" }}
           >
             Website bio
           </label>
@@ -438,7 +438,7 @@ function MiniSitePage() {
             rows={5}
             className="w-full rounded-lg px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
             style={{
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
               borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7",
               resize: "vertical",
             }}

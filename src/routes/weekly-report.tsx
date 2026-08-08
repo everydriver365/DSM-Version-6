@@ -27,7 +27,7 @@ export const Route = createFileRoute("/weekly-report")({
   notFoundComponent: () => <div className="p-4 text-sm">Not found.</div>,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
 const MONTH_SHORT = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",

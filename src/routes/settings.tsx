@@ -62,7 +62,7 @@ export const Route = createFileRoute("/settings")({
   component: SettingsPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const DAYS = [
   { key: "mon", label: "Monday" },

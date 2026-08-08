@@ -96,7 +96,7 @@ function RegisterPage() {
   return (
     <div
       className="min-h-screen w-full flex flex-col items-center justify-center bg-[#0B1F3A] px-4"
-      style={{ fontFamily: "Inter, sans-serif" }}
+      style={{ fontFamily: "Poppins, sans-serif" }}
     >
       {/* Logo */}
       <div className="flex flex-col items-center mb-8">
@@ -105,7 +105,7 @@ function RegisterPage() {
           alt="DSM logo"
           className="h-[60px] w-auto mb-2"
         />
-        <span className="text-[#9CA3AF] text-[14px]" style={{ fontFamily: "Inter, sans-serif" }}>
+        <span className="text-[#9CA3AF] text-[14px]" style={{ fontFamily: "Poppins, sans-serif" }}>
           by EveryDriver
         </span>
       </div>
@@ -122,13 +122,13 @@ function RegisterPage() {
       >
         <h2
           className="text-[20px] font-semibold text-[#0B1F3A] text-center"
-          style={{ fontFamily: "Inter, sans-serif" }}
+          style={{ fontFamily: "Poppins, sans-serif" }}
         >
           Create your account
         </h2>
         <p
           className="text-[13px] text-[#6B7280] text-center mb-6"
-          style={{ fontFamily: "Inter, sans-serif" }}
+          style={{ fontFamily: "Poppins, sans-serif" }}
         >
           Join DSM by EveryDriver
         </p>
@@ -138,7 +138,7 @@ function RegisterPage() {
             <label
               htmlFor="reg-firstname"
               className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-              style={{ fontFamily: "Inter, sans-serif" }}
+              style={{ fontFamily: "Poppins, sans-serif" }}
             >
               First name
             </label>
@@ -152,7 +152,7 @@ function RegisterPage() {
               required
               className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1877D6]"
               style={{
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
                 border: "1.5px solid #CBD5E1",
               }}
             />
@@ -162,7 +162,7 @@ function RegisterPage() {
             <label
               htmlFor="reg-lastname"
               className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-              style={{ fontFamily: "Inter, sans-serif" }}
+              style={{ fontFamily: "Poppins, sans-serif" }}
             >
               Last name
             </label>
@@ -176,7 +176,7 @@ function RegisterPage() {
               required
               className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1877D6]"
               style={{
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
                 border: "1.5px solid #CBD5E1",
               }}
             />
@@ -186,7 +186,7 @@ function RegisterPage() {
             <label
               htmlFor="reg-email"
               className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-              style={{ fontFamily: "Inter, sans-serif" }}
+              style={{ fontFamily: "Poppins, sans-serif" }}
             >
               Email
             </label>
@@ -200,7 +200,7 @@ function RegisterPage() {
               required
               className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1877D6]"
               style={{
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
                 border: "1.5px solid #CBD5E1",
               }}
             />
@@ -210,7 +210,7 @@ function RegisterPage() {
             <label
               htmlFor="reg-password"
               className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-              style={{ fontFamily: "Inter, sans-serif" }}
+              style={{ fontFamily: "Poppins, sans-serif" }}
             >
               Password
             </label>
@@ -225,7 +225,7 @@ function RegisterPage() {
               minLength={8}
               className="h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0B1F3A] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1877D6]"
               style={{
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
                 border: "1.5px solid #CBD5E1",
               }}
             />
@@ -244,7 +244,7 @@ function RegisterPage() {
             <label
               htmlFor="reg-confirm"
               className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-              style={{ fontFamily: "Inter, sans-serif" }}
+              style={{ fontFamily: "Poppins, sans-serif" }}
             >
               Confirm password
             </label>
@@ -258,7 +258,7 @@ function RegisterPage() {
               required
               className="h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0B1F3A] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1877D6]"
               style={{
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
                 border: "1.5px solid #CBD5E1",
               }}
             />
@@ -307,7 +307,7 @@ function RegisterPage() {
             <p
               className="text-[13px] text-[#1877D6] text-center"
               role="alert"
-              style={{ fontFamily: "Inter, sans-serif" }}
+              style={{ fontFamily: "Poppins, sans-serif" }}
             >
               {error}{" "}
               {emailExists && (
@@ -331,7 +331,7 @@ function RegisterPage() {
       {/* Footer */}
       <p
         className="text-[#6B7280] text-[13px] text-center mt-8"
-        style={{ fontFamily: "Inter, sans-serif" }}
+        style={{ fontFamily: "Poppins, sans-serif" }}
       >
         Already have an account?{" "}
         <Link to="/login" className="text-[#1877D6] hover:underline font-medium">

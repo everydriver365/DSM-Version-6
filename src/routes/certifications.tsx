@@ -272,7 +272,7 @@ function CertificationsPage() {
 
   const groupHeader = (label: string, colour: string, count: number) => (
     count > 0 ? (
-      <div style={{ margin: "16px 16px 8px", fontSize: 10, fontWeight: 600, color: colour, textTransform: "uppercase", letterSpacing: 0.6, fontFamily: "Inter, sans-serif" }}>
+      <div style={{ margin: "16px 16px 8px", fontSize: 10, fontWeight: 600, color: colour, textTransform: "uppercase", letterSpacing: 0.6, fontFamily: "Poppins, sans-serif" }}>
         {label}
       </div>
     ) : null
@@ -292,7 +292,7 @@ function CertificationsPage() {
       <div style={{
         background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 12,
         padding: 0, overflow: "hidden", margin: "0 16px 8px",
-        borderLeft: `3px solid ${s.colour}`, fontFamily: "Inter, sans-serif",
+        borderLeft: `3px solid ${s.colour}`, fontFamily: "Poppins, sans-serif",
       }}>
         <div style={{ padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -352,7 +352,7 @@ function CertificationsPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "Inter, sans-serif", paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "Poppins, sans-serif", paddingBottom: 100 }}>
       {/* Top bar */}
       <div style={{ background: "#0F2044", padding: "calc(env(safe-area-inset-top, 0px) + 14px) 16px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, color: "#FFFFFF" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -452,7 +452,7 @@ function CertificationsPage() {
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 40, display: "flex", alignItems: "flex-end" }} onClick={() => setSheetOpen(false)}>
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{ background: "#FFFFFF", width: "100%", maxHeight: "88vh", overflowY: "auto", borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: "20px 16px calc(env(safe-area-inset-bottom, 0px) + 20px)", fontFamily: "Inter, sans-serif" }}
+            style={{ background: "#FFFFFF", width: "100%", maxHeight: "88vh", overflowY: "auto", borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: "20px 16px calc(env(safe-area-inset-bottom, 0px) + 20px)", fontFamily: "Poppins, sans-serif" }}
           >
             <div style={{ width: 40, height: 4, background: "#E5E7EB", borderRadius: 2, margin: "0 auto 16px" }} />
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
@@ -563,7 +563,7 @@ const inputStyle: React.CSSProperties = {
   borderRadius: 10,
   padding: "10px 12px",
   fontSize: 14,
-  fontFamily: "Inter, sans-serif",
+  fontFamily: "Poppins, sans-serif",
   color: "#0F2044",
   background: "#FFFFFF",
   boxSizing: "border-box",

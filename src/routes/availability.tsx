@@ -18,7 +18,7 @@ export const Route = createFileRoute("/availability")({
   component: AvailabilityPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const DAYS = [
   { key: "mon", label: "Monday" },
@@ -160,7 +160,7 @@ function AvailabilityPage() {
                         value={startTime}
                         onChange={(e) => setStartTime(e.target.value)}
                         className="h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-                        style={{ fontFamily: "Inter, sans-serif", borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                        style={{ fontFamily: "Poppins, sans-serif", borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
                       />
                     </div>
                     <div className="flex-1">
@@ -172,7 +172,7 @@ function AvailabilityPage() {
                         value={endTime}
                         onChange={(e) => setEndTime(e.target.value)}
                         className="h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-                        style={{ fontFamily: "Inter, sans-serif", borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                        style={{ fontFamily: "Poppins, sans-serif", borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
                       />
                     </div>
                   </div>
@@ -242,7 +242,7 @@ function Segmented<T extends number>({
             style={{
               backgroundColor: active ? "#1877D6" : "transparent",
               color: active ? "#FFFFFF" : "#6B7280",
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
             }}
           >
             {o.label}

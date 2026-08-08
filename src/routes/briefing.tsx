@@ -21,7 +21,7 @@ export const Route = createFileRoute("/briefing")({
   component: BriefingPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface LessonRow {
   id: string;
@@ -368,7 +368,7 @@ function BriefingPage() {
                       background: "#fff", color: "#1877D6",
                       border: "1px solid #1877D6", fontSize: 13, fontWeight: 600,
                       display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                      cursor: "pointer", fontFamily: "Inter, sans-serif",
+                      cursor: "pointer", fontFamily: "Poppins, sans-serif",
                     }}
                   >
                     <Navigation size={14} /> Navigate
@@ -389,7 +389,7 @@ function BriefingPage() {
                 width: "100%", display: "flex", alignItems: "center", gap: 12,
                 padding: "12px 14px", background: "#fff", border: "none",
                 borderTop: i === 0 ? "none" : "0.5px solid #EEF2F7",
-                cursor: "pointer", fontFamily: "Inter, sans-serif", textAlign: "left",
+                cursor: "pointer", fontFamily: "Poppins, sans-serif", textAlign: "left",
               }}
             >
               <div style={{
@@ -422,7 +422,7 @@ function BriefingPage() {
             style={{
               width: "100%", display: "flex", alignItems: "center", gap: 12,
               padding: "12px 14px", background: "#fff", border: "none",
-              cursor: "pointer", fontFamily: "Inter, sans-serif", textAlign: "left",
+              cursor: "pointer", fontFamily: "Poppins, sans-serif", textAlign: "left",
             }}
           >
             <div style={{

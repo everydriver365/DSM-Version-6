@@ -27,13 +27,13 @@ function stripQuotes(s: string) {
 
 
 
-const POPPINS = { fontFamily: "Inter, sans-serif" as const };
+const POPPINS = { fontFamily: "Poppins, sans-serif" as const };
 const COURSE_TYPES = ["Intensive", "Semi-intensive", "Weekly lessons", "Pass Plus", "Motorway", "Other"];
 const POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
 
 const inputStyle: React.CSSProperties = {
   width: "100%", padding: "10px 12px", border: "1px solid #EEF2F7",
-  borderRadius: 8, fontSize: 14, fontFamily: "Inter, sans-serif",
+  borderRadius: 8, fontSize: 14, fontFamily: "Poppins, sans-serif",
   background: "#fff", color: "#0B1F3A", boxSizing: "border-box",
 };
 const labelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: "#6B7280", marginBottom: 4, display: "block" };
@@ -74,7 +74,7 @@ function NewQuotePage() {
 
   const [errors, setErrors] = useState<{ pupilName?: string; price?: string; postcode?: string }>({});
 
-  const errorTextStyle: React.CSSProperties = { fontSize: 12, color: "#D92D20", marginTop: 4, fontFamily: "Inter, sans-serif" };
+  const errorTextStyle: React.CSSProperties = { fontSize: 12, color: "#D92D20", marginTop: 4, fontFamily: "Poppins, sans-serif" };
   const errorInputStyle: React.CSSProperties = { ...inputStyle, border: "1px solid #D92D20" };
 
   useEffect(() => {
@@ -278,12 +278,12 @@ function NewQuotePage() {
         <button disabled={saving} onClick={() => save("draft")} style={{
           flex: 1, padding: "12px", borderRadius: 10, border: "1px solid #0B1F3A",
           background: "#fff", color: "#0B1F3A", fontWeight: 600, fontSize: 14,
-          fontFamily: "Inter, sans-serif", cursor: "pointer", opacity: saving ? 0.6 : 1,
+          fontFamily: "Poppins, sans-serif", cursor: "pointer", opacity: saving ? 0.6 : 1,
         }}>Save as draft</button>
         <button disabled={saving} onClick={() => save("sent")} style={{
           flex: 1, padding: "12px", borderRadius: 10, border: "none",
           background: "#0B1F3A", color: "#fff", fontWeight: 600, fontSize: 14,
-          fontFamily: "Inter, sans-serif", cursor: "pointer", opacity: saving ? 0.6 : 1,
+          fontFamily: "Poppins, sans-serif", cursor: "pointer", opacity: saving ? 0.6 : 1,
         }}>Save and send</button>
       </div>
     </div>

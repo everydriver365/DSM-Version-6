@@ -12,7 +12,7 @@ export const Route = createFileRoute("/livesession")({
   component: LiveSessionPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface LessonRow {
   id: string;
@@ -279,7 +279,7 @@ function LiveSessionPage() {
               fontSize: 14,
               border: "none",
               resize: "vertical",
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
             }}
           />
           <div
@@ -338,7 +338,7 @@ function LiveSessionPage() {
                 padding: 10,
                 border: "0.5px solid #EEF2F7",
                 fontSize: 14,
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
               }}
             />
             <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
@@ -368,7 +368,7 @@ function actionBtn(bg: string): React.CSSProperties {
     gap: 6,
     fontSize: 14,
     fontWeight: 600,
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Poppins, sans-serif",
     cursor: "pointer",
   };
 }

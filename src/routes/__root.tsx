@@ -193,8 +193,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Sora:wght@600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap",
       },
+
     ],
   }),
   shellComponent: RootShell,
@@ -333,7 +334,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
           alignItems: "center",
           justifyContent: "space-between",
           gap: 12,
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Poppins, sans-serif",
         }}
       >
         <span style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -377,7 +378,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
           boxShadow: "-4px 0 24px rgba(0,0,0,0.2)",
           display: "flex",
           flexDirection: "column",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Poppins, sans-serif",
         }}
       >
         <div
@@ -446,7 +447,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
                 await supabase.auth.signOut();
                 navigate({ to: "/" as never, replace: true });
               }}
-              className="w-full h-auto min-h-[44px] justify-start px-[18px] py-2.5 text-[13px] font-medium text-[#CC2229] hover:bg-transparent hover:text-[#CC2229] font-['Inter',sans-serif]"
+              className="w-full h-auto min-h-[44px] justify-start px-[18px] py-2.5 text-[13px] font-medium text-[#CC2229] hover:bg-transparent hover:text-[#CC2229] font-['Poppins',sans-serif]"
             >
               <IconLogout size={16} color="#CC2229" />
               Sign out

@@ -113,7 +113,7 @@ function AdminSectionTile({
         gap: 10,
         cursor: "pointer",
         textAlign: "left",
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Poppins, sans-serif",
       }}
     >
       <div
@@ -543,7 +543,7 @@ function ChatRoomsSection() {
             border: "1px solid #EEF2F7",
             padding: "0 12px",
             fontSize: 15,
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
           }}
         />
         <input
@@ -557,7 +557,7 @@ function ChatRoomsSection() {
             border: "1px solid #EEF2F7",
             padding: "0 12px",
             fontSize: 15,
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
           }}
         />
         <button
@@ -845,7 +845,7 @@ function ChatRoomsSection() {
                       fontSize: 14,
                       background: "#fff",
                       resize: "vertical",
-                      fontFamily: "Inter, sans-serif",
+                      fontFamily: "Poppins, sans-serif",
                     }}
                   />
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -1013,14 +1013,14 @@ function AdminHub() {
 
   if (status === "checking") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Inter, sans-serif", color: "#6B7280" }}>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif", color: "#6B7280" }}>
         Checking access…
       </div>
     );
   }
   if (status === "denied") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Inter, sans-serif" }}>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: "#1877D6" }}>Access denied</div>
         <div style={{ color: "#6B7280", marginTop: 8 }}>
           Your account doesn't have admin access.
@@ -1067,7 +1067,7 @@ function AdminHub() {
   }
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
       <AdminTopBar title="Admin" onBack={() => navigate({ to: "/home" })} />
       <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)" }}>
         <div style={{ padding: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>

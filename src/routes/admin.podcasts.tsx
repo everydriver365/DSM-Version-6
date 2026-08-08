@@ -224,7 +224,7 @@ function AdminPodcasts() {
 
   if (status === "checking") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>
         Checking access…
       </div>
     );
@@ -232,7 +232,7 @@ function AdminPodcasts() {
   if (status === "denied") return null;
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Inter, sans-serif", paddingBottom: 40 }}>
+    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif", paddingBottom: 40 }}>
       {/* Top bar */}
       <div
         style={{

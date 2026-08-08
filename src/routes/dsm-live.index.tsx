@@ -112,7 +112,7 @@ function DsmLivePage() {
 
 
 
-  const poppins = "'Poppins', system-ui, -apple-system, sans-serif";
+  const poppins = "Poppins, sans-serif";
 
   return (
     <div style={{ background: "#DCE4F0", minHeight: "calc(100vh - 80px)", fontFamily: poppins }}>
@@ -446,7 +446,7 @@ function CommunitySection() {
 
 function PodcastCard({ podcast: p }: { podcast: Podcast }) {
   const navigate = useNavigate();
-  const poppins = "'Poppins', system-ui, -apple-system, sans-serif";
+  const poppins = "Poppins, sans-serif";
   const openUrl = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
   const hasAny = p.spotify_url || p.apple_url || p.audio_url;
 
@@ -604,7 +604,7 @@ function SessionCard({
   booked: boolean;
   onOpen: () => void;
 }) {
-  const poppins = "'Poppins', system-ui, -apple-system, sans-serif";
+  const poppins = "Poppins, sans-serif";
   const s = session as LiveSession & {
     delivery_type?: string | null;
     image_url?: string | null;

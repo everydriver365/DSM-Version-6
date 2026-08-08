@@ -15,7 +15,7 @@ const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 const RED = "#CC2229";
 const HAIRLINE = "#E4E8EF";
-const FONT = "Poppins, Inter, sans-serif";
+const FONT = "Poppins, sans-serif";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =

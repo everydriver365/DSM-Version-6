@@ -15,7 +15,7 @@ export const Route = createFileRoute("/pipeline")({
   component: PipelinePage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type Stage = "new" | "contacted" | "trial_booked" | "active_pupil" | "lost";
 
@@ -271,7 +271,7 @@ function SheetShell({
           borderTopRightRadius: 16,
           maxHeight: "90vh",
           overflowY: "auto",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Poppins, sans-serif",
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -371,7 +371,7 @@ function AddLeadSheet({
             style={{
               border: "0.5px solid #EEF2F7",
               color: "#0B1F3A",
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
             }}
           >
             {SOURCES.map((s) => (
@@ -397,7 +397,7 @@ function AddLeadSheet({
             style={{
               border: "0.5px solid #EEF2F7",
               color: "#0B1F3A",
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
               resize: "vertical",
             }}
           />
@@ -530,7 +530,7 @@ function LeadDetailSheet({
             style={{
               border: "0.5px solid #EEF2F7",
               color: "#0B1F3A",
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
             }}
           >
             {STAGES.map((s) => (
@@ -556,7 +556,7 @@ function LeadDetailSheet({
             style={{
               border: "0.5px solid #EEF2F7",
               color: "#0B1F3A",
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
               resize: "vertical",
             }}
           />

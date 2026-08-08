@@ -19,7 +19,7 @@ export const Route = createFileRoute("/reports")({
   component: ReportsPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 function formatGBP(n: number) {
   return `£${n.toFixed(2)}`;

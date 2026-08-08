@@ -18,7 +18,7 @@ export const Route = createFileRoute("/courses/$id")({
   component: CourseDetailPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const LABEL = "#6B7280";
 const VALUE = "#0B1F3A";
 
@@ -440,7 +440,7 @@ function CourseDetailPage() {
                         border: "0.5px solid #EEF2F7",
                         padding: "0 10px",
                         background: "#fff",
-                        fontFamily: "Inter, sans-serif",
+                        fontFamily: "Poppins, sans-serif",
                         fontSize: 14,
                         color: "#0B1F3A",
                       }}
@@ -484,7 +484,7 @@ function CourseDetailPage() {
                               border: `1.5px solid ${active ? color : "#EEF2F7"}`,
                               background: active ? `${color}10` : "#fff",
                               cursor: "pointer",
-                              fontFamily: "Inter, sans-serif",
+                              fontFamily: "Poppins, sans-serif",
                               textAlign: "left",
                             }}
                           >
@@ -507,7 +507,7 @@ function CourseDetailPage() {
                     {form.lesson_time_preference === "custom" && (
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
                         <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                          <span style={{ fontSize: 12, fontWeight: 500, color: LABEL, fontFamily: "Inter, sans-serif" }}>From</span>
+                          <span style={{ fontSize: 12, fontWeight: 500, color: LABEL, fontFamily: "Poppins, sans-serif" }}>From</span>
                           <input
                             type="time"
                             value={form.lesson_time_from ?? "09:00"}
@@ -516,13 +516,13 @@ function CourseDetailPage() {
                             }
                             style={{
                               height: 44, borderRadius: 10, border: "0.5px solid #EEF2F7",
-                              padding: "0 10px", fontSize: 14, fontFamily: "Inter, sans-serif",
+                              padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
                               color: "#0B1F3A", background: "#fff",
                             }}
                           />
                         </label>
                         <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                          <span style={{ fontSize: 12, fontWeight: 500, color: LABEL, fontFamily: "Inter, sans-serif" }}>To</span>
+                          <span style={{ fontSize: 12, fontWeight: 500, color: LABEL, fontFamily: "Poppins, sans-serif" }}>To</span>
                           <input
                             type="time"
                             value={form.lesson_time_to ?? "17:00"}
@@ -531,7 +531,7 @@ function CourseDetailPage() {
                             }
                             style={{
                               height: 44, borderRadius: 10, border: "0.5px solid #EEF2F7",
-                              padding: "0 10px", fontSize: 14, fontFamily: "Inter, sans-serif",
+                              padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
                               color: "#0B1F3A", background: "#fff",
                             }}
                           />
@@ -566,7 +566,7 @@ function CourseDetailPage() {
                               border: `1px solid ${active ? "#0B1F3A" : "#EEF2F7"}`,
                               background: active ? "#0B1F3A" : "#fff",
                               color: active ? "#fff" : "#0B1F3A",
-                              fontFamily: "Inter, sans-serif",
+                              fontFamily: "Poppins, sans-serif",
                               fontSize: 12,
                               fontWeight: 600,
                               cursor: "pointer",
@@ -618,7 +618,7 @@ function CourseDetailPage() {
                                 border: `1px solid ${active ? "#0B1F3A" : "#EEF2F7"}`,
                                 background: active ? "#0B1F3A" : "#fff",
                                 color: active ? "#fff" : "#0B1F3A",
-                                fontFamily: "Inter, sans-serif",
+                                fontFamily: "Poppins, sans-serif",
                                 fontSize: 12,
                                 fontWeight: 600,
                                 cursor: "pointer",
@@ -650,7 +650,7 @@ function CourseDetailPage() {
                               border: "1px solid #EEF2F7",
                               background: "#fff",
                               color: "#0B1F3A",
-                              fontFamily: "Inter, sans-serif",
+                              fontFamily: "Poppins, sans-serif",
                               fontSize: 11,
                               fontWeight: 600,
                               cursor: "pointer",
@@ -697,7 +697,7 @@ function CourseDetailPage() {
                         borderRadius: 8,
                         border: "0.5px solid #EEF2F7",
                         padding: 10,
-                        fontFamily: "Inter, sans-serif",
+                        fontFamily: "Poppins, sans-serif",
                         fontSize: 14,
                         color: "#0B1F3A",
                         resize: "vertical",
@@ -1058,7 +1058,7 @@ function SelectRow({
           border: "0.5px solid #EEF2F7",
           padding: "0 10px",
           background: "#fff",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Poppins, sans-serif",
           fontSize: 14,
           color: "#0B1F3A",
         }}
@@ -1403,7 +1403,7 @@ function PostcodeAutocomplete(props: {
             border: `1.5px solid ${error ? "#1877D6" : focused ? "#1877D6" : "#EEF2F7"}`,
             borderRadius: 8,
             padding: "0 12px 0 40px",
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
             fontSize: 14,
             color: "#0B1F3A",
             background: "#fff",
@@ -1413,7 +1413,7 @@ function PostcodeAutocomplete(props: {
         />
       </div>
       {error && (
-        <div style={{ color: "#1877D6", fontSize: 12, marginTop: 4, fontFamily: "Inter, sans-serif" }}>
+        <div style={{ color: "#1877D6", fontSize: 12, marginTop: 4, fontFamily: "Poppins, sans-serif" }}>
           {error}
         </div>
       )}
@@ -1449,7 +1449,7 @@ function PostcodeAutocomplete(props: {
                 gap: 8,
                 cursor: "pointer",
                 background: active === i ? "#F8F9FB" : "#fff",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
               }}
             >
               <MapPin size={14} color="#6B7280" />

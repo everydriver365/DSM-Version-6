@@ -18,7 +18,7 @@ export const Route = createFileRoute("/reminder")({
   component: ReminderPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface Pupil {
   id: string;
@@ -149,7 +149,7 @@ function ReminderPage() {
             onChange={(e) => setQuery(e.target.value)}
             className="h-11 w-full rounded-lg pl-9 pr-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
             style={{
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: "#EEF2F7",
@@ -250,7 +250,7 @@ function ReminderPage() {
           placeholder="Type your message..."
           className="mt-2 w-full rounded-lg p-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none resize-none"
           style={{
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
             borderWidth: "0.5px",
             borderStyle: "solid",
             borderColor: "#EEF2F7",

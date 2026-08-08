@@ -27,7 +27,7 @@ export const Route = createFileRoute("/quotes/")({
   component: QuotesPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type TabKey = "pending" | "accepted" | "declined" | "resent" | "expired";
 
@@ -205,7 +205,7 @@ function QuotesPage() {
             padding: "10px 12px",
             fontSize: 14,
             fontWeight: 700,
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
             cursor: "pointer",
             appearance: "none",
             backgroundImage:
@@ -242,7 +242,7 @@ function QuotesPage() {
               style={{
                 marginTop: 8, background: "#1877D6", color: "#fff", border: "none",
                 borderRadius: 10, padding: "10px 16px", fontWeight: 600, fontSize: 14,
-                cursor: "pointer", fontFamily: "Inter, sans-serif",
+                cursor: "pointer", fontFamily: "Poppins, sans-serif",
               }}>
               + New quote
             </button>
@@ -354,7 +354,7 @@ function QuotesPage() {
                           display: "inline-flex", alignItems: "center", gap: 6,
                           background: "#1877D6", border: "1px solid #1877D6", color: "#fff",
                           fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
-                          cursor: "pointer", fontFamily: "Inter, sans-serif",
+                          cursor: "pointer", fontFamily: "Poppins, sans-serif",
                         }}
                       >
                         <RefreshCw size={14} /> Revise & resend
@@ -373,7 +373,7 @@ function QuotesPage() {
                         style={{
                           background: "none", border: "none", color: "#1877D6",
                           fontSize: 12, fontWeight: 600, cursor: "pointer",
-                          fontFamily: "Inter, sans-serif", padding: 0,
+                          fontFamily: "Poppins, sans-serif", padding: 0,
                         }}
                       >
                         View revision →
@@ -398,7 +398,7 @@ function QuotesPage() {
                           display: "inline-flex", alignItems: "center", gap: 6,
                           background: "#fff", border: "1px solid #1877D6", color: "#1877D6",
                           fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
-                          cursor: "pointer", fontFamily: "Inter, sans-serif",
+                          cursor: "pointer", fontFamily: "Poppins, sans-serif",
                         }}
                       >
                         <Link2 size={14} /> Copy link
@@ -435,7 +435,7 @@ function QuotesPage() {
                             display: "inline-flex", alignItems: "center", gap: 6,
                             background: "#0B1F3A", border: "1px solid #0B1F3A", color: "#fff",
                             fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
-                            cursor: "pointer", fontFamily: "Inter, sans-serif",
+                            cursor: "pointer", fontFamily: "Poppins, sans-serif",
                           }}
                         >
                           <Send size={14} /> Send

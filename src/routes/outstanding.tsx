@@ -20,7 +20,7 @@ export const Route = createFileRoute("/outstanding")({
   component: OutstandingPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface PupilDebt { id: string; name: string; phone: string | null; balance_owed: number }
 interface TestRow { id: string; test_date: string; test_centre: string | null; pupil_name: string | null }
@@ -270,7 +270,7 @@ function OutstandingPage() {
                     style={{
                       width: "100%", display: "flex", alignItems: "center", gap: 12,
                       padding: "12px 14px", background: "#fff", border: "none",
-                      cursor: "pointer", fontFamily: "Inter, sans-serif", textAlign: "left",
+                      cursor: "pointer", fontFamily: "Poppins, sans-serif", textAlign: "left",
                     }}
                   >
                     <div style={{
@@ -420,7 +420,7 @@ const rowSub = { fontSize: 12, color: "#6B7280", marginTop: 2 };
 const actionBase = {
   height: 30, padding: "0 10px", borderRadius: 8,
   fontSize: 12, fontWeight: 600, cursor: "pointer",
-  fontFamily: "Inter, sans-serif", border: "none",
+  fontFamily: "Poppins, sans-serif", border: "none",
 } as const;
 
 function ActionBtn({

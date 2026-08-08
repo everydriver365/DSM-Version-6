@@ -15,7 +15,7 @@ export const Route = createFileRoute("/waivers")({
   component: WaiversPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type Template = {
   id: string;
@@ -320,7 +320,7 @@ function SheetShell({
           borderTopRightRadius: 16,
           maxHeight: "90vh",
           overflowY: "auto",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Poppins, sans-serif",
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -410,7 +410,7 @@ function CreateWaiverSheet({
             style={{
               border: "0.5px solid #EEF2F7",
               color: "#0B1F3A",
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
               resize: "vertical",
             }}
           />
@@ -509,7 +509,7 @@ function SendToPupilSheet({
             style={{
               border: "0.5px solid #EEF2F7",
               color: "#0B1F3A",
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
             }}
           >
             <option value="">Select pupil…</option>

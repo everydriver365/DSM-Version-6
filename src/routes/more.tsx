@@ -87,7 +87,7 @@ function MorePage() {
   const go = (route: string) => navigate({ to: route as never });
 
   return (
-    <PageLayout className="pb-20" style={{ fontFamily: 'Inter, sans-serif' }}>
+    <PageLayout className="pb-20" style={{ fontFamily: 'Poppins, sans-serif' }}>
       <InstructorTopBar
         firstName=""
         pageTitle="More"
@@ -126,7 +126,7 @@ function MorePage() {
             border: 'none',
             outline: 'none',
             fontSize: 13,
-            fontFamily: 'Inter, sans-serif',
+            fontFamily: 'Poppins, sans-serif',
             color: '#0F2044',
             background: 'transparent',
           }}
@@ -165,7 +165,7 @@ function MorePage() {
                   gap: 12,
                   cursor: 'pointer',
                   textAlign: 'left',
-                  fontFamily: 'Inter, sans-serif',
+                  fontFamily: 'Poppins, sans-serif',
                 }}
               >
                 <div style={{ width: 36, height: 36, borderRadius: 10, background: tool.colour + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -203,7 +203,7 @@ function MorePage() {
                       gap: 12,
                       cursor: 'pointer',
                       textAlign: 'left',
-                      fontFamily: 'Inter, sans-serif',
+                      fontFamily: 'Poppins, sans-serif',
                       boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                     }}
                   >
@@ -285,7 +285,7 @@ function MorePage() {
                       cursor: 'pointer',
                       textAlign: 'left',
                       width: '100%',
-                      fontFamily: 'Inter, sans-serif',
+                      fontFamily: 'Poppins, sans-serif',
                     }}
                   >
                     <div

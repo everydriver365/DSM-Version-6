@@ -21,8 +21,9 @@ export const Route = createFileRoute("/i/$slug")({
       },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;600;700&family=Playfair+Display:wght@400;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Sora:wght@600;700;800&family=Playfair+Display:wght@400;600;700&display=swap",
       },
+
     ],
   }),
   component: InstructorMiniSite,
@@ -72,10 +73,11 @@ const THEMES: Record<Theme, { bg: string; primary: string; accent: string; surfa
 };
 
 const FONT_FAMILY: Record<Font, string> = {
-  poppins: "'Inter', sans-serif",
-  inter: "'Inter', sans-serif",
+  poppins: "'Poppins', sans-serif",
+  inter: "'Poppins', sans-serif",
   playfair: "'Playfair Display', serif",
 };
+
 
 function InstructorMiniSite() {
   const { slug } = Route.useParams();

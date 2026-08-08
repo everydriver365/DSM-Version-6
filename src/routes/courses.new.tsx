@@ -17,7 +17,7 @@ export const Route = createFileRoute("/courses/new")({
   component: NewCoursePage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type CourseType = "intensive" | "semi-intensive" | "weekly" | "custom";
 type RepeatType = "one-off" | "daily" | "weekly" | "monthly";
@@ -462,7 +462,7 @@ function NewCoursePage() {
                 fontSize: 12,
                 fontWeight: 700,
                 cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
               }}
             >
               {s.n}. {s.label}
@@ -558,7 +558,7 @@ function NewCoursePage() {
                 borderRadius: 10,
                 fontWeight: 600,
                 cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
               }}
             >Back</button>
           )}
@@ -574,7 +574,7 @@ function NewCoursePage() {
                 borderRadius: 10,
                 fontWeight: 600,
                 cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
               }}
             >Next</button>
           ) : (
@@ -591,7 +591,7 @@ function NewCoursePage() {
                   borderRadius: 10,
                   fontWeight: 600,
                   cursor: "pointer",
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Poppins, sans-serif",
                 }}
               >Save draft</button>
               <button
@@ -606,7 +606,7 @@ function NewCoursePage() {
                   borderRadius: 10,
                   fontWeight: 700,
                   cursor: saving ? "not-allowed" : "pointer",
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Poppins, sans-serif",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -669,7 +669,7 @@ function Step1(props: {
                 border: `2px solid ${active ? meta.color : "#e3e6ec"}`,
                 background: active ? meta.bg : "#fff",
                 cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
               }}
             >
               <div style={{ fontSize: 13, fontWeight: 800, color: meta.color }}>{meta.label}</div>
@@ -704,7 +704,7 @@ function Step1(props: {
                   fontWeight: 600,
                   fontSize: 13,
                   cursor: "pointer",
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Poppins, sans-serif",
                 }}
               >
                 {h}h{h === 28 ? " (test week)" : ""}
@@ -734,7 +734,7 @@ function Step1(props: {
             border: "0.5px solid #EEF2F7",
             padding: 10,
             fontSize: 14,
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
             background: "#fff",
             resize: "vertical",
           }}
@@ -856,7 +856,7 @@ function Step2(props: {
             borderRadius: 10,
             color: "#0B1F3A",
             fontSize: 14,
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
           }}
         >
           {endDate
@@ -891,7 +891,7 @@ function Step2(props: {
                   color: active ? "#fff" : "#0B1F3A",
                   cursor: "pointer",
                   textAlign: "left",
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Poppins, sans-serif",
                 }}
               >
                 <Icon size={18} color={active ? "#fff" : "#0B1F3A"} />
@@ -926,7 +926,7 @@ function Step2(props: {
                     fontWeight: 600,
                     fontSize: 12,
                     cursor: "pointer",
-                    fontFamily: "Inter, sans-serif",
+                    fontFamily: "Poppins, sans-serif",
                   }}
                 >
                   {DAY_LABELS[d]}
@@ -955,7 +955,7 @@ function Step2(props: {
                 fontWeight: 600,
                 fontSize: 13,
                 cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
               }}
             >
               Weekdays
@@ -979,7 +979,7 @@ function Step2(props: {
                 fontWeight: 600,
                 fontSize: 13,
                 cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
               }}
             >
               Weekends
@@ -1003,7 +1003,7 @@ function Step2(props: {
                 fontWeight: 600,
                 fontSize: 13,
                 cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
               }}
             >
               All days
@@ -1040,7 +1040,7 @@ function Step2(props: {
           borderRadius: 10,
           fontSize: 13,
           color: "#0B1F3A",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Poppins, sans-serif",
           lineHeight: 1.4,
         }}
       >
@@ -1074,7 +1074,7 @@ function Step2(props: {
             border: "0.5px solid #EEF2F7",
             padding: "0 10px",
             fontSize: 14,
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
             background: "#fff",
             color: "#0B1F3A",
           }}
@@ -1115,7 +1115,7 @@ function Step2(props: {
                   border: `1.5px solid ${active ? color : "#e3e6ec"}`,
                   background: active ? `${color}10` : "#fff",
                   cursor: "pointer",
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Poppins, sans-serif",
                   textAlign: "left",
                 }}
               >
@@ -1138,27 +1138,27 @@ function Step2(props: {
         {timePref === "custom" && (
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
             <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>From</span>
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>From</span>
               <input
                 type="time"
                 value={lessonTimeFrom}
                 onChange={(e) => setLessonTimeFrom(e.target.value)}
                 style={{
                   height: 44, borderRadius: 10, border: "1px solid #e3e6ec",
-                  padding: "0 10px", fontSize: 14, fontFamily: "Inter, sans-serif",
+                  padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
                   color: "#0B1F3A", background: "#fff",
                 }}
               />
             </label>
             <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>To</span>
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>To</span>
               <input
                 type="time"
                 value={lessonTimeTo}
                 onChange={(e) => setLessonTimeTo(e.target.value)}
                 style={{
                   height: 44, borderRadius: 10, border: "1px solid #e3e6ec",
-                  padding: "0 10px", fontSize: 14, fontFamily: "Inter, sans-serif",
+                  padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
                   color: "#0B1F3A", background: "#fff",
                 }}
               />
@@ -1268,7 +1268,7 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
         fontWeight: 600,
         color: "#6B7280",
         marginBottom: 6,
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Poppins, sans-serif",
       }}
     >
       {children}
@@ -1297,7 +1297,7 @@ function ToggleRow({
         borderRadius: 10,
         cursor: "pointer",
         textAlign: "left",
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Poppins, sans-serif",
       }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -1358,7 +1358,7 @@ function CheckRow({
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.5 : 1,
         textAlign: "left",
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Poppins, sans-serif",
         fontSize: 14,
         color: "#0B1F3A",
       }}
@@ -1543,7 +1543,7 @@ function PostcodeAutocomplete(props: {
             border: `1.5px solid ${error ? "#1877D6" : focused ? "#1877D6" : "#EEF2F7"}`,
             borderRadius: 8,
             padding: "0 12px 0 40px",
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
             fontSize: 14,
             color: "#0B1F3A",
             background: "#fff",
@@ -1553,7 +1553,7 @@ function PostcodeAutocomplete(props: {
         />
       </div>
       {error && (
-        <div style={{ color: "#1877D6", fontSize: 12, marginTop: 4, fontFamily: "Inter, sans-serif" }}>
+        <div style={{ color: "#1877D6", fontSize: 12, marginTop: 4, fontFamily: "Poppins, sans-serif" }}>
           {error}
         </div>
       )}
@@ -1589,7 +1589,7 @@ function PostcodeAutocomplete(props: {
                 gap: 8,
                 cursor: "pointer",
                 background: active === i ? "#F8F9FB" : "#fff",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
               }}
             >
               <MapPin size={14} color="#6B7280" />

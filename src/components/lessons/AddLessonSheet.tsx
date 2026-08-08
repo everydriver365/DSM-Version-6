@@ -37,7 +37,7 @@ interface Pupil {
 }
 
 const fieldBorder: React.CSSProperties = {
-  fontFamily: "Inter, sans-serif",
+  fontFamily: "Poppins, sans-serif",
   borderWidth: "0.5px",
   borderStyle: "solid",
   borderColor: "#EEF2F7",
@@ -48,7 +48,7 @@ function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.Re
     <label
       htmlFor={htmlFor}
       className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-      style={{ fontFamily: "Inter, sans-serif" }}
+      style={{ fontFamily: "Poppins, sans-serif" }}
     >
       {children}
     </label>
@@ -407,7 +407,7 @@ export function AddLessonSheet({
           onClick={handleSave}
           disabled={saving}
           className="w-full py-4 rounded-full text-white font-semibold text-base active:opacity-90 disabled:opacity-40"
-          style={{ backgroundColor: "#1877D6", fontFamily: "Inter, sans-serif" }}
+          style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
         >
           {saving ? "Saving..." : "Add lesson"}
         </button>
@@ -415,7 +415,7 @@ export function AddLessonSheet({
     >
       <div
         className="flex flex-col gap-4 px-1 pb-2"
-        style={{ fontFamily: "Inter, sans-serif" }}
+        style={{ fontFamily: "Poppins, sans-serif" }}
       >
         {/* Pupil */}
         <div>

@@ -17,7 +17,7 @@ export const Route = createFileRoute("/courses/")({
   component: CoursesPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface CourseRow {
   id: string;
@@ -156,7 +156,7 @@ function CoursesPage() {
                 fontWeight: 600,
                 fontSize: 14,
                 cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
               }}
             >
               + New course
@@ -299,7 +299,7 @@ function CoursesPage() {
                         fontWeight: 600,
                         fontSize: 13,
                         cursor: "pointer",
-                        fontFamily: "Inter, sans-serif",
+                        fontFamily: "Poppins, sans-serif",
                       }}
                     >
                       <Pencil size={14} />

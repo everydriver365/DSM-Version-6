@@ -27,7 +27,7 @@ export function EmptyState({ icon: Icon, title, description, action }: Props) {
       )}
       <h3
         className="text-[16px] font-semibold"
-        style={{ color: "#0B1F3A", fontFamily: "Sora, Inter, sans-serif" }}
+        style={{ color: "#0B1F3A", fontFamily: "Sora, Poppins, sans-serif" }}
       >
         {title}
       </h3>

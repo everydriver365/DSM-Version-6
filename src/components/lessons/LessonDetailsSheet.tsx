@@ -99,7 +99,7 @@ export function LessonDetailsSheet({
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{ fontFamily: "Inter, sans-serif" }}
+      style={{ fontFamily: "Poppins, sans-serif" }}
     >
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
       <div

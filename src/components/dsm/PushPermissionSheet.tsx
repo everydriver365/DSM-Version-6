@@ -5,7 +5,7 @@ import { BottomSheet, PrimaryButton, GhostButton } from "./BottomSheetV2";
 import { pushSupported, subscribeToPush } from "../../lib/pushSubscription";
 
 const STORAGE_KEY = "push-permission-declined";
-const FONT = { fontFamily: "Poppins, Inter, sans-serif" } as const;
+const FONT = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface PushPermissionSheetProps {
   /** Signed-in user id — the sheet only appears once a user is present. */

@@ -15,7 +15,7 @@ export const Route = createFileRoute("/performance")({
   component: PerformancePage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type Period = "week" | "month" | "year" | "all";
 const TABS: { key: Period; label: string }[] = [

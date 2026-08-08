@@ -18,7 +18,7 @@ export const Route = createFileRoute("/tax")({
   component: TaxPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type YearKey = "2025/26" | "2026/27";
 

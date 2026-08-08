@@ -13,7 +13,7 @@ export const Route = createFileRoute("/news/$articleId")({
 });
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
-const INTER = { fontFamily: "Inter, sans-serif" } as const;
+const INTER = { fontFamily: "Poppins, sans-serif" } as const;
 
 function formatDate(iso: string | null | undefined) {
   if (!iso) return "—";

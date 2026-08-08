@@ -42,7 +42,7 @@ const marketingWebsiteImg = marketingWebsiteAsset.url;
 import explainerPlaceholderAsset from "../assets/instructor-placeholder.png.asset.json";
 const explainerPlaceholderImg = explainerPlaceholderAsset.url;
 
-const FONT = "'Poppins', system-ui, -apple-system, sans-serif";
+const FONT = "Poppins, sans-serif";
 const NAVY = "#133155";
 const NAVY_SOFT = "#243a66";
 const BLUE = "#0E7CCE";
@@ -124,8 +124,7 @@ function Reveal({
         opacity: shown ? 1 : 0,
         transform: shown ? "translateY(0)" : "translateY(16px)",
         transition: `opacity 600ms cubic-bezier(.22,.61,.36,1) ${delay}ms, transform 600ms cubic-bezier(.22,.61,.36,1) ${delay}ms`,
-        ...style,
-      }}
+        ...style}}
     >
       {children}
     </div>
@@ -152,7 +151,7 @@ function HomePage() {
     return (
       <div
         className="min-h-screen"
-        style={{ background: BG, fontFamily: FONT }}
+        style={{ background: BG}}
       />
     );
 
@@ -160,7 +159,7 @@ function HomePage() {
     <div
       data-marketing
       className="min-h-screen antialiased"
-      style={{ fontFamily: FONT, color: INK, background: BG }}
+      style={{ color: INK, background: BG }}
     >
       <MarketingNav />
       <main>
@@ -187,8 +186,7 @@ function Eyebrow({ children }: { children: ReactNode }) {
       style={{
         background: BLUE_TINT,
         color: BLUE_DARK,
-        letterSpacing: "0.14em",
-      }}
+        letterSpacing: "0.14em"}}
     >
       <Sparkles className="w-3 h-3" />
       {children}
@@ -204,8 +202,7 @@ function Hero() {
       style={{
         background:
           "radial-gradient(1100px 600px at 50% -10%, rgba(14,124,206,0.12), transparent 60%), radial-gradient(800px 500px at 90% 10%, rgba(19,49,85,0.06), transparent 60%), " +
-          BG,
-      }}
+          BG}}
     >
       <div className="max-w-[1180px] mx-auto px-5 sm:px-8 pt-6 sm:pt-14 lg:pt-[88px] pb-12 sm:pb-16 lg:pb-24">
         <div className="grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-16 items-center">
@@ -217,8 +214,7 @@ function Hero() {
                   color: NAVY,
                   fontSize: "clamp(36px, 6vw, 64px)",
                   lineHeight: 1.04,
-                  letterSpacing: "-0.025em",
-                }}
+                  letterSpacing: "-0.025em"}}
               >
                 Driving school management,
                 <span style={{ color: BLUE }}> made effortless.</span>
@@ -230,8 +226,7 @@ function Hero() {
                 style={{
                   color: MUTED,
                   fontSize: "clamp(16px, 1.4vw, 18px)",
-                  lineHeight: 1.65,
-                }}
+                  lineHeight: 1.65}}
               >
                 Put the industry's most advanced diary to work — schedule lessons,
                 take payments, and grow your pupil base from one beautiful app.
@@ -246,8 +241,7 @@ function Hero() {
                   style={{
                     background: BLUE,
                     color: "#fff",
-                    boxShadow: "0 10px 24px rgba(14,124,206,0.35)",
-                  }}
+                    boxShadow: "0 10px 24px rgba(14,124,206,0.35)"}}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = BLUE_DARK;
                     e.currentTarget.style.transform = "translateY(-1px)";
@@ -266,8 +260,7 @@ function Hero() {
                   style={{
                     background: "#fff",
                     color: NAVY,
-                    border: `1px solid ${HAIRLINE}`,
-                  }}
+                    border: `1px solid ${HAIRLINE}`}}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = "#F1F5F9";
                   }}
@@ -305,8 +298,7 @@ function Hero() {
                 style={{
                   background:
                     "linear-gradient(135deg, rgba(14,124,206,0.18), rgba(19,49,85,0.10))",
-                  filter: "blur(40px)",
-                }}
+                  filter: "blur(40px)"}}
               />
               <div
                 className="relative rounded-[28px] overflow-hidden bg-white"
@@ -355,8 +347,7 @@ function StatsBar() {
                   style={{
                     color: NAVY,
                     fontSize: "clamp(28px, 3vw, 36px)",
-                    letterSpacing: "-0.02em",
-                  }}
+                    letterSpacing: "-0.02em"}}
                 >
                   {s.n}
                 </div>
@@ -403,8 +394,7 @@ function SectionHead({
             color: NAVY,
             fontSize: "clamp(28px, 4vw, 44px)",
             lineHeight: 1.1,
-            letterSpacing: "-0.02em",
-          }}
+            letterSpacing: "-0.02em"}}
         >
           {title}
         </h2>
@@ -437,8 +427,7 @@ function DiarySection() {
                   color: NAVY,
                   fontSize: "clamp(32px, 4.2vw, 52px)",
                   lineHeight: 1.08,
-                  letterSpacing: "-0.025em",
-                }}
+                  letterSpacing: "-0.025em"}}
               >
                 Learn all about DSM and how we can help you.
               </h2>
@@ -449,8 +438,7 @@ function DiarySection() {
                 style={{
                   color: MUTED,
                   fontSize: "clamp(16px, 1.4vw, 18px)",
-                  lineHeight: 1.65,
-                }}
+                  lineHeight: 1.65}}
               >
                 See how driving instructors use our free diary, payments and
                 pupil tools to save hours every week and run a more
@@ -464,8 +452,7 @@ function DiarySection() {
                 style={{
                   color: BLUE,
                   borderTop: `1px solid ${HAIRLINE}`,
-                  fontSize: 16,
-                }}
+                  fontSize: 16}}
                 onClick={(e) => {
                   e.preventDefault();
                   document
@@ -486,15 +473,13 @@ function DiarySection() {
                 className="absolute -inset-8 rounded-[40px] opacity-60"
                 style={{
                   background:
-                    "radial-gradient(600px 400px at 70% 40%, rgba(14,124,206,0.14), transparent 60%), radial-gradient(500px 300px at 20% 80%, rgba(19,49,85,0.08), transparent 60%)",
-                }}
+                    "radial-gradient(600px 400px at 70% 40%, rgba(14,124,206,0.14), transparent 60%), radial-gradient(500px 300px at 20% 80%, rgba(19,49,85,0.08), transparent 60%)"}}
               />
               <div
                 className="relative rounded-[24px] overflow-hidden bg-white"
                 style={{
                   boxShadow: SHADOW_LIFT,
-                  border: `1px solid ${HAIRLINE}`,
-                }}
+                  border: `1px solid ${HAIRLINE}`}}
               >
                 <div
                   className="aspect-video grid place-items-center relative overflow-hidden group cursor-pointer"
@@ -509,16 +494,14 @@ function DiarySection() {
                     className="absolute inset-0"
                     style={{
                       background:
-                        "linear-gradient(180deg, rgba(15,23,42,0.25) 0%, rgba(15,23,42,0.55) 100%)",
-                    }}
+                        "linear-gradient(180deg, rgba(15,23,42,0.25) 0%, rgba(15,23,42,0.55) 100%)"}}
                   />
                   <div className="relative flex flex-col items-center gap-3 text-white drop-shadow-lg">
                     <span
                       className="w-16 h-16 sm:w-20 sm:h-20 rounded-full grid place-items-center transition-transform group-hover:scale-105"
                       style={{
                         background: BLUE,
-                        boxShadow: "0 12px 30px rgba(14,124,206,0.55)",
-                      }}
+                        boxShadow: "0 12px 30px rgba(14,124,206,0.55)"}}
                     >
                       <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-white text-white ml-1" />
                     </span>
@@ -631,15 +614,13 @@ function FeaturesShowcase() {
                       style={{
                         background:
                           "linear-gradient(135deg, rgba(14,124,206,0.10), rgba(19,49,85,0.06))",
-                        filter: "blur(28px)",
-                      }}
+                        filter: "blur(28px)"}}
                     />
                     <div
                       className="relative rounded-[24px] overflow-hidden bg-white"
                       style={{
                         boxShadow: SHADOW_LIFT,
-                        border: `1px solid ${HAIRLINE}`,
-                      }}
+                        border: `1px solid ${HAIRLINE}`}}
                     >
                       <img
                         src={f.img}
@@ -661,8 +642,7 @@ function FeaturesShowcase() {
                         color: NAVY,
                         fontSize: "clamp(24px, 3vw, 34px)",
                         lineHeight: 1.15,
-                        letterSpacing: "-0.02em",
-                      }}
+                        letterSpacing: "-0.02em"}}
                     >
                       {f.title}
                     </h3>
@@ -671,8 +651,7 @@ function FeaturesShowcase() {
                       style={{
                         color: MUTED,
                         fontSize: 17,
-                        lineHeight: 1.65,
-                      }}
+                        lineHeight: 1.65}}
                     >
                       {f.body}
                     </p>
@@ -768,8 +747,7 @@ function HowItWorks() {
                 className="h-full rounded-2xl bg-white p-7 sm:p-8 transition-all"
                 style={{
                   border: `1px solid ${HAIRLINE}`,
-                  boxShadow: SHADOW_SOFT,
-                }}
+                  boxShadow: SHADOW_SOFT}}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-2px)";
                   e.currentTarget.style.boxShadow = SHADOW_LIFT;
@@ -877,8 +855,7 @@ function PricingTiers() {
                   style={{
                     background: "#fff",
                     border: isPro ? `2px solid ${BLUE}` : `1px solid ${HAIRLINE}`,
-                    boxShadow: isPro ? SHADOW_LIFT : SHADOW_SOFT,
-                  }}
+                    boxShadow: isPro ? SHADOW_LIFT : SHADOW_SOFT}}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-3px)";
                     e.currentTarget.style.boxShadow = SHADOW_LIFT;
@@ -896,8 +873,7 @@ function PricingTiers() {
                       style={{
                         background: BLUE,
                         color: "#fff",
-                        letterSpacing: "0.12em",
-                      }}
+                        letterSpacing: "0.12em"}}
                     >
                       Most popular
                     </span>
@@ -971,8 +947,7 @@ function PricingTiers() {
             style={{
               background: BG,
               border: `1px solid ${HAIRLINE}`,
-              color: NAVY,
-            }}
+              color: NAVY}}
           >
             Compare all plans &amp; features <ArrowRight className="w-4 h-4" />
           </Link>
@@ -1016,8 +991,7 @@ function Testimonials() {
                 className="h-full rounded-2xl bg-white p-7 transition-all"
                 style={{
                   border: `1px solid ${HAIRLINE}`,
-                  boxShadow: SHADOW_SOFT,
-                }}
+                  boxShadow: SHADOW_SOFT}}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-2px)";
                   e.currentTarget.style.boxShadow = SHADOW_LIFT;
@@ -1049,8 +1023,7 @@ function Testimonials() {
                   <div
                     className="w-10 h-10 rounded-full grid place-items-center text-white font-bold"
                     style={{
-                      background: `linear-gradient(135deg, ${NAVY}, ${NAVY_SOFT})`,
-                    }}
+                      background: `linear-gradient(135deg, ${NAVY}, ${NAVY_SOFT})`}}
                   >
                     {t.n.charAt(0)}
                   </div>
@@ -1102,8 +1075,7 @@ function ComparisonFormula() {
             style={{
               background: BG,
               border: `1px solid ${HAIRLINE}`,
-              boxShadow: SHADOW_SOFT,
-            }}
+              boxShadow: SHADOW_SOFT}}
           >
             {rows.map((r, i) => (
               <div
@@ -1161,8 +1133,7 @@ function ComparisonFormula() {
               style={{
                 background: BLUE,
                 color: "#fff",
-                boxShadow: "0 12px 28px rgba(14,124,206,0.35)",
-              }}
+                boxShadow: "0 12px 28px rgba(14,124,206,0.35)"}}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = BLUE_DARK;
                 e.currentTarget.style.transform = "translateY(-1px)";
@@ -1197,16 +1168,14 @@ function FinalCTA() {
             className="relative overflow-hidden rounded-[32px] px-6 sm:px-10 lg:px-16 py-16 sm:py-20 lg:py-24 text-center"
             style={{
               background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY_SOFT} 100%)`,
-              boxShadow: SHADOW_LIFT,
-            }}
+              boxShadow: SHADOW_LIFT}}
           >
             <div
               aria-hidden
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  "radial-gradient(600px 300px at 80% 0%, rgba(14,124,206,0.35), transparent 60%), radial-gradient(500px 280px at 10% 100%, rgba(14,124,206,0.18), transparent 60%)",
-              }}
+                  "radial-gradient(600px 300px at 80% 0%, rgba(14,124,206,0.35), transparent 60%), radial-gradient(500px 280px at 10% 100%, rgba(14,124,206,0.18), transparent 60%)"}}
             />
             <div className="relative">
               <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-8">
@@ -1226,8 +1195,7 @@ function FinalCTA() {
                 style={{
                   fontSize: "clamp(28px, 4.4vw, 48px)",
                   lineHeight: 1.08,
-                  letterSpacing: "-0.025em",
-                }}
+                  letterSpacing: "-0.025em"}}
               >
                 Ready to simplify your business?
               </h2>
@@ -1246,8 +1214,7 @@ function FinalCTA() {
                   style={{
                     background: BLUE,
                     color: "#fff",
-                    boxShadow: "0 12px 30px rgba(14,124,206,0.45)",
-                  }}
+                    boxShadow: "0 12px 30px rgba(14,124,206,0.45)"}}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = BLUE_DARK;
                     e.currentTarget.style.transform = "translateY(-1px)";
@@ -1265,8 +1232,7 @@ function FinalCTA() {
                   style={{
                     background: "rgba(255,255,255,0.08)",
                     border: "1px solid rgba(255,255,255,0.25)",
-                    color: "#fff",
-                  }}
+                    color: "#fff"}}
                 >
                   Compare plans
                 </Link>

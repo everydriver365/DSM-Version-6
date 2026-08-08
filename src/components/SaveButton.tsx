@@ -16,7 +16,7 @@ interface Props {
   idleColor?: string;
 }
 
-const FONT = { fontFamily: "Inter, sans-serif" } as const;
+const FONT = { fontFamily: "Poppins, sans-serif" } as const;
 
 export function SaveButton({
   state,

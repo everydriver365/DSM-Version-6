@@ -18,7 +18,7 @@ export const Route = createFileRoute("/coverage-areas")({
   component: CoverageAreasPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 // Prefer the Lovable-managed browser key (referrer-restricted); fall back to the legacy key.
 const GOOGLE_MAPS_KEY =

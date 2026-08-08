@@ -519,7 +519,7 @@ const SECTION_TITLE_TEXT_STYLE: React.CSSProperties = {
   color: '#1877D6',
   textTransform: 'uppercase',
   letterSpacing: '0.12em',
-  fontFamily: 'Inter, sans-serif',
+  fontFamily: 'Poppins, sans-serif',
 };
 
 const SECTION_LINK_STYLE: React.CSSProperties = {
@@ -4336,7 +4336,7 @@ function HomePage() {
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
           {/* HEADER */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-            <h1 style={{ fontSize: 24, fontWeight: 900, color: "#0B1F3A", margin: 0, fontFamily: "Poppins, sans-serif" }}>
+            <h1 style={{ fontSize: 24, fontWeight: 900, color: "#0B1F3A", margin: 0, fontFamily: "Sora, sans-serif" }}>
               Good morning, {firstName} 👋
             </h1>
             <div style={{ fontSize: 14, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>

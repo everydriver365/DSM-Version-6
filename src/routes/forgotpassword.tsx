@@ -39,7 +39,7 @@ function ForgotPasswordPage() {
   return (
     <div
       className="min-h-screen w-full flex flex-col items-center justify-center bg-[#0B1F3A] px-4"
-      style={{ fontFamily: "Inter, sans-serif" }}
+      style={{ fontFamily: "Poppins, sans-serif" }}
     >
       <div className="flex flex-col items-center mb-8">
         <img src={dsmLogoAsset.url} alt="DSM logo" className="h-[60px] w-auto mb-2" />
@@ -84,7 +84,7 @@ function ForgotPasswordPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1877D6]"
-              style={{ fontFamily: "Inter, sans-serif", border: "1.5px solid #CBD5E1" }}
+              style={{ fontFamily: "Poppins, sans-serif", border: "1.5px solid #CBD5E1" }}
             />
 
             <div className="mt-6">

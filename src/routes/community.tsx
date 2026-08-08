@@ -265,7 +265,7 @@ function AlertSignIcon({ type, size = 28 }: { type: string; size?: number }) {
             fill="white"
             fontSize="11"
             fontWeight="700"
-            fontFamily="Inter, system-ui, sans-serif"
+            fontFamily="Poppins, system-ui, sans-serif"
           >
             ?
           </text>
@@ -409,7 +409,7 @@ function CommunityPage() {
   }, []);
 
   return (
-    <div style={{ background: "#F7FAFC", minHeight: "100vh", paddingBottom: 80, fontFamily: "Inter, sans-serif" }}>
+    <div style={{ background: "#F7FAFC", minHeight: "100vh", paddingBottom: 80, fontFamily: "Poppins, sans-serif" }}>
       {/* TOP BAR */}
       <div style={{
         background: "#0F2044", padding: "16px", display: "flex",
@@ -1947,7 +1947,7 @@ function ReportSheet({
                     border: "0.5px solid " + (location ? "#86EFAC" : "#E2E6ED"),
                     borderRadius: 10,
                     fontSize: 13,
-                    fontFamily: "Inter, sans-serif",
+                    fontFamily: "Poppins, sans-serif",
                     color: "#0F2044",
                     outline: "none",
                     boxSizing: "border-box",
@@ -1999,7 +1999,7 @@ function ReportSheet({
                           border: "none",
                           borderBottom: "1px solid #F1F4F8",
                           fontSize: 13,
-                          fontFamily: "Inter, sans-serif",
+                          fontFamily: "Poppins, sans-serif",
                           color: "#0F2044",
                           cursor: "pointer",
                         }}
@@ -2039,7 +2039,7 @@ function ReportSheet({
                     border: "0.5px solid " + (town ? "#86EFAC" : "#E2E6ED"),
                     borderRadius: 10,
                     fontSize: 13,
-                    fontFamily: "Inter, sans-serif",
+                    fontFamily: "Poppins, sans-serif",
                     color: "#0F2044",
                     outline: "none",
                     boxSizing: "border-box",

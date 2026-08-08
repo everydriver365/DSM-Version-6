@@ -11,7 +11,7 @@ export const Route = createFileRoute("/pupils/syllabus/$id")({
   component: PupilSyllabusPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type Competency = { id: string; name: string; description: string };
 type Category = { key: string; title: string; items: Competency[] };

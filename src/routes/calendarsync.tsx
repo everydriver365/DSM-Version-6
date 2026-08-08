@@ -49,7 +49,7 @@ export const Route = createFileRoute("/calendarsync")({
   component: CalendarSyncPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 
 function CalendarSyncPage() {
@@ -670,7 +670,7 @@ function CalendarSyncPage() {
             value={icsUrl}
             className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
             style={{
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: "#EEF2F7",

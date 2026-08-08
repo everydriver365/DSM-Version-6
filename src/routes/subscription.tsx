@@ -15,7 +15,7 @@ export const Route = createFileRoute("/subscription")({
   component: SubscriptionPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 function SubscriptionPage() {
   const navigate = useNavigate();

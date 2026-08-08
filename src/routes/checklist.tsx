@@ -15,7 +15,7 @@ export const Route = createFileRoute("/checklist")({
   component: ChecklistPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const GROUPS: { title: string; items: string[] }[] = [
   {

@@ -15,7 +15,7 @@ export const Route = createFileRoute("/waitlist")({
   component: WaitlistPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 const RED = "#1877D6";

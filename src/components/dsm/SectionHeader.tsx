@@ -24,7 +24,7 @@ export function SectionHeader({ children, className = "", style }: Props) {
         style={{
           letterSpacing: "0.12em",
           color: "#1877D6",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Poppins, sans-serif",
         }}
       >
         {children}

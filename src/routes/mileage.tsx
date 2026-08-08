@@ -23,7 +23,7 @@ export const Route = createFileRoute("/mileage")({
   component: MileagePage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const TAX_RATE = 0.45;
 
 interface MileageRow {
@@ -314,7 +314,7 @@ function MileagePage() {
               <div>
                 <label
                   className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-                  style={{ fontFamily: "Inter, sans-serif" }}
+                  style={{ fontFamily: "Poppins, sans-serif" }}
                 >
                   Date
                 </label>
@@ -324,7 +324,7 @@ function MileagePage() {
                   onChange={(e) => setTripDate(e.target.value)}
                   className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                   style={{
-                    fontFamily: "Inter, sans-serif",
+                    fontFamily: "Poppins, sans-serif",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
                     borderColor: "#EEF2F7",
@@ -351,7 +351,7 @@ function MileagePage() {
               <div>
                 <label
                   className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-                  style={{ fontFamily: "Inter, sans-serif" }}
+                  style={{ fontFamily: "Poppins, sans-serif" }}
                 >
                   Purpose
                 </label>
@@ -363,7 +363,7 @@ function MileagePage() {
                     style={{
                       backgroundColor: purpose === "business" ? "#1877D6" : "transparent",
                       color: purpose === "business" ? "#FFFFFF" : "#6B7280",
-                      fontFamily: "Inter, sans-serif",
+                      fontFamily: "Poppins, sans-serif",
                       borderWidth: purpose === "business" ? 0 : "0.5px",
                       borderStyle: "solid",
                       borderColor: "#EEF2F7",
@@ -378,7 +378,7 @@ function MileagePage() {
                     style={{
                       backgroundColor: purpose === "personal" ? "#6B7280" : "transparent",
                       color: purpose === "personal" ? "#FFFFFF" : "#6B7280",
-                      fontFamily: "Inter, sans-serif",
+                      fontFamily: "Poppins, sans-serif",
                       borderWidth: purpose === "personal" ? 0 : "0.5px",
                       borderStyle: "solid",
                       borderColor: "#EEF2F7",

@@ -12,7 +12,7 @@ export const Route = createFileRoute("/onboarding")({
   component: OnboardingPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const TOTAL_STEPS = 9;
 
 type WebsiteChoice = "yes" | "existing" | "later" | null;

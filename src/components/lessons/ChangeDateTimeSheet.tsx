@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const DURATION_HOURS = [1, 1.5, 2, 2.5, 3, 4];
 
@@ -143,7 +143,7 @@ export function ChangeDateTimeSheet({
                     className="rounded-[12px] text-[14px] font-medium transition-colors"
                     style={{
                       padding: "14px 2px",
-                      fontFamily: "Inter, sans-serif",
+                      fontFamily: "Poppins, sans-serif",
                       background: selected ? "#185FA5" : "#F3F8FF",
                       color: selected ? "#FFFFFF" : "#0B1F3A",
                       border: selected ? "none" : "1px solid #EEF2F7",

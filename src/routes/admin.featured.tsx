@@ -206,14 +206,14 @@ function AdminFeatured() {
 
   if (status === "checking") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Inter, sans-serif", color: "#6B7280" }}>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif", color: "#6B7280" }}>
         Checking access…
       </div>
     );
   }
   if (status === "denied") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Inter, sans-serif" }}>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: "#1877D6" }}>Access denied</div>
         <div style={{ color: "#6B7280", marginTop: 8 }}>Redirecting…</div>
       </div>
@@ -221,7 +221,7 @@ function AdminFeatured() {
   }
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
       <TopBar onBack={() => navigate({ to: "/admin" })} />
       <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)", paddingBottom: 32 }}>
         {/* stats */}

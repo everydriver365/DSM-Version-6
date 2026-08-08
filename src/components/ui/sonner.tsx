@@ -14,9 +14,9 @@ const Toaster = ({ ...props }: ToasterProps) => {
           border: "none",
           borderLeft: "3px solid #1877D6",
           borderRadius: "12px",
-          fontFamily: "Inter, sans-serif",
           boxShadow: "0 10px 30px -10px rgba(11, 31, 58, 0.4)",
         },
+
         classNames: {
           toast: "group toast",
           description: "text-white/70",

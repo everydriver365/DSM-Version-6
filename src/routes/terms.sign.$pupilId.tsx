@@ -22,7 +22,7 @@ const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
 
-const POPPINS = { fontFamily: "Inter, sans-serif" as const };
+const POPPINS = { fontFamily: "Poppins, sans-serif" as const };
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 
@@ -32,7 +32,7 @@ const inputStyle: React.CSSProperties = {
   border: "1px solid #EEF2F7",
   borderRadius: 8,
   fontSize: 14,
-  fontFamily: "Inter, sans-serif",
+  fontFamily: "Poppins, sans-serif",
   background: "#fff",
   color: NAVY,
   boxSizing: "border-box",
@@ -382,7 +382,7 @@ function SignTermsPage() {
                 fontSize: 14,
                 fontWeight: 600,
                 cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
               }}
             >
               Done
@@ -502,7 +502,7 @@ function SignTermsPage() {
                     fontSize: 12,
                     fontWeight: 600,
                     cursor: "pointer",
-                    fontFamily: "Inter, sans-serif",
+                    fontFamily: "Poppins, sans-serif",
                   }}
                 >
                   Clear
@@ -587,7 +587,7 @@ function SignTermsPage() {
                 fontSize: 15,
                 fontWeight: 700,
                 cursor: canSubmit ? "pointer" : "not-allowed",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
                 marginBottom: 24,
               }}
             >

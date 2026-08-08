@@ -50,7 +50,7 @@ export const Route = createFileRoute("/gaps")({
   component: GapsPage,
 });
 
-const FONT = { fontFamily: "Inter, sans-serif" } as const;
+const FONT = { fontFamily: "Poppins, sans-serif" } as const;
 const NAVY = "#0B1F3A";
 const BLUE = "#1A52A0";
 const BLUE_BRIGHT = "#3B82F6";
@@ -3274,7 +3274,7 @@ const inputStyle: React.CSSProperties = {
   fontSize: 14,
   color: NAVY,
   background: "#FFFFFF",
-  fontFamily: "Inter, sans-serif",
+  fontFamily: "Poppins, sans-serif",
 };
 
 function FieldLabel({ children }: { children: React.ReactNode }) {

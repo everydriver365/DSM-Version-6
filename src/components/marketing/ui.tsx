@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "@tanstack/react-router";
 
-const FONT = "'Poppins', system-ui, -apple-system, sans-serif";
+const FONT = "Poppins, sans-serif";
 const NAVY = "#133155";
 const BLUE = "#0E7CCE";
 const BLUE_DARK = "#0B69AD";
@@ -25,9 +25,7 @@ export function Section({
     <section
       style={{
         background: bg ?? "transparent",
-        padding: `${padY}px 20px`,
-        fontFamily: FONT,
-      }}
+        padding: `${padY}px 20px`}}
     >
       <div style={{ maxWidth: 1180, margin: "0 auto" }}>{children}</div>
     </section>
@@ -47,9 +45,7 @@ export function Eyebrow({ children }: { children: React.ReactNode }) {
         fontWeight: 600,
         letterSpacing: "0.12em",
         textTransform: "uppercase",
-        marginBottom: 18,
-        fontFamily: FONT,
-      }}
+        marginBottom: 18}}
     >
       {children}
     </div>
@@ -65,9 +61,7 @@ export function H1({ children }: { children: React.ReactNode }) {
         letterSpacing: "-0.02em",
         fontWeight: 700,
         color: NAVY,
-        margin: 0,
-        fontFamily: FONT,
-      }}
+        margin: 0}}
     >
       {children}
     </h1>
@@ -83,9 +77,7 @@ export function H2({ children }: { children: React.ReactNode }) {
         letterSpacing: "-0.015em",
         fontWeight: 700,
         color: NAVY,
-        margin: 0,
-        fontFamily: FONT,
-      }}
+        margin: 0}}
     >
       {children}
     </h2>
@@ -100,9 +92,7 @@ export function Lead({ children }: { children: React.ReactNode }) {
         lineHeight: 1.65,
         color: "#475569",
         marginTop: 18,
-        maxWidth: 660,
-        fontFamily: FONT,
-      }}
+        maxWidth: 660}}
     >
       {children}
     </p>
@@ -127,9 +117,7 @@ export function PrimaryBtn({ to, children, className, onClick }: { to: string; c
         fontSize: 15,
         textDecoration: "none",
         boxShadow: "0 8px 20px rgba(14,124,206,0.28)",
-        fontFamily: FONT,
-        transition: "background 150ms ease, transform 150ms ease",
-      }}
+        transition: "background 150ms ease, transform 150ms ease"}}
       onMouseEnter={(e) => (e.currentTarget.style.background = BLUE_DARK)}
       onMouseLeave={(e) => (e.currentTarget.style.background = BLUE)}
     >
@@ -156,9 +144,7 @@ export function SecondaryBtn({ to, children, className, onClick }: { to: string;
         fontSize: 15,
         textDecoration: "none",
         border: `1px solid ${BLUE}`,
-        fontFamily: FONT,
-        transition: "background 150ms ease, color 150ms ease",
-      }}
+        transition: "background 150ms ease, color 150ms ease"}}
       onMouseEnter={(e) => {
         e.currentTarget.style.background = BLUE;
         e.currentTarget.style.color = "#fff";
@@ -190,9 +176,7 @@ export function FeatureCard({
         border: `1px solid ${HAIRLINE}`,
         background: "#fff",
         boxShadow: SHADOW_SOFT,
-        fontFamily: FONT,
-        transition: "transform 200ms ease, box-shadow 200ms ease",
-      }}
+        transition: "transform 200ms ease, box-shadow 200ms ease"}}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-2px)";
         e.currentTarget.style.boxShadow =
@@ -213,15 +197,14 @@ export function FeatureCard({
           display: "grid",
           placeItems: "center",
           fontSize: 22,
-          marginBottom: 14,
-        }}
+          marginBottom: 14}}
       >
         {icon}
       </div>
-      <h3 style={{ margin: 0, fontSize: 18, fontWeight: 600, color: NAVY, fontFamily: FONT }}>
+      <h3 style={{ margin: 0, fontSize: 18, fontWeight: 600, color: NAVY}}>
         {title}
       </h3>
-      <p style={{ margin: "8px 0 0", fontSize: 15, lineHeight: 1.65, color: MUTED, fontFamily: FONT }}>
+      <p style={{ margin: "8px 0 0", fontSize: 15, lineHeight: 1.65, color: MUTED}}>
         {body}
       </p>
     </div>

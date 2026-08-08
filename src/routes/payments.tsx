@@ -24,7 +24,7 @@ export const Route = createFileRoute("/payments")({
   component: PaymentsPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const NAVY = "#0B1F3A";
 const BORDER = "#E2E6ED";
 const MUTED = "#6B7280";

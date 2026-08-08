@@ -48,7 +48,7 @@ export const Route = createFileRoute("/discount-codes")({
   component: DiscountCodesPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const SUGGESTIONS = ["SAVE10", "WELCOME", "FIRSTLESSON", "REFER5", "BLOCK10"];
 
@@ -620,7 +620,7 @@ const inputStyle: React.CSSProperties = {
   backgroundColor: "#FFFFFF",
   color: "#0B1F3A",
   fontSize: 14,
-  fontFamily: "Inter, sans-serif",
+  fontFamily: "Poppins, sans-serif",
 };
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {

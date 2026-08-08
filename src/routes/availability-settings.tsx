@@ -35,7 +35,7 @@ const BORDER = "#E2E6ED";
 const ROW_BORDER = "#EEF2F7";
 const FIELD_BG = "#F5F7FA";
 const DASHED_BORDER = "#DCE2EA";
-const FONT = { fontFamily: "Inter, sans-serif" } as const;
+const FONT = { fontFamily: "Poppins, sans-serif" } as const;
 
 const DAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const DAY_SHORT: Record<string, string> = {

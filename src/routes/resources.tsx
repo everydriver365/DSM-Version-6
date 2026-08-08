@@ -22,7 +22,7 @@ export const Route = createFileRoute("/resources")({
   component: ResourcesPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface ResourceItem {
   title: string;

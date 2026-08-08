@@ -33,7 +33,7 @@ export const Route = createFileRoute("/documents")({
   component: DocumentsPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type DocType = "adi" | "insurance" | "mot" | "dbs" | "tax" | "other";
 
