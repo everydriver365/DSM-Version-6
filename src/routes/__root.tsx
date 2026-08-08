@@ -9,9 +9,8 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconX } from "@tabler/icons-react";
+import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMenu2, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconX } from "@tabler/icons-react";
 import { CalendarPlus, ListTodo, Sparkles, Receipt, Calculator, FileSignature, Megaphone, HelpCircle, Settings as SettingsIcon } from "lucide-react";
-import { IconLogout, IconMenu2 } from "@tabler/icons-react";
 
 import appCss from "../styles.css?url";
 import icon192 from "../assets/icon-192.png.asset.json";

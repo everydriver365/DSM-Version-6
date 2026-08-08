@@ -1,10 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconAward, IconCalendar, IconCar, IconChartBar, IconCheck, IconChevronDown, IconChevronRight, IconClipboardCheck, IconClipboardList, IconClock, IconCreditCard, IconCurrencyPound, IconDots, IconExternalLink, IconFlag, IconHeart, IconLoader2, IconMail, IconMapPin, IconMessage, IconPalette, IconPencil, IconPhone, IconPlus, IconRefresh, IconSearch, IconSend, IconTrash, IconTrophy, IconX } from "@tabler/icons-react";
+import { IconAward, IconCalendar, IconCamera, IconCar, IconChartBar, IconCheck, IconChevronDown, IconChevronRight, IconClipboardCheck, IconClipboardList, IconClock, IconCreditCard, IconCurrencyPound, IconDots, IconExternalLink, IconFlag, IconHeart, IconLoader2, IconMail, IconMapPin, IconMessage, IconPalette, IconPencil, IconPhone, IconPlus, IconRefresh, IconSearch, IconSend, IconTrash, IconTrophy, IconX } from "@tabler/icons-react";
 import { BookOpen, History } from "lucide-react";
-import { IconCamera } from "@tabler/icons-react";
-import { IconCar } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { uploadImage } from "@/lib/uploadFile";
 import { AddressLookup } from "@/components/dsm/AddressLookup";

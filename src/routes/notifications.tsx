@@ -1,9 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconCircleX, IconCurrencyPound, IconRefresh, IconTrash, IconUsers, IconX } from "@tabler/icons-react";
+import { IconBell, IconChevronRight, IconCircleX, IconCurrencyPound, IconRefresh, IconTrash, IconUsers, IconX } from "@tabler/icons-react";
 import { CheckCheck, Calendar as CalendarIcon } from "lucide-react";
-import { IconBell, IconChevronRight } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";

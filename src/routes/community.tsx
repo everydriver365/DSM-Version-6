@@ -3,10 +3,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { reverseGeocode } from "@/lib/geocode.functions";
-import { IconBell, IconBellOff, IconSearch } from "@tabler/icons-react";
+import { IconAlertTriangle, IconArrowLeft, IconBell, IconBellOff, IconCar, IconChevronDown, IconClock, IconFlag, IconInfoCircle, IconLayoutGrid, IconMapPin, IconMessage, IconMessageCircle, IconPlus, IconSchool, IconSearch, IconSend, IconThumbUp, IconUsers, IconX } from "@tabler/icons-react";
 
 
-import { IconAlertTriangle, IconArrowLeft, IconCar, IconChevronDown, IconClock, IconFlag, IconInfoCircle, IconLayoutGrid, IconMapPin, IconMessage, IconMessageCircle, IconPlus, IconSchool, IconSearch, IconSend, IconThumbUp, IconUsers, IconX } from "@tabler/icons-react";
 import { Building2 as Building } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import {

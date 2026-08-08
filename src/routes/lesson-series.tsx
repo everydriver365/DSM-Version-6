@@ -1,9 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { IconCalendar, IconDots, IconRefresh, IconSearch, IconX } from "@tabler/icons-react";
+import { IconCalendar, IconDots, IconRefresh, IconSearch, IconUsers, IconX } from "@tabler/icons-react";
 import { PageHeader } from "@/components/dsm/PageHeader";
 import { toast } from "sonner";
-import { IconUsers } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { BottomSheet } from "../components/dsm/BottomSheet";
 import { supabase } from "../lib/supabaseClient";

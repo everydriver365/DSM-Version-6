@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { IconBell, IconCalendar, IconClock, IconMapPin } from "@tabler/icons-react";
-import { IconDotsVertical, IconPencil, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconClock, IconDotsVertical, IconMapPin, IconPencil, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";

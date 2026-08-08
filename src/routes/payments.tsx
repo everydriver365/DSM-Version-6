@@ -1,8 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { IconCreditCard, IconDotsVertical, IconPlus, IconRotateClockwise2, IconSearch, IconX } from "@tabler/icons-react";
+import { IconCreditCard, IconCurrencyPound, IconDotsVertical, IconPlus, IconRotateClockwise2, IconSearch, IconX } from "@tabler/icons-react";
 import { Banknote, Landmark, Wallet, QrCode, Receipt } from "lucide-react";
-import { IconCurrencyPound } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 
 import { Button } from "../components/dsm/Button";

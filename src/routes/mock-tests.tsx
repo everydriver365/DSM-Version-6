@@ -1,8 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { IconPlus, IconSearch, IconX } from "@tabler/icons-react";
+import { IconClipboard, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconClipboard } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 
 import { toast } from "sonner";

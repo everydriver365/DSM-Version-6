@@ -3,7 +3,6 @@ import { supabase } from "@/lib/supabaseClient";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconAward, IconBolt, IconCheck, IconChevronRight, IconDownload, IconPlayerPlay, IconStar, IconTrendingUp, IconX } from "@tabler/icons-react";
 import { ShoppingBag, CalendarOff, Film } from "lucide-react";
-import { IconPlayerPlay } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";

@@ -23,50 +23,8 @@ import { LessonActionsSheet } from "@/components/lessons/LessonActionsSheet";
 import { WelcomeOverlay } from "@/components/dsm/WelcomeOverlay";
 
 
-import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconAward, IconBell, IconBolt, IconCalendar, IconCalendarCheck, IconCamera, IconCar, IconChartBar, IconCheckbox, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconCircleX, IconClipboardCheck, IconClipboardList, IconClock, IconCopy, IconCreditCard, IconCurrencyPound, IconDeviceLaptop, IconDeviceMobile, IconDots, IconFileText, IconGift, IconHeart, IconInbox, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMenu2, IconMessage, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlus, IconRadio, IconRefresh, IconSchool, IconSearch, IconSend, IconSettings, IconShield, IconStar, IconSun, IconTag, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUsers, IconWorld, IconX } from "@tabler/icons-react";
+import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconAward, IconBell, IconBolt, IconBriefcase, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconChartBar, IconCheckbox, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconCircleX, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDots, IconDotsVertical, IconFileText, IconGift, IconHeart, IconInbox, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPlay, IconPlus, IconRadio, IconReceipt, IconRefresh, IconSchool, IconSearch, IconSend, IconSettings, IconShield, IconSparkles, IconSpeakerphone, IconStar, IconSteeringWheel, IconSun, IconTag, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserPlus, IconUsers, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
 import { CalendarOff, Receipt, BookOpen, HelpCircle, Calculator, Fuel, FolderOpen, FileSignature, ToggleLeft, Crown, UserCircle, PlayCircle, CheckCheck, FileSpreadsheet, ArrowLeftRight, Megaphone, Sparkles, FileCheck, Headphones, Infinity, Move, Video, ShieldAlert, Building2 as Building, Calendar as CalendarIcon, Settings as SettingsIcon } from "lucide-react";
-import {
-  IconCurrencyPound,
-  IconCalendarStats,
-  IconClockHour4,
-  IconAlertTriangle,
-  IconBolt,
-  IconChevronRight,
-  IconSparkles,
-  IconPhone,
-  IconMessage,
-  IconPlayerPlay,
-  IconCalendarEvent,
-  IconUsers,
-  IconWallet,
-  IconMessageCircle,
-  IconLayoutGrid,
-  IconX,
-  IconCalendar,
-  IconMapPin,
-  IconClock,
-  IconDots,
-  IconDotsVertical,
-  IconSearch,
-  IconCreditCard,
-
-  IconUserPlus,
-  IconCalendarPlus,
-  IconReceipt,
-  IconSpeakerphone,
-  IconChartBar,
-  IconSteeringWheel,
-  IconMicrophone,
-  IconBriefcase,
-  IconCircleCheck,
-  IconArrowRight,
-  IconGift,
-  IconNavigation,
-  IconClipboardList,
-  IconClockExclamation,
-  IconCurrentLocation,
-  IconPencil,
-} from "@tabler/icons-react";
 
 
 

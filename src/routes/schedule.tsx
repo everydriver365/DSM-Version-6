@@ -1,22 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { IconCalendar, IconClock, IconDots, IconPlus, IconRefresh, IconTrash } from "@tabler/icons-react";
+import { IconArrowLeft, IconArrowRight, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
 import { Move, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
-import {
-  IconSearch,
-  IconPlus,
-  IconChevronDown,
-  IconChevronLeft,
-  IconChevronRight,
-  IconArrowLeft,
-  IconArrowRight,
-  IconCheck,
-
-
-} from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
