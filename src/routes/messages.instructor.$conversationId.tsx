@@ -266,7 +266,12 @@ function InstructorDMThread() {
   const [loading, setLoading] = useState(true);
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
+  const [otherTyping, setOtherTyping] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const typingClearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const typingStopRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const typingSentRef = useRef(false);
 
   // Hide the global bottom nav while this chat thread is open, restore on unmount.
   useEffect(() => {
@@ -333,7 +338,7 @@ function InstructorDMThread() {
     })();
 
     const channel = supabase
-      .channel(`dm-${conversationId}`)
+      .channel(`dm-${conversationId}`, { config: { broadcast: { self: false } } })
       .on(
         "postgres_changes",
         {
@@ -360,26 +365,79 @@ function InstructorDMThread() {
             }
             return [...prev, row];
           });
-          // Thread is open, so an inbound message is read on arrival — mark it
-          // and drop the badge straight away instead of letting it flash.
+          // An inbound message means they have stopped typing.
           if (row.from_instructor_id !== userId) {
+            setOtherTyping(false);
+            // Thread is open, so an inbound message is read on arrival — mark it
+            // and drop the badge straight away instead of letting it flash.
             void markConversationRead(conversationId, userId).then((n) =>
               broadcastRead(n),
             );
           }
         },
       )
+      .on("broadcast", { event: "typing" }, (payload) => {
+        const p = payload.payload as { userId?: string; typing?: boolean };
+        if (!p?.userId || p.userId === userId) return;
+        if (p.typing) {
+          setOtherTyping(true);
+          if (typingClearRef.current) clearTimeout(typingClearRef.current);
+          // Fail safe: drop the indicator if their "stopped" ping never lands.
+          typingClearRef.current = setTimeout(() => setOtherTyping(false), 4000);
+        } else {
+          if (typingClearRef.current) clearTimeout(typingClearRef.current);
+          setOtherTyping(false);
+        }
+      })
       .subscribe();
+
+    channelRef.current = channel;
 
     return () => {
       cancelled = true;
+      channelRef.current = null;
+      if (typingClearRef.current) clearTimeout(typingClearRef.current);
+      if (typingStopRef.current) clearTimeout(typingStopRef.current);
       void supabase.removeChannel(channel);
     };
   }, [conversationId, userId]);
 
+  /** Broadcast our typing state, throttled, with an auto "stopped" after 2.5s idle. */
+  function signalTyping() {
+    const channel = channelRef.current;
+    if (!channel || !userId) return;
+
+    if (!typingSentRef.current) {
+      typingSentRef.current = true;
+      void channel.send({
+        type: "broadcast",
+        event: "typing",
+        payload: { userId, typing: true },
+      });
+    }
+
+    if (typingStopRef.current) clearTimeout(typingStopRef.current);
+    typingStopRef.current = setTimeout(() => stopTyping(), 2500);
+  }
+
+  function stopTyping() {
+    if (typingStopRef.current) {
+      clearTimeout(typingStopRef.current);
+      typingStopRef.current = null;
+    }
+    if (!typingSentRef.current) return;
+    typingSentRef.current = false;
+    void channelRef.current?.send({
+      type: "broadcast",
+      event: "typing",
+      payload: { userId, typing: false },
+    });
+  }
+
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, otherTyping]);
 
   /** Insert one message, keeping its optimistic row's delivery state in sync. */
   async function deliver(localId: string, text: string, otherId: string) {
@@ -427,6 +485,7 @@ function InstructorDMThread() {
     setSending(true);
     const text = body.trim();
     setBody("");
+    stopTyping();
 
     const otherId =
       conversation.instructor_a_id === userId
@@ -700,6 +759,44 @@ function InstructorDMThread() {
             );
           })
         )}
+        {otherTyping && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-end",
+              gap: 8,
+              marginBottom: 14,
+            }}
+          >
+            <Avatar person={otherInstructor} bg={NAVY} />
+            <div
+              style={{
+                background: "#EEF2F7",
+                borderRadius: "6px 16px 16px 16px",
+                padding: "11px 14px",
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: "#9CA3AF",
+                    display: "inline-block",
+                    animation: "dsmtyping 1.2s infinite ease-in-out",
+                    animationDelay: `${i * 0.18}s`,
+                  }}
+                />
+              ))}
+            </div>
+            <style>{`@keyframes dsmtyping { 0%, 60%, 100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }`}</style>
+          </div>
+        )}
         <div ref={bottomRef} />
       </div>
 
@@ -738,7 +835,12 @@ function InstructorDMThread() {
         <textarea
           rows={1}
           value={body}
-          onChange={(e) => setBody(e.target.value)}
+          onChange={(e) => {
+            setBody(e.target.value);
+            if (e.target.value.trim()) signalTyping();
+            else stopTyping();
+          }}
+          onBlur={() => stopTyping()}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
