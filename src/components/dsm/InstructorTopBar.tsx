@@ -24,6 +24,7 @@ export type InstructorTopBarProps = {
   onProfile?: () => void;
   onBack?: () => void;
   pageTitle?: string;
+  titleStyle?: React.CSSProperties;
 };
 
 const ICON_BTN: React.CSSProperties = {
@@ -71,6 +72,7 @@ export default function InstructorTopBar({
   onProfile,
   onBack,
   pageTitle,
+  titleStyle,
 }: InstructorTopBarProps) {
   const isSubpage = typeof onBack === "function";
   const navigate = useNavigate();
@@ -108,6 +110,7 @@ export default function InstructorTopBar({
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
+              ...titleStyle,
             }}
           >
             {pageTitle ?? ""}

@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useState, useRef } from "react";
-import { ArrowLeft, Briefcase, X, Send } from "lucide-react";
+import { Briefcase, X, Send } from "lucide-react";
+import { IconCheck } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 
@@ -201,14 +202,14 @@ function JobCard({
 
   let badge: { label: string; color: string; bg: string } | null = null;
   if (variant === "claimed") {
-    badge = { label: "Accepted", color: "#1E9E5A", bg: "#E4F6EB" };
+    badge = { label: "Accepted", color: "#248A3D", bg: "#E6F7EC" };
   } else {
     if (!distanceKnown) {
-      if (hoursDaysGood) badge = { label: "Good schedule", color: GREEN, bg: "#E5F5EC" };
+      if (hoursDaysGood) badge = { label: "Good schedule", color: "#248A3D", bg: "#E6F7EC" };
       else if (hoursDays === "possible") badge = { label: "Possible schedule fit", color: AMBER, bg: "#FDF2E4" };
     } else {
       const distText = `${distanceMi!.toFixed(1)} mi`;
-      if (hoursDaysGood && inRadius) badge = { label: `Good match · ${distText}`, color: GREEN, bg: "#E5F5EC" };
+      if (hoursDaysGood && inRadius) badge = { label: `Good match · ${distText}`, color: "#248A3D", bg: "#E6F7EC" };
       else if (hoursDaysGood) badge = { label: `Fits schedule · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
       else if (inRadius) badge = { label: `Nearby · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
     }
@@ -219,7 +220,7 @@ function JobCard({
       onClick={() => setDetailJob(job)}
       style={{
         background: "#FFFFFF",
-        borderRadius: 16,
+        borderRadius: 18,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         overflow: "hidden",
         cursor: "pointer",
@@ -227,37 +228,41 @@ function JobCard({
     >
       <div
         style={{
-          background: NAVY,
-          padding: "14px 16px",
+          padding: "16px 18px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          gap: 12,
         }}
       >
-        <div style={{ fontSize: 11, fontWeight: 600, color: "#B9C4D4", letterSpacing: 0.3 }}>
+        <div style={{ fontSize: 12.5, fontWeight: 500, color: "#8A8A8E", ...POPPINS }}>
           {variant === "claimed"
             ? `Job accepted · ${job.claimed_at ? relTime(job.claimed_at) : "—"}`
             : `Job offer · Posted ${relTime(job.created_at)}`}
         </div>
         {worth != null && (
-          <div style={{ fontSize: 20, fontWeight: 700, color: "#FFFFFF" }}>
+          <div
+            style={{
+              fontSize: 22,
+              fontWeight: 800,
+              color: worth === 0 ? "#C7C7CC" : "#000",
+              ...POPPINS,
+            }}
+          >
             £{worth.toFixed(2)}
           </div>
         )}
       </div>
 
-      <div style={{ padding: 16 }}>
-        <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>
-          {[titleCase(job.pupil_name) || "New pupil", job.postcode_area]
-            .filter(Boolean)
-            .join(" · ")}
+      <div style={{ padding: "0 18px" }}>
+        <div style={{ fontSize: 19, fontWeight: 800, letterSpacing: "-0.3px", color: "#000", ...POPPINS }}>
+          {titleCase(job.pupil_name) || "New pupil"}
         </div>
-        <div style={{ fontSize: 13.5, color: "#5A6B85", marginTop: 2 }}>
+        <div style={{ fontSize: 13.5, fontWeight: 500, color: "#8A8A8E", marginTop: 2, ...POPPINS }}>
           {[
             sentenceCase(job.transmission),
             job.course_hours ? `${job.course_hours} hrs` : null,
             job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : null,
-            distanceMi != null ? `${distanceMi.toFixed(1)} mi away` : null,
             sentenceCase(job.preferred_timing?.join(", ")),
           ]
             .filter(Boolean)
@@ -271,28 +276,25 @@ function JobCard({
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
-                fontSize: 10,
+                fontSize: 11.5,
                 fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: 0.3,
                 color: badge.color,
                 background: badge.bg,
-                padding: "4px 10px",
-                borderRadius: 999,
+                padding: "6px 12px",
+                borderRadius: 20,
                 whiteSpace: "nowrap",
+                ...POPPINS,
               }}
             >
-              {badge.color === "#1E9E5A" && (
-                <span style={{ width: 6, height: 6, borderRadius: 999, background: "#1E9E5A" }} />
-              )}
-              {badge.label}
+              <IconCheck size={11} stroke={2.5} color={badge.color} />
+              {sentenceCase(badge.label)}
             </div>
           </div>
         )}
 
-        <div style={{ height: 1, background: "#EDF0F5", margin: "16px 0" }} />
+        <div style={{ height: 1, background: "#E9E9EC", margin: "16px 0" }} />
 
-        <div style={{ display: "flex", gap: 8 }}>
+        <div style={{ display: "flex", gap: 10, paddingBottom: 16 }}>
           {variant === "offer" && (
             <button
               type="button"
@@ -302,16 +304,18 @@ function JobCard({
                 onDecline?.();
               }}
               style={{
-                background: "#FFFFFF",
-                color: NAVY,
-                height: 42,
-                borderRadius: 12,
-                padding: "0 16px",
-                border: "1.5px solid #DCE2EB",
-                fontSize: 13,
+                background: "#F2F2F7",
+                color: "#000",
+                height: "auto",
+                borderRadius: 14,
+                padding: 14,
+                border: "none",
+                fontSize: 14.5,
                 fontWeight: 700,
                 cursor: "pointer",
                 whiteSpace: "nowrap",
+                flex: 1,
+                ...POPPINS,
               }}
             >
               Decline
@@ -326,15 +330,16 @@ function JobCard({
             style={{
               background: BLUE,
               color: "#FFF",
-              height: 42,
-              borderRadius: 12,
-              padding: "0 12px",
+              height: "auto",
+              borderRadius: 14,
+              padding: 14,
               border: "none",
-              fontSize: 13,
+              fontSize: 14.5,
               fontWeight: 700,
               cursor: "pointer",
               whiteSpace: "nowrap",
-              flex: variant === "claimed" ? 1 : undefined,
+              flex: 1,
+              ...POPPINS,
             }}
           >
             More details
@@ -504,6 +509,7 @@ function JobsPage() {
       <InstructorTopBar
         firstName=""
         pageTitle="Jobs"
+        titleStyle={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.5px", color: "#fff" }}
         onBack={() => navigate({ to: "/home" as never })}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
@@ -515,48 +521,52 @@ function JobsPage() {
 
       <div className="sticky top-0 z-30">
         <div
-          className="flex items-center justify-end"
-          style={{ background: "#FFFFFF", padding: "8px 16px" }}
-        >
-          <div className="text-[12px] font-semibold" style={{ ...POPPINS, color: "#6B7280" }}>
-            {activeTab === "open" ? `${jobs?.length ?? 0} open` : `${claimedJobs?.length ?? 0} claimed`}
-          </div>
-        </div>
-
-
-        {/* Tabs */}
-        <div
           style={{
             display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
             background: "#FFFFFF",
-            padding: "4px 12px 0",
-            gap: 16,
-            borderBottom: "1px solid #E5E7EB",
+            padding: "10px 16px 12px",
           }}
         >
-          {(["open", "claimed"] as const).map((tab) => {
-            const active = activeTab === tab;
-            return (
-              <button
-                key={tab}
-                type="button"
-                onClick={() => setActiveTab(tab)}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  borderBottom: `2px solid ${active ? BLUE : "transparent"}`,
-                  padding: "10px 4px",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: active ? BLUE : GREY,
-                  cursor: "pointer",
-                  textTransform: "capitalize",
-                }}
-              >
-                {tab}
-              </button>
-            );
-          })}
+          <div
+            style={{
+              display: "inline-flex",
+              background: "#E5E5EA",
+              borderRadius: 12,
+              padding: 3,
+            }}
+          >
+            {(["open", "claimed"] as const).map((tab) => {
+              const active = activeTab === tab;
+              return (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setActiveTab(tab)}
+                  style={{
+                    background: active ? "#fff" : "transparent",
+                    border: "none",
+                    borderRadius: 9,
+                    padding: "8px 18px",
+                    fontSize: 13.5,
+                    fontWeight: 600,
+                    color: active ? "#000" : "#6B6B6F",
+                    cursor: "pointer",
+                    textTransform: "capitalize",
+                    boxShadow: active ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
+                    ...POPPINS,
+                  }}
+                >
+                  {tab}
+                </button>
+              );
+            })}
+          </div>
+          <div style={{ fontSize: 13, fontWeight: 500, color: "#8A8A8E", ...POPPINS }}>
+            {activeTab === "open" ? `${jobs?.length ?? 0} open` : `${claimedJobs?.length ?? 0} claimed`}
+          </div>
         </div>
       </div>
 
