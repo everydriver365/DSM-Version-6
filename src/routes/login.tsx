@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef, type FormEvent } from "react";
-import { Eye, EyeOff, ScanFace } from "lucide-react";
+import { Eye, EyeOff, ScanFace, Check } from "lucide-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
@@ -219,12 +219,16 @@ function LoginPage() {
               ? onBiometric
               : () => setError("Sign in with your password first to enable Face ID")
           }
-          className="w-full max-w-[360px] h-12 rounded-lg text-[14px] font-medium flex items-center justify-center gap-2 mt-8"
+          className="w-full max-w-[360px] flex items-center justify-center gap-2 mt-8"
           style={{
             fontFamily: "Poppins, sans-serif",
-            background: enrolled ? "#1877D6" : "#1B2C4A",
-            color: enrolled ? "#FFFFFF" : "#8CA1C2",
-            border: enrolled ? "1.5px solid #1877D6" : "1.5px solid #22375A",
+            background: "rgba(255,255,255,0.1)",
+            border: "1px solid rgba(255,255,255,0.15)",
+            borderRadius: 14,
+            padding: 16,
+            color: "#fff",
+            fontSize: 15.5,
+            fontWeight: 600,
           }}
         >
           <ScanFace size={20} />
@@ -273,7 +277,7 @@ function LoginPage() {
         style={{
           borderRadius: "20px",
           padding: "32px",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+          boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
         }}
       >
         <h2
@@ -306,10 +310,13 @@ function LoginPage() {
               value={email}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               required
-              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1877D6]"
+              className="h-auto w-full text-[15px] text-[#0B1F3A] placeholder:text-[#9CA3AF] focus:outline-none"
               style={{
                 fontFamily: "Poppins, sans-serif",
-                border: "1.5px solid #CBD5E1",
+                background: "#F2F2F7",
+                border: "none",
+                borderRadius: 12,
+                padding: "14px 16px",
               }}
             />
           </div>
@@ -330,16 +337,20 @@ function LoginPage() {
               value={password}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
               required
-              className="h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0B1F3A] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1877D6]"
+              className="h-auto w-full pr-10 text-[15px] text-[#0B1F3A] placeholder:text-[#9CA3AF] focus:outline-none"
               style={{
                 fontFamily: "Poppins, sans-serif",
-                border: "1.5px solid #CBD5E1",
+                background: "#F2F2F7",
+                border: "none",
+                borderRadius: 12,
+                padding: "14px 16px",
               }}
             />
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-3 top-9 text-[#6B7280] hover:text-[#0B1F3A]"
+              className="absolute right-3 top-9 hover:text-[#0B1F3A]"
+              style={{ color: "#8A8A8E" }}
               aria-label={showPassword ? "Hide password" : "Show password"}
               tabIndex={-1}
             >
@@ -349,19 +360,32 @@ function LoginPage() {
 
           {/* Remember me + Forgot */}
           <div className="flex items-center justify-between">
-            <label className="flex items-center gap-2 text-[13px] text-[#6B7280] cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={remember}
-                onChange={(e) => {
-                  const on = e.target.checked;
-                  setRemember(on);
-                  persistRemember(email, on);
+            <button
+              type="button"
+              onClick={() => {
+                const on = !remember;
+                setRemember(on);
+                persistRemember(email, on);
+              }}
+              className="flex items-center gap-2 cursor-pointer select-none"
+              style={{ fontFamily: "Poppins, sans-serif", fontSize: 14, fontWeight: 500, color: "#000" }}
+            >
+              <div
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 6,
+                  background: remember ? "#1877D6" : "#F2F2F7",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
                 }}
-                className="h-4 w-4 rounded border-[#CBD5E1] accent-[#1877D6]"
-              />
+              >
+                {remember && <Check size={12} strokeWidth={3} color="#fff" />}
+              </div>
               Remember me
-            </label>
+            </button>
             <Link
               to="/forgotpassword"
               className="text-[13px] text-[#1877D6] hover:underline"
