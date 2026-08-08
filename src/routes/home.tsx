@@ -7641,7 +7641,7 @@ function HomePage() {
                       .slice(0, 2)
                       .map((r) => r.latest?.instructors?.name ?? null),
                   ]
-                    .filter((n): n is string => !!clean(n))
+                    .filter((n): n is string => typeof n === 'string' && n.trim().length > 0)
                     .map((name) => ({
                       type: 'chat' as const, name, image: null, colour: '#7C3AED',
                     }));
