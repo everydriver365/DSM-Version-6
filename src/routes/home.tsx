@@ -7660,7 +7660,7 @@ function HomePage() {
                     : [];
 
                   const avatarSources: AvatarSource[] = [
-                    ...unreadMsgs.slice(0, 2).map((m, i) => ({
+                    ...unreadMsgs.slice(0, 1).map((m, i) => ({
                       type: 'pupil' as const,
                       name: pupilName(m),
                       image: m.pupils?.profile_image_url || null,
@@ -7678,7 +7678,7 @@ function HomePage() {
                       image: null,
                       colour: '#FDF0E3',
                     }] : []),
-                    ...chatPeople.slice(0, 2),
+                    ...chatPeople.slice(0, 1),
                     ...alerts.slice(0, 1).map(() => ({
                       type: 'alert' as const,
                       name: null,
@@ -7687,8 +7687,8 @@ function HomePage() {
                     })),
                     ...quietPupils.slice(0, 1),
                   ];
-                  const extraAvatarCount = avatarSources.length > 5 ? avatarSources.length - 5 : 0;
-                  const visibleAvatars = avatarSources.slice(0, 5);
+                  const extraAvatarCount = avatarSources.length > 4 ? avatarSources.length - 4 : 0;
+                  const visibleAvatars = avatarSources.slice(0, 4);
 
                   const totalActive = alerts.length + totalUnreadChat + pupilReplies.length + adminUnread + unreadDMs;
                   const latestActivity = [
