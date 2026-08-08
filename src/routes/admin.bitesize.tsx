@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
+import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import {
   IconChevronLeft,
   IconPlus,
@@ -80,6 +81,7 @@ function AdminBitesizePage() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
+  const { confirm: askConfirm, confirmSheet } = useConfirmSheet();
 
   // Upload/edit form fields
   const [title, setTitle] = useState("");
@@ -218,7 +220,7 @@ function AdminBitesizePage() {
   }
 
   async function deleteVideo(video: any) {
-    if (!confirm(`Delete "${video.title}"? Cannot be undone.`)) return;
+    if (!(await askConfirm({ title: "Delete video", message: "Cannot be undone.", confirmLabel: "Delete" }))) return;
     await supabase
       .from("bitesize_videos")
       .update({ deleted_at: new Date().toISOString() })
@@ -387,6 +389,7 @@ function AdminBitesizePage() {
   }
 
   return (
+    <>
     <div style={{ minHeight: "100vh", background: "#DCE4F0", ...POPPINS }}>
       {/* HEADER */}
       <div
@@ -917,5 +920,7 @@ function AdminBitesizePage() {
         </div>
       )}
     </div>
+    {confirmSheet}
+    </>
   );
 }

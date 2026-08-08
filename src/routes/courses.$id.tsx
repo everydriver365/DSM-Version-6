@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { toast } from "sonner";
 import { Pencil, Archive, Phone, MessageSquare, X, Loader2, MapPin, Clock, Sunrise, Sun, Moon, GraduationCap, Settings } from "lucide-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -133,6 +134,7 @@ function CourseDetailPage() {
   // Edit-mode form state mirrors Course shape
   const [form, setForm] = useState<Course | null>(null);
   const [pickupError, setPickupError] = useState<string | null>(null);
+  const { confirm: askConfirm, confirmSheet } = useConfirmSheet();
 
   async function load() {
     setLoading(true);
@@ -208,7 +210,7 @@ function CourseDetailPage() {
   }
 
   async function archive() {
-    if (!confirm("Archive this course? It will be hidden from your active list.")) return;
+    if (!(await askConfirm({ title: "Archive course", message: "Archive this course? It will be hidden from your active list.", confirmLabel: "Archive", destructive: false }))) return;
     const { error: upErr } = await supabase
       .from("instructor_courses")
       .update({ status: "archived" })
@@ -957,6 +959,7 @@ function CourseDetailPage() {
           }}
         />
       )}
+      {confirmSheet}
     </div>
   );
 }

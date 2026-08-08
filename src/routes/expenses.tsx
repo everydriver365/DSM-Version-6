@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import {
   ArrowLeft,
   Plus,
@@ -131,6 +132,7 @@ function ExpensesPage() {
   const [editing, setEditing] = useState<Expense | null>(null);
   const [instructorId, setInstructorId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const { confirm: askConfirm, confirmSheet } = useConfirmSheet();
 
   useEffect(() => {
     void (async () => {
@@ -192,7 +194,7 @@ function ExpensesPage() {
   }, [filtered]);
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this expense?")) return;
+    if (!(await askConfirm({ title: "Delete expense", message: "Delete this expense?", confirmLabel: "Delete" }))) return;
     const { error } = await supabase.from("expenses").delete().eq("id", id);
     if (error) {
       toast.error("Delete failed");
@@ -385,6 +387,7 @@ function ExpensesPage() {
           if (instructorId) await refetch(instructorId);
         }}
       />
+      {confirmSheet}
     </div>
   );
 }

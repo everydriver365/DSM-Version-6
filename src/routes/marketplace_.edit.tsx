@@ -3,6 +3,7 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
+import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
 export const Route = createFileRoute("/marketplace_/edit")({
   component: MarketplaceEditPage,
@@ -45,6 +46,7 @@ function MarketplaceEditPage() {
   const [savingId, setSavingId] = useState<string | null>(null);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const { confirm: askConfirm, confirmSheet } = useConfirmSheet();
 
   useEffect(() => {
     void load();
@@ -140,7 +142,7 @@ function MarketplaceEditPage() {
       setTiles((prev) => prev.filter((_, i) => i !== idx));
       return;
     }
-    if (!confirm("Delete this tile?")) return;
+    if (!(await askConfirm({ title: "Delete listing", message: "Delete this tile?", confirmLabel: "Delete" }))) return;
     const { error } = await supabase.from("marketplace_tiles").delete().eq("id", tile.id);
     if (error) {
       toast.error("Delete failed");
@@ -195,6 +197,7 @@ function MarketplaceEditPage() {
   };
 
   return (
+    <>
     <div style={{ minHeight: "100vh", background: "#fff" }}>
       <InstructorTopBar
         firstName=""
@@ -446,5 +449,7 @@ function MarketplaceEditPage() {
         )}
       </div>
     </div>
+    {confirmSheet}
+    </>
   );
 }

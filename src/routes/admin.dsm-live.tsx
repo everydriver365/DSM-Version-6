@@ -4,6 +4,7 @@ import { Plus, X, Pencil, Trash2, Users as UsersIcon, Camera } from "lucide-reac
 import { supabase } from "@/lib/supabaseClient";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useAdminGate } from "./admin";
+import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
 const POPPINS: React.CSSProperties = { fontFamily: "Poppins, system-ui, sans-serif" };
 
@@ -175,6 +176,7 @@ function AdminDsmLive() {
   const [recurringUpdateChoice, setRecurringUpdateChoice] =
     useState<"single" | "following" | "all">("single");
   const [pendingPayload, setPendingPayload] = useState<any>(null);
+  const { confirm: askConfirm, confirmSheet } = useConfirmSheet();
 
   useEffect(() => {
     if (status === "denied") navigate({ to: "/home" });
@@ -515,7 +517,7 @@ function AdminDsmLive() {
   }
 
   async function _handleDelete(s: Session) {
-    if (!confirm(`Delete "${s.title}"?`)) return;
+    if (!(await askConfirm({ title: "Delete session", message: `Delete "${s.title}"?`, confirmLabel: "Delete" }))) return;
     try {
       await restFetch(`dsm_live_sessions?id=eq.${s.id}`, {
         method: "PATCH",
@@ -1238,6 +1240,7 @@ function AdminDsmLive() {
           </div>
         </div>
       )}
+      {confirmSheet}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { ClipboardCheck, Mic, MicOff, Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { supabase } from "../lib/supabaseClient";
+import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
 export const Route = createFileRoute("/mock-tests/$pupilId")({
   head: () => ({ meta: [{ title: "Mock tests — DSM by EveryDriver" }] }),
@@ -175,6 +176,7 @@ function MockTestsPage() {
   const [dangerous, setDangerous] = useState<string>("0");
   const [score, setScore] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
+  const { confirm: askConfirm, confirmSheet } = useConfirmSheet();
 
   const loadTests = async () => {
     const headers = await restHeaders();
@@ -293,7 +295,7 @@ function MockTestsPage() {
   };
 
   const deleteTest = async (id: string) => {
-    if (!confirm("Delete this mock test?")) return;
+    if (!(await askConfirm({ title: "Delete mock test", message: "Delete this mock test?", confirmLabel: "Delete" }))) return;
     try {
       const headers = await restHeaders();
       const res = await fetch(
@@ -314,6 +316,7 @@ function MockTestsPage() {
   };
 
   return (
+    <>
     <div className="min-h-screen" style={{ backgroundColor: "#FFFFFF", ...INTER }}>
       <InstructorTopBar
         firstName=""
@@ -667,5 +670,7 @@ function MockTestsPage() {
         </div>
       )}
     </div>
+    {confirmSheet}
+    </>
   );
 }

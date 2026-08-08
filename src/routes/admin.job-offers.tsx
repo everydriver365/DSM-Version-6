@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
+import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
 export const Route = createFileRoute("/admin/job-offers")({
   component: AdminJobOffers,
@@ -153,6 +154,7 @@ function AdminJobOffers() {
   const [enquiryQuery, setEnquiryQuery] = useState("");
   const [enquiryResults, setEnquiryResults] = useState<Enquiry[]>([]);
   const [linkedEnquiry, setLinkedEnquiry] = useState<Enquiry | null>(null);
+  const { confirm: askConfirm, confirmSheet } = useConfirmSheet();
 
   useEffect(() => {
     if (gate === "denied") navigate({ to: "/home" });
@@ -351,7 +353,7 @@ function AdminJobOffers() {
   };
 
   const cancelOffer = async (offer: JobOffer) => {
-    if (!confirm("Cancel this job offer?")) return;
+    if (!(await askConfirm({ title: "Cancel job offer", message: "Cancel this job offer?", confirmLabel: "Cancel offer" }))) return;
     const { error } = await supabase
       .from("job_offers")
       .update({ status: "cancelled" })
@@ -381,6 +383,7 @@ function AdminJobOffers() {
   }
 
   return (
+    <>
     <div style={{ background: "#DCE4F0", minHeight: "100vh", ...POPPINS, paddingBottom: 32 }}>
       {/* Header */}
       <div
@@ -903,6 +906,8 @@ function AdminJobOffers() {
         />
       )}
     </div>
+    {confirmSheet}
+    </>
   );
 }
 

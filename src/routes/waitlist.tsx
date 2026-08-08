@@ -4,6 +4,7 @@ import { Plus, X, Clock, Send, Check, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
+import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
 export const Route = createFileRoute("/waitlist")({
   head: () => ({
@@ -69,6 +70,7 @@ function WaitlistPage() {
   const [offers, setOffers] = useState<OfferRow[] | null>(null);
   const [addOpen, setAddOpen] = useState(false);
   const [offerOpen, setOfferOpen] = useState<WaitlistRow | null>(null);
+  const { confirm: askConfirm, confirmSheet } = useConfirmSheet();
 
   const pupilName = useMemo(() => {
     const m: Record<string, string> = {};
@@ -116,7 +118,7 @@ function WaitlistPage() {
   }, []);
 
   const removeWaiting = async (id: string) => {
-    if (!confirm("Remove from waiting list?")) return;
+    if (!(await askConfirm({ title: "Remove from waitlist", message: "Remove from waiting list?", confirmLabel: "Remove" }))) return;
     await supabase.from("lesson_waitlist").delete().eq("id", id);
     load();
   };
@@ -339,6 +341,7 @@ function WaitlistPage() {
           }}
         />
       )}
+      {confirmSheet}
     </div>
   );
 }
