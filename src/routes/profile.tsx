@@ -101,6 +101,7 @@ function TextField({
   icon,
   rightSlot,
   inputMode,
+  last = false,
 }: {
   label: string;
   value: string;
@@ -110,24 +111,22 @@ function TextField({
   icon?: React.ReactNode;
   rightSlot?: React.ReactNode;
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  last?: boolean;
 }) {
   return (
-    <div className="w-full">
-      <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+    <div className="flex items-center" style={{ padding: '13px 0', borderBottom: last ? 'none' : '1px solid #E4E8EF' }}>
+      <label className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0" style={POPPINS}>
         {label}
       </label>
-      <div
-        className="flex items-center gap-2 rounded-lg bg-white px-3"
-        style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", height: 40 }}
-      >
-        {icon ? <span className="flex-shrink-0">{icon}</span> : null}
+      <div className="flex-1 flex items-center gap-2">
+        {icon ? <span className="shrink-0">{icon}</span> : null}
         <input
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           type={type}
           inputMode={inputMode}
-          className="flex-1 bg-transparent text-[14px] text-[#0B1F3A] outline-none"
+          className="flex-1 bg-transparent text-[15px] text-[#0B1F3A] outline-none text-right border-none"
           style={POPPINS}
         />
         {rightSlot}
@@ -149,23 +148,48 @@ function AccordionCard({
 }) {
   const meta = SECTION_META.find((s) => s.key === sectionKey)!;
   const Icon = meta.icon;
+  const hex = meta.iconColor;
+  const iconBg = (() => {
+    if (hex.length === 7) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, 0.15)`;
+    }
+    return `${meta.iconColor}26`;
+  })();
   return (
     <div
       className="bg-white mb-3"
-      style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", borderRadius: 12 }}
+      style={{ borderRadius: 16, boxShadow: '0 1px 3px rgba(11,31,58,0.06)', border: 'none' }}
     >
       <button
         type="button"
         onClick={onToggle}
-        className="w-full flex items-center gap-3 px-4 py-3"
+        style={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          padding: '14px 16px',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          borderBottom: isOpen ? '1px solid #E4E8EF' : 'none',
+        }}
       >
-        <Icon size={18} color={meta.iconColor} />
-        <span className="flex-1 text-left text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+        <div
+          className="flex items-center justify-center rounded-lg"
+          style={{ width: 32, height: 32, backgroundColor: iconBg }}
+        >
+          <Icon size={20} color={meta.iconColor} />
+        </div>
+        <span className="flex-1 text-left text-[14px] font-semibold text-[#0B1F3A]" style={POPPINS}>
           {meta.label}
         </span>
         <ChevronDown
-          size={18}
-          color="#6B7280"
+          size={16}
+          color="#C7D0DC"
           style={{
             transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
             transition: "transform 200ms",
@@ -175,12 +199,7 @@ function AccordionCard({
       {isOpen && (
         <div
           className="px-4 pb-4"
-          style={{
-            borderTopWidth: "0.5px",
-            borderTopStyle: "solid",
-            borderTopColor: "#EEF2F7",
-            paddingTop: 16,
-          }}
+          style={{ paddingTop: 16 }}
         >
           {children}
         </div>
@@ -194,22 +213,24 @@ function SelectField({
   value,
   onChange,
   options,
+  last = false,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   options: { value: string; label: string }[];
+  last?: boolean;
 }) {
   return (
-    <div className="w-full">
-      <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+    <div className="flex items-center" style={{ padding: '13px 0', borderBottom: last ? 'none' : '1px solid #E4E8EF' }}>
+      <label className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0" style={POPPINS}>
         {label}
       </label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full h-10 rounded-lg bg-white px-3 text-[14px] text-[#0B1F3A] outline-none"
-        style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", ...POPPINS }}
+        className="flex-1 bg-transparent text-[15px] text-[#0B1F3A] outline-none text-right border-none"
+        style={POPPINS}
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>
@@ -762,7 +783,7 @@ function ProfilePage() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="flex flex-col">
             <TextField label="First name" value={firstName} onChange={setFirstName} placeholder="Jane" />
             <TextField label="Last name" value={lastName} onChange={setLastName} placeholder="Smith" />
             <TextField
@@ -771,7 +792,7 @@ function ProfilePage() {
               onChange={setEmail}
               placeholder="you@example.com"
               type="email"
-              icon={<Mail size={16} color="#6B7280" />}
+              icon={<Mail size={16} color="#6B7686" />}
               rightSlot={emailVerified ? <VerifiedPill /> : null}
             />
             <TextField
@@ -780,43 +801,42 @@ function ProfilePage() {
               onChange={setPhone}
               placeholder="07…"
               inputMode="tel"
-              icon={<Smartphone size={16} color="#6B7280" />}
+              icon={<Smartphone size={16} color="#6B7686" />}
               rightSlot={phoneVerified ? <VerifiedPill /> : null}
             />
-            <div className="sm:col-span-2">
-              <AddressLookup
-                initialPostcode={homePostcode}
-                initialAddress={address}
-                initialCity={homeCity}
-                onAddressFound={({ postcode, address: addr, city, lat, lng }) => {
-                  setAddress(addr);
-                  setHomePostcode(postcode);
-                  setHomeCity(city);
-                  setHomeLat(lat);
-                  setHomeLng(lng);
-                  setAddressSaved(false);
-                }}
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <SelectField
-                label="Timezone"
-                value={timezone}
-                onChange={setTimezone}
-                options={[
-                  { value: "Europe/London", label: "Europe/London" },
-                  { value: "Europe/Dublin", label: "Europe/Dublin" },
-                  { value: "Europe/Paris", label: "Europe/Paris" },
-                  { value: "UTC", label: "UTC" },
-                ]}
-              />
-            </div>
+            <SelectField
+              label="Timezone"
+              value={timezone}
+              onChange={setTimezone}
+              last
+              options={[
+                { value: "Europe/London", label: "Europe/London" },
+                { value: "Europe/Dublin", label: "Europe/Dublin" },
+                { value: "Europe/Paris", label: "Europe/Paris" },
+                { value: "UTC", label: "UTC" },
+              ]}
+            />
+          </div>
+          <div className="mt-3">
+            <AddressLookup
+              initialPostcode={homePostcode}
+              initialAddress={address}
+              initialCity={homeCity}
+              onAddressFound={({ postcode, address: addr, city, lat, lng }) => {
+                setAddress(addr);
+                setHomePostcode(postcode);
+                setHomeCity(city);
+                setHomeLat(lat);
+                setHomeLng(lng);
+                setAddressSaved(false);
+              }}
+            />
           </div>
         </AccordionCard>
 
         {/* Business */}
         <AccordionCard sectionKey="business" isOpen={expanded.business} onToggle={() => toggleSection("business")}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="flex flex-col">
             <TextField label="DVSA badge number" value={dvsaBadge} onChange={setDvsaBadge} placeholder="123456" />
             <SelectField
               label="DVSA grade"
@@ -838,8 +858,8 @@ function ProfilePage() {
               ]}
             />
             <TextField label="Trading name" value={tradingName} onChange={setTradingName} placeholder="e.g. Jane's Driving School" />
-            <div className="sm:col-span-2">
-              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+            <div className="flex items-start" style={{ padding: '13px 0' }}>
+              <label className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0 pt-1" style={POPPINS}>
                 Bio
               </label>
               <textarea
@@ -847,89 +867,83 @@ function ProfilePage() {
                 onChange={(e) => setBio(e.target.value)}
                 rows={3}
                 placeholder="Tell pupils a bit about yourself"
-                className="w-full rounded-lg px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-                style={{
-                  fontFamily: "Poppins, sans-serif",
-                  borderWidth: "0.5px",
-                  borderStyle: "solid",
-                  borderColor: "#EEF2F7",
-                  resize: "vertical",
-                }}
+                className="flex-1 bg-transparent text-[15px] text-[#0B1F3A] outline-none text-right border-none resize-none"
+                style={POPPINS}
               />
             </div>
+          </div>
 
-            <div className="sm:col-span-2">
-              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
-                DBS certificate
-              </label>
-              <input
-                ref={dbsRef}
-                type="file"
-                accept="application/pdf,image/*"
-                className="hidden"
-                onChange={onPickDbs}
-              />
-              <button
-                type="button"
-                onClick={() => dbsRef.current?.click()}
-                className="w-full flex items-center justify-between rounded-lg px-3 py-2 bg-white text-left"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
-              >
-                <span className="flex items-center gap-2 text-[14px]" style={POPPINS}>
-                  {dbsUploaded ? (
-                    <>
-                      <Check size={16} color="#0B1F3A" />
-                      <span className="text-[#0B1F3A] font-medium">Uploaded</span>
-                    </>
-                  ) : (
-                    <>
-                      <AlertTriangle size={16} color="#0B1F3A" />
-                      <span className="text-[#0B1F3A]">Upload DBS certificate</span>
-                    </>
-                  )}
-                </span>
-                <span className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
-                  {dbsUploaded ? "Replace" : "Upload"}
-                </span>
-              </button>
-            </div>
-
-            <div className="sm:col-span-2">
-              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
-                Service areas
-              </label>
-              <div
-                className="rounded-lg bg-white px-2 py-2 flex flex-wrap gap-2"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", minHeight: 44 }}
-              >
-                {coverageAreas.length === 0 ? (
-                  <span className="text-[13px] text-[#6B7280] px-1 py-1" style={POPPINS}>
-                    No coverage areas yet
-                  </span>
+          <div className="mt-4">
+            <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+              DBS certificate
+            </label>
+            <input
+              ref={dbsRef}
+              type="file"
+              accept="application/pdf,image/*"
+              className="hidden"
+              onChange={onPickDbs}
+            />
+            <button
+              type="button"
+              onClick={() => dbsRef.current?.click()}
+              className="w-full flex items-center justify-between rounded-lg px-3 py-2 bg-white text-left"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+            >
+              <span className="flex items-center gap-2 text-[14px]" style={POPPINS}>
+                {dbsUploaded ? (
+                  <>
+                    <Check size={16} color="#0B1F3A" />
+                    <span className="text-[#0B1F3A] font-medium">Uploaded</span>
+                  </>
                 ) : (
-                  coverageAreas.map((a) => {
-                    const label = (a.area_name && a.area_name.trim()) || "Area";
-                    const radius = a.radius_miles ?? 0;
-                    return (
-                      <span
-                        key={a.id}
-                        className="inline-flex items-center px-2 py-1 rounded-full text-[12px]"
-                        style={{ backgroundColor: "#E0ECFA", color: "#0B1F3A", ...POPPINS }}
-                      >
-                        {label} — {radius}mi
-                      </span>
-                    );
-                  })
+                  <>
+                    <AlertTriangle size={16} color="#0B1F3A" />
+                    <span className="text-[#0B1F3A]">Upload DBS certificate</span>
+                  </>
                 )}
-              </div>
-              <Link
-                to="/coverage-areas"
-                className="inline-block mt-2 text-[13px]"
-                style={{ color: "#1877D6", ...POPPINS }}
-              >
-                Manage coverage areas
-              </Link>
+              </span>
+              <span className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
+                {dbsUploaded ? "Replace" : "Upload"}
+              </span>
+            </button>
+          </div>
+
+          <div className="mt-4">
+            <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+              Service areas
+            </label>
+            <div
+              className="rounded-lg bg-white px-2 py-2 flex flex-wrap gap-2"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", minHeight: 44 }}
+            >
+              {coverageAreas.length === 0 ? (
+                <span className="text-[13px] text-[#6B7280] px-1 py-1" style={POPPINS}>
+                  No coverage areas yet
+                </span>
+              ) : (
+                coverageAreas.map((a) => {
+                  const label = (a.area_name && a.area_name.trim()) || "Area";
+                  const radius = a.radius_miles ?? 0;
+                  return (
+                    <span
+                      key={a.id}
+                      className="inline-flex items-center px-2 py-1 rounded-full text-[12px]"
+                      style={{ backgroundColor: "#E0ECFA", color: "#0B1F3A", ...POPPINS }}
+                    >
+                      {label} — {radius}mi
+                    </span>
+                  );
+                })
+              )}
             </div>
+            <Link
+              to="/coverage-areas"
+              className="inline-block mt-2 text-[13px]"
+              style={{ color: "#1877D6", ...POPPINS }}
+            >
+              Manage coverage areas
+            </Link>
           </div>
         </AccordionCard>
 
@@ -1002,7 +1016,7 @@ function ProfilePage() {
               </button>
             )}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="flex flex-col">
             <TextField label="Make" value={vehicleMake} onChange={setVehicleMake} placeholder="Vauxhall" />
             <TextField label="Model" value={vehicleModel} onChange={setVehicleModel} placeholder="Corsa" />
             <TextField label="Year" value={vehicleYear} onChange={setVehicleYear} placeholder="2022" type="number" inputMode="numeric" />
@@ -1017,28 +1031,24 @@ function ProfilePage() {
                 { value: "Both", label: "Both" },
               ]}
             />
-            <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 sm:col-span-2"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", height: 48 }}>
-              <span className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Dual controls fitted</span>
-              <Toggle checked={dualControls} onChange={setDualControls} />
+            <div className="flex items-center" style={{ padding: '13px 0', borderBottom: '1px solid #E4E8EF' }}>
+              <span className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0" style={POPPINS}>Dual controls fitted</span>
+              <div className="flex-1 flex justify-end">
+                <Toggle checked={dualControls} onChange={setDualControls} />
+              </div>
             </div>
-            <div className="sm:col-span-2">
-              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
-                Insurance expiry
-              </label>
-              <div
-                className="flex items-center gap-2 rounded-lg bg-white px-3"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", height: 40 }}
-              >
+            <div className="flex items-center" style={{ padding: '13px 0' }}>
+              <label className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0" style={POPPINS}>Insurance expiry</label>
+              <div className="flex-1 flex items-center gap-2 justify-end">
                 <input
                   type="date"
                   value={insuranceExpiry}
                   onChange={(e) => setInsuranceExpiry(e.target.value)}
-                  className="flex-1 bg-transparent text-[14px] text-[#0B1F3A] outline-none"
+                  className="bg-transparent text-[15px] text-[#0B1F3A] outline-none border-none text-right"
                   style={POPPINS}
                 />
                 {insuranceWarning ? (
-                  <span className="inline-flex items-center gap-1 text-[12px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                  <span className="inline-flex items-center gap-1 text-[12px] shrink-0" style={{ color: "#0B1F3A", ...POPPINS }}>
                     <AlertTriangle size={14} color="#0B1F3A" /> Expiring soon
                   </span>
                 ) : null}
@@ -1106,59 +1116,49 @@ function ProfilePage() {
 
         {/* Security */}
         <AccordionCard sectionKey="security" isOpen={expanded.security} onToggle={() => toggleSection("security")}>
-          <div className="flex flex-col gap-3">
-            <div
-              className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
-            >
-              <div>
-                <div className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Password</div>
-                <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
+          <div className="flex flex-col">
+            <div className="flex items-center" style={{ padding: '13px 0', borderBottom: '1px solid #E4E8EF' }}>
+              <span className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0" style={POPPINS}>Password</span>
+              <div className="flex-1 flex items-center justify-end gap-2">
+                <span className="text-[12px] text-[#6B7686]" style={POPPINS}>
                   Last changed: {passwordChangedAt ? new Date(passwordChangedAt).toLocaleDateString() : "—"}
-                </div>
+                </span>
+                <Link to="/resetpassword" className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
+                  Change
+                </Link>
               </div>
-              <Link to="/resetpassword" className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
-                Change password
-              </Link>
             </div>
 
-            <div
-              className="rounded-lg bg-white px-3 py-3 flex flex-col gap-3"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Two-factor authentication</span>
+            <div className="flex items-center" style={{ padding: '13px 0', borderBottom: '1px solid #E4E8EF' }}>
+              <span className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0" style={POPPINS}>Two-factor authentication</span>
+              <div className="flex-1 flex justify-end">
                 <Toggle checked={twoFactorEnabled} onChange={setTwoFactorEnabled} />
               </div>
-              {twoFactorEnabled && (
-                <SelectField
-                  label="Method"
-                  value={twoFactorMethod}
-                  onChange={setTwoFactorMethod}
-                  options={[
-                    { value: "Authenticator app", label: "Authenticator app" },
-                    { value: "SMS", label: "SMS" },
-                  ]}
-                />
-              )}
             </div>
+            {twoFactorEnabled && (
+              <SelectField
+                label="Method"
+                value={twoFactorMethod}
+                onChange={setTwoFactorMethod}
+                options={[
+                  { value: "Authenticator app", label: "Authenticator app" },
+                  { value: "SMS", label: "SMS" },
+                ]}
+              />
+            )}
 
-            <div
-              className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
-            >
-              <div>
-                <div className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Active sessions</div>
-                <div className="text-[12px] text-[#6B7280]" style={POPPINS}>{activeSessions} device signed in</div>
+            <div className="flex items-center" style={{ padding: '13px 0', borderBottom: '1px solid #E4E8EF' }}>
+              <span className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0" style={POPPINS}>Active sessions</span>
+              <div className="flex-1 flex items-center justify-end">
+                <span className="text-[14px] text-[#0B1F3A]" style={POPPINS}>{activeSessions} device signed in</span>
               </div>
             </div>
 
-            <div
-              className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
-            >
-              <span className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Login alerts</span>
-              <Toggle checked={loginAlerts} onChange={setLoginAlerts} />
+            <div className="flex items-center" style={{ padding: '13px 0' }}>
+              <span className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0" style={POPPINS}>Login alerts</span>
+              <div className="flex-1 flex justify-end">
+                <Toggle checked={loginAlerts} onChange={setLoginAlerts} />
+              </div>
             </div>
           </div>
         </AccordionCard>
