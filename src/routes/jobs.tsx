@@ -202,14 +202,14 @@ function JobCard({
 
   let badge: { label: string; color: string; bg: string } | null = null;
   if (variant === "claimed") {
-    badge = { label: "Accepted", color: "#1E9E5A", bg: "#E4F6EB" };
+    badge = { label: "Accepted", color: "#248A3D", bg: "#E6F7EC" };
   } else {
     if (!distanceKnown) {
-      if (hoursDaysGood) badge = { label: "Good schedule", color: GREEN, bg: "#E5F5EC" };
+      if (hoursDaysGood) badge = { label: "Good schedule", color: "#248A3D", bg: "#E6F7EC" };
       else if (hoursDays === "possible") badge = { label: "Possible schedule fit", color: AMBER, bg: "#FDF2E4" };
     } else {
       const distText = `${distanceMi!.toFixed(1)} mi`;
-      if (hoursDaysGood && inRadius) badge = { label: `Good match · ${distText}`, color: GREEN, bg: "#E5F5EC" };
+      if (hoursDaysGood && inRadius) badge = { label: `Good match · ${distText}`, color: "#248A3D", bg: "#E6F7EC" };
       else if (hoursDaysGood) badge = { label: `Fits schedule · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
       else if (inRadius) badge = { label: `Nearby · ${distText} away`, color: AMBER, bg: "#FDF2E4" };
     }
