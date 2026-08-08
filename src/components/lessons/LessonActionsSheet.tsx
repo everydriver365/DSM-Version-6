@@ -251,7 +251,17 @@ export function LessonActionsSheet({
   };
 
 
+  const openMaps = () => {
+    const dest = (lesson.pickup_location ?? lesson.pupils?.address ?? lesson.pupils?.postcode ?? "").trim();
+    if (!dest) {
+      toast("No pickup address set");
+      return;
+    }
+    window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dest)}`, "_blank");
+  };
+
   const sendSms = (body: string) => {
+
     if (!phone) {
       toast("No phone number");
       return;
