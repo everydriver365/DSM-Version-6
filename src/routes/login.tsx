@@ -349,7 +349,8 @@ function LoginPage() {
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-3 top-9 text-[#6B7280] hover:text-[#0B1F3A]"
+              className="absolute right-3 top-9 hover:text-[#0B1F3A]"
+              style={{ color: "#8A8A8E" }}
               aria-label={showPassword ? "Hide password" : "Show password"}
               tabIndex={-1}
             >
