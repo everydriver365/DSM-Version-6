@@ -18,6 +18,7 @@ import {
   Loader2,
 } from "lucide-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { DSMToggle } from "@/components/dsm/DSMToggle";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -220,37 +221,8 @@ function SelectField({
   );
 }
 
-function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <button
-      type="button"
-      onClick={() => onChange(!checked)}
-      className="relative inline-flex items-center"
-      style={{
-        width: 40,
-        height: 22,
-        borderRadius: 999,
-        backgroundColor: checked ? "#1877D6" : "#D1D5DB",
-        transition: "background-color 120ms",
-      }}
-      aria-pressed={checked}
-    >
-      <span
-        style={{
-          position: "absolute",
-          top: 2,
-          left: checked ? 20 : 2,
-          width: 18,
-          height: 18,
-          borderRadius: 999,
-          backgroundColor: "#FFFFFF",
-          transition: "left 120ms",
-          boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-        }}
-      />
-    </button>
-  );
-}
+const Toggle = DSMToggle;
+
 
 function VerifiedPill() {
   return (
@@ -1077,30 +1049,58 @@ function ProfilePage() {
 
         {/* Notifications */}
         <AccordionCard sectionKey="notifications" isOpen={expanded.notifications} onToggle={() => toggleSection("notifications")}>
-          <div className="overflow-x-auto">
-            <table className="w-full text-[13px]" style={POPPINS}>
-              <thead>
-                <tr className="text-left text-[#6B7280]">
-                  <th className="py-2 pr-2 font-medium">Event</th>
-                  <th className="py-2 px-2 font-medium text-center">Email</th>
-                  <th className="py-2 px-2 font-medium text-center">SMS</th>
-                  <th className="py-2 px-2 font-medium text-center">Push</th>
-                </tr>
-              </thead>
-              <tbody>
-                {NOTIF_EVENTS.map((ev) => {
-                  const pref = notifPrefs[ev.key] ?? { email: false, sms: false, push: false };
-                  return (
-                    <tr key={ev.key} className="border-t" style={{ borderColor: "#EEF2F7" }}>
-                      <td className="py-2 pr-2 text-[#0B1F3A]">{ev.label}</td>
-                      <td className="py-2 px-2"><div className="flex justify-center"><Toggle checked={pref.email} onChange={(v) => setNotif(ev.key, "email", v)} /></div></td>
-                      <td className="py-2 px-2"><div className="flex justify-center"><Toggle checked={pref.sms} onChange={(v) => setNotif(ev.key, "sms", v)} /></div></td>
-                      <td className="py-2 px-2"><div className="flex justify-center"><Toggle checked={pref.push} onChange={(v) => setNotif(ev.key, "push", v)} /></div></td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div className="flex flex-col gap-4" style={POPPINS}>
+            {NOTIF_EVENTS.map((ev) => {
+              const pref = notifPrefs[ev.key] ?? { email: false, sms: false, push: false };
+              const rows: Array<{ label: string; k: "email" | "sms" | "push" }> = [
+                { label: "Email", k: "email" },
+                { label: "SMS", k: "sms" },
+                { label: "Push", k: "push" },
+              ];
+              return (
+                <div key={ev.key}>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: "#9CA3AF",
+                      textTransform: "uppercase",
+                      letterSpacing: 0.4,
+                      padding: "0 4px 6px",
+                    }}
+                  >
+                    {ev.label}
+                  </div>
+                  <div
+                    style={{
+                      background: "#fff",
+                      borderRadius: 16,
+                      border: "1px solid #E4E8EF",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {rows.map((r, i) => (
+                      <div
+                        key={r.k}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: "12px 16px",
+                          borderTop: i === 0 ? "none" : "1px solid #E4E8EF",
+                        }}
+                      >
+                        <span style={{ fontSize: 15, color: "#0B1F3A" }}>{r.label}</span>
+                        <DSMToggle
+                          checked={pref[r.k]}
+                          onChange={(v: boolean) => setNotif(ev.key, r.k, v)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </AccordionCard>
 

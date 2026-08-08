@@ -1,3 +1,4 @@
+import { DSMToggle } from "@/components/dsm/DSMToggle";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -314,37 +315,7 @@ function AdminBitesizePage() {
       >
         {editVideo ? "Published" : "Publish immediately"}
       </div>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={published}
-        aria-label="Publish"
-        onClick={() => setPublished((v) => !v)}
-        style={{
-          width: 48,
-          height: 28,
-          borderRadius: 20,
-          border: "none",
-          cursor: "pointer",
-          background: published ? "#7C3AED" : "#E4E8EF",
-          position: "relative",
-          transition: "background 0.15s ease",
-          flexShrink: 0,
-        }}
-      >
-        <span
-          style={{
-            position: "absolute",
-            top: 3,
-            left: published ? 23 : 3,
-            width: 22,
-            height: 22,
-            borderRadius: "50%",
-            background: "#fff",
-            transition: "left 0.15s ease",
-          }}
-        />
-      </button>
+      <DSMToggle checked={published} onChange={(v) => setPublished(v)} />
     </div>
   );
 
