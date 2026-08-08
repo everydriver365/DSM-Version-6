@@ -77,7 +77,7 @@ export function PageHeader({
             fontWeight: 700,
             color: "#fff",
             margin: 0,
-            fontFamily: "Sora, Poppins, sans-serif",
+            fontFamily: "Poppins, sans-serif",
             lineHeight: 1.25,
             whiteSpace: "nowrap",
             overflow: "hidden",
