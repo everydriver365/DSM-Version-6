@@ -7872,6 +7872,20 @@ function HomePage() {
                                     </div>
                                   );
                                 }
+                                if (s.type === 'admin') {
+                                  return (
+                                    <div
+                                      key={key}
+                                      style={{
+                                        width: 28, height: 28, borderRadius: '50%', background: '#FDF0E3',
+                                        border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8,
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                                      }}
+                                    >
+                                      <Megaphone size={14} color="#92400E" />
+                                    </div>
+                                  );
+                                }
                                 return (
                                   <div
                                     key={key}
