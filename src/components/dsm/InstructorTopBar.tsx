@@ -110,6 +110,7 @@ export default function InstructorTopBar({
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
+              ...titleStyle,
             }}
           >
             {pageTitle ?? ""}
