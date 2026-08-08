@@ -1169,154 +1169,109 @@ function BitesizePage() {
 
       {/* EDIT SHEET */}
       {editVideo && isAdmin && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 300,
-            background: "#fff",
-            overflowY: "auto",
-          }}
+        <BottomSheet
+          title="Edit video"
+          onClose={() => setEditVideo(null)}
+          footer={
+            <>
+              <PrimaryButton
+                disabled={!editTitle.trim() || saving}
+                onClick={saveEdit}
+              >
+                {saving ? "Saving..." : "Save changes"}
+              </PrimaryButton>
+              <GhostButton
+                color="#6B7686"
+                bg="#F1F5F9"
+                onClick={() => setEditVideo(null)}
+              >
+                Cancel
+              </GhostButton>
+            </>
+          }
         >
-          {/* Header */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "14px 16px",
-              paddingTop: "calc(14px + env(safe-area-inset-top, 0px))",
-              borderBottom: "0.5px solid #E4E8EF",
-            }}
-          >
-            <div
-              style={{
-                fontSize: 16,
-                fontWeight: 700,
-                color: "#0B1F3A",
-                ...POPPINS,
-              }}
-            >
-              Edit video
-            </div>
-            <button
-              type="button"
-              aria-label="Close"
-              onClick={() => setEditVideo(null)}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                padding: 0,
-                display: "flex",
-                color: "#6B7686",
-              }}
-            >
-              <IconX size={20} />
-            </button>
-          </div>
-
-          {/* Form */}
-          <div
-            style={{
-              padding: 16,
-              display: "flex",
-              flexDirection: "column",
-              gap: 16,
-            }}
-          >
-            {/* Title */}
-            <div>
-              <label
+          <SheetGroup>
+            <SheetRow>
+              <div className="flex-1 min-w-0">
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: "#6B7686",
+                    marginBottom: 6,
+                  }}
+                >
+                  Title *
+                </div>
+                <input
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  style={{
+                    width: "100%",
+                    border: "none",
+                    outline: "none",
+                    background: "transparent",
+                    fontSize: 16,
+                    fontWeight: 600,
+                    color: "#0B1F3A",
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                />
+              </div>
+            </SheetRow>
+            <SheetRow>
+              <div className="flex-1 min-w-0">
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: "#6B7686",
+                    marginBottom: 6,
+                  }}
+                >
+                  Description
+                </div>
+                <textarea
+                  rows={3}
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  style={{
+                    width: "100%",
+                    border: "none",
+                    outline: "none",
+                    background: "transparent",
+                    fontSize: 16,
+                    fontWeight: 600,
+                    color: "#0B1F3A",
+                    fontFamily: "Poppins, sans-serif",
+                    resize: "none",
+                  }}
+                />
+              </div>
+            </SheetRow>
+            <SheetRow>
+              <div
                 style={{
-                  fontSize: 11,
-                  fontWeight: 600,
+                  fontSize: 13,
+                  fontWeight: 500,
                   color: "#6B7686",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  display: "block",
-                  marginBottom: 6,
-                  ...POPPINS,
-                }}
-              >
-                Title *
-              </label>
-              <input
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "10px 12px",
-                  border: "1px solid #E4E8EF",
-                  borderRadius: 8,
-                  fontSize: 14,
-                  ...POPPINS,
-                  color: "#0B1F3A",
-                }}
-              />
-            </div>
-
-            {/* Description */}
-            <div>
-              <label
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: "#6B7686",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  display: "block",
-                  marginBottom: 6,
-                  ...POPPINS,
-                }}
-              >
-                Description
-              </label>
-              <textarea
-                rows={3}
-                value={editDescription}
-                onChange={(e) => setEditDescription(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "10px 12px",
-                  border: "1px solid #E4E8EF",
-                  borderRadius: 8,
-                  fontSize: 14,
-                  ...POPPINS,
-                  color: "#0B1F3A",
-                  resize: "none",
-                }}
-              />
-            </div>
-
-            {/* Category */}
-            <div>
-              <label
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: "#6B7686",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  display: "block",
-                  marginBottom: 6,
-                  ...POPPINS,
                 }}
               >
                 Category
-              </label>
+              </div>
               <select
                 value={editCategory}
                 onChange={(e) => setEditCategory(e.target.value)}
                 style={{
-                  width: "100%",
-                  padding: "10px 12px",
-                  border: "1px solid #E4E8EF",
-                  borderRadius: 8,
-                  fontSize: 14,
-                  ...POPPINS,
+                  flex: 1,
+                  border: "none",
+                  outline: "none",
+                  background: "transparent",
+                  textAlign: "right",
+                  fontSize: 16,
+                  fontWeight: 600,
                   color: "#0B1F3A",
-                  background: "#fff",
+                  fontFamily: "Poppins, sans-serif",
                 }}
               >
                 {CATEGORIES.filter((c) => c !== "All").map((c) => (
@@ -1325,69 +1280,54 @@ function BitesizePage() {
                   </option>
                 ))}
               </select>
-            </div>
-
-            {/* Duration */}
-            <div>
-              <label
+            </SheetRow>
+            <SheetRow>
+              <div
                 style={{
-                  fontSize: 11,
-                  fontWeight: 600,
+                  fontSize: 13,
+                  fontWeight: 500,
                   color: "#6B7686",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  display: "block",
-                  marginBottom: 6,
-                  ...POPPINS,
                 }}
               >
                 Duration (minutes)
-              </label>
+              </div>
               <input
                 type="number"
                 value={editDuration}
                 onChange={(e) => setEditDuration(e.target.value)}
                 placeholder="e.g. 5"
                 style={{
-                  width: "100%",
-                  padding: "10px 12px",
-                  border: "1px solid #E4E8EF",
-                  borderRadius: 8,
-                  fontSize: 14,
-                  ...POPPINS,
+                  flex: 1,
+                  border: "none",
+                  outline: "none",
+                  background: "transparent",
+                  textAlign: "right",
+                  fontSize: 16,
+                  fontWeight: 600,
                   color: "#0B1F3A",
+                  fontFamily: "Poppins, sans-serif",
                 }}
               />
-            </div>
+            </SheetRow>
+          </SheetGroup>
 
-            {/* Publish toggle */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                background: "#F8FAFC",
-                border: "0.5px solid #E4E8EF",
-                borderRadius: 10,
-                padding: "12px 14px",
-              }}
-            >
-              <div>
+          <SheetGroup>
+            <SheetRow>
+              <div className="flex-1 min-w-0">
                 <div
                   style={{
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: 600,
                     color: "#0B1F3A",
-                    ...POPPINS,
                   }}
                 >
                   Published
                 </div>
                 <div
                   style={{
-                    fontSize: 12,
+                    fontSize: 13,
+                    fontWeight: 500,
                     color: "#6B7686",
-                    ...POPPINS,
                   }}
                 >
                   {editPublished
@@ -1395,76 +1335,41 @@ function BitesizePage() {
                     : "Saved as draft"}
                 </div>
               </div>
-              <div
+              <button
+                type="button"
+                role="switch"
+                aria-checked={editPublished}
+                aria-label="Published"
                 onClick={() => setEditPublished((v) => !v)}
                 style={{
-                  width: 44,
-                  height: 24,
-                  borderRadius: 12,
-                  background: editPublished ? "#7C3AED" : "#E4E8EF",
-                  position: "relative",
+                  width: 46,
+                  height: 28,
+                  borderRadius: 20,
+                  border: "none",
                   cursor: "pointer",
-                  transition: "background 0.2s",
+                  background: editPublished ? "#1877D6" : "#E4E8EF",
+                  position: "relative",
+                  transition: "background 0.15s ease",
                   flexShrink: 0,
                 }}
               >
-                <div
+                <span
                   style={{
                     position: "absolute",
-                    top: 2,
-                    left: editPublished ? 22 : 2,
-                    width: 20,
-                    height: 20,
+                    top: 3,
+                    left: editPublished ? 21 : 3,
+                    width: 22,
+                    height: 22,
                     borderRadius: "50%",
                     background: "#fff",
-                    transition: "left 0.2s",
+                    transition: "left 0.15s ease",
                     boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
                   }}
                 />
-              </div>
-            </div>
-
-            {/* Save button */}
-            <button
-              disabled={!editTitle.trim() || saving}
-              onClick={saveEdit}
-              style={{
-                width: "100%",
-                padding: 14,
-                background:
-                  saving || !editTitle.trim() ? "#9CA3AF" : "#7C3AED",
-                color: "#fff",
-                border: "none",
-                borderRadius: 10,
-                fontSize: 14,
-                fontWeight: 700,
-                cursor: saving ? "not-allowed" : "pointer",
-                ...POPPINS,
-              }}
-            >
-              {saving ? "Saving..." : "Save changes"}
-            </button>
-
-            {/* Cancel */}
-            <button
-              onClick={() => setEditVideo(null)}
-              style={{
-                width: "100%",
-                padding: 14,
-                background: "#F1F5F9",
-                color: "#6B7686",
-                border: "none",
-                borderRadius: 10,
-                fontSize: 14,
-                fontWeight: 600,
-                cursor: "pointer",
-                ...POPPINS,
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
+              </button>
+            </SheetRow>
+          </SheetGroup>
+        </BottomSheet>
       )}
     </div>
   );
