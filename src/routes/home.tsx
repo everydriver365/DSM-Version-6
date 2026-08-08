@@ -7607,11 +7607,17 @@ function HomePage() {
 
           return (
             <div style={SECTION_WRAPPER_STYLE}>
-              <div style={{ ...SECTION_HEADER_STYLE, padding: 0 }}>
+              <div style={SECTION_HEADER_STYLE}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
                   <span style={SECTION_TITLE_TEXT_STYLE}>Community</span>
                 </div>
+                <button
+                  onClick={() => navigate({ to: '/community' })}
+                  style={SECTION_LINK_STYLE}
+                >
+                  View All
+                </button>
               </div>
               <div style={{
                 margin: 0, background: '#FFFFFF', borderRadius: 16,
