@@ -565,10 +565,7 @@ function InstructorDMThread() {
       {/* COMPOSER */}
       <div
         style={{
-          position: "fixed",
-          left: 0,
-          right: 0,
-          bottom: 0,
+          flexShrink: 0,
           background: "#FFFFFF",
           borderTop: `0.5px solid ${BORDER}`,
           padding: "10px 16px",
