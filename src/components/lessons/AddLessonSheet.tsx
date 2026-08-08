@@ -772,6 +772,4 @@ export function AddLessonSheet({
   );
 }
 
-}
-
 export default AddLessonSheet;
