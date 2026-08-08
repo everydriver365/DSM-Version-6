@@ -526,7 +526,7 @@ const SECTION_LINK_STYLE: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
   gap: 2,
-  fontSize: 13,
+  fontSize: 11,
   fontWeight: 600,
   color: '#1877D6',
   background: 'none',
