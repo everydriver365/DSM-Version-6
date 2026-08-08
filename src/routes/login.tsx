@@ -310,10 +310,13 @@ function LoginPage() {
               value={email}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               required
-              className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1877D6]"
+              className="h-auto w-full text-[15px] text-[#0B1F3A] placeholder:text-[#9CA3AF] focus:outline-none"
               style={{
                 fontFamily: "Poppins, sans-serif",
-                border: "1.5px solid #CBD5E1",
+                background: "#F2F2F7",
+                border: "none",
+                borderRadius: 12,
+                padding: "14px 16px",
               }}
             />
           </div>
