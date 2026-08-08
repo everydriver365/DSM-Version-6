@@ -5102,30 +5102,13 @@ function HomePage() {
                       {/* Seam fade overlay */}
                       <div style={{
                         position: 'absolute', top: 0, left: 0, bottom: 0, width: '45%',
-                        background: 'linear-gradient(100deg, #F4F7FB 0%, rgba(244,247,251,0.5) 22%, rgba(244,247,251,0) 42%)',
+                        background: 'linear-gradient(100deg, #F4F7FB 0%, rgba(244,247,251,0.6) 18%, rgba(244,247,251,0) 38%)',
                         zIndex: 3,
                         pointerEvents: 'none',
                       }} />
 
-                      {/* Live location dot */}
-                      <div style={{
-                        position: 'absolute', top: 10, right: 10, zIndex: 4,
-                        background: 'rgba(255,255,255,0.55)',
-                        backdropFilter: 'blur(10px)',
-                        WebkitBackdropFilter: 'blur(10px)',
-                        border: '1px solid rgba(255,255,255,0.6)',
-                        borderRadius: '50%',
-                        width: 18, height: 18,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      }}>
-                        <span style={{
-                          width: 7, height: 7, borderRadius: '50%',
-                          background: isPaid ? '#15803D' : '#CC2229',
-                        }} />
-                      </div>
-
                       {/* ETA pill */}
+
                       {driveData && (
                         <div style={{
                           position: 'absolute', bottom: 10, right: 10, zIndex: 4,
@@ -5157,33 +5140,31 @@ function HomePage() {
                       clipPath: 'polygon(0 0, 100% 0, 88% 100%, 0 100%)',
                       position: 'relative',
                       zIndex: 2,
-                      padding: '14px 16px 14px 14px',
+                      padding: '14px 14px 14px 14px',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: 6,
+                      gap: 8,
                       justifyContent: 'space-between',
                     }}>
                       <div style={{
-                        background: 'rgba(11,31,58,0.08)',
+                        background: '#E5E8EE',
                         borderRadius: 20,
-                        padding: '3px 10px',
+                        padding: '4px 10px',
                         display: 'inline-flex',
                         alignSelf: 'flex-start',
                         alignItems: 'center', gap: 5,
-                        fontSize: 11, fontWeight: 600, color: '#0B1F3A',
+                        fontSize: 11, fontWeight: 700, color: '#0B1F3A',
                         fontFamily: 'Poppins, sans-serif',
                         whiteSpace: 'nowrap',
                       }}>
-                        <span style={{ fontWeight: 700 }}>
-                          {isLessonToday ? 'TODAY' : `${railDow} ${railDay} ${railMon}`}
-                        </span>
-                        <span>{startText}{endText ? ` - ${endText}` : ''}</span>
+                        <span>{isLessonToday ? 'TODAY' : `${railDow} ${railDay} ${railMon}`}</span>
+                        <span style={{ fontWeight: 600, color: '#4A5568' }}>{startText}{endText ? ` - ${endText}` : ''}</span>
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                        <PupilAvatar pupil={upcoming?.pupils ?? null} pupilId={upcoming?.pupil_id ?? null} size={36} />
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+                        <PupilAvatar pupil={upcoming?.pupils ?? null} pupilId={upcoming?.pupil_id ?? null} size={40} />
                         <div style={{
-                          fontSize: 14, fontWeight: 700, color: '#0B1F3A',
+                          fontSize: 16, fontWeight: 700, color: '#0B1F3A',
                           fontFamily: 'Poppins, sans-serif',
                           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                           minWidth: 0,
@@ -5198,8 +5179,8 @@ function HomePage() {
                           background: hPillBgFinal,
                           color: hPillFgFinal,
                           borderRadius: 20,
-                          padding: '3px 9px',
-                          fontSize: 11, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
+                          padding: '4px 10px',
+                          fontSize: 12, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
                           whiteSpace: 'nowrap',
                         }}>
                           {hLabelFinal}
@@ -5211,14 +5192,12 @@ function HomePage() {
                         onClick={(e) => { e.stopPropagation(); openMaps(); }}
                         style={{
                           alignSelf: 'flex-start',
-                          background: 'rgba(255,255,255,0.55)',
-                          backdropFilter: 'blur(10px)',
-                          WebkitBackdropFilter: 'blur(10px)',
+                          background: '#FFFFFF',
                           color: '#0B1F3A',
-                          padding: '4px 10px',
+                          padding: '5px 12px',
                           borderRadius: 20,
-                          border: '1px solid rgba(255,255,255,0.6)',
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                          border: '1px solid #E5E8EE',
+                          boxShadow: '0 1px 4px rgba(11,31,58,0.06)',
                           fontSize: 12,
                           fontWeight: 700,
                           cursor: 'pointer',
@@ -5230,6 +5209,7 @@ function HomePage() {
                         <span>Navigate</span>
                       </button>
                     </div>
+
                   </div>
                 );
               })()}
