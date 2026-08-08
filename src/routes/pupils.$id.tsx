@@ -2848,7 +2848,7 @@ function PupilDetailPage() {
                       />
                       <input
                         type="text"
-                        placeholder="IconSearch test centres..."
+                        placeholder="Search test centres..."
                         value={centreSearch}
                         onChange={(e) => setCentreSearch(e.target.value)}
                         style={{
@@ -3441,7 +3441,7 @@ function PupilDetailPage() {
                   <div style={{ height: "0.5px", background: "rgba(11,31,58,0.10)" }} />
                   <button style={rowBtn} onClick={sendPaymentLink} disabled={balance <= 0 || isPaid}>
                     <span style={{ display: "flex", alignItems: "center", gap: 10, opacity: (balance <= 0 || isPaid) ? 0.5 : 1 }}>
-                      <IconCreditCard stroke={1.5} size={16} color="#1877D6" /> IconSend payment link
+                      <IconCreditCard stroke={1.5} size={16} color="#1877D6" /> Send payment link
                     </span>
                     <IconChevronRight stroke={1.5} size={18} color="#64748B" />
                   </button>
@@ -3765,7 +3765,7 @@ function PupilDetailPage() {
           />
         )}
 
-      {/* IconCalendar colour + buffer */}
+      {/* Calendar colour + buffer */}
       {pupil && (
         <PupilRatesAndColour
           pupil={pupil}
@@ -4065,7 +4065,7 @@ function PupilDetailPage() {
                 <div className="mt-2 rounded-lg bg-white overflow-hidden" style={{ border: "0.5px solid #EEF2F7" }}>
                   <input
                     type="text"
-                    placeholder="IconSearch centres…"
+                    placeholder="Search centres…"
                     value={practicalQuickCentreSearch}
                     onChange={(e) => setPracticalQuickCentreSearch(e.target.value)}
                     className="h-10 w-full px-3 text-[13px] bg-white"
@@ -4250,7 +4250,7 @@ function PupilDetailPage() {
 
                 doc.save(`${pupilName} - ${milestone} - Certificate.pdf`);
                 setCertOpen(false);
-                toast.success("Certificate downloaded. IconSend to pupil manually.");
+                toast.success("Certificate downloaded. Send to pupil manually.");
               }}
               className="w-full inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white"
               style={{ height: 44, borderRadius: 8, backgroundColor: "#1877D6", ...POPPINS }}
@@ -4989,7 +4989,7 @@ function PupilExtras({
             >
               <IconMessage stroke={1.5} size={18} color="#1A52A0" />
               <div className="flex-1">
-                <div className="text-[14px] font-semibold">IconSend SMS</div>
+                <div className="text-[14px] font-semibold">Send SMS</div>
                 <div className="text-[12px]" style={{ color: "#6B7280" }}>
                   {pupil.phone ?? "No phone on file"}
                 </div>
@@ -5003,7 +5003,7 @@ function PupilExtras({
             >
               <IconMail stroke={1.5} size={18} color="#1A52A0" />
               <div className="flex-1">
-                <div className="text-[14px] font-semibold">IconSend email</div>
+                <div className="text-[14px] font-semibold">Send email</div>
                 <div className="text-[12px]" style={{ color: "#6B7280" }}>
                   {pupil.email ?? "No email on file"}
                 </div>
@@ -5220,11 +5220,11 @@ function PupilRatesAndColour({
       {/* Unavailable periods */}
       <UnavailablePeriodsCard pupilId={pupil.id} />
 
-      {/* IconCalendar colour */}
+      {/* Calendar colour */}
       <div style={EXTRAS_CARD}>
         <div className="flex items-center gap-2 mb-3">
           <IconPalette stroke={1.5} size={18} color="#1877D6" />
-          <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>IconCalendar colour</span>
+          <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Calendar colour</span>
         </div>
         <div className="grid grid-cols-8 gap-2">
           {CAL_COLOURS.map((c) => {
@@ -5479,7 +5479,7 @@ function PracticalEditor({
               <IconSearch stroke={1.5} size={16} color="#64748B" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
               <input
                 type="text"
-                placeholder="IconSearch test centres..."
+                placeholder="Search test centres..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 style={{ ...inputStyle, height: 36, padding: "0 12px 0 36px", fontSize: 13 }}
