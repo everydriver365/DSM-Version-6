@@ -3892,75 +3892,70 @@ function PupilDetailPage() {
               </button>
             }
           >
-            <div className="space-y-4 pb-2" style={POPPINS}>
-              <div
-                className="rounded-xl px-4 py-3 flex items-center justify-between"
-                style={{ background: "#fff", border: "1px solid #E3E7ED" }}
-              >
-                <div>
-                  <div className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "#8A93A3" }}>
-                    Current total
+            <div className="pb-2" style={POPPINS}>
+              <SheetGroup>
+                <SheetRow>
+                  <div className="flex-1">
+                    <div className="text-[13px] font-medium" style={{ color: "#6B7686" }}>
+                      Current total
+                    </div>
+                    <div className="text-[22px] font-bold mt-0.5" style={{ color: "#0B1F3A" }}>
+                      {currentTotal}
+                    </div>
                   </div>
-                  <div className="text-[22px] font-bold" style={{ color: "#0B1F3A" }}>
-                    {currentTotal}
+                  <ChevronRight size={18} color="#8A93A3" />
+                  <div className="flex-1 text-right">
+                    <div className="text-[13px] font-medium" style={{ color: "#6B7686" }}>
+                      New total
+                    </div>
+                    <div className="text-[22px] font-bold mt-0.5" style={{ color: "#1877D6" }}>
+                      {newTotal}
+                    </div>
                   </div>
-                </div>
-                <ChevronRight size={18} color="#8A93A3" />
-                <div className="text-right">
-                  <div className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "#8A93A3" }}>
-                    New total
-                  </div>
-                  <div className="text-[22px] font-bold" style={{ color: "#1877D6" }}>
-                    {newTotal}
-                  </div>
-                </div>
-              </div>
+                </SheetRow>
+              </SheetGroup>
 
-              <div>
-                <label className="block text-[12px] font-medium mb-1" style={{ color: "#6B7280", ...POPPINS }}>
-                  Adjustment (+/-)
-                </label>
-                <input
-                  type="number"
-                  inputMode="numeric"
-                  step="1"
-                  value={adjValue}
-                  onChange={(e) => setAdjValue(e.target.value)}
-                  className="w-full h-11 px-3 rounded-lg text-[16px]"
-                  style={{
-                    background: "#fff",
-                    border: "1px solid #E3E7ED",
-                    color: "#0B1F3A",
-                    ...POPPINS,
-                  }}
-                />
-                <div className="text-[12px] mt-2" style={{ color: delta === 0 ? "#8A93A3" : "#1877D6", ...POPPINS }}>
-                  {previewLabel}
-                </div>
-              </div>
+              <SheetGroup>
+                <SheetRow>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>
+                      Adjustment (+/-)
+                    </div>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      step="1"
+                      value={adjValue}
+                      onChange={(e) => setAdjValue(e.target.value)}
+                      className="w-full bg-transparent focus:outline-none text-[16px] font-semibold"
+                      style={{ color: "#0B1F3A", ...POPPINS }}
+                    />
+                  </div>
+                </SheetRow>
+                <SheetRow>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[13px] font-medium mb-1" style={{ color: "#6B7686" }}>
+                      Reason / note (optional)
+                    </div>
+                    <textarea
+                      value={adjNote}
+                      onChange={(e) => setAdjNote(e.target.value)}
+                      rows={3}
+                      placeholder="e.g. carried over from previous instructor"
+                      className="w-full bg-transparent focus:outline-none text-[16px] resize-none"
+                      style={{ color: "#0B1F3A", ...POPPINS }}
+                    />
+                  </div>
+                </SheetRow>
+              </SheetGroup>
 
-              <div>
-                <label className="block text-[12px] font-medium mb-1" style={{ color: "#6B7280", ...POPPINS }}>
-                  Reason / note (optional)
-                </label>
-                <textarea
-                  value={adjNote}
-                  onChange={(e) => setAdjNote(e.target.value)}
-                  rows={3}
-                  placeholder="e.g. carried over from previous instructor"
-                  className="w-full px-3 py-2 rounded-lg text-[16px] resize-none"
-                  style={{
-                    background: "#fff",
-                    border: "1px solid #E3E7ED",
-                    color: "#0B1F3A",
-                    ...POPPINS,
-                  }}
-                />
+              <div className="text-[13px] mt-1 mb-2 px-1 font-medium" style={{ color: delta === 0 ? "#8A93A3" : "#1877D6", ...POPPINS }}>
+                {previewLabel}
               </div>
 
               <div
-                className="text-[11px] leading-snug rounded-lg px-3 py-2"
-                style={{ background: "#F4F8FE", color: "#1A52A0", ...POPPINS }}
+                className="text-[12px] leading-snug rounded-2xl px-4 py-3"
+                style={{ background: "#F0F7FF", color: "#1A52A0", ...POPPINS }}
               >
                 Saves the adjustment and applies the same change to prepaid hours ({(Number(pupil.prepaid_hours ?? 0)).toFixed(1)}h → {(Number(pupil.prepaid_hours ?? 0) + deltaHours).toFixed(1)}h).
               </div>
@@ -4011,29 +4006,35 @@ function PupilDetailPage() {
             </button>
           }
         >
-          <div className="space-y-3 pb-2">
-            <div>
-              <label className="block mb-1 text-[12px] font-medium" style={{ color: "#6B7280", ...POPPINS }}>Date</label>
-              <input
-                type="date"
-                value={practicalQuickDate}
-                onChange={(e) => setPracticalQuickDate(e.target.value)}
-                className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
-                style={{ border: "0.5px solid #EEF2F7", color: "#0B1F3A", ...POPPINS }}
-              />
-            </div>
-            <div>
-              <label className="block mb-1 text-[12px] font-medium" style={{ color: "#6B7280", ...POPPINS }}>Time</label>
-              <input
-                type="time"
-                value={practicalQuickTime}
-                onChange={(e) => setPracticalQuickTime(e.target.value)}
-                className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
-                style={{ border: "0.5px solid #EEF2F7", color: "#0B1F3A", ...POPPINS }}
-              />
-            </div>
-            <div>
-              <label className="block mb-1 text-[12px] font-medium" style={{ color: "#6B7280", ...POPPINS }}>Test centre</label>
+          <div className="pb-2">
+            <SheetGroup>
+              <SheetRow>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>Date</div>
+                  <input
+                    type="date"
+                    value={practicalQuickDate}
+                    onChange={(e) => setPracticalQuickDate(e.target.value)}
+                    className="w-full bg-transparent focus:outline-none text-[16px] font-semibold"
+                    style={{ color: "#0B1F3A", ...POPPINS }}
+                  />
+                </div>
+              </SheetRow>
+              <SheetRow>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>Time</div>
+                  <input
+                    type="time"
+                    value={practicalQuickTime}
+                    onChange={(e) => setPracticalQuickTime(e.target.value)}
+                    className="w-full bg-transparent focus:outline-none text-[16px] font-semibold"
+                    style={{ color: "#0B1F3A", ...POPPINS }}
+                  />
+                </div>
+              </SheetRow>
+            </SheetGroup>
+            <div className="mb-2">
+              <label className="block mb-1 text-[13px] font-medium px-1" style={{ color: "#6B7686", ...POPPINS }}>Test centre</label>
               <button
                 type="button"
                 onClick={async () => {
@@ -5704,28 +5705,46 @@ function UnavailablePeriodsCard({ pupilId }: { pupilId: string }) {
       )}
 
       {open && (
-        <BottomSheetV2 title="Add unavailable period" onClose={() => setOpen(false)}>
-          <div className="flex flex-col gap-3 p-4">
-            <div>
-              <div className="text-[12px] mb-1" style={{ color: "#6B7280", ...POPPINS }}>Start date</div>
-              <input type="date" value={start} onChange={(e) => setStart(e.target.value)} style={inputStyle} />
-            </div>
-            <div>
-              <div className="text-[12px] mb-1" style={{ color: "#6B7280", ...POPPINS }}>End date</div>
-              <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} style={inputStyle} />
-            </div>
-            <div>
-              <div className="text-[12px] mb-1" style={{ color: "#6B7280", ...POPPINS }}>Reason</div>
-              <select value={reason} onChange={(e) => setReason(e.target.value)} style={inputStyle}>
-                {UNAVAIL_REASONS.map((r) => (
-                  <option key={r} value={r}>{r}</option>
-                ))}
-              </select>
-            </div>
-            <div className="flex justify-end gap-2 pt-2">
-              <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-              <Button variant="primary" onClick={save} disabled={saving}>{saving ? "Saving…" : "Save"}</Button>
-            </div>
+        <BottomSheetV2
+          title="Add unavailable period"
+          onClose={() => setOpen(false)}
+          footer={
+            <button
+              type="button"
+              disabled={saving}
+              onClick={save}
+              className="w-full h-[52px] rounded-2xl text-white text-[16px] font-bold"
+              style={{ background: "#1877D6", ...POPPINS, opacity: saving ? 0.6 : 1 }}
+            >
+              {saving ? "Saving…" : "Save"}
+            </button>
+          }
+        >
+          <div className="pb-2">
+            <SheetGroup>
+              <SheetRow>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>Start date</div>
+                  <input type="date" value={start} onChange={(e) => setStart(e.target.value)} className="w-full bg-transparent focus:outline-none text-[16px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }} />
+                </div>
+              </SheetRow>
+              <SheetRow>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>End date</div>
+                  <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} className="w-full bg-transparent focus:outline-none text-[16px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }} />
+                </div>
+              </SheetRow>
+              <SheetRow>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>Reason</div>
+                  <select value={reason} onChange={(e) => setReason(e.target.value)} className="w-full bg-transparent focus:outline-none text-[16px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                    {UNAVAIL_REASONS.map((r) => (
+                      <option key={r} value={r}>{r}</option>
+                    ))}
+                  </select>
+                </div>
+              </SheetRow>
+            </SheetGroup>
           </div>
         </BottomSheetV2>
       )}
