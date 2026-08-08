@@ -421,7 +421,7 @@ function InstructorDMThread() {
       </div>
 
       {/* MESSAGE LIST */}
-      <div style={{ flex: 1, padding: "16px 16px 80px" }}>
+      <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "16px 16px 12px" }}>
         {loading ? (
           <div
             style={{
