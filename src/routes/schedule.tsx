@@ -1558,8 +1558,8 @@ function SchedulePage() {
                                   tabIndex={clickable ? 0 : undefined}
                                   style={{
                                     background: isTestDay ? '#FFF3E0' : '#FFFFFF',
-                                    borderRadius: 16,
-                                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                                    borderRadius: 14,
+                                    boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                                     padding: "12px 14px",
                                     display: "flex",
                                     alignItems: (isBlockRow || isLessonRow) ? "stretch" : "center",
@@ -1572,7 +1572,7 @@ function SchedulePage() {
                                       ? '2px solid #FF8C00'
                                       : isMovingThis
                                         ? '2px solid #1877D6'
-                                        : undefined,
+                                        : '0.5px solid #E4E8EF',
                                     animation: isMovingThis ? 'movePulse 1.5s ease-in-out infinite' : undefined,
                                     ...POPPINS,
                                   }}
