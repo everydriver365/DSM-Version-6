@@ -505,6 +505,7 @@ function JobsPage() {
       <InstructorTopBar
         firstName=""
         pageTitle="Jobs"
+        titleStyle={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.5px", color: "#fff" }}
         onBack={() => navigate({ to: "/home" as never })}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
