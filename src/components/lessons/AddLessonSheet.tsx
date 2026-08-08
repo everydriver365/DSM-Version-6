@@ -66,24 +66,14 @@ interface Pupil {
   pricing_type: string | null;
 }
 
-const fieldBorder: React.CSSProperties = {
-  fontFamily: "Poppins, sans-serif",
-  borderWidth: "0.5px",
-  borderStyle: "solid",
-  borderColor: "#EEF2F7",
-};
-
-function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) {
+function ErrorText({ children }: { children: React.ReactNode }) {
   return (
-    <label
-      htmlFor={htmlFor}
-      className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-      style={{ fontFamily: "Poppins, sans-serif" }}
-    >
+    <p className="mb-3 -mt-1 text-[12px]" style={{ color: "#CC2229", fontFamily: "Poppins, sans-serif" }}>
       {children}
-    </label>
+    </p>
   );
 }
+
 
 function ErrorText({ children }: { children: React.ReactNode }) {
   return (
