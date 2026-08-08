@@ -1082,37 +1082,7 @@ function BitesizePage() {
                   </div>
                 )}
               </div>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={uploadPublished}
-                aria-label="Publish immediately"
-                onClick={() => setUploadPublished((v) => !v)}
-                style={{
-                  width: 48,
-                  height: 28,
-                  borderRadius: 20,
-                  border: "none",
-                  cursor: "pointer",
-                  background: uploadPublished ? "#7C3AED" : "#E4E8EF",
-                  position: "relative",
-                  transition: "background 0.15s ease",
-                  flexShrink: 0,
-                }}
-              >
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 3,
-                    left: uploadPublished ? 23 : 3,
-                    width: 22,
-                    height: 22,
-                    borderRadius: "50%",
-                    background: "#fff",
-                    transition: "left 0.15s ease",
-                  }}
-                />
-              </button>
+              <DSMToggle checked={uploadPublished} onChange={(v) => setUploadPublished(v)} />
             </div>
 
             <button
@@ -1311,38 +1281,7 @@ function BitesizePage() {
                     : "Saved as draft"}
                 </div>
               </div>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={editPublished}
-                aria-label="Published"
-                onClick={() => setEditPublished((v) => !v)}
-                style={{
-                  width: 46,
-                  height: 28,
-                  borderRadius: 20,
-                  border: "none",
-                  cursor: "pointer",
-                  background: editPublished ? "#1877D6" : "#E4E8EF",
-                  position: "relative",
-                  transition: "background 0.15s ease",
-                  flexShrink: 0,
-                }}
-              >
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 3,
-                    left: editPublished ? 21 : 3,
-                    width: 22,
-                    height: 22,
-                    borderRadius: "50%",
-                    background: "#fff",
-                    transition: "left 0.15s ease",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
-                  }}
-                />
-              </button>
+              <DSMToggle checked={editPublished} onChange={(v) => setEditPublished(v)} />
             </SheetRow>
           </SheetGroup>
         </BottomSheet>

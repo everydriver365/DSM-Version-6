@@ -1586,37 +1586,7 @@ function ShowcasePage() {
                     </div>
                   )}
                 </div>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={uploadPublished}
-                  aria-label="Publish immediately"
-                  onClick={() => setUploadPublished((v) => !v)}
-                  style={{
-                    width: 48,
-                    height: 28,
-                    borderRadius: 20,
-                    border: "none",
-                    cursor: "pointer",
-                    background: uploadPublished ? RED : "#E4E8EF",
-                    position: "relative",
-                    transition: "background 0.15s ease",
-                    flexShrink: 0,
-                  }}
-                >
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: 3,
-                      left: uploadPublished ? 23 : 3,
-                      width: 22,
-                      height: 22,
-                      borderRadius: "50%",
-                      background: "#fff",
-                      transition: "left 0.15s ease",
-                    }}
-                  />
-                </button>
+                <DSMToggle checked={uploadPublished} onChange={(v) => setUploadPublished(v)} />
               </div>
             )}
 
