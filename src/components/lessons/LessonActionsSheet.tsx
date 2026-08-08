@@ -2,13 +2,18 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { MapPin, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import {
   IconAlertCircle,
   IconAlertTriangle,
-  IconCalendar,
+  IconCheck,
+  IconChevronRight,
   IconClock,
+  IconCurrencyPound,
+  IconMap,
+  IconMapPin,
   IconNotes,
+  IconRepeat,
   IconTrash,
   IconX,
   IconCircleCheck,
@@ -19,11 +24,11 @@ import {
   IconNavigation,
   IconPencil,
   IconPhone,
-  IconCreditCard,
   IconRoute,
 } from "@tabler/icons-react";
 
-import { BottomSheet } from "@/components/dsm/BottomSheetV2";
+import { BottomSheet, SheetGroup, SheetRow } from "@/components/dsm/BottomSheetV2";
+
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { CancelSummaryPanel } from "@/components/lessons/CancelSummaryPanel";
@@ -84,6 +89,23 @@ export interface LessonActionsSheetProps {
 }
 
 const NAVY = "#0B1F3A";
+
+const rowLabel: React.CSSProperties = {
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 15,
+  fontWeight: 500,
+  color: NAVY,
+  minWidth: 0,
+};
+
+function Chevron() {
+  return (
+    <span style={{ marginLeft: "auto", display: "flex", flexShrink: 0 }}>
+      <IconChevronRight size={18} stroke={1.8} color="#C2CAD6" />
+    </span>
+  );
+}
+
 
 function formatLessonTime(time: string): string {
   const [hStr, mStr] = (time ?? "00:00").split(":");
@@ -227,7 +249,17 @@ export function LessonActionsSheet({
   };
 
 
+  const openMaps = () => {
+    const dest = (lesson.pickup_location ?? lesson.pupils?.address ?? lesson.pupils?.postcode ?? "").trim();
+    if (!dest) {
+      toast("No pickup address set");
+      return;
+    }
+    window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dest)}`, "_blank");
+  };
+
   const sendSms = (body: string) => {
+
     if (!phone) {
       toast("No phone number");
       return;
@@ -509,35 +541,12 @@ export function LessonActionsSheet({
 
   return (
     <>
-      <BottomSheet title="Lesson" onClose={onClose}>
-        {/* HEADER */}
-        <div style={{ padding: "0 4px 10px", borderBottom: "1px solid #E3E7ED", marginBottom: 12 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-            <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 14, fontWeight: 600, color: NAVY }}>
-              {pupilName}
-            </span>
-            {payPill && (
-              <span
-                style={{
-                  fontFamily: "Poppins, sans-serif",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: payPill.fg,
-                  background: payPill.bg,
-                  borderRadius: 999,
-                  padding: "3px 10px",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {payPill.label}
-              </span>
-            )}
-          </div>
-          <div style={{ marginTop: 3, fontFamily: "Poppins, sans-serif", fontSize: 11, color: "#8E8E93" }}>
-            {dateLabel} · {timeLabel}
-            {durationLabel}
-          </div>
-        </div>
+      <BottomSheet
+        title={pupilName}
+        subtitle={`${dateLabel} · ${timeLabel}${durationLabel}`}
+        onClose={onClose}
+      >
+
 
         {inlineView !== "main" && (
           <button type="button" onClick={() => setInlineView("main")} style={backLink}>
@@ -990,222 +999,31 @@ export function LessonActionsSheet({
 
         {inlineView === "main" && (
         <>
-        {/* Quick Actions */}
-
-        <div style={sectionLabel}>Quick Actions</div>
-
-        {/* Row 1 — Navigate / Message / Call */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-          <button
-            type="button"
-            style={{ ...gridBtn, background: goingActive ? "#FFF8E8" : "#FFFFFF" }}
-            onClick={() => {
-              setGoingActive(true);
-              sendSms(`Hi ${firstName}, on the way!`);
-            }}
-          >
-            <div style={iconBg("#E6F1FB")}>
-              <IconNavigation size={18} stroke={1.8} color={NAVY} />
-            </div>
-            <span style={pillLabel}>Navigate</span>
-          </button>
-          <button
-            type="button"
-            style={{ ...gridBtn, background: "#FFFFFF" }}
-            onClick={(e) => {
-              e.stopPropagation();
-              setMessageOpen(true);
-            }}
-          >
-            <div style={iconBg("#E6F1FB")}>
-              <IconMessage size={18} stroke={1.8} color={NAVY} />
-            </div>
-            <span style={pillLabel}>Message</span>
-          </button>
-          <button
-            type="button"
-            style={{ ...gridBtn, background: "#FFFFFF" }}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (!phone) {
-                toast("No phone number");
-                return;
-              }
-              window.location.href = `tel:${phone}`;
-            }}
-          >
-            <div style={iconBg("#E6F1FB")}>
-              <IconPhone size={18} stroke={1.8} color={NAVY} />
-            </div>
-            <span style={pillLabel}>Call</span>
-          </button>
-        </div>
-
-
-        {/* Row 2 — Track / Running late / I'm here */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 8 }}>
-          <button
-            type="button"
-            style={{ ...gridBtn, background: "#E6F1FB", border: "1px solid #CFE1F7", color: "#1877D6" }}
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate({
-                to: "/live",
-                search: { autostart: "1", lessonId: lesson.id, pupilId: lesson.pupil_id },
-              } as never);
-            }}
-          >
-            <div style={iconBg("#E6F1FB")}>
-              <IconRoute size={18} stroke={1.8} color="#1877D6" />
-            </div>
-            <span style={{ ...pillLabel, color: "#1877D6" }}>Track</span>
-          </button>
-          <button type="button" style={gridBtnDanger} onClick={onOpenLate}>
-            <div style={iconBg("#FCE9E9")}>
-              <IconClockExclamation size={18} stroke={1.8} color="#CC2229" />
-            </div>
-            <span style={{ ...pillLabel, color: "#CC2229" }}>Running late</span>
-          </button>
-          <button
-            type="button"
-            style={{ ...gridBtn, background: "#E8F5E9" }}
-            onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
-          >
-            <div style={iconBg("#E4F5EA")}>
-              <IconCurrentLocation size={18} stroke={1.8} color={NAVY} />
-            </div>
-            <span style={pillLabel}>I'm here</span>
-          </button>
-        </div>
-
-
-        {/* Row 3 — Payment / Prep / Edit */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 8 }}>
-          <button
-            type="button"
-            style={{ ...gridBtn, background: "#FFFFFF" }}
-            onClick={(e) => {
-              e.stopPropagation();
-              setUnifiedPayOpen(true);
-            }}
-          >
-            <div style={iconBg("#FEF3D7")}>
-              <IconCreditCard size={18} stroke={1.8} color={NAVY} />
-            </div>
-            <span style={pillLabel}>Payment</span>
-          </button>
-          <button type="button" style={{ ...gridBtn, background: "#FFFFFF" }} onClick={onOpenLesson}>
-            <div style={iconBg("#EFE7FB")}>
-              <IconClipboardList size={18} stroke={1.8} color={NAVY} />
-            </div>
-            <span style={pillLabel}>Prep</span>
-          </button>
-          <button
-            type="button"
-            style={{ ...gridBtn, background: "#FFFFFF" }}
-            onClick={() => navigate({ to: "/lessons/edit/$id", params: { id: lesson.id } })}
-          >
-            <div style={iconBg("#F1F4F8")}>
-              <IconPencil size={18} stroke={1.8} color={NAVY} />
-            </div>
-            <span style={pillLabel}>Edit</span>
-          </button>
-        </div>
-
-
-        {/* Row 4 — Reschedule / Duration / Add note */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 8 }}>
-          <button
-            type="button"
-            style={{ ...gridBtn, background: "#FFFFFF" }}
-            onClick={() => setInlineView("reschedule")}
-          >
-            <div style={iconBg("#E6F1FB")}>
-              <IconCalendar size={18} stroke={1.8} color={NAVY} />
-            </div>
-            <span style={pillLabel}>Reschedule</span>
-          </button>
-          <button
-            type="button"
-            style={{ ...gridBtn, background: "#FFFFFF" }}
-            onClick={() => setInlineView("duration")}
-          >
-            <div style={iconBg("#F1F4F8")}>
-              <IconClock size={18} stroke={1.8} color={NAVY} />
-            </div>
-            <span style={pillLabel}>Duration</span>
-          </button>
-          <button
-            type="button"
-            style={{ ...gridBtn, background: "#FFFFFF" }}
-            onClick={() => setInlineView("note")}
-          >
-            <div style={iconBg("#EFE7FB")}>
-              <IconNotes size={18} stroke={1.8} color={NAVY} />
-            </div>
-            <span style={pillLabel}>Add note</span>
-          </button>
-        </div>
-
-
-        {/* Row 5 — destructive */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 8 }}>
-          <button
-            type="button"
-            style={{ ...gridBtnDanger, fontWeight: 600 }}
-            onClick={() => setInlineView("cancel")}
-          >
-            <IconX size={18} stroke={1.8} color="#CC2229" />
-            <span style={{ ...pillLabel, fontWeight: 600, color: "#CC2229" }}>Cancel lesson</span>
-          </button>
-          <button
-            type="button"
-            style={{ ...gridBtnDanger, fontWeight: 600 }}
-            onClick={() => setInlineView("delete")}
-          >
-            <IconTrash size={18} stroke={1.8} color="#CC2229" />
-            <span style={{ ...pillLabel, fontWeight: 600, color: "#CC2229" }}>Delete lesson</span>
-          </button>
-        </div>
-
-
-        {/* End of lesson — full width */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onEol();
-          }}
-          style={{
-            marginTop: 8,
-            width: "100%",
-            background: "linear-gradient(135deg, #1C8A4B, #156B3A)",
-            border: "none",
-            borderRadius: 12,
-            padding: "12px 4px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
-            cursor: "pointer",
-            fontFamily: "Poppins, sans-serif",
-            fontSize: 13,
-            fontWeight: 600,
-            color: "#FFFFFF",
-            boxShadow: "0 4px 12px rgba(28,138,75,0.25)",
-          }}
-        >
-          <IconCircleCheck size={18} stroke={1.8} color="#FFFFFF" />
-          <span>End of lesson</span>
-        </button>
-
-
-        {/* Pickup */}
-        <div style={{ marginTop: 14 }}>
-          <div style={sectionLabel}>Pickup</div>
+        {/* SECTION 1 — Lesson info (read only) */}
+        <SheetGroup>
+          <SheetRow>
+            <IconClock size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>
+              {timeLabel}
+              {lesson.duration_minutes ? ` · ${lesson.duration_minutes} min` : ""}
+            </span>
+          </SheetRow>
+          <SheetRow>
+            <IconMapPin size={20} stroke={1.8} color="#6B7686" />
+            <span style={{ ...rowLabel, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {pickupValue || "No address set"}
+            </span>
+            <button
+              type="button"
+              onClick={() => setIsEditingPickup((v) => !v)}
+              aria-label="Edit pickup address"
+              style={{ marginLeft: "auto", background: "none", border: "none", padding: 0, cursor: "pointer", color: "#8E8E93", display: "flex" }}
+            >
+              <Pencil size={16} />
+            </button>
+          </SheetRow>
           {isEditingPickup ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 8, background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 6px rgba(11,31,58,0.04)", padding: "9px 12px" }}>
-              <MapPin size={14} color="#8E8E93" />
+            <SheetRow>
               <input
                 value={pickupValue}
                 onChange={(e) => {
@@ -1239,274 +1057,220 @@ export function LessonActionsSheet({
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  cursor: pickupState === "checking" ? "default" : "pointer",
                   flexShrink: 0,
                 }}
               >
                 <IconCircleCheck size={18} stroke={1.8} />
               </button>
-            </div>
-          ) : (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 8,
-                background: "#FFFFFF",
-                border: "1px solid #E2E8F0",
-                borderRadius: 12,
-                boxShadow: "0 2px 6px rgba(11,31,58,0.04)",
-                padding: "9px 12px",
-              }}
-            >
-
-              <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                <MapPin size={14} color="#8E8E93" />
-                <span
-                  style={{
-                    fontFamily: "Poppins, sans-serif",
-                    fontSize: 13,
-                    color: NAVY,
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {pickupValue || "No address set"}
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsEditingPickup(true)}
+            </SheetRow>
+          ) : null}
+          <SheetRow>
+            <IconCurrencyPound size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>
+              {balance > 0 ? `£${balance.toFixed(2)} due` : "Nothing outstanding"}
+            </span>
+            {payPill && (
+              <span
                 style={{
-                  background: "none",
-                  border: "none",
-                  padding: 0,
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  color: "#8E8E93",
-                  flexShrink: 0,
+                  marginLeft: "auto",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: payPill.fg,
+                  background: payPill.bg,
+                  borderRadius: 999,
+                  padding: "3px 10px",
+                  whiteSpace: "nowrap",
                 }}
-                aria-label="Edit pickup address"
               >
-                <Pencil size={16} />
-              </button>
-            </div>
-          )}
-          {statusLine(
-            verifiedForRef.current !== null && verifiedForRef.current === pickupValue.trim()
-              ? pickupState
-              : "idle",
-            "Verified via Google Maps",
-            "Couldn't verify — check for typos",
-          )}
-        </div>
+                {payPill.label}
+              </span>
+            )}
+          </SheetRow>
+        </SheetGroup>
+
+        {/* SECTION 2 — Primary actions */}
+        <SheetGroup>
+          <SheetRow
+            onClick={() => {
+              setMessageOpen(true);
+            }}
+          >
+            <IconMessage size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>Message pupil</span>
+            <Chevron />
+          </SheetRow>
+          <SheetRow
+            onClick={() => {
+              if (!phone) {
+                toast("No phone number");
+                return;
+              }
+              window.location.href = `tel:${phone}`;
+            }}
+          >
+            <IconPhone size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>Call pupil</span>
+            <Chevron />
+          </SheetRow>
+          <SheetRow onClick={openMaps}>
+            <IconMap size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>View route</span>
+            <Chevron />
+          </SheetRow>
+          <SheetRow onClick={() => setUnifiedPayOpen(true)}>
+            <IconCurrencyPound size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>Take payment</span>
+            <Chevron />
+          </SheetRow>
+          <SheetRow onClick={onEol}>
+            <IconCheck size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>Mark complete</span>
+            <Chevron />
+          </SheetRow>
+        </SheetGroup>
+
+        {/* SECTION 3 — Edit actions */}
+        <SheetGroup>
+          <SheetRow onClick={() => navigate({ to: "/lessons/edit/$id", params: { id: lesson.id } })}>
+            <IconPencil size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>Edit lesson</span>
+            <Chevron />
+          </SheetRow>
+          <SheetRow onClick={() => setInlineView("reschedule")}>
+            <IconRepeat size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>Reschedule</span>
+            <Chevron />
+          </SheetRow>
+          <SheetRow onClick={() => setInlineView("duration")}>
+            <IconClock size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>Change duration</span>
+            <Chevron />
+          </SheetRow>
+          <SheetRow onClick={() => setInlineView("note")}>
+            <IconNotes size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>Add note</span>
+            <Chevron />
+          </SheetRow>
+        </SheetGroup>
+
+        {/* SECTION 3b — On the road */}
+        <SheetGroup>
+          <SheetRow
+            onClick={() => {
+              setGoingActive(true);
+              sendSms(`Hi ${firstName}, on the way!`);
+            }}
+          >
+            <IconNavigation size={20} stroke={1.8} color={goingActive ? "#1877D6" : "#6B7686"} />
+            <span style={rowLabel}>Tell pupil I'm on the way</span>
+            <Chevron />
+          </SheetRow>
+          <SheetRow
+            onClick={() =>
+              navigate({
+                to: "/live",
+                search: { autostart: "1", lessonId: lesson.id, pupilId: lesson.pupil_id },
+              } as never)
+            }
+          >
+            <IconRoute size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>Track lesson live</span>
+            <Chevron />
+          </SheetRow>
+          <SheetRow onClick={onOpenLate}>
+            <IconClockExclamation size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>Running late</span>
+            <Chevron />
+          </SheetRow>
+          <SheetRow onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}>
+            <IconCurrentLocation size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>I'm here</span>
+            <Chevron />
+          </SheetRow>
+          <SheetRow onClick={onOpenLesson}>
+            <IconClipboardList size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>Lesson prep</span>
+            <Chevron />
+          </SheetRow>
+          <SheetRow
+            onClick={() =>
+              navigate({ to: "/pupils/$id", params: { id: lesson.pupil_id }, search: { lessonId: lesson.id } } as never)
+            }
+          >
+            <IconClipboardList size={20} stroke={1.8} color="#6B7686" />
+            <span style={rowLabel}>View full pupil profile</span>
+            <Chevron />
+          </SheetRow>
+        </SheetGroup>
 
         {/* what3words */}
-        <div style={{ marginTop: 14 }}>
-          <div style={sectionLabel}>what3words</div>
-          <div style={{ background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 6px rgba(11,31,58,0.04)", padding: "9px 12px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ color: "#E11F26", fontWeight: 700, fontFamily: "Poppins, sans-serif", fontSize: 15 }}>
-                ///
-              </span>
-              {[0, 1, 2].map((i) => (
-                <Fragment key={i}>
-                  {i > 0 && <span style={{ color: NAVY, fontWeight: 700 }}>.</span>}
-                  <input
-                    value={w3w[i]}
-                    onChange={(e) => {
-                      const next = [...w3w] as [string, string, string];
-                      next[i] = e.target.value.replace(/[^a-zA-Z\u00C0-\u024F-]/g, "");
-                      setW3w(next);
-                      setW3wState("idle");
-                    }}
-                    onBlur={verifyAndSaveW3w}
-                    placeholder={`word${i + 1}`}
-                    style={{ ...fieldInput, textAlign: "center", padding: "9px 6px" }}
-                  />
-                </Fragment>
-              ))}
-            </div>
-            {statusLine(w3wState, "Verified via what3words", "Not a recognised what3words address")}
-          </div>
-        </div>
+        <SheetGroup>
+          <SheetRow>
+            <span style={{ color: "#E11F26", fontWeight: 700, fontFamily: "Poppins, sans-serif", fontSize: 15 }}>
+              ///
+            </span>
+            {[0, 1, 2].map((i) => (
+              <Fragment key={i}>
+                {i > 0 && <span style={{ color: NAVY, fontWeight: 700 }}>.</span>}
+                <input
+                  value={w3w[i]}
+                  onChange={(e) => {
+                    const next = [...w3w] as [string, string, string];
+                    next[i] = e.target.value.replace(/[^a-zA-Z\u00C0-\u024F-]/g, "");
+                    setW3w(next);
+                    setW3wState("idle");
+                  }}
+                  onBlur={verifyAndSaveW3w}
+                  placeholder={`word${i + 1}`}
+                  style={{ ...fieldInput, textAlign: "center", padding: "9px 6px" }}
+                />
+              </Fragment>
+            ))}
+          </SheetRow>
+          {w3wState !== "idle" ? (
+            <SheetRow>{statusLine(w3wState, "Verified via what3words", "Not a recognised what3words address")}</SheetRow>
+          ) : null}
+        </SheetGroup>
 
-
-        {/* Account — driven by lessons.payment_status + lessons.amount_due */}
-        {(() => {
-          const status = (lesson.payment_status ?? "unpaid").toLowerCase();
-          const amount = balance;
-
-          let label: string | null = null;
-          let fg = NAVY;
-          let bg = "#FEF7E8";
-          let showActions = false;
-
-          if (status === "paid") {
-            label = "Paid ✓";
-            fg = "#1F6B2E";
-          } else if (status === "prepaid") {
-            label = "Prepaid ✓";
-            fg = "#1F6B2E";
-          } else if (status === "cancelled") {
-            label = "Cancelled";
-            fg = "#5A6270";
-            bg = "#E9EDF2";
-          } else if (status === "partial") {
-            label = `£${amount.toFixed(2)} remaining`;
-            fg = "#8A5A00";
-            showActions = true;
-          } else if (status === "unpaid" && amount > 0) {
-            label = `£${amount.toFixed(2)} due`;
-            fg = "#8A5A00";
-            showActions = true;
-          }
-
-          if (!label) return null;
-
-          return (
-            <div style={{ marginTop: 14 }}>
-              <div style={sectionLabel}>Account</div>
-              <div
-                style={{
-                  background: "#FFFFFF",
-                  borderRadius: 12,
-                  boxShadow: "0 2px 6px rgba(11,31,58,0.04)",
-                  padding: "11px 12px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 8,
-                  fontFamily: "Poppins, sans-serif",
-                }}
-              >
-                <span style={{ fontSize: 14, fontWeight: 600, color: fg }}>{label}</span>
-
-                {showActions && (
-                  <div style={{ display: "flex", gap: 6 }}>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        sendSms(
-                          `Hi ${firstName}, just a quick reminder that £${amount.toFixed(2)} is outstanding on your lesson account. Thanks!`,
-                        )
-                      }
-                      style={{
-                        background: "#FFFFFF",
-                        color: NAVY,
-                        fontSize: 11,
-                        fontWeight: 500,
-                        padding: "0 10px",
-                        height: 26,
-                        borderRadius: 8,
-                        border: "none",
-                        cursor: "pointer",
-                        fontFamily: "Poppins, sans-serif",
-                      }}
-                    >
-                      Chase
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => navigate({ to: "/payments" } as never)}
-                      style={{
-                        background: "#3B6D11",
-                        color: "#FFFFFF",
-                        fontSize: 11,
-                        fontWeight: 500,
-                        padding: "0 10px",
-                        height: 26,
-                        borderRadius: 8,
-                        border: "none",
-                        cursor: "pointer",
-                        fontFamily: "Poppins, sans-serif",
-                      }}
-                    >
-                      Mark paid
-                    </button>
+        {/* Last lesson */}
+        <SheetGroup>
+          <SheetRow>
+            <IconNotes size={20} stroke={1.8} color="#6B7686" />
+            {prev ? (
+              <div style={{ minWidth: 0 }}>
+                <div style={rowLabel}>
+                  {new Date(prev.lesson_date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })} ·{" "}
+                  <span style={{ textTransform: "capitalize", color: "#6B7686" }}>{prev.status}</span>
+                </div>
+                {prev.notes && (
+                  <div style={{ marginTop: 3, color: "#6B7686", fontSize: 12, fontFamily: "Poppins, sans-serif", lineHeight: 1.4 }}>
+                    {prev.notes}
                   </div>
                 )}
               </div>
-            </div>
-          );
-        })()}
+            ) : (
+              <span style={{ ...rowLabel, color: "#8A93A3" }}>No previous lesson</span>
+            )}
+          </SheetRow>
+        </SheetGroup>
 
-        {/* Last lesson */}
-        <div style={{ marginTop: 14 }}>
-          <div style={sectionLabel}>Last Lesson</div>
-          {prev ? (
-            <div
-              style={{ background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 6px rgba(11,31,58,0.04)", padding: "10px 12px", fontFamily: "Poppins, sans-serif" }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 12, fontWeight: 600, color: NAVY }}>
-                  {new Date(prev.lesson_date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
-                </span>
-                <span
-                  style={{
-                    fontSize: 9,
-                    fontWeight: 500,
-                    padding: "2px 8px",
-                    borderRadius: 999,
-                    color: "#5A6270",
-                    background: "#E9EDF2",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {prev.status}
-                </span>
-
-              </div>
-              {prev.notes && (
-                <div style={{ marginTop: 5, color: "#5A6270", fontSize: 11, lineHeight: 1.4 }}>{prev.notes}</div>
-              )}
-            </div>
-          ) : (
-            <div
-              style={{
-                background: "#FFFFFF",
-                borderRadius: 12,
-                boxShadow: "0 2px 6px rgba(11,31,58,0.04)",
-                padding: "10px 12px",
-                color: "#8A93A3",
-                fontFamily: "Poppins, sans-serif",
-                fontSize: 12,
-              }}
-            >
-              No previous lesson
-            </div>
-          )}
-
+        {/* SECTION 4 — Destructive */}
+        <div style={{ marginTop: 12 }}>
+          <SheetGroup>
+            <SheetRow onClick={() => setInlineView("cancel")}>
+              <IconX size={20} stroke={1.8} color="#CC2229" />
+              <span style={{ ...rowLabel, color: "#CC2229" }}>Cancel lesson</span>
+            </SheetRow>
+            <SheetRow onClick={() => setInlineView("delete")}>
+              <IconTrash size={20} stroke={1.8} color="#CC2229" />
+              <span style={{ ...rowLabel, color: "#CC2229" }}>Delete lesson</span>
+            </SheetRow>
+          </SheetGroup>
         </div>
-
-        {/* Full pupil profile link */}
-        <button
-          type="button"
-          onClick={() =>
-            navigate({ to: "/pupils/$id", params: { id: lesson.pupil_id }, search: { lessonId: lesson.id } } as never)
-          }
-          style={{
-            marginTop: 14,
-            marginBottom: 8,
-            width: "100%",
-            textAlign: "center",
-            background: "none",
-            border: "none",
-            color: "#1877D6",
-            fontFamily: "Poppins, sans-serif",
-            fontSize: 12,
-            fontWeight: 600,
-            cursor: "pointer",
-            padding: 0,
-          }}
-        >
-          View full pupil profile →
-        </button>
         </>
         )}
+
       </BottomSheet>
 
 
