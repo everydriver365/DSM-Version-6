@@ -72,6 +72,7 @@ export default function InstructorTopBar({
   onProfile,
   onBack,
   pageTitle,
+  titleStyle,
 }: InstructorTopBarProps) {
   const isSubpage = typeof onBack === "function";
   const navigate = useNavigate();
