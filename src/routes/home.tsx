@@ -5102,30 +5102,13 @@ function HomePage() {
                       {/* Seam fade overlay */}
                       <div style={{
                         position: 'absolute', top: 0, left: 0, bottom: 0, width: '45%',
-                        background: 'linear-gradient(100deg, #F4F7FB 0%, rgba(244,247,251,0.5) 22%, rgba(244,247,251,0) 42%)',
+                        background: 'linear-gradient(100deg, #F4F7FB 0%, rgba(244,247,251,0.6) 18%, rgba(244,247,251,0) 38%)',
                         zIndex: 3,
                         pointerEvents: 'none',
                       }} />
 
-                      {/* Live location dot */}
-                      <div style={{
-                        position: 'absolute', top: 10, right: 10, zIndex: 4,
-                        background: 'rgba(255,255,255,0.55)',
-                        backdropFilter: 'blur(10px)',
-                        WebkitBackdropFilter: 'blur(10px)',
-                        border: '1px solid rgba(255,255,255,0.6)',
-                        borderRadius: '50%',
-                        width: 18, height: 18,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      }}>
-                        <span style={{
-                          width: 7, height: 7, borderRadius: '50%',
-                          background: isPaid ? '#15803D' : '#CC2229',
-                        }} />
-                      </div>
-
                       {/* ETA pill */}
+
                       {driveData && (
                         <div style={{
                           position: 'absolute', bottom: 10, right: 10, zIndex: 4,
