@@ -197,6 +197,58 @@ function broadcastRead(delta: number) {
   setTimeout(() => fire(false), 1500);
 }
 
+/**
+ * Delivery state for the latest message in one of my bubble groups:
+ * sending (clock), sent (tick), read (double tick), failed (tap to retry).
+ */
+function DeliveryIndicator({
+  message,
+  onRetry,
+}: {
+  message: DMMessage;
+  onRetry: (m: DMMessage) => void;
+}) {
+  if (message.delivery === "sending") {
+    return (
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
+        <IconClock size={12} stroke={1.5} color="#B0B8C4" />
+        <span>Sending</span>
+      </span>
+    );
+  }
+
+  if (message.delivery === "failed") {
+    return (
+      <button
+        type="button"
+        onClick={() => onRetry(message)}
+        style={{
+          ...POPPINS,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 3,
+          background: "transparent",
+          border: "none",
+          padding: 0,
+          fontSize: 10,
+          fontWeight: 600,
+          color: "#CC2229",
+          cursor: "pointer",
+        }}
+      >
+        <IconAlertCircle size={12} stroke={1.5} color="#CC2229" />
+        Not sent · Tap to retry
+      </button>
+    );
+  }
+
+  return message.read_at ? (
+    <IconChecks size={13} stroke={1.5} color={BLUE} />
+  ) : (
+    <IconCheck size={13} stroke={1.5} color="#B0B8C4" />
+  );
+}
+
 
 
 function InstructorDMThread() {
