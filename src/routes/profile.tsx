@@ -1116,59 +1116,49 @@ function ProfilePage() {
 
         {/* Security */}
         <AccordionCard sectionKey="security" isOpen={expanded.security} onToggle={() => toggleSection("security")}>
-          <div className="flex flex-col gap-3">
-            <div
-              className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
-            >
-              <div>
-                <div className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Password</div>
-                <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
+          <div className="flex flex-col">
+            <div className="flex items-center" style={{ padding: '13px 0', borderBottom: '1px solid #E4E8EF' }}>
+              <span className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0" style={POPPINS}>Password</span>
+              <div className="flex-1 flex items-center justify-end gap-2">
+                <span className="text-[12px] text-[#6B7686]" style={POPPINS}>
                   Last changed: {passwordChangedAt ? new Date(passwordChangedAt).toLocaleDateString() : "—"}
-                </div>
+                </span>
+                <Link to="/resetpassword" className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
+                  Change
+                </Link>
               </div>
-              <Link to="/resetpassword" className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
-                Change password
-              </Link>
             </div>
 
-            <div
-              className="rounded-lg bg-white px-3 py-3 flex flex-col gap-3"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Two-factor authentication</span>
+            <div className="flex items-center" style={{ padding: '13px 0', borderBottom: '1px solid #E4E8EF' }}>
+              <span className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0" style={POPPINS}>Two-factor authentication</span>
+              <div className="flex-1 flex justify-end">
                 <Toggle checked={twoFactorEnabled} onChange={setTwoFactorEnabled} />
               </div>
-              {twoFactorEnabled && (
-                <SelectField
-                  label="Method"
-                  value={twoFactorMethod}
-                  onChange={setTwoFactorMethod}
-                  options={[
-                    { value: "Authenticator app", label: "Authenticator app" },
-                    { value: "SMS", label: "SMS" },
-                  ]}
-                />
-              )}
             </div>
+            {twoFactorEnabled && (
+              <SelectField
+                label="Method"
+                value={twoFactorMethod}
+                onChange={setTwoFactorMethod}
+                options={[
+                  { value: "Authenticator app", label: "Authenticator app" },
+                  { value: "SMS", label: "SMS" },
+                ]}
+              />
+            )}
 
-            <div
-              className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
-            >
-              <div>
-                <div className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Active sessions</div>
-                <div className="text-[12px] text-[#6B7280]" style={POPPINS}>{activeSessions} device signed in</div>
+            <div className="flex items-center" style={{ padding: '13px 0', borderBottom: '1px solid #E4E8EF' }}>
+              <span className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0" style={POPPINS}>Active sessions</span>
+              <div className="flex-1 flex items-center justify-end">
+                <span className="text-[14px] text-[#0B1F3A]" style={POPPINS}>{activeSessions} device signed in</span>
               </div>
             </div>
 
-            <div
-              className="flex items-center justify-between rounded-lg bg-white px-3 py-3"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
-            >
-              <span className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Login alerts</span>
-              <Toggle checked={loginAlerts} onChange={setLoginAlerts} />
+            <div className="flex items-center" style={{ padding: '13px 0' }}>
+              <span className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0" style={POPPINS}>Login alerts</span>
+              <div className="flex-1 flex justify-end">
+                <Toggle checked={loginAlerts} onChange={setLoginAlerts} />
+              </div>
             </div>
           </div>
         </AccordionCard>
