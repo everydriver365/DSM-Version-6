@@ -109,13 +109,11 @@ function NotesListPage() {
 
       <div className="px-4 mt-3 flex flex-col" style={{ gap: 8 }}>
         {loading ? null : notes.length === 0 ? (
-          <div
-            className="flex flex-col items-center justify-center"
-            style={{ padding: "64px 0", color: "#6B7280" }}
-          >
-            <FileText size={32} color="#9CA3AF" />
-            <div className="mt-2 text-[13px]">No notes yet</div>
-          </div>
+          <EmptyState
+            icon={<IconNotes size={32} color="#9CA3AF" stroke={1.5} />}
+            title="No notes yet"
+            subtitle="Tap + to add your first note"
+          />
         ) : (
           notes.map((n) => (
             <Card

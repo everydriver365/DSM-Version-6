@@ -319,7 +319,11 @@ function EndOfDayPage() {
       <Card>
         <Heading title="Today's lessons" />
         {lessons.length === 0 ? (
-          <div style={{ fontSize: 13, color: "#6B7280" }}>No lessons today.</div>
+          <EmptyState
+            icon={<IconCalendarOff size={32} color="#9CA3AF" stroke={1.5} />}
+            title="No lessons today"
+            subtitle="Enjoy your day off!"
+          />
         ) : (
           lessons.map((l) => (
             <button
@@ -363,7 +367,11 @@ function EndOfDayPage() {
       <Card>
         <Heading icon={<CalendarIcon size={16} color="#1877D6" />} title="Tomorrow" />
         {tomorrowLessons.length === 0 ? (
-          <div style={{ fontSize: 13, color: "#6B7280" }}>No lessons booked for tomorrow.</div>
+          <EmptyState
+            icon={<IconCalendarOff size={32} color="#9CA3AF" stroke={1.5} />}
+            title="Nothing tomorrow"
+            subtitle="No lessons booked yet"
+          />
         ) : (
           <>
             <div style={{ fontSize: 13, color: "#0B1F3A", marginBottom: 8 }}>

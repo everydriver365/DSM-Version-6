@@ -748,7 +748,11 @@ function LessonSeriesPage() {
               }}
             >
               {filteredPupils.length === 0 ? (
-                <div style={{ padding: 12, fontSize: 13, color: "#9CA3AF" }}>No pupils found</div>
+                <EmptyState
+                  icon={<IconUsers size={32} color="#9CA3AF" stroke={1.5} />}
+                  title="No pupils found"
+                  subtitle="Try a different search"
+                />
               ) : (
                 filteredPupils.slice(0, 20).map((p) => {
                   const c = p.calendar_colour || "#1A52A0";

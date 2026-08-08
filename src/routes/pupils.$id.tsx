@@ -3286,7 +3286,11 @@ function PupilDetailPage() {
                   ...POPPINS,
                 }}
               >
-                <span style={{ fontSize: 13, color: "#8A93A3", ...POPPINS }}>No lessons yet</span>
+                <EmptyState
+                  icon={<IconCar size={32} color="#9CA3AF" stroke={1.5} />}
+                  title="No lessons yet"
+                  subtitle="Lessons will appear here once scheduled"
+                />
               </div>
             );
           }
