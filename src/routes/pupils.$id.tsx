@@ -2408,79 +2408,66 @@ function PupilDetailPage() {
             </div>
           ) : viewingReport ? (
             <div style={{ padding: "4px 4px 16px", ...POPPINS }}>
-              <div style={{ marginBottom: 12 }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
-                  {viewingReport.started_at
-                    ? new Date(viewingReport.started_at).toLocaleString("en-GB", {
-                        weekday: "short", day: "2-digit", month: "short", year: "numeric",
-                        hour: "2-digit", minute: "2-digit",
-                      })
-                    : "—"}
-                </div>
-                <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
-                  {viewingReport.duration_minutes ? `${viewingReport.duration_minutes} min · ` : ""}
-                  Saved to {(pupil?.first_name || pupil?.name || "pupil")}'s record
-                </div>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 16 }}>
-                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Distance</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>{viewingReport.totalDistanceMiles.toFixed(2)} mi</div>
-                </div>
-                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Max speed</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 2 }}>{Math.round(viewingReport.overallMaxSpeed)} mph</div>
-                </div>
-                <div style={{ background: "#F8FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, padding: 10 }}>
-                  <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>Overspeed</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: viewingReport.overspeedCount > 0 ? "#CC2229" : "#0B1F3A", marginTop: 2 }}>{viewingReport.overspeedCount}</div>
-                </div>
-              </div>
+              <SheetGroup>
+                <SheetRow>
+                  <div className="flex-1 min-w-0">
+                    <div style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A" }}>
+                      {viewingReport.started_at
+                        ? new Date(viewingReport.started_at).toLocaleString("en-GB", {
+                            weekday: "short", day: "2-digit", month: "short", year: "numeric",
+                            hour: "2-digit", minute: "2-digit",
+                          })
+                        : "—"}
+                    </div>
+                    <div style={{ fontSize: 13, color: "#6B7686", marginTop: 2, fontWeight: 500 }}>
+                      {viewingReport.duration_minutes ? `${viewingReport.duration_minutes} min · ` : ""}
+                      Saved to {(pupil?.first_name || pupil?.name || "pupil")}'s record
+                    </div>
+                  </div>
+                </SheetRow>
+                <SheetRow>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0, width: "100%" }}>
+                    <div style={{ textAlign: "center", borderRight: "1px solid #E4E8EF" }}>
+                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Distance</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 3 }}>{viewingReport.totalDistanceMiles.toFixed(2)} mi</div>
+                    </div>
+                    <div style={{ textAlign: "center", borderRight: "1px solid #E4E8EF" }}>
+                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Max speed</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 3 }}>{Math.round(viewingReport.overallMaxSpeed)} mph</div>
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Overspeed</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: viewingReport.overspeedCount > 0 ? "#CC2229" : "#0B1F3A", marginTop: 3 }}>{viewingReport.overspeedCount}</div>
+                    </div>
+                  </div>
+                </SheetRow>
+              </SheetGroup>
 
               {viewingReport.overspeedEvents.length > 0 && (
                 <>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
-                    Overspeed alerts
+                  <div className="px-1 pb-2 pt-1 text-xs font-semibold tracking-wide" style={{ color: "#8A93A3" }}>
+                    OVERSPEED ALERTS
                   </div>
-                  <div style={{ border: "0.5px solid #FCA5A5", borderRadius: 12, overflow: "hidden", marginBottom: 16, background: "#FEF2F2" }}>
-                    {viewingReport.overspeedEvents.map((ev, i) => (
-                      <button
-                        key={ev.id}
-                        type="button"
-                        onClick={() => setSelectedOverspeedEvent(ev)}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          borderTop: i === 0 ? "none" : "0.5px solid #FECACA",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          gap: 8,
-                          background: "transparent",
-                          border: "none",
-                          borderBottom: i === viewingReport.overspeedEvents.length - 1 ? "none" : "0.5px solid #FECACA",
-                          cursor: "pointer",
-                          textAlign: "left",
-                        }}
-                      >
+                  <SheetGroup>
+                    {viewingReport.overspeedEvents.map((ev) => (
+                      <SheetRow key={ev.id} onClick={() => setSelectedOverspeedEvent(ev)}>
                         <div style={{ minWidth: 0, flex: 1 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          <div style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                             {ev.road_name ?? "Unknown road"}
                           </div>
-                          <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>
+                          <div style={{ fontSize: 13, color: "#6B7686", marginTop: 2, fontWeight: 500 }}>
                             {new Date(ev.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })} · {Math.round(ev.speed_mph)} mph in a {ev.speed_limit_mph} mph zone
                           </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <span style={{ fontSize: 11, fontWeight: 700, color: "#CC2229", whiteSpace: "nowrap" }}>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <span style={{ fontSize: 13, fontWeight: 700, color: "#CC2229", whiteSpace: "nowrap" }}>
                             +{Math.round(ev.excess_mph)} mph
                           </span>
-                          <ChevronRight size={14} color="#CC2229" />
+                          <ChevronRight size={16} color="#CC2229" />
                         </div>
-                      </button>
+                      </SheetRow>
                     ))}
-                  </div>
+                  </SheetGroup>
                 </>
               )}
 

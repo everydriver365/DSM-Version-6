@@ -1,12 +1,23 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Search } from "lucide-react";
+import { IconChevronRight, IconMessageCircle2 } from "@tabler/icons-react";
 import { toast } from "sonner";
 
-import { BottomSheet, PrimaryButton, SectionLabel } from "@/components/dsm/BottomSheetV2";
+import {
+  Avatar,
+  BottomSheet,
+  PrimaryButton,
+  SectionLabel,
+  SheetDivider,
+  SheetGroup,
+  SheetRadio,
+  SheetRow,
+  SheetSearchRow,
+} from "@/components/dsm/BottomSheetV2";
 import { supabase } from "@/lib/supabaseClient";
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
+const SUBTLE = "#6B7686";
 
 const QUICK_REPLIES: { label: string; body: string }[] = [
   { label: "Running late", body: "Hi {name}, I'm running about 10 minutes late for your lesson — see you shortly!" },
@@ -79,27 +90,6 @@ interface PupilRow {
   phone: string | null;
 }
 
-const cardStyle: React.CSSProperties = {
-  background: "#fff",
-  border: "1px solid #E2E8F0",
-  borderRadius: 14,
-  padding: 12,
-  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-  marginBottom: 10,
-};
-
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  height: 42,
-  borderRadius: 10,
-  border: "1px solid #E2E8F0",
-  background: "#fff",
-  padding: "0 12px",
-  fontSize: 14,
-  color: NAVY,
-  outline: "none",
-};
-
 export function SendMessageSheet({
   open,
   onClose,
@@ -117,6 +107,7 @@ export function SendMessageSheet({
   const [pendingPupil, setPendingPupil] = useState<PupilRow | null>(null);
   const [smsStatus, setSmsStatus] = useState<SmsStatus>("idle");
   const [draftStatus, setDraftStatus] = useState<DraftStatus>("empty");
+  const [activeTemplate, setActiveTemplate] = useState<string | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -132,6 +123,7 @@ export function SendMessageSheet({
     setPendingPupil(null);
     setSmsStatus("idle");
     setDraftStatus("empty");
+    setActiveTemplate(null);
     const t = setTimeout(() => textareaRef.current?.focus(), 120);
     return () => clearTimeout(t);
   }, [open, initialPupilId]);
@@ -241,9 +233,10 @@ export function SendMessageSheet({
     setPendingPupil(null);
   }
 
-  function insertTemplate(body: string) {
+  function insertTemplate(label: string, body: string) {
     const first = (pupilName || "").trim().split(" ")[0] || "there";
     const text = body.replace(/\{name\}/g, first);
+    setActiveTemplate(label);
     setMessageText((prev) => (prev.trim() ? `${prev.trim()} ${text}` : text));
     textareaRef.current?.focus();
   }
@@ -374,7 +367,7 @@ export function SendMessageSheet({
       footer={
         smsStatus === "idle" ? (
           <PrimaryButton onClick={handleSend} disabled={!canSend}>
-            {sending ? "Sending…" : "Send"}
+            {sending ? "Sending…" : "Send message"}
           </PrimaryButton>
         ) : (
           <PrimaryButton onClick={onClose}>Done</PrimaryButton>
@@ -383,80 +376,119 @@ export function SendMessageSheet({
     >
       {/* SMS delivery status */}
       {smsStatus !== "idle" && (
-        <div
-          style={{
-            ...cardStyle,
-            background: SMS_STATUS_UI[smsStatus].bg,
-            border: `1px solid ${SMS_STATUS_UI[smsStatus].border}`,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                background: SMS_STATUS_UI[smsStatus].fg,
-                flexShrink: 0,
-              }}
-            />
-            <div style={{ fontSize: 14, fontWeight: 700, color: SMS_STATUS_UI[smsStatus].fg }}>
-              SMS {SMS_STATUS_UI[smsStatus].label}
-            </div>
-          </div>
-          <div style={{ fontSize: 12, color: "#8A93A3", marginTop: 4 }}>
-            {SMS_STATUS_UI[smsStatus].detail}
-          </div>
-        </div>
-      )}
-
-      {/* Pupil selector */}
-      <div style={cardStyle}>
-        <SectionLabel>PUPIL</SectionLabel>
-        <button
-          type="button"
-          onClick={() => setPupilOpen((v) => !v)}
-          style={{ ...inputStyle, textAlign: "left", cursor: "pointer" }}
-        >
-          {pupilName || "Select pupil"}
-        </button>
-
-        {selectedPupil && (
-          <div style={{ marginTop: 6, fontSize: 12, color: "#8A93A3" }}>
-            {pupilPhone || "No phone number"}
-          </div>
-        )}
-
-        {pendingPupil && (
+        <SheetGroup>
           <div
             style={{
-              marginTop: 8,
-              padding: 10,
-              borderRadius: 10,
-              border: "1px solid #FCD9A8",
-              background: "#FFF7EC",
+              padding: "15px 16px",
+              background: SMS_STATUS_UI[smsStatus].bg,
             }}
           >
-            <div style={{ fontSize: 13, color: NAVY, fontWeight: 600 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: SMS_STATUS_UI[smsStatus].fg,
+                  flexShrink: 0,
+                }}
+              />
+              <div style={{ fontSize: 14, fontWeight: 700, color: SMS_STATUS_UI[smsStatus].fg }}>
+                SMS {SMS_STATUS_UI[smsStatus].label}
+              </div>
+            </div>
+            <div style={{ fontSize: 12, color: "#8A93A3", marginTop: 4 }}>
+              {SMS_STATUS_UI[smsStatus].detail}
+            </div>
+          </div>
+        </SheetGroup>
+      )}
+
+      {/* Section 1 — pupil selector */}
+      <SectionLabel>PUPIL</SectionLabel>
+      <SheetGroup>
+        <SheetRow onClick={() => setPupilOpen((v) => !v)}>
+          {selectedPupil ? (
+            <Avatar name={pupilName || "?"} id={pupils.findIndex((p) => p.id === pupilId)} />
+          ) : (
+            <div
+              className="flex items-center justify-center rounded-full shrink-0"
+              style={{ width: 40, height: 40, backgroundColor: "#EEF2F7", color: SUBTLE }}
+            >
+              <IconMessageCircle2 size={18} />
+            </div>
+          )}
+          <div className="flex-1 min-w-0 text-left">
+            <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>
+              {pupilName || "Select pupil"}
+            </div>
+            {selectedPupil && (
+              <div style={{ fontSize: 13, fontWeight: 500, color: SUBTLE }}>
+                {pupilPhone || "No phone number"}
+              </div>
+            )}
+          </div>
+          <IconChevronRight size={18} color={SUBTLE} style={{ flexShrink: 0 }} />
+        </SheetRow>
+
+        {pupilOpen && (
+          <>
+            <SheetDivider />
+            <SheetSearchRow value={pupilQuery} onChange={setPupilQuery} placeholder="Search pupils…" />
+            <SheetDivider />
+            <div style={{ maxHeight: 220, overflowY: "auto" }}>
+              {filteredPupils.length === 0 && (
+                <div style={{ padding: "15px 16px", fontSize: 13, color: SUBTLE }}>No pupils found</div>
+              )}
+              {filteredPupils.map((p, idx) => (
+                <div key={p.id}>
+                  {idx > 0 && <SheetDivider />}
+                  <SheetRow
+                    selected={p.id === pupilId}
+                    onClick={() => {
+                      if (pupilId && p.id !== pupilId && messageText.trim()) {
+                        setPendingPupil(p);
+                        return;
+                      }
+                      applyPupil(p);
+                    }}
+                  >
+                    <SheetRadio selected={p.id === pupilId} />
+                    <div className="flex-1 min-w-0 text-left">
+                      <div style={{ fontSize: 15, fontWeight: 600, color: NAVY }}>{p.name ?? "Pupil"}</div>
+                    </div>
+                    <div style={{ fontSize: 12, color: SUBTLE }}>{p.phone || "No phone"}</div>
+                  </SheetRow>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </SheetGroup>
+
+      {pendingPupil && (
+        <SheetGroup>
+          <div style={{ padding: "15px 16px" }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>
               Switch to {pendingPupil.name ?? "this pupil"}?
             </div>
-            <div style={{ fontSize: 12, color: "#8A93A3", marginTop: 2 }}>
+            <div style={{ fontSize: 13, color: SUBTLE, marginTop: 2 }}>
               Your unsent message will be kept, but it was written for{" "}
               {pupilName || "the current pupil"}.
             </div>
-            <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+            <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
               <button
                 type="button"
                 onClick={() => applyPupil(pendingPupil)}
                 style={{
                   flex: 1,
-                  height: 36,
-                  borderRadius: 10,
+                  height: 40,
+                  borderRadius: 12,
                   border: "none",
                   background: BLUE,
                   color: "#fff",
                   fontSize: 13,
-                  fontWeight: 600,
+                  fontWeight: 700,
                   cursor: "pointer",
                 }}
               >
@@ -467,13 +499,13 @@ export function SendMessageSheet({
                 onClick={() => setPendingPupil(null)}
                 style={{
                   flex: 1,
-                  height: 36,
-                  borderRadius: 10,
+                  height: 40,
+                  borderRadius: 12,
                   border: "1px solid #E2E8F0",
                   background: "#fff",
                   color: NAVY,
                   fontSize: 13,
-                  fontWeight: 600,
+                  fontWeight: 700,
                   cursor: "pointer",
                 }}
               >
@@ -481,187 +513,113 @@ export function SendMessageSheet({
               </button>
             </div>
           </div>
-        )}
+        </SheetGroup>
+      )}
 
-        {pupilOpen && (
-          <div style={{ marginTop: 8 }}>
-            <div style={{ position: "relative" }}>
-              <Search
-                size={14}
-                style={{ position: "absolute", left: 10, top: 14, color: "#8A93A3" }}
-              />
-              <input
-                autoFocus
-                value={pupilQuery}
-                onChange={(e) => setPupilQuery(e.target.value)}
-                placeholder="Search pupils…"
-                style={{ ...inputStyle, paddingLeft: 30 }}
-              />
-            </div>
-            <div style={{ maxHeight: 200, overflowY: "auto", marginTop: 6 }}>
-              {filteredPupils.length === 0 && (
-                <div style={{ padding: 10, fontSize: 13, color: "#8A93A3" }}>No pupils found</div>
-              )}
-              {filteredPupils.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => {
-                    if (pupilId && p.id !== pupilId && messageText.trim()) {
-                      setPendingPupil(p);
-                      return;
-                    }
-                    applyPupil(p);
-                  }}
-                  style={{
-                    display: "flex",
-                    width: "100%",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 8,
-                    padding: "10px 8px",
-                    background: p.id === pupilId ? "#EEF5FE" : "transparent",
-                    border: "none",
-                    borderRadius: 8,
-                    fontSize: 14,
-                    color: NAVY,
-                    textAlign: "left",
-                    cursor: "pointer",
-                  }}
-                >
-                  <span>{p.name ?? "Pupil"}</span>
-                  <span style={{ fontSize: 12, color: "#8A93A3" }}>
-                    {p.phone || "No phone"}
-                  </span>
-                </button>
-              ))}
-            </div>
+      {/* Section 2 — message templates */}
+      <SectionLabel>QUICK REPLIES</SectionLabel>
+      <SheetGroup>
+        {QUICK_REPLIES.map((t, idx) => (
+          <div key={t.label}>
+            {idx > 0 && <SheetDivider />}
+            <SheetRow selected={activeTemplate === t.label} onClick={() => insertTemplate(t.label, t.body)}>
+              <SheetRadio selected={activeTemplate === t.label} />
+              <div className="flex-1 min-w-0 text-left" style={{ fontSize: 15, fontWeight: 600, color: NAVY }}>
+                {t.label}
+              </div>
+            </SheetRow>
           </div>
-        )}
-      </div>
+        ))}
+      </SheetGroup>
 
-      {/* Message */}
-      <div style={cardStyle}>
+      {/* Section 3 — compose */}
+      <div className="flex items-center justify-between">
+        <SectionLabel>MESSAGE</SectionLabel>
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
-            gap: 8,
+            gap: 5,
+            fontSize: 11,
+            fontWeight: 700,
+            color: DRAFT_UI[draftStatus].color,
+            marginBottom: 8,
           }}
         >
-          <SectionLabel>MESSAGE</SectionLabel>
-          <div
+          <span
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 5,
-              fontSize: 11,
-              fontWeight: 700,
-              color: DRAFT_UI[draftStatus].color,
-              marginBottom: 6,
+              width: 6,
+              height: 6,
+              borderRadius: "50%",
+              background: DRAFT_UI[draftStatus].color,
             }}
-          >
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: DRAFT_UI[draftStatus].color,
-              }}
-            />
-            {DRAFT_UI[draftStatus].label}
-          </div>
-        </div>
-        <textarea
-          ref={textareaRef}
-          rows={4}
-          value={messageText}
-          onChange={(e) => setMessageText(e.target.value)}
-          placeholder="Type a message..."
-          style={{
-            width: "100%",
-            borderRadius: 10,
-            border: "1px solid #E2E8F0",
-            background: "#fff",
-            padding: 12,
-            fontSize: 14,
-            lineHeight: 1.45,
-            color: NAVY,
-            outline: "none",
-            resize: "none",
-          }}
-        />
-
-        {/* Quick replies */}
-        <div style={{ marginTop: 10 }}>
-          <SectionLabel>QUICK REPLIES</SectionLabel>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {QUICK_REPLIES.map((t) => (
-              <button
-                key={t.label}
-                type="button"
-                onClick={() => insertTemplate(t.body)}
-                style={{
-                  padding: "7px 11px",
-                  borderRadius: 999,
-                  border: "1px solid #CFE1F7",
-                  background: "#EEF5FE",
-                  color: BLUE,
-                  fontSize: 12,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
+          />
+          {DRAFT_UI[draftStatus].label}
         </div>
       </div>
-
+      <SheetGroup>
+        <div style={{ padding: "15px 16px" }}>
+          <textarea
+            ref={textareaRef}
+            rows={4}
+            value={messageText}
+            onChange={(e) => setMessageText(e.target.value)}
+            placeholder="Type a message..."
+            className="w-full focus:outline-none"
+            style={{
+              fontFamily: "Poppins, sans-serif",
+              fontSize: 15,
+              lineHeight: 1.45,
+              color: NAVY,
+              resize: "none",
+              background: "transparent",
+            }}
+          />
+        </div>
+      </SheetGroup>
 
       {/* SMS toggle */}
       {pupilPhone && (
-        <div style={{ ...cardStyle, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>Send via SMS</div>
-            <div style={{ fontSize: 12, color: "#8A93A3", marginTop: 2 }}>
-              Also texts {pupilPhone}
+        <SheetGroup>
+          <SheetRow>
+            <div className="flex-1 min-w-0">
+              <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>Send via SMS</div>
+              <div style={{ fontSize: 13, fontWeight: 500, color: SUBTLE, marginTop: 2 }}>
+                Also texts {pupilPhone}
+              </div>
             </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => setSendSms((v) => !v)}
-            aria-pressed={sendSms}
-            style={{
-              width: 48,
-              height: 28,
-              borderRadius: 999,
-              border: "none",
-              background: sendSms ? BLUE : "#CBD5E1",
-              position: "relative",
-              cursor: "pointer",
-              flexShrink: 0,
-              transition: "background 150ms ease",
-            }}
-          >
-            <span
+            <button
+              type="button"
+              onClick={() => setSendSms((v) => !v)}
+              aria-pressed={sendSms}
               style={{
-                position: "absolute",
-                top: 3,
-                left: sendSms ? 23 : 3,
-                width: 22,
-                height: 22,
-                borderRadius: "50%",
-                background: "#fff",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
-                transition: "left 150ms ease",
+                width: 48,
+                height: 28,
+                borderRadius: 999,
+                border: "none",
+                background: sendSms ? BLUE : "#CBD5E1",
+                position: "relative",
+                cursor: "pointer",
+                flexShrink: 0,
+                transition: "background 150ms ease",
               }}
-            />
-          </button>
-        </div>
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: 3,
+                  left: sendSms ? 23 : 3,
+                  width: 22,
+                  height: 22,
+                  borderRadius: "50%",
+                  background: "#fff",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                  transition: "left 150ms ease",
+                }}
+              />
+            </button>
+          </SheetRow>
+        </SheetGroup>
       )}
     </BottomSheet>
   );
