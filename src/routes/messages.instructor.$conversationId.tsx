@@ -4,6 +4,10 @@ import {
   IconChevronLeft,
   IconSend,
   IconPaperclip,
+  IconClock,
+  IconCheck,
+  IconChecks,
+  IconAlertCircle,
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 
