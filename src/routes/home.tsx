@@ -5020,14 +5020,14 @@ function HomePage() {
 
           return (
             <>
-              {/* Map header */}
+              {/* Diagonal two-panel hero */}
               {(() => {
                 const GMAPS_KEY = (import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined)
                   || "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
                 const staticMapUrl = (driveData?.destLat && driveData?.destLng && GMAPS_KEY)
                   ? `https://maps.googleapis.com/maps/api/staticmap`
                     + `?center=${driveData.destLat},${driveData.destLng}`
-                    + `&zoom=15&size=800x260&scale=2`
+                    + `&zoom=15&size=800x320&scale=2`
                     + `&markers=color:red%7C${driveData.destLat},${driveData.destLng}`
                     + `&style=feature:poi%7Cvisibility:off`
                     + `&style=feature:transit%7Cvisibility:off`
@@ -5035,160 +5035,210 @@ function HomePage() {
                   : null;
                 return (
                   <div
-                    onClick={() => openMaps()}
                     style={{
-                      height: 130,
-                      borderRadius: '14px 14px 0 0',
-                      overflow: 'hidden',
+                      display: 'flex',
                       position: 'relative',
-                      cursor: 'pointer',
-                      background: 'linear-gradient(135deg, #1e3a5f, #0B1F3A)',
+                      height: 160,
+                      overflow: 'hidden',
+                      borderRadius: '16px 16px 0 0',
                     }}
                   >
-                    {staticMapUrl ? (
-                      <>
-                        <img
-                          src={staticMapUrl}
-                          alt="Pickup location"
-                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                          onError={(e) => {
-                            const el = e.currentTarget;
-                            el.style.display = 'none';
-                            const fallback = el.nextElementSibling as HTMLElement | null;
-                            if (fallback) fallback.style.display = 'flex';
-                          }}
-                        />
-                        <div style={{
-                          display: 'none',
-                          position: 'absolute', inset: 0,
-                          background: 'linear-gradient(135deg, #1e3a5f, #0B1F3A)',
-                          alignItems: 'center', justifyContent: 'center',
-                          flexDirection: 'column', gap: 8,
-                        }}>
+                    {/* RIGHT PANEL — map */}
+                    <div style={{
+                      position: 'absolute', top: 0, right: 0, bottom: 0, left: '46%',
+                      overflow: 'hidden',
+                      zIndex: 1,
+                      background: 'linear-gradient(135deg, #1e3a5f, #0B1F3A)',
+                    }}>
+                      {staticMapUrl ? (
+                        <>
+                          <img
+                            src={staticMapUrl}
+                            alt="Pickup location"
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                            onError={(e) => {
+                              const el = e.currentTarget;
+                              el.style.display = 'none';
+                              const fallback = el.nextElementSibling as HTMLElement | null;
+                              if (fallback) fallback.style.display = 'flex';
+                            }}
+                          />
+                          <div style={{
+                            display: 'none',
+                            position: 'absolute', inset: 0,
+                            background: 'linear-gradient(135deg, #1e3a5f, #0B1F3A)',
+                            alignItems: 'center', justifyContent: 'center',
+                          }}>
+                            <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0, opacity: 0.15 }}>
+                              <defs>
+                                <pattern id="nlDots" width="20" height="20" patternUnits="userSpaceOnUse">
+                                  <circle cx="1" cy="1" r="1" fill="white" />
+                                </pattern>
+                              </defs>
+                              <rect width="100%" height="100%" fill="url(#nlDots)" />
+                            </svg>
+                            <MapPin size={30} color="#CC2229" fill="#CC2229" style={{ position: 'relative', zIndex: 1 }} />
+                          </div>
+                        </>
+                      ) : (
+                        <>
                           <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0, opacity: 0.15 }}>
                             <defs>
-                              <pattern id="nlDots" width="20" height="20" patternUnits="userSpaceOnUse">
+                              <pattern id="nlDotsFb" width="20" height="20" patternUnits="userSpaceOnUse">
                                 <circle cx="1" cy="1" r="1" fill="white" />
                               </pattern>
                             </defs>
-                            <rect width="100%" height="100%" fill="url(#nlDots)" />
+                            <rect width="100%" height="100%" fill="url(#nlDotsFb)" />
                           </svg>
-                          <MapPin size={36} color="#CC2229" fill="#CC2229" style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.4))', position: 'relative', zIndex: 1 }} />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0, opacity: 0.15 }}>
-                          <defs>
-                            <pattern id="nlDotsFb" width="20" height="20" patternUnits="userSpaceOnUse">
-                              <circle cx="1" cy="1" r="1" fill="white" />
-                            </pattern>
-                          </defs>
-                          <rect width="100%" height="100%" fill="url(#nlDotsFb)" />
-                        </svg>
-                        <div style={{
-                          position: 'absolute', inset: 0,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        }}>
-                          <MapPin size={36} color="#CC2229" fill="#CC2229" style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.4))' }} />
-                        </div>
-                      </>
-                    )}
+                          <div style={{
+                            position: 'absolute', inset: 0,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          }}>
+                            <MapPin size={30} color="#CC2229" fill="#CC2229" />
+                          </div>
+                        </>
+                      )}
 
-                    {/* Bottom gradient */}
-                    <div style={{
-                      position: 'absolute', bottom: 0, left: 0, right: 0, height: 50,
-                      background: 'linear-gradient(transparent, rgba(0,0,0,0.3))',
-                      pointerEvents: 'none',
-                    }} />
-
-                    {/* Date / time badge */}
-                    <div style={{
-                      position: 'absolute', top: 10, left: 10,
-                      background: 'rgba(255,255,255,0.55)',
-                      backdropFilter: 'blur(10px)',
-                      WebkitBackdropFilter: 'blur(10px)',
-                      border: '1px solid rgba(255,255,255,0.6)',
-                      borderRadius: 20, padding: '4px 10px',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                      display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5,
-                    }}>
-                      <span style={{ fontSize: 11, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
-                        {isLessonToday ? 'TODAY' : `${railDow} ${railDay} ${railMon}`}
-                      </span>
-                      <span style={{ width: 1, height: 12, background: 'rgba(11,31,58,0.12)' }} />
-                      <span style={{ fontSize: 11, fontWeight: 600, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
-                        {startText}{endText ? ` - ${endText}` : ''}
-                      </span>
-                      <span style={{ fontSize: 10, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>
-                        · {durationDecimal}h
-                      </span>
-                    </div>
-
-                    {/* Status dot */}
-                    <div style={{
-                      position: 'absolute', top: 10, right: 10,
-                      background: 'rgba(255,255,255,0.55)',
-                      backdropFilter: 'blur(10px)',
-                      WebkitBackdropFilter: 'blur(10px)',
-                      border: '1px solid rgba(255,255,255,0.6)',
-                      borderRadius: '50%',
-                      width: 18, height: 18,
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}>
-                      <span style={{
-                        width: 7, height: 7, borderRadius: '50%',
-                        background: isPaid ? '#15803D' : '#CC2229',
-                      }} />
-                    </div>
-
-                    {/* ETA badge */}
-                    {driveData && (
+                      {/* Seam fade overlay */}
                       <div style={{
-                        position: 'absolute', bottom: 10, left: 10,
+                        position: 'absolute', top: 0, left: 0, bottom: 0, width: '45%',
+                        background: 'linear-gradient(100deg, #F4F7FB 0%, rgba(244,247,251,0.5) 22%, rgba(244,247,251,0) 42%)',
+                        zIndex: 3,
+                        pointerEvents: 'none',
+                      }} />
+
+                      {/* Live location dot */}
+                      <div style={{
+                        position: 'absolute', top: 10, right: 10, zIndex: 4,
                         background: 'rgba(255,255,255,0.55)',
                         backdropFilter: 'blur(10px)',
                         WebkitBackdropFilter: 'blur(10px)',
                         border: '1px solid rgba(255,255,255,0.6)',
-                        borderRadius: 20, padding: '4px 10px',
+                        borderRadius: '50%',
+                        width: 18, height: 18,
                         boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                        display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
                       }}>
-                        <Car size={13} color="#1877D6" />
-                        <span style={{ fontSize: 12, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
-                          {driveData.durationMinutes} min
-                        </span>
-                        {driveData.distanceText && (
-                          <span style={{ fontSize: 11, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>
-                            · {driveData.distanceText}
-                          </span>
-                        )}
+                        <span style={{
+                          width: 7, height: 7, borderRadius: '50%',
+                          background: isPaid ? '#15803D' : '#CC2229',
+                        }} />
                       </div>
-                    )}
 
-                    {/* View route button */}
-                    <button
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); openMaps(); }}
-                      style={{
-                        position: 'absolute', bottom: 10, right: 10,
-                        background: 'rgba(255,255,255,0.85)',
-                        backdropFilter: 'blur(10px)',
-                        WebkitBackdropFilter: 'blur(10px)',
-                        border: '1px solid rgba(255,255,255,0.8)',
+                      {/* ETA pill */}
+                      {driveData && (
+                        <div style={{
+                          position: 'absolute', bottom: 10, right: 10, zIndex: 4,
+                          background: 'rgba(255,255,255,0.55)',
+                          backdropFilter: 'blur(10px)',
+                          WebkitBackdropFilter: 'blur(10px)',
+                          border: '1px solid rgba(255,255,255,0.6)',
+                          borderRadius: 20, padding: '4px 10px',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                          display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5,
+                        }}>
+                          <Car size={13} color="#1877D6" />
+                          <span style={{ fontSize: 12, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+                            {driveData.durationMinutes} min
+                          </span>
+                          {driveData.distanceText && (
+                            <span style={{ fontSize: 11, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>
+                              · {driveData.distanceText}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* LEFT PANEL */}
+                    <div style={{
+                      width: '68%',
+                      background: '#F4F7FB',
+                      clipPath: 'polygon(0 0, 100% 0, 88% 100%, 0 100%)',
+                      position: 'relative',
+                      zIndex: 2,
+                      padding: '14px 16px 14px 14px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 6,
+                      justifyContent: 'space-between',
+                    }}>
+                      <div style={{
+                        background: 'rgba(11,31,58,0.08)',
                         borderRadius: 20,
-                        padding: '5px 10px',
-                        display: 'flex', alignItems: 'center', gap: 4,
-                        cursor: 'pointer',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                      }}
-                    >
-                      <Navigation size={12} color="#1877D6" />
-                      <span style={{ fontSize: 10.5, fontWeight: 700, color: '#1877D6', fontFamily: 'Poppins, sans-serif' }}>
-                        View route & Navigate
-                      </span>
-                    </button>
+                        padding: '3px 10px',
+                        display: 'inline-flex',
+                        alignSelf: 'flex-start',
+                        alignItems: 'center', gap: 5,
+                        fontSize: 11, fontWeight: 600, color: '#0B1F3A',
+                        fontFamily: 'Poppins, sans-serif',
+                        whiteSpace: 'nowrap',
+                      }}>
+                        <span style={{ fontWeight: 700 }}>
+                          {isLessonToday ? 'TODAY' : `${railDow} ${railDay} ${railMon}`}
+                        </span>
+                        <span>{startText}{endText ? ` - ${endText}` : ''}</span>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                        <PupilAvatar pupil={upcoming?.pupils ?? null} pupilId={upcoming?.pupil_id ?? null} size={36} />
+                        <div style={{
+                          fontSize: 14, fontWeight: 700, color: '#0B1F3A',
+                          fontFamily: 'Poppins, sans-serif',
+                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                          minWidth: 0,
+                        }}>
+                          {pupilFullName || 'Pupil'}
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                        <span style={{
+                          display: 'inline-flex', alignItems: 'center', gap: 4,
+                          background: '#FFFFFF',
+                          color: '#0B1F3A',
+                          border: '1px solid #E4E8EF',
+                          borderRadius: 20,
+                          padding: '3px 9px',
+                          fontSize: 12, fontWeight: 800, fontFamily: 'Poppins, sans-serif',
+                          whiteSpace: 'nowrap',
+                        }}>
+                          <span style={{ fontWeight: 400 }}>Cost:</span> {priceText}
+                        </span>
+                        <span style={{
+                          display: 'inline-flex', alignItems: 'center',
+                          background: hPillBgFinal,
+                          color: hPillFgFinal,
+                          borderRadius: 20,
+                          padding: '3px 9px',
+                          fontSize: 11, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
+                          whiteSpace: 'nowrap',
+                        }}>
+                          {hLabelFinal}
+                        </span>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); openMaps(); }}
+                        style={{
+                          alignSelf: 'flex-start',
+                          background: '#0B1F3A',
+                          color: '#fff',
+                          padding: '8px 14px',
+                          borderRadius: 9,
+                          border: 'none',
+                          fontSize: 12,
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          fontFamily: 'Poppins, sans-serif',
+                          display: 'flex', alignItems: 'center', gap: 6,
+                        }}
+                      >
+                        <Navigation size={14} color="#FFFFFF" />
+                        Navigate
+                      </button>
+                    </div>
                   </div>
                 );
               })()}
