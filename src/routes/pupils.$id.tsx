@@ -15,7 +15,7 @@ import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
-import { BottomSheet as BottomSheetV2 } from "../components/dsm/BottomSheetV2";
+import { BottomSheet as BottomSheetV2, SheetGroup, SheetRow, SheetDivider } from "../components/dsm/BottomSheetV2";
 import { DL25Sheet } from "./tests";
 import { ChangeDateTimeSheet } from "../components/lessons/ChangeDateTimeSheet";
 import { CancelLessonSheet } from "../components/lessons/CancelLessonSheet";
