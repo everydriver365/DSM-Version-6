@@ -7674,7 +7674,8 @@ function HomePage() {
                   const topRoom = visibleRooms
                     .filter((r) => r?.latest?.created_at && r.id !== adminRoom?.id)
                     .sort((a, b) =>
-                      new Date(b.latest.created_at).getTime() - new Date(a.latest.created_at).getTime())[0];
+                      new Date(b.latest?.created_at ?? 0).getTime()
+                      - new Date(a.latest?.created_at ?? 0).getTime())[0];
                   const topDM = unreadDMs > 0 ? dmPreviews[0] : null;
 
                   type LatestItem = {
