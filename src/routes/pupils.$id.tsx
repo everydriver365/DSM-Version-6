@@ -3358,17 +3358,30 @@ function PupilDetailPage() {
             setPastLessons((prev) => prev ? prev.map((x) => x.id === focus!.id ? { ...x, payment_status: "paid" } : x) : prev);
           };
 
-          const pillBase: React.CSSProperties = {
-            background: '#FFFFFF', border: '0.5px solid #E2E6ED', borderRadius: 12,
-            padding: '10px 0', display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center', gap: 4, cursor: 'pointer',
-            fontFamily: 'Poppins, sans-serif', fontSize: 12, fontWeight: 500, color: '#0B1F3A',
+          const segBase: React.CSSProperties = {
+            flex: 1, borderRadius: 9, border: 'none', padding: '9px 0',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            cursor: 'pointer', fontFamily: 'Poppins, sans-serif', fontSize: 13, fontWeight: 600,
           };
           const rowBtn: React.CSSProperties = {
             width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
-            padding: "14px 16px", background: "none", border: "none", cursor: "pointer",
-            fontFamily: 'Poppins, sans-serif', fontSize: 14, color: "#0B1F3A", fontWeight: 500,
+            padding: "12px 16px", background: "none", border: "none", cursor: "pointer",
+            fontFamily: 'Poppins, sans-serif', fontSize: 15, color: "#0B1F3A", fontWeight: 500,
           };
+          const rowChip = (color: string): React.CSSProperties => ({
+            width: 30, height: 30, borderRadius: 8, background: "#F2F2F7",
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            color, flexShrink: 0,
+          });
+          const sectionTitle: React.CSSProperties = {
+            fontSize: 20, fontWeight: 800, color: "#000000", letterSpacing: "-0.4px",
+            margin: "16px 0 8px", fontFamily: 'Poppins, sans-serif',
+          };
+          const groupCard: React.CSSProperties = {
+            background: "#FFFFFF", borderRadius: 16,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.05)", overflow: "hidden",
+          };
+          const hairline = <div style={{ height: 1, background: "#E9E9EC" }} />;
 
           const label = isLive ? "In progress" : isPast ? "Last lesson" : "Next lesson";
           const labelColor = isLive ? "#137333" : isCancelled ? "#B42318" : "#1877D6";
