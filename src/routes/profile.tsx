@@ -149,23 +149,48 @@ function AccordionCard({
 }) {
   const meta = SECTION_META.find((s) => s.key === sectionKey)!;
   const Icon = meta.icon;
+  const hex = meta.iconColor;
+  const iconBg = (() => {
+    if (hex.length === 7) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, 0.15)`;
+    }
+    return `${meta.iconColor}26`;
+  })();
   return (
     <div
       className="bg-white mb-3"
-      style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", borderRadius: 12 }}
+      style={{ borderRadius: 16, boxShadow: '0 1px 3px rgba(11,31,58,0.06)', border: 'none' }}
     >
       <button
         type="button"
         onClick={onToggle}
-        className="w-full flex items-center gap-3 px-4 py-3"
+        style={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          padding: '14px 16px',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          borderBottom: isOpen ? '1px solid #E4E8EF' : 'none',
+        }}
       >
-        <Icon size={18} color={meta.iconColor} />
-        <span className="flex-1 text-left text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+        <div
+          className="flex items-center justify-center rounded-lg"
+          style={{ width: 32, height: 32, backgroundColor: iconBg }}
+        >
+          <Icon size={20} color={meta.iconColor} />
+        </div>
+        <span className="flex-1 text-left text-[14px] font-semibold text-[#0B1F3A]" style={POPPINS}>
           {meta.label}
         </span>
         <ChevronDown
-          size={18}
-          color="#6B7280"
+          size={16}
+          color="#C7D0DC"
           style={{
             transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
             transition: "transform 200ms",
@@ -175,12 +200,7 @@ function AccordionCard({
       {isOpen && (
         <div
           className="px-4 pb-4"
-          style={{
-            borderTopWidth: "0.5px",
-            borderTopStyle: "solid",
-            borderTopColor: "#EEF2F7",
-            paddingTop: 16,
-          }}
+          style={{ paddingTop: 16 }}
         >
           {children}
         </div>
