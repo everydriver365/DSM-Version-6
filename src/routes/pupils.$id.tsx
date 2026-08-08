@@ -3050,20 +3050,11 @@ function PupilDetailPage() {
 
         {/* Mock tests card */}
         {pupil && (
-          <div
-            className="mt-3"
-            style={{
-              background: "#FFFFFF",
-              borderRadius: 16,
-              border: "0.5px solid #E2E6ED",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-              overflow: "hidden",
-            }}
-          >
-            <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "0.5px solid #EEF2F7" }}>
-              <span className="flex items-center gap-2 text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <IconClipboardCheck stroke={1.5} size={16} color="#1877D6" /> Mock tests
-              </span>
+          <div className="mt-4">
+            <div className="flex items-center justify-between mb-2">
+              <h3 style={{ fontSize: 20, fontWeight: 800, color: "#000000", letterSpacing: "-0.4px", ...POPPINS }}>
+                Mock tests
+              </h3>
               <span
                 className="text-[11px] font-semibold text-white"
                 style={{ backgroundColor: "#1877D6", padding: "2px 8px", borderRadius: 999, ...POPPINS }}
@@ -3071,6 +3062,14 @@ function PupilDetailPage() {
                 {mockTests.length}
               </span>
             </div>
+            <div
+              style={{
+                background: "#FFFFFF",
+                borderRadius: 16,
+                boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                overflow: "hidden",
+              }}
+            >
             {mockTests.length === 0 ? (
               <div className="px-4 py-3 text-[13px]" style={{ color: "#9CA3AF", ...POPPINS }}>
                 No mock tests logged yet
