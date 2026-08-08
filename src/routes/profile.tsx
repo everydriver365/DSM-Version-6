@@ -836,7 +836,7 @@ function ProfilePage() {
 
         {/* Business */}
         <AccordionCard sectionKey="business" isOpen={expanded.business} onToggle={() => toggleSection("business")}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="flex flex-col">
             <TextField label="DVSA badge number" value={dvsaBadge} onChange={setDvsaBadge} placeholder="123456" />
             <SelectField
               label="DVSA grade"
@@ -858,8 +858,8 @@ function ProfilePage() {
               ]}
             />
             <TextField label="Trading name" value={tradingName} onChange={setTradingName} placeholder="e.g. Jane's Driving School" />
-            <div className="sm:col-span-2">
-              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+            <div className="flex items-start" style={{ padding: '13px 0' }}>
+              <label className="text-[13px] font-medium text-[#6B7686] w-[120px] shrink-0 pt-1" style={POPPINS}>
                 Bio
               </label>
               <textarea
@@ -867,89 +867,83 @@ function ProfilePage() {
                 onChange={(e) => setBio(e.target.value)}
                 rows={3}
                 placeholder="Tell pupils a bit about yourself"
-                className="w-full rounded-lg px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-                style={{
-                  fontFamily: "Poppins, sans-serif",
-                  borderWidth: "0.5px",
-                  borderStyle: "solid",
-                  borderColor: "#EEF2F7",
-                  resize: "vertical",
-                }}
+                className="flex-1 bg-transparent text-[15px] text-[#0B1F3A] outline-none text-right border-none resize-none"
+                style={POPPINS}
               />
             </div>
+          </div>
 
-            <div className="sm:col-span-2">
-              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
-                DBS certificate
-              </label>
-              <input
-                ref={dbsRef}
-                type="file"
-                accept="application/pdf,image/*"
-                className="hidden"
-                onChange={onPickDbs}
-              />
-              <button
-                type="button"
-                onClick={() => dbsRef.current?.click()}
-                className="w-full flex items-center justify-between rounded-lg px-3 py-2 bg-white text-left"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
-              >
-                <span className="flex items-center gap-2 text-[14px]" style={POPPINS}>
-                  {dbsUploaded ? (
-                    <>
-                      <Check size={16} color="#0B1F3A" />
-                      <span className="text-[#0B1F3A] font-medium">Uploaded</span>
-                    </>
-                  ) : (
-                    <>
-                      <AlertTriangle size={16} color="#0B1F3A" />
-                      <span className="text-[#0B1F3A]">Upload DBS certificate</span>
-                    </>
-                  )}
-                </span>
-                <span className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
-                  {dbsUploaded ? "Replace" : "Upload"}
-                </span>
-              </button>
-            </div>
-
-            <div className="sm:col-span-2">
-              <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
-                Service areas
-              </label>
-              <div
-                className="rounded-lg bg-white px-2 py-2 flex flex-wrap gap-2"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", minHeight: 44 }}
-              >
-                {coverageAreas.length === 0 ? (
-                  <span className="text-[13px] text-[#6B7280] px-1 py-1" style={POPPINS}>
-                    No coverage areas yet
-                  </span>
+          <div className="mt-4">
+            <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+              DBS certificate
+            </label>
+            <input
+              ref={dbsRef}
+              type="file"
+              accept="application/pdf,image/*"
+              className="hidden"
+              onChange={onPickDbs}
+            />
+            <button
+              type="button"
+              onClick={() => dbsRef.current?.click()}
+              className="w-full flex items-center justify-between rounded-lg px-3 py-2 bg-white text-left"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+            >
+              <span className="flex items-center gap-2 text-[14px]" style={POPPINS}>
+                {dbsUploaded ? (
+                  <>
+                    <Check size={16} color="#0B1F3A" />
+                    <span className="text-[#0B1F3A] font-medium">Uploaded</span>
+                  </>
                 ) : (
-                  coverageAreas.map((a) => {
-                    const label = (a.area_name && a.area_name.trim()) || "Area";
-                    const radius = a.radius_miles ?? 0;
-                    return (
-                      <span
-                        key={a.id}
-                        className="inline-flex items-center px-2 py-1 rounded-full text-[12px]"
-                        style={{ backgroundColor: "#E0ECFA", color: "#0B1F3A", ...POPPINS }}
-                      >
-                        {label} — {radius}mi
-                      </span>
-                    );
-                  })
+                  <>
+                    <AlertTriangle size={16} color="#0B1F3A" />
+                    <span className="text-[#0B1F3A]">Upload DBS certificate</span>
+                  </>
                 )}
-              </div>
-              <Link
-                to="/coverage-areas"
-                className="inline-block mt-2 text-[13px]"
-                style={{ color: "#1877D6", ...POPPINS }}
-              >
-                Manage coverage areas
-              </Link>
+              </span>
+              <span className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
+                {dbsUploaded ? "Replace" : "Upload"}
+              </span>
+            </button>
+          </div>
+
+          <div className="mt-4">
+            <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+              Service areas
+            </label>
+            <div
+              className="rounded-lg bg-white px-2 py-2 flex flex-wrap gap-2"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", minHeight: 44 }}
+            >
+              {coverageAreas.length === 0 ? (
+                <span className="text-[13px] text-[#6B7280] px-1 py-1" style={POPPINS}>
+                  No coverage areas yet
+                </span>
+              ) : (
+                coverageAreas.map((a) => {
+                  const label = (a.area_name && a.area_name.trim()) || "Area";
+                  const radius = a.radius_miles ?? 0;
+                  return (
+                    <span
+                      key={a.id}
+                      className="inline-flex items-center px-2 py-1 rounded-full text-[12px]"
+                      style={{ backgroundColor: "#E0ECFA", color: "#0B1F3A", ...POPPINS }}
+                    >
+                      {label} — {radius}mi
+                    </span>
+                  );
+                })
+              )}
             </div>
+            <Link
+              to="/coverage-areas"
+              className="inline-block mt-2 text-[13px]"
+              style={{ color: "#1877D6", ...POPPINS }}
+            >
+              Manage coverage areas
+            </Link>
           </div>
         </AccordionCard>
 
