@@ -759,6 +759,44 @@ function InstructorDMThread() {
             );
           })
         )}
+        {otherTyping && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-end",
+              gap: 8,
+              marginBottom: 14,
+            }}
+          >
+            <Avatar person={otherInstructor} bg={NAVY} />
+            <div
+              style={{
+                background: "#EEF2F7",
+                borderRadius: "6px 16px 16px 16px",
+                padding: "11px 14px",
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: "#9CA3AF",
+                    display: "inline-block",
+                    animation: "dsmtyping 1.2s infinite ease-in-out",
+                    animationDelay: `${i * 0.18}s`,
+                  }}
+                />
+              ))}
+            </div>
+            <style>{`@keyframes dsmtyping { 0%, 60%, 100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }`}</style>
+          </div>
+        )}
         <div ref={bottomRef} />
       </div>
 
