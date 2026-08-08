@@ -524,7 +524,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             </div>
             <div
               style={{
-                fontSize: 15,
+                fontSize: 14,
                 fontWeight: 800,
                 color: "#fff",
                 fontFamily: FONT,
