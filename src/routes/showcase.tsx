@@ -170,6 +170,7 @@ function ShowcasePage() {
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [comments, setComments] = useState<any[]>([]);
   const [commentBody, setCommentBody] = useState("");
+  const [commentSort, setCommentSort] = useState<"newest" | "top">("newest");
   const [sendingComment, setSendingComment] = useState(false);
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
 
@@ -806,9 +807,10 @@ function ShowcasePage() {
                   <div
                     style={{
                       margin: "8px 0 0",
-                      background: "#F8FAFC",
-                      border: "0.5px solid #E4E8EF",
-                      borderRadius: 10,
+                      background: "#fff",
+                      border: "none",
+                      borderRadius: 12,
+                      boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                       padding: "10px 12px",
                       display: "flex",
                       alignItems: "center",
@@ -887,8 +889,9 @@ function ShowcasePage() {
                 key={video.id}
                 style={{
                   background: "#fff",
-                  border: "0.5px solid #E4E8EF",
-                  borderRadius: 12,
+                  border: "none",
+                  borderRadius: 16,
+                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                   overflow: "hidden",
                 }}
               >
@@ -1115,7 +1118,7 @@ function ShowcasePage() {
               bottom: 0,
               left: 0,
               right: 0,
-              background: "#111",
+              background: NAVY,
               borderRadius: "20px 20px 0 0",
               maxHeight: "70vh",
               display: "flex",
@@ -1127,7 +1130,7 @@ function ShowcasePage() {
                 width: 36,
                 height: 4,
                 borderRadius: 4,
-                background: "#333",
+                background: "rgba(255,255,255,0.25)",
                 margin: "12px auto",
               }}
             />
@@ -1143,7 +1146,31 @@ function ShowcasePage() {
               {comments.length} comments
             </div>
 
-            <div style={{ flex: 1, overflowY: "auto", padding: "0 16px" }}>
+            {/* Filter chips */}
+            <div style={{ display: "flex", gap: 8, padding: "0 16px 12px" }}>
+              {(["newest", "top"] as const).map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setCommentSort(s)}
+                  style={{
+                    borderRadius: 20,
+                    padding: "4px 12px",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    border: "none",
+                    cursor: "pointer",
+                    ...POPPINS,
+                    background: commentSort === s ? BLUE : "rgba(255,255,255,0.1)",
+                    color: "#fff",
+                  }}
+                >
+                  {s === "newest" ? "Newest" : "Top"}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ flex: 1, overflowY: "auto", padding: "0 0 8px" }}>
               {comments.length === 0 ? (
                 <div
                   style={{
@@ -1157,81 +1184,116 @@ function ShowcasePage() {
                   No comments yet — be the first
                 </div>
               ) : (
-                comments.map((c: any, i: number) => {
-                  const name = c.instructor?.name ?? c.author_name ?? "Instructor";
-                  return (
-                    <div
-                      key={c.id}
-                      style={{ display: "flex", gap: 10, marginBottom: 14 }}
-                    >
-                      <div
-                        style={{
-                          width: 32,
-                          height: 32,
-                          flexShrink: 0,
-                          borderRadius: "50%",
-                          background: AVATAR_COLORS[i % AVATAR_COLORS.length],
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "#fff",
-                          fontSize: 11,
-                          fontWeight: 700,
-                          ...POPPINS,
-                        }}
-                      >
-                        {initials(name)}
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div
-                          style={{ display: "flex", alignItems: "center", gap: 6 }}
-                        >
-                          <span
+                <div
+                  style={{
+                    background: "rgba(255,255,255,0.06)",
+                    borderRadius: 16,
+                    margin: "0 16px",
+                    overflow: "hidden",
+                  }}
+                >
+                  {(() => {
+                    const displayedComments =
+                      commentSort === "newest"
+                        ? [...comments].sort(
+                            (a, b) =>
+                              new Date(b.created_at).getTime() -
+                              new Date(a.created_at).getTime()
+                          )
+                        : [...comments];
+                    return displayedComments.map((c: any, i: number) => {
+                      const name = c.instructor?.name ?? c.author_name ?? "Instructor";
+                      return (
+                        <div key={c.id}>
+                          <div
                             style={{
-                              fontSize: 12,
-                              fontWeight: 600,
-                              color: "#fff",
-                              ...POPPINS,
+                              padding: "12px 16px",
+                              display: "flex",
+                              gap: 10,
+                              alignItems: "flex-start",
                             }}
                           >
-                            {name}
-                          </span>
-                          <span
-                            style={{
-                              fontSize: 10,
-                              color: "rgba(255,255,255,0.4)",
-                              ...POPPINS,
-                            }}
-                          >
-                            {timeAgo(c.created_at)}
-                          </span>
+                            <div
+                              style={{
+                                width: 32,
+                                height: 32,
+                                flexShrink: 0,
+                                borderRadius: "50%",
+                                background: AVATAR_COLORS[i % AVATAR_COLORS.length],
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: "#fff",
+                                fontSize: 11,
+                                fontWeight: 700,
+                                ...POPPINS,
+                              }}
+                            >
+                              {initials(name)}
+                            </div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div
+                                style={{ display: "flex", alignItems: "center", gap: 6 }}
+                              >
+                                <span
+                                  style={{
+                                    fontSize: 12,
+                                    fontWeight: 600,
+                                    color: "#fff",
+                                    ...POPPINS,
+                                  }}
+                                >
+                                  {name}
+                                </span>
+                                <span
+                                  style={{
+                                    fontSize: 10,
+                                    color: "rgba(255,255,255,0.4)",
+                                    ...POPPINS,
+                                  }}
+                                >
+                                  {timeAgo(c.created_at)}
+                                </span>
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: 13,
+                                  color: "rgba(255,255,255,0.85)",
+                                  marginTop: 3,
+                                  lineHeight: 1.4,
+                                  ...POPPINS,
+                                }}
+                              >
+                                {c.body}
+                              </div>
+                            </div>
+                          </div>
+                          {i !== displayedComments.length - 1 && (
+                            <div
+                              style={{
+                                height: 1,
+                                marginLeft: 42,
+                                background: "rgba(255,255,255,0.08)",
+                              }}
+                            />
+                          )}
                         </div>
-                        <div
-                          style={{
-                            fontSize: 13,
-                            color: "rgba(255,255,255,0.85)",
-                            marginTop: 3,
-                            lineHeight: 1.4,
-                            ...POPPINS,
-                          }}
-                        >
-                          {c.body}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
+                      );
+                    });
+                  })()}
+                </div>
               )}
             </div>
 
             <div
               style={{
+                background: "rgba(255,255,255,0.06)",
+                borderRadius: 16,
+                margin: "8px 16px",
+                padding: "10px 14px",
                 display: "flex",
                 gap: 10,
                 alignItems: "center",
-                padding: "12px 16px",
-                paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
-                borderTop: "0.5px solid rgba(255,255,255,0.1)",
               }}
             >
               <div
@@ -1265,12 +1327,10 @@ function ShowcasePage() {
                 aria-label="Add a comment"
                 style={{
                   flex: 1,
-                  background: "rgba(255,255,255,0.1)",
-                  borderRadius: 20,
-                  padding: "8px 14px",
-                  color: "#fff",
+                  background: "transparent",
                   border: "none",
                   outline: "none",
+                  color: "#fff",
                   fontSize: 13,
                   ...POPPINS,
                 }}
