@@ -484,7 +484,12 @@ function RootComponent() {
   ]);
   const isMessageThread = pathname.startsWith("/messages/");
   const showFloatingMenu =
-    !hasOwnMenu.has(pathname) && !hideNavExact.has(pathname) && !isMessageThread;
+    !hasOwnMenu.has(pathname) &&
+    !hideNavExact.has(pathname) &&
+    !isMessageThread &&
+    // Pupil detail has its own "More" action; the FAB would float over
+    // in-page controls (delete buttons, Cancel lesson row).
+    !pathname.startsWith("/pupils/");
   const hideNav =
     hideNavExact.has(pathname) ||
     isMessageThread ||
@@ -747,7 +752,7 @@ function RootComponent() {
           onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
           style={{
             position: "fixed",
-            bottom: 80,
+            bottom: "calc(env(safe-area-inset-bottom, 0px) + 88px)",
             right: 16,
             width: 44,
             height: 44,

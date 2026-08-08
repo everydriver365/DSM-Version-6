@@ -406,6 +406,7 @@ function PupilDetailPage() {
   const [syllabusSum, setSyllabusSum] = useState<number>(0);
   const [syllabus, setSyllabus] = useState<{ level: number }[] | null>(null);
   const [photoUploading, setPhotoUploading] = useState(false);
+  const [arrivalState, setArrivalState] = useState<"here" | "going" | "arrived" | null>(null);
   const [liveOwed, setLiveOwed] = useState<number | null>(null);
   const [balance, setBalance] = useState<number>(0);
   const [totalCost, setTotalCost] = useState<number>(0);
@@ -1559,161 +1560,140 @@ function PupilDetailPage() {
                   </button>
                 </div>
 
-                {/* Photo consent row */}
-                <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                  <span className="text-[14px] font-medium text-slate-700" style={POPPINS}>
-                    Photo consent
-                  </span>
-                  <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                    <input
-                      type="checkbox"
-                      checked={Boolean(pupil.photo_consent)}
-                      onChange={(e) => togglePhotoConsent(e.target.checked)}
-                      className="sr-only peer"
-                    />
-                    <div
-                      className="w-11 h-6 rounded-full transition-colors"
-                      style={{ backgroundColor: pupil.photo_consent ? "#00B5A5" : "#CBD5E1" }}
-                    />
-                    <div
-                      className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
-                      style={{
-                        transform: pupil.photo_consent ? "translateX(20px)" : "translateX(0)",
-                      }}
-                    />
-                  </label>
-                </div>
-
-                {/* 3-up hero stat row: Balance | Hours remaining | Days to test */}
-                {(() => {
-                  const isBlock =
-                    pricingType === "block" || pricingType === "national_intensives";
-                  const accountCredit = Number(pupil.account_balance ?? 0);
-                  const balanceColor = isBlock
-                    ? balance > 0
-                      ? "#CC2229"
-                      : "#16A34A"
-                    : balance > 0
-                      ? "#CC2229"
-                      : accountCredit > 0
-                        ? "#16A34A"
-                        : "#0B1F3A";
-                  const hoursRemaining = Math.max(
-                    0,
-                    Number(pupil.prepaid_hours ?? 0) - hoursCompleted,
-                  );
-                  const hoursValue = hoursRemaining.toFixed(1);
-                  const balanceLabel = isBlock
-                    ? "Package"
-                    : balance > 0
-                      ? "Balance owed"
-                      : accountCredit > 0
-                        ? "In credit"
-                        : "Balance";
-                  const balanceValue = isBlock
-                    ? balance > 0
-                      ? `${hoursValue} hrs remaining · £${balance.toFixed(2)} outstanding`
-                      : `${hoursValue} hrs remaining · Fully paid`
-                    : balance > 0
-                      ? `£${balance.toFixed(2)}`
-                      : accountCredit > 0
-                        ? `£${accountCredit.toFixed(2)}`
-                        : "All paid";
-                  const today = ymd(new Date());
-                  let testValue = "Not booked";
-                  let testColor = "#6B7280";
-                  if (pupil.test_date) {
-                    const d = daysBetween(today, pupil.test_date);
-                    if (d === 0) {
-                      testValue = "Today";
-                      testColor = "#1877D6";
-                    } else if (d === 1) {
-                      testValue = "Tomorrow";
-                      testColor = "#1877D6";
-                    } else if (d < 0) {
-                      testValue = "Passed?";
-                      testColor = "#6B7280";
-                    } else {
-                      testValue = `${d} days`;
-                      testColor = "#0B1F3A";
-                    }
-                  }
-                  return (
-                    <div className="grid grid-cols-3 gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => setActiveTab("payments")}
-                        className="text-left rounded-xl p-2 border active:scale-[0.98] transition-transform min-w-0"
-                        style={{
-                          backgroundColor: "#FFFFFF",
-                          borderColor: "#E2E6ED",
-                          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                        }}
-                      >
-                        <p
-                          className="text-[9px] font-bold uppercase truncate"
-                          style={{ color: "#6B7280", letterSpacing: "0.06em", ...POPPINS }}
-                        >
-                          {balanceLabel}
-                        </p>
-                        <p
-                          className="text-[15px] font-bold mt-0.5 leading-tight truncate"
-                          style={{ color: balanceColor, ...POPPINS }}
-                        >
-                          {balanceValue}
-                        </p>
-                      </button>
+                {/* Grouped card: Photo consent + 3-up stat row */}
+                <div
+                  style={{
+                    background: "#FFFFFF",
+                    borderRadius: 16,
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                    overflow: "hidden",
+                  }}
+                >
+                  {/* Photo consent row */}
+                  <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid #E9E9EC" }}>
+                    <span className="text-[14px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>
+                      Photo consent
+                    </span>
+                    <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                      <input
+                        type="checkbox"
+                        checked={Boolean(pupil.photo_consent)}
+                        onChange={(e) => togglePhotoConsent(e.target.checked)}
+                        className="sr-only peer"
+                      />
                       <div
-                        className="rounded-xl p-2 border min-w-0"
+                        className="w-11 h-6 rounded-full transition-colors"
+                        style={{ backgroundColor: pupil.photo_consent ? "#248A3D" : "#CBD5E1" }}
+                      />
+                      <div
+                        className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
                         style={{
-                          backgroundColor: "#FFFFFF",
-                          borderColor: "#E2E6ED",
-                          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                          transform: pupil.photo_consent ? "translateX(20px)" : "translateX(0)",
                         }}
-                      >
-                        <p
-                          className="text-[9px] font-bold uppercase truncate"
-                          style={{ color: "#6B7280", letterSpacing: "0.06em", ...POPPINS }}
-                        >
-                          Hours left
-                        </p>
-                        <p
-                          className="text-[15px] font-bold mt-0.5 leading-tight truncate"
-                          style={{ color: "#0B1F3A", ...POPPINS }}
-                        >
-                          {hoursValue}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setActiveTab("profile");
-                          setPracticalEditing(true);
-                        }}
-                        className="text-left rounded-xl p-2 border active:scale-[0.98] transition-transform min-w-0"
-                        style={{
-                          backgroundColor: "#FFFFFF",
-                          borderColor: "#E2E6ED",
-                          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                        }}
-                      >
-                        <p
-                          className="text-[9px] font-bold uppercase truncate"
-                          style={{ color: "#6B7280", letterSpacing: "0.06em", ...POPPINS }}
-                        >
-                          Test in
-                        </p>
-                        <p
-                          className="text-[15px] font-bold mt-0.5 leading-tight truncate"
-                          style={{ color: testColor, ...POPPINS }}
-                        >
-                          {testValue}
-                        </p>
-                      </button>
-                    </div>
+                      />
+                    </label>
+                  </div>
 
-                  );
-                })()}
+                  {/* 3-up stat row: Balance | Hours remaining | Days to test */}
+                  {(() => {
+                    const isBlock =
+                      pricingType === "block" || pricingType === "national_intensives";
+                    const accountCredit = Number(pupil.account_balance ?? 0);
+                    const balanceColor = isBlock
+                      ? balance > 0
+                        ? "#CC2229"
+                        : "#248A3D"
+                      : balance > 0
+                        ? "#CC2229"
+                        : accountCredit > 0
+                          ? "#248A3D"
+                          : "#000000";
+                    const hoursRemaining = Math.max(
+                      0,
+                      Number(pupil.prepaid_hours ?? 0) - hoursCompleted,
+                    );
+                    const hoursValue = hoursRemaining.toFixed(1);
+                    const balanceLabel = isBlock
+                      ? "Package"
+                      : balance > 0
+                        ? "Balance owed"
+                        : accountCredit > 0
+                          ? "In credit"
+                          : "Balance";
+                    const balanceValue = isBlock
+                      ? balance > 0
+                        ? `£${balance.toFixed(2)} due`
+                        : "Fully paid"
+                      : balance > 0
+                        ? `£${balance.toFixed(2)}`
+                        : accountCredit > 0
+                          ? `£${accountCredit.toFixed(2)}`
+                          : "All paid";
+                    const today = ymd(new Date());
+                    let testValue = "Not booked";
+                    let testColor = "#8A8A8E";
+                    if (pupil.test_date) {
+                      const d = daysBetween(today, pupil.test_date);
+                      if (d === 0) {
+                        testValue = "Today";
+                        testColor = "#1877D6";
+                      } else if (d === 1) {
+                        testValue = "Tomorrow";
+                        testColor = "#1877D6";
+                      } else if (d < 0) {
+                        testValue = "Passed?";
+                        testColor = "#8A8A8E";
+                      } else {
+                        testValue = `${d} days`;
+                        testColor = "#000000";
+                      }
+                    }
+                    const colLabel: React.CSSProperties = {
+                      fontSize: 10,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.06em",
+                      color: "#8A8A8E",
+                      ...POPPINS,
+                    };
+                    const colValue: React.CSSProperties = {
+                      fontSize: 19,
+                      fontWeight: 800,
+                      lineHeight: 1.15,
+                      marginTop: 2,
+                      ...POPPINS,
+                    };
+                    return (
+                      <div className="grid grid-cols-3">
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab("payments")}
+                          className="text-left px-4 py-3 min-w-0 active:opacity-70"
+                          style={{ background: "none", border: "none" }}
+                        >
+                          <p className="truncate" style={colLabel}>{balanceLabel}</p>
+                          <p className="truncate" style={{ ...colValue, color: balanceColor }}>{balanceValue}</p>
+                        </button>
+                        <div className="px-4 py-3 min-w-0" style={{ borderLeft: "1px solid #E9E9EC", borderRight: "1px solid #E9E9EC" }}>
+                          <p className="truncate" style={colLabel}>Hours left</p>
+                          <p className="truncate" style={{ ...colValue, color: "#248A3D" }}>{hoursValue}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveTab("profile");
+                            setPracticalEditing(true);
+                          }}
+                          className="text-left px-4 py-3 min-w-0 active:opacity-70"
+                          style={{ background: "none", border: "none" }}
+                        >
+                          <p className="truncate" style={colLabel}>Test in</p>
+                          <p className="truncate" style={{ ...colValue, color: testColor }}>{testValue}</p>
+                        </button>
+                      </div>
+                    );
+                  })()}
+                </div>
 
                 {/* Readiness dashboard */}
                 {(() => {
@@ -1769,7 +1749,7 @@ function PupilDetailPage() {
                         <div className="grid grid-cols-3 gap-2">
                           {[
                             { label: "Syllabus", value: Math.round(readiness.syllabusPoints), max: 60 },
-                            { label: "Lessons", value: completedLessonCount, max: confirmedLessonCount },
+                            { label: "Lessons", value: completedLessonCount, max: confirmedLessonCount > 0 ? confirmedLessonCount : Math.round(Number(pupil?.prepaid_hours ?? 0)) },
                             { label: "Theory", value: readiness.theoryPoints, max: 10 },
                           ].map((s) => (
                             <div key={s.label} className="flex flex-col">
@@ -1883,25 +1863,28 @@ function PupilDetailPage() {
 
                 {/* Recent payments */}
                 {paymentHistory.length > 0 && (
-                  <div className="pt-2 border-t border-slate-100">
-                    <div
-                      className="text-[11px] font-medium uppercase mb-2"
-                      style={{ color: "#6B7280", letterSpacing: "0.05em", ...POPPINS }}
+                  <div>
+                    <h3
+                      className="mb-2"
+                      style={{ fontSize: 20, fontWeight: 800, color: "#000000", letterSpacing: "-0.4px", ...POPPINS }}
                     >
                       Recent payments
-                    </div>
-                    <div className="flex flex-col" style={{ borderTop: "0.5px solid #EEF2F7" }}>
-                      {paymentHistory.map((p) => (
+                    </h3>
+                    <div
+                      className="flex flex-col"
+                      style={{ background: "#FFFFFF", borderRadius: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.05)", overflow: "hidden" }}
+                    >
+                      {paymentHistory.map((p, pi) => (
                         <div
                           key={p.id}
-                          className="flex items-center justify-between py-2"
-                          style={{ borderBottom: "0.5px solid #EEF2F7" }}
+                          className="flex items-center justify-between px-4 py-3"
+                          style={{ borderTop: pi === 0 ? "none" : "1px solid #E9E9EC" }}
                         >
                           <div className="flex flex-col">
-                            <span className="text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                            <span style={{ fontSize: 16, fontWeight: 700, color: "#000000", ...POPPINS }}>
                               £{Number(p.lesson_cost ?? 0).toFixed(2)}
                             </span>
-                            <span className="text-[11px]" style={{ color: "#6B7280", ...POPPINS }}>
+                            <span style={{ fontSize: 12.5, color: "#8A8A8E", ...POPPINS }}>
                               {new Date(p.created_at).toLocaleDateString("en-GB", {
                                 day: "2-digit",
                                 month: "short",
@@ -1962,60 +1945,107 @@ function PupilDetailPage() {
         <div className="px-4">
 
         {/* Quick actions row: Call · Message · Text · Add lesson · More */}
-        <div className="grid grid-cols-5 gap-2 mt-4">
-          <ActionTile
-            label="Call"
-            icon={<IconPhone stroke={1.5} size={20} />}
-            iconBg="#E7F5EE"
-            iconColor="#1E8E3E"
-            href={pupil?.phone ? `tel:${pupil.phone}` : undefined}
-          />
-          <ActionTile
-            label="Message"
-            icon={<IconMessage stroke={1.5} size={20} />}
-            iconBg="#E6F1FB"
-            iconColor="#1877D6"
-            onClick={() => { setSendMessagePupilId(pupil?.id ?? id); setSendMessageOpen(true); }}
-            badge={unreadMessages > 0 ? String(unreadMessages) : undefined}
-          />
-          <ActionTile
-            label="Text"
-            icon={<IconSend stroke={1.5} size={20} />}
-            iconBg="#F1E9FA"
-            iconColor="#7A3FC0"
-            href={pupil?.phone ? `sms:${pupil.phone}` : undefined}
-          />
-          <ActionTile
-            label="Add lesson"
-            icon={<IconPlus stroke={1.5} size={20} />}
-            iconBg="#FEF3E2"
-            iconColor="#B5661E"
-            onClick={() => { setAddLessonDate(undefined); setAddLessonPupilId(pupil?.id ?? id); setAddLessonOpen(true); }}
-          />
-          <ActionTile
-            label="More"
-            icon={<IconDots stroke={1.5} size={20} />}
-            iconBg="#F3F4F6"
-            iconColor="#6B7280"
-            onClick={() => setMoreOpen(true)}
-          />
-        </div>
+        {(() => {
+          const cellCls =
+            "relative flex flex-col items-center justify-center gap-1 py-3 active:opacity-60";
+          const cellStyle = (i: number): React.CSSProperties => ({
+            borderLeft: i === 0 ? "none" : "1px solid #E9E9EC",
+            background: "none",
+            color: "#0B1F3A",
+            textDecoration: "none",
+          });
+          const labelStyle: React.CSSProperties = {
+            fontSize: 11,
+            fontWeight: 600,
+            color: "#0B1F3A",
+            ...POPPINS,
+          };
+          const actions: {
+            label: string;
+            icon: React.ReactNode;
+            href?: string;
+            onClick?: () => void;
+            badge?: string;
+          }[] = [
+            {
+              label: "Call",
+              icon: <IconPhone stroke={1.5} size={20} />,
+              href: pupil?.phone ? `tel:${pupil.phone}` : undefined,
+            },
+            {
+              label: "Message",
+              icon: <IconMessage stroke={1.5} size={20} />,
+              onClick: () => { setSendMessagePupilId(pupil?.id ?? id); setSendMessageOpen(true); },
+              badge: unreadMessages > 0 ? String(unreadMessages) : undefined,
+            },
+            {
+              label: "Text",
+              icon: <IconSend stroke={1.5} size={20} />,
+              href: pupil?.phone ? `sms:${pupil.phone}` : undefined,
+            },
+            {
+              label: "Add lesson",
+              icon: <IconPlus stroke={1.5} size={20} />,
+              onClick: () => { setAddLessonDate(undefined); setAddLessonPupilId(pupil?.id ?? id); setAddLessonOpen(true); },
+            },
+            {
+              label: "More",
+              icon: <IconDots stroke={1.5} size={20} />,
+              onClick: () => setMoreOpen(true),
+            },
+          ];
+          return (
+            <div
+              className="grid grid-cols-5 mt-4"
+              style={{ background: "#FFFFFF", borderRadius: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.05)", overflow: "hidden" }}
+            >
+              {actions.map((a, i) => {
+                const inner = (
+                  <>
+                    {a.icon}
+                    <span style={labelStyle}>{a.label}</span>
+                    {a.badge ? (
+                      <span
+                        className="absolute top-1.5 right-2 text-[10px] font-bold"
+                        style={{ color: "#CC2229" }}
+                      >
+                        {a.badge}
+                      </span>
+                    ) : null}
+                  </>
+                );
+                if (a.href) {
+                  return (
+                    <a key={a.label} href={a.href} className={cellCls} style={cellStyle(i)}>
+                      {inner}
+                    </a>
+                  );
+                }
+                return (
+                  <button key={a.label} type="button" onClick={a.onClick} className={cellCls} style={{ ...cellStyle(i), border: "none", borderLeft: i === 0 ? "none" : "1px solid #E9E9EC" }}>
+                    {inner}
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })()}
 
-        {/* Tab bar */}
+        {/* Tab bar — iOS segmented control */}
         <div
-          className="mt-4 mb-2 flex gap-1 rounded-xl p-1"
-          style={{ background: "#EEF2F7", ...POPPINS }}
+          className="mt-4 mb-2 flex gap-1"
+          style={{ background: "#E5E5EA", borderRadius: 12, padding: 3, ...POPPINS }}
         >
           {(["overview", "lessons", "payments", "profile"] as const).map((t) => (
             <button
               key={t}
               type="button"
               onClick={() => setActiveTab(t)}
-              className="flex-1 h-9 rounded-lg text-[13px] font-semibold capitalize transition-colors"
+              className="flex-1 h-9 rounded-[9px] text-[13px] font-semibold capitalize transition-colors"
               style={{
                 background: activeTab === t ? "#FFFFFF" : "transparent",
                 color: activeTab === t ? "#0B1F3A" : "#6B7280",
-                boxShadow: activeTab === t ? "0 1px 3px rgba(0,0,0,0.06)" : "none",
+                boxShadow: activeTab === t ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
                 border: "none",
                 ...POPPINS,
               }}
@@ -2848,7 +2878,7 @@ function PupilDetailPage() {
                       />
                       <input
                         type="text"
-                        placeholder="IconSearch test centres..."
+                        placeholder="Search test centres..."
                         value={centreSearch}
                         onChange={(e) => setCentreSearch(e.target.value)}
                         style={{
@@ -3021,20 +3051,11 @@ function PupilDetailPage() {
 
         {/* Mock tests card */}
         {pupil && (
-          <div
-            className="mt-3"
-            style={{
-              background: "#FFFFFF",
-              borderRadius: 16,
-              border: "0.5px solid #E2E6ED",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-              overflow: "hidden",
-            }}
-          >
-            <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "0.5px solid #EEF2F7" }}>
-              <span className="flex items-center gap-2 text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <IconClipboardCheck stroke={1.5} size={16} color="#1877D6" /> Mock tests
-              </span>
+          <div className="mt-4">
+            <div className="flex items-center justify-between mb-2">
+              <h3 style={{ fontSize: 20, fontWeight: 800, color: "#000000", letterSpacing: "-0.4px", ...POPPINS }}>
+                Mock tests
+              </h3>
               <span
                 className="text-[11px] font-semibold text-white"
                 style={{ backgroundColor: "#1877D6", padding: "2px 8px", borderRadius: 999, ...POPPINS }}
@@ -3042,6 +3063,14 @@ function PupilDetailPage() {
                 {mockTests.length}
               </span>
             </div>
+            <div
+              style={{
+                background: "#FFFFFF",
+                borderRadius: 16,
+                boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                overflow: "hidden",
+              }}
+            >
             {mockTests.length === 0 ? (
               <div className="px-4 py-3 text-[13px]" style={{ color: "#9CA3AF", ...POPPINS }}>
                 No mock tests logged yet
@@ -3067,7 +3096,7 @@ function PupilDetailPage() {
                       onClick={() => openMockDetail(mt)}
                       className="w-full text-left flex items-center justify-between px-4 py-3"
                       style={{
-                        borderBottom: idx < mockTests.length - 1 ? "0.5px solid #EEF2F7" : "none",
+                        borderBottom: idx < mockTests.length - 1 ? "1px solid #E9E9EC" : "none",
                         background: "none",
                         border: "none",
                         ...POPPINS,
@@ -3098,10 +3127,11 @@ function PupilDetailPage() {
               type="button"
               onClick={() => navigate({ to: "/mock-tests", search: { pupilId: id } as never })}
               className="w-full text-left px-4 py-3 text-[13px] font-medium"
-              style={{ color: "#1877D6", borderTop: "0.5px solid #EEF2F7", background: "none", borderRight: "none", borderLeft: "none", borderBottom: "none", ...POPPINS }}
+              style={{ color: "#1877D6", borderTop: "1px solid #E9E9EC", background: "none", borderRight: "none", borderLeft: "none", borderBottom: "none", ...POPPINS }}
             >
               New mock test
             </button>
+            </div>
           </div>
         )}
 
@@ -3328,17 +3358,30 @@ function PupilDetailPage() {
             setPastLessons((prev) => prev ? prev.map((x) => x.id === focus!.id ? { ...x, payment_status: "paid" } : x) : prev);
           };
 
-          const pillBase: React.CSSProperties = {
-            background: '#FFFFFF', border: '0.5px solid #E2E6ED', borderRadius: 12,
-            padding: '10px 0', display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center', gap: 4, cursor: 'pointer',
-            fontFamily: 'Poppins, sans-serif', fontSize: 12, fontWeight: 500, color: '#0B1F3A',
+          const segBase: React.CSSProperties = {
+            flex: 1, borderRadius: 9, border: 'none', padding: '9px 0',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            cursor: 'pointer', fontFamily: 'Poppins, sans-serif', fontSize: 13, fontWeight: 600,
           };
           const rowBtn: React.CSSProperties = {
             width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
-            padding: "14px 16px", background: "none", border: "none", cursor: "pointer",
-            fontFamily: 'Poppins, sans-serif', fontSize: 14, color: "#0B1F3A", fontWeight: 500,
+            padding: "12px 16px", background: "none", border: "none", cursor: "pointer",
+            fontFamily: 'Poppins, sans-serif', fontSize: 15, color: "#0B1F3A", fontWeight: 500,
           };
+          const rowChip = (color: string): React.CSSProperties => ({
+            width: 30, height: 30, borderRadius: 8, background: "#F2F2F7",
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            color, flexShrink: 0,
+          });
+          const sectionTitle: React.CSSProperties = {
+            fontSize: 20, fontWeight: 800, color: "#000000", letterSpacing: "-0.4px",
+            margin: "16px 0 8px", fontFamily: 'Poppins, sans-serif',
+          };
+          const groupCard: React.CSSProperties = {
+            background: "#FFFFFF", borderRadius: 16,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.05)", overflow: "hidden",
+          };
+          const hairline = <div style={{ height: 1, background: "#E9E9EC" }} />;
 
           const label = isLive ? "In progress" : isPast ? "Last lesson" : "Next lesson";
           const labelColor = isLive ? "#137333" : isCancelled ? "#B42318" : "#1877D6";
@@ -3352,15 +3395,13 @@ function PupilDetailPage() {
           return (
             <>
               {/* Lesson Details Card */}
+              <h3 style={sectionTitle}>{label}</h3>
               <div
                 ref={focusedLessonCardRef}
                 style={{
-                  background: "#FFFFFF",
-                  borderRadius: 16,
-                  border: focusLessonId ? "2px solid #1877D6" : "0.5px solid rgba(11,31,58,0.10)",
-                  overflow: "hidden",
-                  marginTop: 12,
-                  boxShadow: focusLessonId ? "0 12px 30px rgba(24,119,214,0.18)" : "none",
+                  ...groupCard,
+                  border: focusLessonId ? "2px solid #1877D6" : "none",
+                  boxShadow: focusLessonId ? "0 12px 30px rgba(24,119,214,0.18)" : "0 1px 3px rgba(0,0,0,0.05)",
                   scrollMarginTop: 64,
                 }}
               >
@@ -3390,40 +3431,50 @@ function PupilDetailPage() {
                   </span>
                 </div>
                 <div style={{ padding: 16 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                    <IconCalendar stroke={1.5} size={16} color="#1877D6" />
-                    <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>
-                      {formatDateShort(start)} · {formatTime(focus.lesson_time)}
-                    </div>
-                    <span style={{ fontSize: 12, color: "#64748B", ...POPPINS }}>
-                      · {focus.duration_minutes ?? 60} mins
+                  {/* Consolidated info block */}
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#000000", letterSpacing: "-0.2px", ...POPPINS }}>
+                    {formatDateShort(start)} · {formatTime(focus.lesson_time)}
+                    <span style={{ fontSize: 13, fontWeight: 500, color: "#8A8A8E" }}>
+                      {" "}· {focus.duration_minutes ?? 60} mins
                     </span>
                   </div>
                   {pickup && (
-                    <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 12 }}>
-                      <IconMapPin stroke={1.5} size={16} color="#64748B" style={{ marginTop: 2, flexShrink: 0 }} />
-                      <div style={{ flex: 1, fontSize: 13, color: "#0B1F3A", ...POPPINS }}>{pickup}</div>
+                    <div style={{ fontSize: 13.5, color: "#6B6B6F", marginTop: 4, lineHeight: 1.4, ...POPPINS }}>
+                      {pickup}{" "}
                       <a
                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickup)}`}
                         target="_blank" rel="noreferrer"
-                        style={{ fontSize: 12, color: "#1877D6", fontWeight: 600, flexShrink: 0, ...POPPINS }}
+                        style={{ color: "#1877D6", fontWeight: 600, whiteSpace: "nowrap" }}
                       >Navigate</a>
                     </div>
                   )}
                   {!isPast && !isCancelled && (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-                      <button style={pillBase} onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}>
-                        <IconMapPin stroke={1.5} size={16} color="#0B1F3A" />
-                        <span>Here</span>
-                      </button>
-                      <button style={pillBase} onClick={() => sendSms(`Hi ${firstName}, on the way!`)}>
-                        <IconSend stroke={1.5} size={16} color="#0B1F3A" />
-                        <span>Going</span>
-                      </button>
-                      <button style={{ ...pillBase, background: '#1877D6', color: '#FFFFFF', borderColor: '#1877D6' }} onClick={() => { sendSms(`Hi ${firstName}, I've arrived 🚗`); toast.success("Marked as arrived"); }}>
-                        <IconCheck stroke={1.5} size={16} color="#FFFFFF" />
-                        <span style={{ color: '#FFFFFF' }}>Arrived</span>
-                      </button>
+                    <div style={{ display: 'flex', gap: 3, background: '#F2F2F7', borderRadius: 12, padding: 3, marginTop: 12 }}>
+                      {([
+                        { key: "here" as const, label: "Here", icon: <IconMapPin stroke={1.5} size={15} />, msg: `Hi ${firstName}, I'm outside whenever you're ready 👋` },
+                        { key: "going" as const, label: "Going", icon: <IconSend stroke={1.5} size={15} />, msg: `Hi ${firstName}, on the way!` },
+                        { key: "arrived" as const, label: "Arrived", icon: <IconCheck stroke={1.5} size={15} />, msg: `Hi ${firstName}, I've arrived 🚗` },
+                      ]).map((s) => {
+                        const active = arrivalState === s.key;
+                        return (
+                          <button
+                            key={s.key}
+                            style={{
+                              ...segBase,
+                              background: active ? "#1877D6" : "transparent",
+                              color: active ? "#FFFFFF" : "#6B6B6F",
+                            }}
+                            onClick={() => {
+                              setArrivalState(s.key);
+                              sendSms(s.msg);
+                              if (s.key === "arrived") toast.success("Marked as arrived");
+                            }}
+                          >
+                            {s.icon}
+                            <span>{s.label}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -3431,50 +3482,60 @@ function PupilDetailPage() {
 
               {/* Manage Lesson Card */}
               {!isCancelled && (
-                <div style={{ background: "#FFFFFF", borderRadius: 16, border: "0.5px solid rgba(11,31,58,0.10)", overflow: "hidden", marginTop: 12 }}>
-                  <button style={rowBtn} onClick={() => navigate({ to: "/lessons/reschedule/$id", params: { id: focus!.id } })}>
-                    <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <IconRefresh stroke={1.5} size={16} color="#1877D6" /> Reschedule
-                    </span>
-                    <IconChevronRight stroke={1.5} size={18} color="#64748B" />
-                  </button>
-                  <div style={{ height: "0.5px", background: "rgba(11,31,58,0.10)" }} />
-                  <button style={rowBtn} onClick={sendPaymentLink} disabled={balance <= 0 || isPaid}>
-                    <span style={{ display: "flex", alignItems: "center", gap: 10, opacity: (balance <= 0 || isPaid) ? 0.5 : 1 }}>
-                      <IconCreditCard stroke={1.5} size={16} color="#1877D6" /> IconSend payment link
-                    </span>
-                    <IconChevronRight stroke={1.5} size={18} color="#64748B" />
-                  </button>
-                  <div style={{ height: "0.5px", background: "rgba(11,31,58,0.10)" }} />
-                  <button style={rowBtn} onClick={() => navigate({ to: "/lessons/$id", params: { id: focus!.id }, search: { action: "cancel" } })}>
-                    <span style={{ display: "flex", alignItems: "center", gap: 10, color: "#B42318" }}>
-                      <IconX stroke={1.5} size={16} color="#B42318" /> Cancel lesson
-                    </span>
-                    <IconChevronRight stroke={1.5} size={18} color="#64748B" />
-                  </button>
-                </div>
+                <>
+                  <h3 style={sectionTitle}>Manage lesson</h3>
+                  <div style={groupCard}>
+                    <button style={rowBtn} onClick={() => navigate({ to: "/lessons/reschedule/$id", params: { id: focus!.id } })}>
+                      <span style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <span style={rowChip("#0B1F3A")}><IconRefresh stroke={1.5} size={17} /></span> Reschedule
+                      </span>
+                      <IconChevronRight stroke={1.5} size={18} color="#C4C4C8" />
+                    </button>
+                    {hairline}
+                    <button style={rowBtn} onClick={sendPaymentLink} disabled={balance <= 0 || isPaid}>
+                      <span style={{ display: "flex", alignItems: "center", gap: 12, opacity: (balance <= 0 || isPaid) ? 0.5 : 1 }}>
+                        <span style={rowChip("#0B1F3A")}><IconCreditCard stroke={1.5} size={17} /></span> Send payment link
+                      </span>
+                      <IconChevronRight stroke={1.5} size={18} color="#C4C4C8" />
+                    </button>
+                    {hairline}
+                    <button style={{ ...rowBtn, color: "#FF3B30" }} onClick={() => navigate({ to: "/lessons/$id", params: { id: focus!.id }, search: { action: "cancel" } })}>
+                      <span style={{ display: "flex", alignItems: "center", gap: 12, color: "#FF3B30" }}>
+                        <span style={rowChip("#FF3B30")}><IconX stroke={1.5} size={17} /></span> Cancel lesson
+                      </span>
+                      <IconChevronRight stroke={1.5} size={18} color="#C4C4C8" />
+                    </button>
+                  </div>
+                </>
               )}
 
               {/* Messages Card */}
+              <h3 style={sectionTitle}>Messages</h3>
               <div
                 onClick={() => navigate({ to: "/messages/$pupilId", params: { pupilId: id } })}
-                style={{ background: "#FFFFFF", borderRadius: 16, border: "0.5px solid rgba(11,31,58,0.10)", padding: 14, marginTop: 12, cursor: "pointer" }}
+                style={{ ...groupCard, padding: 14, cursor: "pointer" }}
               >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <IconMessage stroke={1.5} size={16} color="#1877D6" />
-                    <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Messages</span>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={rowChip("#0B1F3A")}><IconMessage stroke={1.5} size={17} /></span>
+                    <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Recent</span>
                     {unreadMessages > 0 && (
-                      <span style={{ background: "#B42318", color: "#FFF", fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 999 }}>{unreadMessages}</span>
+                      <span style={{ background: "#CC2229", color: "#FFF", fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 999 }}>{unreadMessages}</span>
                     )}
                   </div>
-                  <span style={{ fontSize: 12, color: "#1877D6", fontWeight: 600, ...POPPINS }}>Open chat →</span>
+                  <span style={{ fontSize: 13, color: "#1877D6", fontWeight: 600, ...POPPINS }}>Open chat →</span>
                 </div>
-                <div style={{ fontSize: 13, color: lastMessage ? "#0B1F3A" : "#8A93A3", ...POPPINS, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <div
+                  style={{
+                    background: "#F2F2F7", borderRadius: 12, padding: "10px 12px",
+                    fontSize: 13.5, color: lastMessage ? "#0B1F3A" : "#8A8A8E", ...POPPINS,
+                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                  }}
+                >
                   {lastMsgPreview}
                 </div>
                 {lastMessage && (
-                  <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 4, ...POPPINS }}>{lastMsgTime}</div>
+                  <div style={{ fontSize: 11.5, color: "#8A8A8E", marginTop: 6, ...POPPINS }}>{lastMsgTime}</div>
                 )}
               </div>
 
@@ -3765,7 +3826,7 @@ function PupilDetailPage() {
           />
         )}
 
-      {/* IconCalendar colour + buffer */}
+      {/* Calendar colour + buffer */}
       {pupil && (
         <PupilRatesAndColour
           pupil={pupil}
@@ -4065,7 +4126,7 @@ function PupilDetailPage() {
                 <div className="mt-2 rounded-lg bg-white overflow-hidden" style={{ border: "0.5px solid #EEF2F7" }}>
                   <input
                     type="text"
-                    placeholder="IconSearch centres…"
+                    placeholder="Search centres…"
                     value={practicalQuickCentreSearch}
                     onChange={(e) => setPracticalQuickCentreSearch(e.target.value)}
                     className="h-10 w-full px-3 text-[13px] bg-white"
@@ -4250,7 +4311,7 @@ function PupilDetailPage() {
 
                 doc.save(`${pupilName} - ${milestone} - Certificate.pdf`);
                 setCertOpen(false);
-                toast.success("Certificate downloaded. IconSend to pupil manually.");
+                toast.success("Certificate downloaded. Send to pupil manually.");
               }}
               className="w-full inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white"
               style={{ height: 44, borderRadius: 8, backgroundColor: "#1877D6", ...POPPINS }}
@@ -4989,7 +5050,7 @@ function PupilExtras({
             >
               <IconMessage stroke={1.5} size={18} color="#1A52A0" />
               <div className="flex-1">
-                <div className="text-[14px] font-semibold">IconSend SMS</div>
+                <div className="text-[14px] font-semibold">Send SMS</div>
                 <div className="text-[12px]" style={{ color: "#6B7280" }}>
                   {pupil.phone ?? "No phone on file"}
                 </div>
@@ -5003,7 +5064,7 @@ function PupilExtras({
             >
               <IconMail stroke={1.5} size={18} color="#1A52A0" />
               <div className="flex-1">
-                <div className="text-[14px] font-semibold">IconSend email</div>
+                <div className="text-[14px] font-semibold">Send email</div>
                 <div className="text-[12px]" style={{ color: "#6B7280" }}>
                   {pupil.email ?? "No email on file"}
                 </div>
@@ -5220,11 +5281,11 @@ function PupilRatesAndColour({
       {/* Unavailable periods */}
       <UnavailablePeriodsCard pupilId={pupil.id} />
 
-      {/* IconCalendar colour */}
+      {/* Calendar colour */}
       <div style={EXTRAS_CARD}>
         <div className="flex items-center gap-2 mb-3">
           <IconPalette stroke={1.5} size={18} color="#1877D6" />
-          <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>IconCalendar colour</span>
+          <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Calendar colour</span>
         </div>
         <div className="grid grid-cols-8 gap-2">
           {CAL_COLOURS.map((c) => {
@@ -5479,7 +5540,7 @@ function PracticalEditor({
               <IconSearch stroke={1.5} size={16} color="#64748B" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
               <input
                 type="text"
-                placeholder="IconSearch test centres..."
+                placeholder="Search test centres..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 style={{ ...inputStyle, height: 36, padding: "0 12px 0 36px", fontSize: 13 }}
