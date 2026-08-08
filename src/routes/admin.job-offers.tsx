@@ -420,7 +420,7 @@ function AdminJobOffers() {
                 key={o.id}
                 style={{
                   background: "#fff",
-                  borderRadius: 12,
+                  borderRadius: 16,
                   boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                   padding: 14,
                 }}

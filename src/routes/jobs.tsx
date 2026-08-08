@@ -219,7 +219,7 @@ function JobCard({
       onClick={() => setDetailJob(job)}
       style={{
         background: "#FFFFFF",
-        borderRadius: 14,
+        borderRadius: 16,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         overflow: "hidden",
         cursor: "pointer",

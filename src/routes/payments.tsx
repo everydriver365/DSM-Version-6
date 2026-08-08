@@ -409,7 +409,7 @@ function PaymentsPage() {
           <div
             style={{
               background: "#FFFFFF",
-              borderRadius: 14,
+              borderRadius: 16,
               padding: "14px 16px",
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             }}
@@ -713,7 +713,7 @@ function StatTile({ label, value, color }: { label: string; value: string; color
     <div
       style={{
         background: "#FFFFFF",
-        borderRadius: 14,
+        borderRadius: 16,
         padding: "12px 14px",
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
       }}

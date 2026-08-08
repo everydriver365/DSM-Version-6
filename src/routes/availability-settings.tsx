@@ -78,7 +78,7 @@ function Card({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
       background: "#fff",
-      borderRadius: 14,
+      borderRadius: 16,
       boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
       padding: 16,
       margin: "0 16px 14px",

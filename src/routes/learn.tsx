@@ -485,7 +485,7 @@ function LearnPage() {
           style={{
             margin: "0 16px",
             background: "white",
-            borderRadius: 14,
+            borderRadius: 16,
             boxShadow: CARD_SHADOW,
             overflow: "hidden",
           }}
@@ -515,7 +515,7 @@ function LearnPage() {
             style={{
               margin: "0 16px",
               background: "white",
-              borderRadius: 14,
+              borderRadius: 16,
               boxShadow: CARD_SHADOW,
               overflow: "hidden",
             }}

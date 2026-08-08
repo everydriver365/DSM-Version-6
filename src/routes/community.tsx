@@ -1246,7 +1246,7 @@ function AlertsTab({
                 <div onClick={() => setSelectedAlert(a)} style={{
                   cursor: "pointer",
                   background: "white",
-                  borderRadius: 14,
+                  borderRadius: 16,
                   boxShadow: "0 3px 10px rgba(11,31,58,0.08)",
                   padding: "11px 12px",
                   display: "flex",
@@ -1550,7 +1550,7 @@ function AlertCard({
 
   return (
     <div onClick={() => onSelect?.(alert)} style={{
-      background: "white", borderRadius: 12, boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+      background: "white", borderRadius: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
       padding: "14px 16px", marginBottom: 8, cursor: "pointer",
     }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>

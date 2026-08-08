@@ -1656,7 +1656,7 @@ function GapsPage() {
           <div
             style={{
               background: "#FFFFFF",
-              borderRadius: 14,
+              borderRadius: 16,
               padding: 24,
               margin: "0 16px 14px",
               textAlign: "center",

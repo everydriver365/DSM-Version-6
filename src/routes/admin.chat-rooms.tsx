@@ -226,7 +226,7 @@ function AdminChatRooms() {
           style={{
             background: "#fff",
             border: "1px solid #E2E8F0",
-            borderRadius: 14,
+            borderRadius: 16,
             padding: 16,
             display: "flex",
             flexDirection: "column",
@@ -385,7 +385,7 @@ function AdminChatRooms() {
                 style={{
                   background: "#fff",
                   border: "1px solid #E2E8F0",
-                  borderRadius: 14,
+                  borderRadius: 16,
                   padding: 14,
                   boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                 }}

@@ -267,7 +267,7 @@ function FlaggedMessagesSection() {
               <div
                 key={m.id}
                 style={{
-                  background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 12,
+                  background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 16,
                   padding: 14, boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                 }}
               >
