@@ -7624,28 +7624,72 @@ function HomePage() {
                 style={{ padding: '12px 14px', cursor: 'pointer' }}
               >
                 {(() => {
-                  const avatarSources = [
+                  type AvatarSource = {
+                    type: 'pupil' | 'instructor' | 'alert' | 'chat' | 'admin';
+                    name: string | null;
+                    image: string | null;
+                    colour: string;
+                  };
+                  const chatPeople: AvatarSource[] = [
+                    localChatLatest?.instructors?.name ?? null,
+                    ukChatLatest?.instructors?.name ?? null,
+                    ...visibleRooms
+                      .filter((r) => r.id !== adminRoom?.id && r.latest?.created_at)
+                      .sort((a, b) =>
+                        new Date(b.latest?.created_at ?? 0).getTime()
+                        - new Date(a.latest?.created_at ?? 0).getTime())
+                      .slice(0, 2)
+                      .map((r) => r.latest?.instructors?.name ?? null),
+                  ]
+                    .filter((n): n is string => typeof n === 'string' && n.trim().length > 0)
+                    .map((name) => ({
+                      type: 'chat' as const, name, image: null, colour: '#7C3AED',
+                    }));
+
+                  const seenPupilIds = new Set(unreadMsgs.map((m) => m.pupil_id));
+                  const quietPupils: AvatarSource[] = unreadMsgs.length === 0
+                    ? allPupilsList
+                      .filter((p) => p.status === 'active' && !seenPupilIds.has(p.id))
+                      .slice(0, 3)
+                      .map((p, i) => ({
+                        type: 'pupil' as const,
+                        name: p.name || p.first_name || 'Pupil',
+                        image: p.profile_image_url || null,
+                        colour: p.calendar_colour ?? ['#0B1F3A', '#CC2229', '#1877D6', '#15803D'][i % 4],
+                      }))
+                    : [];
+
+                  const avatarSources: AvatarSource[] = [
                     ...unreadMsgs.map((m, i) => ({
                       type: 'pupil' as const,
                       name: pupilName(m),
                       image: m.pupils?.profile_image_url || null,
                       colour: m.pupils?.calendar_colour ?? ['#0B1F3A', '#CC2229', '#1877D6', '#15803D'][i % 4],
                     })),
-                    ...(unreadDMs > 0 ? dmPreviews.map((dm) => ({
+                    ...dmPreviews.slice(0, 3).map((dm) => ({
                       type: 'instructor' as const,
                       name: dm.other_name || 'DSM Instructor',
                       image: dm.other_image || null,
                       colour: '#0F766E',
-                    })) : []),
-                    ...(alerts.length > 0 ? [{
+                    })),
+                    ...(adminUnread > 0 ? [{
+                      type: 'admin' as const,
+                      name: null,
+                      image: null,
+                      colour: '#FDF0E3',
+                    }] : []),
+                    ...chatPeople,
+                    ...alerts.slice(0, 3).map(() => ({
                       type: 'alert' as const,
                       name: null,
                       image: null,
                       colour: '#FCE9E9',
-                    }] : []),
+                    })),
+                    ...quietPupils,
                   ];
                   const extraAvatarCount = avatarSources.length > 8 ? avatarSources.length - 8 : 0;
                   const visibleAvatars = avatarSources.slice(0, 8);
+
                   const totalActive = alerts.length + totalUnreadChat + pupilReplies.length + adminUnread + unreadDMs;
                   const latestActivity = [
                     localAlerts?.[0]?.created_at,
@@ -7800,7 +7844,7 @@ function HomePage() {
                           ) : (
                             <>
                               {visibleAvatars.map((s, i) => {
-                                const key = `${s.type}-${s.name ?? i}`;
+                                const key = `${s.type}-${s.name ?? ''}-${i}`;
                                 if (s.image) {
                                   return (
                                     <img
@@ -7825,6 +7869,20 @@ function HomePage() {
                                       }}
                                     >
                                       <AlertTriangle size={14} color="#CC2229" />
+                                    </div>
+                                  );
+                                }
+                                if (s.type === 'admin') {
+                                  return (
+                                    <div
+                                      key={key}
+                                      style={{
+                                        width: 28, height: 28, borderRadius: '50%', background: '#FDF0E3',
+                                        border: '2px solid #fff', marginLeft: i === 0 ? 0 : -8,
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                                      }}
+                                    >
+                                      <Megaphone size={14} color="#92400E" />
                                     </div>
                                   );
                                 }
