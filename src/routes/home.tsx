@@ -5107,6 +5107,21 @@ function HomePage() {
                         pointerEvents: 'none',
                       }} />
 
+                      {/* Payment pill */}
+                      <div style={{
+                        position: 'absolute', top: 10, right: 10, zIndex: 5,
+                        display: 'inline-flex', alignItems: 'center',
+                        background: hPillBgFinal,
+                        color: hPillFgFinal,
+                        borderRadius: 20,
+                        padding: '4px 10px',
+                        fontSize: 12, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
+                        whiteSpace: 'nowrap',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                      }}>
+                        {hLabelFinal}
+                      </div>
+
                       {/* ETA pill */}
 
                       {driveData && (
@@ -5173,19 +5188,6 @@ function HomePage() {
                         </div>
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                        <span style={{
-                          display: 'inline-flex', alignItems: 'center',
-                          background: hPillBgFinal,
-                          color: hPillFgFinal,
-                          borderRadius: 20,
-                          padding: '4px 10px',
-                          fontSize: 12, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
-                          whiteSpace: 'nowrap',
-                        }}>
-                          {hLabelFinal}
-                        </span>
-                      </div>
 
                       <button
                         type="button"
