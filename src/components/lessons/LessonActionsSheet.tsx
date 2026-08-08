@@ -533,35 +533,12 @@ export function LessonActionsSheet({
 
   return (
     <>
-      <BottomSheet title="Lesson" onClose={onClose}>
-        {/* HEADER */}
-        <div style={{ padding: "0 4px 10px", borderBottom: "1px solid #E3E7ED", marginBottom: 12 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-            <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 14, fontWeight: 600, color: NAVY }}>
-              {pupilName}
-            </span>
-            {payPill && (
-              <span
-                style={{
-                  fontFamily: "Poppins, sans-serif",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: payPill.fg,
-                  background: payPill.bg,
-                  borderRadius: 999,
-                  padding: "3px 10px",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {payPill.label}
-              </span>
-            )}
-          </div>
-          <div style={{ marginTop: 3, fontFamily: "Poppins, sans-serif", fontSize: 11, color: "#8E8E93" }}>
-            {dateLabel} · {timeLabel}
-            {durationLabel}
-          </div>
-        </div>
+      <BottomSheet
+        title={pupilName}
+        subtitle={`${dateLabel} · ${timeLabel}${durationLabel}`}
+        onClose={onClose}
+      >
+
 
         {inlineView !== "main" && (
           <button type="button" onClick={() => setInlineView("main")} style={backLink}>
