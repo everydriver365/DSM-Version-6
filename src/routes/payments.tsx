@@ -553,16 +553,16 @@ function PaymentsPage() {
           groups.map((g) => (
             <div key={g.label + g.rows[0].id}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", marginBottom: 8 }}>
-                <div style={{ fontSize: 13, fontWeight: 500, color: "#0B1F3A", ...POPPINS }}>{g.label}</div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em', ...POPPINS }}>{g.label}</div>
                 <div style={{ fontSize: 12, color: "#B0BAC9", ...POPPINS }}>{formatGBP(g.total)}</div>
               </div>
 
               <div
                 style={{
                   background: "#FFFFFF",
-                  borderRadius: 14,
+                  borderRadius: 16,
                   overflow: "hidden",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                   margin: "0 16px 14px",
                 }}
               >
@@ -575,7 +575,7 @@ function PaymentsPage() {
                     <div
                       key={row.id}
                       style={{
-                        borderBottom: i < g.rows.length - 1 ? "0.5px solid #EEF2F7" : "none",
+                        borderBottom: i < g.rows.length - 1 ? "1px solid #E4E8EF" : "none",
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 16px", minHeight: 66 }}>
