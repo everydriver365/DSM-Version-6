@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { IconChartBar } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { StatTile } from "../components/dsm/StatTile";

@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Plus, FileText } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { IconNotes } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 
 import { Card } from "../components/dsm/Card";
 import { supabase } from "../lib/supabaseClient";

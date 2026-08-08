@@ -14,6 +14,8 @@ import {
   Car,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
+import { IconCalendarOff } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
 import { LogMileageSheet } from "@/components/mileage/LogMileageSheet";

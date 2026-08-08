@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Search, X } from "lucide-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { IconClipboard } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
