@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import { Check, CheckCircle, Globe, Clock, UserPlus, CalendarDays } from "lucide-react";
-import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
 
@@ -696,36 +695,6 @@ function ActionRow({
   );
 }
 
-function Field({
-  label,
-  value,
-  onChange,
-  type = "text",
-  placeholder,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  type?: string;
-  placeholder?: string;
-}) {
-  return (
-    <div>
-      <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
-        {label}
-      </label>
-      <input
-        type={type}
-        value={value}
-        placeholder={placeholder}
-        onChange={(e) => onChange(e.target.value)}
-        className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1877D6]"
-        style={{ ...POPPINS, border: "1.5px solid #CBD5E1" }}
-      />
-    </div>
-  );
-}
-
 function ChoiceCard({
   icon,
   title,
@@ -759,27 +728,3 @@ function ChoiceCard({
   );
 }
 
-function ActionCard({
-  icon,
-  label,
-  onClick,
-  disabled,
-}: {
-  icon: ReactNode;
-  label: string;
-  onClick: () => void;
-  disabled?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className="w-full flex items-center gap-3 p-3 text-left disabled:opacity-50"
-      style={{ ...POPPINS, borderRadius: 10, background: "#E6F1FB", border: "1px solid #D3E4F7" }}
-    >
-      {icon}
-      <span className="text-[14px] font-semibold text-[#0B1F3A]">{label}</span>
-    </button>
-  );
-}
