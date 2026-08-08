@@ -86,9 +86,7 @@ export function MarketingNav() {
         top: 0,
         zIndex: 50,
         background: "#fff",
-        borderBottom: `1px solid ${BORDER}`,
-        fontFamily: "Poppins, sans-serif",
-      }}
+        borderBottom: `1px solid ${BORDER}`}}
     >
       <div
         style={{
@@ -99,8 +97,7 @@ export function MarketingNav() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: 24,
-        }}
+          gap: 24}}
         className="ed-nav-inner"
       >
         <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
@@ -114,8 +111,7 @@ export function MarketingNav() {
               color: NAVY,
               fontWeight: 800,
               fontFamily: "'Poppins', sans-serif",
-              whiteSpace: "nowrap",
-            }}
+              whiteSpace: "nowrap"}}
           >
             <span style={{ fontSize: 14 }}>Driving School</span>
             <span style={{ fontSize: 14 }}>Manager</span>
@@ -145,8 +141,7 @@ export function MarketingNav() {
               borderRadius: 6,
               lineHeight: 1,
               border: `1.5px solid ${ACCENT}`,
-              boxShadow: "0 1px 2px rgba(12,35,64,0.08)",
-            }}
+              boxShadow: "0 1px 2px rgba(12,35,64,0.08)"}}
           >
             Start free
           </Link>
@@ -161,8 +156,7 @@ export function MarketingNav() {
               padding: "12px 22px",
               borderRadius: 6,
               border: `1.5px solid ${ACCENT}`,
-              lineHeight: 1,
-            }}
+              lineHeight: 1}}
           >
             Sign in
           </Link>
@@ -190,8 +184,7 @@ export function MarketingNav() {
             background: "#fff",
             borderTop: `1px solid ${BORDER}`,
             borderBottom: `1px solid ${BORDER}`,
-            boxShadow: "0 24px 40px rgba(12,35,64,0.08)",
-          }}
+            boxShadow: "0 24px 40px rgba(12,35,64,0.08)"}}
         >
           {which === "product" && (
             <MegaPanel
@@ -278,8 +271,7 @@ export function MarketingNav() {
                 borderRadius: 6,
                 fontWeight: 700,
                 textDecoration: "none",
-                fontSize: 14,
-              }}
+                fontSize: 14}}
             >
               Start free
             </Link>
@@ -296,8 +288,7 @@ export function MarketingNav() {
                 fontWeight: 700,
                 textDecoration: "none",
                 fontSize: 14,
-                border: `1.5px solid ${ACCENT}`,
-              }}
+                border: `1.5px solid ${ACCENT}`}}
             >
               Sign in
             </Link>
@@ -404,8 +395,7 @@ function MegaPanel({
         padding: "36px 40px",
         display: "grid",
         gridTemplateColumns: "1.15fr 1fr 1fr",
-        gap: 40,
-      }}
+        gap: 40}}
     >
       <div>
         <SectionLabel>{leftTitle}</SectionLabel>
@@ -431,8 +421,7 @@ function MegaPanel({
                     alignItems: "center",
                     justifyContent: "center",
                     flexShrink: 0,
-                    transition: "background .15s ease, color .15s ease",
-                  }}
+                    transition: "background .15s ease, color .15s ease"}}
                 >
                   <Icon size={20} />
                 </div>
@@ -444,8 +433,7 @@ function MegaPanel({
                       fontSize: 15,
                       fontWeight: 700,
                       marginBottom: f.desc ? 4 : 0,
-                      transition: "color .15s ease",
-                    }}
+                      transition: "color .15s ease"}}
                   >
                     {f.label}
                   </div>
@@ -472,8 +460,7 @@ function MegaPanel({
                 fontSize: 15,
                 fontWeight: 600,
                 padding: "10px 0",
-                transition: "color .15s ease",
-              }}
+                transition: "color .15s ease"}}
             >
               {l.label}
             </Link>
@@ -501,8 +488,7 @@ function MegaPanel({
               justifyContent: "center",
               flexShrink: 0,
               boxShadow: "0 2px 6px rgba(12,35,64,0.08)",
-              transition: "background .15s ease, color .15s ease",
-            }}
+              transition: "background .15s ease, color .15s ease"}}
           >
             <PlayCircle size={22} />
           </div>
@@ -517,8 +503,7 @@ function MegaPanel({
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
-                transition: "color .15s ease",
-              }}
+                transition: "color .15s ease"}}
             >
               {rightHeadline} <ArrowUpRight size={14} />
             </div>
@@ -531,8 +516,7 @@ function MegaPanel({
                 padding: "9px 16px",
                 borderRadius: 6,
                 fontSize: 13,
-                fontWeight: 700,
-              }}
+                fontWeight: 700}}
             >
               {rightCta}
             </span>
@@ -554,8 +538,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
           letterSpacing: "0.14em",
           textTransform: "uppercase",
           paddingBottom: 12,
-          borderBottom: `1px solid ${BORDER}`,
-        }}
+          borderBottom: `1px solid ${BORDER}`}}
       >
         {children}
       </div>
