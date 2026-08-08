@@ -1643,8 +1643,8 @@ function SchedulePage() {
                                            <div
                                              aria-hidden
                                              style={{
-                                               width: 3,
-                                               borderRadius: 2,
+                                               width: 4,
+                                               borderRadius: '14px 0 0 14px',
                                                background: markerColor,
                                                flexShrink: 0,
                                                alignSelf: 'stretch',
@@ -1652,16 +1652,16 @@ function SchedulePage() {
                                            />
                                          </>
                                       ) : (
-                                        <div
-                                          aria-hidden
-                                          style={{
-                                            width: 3,
-                                            borderRadius: 2,
-                                            background: markerColor,
-                                            flexShrink: 0,
-                                            alignSelf: 'stretch',
-                                          }}
-                                        />
+                                         <div
+                                           aria-hidden
+                                           style={{
+                                             width: 4,
+                                             borderRadius: '14px 0 0 14px',
+                                             background: markerColor,
+                                             flexShrink: 0,
+                                             alignSelf: 'stretch',
+                                           }}
+                                         />
                                       )}
                                         <div style={{ flex: 1, minWidth: 0, paddingTop: isLessonRow ? 2 : 0 }}>
                                           {isTestDay && (
