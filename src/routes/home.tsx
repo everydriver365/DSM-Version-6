@@ -5223,20 +5223,23 @@ function HomePage() {
                         onClick={(e) => { e.stopPropagation(); openMaps(); }}
                         style={{
                           alignSelf: 'flex-start',
-                          background: '#0B1F3A',
-                          color: '#fff',
-                          padding: '8px 14px',
-                          borderRadius: 9,
-                          border: 'none',
+                          background: 'rgba(255,255,255,0.55)',
+                          backdropFilter: 'blur(10px)',
+                          WebkitBackdropFilter: 'blur(10px)',
+                          color: '#0B1F3A',
+                          padding: '4px 10px',
+                          borderRadius: 20,
+                          border: '1px solid rgba(255,255,255,0.6)',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
                           fontSize: 12,
                           fontWeight: 700,
                           cursor: 'pointer',
                           fontFamily: 'Poppins, sans-serif',
-                          display: 'flex', alignItems: 'center', gap: 6,
+                          display: 'flex', alignItems: 'center', gap: 5,
                         }}
                       >
-                        <Navigation size={14} color="#FFFFFF" />
-                        Navigate
+                        <Navigation size={13} color="#1877D6" />
+                        <span>Navigate</span>
                       </button>
                     </div>
                   </div>
