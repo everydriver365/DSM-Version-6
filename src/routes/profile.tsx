@@ -783,7 +783,7 @@ function ProfilePage() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="flex flex-col">
             <TextField label="First name" value={firstName} onChange={setFirstName} placeholder="Jane" />
             <TextField label="Last name" value={lastName} onChange={setLastName} placeholder="Smith" />
             <TextField
@@ -792,7 +792,7 @@ function ProfilePage() {
               onChange={setEmail}
               placeholder="you@example.com"
               type="email"
-              icon={<Mail size={16} color="#6B7280" />}
+              icon={<Mail size={16} color="#6B7686" />}
               rightSlot={emailVerified ? <VerifiedPill /> : null}
             />
             <TextField
@@ -801,37 +801,36 @@ function ProfilePage() {
               onChange={setPhone}
               placeholder="07…"
               inputMode="tel"
-              icon={<Smartphone size={16} color="#6B7280" />}
+              icon={<Smartphone size={16} color="#6B7686" />}
               rightSlot={phoneVerified ? <VerifiedPill /> : null}
             />
-            <div className="sm:col-span-2">
-              <AddressLookup
-                initialPostcode={homePostcode}
-                initialAddress={address}
-                initialCity={homeCity}
-                onAddressFound={({ postcode, address: addr, city, lat, lng }) => {
-                  setAddress(addr);
-                  setHomePostcode(postcode);
-                  setHomeCity(city);
-                  setHomeLat(lat);
-                  setHomeLng(lng);
-                  setAddressSaved(false);
-                }}
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <SelectField
-                label="Timezone"
-                value={timezone}
-                onChange={setTimezone}
-                options={[
-                  { value: "Europe/London", label: "Europe/London" },
-                  { value: "Europe/Dublin", label: "Europe/Dublin" },
-                  { value: "Europe/Paris", label: "Europe/Paris" },
-                  { value: "UTC", label: "UTC" },
-                ]}
-              />
-            </div>
+            <SelectField
+              label="Timezone"
+              value={timezone}
+              onChange={setTimezone}
+              last
+              options={[
+                { value: "Europe/London", label: "Europe/London" },
+                { value: "Europe/Dublin", label: "Europe/Dublin" },
+                { value: "Europe/Paris", label: "Europe/Paris" },
+                { value: "UTC", label: "UTC" },
+              ]}
+            />
+          </div>
+          <div className="mt-3">
+            <AddressLookup
+              initialPostcode={homePostcode}
+              initialAddress={address}
+              initialCity={homeCity}
+              onAddressFound={({ postcode, address: addr, city, lat, lng }) => {
+                setAddress(addr);
+                setHomePostcode(postcode);
+                setHomeCity(city);
+                setHomeLat(lat);
+                setHomeLng(lng);
+                setAddressSaved(false);
+              }}
+            />
           </div>
         </AccordionCard>
 
