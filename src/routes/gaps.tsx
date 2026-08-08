@@ -2411,101 +2411,61 @@ function GapsPage() {
                 return next;
               });
 
-            if (filteredRanked.length === 0) {
-              return (
-                <div
-                  style={{
-                    padding: 16,
-                    textAlign: "center",
-                    color: MUTED,
-                    fontSize: 13,
-                  }}
-                >
-                  No pupils match "{pupilSearchQuery}"
-                </div>
-              );
-            }
-
-            return filteredRanked.map((r) => {
-              const name = fullNameOf(r.pupil);
-              const parts = name.trim().split(/\s+/);
-              const initials =
-                ((parts[0]?.[0] ?? "") +
-                  (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase() ||
-                "?";
-              const checked = selectedPupilIds.has(r.pupil.id);
-              return (
-                <div
-                  key={r.pupil.id}
-                  onClick={() => toggle(r.pupil.id)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    padding: "10px 0",
-                    cursor: "pointer",
-                  }}
-                >
-                  <div
-                    aria-label={checked ? "Deselect" : "Select"}
-                    style={{
-                      width: 20,
-                      height: 20,
-                      borderRadius: 4,
-                      border: checked ? "none" : "1.5px solid #9CA3AF",
-                      background: checked ? "#1877D6" : "#FFFFFF",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}
-                  >
-                    {checked && (
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path
-                          d="M2 6.5L5 9.5L10 3"
-                          stroke="white"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: 999,
-                      background: r.pupil.calendar_colour ?? "#6B7280",
-                      color: "#FFFFFF",
-                      fontSize: 12,
-                      fontWeight: 700,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}
-                  >
-                    {initials}
-                  </div>
-                  <div
-                    style={{
-                      flex: 1,
-                      minWidth: 0,
-                      fontSize: 14,
-                      color: NAVY,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {name}
-                  </div>
-                </div>
-              );
-            });
+            return (
+              <SheetGroup>
+                <SheetSearchRow
+                  value={pupilSearchQuery}
+                  onChange={setPupilSearchQuery}
+                  placeholder="Search pupils…"
+                />
+                {filteredRanked.length === 0 ? (
+                  <SheetRow>
+                    <div style={{ color: MUTED, fontSize: 13 }}>
+                      No pupils match "{pupilSearchQuery}"
+                    </div>
+                  </SheetRow>
+                ) : (
+                  filteredRanked.map((r) => {
+                    const name = fullNameOf(r.pupil);
+                    const parts = name.trim().split(/\s+/);
+                    const initials =
+                      ((parts[0]?.[0] ?? "") +
+                        (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase() ||
+                      "?";
+                    const checked = selectedPupilIds.has(r.pupil.id);
+                    return (
+                      <SheetRadioRow
+                        key={r.pupil.id}
+                        title={name}
+                        selected={checked}
+                        onSelect={() => toggle(r.pupil.id)}
+                        leading={
+                          <div
+                            style={{
+                              width: 32,
+                              height: 32,
+                              borderRadius: 999,
+                              background: r.pupil.calendar_colour ?? "#6B7280",
+                              color: "#FFFFFF",
+                              fontSize: 12,
+                              fontWeight: 700,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              flexShrink: 0,
+                            }}
+                          >
+                            {initials}
+                          </div>
+                        }
+                      />
+                    );
+                  })
+                )}
+              </SheetGroup>
+            );
           })()}
+
         </BottomSheetV2>
       )}
 
