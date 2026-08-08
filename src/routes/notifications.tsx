@@ -221,165 +221,222 @@ function NotificationsPage() {
 
       <div className="px-4">
         {items === null ? null : items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-2">
-            <Bell size={32} color="#6B7280" />
-            <p className="text-[14px] text-[#6B7280]" style={POPPINS}>
-              No notifications
-            </p>
-          </div>
+          <EmptyState
+            icon={<IconBell size={32} color="#9CA3AF" stroke={1.5} />}
+            title="All caught up"
+            subtitle="No notifications yet"
+          />
         ) : (
           groups.map((g) => (
-            <div key={g.label}>
-              <SectionHeader>{g.label}</SectionHeader>
-              <div className="flex flex-col gap-2">
-                {g.items.map((n) => {
+            <div key={g.label} style={{ marginTop: 18 }}>
+              <div
+                style={{
+                  ...POPPINS,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#9CA3AF",
+                  textTransform: "uppercase",
+                  letterSpacing: 0.3,
+                  marginLeft: 16,
+                  marginBottom: 8,
+                }}
+              >
+                {g.label}
+              </div>
+              <div
+                style={{
+                  background: "#FFFFFF",
+                  borderRadius: 16,
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                  overflow: "hidden",
+                }}
+              >
+                {g.items.map((n, index) => {
                   const ic = typeIcon(n.type);
+                  const isLast = index === g.items.length - 1;
                   return (
-                    <div
-                      key={n.id}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => {
-                        markRead(n.id);
-                        if (n.reference_type === "job_offer" && n.reference_id) {
-                          navigate({ to: "/messages", search: { jobOfferId: n.reference_id } as never });
-                        } else if (n.type === "booking" || n.reference_type === "course_booking") {
-                          if (n.reference_id) {
-                            navigate({ to: "/bookings/$id", params: { id: n.reference_id } });
-                          } else {
-                            navigate({ to: "/schedule" });
-                          }
-                        } else if (n.type === "enquiry") {
-                          navigate({ to: "/enquiries" });
-                        } else if (n.type === "message") {
-                          navigate({ to: "/messages" });
-                        } else if (n.type === "tracking") {
-                          navigate({ to: "/live" });
-                        } else if (n.type === "quote_accepted") {
-                          navigate({ to: "/quotes" });
-                        } else if (n.type === "pupil_reply") {
-                          if (n.reference_id) {
-                            navigate({ to: "/messages/$pupilId", params: { pupilId: n.reference_id } as never });
-                          } else {
+                    <div key={n.id}>
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          markRead(n.id);
+                          if (n.reference_type === "job_offer" && n.reference_id) {
+                            navigate({ to: "/messages", search: { jobOfferId: n.reference_id } as never });
+                          } else if (n.type === "booking" || n.reference_type === "course_booking") {
+                            if (n.reference_id) {
+                              navigate({ to: "/bookings/$id", params: { id: n.reference_id } });
+                            } else {
+                              navigate({ to: "/schedule" });
+                            }
+                          } else if (n.type === "enquiry") {
+                            navigate({ to: "/enquiries" });
+                          } else if (n.type === "message") {
                             navigate({ to: "/messages" });
+                          } else if (n.type === "tracking") {
+                            navigate({ to: "/live" });
+                          } else if (n.type === "quote_accepted") {
+                            navigate({ to: "/quotes" });
+                          } else if (n.type === "pupil_reply") {
+                            if (n.reference_id) {
+                              navigate({ to: "/messages/$pupilId", params: { pupilId: n.reference_id } as never });
+                            } else {
+                              navigate({ to: "/messages" });
+                            }
+                          } else if (n.type === "gap_accepted" || n.type === "gap_message_sent") {
+                            navigate({ to: "/gaps" });
                           }
-                        } else if (n.type === "gap_accepted" || n.type === "gap_message_sent") {
-                          navigate({ to: "/gaps" });
-                        }
-                      }}
-                      className="w-full text-left rounded-xl overflow-hidden cursor-pointer"
-                      style={{
-                        backgroundColor: n.read ? "#F8F9FB" : "#EEF4FB",
-                        borderWidth: "0.5px",
-                        borderStyle: "solid",
-                        borderColor: "#EEF2F7",
-                        borderLeftWidth: n.read ? "0.5px" : "3px",
-                        borderLeftColor: n.read ? "#EEF2F7" : "#1877D6",
-                      }}
-                    >
-                      <div className="flex items-start gap-3 p-3">
-                        <div
-                          className="flex items-center justify-center rounded-full shrink-0"
-                          style={{ width: 36, height: 36, backgroundColor: ic.bg }}
-                        >
-                          {ic.node}
-                        </div>
-                        <div className="min-w-0 flex-1">
+                        }}
+                        className="w-full text-left cursor-pointer"
+                        style={{
+                          background: n.read ? "#FFFFFF" : "#F5F9FF",
+                          padding: "13px 16px",
+                          position: "relative",
+                        }}
+                      >
+                        <div className="flex items-start gap-3">
+                          {/* Unread indicator */}
                           <div
-                            className="text-[14px] font-semibold text-[#0B1F3A] truncate"
-                            style={POPPINS}
+                            style={{
+                              width: 7,
+                              flexShrink: 0,
+                              display: "flex",
+                              justifyContent: "center",
+                              marginTop: 6,
+                            }}
                           >
-                            {typeTitle(n.type, n.title)}
+                            {!n.read && (
+                              <div
+                                style={{
+                                  width: 7,
+                                  height: 7,
+                                  borderRadius: "50%",
+                                  background: "#1877D6",
+                                }}
+                              />
+                            )}
                           </div>
-                          {n.body && (
+
+                          {/* Icon */}
+                          <div
+                            className="flex items-center justify-center rounded-full shrink-0"
+                            style={{ width: 36, height: 36, backgroundColor: ic.bg }}
+                          >
+                            {ic.node}
+                          </div>
+
+                          {/* Content */}
+                          <div className="min-w-0 flex-1">
                             <div
-                              className="text-[13px] text-[#6B7280] mt-0.5"
+                              className="text-[14px] font-semibold text-[#0B1F3A] truncate"
                               style={POPPINS}
                             >
-                              {n.body}
+                              {typeTitle(n.type, n.title)}
                             </div>
-                          )}
-                          {n.type === "lesson_cancelled_by_pupil" && (
-                            <div className="flex items-center gap-2 mt-2">
-                              {n.reference_id && (
+                            {n.body && (
+                              <div
+                                className="text-[13px] text-[#6B7280] mt-0.5"
+                                style={POPPINS}
+                              >
+                                {n.body}
+                              </div>
+                            )}
+                            <div
+                              className="text-[11px] text-[#9CA3AF] mt-0.5"
+                              style={POPPINS}
+                            >
+                              {formatTime(n.created_at)}
+                            </div>
+                            {n.type === "lesson_cancelled_by_pupil" && (
+                              <div className="flex items-center gap-2 mt-2">
+                                {n.reference_id && (
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      markRead(n.id);
+                                      navigate({ to: "/lessons/$id", params: { id: n.reference_id! } });
+                                    }}
+                                    className="text-[12px] font-semibold"
+                                    style={{ color: "#0B1F3A", background: "none", border: "none", padding: 0, cursor: "pointer", ...POPPINS }}
+                                  >
+                                    View lesson →
+                                  </button>
+                                )}
                                 <button
                                   type="button"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     markRead(n.id);
-                                    navigate({ to: "/lessons/$id", params: { id: n.reference_id! } });
+                                    navigate({ to: "/gaps" });
+                                  }}
+                                  className="text-[12px] font-semibold text-white"
+                                  style={{ background: "#D97706", border: "none", borderRadius: 8, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
+                                >
+                                  Fill slot →
+                                </button>
+                              </div>
+                            )}
+                            {n.type === "reschedule_request" && (
+                              <div className="flex items-center gap-2 mt-2">
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    markRead(n.id);
+                                    navigate({ to: "/messages" });
                                   }}
                                   className="text-[12px] font-semibold"
                                   style={{ color: "#0B1F3A", background: "none", border: "none", padding: 0, cursor: "pointer", ...POPPINS }}
                                 >
-                                  View lesson →
+                                  View message →
                                 </button>
-                              )}
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  markRead(n.id);
-                                  navigate({ to: "/gaps" });
-                                }}
-                                className="text-[12px] font-semibold text-white"
-                                style={{ background: "#D97706", border: "none", borderRadius: 8, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
-                              >
-                                Fill slot →
-                              </button>
-                            </div>
-                          )}
-                          {n.type === "reschedule_request" && (
-                            <div className="flex items-center gap-2 mt-2">
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  markRead(n.id);
-                                  navigate({ to: "/messages" });
-                                }}
-                                className="text-[12px] font-semibold"
-                                style={{ color: "#0B1F3A", background: "none", border: "none", padding: 0, cursor: "pointer", ...POPPINS }}
-                              >
-                                View message →
-                              </button>
-                              {n.reference_id && (
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    markRead(n.id);
-                                    navigate({ to: "/lessons/reschedule/$id", params: { id: n.reference_id! } });
-                                  }}
-                                  className="text-[12px] font-semibold text-white"
-                                  style={{ background: "#1877D6", border: "none", borderRadius: 8, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
-                                >
-                                  Reschedule →
-                                </button>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex flex-col items-end gap-1 shrink-0">
-                          <div
-                            className="text-[11px] text-[#6B7280]"
-                            style={POPPINS}
-                          >
-                            {formatTime(n.created_at)}
+                                {n.reference_id && (
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      markRead(n.id);
+                                      navigate({ to: "/lessons/reschedule/$id", params: { id: n.reference_id! } });
+                                    }}
+                                    className="text-[12px] font-semibold text-white"
+                                    style={{ background: "#1877D6", border: "none", borderRadius: 8, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
+                                  >
+                                    Reschedule →
+                                  </button>
+                                )}
+                              </div>
+                            )}
                           </div>
-                          <button
-                            type="button"
-                            aria-label="Remove notification"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              deleteOne(n.id);
-                            }}
-                            className="flex items-center justify-center -mr-1 -mb-1 p-1 rounded hover:bg-black/5"
-                          >
-                            <X size={16} color="#9CA3AF" />
-                          </button>
+
+                          {/* Chevron + delete */}
+                          <div className="flex flex-col items-center gap-0.5 shrink-0" style={{ marginTop: 2 }}>
+                            <button
+                              type="button"
+                              aria-label="Remove notification"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteOne(n.id);
+                              }}
+                              className="flex items-center justify-center p-1 rounded hover:bg-black/5"
+                            >
+                              <X size={16} color="#9CA3AF" />
+                            </button>
+                            <IconChevronRight size={18} color="#9CA3AF" />
+                          </div>
                         </div>
                       </div>
+
+                      {/* Hairline divider — not on last */}
+                      {!isLast && (
+                        <div
+                          style={{
+                            height: 1,
+                            background: "#E4E8EF",
+                            marginLeft: 62,
+                          }}
+                        />
+                      )}
                     </div>
                   );
                 })}
