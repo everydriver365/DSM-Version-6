@@ -6639,13 +6639,13 @@ function HomePage() {
               type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late' | 'nearby' | 'take-payment' | 'add-expense' | 'log-mileage' | 'send-message'; badge?: number; graphic?: GraphicKind };
               const quickTiles: QuickTile[] = [
                 // First four
-                { label: 'Fill slots', sub: 'Gaps', route: '/gaps', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0, badge: freeSlotCount, graphic: 'timeline' },
-                { label: 'Schedule', sub: 'View diary', route: null, icon: IconCalendar, iconStroke: '#1877D6', chipBg: '#E6F1FB', wsIndex: 1, graphic: 'calendar' },
-                { label: 'Take payment', sub: 'Card & QR', route: null, icon: IconCreditCard, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', action: 'take-payment', graphic: 'card' },
-                { label: 'Nearby', sub: 'Find places', route: null, icon: IconMapPin, iconStroke: '#1877D6', chipBg: '#E6F1FB', action: 'nearby', graphic: 'location' },
+                { label: 'Fill Empty Slots', sub: 'Gaps', route: '/gaps', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0, badge: freeSlotCount, graphic: 'timeline' },
+                { label: 'My Schedule', sub: 'View diary', route: null, icon: IconCalendar, iconStroke: '#1877D6', chipBg: '#E6F1FB', wsIndex: 1, graphic: 'calendar' },
+                { label: 'Take a Payment', sub: 'Card & QR', route: null, icon: IconCreditCard, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', action: 'take-payment', graphic: 'card' },
+                { label: 'Find Nearby', sub: 'Find places', route: null, icon: IconMapPin, iconStroke: '#1877D6', chipBg: '#E6F1FB', action: 'nearby', graphic: 'location' },
                 // Page 2 — Teaching
                 { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, iconStroke: '#6B4FA0', chipBg: '#EAE3F5', graphic: 'donut' },
-                { label: 'Courses', sub: 'My courses', route: '/courses', icon: GraduationCap, iconStroke: '#DC2626', chipBg: '#FBE2E2', graphic: 'grad' },
+                { label: 'Courses', sub: 'List your\u00a0 courses', route: '/courses', icon: GraduationCap, iconStroke: '#DC2626', chipBg: '#FBE2E2', graphic: 'grad' },
                 { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} owed` : 'All settled', route: '/payments', icon: IconCurrencyPound, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0, badge: outstanding > 0 ? Math.round(outstanding) : undefined, graphic: 'chart' },
                 { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#1877D6', chipBg: '#E6F1FB', attention: unreadCount > 0, graphic: 'bubbles' },
 
