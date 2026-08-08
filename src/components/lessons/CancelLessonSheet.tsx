@@ -1,13 +1,25 @@
 import { useEffect, useState } from "react";
-import { X } from "lucide-react";
 import { toast } from "sonner";
+import { IconAlertTriangle } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { CancelSummaryPanel } from "@/components/lessons/CancelSummaryPanel";
 import { recordRefund } from "@/lib/payments";
 import { describeChargeOption } from "@/lib/cancelCharge";
 import { cancelLessonWithUndo, UNDO_WINDOW_MS } from "@/lib/cancelLesson";
+import {
+  BottomSheet,
+  GhostButton,
+  PrimaryButton,
+  SectionLabel,
+  SheetDivider,
+  SheetGroup,
+  SheetRadio,
+  SheetRow,
+} from "@/components/dsm/BottomSheetV2";
 
-const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const NAVY = "#0B1F3A";
+const SUBTLE = "#6B7686";
+const RED = "#CC2229";
 
 const CANCEL_REASONS = [
   "Pupil cancelled",
@@ -19,6 +31,7 @@ const CANCEL_REASONS = [
 ] as const;
 
 type CancellationTier = { hours: number; charge_percent: number };
+type FeeChoice = "charge" | "waive" | "none";
 
 export function CancelLessonSheet({
   open,
@@ -48,6 +61,7 @@ export function CancelLessonSheet({
   const [reason, setReason] = useState<string>("");
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [feeChoice, setFeeChoice] = useState<FeeChoice | null>(null);
   const [tiers, setTiers] = useState<CancellationTier[]>([
     { hours: 24, charge_percent: 100 },
     { hours: 48, charge_percent: 50 },
@@ -59,6 +73,7 @@ export function CancelLessonSheet({
       setReason("");
       setNotes("");
       setSubmitting(false);
+      setFeeChoice(null);
     }
   }, [open]);
 
@@ -219,176 +234,150 @@ export function CancelLessonSheet({
     onCancelled();
   }
 
+  function handleConfirm() {
+    if (feeChoice === "charge") {
+      void performCancel(chargeAmount, false);
+    } else if (feeChoice === "waive") {
+      void performCancel(0, true);
+    } else if (feeChoice === "none") {
+      void performCancel(0, false);
+    }
+  }
 
   if (!open) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center" style={POPPINS}>
-      <div
-        className="absolute inset-0"
-        style={{ backgroundColor: "rgba(11,31,58,0.5)" }}
-        onClick={onClose}
-        aria-hidden
-      />
-      <div
-        className="relative w-full bg-white"
-        style={{
-          borderTopLeftRadius: 16,
-          borderTopRightRadius: 16,
-          maxHeight: "92vh",
-          overflowY: "auto",
-          paddingBottom: 24,
-        }}
-      >
-        <div className="flex items-center justify-between px-4 pt-4">
-          <span className="text-[11px] font-semibold tracking-wider" style={{ color: "#6B7280" }}>
-            CANCEL LESSON
-          </span>
-          <button
-            type="button"
-            aria-label="Close"
-            onClick={onClose}
-            className="flex items-center justify-center"
-            style={{ width: 32, height: 32 }}
-          >
-            <X size={18} color="#6B7280" />
-          </button>
-        </div>
+  const canConfirm = !!reason && !!feeChoice && !submitting;
 
-        <div className="px-4 mt-2">
-          <div className="rounded-[12px] p-3" style={{ backgroundColor: "#F3F4F6" }}>
-            <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A" }}>{pupilName}</div>
-            <div className="text-[12px]" style={{ color: "#6B7280" }}>{when}</div>
+  return (
+    <BottomSheet
+      title="Cancel lesson"
+      subtitle={`${pupilName} · ${when}`}
+      onClose={onClose}
+      footer={
+        <>
+          <PrimaryButton color={RED} onClick={handleConfirm} disabled={!canConfirm}>
+            {submitting ? "Cancelling…" : "Confirm cancellation"}
+          </PrimaryButton>
+          <GhostButton color={NAVY} bg="#E9EDF3" onClick={onClose}>
+            Keep lesson
+          </GhostButton>
+        </>
+      }
+    >
+      {/* Section 1 — warning */}
+      <SheetGroup>
+        <div
+          className="flex items-start gap-3"
+          style={{ padding: "15px 16px", background: "#FFF8E8" }}
+        >
+          <IconAlertTriangle size={20} color="#B7791F" style={{ flexShrink: 0, marginTop: 1 }} />
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#8A5A00" }}>
+              This will cancel the lesson
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 500, color: "#8A6D3B", marginTop: 2 }}>
+              Notice given: {Math.max(0, Math.round(hoursUntilLesson))} hours
+              {applicableTier || isNoShow
+                ? ` — a cancellation fee may apply based on your policy.`
+                : ` — sufficient notice, no charge applies.`}
+            </div>
           </div>
         </div>
+      </SheetGroup>
 
-        {/* Step 1 — reason */}
-        <div className="px-4 mt-4">
-          <label className="text-[12px] font-semibold" style={{ color: "#0B1F3A" }}>
-            Cancellation reason *
-          </label>
-          <select
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            className="w-full mt-1 px-3 bg-white"
-            style={{ height: 44, borderRadius: 8, border: "1px solid #EEF2F7", color: "#0B1F3A", fontSize: 14, ...POPPINS }}
-          >
-            <option value="" disabled>Select a reason</option>
-            {CANCEL_REASONS.map((r) => (
-              <option key={r} value={r}>{r}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Optional notes */}
-        <div className="px-4 mt-4">
-          <label className="text-[12px] font-semibold" style={{ color: "#0B1F3A" }}>
-            Additional notes
-          </label>
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            rows={2}
-            className="w-full mt-1 px-3 py-2 bg-white"
-            style={{ borderRadius: 8, border: "1px solid #EEF2F7", color: "#0B1F3A", fontSize: 14, resize: "none", ...POPPINS }}
-          />
-        </div>
-
-        {/* Step 2 — charge calculation (shown once reason is selected) */}
-        {reason && (
-          <>
-            <div
-              className="mx-4"
-              style={{
-                marginTop: 12,
-                background: "#FEF2F2",
-                border: "0.5px solid #FECACA",
-                borderRadius: 12,
-                padding: 16,
+      {/* Section 2 — reason */}
+      <SectionLabel>REASON</SectionLabel>
+      <SheetGroup>
+        <SheetRow>
+          <div className="flex-1 min-w-0">
+            <div style={{ fontSize: 13, fontWeight: 500, color: SUBTLE }}>Cancellation reason *</div>
+            <select
+              value={reason}
+              onChange={(e) => {
+                setReason(e.target.value);
+                setFeeChoice(null);
               }}
+              className="w-full mt-1 bg-transparent focus:outline-none"
+              style={{ fontSize: 16, fontWeight: 600, color: NAVY, fontFamily: "Poppins, sans-serif" }}
             >
-              <div className="text-[14px]" style={{ color: "#0F2044", ...POPPINS }}>
-                Notice given: {Math.max(0, Math.round(hoursUntilLesson))} hours
+              <option value="" disabled>Select a reason</option>
+              {CANCEL_REASONS.map((r) => (
+                <option key={r} value={r}>{r}</option>
+              ))}
+            </select>
+          </div>
+        </SheetRow>
+        <SheetDivider />
+        <SheetRow>
+          <div className="flex-1 min-w-0">
+            <div style={{ fontSize: 13, fontWeight: 500, color: SUBTLE }}>Additional notes</div>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              rows={2}
+              placeholder="Optional"
+              className="w-full mt-1 bg-transparent focus:outline-none"
+              style={{ fontSize: 15, fontWeight: 500, color: NAVY, resize: "none", fontFamily: "Poppins, sans-serif" }}
+            />
+          </div>
+        </SheetRow>
+      </SheetGroup>
+
+      {/* Section 3 — fee options */}
+      {reason && (
+        <>
+          <SectionLabel>CANCELLATION FEE</SectionLabel>
+          <SheetGroup>
+            {chargeAmount > 0 && (
+              <>
+                <SheetRow selected={feeChoice === "charge"} onClick={() => setFeeChoice("charge")}>
+                  <SheetRadio selected={feeChoice === "charge"} />
+                  <div className="flex-1 min-w-0 text-left">
+                    <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>
+                      Apply £{chargeAmount.toFixed(2)} charge
+                    </div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: SUBTLE }}>
+                      {chargePercent}% ·{" "}
+                      {isNoShow ? "no-show policy" : `less than ${noticePeriod}h notice`}
+                    </div>
+                  </div>
+                </SheetRow>
+                <SheetDivider />
+                <SheetRow selected={feeChoice === "waive"} onClick={() => setFeeChoice("waive")}>
+                  <SheetRadio selected={feeChoice === "waive"} />
+                  <div className="flex-1 min-w-0 text-left">
+                    <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>Waive charge</div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: SUBTLE }}>
+                      Cancel with no fee, this once
+                    </div>
+                  </div>
+                </SheetRow>
+                <SheetDivider />
+              </>
+            )}
+            <SheetRow selected={feeChoice === "none"} onClick={() => setFeeChoice("none")}>
+              <SheetRadio selected={feeChoice === "none"} />
+              <div className="flex-1 min-w-0 text-left">
+                <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>
+                  {chargeAmount > 0 ? "Cancel without charge" : "No charge applies"}
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 500, color: SUBTLE }}>
+                  {chargeAmount > 0 ? "Skip any cancellation fee" : "Sufficient notice given"}
+                </div>
               </div>
-              {chargePercent > 0 ? (
-                <>
-                  <div className="mt-2" style={{ fontWeight: 700, fontSize: 15, color: "#CC2229", ...POPPINS }}>
-                    Cancellation charge applies: {chargePercent}% = £{chargeAmount.toFixed(2)}
-                  </div>
-                  <div className="text-[12px] mt-1" style={{ color: "#9CA3AF", ...POPPINS }}>
-                    {isNoShow
-                      ? "Based on your no-show policy"
-                      : `Based on your policy: less than ${noticePeriod} hours notice`}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="mt-2 text-[14px]" style={{ fontWeight: 600, color: "#16A34A", ...POPPINS }}>
-                    No charge applies
-                  </div>
-                  <div className="text-[12px] mt-1" style={{ color: "#9CA3AF", ...POPPINS }}>
-                    Sufficient notice given
-                  </div>
-                </>
-              )}
-            </div>
+            </SheetRow>
+          </SheetGroup>
 
-            {/* Summary */}
-            <div className="px-4">
-              <CancelSummaryPanel
-                reason={reason}
-                notes={notes}
-                chargeOption={chargeAmount > 0 ? "fee" : "none"}
-                cancelFee={chargeAmount > 0 ? chargeAmount : undefined}
-                amountDue={amountDue}
-                paymentStatus={paymentStatus}
-              />
-            </div>
-
-
-            <div className="px-4 mt-4 flex flex-col gap-2">
-              {chargeAmount > 0 && (
-                <button
-                  type="button"
-                  onClick={() => performCancel(chargeAmount, false)}
-                  disabled={submitting}
-                  className="inline-flex items-center justify-center text-[14px] font-semibold text-white disabled:opacity-50"
-                  style={{ height: 44, borderRadius: 8, backgroundColor: "#CC2229", ...POPPINS }}
-                >
-                  {submitting ? "Applying…" : `Apply £${chargeAmount.toFixed(2)} charge`}
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => performCancel(0, true)}
-                disabled={submitting}
-                className="inline-flex items-center justify-center text-[14px] font-semibold disabled:opacity-50"
-                style={{ height: 44, borderRadius: 8, backgroundColor: "#F3F4F6", color: "#6B7280", ...POPPINS }}
-              >
-                Waive charge
-              </button>
-              <button
-                type="button"
-                onClick={() => performCancel(0, false)}
-                disabled={submitting}
-                className="inline-flex items-center justify-center text-[14px] font-medium disabled:opacity-50"
-                style={{ height: 44, borderRadius: 8, backgroundColor: "#FFFFFF", border: "0.5px solid #E2E6ED", color: "#9CA3AF", ...POPPINS }}
-              >
-                Cancel without charge
-              </button>
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={submitting}
-                className="inline-flex items-center justify-center text-[13px] font-medium disabled:opacity-50"
-                style={{ height: 40, borderRadius: 8, backgroundColor: "transparent", color: "#0B1F3A", ...POPPINS }}
-              >
-                Keep lesson
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
+          <CancelSummaryPanel
+            reason={reason}
+            notes={notes}
+            chargeOption={chargeAmount > 0 ? "fee" : "none"}
+            cancelFee={chargeAmount > 0 ? chargeAmount : undefined}
+            amountDue={amountDue}
+            paymentStatus={paymentStatus}
+          />
+        </>
+      )}
+    </BottomSheet>
   );
 }
