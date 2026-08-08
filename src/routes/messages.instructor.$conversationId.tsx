@@ -329,6 +329,47 @@ function InstructorDMThread() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  /** Insert one message, keeping its optimistic row's delivery state in sync. */
+  async function deliver(localId: string, text: string, otherId: string) {
+    setMessages((prev) =>
+      prev.map((m) => (m.id === localId ? { ...m, delivery: "sending" } : m)),
+    );
+
+    const { data, error } = await supabase
+      .from("instructor_messages")
+      .insert({
+        conversation_id: conversationId,
+        from_instructor_id: userId,
+        to_instructor_id: otherId,
+        body: text,
+      } as never)
+      .select("*")
+      .single();
+
+    if (error || !data) {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === localId ? { ...m, delivery: "failed" } : m)),
+      );
+      return;
+    }
+
+    const row = data as unknown as DMMessage;
+    setMessages((prev) => {
+      const withoutDupe = prev.filter((m) => m.id !== row.id);
+      return withoutDupe.map((m) =>
+        m.id === localId ? { ...row, delivery: "sent" } : m,
+      );
+    });
+
+    await supabase
+      .from("instructor_conversations")
+      .update({
+        last_message: text,
+        last_message_at: new Date().toISOString(),
+      } as never)
+      .eq("id", conversationId);
+  }
+
   async function sendMessage() {
     if (!body.trim() || !conversation || !userId || sending) return;
     setSending(true);
@@ -340,23 +381,34 @@ function InstructorDMThread() {
         ? conversation.instructor_b_id
         : conversation.instructor_a_id;
 
-    await supabase.from("instructor_messages").insert({
-      conversation_id: conversationId,
-      from_instructor_id: userId,
-      to_instructor_id: otherId,
-      body: text,
-    } as never);
+    const localId = `local-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: localId,
+        conversation_id: conversationId,
+        from_instructor_id: userId,
+        to_instructor_id: otherId,
+        body: text,
+        created_at: new Date().toISOString(),
+        read_at: null,
+        delivery: "sending",
+      },
+    ]);
 
-    await supabase
-      .from("instructor_conversations")
-      .update({
-        last_message: text,
-        last_message_at: new Date().toISOString(),
-      } as never)
-      .eq("id", conversationId);
-
+    await deliver(localId, text, otherId);
     setSending(false);
   }
+
+  async function retryMessage(m: DMMessage) {
+    if (!conversation || !userId) return;
+    const otherId =
+      conversation.instructor_a_id === userId
+        ? conversation.instructor_b_id
+        : conversation.instructor_a_id;
+    await deliver(m.id, m.body ?? "", otherId);
+  }
+
 
   const other = firstName(otherInstructor?.name);
 
