@@ -386,46 +386,23 @@ function AdminJobOffers() {
   return (
     <>
     <div style={{ background: "#DCE4F0", minHeight: "100vh", ...POPPINS, paddingBottom: 32 }}>
-      {/* Header */}
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 30,
-          background: BLUE,
-          color: "#fff",
-          padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-        }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/admin" })}
-          aria-label="Back"
-          style={{
-            width: 32, height: 32, borderRadius: "50%",
-            background: "rgba(255,255,255,0.15)", border: "none",
-            display: "inline-flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", color: "#fff",
-          }}
-        >
-          <ChevronLeft size={18} />
-        </button>
-        <span style={{ fontSize: 16, fontWeight: 600, flex: 1 }}>Job offers</span>
-        <button
-          type="button"
-          onClick={openNew}
-          style={{
-            background: "#fff", color: BLUE, border: "none", borderRadius: 8,
-            padding: "8px 12px", fontSize: 13, fontWeight: 600, cursor: "pointer",
-            display: "inline-flex", alignItems: "center", gap: 6,
-          }}
-        >
-          <Plus size={14} /> New
-        </button>
-      </div>
+      <PageHeader
+        title="Job Offers"
+        backTo="/admin"
+        right={
+          <button
+            type="button"
+            onClick={openNew}
+            style={{
+              background: "#fff", color: BLUE, border: "none", borderRadius: 8,
+              padding: "8px 12px", fontSize: 13, fontWeight: 600, cursor: "pointer",
+              display: "inline-flex", alignItems: "center", gap: 6,
+            }}
+          >
+            <Plus size={14} /> New
+          </button>
+        }
+      />
 
       {/* List */}
       <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 10 }}>
