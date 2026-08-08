@@ -3482,50 +3482,60 @@ function PupilDetailPage() {
 
               {/* Manage Lesson Card */}
               {!isCancelled && (
-                <div style={{ background: "#FFFFFF", borderRadius: 16, border: "0.5px solid rgba(11,31,58,0.10)", overflow: "hidden", marginTop: 12 }}>
-                  <button style={rowBtn} onClick={() => navigate({ to: "/lessons/reschedule/$id", params: { id: focus!.id } })}>
-                    <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <IconRefresh stroke={1.5} size={16} color="#1877D6" /> Reschedule
-                    </span>
-                    <IconChevronRight stroke={1.5} size={18} color="#64748B" />
-                  </button>
-                  <div style={{ height: "0.5px", background: "rgba(11,31,58,0.10)" }} />
-                  <button style={rowBtn} onClick={sendPaymentLink} disabled={balance <= 0 || isPaid}>
-                    <span style={{ display: "flex", alignItems: "center", gap: 10, opacity: (balance <= 0 || isPaid) ? 0.5 : 1 }}>
-                      <IconCreditCard stroke={1.5} size={16} color="#1877D6" /> Send payment link
-                    </span>
-                    <IconChevronRight stroke={1.5} size={18} color="#64748B" />
-                  </button>
-                  <div style={{ height: "0.5px", background: "rgba(11,31,58,0.10)" }} />
-                  <button style={rowBtn} onClick={() => navigate({ to: "/lessons/$id", params: { id: focus!.id }, search: { action: "cancel" } })}>
-                    <span style={{ display: "flex", alignItems: "center", gap: 10, color: "#B42318" }}>
-                      <IconX stroke={1.5} size={16} color="#B42318" /> Cancel lesson
-                    </span>
-                    <IconChevronRight stroke={1.5} size={18} color="#64748B" />
-                  </button>
-                </div>
+                <>
+                  <h3 style={sectionTitle}>Manage lesson</h3>
+                  <div style={groupCard}>
+                    <button style={rowBtn} onClick={() => navigate({ to: "/lessons/reschedule/$id", params: { id: focus!.id } })}>
+                      <span style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <span style={rowChip("#0B1F3A")}><IconRefresh stroke={1.5} size={17} /></span> Reschedule
+                      </span>
+                      <IconChevronRight stroke={1.5} size={18} color="#C4C4C8" />
+                    </button>
+                    {hairline}
+                    <button style={rowBtn} onClick={sendPaymentLink} disabled={balance <= 0 || isPaid}>
+                      <span style={{ display: "flex", alignItems: "center", gap: 12, opacity: (balance <= 0 || isPaid) ? 0.5 : 1 }}>
+                        <span style={rowChip("#0B1F3A")}><IconCreditCard stroke={1.5} size={17} /></span> Send payment link
+                      </span>
+                      <IconChevronRight stroke={1.5} size={18} color="#C4C4C8" />
+                    </button>
+                    {hairline}
+                    <button style={{ ...rowBtn, color: "#FF3B30" }} onClick={() => navigate({ to: "/lessons/$id", params: { id: focus!.id }, search: { action: "cancel" } })}>
+                      <span style={{ display: "flex", alignItems: "center", gap: 12, color: "#FF3B30" }}>
+                        <span style={rowChip("#FF3B30")}><IconX stroke={1.5} size={17} /></span> Cancel lesson
+                      </span>
+                      <IconChevronRight stroke={1.5} size={18} color="#C4C4C8" />
+                    </button>
+                  </div>
+                </>
               )}
 
               {/* Messages Card */}
+              <h3 style={sectionTitle}>Messages</h3>
               <div
                 onClick={() => navigate({ to: "/messages/$pupilId", params: { pupilId: id } })}
-                style={{ background: "#FFFFFF", borderRadius: 16, border: "0.5px solid rgba(11,31,58,0.10)", padding: 14, marginTop: 12, cursor: "pointer" }}
+                style={{ ...groupCard, padding: 14, cursor: "pointer" }}
               >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <IconMessage stroke={1.5} size={16} color="#1877D6" />
-                    <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Messages</span>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={rowChip("#0B1F3A")}><IconMessage stroke={1.5} size={17} /></span>
+                    <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Recent</span>
                     {unreadMessages > 0 && (
-                      <span style={{ background: "#B42318", color: "#FFF", fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 999 }}>{unreadMessages}</span>
+                      <span style={{ background: "#CC2229", color: "#FFF", fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 999 }}>{unreadMessages}</span>
                     )}
                   </div>
-                  <span style={{ fontSize: 12, color: "#1877D6", fontWeight: 600, ...POPPINS }}>Open chat →</span>
+                  <span style={{ fontSize: 13, color: "#1877D6", fontWeight: 600, ...POPPINS }}>Open chat →</span>
                 </div>
-                <div style={{ fontSize: 13, color: lastMessage ? "#0B1F3A" : "#8A93A3", ...POPPINS, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <div
+                  style={{
+                    background: "#F2F2F7", borderRadius: 12, padding: "10px 12px",
+                    fontSize: 13.5, color: lastMessage ? "#0B1F3A" : "#8A8A8E", ...POPPINS,
+                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                  }}
+                >
                   {lastMsgPreview}
                 </div>
                 {lastMessage && (
-                  <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 4, ...POPPINS }}>{lastMsgTime}</div>
+                  <div style={{ fontSize: 11.5, color: "#8A8A8E", marginTop: 6, ...POPPINS }}>{lastMsgTime}</div>
                 )}
               </div>
 
