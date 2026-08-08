@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Plus, X, Pencil, Trash2, Eye, EyeOff, Music } from "lucide-react";
+import { Plus, X, Pencil, Trash2, Eye, EyeOff, Music } from "lucide-react";
+import { PageHeader } from "@/components/dsm/PageHeader";
 import { useAdminGate } from "./admin";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 

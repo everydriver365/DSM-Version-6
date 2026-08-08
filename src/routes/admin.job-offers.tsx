@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Plus, X, Send, Search, Pencil } from "lucide-react";
+import { Plus, X, Send, Search, Pencil } from "lucide-react";
+import { PageHeader } from "@/components/dsm/PageHeader";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
