@@ -5157,33 +5157,31 @@ function HomePage() {
                       clipPath: 'polygon(0 0, 100% 0, 88% 100%, 0 100%)',
                       position: 'relative',
                       zIndex: 2,
-                      padding: '14px 16px 14px 14px',
+                      padding: '14px 14px 14px 14px',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: 6,
+                      gap: 8,
                       justifyContent: 'space-between',
                     }}>
                       <div style={{
-                        background: 'rgba(11,31,58,0.08)',
+                        background: '#E5E8EE',
                         borderRadius: 20,
-                        padding: '3px 10px',
+                        padding: '4px 10px',
                         display: 'inline-flex',
                         alignSelf: 'flex-start',
                         alignItems: 'center', gap: 5,
-                        fontSize: 11, fontWeight: 600, color: '#0B1F3A',
+                        fontSize: 11, fontWeight: 700, color: '#0B1F3A',
                         fontFamily: 'Poppins, sans-serif',
                         whiteSpace: 'nowrap',
                       }}>
-                        <span style={{ fontWeight: 700 }}>
-                          {isLessonToday ? 'TODAY' : `${railDow} ${railDay} ${railMon}`}
-                        </span>
-                        <span>{startText}{endText ? ` - ${endText}` : ''}</span>
+                        <span>{isLessonToday ? 'TODAY' : `${railDow} ${railDay} ${railMon}`}</span>
+                        <span style={{ fontWeight: 600, color: '#4A5568' }}>{startText}{endText ? ` - ${endText}` : ''}</span>
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                        <PupilAvatar pupil={upcoming?.pupils ?? null} pupilId={upcoming?.pupil_id ?? null} size={36} />
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+                        <PupilAvatar pupil={upcoming?.pupils ?? null} pupilId={upcoming?.pupil_id ?? null} size={40} />
                         <div style={{
-                          fontSize: 14, fontWeight: 700, color: '#0B1F3A',
+                          fontSize: 16, fontWeight: 700, color: '#0B1F3A',
                           fontFamily: 'Poppins, sans-serif',
                           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                           minWidth: 0,
@@ -5198,8 +5196,8 @@ function HomePage() {
                           background: hPillBgFinal,
                           color: hPillFgFinal,
                           borderRadius: 20,
-                          padding: '3px 9px',
-                          fontSize: 11, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
+                          padding: '4px 10px',
+                          fontSize: 12, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
                           whiteSpace: 'nowrap',
                         }}>
                           {hLabelFinal}
@@ -5211,14 +5209,12 @@ function HomePage() {
                         onClick={(e) => { e.stopPropagation(); openMaps(); }}
                         style={{
                           alignSelf: 'flex-start',
-                          background: 'rgba(255,255,255,0.55)',
-                          backdropFilter: 'blur(10px)',
-                          WebkitBackdropFilter: 'blur(10px)',
+                          background: '#FFFFFF',
                           color: '#0B1F3A',
-                          padding: '4px 10px',
+                          padding: '5px 12px',
                           borderRadius: 20,
-                          border: '1px solid rgba(255,255,255,0.6)',
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                          border: '1px solid #E5E8EE',
+                          boxShadow: '0 1px 4px rgba(11,31,58,0.06)',
                           fontSize: 12,
                           fontWeight: 700,
                           cursor: 'pointer',
@@ -5230,6 +5226,7 @@ function HomePage() {
                         <span>Navigate</span>
                       </button>
                     </div>
+
                   </div>
                 );
               })()}
