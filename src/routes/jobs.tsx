@@ -255,14 +255,34 @@ function JobCard({
       </div>
 
       <div style={{ padding: "0 18px" }}>
-        <div style={{ fontSize: 19, fontWeight: 800, letterSpacing: "-0.3px", color: "#000", ...POPPINS }}>
+        <div
+          style={{
+            fontSize: 19,
+            fontWeight: 800,
+            letterSpacing: "-0.3px",
+            color: "#000",
+            marginBottom: variant === "claimed" ? 6 : 0,
+            ...POPPINS,
+          }}
+        >
           {titleCase(job.pupil_name) || "New pupil"}
+          {variant === "claimed" && job.postcode_area ? ` · ${job.postcode_area}` : ""}
         </div>
-        <div style={{ fontSize: 13.5, fontWeight: 500, color: "#8A8A8E", marginTop: 2, ...POPPINS }}>
+        <div
+          style={{
+            fontSize: 13.5,
+            fontWeight: 500,
+            color: "#8A8A8E",
+            lineHeight: 1.5,
+            marginBottom: variant === "claimed" ? 14 : 0,
+            ...POPPINS,
+          }}
+        >
           {[
             sentenceCase(job.transmission),
             job.course_hours ? `${job.course_hours} hrs` : null,
             job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : null,
+            variant === "claimed" && distanceKnown ? `${distanceMi!.toFixed(1)} mi` : null,
             sentenceCase(job.preferred_timing?.join(", ")),
           ]
             .filter(Boolean)
@@ -286,7 +306,11 @@ function JobCard({
                 ...POPPINS,
               }}
             >
-              <IconCheck size={11} stroke={2.5} color={badge.color} />
+              {variant === "claimed" ? (
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: badge.color }} />
+              ) : (
+                <IconCheck size={11} stroke={2.5} color={badge.color} />
+              )}
               {sentenceCase(badge.label)}
             </div>
           </div>
