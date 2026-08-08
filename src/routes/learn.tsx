@@ -193,13 +193,14 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
               width: 40,
               height: 40,
               borderRadius: "50%",
-              background: "white",
+              background: "#fff",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <IconPlayerPlay stroke={1.5} size={18} color={NAVY} fill={NAVY} style={{ marginLeft: 2 }} />
+            <IconPlayerPlay size={18} color={NAVY} stroke={2} style={{ marginLeft: 2 }} />
           </div>
         </div>
         <div
