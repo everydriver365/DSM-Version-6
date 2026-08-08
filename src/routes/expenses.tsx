@@ -206,52 +206,33 @@ function ExpensesPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#fff", paddingBottom: 96 }}>
-      {/* Top bar */}
-      <header
-        style={{
-          background: NAVY,
-          color: "#fff",
-          padding: "16px 16px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          position: "sticky",
-          top: 0,
-          zIndex: 20,
-        }}
-      >
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/home" })}
-          aria-label="Back"
-          style={{ background: "transparent", border: 0, color: "#fff", cursor: "pointer" }}
-        >
-          <ArrowLeft size={22} />
-        </button>
-        <div style={{ fontWeight: 700, fontSize: 17 }}>Expenses</div>
-        <button
-          type="button"
-          onClick={() => {
-            setEditing(null);
-            setAddExpenseOpen(true);
-          }}
-          style={{
-            background: "rgba(255,255,255,0.14)",
-            border: 0,
-            color: "#fff",
-            padding: "8px 12px",
-            borderRadius: 10,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            fontWeight: 600,
-            cursor: "pointer",
-            fontSize: 13,
-          }}
-        >
-          <Plus size={16} /> Add expense
-        </button>
-      </header>
+      <PageHeader
+        title="Expenses"
+        right={
+          <button
+            type="button"
+            onClick={() => {
+              setEditing(null);
+              setAddExpenseOpen(true);
+            }}
+            style={{
+              background: "rgba(255,255,255,0.14)",
+              border: 0,
+              color: "#fff",
+              padding: "8px 12px",
+              borderRadius: 10,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              fontWeight: 600,
+              cursor: "pointer",
+              fontSize: 13,
+            }}
+          >
+            <Plus size={16} /> Add expense
+          </button>
+        }
+      />
 
       {/* Summary cards */}
       <div
