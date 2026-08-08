@@ -252,6 +252,19 @@ async function recordPaymentCore(
     );
   }
 
+  if (typeof window !== 'undefined') {
+    setTimeout(() => {
+      window.dispatchEvent(
+        new Event('dsm-payment-recorded')
+      );
+    }, 300);
+    setTimeout(() => {
+      window.dispatchEvent(
+        new Event('dsm-payment-recorded')
+      );
+    }, 1200);
+  }
+
   return {
     amountApplied,
     overpayment,
@@ -346,6 +359,19 @@ export async function recordStandalonePayment(
     created_at: now,
   });
   if (payErr) console.error("[recordStandalonePayment] payments insert", payErr);
+
+  if (typeof window !== 'undefined') {
+    setTimeout(() => {
+      window.dispatchEvent(
+        new Event('dsm-payment-recorded')
+      );
+    }, 300);
+    setTimeout(() => {
+      window.dispatchEvent(
+        new Event('dsm-payment-recorded')
+      );
+    }, 1200);
+  }
 
   return { historyId: (hRow as { id: string } | null)?.id ?? "" };
 }
@@ -497,6 +523,19 @@ export async function recordRefund(
     }
   }
 
+  if (typeof window !== 'undefined') {
+    setTimeout(() => {
+      window.dispatchEvent(
+        new Event('dsm-payment-recorded')
+      );
+    }, 300);
+    setTimeout(() => {
+      window.dispatchEvent(
+        new Event('dsm-payment-recorded')
+      );
+    }, 1200);
+  }
+
   return { amountReversed, fromAccountCredit, newAccountBalance, historyId };
 }
 
@@ -561,6 +600,19 @@ export async function correctPaymentRecord(input: CorrectPaymentInput): Promise<
         .eq("id", lessonId);
       if (error) return { error: error.message };
     }
+  }
+
+  if (typeof window !== 'undefined') {
+    setTimeout(() => {
+      window.dispatchEvent(
+        new Event('dsm-payment-recorded')
+      );
+    }, 300);
+    setTimeout(() => {
+      window.dispatchEvent(
+        new Event('dsm-payment-recorded')
+      );
+    }, 1200);
   }
 
   return { error: null };
