@@ -600,7 +600,13 @@ function LearnPage() {
                 autoPlay
                 playsInline
                 onClick={(e) => e.stopPropagation()}
-                style={{ width: "100%", maxHeight: "80vh", background: "#000" }}
+                style={{
+                  width: "100%",
+                  maxHeight: "80vh",
+                  borderRadius: 16,
+                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                  background: "#000",
+                }}
               />
             );
           })()}
