@@ -1,3 +1,4 @@
+import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
@@ -169,7 +170,7 @@ function BookingDetailPage() {
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       {loading ? (
-        <div style={{ padding: 24, color: "#6B7280" }}>Loading…</div>
+        <PageLoader />
       ) : error ? (
         <div style={{ padding: 24, color: "#B42318" }}>{error}</div>
       ) : !booking ? (
