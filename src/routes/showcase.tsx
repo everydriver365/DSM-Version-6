@@ -807,9 +807,10 @@ function ShowcasePage() {
                   <div
                     style={{
                       margin: "8px 0 0",
-                      background: "#F8FAFC",
-                      border: "0.5px solid #E4E8EF",
-                      borderRadius: 10,
+                      background: "#fff",
+                      border: "none",
+                      borderRadius: 12,
+                      boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                       padding: "10px 12px",
                       display: "flex",
                       alignItems: "center",
