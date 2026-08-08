@@ -2027,165 +2027,137 @@ export function UnifiedPaymentSheet({
             )}
 
             {/* Amount */}
-            <Label>Amount</Label>
-            <div style={{ position: "relative", marginBottom: 6 }}>
-              <span
-                style={{
-                  position: "absolute",
-                  left: 12,
-                  top: 12,
-                  fontSize: 20,
-                  fontWeight: 700,
-                  color: NAVY,
-                }}
-              >
-                £
-              </span>
-              <input
-                inputMode="decimal"
-                value={amount}
-                onChange={(e) => {
-                  const v = e.target.value.replace(/[^0-9.]/g, "");
-                  if ((v.match(/\./g) ?? []).length > 1) return;
-                  const parts = v.split(".");
-                  if (parts[1] && parts[1].length > 2) return;
-                  setAmount(v);
-                }}
-                placeholder="0.00"
-                style={{
-                  ...inputStyle,
-                  height: 52,
-                  paddingLeft: 30,
-                  fontSize: 22,
-                  fontWeight: 700,
-                }}
-              />
-            </div>
-
-            {!customMode && outstanding > 0 && (
-              <div style={{ fontSize: 11, color: BODY, marginBottom: 12 }}>
-                {amountNum > 0 && amountNum < outstanding
-                  ? `Partial: ${money(amountNum)} of ${money(outstanding)} · `
-                  : `Full amount: ${money(outstanding)} · `}
-                <button
-                  type="button"
-                  onClick={() => setAmount(outstanding.toFixed(2))}
+            <Group>
+              <Row>
+                <span style={{ fontSize: 28, fontWeight: 700, color: NAVY, lineHeight: 1 }}>£</span>
+                <input
+                  inputMode="decimal"
+                  value={amount}
+                  onChange={(e) => {
+                    const v = e.target.value.replace(/[^0-9.]/g, "");
+                    if ((v.match(/\./g) ?? []).length > 1) return;
+                    const parts = v.split(".");
+                    if (parts[1] && parts[1].length > 2) return;
+                    setAmount(v);
+                  }}
+                  placeholder="0.00"
                   style={{
-                    background: "none",
+                    flex: 1,
+                    minWidth: 0,
                     border: "none",
-                    padding: 0,
-                    color: BLUE,
-                    fontWeight: 600,
-                    fontSize: 11,
-                    cursor: "pointer",
+                    outline: "none",
+                    background: "transparent",
+                    fontSize: 28,
+                    fontWeight: 700,
+                    color: NAVY,
                     fontFamily: FONT,
+                    padding: 0,
                   }}
-                >
-                  Pay in full
-                </button>
-              </div>
-            )}
-
-            {/* Partial toggle */}
-            {!customMode && outstanding > 0 && (
-              <>
-                <label
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    border: `1px solid ${BORDER}`,
-                    borderRadius: 8,
-                    padding: "9px 12px",
-                    marginBottom: 6,
-                    cursor: "pointer",
-                  }}
-                >
-                  <span style={{ fontSize: 12, color: BODY }}>Partial payment</span>
+                />
+              </Row>
+              {!customMode && outstanding > 0 ? (
+                <Row>
+                  <span style={{ flex: 1, fontSize: 13, color: SUBTLE }}>
+                    {amountNum > 0 && amountNum < outstanding
+                      ? `Partial: ${money(amountNum)} of ${money(outstanding)}`
+                      : `Outstanding balance ${money(outstanding)}`}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setAmount(outstanding.toFixed(2))}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      padding: 0,
+                      color: BLUE,
+                      fontWeight: 700,
+                      fontSize: 13,
+                      cursor: "pointer",
+                      fontFamily: FONT,
+                    }}
+                  >
+                    Pay in full
+                  </button>
+                </Row>
+              ) : null}
+              {!customMode && outstanding > 0 ? (
+                <Row onClick={() => setPartial(!partial)}>
+                  <span style={{ flex: 1, fontSize: 16, fontWeight: 600, color: NAVY }}>
+                    Partial payment
+                  </span>
                   <input
                     type="checkbox"
                     checked={partial}
                     onChange={(e) => setPartial(e.target.checked)}
-                    style={{ width: 16, height: 16, accentColor: BLUE }}
+                    onClick={(e) => e.stopPropagation()}
+                    style={{ width: 18, height: 18, accentColor: BLUE }}
                   />
-                </label>
+                </Row>
+              ) : null}
+            </Group>
+
+            {!customMode && outstanding > 0 && (
+              <SectionCaption>
                 {partial ? (
-                  <div style={{ fontSize: 11, color: BODY, marginBottom: 12 }}>
+                  <>
                     Remaining after this payment:{" "}
-                    <strong style={{ color: RED }}>
-                      {money(Math.max(0, outstanding - amountNum))}
-                    </strong>
-                  </div>
+                    <strong style={{ color: RED }}>{money(Math.max(0, outstanding - amountNum))}</strong>
+                  </>
+                ) : amountNum > 0 && Math.abs(amountNum - outstanding) > 0.005 ? (
+                  <span style={{ color: AMBER }}>
+                    Amount doesn't match the full outstanding balance — turn on partial payment.
+                  </span>
                 ) : (
-                  amountNum > 0 &&
-                  Math.abs(amountNum - outstanding) > 0.005 && (
-                    <div style={{ fontSize: 11, color: AMBER, marginBottom: 12 }}>
-                      Amount doesn't match the full outstanding balance — turn on partial payment.
-                    </div>
-                  )
+                  `Account credit ${money(balance?.accountCredit ?? 0)}`
                 )}
-              </>
+              </SectionCaption>
             )}
 
-            {/* Custom note */}
-            {customMode && (
-              <div style={{ marginBottom: 12 }}>
-                <Label>Note</Label>
-                <textarea
+            {/* Notes */}
+            <Group>
+              <Row>
+                <StickyNote size={18} color={SUBTLE} />
+                <input
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  placeholder="What is this payment for?"
-                  rows={3}
-                  style={{ ...inputStyle, height: "auto", padding: 10, resize: "vertical" }}
+                  placeholder="Add a note..."
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    border: "none",
+                    outline: "none",
+                    background: "transparent",
+                    fontSize: 13,
+                    color: NAVY,
+                    fontFamily: FONT,
+                    padding: 0,
+                  }}
                 />
-              </div>
-            )}
+              </Row>
+            </Group>
 
-            {/* Method buttons */}
-            <Label>Payment method</Label>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: 6,
-                marginBottom: 12,
-              }}
-            >
+            {/* Method rows */}
+            <Group>
               {methodList.map(({ key, Icon }) => {
                 const active = method === key;
                 return (
-                  <button
+                  <Row
                     key={key}
-                    type="button"
+                    selected={active}
                     onClick={() => {
                       setMethod(key);
                       setQrUrl(null);
                       setPayUrl(null);
                       setQrPaymentId(null);
                     }}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 4,
-                      height: 54,
-                      borderRadius: 8,
-                      border: `1px solid ${active ? BLUE : BORDER}`,
-                      background: active ? BLUE_BG : WHITE,
-                      color: active ? BLUE : BODY,
-                      fontSize: 11,
-                      fontWeight: active ? 600 : 500,
-                      fontFamily: FONT,
-                      cursor: "pointer",
-                    }}
                   >
-                    <Icon size={15} color={active ? BLUE : MUTED} />
-                    {METHOD_LABEL[key]}
-                  </button>
+                    <Radio selected={active} />
+                    <Icon size={18} color={active ? BLUE : SUBTLE} />
+                    <RowLabel>{METHOD_LABEL[key]}</RowLabel>
+                  </Row>
                 );
               })}
-            </div>
+            </Group>
 
             {/* 1% fee note */}
             {feeApplies && amountNum > 0 && (
