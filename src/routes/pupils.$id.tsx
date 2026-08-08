@@ -3433,40 +3433,50 @@ function PupilDetailPage() {
                   </span>
                 </div>
                 <div style={{ padding: 16 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                    <IconCalendar stroke={1.5} size={16} color="#1877D6" />
-                    <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>
-                      {formatDateShort(start)} · {formatTime(focus.lesson_time)}
-                    </div>
-                    <span style={{ fontSize: 12, color: "#64748B", ...POPPINS }}>
-                      · {focus.duration_minutes ?? 60} mins
+                  {/* Consolidated info block */}
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#000000", letterSpacing: "-0.2px", ...POPPINS }}>
+                    {formatDateShort(start)} · {formatTime(focus.lesson_time)}
+                    <span style={{ fontSize: 13, fontWeight: 500, color: "#8A8A8E" }}>
+                      {" "}· {focus.duration_minutes ?? 60} mins
                     </span>
                   </div>
                   {pickup && (
-                    <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 12 }}>
-                      <IconMapPin stroke={1.5} size={16} color="#64748B" style={{ marginTop: 2, flexShrink: 0 }} />
-                      <div style={{ flex: 1, fontSize: 13, color: "#0B1F3A", ...POPPINS }}>{pickup}</div>
+                    <div style={{ fontSize: 13.5, color: "#6B6B6F", marginTop: 4, lineHeight: 1.4, ...POPPINS }}>
+                      {pickup}{" "}
                       <a
                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickup)}`}
                         target="_blank" rel="noreferrer"
-                        style={{ fontSize: 12, color: "#1877D6", fontWeight: 600, flexShrink: 0, ...POPPINS }}
+                        style={{ color: "#1877D6", fontWeight: 600, whiteSpace: "nowrap" }}
                       >Navigate</a>
                     </div>
                   )}
                   {!isPast && !isCancelled && (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-                      <button style={pillBase} onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}>
-                        <IconMapPin stroke={1.5} size={16} color="#0B1F3A" />
-                        <span>Here</span>
-                      </button>
-                      <button style={pillBase} onClick={() => sendSms(`Hi ${firstName}, on the way!`)}>
-                        <IconSend stroke={1.5} size={16} color="#0B1F3A" />
-                        <span>Going</span>
-                      </button>
-                      <button style={{ ...pillBase, background: '#1877D6', color: '#FFFFFF', borderColor: '#1877D6' }} onClick={() => { sendSms(`Hi ${firstName}, I've arrived 🚗`); toast.success("Marked as arrived"); }}>
-                        <IconCheck stroke={1.5} size={16} color="#FFFFFF" />
-                        <span style={{ color: '#FFFFFF' }}>Arrived</span>
-                      </button>
+                    <div style={{ display: 'flex', gap: 3, background: '#F2F2F7', borderRadius: 12, padding: 3, marginTop: 12 }}>
+                      {([
+                        { key: "here" as const, label: "Here", icon: <IconMapPin stroke={1.5} size={15} />, msg: `Hi ${firstName}, I'm outside whenever you're ready 👋` },
+                        { key: "going" as const, label: "Going", icon: <IconSend stroke={1.5} size={15} />, msg: `Hi ${firstName}, on the way!` },
+                        { key: "arrived" as const, label: "Arrived", icon: <IconCheck stroke={1.5} size={15} />, msg: `Hi ${firstName}, I've arrived 🚗` },
+                      ]).map((s) => {
+                        const active = arrivalState === s.key;
+                        return (
+                          <button
+                            key={s.key}
+                            style={{
+                              ...segBase,
+                              background: active ? "#1877D6" : "transparent",
+                              color: active ? "#FFFFFF" : "#6B6B6F",
+                            }}
+                            onClick={() => {
+                              setArrivalState(s.key);
+                              sendSms(s.msg);
+                              if (s.key === "arrived") toast.success("Marked as arrived");
+                            }}
+                          >
+                            {s.icon}
+                            <span>{s.label}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
