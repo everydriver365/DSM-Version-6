@@ -266,7 +266,12 @@ function InstructorDMThread() {
   const [loading, setLoading] = useState(true);
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
+  const [otherTyping, setOtherTyping] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const typingClearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const typingStopRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const typingSentRef = useRef(false);
 
   // Hide the global bottom nav while this chat thread is open, restore on unmount.
   useEffect(() => {
