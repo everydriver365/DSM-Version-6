@@ -7,8 +7,14 @@ import {
   IconAlertCircle,
   IconAlertTriangle,
   IconCalendar,
+  IconCheck,
+  IconChevronRight,
   IconClock,
+  IconCurrencyPound,
+  IconMap,
+  IconMapPin,
   IconNotes,
+  IconRepeat,
   IconTrash,
   IconX,
   IconCircleCheck,
@@ -23,7 +29,8 @@ import {
   IconRoute,
 } from "@tabler/icons-react";
 
-import { BottomSheet } from "@/components/dsm/BottomSheetV2";
+import { BottomSheet, SheetGroup, SheetRow } from "@/components/dsm/BottomSheetV2";
+
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { CancelSummaryPanel } from "@/components/lessons/CancelSummaryPanel";
