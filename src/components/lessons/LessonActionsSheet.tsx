@@ -92,6 +92,23 @@ export interface LessonActionsSheetProps {
 
 const NAVY = "#0B1F3A";
 
+const rowLabel: React.CSSProperties = {
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 15,
+  fontWeight: 500,
+  color: NAVY,
+  minWidth: 0,
+};
+
+function Chevron() {
+  return (
+    <span style={{ marginLeft: "auto", display: "flex", flexShrink: 0 }}>
+      <IconChevronRight size={18} stroke={1.8} color="#C2CAD6" />
+    </span>
+  );
+}
+
+
 function formatLessonTime(time: string): string {
   const [hStr, mStr] = (time ?? "00:00").split(":");
   const h = Number(hStr) || 0;
