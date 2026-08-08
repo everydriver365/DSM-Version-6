@@ -3095,7 +3095,7 @@ function PupilDetailPage() {
                       onClick={() => openMockDetail(mt)}
                       className="w-full text-left flex items-center justify-between px-4 py-3"
                       style={{
-                        borderBottom: idx < mockTests.length - 1 ? "0.5px solid #EEF2F7" : "none",
+                        borderBottom: idx < mockTests.length - 1 ? "1px solid #E9E9EC" : "none",
                         background: "none",
                         border: "none",
                         ...POPPINS,
