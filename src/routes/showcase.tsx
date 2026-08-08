@@ -888,8 +888,9 @@ function ShowcasePage() {
                 key={video.id}
                 style={{
                   background: "#fff",
-                  border: "0.5px solid #E4E8EF",
-                  borderRadius: 12,
+                  border: "none",
+                  borderRadius: 16,
+                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                   overflow: "hidden",
                 }}
               >
