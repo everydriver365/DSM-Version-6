@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef, type FormEvent } from "react";
-import { Eye, EyeOff, ScanFace } from "lucide-react";
+import { Eye, EyeOff, ScanFace, Check } from "lucide-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
