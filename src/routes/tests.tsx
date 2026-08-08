@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Plus, X } from "lucide-react";
 import { IconDotsVertical, IconPencil, IconX as IconClose } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -253,7 +254,7 @@ function TestsPage() {
           <div key={section.key}>
             <SectionHeader>{section.title}</SectionHeader>
             {section.items.length === 0 ? (
-              <EmptyState text={section.emptyText} />
+              <EmptyState title={section.emptyText} subtitle="Nothing to show here" />
             ) : (
               <div className="flex flex-col" style={{ gap: 8 }}>
                 {section.items.map((t) => (
@@ -330,22 +331,6 @@ function TestsPage() {
   );
 }
 
-function EmptyState({ text }: { text: string }) {
-  return (
-    <div
-      style={{
-        background: "#FFFFFF",
-        borderRadius: 10,
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-        padding: "10px 14px",
-        fontSize: 12,
-        color: "#9CA3AF",
-      }}
-    >
-      {text}
-    </div>
-  );
-}
 
 function computeDvsaRiskMetrics(tests: DrivingTest[]) {
   const today = todayYmd();

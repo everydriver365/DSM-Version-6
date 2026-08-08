@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Search as SearchIcon, Clock } from "lucide-react";
+import { IconSearch } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -324,13 +326,11 @@ function SearchPage() {
         )}
 
         {debounced && !loading && results && totalCount === 0 && (
-          <div
-            className="flex flex-col items-center justify-center"
-            style={{ padding: "48px 0", color: "#6B7280" }}
-          >
-            <SearchIcon size={28} color="#9CA3AF" />
-            <div className="text-[13px] mt-2">No results for “{debounced}”</div>
-          </div>
+          <EmptyState
+            icon={<IconSearch size={32} color="#9CA3AF" stroke={1.5} />}
+            title="No results found"
+            subtitle={`Nothing matched "${debounced}"`}
+          />
         )}
 
         {debounced && !loading && results && totalCount > 0 && (

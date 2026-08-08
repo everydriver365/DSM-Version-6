@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, RefreshCw, Calendar, MoreHorizontal, X, Search } from "lucide-react";
 import { toast } from "sonner";
+import { IconUsers } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 import { BottomSheet } from "../components/dsm/BottomSheet";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -746,7 +748,11 @@ function LessonSeriesPage() {
               }}
             >
               {filteredPupils.length === 0 ? (
-                <div style={{ padding: 12, fontSize: 13, color: "#9CA3AF" }}>No pupils found</div>
+                <EmptyState
+                  icon={<IconUsers size={32} color="#9CA3AF" stroke={1.5} />}
+                  title="No pupils found"
+                  subtitle="Try a different search"
+                />
               ) : (
                 filteredPupils.slice(0, 20).map((p) => {
                   const c = p.calendar_colour || "#1A52A0";

@@ -14,6 +14,8 @@ import {
 
 } from "@tabler/icons-react";
 import { toast } from "sonner";
+
+import { EmptyState } from "@/components/dsm/EmptyState";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/fuel")({
@@ -491,7 +493,11 @@ function FuelPage() {
           <section style={cardStyle({ mt: 12 })}>
             <SectionHeading title="Per lesson cost" />
             {perLesson.length === 0 ? (
-              <div style={{ fontSize: 13, color: "#6B7280", marginTop: 8 }}>No lessons this month.</div>
+              <EmptyState
+                icon={<IconGasStation size={32} color="#9CA3AF" stroke={1.5} />}
+                title="No lessons this month"
+                subtitle="Fuel entries will calculate from your lessons"
+              />
             ) : (
               <div style={{ marginTop: 6 }}>
                 {perLesson.map((l) => (

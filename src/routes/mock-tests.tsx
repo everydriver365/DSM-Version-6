@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Search, X } from "lucide-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { IconClipboard } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -180,7 +182,11 @@ function MockTestsPage() {
       <div className="px-4 pt-4">
         <SectionHeader>Mock test history</SectionHeader>
         {results.length === 0 ? (
-          <EmptyState text="No mock tests logged yet" />
+          <EmptyState
+            icon={<IconClipboard size={32} color="#9CA3AF" stroke={1.5} />}
+            title="No mock tests yet"
+            subtitle="Log a mock test to track pupil progress"
+          />
         ) : (
           <div className="flex flex-col" style={{ gap: 8 }}>
             {results.map((r) => {
@@ -291,22 +297,6 @@ function hasFaultMarks(fm: MockTestResult["fault_marks"]) {
   return Object.keys(fm).length > 0;
 }
 
-function EmptyState({ text }: { text: string }) {
-  return (
-    <div
-      style={{
-        background: "#FFFFFF",
-        borderRadius: 10,
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-        padding: "10px 14px",
-        fontSize: 12,
-        color: "#9CA3AF",
-      }}
-    >
-      {text}
-    </div>
-  );
-}
 
 function NewMockTestSheet({
   pupils,

@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Plus, X, MoreVertical, Search, Banknote, CreditCard, Landmark, RotateCcw, Wallet, QrCode, Receipt } from "lucide-react";
+import { IconCurrencyPound } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
@@ -542,11 +544,11 @@ function PaymentsPage() {
         {loading ? (
           <div style={{ fontSize: 13, textAlign: "center", padding: "32px 0", color: "#B0BAC9" }}>Loading…</div>
         ) : groups.length === 0 ? (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 24px", gap: 6 }}>
-            <Receipt size={40} color="#D0D5DD" />
-            <div style={{ fontSize: 14, color: "#B0BAC9" }}>No payments found</div>
-            <div style={{ fontSize: 12, color: "#D0D5DD" }}>Try adjusting your filters</div>
-          </div>
+          <EmptyState
+            icon={<IconCurrencyPound size={32} color="#9CA3AF" stroke={1.5} />}
+            title="No payments yet"
+            subtitle="Payments will appear here once recorded"
+          />
         ) : (
           groups.map((g) => (
             <div key={g.label + g.rows[0].id}>

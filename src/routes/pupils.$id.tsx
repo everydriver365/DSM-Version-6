@@ -3,6 +3,8 @@ import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Award, BarChart3, BookOpen, Calendar, Car, ChevronDown, ChevronRight, ClipboardCheck, ClipboardList, Clock, CreditCard, ExternalLink, Flag, Heart, History, Loader2, Mail, MapPin, MessageSquare, MoreHorizontal, Palette, Pencil, Phone, Plus, PoundSterling, RefreshCw, Search, Send, Trash2, Trophy, X, Check } from "lucide-react";
 import { IconCamera } from "@tabler/icons-react";
+import { IconCar } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 import { uploadImage } from "@/lib/uploadFile";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
@@ -3284,7 +3286,11 @@ function PupilDetailPage() {
                   ...POPPINS,
                 }}
               >
-                <span style={{ fontSize: 13, color: "#8A93A3", ...POPPINS }}>No lessons yet</span>
+                <EmptyState
+                  icon={<IconCar size={32} color="#9CA3AF" stroke={1.5} />}
+                  title="No lessons yet"
+                  subtitle="Lessons will appear here once scheduled"
+                />
               </div>
             );
           }

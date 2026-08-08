@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { IconChartBar } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { StatTile } from "../components/dsm/StatTile";
@@ -201,7 +203,11 @@ function ReportsPage() {
           <SectionHeader>TOP PUPILS</SectionHeader>
           <Card className="p-0">
             {topPupils.length === 0 && (
-              <div className="p-4 text-[13px] text-[#6B7280]">No lessons yet.</div>
+              <EmptyState
+                icon={<IconChartBar size={32} color="#9CA3AF" stroke={1.5} />}
+                title="No data yet"
+                subtitle="Reports will appear once you have lessons"
+              />
             )}
             {topPupils.map((p, idx) => (
               <div key={p.name + idx}>
