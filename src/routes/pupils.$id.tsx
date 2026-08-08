@@ -2481,55 +2481,47 @@ function PupilDetailPage() {
                 />
               )}
 
-              <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
-                Road segments
+              <div className="px-1 pb-2 pt-1 text-xs font-semibold tracking-wide" style={{ color: "#8A93A3" }}>
+                ROAD SEGMENTS
               </div>
-              <div style={{ border: "0.5px solid #E2E6ED", borderRadius: 12, overflow: "hidden" }}>
+              <SheetGroup>
                 {viewingReport.segments.length === 0 ? (
-                  <div style={{ padding: 14, fontSize: 12, color: "#9CA3AF" }}>No segments</div>
+                  <SheetRow>
+                    <span style={{ fontSize: 14, color: "#6B7686" }}>No segments</span>
+                  </SheetRow>
                 ) : (
                   viewingReport.segments.map((s, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        padding: "12px 14px",
-                        borderTop: i === 0 ? "none" : "0.5px solid #F3F4F6",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: 8,
-                      }}
-                    >
+                    <SheetRow key={i}>
                       <div style={{ minWidth: 0, flex: 1 }}>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        <div style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                           {s.road_name}
                         </div>
-                        <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>
+                        <div style={{ fontSize: 13, color: "#6B7686", marginTop: 2, fontWeight: 500 }}>
                           {s.distance_miles.toFixed(2)} mi · {s.speed_limit_mph != null ? `${s.speed_limit_mph} mph limit` : "no limit"} · max {Math.round(s.max_speed_mph)} mph
                         </div>
                       </div>
                       {s.exceeded && (
-                        <span style={{ fontSize: 10, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 8px", borderRadius: 999 }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 8px", borderRadius: 999 }}>
                           Exceeded
                         </span>
                       )}
-                    </div>
+                    </SheetRow>
                   ))
                 )}
-              </div>
+              </SheetGroup>
 
-              <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+              <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
                 <button
                   type="button"
                   onClick={() => setViewingReport(null)}
-                  style={{ flex: 1, padding: "12px 16px", borderRadius: 10, border: "0.5px solid #E2E6ED", background: "#FFFFFF", color: "#0B1F3A", fontSize: 14, fontWeight: 600 }}
+                  style={{ flex: 1, padding: "14px 16px", borderRadius: 16, border: "none", background: "#FFFFFF", color: "#0B1F3A", fontSize: 15, fontWeight: 700, boxShadow: "0 1px 3px rgba(11,31,58,0.06)" }}
                 >
                   Close
                 </button>
                 <button
                   type="button"
                   onClick={exportReportText}
-                  style={{ flex: 1, padding: "12px 16px", borderRadius: 10, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 14, fontWeight: 600 }}
+                  style={{ flex: 1, padding: "14px 16px", borderRadius: 16, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 15, fontWeight: 700 }}
                 >
                   Export
                 </button>
