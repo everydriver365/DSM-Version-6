@@ -17,17 +17,17 @@ export const Route = createFileRoute("/bookings/$id")({
   }),
   component: BookingDetailPage,
   errorComponent: ({ error }) => (
-    <div style={{ padding: 24, fontFamily: "Inter, sans-serif" }}>
+    <div style={{ padding: 24, fontFamily: "Poppins, sans-serif" }}>
       <p>Failed to load booking.</p>
       <p style={{ color: "#6B7280", fontSize: 13 }}>{error.message}</p>
     </div>
   ),
   notFoundComponent: () => (
-    <div style={{ padding: 24, fontFamily: "Inter, sans-serif" }}>Booking not found.</div>
+    <div style={{ padding: 24, fontFamily: "Poppins, sans-serif" }}>Booking not found.</div>
   ),
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface Course {
   name: string | null;

@@ -128,7 +128,7 @@ function QuickAccessPage() {
   return (
     <div
       className="min-h-screen pb-24 pb-safe"
-      style={{ backgroundColor: "#F3F8FF", fontFamily: "Inter, sans-serif" }}
+      style={{ backgroundColor: "#F3F8FF", fontFamily: "Poppins, sans-serif" }}
     >
       <InstructorTopBar
         firstName=""

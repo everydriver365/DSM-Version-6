@@ -18,7 +18,7 @@ export const Route = createFileRoute("/test-day/$pupilId")({
   component: TestDayPage,
 });
 
-const POPPINS = { fontFamily: "Inter, system-ui, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, system-ui, sans-serif" } as const;
 
 type Pupil = {
   id: string;

@@ -10,7 +10,7 @@ export const Route = createFileRoute("/satnav")({
   component: SatNavPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface NextLesson {
   id: string;

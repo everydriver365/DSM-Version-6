@@ -189,7 +189,7 @@ function ApplyPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "Inter, sans-serif", paddingBottom: 120 }}>
+    <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "Poppins, sans-serif", paddingBottom: 120 }}>
       {/* Top bar */}
       <div style={{ background: NAVY, color: "#FFF", padding: "14px 16px", display: "flex", alignItems: "center", gap: 12 }}>
         <button

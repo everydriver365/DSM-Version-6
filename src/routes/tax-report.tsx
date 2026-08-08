@@ -22,7 +22,7 @@ export const Route = createFileRoute("/tax-report")({
   component: TaxReportPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type YearKey = "2025/26" | "2024/25" | "2023/24";
 

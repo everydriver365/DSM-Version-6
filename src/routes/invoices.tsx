@@ -17,7 +17,7 @@ export const Route = createFileRoute("/invoices")({
   component: InvoicesPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const NAVY = "#0B1F3A";
 const GREEN = "#16A34A";
 const RED = "#CC2229";

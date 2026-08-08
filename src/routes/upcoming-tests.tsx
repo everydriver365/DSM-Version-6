@@ -24,7 +24,7 @@ export const Route = createFileRoute("/upcoming-tests")({
   component: UpcomingTestsPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface PupilTestRow {
   id: string;

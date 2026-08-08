@@ -22,7 +22,7 @@ export function PageHeader({ eyebrow, title, subtitle, action, onMenu }: Props) 
         ) : null}
         <h1
           className="truncate text-[22px] font-bold leading-tight"
-          style={{ color: "#0B1F3A", fontFamily: "Sora, Inter, sans-serif" }}
+          style={{ color: "#0B1F3A", fontFamily: "Sora, Poppins, sans-serif" }}
         >
           {title}
         </h1>

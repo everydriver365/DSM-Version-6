@@ -16,7 +16,7 @@ export const Route = createFileRoute("/pupils/payments/$id")({
   component: PupilPaymentsPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface PaymentRow {
   id: string;

@@ -18,7 +18,7 @@ export const Route = createFileRoute("/dataimport")({
   component: DataImportPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const HEADERS = ["name", "first_name", "last_name", "phone", "email", "status"] as const;
 type Row = Record<(typeof HEADERS)[number], string>;

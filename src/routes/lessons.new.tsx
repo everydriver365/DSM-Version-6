@@ -48,7 +48,7 @@ interface Pupil {
 const DURATION_HOURS = [1, 1.5, 2, 2.5, 3, 4];
 
 const fieldBorder: React.CSSProperties = {
-  fontFamily: "Inter, sans-serif",
+  fontFamily: "Poppins, sans-serif",
   borderWidth: "0.5px",
   borderStyle: "solid",
   borderColor: "#EEF2F7",
@@ -59,7 +59,7 @@ function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.Re
     <label
       htmlFor={htmlFor}
       className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-      style={{ fontFamily: "Inter, sans-serif" }}
+      style={{ fontFamily: "Poppins, sans-serif" }}
     >
       {children}
     </label>
@@ -370,7 +370,7 @@ function NewLessonPage() {
 
 
   return (
-    <PageLayout style={{ fontFamily: "Inter, sans-serif" }}>
+    <PageLayout style={{ fontFamily: "Poppins, sans-serif" }}>
       <div className="px-4 pt-6">
         <div className="flex items-center gap-3 mb-4">
           <button
@@ -383,7 +383,7 @@ function NewLessonPage() {
           </button>
           <p
             className="text-[20px] font-semibold"
-            style={{ color: "#0B1F3A", fontFamily: "Inter, sans-serif" }}
+            style={{ color: "#0B1F3A", fontFamily: "Poppins, sans-serif" }}
           >
             Add lesson
           </p>
@@ -469,7 +469,7 @@ function NewLessonPage() {
                     className="cf-tap rounded-[12px] text-[14px] font-medium transition-colors"
                     style={{
                       padding: "14px 2px",
-                      fontFamily: "Inter, sans-serif",
+                      fontFamily: "Poppins, sans-serif",
                       background: selected ? "#185FA5" : "#F3F8FF",
                       color: selected ? "#FFFFFF" : "#0B1F3A",
                       border: selected ? "none" : "1px solid #EEF2F7",
@@ -497,7 +497,7 @@ function NewLessonPage() {
               className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
               style={fieldBorder}
             />
-            <p className="mt-1 text-[12px] text-[#9CA3AF]" style={{ fontFamily: "Inter, sans-serif" }}>
+            <p className="mt-1 text-[12px] text-[#9CA3AF]" style={{ fontFamily: "Poppins, sans-serif" }}>
               Defaults to the pupil&rsquo;s home address if left blank.
             </p>
           </div>

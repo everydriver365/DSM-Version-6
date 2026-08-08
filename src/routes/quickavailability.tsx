@@ -16,7 +16,7 @@ export const Route = createFileRoute("/quickavailability")({
   component: QuickAvailabilityPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 function QuickAvailabilityPage() {
   const navigate = useNavigate();
@@ -140,7 +140,7 @@ function QuickAvailabilityPage() {
                 height: 52,
                 fontSize: 15,
                 backgroundColor: isActive ? "#1877D6" : "#1877D6",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
               }}
             >
               {isActive ? "Go unavailable" : "Go available"}

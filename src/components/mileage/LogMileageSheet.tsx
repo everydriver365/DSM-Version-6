@@ -80,7 +80,7 @@ export function LogMileageSheet({ open, onClose, onSaved }: LogMileageSheetProps
         <div>
           <label
             className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-            style={{ fontFamily: "Inter, sans-serif" }}
+            style={{ fontFamily: "Poppins, sans-serif" }}
           >
             Date
           </label>
@@ -90,7 +90,7 @@ export function LogMileageSheet({ open, onClose, onSaved }: LogMileageSheetProps
             onChange={(e) => setTripDate(e.target.value)}
             className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
             style={{
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: "#EEF2F7",
@@ -117,7 +117,7 @@ export function LogMileageSheet({ open, onClose, onSaved }: LogMileageSheetProps
         <div>
           <label
             className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-            style={{ fontFamily: "Inter, sans-serif" }}
+            style={{ fontFamily: "Poppins, sans-serif" }}
           >
             Purpose
           </label>
@@ -129,7 +129,7 @@ export function LogMileageSheet({ open, onClose, onSaved }: LogMileageSheetProps
               style={{
                 backgroundColor: purpose === "business" ? "#0B1F3A" : "transparent",
                 color: purpose === "business" ? "#FFFFFF" : "#6B7280",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
                 borderWidth: purpose === "business" ? 0 : "0.5px",
                 borderStyle: "solid",
                 borderColor: "#EEF2F7",
@@ -144,7 +144,7 @@ export function LogMileageSheet({ open, onClose, onSaved }: LogMileageSheetProps
               style={{
                 backgroundColor: purpose === "personal" ? "#6B7280" : "transparent",
                 color: purpose === "personal" ? "#FFFFFF" : "#6B7280",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
                 borderWidth: purpose === "personal" ? 0 : "0.5px",
                 borderStyle: "solid",
                 borderColor: "#EEF2F7",

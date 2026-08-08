@@ -544,7 +544,7 @@ function AdminDsmLive() {
 
   if (status === "checking") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Inter, sans-serif", color: "#6B7280" }}>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif", color: "#6B7280" }}>
         Checking access…
       </div>
     );
@@ -817,7 +817,7 @@ function AdminDsmLive() {
                   justifyContent: "center",
                   gap: 6,
                   cursor: uploadingImage ? "wait" : "pointer",
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Poppins, sans-serif",
                   fontSize: 13,
                 }}
               >
@@ -1248,7 +1248,7 @@ const inp: React.CSSProperties = {
   borderRadius: 8,
   border: "1px solid #E2E6ED",
   fontSize: 14,
-  fontFamily: "Inter, sans-serif",
+  fontFamily: "Poppins, sans-serif",
   background: "#fff",
   color: "#0B1F3A",
   boxSizing: "border-box",

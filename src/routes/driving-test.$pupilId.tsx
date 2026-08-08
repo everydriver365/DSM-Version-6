@@ -23,7 +23,7 @@ export const Route = createFileRoute("/driving-test/$pupilId")({
   component: DrivingTestPage,
 });
 
-const INTER = { fontFamily: "Inter, sans-serif" } as const;
+const INTER = { fontFamily: "Poppins, sans-serif" } as const;
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -680,7 +680,7 @@ const inputStyle: React.CSSProperties = {
   fontSize: 14,
   backgroundColor: "#FFFFFF",
   color: "#0F2044",
-  fontFamily: "Inter, sans-serif",
+  fontFamily: "Poppins, sans-serif",
 };
 
 function CentreSearchSelect({
@@ -1231,7 +1231,7 @@ function RecordTab(props: any) {
               fontSize: 14,
               color: "#0F2044",
               resize: "vertical",
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
             }}
           />
           <button
@@ -1286,7 +1286,7 @@ function NumBox({
           borderRadius: 10,
           border: `1px solid ${color}33`,
           backgroundColor: `${color}0D`,
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Poppins, sans-serif",
         }}
       />
     </div>

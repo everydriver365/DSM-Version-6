@@ -930,7 +930,7 @@ function TakePaymentPage() {
             display: "flex",
             flexDirection: "column",
             height: "100vh",
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
           }}
         >
           {/* Close button */}

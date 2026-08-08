@@ -38,7 +38,7 @@ export const Route = createFileRoute("/pupils/$id")({
   component: PupilDetailPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const GOOGLE_MAPS_KEY =
   (import.meta as any).env?.VITE_GOOGLE_API_KEY ||
@@ -3362,12 +3362,12 @@ function PupilDetailPage() {
             background: '#FFFFFF', border: '0.5px solid #E2E6ED', borderRadius: 12,
             padding: '10px 0', display: 'flex', flexDirection: 'column',
             alignItems: 'center', justifyContent: 'center', gap: 4, cursor: 'pointer',
-            fontFamily: 'Inter, sans-serif', fontSize: 12, fontWeight: 500, color: '#0B1F3A',
+            fontFamily: 'Poppins, sans-serif', fontSize: 12, fontWeight: 500, color: '#0B1F3A',
           };
           const rowBtn: React.CSSProperties = {
             width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
             padding: "14px 16px", background: "none", border: "none", cursor: "pointer",
-            fontFamily: 'Inter, sans-serif', fontSize: 14, color: "#0B1F3A", fontWeight: 500,
+            fontFamily: 'Poppins, sans-serif', fontSize: 14, color: "#0B1F3A", fontWeight: 500,
           };
 
           const label = isLive ? "In progress" : isPast ? "Last lesson" : "Next lesson";

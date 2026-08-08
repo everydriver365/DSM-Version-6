@@ -29,7 +29,7 @@ export const Route = createFileRoute("/intake-questions")({
   component: IntakeQuestionsPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type QType = "text" | "yes_no" | "multiple_choice" | "number";
 
@@ -756,7 +756,7 @@ function QuestionSheet({
                 borderRadius: 10,
                 padding: "10px 40px 10px 12px",
                 fontSize: 14,
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
                 resize: "vertical",
                 color: "#0B1F3A",
                 outline: "none",
@@ -795,7 +795,7 @@ function QuestionSheet({
               borderRadius: 10,
               padding: "10px 12px",
               fontSize: 14,
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
               backgroundColor: "#FFFFFF",
               color: "#0B1F3A",
               outline: "none",
@@ -830,7 +830,7 @@ function QuestionSheet({
                         borderRadius: 10,
                         padding: "8px 12px",
                         fontSize: 14,
-                        fontFamily: "Inter, sans-serif",
+                        fontFamily: "Poppins, sans-serif",
                         color: "#0B1F3A",
                         outline: "none",
                       }}
@@ -869,7 +869,7 @@ function QuestionSheet({
                     display: "inline-flex",
                     alignItems: "center",
                     gap: 4,
-                    fontFamily: "Inter, sans-serif",
+                    fontFamily: "Poppins, sans-serif",
                   }}
                 >
                   <Plus size={14} /> Add option
@@ -915,7 +915,7 @@ function QuestionSheet({
               fontWeight: 600,
               cursor: saving ? "not-allowed" : "pointer",
               opacity: saving ? 0.6 : 1,
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
             }}
           >
             {saving ? "Saving…" : "Save question"}

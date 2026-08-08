@@ -24,7 +24,7 @@ export const Route = createFileRoute("/messages/$pupilId")({
   component: PupilThreadPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface Pupil {
   id: string;

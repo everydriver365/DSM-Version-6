@@ -425,7 +425,7 @@ function AdminListingsPage() {
 
   if (gate === "checking") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, color: "#6B7280", fontFamily: "Poppins, Inter, sans-serif" }}>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>
         Checking access…
       </div>
     );
@@ -433,7 +433,7 @@ function AdminListingsPage() {
   if (gate === "denied") return null;
 
   return (
-    <div style={{ background: "#DCE4F0", minHeight: "100vh", fontFamily: "Poppins, Inter, sans-serif", paddingBottom: 40 }}>
+    <div style={{ background: "#DCE4F0", minHeight: "100vh", fontFamily: "Poppins, sans-serif", paddingBottom: 40 }}>
       <div
         style={{
           position: "fixed",
@@ -484,7 +484,7 @@ function AdminListingsPage() {
             padding: "7px 13px",
             fontSize: 13,
             fontWeight: 600,
-            fontFamily: "Poppins, Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
             cursor: "pointer",
           }}
         >
@@ -532,7 +532,7 @@ function AdminListingsPage() {
                 color: filter === k ? "#fff" : "#0B1F3A",
                 fontSize: 13,
                 fontWeight: 500,
-                fontFamily: "Poppins, Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
                 cursor: "pointer",
               }}
             >
@@ -818,7 +818,7 @@ function SupplierListingSheet({
           borderTopRightRadius: 16,
           display: "flex",
           flexDirection: "column",
-          fontFamily: "Poppins, Inter, sans-serif",
+          fontFamily: "Poppins, sans-serif",
         }}
       >
         <div
@@ -1121,7 +1121,7 @@ function StatCard({ label, value }: { label: string; value: number; color?: stri
         border: "0.5px solid #E2E6ED",
         borderRadius: 12,
         padding: 12,
-        fontFamily: "Poppins, Inter, sans-serif",
+        fontFamily: "Poppins, sans-serif",
       }}
     >
       <div style={{ fontSize: 22, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.1 }}>{value}</div>
@@ -1162,7 +1162,7 @@ const inputStyle: React.CSSProperties = {
   borderRadius: 8,
   padding: "8px 10px",
   fontSize: 13,
-  fontFamily: "Poppins, Inter, sans-serif",
+  fontFamily: "Poppins, sans-serif",
   color: "#0B1F3A",
   background: "#fff",
   width: "100%",

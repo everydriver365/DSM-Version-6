@@ -21,7 +21,7 @@ export const Route = createFileRoute("/todos")({
   component: TodosPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type Priority = "high" | "medium" | "low";
 
@@ -321,7 +321,7 @@ function TodosPage() {
               <div>
                 <label
                   className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-                  style={{ fontFamily: "Inter, sans-serif" }}
+                  style={{ fontFamily: "Poppins, sans-serif" }}
                 >
                   Due date
                 </label>
@@ -331,7 +331,7 @@ function TodosPage() {
                   onChange={(e) => setDueDate(e.target.value)}
                   className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                   style={{
-                    fontFamily: "Inter, sans-serif",
+                    fontFamily: "Poppins, sans-serif",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
                     borderColor: "#EEF2F7",
@@ -342,7 +342,7 @@ function TodosPage() {
               <div>
                 <label
                   className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-                  style={{ fontFamily: "Inter, sans-serif" }}
+                  style={{ fontFamily: "Poppins, sans-serif" }}
                 >
                   Priority
                 </label>
@@ -358,7 +358,7 @@ function TodosPage() {
                         style={{
                           backgroundColor: active ? priorityColor(p) : "transparent",
                           color: active ? "#FFFFFF" : "#6B7280",
-                          fontFamily: "Inter, sans-serif",
+                          fontFamily: "Poppins, sans-serif",
                           borderWidth: active ? 0 : "0.5px",
                           borderStyle: "solid",
                           borderColor: "#EEF2F7",

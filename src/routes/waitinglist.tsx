@@ -18,7 +18,7 @@ export const Route = createFileRoute("/waitinglist")({
   component: WaitingListPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface Entry {
   id: string;

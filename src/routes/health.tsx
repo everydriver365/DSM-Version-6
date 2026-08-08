@@ -26,7 +26,7 @@ export const Route = createFileRoute("/health")({
   component: HealthPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface Log {
   log_date: string;

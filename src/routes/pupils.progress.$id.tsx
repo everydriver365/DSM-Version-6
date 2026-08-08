@@ -13,7 +13,7 @@ export const Route = createFileRoute("/pupils/progress/$id")({
   component: PupilProgressPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type Status =
   | "not_started"

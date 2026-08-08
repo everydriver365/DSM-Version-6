@@ -14,7 +14,7 @@ export const Route = createFileRoute("/enquiries")({
   component: EnquiriesPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface EnquiryNotification {
   id: string;

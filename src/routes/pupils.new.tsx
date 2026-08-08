@@ -129,7 +129,7 @@ function NewPupilPage() {
   }
 
   return (
-    <PageLayout style={{ fontFamily: "Inter, sans-serif" }}>
+    <PageLayout style={{ fontFamily: "Poppins, sans-serif" }}>
       <div className="px-4 pt-6">
         <div className="flex items-center gap-3 mb-4">
           <button
@@ -142,7 +142,7 @@ function NewPupilPage() {
           </button>
           <p
             className="text-[20px] font-semibold"
-            style={{ color: "#0B1F3A", fontFamily: "Inter, sans-serif" }}
+            style={{ color: "#0B1F3A", fontFamily: "Poppins, sans-serif" }}
           >
             Add pupil
           </p>
@@ -186,7 +186,7 @@ function NewPupilPage() {
                   color: "#1877D6",
                   borderColor: "#1877D6",
                   backgroundColor: "transparent",
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Poppins, sans-serif",
                 }}
               >
                 <UserPlus size={16} color="#1877D6" />
@@ -229,7 +229,7 @@ function NewPupilPage() {
           <div className="flex flex-col gap-1">
             <label
               className="text-[13px] font-medium text-[#0B1F3A]"
-              style={{ fontFamily: "Inter, sans-serif" }}
+              style={{ fontFamily: "Poppins, sans-serif" }}
             >
               Date of birth
             </label>
@@ -244,10 +244,10 @@ function NewPupilPage() {
                 border: "1px solid #EEF2F7",
                 padding: "0 12px",
                 backgroundColor: "#fff",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
               }}
             />
-            <p className="text-[11px]" style={{ color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>
+            <p className="text-[11px]" style={{ color: "#9CA3AF", fontFamily: "Poppins, sans-serif" }}>
               Optional — used for birthday reminders
             </p>
           </div>
@@ -268,7 +268,7 @@ function NewPupilPage() {
           <div className="flex flex-col gap-1">
             <label
               className="text-[13px] font-medium text-[#0B1F3A]"
-              style={{ fontFamily: "Inter, sans-serif" }}
+              style={{ fontFamily: "Poppins, sans-serif" }}
             >
               How did they find you?
             </label>
@@ -285,7 +285,7 @@ function NewPupilPage() {
                 border: "1px solid #EEF2F7",
                 padding: "0 12px",
                 backgroundColor: "#fff",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
               }}
             >
               <option value="">Select source</option>
@@ -311,7 +311,7 @@ function NewPupilPage() {
           {leadSource !== "National Intensive" && (
             <label
               className="flex items-center justify-between gap-3 mt-1"
-              style={{ fontFamily: "Inter, sans-serif" }}
+              style={{ fontFamily: "Poppins, sans-serif" }}
             >
               <span className="text-[13px] font-medium text-[#0B1F3A]">
                 Block booking / prepaid hours
@@ -332,7 +332,7 @@ function NewPupilPage() {
             >
               <p
                 className="text-[12px] font-semibold tracking-wide"
-                style={{ color: "#6B7280", fontFamily: "Inter, sans-serif" }}
+                style={{ color: "#6B7280", fontFamily: "Poppins, sans-serif" }}
               >
                 BLOCK BOOKING
               </p>
@@ -359,7 +359,7 @@ function NewPupilPage() {
                 return (
                   <p
                     className="text-[12px]"
-                    style={{ color: "#6B7280", fontFamily: "Inter, sans-serif" }}
+                    style={{ color: "#6B7280", fontFamily: "Poppins, sans-serif" }}
                   >
                     Effective rate: £{(a / h).toFixed(2)}/hr
                   </p>
@@ -368,7 +368,7 @@ function NewPupilPage() {
               <div className="flex flex-col gap-1">
                 <label
                   className="text-[13px] font-medium text-[#0B1F3A]"
-                  style={{ fontFamily: "Inter, sans-serif" }}
+                  style={{ fontFamily: "Poppins, sans-serif" }}
                 >
                   Payment method
                 </label>
@@ -382,7 +382,7 @@ function NewPupilPage() {
                     border: "1px solid #EEF2F7",
                     padding: "0 12px",
                     backgroundColor: "#fff",
-                    fontFamily: "Inter, sans-serif",
+                    fontFamily: "Poppins, sans-serif",
                   }}
                 >
                   <option value="cash">Cash</option>
@@ -394,7 +394,7 @@ function NewPupilPage() {
               <div className="flex flex-col gap-1">
                 <label
                   className="text-[13px] font-medium text-[#0B1F3A]"
-                  style={{ fontFamily: "Inter, sans-serif" }}
+                  style={{ fontFamily: "Poppins, sans-serif" }}
                 >
                   Notes (optional)
                 </label>
@@ -408,7 +408,7 @@ function NewPupilPage() {
                     borderRadius: 8,
                     border: "1px solid #EEF2F7",
                     backgroundColor: "#fff",
-                    fontFamily: "Inter, sans-serif",
+                    fontFamily: "Poppins, sans-serif",
                     resize: "vertical",
                   }}
                 />

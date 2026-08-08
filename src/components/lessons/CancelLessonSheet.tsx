@@ -7,7 +7,7 @@ import { recordRefund } from "@/lib/payments";
 import { describeChargeOption } from "@/lib/cancelCharge";
 import { cancelLessonWithUndo, UNDO_WINDOW_MS } from "@/lib/cancelLesson";
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const CANCEL_REASONS = [
   "Pupil cancelled",

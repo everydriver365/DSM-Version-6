@@ -30,7 +30,7 @@ export const Route = createFileRoute("/messages/instructor/$conversationId")({
   component: InstructorDMThread,
 });
 
-const POPPINS = { fontFamily: "Poppins, Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 const BORDER = "#E4E8EF";

@@ -27,7 +27,7 @@ export const Route = createFileRoute("/lessons/edit/$id")({
   component: EditLessonPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface Pupil {
   id: string;
@@ -51,7 +51,7 @@ const STATUSES = [
 ];
 
 const fieldBorder: React.CSSProperties = {
-  fontFamily: "Inter, sans-serif",
+  fontFamily: "Poppins, sans-serif",
   borderWidth: "0.5px",
   borderStyle: "solid",
   borderColor: "#EEF2F7",
@@ -83,7 +83,7 @@ function PaymentStatusBadge({ status }: { status: PayStatus }) {
   return (
     <span
       className="inline-flex items-center px-2 h-6 rounded-full text-[12px] font-semibold"
-      style={{ backgroundColor: s.bg, color: s.fg, fontFamily: "Inter, sans-serif" }}
+      style={{ backgroundColor: s.bg, color: s.fg, fontFamily: "Poppins, sans-serif" }}
     >
       {s.label}
     </span>

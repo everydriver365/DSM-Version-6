@@ -24,7 +24,7 @@ export const Route = createFileRoute("/pupils/")({
   component: PupilsIndexPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface Pupil {
   id: string;
@@ -72,7 +72,7 @@ const PILL_BASE = {
   fontWeight: 700,
   borderRadius: 20,
   padding: "3px 8px",
-  fontFamily: "Inter, sans-serif",
+  fontFamily: "Poppins, sans-serif",
   whiteSpace: "nowrap" as const,
 };
 
@@ -851,7 +851,7 @@ function PupilsIndexPage() {
               <Link
                 to="/pupils/new"
                 className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
-                style={{ backgroundColor: "#1877D6", fontFamily: "Inter, sans-serif" }}
+                style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
               >
                 <Plus size={16} /> Add pupil
               </Link>

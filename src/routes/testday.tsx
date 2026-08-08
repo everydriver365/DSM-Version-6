@@ -20,7 +20,7 @@ export const Route = createFileRoute("/testday")({
   component: TestDayPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const CHECKLIST_ITEMS = [
   "Theory pass certificate checked",

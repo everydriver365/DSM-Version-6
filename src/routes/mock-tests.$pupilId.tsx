@@ -11,7 +11,7 @@ export const Route = createFileRoute("/mock-tests/$pupilId")({
   component: MockTestsPage,
 });
 
-const INTER = { fontFamily: "Inter, sans-serif" } as const;
+const INTER = { fontFamily: "Poppins, sans-serif" } as const;
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =

@@ -12,7 +12,7 @@ export const Route = createFileRoute("/lessons/reschedule/$id")({
   component: RescheduleLessonPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface Lesson {
   id: string;

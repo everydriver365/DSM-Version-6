@@ -20,7 +20,7 @@ export const Route = createFileRoute("/locations")({
   component: LocationsPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface LocationRow {
   id: string;

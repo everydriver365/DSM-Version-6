@@ -66,7 +66,7 @@ const inputStyle: React.CSSProperties = {
   border: "1px solid #E2E8F0",
   padding: "0 12px",
   fontSize: 15,
-  fontFamily: "'Poppins', system-ui, -apple-system, sans-serif",
+  fontFamily: "Poppins, sans-serif",
   color: "#0B1F3A",
   background: "#fff",
   width: "100%",
@@ -201,7 +201,7 @@ function AdminChatRooms() {
           background: "#fff",
           minHeight: "100vh",
           padding: 24,
-          fontFamily: "'Poppins', system-ui, -apple-system, sans-serif",
+          fontFamily: "Poppins, sans-serif",
           color: "#6B7280",
         }}
       >
@@ -215,7 +215,7 @@ function AdminChatRooms() {
       style={{
         background: "#F8FAFC",
         minHeight: "100vh",
-        fontFamily: "'Poppins', system-ui, -apple-system, sans-serif",
+        fontFamily: "Poppins, sans-serif",
       }}
     >
       <AdminTopBar title="Chat rooms" onBack={() => navigate({ to: "/admin" })} />

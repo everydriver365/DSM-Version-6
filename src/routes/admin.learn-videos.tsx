@@ -9,7 +9,7 @@ export const Route = createFileRoute("/admin/learn-videos")({
   component: AdminLearnVideosPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 const GREY = "#6B7280";

@@ -16,7 +16,7 @@ export const Route = createFileRoute("/search")({
   component: SearchPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const RECENTS_KEY = "dsm:recentScreens";
 
 type PupilHit = { id: string; name: string; status: string | null };
@@ -501,7 +501,7 @@ function Row({
         borderStyle: "solid",
         borderColor: "#EEF2F7",
         gap: 12,
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Poppins, sans-serif",
       }}
     >
       {icon && <div style={{ flexShrink: 0 }}>{icon}</div>}

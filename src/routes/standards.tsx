@@ -18,7 +18,7 @@ export const Route = createFileRoute("/standards")({
   component: StandardsPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type Grade = "A" | "B" | "C" | "D";
 

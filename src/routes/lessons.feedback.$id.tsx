@@ -14,7 +14,7 @@ export const Route = createFileRoute("/lessons/feedback/$id")({
   component: LessonFeedbackPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const TOPICS = [
   "Cockpit drill",

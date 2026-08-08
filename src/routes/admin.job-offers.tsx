@@ -10,7 +10,7 @@ export const Route = createFileRoute("/admin/job-offers")({
   component: AdminJobOffers,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 const GREY = "#6B7280";
@@ -925,7 +925,7 @@ function inputStyle(withIcon = false): React.CSSProperties {
     outline: "none",
     background: "#fff",
     color: NAVY,
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Poppins, sans-serif",
   };
 }
 

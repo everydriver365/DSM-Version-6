@@ -7,7 +7,7 @@ export const Route = createFileRoute("/quote/$token")({
   component: PublicQuotePage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" as const };
+const POPPINS = { fontFamily: "Poppins, sans-serif" as const };
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -415,7 +415,7 @@ function PublicQuotePage() {
                       style={{
                         width: "100%", height: 48, background: "#1877D6", color: "#fff",
                         border: "none", borderRadius: 10, fontSize: 15, fontWeight: 600,
-                        fontFamily: "Inter, sans-serif", cursor: "pointer",
+                        fontFamily: "Poppins, sans-serif", cursor: "pointer",
                         opacity: payStatus === "creating" ? 0.6 : 1,
                       }}
                     >
@@ -492,7 +492,7 @@ function PublicQuotePage() {
               style={{
                 height: 52, borderRadius: 12, border: "none",
                 background: "#1877D6", color: "#fff", fontWeight: 600, fontSize: 15,
-                fontFamily: "Inter, sans-serif", cursor: "pointer", opacity: accepting ? 0.6 : 1,
+                fontFamily: "Poppins, sans-serif", cursor: "pointer", opacity: accepting ? 0.6 : 1,
               }}
             >
               {accepting ? "Accepting…" : "Accept this quote →"}
@@ -504,7 +504,7 @@ function PublicQuotePage() {
             style={{
               height: 48, borderRadius: 12, background: "#fff",
               border: "1px solid #0B1F3A", color: "#0B1F3A",
-              fontWeight: 600, fontSize: 14, fontFamily: "Inter, sans-serif", cursor: "pointer",
+              fontWeight: 600, fontSize: 14, fontFamily: "Poppins, sans-serif", cursor: "pointer",
             }}
           >
             I have questions

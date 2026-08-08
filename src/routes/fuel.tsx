@@ -38,7 +38,7 @@ export const Route = createFileRoute("/fuel")({
   component: FuelPage,
 });
 
-const POPPINS = { fontFamily: "Poppins, Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const NAVY = "#0B1F3A";
 const BORDER = "0.5px solid #E4E8EF";
 const CANVAS = "#EEF2F7";

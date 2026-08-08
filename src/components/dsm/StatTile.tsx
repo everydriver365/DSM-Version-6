@@ -11,7 +11,7 @@ export function StatTile({ value, label }: Props) {
         borderWidth: "0.5px",
         borderStyle: "solid",
         borderColor: "#EEF2F7",
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Poppins, sans-serif",
       }}
     >
       <div className="text-[24px] font-semibold text-[#0B1F3A] leading-tight">{value}</div>

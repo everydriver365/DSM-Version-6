@@ -190,13 +190,13 @@ export function LessonActionsSheet({
     border: "none",
     padding: "8px 0",
     cursor: "pointer",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Poppins, sans-serif",
   };
   const inlineHeading: React.CSSProperties = {
     fontSize: 14,
     fontWeight: 600,
     color: NAVY,
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Poppins, sans-serif",
     margin: "4px 0 10px",
   };
   const primaryBtn: React.CSSProperties = {
@@ -207,7 +207,7 @@ export function LessonActionsSheet({
     border: "none",
     borderRadius: 10,
     padding: "12px 0",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Poppins, sans-serif",
     fontSize: 13,
     fontWeight: 600,
     cursor: "pointer",
@@ -220,7 +220,7 @@ export function LessonActionsSheet({
     border: "1px solid #E2E8F0",
     borderRadius: 10,
     padding: "12px 0",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Poppins, sans-serif",
     fontSize: 13,
     fontWeight: 600,
     cursor: "pointer",
@@ -243,7 +243,7 @@ export function LessonActionsSheet({
     textTransform: "uppercase",
     letterSpacing: 0.2,
     marginBottom: 6,
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Poppins, sans-serif",
   };
 
   // --- Pickup address (home address default, editable alternative) ---
@@ -392,7 +392,7 @@ export function LessonActionsSheet({
     justifyContent: "center",
     gap: 5,
     cursor: "pointer",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Poppins, sans-serif",
     fontSize: 11,
     fontWeight: 500,
     color: NAVY,
@@ -420,7 +420,7 @@ export function LessonActionsSheet({
     border: "1px solid #E2E8F0",
     borderRadius: 10,
     padding: "9px 12px",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "Poppins, sans-serif",
     fontSize: 13,
     color: NAVY,
     outline: "none",
@@ -433,7 +433,7 @@ export function LessonActionsSheet({
   ) => {
     if (state === "checking") {
       return (
-        <div style={{ marginTop: 6, fontSize: 11, color: "#8E8E93", fontFamily: "Inter, sans-serif" }}>
+        <div style={{ marginTop: 6, fontSize: 11, color: "#8E8E93", fontFamily: "Poppins, sans-serif" }}>
           Checking…
         </div>
       );
@@ -448,7 +448,7 @@ export function LessonActionsSheet({
             gap: 5,
             fontSize: 11,
             color: "#1F6B2E",
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
           }}
         >
           <IconCircleCheck size={14} stroke={1.8} /> {okText}
@@ -465,7 +465,7 @@ export function LessonActionsSheet({
             gap: 5,
             fontSize: 11,
             color: "#B45309",
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
           }}
         >
           <IconAlertTriangle size={14} stroke={1.8} /> {badText}
@@ -473,7 +473,7 @@ export function LessonActionsSheet({
       );
     }
     return (
-      <div style={{ marginTop: 6, fontSize: 11, color: "#8E8E93", fontFamily: "Inter, sans-serif" }}>
+      <div style={{ marginTop: 6, fontSize: 11, color: "#8E8E93", fontFamily: "Poppins, sans-serif" }}>
         Not yet verified
       </div>
     );
@@ -513,13 +513,13 @@ export function LessonActionsSheet({
         {/* HEADER */}
         <div style={{ padding: "0 4px 10px", borderBottom: "1px solid #E3E7ED", marginBottom: 12 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-            <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: NAVY }}>
+            <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 14, fontWeight: 600, color: NAVY }}>
               {pupilName}
             </span>
             {payPill && (
               <span
                 style={{
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Poppins, sans-serif",
                   fontSize: 11,
                   fontWeight: 600,
                   color: payPill.fg,
@@ -533,7 +533,7 @@ export function LessonActionsSheet({
               </span>
             )}
           </div>
-          <div style={{ marginTop: 3, fontFamily: "Inter, sans-serif", fontSize: 11, color: "#8E8E93" }}>
+          <div style={{ marginTop: 3, fontFamily: "Poppins, sans-serif", fontSize: 11, color: "#8E8E93" }}>
             {dateLabel} · {timeLabel}
             {durationLabel}
           </div>
@@ -961,7 +961,7 @@ export function LessonActionsSheet({
             <div style={{ ...inlineHeading, color: "#CC2229", textAlign: "center" }}>
               Delete this lesson?
             </div>
-            <div style={{ fontFamily: "Inter, sans-serif", fontSize: 11, color: "#9CA3AF" }}>
+            <div style={{ fontFamily: "Poppins, sans-serif", fontSize: 11, color: "#9CA3AF" }}>
               This cannot be undone
             </div>
             <button
@@ -1188,7 +1188,7 @@ export function LessonActionsSheet({
             justifyContent: "center",
             gap: 8,
             cursor: "pointer",
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
             fontSize: 13,
             fontWeight: 600,
             color: "#FFFFFF",
@@ -1265,7 +1265,7 @@ export function LessonActionsSheet({
                 <MapPin size={14} color="#8E8E93" />
                 <span
                   style={{
-                    fontFamily: "Inter, sans-serif",
+                    fontFamily: "Poppins, sans-serif",
                     fontSize: 13,
                     color: NAVY,
                     whiteSpace: "nowrap",
@@ -1309,7 +1309,7 @@ export function LessonActionsSheet({
           <div style={sectionLabel}>what3words</div>
           <div style={{ background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 6px rgba(11,31,58,0.04)", padding: "9px 12px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ color: "#E11F26", fontWeight: 700, fontFamily: "Inter, sans-serif", fontSize: 15 }}>
+              <span style={{ color: "#E11F26", fontWeight: 700, fontFamily: "Poppins, sans-serif", fontSize: 15 }}>
                 ///
               </span>
               {[0, 1, 2].map((i) => (
@@ -1380,7 +1380,7 @@ export function LessonActionsSheet({
                   alignItems: "center",
                   justifyContent: "space-between",
                   gap: 8,
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Poppins, sans-serif",
                 }}
               >
                 <span style={{ fontSize: 14, fontWeight: 600, color: fg }}>{label}</span>
@@ -1404,7 +1404,7 @@ export function LessonActionsSheet({
                         borderRadius: 8,
                         border: "none",
                         cursor: "pointer",
-                        fontFamily: "Inter, sans-serif",
+                        fontFamily: "Poppins, sans-serif",
                       }}
                     >
                       Chase
@@ -1422,7 +1422,7 @@ export function LessonActionsSheet({
                         borderRadius: 8,
                         border: "none",
                         cursor: "pointer",
-                        fontFamily: "Inter, sans-serif",
+                        fontFamily: "Poppins, sans-serif",
                       }}
                     >
                       Mark paid
@@ -1439,7 +1439,7 @@ export function LessonActionsSheet({
           <div style={sectionLabel}>Last Lesson</div>
           {prev ? (
             <div
-              style={{ background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 6px rgba(11,31,58,0.04)", padding: "10px 12px", fontFamily: "Inter, sans-serif" }}
+              style={{ background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 6px rgba(11,31,58,0.04)", padding: "10px 12px", fontFamily: "Poppins, sans-serif" }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 12, fontWeight: 600, color: NAVY }}>
@@ -1472,7 +1472,7 @@ export function LessonActionsSheet({
                 boxShadow: "0 2px 6px rgba(11,31,58,0.04)",
                 padding: "10px 12px",
                 color: "#8A93A3",
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
                 fontSize: 12,
               }}
             >
@@ -1496,7 +1496,7 @@ export function LessonActionsSheet({
             background: "none",
             border: "none",
             color: "#1877D6",
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
             fontSize: 12,
             fontWeight: 600,
             cursor: "pointer",

@@ -20,7 +20,7 @@ export const Route = createFileRoute("/mtd")({
   component: MtdPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const VALUE = "#0B1F3A";
 const MUTED = "#6B7280";
 const MILEAGE_RATE = 0.45;

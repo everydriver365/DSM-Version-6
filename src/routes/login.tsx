@@ -196,7 +196,7 @@ function LoginPage() {
   return (
     <div
       className="min-h-screen w-full flex flex-col items-center justify-center bg-[#0B1F3A] px-4"
-      style={{ fontFamily: "Inter, sans-serif" }}
+      style={{ fontFamily: "Poppins, sans-serif" }}
     >
       {/* Logo */}
       <div className="flex flex-col items-center mb-4">
@@ -205,7 +205,7 @@ function LoginPage() {
           alt="DSM logo"
           className="h-[60px] w-auto mb-2"
         />
-        <span className="text-[#9CA3AF] text-[14px]" style={{ fontFamily: "Inter, sans-serif" }}>
+        <span className="text-[#9CA3AF] text-[14px]" style={{ fontFamily: "Poppins, sans-serif" }}>
           by EveryDriver
         </span>
       </div>
@@ -221,7 +221,7 @@ function LoginPage() {
           }
           className="w-full max-w-[360px] h-12 rounded-lg text-[14px] font-medium flex items-center justify-center gap-2 mt-8"
           style={{
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Poppins, sans-serif",
             background: enrolled ? "#1877D6" : "#1B2C4A",
             color: enrolled ? "#FFFFFF" : "#8CA1C2",
             border: enrolled ? "1.5px solid #1877D6" : "1.5px solid #22375A",
@@ -238,10 +238,10 @@ function LoginPage() {
           className="w-full max-w-[360px] bg-white mt-4"
           style={{ borderRadius: 14, padding: 16, border: "1px solid #E2E8F0" }}
         >
-          <p className="text-[14px] font-semibold text-[#0B1F3A]" style={{ fontFamily: "Inter, sans-serif" }}>
+          <p className="text-[14px] font-semibold text-[#0B1F3A]" style={{ fontFamily: "Poppins, sans-serif" }}>
             Enable Face ID for next time?
           </p>
-          <p className="text-[13px] text-[#6B7280] mt-1" style={{ fontFamily: "Inter, sans-serif" }}>
+          <p className="text-[13px] text-[#6B7280] mt-1" style={{ fontFamily: "Poppins, sans-serif" }}>
             Sign in faster without typing your password.
           </p>
           <div className="flex gap-2 mt-3">
@@ -249,7 +249,7 @@ function LoginPage() {
               type="button"
               onClick={enableFaceId}
               className="flex-1 h-10 rounded-lg text-[14px] font-medium text-white"
-              style={{ background: "#1877D6", fontFamily: "Inter, sans-serif" }}
+              style={{ background: "#1877D6", fontFamily: "Poppins, sans-serif" }}
             >
               Enable
             </button>
@@ -257,7 +257,7 @@ function LoginPage() {
               type="button"
               onClick={skipEnroll}
               className="flex-1 h-10 rounded-lg text-[14px] font-medium text-[#0B1F3A]"
-              style={{ border: "1.5px solid #E2E8F0", fontFamily: "Inter, sans-serif" }}
+              style={{ border: "1.5px solid #E2E8F0", fontFamily: "Poppins, sans-serif" }}
             >
               Not now
             </button>
@@ -278,13 +278,13 @@ function LoginPage() {
       >
         <h2
           className="text-[20px] font-semibold text-[#0B1F3A] text-center"
-          style={{ fontFamily: "Inter, sans-serif" }}
+          style={{ fontFamily: "Poppins, sans-serif" }}
         >
           Welcome back
         </h2>
         <p
           className="text-[13px] text-[#6B7280] text-center"
-          style={{ fontFamily: "Inter, sans-serif" }}
+          style={{ fontFamily: "Poppins, sans-serif" }}
         >
           Sign in to your account
         </p>
@@ -294,7 +294,7 @@ function LoginPage() {
             <label
               htmlFor="login-email"
               className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-              style={{ fontFamily: "Inter, sans-serif" }}
+              style={{ fontFamily: "Poppins, sans-serif" }}
             >
               Email
             </label>
@@ -308,7 +308,7 @@ function LoginPage() {
               required
               className="h-12 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1877D6]"
               style={{
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
                 border: "1.5px solid #CBD5E1",
               }}
             />
@@ -318,7 +318,7 @@ function LoginPage() {
             <label
               htmlFor="login-password"
               className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-              style={{ fontFamily: "Inter, sans-serif" }}
+              style={{ fontFamily: "Poppins, sans-serif" }}
             >
               Password
             </label>
@@ -332,7 +332,7 @@ function LoginPage() {
               required
               className="h-12 w-full rounded-lg px-3 pr-10 text-[14px] text-[#0B1F3A] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#1877D6]"
               style={{
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
                 border: "1.5px solid #CBD5E1",
               }}
             />
@@ -380,7 +380,7 @@ function LoginPage() {
             </Button>
           </div>
 
-          <p className="text-[13px] text-[#6B7280] text-center" style={{ fontFamily: "Inter, sans-serif" }}>
+          <p className="text-[13px] text-[#6B7280] text-center" style={{ fontFamily: "Poppins, sans-serif" }}>
             Don&apos;t have an account?{" "}
             <Link to="/register" className="text-[#1877D6] hover:underline font-medium">
               Create account
@@ -391,7 +391,7 @@ function LoginPage() {
             <p
               className="text-[13px] text-[#15803D] text-center"
               role="status"
-              style={{ fontFamily: "Inter, sans-serif" }}
+              style={{ fontFamily: "Poppins, sans-serif" }}
             >
               {notice}
             </p>
@@ -402,7 +402,7 @@ function LoginPage() {
             <p
               className="text-[13px] text-[#1877D6] text-center"
               role="alert"
-              style={{ fontFamily: "Inter, sans-serif" }}
+              style={{ fontFamily: "Poppins, sans-serif" }}
             >
               {error}
             </p>
@@ -413,7 +413,7 @@ function LoginPage() {
       {/* Footer */}
       <p
         className="text-[#6B7280] text-[11px] text-center mt-8"
-        style={{ fontFamily: "Inter, sans-serif" }}
+        style={{ fontFamily: "Poppins, sans-serif" }}
       >
         DSM by EveryDriver &copy; 2026
       </p>

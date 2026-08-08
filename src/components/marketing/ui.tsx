@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "@tanstack/react-router";
 
-const FONT = "'Poppins', system-ui, -apple-system, sans-serif";
+const FONT = "Poppins, sans-serif";
 const NAVY = "#133155";
 const BLUE = "#0E7CCE";
 const BLUE_DARK = "#0B69AD";

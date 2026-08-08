@@ -16,7 +16,7 @@ export const Route = createFileRoute("/broadcast")({
   component: BroadcastPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const NAVY = "#0B1F3A";
 const BORDER = "#EEF2F7";
 

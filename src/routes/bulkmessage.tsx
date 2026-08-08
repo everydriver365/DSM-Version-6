@@ -19,7 +19,7 @@ export const Route = createFileRoute("/bulkmessage")({
   component: BulkMessagePage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type FilterKey =
   | "all"

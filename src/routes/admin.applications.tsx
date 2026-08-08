@@ -213,7 +213,7 @@ function AdminApplicationsPage() {
   }
   if (status === "denied") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Inter, sans-serif" }}>
+      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: RED }}>Access denied</div>
         <div style={{ color: MUTED, marginTop: 8 }}>Your account doesn't have admin access.</div>
         <button
@@ -228,7 +228,7 @@ function AdminApplicationsPage() {
   }
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Inter, sans-serif", paddingBottom: 80 }}>
+    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif", paddingBottom: 80 }}>
       {/* Top bar */}
       <div
         style={{
@@ -621,6 +621,6 @@ function Row({ k, v }: { k: string; v: string | null | undefined }) {
 
 function FullMsg({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ padding: 32, textAlign: "center", color: MUTED, fontFamily: "Inter, sans-serif" }}>{children}</div>
+    <div style={{ padding: 32, textAlign: "center", color: MUTED, fontFamily: "Poppins, sans-serif" }}>{children}</div>
   );
 }

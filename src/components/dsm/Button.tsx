@@ -35,7 +35,7 @@ export function Button({
     <button
       {...rest}
       className={`${base} ${width} ${variantClasses} ${className}`}
-      style={{ fontFamily: "Inter, sans-serif", ...extraStyle, ...style }}
+      style={{ fontFamily: "Poppins, sans-serif", ...extraStyle, ...style }}
     >
       {children}
     </button>

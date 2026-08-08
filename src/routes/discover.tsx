@@ -40,7 +40,7 @@ const RED = "#CC2229";
 const CANVAS = "#EEF2F7";
 const HAIRLINE = "#E2E8F0";
 const MUTED = "#8A94A3";
-const FONT = "Poppins, Inter, sans-serif";
+const FONT = "Poppins, sans-serif";
 const SHADOW = "0 1px 3px rgba(0,0,0,0.06)";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";

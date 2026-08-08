@@ -18,7 +18,7 @@ const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 const BG = "#F8F9FB";
 const TEXT = "#374151";
-const FONT = "'Poppins', system-ui, -apple-system, sans-serif";
+const FONT = "Poppins, sans-serif";
 
 function TermsPage() {
   return (

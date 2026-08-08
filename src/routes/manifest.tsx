@@ -26,7 +26,7 @@ export const Route = createFileRoute("/manifest")({
   component: ManifestPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface Lesson {
   id: string;
@@ -309,7 +309,7 @@ function ManifestPage() {
               placeholder="How did the day go?"
               className="w-full rounded-lg p-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none resize-none"
               style={{
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Poppins, sans-serif",
                 borderWidth: "0.5px",
                 borderStyle: "solid",
                 borderColor: "#EEF2F7",

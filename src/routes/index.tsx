@@ -42,7 +42,7 @@ const marketingWebsiteImg = marketingWebsiteAsset.url;
 import explainerPlaceholderAsset from "../assets/instructor-placeholder.png.asset.json";
 const explainerPlaceholderImg = explainerPlaceholderAsset.url;
 
-const FONT = "'Poppins', system-ui, -apple-system, sans-serif";
+const FONT = "Poppins, sans-serif";
 const NAVY = "#133155";
 const NAVY_SOFT = "#243a66";
 const BLUE = "#0E7CCE";

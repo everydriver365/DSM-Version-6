@@ -20,7 +20,7 @@ export const Route = createFileRoute("/automations")({
   component: AutomationsPage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 interface AutomationRow {
   id: string;
@@ -327,7 +327,7 @@ function AutomationsPage() {
                   onChange={(e) => setTriggerType(e.target.value)}
                   className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                   style={{
-                    fontFamily: "Inter, sans-serif",
+                    fontFamily: "Poppins, sans-serif",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
                     borderColor: "#EEF2F7",
@@ -355,7 +355,7 @@ function AutomationsPage() {
                   placeholder="Hi [name], reminder of your lesson on [date] at [time]."
                   className="w-full rounded-lg px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                   style={{
-                    fontFamily: "Inter, sans-serif",
+                    fontFamily: "Poppins, sans-serif",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
                     borderColor: "#EEF2F7",
@@ -372,7 +372,7 @@ function AutomationsPage() {
                       style={{
                         backgroundColor: "#EEF4FB",
                         color: "#1877D6",
-                        fontFamily: "Inter, sans-serif",
+                        fontFamily: "Poppins, sans-serif",
                       }}
                     >
                       {v}

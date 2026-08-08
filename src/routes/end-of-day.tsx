@@ -255,7 +255,7 @@ function EndOfDayPage() {
   const earliestTomorrow = tomorrowLessons[0]?.lesson_time?.slice(0, 5) ?? null;
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#FFFFFF", fontFamily: "Inter, sans-serif", paddingBottom: 80 }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#FFFFFF", fontFamily: "Poppins, sans-serif", paddingBottom: 80 }}>
       {/* Top bar */}
       <InstructorTopBar
         firstName=""
@@ -409,7 +409,7 @@ function EndOfDayPage() {
               padding: 10,
               paddingRight: 40,
               fontSize: 13,
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Poppins, sans-serif",
               border: "1px solid #EEF2F7",
               borderRadius: 10,
               resize: "vertical",

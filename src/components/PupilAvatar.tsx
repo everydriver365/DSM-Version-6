@@ -87,7 +87,7 @@ export function PupilAvatar({ pupil, pupilId, size = 32, className }: PupilAvata
         fontSize: Math.max(10, Math.round(size * 0.375)),
         fontWeight: 700,
         flexShrink: 0,
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Poppins, sans-serif",
         overflow: "hidden",
       }}
     >

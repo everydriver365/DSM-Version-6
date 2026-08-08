@@ -28,7 +28,7 @@ export const Route = createFileRoute("/profile")({
   component: ProfilePage,
 });
 
-const POPPINS = { fontFamily: "Inter, sans-serif" } as const;
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const AVATAR_COLORS: Record<string, string> = {
   blue: "#85B7EB",
@@ -877,7 +877,7 @@ function ProfilePage() {
                 placeholder="Tell pupils a bit about yourself"
                 className="w-full rounded-lg px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                 style={{
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "Poppins, sans-serif",
                   borderWidth: "0.5px",
                   borderStyle: "solid",
                   borderColor: "#EEF2F7",
