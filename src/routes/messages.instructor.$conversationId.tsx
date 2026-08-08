@@ -292,9 +292,22 @@ function InstructorDMThread() {
         },
         (payload) => {
           const row = payload.new as unknown as DMMessage;
-          setMessages((prev) =>
-            prev.some((m) => m.id === row.id) ? prev : [...prev, row],
-          );
+          setMessages((prev) => {
+            if (prev.some((m) => m.id === row.id)) return prev;
+            // Replace the optimistic copy of our own message if it is still pending.
+            const pendingIdx = prev.findIndex(
+              (m) =>
+                m.delivery !== undefined &&
+                m.from_instructor_id === row.from_instructor_id &&
+                (m.body ?? "") === (row.body ?? ""),
+            );
+            if (pendingIdx !== -1) {
+              const next = [...prev];
+              next[pendingIdx] = { ...row, delivery: "sent" };
+              return next;
+            }
+            return [...prev, row];
+          });
           // Thread is open, so an inbound message is read on arrival — mark it
           // and drop the badge straight away instead of letting it flash.
           if (row.from_instructor_id !== userId) {
@@ -302,9 +315,6 @@ function InstructorDMThread() {
               broadcastRead(n),
             );
           }
-
-
-
         },
       )
       .subscribe();
