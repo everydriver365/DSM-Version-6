@@ -797,7 +797,12 @@ function InstructorDMThread() {
         <textarea
           rows={1}
           value={body}
-          onChange={(e) => setBody(e.target.value)}
+          onChange={(e) => {
+            setBody(e.target.value);
+            if (e.target.value.trim()) signalTyping();
+            else stopTyping();
+          }}
+          onBlur={() => stopTyping()}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
