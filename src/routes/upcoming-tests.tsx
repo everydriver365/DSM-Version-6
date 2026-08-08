@@ -280,17 +280,60 @@ function UpcomingTestsPage() {
           }}
           title="Cancel test"
           subtitle={cancelTest?.name ?? undefined}
+          footer={
+            <div className="flex flex-col gap-2">
+              <PrimaryButton
+                color="#CC2229"
+                disabled={saving}
+                onClick={async () => {
+                  if (!cancelTest) return;
+                  setSaving(true);
+                  await supabase.from("pupils").update({
+                    test_date: null,
+                    test_time: null,
+                    test_centre: null,
+                    test_status: "cancelled",
+                  }).eq("id", cancelTest.id);
+                  if (cancelReason.trim() && userId) {
+                    await supabase.from("lesson_history").insert({
+                      instructor_id: userId,
+                      pupil_id: cancelTest.id,
+                      notes: `Test cancelled: ${cancelReason.trim()}`,
+                      payment_status: "note",
+                      created_at: new Date().toISOString(),
+                    });
+                  }
+                  setTests((prev) => prev.filter((t) => t.id !== cancelTest.id));
+                  toast.success("Test cancelled");
+                  setSaving(false);
+                  setCancelTest(null);
+                  setCancelReason("");
+                }}
+              >
+                {saving ? "Cancelling..." : "Confirm cancellation"}
+              </PrimaryButton>
+              <GhostButton
+                color="#0B1F3A"
+                bg="transparent"
+                onClick={() => {
+                  setCancelTest(null);
+                  setCancelReason("");
+                }}
+              >
+                Keep test
+              </GhostButton>
+            </div>
+          }
         >
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "0 4px 8px" }}>
           {/* Warning */}
           <div
+            className="flex gap-3 mb-3"
             style={{
-              display: "flex",
-              gap: 12,
               padding: 14,
               background: "#FEF3C7",
-              borderRadius: 10,
+              borderRadius: 16,
               color: "#92400E",
+              boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
             }}
           >
             <span style={{ fontSize: 18, lineHeight: 1 }}>⚠️</span>
@@ -305,92 +348,29 @@ function UpcomingTestsPage() {
           </div>
 
           {/* Reason */}
-          <div>
-            <label className="block" style={{ fontSize: 12, color: "#6B7280", marginBottom: 6, ...POPPINS }}>
-              Reason (optional)
-            </label>
-            <textarea
-              rows={3}
-              value={cancelReason}
-              onChange={(e) => setCancelReason(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "10px 12px",
-                border: "1px solid #E4E8EF",
-                borderRadius: 8,
-                fontSize: 13,
-                fontFamily: "Poppins, sans-serif",
-                color: "#0B1F3A",
-                resize: "none",
-              }}
-            />
-          </div>
-
-          {/* Confirm cancel */}
-          <button
-            disabled={saving}
-            onClick={async () => {
-              if (!cancelTest) return;
-              setSaving(true);
-              await supabase.from("pupils").update({
-                test_date: null,
-                test_time: null,
-                test_centre: null,
-                test_status: "cancelled",
-              }).eq("id", cancelTest.id);
-              if (cancelReason.trim() && userId) {
-                await supabase.from("lesson_history").insert({
-                  instructor_id: userId,
-                  pupil_id: cancelTest.id,
-                  notes: `Test cancelled: ${cancelReason.trim()}`,
-                  payment_status: "note",
-                  created_at: new Date().toISOString(),
-                });
-              }
-              setTests((prev) => prev.filter((t) => t.id !== cancelTest.id));
-              toast.success("Test cancelled");
-              setSaving(false);
-              setCancelTest(null);
-              setCancelReason("");
-            }}
-            style={{
-              width: "100%",
-              padding: 13,
-              background: "#CC2229",
-              color: "#fff",
-              border: "none",
-              borderRadius: 10,
-              fontSize: 14,
-              fontWeight: 700,
-              cursor: "pointer",
-              fontFamily: "Poppins, sans-serif",
-            }}
-          >
-            {saving ? "Cancelling..." : "Confirm cancellation"}
-          </button>
-
-          {/* Keep test */}
-          <button
-            onClick={() => {
-              setCancelTest(null);
-              setCancelReason("");
-            }}
-            style={{
-              width: "100%",
-              padding: 13,
-              background: "#F1F5F9",
-              color: "#6B7686",
-              border: "none",
-              borderRadius: 10,
-              fontSize: 14,
-              fontWeight: 600,
-              cursor: "pointer",
-              fontFamily: "Poppins, sans-serif",
-            }}
-          >
-            Keep test
-          </button>
-        </div>
+          <SheetGroup>
+            <div style={{ padding: "13px 16px" }}>
+              <label className="block" style={{ fontSize: 13, fontWeight: 500, color: "#6B7686", marginBottom: 6, ...POPPINS }}>
+                Reason (optional)
+              </label>
+              <textarea
+                rows={3}
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                style={{
+                  width: "100%",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  fontFamily: "Poppins, sans-serif",
+                  color: "#0B1F3A",
+                  border: "none",
+                  outline: "none",
+                  background: "transparent",
+                  resize: "none",
+                }}
+              />
+            </div>
+          </SheetGroup>
       </BottomSheetV2>
       )}
     </PageLayout>
