@@ -444,7 +444,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             <IconPlayerPlay size={14} color={RED} stroke={2} />
           </span>
           <div style={chipLabel}>Showcase</div>
-          <div style={chipSub}>Clips</div>
+          <div style={chipSub}>Fun Videos</div>
           {showcaseCount !== null && showcaseCount > 0 && (
             <div style={{ marginTop: 3, fontSize: 8, fontWeight: 700, color: RED, fontFamily: "Poppins, sans-serif" }}>
               {showcaseCount} clips
