@@ -746,6 +746,7 @@ function InstructorDMThread() {
             <style>{`@keyframes dsmspin { to { transform: rotate(360deg); } }`}</style>
           </div>
         ) : messages.length === 0 ? (
+
           <div
             style={{
               display: "flex",
