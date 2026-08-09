@@ -459,52 +459,114 @@ function AvailabilitySettingsPage() {
       <div style={{ height: 14 }} />
 
       {/* SECTION 1 — WORKING HOURS */}
-      <Card>
-        <SectionHead icon={<Clock size={16} color={BLUE} />} title="Working hours" />
+      <div style={{ padding: "0 16px", marginBottom: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+          <div style={{
+            width: 38, height: 38, borderRadius: 11, background: "#E7F1FC",
+            display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+          }}>
+            <Clock size={18} color="#1877D6" />
+          </div>
+          <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: "-0.2px", color: "#000", ...FONT }}>
+            Working hours
+          </div>
+        </div>
 
-        <div>
+        <div style={{
+          background: "#fff", borderRadius: 20, overflow: "hidden",
+          boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.07)",
+        }}>
           {DAY_NAMES.map((d, idx) => {
             const cfg = dayHours[d];
             return (
               <div
                 key={d}
                 style={{
-                  padding: "12px 0",
-                  borderTop: idx === 0 ? "none" : `1px solid ${ROW_BORDER}`,
+                  padding: 16,
+                  borderTop: idx === 0 ? "none" : "1px solid #EFEFF2",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <Toggle on={cfg.active} onChange={() => updateDay(d, { active: !cfg.active })} />
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={cfg.active}
+                    aria-label={`${d} working`}
+                    onClick={() => updateDay(d, { active: !cfg.active })}
+                    style={{
+                      width: 44, height: 26, borderRadius: 20, position: "relative",
+                      background: cfg.active ? "#1877D6" : "#E5E5EA", border: "none", cursor: "pointer",
+                      flexShrink: 0, padding: 0,
+                    }}
+                  >
+                    <span style={{
+                      position: "absolute", top: 2, left: cfg.active ? 20 : 2,
+                      width: 22, height: 22, borderRadius: "50%", background: "#fff",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.2)", transition: "left 120ms",
+                    }} />
+                  </button>
                   <span style={{
-                    width: 34, fontSize: 14, fontWeight: 500,
-                    color: cfg.active ? NAVY : OFF_TXT,
+                    width: 38, fontSize: 15.5, fontWeight: 800, letterSpacing: "-0.1px",
+                    color: cfg.active ? "#000" : "#B0B0B5", ...FONT,
                   }}>
                     {DAY_SHORT[d]}
                   </span>
 
                   {cfg.active ? (
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, flex: 1 }}>
-                      <TimeField value={cfg.start} onChange={(v) => updateDay(d, { start: v })} />
-                      <span style={{ fontSize: 12, color: OFF_TXT }}>to</span>
-                      <TimeField value={cfg.end} onChange={(v) => updateDay(d, { end: v })} />
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1 }}>
+                      <label style={{
+                        flex: 1, background: "#F2F2F7", borderRadius: 10,
+                        padding: "9px 11px", display: "flex", alignItems: "center", justifyContent: "space-between",
+                        cursor: "pointer", position: "relative",
+                      }}>
+                        <span style={{ fontSize: 14, fontWeight: 700, color: "#000", ...FONT }}>{cfg.start}</span>
+                        <Clock size={13} color="#B0B0B5" />
+                        <input
+                          type="time" value={cfg.start}
+                          onChange={(e) => updateDay(d, { start: e.target.value })}
+                          style={{
+                            position: "absolute", inset: 0, opacity: 0, cursor: "pointer",
+                            border: "none", background: "transparent",
+                          }}
+                        />
+                      </label>
+                      <span style={{ fontSize: 12.5, fontWeight: 500, color: "#B0B0B5", ...FONT }}>to</span>
+                      <label style={{
+                        flex: 1, background: "#F2F2F7", borderRadius: 10,
+                        padding: "9px 11px", display: "flex", alignItems: "center", justifyContent: "space-between",
+                        cursor: "pointer", position: "relative",
+                      }}>
+                        <span style={{ fontSize: 14, fontWeight: 700, color: "#000", ...FONT }}>{cfg.end}</span>
+                        <Clock size={13} color="#B0B0B5" />
+                        <input
+                          type="time" value={cfg.end}
+                          onChange={(e) => updateDay(d, { end: e.target.value })}
+                          style={{
+                            position: "absolute", inset: 0, opacity: 0, cursor: "pointer",
+                            border: "none", background: "transparent",
+                          }}
+                        />
+                      </label>
                     </div>
                   ) : (
-                    <div style={{ flex: 1, textAlign: "right", fontSize: 12, color: OFF_TXT }}>Off</div>
+                    <div style={{ flex: 1, textAlign: "right", fontSize: 14, fontWeight: 700, color: "#B0B0B5", ...FONT }}>
+                      Off
+                    </div>
                   )}
                 </div>
 
                 {cfg.active && (
-                  <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 6 }}>
+                  <div style={{ marginTop: 10, marginLeft: 56 }}>
                     <button
                       type="button"
                       onClick={() => copyToWeekdays(d)}
                       style={{
-                        display: "inline-flex", alignItems: "center", gap: 3,
+                        display: "inline-flex", alignItems: "center", gap: 4,
                         background: "none", border: "none", cursor: "pointer",
-                        fontSize: 11, fontWeight: 500, color: BLUE, padding: 0,
+                        fontSize: 12.5, fontWeight: 700, color: "#1877D6", padding: 0, ...FONT,
                       }}
                     >
-                      Copy to all weekdays <ArrowDown size={11} />
+                      Copy to all weekdays <ChevronDown size={11} />
                     </button>
                   </div>
                 )}
@@ -514,14 +576,14 @@ function AvailabilitySettingsPage() {
 
           {/* Lunch break row */}
           <div style={{
-            padding: "12px 0", borderTop: `1px solid ${ROW_BORDER}`,
+            padding: 16, borderTop: "1px solid #EFEFF2",
             display: "flex", alignItems: "center", justifyContent: "space-between",
           }}>
-            <div style={{ fontSize: 14, fontWeight: 500, color: NAVY }}>Lunch break</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#000", ...FONT }}>Lunch break</div>
             <Toggle on={lunchOn} onChange={() => setLunchOn((v) => !v)} />
           </div>
           {lunchOn && (
-            <div style={{ display: "flex", gap: 10, paddingBottom: 4 }}>
+            <div style={{ display: "flex", gap: 10, padding: "0 16px 16px" }}>
               <TimeField value={lunchStart} onChange={setLunchStart} />
               <span style={{ fontSize: 12, color: OFF_TXT, alignSelf: "center" }}>to</span>
               <TimeField value={lunchEnd} onChange={setLunchEnd} />
@@ -534,7 +596,7 @@ function AvailabilitySettingsPage() {
           onClick={() => workingHoursSave.runSave(saveWorkingHours)}
           label="Save working hours"
         />
-      </Card>
+      </div>
 
       {/* SECTION 2 — LESSON BUFFER */}
       <Card>
