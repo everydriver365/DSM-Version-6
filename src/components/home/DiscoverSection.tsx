@@ -433,6 +433,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   if (e.key === "Enter" || e.key === " ") open();
                 }}
                 style={{
+                  position: "relative",
                   background: "linear-gradient(100deg, #0B1F3A 0%, #14509E 100%)",
                   borderRadius: 16,
                   padding: "14px 16px",
@@ -443,6 +444,48 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   cursor: "pointer",
                 }}
               >
+                {heroCards.length > 1 && (
+                  <>
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: 8,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        width: 22,
+                        height: 22,
+                        borderRadius: "50%",
+                        background: "rgba(255,255,255,0.18)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        opacity: 0.85,
+                        pointerEvents: "none",
+                      }}
+                    >
+                      <IconChevronLeft size={14} color="#fff" stroke={2.2} />
+                    </div>
+                    <div
+                      style={{
+                        position: "absolute",
+                        right: 8,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        width: 22,
+                        height: 22,
+                        borderRadius: "50%",
+                        background: "rgba(255,255,255,0.18)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        opacity: 0.85,
+                        pointerEvents: "none",
+                      }}
+                    >
+                      <IconChevronRight size={14} color="#fff" stroke={2.2} />
+                    </div>
+                  </>
+                )}
                 <div
                   style={{
                     display: "flex",
