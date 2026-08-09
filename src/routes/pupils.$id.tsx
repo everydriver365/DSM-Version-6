@@ -1623,12 +1623,12 @@ function PupilDetailPage() {
                     const balanceValue = isBlock
                       ? balance > 0
                         ? `£${balance.toFixed(2)} due`
-                        : "Fully paid"
+                        : "Paid"
                       : balance > 0
                         ? `£${balance.toFixed(2)}`
                         : accountCredit > 0
                           ? `£${accountCredit.toFixed(2)}`
-                          : "All paid";
+                          : "Paid";
                     const today = ymd(new Date());
                     let testValue = "Not booked";
                     let testColor = "#8A8A8E";
