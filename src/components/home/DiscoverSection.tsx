@@ -740,8 +740,43 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             );
           })}
         </div>
-      </div>
 
+        {/* Marketplace pagination dots */}
+        {heroCards.length > 1 && (
+          <div
+            role="tablist"
+            aria-label="Marketplace listings"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 6,
+              marginTop: 10,
+              height: 8,
+            }}
+          >
+            {heroCards.map((_, i) => {
+              const isActive = i === heroIndex;
+              return (
+                <div
+                  key={i}
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-label={`Listing ${i + 1}`}
+                  style={{
+                    width: isActive ? 22 : 6,
+                    height: 6,
+                    borderRadius: 3,
+                    backgroundColor: isActive ? BLUE : "#C7CDD9",
+                    opacity: isActive ? 1 : 0.5,
+                    transition: "width 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s ease",
+                  }}
+                />
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       <SectionHeader>Discover</SectionHeader>
 
