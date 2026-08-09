@@ -184,6 +184,8 @@ function ShowcasePage() {
   const [reportReason, setReportReason] = useState("");
   const [reportingId, setReportingId] = useState<string | null>(null);
   const [sendingReport, setSendingReport] = useState(false);
+  const [reportCommentId, setReportCommentId] = useState<string | null>(null);
+  const [reportedComments, setReportedComments] = useState<Record<string, boolean>>({});
 
   // Upload form state
   const [uploadTitle, setUploadTitle] = useState("");
