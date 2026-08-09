@@ -74,6 +74,9 @@ function DataImportPage() {
   const [parseErrors, setParseErrors] = useState<string[]>([]);
   const [importing, setImporting] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [processed, setProcessed] = useState(0);
+  const [liveSuccess, setLiveSuccess] = useState(0);
+  const [liveFailed, setLiveFailed] = useState(0);
   const [successCount, setSuccessCount] = useState<number | null>(null);
   const [failures, setFailures] = useState<{ row: number; reason: string }[]>([]);
 
