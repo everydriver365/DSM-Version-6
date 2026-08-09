@@ -597,6 +597,10 @@ function LearnPage() {
                 src={playbackSrc ?? playing.url ?? undefined}
 
                 controls
+                controlsList="nodownload noplaybackrate noremoteplayback"
+                disablePictureInPicture
+                disableRemotePlayback
+                onContextMenu={(e) => e.preventDefault()}
                 autoPlay
                 playsInline
                 onClick={(e) => e.stopPropagation()}

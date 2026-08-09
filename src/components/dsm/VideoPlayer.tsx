@@ -96,6 +96,10 @@ export function VideoPlayer({
         ref={videoRef}
         src={src}
         poster={thumbnail ?? undefined}
+        controlsList="nodownload noplaybackrate noremoteplayback"
+        disablePictureInPicture
+        disableRemotePlayback
+        onContextMenu={(e) => e.preventDefault()}
         playsInline
         muted={muted}
         title={title ?? undefined}

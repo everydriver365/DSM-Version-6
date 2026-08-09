@@ -610,6 +610,10 @@ function ShowcasePage() {
                 poster={playing.thumbnail_url ?? undefined}
                 autoPlay
                 controls
+                controlsList="nodownload noplaybackrate noremoteplayback"
+                disablePictureInPicture
+                disableRemotePlayback
+                onContextMenu={(e) => e.preventDefault()}
                 playsInline
                 onCanPlay={(e) => {
                   const v = e.currentTarget;
