@@ -634,45 +634,108 @@ function AdminListingsPage() {
                 key={l.id}
                 style={{
                   background: "#fff",
-                  borderWidth: "0.5px",
-                  borderStyle: "solid",
-                  borderColor: "#E2E6ED",
-                  borderRadius: 12,
-                  padding: 16,
+                  borderRadius: 20,
+                  padding: 18,
                   marginLeft: 16,
                   marginRight: 16,
-                  marginBottom: 8,
+                  marginBottom: 14,
+                  boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.07)",
+                  fontFamily: "Poppins, sans-serif",
                 }}
               >
                 <div
                   onClick={() => setExpandedId(expanded ? null : l.id)}
                   style={{ cursor: "pointer" }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-                    <div style={{ fontWeight: 600, color: "#0B1F3A", fontSize: 15, letterSpacing: "-0.01em" }}>
-                      {l.title}
-                    </div>
-                    {l.marketplace_categories?.name && (
-                      <Badge color="#6B7280" bg="#EEF2F7">{l.marketplace_categories.name}</Badge>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+                    {l.marketplace_categories?.name ? (
+                      <span
+                        style={{
+                          ...categoryStyle(l.marketplace_categories.name),
+                          fontSize: 10,
+                          fontWeight: 800,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.4px",
+                          padding: "5px 11px",
+                          borderRadius: 8,
+                        }}
+                      >
+                        {l.marketplace_categories.name}
+                      </span>
+                    ) : (
+                      <span />
+                    )}
+                    {l.price_display || l.price_amount != null ? (
+                      <div style={{ color: "#000", fontSize: 22, fontWeight: 900, lineHeight: 1 }}>
+                        {l.price_display}
+                      </div>
+                    ) : (
+                      <span
+                        style={{
+                          background: "#FDEDEC",
+                          color: "#FF3B30",
+                          fontSize: 12,
+                          fontWeight: 800,
+                          padding: "6px 10px",
+                          borderRadius: 8,
+                        }}
+                      >
+                        No price
+                      </span>
                     )}
                   </div>
-                  <div style={{ color: "#6B7280", fontSize: 13, marginTop: 4 }}>
-                    {l.instructors?.name ?? "—"}
+
+                  <div style={{ fontSize: 19, fontWeight: 800, color: "#000", letterSpacing: "-0.3px", marginTop: 12 }}>
+                    {l.title}
                   </div>
-                  <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
+                    <div
+                      style={{
+                        width: 26,
+                        height: 26,
+                        borderRadius: "50%",
+                        background: "#0B1F3A",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 10,
+                        fontWeight: 800,
+                        color: "#fff",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {initials(l.instructors?.name)}
+                    </div>
+                    <span style={{ fontSize: 13.5, fontWeight: 700, color: "#0B1F3A" }}>
+                      {l.instructors?.name ?? "—"}
+                    </span>
+                  </div>
+
+                  <div style={{ display: "flex", gap: 6, marginTop: 12, flexWrap: "wrap" }}>
                     {l.listing_type === "instructor" ? (
-                      <Badge color="#1E40AF" bg="#DBEAFE">Instructor</Badge>
+                      <StatusPill type="instructor" label="Instructor" />
                     ) : (
-                      <Badge color="#6D28D9" bg="#EDE9FE">Supplier</Badge>
+                      <StatusPill type="supplier" label="Supplier" />
                     )}
                     {l.is_active ? (
-                      <Badge color="#166534" bg="#DCFCE7">Live</Badge>
+                      <StatusPill type="live" label="Live" />
                     ) : (
-                      <Badge color="#B45309" bg="#FEF3C7">Pending</Badge>
+                      <StatusPill type="pending" label="Pending review" />
                     )}
-                    {l.is_featured && <Badge color="#92400E" bg="#FEF3C7">Featured</Badge>}
+                    {l.is_featured && <StatusPill type="featured" label="Featured" />}
                   </div>
-                  <div style={{ color: "#9CA3AF", fontSize: 11, marginTop: 8 }}>
+
+                  <div
+                    style={{
+                      color: "#B0B0B5",
+                      fontSize: 11.5,
+                      fontWeight: 600,
+                      marginTop: 14,
+                      paddingTop: 12,
+                      borderTop: "1.5px dashed #EEEEF0",
+                    }}
+                  >
                     Submitted {new Date(l.created_at).toLocaleDateString()}
                   </div>
                 </div>
