@@ -387,24 +387,64 @@ function DataImportPage() {
 
               {importing && (
                 <div
-                  className="mt-3 w-full"
+                  className="mt-3"
                   style={{
-                    height: 6,
-                    borderRadius: 999,
-                    backgroundColor: "#EEF2F7",
-                    overflow: "hidden",
+                    backgroundColor: "#FFFFFF",
+                    borderWidth: "0.5px",
+                    borderStyle: "solid",
+                    borderColor: "#EEF2F7",
+                    borderRadius: 12,
+                    padding: 14,
                   }}
                 >
+                  <div className="flex items-center justify-between">
+                    <div className="text-[13px] font-semibold text-[#0B1F3A]">
+                      Importing {processed} of {rows.length}
+                    </div>
+                    <div className="text-[13px] font-semibold" style={{ color: "#1877D6" }}>
+                      {progress}%
+                    </div>
+                  </div>
+
                   <div
+                    className="mt-2 w-full"
                     style={{
-                      width: `${progress}%`,
-                      height: "100%",
-                      backgroundColor: "#1877D6",
-                      transition: "width 0.2s",
+                      height: 6,
+                      borderRadius: 999,
+                      backgroundColor: "#EEF2F7",
+                      overflow: "hidden",
                     }}
-                  />
+                  >
+                    <div
+                      style={{
+                        width: `${progress}%`,
+                        height: "100%",
+                        backgroundColor: "#1877D6",
+                        transition: "width 0.2s",
+                      }}
+                    />
+                  </div>
+
+                  <div className="mt-2.5 flex items-center" style={{ gap: 14 }}>
+                    <div className="flex items-center" style={{ gap: 6 }}>
+                      <CheckCircle2 size={16} color="#1877D6" />
+                      <span className="text-[12px] text-[#0B1F3A]">
+                        <strong>{liveSuccess}</strong> imported
+                      </span>
+                    </div>
+                    <div className="flex items-center" style={{ gap: 6 }}>
+                      <AlertCircle size={16} color={liveFailed > 0 ? "#CC2229" : "#9AA3AF"} />
+                      <span
+                        className="text-[12px]"
+                        style={{ color: liveFailed > 0 ? "#CC2229" : "#6B7280" }}
+                      >
+                        <strong>{liveFailed}</strong> failed
+                      </span>
+                    </div>
+                  </div>
                 </div>
               )}
+
             </div>
           )}
 
