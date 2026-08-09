@@ -115,12 +115,12 @@ function emptyForm(): Partial<JobOffer> {
 
 function statusBadge(status: string) {
   const map: Record<string, { bg: string; color: string; label: string }> = {
-    open: { bg: "#E5F5EC", color: "#0F9D58", label: "OPEN" },
-    claimed: { bg: "#E5F0FC", color: "#1877D6", label: "CLAIMED" },
-    expired: { bg: "#F3F4F6", color: "#6B7280", label: "EXPIRED" },
-    cancelled: { bg: "#FDE7E9", color: "#CC2229", label: "CANCELLED" },
+    open: { bg: "#1A9B5C", color: "#fff", label: "OPEN" },
+    claimed: { bg: "#1877D6", color: "#fff", label: "CLAIMED" },
+    expired: { bg: "#6B7280", color: "#fff", label: "EXPIRED" },
+    cancelled: { bg: "#CC2229", color: "#fff", label: "CANCELLED" },
   };
-  return map[status] ?? { bg: "#F3F4F6", color: "#6B7280", label: status.toUpperCase() };
+  return map[status] ?? { bg: "#6B7280", color: "#fff", label: status.toUpperCase() };
 }
 
 function toDateInputValue(iso: string | null): string {
@@ -397,6 +397,7 @@ function AdminJobOffers() {
               background: "#fff", color: BLUE, border: "none", borderRadius: 8,
               padding: "8px 12px", fontSize: 13, fontWeight: 600, cursor: "pointer",
               display: "inline-flex", alignItems: "center", gap: 6,
+              boxShadow: "0 3px 0 #B8CDE4",
             }}
           >
             <IconPlus stroke={1.5} size={14} /> New
@@ -420,29 +421,32 @@ function AdminJobOffers() {
                 key={o.id}
                 style={{
                   background: "#fff",
-                  borderRadius: 16,
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                  padding: 14,
+                  borderRadius: 20,
+                  padding: 18,
+                  marginBottom: 14,
+                  boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.07)",
                 }}
               >
                 <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>
+                    <div style={{ fontSize: 19, fontWeight: 800, color: "#000", letterSpacing: -0.3 }}>
                       {o.pupil_name || "New pupil"}
                     </div>
-                    <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>
+                    <div style={{ fontSize: 13.5, color: "#6B6B6F", fontWeight: 500, marginTop: 8, lineHeight: 1.5 }}>
                       {[
-                        o.postcode_area,
                         o.transmission,
                         o.course_hours ? `${o.course_hours} hrs` : null,
+                        o.preferred_days?.join(", "),
                         o.preferred_timing?.join(", "),
                       ].filter(Boolean).join(" · ")}
                     </div>
-                    <div style={{ fontSize: 12, color: GREY, marginTop: 4 }}>
-                      {o.offered_rate != null ? `£${Number(o.offered_rate).toFixed(2)}/hr` : "Rate TBC"}
-                    </div>
+                    {o.offered_rate != null && (
+                      <div style={{ fontSize: 17, fontWeight: 800, color: "#000", marginTop: 8 }}>
+                        £{Number(o.offered_rate).toFixed(2)}/hr
+                      </div>
+                    )}
                     {o.status === "claimed" && o.claimed_by && (
-                      <div style={{ fontSize: 12, color: BLUE, marginTop: 6 }}>
+                      <div style={{ fontSize: 12.5, color: BLUE, fontWeight: 600, marginTop: 10 }}>
                         Claimed by {instructorNames[o.claimed_by] ?? o.claimed_by.slice(0, 8)}
                         {o.claimed_at ? ` · ${new Date(o.claimed_at).toLocaleString()}` : ""}
                       </div>
@@ -450,64 +454,98 @@ function AdminJobOffers() {
                   </div>
                   <span
                     style={{
-                      fontSize: 10, fontWeight: 700, letterSpacing: 0.3,
+                      fontSize: 11, fontWeight: 800, letterSpacing: 0.3,
                       color: badge.color, background: badge.bg,
-                      padding: "4px 8px", borderRadius: 999, whiteSpace: "nowrap",
+                      padding: "6px 13px", borderRadius: 20, whiteSpace: "nowrap",
                     }}
                   >
                     {badge.label}
                   </span>
                 </div>
 
-                <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
-                  <button
-                    type="button"
-                    onClick={() => openEdit(o)}
-                    style={{
-                      background: "#fff", color: BLUE, border: `1px solid ${BLUE}`,
-                      borderRadius: 8, padding: "8px 12px", fontSize: 13, fontWeight: 600,
-                      cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6,
-                    }}
-                  >
-                    <IconPencil stroke={1.5} size={14} /> Edit
-                  </button>
-                  {o.status === "claimed" && (
-                    <button
-                      type="button"
-                      onClick={() => setThreadJob(o)}
-                      style={{
-                        background: BLUE, color: "#fff", border: "none", borderRadius: 8,
-                        padding: "8px 12px", fontSize: 13, fontWeight: 600, cursor: "pointer",
-                      }}
-                    >
-                      View messages
-                    </button>
-                  )}
+                <div style={{ display: "flex", gap: 9, marginTop: 16, flexWrap: "wrap" }}>
                   {o.status === "open" && (
                     <>
                       <button
                         type="button"
-                        onClick={() => setThreadJob(o)}
+                        onClick={() => openEdit(o)}
                         style={{
-                          background: "#fff", color: BLUE, border: `1px solid ${BLUE}`,
-                          borderRadius: 8, padding: "8px 12px", fontSize: 13, fontWeight: 600,
-                          cursor: "pointer",
+                          flex: 1,
+                          background: "#fff", color: BLUE, border: `1.5px solid ${BLUE}`,
+                          borderRadius: 13, padding: 12, fontSize: 13.5, fontWeight: 700,
+                          cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
                         }}
                       >
-                        Messages
+                        <IconPencil stroke={1.5} size={14} /> Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setThreadJob(o)}
+                        style={{
+                          flex: 1,
+                          background: "#fff", color: BLUE, border: `1.5px solid ${BLUE}`,
+                          borderRadius: 13, padding: 12, fontSize: 13.5, fontWeight: 700,
+                          cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
+                        }}
+                      >
+                        <IconSend stroke={1.5} size={14} /> Messages
                       </button>
                       <button
                         type="button"
                         onClick={() => cancelOffer(o)}
                         style={{
-                          background: "#fff", color: "#CC2229", border: "1px solid #CC2229",
-                          borderRadius: 8, padding: "8px 12px", fontSize: 13, fontWeight: 600,
-                          cursor: "pointer",
+                          flex: 1,
+                          background: "#fff", color: "#FF3B30", border: "1.5px solid #FF3B30",
+                          borderRadius: 13, padding: 12, fontSize: 13.5, fontWeight: 700,
+                          cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
                         }}
                       >
-                        Cancel
+                        <IconX stroke={1.5} size={14} /> Cancel
                       </button>
                     </>
+                  )}
+                  {o.status === "claimed" && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => openEdit(o)}
+                        style={{
+                          flex: 0.7,
+                          background: "#fff", color: BLUE, border: `1.5px solid ${BLUE}`,
+                          borderRadius: 13, padding: 12, fontSize: 13.5, fontWeight: 700,
+                          cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
+                        }}
+                      >
+                        <IconPencil stroke={1.5} size={14} /> Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setThreadJob(o)}
+                        style={{
+                          flex: 1.3,
+                          background: BLUE, color: "#fff", border: "none", borderRadius: 13,
+                          padding: 12, fontSize: 13.5, fontWeight: 700, cursor: "pointer",
+                          display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
+                          boxShadow: "0 3px 0 #0F52A8",
+                        }}
+                      >
+                        <IconSend stroke={1.5} size={14} /> View messages
+                      </button>
+                    </>
+                  )}
+                  {o.status !== "open" && o.status !== "claimed" && (
+                    <button
+                      type="button"
+                      onClick={() => openEdit(o)}
+                      style={{
+                        flex: 1,
+                        background: "#fff", color: BLUE, border: `1.5px solid ${BLUE}`,
+                        borderRadius: 13, padding: 12, fontSize: 13.5, fontWeight: 700,
+                        cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
+                      }}
+                    >
+                      <IconPencil stroke={1.5} size={14} /> Edit
+                    </button>
                   )}
                 </div>
               </div>
