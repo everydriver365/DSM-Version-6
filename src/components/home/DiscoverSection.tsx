@@ -9,7 +9,16 @@ import {
   IconShoppingBag,
   IconNews,
   IconBrowser,
+  IconCar,
+  IconTool,
+  IconBriefcase,
+  IconCamera,
+  IconDeviceMobile,
+  IconSchool,
+  IconKey,
+  IconPhoto,
 } from "@tabler/icons-react";
+
 import { supabase } from "@/lib/supabaseClient";
 import { sanitizeNewsTitle } from "@/lib/newsText";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
