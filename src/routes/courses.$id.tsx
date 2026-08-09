@@ -295,7 +295,7 @@ function CourseDetailPage() {
           aria-label="Archive"
         >
           <IconArchive stroke={1.5} size={16} />
-          IconArchive
+          Archive
         </button>
       </div>
 
@@ -928,7 +928,7 @@ function CourseDetailPage() {
                   )}
                 </Button>
                 <Button variant="destructive" onClick={archive}>
-                  IconArchive course
+                  Archive course
                 </Button>
               </div>
             )}

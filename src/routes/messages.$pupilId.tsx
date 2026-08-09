@@ -867,7 +867,7 @@ function PupilThreadPage() {
               className="mt-2 text-[13px] font-semibold"
               style={{ color: "#B45309", ...POPPINS }}
             >
-              IconSend invite →
+              Send invite →
             </button>
           </div>
         </div>

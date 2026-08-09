@@ -273,7 +273,7 @@ function NextLessonMap({
       )}
       {error && (
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#6B7280' }}>
-          IconMap unavailable
+          Map unavailable
         </div>
       )}
     </div>
@@ -6205,7 +6205,7 @@ function HomePage() {
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 3, minWidth: 0 }}>
                               <IconCalendarEvent size={13} stroke={1.8} color="#6B7686" style={{ flexShrink: 0 }} />
-                              <span style={{ fontSize: 12, color: '#6B7686', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Google IconCalendar</span>
+                              <span style={{ fontSize: 12, color: '#6B7686', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Google Calendar</span>
                             </div>
                           </div>
                         </div>
@@ -6889,7 +6889,7 @@ function HomePage() {
                         }}
                       >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                          <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>IconSearch tools</div>
+                          <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Search tools</div>
                           <button
                             type="button"
                             onClick={() => setQuickSearchOpen(false)}
@@ -8421,7 +8421,7 @@ function HomePage() {
                   fontFamily: 'Poppins, sans-serif', cursor: 'pointer',
                 }}
               >
-                IconSend message
+                Send message
               </button>
             </div>
           }
@@ -8763,7 +8763,7 @@ function HomePage() {
                       className="flex-1 text-center rounded-xl py-2.5 px-4 text-[13px] font-semibold"
                       style={{ background: '#7C3AED', color: '#FFFFFF', textDecoration: 'none' }}
                     >
-                      🎁 IconSend gift message
+                      🎁 Send gift message
                     </a>
                     <button
                       type="button"
@@ -9783,7 +9783,7 @@ function OutstandingBreakdownModal({
               cursor: rows.length === 0 ? "not-allowed" : "pointer",
             }}
           >
-            IconSend all reminders
+            Send all reminders
           </button>
           <button
             onClick={onClose}
