@@ -108,7 +108,7 @@ function categoryStyle(name: string | null | undefined): { bg: string; color: st
   const n = (name ?? "").toLowerCase();
   if (n.includes("business") || n.includes("service")) return { bg: "#E7F1FC", color: "#1877D6" };
   if (n.includes("equipment")) return { bg: "#F3EEFB", color: "#7B4FC9" };
-  if (n.includes("car") || n.includes("vehicle") return { bg: "#E6F6F4", color: "#0B9B8A" };
+  if (n.includes("car") || n.includes("vehicle")) return { bg: "#E6F6F4", color: "#0B9B8A" };
   if (n.includes("insurance")) return { bg: "#FCE7F3", color: "#C724B1" };
   if (n.includes("franchise") || n.includes("training")) return { bg: "#FFF4E5", color: "#D68A1B" };
   return { bg: "#F2F2F7", color: "#0B1F3A" };
