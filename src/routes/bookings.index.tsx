@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { IconChevronRight, IconSearch } from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import { PageHeader } from "@/components/dsm/PageHeader";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { supabase } from "../lib/supabaseClient";
