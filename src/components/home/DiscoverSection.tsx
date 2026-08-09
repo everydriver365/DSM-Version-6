@@ -478,8 +478,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       top: 0,
                       left: 0,
                       bottom: 0,
-                      width: "60%",
-                      clipPath: "polygon(0 0, 100% 0, 78% 100%, 0 100%)",
+                      width: "42%",
+                      clipPath: "polygon(0 0, 100% 0, 72% 100%, 0 100%)",
                       background: listing?.imageUrl
                         ? "#0B1F3A"
                         : `linear-gradient(150deg, #14335C 0%, ${NAVY} 62%, #071630 100%)`,
