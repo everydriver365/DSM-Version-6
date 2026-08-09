@@ -464,7 +464,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 {/* Illustration */}
                 <div
                   aria-hidden
-                  style={{ position: "absolute", top: 16, right: 16, width: 150, zIndex: 1 }}
+                  style={{ position: "absolute", top: 16, right: 16, width: 150, zIndex: 2 }}
                 >
                   {isWebsite || !listing ? (
                     <div
