@@ -431,19 +431,23 @@ function AvailabilitySettingsPage() {
   return (
     <div style={{ minHeight: "100vh", background: "#F5F7FA", paddingBottom: 40, ...FONT }}>
       <div style={{
-        position: "sticky", top: 0, zIndex: 40, display: "flex", alignItems: "center",
-        background: NAVY, height: 52, padding: "0 8px",
+        position: "sticky", top: 0, zIndex: 40, display: "flex", alignItems: "center", gap: 12,
+        background: "#0B1F3A", height: 52, padding: "0 16px", borderRadius: "0 0 28px 28px",
       }}>
         <button
           type="button"
           aria-label="Back"
           onClick={() => navigate({ to: "/settings" })}
-          style={{ width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", cursor: "pointer" }}
+          style={{
+            width: 34, height: 34, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+            background: "rgba(255,255,255,0.08)", border: "none", cursor: "pointer", flexShrink: 0,
+          }}
         >
           <ArrowLeft size={22} color="#fff" />
         </button>
-        <div style={{ flex: 1, textAlign: "center", color: "#fff", fontSize: 15, fontWeight: 600 }}>My Availability</div>
-        <div style={{ width: 40 }} />
+        <div style={{ color: "#fff", fontSize: 24, fontWeight: 800, letterSpacing: "-0.4px", ...FONT }}>
+          My Availability
+        </div>
       </div>
 
       {savedFlash ? (
