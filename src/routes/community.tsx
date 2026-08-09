@@ -878,45 +878,45 @@ function RoomsTab({
   }
 
   const rowStyle: React.CSSProperties = {
-    background: "white", border: "0.5px solid #E2E6ED", borderRadius: 12,
-    padding: "12px 14px", display: "flex", alignItems: "center", gap: 10,
+    background: "#fff", borderRadius: 18, padding: 14, marginBottom: 12,
+    display: "flex", alignItems: "center", gap: 13,
+    boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
   };
 
   function RoomRow({ room, action }: { room: BrowseRoom; action: React.ReactNode }) {
     return (
       <div style={rowStyle}>
-        {room.image_url ? (
-          <img
-            src={room.image_url}
-            alt=""
-            style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
-          />
-        ) : (
-          <div
-            style={{
-              width: 52, height: 52, borderRadius: "50%", background: "#0B1F3A", color: "white",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 17, fontWeight: 700, flexShrink: 0,
-            }}
-          >
-            {(room.area_name || room.outcode).trim().charAt(0).toUpperCase()}
-          </div>
-        )}
+        <div style={{
+          width: 46, height: 46, borderRadius: "50%", overflow: "hidden", flexShrink: 0,
+          background: "#0B1F3A", color: "#fff",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 16, fontWeight: 800,
+        }}>
+          {room.image_url ? (
+            <img
+              src={room.image_url}
+              alt=""
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
+          ) : (
+            (room.area_name || room.outcode).trim().charAt(0).toUpperCase()
+          )}
+        </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <div style={{ fontSize: 15.5, fontWeight: 800, color: "#0B1F3A", lineHeight: 1.3 }}>
               {room.area_name || room.outcode}
             </div>
             <span style={{
-              background: "#EAF2FC", color: "#1877D6", fontSize: 10, fontWeight: 700,
-              borderRadius: 999, padding: "2px 8px", flexShrink: 0,
+              background: "#E7F1FC", color: "#1877D6", fontSize: 10.5, fontWeight: 800,
+              borderRadius: 20, padding: "3px 9px", whiteSpace: "nowrap", flexShrink: 0,
             }}>
               {room.outcode}
             </span>
             {room.is_opt_in && (
               <span style={{
-                background: "#F1F3F7", color: "#6B7280", fontSize: 10, fontWeight: 700,
-                borderRadius: 999, padding: "2px 8px", flexShrink: 0,
+                background: "#F1F3F7", color: "#6B7280", fontSize: 10.5, fontWeight: 800,
+                borderRadius: 20, padding: "3px 9px", whiteSpace: "nowrap", flexShrink: 0,
               }}>
                 Private
               </span>
@@ -924,13 +924,13 @@ function RoomsTab({
           </div>
           {room.description ? (
             <div style={{
-              fontSize: 12, color: "#6B7686", marginTop: 2,
+              fontSize: 12, color: "#8A8A8E", marginTop: 3,
               overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
             }}>
               {room.description}
             </div>
           ) : null}
-          <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 3, fontSize: 11, color: "#8A93A3" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 4, fontSize: 12, fontWeight: 500, color: "#8A8A8E" }}>
             <IconUsers stroke={1.5} size={12} />
             {room.instructor_count ?? 0} instructors
           </div>
@@ -940,29 +940,35 @@ function RoomsTab({
     );
   }
 
-  const btn = (bg: string): React.CSSProperties => ({
-    height: 32, padding: "0 14px", borderRadius: 8, border: "none",
-    background: bg, color: "white", fontSize: 12, fontWeight: 700, cursor: "pointer", flexShrink: 0,
+  const btn = (bg: string, shadow: string): React.CSSProperties => ({
+    padding: "10px 18px", borderRadius: 12, border: "none",
+    background: bg, color: "#fff", fontSize: 13.5, fontWeight: 800,
+    cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap", boxShadow: shadow,
   });
 
+  const sectionHeader: React.CSSProperties = {
+    fontSize: 12, fontWeight: 700, color: "#8A8A8E", textTransform: "uppercase",
+    letterSpacing: 0.5, marginBottom: 12,
+  };
+
   return (
-    <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 18 }}>
+    <div style={{ padding: 16, display: "flex", flexDirection: "column" }}>
       <div>
-        <div style={{ fontSize: 12, fontWeight: 700, color: "#8A93A3", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
+        <div style={sectionHeader}>
           Your rooms
         </div>
         {loading ? (
           <PageLoader />
         ) : myRooms.length === 0 ? (
-          <div style={{ fontSize: 13, color: "#8A93A3" }}>You haven’t joined any rooms yet.</div>
+          <div style={{ fontSize: 13, color: "#8A8A8E" }}>You haven’t joined any rooms yet.</div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div>
             {myRooms.map((room) => (
               <RoomRow
                 key={room.id}
                 room={room}
                 action={
-                  <button type="button" style={btn("#185FA5")} onClick={() => onOpenRoom(room)}>
+                  <button type="button" style={btn("#1877D6", "0 3px 0 #0F52A8")} onClick={() => onOpenRoom(room)}>
                     Open
                   </button>
                 }
@@ -973,25 +979,26 @@ function RoomsTab({
       </div>
 
       <div>
-        <div style={{ fontSize: 12, fontWeight: 700, color: "#8A93A3", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
+        <div style={{ ...sectionHeader, marginTop: 22 }}>
           Available rooms
         </div>
         <div style={{
-          display: "flex", alignItems: "center", gap: 8, background: "white",
-          border: "0.5px solid #E2E6ED", borderRadius: 10, padding: "0 12px", height: 40, marginBottom: 10,
+          display: "flex", alignItems: "center", gap: 8, background: "#fff",
+          borderRadius: 16, padding: "13px 16px", marginBottom: 12,
+          boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.05)",
         }}>
-          <IconSearch stroke={1.5} size={15} color="#8A93A3" />
+          <IconSearch stroke={1.5} size={16} color="#8A8A8E" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search area or outcode"
-            style={{ flex: 1, border: "none", outline: "none", fontSize: 13, color: "#0F2044", background: "transparent" }}
+            style={{ flex: 1, border: "none", outline: "none", fontSize: 14, color: "#0B1F3A", background: "transparent" }}
           />
         </div>
         {loading ? null : availableRooms.length === 0 ? (
-          <div style={{ fontSize: 13, color: "#8A93A3" }}>No other rooms found.</div>
+          <div style={{ fontSize: 13, color: "#8A8A8E" }}>No other rooms found.</div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div>
             {availableRooms.map((room) => (
               <RoomRow
                 key={room.id}
@@ -1000,7 +1007,7 @@ function RoomsTab({
                   <button
                     type="button"
                     disabled={joiningId === room.id}
-                    style={{ ...btn("#0C8577"), opacity: joiningId === room.id ? 0.6 : 1 }}
+                    style={{ ...btn("#1A9B5C", "0 3px 0 #0F6B3D"), opacity: joiningId === room.id ? 0.6 : 1 }}
                     onClick={() => join(room)}
                   >
                     {joiningId === room.id ? "Joining…" : "Join"}
@@ -1013,6 +1020,7 @@ function RoomsTab({
       </div>
     </div>
   );
+
 }
 
 
