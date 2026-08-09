@@ -614,22 +614,21 @@ function TakePaymentPage() {
         {/* Tabs */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 4,
-            background: "#F4F6FA",
-            padding: 3,
-            borderRadius: 10,
+            display: "flex",
+            flexDirection: "row",
+            background: "#fff",
+            padding: 4,
+            borderRadius: 16,
+            boxShadow: "0 3px 0 #E4E4E8",
             flexShrink: 0,
-            margin: "8px 16px 0",
-            height: 40,
+            margin: "10px 16px 0",
           }}
         >
           {(
             [
-              { k: "qr" as const, label: "QR Code", icon: <QrCode size={13} /> },
-              { k: "card" as const, label: "Card", icon: <CreditCard size={13} /> },
-              { k: "cash" as const, label: "Cash/Transfer", icon: <Banknote size={13} /> },
+              { k: "qr" as const, label: "QR Code", icon: <QrCode size={15} /> },
+              { k: "card" as const, label: "Card", icon: <CreditCard size={15} /> },
+              { k: "cash" as const, label: "Cash/Transfer", icon: <Banknote size={15} /> },
             ]
           ).map((t) => {
             const active = tab === t.k;
@@ -639,18 +638,19 @@ function TakePaymentPage() {
                 type="button"
                 onClick={() => setTab(t.k)}
                 style={{
-                  height: 34,
-                  borderRadius: 8,
+                  flex: 1,
+                  minWidth: 0,
+                  padding: "11px 4px",
+                  borderRadius: 12,
                   border: "none",
-                  background: active ? "#fff" : "transparent",
-                  color: active ? NAVY : "#6B7280",
-                  fontSize: 11,
-                  fontWeight: 600,
+                  background: active ? NAVY : "transparent",
+                  color: active ? "#fff" : "#8A8A8E",
+                  fontSize: 13,
+                  fontWeight: 700,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: 4,
-                  boxShadow: active ? "0 1px 2px rgba(11,31,58,0.08)" : "none",
+                  gap: 6,
                   cursor: "pointer",
                 }}
               >
@@ -660,6 +660,7 @@ function TakePaymentPage() {
             );
           })}
         </div>
+
 
         {/* Main area — numpad or tab-specific content */}
         <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", overflow: "hidden" }}>
