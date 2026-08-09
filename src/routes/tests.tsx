@@ -255,11 +255,19 @@ function TestsPage() {
         {examinerStats.length > 0 && <ExaminerStatsCard stats={examinerStats} />}
         {sections.map((section) => (
           <div key={section.key}>
-            <SectionHeader>{section.title}</SectionHeader>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "18px 0 10px" }}>
+              <span style={{ width: 3, height: 14, background: "#1877D6", borderRadius: 2, flexShrink: 0 }} />
+              <span style={{
+                color: "#1877D6", fontSize: 12, fontWeight: 800,
+                letterSpacing: "0.6px", textTransform: "uppercase", ...POPPINS,
+              }}>
+                {section.title}
+              </span>
+            </div>
             {section.items.length === 0 ? (
               <EmptyState title={section.emptyText} subtitle="Nothing to show here" />
             ) : (
-              <div className="flex flex-col" style={{ gap: 8 }}>
+              <div className="flex flex-col">
                 {section.items.map((t) => (
                   <TestCard
                     key={`${section.key}-${t.id}`}
