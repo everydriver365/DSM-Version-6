@@ -378,7 +378,8 @@ function AdminBitesizePage() {
               width: 36,
               height: 36,
               borderRadius: "50%",
-              background: "rgba(255,255,255,0.15)",
+              background: "#1877D6",
+              boxShadow: "0 3px 0 #0F52A8",
               border: "none",
               display: "flex",
               alignItems: "center",
@@ -393,43 +394,54 @@ function AdminBitesizePage() {
       />
 
       {/* STATS ROW */}
-      <div
-        style={{
-          background: "#fff",
-          padding: "12px 16px",
-          borderBottom: "0.5px solid #E4E8EF",
-          display: "flex",
-          gap: 20,
-          overflowX: "auto",
-        }}
-      >
-        {stats.map((s) => (
-          <div key={s.label} style={{ flexShrink: 0 }}>
+      <div style={{ padding: "16px 16px 0" }}>
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 20,
+            boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
+            display: "flex",
+            overflow: "hidden",
+          }}
+        >
+          {stats.map((s, i) => (
             <div
+              key={s.label}
               style={{
-                fontSize: 9,
-                fontWeight: 600,
-                color: "#9CA3AF",
-                textTransform: "uppercase",
-                letterSpacing: "0.06em",
-                ...POPPINS,
+                flex: 1,
+                padding: "16px 10px",
+                textAlign: "left",
+                borderLeft: i > 0 ? "1.5px dashed #E4E4E8" : undefined,
               }}
             >
-              {s.label}
+              <div
+                style={{
+                  fontSize: 26,
+                  fontWeight: 900,
+                  letterSpacing: "-0.8px",
+                  color: "#000",
+                  ...POPPINS,
+                }}
+              >
+                {s.value}
+              </div>
+              <div
+                style={{
+                  fontSize: 9.5,
+                  fontWeight: 700,
+                  color: "#8A8A8E",
+                  textTransform: "uppercase",
+                  marginTop: 5,
+                  ...POPPINS,
+                }}
+              >
+                {s.label}
+              </div>
             </div>
-            <div
-              style={{
-                fontSize: 18,
-                fontWeight: 700,
-                color: "#0B1F3A",
-                ...POPPINS,
-              }}
-            >
-              {s.value}
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
+
 
       {/* LIST */}
       {loading ? (
@@ -480,164 +492,207 @@ function AdminBitesizePage() {
               key={video.id}
               style={{
                 background: "#fff",
-                border: "0.5px solid #E4E8EF",
-                borderRadius: 12,
-                padding: 12,
-                display: "flex",
-                gap: 12,
-                alignItems: "center",
+                borderRadius: 20,
+                padding: 18,
+                marginBottom: 14,
+                boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
               }}
             >
-              {/* THUMB */}
-              <div
-                style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 8,
-                  overflow: "hidden",
-                  flexShrink: 0,
-                  background: "#EFE7FB",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {video.thumbnail_url ? (
-                  <img
-                    src={video.thumbnail_url}
-                    alt={video.title}
-                    loading="lazy"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      display: "block",
-                    }}
-                  />
-                ) : (
-                  <IconBook size={24} color="#7C3AED" />
-                )}
-              </div>
-
-              {/* CONTENT */}
-              <div style={{ flex: 1, minWidth: 0 }}>
+              {/* TOP SECTION */}
+              <div style={{ display: "flex", gap: 14 }}>
                 <div
                   style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: 14,
+                    overflow: "hidden",
+                    flexShrink: 0,
+                    background: "#F3EEFB",
                     display: "flex",
                     alignItems: "center",
-                    gap: 6,
-                    minWidth: 0,
+                    justifyContent: "center",
                   }}
                 >
+                  {video.thumbnail_url ? (
+                    <img
+                      src={video.thumbnail_url}
+                      alt={video.title}
+                      loading="lazy"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                      }}
+                    />
+                  ) : (
+                    <IconBook size={24} color="#7B4FC9" />
+                  )}
+                </div>
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      minWidth: 0,
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: 17,
+                        fontWeight: 800,
+                        letterSpacing: "-0.2px",
+                        color: "#000",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        ...POPPINS,
+                      }}
+                    >
+                      {video.title}
+                    </div>
+                    <span
+                      style={{
+                        flexShrink: 0,
+                        fontSize: 10,
+                        fontWeight: 800,
+                        borderRadius: 20,
+                        padding: "4px 10px",
+                        background: video.is_published ? "#E6F7EC" : "#FFF6DC",
+                        color: video.is_published ? "#248A3D" : "#B8860B",
+                        ...POPPINS,
+                      }}
+                    >
+                      {video.is_published ? "Published" : "Draft"}
+                    </span>
+                  </div>
                   <div
                     style={{
                       fontSize: 13,
-                      fontWeight: 600,
-                      color: "#0B1F3A",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
+                      fontWeight: 500,
+                      color: "#8A8A8E",
+                      marginTop: 6,
                       ...POPPINS,
                     }}
                   >
-                    {video.title}
+                    {video.category ?? "Uncategorised"}
+                    {video.duration_mins != null
+                      ? ` · ${video.duration_mins} min`
+                      : ""}
                   </div>
-                  <span
+                  <div
                     style={{
-                      flexShrink: 0,
-                      fontSize: 8,
-                      fontWeight: 700,
-                      borderRadius: 20,
-                      padding: "2px 6px",
-                      background: video.is_published ? "#DCFCE7" : "#FEF3C7",
-                      color: video.is_published ? "#15803D" : "#92400E",
+                      fontSize: 12,
+                      color: "#B0B0B5",
+                      marginTop: 4,
                       ...POPPINS,
                     }}
                   >
-                    {video.is_published ? "Published" : "Draft"}
-                  </span>
-                </div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: "#6B7686",
-                    marginTop: 2,
-                    ...POPPINS,
-                  }}
-                >
-                  {video.category ?? "Uncategorised"}
-                  {video.duration_mins != null
-                    ? ` · ${video.duration_mins} min`
-                    : ""}
-                </div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: "#9CA3AF",
-                    marginTop: 2,
-                    ...POPPINS,
-                  }}
-                >
-                  {video.views ?? 0} views
-                  {video.created_at
-                    ? ` · ${new Date(video.created_at).toLocaleDateString("en-GB")}`
-                    : ""}
+                    {video.views ?? 0} views
+                    {video.created_at
+                      ? ` · ${new Date(video.created_at).toLocaleDateString("en-GB")}`
+                      : ""}
+                  </div>
                 </div>
               </div>
 
-              {/* ACTIONS */}
-              <div style={{ flexShrink: 0, display: "flex", gap: 8 }}>
+              {/* ACTION ROW */}
+              <div
+                style={{
+                  marginTop: 16,
+                  paddingTop: 14,
+                  borderTop: "1px solid #F0F0F2",
+                  display: "flex",
+                  gap: 9,
+                }}
+              >
                 <button
                   type="button"
                   aria-label={video.is_published ? "Unpublish" : "Publish"}
                   onClick={() => void togglePublish(video)}
                   style={{
-                    background: "none",
+                    flex: 1,
+                    height: 40,
+                    borderRadius: 12,
+                    background: "#fff",
                     border: "none",
-                    padding: 0,
+                    boxShadow: "0 3px 0 #E4E4E8",
                     display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 6,
+                    fontSize: 12.5,
+                    fontWeight: 700,
+                    color: video.is_published ? "#248A3D" : "#B0B0B5",
                     cursor: "pointer",
+                    ...POPPINS,
                   }}
                 >
                   {video.is_published ? (
-                    <IconEye size={18} color="#15803D" />
+                    <IconEye size={15} />
                   ) : (
-                    <IconEyeOff size={18} color="#9CA3AF" />
+                    <IconEyeOff size={15} />
                   )}
+                  {video.is_published ? "Hide" : "Show"}
                 </button>
                 <button
                   type="button"
                   aria-label="Edit"
                   onClick={() => openEdit(video)}
                   style={{
-                    background: "none",
+                    flex: 1,
+                    height: 40,
+                    borderRadius: 12,
+                    background: "#fff",
                     border: "none",
-                    padding: 0,
+                    boxShadow: "0 3px 0 #E4E4E8",
                     display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 6,
+                    fontSize: 12.5,
+                    fontWeight: 700,
+                    color: "#1877D6",
                     cursor: "pointer",
+                    ...POPPINS,
                   }}
                 >
-                  <IconPencil size={18} color="#1877D6" />
+                  <IconPencil size={15} />
+                  Edit
                 </button>
                 <button
                   type="button"
                   aria-label="Delete"
                   onClick={() => void deleteVideo(video)}
                   style={{
-                    background: "none",
+                    flex: 1,
+                    height: 40,
+                    borderRadius: 12,
+                    background: "#fff",
                     border: "none",
-                    padding: 0,
+                    boxShadow: "0 3px 0 #F7C9C6",
                     display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 6,
+                    fontSize: 12.5,
+                    fontWeight: 700,
+                    color: "#FF3B30",
                     cursor: "pointer",
+                    ...POPPINS,
                   }}
                 >
-                  <IconTrash size={18} color="#CC2229" />
+                  <IconTrash size={15} />
+                  Delete
                 </button>
               </div>
             </div>
           ))}
         </div>
       )}
+
 
       {/* UPLOAD SHEET */}
       {uploadOpen && (
