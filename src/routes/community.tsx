@@ -1220,7 +1220,7 @@ function AlertsTab({
 
   const renderAlertCard = (a: Alert) => {
     const cfg = TYPE_CONFIG[a.alert_type] ?? TYPE_CONFIG.other;
-    const alreadyUpvoted = !!userId && (a.upvoted_by ?? []).includes(userId);
+    
     const source = a.source ?? "manual";
     const reporter = firstName(a.instructors?.name);
     const suspicious = isExpirySuspicious(a.expires_at);
