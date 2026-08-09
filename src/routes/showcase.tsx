@@ -1749,6 +1749,16 @@ function ShowcasePage() {
 
 
       {/* REPORT SHEET */}
+      <ConfirmSheet
+        open={reportCommentId !== null}
+        title="Report this comment?"
+        message="This comment will be sent to a DSM admin for review. The comment stays visible in the thread until an admin acts on it."
+        confirmLabel="Report comment"
+        cancelLabel="Cancel"
+        onConfirm={confirmReportComment}
+        onCancel={() => setReportCommentId(null)}
+      />
+
       {reportOpen && (
         <BottomSheet
           title="Report video"
