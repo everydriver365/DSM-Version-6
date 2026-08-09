@@ -269,6 +269,7 @@ function ShowcasePage() {
   // Load comments for the open video
   useEffect(() => {
     if (!commentsOpen || !playing) return;
+    setReplyTo(null);
     (async () => {
       const { data } = await db
         .from("showcase_comments")
