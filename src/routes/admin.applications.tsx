@@ -297,14 +297,15 @@ function AdminApplicationsPage() {
               onClick={() => setFilter(k)}
               style={{
                 flexShrink: 0,
-                padding: "8px 14px",
-                borderRadius: 999,
-                fontSize: 13,
-                fontWeight: 600,
+                padding: "10px 18px",
+                borderRadius: 24,
+                fontSize: 13.5,
+                fontWeight: 700,
                 cursor: "pointer",
-                border: active ? "none" : `1px solid ${BORDER}`,
-                background: active ? NAVY : "#fff",
-                color: active ? "#fff" : NAVY,
+                border: "none",
+                background: active ? "#0B1F3A" : "#fff",
+                color: active ? "#fff" : "#0B1F3A",
+                boxShadow: active ? "0 3px 0 #050D1C" : "0 3px 0 #E4E4E8",
                 textTransform: "capitalize",
               }}
             >
