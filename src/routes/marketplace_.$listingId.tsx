@@ -269,7 +269,27 @@ function ListingDetailPage() {
           </button>
         </div>
       ) : (
+          <SwipeableDetailShell
+            items={swipeSet}
+            index={swipeIndex}
+            onIndexChange={(i) => {
+              const next = swipeSet[i];
+              if (!next || next.id === listingId) return;
+              navigate({
+                to: "/marketplace/$listingId",
+                params: { listingId: next.id },
+                search: from === "discover" ? { from: "discover" } : {},
+              });
+            }}
+            getKey={(item) => item.id}
+            variant="article"
+            hintKey="dsm_swipe_listing_hint_seen"
+            renderItem={(item, isActive) =>
+              !isActive ? (
+                <ListingPeek listing={item} />
+              ) : (
         <>
+
           {/* Hero photo gallery */}
           <div style={{ position: "relative", width: "100%", background: "#0B1F3A" }}>
             {photos.length > 1 ? (
@@ -633,7 +653,11 @@ function ListingDetailPage() {
             />
           )}
         </>
+              )
+            }
+          />
       )}
+
     </div>
   );
 }
