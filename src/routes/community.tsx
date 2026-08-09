@@ -136,6 +136,27 @@ function isExpirySuspicious(expires: string): boolean {
   return diff > 48 * 3600_000;
 }
 
+/**
+ * Pull likely road names out of the free-text location/description so the
+ * details drawer can list the roads an alert affects.
+ */
+function extractRoads(...sources: (string | null | undefined)[]): string[] {
+  const text = sources.filter(Boolean).join(" · ");
+  if (!text) return [];
+  const found: string[] = [];
+  const push = (v: string) => {
+    const clean = v.trim().replace(/[.,;:]$/, "");
+    if (clean && !found.some((f) => f.toLowerCase() === clean.toLowerCase())) found.push(clean);
+  };
+  // Motorways / A-roads / B-roads, e.g. M25, A406, B1234
+  for (const m of text.matchAll(/\b([AB]\d{1,4}(?:\([MT]\))?|M\d{1,2}(?:\([MT]\))?)\b/g)) push(m[1]);
+  // Named roads, e.g. "Kingsway Road", "High Street"
+  for (const m of text.matchAll(/\b([A-Z][a-zA-Z']+(?:\s[A-Z][a-zA-Z']+)?\s(?:Road|Street|Lane|Avenue|Way|Drive|Close|Hill|Bridge|Roundabout|Bypass|Parade|Terrace))\b/g)) push(m[1]);
+  return found.slice(0, 8);
+}
+
+
+
 function firstName(name: string | null | undefined): string {
   if (!name) return "Someone";
   return name.trim().split(/\s+/)[0] || "Someone";
