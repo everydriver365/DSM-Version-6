@@ -405,7 +405,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           scrollbarWidth: "none",
           WebkitOverflowScrolling: "touch",
           paddingBottom: 8,
-          marginBottom: heroCards.length > 1 ? 10 : 18,
+          marginBottom: 18,
         }}
       >
         {heroCards.map((listing) => {
