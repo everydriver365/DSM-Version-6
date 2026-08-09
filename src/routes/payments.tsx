@@ -734,23 +734,24 @@ function PaymentsPage() {
 }
 
 // ---------- small components ----------
-function StatTile({ label, value, color }: { label: string; value: string; color: string }) {
+function StatTile({ label, value, color, first = true }: { label: string; value: string; color: string; first?: boolean }) {
   return (
     <div
       style={{
-        background: "#FFFFFF",
-        borderRadius: 16,
-        padding: "12px 14px",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+        flex: 1,
+        padding: "16px 10px",
+        textAlign: "left",
+        borderLeft: first ? undefined : "1.5px dashed #E4E4E8",
+        minWidth: 0,
       }}
     >
       <div
         style={{
           fontSize: 10,
-          fontWeight: 500,
-          color: "#8A94A6",
-          letterSpacing: "0.03em",
-          marginBottom: 5,
+          fontWeight: 700,
+          color: "#8A8A8E",
+          textTransform: "uppercase",
+          letterSpacing: "0.3px",
           whiteSpace: "nowrap",
           lineHeight: 1.2,
           ...POPPINS,
@@ -758,8 +759,9 @@ function StatTile({ label, value, color }: { label: string; value: string; color
       >
         {label}
       </div>
-      <div style={{ fontSize: 18, fontWeight: 600, color, ...POPPINS }}>{value}</div>
+      <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.6px", marginTop: 6, color, ...POPPINS }}>{value}</div>
     </div>
+
   );
 }
 
