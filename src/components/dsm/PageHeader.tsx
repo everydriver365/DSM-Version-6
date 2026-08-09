@@ -44,6 +44,7 @@ export function PageHeader({
         alignItems: "center",
         gap: 12,
         padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px",
+        borderRadius: "0 0 28px 28px",
       }}
     >
       {showBack ? (
