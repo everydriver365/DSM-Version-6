@@ -618,6 +618,81 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   </div>
 
                 </div>
+                {heroCards.length > 1 && (
+                  <>
+                    <button
+                      aria-label="Previous listing"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const el = heroScrollRef.current;
+                        if (!el) return;
+                        const w = el.clientWidth;
+                        el.scrollTo({ left: Math.max(0, el.scrollLeft - w), behavior: "smooth" });
+                      }}
+                      style={{
+                        position: "absolute",
+                        left: 8,
+                        top: "50%",
+                        transform: `translateY(-50%) scale(${1 + scrollProgress * 0.15})`,
+                        width: 28,
+                        height: 28,
+                        borderRadius: "50%",
+                        background: "rgba(255,255,255,0.92)",
+                        color: NAVY,
+                        border: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        boxShadow: "0 2px 8px rgba(11,31,58,0.18)",
+                        opacity: heroIndex === 0 ? 0 : 0.25 + 0.75 * scrollProgress,
+                        transition: "opacity 0.2s ease, transform 0.2s ease",
+                        zIndex: 3,
+                        cursor: "pointer",
+                        pointerEvents: heroIndex === 0 ? "none" : "auto",
+                        padding: 0,
+                      }}
+                    >
+                      <IconChevronLeft size={18} stroke={2.5} />
+                    </button>
+                    <button
+                      aria-label="Next listing"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const el = heroScrollRef.current;
+                        if (!el) return;
+                        const w = el.clientWidth;
+                        el.scrollTo({
+                          left: Math.min(el.scrollWidth - w, el.scrollLeft + w),
+                          behavior: "smooth",
+                        });
+                      }}
+                      style={{
+                        position: "absolute",
+                        right: 8,
+                        top: "50%",
+                        transform: `translateY(-50%) scale(${1 + (1 - scrollProgress) * 0.15})`,
+                        width: 28,
+                        height: 28,
+                        borderRadius: "50%",
+                        background: "rgba(255,255,255,0.92)",
+                        color: NAVY,
+                        border: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        boxShadow: "0 2px 8px rgba(11,31,58,0.18)",
+                        opacity: heroIndex === heroCards.length - 1 ? 0 : 0.25 + 0.75 * (1 - scrollProgress),
+                        transition: "opacity 0.2s ease, transform 0.2s ease",
+                        zIndex: 3,
+                        cursor: "pointer",
+                        pointerEvents: heroIndex === heroCards.length - 1 ? "none" : "auto",
+                        padding: 0,
+                      }}
+                    >
+                      <IconChevronRight size={18} stroke={2.5} />
+                    </button>
+                  </>
+                )}
               </div>
             );
           })}
