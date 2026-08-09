@@ -28,9 +28,10 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         left: 0,
         right: 0,
         zIndex: 40,
-        background: "#1877D6",
+        background: "#0B1F3A",
         color: "#fff",
-        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
+        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 16px",
+        borderRadius: "0 0 28px 28px",
         display: "flex",
         alignItems: "center",
         gap: 12,
@@ -41,37 +42,96 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         onClick={onBack}
         aria-label="Back"
         style={{
-          width: 32,
-          height: 32,
+          width: 34,
+          height: 34,
           borderRadius: "50%",
-          background: "rgba(255,255,255,0.15)",
+          background: "rgba(255,255,255,0.08)",
           border: "none",
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
           cursor: "pointer",
           color: "#fff",
+          flexShrink: 0,
         }}
       >
         <ChevronLeft size={18} />
       </button>
-      <span style={{ fontSize: 16, fontWeight: 600 }}>{title}</span>
+      <span style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.4px", color: "#fff" }}>{title}</span>
     </div>
   );
 }
 
 const inputStyle: React.CSSProperties = {
-  height: 44,
-  borderRadius: 10,
-  border: "1px solid #E2E8F0",
-  padding: "0 12px",
-  fontSize: 15,
+  background: "#F2F2F7",
+  borderRadius: 12,
+  border: "none",
+  padding: "13px 15px",
+  fontSize: 14,
   fontFamily: "Poppins, sans-serif",
-  color: "#0B1F3A",
-  background: "#fff",
+  color: "#000",
   width: "100%",
   boxSizing: "border-box",
+  outline: "none",
 };
+
+const segmentWrapStyle: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "row",
+  background: "#F2F2F7",
+  borderRadius: 14,
+  padding: 4,
+};
+
+function segmentStyle(active: boolean): React.CSSProperties {
+  return {
+    flex: 1,
+    padding: "11px 4px",
+    borderRadius: 10,
+    fontSize: 14,
+    fontWeight: 700,
+    textAlign: "center",
+    border: "none",
+    cursor: "pointer",
+    fontFamily: "Poppins, sans-serif",
+    background: active ? "#fff" : "transparent",
+    color: active ? "#1877D6" : "#6B6B6F",
+    boxShadow: active ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+  };
+}
+
+function DSMCheckbox({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <span style={{ display: "inline-flex", position: "relative", width: 22, height: 22, flexShrink: 0 }}>
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        style={{ position: "absolute", inset: 0, opacity: 0, margin: 0, width: 22, height: 22, cursor: "pointer" }}
+      />
+      <span
+        style={{
+          width: 22,
+          height: 22,
+          borderRadius: 7,
+          border: `1.5px solid ${checked ? "#1877D6" : "#D1D1D6"}`,
+          background: checked ? "#1877D6" : "transparent",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          pointerEvents: "none",
+        }}
+      >
+        {checked && <Check size={12} color="#fff" strokeWidth={3} />}
+      </span>
+    </span>
+  );
+}
+
+function titleCase(value: string) {
+  return value.replace(/\S+/g, (w) => (w.length > 4 ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w));
+}
+
 
 function AdminChatRooms() {
   const navigate = useNavigate();
