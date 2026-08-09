@@ -116,10 +116,12 @@ function CoursesPage() {
       <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 16px" }}>
         <button
           onClick={() => navigate({ to: "/courses/new" })}
-          style={{ background: "none", border: "none", cursor: "pointer", color: "#1877D6", display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600 }}
+          style={{ background: "none", border: "none", cursor: "pointer", color: "#1877D6", display: "flex", alignItems: "center", gap: 8, fontSize: 14.5, fontWeight: 600, fontFamily: "Poppins, sans-serif", padding: 0 }}
           aria-label="New course"
         >
-          <Plus size={18} />
+          <span style={{ width: 22, height: 22, borderRadius: "50%", background: "#1877D6", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+            <Plus size={14} color="#fff" strokeWidth={3} />
+          </span>
           New course
         </button>
       </div>
