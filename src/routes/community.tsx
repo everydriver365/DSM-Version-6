@@ -91,23 +91,53 @@ type ChatMessage = {
   instructors: { name: string | null; profile_image_url: string | null } | null;
 };
 
-const TYPE_CONFIG: Record<string, { label: string; bg: string; colour: string; Icon: any }> = {
-  roadworks:         { label: "Roadworks",     bg: "#FEF3C7", colour: "#D97706", Icon: IconCar },
-  road_closure:      { label: "Road closure",  bg: "#FEF3C7", colour: "#D97706", Icon: IconAlertTriangle },
-  heavy_traffic:     { label: "Heavy traffic", bg: "#FEF3C7", colour: "#D97706", Icon: IconCar },
-  hazard:            { label: "Hazard",        bg: "#FCEBEB", colour: "#A32D2D", Icon: IconAlertTriangle },
-  test_centre_busy:  { label: "TC busy",       bg: "#FCEBEB", colour: "#A32D2D", Icon: Building },
-  test_centre_delay: { label: "TC delay",      bg: "#FCEBEB", colour: "#A32D2D", Icon: IconClock },
-  examiner_tip:      { label: "Examiner tip",  bg: "#F5F3FF", colour: "#6B4FD6", Icon: IconSchool },
-  other:             { label: "Other",         bg: "#F3F4F6", colour: "#6B7280", Icon: IconInfoCircle },
+/**
+ * Severity drives every colour an alert type renders with, so the sign icon,
+ * label and pill can never drift apart.
+ *   critical → red   (danger to a lesson route)
+ *   caution  → amber (delays / disruption)
+ *   info     → blue/grey (advisory)
+ */
+type AlertSeverity = "critical" | "caution" | "info" | "neutral";
+
+const SEVERITY_COLOURS: Record<AlertSeverity, { bg: string; colour: string; sign: string }> = {
+  critical: { bg: "#FCEBEB", colour: "#A32D2D", sign: "#C8102E" },
+  caution:  { bg: "#FEF3C7", colour: "#D97706", sign: "#D97706" },
+  info:     { bg: "#F5F3FF", colour: "#6B4FD6", sign: "#005EB8" },
+  neutral:  { bg: "#F3F4F6", colour: "#6B7280", sign: "#9CA3AF" },
+};
+
+type AlertTypeConfig = { label: string; severity: AlertSeverity; bg: string; colour: string; sign: string; Icon: any };
+
+const defineType = (label: string, severity: AlertSeverity, Icon: any): AlertTypeConfig => ({
+  label, severity, Icon, ...SEVERITY_COLOURS[severity],
+});
+
+const TYPE_CONFIG: Record<string, AlertTypeConfig> = {
+  roadworks:         defineType("Roadworks",     "caution",  IconCar),
+  road_closure:      defineType("Road closure",  "critical", IconAlertTriangle),
+  heavy_traffic:     defineType("Heavy traffic", "caution",  IconCar),
+  congestion:        defineType("Congestion",    "caution",  IconCar),
+  accident:          defineType("Accident",      "critical", IconAlertTriangle),
+  collision:         defineType("Collision",     "critical", IconAlertTriangle),
+  hazard:            defineType("Hazard",        "critical", IconAlertTriangle),
+  flooding:          defineType("Flooding",      "critical", IconAlertTriangle),
+  weather:           defineType("Weather",       "caution",  IconAlertTriangle),
+  test_centre_busy:  defineType("TC busy",       "critical", Building),
+  test_centre_delay: defineType("TC delay",      "critical", IconClock),
+  examiner_tip:      defineType("Examiner tip",  "info",     IconSchool),
+  other:             defineType("Other",         "neutral",  IconInfoCircle),
 };
 
 const TYPE_ORDER = [
   "roadworks", "road_closure",
-  "heavy_traffic", "hazard",
+  "heavy_traffic", "congestion",
+  "accident", "collision",
+  "hazard", "flooding", "weather",
   "test_centre_busy", "test_centre_delay",
   "examiner_tip", "other",
 ];
+
 
 function minutesUntilMidnight(): number {
   const now = new Date();
@@ -198,6 +228,7 @@ function loadGoogleMaps(): Promise<void> {
 }
 
 function AlertSignIcon({ type, size = 28 }: { type: string; size?: number }) {
+  const cfg = TYPE_CONFIG[type] ?? TYPE_CONFIG.other;
   const warning = (children: React.ReactNode) => (
     <svg
       width={size}
@@ -209,7 +240,7 @@ function AlertSignIcon({ type, size = 28 }: { type: string; size?: number }) {
       <path
         d="M12 3 L21 20 H3 Z"
         fill="white"
-        stroke="#C8102E"
+        stroke={cfg.sign}
         strokeWidth="2"
         strokeLinejoin="round"
         strokeLinecap="round"
@@ -229,11 +260,35 @@ function AlertSignIcon({ type, size = 28 }: { type: string; size?: number }) {
     case "road_closure":
       return warning(<rect x="5" y="12" width="14" height="3" rx="0.5" fill="black" />);
     case "heavy_traffic":
+    case "congestion":
       return warning(
         <g fill="black">
           <rect x="5" y="9" width="14" height="2" rx="0.5" />
           <rect x="6" y="12" width="12" height="2" rx="0.5" />
           <rect x="5" y="15" width="14" height="2" rx="0.5" />
+        </g>
+      );
+    case "accident":
+    case "collision":
+      return warning(
+        <g fill="none" stroke="black" strokeWidth="1.8" strokeLinecap="round">
+          <path d="M9 10 L15 16" />
+          <path d="M15 10 L9 16" />
+        </g>
+      );
+    case "flooding":
+      return warning(
+        <g fill="none" stroke="black" strokeWidth="1.5" strokeLinecap="round">
+          <path d="M6 13 q1.5 -1.8 3 0 t3 0 t3 0" />
+          <path d="M6 17 q1.5 -1.8 3 0 t3 0 t3 0" />
+        </g>
+      );
+    case "weather":
+      return warning(
+        <g fill="black">
+          <path d="M8.5 14 h7 a2.6 2.6 0 0 0 0 -5 a3.6 3.6 0 0 0 -7 0.6 a2.2 2.2 0 0 0 0 4.4 z" />
+          <rect x="9" y="15.5" width="1.6" height="3" rx="0.8" />
+          <rect x="13.4" y="15.5" width="1.6" height="3" rx="0.8" />
         </g>
       );
     case "hazard":
@@ -260,12 +315,13 @@ function AlertSignIcon({ type, size = 28 }: { type: string; size?: number }) {
           fill="none"
           style={{ display: "block", filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.08))" }}
         >
-          <rect x="3" y="3" width="18" height="18" rx="2" fill="#005EB8" />
+          <rect x="3" y="3" width="18" height="18" rx="2" fill={cfg.sign} />
           <rect x="11" y="7" width="2" height="2" rx="0.5" fill="white" />
           <rect x="11" y="11" width="2" height="8" rx="0.5" fill="white" />
         </svg>
       );
     default:
+
       return (
         <svg
           width={size}
@@ -974,7 +1030,7 @@ const TOMTOM_FILTER_TYPES: Record<string, string[]> = {
   roadworks: ["roadworks", "road_closure"],
   accidents: ["accident", "collision"],
   congestion: ["heavy_traffic", "congestion"],
-  hazards: ["hazard", "other"],
+  hazards: ["hazard", "flooding", "weather", "other"],
 };
 
 function AlertsTab({
