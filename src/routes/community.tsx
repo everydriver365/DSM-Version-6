@@ -1490,49 +1490,56 @@ function AlertsTab({
           </button>
 
 
-          {tomtomOpen && (
-            <>
-              <div style={{ display: "flex", gap: 8, overflowX: "auto", padding: "14px 2px 12px" }}>
-                {TOMTOM_FILTERS.map((f) => {
-                  const active = tomtomFilter === f.key;
-                  return (
-                    <button
-                      key={f.key}
-                      type="button"
-                      onClick={() => setTomtomFilter(f.key)}
-                      style={{
-                        flexShrink: 0,
-                        border: "none",
-                        background: active ? "#0B1F3A" : "#fff",
-                        color: active ? "#fff" : "#0B1F3A",
-                        boxShadow: active ? "0 2px 0 #050D1C" : "0 2px 0 #E4E4E8",
-                        borderRadius: 20, padding: "9px 16px",
-                        fontSize: 13, fontWeight: 700, cursor: "pointer",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {f.label}
-                    </button>
-                  );
-                })}
+          <div
+            ref={tomtomContentRef}
+            style={{
+              maxHeight: tomtomMaxHeight,
+              opacity: tomtomOpen ? 1 : 0,
+              overflow: "hidden",
+              transition: "max-height 0.28s ease, opacity 0.2s ease",
+              pointerEvents: tomtomOpen ? "auto" : "none",
+            }}
+          >
+            <div style={{ display: "flex", gap: 8, overflowX: "auto", padding: "14px 2px 12px" }}>
+              {TOMTOM_FILTERS.map((f) => {
+                const active = tomtomFilter === f.key;
+                return (
+                  <button
+                    key={f.key}
+                    type="button"
+                    onClick={() => setTomtomFilter(f.key)}
+                    style={{
+                      flexShrink: 0,
+                      border: "none",
+                      background: active ? "#0B1F3A" : "#fff",
+                      color: active ? "#fff" : "#0B1F3A",
+                      boxShadow: active ? "0 2px 0 #050D1C" : "0 2px 0 #E4E4E8",
+                      borderRadius: 20, padding: "9px 16px",
+                      fontSize: 13, fontWeight: 700, cursor: "pointer",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {f.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {filteredOfficialAlerts.length === 0 ? (
+              <div style={{
+                padding: 20, textAlign: "center", background: "#fff",
+                border: "1.5px dashed #D1D1D6", borderRadius: 16,
+                fontSize: 14, fontWeight: 500, color: "#B0B0B5",
+              }}>
+                No matching incidents
               </div>
+            ) : (
+              <div>
+                {filteredOfficialAlerts.map((a) => renderAlertCard(a))}
+              </div>
+            )}
+          </div>
 
-              {filteredOfficialAlerts.length === 0 ? (
-                <div style={{
-                  padding: 20, textAlign: "center", background: "#fff",
-                  border: "1.5px dashed #D1D1D6", borderRadius: 16,
-                  fontSize: 14, fontWeight: 500, color: "#B0B0B5",
-                }}>
-                  No matching incidents
-                </div>
-              ) : (
-                <div>
-                  {filteredOfficialAlerts.map((a) => renderAlertCard(a))}
-                </div>
-              )}
-
-            </>
-          )}
         </div>
       )}
 
