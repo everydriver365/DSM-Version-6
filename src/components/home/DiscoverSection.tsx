@@ -588,13 +588,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       style={{
                         background: "#fff",
                         color: NAVY,
-                        fontSize: 13.5,
-                        fontWeight: 800,
+                        fontSize: 10.5,
+                        fontWeight: 700,
                         fontFamily: FONT,
-                        padding: "11px 20px",
-                        borderRadius: 12,
+                        padding: "5px 10px",
+                        borderRadius: 7,
                         border: "none",
-                        boxShadow: "0 3px 0 #B8C4D6",
+                        boxShadow: "0 1.5px 0 #B8C4D6",
+
                         cursor: "pointer",
                       }}
                     >
