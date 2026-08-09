@@ -196,8 +196,19 @@ function AdminInstructorsPage() {
         backTo="/admin"
         right={
           <div
-            className="rounded-full px-2 py-0.5"
-            style={{ backgroundColor: "rgba(255,255,255,0.14)", color: "#fff", fontSize: 12, fontWeight: 600 }}
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: "50%",
+              backgroundColor: "#1877D6",
+              color: "#fff",
+              fontSize: 14,
+              fontWeight: 800,
+              boxShadow: "0 3px 0 #0F52A8",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
             {instructors.length}
           </div>
@@ -205,44 +216,65 @@ function AdminInstructorsPage() {
       />
 
       {/* SEARCH */}
-      <div style={{ padding: "12px 16px", borderBottom: `0.5px solid ${BORDER}`, backgroundColor: "#fff" }}>
-        <div className="flex items-center gap-2 rounded-xl px-3" style={{ backgroundColor: "#F1F4F9", height: 38 }}>
-          <IconSearch stroke={1.5} size={15} color={MUTED} />
+      <div style={{ padding: "16px 16px 0" }}>
+        <div
+          className="flex items-center gap-2"
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: 16,
+            padding: "14px 16px",
+            boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.06)",
+          }}
+        >
+          <IconSearch stroke={1.5} size={17} color="#8A8A8E" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name..."
             className="flex-1 bg-transparent outline-none"
-            style={{ fontSize: 13, color: NAVY }}
+            style={{ fontSize: 14.5, color: "#000" }}
           />
         </div>
       </div>
 
       {/* LIST */}
-      <div style={{ backgroundColor: "#fff" }}>
+      <div style={{ padding: "16px 16px 0" }}>
+        <div
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: 20,
+            overflow: "hidden",
+            boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
+          }}
+        >
         {active.length === 0 && (
           <div style={{ padding: 24, textAlign: "center", fontSize: 13, color: MUTED }}>
             No instructors found
           </div>
         )}
-        {active.map((inst) => {
+        {active.map((inst, idx) => {
           const deleted = !!inst.deleted_at;
           return (
             <div
               key={inst.id}
-              className="flex items-center gap-3 relative"
+              className="flex items-center relative"
               onClick={() => setSelectedInstructor(inst)}
-              style={{ padding: "14px 16px", borderBottom: `0.5px solid ${BORDER}`, cursor: "pointer" }}
+              style={{
+                gap: 13,
+                padding: "15px 16px",
+                borderTop: idx === 0 ? "none" : "1px solid #EFEFF2",
+                cursor: "pointer",
+              }}
             >
               <div
                 className="flex items-center justify-center rounded-full shrink-0 overflow-hidden"
                 style={{
-                  width: 40,
-                  height: 40,
+                  width: 44,
+                  height: 44,
                   backgroundColor: deleted ? BORDER : BLUE,
                   color: deleted ? "#9CA3AF" : "#fff",
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: 14,
+                  fontWeight: 700,
                 }}
               >
                 {inst.profile_image_url ? (
@@ -260,9 +292,10 @@ function AdminInstructorsPage() {
                 <div className="flex items-center gap-1.5">
                   <span
                     style={{
-                      fontSize: 14,
-                      fontWeight: 600,
-                      color: NAVY,
+                      fontSize: 16,
+                      fontWeight: 800,
+                      letterSpacing: "-0.1px",
+                      color: "#000",
                       textDecoration: deleted ? "line-through" : "none",
                     }}
                     className="truncate"
@@ -273,10 +306,20 @@ function AdminInstructorsPage() {
                     <span style={{ fontSize: 12, color: RED, fontWeight: 600 }}>(removed)</span>
                   )}
                 </div>
-                <div className="truncate" style={{ fontSize: 12, color: MUTED }}>
-                  {inst.phone || "—"}
+                <div
+                  className="truncate"
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: inst.phone ? "#6B6B6F" : "#C7C7CC",
+                    marginTop: 2,
+                  }}
+                >
+                  {inst.phone || "No phone number"}
                 </div>
-                <div style={{ fontSize: 11, color: "#9CA3AF" }}>Joined {fmtDate(inst.created_at)}</div>
+                <div style={{ fontSize: 12, color: "#B0B0B5", marginTop: 2 }}>
+                  Joined {fmtDate(inst.created_at)}
+                </div>
               </div>
 
               <button
@@ -286,9 +329,17 @@ function AdminInstructorsPage() {
                   e.stopPropagation();
                   setMenuFor(menuFor === inst.id ? null : inst.id);
                 }}
-                className="p-1"
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 9,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
               >
-                <IconDotsVertical stroke={1.5} size={16} color="#D1D5DB" />
+                <IconDotsVertical stroke={1.5} size={18} color="#8A8A8E" />
               </button>
 
               {menuFor === inst.id && (
@@ -329,7 +380,9 @@ function AdminInstructorsPage() {
             </div>
           );
         })}
+        </div>
       </div>
+
 
       {/* ARCHIVE */}
       {archived.length > 0 && (
