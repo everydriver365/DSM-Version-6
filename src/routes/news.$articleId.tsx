@@ -208,7 +208,7 @@ function NewsArticlePage() {
             lineHeight: 1.3,
           }}
         >
-          {article.title}
+          {sanitizeNewsTitle(article.title)}
         </h1>
 
         {/* Meta row */}
@@ -387,7 +387,7 @@ function NewsArticlePage() {
                     overflow: "hidden",
                   }}
                 >
-                  {nextArticle.title}
+                  {sanitizeNewsTitle(nextArticle.title)}
                 </div>
                 <div style={{ fontSize: 11, color: "#9CA3AF", ...INTER }}>
                   {nextArticle.read_time_mins} min read
