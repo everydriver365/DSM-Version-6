@@ -441,9 +441,10 @@ function ShowcasePage() {
           video_id: playing.id,
           instructor_id: userId,
           body: commentBody.trim(),
+          parent_id: replyTo?.id ?? null,
         })
         .select(
-          "id, body, created_at, instructor:instructors!instructor_id(id, name)",
+          "id, body, created_at, parent_id, instructor_id, instructor:instructors!instructor_id(id, name)",
         )
         .single();
       if (error) throw error;
@@ -463,6 +464,7 @@ function ShowcasePage() {
         }));
       }
       setCommentBody("");
+      setReplyTo(null);
     } catch (err: any) {
       toast.error(err?.message ?? "Could not post comment");
     } finally {
