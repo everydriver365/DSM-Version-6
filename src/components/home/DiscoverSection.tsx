@@ -403,6 +403,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           scrollSnapType: "x mandatory",
           scrollbarWidth: "none",
           WebkitOverflowScrolling: "touch",
+          paddingBottom: 8,
           marginBottom: heroCards.length > 1 ? 10 : 18,
         }}
       >
