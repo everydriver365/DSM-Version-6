@@ -1565,7 +1565,7 @@ function PupilDetailPage() {
                   style={{
                     background: "#FFFFFF",
                     borderRadius: 16,
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                    boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
                     overflow: "hidden",
                   }}
                 >
@@ -1623,12 +1623,12 @@ function PupilDetailPage() {
                     const balanceValue = isBlock
                       ? balance > 0
                         ? `£${balance.toFixed(2)} due`
-                        : "Fully paid"
+                        : "Paid"
                       : balance > 0
                         ? `£${balance.toFixed(2)}`
                         : accountCredit > 0
                           ? `£${accountCredit.toFixed(2)}`
-                          : "All paid";
+                          : "Paid";
                     const today = ymd(new Date());
                     let testValue = "Not booked";
                     let testColor = "#8A8A8E";
@@ -1656,27 +1656,29 @@ function PupilDetailPage() {
                       color: "#8A8A8E",
                       ...POPPINS,
                     };
-                    const colValue: React.CSSProperties = {
-                      fontSize: 19,
+                    const colValue = (v: string): React.CSSProperties => ({
+                      fontSize: v.length > 9 ? 15 : v.length > 7 ? 16.5 : 19,
                       fontWeight: 800,
-                      lineHeight: 1.15,
+                      lineHeight: 1.2,
                       marginTop: 2,
+                      whiteSpace: "normal",
+                      overflowWrap: "anywhere",
                       ...POPPINS,
-                    };
+                    });
                     return (
-                      <div className="grid grid-cols-3">
+                      <div className="grid grid-cols-3 items-stretch">
                         <button
                           type="button"
                           onClick={() => setActiveTab("payments")}
-                          className="text-left px-4 py-3 min-w-0 active:opacity-70"
+                          className="text-left px-3 py-3 min-w-0 active:opacity-70"
                           style={{ background: "none", border: "none" }}
                         >
                           <p className="truncate" style={colLabel}>{balanceLabel}</p>
-                          <p className="truncate" style={{ ...colValue, color: balanceColor }}>{balanceValue}</p>
+                          <p style={{ ...colValue(balanceValue), color: balanceColor }}>{balanceValue}</p>
                         </button>
-                        <div className="px-4 py-3 min-w-0" style={{ borderLeft: "1px solid #E9E9EC", borderRight: "1px solid #E9E9EC" }}>
+                        <div className="px-3 py-3 min-w-0" style={{ borderLeft: "1px solid #E9E9EC", borderRight: "1px solid #E9E9EC" }}>
                           <p className="truncate" style={colLabel}>Hours left</p>
-                          <p className="truncate" style={{ ...colValue, color: "#248A3D" }}>{hoursValue}</p>
+                          <p style={{ ...colValue(hoursValue), color: "#248A3D" }}>{hoursValue}</p>
                         </div>
                         <button
                           type="button"
@@ -1684,11 +1686,11 @@ function PupilDetailPage() {
                             setActiveTab("profile");
                             setPracticalEditing(true);
                           }}
-                          className="text-left px-4 py-3 min-w-0 active:opacity-70"
+                          className="text-left px-3 py-3 min-w-0 active:opacity-70"
                           style={{ background: "none", border: "none" }}
                         >
                           <p className="truncate" style={colLabel}>Test in</p>
-                          <p className="truncate" style={{ ...colValue, color: testColor }}>{testValue}</p>
+                          <p style={{ ...colValue(testValue), color: testColor }}>{testValue}</p>
                         </button>
                       </div>
                     );
