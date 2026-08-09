@@ -475,12 +475,15 @@ function TakePaymentPage() {
           style={{
             flex: 1,
             textAlign: "center",
-            fontSize: 16,
-            fontWeight: 600,
+            fontSize: 19,
+            fontWeight: 800,
+            letterSpacing: "-0.3px",
+            color: "#fff",
           }}
         >
           Take payment
         </div>
+
         <button
           type="button"
           aria-label="Close"
