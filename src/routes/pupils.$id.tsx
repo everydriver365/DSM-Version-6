@@ -3563,25 +3563,36 @@ function PupilDetailPage() {
         {activeTab === "profile" && (<>
 
 
-        <SectionHeader>NOTES</SectionHeader>
+        <div className="flex items-center gap-2" style={{ marginBottom: 8 }}>
+          <span style={{ width: 3, height: 14, borderRadius: 2, background: "#1877D6", display: "inline-block" }} />
+          <span style={{ color: "#1877D6", fontSize: 12, fontWeight: 800, letterSpacing: "0.6px", textTransform: "uppercase", ...POPPINS }}>
+            Notes
+          </span>
+        </div>
         <button
           type="button"
           onClick={() => setNotesOpen((v) => !v)}
-          className="w-full flex items-center justify-between gap-2 rounded-lg p-3 text-left bg-white focus:outline-none focus:border-[#1877D6]"
+          className="w-full text-left focus:outline-none"
           style={{
-            borderWidth: "0.5px",
-            borderStyle: "solid",
-            borderColor: "#EEF2F7",
+            background: "#fff",
+            borderRadius: 16,
+            border: "none",
+            padding: "14px 16px",
+            boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 8,
             ...POPPINS,
           }}
         >
-          <span className="text-[13px] truncate" style={{ color: notesDraft ? "#0B1F3A" : "#9CA3AF", ...POPPINS }}>
+          <span className="truncate" style={{ color: notesDraft ? "#0B1F3A" : "#B0B0B5", fontSize: 14.5, fontWeight: 500, ...POPPINS }}>
             {notesDraft ? notesDraft : "Add a note…"}
           </span>
-          <IconChevronRight stroke={1.5}
-            size={16}
-            color="#9CA3AF"
-            style={{ transform: notesOpen ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
+          <IconChevronRight stroke={1.7}
+            size={15}
+            color="#C7C7CC"
+            style={{ flexShrink: 0, transform: notesOpen ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
           />
         </button>
         {notesOpen && (
