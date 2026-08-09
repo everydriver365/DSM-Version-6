@@ -319,7 +319,7 @@ function AdminApplicationsPage() {
       {apps === null ? (
         <FullMsg>Loading applications…</FullMsg>
       ) : filtered.length === 0 ? (
-        <FullMsg>No applications</FullMsg>
+        <EmptyState filter={filter} />
       ) : (
         filtered.map((app) => {
           const isOpen = expandedId === app.id;
