@@ -292,25 +292,51 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     return () => clearInterval(id);
   }, []);
 
+  type HeroListing = (typeof featuredListings)[number];
+  const heroCards: (HeroListing | null)[] =
+    featuredListings.length > 0 ? featuredListings : [null];
+
   const chipIconWrap: React.CSSProperties = {
-    width: 28,
-    height: 28,
+    width: 26,
+    height: 26,
     borderRadius: 8,
+    background: "#EEF2F7",
+    color: NAVY,
     margin: "0 auto 4px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   };
 
+  const tileStyle: React.CSSProperties = {
+    background: "#fff",
+    border: `1px solid ${HAIRLINE}`,
+    borderRadius: 13,
+    padding: "10px 8px",
+    textAlign: "center",
+    cursor: "pointer",
+    position: "relative",
+  };
+
+  const tileDot: React.CSSProperties = {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    width: 6,
+    height: 6,
+    borderRadius: "50%",
+    background: RED,
+  };
+
   const chipLabel: React.CSSProperties = {
-    fontSize: 12,
+    fontSize: 11.5,
     fontWeight: 700,
     color: NAVY,
   };
 
   const chipSub: React.CSSProperties = {
-    fontSize: 8,
-    color: "#9CA3AF",
+    fontSize: 9.5,
+    color: "#8A8A8E",
     marginTop: 1,
   };
 
