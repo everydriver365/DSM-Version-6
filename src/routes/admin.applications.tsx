@@ -656,3 +656,42 @@ function FullMsg({ children }: { children: React.ReactNode }) {
     <div style={{ padding: 32, textAlign: "center", color: MUTED, fontFamily: "Poppins, sans-serif" }}>{children}</div>
   );
 }
+
+function EmptyState({ filter }: { filter: FilterKey }) {
+  const titles: Record<FilterKey, string> = {
+    all: "No applications",
+    pending: "No pending applications",
+    approved: "No approved applications",
+    rejected: "No rejected applications",
+  };
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "50px 30px",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
+      <div
+        style={{
+          width: 64,
+          height: 64,
+          borderRadius: "50%",
+          background: "#fff",
+          boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.06)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <IconClipboardList size={28} color="#C7C7CC" stroke={1.5} />
+      </div>
+      <div style={{ fontSize: 17, fontWeight: 800, color: "#0B1F3A", marginTop: 18 }}>{titles[filter]}</div>
+      <div style={{ fontSize: 13.5, color: "#8A8A8E", lineHeight: 1.5, marginTop: 6, textAlign: "center" }}>
+        New feature requests from instructors will appear here for review
+      </div>
+    </div>
+  );
+}
