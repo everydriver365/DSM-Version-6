@@ -4,6 +4,8 @@ import { IconAlertTriangle, IconChevronDown, IconChevronLeft, IconChevronUp, Ico
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import JumpToLatestButton from "@/components/dsm/JumpToLatestButton";
+
 
 
 export const Route = createFileRoute("/messages/$pupilId")({
