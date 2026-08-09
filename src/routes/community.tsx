@@ -1408,26 +1408,76 @@ function AlertsTab({
 
       {/* SECTION 2 — Traffic & road data (collapsible) */}
       {officialAlerts.length > 0 && (
-        <div style={{ marginTop: 20 }}>
+        <div style={{ marginTop: 22 }}>
           <button
             type="button"
             onClick={() => setTomtomOpen((v) => !v)}
+            aria-expanded={tomtomOpen}
             style={{
-              width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
-              background: "#fff", border: "none", borderRadius: 16,
-              padding: "15px 16px", cursor: "pointer",
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              minHeight: 56,
+              background: "#fff",
+              border: "none",
+              borderRadius: 16,
+              padding: "14px 16px",
+              cursor: "pointer",
               boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
+              WebkitTapHighlightColor: "transparent",
             }}
           >
-            <span style={{ fontSize: 15.5, fontWeight: 800, color: "#0B1F3A" }}>
-              Official · {officialAlerts.length}
-            </span>
-            <IconChevronDown stroke={1.5}
-              size={16}
-              color="#8A8A8E"
-              style={{ transform: tomtomOpen ? "rotate(180deg)" : "none", transition: "transform .15s" }}
-            />
+            <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: 1 }}>
+              <div
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 10,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  background: "#EAF2FB",
+                  color: "#1877D6",
+                }}
+                aria-hidden="true"
+              >
+                <Building size={20} strokeWidth={1.9} />
+              </div>
+              <div style={{ minWidth: 0, textAlign: "left" }}>
+                <div style={{ fontSize: 15.5, fontWeight: 800, color: "#0B1F3A", lineHeight: 1.25 }}>
+                  Official sources
+                </div>
+                <div style={{ fontSize: 12.5, fontWeight: 500, color: "#8A8A8E", marginTop: 1 }}>
+                  {officialAlerts.length} live incident{officialAlerts.length === 1 ? "" : "s"}
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                background: "#F2F2F7",
+              }}
+              aria-hidden="true"
+            >
+              <IconChevronDown
+                stroke={2}
+                size={18}
+                color="#0B1F3A"
+                style={{ transform: tomtomOpen ? "rotate(180deg)" : "none", transition: "transform .18s ease" }}
+              />
+            </div>
           </button>
+
 
           {tomtomOpen && (
             <>
