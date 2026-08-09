@@ -74,8 +74,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       price_display: string | null;
       category: string | null;
       created_at: string | null;
+      imageUrl: string | null;
     }[]
   >([]);
+
   const [heroIndex, setHeroIndex] = useState(0);
   const heroScrollRef = useRef<HTMLDivElement>(null);
   const [newsHero, setNewsHero] = useState<string | null>(null);
