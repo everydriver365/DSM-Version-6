@@ -67,12 +67,17 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const [liveHero, setLiveHero] = useState<string | null>(null);
   const [showcaseHero, setShowcaseHero] = useState<string | null>(null);
   const [marketplaceHero, setMarketplaceHero] = useState<string | null>(null);
-  const [featuredListing, setFeaturedListing] = useState<{
-    id: string;
-    title: string | null;
-    price_display: string | null;
-    category: string | null;
-  } | null>(null);
+  const [featuredListings, setFeaturedListings] = useState<
+    {
+      id: string;
+      title: string | null;
+      price_display: string | null;
+      category: string | null;
+      created_at: string | null;
+    }[]
+  >([]);
+  const [heroIndex, setHeroIndex] = useState(0);
+  const heroScrollRef = useRef<HTMLDivElement>(null);
   const [newsHero, setNewsHero] = useState<string | null>(null);
   const [latestNewsTitle, setLatestNewsTitle] = useState<string | null>(null);
   const [latestNewsSource, setLatestNewsSource] = useState<string | null>(null);
@@ -225,26 +230,30 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
     supabase
       .from("marketplace_listings")
-      .select("id, title, price_display, image_urls, marketplace_categories(name)")
+      .select("id, title, price_display, image_urls, created_at, marketplace_categories(name)")
       .eq("is_active", true)
       .is("deleted_at", null)
       .order("is_featured", { ascending: false })
       .order("created_at", { ascending: false })
-      .limit(1)
-      .single()
+      .limit(6)
       .then(({ data }) => {
-        if (!data) return;
-        const imgs = (data as { image_urls?: string[] | null }).image_urls;
+        if (!data || data.length === 0) return;
+        const first = data[0] as { image_urls?: string[] | null };
+        const imgs = first.image_urls;
         setMarketplaceHero(
           Array.isArray(imgs) && imgs.length > 0 ? imgs[0] : null,
         );
-        setFeaturedListing({
-          id: data.id,
-          title: data.title ?? null,
-          price_display: data.price_display ?? null,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          category: (data.marketplace_categories as any)?.name ?? null,
-        });
+        setFeaturedListings(
+          data.map((row) => ({
+            id: row.id,
+            title: row.title ?? null,
+            price_display: row.price_display ?? null,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            category: (row.marketplace_categories as any)?.name ?? null,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            created_at: (row as any).created_at ?? null,
+          })),
+        );
       });
 
     supabase
@@ -283,33 +292,338 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     return () => clearInterval(id);
   }, []);
 
+  type HeroListing = (typeof featuredListings)[number];
+  const heroCards: (HeroListing | null)[] =
+    featuredListings.length > 0 ? featuredListings : [null];
+
   const chipIconWrap: React.CSSProperties = {
-    width: 28,
-    height: 28,
+    width: 26,
+    height: 26,
     borderRadius: 8,
+    background: "#EEF2F7",
+    color: NAVY,
     margin: "0 auto 4px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   };
 
+  const tileStyle: React.CSSProperties = {
+    background: "#fff",
+    border: `1px solid ${HAIRLINE}`,
+    borderRadius: 13,
+    padding: "10px 8px",
+    textAlign: "center",
+    cursor: "pointer",
+    position: "relative",
+  };
+
+  const tileDot: React.CSSProperties = {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    width: 6,
+    height: 6,
+    borderRadius: "50%",
+    background: RED,
+  };
+
   const chipLabel: React.CSSProperties = {
-    fontSize: 12,
+    fontSize: 11.5,
     fontWeight: 700,
     color: NAVY,
   };
 
   const chipSub: React.CSSProperties = {
-    fontSize: 8,
-    color: "#9CA3AF",
+    fontSize: 9.5,
+    color: "#8A8A8E",
     marginTop: 1,
   };
 
   return (
     <div style={{ margin: "0 -16px 0", padding: "0 16px 2px", borderRadius: 0, fontFamily: FONT }}>
+      {/* MARKETPLACE SECTION HEADER */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginTop: 18,
+          marginBottom: 10,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+          <span
+            aria-hidden
+            style={{ width: 3, height: 14, background: BLUE, borderRadius: 2, display: "inline-block" }}
+          />
+          <span
+            style={{
+              color: BLUE,
+              fontSize: 12,
+              fontWeight: 800,
+              letterSpacing: "0.6px",
+              textTransform: "uppercase",
+              fontFamily: FONT,
+            }}
+          >
+            Marketplace
+          </span>
+        </div>
+        <span
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate({ to: "/marketplace" as never })}
+          style={{ color: BLUE, fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}
+        >
+          See all →
+        </span>
+      </div>
+
+      {/* MARKETPLACE HERO CAROUSEL */}
+      <div
+        ref={heroScrollRef}
+        onScroll={(e) => {
+          const el = e.currentTarget;
+          const w = el.clientWidth || 1;
+          const i = Math.round(el.scrollLeft / w);
+          if (i !== heroIndex) setHeroIndex(i);
+        }}
+        style={{
+          display: "flex",
+          gap: 0,
+          overflowX: "auto",
+          scrollSnapType: "x mandatory",
+          scrollbarWidth: "none",
+          WebkitOverflowScrolling: "touch",
+          marginBottom: heroCards.length > 1 ? 10 : 18,
+        }}
+      >
+        {heroCards.map((listing) => {
+          const created = listing?.created_at ? new Date(listing.created_at).getTime() : 0;
+          const isNew = created > 0 && Date.now() - created < 14 * 24 * 60 * 60 * 1000;
+          const cat = (listing?.category ?? "").toLowerCase();
+          const isWebsite = cat.includes("web") || cat.includes("site");
+          const open = () =>
+            navigate({
+              to: listing ? ("/marketplace/$listingId" as never) : ("/marketplace" as never),
+              params: listing ? ({ listingId: listing.id } as never) : undefined,
+            });
+          return (
+            <div
+              key={listing?.id ?? "empty"}
+              style={{ flex: "0 0 100%", scrollSnapAlign: "center", paddingRight: 0 }}
+            >
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={open}
+                style={{
+                  position: "relative",
+                  height: 180,
+                  borderRadius: 22,
+                  overflow: "hidden",
+                  cursor: "pointer",
+                  background: "linear-gradient(135deg, #0B1F3A, #14509E)",
+                  boxShadow: "0 5px 0 #081730, 0 16px 32px rgba(11,31,58,0.35)",
+                }}
+              >
+                {isNew && (
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: 14,
+                      left: 14,
+                      background: "#fff",
+                      color: NAVY,
+                      fontSize: 10,
+                      fontWeight: 900,
+                      padding: "5px 10px",
+                      borderRadius: 8,
+                      fontFamily: FONT,
+                      zIndex: 2,
+                    }}
+                  >
+                    NEW
+                  </span>
+                )}
+
+                {/* Illustration */}
+                <div
+                  aria-hidden
+                  style={{ position: "absolute", top: 16, right: 16, width: 150, zIndex: 1 }}
+                >
+                  {isWebsite || !listing ? (
+                    <div
+                      style={{
+                        borderRadius: 10,
+                        border: "1.5px solid rgba(255,255,255,0.35)",
+                        background: "rgba(255,255,255,0.10)",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 4,
+                          padding: "6px 8px",
+                          background: "rgba(255,255,255,0.18)",
+                        }}
+                      >
+                        {[0, 1, 2].map((i) => (
+                          <span
+                            key={i}
+                            style={{
+                              width: 6,
+                              height: 6,
+                              borderRadius: "50%",
+                              background: "rgba(255,255,255,0.4)",
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <div style={{ padding: 8 }}>
+                        <div style={{ height: 7, width: "70%", borderRadius: 3, background: "rgba(255,255,255,0.30)" }} />
+                        <div style={{ height: 6, width: "90%", borderRadius: 3, background: "rgba(255,255,255,0.16)", marginTop: 6 }} />
+                        <div style={{ height: 6, width: "55%", borderRadius: 3, background: "rgba(255,255,255,0.16)", marginTop: 5 }} />
+                        <div style={{ height: 14, width: 52, borderRadius: 5, background: "rgba(255,255,255,0.38)", marginTop: 9 }} />
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                      <IconShoppingBag size={92} color="rgba(255,255,255,0.22)" stroke={1.5} />
+                    </div>
+                  )}
+                </div>
+
+                {/* Content */}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    zIndex: 2,
+                    padding: 18,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <div
+                    style={{
+                      color: "#fff",
+                      fontSize: 20,
+                      fontWeight: 800,
+                      letterSpacing: "-0.3px",
+                      maxWidth: "62%",
+                      fontFamily: FONT,
+                      lineHeight: 1.15,
+                    }}
+                  >
+                    {listing?.title ?? "Services & deals"}
+                  </div>
+                  <div
+                    style={{
+                      color: "rgba(255,255,255,0.7)",
+                      fontSize: 12,
+                      marginTop: 4,
+                      fontFamily: FONT,
+                    }}
+                  >
+                    {listing
+                      ? `${listing.category ?? "Services"} · DSM Marketplace`
+                      : `${listingCount ?? 0} listings available`}
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-end",
+                      justifyContent: "space-between",
+                      marginTop: 12,
+                    }}
+                  >
+                    <div>
+                      <div
+                        style={{
+                          color: "rgba(255,255,255,0.6)",
+                          fontSize: 10,
+                          fontWeight: 600,
+                          letterSpacing: "0.4px",
+                          fontFamily: FONT,
+                        }}
+                      >
+                        FROM
+                      </div>
+                      <div
+                        style={{
+                          color: "#fff",
+                          fontSize: 20,
+                          fontWeight: 900,
+                          fontFamily: FONT,
+                          lineHeight: 1.1,
+                        }}
+                      >
+                        {listing?.price_display ?? "—"}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        open();
+                      }}
+                      style={{
+                        background: "#fff",
+                        color: NAVY,
+                        fontSize: 13.5,
+                        fontWeight: 800,
+                        fontFamily: FONT,
+                        padding: "11px 20px",
+                        borderRadius: 12,
+                        border: "none",
+                        boxShadow: "0 3px 0 #B8C4D6",
+                        cursor: "pointer",
+                      }}
+                    >
+                      View listing
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* PAGINATION DOTS */}
+      {heroCards.length > 1 && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 5,
+            marginBottom: 22,
+          }}
+        >
+          {heroCards.map((l, i) => (
+            <span
+              key={l?.id ?? i}
+              style={{
+                width: i === heroIndex ? 16 : 6,
+                height: 6,
+                borderRadius: i === heroIndex ? 4 : "50%",
+                background: i === heroIndex ? BLUE : "#C7D0DC",
+                transition: "width 0.2s ease",
+              }}
+            />
+          ))}
+        </div>
+      )}
+
       <SectionHeader>Discover</SectionHeader>
 
-      {/* ROW 1 — 4 COMPACT CHIPS */}
+      {/* ROW 1 — 4 COMPACT TILES */}
       <div
         style={{
           display: "grid",
@@ -323,38 +637,16 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => liveRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
-          style={{
-            background: "#fff",
-            border: `0.5px solid ${HAIRLINE}`,
-            borderRadius: 10,
-            padding: "8px 4px",
-            textAlign: "center",
-            cursor: "pointer",
-            position: "relative",
-          }}
+          style={tileStyle}
         >
-          {liveActive && (
-            <span
-              style={{
-                position: "absolute",
-                top: 5,
-                right: 5,
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: RED,
-              }}
-            />
-          )}
-          <span style={{ ...chipIconWrap, background: "#E6F1FB" }}>
-            <IconRadio size={14} color={BLUE} stroke={2} />
+          {liveActive && <span style={tileDot} />}
+          <span style={chipIconWrap}>
+            <IconRadio size={14} color={NAVY} stroke={2} />
           </span>
           <div style={chipLabel}>Live</div>
           <div style={chipSub}>Events</div>
           {liveCount !== null && liveCount > 0 && (
-            <div style={{ marginTop: 3, fontSize: 8, fontWeight: 700, color: BLUE, fontFamily: "Poppins, sans-serif" }}>
-              {liveCount === 1 ? "1 session" : `${liveCount} sessions`}
-            </div>
+            <div style={chipSub}>{liveCount === 1 ? "1 session" : `${liveCount} sessions`}</div>
           )}
         </div>
 
@@ -363,25 +655,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/learn" as never })}
-          style={{
-            background: "#fff",
-            border: `0.5px solid ${HAIRLINE}`,
-            borderRadius: 10,
-            padding: "8px 4px",
-            textAlign: "center",
-            cursor: "pointer",
-            position: "relative",
-          }}
+          style={tileStyle}
         >
-          <span style={{ ...chipIconWrap, background: "#E0E7FF" }}>
-            <IconPlayerPlay size={14} color="#4F46E5" stroke={2} />
+          <span style={chipIconWrap}>
+            <IconPlayerPlay size={14} color={NAVY} stroke={2} />
           </span>
           <div style={chipLabel}>Learn</div>
           <div style={chipSub}>Videos</div>
           {learnCount !== null && learnCount > 0 && (
-            <div style={{ marginTop: 3, fontSize: 8, fontWeight: 700, color: "#4F46E5", fontFamily: "Poppins, sans-serif" }}>
-              {learnCount} videos
-            </div>
+            <div style={chipSub}>{learnCount} videos</div>
           )}
         </div>
 
@@ -390,25 +672,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/bitesize" as never })}
-          style={{
-            background: "#fff",
-            border: `0.5px solid ${HAIRLINE}`,
-            borderRadius: 10,
-            padding: "8px 4px",
-            textAlign: "center",
-            cursor: "pointer",
-            position: "relative",
-          }}
+          style={tileStyle}
         >
-          <span style={{ ...chipIconWrap, background: "#EFE7FB" }}>
-            <IconBook size={14} color="#7C3AED" stroke={2} />
+          <span style={chipIconWrap}>
+            <IconBook size={14} color={NAVY} stroke={2} />
           </span>
           <div style={chipLabel}>Bitesize</div>
           <div style={chipSub}>5 min</div>
           {bitesizeCount !== null && bitesizeCount > 0 && (
-            <div style={{ marginTop: 3, fontSize: 8, fontWeight: 700, color: "#7C3AED", fontFamily: "Poppins, sans-serif" }}>
-              {bitesizeCount} videos
-            </div>
+            <div style={chipSub}>{bitesizeCount} videos</div>
           )}
         </div>
 
@@ -417,165 +689,20 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/showcase" as never })}
-          style={{
-            background: "#fff",
-            border: `0.5px solid ${HAIRLINE}`,
-            borderRadius: 10,
-            padding: "8px 4px",
-            textAlign: "center",
-            cursor: "pointer",
-            position: "relative",
-          }}
+          style={tileStyle}
         >
-          {(showcaseCount ?? 0) > 0 && (
-            <span
-              style={{
-                position: "absolute",
-                top: 5,
-                right: 5,
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: RED,
-              }}
-            />
-          )}
-          <span style={{ ...chipIconWrap, background: "#FCE9E9" }}>
-            <IconPlayerPlay size={14} color={RED} stroke={2} />
+          {(showcaseCount ?? 0) > 0 && <span style={tileDot} />}
+          <span style={chipIconWrap}>
+            <IconPlayerPlay size={14} color={NAVY} stroke={2} />
           </span>
           <div style={chipLabel}>Showcase</div>
           <div style={chipSub}>Fun Videos</div>
           {showcaseCount !== null && showcaseCount > 0 && (
-            <div style={{ marginTop: 3, fontSize: 8, fontWeight: 700, color: RED, fontFamily: "Poppins, sans-serif" }}>
-              {showcaseCount} clips
-            </div>
+            <div style={chipSub}>{showcaseCount} clips</div>
           )}
         </div>
       </div>
 
-      {/* ROW 2 — MARKETPLACE HERO BANNER */}
-      <div
-        role="button"
-        tabIndex={0}
-        onClick={() =>
-          navigate({
-            to: featuredListing ? ("/marketplace/$listingId" as never) : ("/marketplace" as never),
-            params: featuredListing ? ({ listingId: featuredListing.id } as never) : undefined,
-          })
-        }
-        style={{
-          width: "100%",
-          marginBottom: 8,
-          borderRadius: 14,
-          overflow: "hidden",
-          cursor: "pointer",
-          position: "relative",
-          background: "linear-gradient(120deg, #1C8A4B, #0F6E3A)",
-          padding: 14,
-        }}
-      >
-        {marketplaceHero && (
-          <img
-            src={marketplaceHero}
-            alt=""
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              opacity: 0.2,
-              zIndex: 0,
-            }}
-          />
-        )}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundColor: NAVY,
-            opacity: 0.4,
-            zIndex: 1,
-          }}
-        />
-        <div
-          style={{
-            position: "relative",
-            zIndex: 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                display: "inline-block",
-                background: "rgba(255,255,255,0.2)",
-                borderRadius: 20,
-                padding: "2px 8px",
-                fontSize: 8,
-                fontWeight: 700,
-                color: "#fff",
-                marginBottom: 6,
-              }}
-            >
-              🛍 MARKETPLACE
-            </div>
-            <div
-              style={{
-                fontSize: 14,
-                fontWeight: 800,
-                color: "#fff",
-                fontFamily: FONT,
-                display: "-webkit-box",
-                WebkitLineClamp: 1,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-                marginBottom: 2,
-              }}
-            >
-              {featuredListing?.title ?? "Services & deals"}
-            </div>
-            <div
-              style={{
-                fontSize: 11,
-                color: "rgba(255,255,255,0.8)",
-                fontFamily: FONT,
-                marginBottom: 8,
-              }}
-            >
-              {featuredListing
-                ? `${featuredListing.category ?? "Services"} · ${featuredListing.price_display ?? "View listing"}`
-                : `${listingCount ?? 0} listings available`}
-            </div>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate({
-                  to: featuredListing ? ("/marketplace/$listingId" as never) : ("/marketplace" as never),
-                  params: featuredListing ? ({ listingId: featuredListing.id } as never) : undefined,
-                });
-              }}
-              style={{
-                background: "#fff",
-                color: "#0F6E3A",
-                fontSize: 10,
-                fontWeight: 700,
-                fontFamily: FONT,
-                borderRadius: 20,
-                padding: "4px 12px",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              View listing →
-            </button>
-          </div>
-          <IconShoppingBag size={48} color="rgba(255,255,255,0.15)" style={{ flexShrink: 0 }} />
-        </div>
-      </div>
 
       {/* ROW 3 — INDUSTRY NEWS ROW */}
       <div
