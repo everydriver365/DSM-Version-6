@@ -424,10 +424,22 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   borderRadius: 22,
                   overflow: "hidden",
                   cursor: "pointer",
-                  background: "linear-gradient(135deg, #0B1F3A, #14509E)",
+                  background: NAVY,
                   boxShadow: "0 5px 0 #081730, 0 16px 32px rgba(11,31,58,0.35)",
                 }}
               >
+                {/* Tinted glass overlay */}
+                <div
+                  aria-hidden
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: BLUE,
+                    opacity: 0.5,
+                    zIndex: 1,
+                  }}
+                />
+
                 {isNew && (
                   <span
                     style={{
@@ -441,17 +453,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       padding: "5px 10px",
                       borderRadius: 8,
                       fontFamily: FONT,
-                      zIndex: 2,
+                      zIndex: 3,
                     }}
                   >
                     NEW
                   </span>
                 )}
 
+
                 {/* Illustration */}
                 <div
                   aria-hidden
-                  style={{ position: "absolute", top: 16, right: 16, width: 150, zIndex: 1 }}
+                  style={{ position: "absolute", top: 16, right: 16, width: 150, zIndex: 2 }}
                 >
                   {isWebsite || !listing ? (
                     <div
@@ -575,13 +588,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       style={{
                         background: "#fff",
                         color: NAVY,
-                        fontSize: 13.5,
-                        fontWeight: 800,
+                        fontSize: 10.5,
+                        fontWeight: 700,
                         fontFamily: FONT,
-                        padding: "11px 20px",
-                        borderRadius: 12,
+                        padding: "5px 10px",
+                        borderRadius: 7,
                         border: "none",
-                        boxShadow: "0 3px 0 #B8C4D6",
+                        boxShadow: "0 1.5px 0 #B8C4D6",
+
                         cursor: "pointer",
                       }}
                     >
