@@ -478,8 +478,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       top: 0,
                       left: 0,
                       bottom: 0,
-                      width: "60%",
-                      clipPath: "polygon(0 0, 100% 0, 78% 100%, 0 100%)",
+                      width: "42%",
+                      clipPath: "polygon(0 0, 100% 0, 72% 100%, 0 100%)",
                       background: listing?.imageUrl
                         ? "#0B1F3A"
                         : `linear-gradient(150deg, #14335C 0%, ${NAVY} 62%, #071630 100%)`,
@@ -552,10 +552,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     style={{
                       position: "absolute",
                       top: 0,
+                      left: "46%",
                       right: 0,
                       bottom: 26,
-                      width: "52%",
-                      padding: "16px 16px 0 8px",
+                      padding: "16px 16px 0 12px",
                       display: "flex",
                       flexDirection: "column",
                       justifyContent: "space-between",
@@ -583,7 +583,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       <div
                         style={{
                           color: NAVY,
-                          fontSize: 19,
+                          fontSize: 17,
                           fontWeight: 800,
                           letterSpacing: "-0.3px",
                           marginTop: 8,
