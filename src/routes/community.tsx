@@ -1030,7 +1030,7 @@ const TOMTOM_FILTER_TYPES: Record<string, string[]> = {
   roadworks: ["roadworks", "road_closure"],
   accidents: ["accident", "collision"],
   congestion: ["heavy_traffic", "congestion"],
-  hazards: ["hazard", "other"],
+  hazards: ["hazard", "flooding", "weather", "other"],
 };
 
 function AlertsTab({
