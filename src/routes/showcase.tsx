@@ -1558,6 +1558,41 @@ function ShowcasePage() {
                               <IconMessageCircle size={13} stroke={1.7} />
                               Reply
                             </button>
+                            {(() => {
+                              const reported = Boolean(reportedComments[c.id]);
+                              return (
+                                <button
+                                  type="button"
+                                  disabled={reported}
+                                  onClick={() => setReportCommentId(c.id)}
+                                  aria-label={
+                                    reported
+                                      ? "Comment reported"
+                                      : `Report comment by ${name}`
+                                  }
+                                  title={reported ? "Reported" : "Report"}
+                                  style={{
+                                    marginLeft: "auto",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    width: 26,
+                                    height: 26,
+                                    borderRadius: 999,
+                                    border: "none",
+                                    background: "transparent",
+                                    color: reported ? "#CC2229" : "#C7C7CC",
+                                    flexShrink: 0,
+                                  }}
+                                >
+                                  <IconFlag
+                                    size={13}
+                                    stroke={1.7}
+                                    fill={reported ? "#CC2229" : "none"}
+                                  />
+                                </button>
+                              );
+                            })()}
                           </div>
                         </div>
                       </div>
