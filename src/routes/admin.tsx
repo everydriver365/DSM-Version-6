@@ -1113,81 +1113,99 @@ function AdminHub() {
     <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
       <AdminTopBar title="Admin" onBack={() => navigate({ to: "/home" })} />
       <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)" }}>
-        <div style={{ padding: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-          <AdminSectionTile
-            icon={<IconStar stroke={1.5} size={18} />}
-            label="Featured listings"
-            onClick={() => navigate({ to: "/admin/featured" })}
-          />
-          <AdminSectionTile
-            icon={<IconFileText stroke={1.5} size={18} />}
-            label="Applications"
-            onClick={() => navigate({ to: "/admin/applications" as never })}
-          />
-          <AdminSectionTile
-            icon={<ShoppingBag size={18} />}
-            label="Marketplace listings"
-            onClick={() => navigate({ to: "/admin/listings" as never })}
-          />
-          <AdminSectionTile
-            icon={<IconBriefcase stroke={1.5} size={18} />}
-            label="Job offers"
-            onClick={() => navigate({ to: "/admin/job-offers" as never })}
-          />
-          <AdminSectionTile
-            icon={<FileCheck size={18} />}
-            label="Platform terms"
-            onClick={() => navigate({ to: "/admin/terms" as never })}
-          />
-          <AdminSectionTile
-            icon={<Video size={18} />}
-            label="DSM Live"
-            onClick={() => navigate({ to: "/admin/dsm-live" as never })}
-          />
-          <AdminSectionTile
-            icon={<IconMicrophone stroke={1.5} size={18} />}
-            label="Podcasts"
-            onClick={() => navigate({ to: "/admin/podcasts" as never })}
-          />
-          <AdminSectionTile
-            icon={<PlayCircle size={18} />}
-            label="Learn videos"
-            onClick={() => navigate({ to: "/admin/learn-videos" as never })}
-          />
-          <AdminSectionTile
-            icon={<BookOpen size={18} />}
-            label="Bitesize videos"
-            onClick={() => navigate({ to: "/admin/bitesize" as never })}
-          />
+        <div style={{ padding: 16 }}>
+          <AdminGroupLabel first>Marketplace</AdminGroupLabel>
+          <AdminGroupCard>
+            <AdminSectionTile
+              first
+              icon={<IconStar stroke={1.6} size={18} color="#000" />}
+              label="Featured listings"
+              onClick={() => navigate({ to: "/admin/featured" })}
+            />
+            <AdminSectionTile
+              icon={<ShoppingBag size={18} color="#000" />}
+              label="Marketplace listings"
+              onClick={() => navigate({ to: "/admin/listings" as never })}
+            />
+            <AdminSectionTile
+              icon={<IconFileText stroke={1.6} size={18} color="#000" />}
+              label="Applications"
+              onClick={() => navigate({ to: "/admin/applications" as never })}
+            />
+            <AdminSectionTile
+              icon={<IconBriefcase stroke={1.6} size={18} color="#000" />}
+              label="Job offers"
+              onClick={() => navigate({ to: "/admin/job-offers" as never })}
+            />
+            <AdminSectionTile
+              icon={<FileCheck size={18} color="#000" />}
+              label="Platform terms"
+              onClick={() => navigate({ to: "/admin/terms" as never })}
+            />
+          </AdminGroupCard>
 
+          <AdminGroupLabel>Content</AdminGroupLabel>
+          <AdminGroupCard>
+            <AdminSectionTile
+              first
+              icon={<Video size={18} color="#000" />}
+              label="DSM Live"
+              onClick={() => navigate({ to: "/admin/dsm-live" as never })}
+            />
+            <AdminSectionTile
+              icon={<PlayCircle size={18} color="#000" />}
+              label="Learn videos"
+              onClick={() => navigate({ to: "/admin/learn-videos" as never })}
+            />
+            <AdminSectionTile
+              icon={<BookOpen size={18} color="#000" />}
+              label="Bitesize videos"
+              onClick={() => navigate({ to: "/admin/bitesize" as never })}
+            />
+            <AdminSectionTile
+              icon={<IconMicrophone stroke={1.6} size={18} color="#000" />}
+              label="Podcasts"
+              onClick={() => navigate({ to: "/admin/podcasts" as never })}
+            />
+          </AdminGroupCard>
 
-          <AdminSectionTile
-            icon={<IconUsers stroke={1.5} size={18} />}
-            label="All instructors"
-            subtitle={`${instructorCount} registered instructors`}
-            onClick={() => navigate({ to: "/admin/instructors" as never })}
-          />
-          <AdminSectionTile
-            icon={<BookOpen size={18} />}
-            label="All bookings"
-            onClick={() => navigate({ to: "/bookings" as never })}
-          />
-          <AdminSectionTile
-            icon={<IconSettings stroke={1.5} size={18} />}
-            label="Platform settings"
-            onClick={() => navigate({ to: "/settings" as never })}
-          />
-          <AdminSectionTile
-            icon={<IconMessageCircle stroke={1.5} size={18} />}
-            label="Chat rooms"
-            onClick={() => navigate({ to: "/admin/chat-rooms" as never })}
-          />
-          <AdminSectionTile
-            icon={<IconFlag stroke={1.5} size={18} />}
-            label="Flagged"
-            onClick={scrollToFlagged}
-          />
+          <AdminGroupLabel>Instructors</AdminGroupLabel>
+          <AdminGroupCard>
+            <AdminSectionTile
+              first
+              icon={<IconUsers stroke={1.6} size={18} color="#000" />}
+              label="All instructors"
+              subtitle={`${instructorCount} registered`}
+              onClick={() => navigate({ to: "/admin/instructors" as never })}
+            />
+          </AdminGroupCard>
+
+          <AdminGroupLabel>Platform</AdminGroupLabel>
+          <AdminGroupCard>
+            <AdminSectionTile
+              first
+              icon={<BookOpen size={18} color="#000" />}
+              label="All bookings"
+              onClick={() => navigate({ to: "/bookings" as never })}
+            />
+            <AdminSectionTile
+              icon={<IconSettings stroke={1.6} size={18} color="#000" />}
+              label="Platform settings"
+              onClick={() => navigate({ to: "/settings" as never })}
+            />
+            <AdminSectionTile
+              icon={<IconMessageCircle stroke={1.6} size={18} color="#000" />}
+              label="Chat rooms"
+              onClick={() => navigate({ to: "/admin/chat-rooms" as never })}
+            />
+            <AdminSectionTile
+              icon={<IconFlag stroke={1.6} size={18} color="#000" />}
+              label="Flagged"
+              onClick={scrollToFlagged}
+            />
+          </AdminGroupCard>
         </div>
+
         <div ref={flaggedRef}>
           <FlaggedMessagesSection />
         </div>
