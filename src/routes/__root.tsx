@@ -395,6 +395,24 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
                 </button>
               )}
               <button
+                onClick={async () => {
+                  setOpen(false);
+                  await supabase.auth.signOut();
+                  navigate({ to: "/" as never, replace: true });
+                }}
+                style={{
+                  fontSize: 10,
+                  fontWeight: 500,
+                  color: "rgba(255,255,255,0.5)",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: 0,
+                }}
+              >
+                Sign out
+              </button>
+              <button
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
                 style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", display: "flex" }}
