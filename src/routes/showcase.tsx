@@ -272,7 +272,7 @@ function ShowcasePage() {
       const { data } = await db
         .from("showcase_comments")
         .select(
-          "id, body, created_at, instructor:instructors!instructor_id(id, name)",
+          "id, body, created_at, parent_id, instructor_id, instructor:instructors!instructor_id(id, name)",
         )
         .eq("video_id", playing.id)
         .is("deleted_at", null)
