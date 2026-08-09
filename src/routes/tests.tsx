@@ -727,7 +727,7 @@ function TestCard({
           )}
         </div>
       )}
-    </Card>
+    </div>
   );
 }
 
