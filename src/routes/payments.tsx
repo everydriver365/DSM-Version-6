@@ -7,7 +7,6 @@ import { EmptyState } from "@/components/dsm/EmptyState";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
-import WorkspaceDots from "../components/dsm/WorkspaceDots";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -399,7 +398,6 @@ function PaymentsPage() {
           <IconPlus stroke={1.5} size={16} color="#fff" /> Take payment
         </button>
       </div>
-      <WorkspaceDots activeIndex={3} />
 
       {/* Summary stats */}
       <div style={{ padding: "16px 16px 0", marginBottom: 14 }}>
