@@ -59,9 +59,9 @@ function fmtDate(d: string | null) {
 
 function statusBadge(status: string | null) {
   const s = (status || "").toLowerCase();
-  if (s === "confirmed" || s === "paid") return { label: "Confirmed", bg: "#E8F6EE", color: "#1B7F3A" };
-  if (s === "cancelled" || s === "canceled") return { label: "Cancelled", bg: "#FDE7E7", color: "#B42318" };
-  return { label: "Pending", bg: "#EEF2F7", color: "#0B1F3A" };
+  if (s === "confirmed" || s === "paid") return { label: "Confirmed", bg: "#E6F7EC", color: "#248A3D" };
+  if (s === "cancelled" || s === "canceled") return { label: "Cancelled", bg: "#FDEDEC", color: "#FF3B30" };
+  return { label: "Pending", bg: "#FFF6DC", color: "#B8860B" };
 }
 
 const FILTERS = [
