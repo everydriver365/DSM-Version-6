@@ -493,11 +493,31 @@ function AdminListingsPage() {
         </button>
       </div>
 
-      <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, padding: 16 }}>
-          <StatCard label="Pending review" value={stats.pending} />
-          <StatCard label="Live" value={stats.live} />
-          <StatCard label="Total" value={stats.total} />
+        <div style={{ padding: "16px" }}>
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 20,
+              boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
+              display: "flex",
+              overflow: "hidden",
+            }}
+          >
+            {[
+              { label: "Pending review", value: stats.pending, color: "#D68A1B" },
+              { label: "Live", value: stats.live, color: "#000" },
+              { label: "Total", value: stats.total, color: "#000" },
+            ].map((s, i) => (
+              <div key={s.label} style={{ flex: 1, padding: "18px 14px", borderLeft: i === 0 ? "none" : "1.5px dashed #E4E4E8" }}>
+                <div style={{ color: s.color, fontSize: 34, fontWeight: 900, letterSpacing: "-1.2px", lineHeight: 1 }}>
+                  {s.value}
+                </div>
+                <div style={{ color: "#8A8A8E", fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", marginTop: 6 }}>
+                  {s.label}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div
