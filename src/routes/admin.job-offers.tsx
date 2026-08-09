@@ -115,12 +115,12 @@ function emptyForm(): Partial<JobOffer> {
 
 function statusBadge(status: string) {
   const map: Record<string, { bg: string; color: string; label: string }> = {
-    open: { bg: "#E5F5EC", color: "#0F9D58", label: "OPEN" },
-    claimed: { bg: "#E5F0FC", color: "#1877D6", label: "CLAIMED" },
-    expired: { bg: "#F3F4F6", color: "#6B7280", label: "EXPIRED" },
-    cancelled: { bg: "#FDE7E9", color: "#CC2229", label: "CANCELLED" },
+    open: { bg: "#1A9B5C", color: "#fff", label: "OPEN" },
+    claimed: { bg: "#1877D6", color: "#fff", label: "CLAIMED" },
+    expired: { bg: "#6B7280", color: "#fff", label: "EXPIRED" },
+    cancelled: { bg: "#CC2229", color: "#fff", label: "CANCELLED" },
   };
-  return map[status] ?? { bg: "#F3F4F6", color: "#6B7280", label: status.toUpperCase() };
+  return map[status] ?? { bg: "#6B7280", color: "#fff", label: status.toUpperCase() };
 }
 
 function toDateInputValue(iso: string | null): string {
