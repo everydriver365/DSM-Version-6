@@ -6135,3 +6135,10 @@ function ReadyToLearnCard({ pupilId }: { pupilId: string }) {
     </div>
   );
 }
+
+function testStatusColour(status: string): string {
+  const s = status.toLowerCase();
+  if (s.includes("pass")) return "#1A9B5C";
+  if (s.includes("not") || s.includes("fail") || s.includes("cancel")) return "#FF3B30";
+  return "#0B1F3A";
+}
