@@ -378,7 +378,8 @@ function AdminBitesizePage() {
               width: 36,
               height: 36,
               borderRadius: "50%",
-              background: "rgba(255,255,255,0.15)",
+              background: "#1877D6",
+              boxShadow: "0 3px 0 #0F52A8",
               border: "none",
               display: "flex",
               alignItems: "center",
@@ -393,43 +394,54 @@ function AdminBitesizePage() {
       />
 
       {/* STATS ROW */}
-      <div
-        style={{
-          background: "#fff",
-          padding: "12px 16px",
-          borderBottom: "0.5px solid #E4E8EF",
-          display: "flex",
-          gap: 20,
-          overflowX: "auto",
-        }}
-      >
-        {stats.map((s) => (
-          <div key={s.label} style={{ flexShrink: 0 }}>
+      <div style={{ padding: "16px 16px 0" }}>
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 20,
+            boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
+            display: "flex",
+            overflow: "hidden",
+          }}
+        >
+          {stats.map((s, i) => (
             <div
+              key={s.label}
               style={{
-                fontSize: 9,
-                fontWeight: 600,
-                color: "#9CA3AF",
-                textTransform: "uppercase",
-                letterSpacing: "0.06em",
-                ...POPPINS,
+                flex: 1,
+                padding: "16px 10px",
+                textAlign: "left",
+                borderLeft: i > 0 ? "1.5px dashed #E4E4E8" : undefined,
               }}
             >
-              {s.label}
+              <div
+                style={{
+                  fontSize: 26,
+                  fontWeight: 900,
+                  letterSpacing: "-0.8px",
+                  color: "#000",
+                  ...POPPINS,
+                }}
+              >
+                {s.value}
+              </div>
+              <div
+                style={{
+                  fontSize: 9.5,
+                  fontWeight: 700,
+                  color: "#8A8A8E",
+                  textTransform: "uppercase",
+                  marginTop: 5,
+                  ...POPPINS,
+                }}
+              >
+                {s.label}
+              </div>
             </div>
-            <div
-              style={{
-                fontSize: 18,
-                fontWeight: 700,
-                color: "#0B1F3A",
-                ...POPPINS,
-              }}
-            >
-              {s.value}
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
+
 
       {/* LIST */}
       {loading ? (
