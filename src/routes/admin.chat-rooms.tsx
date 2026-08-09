@@ -424,47 +424,62 @@ function AdminChatRooms() {
         ) : filteredRooms.length === 0 ? (
           <div style={{ color: "#6B7280", fontSize: 14 }}>No rooms match your filters.</div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ display: "flex", flexDirection: "column" }}>
             {filteredRooms.map((room) => (
               <div
                 key={room.id}
                 style={{
                   background: "#fff",
-                  border: "1px solid #E2E8F0",
-                  borderRadius: 16,
-                  padding: 14,
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                  border: "none",
+                  borderRadius: 18,
+                  padding: 16,
+                  marginBottom: 12,
+                  boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
                 }}
               >
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>{room.outcode}</div>
-                    <div style={{ fontSize: 13, color: "#6B7280", marginTop: 2 }}>{room.area_name || "—"}</div>
+                    <div style={{ fontSize: 16.5, fontWeight: 800, color: "#000", letterSpacing: "-0.2px" }}>
+                      {room.outcode}
+                    </div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: "#8A8A8E", marginTop: 4 }}>
+                      {room.area_name ? titleCase(room.area_name) : "—"}
+                    </div>
                   </div>
                   <div
                     style={{
-                      fontSize: 12,
-                      fontWeight: 600,
+                      fontSize: 11,
+                      fontWeight: 800,
                       color: "#1877D6",
-                      background: "#EAF2FC",
-                      borderRadius: 999,
-                      padding: "4px 10px",
+                      background: "#E7F1FC",
+                      borderRadius: 20,
+                      padding: "5px 11px",
                       whiteSpace: "nowrap",
                     }}
                   >
                     {room.instructor_count ?? 0} instructors
                   </div>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    marginTop: 14,
+                    paddingTop: 13,
+                    borderTop: "1px solid #F0F0F2",
+                    flexWrap: "wrap",
+                  }}
+                >
                   <span
                     style={{
-                      fontSize: 11,
-                      fontWeight: 600,
+                      fontSize: 10.5,
+                      fontWeight: 800,
                       textTransform: "uppercase",
-                      color: room.room_type === "uk" ? "#0B1F3A" : "#166534",
-                      background: room.room_type === "uk" ? "#E7EBF2" : "#DCFCE7",
-                      borderRadius: 999,
-                      padding: "3px 8px",
+                      color: room.room_type === "uk" ? "#1877D6" : "#248A3D",
+                      background: room.room_type === "uk" ? "#E7F1FC" : "#E6F7EC",
+                      borderRadius: 20,
+                      padding: "4px 10px",
                     }}
                   >
                     {room.room_type || "local"}
@@ -472,18 +487,18 @@ function AdminChatRooms() {
                   {room.is_opt_in && (
                     <span
                       style={{
-                        fontSize: 11,
-                        fontWeight: 600,
+                        fontSize: 10.5,
+                        fontWeight: 800,
                         color: "#92400E",
                         background: "#FEF3C7",
-                        borderRadius: 999,
-                        padding: "3px 8px",
+                        borderRadius: 20,
+                        padding: "4px 10px",
                       }}
                     >
                       Opt-in
                     </span>
                   )}
-                  <span style={{ fontSize: 11, color: "#9CA3AF" }}>
+                  <span style={{ fontSize: 11.5, color: "#B0B0B5" }}>
                     {room.created_at ? new Date(room.created_at).toLocaleDateString("en-GB") : ""}
                   </span>
                   <button
@@ -495,25 +510,26 @@ function AdminChatRooms() {
                       display: "inline-flex",
                       alignItems: "center",
                       gap: 6,
-                      height: 32,
-                      padding: "0 12px",
-                      borderRadius: 10,
-                      border: "1px solid #CC2229",
+                      padding: "8px 14px",
+                      borderRadius: 11,
+                      border: "1.5px solid #FF3B30",
                       background: "#fff",
-                      color: "#CC2229",
-                      fontSize: 13,
-                      fontWeight: 600,
+                      color: "#FF3B30",
+                      fontSize: 12.5,
+                      fontWeight: 700,
+                      fontFamily: "Poppins, sans-serif",
                       cursor: "pointer",
                       opacity: deletingId === room.id ? 0.6 : 1,
                     }}
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={12} />
                     {deletingId === room.id ? "Deleting…" : "Delete"}
                   </button>
                 </div>
               </div>
             ))}
           </div>
+
         )}
       </div>
     </div>
