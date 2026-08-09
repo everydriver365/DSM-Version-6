@@ -277,14 +277,71 @@ function ShowcasePage() {
         .eq("video_id", playing.id)
         .is("deleted_at", null)
         .order("created_at", { ascending: true });
-      setComments(
-        ((data as any[] | null) ?? []).map((c) => ({
-          ...c,
-          instructor: Array.isArray(c.instructor) ? c.instructor[0] : c.instructor,
-        })),
+      const rows = ((data as any[] | null) ?? []).map((c) => ({
+        ...c,
+        instructor: Array.isArray(c.instructor) ? c.instructor[0] : c.instructor,
+      }));
+      setComments(rows);
+
+      const ids = rows.map((c) => c.id);
+      if (ids.length === 0) {
+        setCommentLikeCounts({});
+        setMyCommentLikes({});
+        return;
+      }
+      const { data: likeRows } = await db
+        .from("showcase_comment_likes")
+        .select("comment_id, instructor_id")
+        .in("comment_id", ids);
+      const counts: Record<string, number> = {};
+      const mine: Record<string, boolean> = {};
+      ((likeRows as { comment_id: string; instructor_id: string }[] | null) ?? []).forEach(
+        (r) => {
+          counts[r.comment_id] = (counts[r.comment_id] ?? 0) + 1;
+          if (userId && r.instructor_id === userId) mine[r.comment_id] = true;
+        },
       );
+      setCommentLikeCounts(counts);
+      setMyCommentLikes(mine);
     })();
-  }, [commentsOpen, playing]);
+  }, [commentsOpen, playing, userId]);
+
+  async function toggleCommentLike(commentId: string) {
+    if (!userId) {
+      toast.error("Sign in to like comments");
+      return;
+    }
+    const liked = !!myCommentLikes[commentId];
+    // optimistic
+    setMyCommentLikes((prev) => ({ ...prev, [commentId]: !liked }));
+    setCommentLikeCounts((prev) => ({
+      ...prev,
+      [commentId]: Math.max(0, (prev[commentId] ?? 0) + (liked ? -1 : 1)),
+    }));
+    try {
+      if (liked) {
+        const { error } = await db
+          .from("showcase_comment_likes")
+          .delete()
+          .eq("comment_id", commentId)
+          .eq("instructor_id", userId);
+        if (error) throw error;
+      } else {
+        const { error } = await db
+          .from("showcase_comment_likes")
+          .insert({ comment_id: commentId, instructor_id: userId });
+        if (error) throw error;
+      }
+    } catch (err: any) {
+      // revert
+      setMyCommentLikes((prev) => ({ ...prev, [commentId]: liked }));
+      setCommentLikeCounts((prev) => ({
+        ...prev,
+        [commentId]: Math.max(0, (prev[commentId] ?? 0) + (liked ? 1 : -1)),
+      }));
+      toast.error(err?.message ?? "Could not save like");
+    }
+  }
 
 
   const filtered =
