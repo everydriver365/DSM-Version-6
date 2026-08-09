@@ -211,7 +211,8 @@ function PupilThreadPage() {
       const { data: sessionRes } = await supabase.auth.getSession();
       const token = sessionRes.session?.access_token;
       console.log("[dsm-messages] fetching for pupil:", pupilId, "instructor:", uid);
-      const url = `${SUPABASE_URL}/rest/v1/chat_messages?pupil_id=eq.${pupilId}&instructor_id=eq.${uid}&deleted_at=is.null&order=created_at.asc&select=id,pupil_id,instructor_id,sender_type,sender_id,body,created_at,read_at,deleted_at`;
+      // Newest page first, then reversed for display. Older pages load on scroll.
+      const url = `${SUPABASE_URL}/rest/v1/chat_messages?pupil_id=eq.${pupilId}&instructor_id=eq.${uid}&deleted_at=is.null&order=created_at.desc&limit=${PAGE_SIZE}&select=id,pupil_id,instructor_id,sender_type,sender_id,body,created_at,read_at,deleted_at`;
       console.log("[dsm-messages] fetch URL:", url);
       const res = await fetch(url, {
         headers: {
@@ -223,12 +224,14 @@ function PupilThreadPage() {
       try {
         const data = await res.json();
         console.log("[dsm-messages] result:", res.status, data);
-        if (res.ok && Array.isArray(data)) m = data as ChatMessage[];
+        if (res.ok && Array.isArray(data)) m = (data as ChatMessage[]).slice().reverse();
         else if (!res.ok) console.error("[pupil-thread] messages fetch error", data);
       } catch (e) {
         console.error("[pupil-thread] messages parse error", e);
       }
       setMessages(m);
+      setHasMoreOlder(m.length >= PAGE_SIZE);
+
 
       // Mark inbound messages read
       const { data: marked } = await supabase
