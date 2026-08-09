@@ -3625,40 +3625,42 @@ function PupilDetailPage() {
         )}
       {/* Address (Google Places autocomplete) */}
       {pupil && (
-        <div style={{ margin: "12px 0 0" }}>
+        <div style={{ marginTop: 14 }}>
           <div
-            className="bg-white"
             style={{
-              borderRadius: 12,
-              border: "0.5px solid #E2E6ED",
+              background: "#fff",
+              borderRadius: 18,
               padding: 16,
+              marginBottom: 14,
+              boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
             }}
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <IconMapPin stroke={1.5} size={16} color="#1A52A0" /> Address
+            <div className="flex items-center justify-between">
+              <span className="flex items-center gap-2" style={{ color: "#0B1F3A", fontSize: 16, fontWeight: 800, ...POPPINS }}>
+                <IconMapPin stroke={1.6} size={18} color="#1877D6" /> Address
               </span>
               <button
                 type="button"
                 onClick={() => setAddressEditing((v) => !v)}
-                className="text-[12px] font-semibold"
-                style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+                style={{ color: "#1877D6", fontSize: 13, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
               >
                 {addressEditing ? "Cancel" : "Edit"}
               </button>
             </div>
             {addressEditing ? (
-              <AddressLookup
-                initialAddress={pupil.address ?? ""}
-                initialPostcode={pupil.postcode ?? ""}
-                showSearchButton
-                onAddressFound={saveAddressFromLookup}
-              />
+              <div style={{ marginTop: 10 }}>
+                <AddressLookup
+                  initialAddress={pupil.address ?? ""}
+                  initialPostcode={pupil.postcode ?? ""}
+                  showSearchButton
+                  onAddressFound={saveAddressFromLookup}
+                />
+              </div>
             ) : (
-              <div className="text-[13px]" style={{ color: pupil.address ? "#0B1F3A" : "#9CA3AF", ...POPPINS }}>
+              <div style={{ color: pupil.address ? "#0B1F3A" : "#B0B0B5", fontSize: 14, fontWeight: 500, marginTop: 10, lineHeight: 1.5, ...POPPINS }}>
                 {pupil.address || "No address on file"}
                 {pupil.postcode ? (
-                  <span className="ml-2" style={{ color: "#6B7280" }}>{pupil.postcode}</span>
+                  <span className="ml-2" style={{ color: "#6B6B6F" }}>{pupil.postcode}</span>
                 ) : null}
               </div>
             )}
@@ -3677,25 +3679,29 @@ function PupilDetailPage() {
       )}
       {/* Theory test card */}
       {pupil && (
-        <div style={{ margin: "12px 0 0" }}>
-          <div
-            className="bg-white"
-            style={{ borderRadius: 12, border: "0.5px solid #E2E6ED", padding: 16 }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <BookOpen size={16} color="#1A52A0" /> Theory test
-              </span>
-              <button
-                type="button"
-                onClick={() => setTheoryEditing((v) => !v)}
-                className="text-[12px] font-semibold"
-                style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
-              >
-                {theoryEditing ? "Cancel" : "Edit"}
-              </button>
-            </div>
-            {theoryEditing ? (
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 18,
+            padding: 16,
+            marginBottom: 14,
+            boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-2" style={{ color: "#0B1F3A", fontSize: 16, fontWeight: 800, ...POPPINS }}>
+              <BookOpen size={18} color="#1877D6" /> Theory test
+            </span>
+            <button
+              type="button"
+              onClick={() => setTheoryEditing((v) => !v)}
+              style={{ color: "#1877D6", fontSize: 13, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+            >
+              {theoryEditing ? "Cancel" : "Edit"}
+            </button>
+          </div>
+          {theoryEditing ? (
+            <div style={{ marginTop: 10 }}>
               <TheoryEditor
                 pupil={pupil}
                 onSave={async (patch) => {
@@ -3703,54 +3709,69 @@ function PupilDetailPage() {
                   if (ok) setTheoryEditing(false);
                 }}
               />
-            ) : (
-              <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <div>Status: <b>{pupil.theory_status || "Not started"}</b></div>
-                {pupil.theory_test_date && (
-                  <div style={{ color: "#6B7280", marginTop: 2 }}>Test date: {fmtUKDate(pupil.theory_test_date)}</div>
-                )}
-                {pupil.theory_pass_date && (
-                  <div style={{ color: "#6B7280", marginTop: 2 }}>Pass date: {fmtUKDate(pupil.theory_pass_date)}</div>
-                )}
-                {typeof pupil.theory_score === "number" && (
-                  <div style={{ color: "#6B7280", marginTop: 2 }}>Score: {pupil.theory_score}</div>
-                )}
+            </div>
+          ) : (
+            <div style={{ marginTop: 10, ...POPPINS }}>
+              <div>
+                <span style={{ color: "#6B6B6F", fontSize: 13.5, fontWeight: 500 }}>Status: </span>
+                <span style={{ fontSize: 13.5, fontWeight: 800, color: testStatusColour(pupil.theory_status || "Not started") }}>
+                  {pupil.theory_status || "Not started"}
+                </span>
               </div>
-            )}
-          </div>
+              {pupil.theory_test_date && (
+                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
+                  Test date: <span style={{ color: "#0B1F3A", fontWeight: 700 }}>{fmtUKDate(pupil.theory_test_date)}</span>
+                </div>
+              )}
+              {pupil.theory_pass_date && (
+                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
+                  Pass date: <span style={{ color: "#0B1F3A", fontWeight: 700 }}>{fmtUKDate(pupil.theory_pass_date)}</span>
+                </div>
+              )}
+              {typeof pupil.theory_score === "number" && (
+                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
+                  Score: <span style={{ color: "#0B1F3A", fontWeight: 700 }}>{pupil.theory_score}</span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
       {/* Practical test card */}
       {pupil && (
-        <div style={{ margin: "12px 0 0" }}>
-          <div
-            className="bg-white"
-            style={{ borderRadius: 12, border: "0.5px solid #E2E6ED", padding: 16 }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <IconCar stroke={1.5} size={16} color="#0B1F3A" /> Practical test
-              </span>
-              <button
-                type="button"
-                onClick={async () => {
-                  const next = !practicalEditing;
-                  setPracticalEditing(next);
-                  if (next && allCentres.length === 0) {
-                    const { data } = await supabase
-                      .from("test_centres")
-                      .select("id, name, town")
-                      .order("name", { ascending: true });
-                    setAllCentres((data as any) ?? []);
-                  }
-                }}
-                className="text-[12px] font-semibold"
-                style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
-              >
-                {practicalEditing ? "Cancel" : "Edit"}
-              </button>
-            </div>
-            {practicalEditing ? (
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 18,
+            padding: 16,
+            marginBottom: 14,
+            boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-2" style={{ color: "#0B1F3A", fontSize: 16, fontWeight: 800, ...POPPINS }}>
+              <IconCar stroke={1.6} size={18} color="#1877D6" /> Practical test
+            </span>
+            <button
+              type="button"
+              onClick={async () => {
+                const next = !practicalEditing;
+                setPracticalEditing(next);
+                if (next && allCentres.length === 0) {
+                  const { data } = await supabase
+                    .from("test_centres")
+                    .select("id, name, town")
+                    .order("name", { ascending: true });
+                  setAllCentres((data as any) ?? []);
+                }
+              }}
+              style={{ color: "#1877D6", fontSize: 13, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+            >
+              {practicalEditing ? "Cancel" : "Edit"}
+            </button>
+          </div>
+          {practicalEditing ? (
+            <div style={{ marginTop: 10 }}>
               <PracticalEditor
                 pupil={pupil}
                 centreInfo={centreInfo}
@@ -3765,24 +3786,98 @@ function PupilDetailPage() {
                   if (ok) setPracticalEditing(false);
                 }}
               />
-            ) : (
-              <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <div>Status: <b>{pupil.test_status || "Not booked"}</b></div>
-                {pupil.test_date && (
-                  <div style={{ color: "#6B7280", marginTop: 2 }}>Date: {fmtUKDate(pupil.test_date)}</div>
-                )}
-                {pupil.test_time && (
-                  <div style={{ color: "#6B7280", marginTop: 2 }}>Time: {pupil.test_time.slice(0, 5)}</div>
-                )}
-                {(centreInfo || pupil.test_centre) && (
-                  <div style={{ color: "#6B7280", marginTop: 2 }}>
-                    Centre: {centreInfo?.name || pupil.test_centre}
+            </div>
+          ) : (
+            <div style={{ marginTop: 10, ...POPPINS }}>
+              <div>
+                <span style={{ color: "#6B6B6F", fontSize: 13.5, fontWeight: 500 }}>Status: </span>
+                <span style={{ fontSize: 13.5, fontWeight: 800, color: testStatusColour(pupil.test_status || "Not booked") }}>
+                  {pupil.test_status || "Not booked"}
+                </span>
+              </div>
+              {pupil.test_date && (
+                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
+                  Date: <span style={{ color: "#0B1F3A", fontWeight: 700 }}>{fmtUKDate(pupil.test_date)}</span>
+                </div>
+              )}
+              {pupil.test_time && (
+                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
+                  Time: <span style={{ color: "#0B1F3A", fontWeight: 700 }}>{pupil.test_time.slice(0, 5)}</span>
+                </div>
+              )}
+              {(centreInfo || pupil.test_centre) && (
+                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
+                  Centre:{" "}
+                  <span style={{ color: "#0B1F3A", fontWeight: 700 }}>
+                    {centreInfo?.name || pupil.test_centre}
                     {centreInfo?.town ? `, ${centreInfo.town}` : ""}
-                  </div>
+                  </span>
+                </div>
+              )}
+              {pupil.test_date && !/booked|confirmed|passed|failed/i.test(pupil.test_status || "") && (
+                <div
+                  style={{
+                    background: "#FDEDEC",
+                    borderRadius: 12,
+                    padding: "10px 12px",
+                    marginTop: 12,
+                    color: "#B02318",
+                    fontSize: 11.5,
+                    fontWeight: 600,
+                    lineHeight: 1.5,
+                    ...POPPINS,
+                  }}
+                >
+                  Data mismatch: status shows “{pupil.test_status || "Not booked"}” but a test date, time and centre are recorded — this test appears as scheduled elsewhere in the app. Please check the booking status.
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+      {/* Intake answers */}
+      <div className="px-4">
+        <SectionHeader>INTAKE ANSWERS</SectionHeader>
+        {intakeAnswers === null ? null : intakeAnswers.length === 0 ? (
+          <div className="text-[14px] text-[#6B7280]" style={POPPINS}>
+            No intake answers recorded
+          </div>
+        ) : (
+          <div
+            className="bg-white"
+            style={{
+              borderRadius: 12,
+              borderWidth: "0.5px",
+              borderStyle: "solid",
+              borderColor: "#EEF2F7",
+              padding: 16,
+            }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <IconClipboardList stroke={1.5} size={18} color="#1877D6" />
+              <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                Intake answers
+              </div>
+            </div>
+            {intakeAnswers.map((a, i) => (
+              <div key={a.id}>
+                <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+                  {a.intake_questions?.question ?? "Question"}
+                </div>
+                <div
+                  className="text-[14px] font-semibold mt-0.5"
+                  style={{ color: "#0B1F3A", ...POPPINS }}
+                >
+                  {a.answer ?? a.answer_text ?? String(a.value ?? "")}
+                </div>
+                {i < intakeAnswers.length - 1 && (
+                  <div style={{ height: 0.5, backgroundColor: "#F3F4F6", margin: "12px 0" }} />
                 )}
               </div>
-            )}
+            ))}
           </div>
+        )}
+      </div>
         </div>
       )}
       {/* Intake answers */}
