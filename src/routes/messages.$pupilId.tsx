@@ -883,6 +883,7 @@ function PupilThreadPage() {
       )}
 
       {/* Messages */}
+      <JumpToLatestButton scrollerRef={scrollerRef} bottomOffset={96} />
       <div
         ref={scrollerRef}
         className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3"
