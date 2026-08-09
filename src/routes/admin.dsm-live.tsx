@@ -610,42 +610,55 @@ function AdminDsmLive() {
             background: "#1877D6",
             color: "#fff",
             border: "none",
-            borderRadius: 8,
-            padding: "8px 14px",
-            fontSize: 13,
-            fontWeight: 500,
+            borderRadius: 14,
+            padding: "11px 20px",
+            fontSize: 14,
+            fontWeight: 800,
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
             cursor: "pointer",
+            boxShadow: "0 4px 0 #0F52A8",
             ...POPPINS,
           }}
         >
-          <IconPlus stroke={1.5} size={14} /> Add session
+          <IconPlus stroke={2} size={14} /> Add session
         </button>
       </div>
 
       {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, padding: 16 }}>
-        {[
-          { label: "Upcoming", value: stats.upcoming },
-          { label: "Total booked", value: stats.booked },
-          { label: "Past", value: stats.past },
-        ].map((s) => (
-          <div
-            key={s.label}
-            style={{
-              background: "#fff",
-              border: "0.5px solid #E2E6ED",
-              borderRadius: 12,
-              padding: 12,
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontSize: 20, fontWeight: 500, color: "#0B1F3A" }}>{s.value}</div>
-            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{s.label}</div>
-          </div>
-        ))}
+      <div style={{ padding: 16 }}>
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 20,
+            boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
+            display: "flex",
+            overflow: "hidden",
+          }}
+        >
+          {[
+            { label: "Upcoming", value: stats.upcoming },
+            { label: "Total booked", value: stats.booked },
+            { label: "Past", value: stats.past },
+          ].map((s, i) => (
+            <div
+              key={s.label}
+              style={{
+                flex: 1,
+                padding: "18px 12px",
+                borderLeft: i === 0 ? undefined : "1.5px dashed #E4E4E8",
+              }}
+            >
+              <div style={{ fontSize: 32, fontWeight: 900, color: "#000", letterSpacing: -1.1 }}>
+                {s.value}
+              </div>
+              <div style={{ fontSize: 10.5, fontWeight: 700, color: "#8A8A8E", textTransform: "uppercase", marginTop: 6 }}>
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Sessions list */}
@@ -654,78 +667,84 @@ function AdminDsmLive() {
       ) : sessions.length === 0 ? (
         <div style={{ padding: 24, color: "#6B7280", fontSize: 13 }}>No sessions yet.</div>
       ) : (
-        sessions.map((s) => (
-          <div
-            key={s.id}
-            style={{
-              background: "#fff",
-              border: "0.5px solid #E2E6ED",
-              borderRadius: 12,
-              padding: 16,
-              marginLeft: 16,
-              marginRight: 16,
-              marginBottom: 8,
-            }}
-          >
-            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, marginBottom: 8 }}>
-              <div style={{ fontSize: 15, fontWeight: 500, color: "#0B1F3A", flex: "1 1 100%" }}>
+        sessions.map((s) => {
+          const statusLabel = sentenceCase(s.status);
+          const isUpcoming = s.status === "upcoming" || s.status === "live";
+          const isPast = s.status === "completed" || s.status === "cancelled";
+          const priceText = s.price_display || (s.price_amount ? `£${s.price_amount}` : "Free");
+          const isFreeFallback = !s.price_display && !s.price_amount;
+          return (
+            <div
+              key={s.id}
+              style={{
+                background: "#fff",
+                borderRadius: 20,
+                padding: 18,
+                marginLeft: 16,
+                marginRight: 16,
+                marginBottom: 14,
+                boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.07)",
+              }}
+            >
+              <div style={{ fontSize: 19, fontWeight: 800, color: "#000", letterSpacing: -0.3, marginBottom: 10 }}>
                 {sentenceCase(s.title)}
               </div>
-              {s.category && (
-                <span style={{ fontSize: 11, fontWeight: 500, background: "#EEF2F7", color: "#4B5563", padding: "3px 8px", borderRadius: 999 }}>
-                  {sentenceCase(s.category)}
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                {s.category && (
+                  <span style={{ fontSize: 11.5, fontWeight: 700, background: "#F2F2F7", color: "#6B6B6F", padding: "6px 12px", borderRadius: 20 }}>
+                    {sentenceCase(s.category)}
+                  </span>
+                )}
+                <span
+                  style={{
+                    fontSize: 11.5,
+                    fontWeight: 700,
+                    padding: "6px 12px",
+                    borderRadius: 20,
+                    background: isUpcoming ? "#1877D6" : isPast ? "#E5E5EA" : "#E5E5EA",
+                    color: isUpcoming ? "#fff" : "#8A8A8E",
+                  }}
+                >
+                  {statusLabel}
                 </span>
-              )}
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 500,
-                  padding: "3px 8px",
-                  borderRadius: 999,
-                  background:
-                    s.status === "upcoming" ? "#E6F1FB" :
-                    s.status === "live" ? "#FDE8E9" :
-                    s.status === "completed" ? "#E6F5EE" : "#EEF2F7",
-                  color:
-                    s.status === "upcoming" ? "#0C447C" :
-                    s.status === "live" ? "#A3181E" :
-                    s.status === "completed" ? "#0B5B3F" : "#4B5563",
-                }}
-              >
-                {sentenceCase(s.status)}
-              </span>
+              </div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+                {formatSessionDateTime(s.session_date, s.session_time, s.duration_minutes)}
+              </div>
+              <div style={{ fontSize: 13, color: "#8A8A8E", fontWeight: 500, marginTop: 4 }}>
+                {s.spaces_taken ?? 0}/{s.max_spaces ?? 0} booked ·{" "}
+                {isFreeFallback ? (
+                  <span style={{ color: "#1A9B5C", fontWeight: 700 }}>Free</span>
+                ) : (
+                  priceText
+                )}
+              </div>
+              <div style={{ display: "flex", gap: 9, marginTop: 16 }}>
+                <button
+                  type="button"
+                  onClick={() => openEdit(s)}
+                  style={actionBtn({ textColor: "#0B1F3A", borderColor: "#E4E4E8" })}
+                >
+                  <IconPencil stroke={1.5} size={14} /> Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => openBookings(s)}
+                  style={actionBtn({ textColor: "#1877D6", borderColor: "#1877D6" })}
+                >
+                  <UsersIcon size={14} /> Bookings
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(s)}
+                  style={actionBtn({ textColor: "#FF3B30", borderColor: "#FF3B30" })}
+                >
+                  <IconTrash stroke={1.5} size={14} /> Delete
+                </button>
+              </div>
             </div>
-            <div style={{ fontSize: 13, color: "#6B7280" }}>
-              {s.session_date} · {s.session_time} · {s.duration_minutes} mins
-            </div>
-            <div style={{ fontSize: 13, color: "#6B7280", marginTop: 2 }}>
-              {s.spaces_taken ?? 0}/{s.max_spaces ?? 0} booked · {s.price_display || (s.price_amount ? `£${s.price_amount}` : "Free")}
-            </div>
-            <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-              <button
-                type="button"
-                onClick={() => openEdit(s)}
-                style={actionBtn("#0B1F3A")}
-              >
-                <IconPencil stroke={1.5} size={12} /> Edit
-              </button>
-              <button
-                type="button"
-                onClick={() => openBookings(s)}
-                style={actionBtn("#1877D6")}
-              >
-                <UsersIcon size={12} /> Bookings
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDelete(s)}
-                style={actionBtn("#CC2229")}
-              >
-                <IconTrash stroke={1.5} size={12} /> Delete
-              </button>
-            </div>
-          </div>
-        ))
+          );
+        })
       )}
 
 
