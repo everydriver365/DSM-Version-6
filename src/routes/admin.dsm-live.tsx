@@ -1302,18 +1302,20 @@ const inp: React.CSSProperties = {
   boxSizing: "border-box",
 };
 
-function actionBtn(color: string): React.CSSProperties {
+function actionBtn({ textColor, borderColor }: { textColor: string; borderColor: string }): React.CSSProperties {
   return {
+    flex: 1,
     display: "inline-flex",
     alignItems: "center",
-    gap: 4,
+    justifyContent: "center",
+    gap: 6,
     background: "#fff",
-    color,
-    border: `0.5px solid ${color}`,
-    borderRadius: 8,
-    padding: "6px 10px",
-    fontSize: 12,
-    fontWeight: 500,
+    color: textColor,
+    border: `1.5px solid ${borderColor}`,
+    borderRadius: 13,
+    padding: 12,
+    fontSize: 13.5,
+    fontWeight: 700,
     cursor: "pointer",
     fontFamily: "Poppins, system-ui, sans-serif",
   };
