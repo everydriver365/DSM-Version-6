@@ -4888,6 +4888,8 @@ function PupilExtras({
   instructorName: string;
   onUpdated: (patch: Partial<Pupil>) => void;
 }) {
+  const [emgOpen, setEmgOpen] = useState(false);
+  const [licOpen, setLicOpen] = useState(false);
   const [editEmg, setEditEmg] = useState(false);
   const [emgName, setEmgName] = useState(pupil.emergency_contact_name ?? "");
   const [emgPhone, setEmgPhone] = useState(pupil.emergency_contact_phone ?? "");
