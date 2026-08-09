@@ -4,8 +4,6 @@ import { Gift, Share2 } from "lucide-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
-import { Button } from "../components/dsm/Button";
-import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 
@@ -115,66 +113,195 @@ function ReferralsPage() {
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
 
-      {/* Summary card */}
+      {/* Hero stat card */}
       <div
-        className="mx-4 mt-3 flex flex-col items-center"
-        style={{ backgroundColor: "#0B1F3A", borderRadius: 12, padding: 16 }}
+        className="mx-4 mt-4"
+        style={{
+          background: "linear-gradient(150deg, #0F2A4D, #0B1F3A)",
+          borderRadius: 22,
+          padding: "26px 20px",
+          textAlign: "center",
+          boxShadow: "0 6px 0 #050D1C, 0 18px 36px rgba(0,0,0,0.3)",
+        }}
       >
-        <div className="text-[11px] tracking-wider font-semibold" style={{ color: "#9CA3AF" }}>
-          TOTAL REFERRALS
-        </div>
-        <div className="text-white font-bold mt-1" style={{ fontSize: 28, lineHeight: 1, ...POPPINS }}>
-          {total}
-        </div>
-        <div className="text-[11px] tracking-wider font-semibold mt-3" style={{ color: "#9CA3AF" }}>
-          EARNED FROM REFERRALS
-        </div>
-        <div className="font-bold mt-1" style={{ fontSize: 24, color: "#1877D6", ...POPPINS }}>
-          £{earned.toFixed(2)}
+        <div className="flex" style={{ gap: 0 }}>
+          <div className="flex-1 flex flex-col items-center">
+            <div
+              style={{
+                color: "#7C8BA3",
+                fontSize: 10.5,
+                fontWeight: 700,
+                letterSpacing: 0.6,
+                textTransform: "uppercase",
+              }}
+            >
+              Total referrals
+            </div>
+            <div
+              style={{
+                fontSize: 34,
+                fontWeight: 900,
+                letterSpacing: -1,
+                marginTop: 8,
+                color: "#FFFFFF",
+                ...POPPINS,
+              }}
+            >
+              {total}
+            </div>
+          </div>
+          <div
+            style={{ borderLeft: "1px solid rgba(255,255,255,0.1)", margin: "0 16px" }}
+          />
+          <div className="flex-1 flex flex-col items-center">
+            <div
+              style={{
+                color: "#7C8BA3",
+                fontSize: 10.5,
+                fontWeight: 700,
+                letterSpacing: 0.6,
+                textTransform: "uppercase",
+              }}
+            >
+              Earned from referrals
+            </div>
+            <div
+              style={{
+                fontSize: 34,
+                fontWeight: 900,
+                letterSpacing: -1,
+                marginTop: 8,
+                color: "#3B94E8",
+                ...POPPINS,
+              }}
+            >
+              £{earned.toFixed(2)}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Share card */}
+      {/* Referral code card */}
       <div
-        className="mx-4 mt-3"
+        className="mx-4 mt-4"
         style={{
-          backgroundColor: "white",
-          border: "0.5px solid #EEF2F7",
-          borderRadius: 12,
-          padding: 16,
+          background: "#FFFFFF",
+          borderRadius: 20,
+          padding: 20,
+          boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
         }}
       >
         <div
-          className="text-[11px] font-semibold tracking-wider"
-          style={{ color: "#6B7280", textTransform: "uppercase" }}
+          style={{
+            color: "#8A8A8E",
+            fontSize: 11.5,
+            fontWeight: 700,
+            letterSpacing: 0.4,
+            textTransform: "uppercase",
+            marginBottom: 8,
+          }}
         >
           Your referral code
         </div>
         <div
-          className="font-bold mt-1"
-          style={{ fontSize: 20, color: "#0B1F3A", letterSpacing: 1.5, ...POPPINS }}
+          style={{
+            color: "#000000",
+            fontSize: 24,
+            fontWeight: 900,
+            letterSpacing: 2,
+            marginBottom: 18,
+            ...POPPINS,
+          }}
         >
           {code}
         </div>
-        <div className="mt-3">
-          <Button onClick={share} type="button">
-            <span className="inline-flex items-center justify-center" style={{ gap: 6 }}>
-              <Share2 size={16} color="#FFFFFF" />
-              Share
-            </span>
-          </Button>
+        <button
+          type="button"
+          onClick={share}
+          className="w-full flex items-center justify-center"
+          style={{
+            background: "#1877D6",
+            color: "#FFFFFF",
+            fontSize: 15,
+            fontWeight: 800,
+            padding: 15,
+            borderRadius: 14,
+            boxShadow: "0 4px 0 #0F52A8",
+            gap: 8,
+            border: "none",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          <Share2 size={18} color="#FFFFFF" />
+          <span>Share</span>
+        </button>
+      </div>
+
+      {/* Referral History section label */}
+      <div className="px-4 mt-6 mb-3 flex items-center" style={{ gap: 8 }}>
+        <div
+          style={{
+            width: 3,
+            height: 14,
+            backgroundColor: "#1877D6",
+            borderRadius: 2,
+          }}
+        />
+        <div
+          style={{
+            color: "#1877D6",
+            fontSize: 12,
+            fontWeight: 800,
+            letterSpacing: 0.6,
+            textTransform: "uppercase",
+          }}
+        >
+          Referral history
         </div>
       </div>
 
       <div className="px-4">
-        <SectionHeader>REFERRAL HISTORY</SectionHeader>
         {referrals.length === 0 ? (
           <div
-            className="flex flex-col items-center justify-center text-[13px]"
-            style={{ color: "#6B7280", padding: "32px 0" }}
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 20,
+              padding: "40px 30px",
+              textAlign: "center",
+              boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.05)",
+            }}
           >
-            <Gift size={28} color="#6B7280" />
-            <div className="mt-2">No referrals yet</div>
+            <div
+              className="flex items-center justify-center"
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: "50%",
+                backgroundColor: "#F2F2F7",
+                margin: "0 auto 16px",
+              }}
+            >
+              <Gift size={24} color="#B0B0B5" />
+            </div>
+            <div
+              style={{
+                color: "#0B1F3A",
+                fontSize: 15,
+                fontWeight: 700,
+              }}
+            >
+              No referrals yet
+            </div>
+            <div
+              style={{
+                color: "#8A8A8E",
+                fontSize: 12.5,
+                marginTop: 6,
+                lineHeight: 1.5,
+              }}
+            >
+              Share your code with other instructors to start earning
+            </div>
           </div>
         ) : (
           <div className="flex flex-col" style={{ gap: 8 }}>
