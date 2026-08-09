@@ -16,6 +16,30 @@ function sentenceCase(v?: string | null): string {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
+function formatSessionDateTime(
+  dateStr: string | null,
+  timeStr: string | null,
+  duration: number | null,
+): string {
+  if (!dateStr) return "Date TBC";
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const date = new Date(y, (m || 1) - 1, d || 1);
+  const weekday = date.toLocaleDateString("en-GB", { weekday: "short" });
+  const day = date.getDate();
+  const month = date.toLocaleDateString("en-GB", { month: "short" });
+  let timePart = "";
+  if (timeStr) {
+    const [h = 0, min = 0] = timeStr.split(":").map(Number);
+    const hour12 = h % 12 || 12;
+    const period = h >= 12 ? "pm" : "am";
+    timePart = `${hour12}:${String(min).padStart(2, "0")}${period}`;
+  }
+  const parts = [`${weekday} ${day} ${month}`];
+  if (timePart) parts.push(timePart);
+  if (duration != null) parts.push(`${duration} mins`);
+  return parts.join(" · ");
+}
+
 export const Route = createFileRoute("/admin/dsm-live")({
   component: AdminDsmLive,
 });
