@@ -775,16 +775,18 @@ function TakePaymentPage() {
                   disabled={cardLoading}
                   style={{
                     width: "100%",
-                    height: 44,
-                    borderRadius: 10,
+                    padding: 17,
+                    borderRadius: 16,
                     background: NAVY,
                     color: "#fff",
                     border: "none",
-                    fontSize: 14,
-                    fontWeight: 600,
+                    fontSize: 16,
+                    fontWeight: 800,
+                    boxShadow: "0 4px 0 #050D1C",
                     opacity: cardLoading ? 0.7 : 1,
                     cursor: "pointer",
                   }}
+
                 >
                   {cardLoading ? "Loading…" : `Charge card · £${totalNum.toFixed(2)}`}
                 </button>
@@ -847,37 +849,44 @@ function TakePaymentPage() {
 
 
               {/* Cash controls */}
-              <div style={{ padding: "0 16px 8px", flexShrink: 0, display: "flex", gap: 6 }}>
-                <select
-                  value={cashMethod}
-                  onChange={(e) => setCashMethod(e.target.value as CashMethod)}
-                  style={{
-                    flex: 1,
-                    padding: "0 10px",
-                    height: 44,
-                    borderRadius: 10,
-                    border: "0.5px solid #EEF2F7",
-                    fontSize: 13,
-                    color: NAVY,
-                    background: "#fff",
-                  }}
-                >
-                  <option value="cash">Cash</option>
-                  <option value="bank">Bank transfer</option>
-                </select>
+              <div style={{ padding: "0 16px 12px", flexShrink: 0, display: "flex", gap: 8, alignItems: "center" }}>
+                <div style={{ ...fieldCardStyle, flex: 1, position: "relative", display: "flex", alignItems: "center" }}>
+                  <select
+                    value={cashMethod}
+                    onChange={(e) => setCashMethod(e.target.value as CashMethod)}
+                    style={{
+                      flex: 1,
+                      minWidth: 0,
+                      appearance: "none",
+                      WebkitAppearance: "none",
+                      border: "none",
+                      outline: "none",
+                      background: "transparent",
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: NAVY,
+                      paddingRight: 16,
+                    }}
+                  >
+                    <option value="cash">Cash</option>
+                    <option value="bank">Bank transfer</option>
+                  </select>
+                  <ChevronDown size={14} color="#8A8A8E" style={{ position: "absolute", right: 12, pointerEvents: "none" }} />
+                </div>
                 <button
                   type="button"
                   onClick={recordCash}
                   disabled={cashSaving}
                   style={{
                     flex: 1.2,
-                    height: 44,
-                    borderRadius: 10,
-                    background: "#1877D6",
+                    padding: 17,
+                    borderRadius: 16,
+                    background: NAVY,
                     color: "#fff",
                     border: "none",
-                    fontSize: 14,
-                    fontWeight: 600,
+                    fontSize: 16,
+                    fontWeight: 800,
+                    boxShadow: "0 4px 0 #050D1C",
                     opacity: cashSaving ? 0.7 : 1,
                     cursor: "pointer",
                   }}
@@ -885,6 +894,7 @@ function TakePaymentPage() {
                   {cashSaving ? "Saving…" : "Record"}
                 </button>
               </div>
+
             </>
           )}
         </div>
