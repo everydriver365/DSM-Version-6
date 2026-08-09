@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   IconPlayerPlay,
+  IconChevronLeft,
   IconChevronRight,
   IconRadio,
   IconBook,
