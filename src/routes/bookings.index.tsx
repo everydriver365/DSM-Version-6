@@ -215,7 +215,17 @@ function BookingsListPage() {
       </div>
 
       {/* Filters */}
-      <div style={{ display: "flex", gap: 8, padding: "14px 16px 0", overflowX: "auto" }}>
+      <div
+        className="dsm-hide-scrollbar"
+        style={{
+          display: "flex",
+          gap: 8,
+          padding: "14px 16px 0",
+          overflowX: "auto",
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "none",
+        }}
+      >
         {FILTERS.map((f) => {
           const on = filter === f.key;
           return (
@@ -224,15 +234,15 @@ function BookingsListPage() {
               type="button"
               onClick={() => setFilter(f.key)}
               style={{
-                padding: "8px 16px",
+                padding: "10px 18px",
                 borderRadius: 24,
                 border: "none",
                 fontSize: 13.5,
                 fontWeight: 700,
                 whiteSpace: "nowrap",
                 background: on ? "#0B1F3A" : "#fff",
-                color: on ? "#fff" : "#6B6B6F",
-                boxShadow: on ? "0 3px 0 #061426" : "0 3px 0 #E4E4E8",
+                color: on ? "#fff" : "#0B1F3A",
+                boxShadow: on ? "0 3px 0 #050D1C" : "0 3px 0 #E4E4E8",
                 ...POPPINS,
               }}
             >
@@ -241,6 +251,8 @@ function BookingsListPage() {
           );
         })}
       </div>
+      <style>{`.dsm-hide-scrollbar::-webkit-scrollbar{display:none}`}</style>
+
 
       {/* List */}
       <div style={{ padding: "16px 16px 40px" }}>
