@@ -855,18 +855,19 @@ function AdminLearnVideosPage() {
             No Learn videos yet.
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {videos.map((v) => (
               <div
                 key={v.id}
                 style={{
                   background: "#fff",
-                  border: `1px solid ${BORDER}`,
-                  borderRadius: 12,
-                  padding: 12,
+                  borderRadius: 18,
+                  padding: 14,
+                  marginBottom: 0,
                   display: "flex",
                   alignItems: "center",
-                  gap: 12,
+                  gap: 14,
+                  boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
                 }}
               >
                 <div
@@ -909,9 +910,10 @@ function AdminLearnVideosPage() {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div
                     style={{
-                      fontSize: 14,
-                      fontWeight: 600,
-                      color: NAVY,
+                      fontSize: 16.5,
+                      fontWeight: 800,
+                      color: "#000",
+                      letterSpacing: "-0.2px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
@@ -919,7 +921,7 @@ function AdminLearnVideosPage() {
                   >
                     {v.title}
                   </div>
-                  <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>
+                  <div style={{ fontSize: 12.5, color: "#8A8A8E", fontWeight: 500, marginTop: 3 }}>
                     {v.duration || "—"} · #{v.sort_order ?? 0}
                     {!v.url && " · no video uploaded yet"}
                   </div>
@@ -933,38 +935,42 @@ function AdminLearnVideosPage() {
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
                   style={{
-                    width: 34,
-                    height: 34,
-                    borderRadius: 8,
-                    border: `1px solid ${BORDER}`,
+                    width: 38,
+                    height: 38,
+                    borderRadius: 11,
+                    border: "none",
                     background: "#fff",
                     color: NAVY,
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    flexShrink: 0,
                     cursor: "pointer",
+                    boxShadow: "0 3px 0 #E4E4E8",
                   }}
                 >
-                  <Pencil size={15} />
+                  <Pencil size={16} />
                 </button>
                 <button
                   type="button"
                   aria-label="Delete"
                   onClick={() => handleDelete(v)}
                   style={{
-                    width: 34,
-                    height: 34,
-                    borderRadius: 8,
-                    border: `1px solid ${BORDER}`,
+                    width: 38,
+                    height: 38,
+                    borderRadius: 11,
+                    border: "none",
                     background: "#fff",
-                    color: RED,
+                    color: "#FF3B30",
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    flexShrink: 0,
                     cursor: "pointer",
+                    boxShadow: "0 3px 0 #F7C9C6",
                   }}
                 >
-                  <Trash2 size={15} />
+                  <Trash2 size={16} />
                 </button>
               </div>
             ))}
