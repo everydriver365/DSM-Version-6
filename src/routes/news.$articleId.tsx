@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ChevronLeft, ExternalLink, User, Clock, Calendar } from "lucide-react";
-import { IconNews, IconChevronRight } from "@tabler/icons-react";
+
 import { sanitizeNewsTitle } from "../lib/newsText";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
