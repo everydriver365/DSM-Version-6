@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   IconPlayerPlay,
+  IconChevronLeft,
   IconChevronRight,
   IconRadio,
   IconBook,
@@ -81,6 +82,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   >([]);
 
   const [heroIndex, setHeroIndex] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const heroScrollRef = useRef<HTMLDivElement>(null);
   const [newsHero, setNewsHero] = useState<string | null>(null);
   const [latestNewsTitle, setLatestNewsTitle] = useState<string | null>(null);
@@ -396,6 +398,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onScroll={(e) => {
             const el = e.currentTarget;
             const w = el.clientWidth || 1;
+            const maxScroll = el.scrollWidth - w;
+            const progress = maxScroll > 0 ? el.scrollLeft / maxScroll : 0;
+            setScrollProgress(progress);
             const i = Math.round(el.scrollLeft / w);
             if (i !== heroIndex) setHeroIndex(i);
           }}
