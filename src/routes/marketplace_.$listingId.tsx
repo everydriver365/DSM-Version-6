@@ -408,7 +408,26 @@ function ListingDetailPage() {
             </div>
 
             {/* Seller */}
-            <div style={{ ...CARD, display: "flex", gap: 13, alignItems: "center" }}>
+            <div
+              onClick={
+                hasSellerProfile
+                  ? () =>
+                      navigate({
+                        to: "/marketplace/seller/$supplierId",
+                        params: { supplierId: listing.supplier_id as string },
+                      })
+                  : undefined
+              }
+              role={hasSellerProfile ? "button" : undefined}
+              tabIndex={hasSellerProfile ? 0 : undefined}
+              style={{
+                ...CARD,
+                display: "flex",
+                gap: 13,
+                alignItems: "center",
+                cursor: hasSellerProfile ? "pointer" : "default",
+              }}
+            >
               <div
                 style={{
                   width: 48,

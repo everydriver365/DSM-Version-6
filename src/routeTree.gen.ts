@@ -161,6 +161,7 @@ import { Route as PupilsPaymentsIdRouteImport } from './routes/pupils.payments.$
 import { Route as PupilsHistoryIdRouteImport } from './routes/pupils.history.$id'
 import { Route as PupilsEditIdRouteImport } from './routes/pupils.edit.$id'
 import { Route as MessagesInstructorConversationIdRouteImport } from './routes/messages.instructor.$conversationId'
+import { Route as MarketplaceSellerSupplierIdRouteImport } from './routes/marketplace_.seller.$supplierId'
 import { Route as LessonsRescheduleIdRouteImport } from './routes/lessons.reschedule.$id'
 import { Route as LessonsFeedbackIdRouteImport } from './routes/lessons.feedback.$id'
 import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
@@ -930,6 +931,12 @@ const MessagesInstructorConversationIdRoute =
     path: '/instructor/$conversationId',
     getParentRoute: () => MessagesRoute,
   } as any)
+const MarketplaceSellerSupplierIdRoute =
+  MarketplaceSellerSupplierIdRouteImport.update({
+    id: '/marketplace_/seller/$supplierId',
+    path: '/marketplace/seller/$supplierId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LessonsRescheduleIdRoute = LessonsRescheduleIdRouteImport.update({
   id: '/lessons/reschedule/$id',
   path: '/lessons/reschedule/$id',
@@ -1124,6 +1131,7 @@ export interface FileRoutesByFullPath {
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
   '/lessons/reschedule/$id': typeof LessonsRescheduleIdRoute
+  '/marketplace/seller/$supplierId': typeof MarketplaceSellerSupplierIdRoute
   '/messages/instructor/$conversationId': typeof MessagesInstructorConversationIdRoute
   '/pupils/edit/$id': typeof PupilsEditIdRoute
   '/pupils/history/$id': typeof PupilsHistoryIdRoute
@@ -1282,6 +1290,7 @@ export interface FileRoutesByTo {
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
   '/lessons/reschedule/$id': typeof LessonsRescheduleIdRoute
+  '/marketplace/seller/$supplierId': typeof MarketplaceSellerSupplierIdRoute
   '/messages/instructor/$conversationId': typeof MessagesInstructorConversationIdRoute
   '/pupils/edit/$id': typeof PupilsEditIdRoute
   '/pupils/history/$id': typeof PupilsHistoryIdRoute
@@ -1445,6 +1454,7 @@ export interface FileRoutesById {
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
   '/lessons/reschedule/$id': typeof LessonsRescheduleIdRoute
+  '/marketplace_/seller/$supplierId': typeof MarketplaceSellerSupplierIdRoute
   '/messages/instructor/$conversationId': typeof MessagesInstructorConversationIdRoute
   '/pupils/edit/$id': typeof PupilsEditIdRoute
   '/pupils/history/$id': typeof PupilsHistoryIdRoute
@@ -1608,6 +1618,7 @@ export interface FileRouteTypes {
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
     | '/lessons/reschedule/$id'
+    | '/marketplace/seller/$supplierId'
     | '/messages/instructor/$conversationId'
     | '/pupils/edit/$id'
     | '/pupils/history/$id'
@@ -1766,6 +1777,7 @@ export interface FileRouteTypes {
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
     | '/lessons/reschedule/$id'
+    | '/marketplace/seller/$supplierId'
     | '/messages/instructor/$conversationId'
     | '/pupils/edit/$id'
     | '/pupils/history/$id'
@@ -1928,6 +1940,7 @@ export interface FileRouteTypes {
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
     | '/lessons/reschedule/$id'
+    | '/marketplace_/seller/$supplierId'
     | '/messages/instructor/$conversationId'
     | '/pupils/edit/$id'
     | '/pupils/history/$id'
@@ -2067,6 +2080,7 @@ export interface RootRouteChildren {
   LessonsEditIdRoute: typeof LessonsEditIdRoute
   LessonsFeedbackIdRoute: typeof LessonsFeedbackIdRoute
   LessonsRescheduleIdRoute: typeof LessonsRescheduleIdRoute
+  MarketplaceSellerSupplierIdRoute: typeof MarketplaceSellerSupplierIdRoute
   PupilsEditIdRoute: typeof PupilsEditIdRoute
   PupilsHistoryIdRoute: typeof PupilsHistoryIdRoute
   PupilsPaymentsIdRoute: typeof PupilsPaymentsIdRoute
@@ -3144,6 +3158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MessagesInstructorConversationIdRouteImport
       parentRoute: typeof MessagesRoute
     }
+    '/marketplace_/seller/$supplierId': {
+      id: '/marketplace_/seller/$supplierId'
+      path: '/marketplace/seller/$supplierId'
+      fullPath: '/marketplace/seller/$supplierId'
+      preLoaderRoute: typeof MarketplaceSellerSupplierIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lessons/reschedule/$id': {
       id: '/lessons/reschedule/$id'
       path: '/lessons/reschedule/$id'
@@ -3445,6 +3466,7 @@ const rootRouteChildren: RootRouteChildren = {
   LessonsEditIdRoute: LessonsEditIdRoute,
   LessonsFeedbackIdRoute: LessonsFeedbackIdRoute,
   LessonsRescheduleIdRoute: LessonsRescheduleIdRoute,
+  MarketplaceSellerSupplierIdRoute: MarketplaceSellerSupplierIdRoute,
   PupilsEditIdRoute: PupilsEditIdRoute,
   PupilsHistoryIdRoute: PupilsHistoryIdRoute,
   PupilsPaymentsIdRoute: PupilsPaymentsIdRoute,
@@ -3458,3 +3480,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
