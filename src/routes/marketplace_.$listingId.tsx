@@ -1,4 +1,6 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
+import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
+
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -171,6 +173,22 @@ function ListingDetailPage() {
     if (list.length > 0) return list;
     return listing?.image_url ? [listing.image_url] : [];
   }, [listing]);
+
+  // The set the user can swipe through: this listing plus related ones
+  // (same seller first, then same category), de-duplicated.
+  const swipeSet = useMemo<Listing[]>(() => {
+    if (!listing) return [];
+    const seen = new Set([listing.id]);
+    const rest: Listing[] = [];
+    for (const l of [...sellerListings, ...similar]) {
+      if (seen.has(l.id)) continue;
+      seen.add(l.id);
+      rest.push(l);
+    }
+    return [listing, ...rest];
+  }, [listing, sellerListings, similar]);
+  const swipeIndex = 0;
+
 
   const cat = listing?.marketplace_categories;
   const Icon = iconFor(cat?.slug);
