@@ -3563,25 +3563,36 @@ function PupilDetailPage() {
         {activeTab === "profile" && (<>
 
 
-        <SectionHeader>NOTES</SectionHeader>
+        <div className="flex items-center gap-2" style={{ marginBottom: 8 }}>
+          <span style={{ width: 3, height: 14, borderRadius: 2, background: "#1877D6", display: "inline-block" }} />
+          <span style={{ color: "#1877D6", fontSize: 12, fontWeight: 800, letterSpacing: "0.6px", textTransform: "uppercase", ...POPPINS }}>
+            Notes
+          </span>
+        </div>
         <button
           type="button"
           onClick={() => setNotesOpen((v) => !v)}
-          className="w-full flex items-center justify-between gap-2 rounded-lg p-3 text-left bg-white focus:outline-none focus:border-[#1877D6]"
+          className="w-full text-left focus:outline-none"
           style={{
-            borderWidth: "0.5px",
-            borderStyle: "solid",
-            borderColor: "#EEF2F7",
+            background: "#fff",
+            borderRadius: 16,
+            border: "none",
+            padding: "14px 16px",
+            boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 8,
             ...POPPINS,
           }}
         >
-          <span className="text-[13px] truncate" style={{ color: notesDraft ? "#0B1F3A" : "#9CA3AF", ...POPPINS }}>
+          <span className="truncate" style={{ color: notesDraft ? "#0B1F3A" : "#B0B0B5", fontSize: 14.5, fontWeight: 500, ...POPPINS }}>
             {notesDraft ? notesDraft : "Add a note…"}
           </span>
-          <IconChevronRight stroke={1.5}
-            size={16}
-            color="#9CA3AF"
-            style={{ transform: notesOpen ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
+          <IconChevronRight stroke={1.7}
+            size={15}
+            color="#C7C7CC"
+            style={{ flexShrink: 0, transform: notesOpen ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
           />
         </button>
         {notesOpen && (
@@ -3614,40 +3625,42 @@ function PupilDetailPage() {
         )}
       {/* Address (Google Places autocomplete) */}
       {pupil && (
-        <div style={{ margin: "12px 0 0" }}>
+        <div style={{ marginTop: 14 }}>
           <div
-            className="bg-white"
             style={{
-              borderRadius: 12,
-              border: "0.5px solid #E2E6ED",
+              background: "#fff",
+              borderRadius: 18,
               padding: 16,
+              marginBottom: 14,
+              boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
             }}
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <IconMapPin stroke={1.5} size={16} color="#1A52A0" /> Address
+            <div className="flex items-center justify-between">
+              <span className="flex items-center gap-2" style={{ color: "#0B1F3A", fontSize: 16, fontWeight: 800, ...POPPINS }}>
+                <IconMapPin stroke={1.6} size={18} color="#1877D6" /> Address
               </span>
               <button
                 type="button"
                 onClick={() => setAddressEditing((v) => !v)}
-                className="text-[12px] font-semibold"
-                style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+                style={{ color: "#1877D6", fontSize: 13, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
               >
                 {addressEditing ? "Cancel" : "Edit"}
               </button>
             </div>
             {addressEditing ? (
-              <AddressLookup
-                initialAddress={pupil.address ?? ""}
-                initialPostcode={pupil.postcode ?? ""}
-                showSearchButton
-                onAddressFound={saveAddressFromLookup}
-              />
+              <div style={{ marginTop: 10 }}>
+                <AddressLookup
+                  initialAddress={pupil.address ?? ""}
+                  initialPostcode={pupil.postcode ?? ""}
+                  showSearchButton
+                  onAddressFound={saveAddressFromLookup}
+                />
+              </div>
             ) : (
-              <div className="text-[13px]" style={{ color: pupil.address ? "#0B1F3A" : "#9CA3AF", ...POPPINS }}>
+              <div style={{ color: pupil.address ? "#0B1F3A" : "#B0B0B5", fontSize: 14, fontWeight: 500, marginTop: 10, lineHeight: 1.5, ...POPPINS }}>
                 {pupil.address || "No address on file"}
                 {pupil.postcode ? (
-                  <span className="ml-2" style={{ color: "#6B7280" }}>{pupil.postcode}</span>
+                  <span className="ml-2" style={{ color: "#6B6B6F" }}>{pupil.postcode}</span>
                 ) : null}
               </div>
             )}
@@ -3666,25 +3679,29 @@ function PupilDetailPage() {
       )}
       {/* Theory test card */}
       {pupil && (
-        <div style={{ margin: "12px 0 0" }}>
-          <div
-            className="bg-white"
-            style={{ borderRadius: 12, border: "0.5px solid #E2E6ED", padding: 16 }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <BookOpen size={16} color="#1A52A0" /> Theory test
-              </span>
-              <button
-                type="button"
-                onClick={() => setTheoryEditing((v) => !v)}
-                className="text-[12px] font-semibold"
-                style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
-              >
-                {theoryEditing ? "Cancel" : "Edit"}
-              </button>
-            </div>
-            {theoryEditing ? (
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 18,
+            padding: 16,
+            marginBottom: 14,
+            boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-2" style={{ color: "#0B1F3A", fontSize: 16, fontWeight: 800, ...POPPINS }}>
+              <BookOpen size={18} color="#1877D6" /> Theory test
+            </span>
+            <button
+              type="button"
+              onClick={() => setTheoryEditing((v) => !v)}
+              style={{ color: "#1877D6", fontSize: 13, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+            >
+              {theoryEditing ? "Cancel" : "Edit"}
+            </button>
+          </div>
+          {theoryEditing ? (
+            <div style={{ marginTop: 10 }}>
               <TheoryEditor
                 pupil={pupil}
                 onSave={async (patch) => {
@@ -3692,54 +3709,69 @@ function PupilDetailPage() {
                   if (ok) setTheoryEditing(false);
                 }}
               />
-            ) : (
-              <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <div>Status: <b>{pupil.theory_status || "Not started"}</b></div>
-                {pupil.theory_test_date && (
-                  <div style={{ color: "#6B7280", marginTop: 2 }}>Test date: {fmtUKDate(pupil.theory_test_date)}</div>
-                )}
-                {pupil.theory_pass_date && (
-                  <div style={{ color: "#6B7280", marginTop: 2 }}>Pass date: {fmtUKDate(pupil.theory_pass_date)}</div>
-                )}
-                {typeof pupil.theory_score === "number" && (
-                  <div style={{ color: "#6B7280", marginTop: 2 }}>Score: {pupil.theory_score}</div>
-                )}
+            </div>
+          ) : (
+            <div style={{ marginTop: 10, ...POPPINS }}>
+              <div>
+                <span style={{ color: "#6B6B6F", fontSize: 13.5, fontWeight: 500 }}>Status: </span>
+                <span style={{ fontSize: 13.5, fontWeight: 800, color: testStatusColour(pupil.theory_status || "Not started") }}>
+                  {pupil.theory_status || "Not started"}
+                </span>
               </div>
-            )}
-          </div>
+              {pupil.theory_test_date && (
+                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
+                  Test date: <span style={{ color: "#0B1F3A", fontWeight: 700 }}>{fmtUKDate(pupil.theory_test_date)}</span>
+                </div>
+              )}
+              {pupil.theory_pass_date && (
+                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
+                  Pass date: <span style={{ color: "#0B1F3A", fontWeight: 700 }}>{fmtUKDate(pupil.theory_pass_date)}</span>
+                </div>
+              )}
+              {typeof pupil.theory_score === "number" && (
+                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
+                  Score: <span style={{ color: "#0B1F3A", fontWeight: 700 }}>{pupil.theory_score}</span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
       {/* Practical test card */}
       {pupil && (
-        <div style={{ margin: "12px 0 0" }}>
-          <div
-            className="bg-white"
-            style={{ borderRadius: 12, border: "0.5px solid #E2E6ED", padding: 16 }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="flex items-center gap-2 text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <IconCar stroke={1.5} size={16} color="#0B1F3A" /> Practical test
-              </span>
-              <button
-                type="button"
-                onClick={async () => {
-                  const next = !practicalEditing;
-                  setPracticalEditing(next);
-                  if (next && allCentres.length === 0) {
-                    const { data } = await supabase
-                      .from("test_centres")
-                      .select("id, name, town")
-                      .order("name", { ascending: true });
-                    setAllCentres((data as any) ?? []);
-                  }
-                }}
-                className="text-[12px] font-semibold"
-                style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
-              >
-                {practicalEditing ? "Cancel" : "Edit"}
-              </button>
-            </div>
-            {practicalEditing ? (
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 18,
+            padding: 16,
+            marginBottom: 14,
+            boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-2" style={{ color: "#0B1F3A", fontSize: 16, fontWeight: 800, ...POPPINS }}>
+              <IconCar stroke={1.6} size={18} color="#1877D6" /> Practical test
+            </span>
+            <button
+              type="button"
+              onClick={async () => {
+                const next = !practicalEditing;
+                setPracticalEditing(next);
+                if (next && allCentres.length === 0) {
+                  const { data } = await supabase
+                    .from("test_centres")
+                    .select("id, name, town")
+                    .order("name", { ascending: true });
+                  setAllCentres((data as any) ?? []);
+                }
+              }}
+              style={{ color: "#1877D6", fontSize: 13, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+            >
+              {practicalEditing ? "Cancel" : "Edit"}
+            </button>
+          </div>
+          {practicalEditing ? (
+            <div style={{ marginTop: 10 }}>
               <PracticalEditor
                 pupil={pupil}
                 centreInfo={centreInfo}
@@ -3754,24 +3786,53 @@ function PupilDetailPage() {
                   if (ok) setPracticalEditing(false);
                 }}
               />
-            ) : (
-              <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
-                <div>Status: <b>{pupil.test_status || "Not booked"}</b></div>
-                {pupil.test_date && (
-                  <div style={{ color: "#6B7280", marginTop: 2 }}>Date: {fmtUKDate(pupil.test_date)}</div>
-                )}
-                {pupil.test_time && (
-                  <div style={{ color: "#6B7280", marginTop: 2 }}>Time: {pupil.test_time.slice(0, 5)}</div>
-                )}
-                {(centreInfo || pupil.test_centre) && (
-                  <div style={{ color: "#6B7280", marginTop: 2 }}>
-                    Centre: {centreInfo?.name || pupil.test_centre}
-                    {centreInfo?.town ? `, ${centreInfo.town}` : ""}
-                  </div>
-                )}
+            </div>
+          ) : (
+            <div style={{ marginTop: 10, ...POPPINS }}>
+              <div>
+                <span style={{ color: "#6B6B6F", fontSize: 13.5, fontWeight: 500 }}>Status: </span>
+                <span style={{ fontSize: 13.5, fontWeight: 800, color: testStatusColour(pupil.test_status || "Not booked") }}>
+                  {pupil.test_status || "Not booked"}
+                </span>
               </div>
-            )}
-          </div>
+              {pupil.test_date && (
+                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
+                  Date: <span style={{ color: "#0B1F3A", fontWeight: 700 }}>{fmtUKDate(pupil.test_date)}</span>
+                </div>
+              )}
+              {pupil.test_time && (
+                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
+                  Time: <span style={{ color: "#0B1F3A", fontWeight: 700 }}>{pupil.test_time.slice(0, 5)}</span>
+                </div>
+              )}
+              {(centreInfo || pupil.test_centre) && (
+                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
+                  Centre:{" "}
+                  <span style={{ color: "#0B1F3A", fontWeight: 700 }}>
+                    {centreInfo?.name || pupil.test_centre}
+                    {centreInfo?.town ? `, ${centreInfo.town}` : ""}
+                  </span>
+                </div>
+              )}
+              {pupil.test_date && !/booked|confirmed|passed|failed/i.test(pupil.test_status || "") && (
+                <div
+                  style={{
+                    background: "#FDEDEC",
+                    borderRadius: 12,
+                    padding: "10px 12px",
+                    marginTop: 12,
+                    color: "#B02318",
+                    fontSize: 11.5,
+                    fontWeight: 600,
+                    lineHeight: 1.5,
+                    ...POPPINS,
+                  }}
+                >
+                  Data mismatch: status shows “{pupil.test_status || "Not booked"}” but a test date, time and centre are recorded — this test appears as scheduled elsewhere in the app. Please check the booking status.
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
       {/* Intake answers */}
@@ -4827,6 +4888,8 @@ function PupilExtras({
   instructorName: string;
   onUpdated: (patch: Partial<Pupil>) => void;
 }) {
+  const [emgOpen, setEmgOpen] = useState(false);
+  const [licOpen, setLicOpen] = useState(false);
   const [editEmg, setEditEmg] = useState(false);
   const [emgName, setEmgName] = useState(pupil.emergency_contact_name ?? "");
   const [emgPhone, setEmgPhone] = useState(pupil.emergency_contact_phone ?? "");
@@ -4901,121 +4964,210 @@ function PupilExtras({
 
   return (
     <>
-      {/* Emergency contact + Driving licence */}
-      <div className="flex flex-wrap gap-3 mt-3">
-        <div className="flex-1 min-w-[160px]" style={{ ...EXTRAS_CARD, marginTop: 0 }}>
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <IconHeart stroke={1.5} size={18} color="#CC2229" />
-              <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Emergency contact</span>
-            </div>
-            {!editEmg && (
-              <button type="button" onClick={() => setEditEmg(true)} className="text-[12px] font-semibold" style={{ color: "#1877D6", ...POPPINS }}>
-                {pupil.emergency_contact_name ? "Edit" : "Add"}
-              </button>
-            )}
-          </div>
-          {!editEmg ? (
-            pupil.emergency_contact_name ? (
-              <div>
-                <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>{pupil.emergency_contact_name}</div>
-                <div className="flex items-center gap-2 mt-1">
-                  <a href={`tel:${pupil.emergency_contact_phone ?? ""}`} className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
-                    {pupil.emergency_contact_phone}
-                  </a>
-                  {pupil.emergency_contact_relation && (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full" style={{ background: "#EEF2F7", color: "#0B1F3A", ...POPPINS }}>
-                      {pupil.emergency_contact_relation}
-                    </span>
-                  )}
+      {/* Emergency contact + Driving licence (collapsible rows) */}
+      <div style={{ marginBottom: 14 }}>
+        {/* Emergency contact */}
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 18,
+            boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+            overflow: "hidden",
+            marginBottom: 14,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setEmgOpen((v) => !v)}
+            aria-expanded={emgOpen}
+            style={{ width: "100%", padding: 16, display: "flex", flexDirection: "row", gap: 11, alignItems: "center", background: "none", border: "none", textAlign: "left" }}
+          >
+            <IconHeart stroke={1.6} size={18} color="#FF3B30" style={{ flexShrink: 0 }} />
+            <span style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ display: "block", color: "#0B1F3A", fontSize: 14, fontWeight: 800, ...POPPINS }}>Emergency contact</span>
+              <span
+                style={{
+                  display: "block",
+                  color: pupil.emergency_contact_name ? "#1A9B5C" : "#B0B0B5",
+                  fontSize: 11.5,
+                  fontWeight: pupil.emergency_contact_name ? 700 : 500,
+                  ...POPPINS,
+                }}
+                className="truncate"
+              >
+                {pupil.emergency_contact_name
+                  ? `${pupil.emergency_contact_name}${pupil.emergency_contact_relation ? ` · ${pupil.emergency_contact_relation}` : ""}`
+                  : "Not set"}
+              </span>
+            </span>
+            <IconChevronDown stroke={1.7} size={15} color="#C7C7CC" style={{ flexShrink: 0, transform: emgOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }} />
+          </button>
+          {emgOpen && (
+            <div style={{ padding: "12px 16px 16px", borderTop: "1px solid #F0F0F2" }}>
+              {!editEmg ? (
+                pupil.emergency_contact_name ? (
+                  <div>
+                    <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>{pupil.emergency_contact_name}</div>
+                    <div className="flex items-center gap-2 mt-1">
+                      <a href={`tel:${pupil.emergency_contact_phone ?? ""}`} className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
+                        {pupil.emergency_contact_phone}
+                      </a>
+                      {pupil.emergency_contact_relation && (
+                        <span className="text-[11px] px-2 py-0.5 rounded-full" style={{ background: "#F2F2F7", color: "#0B1F3A", ...POPPINS }}>
+                          {pupil.emergency_contact_relation}
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setEditEmg(true)}
+                      style={{ marginTop: 10, color: "#1877D6", fontSize: 12.5, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+                    >
+                      Edit emergency contact
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setEditEmg(true)}
+                    style={{ color: "#1877D6", fontSize: 12.5, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+                  >
+                    + Add emergency contact
+                  </button>
+                )
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <input style={EXTRAS_INPUT} placeholder="Name" value={emgName} onChange={(e) => setEmgName(e.target.value)} />
+                  <input style={EXTRAS_INPUT} placeholder="Phone" type="tel" value={emgPhone} onChange={(e) => setEmgPhone(e.target.value)} />
+                  <select style={EXTRAS_INPUT} value={emgRel} onChange={(e) => setEmgRel(e.target.value)}>
+                    {RELATIONS.map((r) => <option key={r} value={r}>{r}</option>)}
+                  </select>
+                  <div className="flex gap-2 mt-1">
+                    <button type="button" onClick={saveEmg} disabled={savingEmg} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
+                      {savingEmg ? "Saving…" : "Save"}
+                    </button>
+                    <button type="button" onClick={() => setEditEmg(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
+                      Cancel
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>No emergency contact set</div>
-            )
-          ) : (
-            <div className="flex flex-col gap-2">
-              <input style={EXTRAS_INPUT} placeholder="Name" value={emgName} onChange={(e) => setEmgName(e.target.value)} />
-              <input style={EXTRAS_INPUT} placeholder="Phone" type="tel" value={emgPhone} onChange={(e) => setEmgPhone(e.target.value)} />
-              <select style={EXTRAS_INPUT} value={emgRel} onChange={(e) => setEmgRel(e.target.value)}>
-                {RELATIONS.map((r) => <option key={r} value={r}>{r}</option>)}
-              </select>
-              <div className="flex gap-2 mt-1">
-                <button type="button" onClick={saveEmg} disabled={savingEmg} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
-                  {savingEmg ? "Saving…" : "Save"}
-                </button>
-                <button type="button" onClick={() => setEditEmg(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
-                  Cancel
-                </button>
-              </div>
+              )}
             </div>
           )}
         </div>
 
-        <div className="flex-1 min-w-[160px]" style={{ ...EXTRAS_CARD, marginTop: 0 }}>
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <IconCreditCard stroke={1.5} size={18} color="#1877D6" />
-              <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Driving licence</span>
-            </div>
-            {!editLic && (
-              <button type="button" onClick={() => setEditLic(true)} className="text-[12px] font-semibold" style={{ color: "#1877D6", ...POPPINS }}>
-                {pupil.driving_licence_number ? "Edit" : "Add"}
-              </button>
-            )}
-          </div>
-          {!editLic ? (
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <div className="text-[14px] font-semibold tracking-wider" style={{ color: "#0B1F3A", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-                  {pupil.driving_licence_number ? pupil.driving_licence_number.toUpperCase().replace(/(.{5})(.{6})(.{5})/, "$1 $2 $3") : "Not set"}
-                </div>
-                {pupil.driving_licence_number && (
-                  pupil.driving_licence_checked ? (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: "#DCFCE7", color: "#166534", ...POPPINS }}>
-                      Verified ✓
-                    </span>
-                  ) : (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: "#FEF3C7", color: "#92400E", ...POPPINS }}>
-                      Unverified
-                    </span>
-                  )
-                )}
-              </div>
-              <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={!!pupil.driving_licence_checked}
-                  onChange={(e) => toggleLicenceChecked(e.target.checked)}
-                  disabled={savingChecked}
-                  className="w-4 h-4"
-                  style={{ accentColor: "#1A52A0" }}
-                />
-                <span className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
-                  Licence checked and verified ✓
-                </span>
-              </label>
-              <button
-                type="button"
-                onClick={() => setRequestSheetOpen(true)}
-                className="mt-3 flex items-center gap-1.5 text-[13px] font-semibold"
-                style={{ color: "#1A52A0", ...POPPINS }}
+        {/* Driving licence */}
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 18,
+            boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+            overflow: "hidden",
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setLicOpen((v) => !v)}
+            aria-expanded={licOpen}
+            style={{ width: "100%", padding: 16, display: "flex", flexDirection: "row", gap: 11, alignItems: "center", background: "none", border: "none", textAlign: "left" }}
+          >
+            <IconCreditCard stroke={1.6} size={18} color="#1877D6" style={{ flexShrink: 0 }} />
+            <span style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ display: "block", color: "#0B1F3A", fontSize: 14, fontWeight: 800, ...POPPINS }}>Driving licence</span>
+              <span
+                style={{
+                  display: "block",
+                  color: pupil.driving_licence_checked ? "#1A9B5C" : pupil.driving_licence_number ? "#0B1F3A" : "#B0B0B5",
+                  fontSize: 11.5,
+                  fontWeight: pupil.driving_licence_checked ? 700 : 500,
+                  ...POPPINS,
+                }}
+                className="truncate"
               >
-                Request DVLA check code
-                <IconExternalLink stroke={1.5} size={14} />
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-2">
-              <input style={EXTRAS_INPUT} placeholder="e.g. MORGA657054SM9IJ" value={licence} onChange={(e) => setLicence(e.target.value.toUpperCase())} maxLength={20} />
-              <div className="flex gap-2 mt-1">
-                <button type="button" onClick={saveLic} disabled={savingLic} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
-                  {savingLic ? "Saving…" : "Save"}
-                </button>
-                <button type="button" onClick={() => setEditLic(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
-                  Cancel
-                </button>
-              </div>
+                {pupil.driving_licence_checked
+                  ? "Checked & verified"
+                  : pupil.driving_licence_number
+                    ? "Added · not verified"
+                    : "Not set"}
+              </span>
+            </span>
+            <IconChevronDown stroke={1.7} size={15} color="#C7C7CC" style={{ flexShrink: 0, transform: licOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }} />
+          </button>
+          {licOpen && (
+            <div style={{ padding: "12px 16px 16px", borderTop: "1px solid #F0F0F2" }}>
+              {!editLic ? (
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div
+                      style={{
+                        fontSize: 12.5,
+                        fontWeight: 700,
+                        letterSpacing: "0.05em",
+                        color: pupil.driving_licence_number ? "#0B1F3A" : "#B0B0B5",
+                        fontFamily: pupil.driving_licence_number ? "ui-monospace, SFMono-Regular, Menlo, monospace" : undefined,
+                        ...(pupil.driving_licence_number ? {} : POPPINS),
+                      }}
+                    >
+                      {pupil.driving_licence_number ? pupil.driving_licence_number.toUpperCase().replace(/(.{5})(.{6})(.{5})/, "$1 $2 $3") : "Licence number not set"}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setEditLic(true)}
+                      style={{ color: "#1877D6", fontSize: 12.5, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+                    >
+                      {pupil.driving_licence_number ? "Edit" : "+ Add"}
+                    </button>
+                  </div>
+                  <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
+                    <span
+                      style={{
+                        width: 22,
+                        height: 22,
+                        borderRadius: 6,
+                        flexShrink: 0,
+                        background: pupil.driving_licence_checked ? "#1877D6" : "#FFFFFF",
+                        border: pupil.driving_licence_checked ? "none" : "1.5px solid #D8D8DE",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {pupil.driving_licence_checked && <IconCheck stroke={3} size={14} color="#FFFFFF" />}
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={!!pupil.driving_licence_checked}
+                      onChange={(e) => toggleLicenceChecked(e.target.checked)}
+                      disabled={savingChecked}
+                      style={{ position: "absolute", opacity: 0, width: 0, height: 0 }}
+                    />
+                    <span style={{ color: "#0B1F3A", fontSize: 12.5, fontWeight: 700, ...POPPINS }}>
+                      Licence checked &amp; verified
+                    </span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setRequestSheetOpen(true)}
+                    className="mt-3 flex items-center gap-1.5"
+                    style={{ color: "#1877D6", fontSize: 12.5, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+                  >
+                    Request DVLA check code
+                    <IconExternalLink stroke={1.8} size={12} />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <input style={EXTRAS_INPUT} placeholder="e.g. MORGA657054SM9IJ" value={licence} onChange={(e) => setLicence(e.target.value.toUpperCase())} maxLength={20} />
+                  <div className="flex gap-2 mt-1">
+                    <button type="button" onClick={saveLic} disabled={savingLic} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
+                      {savingLic ? "Saving…" : "Save"}
+                    </button>
+                    <button type="button" onClick={() => setEditLic(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -6073,4 +6225,11 @@ function ReadyToLearnCard({ pupilId }: { pupilId: string }) {
       )}
     </div>
   );
+}
+
+function testStatusColour(status: string): string {
+  const s = status.toLowerCase();
+  if (s.includes("pass")) return "#1A9B5C";
+  if (s.includes("not") || s.includes("fail") || s.includes("cancel")) return "#FF3B30";
+  return "#0B1F3A";
 }
