@@ -409,7 +409,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             WebkitOverflowScrolling: "touch",
           }}
         >
-          {heroCards.map((listing, idx) => {
+          {heroCards.map((listing) => {
             const cat = (listing?.category ?? "").toLowerCase();
             const isWebsite =
               cat.includes("web") || cat.includes("site") || cat.includes("digital");
@@ -643,7 +643,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       ))}
                     </div>
                   )}
-                  <span style={{ display: "none" }}>{idx}</span>
                 </div>
               </div>
             );
