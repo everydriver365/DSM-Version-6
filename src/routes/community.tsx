@@ -1493,6 +1493,7 @@ function AlertsTab({
 
 
           <div
+            id="official-sources-content"
             ref={tomtomContentRef}
             style={{
               maxHeight: tomtomMaxHeight,
