@@ -263,12 +263,19 @@ function PupilThreadPage() {
             );
             // Thread is open — treat inbound arrivals as read right away.
             if (row.sender_type === "pupil" && !row.read_at) {
+              const now = new Date().toISOString();
               void supabase
                 .from("chat_messages")
-                .update({ read_at: new Date().toISOString() })
+                .update({ read_at: now })
                 .eq("id", row.id)
-                .then(() => broadcastRead(1));
+                .then(() => {
+                  setMessages((prev) =>
+                    prev.map((m) => (m.id === row.id ? { ...m, read_at: now } : m)),
+                  );
+                  broadcastRead(1);
+                });
             }
+
           },
         )
         .subscribe();
@@ -279,6 +286,38 @@ function PupilThreadPage() {
       if (channel) supabase.removeChannel(channel);
     };
   }, [pupilId]);
+
+  // Re-mark on focus/visibility: realtime INSERTs can be missed while the tab
+  // or app is backgrounded, so anything that landed meanwhile is read on return.
+  useEffect(() => {
+    if (!userId) return;
+    const markAll = async () => {
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
+      const { data: marked } = await supabase
+        .from("chat_messages")
+        .update({ read_at: new Date().toISOString() })
+        .eq("pupil_id", pupilId)
+        .eq("instructor_id", userId)
+        .eq("sender_type", "pupil")
+        .is("read_at", null)
+        .select("id");
+      if (marked?.length) {
+        const ids = new Set(marked.map((r) => r.id as string));
+        const now = new Date().toISOString();
+        setMessages((prev) =>
+          prev.map((m) => (ids.has(m.id) ? { ...m, read_at: m.read_at ?? now } : m)),
+        );
+        broadcastRead(marked.length);
+      }
+    };
+    window.addEventListener("focus", markAll);
+    document.addEventListener("visibilitychange", markAll);
+    return () => {
+      window.removeEventListener("focus", markAll);
+      document.removeEventListener("visibilitychange", markAll);
+    };
+  }, [pupilId, userId]);
+
 
   // Auto-scroll to the latest message. Jump instantly on first load, then
   // smooth-scroll for new arrivals — but only if the user is already near the

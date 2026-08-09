@@ -404,6 +404,33 @@ function InstructorDMThread() {
     };
   }, [conversationId, userId]);
 
+  // Re-mark on focus/visibility: messages that arrived while the app was
+  // backgrounded (missed realtime events) are marked read on return.
+  useEffect(() => {
+    if (!userId) return;
+    const markAll = async () => {
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
+      const n = await markConversationRead(conversationId, userId);
+      if (n > 0) {
+        const now = new Date().toISOString();
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.to_instructor_id === userId && !m.read_at ? { ...m, read_at: now } : m,
+          ),
+        );
+        broadcastRead(n);
+      }
+    };
+    window.addEventListener("focus", markAll);
+    document.addEventListener("visibilitychange", markAll);
+    return () => {
+      window.removeEventListener("focus", markAll);
+      document.removeEventListener("visibilitychange", markAll);
+    };
+  }, [conversationId, userId]);
+
+
+
   /** Broadcast our typing state, throttled, with an auto "stopped" after 2.5s idle. */
   function signalTyping() {
     const channel = channelRef.current;
