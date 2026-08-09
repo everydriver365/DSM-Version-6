@@ -6,6 +6,7 @@ import { ShoppingBag, CalendarOff } from "lucide-react";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 
 export const Route = createFileRoute("/learn")({
   head: () => ({
@@ -426,6 +427,8 @@ function LearnPage() {
   }, [playing]);
 
   const [videos, setVideos] = useState<Video[]>([]);
+  const playVideos = videos.filter((v) => !!v.url);
+  const playIndex = playing ? playVideos.findIndex((v) => v.id === playing.id) : -1;
 
   useEffect(() => {
     let cancelled = false;
@@ -560,75 +563,105 @@ function LearnPage() {
           }}
           onClick={() => setPlaying(null)}
         >
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setPlaying(null);
+          <SwipeableDetailShell
+            items={playVideos}
+            index={Math.max(0, playIndex)}
+            onIndexChange={(i) => {
+              const next = playVideos[i];
+              if (next) setPlaying(next);
             }}
-            aria-label="Close video"
-            style={{
-              position: "absolute",
-              top: "calc(16px + env(safe-area-inset-top, 0px))",
-              right: 16,
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              border: "none",
-              background: "rgba(255,255,255,0.18)",
+            getKey={(v, i) => String(v.id ?? i)}
+            variant="video"
+            style={{ width: "100%" }}
+            panelStyle={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              cursor: "pointer",
+              padding: "0 8px",
             }}
-          >
-            <IconX stroke={1.5} size={20} color="#FFFFFF" />
-          </button>
-          {(() => {
-            const embed = playing.url ? getYouTubeEmbedUrl(playing.url) : null;
-            if (embed) {
+            topLeft={
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPlaying(null);
+                }}
+                aria-label="Close video"
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: "50%",
+                  border: "none",
+                  background: "rgba(255,255,255,0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  marginTop: "env(safe-area-inset-top, 0px)",
+                }}
+              >
+                <IconX stroke={1.5} size={20} color="#FFFFFF" />
+              </button>
+            }
+            renderItem={(v, isActive) => {
+              const embed = v.url ? getYouTubeEmbedUrl(v.url) : null;
+              if (embed) {
+                return isActive ? (
+                  <iframe
+                    src={embed}
+                    title={v.title ?? "Video"}
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                      width: "100%",
+                      maxHeight: "80vh",
+                      aspectRatio: "16 / 9",
+                      border: "none",
+                      borderRadius: 16,
+                      boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                      background: "#000",
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      aspectRatio: "16 / 9",
+                      borderRadius: 16,
+                      background: "#000",
+                    }}
+                  />
+                );
+              }
               return (
-                <iframe
-                  src={embed}
-                  title={playing.title ?? "Video"}
-                  allow="autoplay; encrypted-media"
-                  allowFullScreen
+                <video
+                  src={
+                    isActive
+                      ? (playbackSrc ?? v.url ?? undefined)
+                      : (v.url ?? undefined)
+                  }
+                  poster={v.thumbnail_url ?? undefined}
+                  preload={isActive ? "auto" : "metadata"}
+                  controls={isActive}
+                  controlsList="nodownload noplaybackrate noremoteplayback"
+                  disablePictureInPicture
+                  disableRemotePlayback
+                  onContextMenu={(e) => e.preventDefault()}
+                  autoPlay={isActive}
+                  playsInline
                   onClick={(e) => e.stopPropagation()}
                   style={{
                     width: "100%",
                     maxHeight: "80vh",
-                    aspectRatio: "16 / 9",
-                    border: "none",
                     borderRadius: 16,
                     boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                     background: "#000",
                   }}
                 />
               );
-            }
-            return (
-              <video
-                src={playbackSrc ?? playing.url ?? undefined}
-
-                controls
-                controlsList="nodownload noplaybackrate noremoteplayback"
-                disablePictureInPicture
-                disableRemotePlayback
-                onContextMenu={(e) => e.preventDefault()}
-                autoPlay
-                playsInline
-                onClick={(e) => e.stopPropagation()}
-                style={{
-                  width: "100%",
-                  maxHeight: "80vh",
-                  borderRadius: 16,
-                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-                  background: "#000",
-                }}
-              />
-            );
-          })()}
-
+            }}
+          />
         </div>
       )}
     </PageLayout>

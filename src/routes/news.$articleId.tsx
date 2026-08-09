@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ChevronLeft, ExternalLink, User, Clock, Calendar } from "lucide-react";
-import { IconNews, IconChevronRight } from "@tabler/icons-react";
+
 import { sanitizeNewsTitle } from "../lib/newsText";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 
 export const Route = createFileRoute("/news/$articleId")({
   head: () => ({
@@ -53,112 +54,9 @@ function cleanContent(raw: string): string {
 }
 
 
-function NewsArticlePage() {
-  const { articleId } = Route.useParams();
-  const navigate = useNavigate();
-
-  const [article, setArticle] = useState<any>(null);
-  const [nextArticle, setNextArticle] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!articleId) return;
-    supabase
-      .from("news_articles")
-      .select("*")
-      .eq("id", articleId)
-      .single()
-      .then(({ data }) => {
-        setArticle(data);
-        setLoading(false);
-      });
-  }, [articleId]);
-
-  // After article is loaded, fetch next article
-  useEffect(() => {
-    if (!article?.published_at) return;
-    supabase
-      .from("news_articles")
-      .select("id, title, source, image_url, published_at, read_time_mins")
-      .eq("is_hidden", false)
-      .lt("published_at", article.published_at)
-      .order("published_at", { ascending: false })
-      .limit(1)
-      .single()
-      .then(({ data }) => {
-        if (data) setNextArticle(data);
-      });
-  }, [article?.published_at]);
-
-  if (loading) {
-    return (
-      <PageLayout style={{ background: "#0B1F3A" }}>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full border-2 border-white/30 border-t-white" style={{ width: 32, height: 32 }} />
-        </div>
-      </PageLayout>
-    );
-  }
-
-  if (!article) {
-    return (
-      <PageLayout style={{ background: "#0B1F3A" }}>
-        <div className="flex flex-col items-center justify-center min-h-screen text-white">
-          <p className="text-[16px]" style={{ ...POPPINS, marginBottom: 16 }}>
-            Article not found
-          </p>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/home" })}
-            className="flex items-center gap-2 text-white"
-            style={{ fontSize: 14, ...POPPINS }}
-          >
-            <ChevronLeft size={18} />
-            Back to home
-          </button>
-        </div>
-      </PageLayout>
-    );
-  }
-
+function ArticleBody({ article }: { article: any }) {
   return (
-    <PageLayout style={{ background: "#F8F9FB" }}>
-      {/* Header */}
-      <div
-        className="flex items-center justify-between px-4"
-        style={{
-          height: "calc(60px + env(safe-area-inset-top, 0px))",
-          paddingTop: "env(safe-area-inset-top, 0px)",
-          backgroundColor: "#0B1F3A",
-        }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 36, height: 36, color: "#FFFFFF" }}
-        >
-          <ChevronLeft size={28} />
-        </button>
-        <span
-          className="text-white"
-          style={{ fontSize: 15, fontWeight: 600, ...POPPINS }}
-        >
-          Industry news
-        </span>
-        <button
-          type="button"
-          aria-label="Open original article"
-          title="Open original article"
-          onClick={() => window.open(article?.link, "_blank")}
-          className="flex items-center justify-center"
-          style={{ width: 36, height: 36, color: "#FFFFFF" }}
-        >
-          <ExternalLink size={22} />
-        </button>
-      </div>
-
+    <div>
       {/* Hero image */}
       {article.image_url ? (
         <img
@@ -281,127 +179,135 @@ function NewsArticlePage() {
             <ExternalLink size={14} />
           </button>
         </div>
-
-        {/* Next article */}
-        {nextArticle && (
-          <div
-            onClick={() =>
-              navigate({
-                to: "/news/$articleId",
-                params: { articleId: nextArticle.id },
-              })
-            }
-            style={{
-              marginTop: 24,
-              borderTop: "0.5px solid #E4E8EF",
-              paddingTop: 16,
-              cursor: "pointer",
-            }}
-          >
-            {/* Label */}
-            <div
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                color: "#1877D6",
-                letterSpacing: "0.06em",
-                marginBottom: 12,
-                ...INTER,
-              }}
-            >
-              Next article
-            </div>
-
-            {/* Card */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                background: "#F8F9FB",
-                borderRadius: 10,
-                padding: 12,
-                border: "1px solid #E4E8EF",
-              }}
-            >
-              {/* Thumbnail */}
-              <div
-                style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: 8,
-                  overflow: "hidden",
-                  flexShrink: 0,
-                  background: "#E4E8EF",
-                }}
-              >
-                {nextArticle.image_url ? (
-                  <img
-                    src={nextArticle.image_url}
-                    alt={nextArticle.title}
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "#1877D6",
-                    }}
-                  >
-                    <IconNews size={24} />
-                  </div>
-                )}
-              </div>
-
-              {/* Text */}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div
-                  style={{
-                    fontSize: 9,
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    color: "#1877D6",
-                    letterSpacing: "0.06em",
-                    marginBottom: 4,
-                    ...INTER,
-                  }}
-                >
-                  {nextArticle.source}
-                </div>
-                <div
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "#0B1F3A",
-                    lineHeight: 1.3,
-                    marginBottom: 4,
-                    ...POPPINS,
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
-                  {sanitizeNewsTitle(nextArticle.title)}
-                </div>
-                <div style={{ fontSize: 11, color: "#9CA3AF", ...INTER }}>
-                  {nextArticle.read_time_mins} min read
-                </div>
-              </div>
-
-              {/* Chevron */}
-              <div style={{ color: "#1877D6", flexShrink: 0 }}>
-                <IconChevronRight size={20} />
-              </div>
-            </div>
-          </div>
-        )}
       </div>
+    </div>
+  );
+}
+
+function NewsArticlePage() {
+  const { articleId } = Route.useParams();
+  const navigate = useNavigate();
+
+  const [article, setArticle] = useState<any>(null);
+  const [articles, setArticles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!articleId) return;
+    supabase
+      .from("news_articles")
+      .select("*")
+      .eq("id", articleId)
+      .single()
+      .then(({ data }) => {
+        setArticle(data);
+        setLoading(false);
+      });
+  }, [articleId]);
+
+  // The set the user was browsing — recent published articles
+  useEffect(() => {
+    supabase
+      .from("news_articles")
+      .select("*")
+      .eq("is_hidden", false)
+      .order("published_at", { ascending: false })
+      .limit(25)
+      .then(({ data }) => {
+        if (data) setArticles(data);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <PageLayout style={{ background: "#0B1F3A" }}>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full border-2 border-white/30 border-t-white" style={{ width: 32, height: 32 }} />
+        </div>
+      </PageLayout>
+    );
+  }
+
+  if (!article) {
+    return (
+      <PageLayout style={{ background: "#0B1F3A" }}>
+        <div className="flex flex-col items-center justify-center min-h-screen text-white">
+          <p className="text-[16px]" style={{ ...POPPINS, marginBottom: 16 }}>
+            Article not found
+          </p>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/home" })}
+            className="flex items-center gap-2 text-white"
+            style={{ fontSize: 14, ...POPPINS }}
+          >
+            <ChevronLeft size={18} />
+            Back to home
+          </button>
+        </div>
+      </PageLayout>
+    );
+  }
+
+  const set = articles.some((a) => a.id === article.id) ? articles : [article];
+  const index = Math.max(0, set.findIndex((a) => a.id === article.id));
+
+  return (
+    <PageLayout style={{ background: "#F8F9FB" }}>
+      {/* Header */}
+      <div
+        className="flex items-center justify-between px-4"
+        style={{
+          height: "calc(60px + env(safe-area-inset-top, 0px))",
+          paddingTop: "env(safe-area-inset-top, 0px)",
+          backgroundColor: "#0B1F3A",
+        }}
+      >
+        <button
+          type="button"
+          aria-label="Back"
+          onClick={() => navigate({ to: "/home" })}
+          className="flex items-center justify-center"
+          style={{ width: 36, height: 36, color: "#FFFFFF" }}
+        >
+          <ChevronLeft size={28} />
+        </button>
+        <span
+          className="text-white"
+          style={{ fontSize: 15, fontWeight: 600, ...POPPINS }}
+        >
+          Industry news
+        </span>
+        <button
+          type="button"
+          aria-label="Open original article"
+          title="Open original article"
+          onClick={() => window.open(article?.link, "_blank")}
+          className="flex items-center justify-center"
+          style={{ width: 36, height: 36, color: "#FFFFFF" }}
+        >
+          <ExternalLink size={22} />
+        </button>
+      </div>
+
+      <SwipeableDetailShell<any>
+        items={set}
+        index={index}
+        onIndexChange={(i) => {
+          const next = set[i];
+          if (next && next.id !== article.id) {
+            navigate({
+              to: "/news/$articleId",
+              params: { articleId: next.id },
+              replace: true,
+            });
+          }
+        }}
+        getKey={(a, i) => String(a?.id ?? i)}
+        variant="article"
+        hintKey="dsm_swipe_news_hint_seen"
+        renderItem={(a) => <ArticleBody article={a} />}
+      />
     </PageLayout>
   );
 }

@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/dsm/PageHeader";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
 import { VideoPlayer } from "@/components/dsm/VideoPlayer";
+import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import {
   BottomSheet,
   SheetGroup,
@@ -486,79 +487,122 @@ function BitesizePage() {
             gap: 12,
           }}
         >
-          {/* INLINE VIDEO PLAYER */}
+          {/* INLINE VIDEO PLAYER — swipe between videos in this category */}
           {playingVideo && (
             <div style={{ gridColumn: "1 / -1" }}>
-              <VideoPlayer
-                src={playingVideo.video_url}
-                thumbnail={playingVideo.thumbnail_url}
-                title={playingVideo.title}
-                autoPlay
-                onClose={() => setPlayingVideo(null)}
-                onEnded={() => {
-                  const idx = filtered.findIndex((v) => v.id === playingVideo.id);
-                  const next = filtered[idx + 1];
-                  if (next) {
-                    playVideo(next);
-                  } else {
-                    setPlayingVideo(null);
-                  }
+              <SwipeableDetailShell<BitesizeVideo>
+                items={filtered}
+                index={Math.max(
+                  0,
+                  filtered.findIndex((v) => v.id === playingVideo.id),
+                )}
+                onIndexChange={(i) => {
+                  const next = filtered[i];
+                  if (next) playVideo(next);
                 }}
-              />
+                getKey={(v, i) => String(v.id ?? i)}
+                variant="video"
+                renderItem={(video, isActive) =>
+                  isActive ? (
+                    <div>
+                      <VideoPlayer
+                        src={video.video_url}
+                        thumbnail={video.thumbnail_url}
+                        title={video.title}
+                        autoPlay
+                        onClose={() => setPlayingVideo(null)}
+                        onEnded={() => {
+                          const idx = filtered.findIndex((v) => v.id === video.id);
+                          const next = filtered[idx + 1];
+                          if (next) {
+                            playVideo(next);
+                          } else {
+                            setPlayingVideo(null);
+                          }
+                        }}
+                      />
 
-              {/* Info below player */}
-              <div
-                style={{
-                  background: "#fff",
-                  border: "0.5px solid #E4E8EF",
-                  borderRadius: 12,
-                  padding: 12,
-                  marginTop: 8,
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 700,
-                    color: "#0B1F3A",
-                    ...POPPINS,
-                  }}
-                >
-                  {playingVideo.title}
-                </div>
-                {playingVideo.description && (
-                  <div
-                    style={{
-                      fontSize: 13,
-                      color: "#6B7686",
-                      marginTop: 4,
-                      lineHeight: 1.45,
-                      ...POPPINS,
-                    }}
-                  >
-                    {playingVideo.description}
-                  </div>
-                )}
-                {playingVideo.category && (
-                  <div
-                    style={{
-                      display: "inline-block",
-                      marginTop: 8,
-                      padding: "3px 10px",
-                      borderRadius: 999,
-                      background: "#EAF2FD",
-                      color: "#1877D6",
-                      fontSize: 11,
-                      fontWeight: 700,
-                      ...POPPINS,
-                    }}
-                  >
-                    {playingVideo.category}
-                  </div>
-                )}
-              </div>
+                      {/* Info below player */}
+                      <div
+                        style={{
+                          background: "#fff",
+                          border: "0.5px solid #E4E8EF",
+                          borderRadius: 12,
+                          padding: 12,
+                          marginTop: 8,
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 15,
+                            fontWeight: 700,
+                            color: "#0B1F3A",
+                            ...POPPINS,
+                          }}
+                        >
+                          {video.title}
+                        </div>
+                        {video.description && (
+                          <div
+                            style={{
+                              fontSize: 13,
+                              color: "#6B7686",
+                              marginTop: 4,
+                              lineHeight: 1.45,
+                              ...POPPINS,
+                            }}
+                          >
+                            {video.description}
+                          </div>
+                        )}
+                        {video.category && (
+                          <div
+                            style={{
+                              display: "inline-block",
+                              marginTop: 8,
+                              padding: "3px 10px",
+                              borderRadius: 999,
+                              background: "#EAF2FD",
+                              color: "#1877D6",
+                              fontSize: 11,
+                              fontWeight: 700,
+                              ...POPPINS,
+                            }}
+                          >
+                            {video.category}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        borderRadius: 12,
+                        overflow: "hidden",
+                        background: "#000",
+                        aspectRatio: "16 / 9",
+                      }}
+                    >
+                      {video.thumbnail_url && (
+                        <img
+                          src={video.thumbnail_url}
+                          alt={video.title}
+                          loading="lazy"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            opacity: 0.7,
+                          }}
+                        />
+                      )}
+                    </div>
+                  )
+                }
+              />
             </div>
           )}
+
 
           {filtered.map((video) => (
 

@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/dsm/PageHeader";
+import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
 import {
@@ -593,6 +594,41 @@ function ShowcasePage() {
           }}
         >
           {playing && (
+            <div style={{ gridColumn: "1 / -1" }}>
+            <SwipeableDetailShell<ShowcaseVideo>
+              items={filtered}
+              index={Math.max(0, filtered.findIndex((v) => v.id === playing.id))}
+              onIndexChange={(i) => {
+                const nx = filtered[i];
+                if (nx) openPlayer(nx);
+              }}
+              getKey={(v, i) => String(v.id ?? i)}
+              variant="video"
+              renderItem={(panelVideo, isActive) =>
+                !isActive ? (
+                  <div
+                    style={{
+                      borderRadius: 12,
+                      overflow: "hidden",
+                      background: "#000",
+                      aspectRatio: "16 / 9",
+                    }}
+                  >
+                    {panelVideo.thumbnail_url && (
+                      <img
+                        src={panelVideo.thumbnail_url}
+                        alt={panelVideo.title ?? "Clip"}
+                        loading="lazy"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          opacity: 0.7,
+                        }}
+                      />
+                    )}
+                  </div>
+                ) : (
             <div
               style={{
                 gridColumn: "1 / -1",
@@ -882,6 +918,10 @@ function ShowcasePage() {
                   </div>
                 )}
               </div>
+            </div>
+                )
+              }
+            />
             </div>
           )}
 
