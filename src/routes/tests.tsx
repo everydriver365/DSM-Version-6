@@ -527,28 +527,37 @@ function TestCard({
     }
   }, [menuOpen]);
 
+  const timeLocation = [formatTime(test.test_time), test.test_centre].filter(Boolean).join(" · ");
+
   return (
-    <Card style={{ position: "relative" }}>
+    <div
+      style={{
+        position: "relative", background: "#fff", borderRadius: 18, padding: 16,
+        marginBottom: 12, boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+      }}
+    >
       <div className="flex items-start" style={{ gap: 12 }}>
         <div
-          className="flex items-center justify-center text-white text-[13px] font-semibold shrink-0"
-          style={{ width: 40, height: 40, borderRadius: 999, backgroundColor: "#1877D6", ...POPPINS }}
+          className="flex items-center justify-center text-white shrink-0"
+          style={{ width: 42, height: 42, borderRadius: 999, backgroundColor: "#1877D6", fontSize: 14, fontWeight: 800, ...POPPINS }}
         >
           {initials(name)}
         </div>
         <div className="flex-1 min-w-0" style={{ paddingRight: showMenu ? 28 : 0 }}>
           <div className="flex items-start justify-between" style={{ gap: 8 }}>
-            <div className="text-[14px] font-semibold truncate" style={{ color: "#0B1F3A", ...POPPINS }}>
+            <div className="truncate" style={{ color: "#000", fontSize: 16, fontWeight: 800, ...POPPINS }}>
               {name}
             </div>
             {showDaysBadge && (
               <span
-                className="text-[11px] font-medium shrink-0"
+                className="shrink-0"
                 style={{
                   color: "#1877D6",
-                  backgroundColor: "#EEF4FB",
-                  padding: "2px 8px",
-                  borderRadius: 999,
+                  backgroundColor: "#E7F1FC",
+                  fontSize: 12,
+                  fontWeight: 800,
+                  padding: "5px 12px",
+                  borderRadius: 20,
                   ...POPPINS,
                 }}
               >
@@ -570,59 +579,58 @@ function TestCard({
               </span>
             )}
           </div>
-          <div className="text-[13px] font-bold mt-1" style={{ color: "#0B1F3A", ...POPPINS }}>
+          <div style={{ color: "#0B1F3A", fontSize: 14, fontWeight: 700, marginTop: 4, ...POPPINS }}>
             {formatDateLong(test.test_date)}
           </div>
-          <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
-            {formatTime(test.test_time) || "—"}
-            {test.test_centre ? ` · ${test.test_centre}` : ""}
-          </div>
-
-          {showDaysBadge && (
-            <div className="text-[11px] font-medium" style={{ color: "#1877D6", ...POPPINS }}>
-              {formatCountdown(test.test_date, test.test_time) ?? "Overdue"}
-            </div>
-          )}
-
-          {showDaysBadge && (
-            <div className="mt-2 flex items-center" style={{ gap: 8 }}>
-              {resultColor ? (
-                <span
-                  className="text-[11px] font-semibold text-white"
-                  style={{
-                    backgroundColor: resultColor,
-                    padding: "3px 10px",
-                    borderRadius: 999,
-                    ...POPPINS,
-                  }}
-                >
-                  {test.result}
-                  {test.faults != null ? ` · ${test.faults} faults` : ""}
-                </span>
-              ) : (
-                onLogResult && (
-                  <button
-                    type="button"
-                    onClick={onLogResult}
-                    className="inline-flex items-center justify-center text-[12px] font-medium"
-                    style={{
-                      height: 32,
-                      padding: "0 12px",
-                      borderRadius: 8,
-                      backgroundColor: "transparent",
-                      border: "1px solid #1877D6",
-                      color: "#1877D6",
-                      ...POPPINS,
-                    }}
-                  >
-                    Log result
-                  </button>
-                )
-              )}
+          {timeLocation && (
+            <div style={{ color: "#8A8A8E", fontSize: 12.5, marginTop: 2, ...POPPINS }}>
+              {timeLocation}
             </div>
           )}
         </div>
       </div>
+
+      {showDaysBadge && (
+        resultColor ? (
+          <div className="mt-2 flex items-center" style={{ gap: 8 }}>
+            <span
+              className="text-[11px] font-semibold text-white"
+              style={{
+                backgroundColor: resultColor,
+                padding: "3px 10px",
+                borderRadius: 999,
+                ...POPPINS,
+              }}
+            >
+              {test.result}
+              {test.faults != null ? ` · ${test.faults} faults` : ""}
+            </span>
+          </div>
+        ) : (
+          onLogResult && (
+            <button
+              type="button"
+              onClick={onLogResult}
+              className="inline-flex items-center justify-center"
+              style={{
+                width: "100%",
+                marginTop: 14,
+                padding: 12,
+                borderRadius: 12,
+                background: "#fff",
+                border: "1.5px solid #1877D6",
+                color: "#1877D6",
+                fontSize: 14,
+                fontWeight: 700,
+                ...POPPINS,
+              }}
+            >
+              Log result
+            </button>
+          )
+        )
+      )}
+
 
       {/* Dots menu */}
       {showMenu && (
