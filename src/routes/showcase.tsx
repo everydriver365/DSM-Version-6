@@ -1165,64 +1165,86 @@ function ShowcasePage() {
               bottom: 0,
               left: 0,
               right: 0,
-              background: NAVY,
+              background: "#fff",
               borderRadius: "20px 20px 0 0",
-              maxHeight: "70vh",
+              maxHeight: "78vh",
               display: "flex",
               flexDirection: "column",
+              overflow: "hidden",
             }}
           >
+            {/* Header */}
             <div
               style={{
-                width: 36,
-                height: 4,
-                borderRadius: 4,
-                background: "rgba(255,255,255,0.25)",
-                margin: "12px auto",
-              }}
-            />
-            <div
-              style={{
-                fontSize: 14,
-                fontWeight: 600,
-                color: "#fff",
-                padding: "0 16px 12px",
-                ...POPPINS,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+                padding: "16px 18px",
+                borderBottom: "1px solid #E4E4E8",
               }}
             >
-              {comments.length} comments
-            </div>
-
-            {/* Filter chips */}
-            <div style={{ display: "flex", gap: 8, padding: "0 16px 12px" }}>
-              {(["newest", "top"] as const).map((s) => (
+              <div
+                style={{
+                  color: "#000",
+                  fontSize: 16,
+                  fontWeight: 800,
+                  ...POPPINS,
+                }}
+              >
+                {comments.length} Comments
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                {(["newest", "top"] as const).map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setCommentSort(s)}
+                    style={{
+                      borderRadius: 20,
+                      padding: "5px 12px",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      border: "none",
+                      cursor: "pointer",
+                      background: commentSort === s ? BLUE : "#F2F2F7",
+                      color: commentSort === s ? "#fff" : "#6B6B6F",
+                      ...POPPINS,
+                    }}
+                  >
+                    {s === "newest" ? "Newest" : "Top"}
+                  </button>
+                ))}
                 <button
-                  key={s}
                   type="button"
-                  onClick={() => setCommentSort(s)}
+                  aria-label="Close comments"
+                  onClick={() => setCommentsOpen(false)}
                   style={{
-                    borderRadius: 20,
-                    padding: "4px 12px",
-                    fontSize: 12,
-                    fontWeight: 600,
+                    width: 28,
+                    height: 28,
+                    borderRadius: "50%",
+                    background: "#E5E5EA",
                     border: "none",
                     cursor: "pointer",
-                    ...POPPINS,
-                    background: commentSort === s ? BLUE : "rgba(255,255,255,0.1)",
-                    color: "#fff",
+                    padding: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
                   }}
                 >
-                  {s === "newest" ? "Newest" : "Top"}
+                  <IconX size={12} color="#6B6B6F" />
                 </button>
-              ))}
+              </div>
             </div>
 
-            <div style={{ flex: 1, overflowY: "auto", padding: "0 0 8px" }}>
+            {/* List */}
+            <div style={{ flex: 1, overflowY: "auto", padding: "16px 18px" }}>
               {comments.length === 0 ? (
                 <div
                   style={{
                     textAlign: "center",
-                    color: "rgba(255,255,255,0.4)",
+                    color: "#B0B0B5",
                     fontSize: 13,
                     padding: "30px 0",
                     ...POPPINS,
@@ -1231,116 +1253,102 @@ function ShowcasePage() {
                   No comments yet — be the first
                 </div>
               ) : (
-                <div
-                  style={{
-                    background: "rgba(255,255,255,0.06)",
-                    borderRadius: 16,
-                    margin: "0 16px",
-                    overflow: "hidden",
-                  }}
-                >
-                  {(() => {
-                    const displayedComments =
-                      commentSort === "newest"
-                        ? [...comments].sort(
-                            (a, b) =>
-                              new Date(b.created_at).getTime() -
-                              new Date(a.created_at).getTime()
-                          )
-                        : [...comments];
-                    return displayedComments.map((c: any, i: number) => {
-                      const name = c.instructor?.name ?? c.author_name ?? "Instructor";
-                      return (
-                        <div key={c.id}>
+                (() => {
+                  const displayedComments =
+                    commentSort === "newest"
+                      ? [...comments].sort(
+                          (a, b) =>
+                            new Date(b.created_at).getTime() -
+                            new Date(a.created_at).getTime(),
+                        )
+                      : [...comments];
+                  return displayedComments.map((c: any, i: number) => {
+                    const name = c.instructor?.name ?? c.author_name ?? "Instructor";
+                    return (
+                      <div
+                        key={c.id}
+                        style={{
+                          display: "flex",
+                          gap: 11,
+                          marginBottom: 18,
+                          alignItems: "flex-start",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 36,
+                            height: 36,
+                            flexShrink: 0,
+                            borderRadius: "50%",
+                            background: AVATAR_COLORS[i % AVATAR_COLORS.length],
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "#fff",
+                            fontSize: 12,
+                            fontWeight: 700,
+                            ...POPPINS,
+                          }}
+                        >
+                          {initials(name)}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
                           <div
                             style={{
-                              padding: "12px 16px",
                               display: "flex",
-                              gap: 10,
-                              alignItems: "flex-start",
+                              alignItems: "center",
+                              gap: 7,
                             }}
                           >
-                            <div
+                            <span
                               style={{
-                                width: 32,
-                                height: 32,
-                                flexShrink: 0,
-                                borderRadius: "50%",
-                                background: AVATAR_COLORS[i % AVATAR_COLORS.length],
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                color: "#fff",
-                                fontSize: 11,
+                                fontSize: 13.5,
                                 fontWeight: 700,
+                                color: "#000",
                                 ...POPPINS,
                               }}
                             >
-                              {initials(name)}
-                            </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div
-                                style={{ display: "flex", alignItems: "center", gap: 6 }}
-                              >
-                                <span
-                                  style={{
-                                    fontSize: 12,
-                                    fontWeight: 600,
-                                    color: "#fff",
-                                    ...POPPINS,
-                                  }}
-                                >
-                                  {name}
-                                </span>
-                                <span
-                                  style={{
-                                    fontSize: 10,
-                                    color: "rgba(255,255,255,0.4)",
-                                    ...POPPINS,
-                                  }}
-                                >
-                                  {timeAgo(c.created_at)}
-                                </span>
-                              </div>
-                              <div
-                                style={{
-                                  fontSize: 13,
-                                  color: "rgba(255,255,255,0.85)",
-                                  marginTop: 3,
-                                  lineHeight: 1.4,
-                                  ...POPPINS,
-                                }}
-                              >
-                                {c.body}
-                              </div>
-                            </div>
-                          </div>
-                          {i !== displayedComments.length - 1 && (
-                            <div
+                              {name}
+                            </span>
+                            <span
                               style={{
-                                height: 1,
-                                marginLeft: 42,
-                                background: "rgba(255,255,255,0.08)",
+                                fontSize: 11,
+                                color: "#B0B0B5",
+                                ...POPPINS,
                               }}
-                            />
-                          )}
+                            >
+                              {timeAgo(c.created_at)}
+                            </span>
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 14,
+                              fontWeight: 400,
+                              color: NAVY,
+                              marginTop: 3,
+                              lineHeight: 1.4,
+                              ...POPPINS,
+                            }}
+                          >
+                            {c.body}
+                          </div>
                         </div>
-                      );
-                    });
-                  })()}
-                </div>
+                      </div>
+                    );
+                  });
+                })()
               )}
             </div>
 
+            {/* Compose bar */}
             <div
               style={{
-                background: "rgba(255,255,255,0.06)",
-                borderRadius: 16,
-                margin: "8px 16px",
-                padding: "10px 14px",
                 display: "flex",
                 gap: 10,
                 alignItems: "center",
+                padding: "12px 16px",
+                background: "#fff",
+                borderTop: "1px solid #E4E4E8",
               }}
             >
               <div
@@ -1374,11 +1382,14 @@ function ShowcasePage() {
                 aria-label="Add a comment"
                 style={{
                   flex: 1,
-                  background: "transparent",
+                  minWidth: 0,
+                  background: "#F2F2F7",
                   border: "none",
                   outline: "none",
-                  color: "#fff",
-                  fontSize: 13,
+                  borderRadius: 20,
+                  padding: "9px 16px",
+                  color: NAVY,
+                  fontSize: 13.5,
                   ...POPPINS,
                 }}
               />
@@ -1388,20 +1399,27 @@ function ShowcasePage() {
                 onClick={sendComment}
                 disabled={sendingComment || !commentBody.trim()}
                 style={{
-                  background: "none",
+                  width: 34,
+                  height: 34,
+                  borderRadius: "50%",
+                  background: BLUE,
                   border: "none",
                   padding: 0,
                   display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
                   cursor: "pointer",
                   opacity: commentBody.trim() ? 1 : 0.5,
                 }}
               >
-                <IconSend size={18} color={BLUE} />
+                <IconSend size={14} color="#fff" />
               </button>
             </div>
           </div>
         </div>
       )}
+
 
       {/* REPORT SHEET */}
       {reportOpen && (
