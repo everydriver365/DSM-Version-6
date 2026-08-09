@@ -380,8 +380,21 @@ function PaymentsPage() {
         <button
           type="button"
           onClick={() => { setUnifiedPayPupilId(pupilFilter && pupilFilter !== "all" ? pupilFilter : undefined); setUnifiedPayOpen(true); }}
-          className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
-          style={{ backgroundColor: TEAL }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            background: "#1A9B5C",
+            color: "#fff",
+            fontSize: 14,
+            fontWeight: 800,
+            padding: "11px 20px",
+            borderRadius: 14,
+            border: 0,
+            boxShadow: "0 4px 0 #0F6B3D",
+            cursor: "pointer",
+            ...POPPINS,
+          }}
         >
           <IconPlus stroke={1.5} size={16} color="#fff" /> Take payment
         </button>
@@ -389,19 +402,32 @@ function PaymentsPage() {
       <WorkspaceDots activeIndex={3} />
 
       {/* Summary stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "16px 16px 0", marginBottom: 14 }}>
-        <StatTile label="THIS MONTH" value={formatGBP(stats.monthReceived)} color="#1E8E3E" />
-        <StatTile
-          label="OUTSTANDING"
-          value={formatGBP(stats.outstanding)}
-          color={stats.outstanding > 0 ? "#CC2229" : "#B0BAC9"}
-        />
-        <StatTile
-          label="REFUNDED"
-          value={formatGBP(stats.monthRefunded)}
-          color={stats.monthRefunded > 0 ? "#B5661E" : "#B0BAC9"}
-        />
+      <div style={{ padding: "16px 16px 0", marginBottom: 14 }}>
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 20,
+            boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
+            display: "flex",
+            overflow: "hidden",
+          }}
+        >
+          <StatTile label="THIS MONTH" value={formatGBP(stats.monthReceived)} color="#1A9B5C" />
+          <StatTile
+            first={false}
+            label="OUTSTANDING"
+            value={formatGBP(stats.outstanding)}
+            color={stats.outstanding > 0 ? "#FF3B30" : "#C7C7CC"}
+          />
+          <StatTile
+            first={false}
+            label="REFUNDED"
+            value={formatGBP(stats.monthRefunded)}
+            color={stats.monthRefunded > 0 ? "#FF3B30" : "#C7C7CC"}
+          />
+        </div>
       </div>
+
 
       {/* Paid vs outstanding breakdown */}
       {paidBreakdown.totalDue > 0 && (
