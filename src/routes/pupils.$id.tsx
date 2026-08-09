@@ -4964,121 +4964,210 @@ function PupilExtras({
 
   return (
     <>
-      {/* Emergency contact + Driving licence */}
-      <div className="flex flex-wrap gap-3 mt-3">
-        <div className="flex-1 min-w-[160px]" style={{ ...EXTRAS_CARD, marginTop: 0 }}>
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <IconHeart stroke={1.5} size={18} color="#CC2229" />
-              <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Emergency contact</span>
-            </div>
-            {!editEmg && (
-              <button type="button" onClick={() => setEditEmg(true)} className="text-[12px] font-semibold" style={{ color: "#1877D6", ...POPPINS }}>
-                {pupil.emergency_contact_name ? "Edit" : "Add"}
-              </button>
-            )}
-          </div>
-          {!editEmg ? (
-            pupil.emergency_contact_name ? (
-              <div>
-                <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>{pupil.emergency_contact_name}</div>
-                <div className="flex items-center gap-2 mt-1">
-                  <a href={`tel:${pupil.emergency_contact_phone ?? ""}`} className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
-                    {pupil.emergency_contact_phone}
-                  </a>
-                  {pupil.emergency_contact_relation && (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full" style={{ background: "#EEF2F7", color: "#0B1F3A", ...POPPINS }}>
-                      {pupil.emergency_contact_relation}
-                    </span>
-                  )}
+      {/* Emergency contact + Driving licence (collapsible rows) */}
+      <div style={{ marginBottom: 14 }}>
+        {/* Emergency contact */}
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 18,
+            boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+            overflow: "hidden",
+            marginBottom: 14,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setEmgOpen((v) => !v)}
+            aria-expanded={emgOpen}
+            style={{ width: "100%", padding: 16, display: "flex", flexDirection: "row", gap: 11, alignItems: "center", background: "none", border: "none", textAlign: "left" }}
+          >
+            <IconHeart stroke={1.6} size={18} color="#FF3B30" style={{ flexShrink: 0 }} />
+            <span style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ display: "block", color: "#0B1F3A", fontSize: 14, fontWeight: 800, ...POPPINS }}>Emergency contact</span>
+              <span
+                style={{
+                  display: "block",
+                  color: pupil.emergency_contact_name ? "#1A9B5C" : "#B0B0B5",
+                  fontSize: 11.5,
+                  fontWeight: pupil.emergency_contact_name ? 700 : 500,
+                  ...POPPINS,
+                }}
+                className="truncate"
+              >
+                {pupil.emergency_contact_name
+                  ? `${pupil.emergency_contact_name}${pupil.emergency_contact_relation ? ` · ${pupil.emergency_contact_relation}` : ""}`
+                  : "Not set"}
+              </span>
+            </span>
+            <IconChevronDown stroke={1.7} size={15} color="#C7C7CC" style={{ flexShrink: 0, transform: emgOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }} />
+          </button>
+          {emgOpen && (
+            <div style={{ padding: "12px 16px 16px", borderTop: "1px solid #F0F0F2" }}>
+              {!editEmg ? (
+                pupil.emergency_contact_name ? (
+                  <div>
+                    <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>{pupil.emergency_contact_name}</div>
+                    <div className="flex items-center gap-2 mt-1">
+                      <a href={`tel:${pupil.emergency_contact_phone ?? ""}`} className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
+                        {pupil.emergency_contact_phone}
+                      </a>
+                      {pupil.emergency_contact_relation && (
+                        <span className="text-[11px] px-2 py-0.5 rounded-full" style={{ background: "#F2F2F7", color: "#0B1F3A", ...POPPINS }}>
+                          {pupil.emergency_contact_relation}
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setEditEmg(true)}
+                      style={{ marginTop: 10, color: "#1877D6", fontSize: 12.5, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+                    >
+                      Edit emergency contact
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setEditEmg(true)}
+                    style={{ color: "#1877D6", fontSize: 12.5, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+                  >
+                    + Add emergency contact
+                  </button>
+                )
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <input style={EXTRAS_INPUT} placeholder="Name" value={emgName} onChange={(e) => setEmgName(e.target.value)} />
+                  <input style={EXTRAS_INPUT} placeholder="Phone" type="tel" value={emgPhone} onChange={(e) => setEmgPhone(e.target.value)} />
+                  <select style={EXTRAS_INPUT} value={emgRel} onChange={(e) => setEmgRel(e.target.value)}>
+                    {RELATIONS.map((r) => <option key={r} value={r}>{r}</option>)}
+                  </select>
+                  <div className="flex gap-2 mt-1">
+                    <button type="button" onClick={saveEmg} disabled={savingEmg} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
+                      {savingEmg ? "Saving…" : "Save"}
+                    </button>
+                    <button type="button" onClick={() => setEditEmg(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
+                      Cancel
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>No emergency contact set</div>
-            )
-          ) : (
-            <div className="flex flex-col gap-2">
-              <input style={EXTRAS_INPUT} placeholder="Name" value={emgName} onChange={(e) => setEmgName(e.target.value)} />
-              <input style={EXTRAS_INPUT} placeholder="Phone" type="tel" value={emgPhone} onChange={(e) => setEmgPhone(e.target.value)} />
-              <select style={EXTRAS_INPUT} value={emgRel} onChange={(e) => setEmgRel(e.target.value)}>
-                {RELATIONS.map((r) => <option key={r} value={r}>{r}</option>)}
-              </select>
-              <div className="flex gap-2 mt-1">
-                <button type="button" onClick={saveEmg} disabled={savingEmg} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
-                  {savingEmg ? "Saving…" : "Save"}
-                </button>
-                <button type="button" onClick={() => setEditEmg(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
-                  Cancel
-                </button>
-              </div>
+              )}
             </div>
           )}
         </div>
 
-        <div className="flex-1 min-w-[160px]" style={{ ...EXTRAS_CARD, marginTop: 0 }}>
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <IconCreditCard stroke={1.5} size={18} color="#1877D6" />
-              <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Driving licence</span>
-            </div>
-            {!editLic && (
-              <button type="button" onClick={() => setEditLic(true)} className="text-[12px] font-semibold" style={{ color: "#1877D6", ...POPPINS }}>
-                {pupil.driving_licence_number ? "Edit" : "Add"}
-              </button>
-            )}
-          </div>
-          {!editLic ? (
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <div className="text-[14px] font-semibold tracking-wider" style={{ color: "#0B1F3A", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-                  {pupil.driving_licence_number ? pupil.driving_licence_number.toUpperCase().replace(/(.{5})(.{6})(.{5})/, "$1 $2 $3") : "Not set"}
-                </div>
-                {pupil.driving_licence_number && (
-                  pupil.driving_licence_checked ? (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: "#DCFCE7", color: "#166534", ...POPPINS }}>
-                      Verified ✓
-                    </span>
-                  ) : (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: "#FEF3C7", color: "#92400E", ...POPPINS }}>
-                      Unverified
-                    </span>
-                  )
-                )}
-              </div>
-              <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={!!pupil.driving_licence_checked}
-                  onChange={(e) => toggleLicenceChecked(e.target.checked)}
-                  disabled={savingChecked}
-                  className="w-4 h-4"
-                  style={{ accentColor: "#1A52A0" }}
-                />
-                <span className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
-                  Licence checked and verified ✓
-                </span>
-              </label>
-              <button
-                type="button"
-                onClick={() => setRequestSheetOpen(true)}
-                className="mt-3 flex items-center gap-1.5 text-[13px] font-semibold"
-                style={{ color: "#1A52A0", ...POPPINS }}
+        {/* Driving licence */}
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 18,
+            boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+            overflow: "hidden",
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setLicOpen((v) => !v)}
+            aria-expanded={licOpen}
+            style={{ width: "100%", padding: 16, display: "flex", flexDirection: "row", gap: 11, alignItems: "center", background: "none", border: "none", textAlign: "left" }}
+          >
+            <IconCreditCard stroke={1.6} size={18} color="#1877D6" style={{ flexShrink: 0 }} />
+            <span style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ display: "block", color: "#0B1F3A", fontSize: 14, fontWeight: 800, ...POPPINS }}>Driving licence</span>
+              <span
+                style={{
+                  display: "block",
+                  color: pupil.driving_licence_checked ? "#1A9B5C" : pupil.driving_licence_number ? "#0B1F3A" : "#B0B0B5",
+                  fontSize: 11.5,
+                  fontWeight: pupil.driving_licence_checked ? 700 : 500,
+                  ...POPPINS,
+                }}
+                className="truncate"
               >
-                Request DVLA check code
-                <IconExternalLink stroke={1.5} size={14} />
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-2">
-              <input style={EXTRAS_INPUT} placeholder="e.g. MORGA657054SM9IJ" value={licence} onChange={(e) => setLicence(e.target.value.toUpperCase())} maxLength={20} />
-              <div className="flex gap-2 mt-1">
-                <button type="button" onClick={saveLic} disabled={savingLic} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
-                  {savingLic ? "Saving…" : "Save"}
-                </button>
-                <button type="button" onClick={() => setEditLic(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
-                  Cancel
-                </button>
-              </div>
+                {pupil.driving_licence_checked
+                  ? "Checked & verified"
+                  : pupil.driving_licence_number
+                    ? "Added · not verified"
+                    : "Not set"}
+              </span>
+            </span>
+            <IconChevronDown stroke={1.7} size={15} color="#C7C7CC" style={{ flexShrink: 0, transform: licOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }} />
+          </button>
+          {licOpen && (
+            <div style={{ padding: "12px 16px 16px", borderTop: "1px solid #F0F0F2" }}>
+              {!editLic ? (
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div
+                      style={{
+                        fontSize: 12.5,
+                        fontWeight: 700,
+                        letterSpacing: "0.05em",
+                        color: pupil.driving_licence_number ? "#0B1F3A" : "#B0B0B5",
+                        fontFamily: pupil.driving_licence_number ? "ui-monospace, SFMono-Regular, Menlo, monospace" : undefined,
+                        ...(pupil.driving_licence_number ? {} : POPPINS),
+                      }}
+                    >
+                      {pupil.driving_licence_number ? pupil.driving_licence_number.toUpperCase().replace(/(.{5})(.{6})(.{5})/, "$1 $2 $3") : "Licence number not set"}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setEditLic(true)}
+                      style={{ color: "#1877D6", fontSize: 12.5, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+                    >
+                      {pupil.driving_licence_number ? "Edit" : "+ Add"}
+                    </button>
+                  </div>
+                  <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
+                    <span
+                      style={{
+                        width: 22,
+                        height: 22,
+                        borderRadius: 6,
+                        flexShrink: 0,
+                        background: pupil.driving_licence_checked ? "#1877D6" : "#FFFFFF",
+                        border: pupil.driving_licence_checked ? "none" : "1.5px solid #D8D8DE",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {pupil.driving_licence_checked && <IconCheck stroke={3} size={14} color="#FFFFFF" />}
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={!!pupil.driving_licence_checked}
+                      onChange={(e) => toggleLicenceChecked(e.target.checked)}
+                      disabled={savingChecked}
+                      style={{ position: "absolute", opacity: 0, width: 0, height: 0 }}
+                    />
+                    <span style={{ color: "#0B1F3A", fontSize: 12.5, fontWeight: 700, ...POPPINS }}>
+                      Licence checked &amp; verified
+                    </span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setRequestSheetOpen(true)}
+                    className="mt-3 flex items-center gap-1.5"
+                    style={{ color: "#1877D6", fontSize: 12.5, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+                  >
+                    Request DVLA check code
+                    <IconExternalLink stroke={1.8} size={12} />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <input style={EXTRAS_INPUT} placeholder="e.g. MORGA657054SM9IJ" value={licence} onChange={(e) => setLicence(e.target.value.toUpperCase())} maxLength={20} />
+                  <div className="flex gap-2 mt-1">
+                    <button type="button" onClick={saveLic} disabled={savingLic} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
+                      {savingLic ? "Saving…" : "Save"}
+                    </button>
+                    <button type="button" onClick={() => setEditLic(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
