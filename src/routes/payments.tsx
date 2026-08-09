@@ -7,7 +7,6 @@ import { EmptyState } from "@/components/dsm/EmptyState";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
-import WorkspaceDots from "../components/dsm/WorkspaceDots";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
