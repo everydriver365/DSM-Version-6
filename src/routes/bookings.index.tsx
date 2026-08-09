@@ -276,91 +276,113 @@ function BookingsListPage() {
             </div>
           </div>
         ) : (
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: 20,
-              overflow: "hidden",
-              boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
-            }}
-          >
-            {filtered.map((b, idx) => {
+          <div>
+            {filtered.map((b) => {
               const badge = statusBadge(b.status);
               const price = b.instructor_courses?.price ?? 0;
               const paid = b.amount_paid ?? 0;
               const balance = Math.max(0, price - paid);
+              const hours = b.instructor_courses?.total_hours;
+              const meta = [
+                hours != null ? `${hours} hrs` : null,
+                b.instructor_courses?.pickup_area || null,
+              ].filter(Boolean) as string[];
               return (
                 <div
                   key={b.id}
                   onClick={() => navigate({ to: "/bookings/$id", params: { id: b.id } })}
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 13,
-                    padding: "15px 16px",
-                    borderTop: idx === 0 ? "none" : "1px solid #EFEFF2",
+                    background: "#fff",
+                    borderRadius: 18,
+                    padding: 16,
+                    marginBottom: 12,
                     cursor: "pointer",
+                    boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
                   }}
                 >
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <span
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span
+                          style={{
+                            fontSize: 17,
+                            fontWeight: 800,
+                            color: "#000",
+                            letterSpacing: "-0.2px",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {b.pupil_name || "Unnamed pupil"}
+                        </span>
+                        <span
+                          style={{
+                            padding: "4px 10px",
+                            borderRadius: 20,
+                            fontSize: 10,
+                            fontWeight: 800,
+                            background: badge.bg,
+                            color: badge.color,
+                            flexShrink: 0,
+                          }}
+                        >
+                          {badge.label}
+                        </span>
+                      </div>
+                      <div
                         style={{
-                          fontSize: 16,
-                          fontWeight: 800,
-                          color: "#000",
-                          letterSpacing: "-0.1px",
+                          fontSize: 13.5,
+                          fontWeight: 500,
+                          color: "#6B6B6F",
+                          marginTop: 5,
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
                         }}
                       >
-                        {b.pupil_name || "Unnamed pupil"}
-                      </span>
-                      <span
-                        style={{
-                          padding: "3px 9px",
-                          borderRadius: 999,
-                          fontSize: 11,
-                          fontWeight: 700,
-                          background: badge.bg,
-                          color: badge.color,
-                          flexShrink: 0,
-                        }}
-                      >
-                        {badge.label}
-                      </span>
+                        {b.instructor_courses?.name || "Course booking"}
+                      </div>
                     </div>
+
+                    <div style={{ textAlign: "right", flexShrink: 0 }}>
+                      <div style={{ fontSize: 18, fontWeight: 800, color: "#000" }}>{money(paid)}</div>
+                      {balance > 0 ? (
+                        <div style={{ fontSize: 11.5, fontWeight: 700, color: "#FF3B30", marginTop: 2 }}>
+                          {money(balance)} due
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  <div style={{ height: 1, background: "#F0F0F2", margin: "13px 0" }} />
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
                     <div
                       style={{
-                        fontSize: 13,
+                        fontSize: 12.5,
                         fontWeight: 500,
-                        color: "#6B6B6F",
-                        marginTop: 2,
+                        color: "#8A8A8E",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {b.instructor_courses?.name || "Course booking"}
+                      <span style={{ color: "#1877D6", fontWeight: 700 }}>
+                        {b.instructor_courses?.course_type || "Course"}
+                      </span>
+                      {meta.length ? ` · ${meta.join(" · ")}` : ""}
                     </div>
-                    <div style={{ fontSize: 12, color: "#B0B0B5", marginTop: 2 }}>
-                      Booked {fmtDate(b.booked_at)}
-                    </div>
-                  </div>
-
-                  <div style={{ textAlign: "right", flexShrink: 0 }}>
-                    <div style={{ fontSize: 15, fontWeight: 800, color: "#000" }}>{money(paid)}</div>
-                    <div style={{ fontSize: 11.5, color: balance > 0 ? "#CC2229" : "#8A8A8E", marginTop: 2 }}>
-                      {balance > 0 ? `${money(balance)} due` : "Paid in full"}
+                    <div style={{ fontSize: 11.5, color: "#B0B0B5", flexShrink: 0 }}>
+                      {fmtDate(b.booked_at)}
                     </div>
                   </div>
-                  <IconChevronRight size={16} color="#8A8A8E" />
                 </div>
               );
             })}
           </div>
         )}
+
       </div>
     </div>
   );
