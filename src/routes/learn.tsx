@@ -426,6 +426,8 @@ function LearnPage() {
   }, [playing]);
 
   const [videos, setVideos] = useState<Video[]>([]);
+  const playVideos = videos.filter((v) => !!v.url);
+  const playIndex = playing ? playVideos.findIndex((v) => v.id === playing.id) : -1;
 
   useEffect(() => {
     let cancelled = false;
