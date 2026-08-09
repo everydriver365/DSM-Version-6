@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { IconChevronDown, IconChevronLeft, IconChevronUp } from "@tabler/icons-react";
+import { IconChevronDown, IconChevronLeft, IconChevronUp, IconClipboardList } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
@@ -235,9 +235,10 @@ function AdminApplicationsPage() {
           position: "sticky",
           top: 0,
           zIndex: 10,
-          background: RED,
+          background: "#0B1F3A",
           color: "#fff",
-          padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
+          borderRadius: "0 0 28px 28px",
+          padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 18px",
           display: "flex",
           alignItems: "center",
           gap: 12,
@@ -248,28 +249,41 @@ function AdminApplicationsPage() {
           onClick={() => navigate({ to: "/admin" })}
           aria-label="Back"
           style={{
-            width: 32,
-            height: 32,
+            width: 34,
+            height: 34,
             borderRadius: "50%",
-            background: "rgba(255,255,255,0.18)",
+            background: "rgba(255,255,255,0.08)",
             border: "none",
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
             color: "#fff",
+            flexShrink: 0,
           }}
         >
           <IconChevronLeft stroke={1.5} size={18} />
         </button>
-        <span style={{ fontSize: 16, fontWeight: 600 }}>Featured applications</span>
+        <span style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.4px", color: "#fff" }}>
+          Featured applications
+        </span>
       </div>
 
       {/* Stats */}
-      <div style={{ padding: 16, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
-        <StatCard label="Pending" value={stats.pending} color={AMBER} bg="#FEF3C7" />
-        <StatCard label="Approved" value={stats.approved} color={GREEN} bg="#DCFCE7" />
-        <StatCard label="Rejected" value={stats.rejected} color={RED} bg="#FEE2E2" />
+      <div style={{ padding: "16px" }}>
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 20,
+            boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
+            display: "flex",
+            overflow: "hidden",
+          }}
+        >
+          <StatColumn label="Pending" value={stats.pending} color={AMBER} />
+          <StatColumn label="Approved" value={stats.approved} color={GREEN} divider />
+          <StatColumn label="Rejected" value={stats.rejected} color={RED} divider />
+        </div>
       </div>
 
       {/* Filter tabs */}
@@ -283,14 +297,15 @@ function AdminApplicationsPage() {
               onClick={() => setFilter(k)}
               style={{
                 flexShrink: 0,
-                padding: "8px 14px",
-                borderRadius: 999,
-                fontSize: 13,
-                fontWeight: 600,
+                padding: "10px 18px",
+                borderRadius: 24,
+                fontSize: 13.5,
+                fontWeight: 700,
                 cursor: "pointer",
-                border: active ? "none" : `1px solid ${BORDER}`,
-                background: active ? NAVY : "#fff",
-                color: active ? "#fff" : NAVY,
+                border: "none",
+                background: active ? "#0B1F3A" : "#fff",
+                color: active ? "#fff" : "#0B1F3A",
+                boxShadow: active ? "0 3px 0 #050D1C" : "0 3px 0 #E4E4E8",
                 textTransform: "capitalize",
               }}
             >
@@ -304,7 +319,7 @@ function AdminApplicationsPage() {
       {apps === null ? (
         <FullMsg>Loading applications…</FullMsg>
       ) : filtered.length === 0 ? (
-        <FullMsg>No applications</FullMsg>
+        <EmptyState filter={filter} />
       ) : (
         filtered.map((app) => {
           const isOpen = expandedId === app.id;
@@ -564,11 +579,28 @@ function fmt(iso: string | null): string {
   }
 }
 
-function StatCard({ label, value, color, bg }: { label: string; value: number; color: string; bg: string }) {
+function StatColumn({ label, value, color, divider }: { label: string; value: number; color: string; divider?: boolean }) {
   return (
-    <div style={{ background: bg, borderRadius: 12, padding: 12, textAlign: "center" }}>
-      <div style={{ fontSize: 22, fontWeight: 800, color }}>{value}</div>
-      <div style={{ fontSize: 11, color, fontWeight: 600, marginTop: 2 }}>{label}</div>
+    <div
+      style={{
+        flex: 1,
+        padding: "18px 12px",
+        borderLeft: divider ? "1.5px dashed #E4E4E8" : undefined,
+      }}
+    >
+      <div style={{ fontSize: 34, fontWeight: 900, color, letterSpacing: "-1.2px", lineHeight: 1 }}>{value}</div>
+      <div
+        style={{
+          fontSize: 10.5,
+          fontWeight: 700,
+          color: "#8A8A8E",
+          textTransform: "uppercase",
+          letterSpacing: "0.2px",
+          marginTop: 6,
+        }}
+      >
+        {label}
+      </div>
     </div>
   );
 }
@@ -622,5 +654,44 @@ function Row({ k, v }: { k: string; v: string | null | undefined }) {
 function FullMsg({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ padding: 32, textAlign: "center", color: MUTED, fontFamily: "Poppins, sans-serif" }}>{children}</div>
+  );
+}
+
+function EmptyState({ filter }: { filter: FilterKey }) {
+  const titles: Record<FilterKey, string> = {
+    all: "No applications",
+    pending: "No pending applications",
+    approved: "No approved applications",
+    rejected: "No rejected applications",
+  };
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "50px 30px",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
+      <div
+        style={{
+          width: 64,
+          height: 64,
+          borderRadius: "50%",
+          background: "#fff",
+          boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.06)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <IconClipboardList size={28} color="#C7C7CC" stroke={1.5} />
+      </div>
+      <div style={{ fontSize: 17, fontWeight: 800, color: "#0B1F3A", marginTop: 18 }}>{titles[filter]}</div>
+      <div style={{ fontSize: 13.5, color: "#8A8A8E", lineHeight: 1.5, marginTop: 6, textAlign: "center" }}>
+        New feature requests from instructors will appear here for review
+      </div>
+    </div>
   );
 }
