@@ -457,25 +457,23 @@ function LearnPage() {
       />
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
-      <div style={{ padding: "8px 16px 4px" }}>
-        <h1 style={{ fontSize: 26, fontWeight: 700, color: NAVY, margin: 0, lineHeight: 1.15 }}>
-          Learn
-        </h1>
-        <p style={{ fontSize: 14, color: GRAY_BODY, margin: "4px 0 0" }}>
+      <div style={{ padding: "8px 16px 0" }}>
+        <p style={{ fontSize: 14, fontWeight: 500, color: "#8A8A8E", margin: "0 0 22px" }}>
           Quick guides to get more out of DSM.
         </p>
       </div>
 
-      <div style={{ marginTop: 20 }}>
+      <div>
         <SectionLabel
-          icon={<IconPlayerPlay stroke={1.5} size={14} color={BLUE} />}
+          strong
+          icon={<IconPlayerPlay stroke={1.5} size={13} color={BLUE} fill={BLUE} />}
           label="How to"
         />
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: 12,
+            gap: 14,
             padding: "0 16px",
           }}
         >
