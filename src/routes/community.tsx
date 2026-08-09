@@ -1424,6 +1424,7 @@ function AlertsTab({
             type="button"
             onClick={() => setTomtomOpen((v) => !v)}
             aria-expanded={tomtomOpen}
+            aria-controls="official-sources-content"
             style={{
               width: "100%",
               display: "flex",
@@ -1439,6 +1440,7 @@ function AlertsTab({
               boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
               WebkitTapHighlightColor: "transparent",
             }}
+            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877D6]/40 focus-visible:ring-offset-2"
           >
             <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: 1 }}>
               <div
@@ -1491,6 +1493,7 @@ function AlertsTab({
 
 
           <div
+            id="official-sources-content"
             ref={tomtomContentRef}
             style={{
               maxHeight: tomtomMaxHeight,
