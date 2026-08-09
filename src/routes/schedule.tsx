@@ -1060,7 +1060,7 @@ function SchedulePage() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <div style={{ width: 8, height: 8, borderRadius: 2, background: '#9CA3AF' }} />
-          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Google IconCalendar</span>
+          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Google Calendar</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <div style={{ width: 8, height: 8, borderRadius: 2, background: '#D97706' }} />
@@ -1619,7 +1619,7 @@ function SchedulePage() {
                                           {title}
                                         </div>
                                         <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>
-                                          Google IconCalendar
+                                          Google Calendar
                                         </div>
                                       </div>
                                     </>
