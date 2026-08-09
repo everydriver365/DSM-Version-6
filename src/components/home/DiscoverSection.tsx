@@ -558,9 +558,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <div
                   style={{
                     position: "absolute",
-                    inset: 0,
+                    left: 14,
+                    right: 14,
+                    bottom: 14,
                     zIndex: 3,
-                    padding: 18,
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "flex-end",
@@ -569,12 +570,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   <div
                     style={{
                       color: "#fff",
-                      fontSize: 20,
-                      fontWeight: 800,
-                      letterSpacing: "-0.3px",
-                      maxWidth: "62%",
+                      fontSize: 16,
+                      fontWeight: 700,
+                      letterSpacing: "-0.2px",
+                      maxWidth: "60%",
                       fontFamily: FONT,
-                      lineHeight: 1.15,
+                      lineHeight: 1.2,
                     }}
                   >
                     {listing?.title ?? "Services & deals"}
@@ -582,8 +583,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   <div
                     style={{
                       color: "rgba(255,255,255,0.7)",
-                      fontSize: 12,
-                      marginTop: 4,
+                      fontSize: 10,
+                      marginTop: 3,
                       fontFamily: FONT,
                     }}
                   >
@@ -596,14 +597,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       display: "flex",
                       alignItems: "flex-end",
                       justifyContent: "space-between",
-                      marginTop: 12,
+                      marginTop: 8,
                     }}
                   >
                     <div>
                       <div
                         style={{
                           color: "rgba(255,255,255,0.6)",
-                          fontSize: 10,
+                          fontSize: 9,
                           fontWeight: 600,
                           letterSpacing: "0.4px",
                           fontFamily: FONT,
@@ -614,7 +615,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       <div
                         style={{
                           color: "#fff",
-                          fontSize: 20,
+                          fontSize: 17,
                           fontWeight: 900,
                           fontFamily: FONT,
                           lineHeight: 1.1,
@@ -632,14 +633,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       style={{
                         background: "#fff",
                         color: NAVY,
-                        fontSize: 10.5,
+                        fontSize: 9.5,
                         fontWeight: 700,
                         fontFamily: FONT,
-                        padding: "5px 10px",
-                        borderRadius: 7,
+                        padding: "4px 8px",
+                        borderRadius: 6,
                         border: "none",
                         boxShadow: "0 1.5px 0 #B8C4D6",
-
                         cursor: "pointer",
                       }}
                     >
