@@ -174,6 +174,9 @@ function ShowcasePage() {
   const [commentSort, setCommentSort] = useState<"newest" | "top">("newest");
   const [sendingComment, setSendingComment] = useState(false);
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
+  // Per-comment likes
+  const [commentLikeCounts, setCommentLikeCounts] = useState<Record<string, number>>({});
+  const [myCommentLikes, setMyCommentLikes] = useState<Record<string, boolean>>({});
 
   // Reports
   const [reportOpen, setReportOpen] = useState(false);
