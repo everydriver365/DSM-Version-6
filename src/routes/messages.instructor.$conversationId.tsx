@@ -10,6 +10,7 @@ import {
   IconAlertCircle,
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
+import JumpToLatestButton from "@/components/dsm/JumpToLatestButton";
 
 export const Route = createFileRoute("/messages/instructor/$conversationId")({
   head: () => ({
@@ -268,6 +269,7 @@ function InstructorDMThread() {
   const [sending, setSending] = useState(false);
   const [otherTyping, setOtherTyping] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const typingClearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const typingStopRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -617,7 +619,8 @@ function InstructorDMThread() {
       </div>
 
       {/* MESSAGE LIST */}
-      <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "16px 16px 12px" }}>
+      <JumpToLatestButton scrollerRef={scrollerRef} bottomOffset={92} />
+      <div ref={scrollerRef} style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "16px 16px 12px" }}>
         {loading ? (
           <div
             style={{
