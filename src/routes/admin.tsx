@@ -1112,7 +1112,7 @@ function AdminHub() {
   return (
     <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
       <AdminTopBar title="Admin" onBack={() => navigate({ to: "/home" })} />
-      <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)" }}>
+      <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 80px)" }}>
         <div style={{ padding: 16 }}>
           <AdminGroupLabel first>Marketplace</AdminGroupLabel>
           <AdminGroupCard>
