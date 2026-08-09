@@ -493,10 +493,11 @@ function PaymentsPage() {
         type="button"
         onClick={() => setPupilPickerOpen(true)}
         style={{
-          background: "#FFFFFF",
-          borderRadius: 12,
-          padding: "9px 12px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+          background: "#fff",
+          borderRadius: 16,
+          padding: "14px 16px",
+          boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.06)",
+
           display: "flex",
           alignItems: "center",
           gap: 8,
