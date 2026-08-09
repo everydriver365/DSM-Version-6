@@ -265,6 +265,73 @@ function DataImportPage() {
             </div>
           )}
 
+          {/* COLUMN MAPPING */}
+          {mapping && csvHeaders.length > 0 && (
+            <div className="mt-4">
+              <div className="text-[12px] font-semibold text-[#6B7280] mb-2">
+                COLUMN MAPPING (auto-detected)
+              </div>
+              <div
+                className="flex flex-col"
+                style={{
+                  backgroundColor: "#FFFFFF",
+                  borderWidth: "0.5px",
+                  borderStyle: "solid",
+                  borderColor: "#EEF2F7",
+                  borderRadius: 12,
+                  overflow: "hidden",
+                }}
+              >
+                {PUPIL_FIELDS.map((f, i) => {
+                  const m = mapping[f];
+                  const auto = m.index >= 0;
+                  return (
+                    <div
+                      key={f}
+                      className="flex items-center justify-between px-3 py-2.5"
+                      style={{ borderTop: i === 0 ? undefined : "0.5px solid #EEF2F7", gap: 10 }}
+                    >
+                      <div className="min-w-0">
+                        <div className="text-[13px] font-medium text-[#0B1F3A]">{FIELD_LABELS[f]}</div>
+                        <div className="text-[11px]" style={{ color: auto ? "#1877D6" : "#9AA3AF" }}>
+                          {auto
+                            ? m.via === "exact"
+                              ? "Exact match"
+                              : m.via === "fuzzy"
+                                ? `Best guess (${Math.round(m.confidence * 100)}%)`
+                                : "Matched by name"
+                            : "Not mapped"}
+                        </div>
+                      </div>
+                      <select
+                        value={m.index}
+                        onChange={(e) => setFieldColumn(f, Number(e.target.value))}
+                        className="text-[13px] text-[#0B1F3A]"
+                        style={{
+                          maxWidth: "55%",
+                          padding: "6px 8px",
+                          borderRadius: 8,
+                          borderWidth: "0.5px",
+                          borderStyle: "solid",
+                          borderColor: auto ? "#1877D6" : "#E4E4E8",
+                          backgroundColor: auto ? "#F3F8FF" : "#FAFBFC",
+                        }}
+                      >
+                        <option value={-1}>— Skip —</option>
+                        {csvHeaders.map((h, idx) => (
+                          <option key={idx} value={idx}>
+                            {h || `Column ${idx + 1}`}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+
           {/* PREVIEW */}
           {rows.length > 0 && (
             <div className="mt-4">
