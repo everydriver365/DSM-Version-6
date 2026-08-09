@@ -1320,7 +1320,11 @@ function ShowcasePage() {
                             new Date(b.created_at).getTime() -
                             new Date(a.created_at).getTime(),
                         )
-                      : [...comments];
+                      : [...comments].sort(
+                          (a, b) =>
+                            (commentLikeCounts[b.id] ?? 0) -
+                            (commentLikeCounts[a.id] ?? 0),
+                        );
                   return displayedComments.map((c: any, i: number) => {
                     const name = c.instructor?.name ?? c.author_name ?? "Instructor";
                     return (
