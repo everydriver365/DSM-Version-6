@@ -947,7 +947,6 @@ function ShowcasePage() {
 
           {filtered.map((video) => {
             const upvoted = votes[video.id] === "up";
-            const downvoted = votes[video.id] === "down";
             return (
               <div
                 key={video.id}
