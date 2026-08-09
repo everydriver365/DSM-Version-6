@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ChevronLeft, Loader2, Plus, X } from "lucide-react";
-import { IconX, IconPlus } from "@tabler/icons-react";
+import { IconX, IconPlus, IconStar } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadImage } from "@/lib/uploadFile";
@@ -103,6 +103,54 @@ const emptyDraft: NewListingDraft = {
   isActive: true,
   images: [],
 };
+
+function categoryStyle(name: string | null | undefined): { bg: string; color: string } {
+  const n = (name ?? "").toLowerCase();
+  if (n.includes("business") || n.includes("service")) return { bg: "#E7F1FC", color: "#1877D6" };
+  if (n.includes("equipment")) return { bg: "#F3EEFB", color: "#7B4FC9" };
+  if (n.includes("car") || n.includes("vehicle")) return { bg: "#E6F6F4", color: "#0B9B8A" };
+  if (n.includes("insurance")) return { bg: "#FCE7F3", color: "#C724B1" };
+  if (n.includes("franchise") || n.includes("training")) return { bg: "#FFF4E5", color: "#D68A1B" };
+  return { bg: "#F2F2F7", color: "#0B1F3A" };
+}
+
+function initials(name: string | null | undefined): string {
+  if (!name) return "?";
+  return name
+    .split(" ")
+    .map((w) => w[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
+function StatusPill({ type, label }: { type: "instructor" | "live" | "pending" | "featured" | "supplier"; label: string }) {
+  const styles: Record<string, React.CSSProperties> = {
+    instructor: { background: "#0B1F3A", color: "#fff" },
+    supplier: { background: "#8A8A8E", color: "#fff" },
+    live: { background: "#1A9B5C", color: "#fff" },
+    pending: { background: "#D68A1B", color: "#fff" },
+    featured: { background: "#FFD866", color: "#5A4200" },
+  };
+  return (
+    <span
+      style={{
+        ...styles[type],
+        fontSize: 11.5,
+        fontWeight: 800,
+        padding: "6px 12px",
+        borderRadius: 20,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 4,
+      }}
+    >
+      {type === "featured" && <IconStar size={12} fill="currentColor" />}
+      {label}
+    </span>
+  );
+}
 
 function AdminListingsPage() {
   const navigate = useNavigate();
@@ -443,6 +491,7 @@ function AdminListingsPage() {
           zIndex: 40,
           background: "#0B1F3A",
           color: "#fff",
+          borderRadius: "0 0 28px 28px",
           padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
           display: "flex",
           alignItems: "center",
@@ -454,10 +503,10 @@ function AdminListingsPage() {
           onClick={() => navigate({ to: "/admin" })}
           aria-label="Back"
           style={{
-            width: 32,
-            height: 32,
+            width: 34,
+            height: 34,
             borderRadius: "50%",
-            background: "rgba(255,255,255,0.12)",
+            background: "rgba(255,255,255,0.08)",
             border: "none",
             display: "inline-flex",
             alignItems: "center",
@@ -468,7 +517,7 @@ function AdminListingsPage() {
         >
           <ChevronLeft size={18} strokeWidth={2} />
         </button>
-        <span style={{ fontSize: 16, fontWeight: 600, letterSpacing: "-0.01em" }}>Marketplace listings</span>
+        <span style={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.5px" }}>Marketplace listings</span>
         <button
           type="button"
           onClick={() => setSheetOpen(true)}
@@ -493,10 +542,31 @@ function AdminListingsPage() {
       </div>
 
       <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, padding: 16 }}>
-          <StatCard label="Pending review" value={stats.pending} />
-          <StatCard label="Live" value={stats.live} />
-          <StatCard label="Total" value={stats.total} />
+        <div style={{ padding: "16px" }}>
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 20,
+              boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
+              display: "flex",
+              overflow: "hidden",
+            }}
+          >
+            {[
+              { label: "Pending review", value: stats.pending, color: "#D68A1B" },
+              { label: "Live", value: stats.live, color: "#000" },
+              { label: "Total", value: stats.total, color: "#000" },
+            ].map((s, i) => (
+              <div key={s.label} style={{ flex: 1, padding: "18px 14px", borderLeft: i === 0 ? "none" : "1.5px dashed #E4E4E8" }}>
+                <div style={{ color: s.color, fontSize: 34, fontWeight: 900, letterSpacing: "-1.2px", lineHeight: 1 }}>
+                  {s.value}
+                </div>
+                <div style={{ color: "#8A8A8E", fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", marginTop: 6 }}>
+                  {s.label}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div
@@ -517,28 +587,32 @@ function AdminListingsPage() {
               ["instructor", "Instructor listings"],
               ["supplier", "Supplier listings"],
             ] as [Filter, string][]
-          ).map(([k, label]) => (
-            <button
-              key={k}
-              type="button"
-              onClick={() => setFilter(k)}
-              style={{
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-                padding: "8px 14px",
-                borderRadius: 999,
-                border: filter === k ? "0.5px solid #0B1F3A" : "0.5px solid #E2E6ED",
-                background: filter === k ? "#0B1F3A" : "#fff",
-                color: filter === k ? "#fff" : "#0B1F3A",
-                fontSize: 13,
-                fontWeight: 500,
-                fontFamily: "Poppins, sans-serif",
-                cursor: "pointer",
-              }}
-            >
-              {label}
-            </button>
-          ))}
+          ).map(([k, label]) => {
+            const active = filter === k;
+            return (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setFilter(k)}
+                style={{
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  padding: "10px 18px",
+                  borderRadius: 24,
+                  border: "none",
+                  background: active ? "#1877D6" : "#fff",
+                  color: active ? "#fff" : "#0B1F3A",
+                  boxShadow: active ? "0 3px 0 #0F52A8" : "0 3px 0 #E4E4E8",
+                  fontSize: 13.5,
+                  fontWeight: 700,
+                  fontFamily: "Poppins, sans-serif",
+                  cursor: "pointer",
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
           <span aria-hidden style={{ flexShrink: 0, width: 4 }} />
         </div>
 
@@ -560,45 +634,108 @@ function AdminListingsPage() {
                 key={l.id}
                 style={{
                   background: "#fff",
-                  borderWidth: "0.5px",
-                  borderStyle: "solid",
-                  borderColor: "#E2E6ED",
-                  borderRadius: 12,
-                  padding: 16,
+                  borderRadius: 20,
+                  padding: 18,
                   marginLeft: 16,
                   marginRight: 16,
-                  marginBottom: 8,
+                  marginBottom: 14,
+                  boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.07)",
+                  fontFamily: "Poppins, sans-serif",
                 }}
               >
                 <div
                   onClick={() => setExpandedId(expanded ? null : l.id)}
                   style={{ cursor: "pointer" }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-                    <div style={{ fontWeight: 600, color: "#0B1F3A", fontSize: 15, letterSpacing: "-0.01em" }}>
-                      {l.title}
-                    </div>
-                    {l.marketplace_categories?.name && (
-                      <Badge color="#6B7280" bg="#EEF2F7">{l.marketplace_categories.name}</Badge>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+                    {l.marketplace_categories?.name ? (
+                      <span
+                        style={{
+                          ...categoryStyle(l.marketplace_categories.name),
+                          fontSize: 10,
+                          fontWeight: 800,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.4px",
+                          padding: "5px 11px",
+                          borderRadius: 8,
+                        }}
+                      >
+                        {l.marketplace_categories.name}
+                      </span>
+                    ) : (
+                      <span />
+                    )}
+                    {l.price_display || l.price_amount != null ? (
+                      <div style={{ color: "#000", fontSize: 22, fontWeight: 900, lineHeight: 1 }}>
+                        {l.price_display}
+                      </div>
+                    ) : (
+                      <span
+                        style={{
+                          background: "#FDEDEC",
+                          color: "#FF3B30",
+                          fontSize: 12,
+                          fontWeight: 800,
+                          padding: "6px 10px",
+                          borderRadius: 8,
+                        }}
+                      >
+                        No price
+                      </span>
                     )}
                   </div>
-                  <div style={{ color: "#6B7280", fontSize: 13, marginTop: 4 }}>
-                    {l.instructors?.name ?? "—"}
+
+                  <div style={{ fontSize: 19, fontWeight: 800, color: "#000", letterSpacing: "-0.3px", marginTop: 12 }}>
+                    {l.title}
                   </div>
-                  <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
+                    <div
+                      style={{
+                        width: 26,
+                        height: 26,
+                        borderRadius: "50%",
+                        background: "#0B1F3A",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 10,
+                        fontWeight: 800,
+                        color: "#fff",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {initials(l.instructors?.name)}
+                    </div>
+                    <span style={{ fontSize: 13.5, fontWeight: 700, color: "#0B1F3A" }}>
+                      {l.instructors?.name ?? "—"}
+                    </span>
+                  </div>
+
+                  <div style={{ display: "flex", gap: 6, marginTop: 12, flexWrap: "wrap" }}>
                     {l.listing_type === "instructor" ? (
-                      <Badge color="#1E40AF" bg="#DBEAFE">Instructor</Badge>
+                      <StatusPill type="instructor" label="Instructor" />
                     ) : (
-                      <Badge color="#6D28D9" bg="#EDE9FE">Supplier</Badge>
+                      <StatusPill type="supplier" label="Supplier" />
                     )}
                     {l.is_active ? (
-                      <Badge color="#166534" bg="#DCFCE7">Live</Badge>
+                      <StatusPill type="live" label="Live" />
                     ) : (
-                      <Badge color="#B45309" bg="#FEF3C7">Pending</Badge>
+                      <StatusPill type="pending" label="Pending review" />
                     )}
-                    {l.is_featured && <Badge color="#92400E" bg="#FEF3C7">Featured</Badge>}
+                    {l.is_featured && <StatusPill type="featured" label="Featured" />}
                   </div>
-                  <div style={{ color: "#9CA3AF", fontSize: 11, marginTop: 8 }}>
+
+                  <div
+                    style={{
+                      color: "#B0B0B5",
+                      fontSize: 11.5,
+                      fontWeight: 600,
+                      marginTop: 14,
+                      paddingTop: 12,
+                      borderTop: "1.5px dashed #EEEEF0",
+                    }}
+                  >
                     Submitted {new Date(l.created_at).toLocaleDateString()}
                   </div>
                 </div>
