@@ -9,7 +9,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMenu2, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconX } from "@tabler/icons-react";
+import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMenu2, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconSearch, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconX } from "@tabler/icons-react";
 import { CalendarPlus, ListTodo, Sparkles, Receipt, Calculator, FileSignature, Megaphone, HelpCircle, Settings as SettingsIcon } from "lucide-react";
 
 import appCss from "../styles.css?url";
@@ -253,6 +253,7 @@ const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
 
 function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
