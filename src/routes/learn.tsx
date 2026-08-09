@@ -190,17 +190,17 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
         >
           <div
             style={{
-              width: 40,
-              height: 40,
+              width: 44,
+              height: 44,
               borderRadius: "50%",
               background: "#fff",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+              boxShadow: "0 3px 10px rgba(0,0,0,0.25)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <IconPlayerPlay size={18} color={NAVY} stroke={2} style={{ marginLeft: 2 }} />
+            <IconPlayerPlay size={16} color={NAVY} stroke={2} fill={NAVY} style={{ marginLeft: 2 }} />
           </div>
         </div>
         <div
@@ -208,16 +208,15 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
             position: "absolute",
             bottom: 8,
             right: 8,
-            padding: "4px 8px",
-            borderRadius: 999,
-            background: "rgba(0,0,0,0.55)",
-            color: "white",
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: 0.2,
+            padding: "3px 8px",
+            borderRadius: 20,
+            background: "rgba(0,0,0,0.6)",
+            color: "#fff",
+            fontSize: 10.5,
+            fontWeight: 700,
           }}
         >
-          {v.duration}
+          {formatDuration(v.duration)}
         </div>
         {downloadable && (
           <button
