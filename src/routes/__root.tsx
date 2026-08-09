@@ -280,46 +280,64 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
     if (m.to) navigate({ to: m.to as never });
   };
 
-  const Row = ({ m, quick }: { m: MenuItem; quick?: boolean }) => {
+  const Row = ({ m, first }: { m: MenuItem; first?: boolean }) => {
     const Icon = m.icon;
-    const isSignOut = !!m.signOut;
     return (
       <button
         type="button"
         onClick={() => go(m)}
         style={{
           width: "100%",
-          minHeight: quick ? 44 : 42,
           textAlign: "left",
-          padding: quick ? "10px 18px" : "9px 18px",
+          padding: "14px 16px",
           background: "none",
           border: "none",
+          borderTop: first ? "none" : "1px solid #EFEFF2",
           cursor: "pointer",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
-          gap: 12,
+          gap: 13,
           fontFamily: "Poppins, sans-serif",
         }}
       >
-        <span style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <Icon
-            size={quick ? 19 : 18}
-            strokeWidth={1.8}
-            color={isSignOut ? "#CC2229" : quick ? "#1877D6" : "#94A3B8"}
-          />
-          <span
-            style={{
-              fontSize: 14,
-              fontWeight: quick ? 500 : 400,
-              color: isSignOut ? "#CC2229" : "#0B1F3A",
-            }}
-          >
-            {m.label}
-          </span>
+        <span
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: 8,
+            background: "#F2F2F7",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <Icon size={17} strokeWidth={1.8} color="#000" />
         </span>
+        <span style={{ flex: 1, fontSize: 15, fontWeight: 500, color: "#000" }}>{m.label}</span>
+        <IconChevronRight size={14} color="#C7C7CC" />
       </button>
     );
+  };
+
+  const matches = (label: string) =>
+    !query.trim() || label.toLowerCase().includes(query.trim().toLowerCase());
+
+  const sections: { title: string; items: MenuItem[] }[] = [
+    { title: "Quick actions", items: QUICK_ACTIONS },
+    ...MENU_GROUPS.map((g) => ({
+      title: g.title,
+      items: g.items.filter((m) => !m.signOut),
+    })),
+  ]
+    .map((s) => ({ title: s.title, items: s.items.filter((m) => matches(m.label)) }))
+    .filter((s) => s.items.length > 0);
+
+  const cardStyle: React.CSSProperties = {
+    background: "#fff",
+    borderRadius: 16,
+    overflow: "hidden",
+    boxShadow: "0 1px 2px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.05)",
   };
 
   return (
@@ -339,7 +357,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
         style={{
           width: "min(82vw, 320px)",
           height: "100vh",
-          background: "#fff",
+          background: "#F2F2F7",
           boxShadow: "-4px 0 24px rgba(0,0,0,0.2)",
           display: "flex",
           flexDirection: "column",
@@ -350,99 +368,125 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
           style={{
             background: "#0B1F3A",
             color: "#fff",
-            padding: "16px 18px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+            padding: "16px 18px 14px",
           }}
         >
-          <div style={{ fontWeight: 700, fontSize: 16 }}>Menu</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            {isAdmin && (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ fontWeight: 700, fontSize: 16 }}>Menu</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              {isAdmin && (
+                <button
+                  onClick={() => {
+                    navigate({ to: "/admin" as never });
+                    setOpen(false);
+                  }}
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 500,
+                    color: "rgba(255,255,255,0.5)",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: 0,
+                  }}
+                >
+                  Admin
+                </button>
+              )}
               <button
-                onClick={() => {
-                  navigate({ to: "/admin" as never });
-                  setOpen(false);
-                }}
-                style={{
-                  fontSize: 10,
-                  fontWeight: 500,
-                  color: "rgba(255,255,255,0.5)",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  padding: 0,
-                }}
+                onClick={() => setOpen(false)}
+                aria-label="Close menu"
+                style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", display: "flex" }}
               >
-                Admin
+                <IconX stroke={1.5} size={22} />
               </button>
-            )}
-            <button
-              onClick={() => setOpen(false)}
-              aria-label="Close menu"
-              style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", display: "flex" }}
-            >
-              <IconX stroke={1.5} size={22} />
-            </button>
+            </div>
+          </div>
+
+          <div
+            style={{
+              marginTop: 12,
+              background: "rgba(255,255,255,0.08)",
+              borderRadius: 12,
+              padding: "11px 14px",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 9,
+            }}
+          >
+            <IconSearch size={16} color="rgba(255,255,255,0.5)" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search menu"
+              aria-label="Search menu"
+              style={{
+                flex: 1,
+                background: "transparent",
+                border: "none",
+                outline: "none",
+                color: "#fff",
+                fontSize: 14,
+                fontFamily: "Poppins, sans-serif",
+              }}
+            />
           </div>
         </div>
 
-        <div style={{ overflowY: "auto", flex: 1, paddingBottom: 24 }}>
-          <div style={{ padding: "10px 0 10px", borderBottom: "2px solid #E2E8F0" }}>
-            <div
-              style={{
-                fontSize: 10,
-                textTransform: "uppercase",
-                letterSpacing: "0.12em",
-                color: "#94A3B8",
-                fontWeight: 600,
-                padding: "4px 18px 6px",
-              }}
-            >
-              Quick actions
+        <div style={{ overflowY: "auto", flex: 1, padding: "16px 14px 28px" }}>
+          {sections.map((g, gi) => (
+            <div key={g.title} style={{ marginTop: gi === 0 ? 0 : 22 }}>
+              <div
+                style={{
+                  color: "#8A8A8E",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  letterSpacing: "0.5px",
+                  textTransform: "uppercase",
+                  margin: "4px 4px 10px",
+                }}
+              >
+                {g.title}
+              </div>
+              <div style={cardStyle}>
+                {g.items.map((m, i) => (
+                  <Row key={m.label} m={m} first={i === 0} />
+                ))}
+              </div>
             </div>
-            {QUICK_ACTIONS.map((m) => (
-              <Row key={m.label} m={m} quick />
-            ))}
-            <Separator className="h-[0.5px] bg-[#F5CBCB]" />
-            <Button
-              variant="ghost"
+          ))}
+
+          <div style={{ marginTop: 28, ...cardStyle, padding: 15 }}>
+            <button
+              type="button"
               onClick={async () => {
                 setOpen(false);
                 await supabase.auth.signOut();
                 navigate({ to: "/" as never, replace: true });
               }}
-              className="w-full h-auto min-h-[44px] justify-start px-[18px] py-2.5 text-[13px] font-medium text-[#CC2229] hover:bg-transparent hover:text-[#CC2229] font-['Poppins',sans-serif]"
+              style={{
+                width: "100%",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 10,
+                fontFamily: "Poppins, sans-serif",
+              }}
             >
-              <IconLogout stroke={1.5} size={16} color="#CC2229" />
-              Sign out
-            </Button>
+              <IconLogout size={16} color="#FF3B30" />
+              <span style={{ color: "#FF3B30", fontSize: 15, fontWeight: 700 }}>Sign out</span>
+            </button>
           </div>
-
-          {MENU_GROUPS.map((g) => (
-            <div key={g.title} style={{ padding: "8px 0", borderBottom: "0.5px solid #EEF2F7" }}>
-              <div
-                style={{
-                  fontSize: 10,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.12em",
-                  color: "#94A3B8",
-                  fontWeight: 600,
-                  padding: "4px 18px 6px",
-                }}
-              >
-                {g.title}
-              </div>
-              {g.items.map((m) => (
-                <Row key={m.label} m={m} />
-              ))}
-            </div>
-          ))}
         </div>
       </div>
     </div>
   );
 }
+
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
