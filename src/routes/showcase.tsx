@@ -176,6 +176,12 @@ function ShowcasePage() {
   const [sendingComment, setSendingComment] = useState(false);
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [replyTo, setReplyTo] = useState<{ id: string; name: string } | null>(null);
+  // Comment pagination (paginates top-level threads; replies load with their parent)
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [loadingMoreComments, setLoadingMoreComments] = useState(false);
+  const [hasMoreComments, setHasMoreComments] = useState(false);
+  const rootOffsetRef = useRef(0);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
   // Per-comment likes
   const [commentLikeCounts, setCommentLikeCounts] = useState<Record<string, number>>({});
   const [myCommentLikes, setMyCommentLikes] = useState<Record<string, boolean>>({});
