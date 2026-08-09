@@ -58,11 +58,13 @@ function NewsIndexPage() {
     <PageLayout style={{ background: "#DCE4F0" }}>
       {/* Header */}
       <div
-        className="flex items-center justify-between px-4"
+        className="flex items-center px-4"
         style={{
+          gap: 12,
           height: "calc(60px + env(safe-area-inset-top, 0px))",
           paddingTop: "env(safe-area-inset-top, 0px)",
           backgroundColor: "#0B1F3A",
+          borderRadius: "0 0 28px 28px",
         }}
       >
         <button
@@ -70,18 +72,27 @@ function NewsIndexPage() {
           aria-label="Back"
           onClick={() => navigate({ to: "/home" })}
           className="flex items-center justify-center"
-          style={{ width: 36, height: 36, color: "#FFFFFF" }}
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: 999,
+            flexShrink: 0,
+            border: "none",
+            background: "rgba(255,255,255,0.08)",
+            color: "#FFFFFF",
+            cursor: "pointer",
+          }}
         >
-          <ChevronLeft size={28} />
+          <ChevronLeft size={20} />
         </button>
         <span
           className="text-white"
-          style={{ fontSize: 15, fontWeight: 600, ...POPPINS }}
+          style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.4px", ...POPPINS }}
         >
           Industry news
         </span>
-        <div style={{ width: 36 }} />
       </div>
+
 
       {/* Filter chips */}
       <div
