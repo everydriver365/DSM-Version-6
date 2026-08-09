@@ -280,22 +280,22 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
   );
 }
 
-function SectionLabel({ icon, label }: { icon: React.ReactNode; label: string }) {
+function SectionLabel({ icon, label, strong }: { icon: React.ReactNode; label: string; strong?: boolean }) {
   return (
     <div
       style={{
         display: "flex",
         alignItems: "center",
-        gap: 6,
+        gap: strong ? 7 : 6,
         padding: "0 16px 12px",
       }}
     >
       {icon}
       <span
         style={{
-          fontSize: 12,
-          fontWeight: 600,
-          color: GRAY_LABEL,
+          fontSize: strong ? 15 : 12,
+          fontWeight: strong ? 800 : 600,
+          color: strong ? NAVY : GRAY_LABEL,
           fontFamily: FONT,
         }}
       >
