@@ -1444,7 +1444,7 @@ function AlertsTab({
                 }}
                 aria-hidden="true"
               >
-                <IconBuilding size={20} stroke={1.9} />
+                <Building size={20} strokeWidth={1.9} />
               </div>
               <div style={{ minWidth: 0, textAlign: "left" }}>
                 <div style={{ fontSize: 15.5, fontWeight: 800, color: "#0B1F3A", lineHeight: 1.25 }}>
