@@ -2,7 +2,7 @@ import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { IconArrowLeft, IconBriefcase, IconCamera, IconCar, IconCircleCheck, IconHeart, IconMapPin, IconPackage, IconSchool, IconShieldCheck, IconStar, IconTag, IconTool, IconX } from "@tabler/icons-react";
+import { IconArrowLeft, IconBriefcase, IconCamera, IconCar, IconChevronRight, IconCircleCheck, IconHeart, IconMapPin, IconPackage, IconSchool, IconShieldCheck, IconStar, IconTag, IconTool, IconX } from "@tabler/icons-react";
 import { BookOpen, Megaphone } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -152,6 +152,8 @@ function ListingDetailPage() {
   const cat = listing?.marketplace_categories;
   const Icon = iconFor(cat?.slug);
   const supplier = listing?.marketplace_suppliers;
+  // A seller profile page only exists for supplier-backed listings.
+  const hasSellerProfile = Boolean(listing?.supplier_id && supplier);
 
 
   const CARD: React.CSSProperties = {
@@ -408,7 +410,26 @@ function ListingDetailPage() {
             </div>
 
             {/* Seller */}
-            <div style={{ ...CARD, display: "flex", gap: 13, alignItems: "center" }}>
+            <div
+              onClick={
+                hasSellerProfile
+                  ? () =>
+                      navigate({
+                        to: "/marketplace/seller/$supplierId",
+                        params: { supplierId: listing.supplier_id as string },
+                      })
+                  : undefined
+              }
+              role={hasSellerProfile ? "button" : undefined}
+              tabIndex={hasSellerProfile ? 0 : undefined}
+              style={{
+                ...CARD,
+                display: "flex",
+                gap: 13,
+                alignItems: "center",
+                cursor: hasSellerProfile ? "pointer" : "default",
+              }}
+            >
               <div
                 style={{
                   width: 48,
@@ -458,6 +479,9 @@ function ListingDetailPage() {
                   </div>
                 )}
               </div>
+              {hasSellerProfile && (
+                <IconChevronRight stroke={1.8} size={18} color="#B0B0B5" />
+              )}
             </div>
 
             {/* Description */}
