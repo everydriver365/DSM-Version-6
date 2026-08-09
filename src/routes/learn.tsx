@@ -6,6 +6,7 @@ import { ShoppingBag, CalendarOff } from "lucide-react";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 
 export const Route = createFileRoute("/learn")({
   head: () => ({
