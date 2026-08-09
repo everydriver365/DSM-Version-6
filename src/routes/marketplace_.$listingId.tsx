@@ -628,13 +628,14 @@ function ContactActions({
   const type = listing.contact_type ?? "email";
 
   const primaryBtn = {
-    background: "#0F2044",
-    color: "#FFFFFF",
+    background: "#0B1F3A",
+    color: "#fff",
     border: "none",
-    fontSize: 14,
-    fontWeight: 700,
-    padding: "12px 16px",
-    borderRadius: 10,
+    fontSize: 15,
+    fontWeight: 800,
+    padding: 15,
+    borderRadius: 14,
+    boxShadow: "0 4px 0 #050D1C",
     cursor: "pointer",
     width: "100%",
     textAlign: "center" as const,
@@ -643,20 +644,22 @@ function ContactActions({
   };
 
   const secondaryBtn = {
-    background: "#FFFFFF",
-    color: "#0F2044",
-    border: "0.5px solid #0F2044",
-    fontSize: 14,
-    fontWeight: 700,
-    padding: "12px 16px",
-    borderRadius: 10,
+    background: "#EEF2F7",
+    color: "#0B1F3A",
+    border: "none",
+    fontSize: 15,
+    fontWeight: 800,
+    padding: 15,
+    borderRadius: 14,
+    boxShadow: "0 4px 0 #D8DEE7",
     cursor: "pointer",
     width: "100%",
     textAlign: "center" as const,
     textDecoration: "none",
     display: "block",
-    marginTop: 8,
+    marginTop: 12,
   };
+
 
   if (type === "website") {
     const url =
