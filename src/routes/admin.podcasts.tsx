@@ -250,10 +250,11 @@ function AdminPodcasts() {
               background: "#fff",
               color: "#0B1F3A",
               border: 0,
-              padding: "8px 12px",
-              borderRadius: 8,
-              fontWeight: 700,
+              padding: "9px 15px",
+              borderRadius: 20,
+              fontWeight: 800,
               fontSize: 13,
+              boxShadow: "0 3px 0 #B0B8C4",
               cursor: "pointer",
               display: "inline-flex",
               alignItems: "center",
@@ -266,27 +267,56 @@ function AdminPodcasts() {
       />
 
       {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, padding: 16 }}>
-        {[
-          { label: "Published", value: stats.published },
-          { label: "Total plays", value: stats.plays },
-          { label: "Episodes", value: stats.total },
-        ].map((s) => (
-          <div
-            key={s.label}
-            style={{
-              background: "#fff",
-              border: "0.5px solid #E2E6ED",
-              borderRadius: 12,
-              padding: 12,
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontWeight: 800, fontSize: 20, color: "#0F2044" }}>{s.value}</div>
-            <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{s.label}</div>
-          </div>
-        ))}
+      <div style={{ padding: 16 }}>
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 20,
+            boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
+            display: "flex",
+            overflow: "hidden",
+          }}
+        >
+          {[
+            { label: "Published", value: stats.published },
+            { label: "Total plays", value: stats.plays },
+            { label: "Episodes", value: stats.total },
+          ].map((s, i) => (
+            <div
+              key={s.label}
+              style={{
+                flex: 1,
+                padding: "18px 12px",
+                textAlign: "left",
+                borderLeft: i > 0 ? "1.5px dashed #E4E4E8" : undefined,
+              }}
+            >
+              <div
+                style={{
+                  fontWeight: 900,
+                  fontSize: 32,
+                  letterSpacing: "-1.1px",
+                  color: "#000",
+                }}
+              >
+                {s.value}
+              </div>
+              <div
+                style={{
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  color: "#8A8A8E",
+                  textTransform: "uppercase",
+                  marginTop: 6,
+                }}
+              >
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
+
 
       {/* List */}
       {loading ? (
