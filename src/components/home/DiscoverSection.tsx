@@ -9,7 +9,16 @@ import {
   IconShoppingBag,
   IconNews,
   IconBrowser,
+  IconCar,
+  IconTool,
+  IconBriefcase,
+  IconCamera,
+  IconDeviceMobile,
+  IconSchool,
+  IconKey,
+  IconPhoto,
 } from "@tabler/icons-react";
+
 import { supabase } from "@/lib/supabaseClient";
 import { sanitizeNewsTitle } from "@/lib/newsText";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
@@ -19,6 +28,23 @@ const BLUE = "#1877D6";
 const RED = "#CC2229";
 const HAIRLINE = "#E4E8EF";
 const FONT = "Poppins, sans-serif";
+
+/** Pick an icon that matches the listing category for the missing-photo fallback. */
+function categoryIcon(category?: string | null) {
+  const c = (category ?? "").toLowerCase();
+  if (/web|site|digital|seo/.test(c)) return IconBrowser;
+  if (/car|vehicle|dual|van/.test(c)) return IconCar;
+  if (/rent|hire|lease/.test(c)) return IconKey;
+  if (/job|vacancy|recruit|franchise/.test(c)) return IconBriefcase;
+  if (/train|course|lesson|adi|pdi|school|tuition/.test(c)) return IconSchool;
+  if (/book|guide|resource|material/.test(c)) return IconBook;
+  if (/camera|dash|video/.test(c)) return IconCamera;
+  if (/phone|tech|device|app|electronic/.test(c)) return IconDeviceMobile;
+  if (/tool|part|equip|service|repair|maint/.test(c)) return IconTool;
+  if (!c) return IconPhoto;
+  return IconShoppingBag;
+}
+
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -414,10 +440,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           }}
         >
           {heroCards.map((listing) => {
-            const cat = (listing?.category ?? "").toLowerCase();
-            const isWebsite =
-              cat.includes("web") || cat.includes("site") || cat.includes("digital");
-            const Icon = isWebsite ? IconBrowser : IconShoppingBag;
+            const Icon = categoryIcon(listing?.category);
+
             const open = () =>
               navigate({
                 to: listing ? ("/marketplace/$listingId" as never) : ("/marketplace" as never),
@@ -456,7 +480,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       bottom: 0,
                       width: "60%",
                       clipPath: "polygon(0 0, 100% 0, 78% 100%, 0 100%)",
-                      background: listing?.imageUrl ? "#0B1F3A" : NAVY,
+                      background: listing?.imageUrl
+                        ? "#0B1F3A"
+                        : `linear-gradient(150deg, #14335C 0%, ${NAVY} 62%, #071630 100%)`,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -470,8 +496,25 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                       />
                     ) : (
-                      <Icon size={44} color="#fff" stroke={1.5} opacity={0.35} />
+                      <div
+                        aria-hidden
+                        style={{
+                          /* nudge left: the angled cut removes space on the right */
+                          transform: "translateX(-11%)",
+                          width: 72,
+                          height: 72,
+                          borderRadius: 999,
+                          background: "rgba(255,255,255,0.10)",
+                          border: "1px solid rgba(255,255,255,0.18)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Icon size={34} color="#FFFFFF" stroke={1.6} opacity={0.9} />
+                      </div>
                     )}
+
                     <div
                       style={{
                         position: "absolute",
