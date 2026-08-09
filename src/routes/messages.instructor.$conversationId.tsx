@@ -491,8 +491,73 @@ function InstructorDMThread() {
       });
       return;
     }
+    // Older messages were prepended — keep the reader where they are.
+    if (prependingRef.current) {
+      prependingRef.current = false;
+      return;
+    }
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, otherTyping]);
+
+  // ---- Infinite scroll: load older messages when the user nears the top ----
+  const loadOlder = useCallback(async () => {
+    const el = scrollerRef.current;
+    const oldest = messages[0];
+    if (!el || !oldest || loadingOlderRef.current || !hasMoreOlder) return;
+    loadingOlderRef.current = true;
+    setLoadingOlder(true);
+
+    const prevHeight = el.scrollHeight;
+    const prevTop = el.scrollTop;
+
+    const { data, error } = await supabase
+      .from("instructor_messages")
+      .select("*")
+      .eq("conversation_id", conversationId)
+      .is("deleted_at", null)
+      .lt("created_at", oldest.created_at)
+      .order("created_at", { ascending: false })
+      .limit(PAGE_SIZE);
+
+    if (error) {
+      console.error("[dm] older messages fetch error", error.message);
+      loadingOlderRef.current = false;
+      setLoadingOlder(false);
+      return;
+    }
+
+    const older = ((data ?? []) as unknown as DMMessage[]).slice().reverse();
+    setHasMoreOlder(older.length >= PAGE_SIZE);
+    if (older.length > 0) {
+      prependingRef.current = true;
+      setMessages((prev) => {
+        const seen = new Set(prev.map((m) => m.id));
+        return [...older.filter((m) => !seen.has(m.id)), ...prev];
+      });
+      requestAnimationFrame(() => {
+        const node = scrollerRef.current;
+        if (node) node.scrollTop = node.scrollHeight - prevHeight + prevTop;
+        loadingOlderRef.current = false;
+        setLoadingOlder(false);
+      });
+      return;
+    }
+
+    loadingOlderRef.current = false;
+    setLoadingOlder(false);
+  }, [messages, conversationId, hasMoreOlder]);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      if (el.scrollTop < 120) void loadOlder();
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [loadOlder]);
+
+
 
 
   /** Insert one message, keeping its optimistic row's delivery state in sync. */
