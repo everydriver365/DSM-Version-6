@@ -6,11 +6,9 @@ import {
   Shield,
   Repeat,
   Calendar as CalendarIcon,
-  
   X,
   Plus,
   ChevronDown,
-  ArrowDown,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { useSaveState } from "@/hooks/useSaveState";
