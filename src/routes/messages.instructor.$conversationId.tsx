@@ -435,9 +435,24 @@ function InstructorDMThread() {
   }
 
 
+  // Open straight on the latest message (no visible scroll animation), then
+  // smooth-scroll for anything that arrives afterwards.
+  const didInitialScrollRef = useRef(false);
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messages.length === 0) return;
+    if (!didInitialScrollRef.current) {
+      didInitialScrollRef.current = true;
+      // Two frames so bubbles/avatars have laid out before we measure.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          bottomRef.current?.scrollIntoView({ block: "end" });
+        });
+      });
+      return;
+    }
+    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, otherTyping]);
+
 
   /** Insert one message, keeping its optimistic row's delivery state in sync. */
   async function deliver(localId: string, text: string, otherId: string) {

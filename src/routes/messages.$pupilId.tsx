@@ -293,8 +293,17 @@ function PupilThreadPage() {
       didInitialScrollRef.current = true;
       prevCountRef.current = count;
       el.scrollTop = el.scrollHeight;
+      // Re-pin after layout settles (fonts, avatars, attachments) so the
+      // thread always opens on the newest message.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const node = scrollerRef.current;
+          if (node) node.scrollTop = node.scrollHeight;
+        });
+      });
       return;
     }
+
 
     const grew = count > prevCountRef.current;
     prevCountRef.current = count;
