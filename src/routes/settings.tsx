@@ -2473,18 +2473,114 @@ function MenuRow({
   );
 }
 
+function AccountRow({
+  icon,
+  iconBg,
+  label,
+  subLabel,
+  value,
+  onClick,
+  isFirst,
+  warning,
+}: {
+  icon: React.ReactNode;
+  iconBg: string;
+  label: string;
+  subLabel?: string;
+  value?: string;
+  onClick: () => void;
+  isFirst?: boolean;
+  warning?: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full flex items-center text-left"
+      style={{
+        gap: 14,
+        padding: "15px 16px",
+        borderTop: isFirst ? undefined : "1px solid #EFEFF2",
+        background: "#FFFFFF",
+      }}
+    >
+      <div
+        className="flex items-center justify-center"
+        style={{ width: 38, height: 38, minWidth: 38, minHeight: 38, borderRadius: 11, backgroundColor: iconBg, flexShrink: 0 }}
+      >
+        {icon}
+      </div>
+      <div className="flex-1 min-w-0 flex flex-col">
+        <span
+          className="truncate flex items-center gap-2"
+          style={{ fontSize: 16, fontWeight: 700, color: "#000000", ...POPPINS }}
+        >
+          {label}
+          {warning ? (
+            <span
+              aria-hidden
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 999,
+                background: "#D97706",
+                display: "inline-block",
+                flexShrink: 0,
+              }}
+            />
+          ) : null}
+        </span>
+        {warning ? (
+          <span
+            className="truncate"
+            title={warning}
+            style={{ fontSize: 11, color: "#D97706", ...POPPINS, marginTop: 2 }}
+          >
+            {warning}
+          </span>
+        ) : subLabel ? (
+          <span
+            className="truncate"
+            title={subLabel}
+            style={{ fontSize: 12, color: "#8A8A8E", ...POPPINS, marginTop: 2 }}
+          >
+            {subLabel}
+          </span>
+        ) : null}
+      </div>
+      {value ? (
+        <span
+          style={{
+            background: "#E6F1FB",
+            color: "#1877D6",
+            fontSize: 11,
+            fontWeight: 700,
+            padding: "4px 10px",
+            borderRadius: 20,
+            marginRight: 4,
+            ...POPPINS,
+          }}
+        >
+          {value}
+        </span>
+      ) : null}
+      <ChevronRight size={15} color="#C7C7CC" />
+    </button>
+  );
+}
+
 // Section label — plain caption, no left accent bar.
 function Label({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="mb-2"
       style={{
-        marginTop: 20,
+        marginTop: 24,
         paddingLeft: 4,
-        fontSize: 11,
-        fontWeight: 500,
-        color: "#B0BAC9",
-        letterSpacing: "0.04em",
+        fontSize: 12,
+        fontWeight: 700,
+        color: "#8A8A8E",
+        letterSpacing: "0.5px",
         textTransform: "uppercase",
         ...POPPINS,
       }}
