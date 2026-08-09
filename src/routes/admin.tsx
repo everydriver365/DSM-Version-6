@@ -20,12 +20,13 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         left: 0,
         right: 0,
         zIndex: 40,
-        background: "#1877D6",
+        background: "#0B1F3A",
         color: "#fff",
-        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
+        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 16px",
         display: "flex",
         alignItems: "center",
         gap: 12,
+        borderRadius: "0 0 28px 28px",
       }}
     >
       <button
@@ -33,24 +34,29 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         onClick={onBack}
         aria-label="Back"
         style={{
-          width: 32,
-          height: 32,
+          width: 34,
+          height: 34,
           borderRadius: "50%",
-          background: "rgba(255,255,255,0.15)",
+          background: "rgba(255,255,255,0.08)",
           border: "none",
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
           cursor: "pointer",
           color: "#fff",
+          flexShrink: 0,
+          padding: 0,
         }}
       >
-        <IconChevronLeft stroke={1.5} size={18} />
+        <IconChevronLeft stroke={1.8} size={18} color="#fff" />
       </button>
-      <span style={{ fontSize: 16, fontWeight: 600 }}>{title}</span>
+      <span style={{ fontSize: 26, fontWeight: 800, color: "#fff", letterSpacing: "-0.5px" }}>
+        {title}
+      </span>
     </div>
   );
 }
+
 
 export function useAdminGate() {
   const navigate = useNavigate();
