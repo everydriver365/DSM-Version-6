@@ -539,28 +539,32 @@ function AdminListingsPage() {
               ["instructor", "Instructor listings"],
               ["supplier", "Supplier listings"],
             ] as [Filter, string][]
-          ).map(([k, label]) => (
-            <button
-              key={k}
-              type="button"
-              onClick={() => setFilter(k)}
-              style={{
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-                padding: "8px 14px",
-                borderRadius: 999,
-                border: filter === k ? "0.5px solid #0B1F3A" : "0.5px solid #E2E6ED",
-                background: filter === k ? "#0B1F3A" : "#fff",
-                color: filter === k ? "#fff" : "#0B1F3A",
-                fontSize: 13,
-                fontWeight: 500,
-                fontFamily: "Poppins, sans-serif",
-                cursor: "pointer",
-              }}
-            >
-              {label}
-            </button>
-          ))}
+          ).map(([k, label]) => {
+            const active = filter === k;
+            return (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setFilter(k)}
+                style={{
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  padding: "10px 18px",
+                  borderRadius: 24,
+                  border: "none",
+                  background: active ? "#1877D6" : "#fff",
+                  color: active ? "#fff" : "#0B1F3A",
+                  boxShadow: active ? "0 3px 0 #0F52A8" : "0 3px 0 #E4E4E8",
+                  fontSize: 13.5,
+                  fontWeight: 700,
+                  fontFamily: "Poppins, sans-serif",
+                  cursor: "pointer",
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
           <span aria-hidden style={{ flexShrink: 0, width: 4 }} />
         </div>
 
