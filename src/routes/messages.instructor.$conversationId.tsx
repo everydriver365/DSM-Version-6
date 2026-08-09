@@ -153,6 +153,9 @@ function Avatar({
     </div>
   );
 }
+/** How many messages to fetch per page (initial load and each older page). */
+const PAGE_SIZE = 30;
+
 
 /**
  * Mark every unread DM addressed to me in this conversation as read.
