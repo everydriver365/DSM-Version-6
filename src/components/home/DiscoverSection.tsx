@@ -246,16 +246,21 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           Array.isArray(imgs) && imgs.length > 0 ? imgs[0] : null,
         );
         setFeaturedListings(
-          data.map((row) => ({
-            id: row.id,
-            title: row.title ?? null,
-            price_display: row.price_display ?? null,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            category: (row.marketplace_categories as any)?.name ?? null,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            created_at: (row as any).created_at ?? null,
-          })),
+          data.map((row) => {
+            const imgs = (row as { image_urls?: string[] | null }).image_urls;
+            return {
+              id: row.id,
+              title: row.title ?? null,
+              price_display: row.price_display ?? null,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              category: (row.marketplace_categories as any)?.name ?? null,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              created_at: (row as any).created_at ?? null,
+              imageUrl: Array.isArray(imgs) && imgs.length > 0 ? imgs[0] : null,
+            };
+          }),
         );
+
       });
 
     supabase
