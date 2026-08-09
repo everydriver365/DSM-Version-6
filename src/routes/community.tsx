@@ -1603,6 +1603,7 @@ function AlertsTab({
               </div>
             }
           >
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Details</div>
             <div style={{ background: "white", borderRadius: 14, overflow: "hidden", marginBottom: 14 }}>
               {metaRows.map((r, i) => {
                 const isReportedTomTom = r.label === "Reported" && selectedAlert.source === 'tomtom';
@@ -1610,15 +1611,39 @@ function AlertsTab({
                   <div key={r.label} style={{ ...rowStyle, borderTop: i === 0 ? "none" : "0.5px solid #EEF0F3", alignItems: isReportedTomTom ? "flex-start" : "center" }}>
                     <span style={{ color: "#8A93A3" }}>{r.label}</span>
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", marginLeft: 12 }}>
-                      <span style={{ color: "#0B1F3A", fontWeight: 600, textAlign: "right" }}>{r.value}</span>
+                      <span style={{ color: r.danger ? "#CC2229" : "#0B1F3A", fontWeight: r.danger ? 800 : 600, textAlign: "right" }}>{r.value}</span>
                       {isReportedTomTom && (
                         <span style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>Updates automatically</span>
+                      )}
+                      {r.danger && (
+                        <span style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2, textAlign: "right" }}>End time looks unreliable</span>
                       )}
                     </div>
                   </div>
                 );
               })}
             </div>
+
+            {affectedRoads.length > 0 && (
+              <>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Affected roads</div>
+                <div style={{
+                  background: "white", borderRadius: 14, padding: "12px 14px", marginBottom: 14,
+                  display: "flex", flexWrap: "wrap", gap: 6,
+                }}>
+                  {affectedRoads.map((road) => (
+                    <span key={road} style={{
+                      background: "#E7F1FC", color: "#1877D6", fontSize: 12, fontWeight: 700,
+                      padding: "5px 11px", borderRadius: 20,
+                    }}>
+                      {road}
+                    </span>
+                  ))}
+                </div>
+              </>
+            )}
+
+
 
             <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Description</div>
             <div style={{
