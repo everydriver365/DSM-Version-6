@@ -472,7 +472,7 @@ export function AddressLookup({
             }}
           >
             <IconSearch stroke={1.5} size={14} color="#1877D6" />
-            IconSearch now
+            Search now
           </button>
         </div>
       )}

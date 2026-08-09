@@ -247,7 +247,7 @@ function AdminFeatured() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="IconSearch instructors"
+              placeholder="Search instructors"
               style={{
                 flex: 1,
                 border: "none",

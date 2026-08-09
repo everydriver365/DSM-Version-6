@@ -739,12 +739,12 @@ function AdminDsmLive() {
             </FormField>
           </div>
           <FormField label="Price display">
-            <input style={inp} placeholder="Free for IconPlus & Max" value={form.price_display || ""} onChange={(e) => setForm({ ...form, price_display: e.target.value })} />
+            <input style={inp} placeholder="Free for Plus & Max" value={form.price_display || ""} onChange={(e) => setForm({ ...form, price_display: e.target.value })} />
           </FormField>
           <FormField label="Price amount (£, 0 = free)">
             <input type="number" style={inp} value={form.price_amount ?? 0} onChange={(e) => setForm({ ...form, price_amount: Number(e.target.value) })} />
           </FormField>
-          <Toggle label="Free for IconPlus/Max" checked={!!form.free_for_plus_max} onChange={(v) => setForm({ ...form, free_for_plus_max: v })} />
+          <Toggle label="Free for Plus/Max" checked={!!form.free_for_plus_max} onChange={(v) => setForm({ ...form, free_for_plus_max: v })} />
           <FormField label="Zoom link">
             <input style={inp} placeholder="https://zoom.us/j/…" value={form.zoom_link || ""} onChange={(e) => setForm({ ...form, zoom_link: e.target.value })} />
           </FormField>

@@ -2003,7 +2003,7 @@ function LivePage() {
                   type="text"
                   value={pupilSearchQuery}
                   onChange={(e) => setPupilSearchQuery(e.target.value)}
-                  placeholder="IconSearch pupils"
+                  placeholder="Search pupils"
                   autoFocus
                   style={{
                     border: "none",

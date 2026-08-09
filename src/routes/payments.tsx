@@ -753,7 +753,7 @@ function PupilPicker({ pupils, selectedId, onClose, onSelect, allowAll }: { pupi
   return (
     <BottomSheet title="Select pupil" onClose={onClose}>
       <SheetGroup>
-        <SheetSearchRow value={q} onChange={setQ} placeholder="IconSearch pupils…" />
+        <SheetSearchRow value={q} onChange={setQ} placeholder="Search pupils…" />
         {allowAll && (
           <SheetRadioRow title="All pupils" selected={selectedId === ""} onSelect={() => onSelect("")} />
         )}

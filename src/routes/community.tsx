@@ -626,7 +626,7 @@ function CommunityPage() {
                       .limit(20);
                     setDmSearchResults((data as any[]) ?? []);
                   }}
-                  placeholder="IconSearch instructors..."
+                  placeholder="Search instructors..."
                   style={{
                     width: "100%", boxSizing: "border-box", border: "1px solid #E4E8EF",
                     borderRadius: 8, padding: "10px 12px", fontSize: 14, color: "#0B1F3A", outline: "none",
@@ -890,7 +890,7 @@ function RoomsTab({
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="IconSearch area or outcode"
+            placeholder="Search area or outcode"
             style={{ flex: 1, border: "none", outline: "none", fontSize: 13, color: "#0F2044", background: "transparent" }}
           />
         </div>
@@ -2584,7 +2584,7 @@ function ChatTab({
           <div style={{ position: "relative", flexShrink: 0, display: "flex", alignItems: "center", gap: 4 }}>
             <button
               type="button"
-              aria-label="IconSearch messages"
+              aria-label="Search messages"
               onClick={() => setSearchOpen((v) => !v)}
               style={{
                 background: "none", border: "none", cursor: "pointer",
@@ -2729,7 +2729,7 @@ function ChatTab({
           <input
             value={msgSearch}
             onChange={(e) => setMsgSearch(e.target.value)}
-            placeholder="IconSearch messages..."
+            placeholder="Search messages..."
             autoFocus
             style={{
               flex: 1, border: "none", outline: "none", fontSize: 13, color: "#0F2044", background: "transparent",
@@ -2840,7 +2840,7 @@ function ChatTab({
                         <button
                           type="button"
                           onClick={() => flag(m)}
-                          aria-label="IconFlag message"
+                          aria-label="Flag message"
                           style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "flex" }}
                         >
                           <IconFlag stroke={1.5} size={11} color="#D1D5DB" />
@@ -2898,7 +2898,7 @@ function ChatTab({
             type="button"
             onClick={send}
             disabled={noRoom || !newMessage.trim() || !room}
-            aria-label="IconSend"
+            aria-label="Send"
             style={{
               width: 36, height: 36, borderRadius: "50%", border: "none",
               background: !noRoom && newMessage.trim() && room ? "#0F2044" : "#E5E7EB",

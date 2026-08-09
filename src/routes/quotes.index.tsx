@@ -23,7 +23,7 @@ export const Route = createFileRoute("/quotes/")({
   head: () => ({
     meta: [
       { title: "Quotes — DSM by EveryDriver" },
-      { name: "description", content: "IconSend and track course quotes to prospective pupils." },
+      { name: "description", content: "Send and track course quotes to prospective pupils." },
     ],
   }),
   component: QuotesPage,

@@ -579,7 +579,7 @@ function AdminJobOffers() {
                       <input
                         value={enquiryQuery}
                         onChange={(e) => setEnquiryQuery(e.target.value)}
-                        placeholder="IconSearch enquiries by name…"
+                        placeholder="Search enquiries by name…"
                         style={inputStyle(true)}
                       />
                     </div>

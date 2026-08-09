@@ -211,7 +211,7 @@ function AdminInstructorsPage() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="IconSearch by name..."
+            placeholder="Search by name..."
             className="flex-1 bg-transparent outline-none"
             style={{ fontSize: 13, color: NAVY }}
           />

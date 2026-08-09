@@ -573,7 +573,7 @@ function DocSheet({
             }}
           >
             <IconUpload stroke={1.5} size={16} color="#1877D6" />
-            IconUpload file
+            Upload file
             <input
               type="file"
               accept={ACCEPT}

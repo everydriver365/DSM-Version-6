@@ -151,7 +151,7 @@ function NextLessonMap({
     let cancelled = false;
     loadGoogleMapsJs()
       .then(() => { if (!cancelled) setReady(true); })
-      .catch((e) => { if (!cancelled) setError(e?.message ?? "IconMap failed to load"); });
+      .catch((e) => { if (!cancelled) setError(e?.message ?? "Map failed to load"); });
     return () => { cancelled = true; };
   }, []);
 
@@ -273,7 +273,7 @@ function NextLessonMap({
       )}
       {error && (
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#6B7280' }}>
-          IconMap unavailable
+          Map unavailable
         </div>
       )}
     </div>
@@ -1243,7 +1243,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
         </div>
         <button
           type="button"
-          aria-label="IconSearch actions"
+          aria-label="Search actions"
           onClick={() => {
             const next = !searchOpen;
             setSearchOpen(next);
@@ -1284,7 +1284,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="IconSearch actions..."
+            placeholder="Search actions..."
             style={{
               flex: 1,
               border: 'none',
@@ -4028,10 +4028,10 @@ function HomePage() {
     { icon: <IconCalendar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Diary", route: "/diary" },
     { icon: <Crown size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My plan", route: "/subscription" },
     { icon: <PlayCircle size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Live session", route: "/livesession" },
-    { icon: <IconSearch stroke={1.5} size={20} color="#FFFFFF" />, bg: "#6B7280", label: "IconSearch", route: "/search" },
+    { icon: <IconSearch stroke={1.5} size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Search", route: "/search" },
     { icon: <IconBell stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Notifications", route: "/notifications" },
     
-    { icon: <IconRefresh stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "IconCalendar sync", route: "/calendarsync" },
+    { icon: <IconRefresh stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Calendar sync", route: "/calendarsync" },
     { icon: <UserCircle size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Profile", route: "/profile" },
     { icon: <FileSpreadsheet size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "MTD", route: "/mtd" },
     { icon: <IconFileText stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Quotes", route: "/quotes" },
@@ -6205,7 +6205,7 @@ function HomePage() {
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 3, minWidth: 0 }}>
                               <IconCalendarEvent size={13} stroke={1.8} color="#6B7686" style={{ flexShrink: 0 }} />
-                              <span style={{ fontSize: 12, color: '#6B7686', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Google IconCalendar</span>
+                              <span style={{ fontSize: 12, color: '#6B7686', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Google Calendar</span>
                             </div>
                           </div>
                         </div>
@@ -6510,7 +6510,7 @@ function HomePage() {
                 { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} owed` : 'All settled', route: '/payments', icon: IconCurrencyPound, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0, badge: outstanding > 0 ? Math.round(outstanding) : undefined, graphic: 'chart' },
                 { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#1877D6', chipBg: '#E6F1FB', attention: unreadCount > 0, graphic: 'bubbles' },
 
-                { label: 'IconSend message', sub: 'Quick text', route: null, icon: IconMessage, iconStroke: '#1877D6', chipBg: '#E6F1FB', action: 'send-message', graphic: 'bubbles' },
+                { label: 'Send message', sub: 'Quick text', route: null, icon: IconMessage, iconStroke: '#1877D6', chipBg: '#E6F1FB', action: 'send-message', graphic: 'bubbles' },
                 { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'running-late', graphic: 'alarm' },
                 { label: 'EOL', sub: 'End of lesson', route: '/pupils', icon: BookOpen, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'book' },
                 { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: IconAward, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'medal' },
@@ -6534,10 +6534,10 @@ function HomePage() {
                 { label: 'Invoices', sub: 'Billing', route: '/invoices', icon: IconFileText, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'invoice' },
                 { label: 'Forecast', sub: 'Earnings', route: '/earnings', icon: IconTrendingUp, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'trend' },
                 // Page 5 — Admin
-                { label: 'IconSettings', sub: 'Account', route: '/settings', icon: SettingsIcon, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'gear' },
+                { label: 'Settings', sub: 'Account', route: '/settings', icon: SettingsIcon, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'gear' },
                 { label: 'Availability', sub: 'Working hours', route: '/availability-settings', icon: IconClock, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'clock2' },
                 { label: 'Coverage', sub: 'Service areas', route: '/coverage-areas', icon: IconMapPin, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'map' },
-                { label: 'IconCalendar', sub: 'Google sync', route: '/calendarsync', icon: CalendarIcon, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'sync' },
+                { label: 'Calendar', sub: 'Google sync', route: '/calendarsync', icon: CalendarIcon, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'sync' },
                 { label: 'Referrals', sub: 'Rewards', route: '/referrals', icon: IconGift, iconStroke: '#00B5A5', chipBg: '#D8F1EE', graphic: 'gift' },
                 { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
                 { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'spark' },
@@ -6839,7 +6839,7 @@ function HomePage() {
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                           }}
-                          aria-label="IconSearch quick access"
+                          aria-label="Search quick access"
                         >
                           <IconSearch stroke={1.5} size={15} color="#0B1F3A" />
                         </button>
@@ -6889,7 +6889,7 @@ function HomePage() {
                         }}
                       >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                          <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>IconSearch tools</div>
+                          <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Search tools</div>
                           <button
                             type="button"
                             onClick={() => setQuickSearchOpen(false)}
@@ -6913,7 +6913,7 @@ function HomePage() {
                           <input
                             autoFocus
                             type="text"
-                            placeholder="IconSearch all features..."
+                            placeholder="Search all features..."
                             value={quickSearchQuery}
                             onChange={(e) => setQuickSearchQuery(e.target.value)}
                             style={{
@@ -8421,7 +8421,7 @@ function HomePage() {
                   fontFamily: 'Poppins, sans-serif', cursor: 'pointer',
                 }}
               >
-                IconSend message
+                Send message
               </button>
             </div>
           }
@@ -8763,7 +8763,7 @@ function HomePage() {
                       className="flex-1 text-center rounded-xl py-2.5 px-4 text-[13px] font-semibold"
                       style={{ background: '#7C3AED', color: '#FFFFFF', textDecoration: 'none' }}
                     >
-                      🎁 IconSend gift message
+                      🎁 Send gift message
                     </a>
                     <button
                       type="button"
@@ -9783,7 +9783,7 @@ function OutstandingBreakdownModal({
               cursor: rows.length === 0 ? "not-allowed" : "pointer",
             }}
           >
-            IconSend all reminders
+            Send all reminders
           </button>
           <button
             onClick={onClose}
