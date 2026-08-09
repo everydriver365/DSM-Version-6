@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Delete, QrCode, CreditCard, Banknote, Share2, Copy, X, CircleCheck } from "lucide-react";
+import { ChevronLeft, ChevronDown, Delete, QrCode, CreditCard, Banknote, Share2, Copy, X, CircleCheck } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -434,7 +434,29 @@ function TakePaymentPage() {
   };
 
   const NAVY = "#0B1F3A";
+  const fieldCardStyle: React.CSSProperties = {
+    background: "#fff",
+    borderRadius: 14,
+    padding: "13px 15px",
+    boxShadow: "0 3px 0 #E4E4E8",
+  };
+  const keyStyle: React.CSSProperties = {
+    background: "#fff",
+    borderRadius: 16,
+    padding: 20,
+    border: "none",
+    textAlign: "center",
+    color: NAVY,
+    fontSize: 24,
+    fontWeight: 800,
+    boxShadow: "0 3px 0 #E4E4E8",
+    cursor: "pointer",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+  };
   const numpadKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "back"];
+
   const numpadRows = [
     numpadKeys.slice(0, 3),
     numpadKeys.slice(3, 6),
@@ -475,12 +497,15 @@ function TakePaymentPage() {
           style={{
             flex: 1,
             textAlign: "center",
-            fontSize: 16,
-            fontWeight: 600,
+            fontSize: 19,
+            fontWeight: 800,
+            letterSpacing: "-0.3px",
+            color: "#fff",
           }}
         >
           Take payment
         </div>
+
         <button
           type="button"
           aria-label="Close"
@@ -520,9 +545,10 @@ function TakePaymentPage() {
           style={{
             textAlign: "center",
             flexShrink: 0,
-            padding: passBookingFee ? "6px 16px 0" : "6px 16px",
-            fontSize: 36,
-            fontWeight: 700,
+            padding: passBookingFee ? "10px 16px 0" : "10px 16px",
+            fontSize: 46,
+            fontWeight: 900,
+            letterSpacing: "-1.5px",
             color: NAVY,
             lineHeight: 1.05,
           }}
@@ -534,9 +560,11 @@ function TakePaymentPage() {
             style={{
               textAlign: "center",
               flexShrink: 0,
-              padding: "2px 16px 4px",
-              fontSize: 11,
-              color: "#6B7280",
+              padding: "0 16px 4px",
+              marginTop: 4,
+              fontSize: 13,
+              fontWeight: 500,
+              color: "#8A8A8E",
             }}
           >
             £{amountNum.toFixed(2)} + 1% fee (£{(amountNum * 0.01).toFixed(2)})
@@ -547,89 +575,111 @@ function TakePaymentPage() {
         <div
           style={{
             display: "flex",
-            gap: 6,
+            gap: 8,
             flexShrink: 0,
-            padding: "0 16px 4px",
-            alignItems: "center",
+            padding: "12px 16px 0",
+            alignItems: "stretch",
           }}
         >
-          <select
-            value={pupilId}
-            onChange={(e) => setPupilId(e.target.value)}
-            style={{
-              flex: 1,
-              minWidth: 0,
-              padding: "6px 8px",
-              borderRadius: 8,
-              border: "0.5px solid #EEF2F7",
-              fontSize: 13,
-              color: NAVY,
-              background: "#fff",
-            }}
-          >
-            <option value="">For (optional)</option>
-            {pupils.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+          <div style={{ ...fieldCardStyle, flex: 1.1, position: "relative", display: "flex", alignItems: "center" }}>
+            <select
+              value={pupilId}
+              onChange={(e) => setPupilId(e.target.value)}
+              style={{
+                flex: 1,
+                minWidth: 0,
+                appearance: "none",
+                WebkitAppearance: "none",
+                border: "none",
+                outline: "none",
+                background: "transparent",
+                fontSize: 14,
+                fontWeight: 700,
+                color: NAVY,
+                paddingRight: 16,
+              }}
+            >
+              <option value="">For (optional)</option>
+              {pupils.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+            <ChevronDown size={14} color="#8A8A8E" style={{ position: "absolute", right: 12, pointerEvents: "none" }} />
+          </div>
           <input
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Description"
             style={{
-              flex: 1.5,
+              ...fieldCardStyle,
+              flex: 1.6,
               minWidth: 0,
-              padding: "6px 8px",
-              borderRadius: 8,
-              border: "0.5px solid #EEF2F7",
-              fontSize: 13,
+              border: "none",
+              outline: "none",
+              fontSize: 14,
+              fontWeight: 500,
               color: NAVY,
             }}
           />
-          <input
-            type="number"
-            inputMode="decimal"
-            step="0.5"
-            min="0"
-            value={hoursBought}
-            onChange={(e) => setHoursBought(e.target.value)}
-            placeholder="Hrs"
-            title="Hours bought (optional)"
-            style={{
-              width: 56,
-              minWidth: 0,
-              padding: "6px 8px",
-              borderRadius: 8,
-              border: "0.5px solid #EEF2F7",
-              fontSize: 13,
-              color: NAVY,
-              textAlign: "center",
-            }}
-          />
+          <div style={{ ...fieldCardStyle, width: 70, flexShrink: 0, padding: "13px 10px" }}>
+            <input
+              type="number"
+              inputMode="decimal"
+              step="0.5"
+              min="0"
+              value={hoursBought}
+              onChange={(e) => setHoursBought(e.target.value)}
+              placeholder="0"
+              title="Hours bought (optional)"
+              style={{
+                width: "100%",
+                minWidth: 0,
+                border: "none",
+                outline: "none",
+                background: "transparent",
+                fontSize: 14,
+                fontWeight: 800,
+                color: NAVY,
+                textAlign: "center",
+                padding: 0,
+              }}
+            />
+            <div
+              style={{
+                textAlign: "center",
+                color: "#B0B0B5",
+                fontSize: 9.5,
+                fontWeight: 600,
+                marginTop: 2,
+              }}
+            >
+              HRS
+            </div>
+          </div>
         </div>
+
 
         {/* Tabs */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 4,
-            background: "#F4F6FA",
-            padding: 3,
-            borderRadius: 10,
+            display: "flex",
+            flexDirection: "row",
+            background: "#fff",
+            padding: 4,
+            borderRadius: 16,
+            boxShadow: "0 3px 0 #E4E4E8",
             flexShrink: 0,
-            margin: "8px 16px 0",
-            height: 40,
+            margin: "10px 16px 0",
           }}
         >
           {(
             [
-              { k: "qr" as const, label: "QR Code", icon: <QrCode size={13} /> },
-              { k: "card" as const, label: "Card", icon: <CreditCard size={13} /> },
-              { k: "cash" as const, label: "Cash/Transfer", icon: <Banknote size={13} /> },
+              { k: "qr" as const, label: "QR Code", icon: <QrCode size={15} /> },
+              { k: "card" as const, label: "Card", icon: <CreditCard size={15} /> },
+              { k: "cash" as const, label: "Cash/Transfer", icon: <Banknote size={15} /> },
             ]
           ).map((t) => {
             const active = tab === t.k;
@@ -639,18 +689,19 @@ function TakePaymentPage() {
                 type="button"
                 onClick={() => setTab(t.k)}
                 style={{
-                  height: 34,
-                  borderRadius: 8,
+                  flex: 1,
+                  minWidth: 0,
+                  padding: "11px 4px",
+                  borderRadius: 12,
                   border: "none",
-                  background: active ? "#fff" : "transparent",
-                  color: active ? NAVY : "#6B7280",
-                  fontSize: 11,
-                  fontWeight: 600,
+                  background: active ? NAVY : "transparent",
+                  color: active ? "#fff" : "#8A8A8E",
+                  fontSize: 13,
+                  fontWeight: 700,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: 4,
-                  boxShadow: active ? "0 1px 2px rgba(11,31,58,0.08)" : "none",
+                  gap: 6,
                   cursor: "pointer",
                 }}
               >
@@ -661,6 +712,7 @@ function TakePaymentPage() {
           })}
         </div>
 
+
         {/* Main area — numpad or tab-specific content */}
         <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", overflow: "hidden" }}>
           {tab === "qr" && (
@@ -669,11 +721,10 @@ function TakePaymentPage() {
                 style={{
                   flex: "0 0 auto",
                   minHeight: 0,
-                  padding: "6px 12px 8px",
+                  padding: "10px 16px 12px",
                   display: "grid",
                   gridTemplateColumns: "repeat(3, 1fr)",
-                  gridTemplateRows: "repeat(4, 52px)",
-                  gap: 6,
+                  gap: 10,
                 }}
               >
                 {numpadKeys.map((k) => (
@@ -681,42 +732,29 @@ function TakePaymentPage() {
                     key={k}
                     type="button"
                     onClick={() => press(k)}
-                    style={{
-                      height: 52,
-                      maxHeight: 52,
-                      padding: "4px 0",
-                      fontSize: 20,
-                      fontWeight: 600,
-                      border: "0.5px solid #EEF2F7",
-                      borderRadius: 8,
-                      background: "white",
-                      cursor: "pointer",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: NAVY,
-                    }}
+                    style={keyStyle}
                   >
-                    {k === "back" ? <Delete size={20} /> : k}
+                    {k === "back" ? <Delete size={22} color="#6B6B6F" /> : k}
                   </button>
                 ))}
               </div>
 
               {/* Generate QR button */}
-              <div style={{ padding: "0 16px 8px", flexShrink: 0 }}>
+              <div style={{ padding: "0 16px 12px", flexShrink: 0 }}>
                 <button
                   type="button"
                   onClick={generateQr}
                   disabled={qrGenerating}
                   style={{
                     width: "100%",
-                    height: 44,
-                    borderRadius: 10,
+                    padding: 17,
+                    borderRadius: 16,
                     background: NAVY,
                     color: "#fff",
                     border: "none",
-                    fontSize: 14,
-                    fontWeight: 600,
+                    fontSize: 16,
+                    fontWeight: 800,
+                    boxShadow: "0 4px 0 #050D1C",
                     opacity: qrGenerating ? 0.7 : 1,
                     cursor: "pointer",
                   }}
@@ -724,6 +762,7 @@ function TakePaymentPage() {
                   {qrGenerating ? "Generating…" : "Generate QR code"}
                 </button>
               </div>
+
             </>
           )}
 
@@ -788,11 +827,10 @@ function TakePaymentPage() {
                 style={{
                   flex: "0 0 auto",
                   minHeight: 0,
-                  padding: "6px 12px 8px",
+                  padding: "10px 16px 12px",
                   display: "grid",
                   gridTemplateColumns: "repeat(3, 1fr)",
-                  gridTemplateRows: "repeat(4, 52px)",
-                  gap: 6,
+                  gap: 10,
                 }}
               >
                 {numpadKeys.map((k) => (
@@ -800,26 +838,13 @@ function TakePaymentPage() {
                     key={k}
                     type="button"
                     onClick={() => press(k)}
-                    style={{
-                      height: 52,
-                      maxHeight: 52,
-                      padding: "4px 0",
-                      fontSize: 20,
-                      fontWeight: 600,
-                      border: "0.5px solid #EEF2F7",
-                      borderRadius: 8,
-                      background: "white",
-                      cursor: "pointer",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: NAVY,
-                    }}
+                    style={keyStyle}
                   >
-                    {k === "back" ? <Delete size={20} /> : k}
+                    {k === "back" ? <Delete size={22} color="#6B6B6F" /> : k}
                   </button>
                 ))}
               </div>
+
 
               {/* Cash controls */}
               <div style={{ padding: "0 16px 8px", flexShrink: 0, display: "flex", gap: 6 }}>
