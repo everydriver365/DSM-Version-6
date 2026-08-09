@@ -430,7 +430,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 onClick={open}
                 style={{
                   position: "relative",
-                  height: 180,
+                  height: 140,
                   borderRadius: 22,
                   overflow: "hidden",
                   cursor: "pointer",
