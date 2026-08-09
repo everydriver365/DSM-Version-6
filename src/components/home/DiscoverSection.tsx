@@ -29,6 +29,23 @@ const RED = "#CC2229";
 const HAIRLINE = "#E4E8EF";
 const FONT = "Poppins, sans-serif";
 
+/** Pick an icon that matches the listing category for the missing-photo fallback. */
+function categoryIcon(category?: string | null) {
+  const c = (category ?? "").toLowerCase();
+  if (/web|site|digital|seo/.test(c)) return IconBrowser;
+  if (/car|vehicle|dual|van/.test(c)) return IconCar;
+  if (/rent|hire|lease/.test(c)) return IconKey;
+  if (/job|vacancy|recruit|franchise/.test(c)) return IconBriefcase;
+  if (/train|course|lesson|adi|pdi|school|tuition/.test(c)) return IconSchool;
+  if (/book|guide|resource|material/.test(c)) return IconBook;
+  if (/camera|dash|video/.test(c)) return IconCamera;
+  if (/phone|tech|device|app|electronic/.test(c)) return IconDeviceMobile;
+  if (/tool|part|equip|service|repair|maint/.test(c)) return IconTool;
+  if (!c) return IconPhoto;
+  return IconShoppingBag;
+}
+
+
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
