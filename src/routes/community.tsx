@@ -136,6 +136,27 @@ function isExpirySuspicious(expires: string): boolean {
   return diff > 48 * 3600_000;
 }
 
+/**
+ * Pull likely road names out of the free-text location/description so the
+ * details drawer can list the roads an alert affects.
+ */
+function extractRoads(...sources: (string | null | undefined)[]): string[] {
+  const text = sources.filter(Boolean).join(" · ");
+  if (!text) return [];
+  const found: string[] = [];
+  const push = (v: string) => {
+    const clean = v.trim().replace(/[.,;:]$/, "");
+    if (clean && !found.some((f) => f.toLowerCase() === clean.toLowerCase())) found.push(clean);
+  };
+  // Motorways / A-roads / B-roads, e.g. M25, A406, B1234
+  for (const m of text.matchAll(/\b([AB]\d{1,4}(?:\([MT]\))?|M\d{1,2}(?:\([MT]\))?)\b/g)) push(m[1]);
+  // Named roads, e.g. "Kingsway Road", "High Street"
+  for (const m of text.matchAll(/\b([A-Z][a-zA-Z']+(?:\s[A-Z][a-zA-Z']+)?\s(?:Road|Street|Lane|Avenue|Way|Drive|Close|Hill|Bridge|Roundabout|Bypass|Parade|Terrace))\b/g)) push(m[1]);
+  return found.slice(0, 8);
+}
+
+
+
 function firstName(name: string | null | undefined): string {
   if (!name) return "Someone";
   return name.trim().split(/\s+/)[0] || "Someone";
@@ -1516,12 +1537,19 @@ function AlertsTab({
           display: "flex", justifyContent: "space-between", alignItems: "center",
           padding: "11px 14px", fontSize: 13,
         };
-        const metaRows: { label: string; value: string }[] = [
+        const expirySuspicious = isExpirySuspicious(selectedAlert.expires_at);
+        const affectedRoads = extractRoads(selectedAlert.location_name, selectedAlert.description);
+        const metaRows: { label: string; value: string; danger?: boolean }[] = [
           ...(selectedAlert.location_name ? [{ label: "Location", value: selectedAlert.location_name }] : []),
+          ...(selectedAlert.area ? [{ label: "Area", value: selectedAlert.area }] : []),
+          ...(selectedAlert.outcode ? [{ label: "Postcode area", value: selectedAlert.outcode }] : []),
+          { label: "Alert type", value: cfg.label },
+          { label: "Source", value: selectedAlert.source === 'tomtom' ? "TomTom Traffic" : `Instructor · ${firstName(selectedAlert.instructors?.name)}` },
           { label: "Reported", value: selectedAlert.source === 'tomtom' ? "TomTom Traffic" : new Date(selectedAlert.created_at).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) },
-          { label: "Expires", value: formatCountdown(selectedAlert.expires_at) },
+          { label: "Expires", value: formatCountdown(selectedAlert.expires_at), danger: expirySuspicious },
           { label: "Confirmations", value: String(selectedAlert.upvotes) },
         ];
+
         return (
           <BottomSheet
             title={cfg.label}
@@ -1575,6 +1603,7 @@ function AlertsTab({
               </div>
             }
           >
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Details</div>
             <div style={{ background: "white", borderRadius: 14, overflow: "hidden", marginBottom: 14 }}>
               {metaRows.map((r, i) => {
                 const isReportedTomTom = r.label === "Reported" && selectedAlert.source === 'tomtom';
@@ -1582,15 +1611,39 @@ function AlertsTab({
                   <div key={r.label} style={{ ...rowStyle, borderTop: i === 0 ? "none" : "0.5px solid #EEF0F3", alignItems: isReportedTomTom ? "flex-start" : "center" }}>
                     <span style={{ color: "#8A93A3" }}>{r.label}</span>
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", marginLeft: 12 }}>
-                      <span style={{ color: "#0B1F3A", fontWeight: 600, textAlign: "right" }}>{r.value}</span>
+                      <span style={{ color: r.danger ? "#CC2229" : "#0B1F3A", fontWeight: r.danger ? 800 : 600, textAlign: "right" }}>{r.value}</span>
                       {isReportedTomTom && (
                         <span style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>Updates automatically</span>
+                      )}
+                      {r.danger && (
+                        <span style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2, textAlign: "right" }}>End time looks unreliable</span>
                       )}
                     </div>
                   </div>
                 );
               })}
             </div>
+
+            {affectedRoads.length > 0 && (
+              <>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Affected roads</div>
+                <div style={{
+                  background: "white", borderRadius: 14, padding: "12px 14px", marginBottom: 14,
+                  display: "flex", flexWrap: "wrap", gap: 6,
+                }}>
+                  {affectedRoads.map((road) => (
+                    <span key={road} style={{
+                      background: "#E7F1FC", color: "#1877D6", fontSize: 12, fontWeight: 700,
+                      padding: "5px 11px", borderRadius: 20,
+                    }}>
+                      {road}
+                    </span>
+                  ))}
+                </div>
+              </>
+            )}
+
+
 
             <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Description</div>
             <div style={{
