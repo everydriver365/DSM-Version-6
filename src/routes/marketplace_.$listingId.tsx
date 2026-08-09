@@ -292,13 +292,13 @@ function ListingDetailPage() {
               </div>
             )}
 
-            {/* Status badge */}
+            {/* Status badge — derived from the listing's status fields */}
             <div
               style={{
                 position: "absolute",
                 top: 12,
                 left: 12,
-                background: listing.is_active ? "#1A9B5C" : "#6B7686",
+                background: statusBadge.colour,
                 color: "#fff",
                 fontSize: 11,
                 fontWeight: 800,
@@ -306,7 +306,7 @@ function ListingDetailPage() {
                 borderRadius: 20,
               }}
             >
-              {listing.is_active ? "For Sale" : "Sold"}
+              {statusBadge.label}
             </div>
 
             {/* Pagination dots */}
