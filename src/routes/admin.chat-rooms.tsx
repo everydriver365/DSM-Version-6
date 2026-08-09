@@ -285,17 +285,19 @@ function AdminChatRooms() {
           onSubmit={handleCreate}
           style={{
             background: "#fff",
-            border: "1px solid #E2E8F0",
-            borderRadius: 16,
-            padding: 16,
+            border: "none",
+            borderRadius: 20,
+            padding: 18,
             display: "flex",
             flexDirection: "column",
             gap: 12,
-            marginBottom: 20,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            marginBottom: 22,
+            boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
           }}
         >
-          <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A" }}>Create room</div>
+          <div style={{ fontSize: 17, fontWeight: 800, color: "#000", letterSpacing: "-0.2px", marginBottom: 2 }}>
+            Create room
+          </div>
           <input
             type="text"
             placeholder="Outcode (e.g. SO30)"
@@ -311,26 +313,10 @@ function AdminChatRooms() {
             onChange={(e) => setAreaName(e.target.value)}
             style={inputStyle}
           />
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={segmentWrapStyle}>
             {(["local", "uk"] as const).map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setRoomType(t)}
-                style={{
-                  flex: 1,
-                  height: 40,
-                  borderRadius: 10,
-                  border: `1px solid ${roomType === t ? "#1877D6" : "#E2E8F0"}`,
-                  background: roomType === t ? "#EAF2FC" : "#fff",
-                  color: roomType === t ? "#1877D6" : "#6B7280",
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: "pointer",
-                  textTransform: "uppercase",
-                }}
-              >
-                {t}
+              <button key={t} type="button" onClick={() => setRoomType(t)} style={segmentStyle(roomType === t)}>
+                {t === "uk" ? "UK" : "Local"}
               </button>
             ))}
           </div>
@@ -340,31 +326,30 @@ function AdminChatRooms() {
               alignItems: "center",
               justifyContent: "space-between",
               fontSize: 14,
-              color: "#0B1F3A",
+              color: "#000",
+              fontWeight: 600,
               cursor: "pointer",
             }}
           >
             Opt-in only
-            <input
-              type="checkbox"
-              checked={isOptIn}
-              onChange={(e) => setIsOptIn(e.target.checked)}
-              style={{ width: 18, height: 18, accentColor: "#1877D6" }}
-            />
+            <DSMCheckbox checked={isOptIn} onChange={setIsOptIn} />
           </label>
           {error && <div style={{ color: "#CC2229", fontSize: 13 }}>{error}</div>}
           <button
             type="submit"
             disabled={creating}
             style={{
-              height: 44,
-              borderRadius: 10,
+              width: "100%",
+              padding: 15,
+              borderRadius: 14,
               background: "#1877D6",
               color: "#fff",
               border: "none",
-              fontWeight: 600,
+              fontWeight: 800,
               fontSize: 15,
+              fontFamily: "Poppins, sans-serif",
               cursor: "pointer",
+              boxShadow: "0 4px 0 #0F52A8",
               opacity: creating ? 0.6 : 1,
             }}
           >
@@ -373,9 +358,13 @@ function AdminChatRooms() {
         </form>
 
         {/* List */}
-        <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", marginBottom: 10 }}>
-          Existing rooms{filteredRooms.length ? ` (${filteredRooms.length})` : ""}
+        <div style={{ fontSize: 19, fontWeight: 800, color: "#000", letterSpacing: "-0.3px", marginBottom: 12 }}>
+          Existing rooms
+          {filteredRooms.length ? (
+            <span style={{ fontSize: 15, fontWeight: 500, color: "#8A8A8E" }}> ({filteredRooms.length})</span>
+          ) : null}
         </div>
+
 
         {/* Filters */}
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 14 }}>
