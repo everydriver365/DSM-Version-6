@@ -1395,6 +1395,39 @@ function ShowcasePage() {
                           >
                             {c.body}
                           </div>
+                          {(() => {
+                            const liked = !!myCommentLikes[c.id];
+                            const count = commentLikeCounts[c.id] ?? 0;
+                            return (
+                              <button
+                                type="button"
+                                onClick={() => toggleCommentLike(c.id)}
+                                aria-pressed={liked}
+                                aria-label={liked ? "Unlike comment" : "Like comment"}
+                                style={{
+                                  marginTop: 7,
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: 5,
+                                  padding: "5px 10px",
+                                  borderRadius: 999,
+                                  border: "none",
+                                  background: liked ? "#E7F1FC" : "#F2F2F7",
+                                  color: liked ? BLUE : "#6B6B6F",
+                                  fontSize: 12,
+                                  fontWeight: 600,
+                                  ...POPPINS,
+                                }}
+                              >
+                                <IconThumbUp
+                                  size={13}
+                                  stroke={liked ? 2.2 : 1.7}
+                                  fill={liked ? BLUE : "none"}
+                                />
+                                {count > 0 ? count : "Like"}
+                              </button>
+                            );
+                          })()}
                         </div>
                       </div>
                     );
