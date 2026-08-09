@@ -386,27 +386,39 @@ function AdminInstructorsPage() {
 
       {/* ARCHIVE */}
       {archived.length > 0 && (
-        <div style={{ marginTop: 12 }}>
+        <div style={{ margin: "16px 16px 0" }}>
           {/* Toggle header */}
           <div
             onClick={() => setShowArchive((v) => !v)}
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
-              padding: "12px 16px",
-              background: "#F8FAFC",
-              border: "0.5px solid #E4E8EF",
-              borderRadius: showArchive ? "10px 10px 0 0" : 10,
+              gap: 12,
+              padding: 16,
+              background: "#fff",
+              borderRadius: 20,
+              boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.05)",
               cursor: "pointer",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <IconArchive size={18} color={NAVY} />
-              <span style={{ fontSize: 13, fontWeight: 600, color: NAVY, fontFamily: "Poppins, sans-serif" }}>
-                Archive ({archived.length})
-              </span>
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 10,
+                background: "#F2F2F7",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <IconArchive size={17} color="#6B6B6F" />
             </div>
+            <span style={{ flex: 1, fontSize: 15, fontWeight: 700, color: "#000", fontFamily: "Poppins, sans-serif" }}>
+              Archive <span style={{ color: "#8A8A8E", fontWeight: 500 }}>({archived.length})</span>
+            </span>
+
             {showArchive ? (
               <IconChevronUp size={18} color={MUTED} />
             ) : (
