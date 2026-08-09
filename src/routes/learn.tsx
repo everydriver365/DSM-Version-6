@@ -68,6 +68,9 @@ function formatDuration(d: string | number | null | undefined): string {
   }
   if (/^\d+(\.\d+)?$/.test(raw)) return `${raw} min`;
   return raw;
+}
+
+
 
 const LEARN_VIDEO_CACHE = "dsm-learn-videos-v1";
 
