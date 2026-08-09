@@ -51,6 +51,115 @@ export const Route = createFileRoute("/calendarsync")({
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
+const SECTION_CARD: React.CSSProperties = {
+  background: "#fff",
+  borderRadius: 20,
+  padding: 18,
+  boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
+  marginBottom: 24,
+};
+
+const DESC: React.CSSProperties = {
+  ...POPPINS,
+  color: "#6B6B6F",
+  fontSize: 13.5,
+  fontWeight: 500,
+  lineHeight: 1.5,
+  marginBottom: 16,
+};
+
+const FIELD_LABEL: React.CSSProperties = {
+  ...POPPINS,
+  display: "block",
+  color: "#8A8A8E",
+  fontSize: 12,
+  fontWeight: 600,
+  marginBottom: 8,
+};
+
+const FIELD_INPUT: React.CSSProperties = {
+  ...POPPINS,
+  background: "#F2F2F7",
+  borderRadius: 12,
+  padding: "13px 15px",
+  border: "none",
+  outline: "none",
+  color: "#6B6B6F",
+  fontSize: 13,
+  fontWeight: 500,
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+};
+
+const STATUS_DOT: React.CSSProperties = {
+  width: 22,
+  height: 22,
+  borderRadius: 999,
+  background: "#1A9B5C",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexShrink: 0,
+};
+
+const BTN_BASE: React.CSSProperties = {
+  ...POPPINS,
+  width: "100%",
+  padding: 15,
+  borderRadius: 14,
+  fontSize: 14.5,
+  fontWeight: 800,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 8,
+};
+
+const BTN_PRIMARY: React.CSSProperties = {
+  ...BTN_BASE,
+  background: "#1877D6",
+  color: "#fff",
+  border: "none",
+  boxShadow: "0 4px 0 #0F52A8",
+};
+
+const BTN_OUTLINE: React.CSSProperties = {
+  ...BTN_BASE,
+  background: "#fff",
+  color: "#1877D6",
+  border: "1.5px solid #E4E4E8",
+};
+
+const BTN_OUTLINE_RED: React.CSSProperties = {
+  ...BTN_BASE,
+  background: "#fff",
+  color: "#FF3B30",
+  border: "1.5px solid #FF3B30",
+};
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 12 }}>
+      <span style={{ width: 3, height: 14, background: "#1877D6", borderRadius: 2, flexShrink: 0 }} />
+      <span
+        style={{
+          ...POPPINS,
+          color: "#1877D6",
+          fontSize: 12,
+          fontWeight: 800,
+          letterSpacing: "0.6px",
+          textTransform: "uppercase",
+        }}
+      >
+        {children}
+      </span>
+    </div>
+  );
+}
+
+
+
 
 function CalendarSyncPage() {
   const navigate = useNavigate();
