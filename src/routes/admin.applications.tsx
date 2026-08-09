@@ -270,10 +270,20 @@ function AdminApplicationsPage() {
       </div>
 
       {/* Stats */}
-      <div style={{ padding: 16, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
-        <StatCard label="Pending" value={stats.pending} color={AMBER} bg="#FEF3C7" />
-        <StatCard label="Approved" value={stats.approved} color={GREEN} bg="#DCFCE7" />
-        <StatCard label="Rejected" value={stats.rejected} color={RED} bg="#FEE2E2" />
+      <div style={{ padding: "16px" }}>
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 20,
+            boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
+            display: "flex",
+            overflow: "hidden",
+          }}
+        >
+          <StatColumn label="Pending" value={stats.pending} color={AMBER} />
+          <StatColumn label="Approved" value={stats.approved} color={GREEN} divider />
+          <StatColumn label="Rejected" value={stats.rejected} color={RED} divider />
+        </div>
       </div>
 
       {/* Filter tabs */}
