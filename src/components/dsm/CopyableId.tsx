@@ -24,7 +24,7 @@ export function CopyableId({
       toast.success(`${label ?? "ID"} copied`);
       setTimeout(() => setCopied(false), 1600);
     } catch {
-      toast.error("IconCopy failed");
+      toast.error("Copy failed");
     }
   };
   return (
@@ -35,7 +35,7 @@ export function CopyableId({
         "inline-flex items-center gap-1.5 rounded-md border border-[#EEF2F7] bg-[#F3F8FF] px-2 py-0.5 font-mono text-xs text-[#0B1F3A] hover:bg-[#EAF3FB] transition-colors",
         className,
       )}
-      title={`IconCopy ${label ?? "ID"}`}
+      title={`Copy ${label ?? "ID"}`}
     >
       <span className="truncate max-w-[140px]">{value}</span>
       {copied ? (

@@ -667,7 +667,7 @@ function OfferSlotModal({
             className="flex-1 py-2.5 rounded-md text-[14px] font-semibold text-white disabled:opacity-50"
             style={{ backgroundColor: BLUE, ...POPPINS }}
           >
-            {saving ? "Sending…" : "IconSend offer"}
+            {saving ? "Sending…" : "Send offer"}
           </button>
         </div>
       </div>

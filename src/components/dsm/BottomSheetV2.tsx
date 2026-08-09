@@ -408,7 +408,7 @@ export function SheetRadioRow({
 export function SheetSearchRow({
   value,
   onChange,
-  placeholder = "IconSearch…",
+  placeholder = "Search…",
 }: {
   value: string;
   onChange: (v: string) => void;

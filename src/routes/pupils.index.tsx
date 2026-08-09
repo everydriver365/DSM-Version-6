@@ -800,7 +800,7 @@ function PupilsIndexPage() {
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="IconSearch pupils..."
+            placeholder="Search pupils..."
             style={{
               flex: 1,
               border: 'none',

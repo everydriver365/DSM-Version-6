@@ -714,7 +714,7 @@ function LessonSeriesPage() {
             <IconSearch stroke={1.5} size={14} color="#9CA3AF" />
             <input
               type="text"
-              placeholder={pupilId ? pupils.find((p) => p.id === pupilId)?.name ?? "IconSearch pupils…" : "IconSearch pupils…"}
+              placeholder={pupilId ? pupils.find((p) => p.id === pupilId)?.name ?? "Search pupils…" : "Search pupils…"}
               value={pupilSearch}
               onChange={(e) => setPupilSearch(e.target.value)}
               style={{ border: "none", outline: "none", flex: 1, fontSize: 14, color: "#0F2044", background: "transparent" }}

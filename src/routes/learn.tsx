@@ -223,7 +223,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
           <button
             type="button"
             onClick={handleDownload}
-            aria-label={cached ? "Available offline" : "IconDownload for offline"}
+            aria-label={cached ? "Available offline" : "Download for offline"}
             style={{
               position: "absolute",
               top: 8,

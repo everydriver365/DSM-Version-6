@@ -71,7 +71,7 @@ export function WelcomeOverlay({ userId, instructorName, onDismiss }: WelcomeOve
     {
       icon: <IconCalendar stroke={1.5} size={20} color="#fff" />,
       bg: "#15803D",
-      title: "Connect Google IconCalendar",
+      title: "Connect Google Calendar",
       subtitle: "Sync lessons automatically",
       to: "/settings",
     },

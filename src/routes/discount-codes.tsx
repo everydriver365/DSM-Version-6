@@ -139,7 +139,7 @@ function DiscountCodesPage() {
       await navigator.clipboard.writeText(text);
       toast.success("Copied");
     } catch {
-      toast.error("IconCopy failed");
+      toast.error("Copy failed");
     }
   }
 
@@ -299,7 +299,7 @@ function CodeCard({
             <button
               type="button"
               onClick={onCopy}
-              aria-label="IconCopy code"
+              aria-label="Copy code"
               style={{
                 width: 28,
                 height: 28,

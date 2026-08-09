@@ -204,7 +204,7 @@ function BookingDetailPage() {
             </div>
             <Row label="Name" value={booking.pupil_name} />
             <Row label="Email" value={booking.pupil_email} />
-            <Row label="IconPhone" value={booking.pupil_phone} />
+            <Row label="Phone" value={booking.pupil_phone} />
             <Row
               label="Address"
               value={

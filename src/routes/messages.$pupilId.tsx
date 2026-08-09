@@ -679,7 +679,7 @@ function PupilThreadPage() {
                       setSearchQuery("");
                     }
                   }}
-                  placeholder="IconSearch messages..."
+                  placeholder="Search messages..."
                   autoFocus
                   style={{
                     flex: 1,
@@ -804,7 +804,7 @@ function PupilThreadPage() {
 
               <button
                 type="button"
-                aria-label="IconSearch messages"
+                aria-label="Search messages"
                 onClick={() => setSearchOpen(true)}
                 style={{
                   width: 28,

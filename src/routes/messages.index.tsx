@@ -1159,7 +1159,7 @@ function MessagesIndexPage() {
             </div>
             <button
               type="button"
-              aria-label="IconSearch messages"
+              aria-label="Search messages"
               onClick={() => setShowSearch((v) => !v)}
               style={{
                 width: 32,
@@ -1215,7 +1215,7 @@ function MessagesIndexPage() {
                   autoFocus
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="IconSearch messages"
+                  placeholder="Search messages"
                   style={{
                     flex: 1,
                     border: 0,
@@ -1433,7 +1433,7 @@ function MessagesIndexPage() {
               autoFocus
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="IconSearch instructors..."
+              placeholder="Search instructors..."
               style={{
                 width: "100%",
                 boxSizing: "border-box",
@@ -1881,7 +1881,7 @@ function RoomBrowser({
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="IconSearch area or room name"
+            placeholder="Search area or room name"
             style={{
               flex: 1,
               border: 0,
@@ -2029,7 +2029,7 @@ function LocalChatView(props: {
         </button>
         <button
           type="button"
-          aria-label="IconSearch rooms"
+          aria-label="Search rooms"
           onClick={() => setRoomSelectorOpen((v) => !v)}
           style={{ background: "none", border: 0, padding: 4, cursor: "pointer", display: "flex" }}
         >
@@ -2066,7 +2066,7 @@ function LocalChatView(props: {
               <input
                 value={roomSearch}
                 onChange={(e) => setRoomSearch(e.target.value)}
-                placeholder="IconSearch rooms..."
+                placeholder="Search rooms..."
                 autoFocus
                 style={{
                   flex: 1,
@@ -2293,7 +2293,7 @@ function LocalChatView(props: {
                         <span style={{ fontSize: 10, color: "#9CA3AF" }}>{time}</span>
                         <button
                           type="button"
-                          aria-label="IconFlag message"
+                          aria-label="Flag message"
                           onClick={() => onFlag(msg.id)}
                           style={{
                             background: "transparent",
@@ -2369,7 +2369,7 @@ function LocalChatView(props: {
         />
         <button
           type="button"
-          aria-label="IconSend"
+          aria-label="Send"
           disabled={!newMessage.trim() || !room}
           onClick={onSend}
           style={{

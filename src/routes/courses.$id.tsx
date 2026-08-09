@@ -211,7 +211,7 @@ function CourseDetailPage() {
   }
 
   async function archive() {
-    if (!(await askConfirm({ title: "IconArchive course", message: "IconArchive this course? It will be hidden from your active list.", confirmLabel: "IconArchive", destructive: false }))) return;
+    if (!(await askConfirm({ title: "Archive course", message: "Archive this course? It will be hidden from your active list.", confirmLabel: "Archive", destructive: false }))) return;
     const { error: upErr } = await supabase
       .from("instructor_courses")
       .update({ status: "archived" })
@@ -292,7 +292,7 @@ function CourseDetailPage() {
         <button
           onClick={archive}
           style={{ background: "none", border: "none", cursor: "pointer", color: "#1877D6", display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600 }}
-          aria-label="IconArchive"
+          aria-label="Archive"
         >
           <IconArchive stroke={1.5} size={16} />
           IconArchive
@@ -595,7 +595,7 @@ function CourseDetailPage() {
                           [4, "Thu"],
                           [5, "Fri"],
                           [6, "Sat"],
-                          [0, "IconSun"],
+                          [0, "Sun"],
                         ] as const).map(([d, lbl]) => {
                           const days = form.repeat_days ?? [];
                           const active = days.includes(d);
@@ -1210,7 +1210,7 @@ function AddBookingSheet({
 
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <Input label="Pupil name" value={name} onChange={(e) => setName(e.target.value)} />
-          <Input label="IconPhone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+          <Input label="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
           <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           <Input
             label="Amount paid (£)"

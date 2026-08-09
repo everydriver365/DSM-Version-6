@@ -1005,7 +1005,7 @@ export function UnifiedPaymentSheet({
       await navigator.clipboard.writeText(payUrl);
       toast.success("Link copied");
     } catch {
-      toast.error("IconCopy failed");
+      toast.error("Copy failed");
     }
   };
 
@@ -1285,7 +1285,7 @@ export function UnifiedPaymentSheet({
           pupilId,
           amount: refundDue,
           method: "refund",
-          notes: `IconPackage cancellation — ${unusedHrs}h of ${blockTotalHrs}h unused`,
+          notes: `Package cancellation — ${unusedHrs}h of ${blockTotalHrs}h unused`,
           currentAccountBalance: Number(pupil?.account_balance ?? 0),
         });
 
@@ -1444,7 +1444,7 @@ export function UnifiedPaymentSheet({
                   cells={
                     isPackage
                       ? [
-                          { label: "IconPackage", value: money(balance.packageTotal) },
+                          { label: "Package", value: money(balance.packageTotal) },
                           { label: "Paid", value: money(balance.packagePaid), color: GREEN },
                           {
                             label: "Outstanding",
@@ -1744,7 +1744,7 @@ export function UnifiedPaymentSheet({
                 autoFocus
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="IconSearch pupils"
+                placeholder="Search pupils"
                 style={{
                   flex: 1,
                   minWidth: 0,
@@ -1923,7 +1923,7 @@ export function UnifiedPaymentSheet({
                 cells={
                   isPackage
                     ? [
-                        { label: "IconPackage", value: money(balance.packageTotal) },
+                        { label: "Package", value: money(balance.packageTotal) },
                         { label: "Paid", value: money(balance.packagePaid), color: GREEN },
                         {
                           label: "Outstanding",
@@ -2212,7 +2212,7 @@ export function UnifiedPaymentSheet({
               >
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
                   {[
-                    { label: "IconCopy link", Icon: IconCopy, onClick: copyLink },
+                    { label: "Copy link", Icon: IconCopy, onClick: copyLink },
                     { label: "Send SMS", Icon: IconMessage, onClick: sendSms },
                     { label: "Email", Icon: IconMail, onClick: () => void sendEmail() },
                   ].map(({ label, Icon, onClick }) => (
@@ -2686,7 +2686,7 @@ export function UnifiedPaymentSheet({
                     style={inputStyle}
                   />
                 </Field>
-                <Field label="IconPackage price (£)">
+                <Field label="Package price (£)">
                   <input
                     inputMode="decimal"
                     value={packagePrice}

@@ -647,7 +647,7 @@ function AddSheet({
       toast.success("Certificate uploaded");
     } catch (err: any) {
       console.error("[cpd] upload error", err);
-      toast.error(err?.message ?? "IconUpload failed");
+      toast.error(err?.message ?? "Upload failed");
     } finally {
       setUploading(false);
     }
@@ -831,7 +831,7 @@ function AddSheet({
                   color: "#0B1F3A",
                 }}
               >
-                <IconUpload stroke={1.5} size={14} /> {uploading ? "Uploading…" : "IconUpload certificate"}
+                <IconUpload stroke={1.5} size={14} /> {uploading ? "Uploading…" : "Upload certificate"}
                 <input
                   type="file"
                   accept="image/*,application/pdf"

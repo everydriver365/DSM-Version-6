@@ -244,7 +244,7 @@ const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
     title: "Account",
     items: [
       { label: "Settings", icon: SettingsIcon, to: "/settings" },
-      { label: "IconCalendar sync", icon: IconRefresh, to: "/calendarsync" },
+      { label: "Calendar sync", icon: IconRefresh, to: "/calendarsync" },
       { label: "Help", icon: HelpCircle, to: "/help" },
       { label: "Sign out", icon: IconLogout, signOut: true },
     ],

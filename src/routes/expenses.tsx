@@ -27,7 +27,7 @@ const CATEGORIES = [
   "Equipment",
   "Training",
   "Vehicle",
-  "IconPhone",
+  "Phone",
   "Professional fees",
   "Other",
 ] as const;
@@ -41,7 +41,7 @@ const FILTERS: Array<"All" | Category> = [
   "Equipment",
   "Training",
   "Vehicle",
-  "IconPhone",
+  "Phone",
   "Other",
 ];
 
@@ -60,7 +60,7 @@ const categoryIcon = (category: string, size: number = 16): ReactNode => {
     'Equipment': <IconTool stroke={1.5} size={size} />,
     'Training': <IconSchool stroke={1.5} size={size} />,
     'Vehicle': <IconCar stroke={1.5} size={size} />,
-    'IconPhone': <IconPhone stroke={1.5} size={size} />,
+    'Phone': <IconPhone stroke={1.5} size={size} />,
     'Professional fees': <IconBriefcase stroke={1.5} size={size} />,
     'Other': <IconDots stroke={1.5} size={size} />,
   };
@@ -75,7 +75,7 @@ const categoryColour = (category: string) => {
     'Equipment': '#6B7280',
     'Training': '#10B981',
     'Vehicle': '#EF4444',
-    'IconPhone': '#06B6D4',
+    'Phone': '#06B6D4',
     'Professional fees': '#0B1F3A',
     'Other': '#9CA3AF',
   };

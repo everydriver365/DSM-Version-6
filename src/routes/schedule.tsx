@@ -599,7 +599,7 @@ function SchedulePage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success("IconCalendar synced — " + (data.eventsImported || 0) + " events updated");
+        toast.success("Calendar synced — " + (data.eventsImported || 0) + " events updated");
         setLastSynced(new Date().toISOString());
         await fetchCalendarBlocks();
       } else {
@@ -1532,7 +1532,7 @@ function SchedulePage() {
                                   const blockTime = `${pad(startD.getHours())}:${pad(startD.getMinutes())}`;
                                   const blockDurationMins = Math.max(1, Math.round((endD.getTime() - startD.getTime()) / 60000));
                                   toast.info(
-                                    'This is a Google IconCalendar event. To manage it, open Google IconCalendar. To add this as a DSM lesson with payment tracking, tap "Add as lesson".',
+                                    'This is a Google Calendar event. To manage it, open Google Calendar. To add this as a DSM lesson with payment tracking, tap "Add as lesson".',
                                     {
                                       duration: 5000,
                                       action: {

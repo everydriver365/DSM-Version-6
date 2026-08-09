@@ -489,7 +489,7 @@ export function AddLessonSheet({
                   setPupilQuery(e.target.value);
                   setPupilListOpen(true);
                 }}
-                placeholder="IconSearch pupils…"
+                placeholder="Search pupils…"
                 className="flex-1 bg-transparent focus:outline-none"
                 style={{ ...valueStyle, fontWeight: 500 }}
               />

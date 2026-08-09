@@ -465,7 +465,7 @@ function ProfilePage() {
         setSaving(false);
         return;
       }
-      toast.success("IconCheck your new email address to confirm the change");
+      toast.success("Check your new email address to confirm the change");
     }
 
     setSaving(false);

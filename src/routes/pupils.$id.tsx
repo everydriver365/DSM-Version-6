@@ -4896,7 +4896,7 @@ function PupilExtras({
   }
 
   const smsBody = `Hi ${pupil.name}, could you please share your DVLA licence check code with me? You can get it at https://www.gov.uk/view-driving-licence — tap 'Share your licence information' and send me the code. Thanks, ${instructorName || "your instructor"}`;
-  const emailSubject = "DVLA Licence IconCheck Code Request";
+  const emailSubject = "DVLA Licence Check Code Request";
   const emailBody = `Hi ${pupil.name},\n\nAs part of your driving lessons, I need to verify your driving licence details.\n\nCould you please get your DVLA check code by visiting:\nhttps://www.gov.uk/view-driving-licence\n\nTap 'Share your licence information' and send me the 8-character code.\n\nMany thanks,\n${instructorName || "your instructor"}`;
 
   return (
@@ -4936,7 +4936,7 @@ function PupilExtras({
           ) : (
             <div className="flex flex-col gap-2">
               <input style={EXTRAS_INPUT} placeholder="Name" value={emgName} onChange={(e) => setEmgName(e.target.value)} />
-              <input style={EXTRAS_INPUT} placeholder="IconPhone" type="tel" value={emgPhone} onChange={(e) => setEmgPhone(e.target.value)} />
+              <input style={EXTRAS_INPUT} placeholder="Phone" type="tel" value={emgPhone} onChange={(e) => setEmgPhone(e.target.value)} />
               <select style={EXTRAS_INPUT} value={emgRel} onChange={(e) => setEmgRel(e.target.value)}>
                 {RELATIONS.map((r) => <option key={r} value={r}>{r}</option>)}
               </select>
