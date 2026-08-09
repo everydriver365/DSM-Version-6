@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Trash2 } from "lucide-react";
+import { Check, ChevronLeft, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
