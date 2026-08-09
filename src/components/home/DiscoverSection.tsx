@@ -435,15 +435,48 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   boxShadow: "0 5px 0 #081730, 0 16px 32px rgba(11,31,58,0.35)",
                 }}
               >
-                {/* Tinted glass overlay */}
+                {/* Listing image background */}
+                {listing?.imageUrl ? (
+                  <img
+                    src={listing.imageUrl}
+                    alt=""
+                    loading="lazy"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      opacity: 0.5,
+                      zIndex: 1,
+                      borderRadius: 22,
+                      pointerEvents: "none",
+                    }}
+                  />
+                ) : (
+                  <div
+                    aria-hidden
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background: BLUE,
+                      opacity: 0.5,
+                      zIndex: 1,
+                      borderRadius: 22,
+                    }}
+                  />
+                )}
+
+                {/* Bottom-to-top gradient so text stays readable */}
                 <div
                   aria-hidden
                   style={{
                     position: "absolute",
                     inset: 0,
-                    background: BLUE,
-                    opacity: 0.5,
-                    zIndex: 1,
+                    background: `linear-gradient(to top, ${NAVY}e6 0%, ${NAVY}80 40%, ${NAVY}40 70%, transparent 100%)`,
+                    zIndex: 2,
+                    borderRadius: 22,
+                    pointerEvents: "none",
                   }}
                 />
 
@@ -467,55 +500,56 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   </span>
                 )}
 
-
-                {/* Illustration */}
-                <div
-                  aria-hidden
-                  style={{ position: "absolute", top: 16, right: 16, width: 150, zIndex: 2 }}
-                >
-                  {isWebsite || !listing ? (
-                    <div
-                      style={{
-                        borderRadius: 10,
-                        border: "1.5px solid rgba(255,255,255,0.35)",
-                        background: "rgba(255,255,255,0.10)",
-                        overflow: "hidden",
-                      }}
-                    >
+                {!listing?.imageUrl && (
+                  <div
+                    aria-hidden
+                    style={{ position: "absolute", top: 16, right: 16, width: 150, zIndex: 2 }}
+                  >
+                    {isWebsite || !listing ? (
                       <div
                         style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 4,
-                          padding: "6px 8px",
-                          background: "rgba(255,255,255,0.18)",
+                          borderRadius: 10,
+                          border: "1.5px solid rgba(255,255,255,0.35)",
+                          background: "rgba(255,255,255,0.10)",
+                          overflow: "hidden",
                         }}
                       >
-                        {[0, 1, 2].map((i) => (
-                          <span
-                            key={i}
-                            style={{
-                              width: 6,
-                              height: 6,
-                              borderRadius: "50%",
-                              background: "rgba(255,255,255,0.4)",
-                            }}
-                          />
-                        ))}
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 4,
+                            padding: "6px 8px",
+                            background: "rgba(255,255,255,0.18)",
+                          }}
+                        >
+                          {[0, 1, 2].map((i) => (
+                            <span
+                              key={i}
+                              style={{
+                                width: 6,
+                                height: 6,
+                                borderRadius: "50%",
+                                background: "rgba(255,255,255,0.4)",
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <div style={{ padding: 8 }}>
+                          <div style={{ height: 7, width: "70%", borderRadius: 3, background: "rgba(255,255,255,0.30)" }} />
+                          <div style={{ height: 6, width: "90%", borderRadius: 3, background: "rgba(255,255,255,0.16)", marginTop: 6 }} />
+                          <div style={{ height: 6, width: "55%", borderRadius: 3, background: "rgba(255,255,255,0.16)", marginTop: 5 }} />
+                          <div style={{ height: 14, width: 52, borderRadius: 5, background: "rgba(255,255,255,0.38)", marginTop: 9 }} />
+                        </div>
                       </div>
-                      <div style={{ padding: 8 }}>
-                        <div style={{ height: 7, width: "70%", borderRadius: 3, background: "rgba(255,255,255,0.30)" }} />
-                        <div style={{ height: 6, width: "90%", borderRadius: 3, background: "rgba(255,255,255,0.16)", marginTop: 6 }} />
-                        <div style={{ height: 6, width: "55%", borderRadius: 3, background: "rgba(255,255,255,0.16)", marginTop: 5 }} />
-                        <div style={{ height: 14, width: 52, borderRadius: 5, background: "rgba(255,255,255,0.38)", marginTop: 9 }} />
+                    ) : (
+                      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                        <IconShoppingBag size={92} color="rgba(255,255,255,0.22)" stroke={1.5} />
                       </div>
-                    </div>
-                  ) : (
-                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                      <IconShoppingBag size={92} color="rgba(255,255,255,0.22)" stroke={1.5} />
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                )}
+
 
                 {/* Content */}
                 <div
