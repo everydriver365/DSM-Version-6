@@ -237,8 +237,12 @@ function TestsPage() {
         <button
           type="button"
           onClick={() => setAddOpen(true)}
-          className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
+          className="inline-flex items-center gap-2"
+          style={{
+            background: "#fff", color: "#0B1F3A", fontSize: 13.5, fontWeight: 800,
+            padding: "10px 18px", borderRadius: 14, border: "none",
+            boxShadow: "0 3px 0 #C7D0DC", ...POPPINS,
+          }}
         >
           <IconPlus stroke={1.5} size={15} />
           Add test
@@ -251,11 +255,19 @@ function TestsPage() {
         {examinerStats.length > 0 && <ExaminerStatsCard stats={examinerStats} />}
         {sections.map((section) => (
           <div key={section.key}>
-            <SectionHeader>{section.title}</SectionHeader>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "18px 0 10px" }}>
+              <span style={{ width: 3, height: 14, background: "#1877D6", borderRadius: 2, flexShrink: 0 }} />
+              <span style={{
+                color: "#1877D6", fontSize: 12, fontWeight: 800,
+                letterSpacing: "0.6px", textTransform: "uppercase", ...POPPINS,
+              }}>
+                {section.title}
+              </span>
+            </div>
             {section.items.length === 0 ? (
               <EmptyState title={section.emptyText} subtitle="Nothing to show here" />
             ) : (
-              <div className="flex flex-col" style={{ gap: 8 }}>
+              <div className="flex flex-col">
                 {section.items.map((t) => (
                   <TestCard
                     key={`${section.key}-${t.id}`}
@@ -378,24 +390,31 @@ function computeDvsaRiskMetrics(tests: DrivingTest[]) {
 }
 
 function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof computeDvsaRiskMetrics>> }) {
-  const bannerBg =
-    metrics.triggerCount >= 3 ? "#FEE2E2" : metrics.triggerCount === 2 ? "#FEF3C7" : "#F3F4F6";
-  const bannerColor =
-    metrics.triggerCount >= 3 ? "#991B1B" : metrics.triggerCount === 2 ? "#92400E" : "#4B5563";
-
   return (
-    <div className="mb-4" style={{ borderRadius: 12, background: "#FFFFFF", border: "0.5px solid #EEF2F7", overflow: "hidden" }}>
-      <div className="px-3 py-3" style={{ background: "#0B1F3A" }}>
-        <div className="text-[13px] font-semibold text-white" style={POPPINS}>DVSA Standards Check risk</div>
-        <div className="text-[11px] text-white/80 mt-0.5" style={POPPINS}>Last 12 months · completed tests only</div>
+    <div
+      className="mb-4"
+      style={{
+        borderRadius: 20, background: "#FFFFFF", overflow: "hidden",
+        boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.08)",
+      }}
+    >
+      <div style={{ background: "#0B1F3A", padding: "16px 18px" }}>
+        <div style={{ color: "#fff", fontSize: 17, fontWeight: 800, letterSpacing: "-0.2px", ...POPPINS }}>
+          DVSA Standards Check risk
+        </div>
+        <div style={{ color: "#7C8BA3", fontSize: 12, marginTop: 3, ...POPPINS }}>
+          Last 12 months · completed tests only
+        </div>
       </div>
-      <div className="px-3">
+      <div style={{ background: "#fff" }}>
         <DvsaMetricRow
+          first
           label="Avg minor faults"
           value={metrics.avgMinorFaults}
           valueSuffix=""
           threshold="6+"
           triggered={metrics.triggers.avgMinorFaults}
+          approaching={metrics.avgMinorFaults >= 5}
           decimals={1}
         />
         <DvsaMetricRow
@@ -404,6 +423,7 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
           valueSuffix=""
           threshold="0.55+"
           triggered={metrics.triggers.avgSeriousFaults}
+          approaching={metrics.avgSeriousFaults >= 0.45}
           decimals={2}
         />
         <DvsaMetricRow
@@ -412,6 +432,7 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
           valueSuffix="%"
           threshold="10%+"
           triggered={metrics.triggers.interventionRate}
+          approaching={metrics.interventionRate >= 8}
           decimals={0}
         />
         <DvsaMetricRow
@@ -420,11 +441,16 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
           valueSuffix="%"
           threshold="≤55%"
           triggered={metrics.triggers.passRate}
+          approaching={metrics.passRate <= 62}
           decimals={0}
         />
       </div>
-      <div className="px-3 py-3 text-[12px] font-medium" style={{ background: bannerBg, color: bannerColor, ...POPPINS }}>
-        {metrics.triggerCount} of 4 triggers met — DVSA typically requests a check at 3 or more. Based on {metrics.totalTests} completed tests.
+      <div style={{
+        background: "#F7F9FC", padding: "14px 18px", color: "#6B6B6F",
+        fontSize: 12.5, fontWeight: 500, lineHeight: 1.5, ...POPPINS,
+      }}>
+        <span style={{ color: "#0B1F3A", fontWeight: 800 }}>{metrics.triggerCount} of 4 triggers met</span>
+        {" "}— DVSA typically requests a check at 3 or more. Based on {metrics.totalTests} completed tests.
       </div>
     </div>
   );
@@ -436,21 +462,30 @@ function DvsaMetricRow({
   valueSuffix,
   threshold,
   triggered,
+  approaching,
   decimals,
+  first,
 }: {
   label: string;
   value: number;
   valueSuffix: string;
   threshold: string;
   triggered: boolean;
+  approaching?: boolean;
   decimals: number;
+  first?: boolean;
 }) {
   const formatted = Number.isFinite(value) ? value.toFixed(decimals) : "0";
+  const colour = triggered ? "#FF3B30" : approaching ? "#D68A1B" : "#1A9B5C";
   return (
-    <div className="flex items-center justify-between py-2" style={{ borderBottom: "0.5px solid #EEF2F7" }}>
-      <span className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>{label}</span>
-      <span className="text-[13px] font-semibold" style={{ color: triggered ? "#CC2229" : "#1E8E5A", ...POPPINS }}>
-        {formatted}{valueSuffix} (trigger: {threshold})
+    <div
+      className="flex items-center justify-between"
+      style={{ padding: "14px 18px", borderTop: first ? "none" : "1px solid #F0F0F2" }}
+    >
+      <span style={{ color: "#6B6B6F", fontSize: 14, fontWeight: 600, ...POPPINS }}>{label}</span>
+      <span style={{ color: colour, fontSize: 14.5, fontWeight: 800, textAlign: "right", ...POPPINS }}>
+        {formatted}{valueSuffix}
+        <span style={{ fontWeight: 500, fontSize: 12.5, opacity: 0.7 }}> (trigger: {threshold})</span>
       </span>
     </div>
   );
@@ -492,28 +527,37 @@ function TestCard({
     }
   }, [menuOpen]);
 
+  const timeLocation = [formatTime(test.test_time), test.test_centre].filter(Boolean).join(" · ");
+
   return (
-    <Card style={{ position: "relative" }}>
+    <div
+      style={{
+        position: "relative", background: "#fff", borderRadius: 18, padding: 16,
+        marginBottom: 12, boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+      }}
+    >
       <div className="flex items-start" style={{ gap: 12 }}>
         <div
-          className="flex items-center justify-center text-white text-[13px] font-semibold shrink-0"
-          style={{ width: 40, height: 40, borderRadius: 999, backgroundColor: "#1877D6", ...POPPINS }}
+          className="flex items-center justify-center text-white shrink-0"
+          style={{ width: 42, height: 42, borderRadius: 999, backgroundColor: "#1877D6", fontSize: 14, fontWeight: 800, ...POPPINS }}
         >
           {initials(name)}
         </div>
         <div className="flex-1 min-w-0" style={{ paddingRight: showMenu ? 28 : 0 }}>
           <div className="flex items-start justify-between" style={{ gap: 8 }}>
-            <div className="text-[14px] font-semibold truncate" style={{ color: "#0B1F3A", ...POPPINS }}>
+            <div className="truncate" style={{ color: "#000", fontSize: 16, fontWeight: 800, ...POPPINS }}>
               {name}
             </div>
             {showDaysBadge && (
               <span
-                className="text-[11px] font-medium shrink-0"
+                className="shrink-0"
                 style={{
                   color: "#1877D6",
-                  backgroundColor: "#EEF4FB",
-                  padding: "2px 8px",
-                  borderRadius: 999,
+                  backgroundColor: "#E7F1FC",
+                  fontSize: 12,
+                  fontWeight: 800,
+                  padding: "5px 12px",
+                  borderRadius: 20,
                   ...POPPINS,
                 }}
               >
@@ -535,59 +579,58 @@ function TestCard({
               </span>
             )}
           </div>
-          <div className="text-[13px] font-bold mt-1" style={{ color: "#0B1F3A", ...POPPINS }}>
+          <div style={{ color: "#0B1F3A", fontSize: 14, fontWeight: 700, marginTop: 4, ...POPPINS }}>
             {formatDateLong(test.test_date)}
           </div>
-          <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
-            {formatTime(test.test_time) || "—"}
-            {test.test_centre ? ` · ${test.test_centre}` : ""}
-          </div>
-
-          {showDaysBadge && (
-            <div className="text-[11px] font-medium" style={{ color: "#1877D6", ...POPPINS }}>
-              {formatCountdown(test.test_date, test.test_time) ?? "Overdue"}
-            </div>
-          )}
-
-          {showDaysBadge && (
-            <div className="mt-2 flex items-center" style={{ gap: 8 }}>
-              {resultColor ? (
-                <span
-                  className="text-[11px] font-semibold text-white"
-                  style={{
-                    backgroundColor: resultColor,
-                    padding: "3px 10px",
-                    borderRadius: 999,
-                    ...POPPINS,
-                  }}
-                >
-                  {test.result}
-                  {test.faults != null ? ` · ${test.faults} faults` : ""}
-                </span>
-              ) : (
-                onLogResult && (
-                  <button
-                    type="button"
-                    onClick={onLogResult}
-                    className="inline-flex items-center justify-center text-[12px] font-medium"
-                    style={{
-                      height: 32,
-                      padding: "0 12px",
-                      borderRadius: 8,
-                      backgroundColor: "transparent",
-                      border: "1px solid #1877D6",
-                      color: "#1877D6",
-                      ...POPPINS,
-                    }}
-                  >
-                    Log result
-                  </button>
-                )
-              )}
+          {timeLocation && (
+            <div style={{ color: "#8A8A8E", fontSize: 12.5, marginTop: 2, ...POPPINS }}>
+              {timeLocation}
             </div>
           )}
         </div>
       </div>
+
+      {showDaysBadge && (
+        resultColor ? (
+          <div className="mt-2 flex items-center" style={{ gap: 8 }}>
+            <span
+              className="text-[11px] font-semibold text-white"
+              style={{
+                backgroundColor: resultColor,
+                padding: "3px 10px",
+                borderRadius: 999,
+                ...POPPINS,
+              }}
+            >
+              {test.result}
+              {test.faults != null ? ` · ${test.faults} faults` : ""}
+            </span>
+          </div>
+        ) : (
+          onLogResult && (
+            <button
+              type="button"
+              onClick={onLogResult}
+              className="inline-flex items-center justify-center"
+              style={{
+                width: "100%",
+                marginTop: 14,
+                padding: 12,
+                borderRadius: 12,
+                background: "#fff",
+                border: "1.5px solid #1877D6",
+                color: "#1877D6",
+                fontSize: 14,
+                fontWeight: 700,
+                ...POPPINS,
+              }}
+            >
+              Log result
+            </button>
+          )
+        )
+      )}
+
 
       {/* Dots menu */}
       {showMenu && (
@@ -598,15 +641,15 @@ function TestCard({
             style={{
               display: "grid",
               placeItems: "center",
-              width: 28,
-              height: 28,
+              width: 26,
+              height: 26,
               borderRadius: 8,
               background: "transparent",
               border: "none",
               cursor: "pointer",
             }}
           >
-            <IconDotsVertical size={16} color="#9CA3AF" />
+            <IconDotsVertical size={16} color="#B0B0B5" />
           </button>
 
           {menuOpen && (
@@ -684,7 +727,7 @@ function TestCard({
           )}
         </div>
       )}
-    </Card>
+    </div>
   );
 }
 
