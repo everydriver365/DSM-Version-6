@@ -493,6 +493,7 @@ function AdminListingsPage() {
         </button>
       </div>
 
+      <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)" }}>
         <div style={{ padding: "16px" }}>
           <div
             style={{
