@@ -714,14 +714,14 @@ function SettingsPage() {
       
 
 
-      {/* Profile header */}
+      {/* Profile card */}
       <div className="mx-4 mt-3" style={{ marginBottom: 20 }}>
         <div
           style={{
             background: "#FFFFFF",
-            borderRadius: 16,
-            padding: 16,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            borderRadius: 20,
+            padding: 18,
+            boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
             display: "flex",
             alignItems: "center",
             gap: 14,
@@ -731,18 +731,18 @@ function SettingsPage() {
             <img
               src={avatarUrl}
               alt="Profile"
-              style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+              style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
             />
           ) : (
             <div
               style={{
-                width: 52,
-                height: 52,
+                width: 56,
+                height: 56,
                 borderRadius: "50%",
                 background: "#1877D6",
                 color: "#FFFFFF",
                 fontSize: 20,
-                fontWeight: 600,
+                fontWeight: 800,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -756,10 +756,10 @@ function SettingsPage() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: 16,
-                fontWeight: 600,
-                color: "#0B1F3A",
-                textTransform: "capitalize",
+                fontSize: 18,
+                fontWeight: 800,
+                color: "#000000",
+                letterSpacing: -0.2,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
@@ -770,9 +770,9 @@ function SettingsPage() {
             </div>
             <div
               style={{
-                fontSize: 12,
-                color: "#8A94A6",
-                marginTop: 1,
+                fontSize: 12.5,
+                color: "#8A8A8E",
+                marginTop: 2,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
@@ -786,12 +786,12 @@ function SettingsPage() {
             type="button"
             onClick={() => navigate({ to: "/profile" })}
             style={{
-              background: "#EEF2F7",
+              background: "#F2F2F7",
               border: "none",
-              borderRadius: 10,
-              padding: "8px 14px",
-              fontSize: 12,
-              fontWeight: 500,
+              borderRadius: 12,
+              padding: "10px 16px",
+              fontSize: 12.5,
+              fontWeight: 700,
               color: "#0B1F3A",
               cursor: "pointer",
               flexShrink: 0,
