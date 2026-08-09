@@ -152,6 +152,8 @@ function ListingDetailPage() {
   const cat = listing?.marketplace_categories;
   const Icon = iconFor(cat?.slug);
   const supplier = listing?.marketplace_suppliers;
+  // A seller profile page only exists for supplier-backed listings.
+  const hasSellerProfile = Boolean(listing?.supplier_id && supplier);
 
 
   const CARD: React.CSSProperties = {
