@@ -578,11 +578,28 @@ function fmt(iso: string | null): string {
   }
 }
 
-function StatCard({ label, value, color, bg }: { label: string; value: number; color: string; bg: string }) {
+function StatColumn({ label, value, color, divider }: { label: string; value: number; color: string; divider?: boolean }) {
   return (
-    <div style={{ background: bg, borderRadius: 12, padding: 12, textAlign: "center" }}>
-      <div style={{ fontSize: 22, fontWeight: 800, color }}>{value}</div>
-      <div style={{ fontSize: 11, color, fontWeight: 600, marginTop: 2 }}>{label}</div>
+    <div
+      style={{
+        flex: 1,
+        padding: "18px 12px",
+        borderLeft: divider ? "1.5px dashed #E4E4E8" : undefined,
+      }}
+    >
+      <div style={{ fontSize: 34, fontWeight: 900, color, letterSpacing: "-1.2px", lineHeight: 1 }}>{value}</div>
+      <div
+        style={{
+          fontSize: 10.5,
+          fontWeight: 700,
+          color: "#8A8A8E",
+          textTransform: "uppercase",
+          letterSpacing: "0.2px",
+          marginTop: 6,
+        }}
+      >
+        {label}
+      </div>
     </div>
   );
 }
