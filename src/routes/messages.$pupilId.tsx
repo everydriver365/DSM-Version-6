@@ -153,6 +153,9 @@ function HighlightedBody({ body, query }: { body: string; query: string }) {
 
 const SYSTEM_TYPES = ["call", "missed_call", "sms_event", "system", "event"];
 
+/** How many messages to fetch per page (initial load and each older page). */
+const PAGE_SIZE = 30;
+
 /**
  * Tell the bottom nav / home badge that messages were read. `delta` lets the
  * badge drop immediately; the repeats reconcile once the write has committed.
