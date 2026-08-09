@@ -390,24 +390,31 @@ function computeDvsaRiskMetrics(tests: DrivingTest[]) {
 }
 
 function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof computeDvsaRiskMetrics>> }) {
-  const bannerBg =
-    metrics.triggerCount >= 3 ? "#FEE2E2" : metrics.triggerCount === 2 ? "#FEF3C7" : "#F3F4F6";
-  const bannerColor =
-    metrics.triggerCount >= 3 ? "#991B1B" : metrics.triggerCount === 2 ? "#92400E" : "#4B5563";
-
   return (
-    <div className="mb-4" style={{ borderRadius: 12, background: "#FFFFFF", border: "0.5px solid #EEF2F7", overflow: "hidden" }}>
-      <div className="px-3 py-3" style={{ background: "#0B1F3A" }}>
-        <div className="text-[13px] font-semibold text-white" style={POPPINS}>DVSA Standards Check risk</div>
-        <div className="text-[11px] text-white/80 mt-0.5" style={POPPINS}>Last 12 months · completed tests only</div>
+    <div
+      className="mb-4"
+      style={{
+        borderRadius: 20, background: "#FFFFFF", overflow: "hidden",
+        boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.08)",
+      }}
+    >
+      <div style={{ background: "#0B1F3A", padding: "16px 18px" }}>
+        <div style={{ color: "#fff", fontSize: 17, fontWeight: 800, letterSpacing: "-0.2px", ...POPPINS }}>
+          DVSA Standards Check risk
+        </div>
+        <div style={{ color: "#7C8BA3", fontSize: 12, marginTop: 3, ...POPPINS }}>
+          Last 12 months · completed tests only
+        </div>
       </div>
-      <div className="px-3">
+      <div style={{ background: "#fff" }}>
         <DvsaMetricRow
+          first
           label="Avg minor faults"
           value={metrics.avgMinorFaults}
           valueSuffix=""
           threshold="6+"
           triggered={metrics.triggers.avgMinorFaults}
+          approaching={metrics.avgMinorFaults >= 5}
           decimals={1}
         />
         <DvsaMetricRow
@@ -416,6 +423,7 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
           valueSuffix=""
           threshold="0.55+"
           triggered={metrics.triggers.avgSeriousFaults}
+          approaching={metrics.avgSeriousFaults >= 0.45}
           decimals={2}
         />
         <DvsaMetricRow
@@ -424,6 +432,7 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
           valueSuffix="%"
           threshold="10%+"
           triggered={metrics.triggers.interventionRate}
+          approaching={metrics.interventionRate >= 8}
           decimals={0}
         />
         <DvsaMetricRow
@@ -432,11 +441,16 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
           valueSuffix="%"
           threshold="≤55%"
           triggered={metrics.triggers.passRate}
+          approaching={metrics.passRate <= 62}
           decimals={0}
         />
       </div>
-      <div className="px-3 py-3 text-[12px] font-medium" style={{ background: bannerBg, color: bannerColor, ...POPPINS }}>
-        {metrics.triggerCount} of 4 triggers met — DVSA typically requests a check at 3 or more. Based on {metrics.totalTests} completed tests.
+      <div style={{
+        background: "#F7F9FC", padding: "14px 18px", color: "#6B6B6F",
+        fontSize: 12.5, fontWeight: 500, lineHeight: 1.5, ...POPPINS,
+      }}>
+        <span style={{ color: "#0B1F3A", fontWeight: 800 }}>{metrics.triggerCount} of 4 triggers met</span>
+        {" "}— DVSA typically requests a check at 3 or more. Based on {metrics.totalTests} completed tests.
       </div>
     </div>
   );
@@ -448,21 +462,30 @@ function DvsaMetricRow({
   valueSuffix,
   threshold,
   triggered,
+  approaching,
   decimals,
+  first,
 }: {
   label: string;
   value: number;
   valueSuffix: string;
   threshold: string;
   triggered: boolean;
+  approaching?: boolean;
   decimals: number;
+  first?: boolean;
 }) {
   const formatted = Number.isFinite(value) ? value.toFixed(decimals) : "0";
+  const colour = triggered ? "#FF3B30" : approaching ? "#D68A1B" : "#1A9B5C";
   return (
-    <div className="flex items-center justify-between py-2" style={{ borderBottom: "0.5px solid #EEF2F7" }}>
-      <span className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>{label}</span>
-      <span className="text-[13px] font-semibold" style={{ color: triggered ? "#CC2229" : "#1E8E5A", ...POPPINS }}>
-        {formatted}{valueSuffix} (trigger: {threshold})
+    <div
+      className="flex items-center justify-between"
+      style={{ padding: "14px 18px", borderTop: first ? "none" : "1px solid #F0F0F2" }}
+    >
+      <span style={{ color: "#6B6B6F", fontSize: 14, fontWeight: 600, ...POPPINS }}>{label}</span>
+      <span style={{ color: colour, fontSize: 14.5, fontWeight: 800, textAlign: "right", ...POPPINS }}>
+        {formatted}{valueSuffix}
+        <span style={{ fontWeight: 500, fontSize: 12.5, opacity: 0.7 }}> (trigger: {threshold})</span>
       </span>
     </div>
   );
