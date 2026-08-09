@@ -397,6 +397,7 @@ function AdminJobOffers() {
               background: "#fff", color: BLUE, border: "none", borderRadius: 8,
               padding: "8px 12px", fontSize: 13, fontWeight: 600, cursor: "pointer",
               display: "inline-flex", alignItems: "center", gap: 6,
+              boxShadow: "0 3px 0 #B8CDE4",
             }}
           >
             <IconPlus stroke={1.5} size={14} /> New
