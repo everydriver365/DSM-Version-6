@@ -247,7 +247,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
               height: 30,
               borderRadius: "50%",
               border: "none",
-              background: cached ? "#1E8E3E" : "rgba(0,0,0,0.55)",
+              background: cached ? "#1E8E3E" : "rgba(0,0,0,0.5)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -256,19 +256,20 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
             }}
           >
             {cached ? (
-              <IconCheck stroke={1.5} size={15} color="#FFFFFF" strokeWidth={3} />
+              <IconCheck stroke={1.5} size={13} color="#FFFFFF" strokeWidth={3} />
             ) : (
-              <IconDownload stroke={1.5} size={15} color="#FFFFFF" />
+              <IconDownload stroke={1.5} size={13} color="#FFFFFF" />
             )}
           </button>
         )}
       </div>
       <div
         style={{
-          marginTop: 8,
-          fontSize: 13,
-          fontWeight: 600,
-          color: NAVY,
+          marginTop: 10,
+          fontSize: 14.5,
+          fontWeight: 700,
+          letterSpacing: "-0.1px",
+          color: "#000",
           lineHeight: 1.3,
         }}
       >
