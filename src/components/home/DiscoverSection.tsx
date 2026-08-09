@@ -426,7 +426,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             return (
               <div
                 key={listing?.id ?? "empty"}
-                style={{ flex: "0 0 100%", scrollSnapAlign: "center" }}
+                style={{ flex: "0 0 100%", scrollSnapAlign: "center", position: "relative" }}
               >
                 <div
                   role="button"
@@ -617,36 +617,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     </div>
                   </div>
 
-                  {/* Pagination dots */}
-                  {heroCards.length > 1 && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        bottom: 6,
-                        left: 0,
-                        right: 0,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: 5,
-                        zIndex: 3,
-                      }}
-                    >
-                      {heroCards.map((_, di) => (
-                        <span
-                          key={di}
-                          style={{
-                            width: di === heroIndex ? 16 : 6,
-                            height: 6,
-                            borderRadius: di === heroIndex ? 4 : "50%",
-                            background:
-                              di === heroIndex ? BLUE : "rgba(11,31,58,0.18)",
-                            display: "inline-block",
-                          }}
-                        />
-                      ))}
-                    </div>
-                  )}
                 </div>
               </div>
             );
