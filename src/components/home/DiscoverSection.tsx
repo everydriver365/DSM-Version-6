@@ -560,7 +560,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     position: "absolute",
                     left: 14,
                     right: 14,
-                    bottom: 14,
+                    bottom: 10,
                     zIndex: 3,
                     display: "flex",
                     flexDirection: "column",
@@ -570,7 +570,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   <div
                     style={{
                       color: "#fff",
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: 700,
                       letterSpacing: "-0.2px",
                       maxWidth: "60%",
@@ -583,8 +583,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   <div
                     style={{
                       color: "rgba(255,255,255,0.7)",
-                      fontSize: 10,
-                      marginTop: 3,
+                      fontSize: 9,
+                      marginTop: 2,
                       fontFamily: FONT,
                     }}
                   >
@@ -597,14 +597,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       display: "flex",
                       alignItems: "flex-end",
                       justifyContent: "space-between",
-                      marginTop: 8,
+                      marginTop: 5,
                     }}
                   >
                     <div>
                       <div
                         style={{
                           color: "rgba(255,255,255,0.6)",
-                          fontSize: 9,
+                          fontSize: 8,
                           fontWeight: 600,
                           letterSpacing: "0.4px",
                           fontFamily: FONT,
@@ -615,7 +615,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       <div
                         style={{
                           color: "#fff",
-                          fontSize: 17,
+                          fontSize: 15,
                           fontWeight: 900,
                           fontFamily: FONT,
                           lineHeight: 1.1,
@@ -633,7 +633,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       style={{
                         background: "#fff",
                         color: NAVY,
-                        fontSize: 9.5,
+                        fontSize: 9,
                         fontWeight: 700,
                         fontFamily: FONT,
                         padding: "4px 8px",
