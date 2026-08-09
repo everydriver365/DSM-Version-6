@@ -479,6 +479,9 @@ function ListingDetailPage() {
                   </div>
                 )}
               </div>
+              {hasSellerProfile && (
+                <IconChevronRight stroke={1.8} size={18} color="#B0B0B5" />
+              )}
             </div>
 
             {/* Description */}
