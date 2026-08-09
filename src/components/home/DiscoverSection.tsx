@@ -230,26 +230,30 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
     supabase
       .from("marketplace_listings")
-      .select("id, title, price_display, image_urls, marketplace_categories(name)")
+      .select("id, title, price_display, image_urls, created_at, marketplace_categories(name)")
       .eq("is_active", true)
       .is("deleted_at", null)
       .order("is_featured", { ascending: false })
       .order("created_at", { ascending: false })
-      .limit(1)
-      .single()
+      .limit(6)
       .then(({ data }) => {
-        if (!data) return;
-        const imgs = (data as { image_urls?: string[] | null }).image_urls;
+        if (!data || data.length === 0) return;
+        const first = data[0] as { image_urls?: string[] | null };
+        const imgs = first.image_urls;
         setMarketplaceHero(
           Array.isArray(imgs) && imgs.length > 0 ? imgs[0] : null,
         );
-        setFeaturedListing({
-          id: data.id,
-          title: data.title ?? null,
-          price_display: data.price_display ?? null,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          category: (data.marketplace_categories as any)?.name ?? null,
-        });
+        setFeaturedListings(
+          data.map((row) => ({
+            id: row.id,
+            title: row.title ?? null,
+            price_display: row.price_display ?? null,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            category: (row.marketplace_categories as any)?.name ?? null,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            created_at: (row as any).created_at ?? null,
+          })),
+        );
       });
 
     supabase
