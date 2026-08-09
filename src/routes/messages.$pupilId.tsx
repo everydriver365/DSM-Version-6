@@ -263,12 +263,19 @@ function PupilThreadPage() {
             );
             // Thread is open — treat inbound arrivals as read right away.
             if (row.sender_type === "pupil" && !row.read_at) {
+              const now = new Date().toISOString();
               void supabase
                 .from("chat_messages")
-                .update({ read_at: new Date().toISOString() })
+                .update({ read_at: now })
                 .eq("id", row.id)
-                .then(() => broadcastRead(1));
+                .then(() => {
+                  setMessages((prev) =>
+                    prev.map((m) => (m.id === row.id ? { ...m, read_at: now } : m)),
+                  );
+                  broadcastRead(1);
+                });
             }
+
           },
         )
         .subscribe();
