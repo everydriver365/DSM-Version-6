@@ -154,6 +154,7 @@ function ListingDetailPage() {
   const supplier = listing?.marketplace_suppliers;
   // A seller profile page only exists for supplier-backed listings.
   const hasSellerProfile = Boolean(listing?.supplier_id && supplier);
+  const statusBadge = listingStatusBadge(listing);
 
 
   const CARD: React.CSSProperties = {
