@@ -440,10 +440,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           }}
         >
           {heroCards.map((listing) => {
-            const cat = (listing?.category ?? "").toLowerCase();
-            const isWebsite =
-              cat.includes("web") || cat.includes("site") || cat.includes("digital");
-            const Icon = isWebsite ? IconBrowser : IconShoppingBag;
+            const Icon = categoryIcon(listing?.category);
+
             const open = () =>
               navigate({
                 to: listing ? ("/marketplace/$listingId" as never) : ("/marketplace" as never),
