@@ -420,15 +420,16 @@ function AdminInstructorsPage() {
             </span>
 
             {showArchive ? (
-              <IconChevronUp size={18} color={MUTED} />
+              <IconChevronUp size={16} color="#8A8A8E" />
             ) : (
-              <IconChevronDown size={18} color={MUTED} />
+              <IconChevronDown size={16} color="#8A8A8E" />
             )}
           </div>
 
           {/* Archived list */}
           {showArchive && (
-            <div style={{ backgroundColor: "#fff", border: "0.5px solid #E4E8EF", borderTop: "none", borderRadius: "0 0 10px 10px", overflow: "hidden" }}>
+            <div style={{ marginTop: 10, backgroundColor: "#fff", borderRadius: 20, boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)", overflow: "hidden" }}>
+
               {archived.map((instructor) => (
                 <div
                   key={instructor.id}
