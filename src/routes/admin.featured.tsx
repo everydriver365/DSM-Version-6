@@ -231,29 +231,38 @@ function AdminFeatured() {
   }
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
+    <div style={{ background: "#F2F2F7", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
       <TopBar onBack={() => navigate({ to: "/admin" })} />
-      <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)", paddingBottom: 32 }}>
+      <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 74px)", paddingBottom: 32 }}>
         {/* stats */}
-        <div style={{ padding: 16, display: "flex", gap: 12 }}>
-          <StatCard label="Total featured" value={String(featuredCount)} />
-          <StatCard label="Revenue" value={`£${revenue.toFixed(2)}`} />
+        <div style={{ padding: "0 16px" }}>
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 16,
+              boxShadow: CARD_SHADOW,
+              display: "flex",
+            }}
+          >
+            <StatColumn label="Total featured" value={String(featuredCount)} />
+            <StatColumn label="Revenue" value={`£${revenue.toFixed(2)}`} divider />
+          </div>
         </div>
 
         {/* search */}
-        <div style={{ padding: "0 16px" }}>
+        <div style={{ padding: "12px 16px 0" }}>
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 8,
-              background: "#F8F9FB",
-              border: "0.5px solid #EEF2F7",
-              borderRadius: 10,
-              padding: "8px 12px",
+              gap: 9,
+              background: "#fff",
+              borderRadius: 14,
+              padding: "13px 16px",
+              boxShadow: CARD_SHADOW,
             }}
           >
-            <IconSearch stroke={1.5} size={16} color="#6B7280" />
+            <IconSearch stroke={1.5} size={16} color="#8A8A8E" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -264,76 +273,99 @@ function AdminFeatured() {
                 outline: "none",
                 background: "transparent",
                 fontSize: 14,
-                color: "#0B1F3A",
+                color: "#000",
               }}
             />
           </div>
         </div>
 
         {/* list */}
-        <div style={{ margin: "12px 16px 0", display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ margin: "12px 16px 0" }}>
           {loading ? (
-            <div style={{ color: "#6B7280", padding: 12 }}>Loading…</div>
+            <div style={{ color: "#8A8A8E", padding: 12 }}>Loading…</div>
           ) : filtered.length === 0 ? (
-            <div style={{ color: "#6B7280", padding: 12 }}>No instructors found.</div>
+            <div style={{ color: "#8A8A8E", padding: 12 }}>No instructors found.</div>
           ) : (
-            filtered.map((inst) => (
-              <div
-                key={inst.id}
-                style={{
-                  background: "#fff",
-                  borderWidth: "0.5px",
-                  borderStyle: "solid",
-                  borderColor: "#EEF2F7",
-                  borderRadius: 12,
-                  padding: 14,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                }}
-              >
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
-                      {inst.name ?? "Unnamed"}
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 16,
+                overflow: "hidden",
+                boxShadow: CARD_SHADOW,
+              }}
+            >
+              {filtered.map((inst, idx) => {
+                const featured = !!inst.featured_listing;
+                return (
+                  <div
+                    key={inst.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 13,
+                      padding: "14px 16px",
+                      borderTop: idx === 0 ? "none" : "1px solid #EFEFF2",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 38,
+                        height: 38,
+                        borderRadius: "50%",
+                        background: featured ? "#0B1F3A" : "#F2F2F7",
+                        color: featured ? "#fff" : "#0B1F3A",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {initialsOf(inst.name)}
                     </div>
-                    {inst.featured_listing && (
-                      <span
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 4,
-                          fontSize: 10,
-                          fontWeight: 600,
-                          color: "#8A6100",
-                          background: "#FFF4CC",
-                          border: "0.5px solid #F0D77A",
-                          padding: "2px 6px",
-                          borderRadius: 999,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.04em",
-                        }}
-                      >
-                        <IconStar stroke={1.5} size={10} /> Featured
-                      </span>
-                    )}
-                  </div>
-                  <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
-                    {inst.app_slug ?? "no slug"}
-                  </div>
-                  {inst.featured_until && (
-                    <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>
-                      Until {new Date(inst.featured_until).toLocaleDateString()}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: "#000" }}>
+                          {inst.name ?? "Unnamed"}
+                        </div>
+                        {featured && (
+                          <span
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 4,
+                              fontSize: 10,
+                              fontWeight: 800,
+                              color: "#B8860B",
+                              background: "#FFF6DC",
+                              padding: "3px 9px",
+                              borderRadius: 20,
+                              letterSpacing: "0.3px",
+                            }}
+                          >
+                            <IconStar stroke={1.5} size={9} /> Featured
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: 12.5, color: "#8A8A8E", marginTop: 2 }}>
+                        {inst.app_slug ?? "no slug"}
+                      </div>
+                      {featured && inst.featured_until && (
+                        <div style={{ fontSize: 11.5, fontWeight: 500, color: "#B8860B", marginTop: 2 }}>
+                          Until {new Date(inst.featured_until).toLocaleDateString()}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-                <Toggle
-                  on={!!inst.featured_listing}
-                  disabled={savingId === inst.id}
-                  onChange={(v) => toggleFeatured(inst, v)}
-                />
-              </div>
-            ))
+                    <Toggle
+                      on={featured}
+                      disabled={savingId === inst.id}
+                      onChange={(v) => toggleFeatured(inst, v)}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
       </div>
