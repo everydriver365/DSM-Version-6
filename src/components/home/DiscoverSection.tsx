@@ -556,7 +556,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   style={{
                     position: "absolute",
                     inset: 0,
-                    zIndex: 2,
+                    zIndex: 3,
                     padding: 18,
                     display: "flex",
                     flexDirection: "column",
