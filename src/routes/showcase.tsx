@@ -275,47 +275,117 @@ function ShowcasePage() {
     })();
   }, [videos, userId]);
 
-  // Load comments for the open video
+  // Load comments for the open video, one page of top-level threads at a time
+  const COMMENT_PAGE_SIZE = 15;
+
+  const loadCommentPage = useCallback(
+    async (videoId: string, replace: boolean) => {
+      const from = replace ? 0 : rootOffsetRef.current;
+      if (replace) setCommentsLoading(true);
+      else setLoadingMoreComments(true);
+      try {
+        const select =
+          "id, body, created_at, parent_id, instructor_id, instructor:instructors!instructor_id(id, name)";
+        const { data: rootData } = await db
+          .from("showcase_comments")
+          .select(select)
+          .eq("video_id", videoId)
+          .is("deleted_at", null)
+          .is("parent_id", null)
+          .order("created_at", { ascending: true })
+          .range(from, from + COMMENT_PAGE_SIZE - 1);
+        const rootRows = ((rootData as any[] | null) ?? []).map((c) => ({
+          ...c,
+          instructor: Array.isArray(c.instructor) ? c.instructor[0] : c.instructor,
+        }));
+        const rootIds = rootRows.map((c) => c.id);
+
+        let replyRows: any[] = [];
+        if (rootIds.length > 0) {
+          const { data: replyData } = await db
+            .from("showcase_comments")
+            .select(select)
+            .eq("video_id", videoId)
+            .is("deleted_at", null)
+            .in("parent_id", rootIds)
+            .order("created_at", { ascending: true });
+          replyRows = ((replyData as any[] | null) ?? []).map((c) => ({
+            ...c,
+            instructor: Array.isArray(c.instructor) ? c.instructor[0] : c.instructor,
+          }));
+        }
+
+        const pageRows = [...rootRows, ...replyRows];
+        rootOffsetRef.current = from + rootRows.length;
+        setHasMoreComments(rootRows.length === COMMENT_PAGE_SIZE);
+        setComments((prev) => {
+          if (replace) return pageRows;
+          const seen = new Set(prev.map((c: any) => c.id));
+          return [...prev, ...pageRows.filter((c) => !seen.has(c.id))];
+        });
+
+        const ids = pageRows.map((c) => c.id);
+        if (ids.length === 0) {
+          if (replace) {
+            setCommentLikeCounts({});
+            setMyCommentLikes({});
+          }
+          return;
+        }
+        const { data: likeRows } = await db
+          .from("showcase_comment_likes")
+          .select("comment_id, instructor_id")
+          .in("comment_id", ids);
+        const counts: Record<string, number> = {};
+        const mine: Record<string, boolean> = {};
+        ((likeRows as { comment_id: string; instructor_id: string }[] | null) ?? []).forEach(
+          (r) => {
+            counts[r.comment_id] = (counts[r.comment_id] ?? 0) + 1;
+            if (userId && r.instructor_id === userId) mine[r.comment_id] = true;
+          },
+        );
+        setCommentLikeCounts((prev) => (replace ? counts : { ...prev, ...counts }));
+        setMyCommentLikes((prev) => (replace ? mine : { ...prev, ...mine }));
+      } finally {
+        setCommentsLoading(false);
+        setLoadingMoreComments(false);
+      }
+    },
+    [userId],
+  );
+
   useEffect(() => {
     if (!commentsOpen || !playing) return;
     setReplyTo(null);
-    (async () => {
-      const { data } = await db
-        .from("showcase_comments")
-        .select(
-          "id, body, created_at, parent_id, instructor_id, instructor:instructors!instructor_id(id, name)",
-        )
-        .eq("video_id", playing.id)
-        .is("deleted_at", null)
-        .order("created_at", { ascending: true });
-      const rows = ((data as any[] | null) ?? []).map((c) => ({
-        ...c,
-        instructor: Array.isArray(c.instructor) ? c.instructor[0] : c.instructor,
-      }));
-      setComments(rows);
+    setComments([]);
+    rootOffsetRef.current = 0;
+    setHasMoreComments(false);
+    void loadCommentPage(playing.id, true);
+  }, [commentsOpen, playing, loadCommentPage]);
 
-      const ids = rows.map((c) => c.id);
-      if (ids.length === 0) {
-        setCommentLikeCounts({});
-        setMyCommentLikes({});
-        return;
-      }
-      const { data: likeRows } = await db
-        .from("showcase_comment_likes")
-        .select("comment_id, instructor_id")
-        .in("comment_id", ids);
-      const counts: Record<string, number> = {};
-      const mine: Record<string, boolean> = {};
-      ((likeRows as { comment_id: string; instructor_id: string }[] | null) ?? []).forEach(
-        (r) => {
-          counts[r.comment_id] = (counts[r.comment_id] ?? 0) + 1;
-          if (userId && r.instructor_id === userId) mine[r.comment_id] = true;
-        },
-      );
-      setCommentLikeCounts(counts);
-      setMyCommentLikes(mine);
-    })();
-  }, [commentsOpen, playing, userId]);
+  // Infinite scroll: fetch the next page when the sentinel scrolls into view
+  useEffect(() => {
+    if (!commentsOpen || !playing || !hasMoreComments) return;
+    const el = loadMoreRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && !loadingMoreComments && !commentsLoading) {
+          void loadCommentPage(playing.id, false);
+        }
+      },
+      { rootMargin: "200px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [
+    commentsOpen,
+    playing,
+    hasMoreComments,
+    loadingMoreComments,
+    commentsLoading,
+    loadCommentPage,
+  ]);
 
   async function toggleCommentLike(commentId: string) {
     if (!userId) {
