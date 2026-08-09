@@ -714,14 +714,14 @@ function SettingsPage() {
       
 
 
-      {/* Profile header */}
+      {/* Profile card */}
       <div className="mx-4 mt-3" style={{ marginBottom: 20 }}>
         <div
           style={{
             background: "#FFFFFF",
-            borderRadius: 16,
-            padding: 16,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            borderRadius: 20,
+            padding: 18,
+            boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
             display: "flex",
             alignItems: "center",
             gap: 14,
@@ -731,18 +731,18 @@ function SettingsPage() {
             <img
               src={avatarUrl}
               alt="Profile"
-              style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+              style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
             />
           ) : (
             <div
               style={{
-                width: 52,
-                height: 52,
+                width: 56,
+                height: 56,
                 borderRadius: "50%",
                 background: "#1877D6",
                 color: "#FFFFFF",
                 fontSize: 20,
-                fontWeight: 600,
+                fontWeight: 800,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -756,10 +756,10 @@ function SettingsPage() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: 16,
-                fontWeight: 600,
-                color: "#0B1F3A",
-                textTransform: "capitalize",
+                fontSize: 18,
+                fontWeight: 800,
+                color: "#000000",
+                letterSpacing: -0.2,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
@@ -770,9 +770,9 @@ function SettingsPage() {
             </div>
             <div
               style={{
-                fontSize: 12,
-                color: "#8A94A6",
-                marginTop: 1,
+                fontSize: 12.5,
+                color: "#8A8A8E",
+                marginTop: 2,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
@@ -786,12 +786,12 @@ function SettingsPage() {
             type="button"
             onClick={() => navigate({ to: "/profile" })}
             style={{
-              background: "#EEF2F7",
+              background: "#F2F2F7",
               border: "none",
-              borderRadius: 10,
-              padding: "8px 14px",
-              fontSize: 12,
-              fontWeight: 500,
+              borderRadius: 12,
+              padding: "10px 16px",
+              fontSize: 12.5,
+              fontWeight: 700,
               color: "#0B1F3A",
               cursor: "pointer",
               flexShrink: 0,
@@ -804,70 +804,68 @@ function SettingsPage() {
       </div>
 
       <div
-        className="mx-4 mt-3 flex items-center cursor-pointer"
+        className="mx-4"
         onClick={() => navigate({ to: "/availability-settings" as never })}
         style={{
           background: "#FFFFFF",
-          border: "0.5px solid #E2E6ED",
-          borderRadius: 12,
-          padding: 16,
-          gap: 12,
+          borderRadius: 20,
+          padding: 18,
+          boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
+          display: "flex",
+          alignItems: "center",
+          gap: 14,
+          cursor: "pointer",
         }}
       >
         <div
-          className="flex items-center justify-center rounded-xl"
-          style={{ width: 44, height: 44, background: "#E0F4FF", flexShrink: 0 }}
+          className="flex items-center justify-center"
+          style={{ width: 44, height: 44, borderRadius: 13, background: "#E7F1FC", flexShrink: 0 }}
         >
-          <Clock color="#1877D6" size={22} />
+          <Clock color="#1877D6" size={20} />
         </div>
         <div className="flex-1 min-w-0 flex flex-col">
           <span
-            className="font-semibold"
-            style={{ fontSize: 14, color: "#0B1F3A", ...POPPINS }}
+            style={{ fontSize: 16, fontWeight: 800, color: "#000000", letterSpacing: -0.1, ...POPPINS }}
           >
             Availability & working hours
           </span>
           <span
-            style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, ...POPPINS }}
+            style={{ fontSize: 12.5, color: "#8A8A8E", marginTop: 3, lineHeight: 1.4, ...POPPINS }}
           >
             Working days, hours, buffers, lunch break, time off, travel time
           </span>
         </div>
-        <ChevronRight color="#D1D5DB" size={18} />
+        <ChevronRight color="#C7C7CC" size={16} />
       </div>
 
 
       <div className="px-4">
-        <Label>ACCOUNT</Label>
-        <div style={{ backgroundColor: 'white', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
-          <MenuRow
-            icon={<User color="#1877D6" />}
-            iconBg="#E6F1FB"
+        <Label>Account</Label>
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)', marginBottom: 20 }}>
+          <AccountRow
+            icon={<User color="#1877D6" size={20} />}
+            iconBg="#E7F1FC"
             label="Profile"
             onClick={() => navigate({ to: "/profile" })}
             isFirst
-            isLast={false}
           />
-          <MenuRow
-            icon={<PoundSterling color="#CC2229" />}
-            iconBg="#FCEBEB"
+          <AccountRow
+            icon={<PoundSterling color="#FF3B30" size={20} />}
+            iconBg="#FDEDEC"
             label="Payments"
             onClick={() => navigate({ to: "/payments" })}
-            isLast={false}
           />
-          <MenuRow
-            icon={<Bell color="#B5661E" />}
-            iconBg="#FBEFE1"
+          <AccountRow
+            icon={<Bell color="#D68A1B" size={20} />}
+            iconBg="#FFF6DC"
             label="Notifications"
             onClick={() => navigate({ to: "/notificationsettings" })}
-            isLast={false}
           />
-          <MenuRow
-            icon={<Calendar color="#6B4FD6" />}
-            iconBg="#F0EBFF"
+          <AccountRow
+            icon={<Calendar color="#7B4FC9" size={20} />}
+            iconBg="#F3EEFB"
             label="Calendar sync"
             onClick={() => navigate({ to: "/calendarsync" })}
-            isLast={false}
             warning={
               calendarLastSynced &&
               Date.now() - new Date(calendarLastSynced).getTime() > 6 * 60 * 60 * 1000
@@ -875,43 +873,36 @@ function SettingsPage() {
                 : undefined
             }
           />
-          <MenuRow
-            icon={<Gift size={18} color="#00B5A5" />}
+          <AccountRow
+            icon={<Gift size={20} color="#00B5A5" />}
             iconBg="#CCFBF1"
             label="Referrals"
             onClick={() => navigate({ to: "/referrals" })}
-            isLast={false}
           />
-          <MenuRow
-            icon={<Zap size={18} color="#D97706" />}
+          <AccountRow
+            icon={<Zap size={20} color="#D97706" />}
             iconBg="#FEF3C7"
             label="Automations"
             onClick={() => navigate({ to: "/automations" })}
-            isLast={false}
           />
-          <MenuRow
-            icon={<Globe size={18} color="#1877D6" />}
+          <AccountRow
+            icon={<Globe size={20} color="#1877D6" />}
             iconBg="#E6F1FB"
             label="My mini website"
             onClick={() => navigate({ to: "/minisite" })}
-            isLast={false}
           />
-
-          <MenuRow
-            icon={<Landmark color="#1877D6" />}
+          <AccountRow
+            icon={<Landmark color="#1877D6" size={20} />}
             iconBg="#E6F1FB"
             label="Accounting integrations"
             onClick={() => navigate({ to: "/mtd" })}
-            isLast={false}
           />
-
-          <MenuRow
-            icon={<Crown color="#1877D6" />}
+          <AccountRow
+            icon={<Crown color="#1877D6" size={20} />}
             iconBg="#E6F1FB"
             label="My plan"
             value="DSM Free"
             onClick={() => navigate({ to: "/subscription" })}
-            isLast
           />
         </div>
 
@@ -2471,18 +2462,114 @@ function MenuRow({
   );
 }
 
+function AccountRow({
+  icon,
+  iconBg,
+  label,
+  subLabel,
+  value,
+  onClick,
+  isFirst,
+  warning,
+}: {
+  icon: React.ReactNode;
+  iconBg: string;
+  label: string;
+  subLabel?: string;
+  value?: string;
+  onClick: () => void;
+  isFirst?: boolean;
+  warning?: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full flex items-center text-left"
+      style={{
+        gap: 14,
+        padding: "15px 16px",
+        borderTop: isFirst ? undefined : "1px solid #EFEFF2",
+        background: "#FFFFFF",
+      }}
+    >
+      <div
+        className="flex items-center justify-center"
+        style={{ width: 38, height: 38, minWidth: 38, minHeight: 38, borderRadius: 11, backgroundColor: iconBg, flexShrink: 0 }}
+      >
+        {icon}
+      </div>
+      <div className="flex-1 min-w-0 flex flex-col">
+        <span
+          className="truncate flex items-center gap-2"
+          style={{ fontSize: 16, fontWeight: 700, color: "#000000", ...POPPINS }}
+        >
+          {label}
+          {warning ? (
+            <span
+              aria-hidden
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 999,
+                background: "#D97706",
+                display: "inline-block",
+                flexShrink: 0,
+              }}
+            />
+          ) : null}
+        </span>
+        {warning ? (
+          <span
+            className="truncate"
+            title={warning}
+            style={{ fontSize: 11, color: "#D97706", ...POPPINS, marginTop: 2 }}
+          >
+            {warning}
+          </span>
+        ) : subLabel ? (
+          <span
+            className="truncate"
+            title={subLabel}
+            style={{ fontSize: 12, color: "#8A8A8E", ...POPPINS, marginTop: 2 }}
+          >
+            {subLabel}
+          </span>
+        ) : null}
+      </div>
+      {value ? (
+        <span
+          style={{
+            background: "#E6F1FB",
+            color: "#1877D6",
+            fontSize: 11,
+            fontWeight: 700,
+            padding: "4px 10px",
+            borderRadius: 20,
+            marginRight: 4,
+            ...POPPINS,
+          }}
+        >
+          {value}
+        </span>
+      ) : null}
+      <ChevronRight size={15} color="#C7C7CC" />
+    </button>
+  );
+}
+
 // Section label — plain caption, no left accent bar.
 function Label({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="mb-2"
       style={{
-        marginTop: 20,
+        marginTop: 24,
         paddingLeft: 4,
-        fontSize: 11,
-        fontWeight: 500,
-        color: "#B0BAC9",
-        letterSpacing: "0.04em",
+        fontSize: 12,
+        fontWeight: 700,
+        color: "#8A8A8E",
+        letterSpacing: "0.5px",
         textTransform: "uppercase",
         ...POPPINS,
       }}
