@@ -874,7 +874,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               whiteSpace: "nowrap",
             }}
           >
-            {latestNewsTitle ? sanitizeNewsTitle(latestNewsTitle) : "Industry news & updates"}
+            {latestNewsTitle || "Industry news & updates"}
           </div>
         </div>
         <IconChevronRight size={14} color={HAIRLINE} style={{ flexShrink: 0 }} />
