@@ -95,7 +95,7 @@ function BookingsListPage() {
       const { data, error } = await supabase
         .from("course_bookings")
         .select(
-          "id, status, pupil_name, pupil_email, amount_paid, booked_at, instructor_courses(name, price)",
+          "id, status, pupil_name, pupil_email, amount_paid, booked_at, instructor_courses(name, price, course_type, total_hours, pickup_area)",
         )
         .eq("instructor_id", userId)
         .order("booked_at", { ascending: false });
