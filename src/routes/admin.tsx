@@ -92,32 +92,65 @@ export function useAdminGate() {
   return status;
 }
 
+function AdminGroupLabel({ children, first }: { children: React.ReactNode; first?: boolean }) {
+  return (
+    <div
+      style={{
+        color: "#8A8A8E",
+        fontSize: 12,
+        fontWeight: 700,
+        letterSpacing: "0.5px",
+        textTransform: "uppercase",
+        margin: first ? "4px 4px 10px" : "22px 4px 10px",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function AdminGroupCard({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        background: "#fff",
+        borderRadius: 16,
+        overflow: "hidden",
+        boxShadow: "0 1px 2px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.05)",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 function AdminSectionTile({
   icon,
   label,
   subtitle,
   onClick,
+  first,
 }: {
   icon: React.ReactNode;
   label: string;
   subtitle?: string;
   onClick: () => void;
+  first?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
       style={{
+        width: "100%",
         background: "#fff",
-        borderWidth: "0.5px",
-        borderStyle: "solid",
-        borderColor: "#EEF2F7",
-        borderRadius: 12,
-        padding: 16,
+        border: "none",
+        borderTop: first ? "none" : "1px solid #EFEFF2",
+        padding: "14px 16px",
         display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: 10,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 13,
         cursor: "pointer",
         textAlign: "left",
         fontFamily: "Poppins, sans-serif",
@@ -125,27 +158,30 @@ function AdminSectionTile({
     >
       <div
         style={{
-          width: 36,
-          height: 36,
-          borderRadius: 10,
-          background: "#FEECEE",
-          color: "#1877D6",
+          width: 32,
+          height: 32,
+          borderRadius: 9,
+          background: "#F2F2F7",
+          color: "#000",
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
+          flexShrink: 0,
         }}
       >
         {icon}
       </div>
-      <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{label}</div>
-      {subtitle && (
-        <div style={{ fontSize: 12, fontWeight: 500, color: "#8A93A3", marginTop: -6 }}>
-          {subtitle}
-        </div>
-      )}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 15, fontWeight: 600, color: "#000" }}>{label}</div>
+        {subtitle && (
+          <div style={{ fontSize: 12, color: "#8A8A8E", marginTop: 1 }}>{subtitle}</div>
+        )}
+      </div>
+      <IconChevronRight size={14} stroke={2} color="#C7C7CC" style={{ flexShrink: 0 }} />
     </button>
   );
 }
+
 
 
 type ChatRoom = {
