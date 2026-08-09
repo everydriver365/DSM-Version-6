@@ -177,7 +177,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
                 backgroundPosition: "center",
               }
             : null),
-          boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+          boxShadow: "0 4px 12px rgba(11,31,58,0.12)",
         }}
       >
         {!thumb && (
