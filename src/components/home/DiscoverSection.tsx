@@ -652,31 +652,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         })}
       </div>
 
-      {/* PAGINATION DOTS */}
-      {heroCards.length > 1 && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 5,
-            marginBottom: 22,
-          }}
-        >
-          {heroCards.map((l, i) => (
-            <span
-              key={l?.id ?? i}
-              style={{
-                width: i === heroIndex ? 16 : 6,
-                height: 6,
-                borderRadius: i === heroIndex ? 4 : "50%",
-                background: i === heroIndex ? BLUE : "#C7D0DC",
-                transition: "width 0.2s ease",
-              }}
-            />
-          ))}
-        </div>
-      )}
 
       <SectionHeader>Discover</SectionHeader>
 
