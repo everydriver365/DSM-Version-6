@@ -1421,7 +1421,7 @@ function ShowcasePage() {
                     ...POPPINS,
                   }}
                 >
-                  No comments yet — be the first
+                  {commentsLoading ? "Loading comments…" : "No comments yet — be the first"}
                 </div>
               ) : (
                 (() => {
