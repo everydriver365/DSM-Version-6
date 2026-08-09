@@ -1013,17 +1013,53 @@ function MessagesIndexPage() {
 
   return (
     <PageLayout style={{ ...FONT, background: "#DCE4F0", paddingBottom: 24 }}>
-      <InstructorTopBar
-        firstName={myName ?? ""}
-        pageTitle="Messages"
-        onBack={() => navigate({ to: '/home' as never, replace: true })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onMenu={() => window.dispatchEvent(new Event("dsm-open-menu"))}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
+      <PageHeader
+        title="Messages"
+        showBack
+        backTo="/home"
+        right={
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <button
+              type="button"
+              aria-label="Notifications"
+              onClick={() => navigate({ to: "/notifications" as never })}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.08)",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                padding: 0,
+              }}
+            >
+              <IconBell size={17} stroke={1.8} color="#C7D0DE" />
+            </button>
+            <button
+              type="button"
+              aria-label="Menu"
+              onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.08)",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                padding: 0,
+              }}
+            >
+              <IconAdjustmentsHorizontal size={17} stroke={1.8} color="#C7D0DE" />
+            </button>
+          </div>
+        }
       />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       {view === "chat" ? (
         <LocalChatView
