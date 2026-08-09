@@ -99,7 +99,9 @@ function ListingDetailPage() {
   const [listing, setListing] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
   const [similar, setSimilar] = useState<Listing[]>([]);
+  const [sellerListings, setSellerListings] = useState<Listing[]>([]);
   const [enquiryOpen, setEnquiryOpen] = useState(false);
+  const [photoIndex, setPhotoIndex] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -118,6 +120,18 @@ function ListingDetailPage() {
           );
           if (!cancelled) setSimilar(sim);
         }
+        // Other active listings from the same seller (supplier or instructor).
+        const sellerFilter = found?.supplier_id
+          ? `supplier_id=eq.${found.supplier_id}`
+          : found?.instructor_id
+            ? `instructor_id=eq.${found.instructor_id}`
+            : null;
+        if (sellerFilter) {
+          const mine = await sbGet<Listing[]>(
+            `marketplace_listings?${sellerFilter}&id=neq.${listingId}&is_active=eq.true&deleted_at=is.null&select=*,marketplace_suppliers(name,logo_url,website_url,email,phone,is_verified),marketplace_categories(name,slug)&limit=10`,
+          );
+          if (!cancelled) setSellerListings(mine);
+        }
       } catch (err) {
         console.error("[listing] load error", err);
       } finally {
@@ -129,15 +143,16 @@ function ListingDetailPage() {
     };
   }, [listingId]);
 
-  const heroImage = useMemo(() => {
-    if (listing?.image_urls && listing.image_urls.length > 0)
-      return listing.image_urls[0];
-    return listing?.image_url ?? null;
+  const photos = useMemo(() => {
+    const list = (listing?.image_urls ?? []).filter(Boolean) as string[];
+    if (list.length > 0) return list;
+    return listing?.image_url ? [listing.image_url] : [];
   }, [listing]);
 
   const cat = listing?.marketplace_categories;
   const Icon = iconFor(cat?.slug);
   const supplier = listing?.marketplace_suppliers;
+
 
   return (
     <div style={{ minHeight: "100vh", background: "#FFFFFF", paddingBottom: 96 }}>
