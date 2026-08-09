@@ -811,18 +811,20 @@ function AdminLearnVideosPage() {
             onClick={() => setAdding(true)}
             style={{
               width: "100%",
-              height: 44,
-              borderRadius: 10,
+              borderRadius: 16,
               background: BLUE,
               color: "#fff",
               border: "none",
-              fontWeight: 600,
+              fontSize: 15,
+              fontWeight: 800,
+              padding: 15,
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
               marginBottom: 16,
+              boxShadow: "0 4px 0 #0F52A8",
               ...POPPINS,
             }}
           >
