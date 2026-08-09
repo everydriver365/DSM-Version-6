@@ -1,12 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Info, Copy, Check, Calendar, CalendarPlus, AlertTriangle, ChevronDown, Loader2, AlertCircle, CheckCircle } from "lucide-react";
+import { ArrowLeft, Info, Copy, Check, Calendar, CalendarPlus, AlertTriangle, ChevronDown, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { SectionHeader } from "../components/dsm/SectionHeader";
-import { Card } from "../components/dsm/Card";
-import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 
