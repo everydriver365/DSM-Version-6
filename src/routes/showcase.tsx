@@ -1363,7 +1363,7 @@ function ShowcasePage() {
                   ...POPPINS,
                 }}
               >
-                {comments.length} Comments
+                {Math.max(commentCounts[playing.id] ?? 0, comments.length)} Comments
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 {(["newest", "top"] as const).map((s) => (
