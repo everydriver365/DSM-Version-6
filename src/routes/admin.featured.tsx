@@ -18,6 +18,14 @@ type Instructor = {
 
 const FEE = 14.99;
 
+const CARD_SHADOW = "0 1px 2px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.05)";
+
+function initialsOf(name: string | null) {
+  const parts = (name ?? "").trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  return (parts[0]![0]! + (parts[1]?.[0] ?? "")).toUpperCase();
+}
+
 function TopBar({ onBack }: { onBack: () => void }) {
   return (
     <div
@@ -27,9 +35,10 @@ function TopBar({ onBack }: { onBack: () => void }) {
         left: 0,
         right: 0,
         zIndex: 40,
-        background: "#1877D6",
+        background: "#0B1F3A",
         color: "#fff",
-        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
+        borderRadius: "0 0 28px 28px",
+        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 18px",
         display: "flex",
         alignItems: "center",
         gap: 12,
@@ -40,46 +49,45 @@ function TopBar({ onBack }: { onBack: () => void }) {
         onClick={onBack}
         aria-label="Back"
         style={{
-          width: 32,
-          height: 32,
+          width: 34,
+          height: 34,
           borderRadius: "50%",
-          background: "rgba(255,255,255,0.15)",
+          background: "rgba(255,255,255,0.08)",
           border: "none",
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
           cursor: "pointer",
           color: "#fff",
+          flexShrink: 0,
         }}
       >
         <IconChevronLeft stroke={1.5} size={18} />
       </button>
-      <span style={{ fontSize: 16, fontWeight: 600 }}>Featured listings</span>
+      <span style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.4px", color: "#fff" }}>
+        Featured listings
+      </span>
     </div>
   );
 }
 
-function StatCard({ label, value }: { label: string; value: string }) {
+function StatColumn({ label, value, divider }: { label: string; value: string; divider?: boolean }) {
   return (
     <div
       style={{
         flex: 1,
-        background: "#F8F9FB",
-        borderWidth: "0.5px",
-        borderStyle: "solid",
-        borderColor: "#EEF2F7",
-        borderRadius: 12,
-        padding: 14,
+        padding: 16,
+        borderLeft: divider ? "1px solid #EFEFF2" : undefined,
       }}
     >
-      <div style={{ fontSize: 22, fontWeight: 600, color: "#0B1F3A" }}>{value}</div>
+      <div style={{ fontSize: 26, fontWeight: 800, color: "#000", letterSpacing: "-0.5px" }}>{value}</div>
       <div
         style={{
-          fontSize: 11,
-          fontWeight: 500,
-          color: "#6B7280",
+          fontSize: 10.5,
+          fontWeight: 700,
+          color: "#8A8A8E",
           textTransform: "uppercase",
-          letterSpacing: "0.05em",
+          letterSpacing: "0.4px",
           marginTop: 4,
         }}
       >
@@ -98,27 +106,29 @@ function Toggle({ on, onChange, disabled }: { on: boolean; onChange: (v: boolean
       disabled={disabled}
       onClick={() => onChange(!on)}
       style={{
-        width: 44,
-        height: 26,
+        width: 46,
+        height: 28,
         borderRadius: 999,
-        background: on ? "#1877D6" : "#D1D5DB",
+        background: on ? "#1877D6" : "#E5E5EA",
         border: "none",
         position: "relative",
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.6 : 1,
         transition: "background 0.15s",
         flexShrink: 0,
+        padding: 0,
       }}
     >
       <span
         style={{
           position: "absolute",
-          top: 3,
-          left: on ? 21 : 3,
-          width: 20,
-          height: 20,
+          top: 2,
+          left: on ? 20 : 2,
+          width: 24,
+          height: 24,
           borderRadius: "50%",
           background: "#fff",
+          boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
           transition: "left 0.15s",
         }}
       />
@@ -221,29 +231,38 @@ function AdminFeatured() {
   }
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
+    <div style={{ background: "#F2F2F7", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
       <TopBar onBack={() => navigate({ to: "/admin" })} />
-      <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)", paddingBottom: 32 }}>
+      <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 74px)", paddingBottom: 32 }}>
         {/* stats */}
-        <div style={{ padding: 16, display: "flex", gap: 12 }}>
-          <StatCard label="Total featured" value={String(featuredCount)} />
-          <StatCard label="Revenue" value={`£${revenue.toFixed(2)}`} />
+        <div style={{ padding: "0 16px" }}>
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 16,
+              boxShadow: CARD_SHADOW,
+              display: "flex",
+            }}
+          >
+            <StatColumn label="Total featured" value={String(featuredCount)} />
+            <StatColumn label="Revenue" value={`£${revenue.toFixed(2)}`} divider />
+          </div>
         </div>
 
         {/* search */}
-        <div style={{ padding: "0 16px" }}>
+        <div style={{ padding: "12px 16px 0" }}>
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 8,
-              background: "#F8F9FB",
-              border: "0.5px solid #EEF2F7",
-              borderRadius: 10,
-              padding: "8px 12px",
+              gap: 9,
+              background: "#fff",
+              borderRadius: 14,
+              padding: "13px 16px",
+              boxShadow: CARD_SHADOW,
             }}
           >
-            <IconSearch stroke={1.5} size={16} color="#6B7280" />
+            <IconSearch stroke={1.5} size={16} color="#8A8A8E" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -254,76 +273,99 @@ function AdminFeatured() {
                 outline: "none",
                 background: "transparent",
                 fontSize: 14,
-                color: "#0B1F3A",
+                color: "#000",
               }}
             />
           </div>
         </div>
 
         {/* list */}
-        <div style={{ margin: "12px 16px 0", display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ margin: "12px 16px 0" }}>
           {loading ? (
-            <div style={{ color: "#6B7280", padding: 12 }}>Loading…</div>
+            <div style={{ color: "#8A8A8E", padding: 12 }}>Loading…</div>
           ) : filtered.length === 0 ? (
-            <div style={{ color: "#6B7280", padding: 12 }}>No instructors found.</div>
+            <div style={{ color: "#8A8A8E", padding: 12 }}>No instructors found.</div>
           ) : (
-            filtered.map((inst) => (
-              <div
-                key={inst.id}
-                style={{
-                  background: "#fff",
-                  borderWidth: "0.5px",
-                  borderStyle: "solid",
-                  borderColor: "#EEF2F7",
-                  borderRadius: 12,
-                  padding: 14,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                }}
-              >
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
-                      {inst.name ?? "Unnamed"}
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 16,
+                overflow: "hidden",
+                boxShadow: CARD_SHADOW,
+              }}
+            >
+              {filtered.map((inst, idx) => {
+                const featured = !!inst.featured_listing;
+                return (
+                  <div
+                    key={inst.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 13,
+                      padding: "14px 16px",
+                      borderTop: idx === 0 ? "none" : "1px solid #EFEFF2",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 38,
+                        height: 38,
+                        borderRadius: "50%",
+                        background: featured ? "#0B1F3A" : "#F2F2F7",
+                        color: featured ? "#fff" : "#0B1F3A",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {initialsOf(inst.name)}
                     </div>
-                    {inst.featured_listing && (
-                      <span
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 4,
-                          fontSize: 10,
-                          fontWeight: 600,
-                          color: "#8A6100",
-                          background: "#FFF4CC",
-                          border: "0.5px solid #F0D77A",
-                          padding: "2px 6px",
-                          borderRadius: 999,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.04em",
-                        }}
-                      >
-                        <IconStar stroke={1.5} size={10} /> Featured
-                      </span>
-                    )}
-                  </div>
-                  <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
-                    {inst.app_slug ?? "no slug"}
-                  </div>
-                  {inst.featured_until && (
-                    <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>
-                      Until {new Date(inst.featured_until).toLocaleDateString()}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: "#000" }}>
+                          {inst.name ?? "Unnamed"}
+                        </div>
+                        {featured && (
+                          <span
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 4,
+                              fontSize: 10,
+                              fontWeight: 800,
+                              color: "#B8860B",
+                              background: "#FFF6DC",
+                              padding: "3px 9px",
+                              borderRadius: 20,
+                              letterSpacing: "0.3px",
+                            }}
+                          >
+                            <IconStar stroke={1.5} size={9} /> Featured
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: 12.5, color: "#8A8A8E", marginTop: 2 }}>
+                        {inst.app_slug ?? "no slug"}
+                      </div>
+                      {featured && inst.featured_until && (
+                        <div style={{ fontSize: 11.5, fontWeight: 500, color: "#B8860B", marginTop: 2 }}>
+                          Until {new Date(inst.featured_until).toLocaleDateString()}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-                <Toggle
-                  on={!!inst.featured_listing}
-                  disabled={savingId === inst.id}
-                  onChange={(v) => toggleFeatured(inst, v)}
-                />
-              </div>
-            ))
+                    <Toggle
+                      on={featured}
+                      disabled={savingId === inst.id}
+                      onChange={(v) => toggleFeatured(inst, v)}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
       </div>
