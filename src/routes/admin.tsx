@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
-import { IconBriefcase, IconChevronLeft, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconPencil, IconSettings, IconShieldCheck, IconStar, IconTrash, IconUsers } from "@tabler/icons-react";
+import { IconBriefcase, IconChevronLeft, IconChevronRight, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconPencil, IconSettings, IconShieldCheck, IconStar, IconTrash, IconUsers } from "@tabler/icons-react";
 import { BookOpen, FileCheck, ShoppingBag, Video, PlayCircle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
@@ -20,12 +20,13 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         left: 0,
         right: 0,
         zIndex: 40,
-        background: "#1877D6",
+        background: "#0B1F3A",
         color: "#fff",
-        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
+        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 16px",
         display: "flex",
         alignItems: "center",
         gap: 12,
+        borderRadius: "0 0 28px 28px",
       }}
     >
       <button
@@ -33,24 +34,29 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         onClick={onBack}
         aria-label="Back"
         style={{
-          width: 32,
-          height: 32,
+          width: 34,
+          height: 34,
           borderRadius: "50%",
-          background: "rgba(255,255,255,0.15)",
+          background: "rgba(255,255,255,0.08)",
           border: "none",
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
           cursor: "pointer",
           color: "#fff",
+          flexShrink: 0,
+          padding: 0,
         }}
       >
-        <IconChevronLeft stroke={1.5} size={18} />
+        <IconChevronLeft stroke={1.8} size={18} color="#fff" />
       </button>
-      <span style={{ fontSize: 16, fontWeight: 600 }}>{title}</span>
+      <span style={{ fontSize: 26, fontWeight: 800, color: "#fff", letterSpacing: "-0.5px" }}>
+        {title}
+      </span>
     </div>
   );
 }
+
 
 export function useAdminGate() {
   const navigate = useNavigate();
@@ -86,32 +92,65 @@ export function useAdminGate() {
   return status;
 }
 
+function AdminGroupLabel({ children, first }: { children: React.ReactNode; first?: boolean }) {
+  return (
+    <div
+      style={{
+        color: "#8A8A8E",
+        fontSize: 12,
+        fontWeight: 700,
+        letterSpacing: "0.5px",
+        textTransform: "uppercase",
+        margin: first ? "4px 4px 10px" : "22px 4px 10px",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function AdminGroupCard({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        background: "#fff",
+        borderRadius: 16,
+        overflow: "hidden",
+        boxShadow: "0 1px 2px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.05)",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 function AdminSectionTile({
   icon,
   label,
   subtitle,
   onClick,
+  first,
 }: {
   icon: React.ReactNode;
   label: string;
   subtitle?: string;
   onClick: () => void;
+  first?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
       style={{
+        width: "100%",
         background: "#fff",
-        borderWidth: "0.5px",
-        borderStyle: "solid",
-        borderColor: "#EEF2F7",
-        borderRadius: 12,
-        padding: 16,
+        border: "none",
+        borderTop: first ? "none" : "1px solid #EFEFF2",
+        padding: "14px 16px",
         display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: 10,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 13,
         cursor: "pointer",
         textAlign: "left",
         fontFamily: "Poppins, sans-serif",
@@ -119,27 +158,30 @@ function AdminSectionTile({
     >
       <div
         style={{
-          width: 36,
-          height: 36,
-          borderRadius: 10,
-          background: "#FEECEE",
-          color: "#1877D6",
+          width: 32,
+          height: 32,
+          borderRadius: 9,
+          background: "#F2F2F7",
+          color: "#000",
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
+          flexShrink: 0,
         }}
       >
         {icon}
       </div>
-      <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{label}</div>
-      {subtitle && (
-        <div style={{ fontSize: 12, fontWeight: 500, color: "#8A93A3", marginTop: -6 }}>
-          {subtitle}
-        </div>
-      )}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 15, fontWeight: 600, color: "#000" }}>{label}</div>
+        {subtitle && (
+          <div style={{ fontSize: 12, color: "#8A8A8E", marginTop: 1 }}>{subtitle}</div>
+        )}
+      </div>
+      <IconChevronRight size={14} stroke={2} color="#C7C7CC" style={{ flexShrink: 0 }} />
     </button>
   );
 }
+
 
 
 type ChatRoom = {
@@ -1070,82 +1112,100 @@ function AdminHub() {
   return (
     <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
       <AdminTopBar title="Admin" onBack={() => navigate({ to: "/home" })} />
-      <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)" }}>
-        <div style={{ padding: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-          <AdminSectionTile
-            icon={<IconStar stroke={1.5} size={18} />}
-            label="Featured listings"
-            onClick={() => navigate({ to: "/admin/featured" })}
-          />
-          <AdminSectionTile
-            icon={<IconFileText stroke={1.5} size={18} />}
-            label="Applications"
-            onClick={() => navigate({ to: "/admin/applications" as never })}
-          />
-          <AdminSectionTile
-            icon={<ShoppingBag size={18} />}
-            label="Marketplace listings"
-            onClick={() => navigate({ to: "/admin/listings" as never })}
-          />
-          <AdminSectionTile
-            icon={<IconBriefcase stroke={1.5} size={18} />}
-            label="Job offers"
-            onClick={() => navigate({ to: "/admin/job-offers" as never })}
-          />
-          <AdminSectionTile
-            icon={<FileCheck size={18} />}
-            label="Platform terms"
-            onClick={() => navigate({ to: "/admin/terms" as never })}
-          />
-          <AdminSectionTile
-            icon={<Video size={18} />}
-            label="DSM Live"
-            onClick={() => navigate({ to: "/admin/dsm-live" as never })}
-          />
-          <AdminSectionTile
-            icon={<IconMicrophone stroke={1.5} size={18} />}
-            label="Podcasts"
-            onClick={() => navigate({ to: "/admin/podcasts" as never })}
-          />
-          <AdminSectionTile
-            icon={<PlayCircle size={18} />}
-            label="Learn videos"
-            onClick={() => navigate({ to: "/admin/learn-videos" as never })}
-          />
-          <AdminSectionTile
-            icon={<BookOpen size={18} />}
-            label="Bitesize videos"
-            onClick={() => navigate({ to: "/admin/bitesize" as never })}
-          />
+      <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 80px)" }}>
+        <div style={{ padding: 16 }}>
+          <AdminGroupLabel first>Marketplace</AdminGroupLabel>
+          <AdminGroupCard>
+            <AdminSectionTile
+              first
+              icon={<IconStar stroke={1.6} size={18} color="#000" />}
+              label="Featured listings"
+              onClick={() => navigate({ to: "/admin/featured" })}
+            />
+            <AdminSectionTile
+              icon={<ShoppingBag size={18} color="#000" />}
+              label="Marketplace listings"
+              onClick={() => navigate({ to: "/admin/listings" as never })}
+            />
+            <AdminSectionTile
+              icon={<IconFileText stroke={1.6} size={18} color="#000" />}
+              label="Applications"
+              onClick={() => navigate({ to: "/admin/applications" as never })}
+            />
+            <AdminSectionTile
+              icon={<IconBriefcase stroke={1.6} size={18} color="#000" />}
+              label="Job offers"
+              onClick={() => navigate({ to: "/admin/job-offers" as never })}
+            />
+            <AdminSectionTile
+              icon={<FileCheck size={18} color="#000" />}
+              label="Platform terms"
+              onClick={() => navigate({ to: "/admin/terms" as never })}
+            />
+          </AdminGroupCard>
 
+          <AdminGroupLabel>Content</AdminGroupLabel>
+          <AdminGroupCard>
+            <AdminSectionTile
+              first
+              icon={<Video size={18} color="#000" />}
+              label="DSM Live"
+              onClick={() => navigate({ to: "/admin/dsm-live" as never })}
+            />
+            <AdminSectionTile
+              icon={<PlayCircle size={18} color="#000" />}
+              label="Learn videos"
+              onClick={() => navigate({ to: "/admin/learn-videos" as never })}
+            />
+            <AdminSectionTile
+              icon={<BookOpen size={18} color="#000" />}
+              label="Bitesize videos"
+              onClick={() => navigate({ to: "/admin/bitesize" as never })}
+            />
+            <AdminSectionTile
+              icon={<IconMicrophone stroke={1.6} size={18} color="#000" />}
+              label="Podcasts"
+              onClick={() => navigate({ to: "/admin/podcasts" as never })}
+            />
+          </AdminGroupCard>
 
-          <AdminSectionTile
-            icon={<IconUsers stroke={1.5} size={18} />}
-            label="All instructors"
-            subtitle={`${instructorCount} registered instructors`}
-            onClick={() => navigate({ to: "/admin/instructors" as never })}
-          />
-          <AdminSectionTile
-            icon={<BookOpen size={18} />}
-            label="All bookings"
-            onClick={() => navigate({ to: "/bookings" as never })}
-          />
-          <AdminSectionTile
-            icon={<IconSettings stroke={1.5} size={18} />}
-            label="Platform settings"
-            onClick={() => navigate({ to: "/settings" as never })}
-          />
-          <AdminSectionTile
-            icon={<IconMessageCircle stroke={1.5} size={18} />}
-            label="Chat rooms"
-            onClick={() => navigate({ to: "/admin/chat-rooms" as never })}
-          />
-          <AdminSectionTile
-            icon={<IconFlag stroke={1.5} size={18} />}
-            label="Flagged"
-            onClick={scrollToFlagged}
-          />
+          <AdminGroupLabel>Instructors</AdminGroupLabel>
+          <AdminGroupCard>
+            <AdminSectionTile
+              first
+              icon={<IconUsers stroke={1.6} size={18} color="#000" />}
+              label="All instructors"
+              subtitle={`${instructorCount} registered`}
+              onClick={() => navigate({ to: "/admin/instructors" as never })}
+            />
+          </AdminGroupCard>
+
+          <AdminGroupLabel>Platform</AdminGroupLabel>
+          <AdminGroupCard>
+            <AdminSectionTile
+              first
+              icon={<BookOpen size={18} color="#000" />}
+              label="All bookings"
+              onClick={() => navigate({ to: "/bookings" as never })}
+            />
+            <AdminSectionTile
+              icon={<IconSettings stroke={1.6} size={18} color="#000" />}
+              label="Platform settings"
+              onClick={() => navigate({ to: "/settings" as never })}
+            />
+            <AdminSectionTile
+              icon={<IconMessageCircle stroke={1.6} size={18} color="#000" />}
+              label="Chat rooms"
+              onClick={() => navigate({ to: "/admin/chat-rooms" as never })}
+            />
+            <AdminSectionTile
+              icon={<IconFlag stroke={1.6} size={18} color="#000" />}
+              label="Flagged"
+              onClick={scrollToFlagged}
+            />
+          </AdminGroupCard>
         </div>
+
         <div ref={flaggedRef}>
           <FlaggedMessagesSection />
         </div>
