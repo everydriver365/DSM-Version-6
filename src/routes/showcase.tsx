@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/dsm/PageHeader";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
+import { ConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
 import {
