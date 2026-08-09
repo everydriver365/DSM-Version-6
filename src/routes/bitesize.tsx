@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/dsm/PageHeader";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
 import { VideoPlayer } from "@/components/dsm/VideoPlayer";
+import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import {
   BottomSheet,
   SheetGroup,
