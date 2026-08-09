@@ -323,17 +323,22 @@ function InstructorDMThread() {
         setMe(c.instructor_a_id === userId ? c.instructor_a : c.instructor_b);
       }
 
+      // Newest page first, reversed for display; older pages load on scroll.
       const { data: msgs } = await supabase
         .from("instructor_messages")
         .select("*")
         .eq("conversation_id", conversationId)
         .is("deleted_at", null)
-        .order("created_at", { ascending: true });
+        .order("created_at", { ascending: false })
+        .limit(PAGE_SIZE);
 
       if (!cancelled) {
-        setMessages((msgs ?? []) as unknown as DMMessage[]);
+        const page = ((msgs ?? []) as unknown as DMMessage[]).slice().reverse();
+        setMessages(page);
+        setHasMoreOlder(page.length >= PAGE_SIZE);
         setLoading(false);
       }
+
 
       const marked = await markConversationRead(conversationId, userId);
       broadcastRead(marked);
