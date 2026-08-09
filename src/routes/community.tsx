@@ -126,6 +126,16 @@ function formatCountdown(expires: string): string {
   return `expires in ${m}m`;
 }
 
+/**
+ * Traffic alerts should never be valid for more than ~2 days.
+ * Anything longer indicates bad/missing end-date data (e.g. TomTom incidents
+ * with no endTime defaulting to a far-future value) — surface it visually.
+ */
+function isExpirySuspicious(expires: string): boolean {
+  const diff = new Date(expires).getTime() - Date.now();
+  return diff > 48 * 3600_000;
+}
+
 function firstName(name: string | null | undefined): string {
   if (!name) return "Someone";
   return name.trim().split(/\s+/)[0] || "Someone";
