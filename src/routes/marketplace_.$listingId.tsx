@@ -154,12 +154,27 @@ function ListingDetailPage() {
   const supplier = listing?.marketplace_suppliers;
 
 
+  const CARD: React.CSSProperties = {
+    background: "#fff",
+    borderRadius: 20,
+    padding: 18,
+    boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
+  };
+  const LABEL: React.CSSProperties = {
+    color: "#8A8A8E",
+    fontSize: 12,
+    fontWeight: 700,
+    letterSpacing: "0.5px",
+    textTransform: "uppercase",
+    margin: "0 4px 8px",
+  };
+
   return (
-    <div style={{ minHeight: "100vh", background: "#FFFFFF", paddingBottom: 96 }}>
-      {/* Top bar */}
+    <div style={{ minHeight: "100vh", background: "#F5F6F8", paddingBottom: 96 }}>
+      {/* Header */}
       <div
         style={{
-          background: "#0F2044",
+          background: "#0B1F3A",
           color: "#FFFFFF",
           padding: "14px 16px",
           display: "flex",
@@ -175,20 +190,27 @@ function ListingDetailPage() {
           onClick={goBack}
           aria-label="Back"
           style={{
-            background: "transparent",
+            width: 34,
+            height: 34,
+            borderRadius: 999,
+            background: "rgba(255,255,255,0.08)",
             border: "none",
             color: "#FFFFFF",
             cursor: "pointer",
             padding: 0,
             display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
           }}
         >
-          <IconArrowLeft stroke={1.5} size={22} />
+          <IconArrowLeft stroke={1.8} size={19} />
         </button>
         <div
           style={{
-            fontSize: 15,
+            fontSize: 18,
             fontWeight: 700,
+            color: "#fff",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -211,7 +233,7 @@ function ListingDetailPage() {
             style={{
               background: "none",
               border: "none",
-              color: "#1A52A0",
+              color: "#1877D6",
               fontSize: 14,
               fontWeight: 600,
               cursor: "pointer",
@@ -222,164 +244,255 @@ function ListingDetailPage() {
         </div>
       ) : (
         <>
-          {/* Hero */}
-          <div
-            style={{
-              width: "100%",
-              height: 220,
-              background: heroImage
-                ? `#F3F8FF url(${heroImage}) center/cover`
-                : "linear-gradient(135deg,#0F2044,#1A52A0)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {!heroImage && <Icon size={64} color="#FFFFFF" />}
-          </div>
+          {/* Hero photo gallery */}
+          <div style={{ position: "relative", width: "100%", background: "#0B1F3A" }}>
+            {photos.length > 1 ? (
+              <div
+                onScroll={(e) => {
+                  const el = e.currentTarget;
+                  const i = Math.round(el.scrollLeft / Math.max(el.clientWidth, 1));
+                  if (i !== photoIndex) setPhotoIndex(i);
+                }}
+                style={{
+                  display: "flex",
+                  overflowX: "auto",
+                  scrollSnapType: "x mandatory",
+                  scrollbarWidth: "none",
+                }}
+              >
+                {photos.map((p, i) => (
+                  <div
+                    key={`${p}-${i}`}
+                    style={{
+                      flex: "0 0 100%",
+                      width: "100%",
+                      aspectRatio: "1 / 0.9",
+                      scrollSnapAlign: "center",
+                      background: `#E7EDF5 url(${p}) center/cover`,
+                    }}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div
+                style={{
+                  width: "100%",
+                  aspectRatio: "1 / 0.9",
+                  background: photos[0]
+                    ? `#E7EDF5 url(${photos[0]}) center/cover`
+                    : "linear-gradient(135deg,#0B1F3A,#1877D6)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {!photos[0] && <Icon size={64} color="#FFFFFF" />}
+              </div>
+            )}
 
-          {/* Supplier bar */}
-          <div
-            style={{
-              background: "#FFFFFF",
-              padding: "12px 16px",
-              borderBottom: "0.5px solid #E2E6ED",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
+            {/* Status badge */}
             <div
               style={{
-                width: 40,
-                height: 40,
-                borderRadius: 999,
-                background: supplier?.logo_url
-                  ? `#EEF2F7 url(${supplier.logo_url}) center/cover`
-                  : "#EEF2F7",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                color: "#0F2044",
-                fontWeight: 700,
-                fontSize: 14,
+                position: "absolute",
+                top: 12,
+                left: 12,
+                background: listing.is_active ? "#1A9B5C" : "#6B7686",
+                color: "#fff",
+                fontSize: 11,
+                fontWeight: 800,
+                padding: "6px 12px",
+                borderRadius: 20,
               }}
             >
-              {!supplier?.logo_url &&
-                (supplier?.name?.charAt(0)?.toUpperCase() ?? "?")}
+              {listing.is_active ? "For Sale" : "Sold"}
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
+
+            {/* Pagination dots */}
+            {photos.length > 1 && (
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: 12,
+                  left: 0,
+                  right: 0,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 5,
+                }}
+              >
+                {photos.map((p, i) => (
+                  <span
+                    key={`dot-${p}-${i}`}
+                    style={{
+                      width: i === photoIndex ? 16 : 6,
+                      height: 6,
+                      borderRadius: 999,
+                      background: i === photoIndex ? "#0B1F3A" : "rgba(11,31,58,0.25)",
+                      transition: "width .2s ease",
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 14 }}>
+            {/* Title + price */}
+            <div style={{ ...CARD, padding: 20 }}>
+              <div
+                style={{
+                  color: "#0B1F3A",
+                  fontSize: 22,
+                  fontWeight: 800,
+                  letterSpacing: "-0.3px",
+                  lineHeight: 1.25,
+                }}
+              >
+                {listing.title}
+              </div>
               <div
                 style={{
                   display: "flex",
-                  alignItems: "center",
-                  gap: 8,
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
+                  gap: 10,
+                  marginTop: 10,
                 }}
               >
                 <span
                   style={{
-                    fontSize: 14,
-                    fontWeight: 700,
-                    color: "#0F2044",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
+                    color: "#0B1F3A",
+                    fontSize: 28,
+                    fontWeight: 900,
+                    letterSpacing: "-0.6px",
                   }}
                 >
-                  {supplier?.name ?? "Listed by instructor"}
+                  {listing.price_display ?? "POA"}
                 </span>
-                {supplier?.is_verified && (
+                {listing.condition && (
                   <span
                     style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 3,
-                      color: "#059669",
-                      fontSize: 11,
-                      fontWeight: 600,
+                      background: "#EEF2F7",
+                      color: "#6B7686",
+                      fontSize: 11.5,
+                      fontWeight: 700,
+                      padding: "5px 11px",
+                      borderRadius: 20,
+                      whiteSpace: "nowrap",
+                      textTransform: "capitalize",
                     }}
                   >
-                    <IconCircleCheck stroke={1.5} size={11} /> Verified
+                    {listing.condition}
                   </span>
                 )}
               </div>
+              {listing.location && (
+                <div
+                  style={{
+                    borderTop: "1px solid #F0F0F2",
+                    paddingTop: 12,
+                    marginTop: 12,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    color: "#8A8A8E",
+                    fontSize: 13,
+                    fontWeight: 600,
+                  }}
+                >
+                  <IconMapPin stroke={1.8} size={13} />
+                  {listing.location}
+                </div>
+              )}
             </div>
-            {cat && (
-              <span
+
+            {/* Seller */}
+            <div style={{ ...CARD, display: "flex", gap: 13, alignItems: "center" }}>
+              <div
                 style={{
-                  display: "inline-block",
-                  background: "#EEF2F7",
-                  color: "#0F2044",
-                  fontSize: 10,
-                  fontWeight: 600,
-                  padding: "3px 8px",
+                  width: 48,
+                  height: 48,
                   borderRadius: 999,
-                }}
-              >
-                {cat.name}
-              </span>
-            )}
-          </div>
-
-          {/* Content */}
-          <div style={{ padding: 16 }}>
-            <h1
-              style={{
-                margin: 0,
-                fontSize: 22,
-                fontWeight: 700,
-                color: "#0F2044",
-                marginBottom: 8,
-              }}
-            >
-              {listing.title}
-            </h1>
-            {listing.price_display && (
-              <div
-                style={{
-                  fontSize: 20,
-                  fontWeight: 900,
-                  color: "#00B5A5",
-                  marginBottom: 16,
-                }}
-              >
-                {listing.price_display}
-              </div>
-            )}
-            {listing.description && (
-              <div
-                style={{
-                  fontSize: 14,
-                  color: "#374151",
-                  lineHeight: 1.6,
-                  marginBottom: 16,
-                  whiteSpace: "pre-wrap",
-                }}
-              >
-                {listing.description}
-              </div>
-            )}
-
-            {listing.tags && listing.tags.length > 0 && (
-              <div
-                style={{
+                  background: supplier?.logo_url
+                    ? `#E7F1FC url(${supplier.logo_url}) center/cover`
+                    : "#E7F1FC",
+                  color: "#1877D6",
+                  fontWeight: 800,
+                  fontSize: 17,
                   display: "flex",
-                  flexWrap: "wrap",
-                  gap: 6,
-                  marginBottom: 12,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
                 }}
               >
+                {!supplier?.logo_url && (supplier?.name?.charAt(0)?.toUpperCase() ?? "?")}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    color: "#0B1F3A",
+                    fontSize: 15,
+                    fontWeight: 800,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                  }}
+                >
+                  <span
+                    style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {supplier?.name ?? "Listed by instructor"}
+                  </span>
+                  {supplier?.is_verified && (
+                    <IconCircleCheck stroke={1.8} size={15} color="#1A9B5C" />
+                  )}
+                </div>
+                {cat && (
+                  <div style={{ color: "#8A8A8E", fontSize: 12, marginTop: 2 }}>
+                    {cat.name}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Description */}
+            {listing.description && (
+              <div>
+                <div style={LABEL}>Description</div>
+                <div style={CARD}>
+                  <div
+                    style={{
+                      color: "#6B6B6F",
+                      fontSize: 14,
+                      fontWeight: 500,
+                      lineHeight: 1.6,
+                      whiteSpace: "pre-wrap",
+                    }}
+                  >
+                    {listing.description}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Tags */}
+            {listing.tags && listing.tags.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {listing.tags.map((t) => (
                   <span
                     key={t}
                     style={{
-                      fontSize: 11,
-                      fontWeight: 600,
-                      color: "#6B7280",
-                      background: "#F3F4F6",
-                      padding: "3px 8px",
-                      borderRadius: 999,
+                      fontSize: 11.5,
+                      fontWeight: 700,
+                      color: "#6B7686",
+                      background: "#EEF2F7",
+                      padding: "5px 11px",
+                      borderRadius: 20,
                     }}
                   >
                     #{t}
@@ -388,43 +501,13 @@ function ListingDetailPage() {
               </div>
             )}
 
-            {listing.location && (
+            {/* Get in touch */}
+            <div style={CARD}>
               <div
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  fontSize: 13,
-                  color: "#6B7280",
-                  marginBottom: 10,
-                }}
-              >
-                <IconMapPin stroke={1.5} size={14} />
-                {listing.location}
-              </div>
-            )}
-
-            {listing.condition && (
-              <div style={{ marginBottom: 10 }}>
-                <ConditionBadge condition={listing.condition} />
-              </div>
-            )}
-
-            {/* Contact actions card */}
-            <div
-              style={{
-                background: "#FFFFFF",
-                border: "0.5px solid #E2E6ED",
-                borderRadius: 12,
-                padding: 16,
-                marginTop: 16,
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 14,
-                  fontWeight: 700,
-                  color: "#0F2044",
+                  color: "#0B1F3A",
+                  fontSize: 16,
+                  fontWeight: 800,
                   marginBottom: 12,
                 }}
               >
@@ -437,31 +520,50 @@ function ListingDetailPage() {
             </div>
           </div>
 
-          {/* Similar */}
-          {similar.length > 0 && (
-            <div style={{ padding: "8px 16px 16px", marginTop: 8 }}>
-              <div
-                style={{
-                  fontSize: 13,
-                  color: "#6B7280",
-                  fontWeight: 600,
-                  marginBottom: 10,
-                }}
-              >
-                More from this category
-              </div>
+          {/* More from this seller */}
+          {sellerListings.length > 0 && (
+            <div style={{ padding: "0 16px 16px" }}>
+              <div style={LABEL}>More from this seller</div>
               <div
                 style={{
                   display: "flex",
                   gap: 12,
                   overflowX: "auto",
-                  scrollSnapType: "x mandatory",
-                  paddingBottom: 8,
+                  paddingBottom: 14,
+                  scrollbarWidth: "none",
+                }}
+              >
+                {sellerListings.map((s) => (
+                  <MiniListingCard
+                    key={s.id}
+                    listing={s}
+                    onOpen={(id) =>
+                      navigate({
+                        to: "/marketplace/$listingId",
+                        params: { listingId: id },
+                      })
+                    }
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Similar in category */}
+          {similar.length > 0 && (
+            <div style={{ padding: "0 16px 16px" }}>
+              <div style={LABEL}>More in this category</div>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 12,
+                  overflowX: "auto",
+                  paddingBottom: 14,
                   scrollbarWidth: "none",
                 }}
               >
                 {similar.map((s) => (
-                  <SimilarCard
+                  <MiniListingCard
                     key={s.id}
                     listing={s}
                     onOpen={(id) =>
@@ -487,6 +589,7 @@ function ListingDetailPage() {
     </div>
   );
 }
+
 
 function ConditionBadge({ condition }: { condition: string }) {
   const map: Record<string, { bg: string; color: string }> = {
