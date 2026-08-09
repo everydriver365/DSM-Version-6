@@ -520,9 +520,10 @@ function TakePaymentPage() {
           style={{
             textAlign: "center",
             flexShrink: 0,
-            padding: passBookingFee ? "6px 16px 0" : "6px 16px",
-            fontSize: 36,
-            fontWeight: 700,
+            padding: passBookingFee ? "10px 16px 0" : "10px 16px",
+            fontSize: 46,
+            fontWeight: 900,
+            letterSpacing: "-1.5px",
             color: NAVY,
             lineHeight: 1.05,
           }}
@@ -534,9 +535,11 @@ function TakePaymentPage() {
             style={{
               textAlign: "center",
               flexShrink: 0,
-              padding: "2px 16px 4px",
-              fontSize: 11,
-              color: "#6B7280",
+              padding: "0 16px 4px",
+              marginTop: 4,
+              fontSize: 13,
+              fontWeight: 500,
+              color: "#8A8A8E",
             }}
           >
             £{amountNum.toFixed(2)} + 1% fee (£{(amountNum * 0.01).toFixed(2)})
@@ -547,69 +550,92 @@ function TakePaymentPage() {
         <div
           style={{
             display: "flex",
-            gap: 6,
+            gap: 8,
             flexShrink: 0,
-            padding: "0 16px 4px",
-            alignItems: "center",
+            padding: "12px 16px 0",
+            alignItems: "stretch",
           }}
         >
-          <select
-            value={pupilId}
-            onChange={(e) => setPupilId(e.target.value)}
-            style={{
-              flex: 1,
-              minWidth: 0,
-              padding: "6px 8px",
-              borderRadius: 8,
-              border: "0.5px solid #EEF2F7",
-              fontSize: 13,
-              color: NAVY,
-              background: "#fff",
-            }}
-          >
-            <option value="">For (optional)</option>
-            {pupils.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+          <div style={{ ...fieldCardStyle, flex: 1.1, position: "relative", display: "flex", alignItems: "center" }}>
+            <select
+              value={pupilId}
+              onChange={(e) => setPupilId(e.target.value)}
+              style={{
+                flex: 1,
+                minWidth: 0,
+                appearance: "none",
+                WebkitAppearance: "none",
+                border: "none",
+                outline: "none",
+                background: "transparent",
+                fontSize: 14,
+                fontWeight: 700,
+                color: NAVY,
+                paddingRight: 16,
+              }}
+            >
+              <option value="">For (optional)</option>
+              {pupils.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+            <ChevronDown size={14} color="#8A8A8E" style={{ position: "absolute", right: 12, pointerEvents: "none" }} />
+          </div>
           <input
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Description"
             style={{
-              flex: 1.5,
+              ...fieldCardStyle,
+              flex: 1.6,
               minWidth: 0,
-              padding: "6px 8px",
-              borderRadius: 8,
-              border: "0.5px solid #EEF2F7",
-              fontSize: 13,
+              border: "none",
+              outline: "none",
+              fontSize: 14,
+              fontWeight: 500,
               color: NAVY,
             }}
           />
-          <input
-            type="number"
-            inputMode="decimal"
-            step="0.5"
-            min="0"
-            value={hoursBought}
-            onChange={(e) => setHoursBought(e.target.value)}
-            placeholder="Hrs"
-            title="Hours bought (optional)"
-            style={{
-              width: 56,
-              minWidth: 0,
-              padding: "6px 8px",
-              borderRadius: 8,
-              border: "0.5px solid #EEF2F7",
-              fontSize: 13,
-              color: NAVY,
-              textAlign: "center",
-            }}
-          />
+          <div style={{ ...fieldCardStyle, width: 70, flexShrink: 0, padding: "13px 10px" }}>
+            <input
+              type="number"
+              inputMode="decimal"
+              step="0.5"
+              min="0"
+              value={hoursBought}
+              onChange={(e) => setHoursBought(e.target.value)}
+              placeholder="0"
+              title="Hours bought (optional)"
+              style={{
+                width: "100%",
+                minWidth: 0,
+                border: "none",
+                outline: "none",
+                background: "transparent",
+                fontSize: 14,
+                fontWeight: 800,
+                color: NAVY,
+                textAlign: "center",
+                padding: 0,
+              }}
+            />
+            <div
+              style={{
+                textAlign: "center",
+                color: "#B0B0B5",
+                fontSize: 9.5,
+                fontWeight: 600,
+                marginTop: 2,
+              }}
+            >
+              HRS
+            </div>
+          </div>
         </div>
+
 
         {/* Tabs */}
         <div
