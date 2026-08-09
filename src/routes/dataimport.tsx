@@ -1,5 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  PUPIL_FIELDS,
+  FIELD_LABELS,
+  autoMapColumns,
+  applyMapping,
+  mappingIsUsable,
+  type ColumnMapping,
+  type PupilField,
+} from "@/lib/csvColumnMapping";
 import { ChevronLeft, Info, Upload, CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
