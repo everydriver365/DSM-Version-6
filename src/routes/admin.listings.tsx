@@ -104,6 +104,54 @@ const emptyDraft: NewListingDraft = {
   images: [],
 };
 
+function categoryStyle(name: string | null | undefined): { bg: string; color: string } {
+  const n = (name ?? "").toLowerCase();
+  if (n.includes("business") || n.includes("service")) return { bg: "#E7F1FC", color: "#1877D6" };
+  if (n.includes("equipment")) return { bg: "#F3EEFB", color: "#7B4FC9" };
+  if (n.includes("car") || n.includes("vehicle") return { bg: "#E6F6F4", color: "#0B9B8A" };
+  if (n.includes("insurance")) return { bg: "#FCE7F3", color: "#C724B1" };
+  if (n.includes("franchise") || n.includes("training")) return { bg: "#FFF4E5", color: "#D68A1B" };
+  return { bg: "#F2F2F7", color: "#0B1F3A" };
+}
+
+function initials(name: string | null | undefined): string {
+  if (!name) return "?";
+  return name
+    .split(" ")
+    .map((w) => w[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
+function StatusPill({ type, label }: { type: "instructor" | "live" | "pending" | "featured" | "supplier"; label: string }) {
+  const styles: Record<string, React.CSSProperties> = {
+    instructor: { background: "#0B1F3A", color: "#fff" },
+    supplier: { background: "#8A8A8E", color: "#fff" },
+    live: { background: "#1A9B5C", color: "#fff" },
+    pending: { background: "#D68A1B", color: "#fff" },
+    featured: { background: "#FFD866", color: "#5A4200" },
+  };
+  return (
+    <span
+      style={{
+        ...styles[type],
+        fontSize: 11.5,
+        fontWeight: 800,
+        padding: "6px 12px",
+        borderRadius: 20,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 4,
+      }}
+    >
+      {type === "featured" && <IconStar size={12} fill="currentColor" />}
+      {label}
+    </span>
+  );
+}
+
 function AdminListingsPage() {
   const navigate = useNavigate();
   const [gate, setGate] = useState<"checking" | "allowed" | "denied">("checking");
