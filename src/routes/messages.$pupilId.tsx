@@ -357,6 +357,14 @@ function PupilThreadPage() {
     }
 
 
+    // A page of older messages was prepended — scroll position is restored by
+    // the loader itself, so never treat that growth as "new message arrived".
+    if (prependingRef.current) {
+      prependingRef.current = false;
+      prevCountRef.current = count;
+      return;
+    }
+
     const grew = count > prevCountRef.current;
     prevCountRef.current = count;
     if (!grew) return;
@@ -368,6 +376,69 @@ function PupilThreadPage() {
       el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
     });
   }, [messages]);
+
+  // ---- Infinite scroll: load older messages when the user nears the top ----
+  const loadOlder = useCallback(async () => {
+    const el = scrollerRef.current;
+    const oldest = messages[0];
+    if (!el || !oldest || !userId || loadingOlderRef.current || !hasMoreOlder) return;
+    loadingOlderRef.current = true;
+    setLoadingOlder(true);
+
+    // Anchor on the pre-prepend height so the view stays on the same message.
+    const prevHeight = el.scrollHeight;
+    const prevTop = el.scrollTop;
+
+    const { data, error } = await supabase
+      .from("chat_messages")
+      .select(
+        "id,pupil_id,instructor_id,sender_type,sender_id,body,created_at,read_at,deleted_at",
+      )
+      .eq("pupil_id", pupilId)
+      .eq("instructor_id", userId)
+      .is("deleted_at", null)
+      .lt("created_at", oldest.created_at)
+      .order("created_at", { ascending: false })
+      .limit(PAGE_SIZE);
+
+    if (error) {
+      console.error("[pupil-thread] older messages fetch error", error);
+      loadingOlderRef.current = false;
+      setLoadingOlder(false);
+      return;
+    }
+
+    const older = ((data ?? []) as unknown as ChatMessage[]).slice().reverse();
+    setHasMoreOlder(older.length >= PAGE_SIZE);
+    if (older.length > 0) {
+      prependingRef.current = true;
+      setMessages((prev) => {
+        const seen = new Set(prev.map((m) => m.id));
+        return [...older.filter((m) => !seen.has(m.id)), ...prev];
+      });
+      requestAnimationFrame(() => {
+        const node = scrollerRef.current;
+        if (node) node.scrollTop = node.scrollHeight - prevHeight + prevTop;
+        loadingOlderRef.current = false;
+        setLoadingOlder(false);
+      });
+      return;
+    }
+
+    loadingOlderRef.current = false;
+    setLoadingOlder(false);
+  }, [messages, userId, pupilId, hasMoreOlder]);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      if (el.scrollTop < 120) void loadOlder();
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [loadOlder]);
+
 
   // ---- Typing indicator -------------------------------------------------
   // Lightweight realtime broadcast: each side pings "typing" while composing.
