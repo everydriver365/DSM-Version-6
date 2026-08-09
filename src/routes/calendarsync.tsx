@@ -1,12 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Info, Copy, Check, Calendar, CalendarPlus, AlertTriangle, ChevronDown, Loader2, AlertCircle, CheckCircle } from "lucide-react";
+import { ArrowLeft, Info, Copy, Check, Calendar, CalendarPlus, AlertTriangle, ChevronDown, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { SectionHeader } from "../components/dsm/SectionHeader";
-import { Card } from "../components/dsm/Card";
-import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 
@@ -50,6 +48,115 @@ export const Route = createFileRoute("/calendarsync")({
 });
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+
+const SECTION_CARD: React.CSSProperties = {
+  background: "#fff",
+  borderRadius: 20,
+  padding: 18,
+  boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
+  marginBottom: 24,
+};
+
+const DESC: React.CSSProperties = {
+  ...POPPINS,
+  color: "#6B6B6F",
+  fontSize: 13.5,
+  fontWeight: 500,
+  lineHeight: 1.5,
+  marginBottom: 16,
+};
+
+const FIELD_LABEL: React.CSSProperties = {
+  ...POPPINS,
+  display: "block",
+  color: "#8A8A8E",
+  fontSize: 12,
+  fontWeight: 600,
+  marginBottom: 8,
+};
+
+const FIELD_INPUT: React.CSSProperties = {
+  ...POPPINS,
+  background: "#F2F2F7",
+  borderRadius: 12,
+  padding: "13px 15px",
+  border: "none",
+  outline: "none",
+  color: "#6B6B6F",
+  fontSize: 13,
+  fontWeight: 500,
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+};
+
+const STATUS_DOT: React.CSSProperties = {
+  width: 22,
+  height: 22,
+  borderRadius: 999,
+  background: "#1A9B5C",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexShrink: 0,
+};
+
+const BTN_BASE: React.CSSProperties = {
+  ...POPPINS,
+  width: "100%",
+  padding: 15,
+  borderRadius: 14,
+  fontSize: 14.5,
+  fontWeight: 800,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 8,
+};
+
+const BTN_PRIMARY: React.CSSProperties = {
+  ...BTN_BASE,
+  background: "#1877D6",
+  color: "#fff",
+  border: "none",
+  boxShadow: "0 4px 0 #0F52A8",
+};
+
+const BTN_OUTLINE: React.CSSProperties = {
+  ...BTN_BASE,
+  background: "#fff",
+  color: "#1877D6",
+  border: "1.5px solid #E4E4E8",
+};
+
+const BTN_OUTLINE_RED: React.CSSProperties = {
+  ...BTN_BASE,
+  background: "#fff",
+  color: "#FF3B30",
+  border: "1.5px solid #FF3B30",
+};
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 12 }}>
+      <span style={{ width: 3, height: 14, background: "#1877D6", borderRadius: 2, flexShrink: 0 }} />
+      <span
+        style={{
+          ...POPPINS,
+          color: "#1877D6",
+          fontSize: 12,
+          fontWeight: 800,
+          letterSpacing: "0.6px",
+          textTransform: "uppercase",
+        }}
+      >
+        {children}
+      </span>
+    </div>
+  );
+}
+
+
 
 
 function CalendarSyncPage() {
@@ -362,58 +469,50 @@ function CalendarSyncPage() {
       <div className="px-4 pb-12">
         {/* Info card */}
         <div
-          className="mx-0 mt-3 flex items-start gap-3"
+          className="mx-0 mt-3"
           style={{
-            backgroundColor: "#EEF4FB",
-            borderWidth: "0.5px",
-            borderStyle: "solid",
-            borderColor: "#1877D6",
-            borderRadius: 12,
-            padding: 16,
+            backgroundColor: "#E7F1FC",
+            borderRadius: 16,
+            padding: "14px 16px",
+            display: "flex",
+            flexDirection: "row",
+            gap: 10,
           }}
         >
-          <Info size={20} color="#1877D6" className="shrink-0 mt-0.5" />
-          <p className="text-[13px] text-[#0B1F3A] leading-[1.5]" style={POPPINS}>
+          <Info size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
+          <p style={{ ...POPPINS, color: "#0B1F3A", fontSize: 13, fontWeight: 500, lineHeight: 1.5 }}>
             Sync your lessons to any calendar app using an ICS feed. Works with Google Calendar, Apple Calendar, and Outlook.
           </p>
         </div>
 
         {/* Section 1 — Google events → DSM */}
-        <SectionHeader>GOOGLE EVENTS → DSM</SectionHeader>
+        <div style={{ marginTop: 24 }}>
+          <SectionLabel>Google events → DSM</SectionLabel>
+        </div>
         {/* Import external Google Calendar */}
-        <div
-          style={{
-            backgroundColor: "#FFFFFF",
-            borderWidth: "0.5px",
-            borderStyle: "solid",
-            borderColor: "#E2E6ED",
-            borderRadius: 12,
-            padding: 16,
-            marginTop: 16,
-          }}
-        >
-          <div className="flex items-center gap-2">
-            <Calendar size={18} color="#1A52A0" />
-            <div className="text-[14px] font-semibold" style={{ ...POPPINS, color: "#0F2044" }}>
-              Import your Google Calendar
-            </div>
-          </div>
-          <p className="text-xs" style={{ ...POPPINS, color: "#6B7280", marginTop: 4, marginBottom: 16 }}>
+        <div style={SECTION_CARD}>
+          <p style={DESC}>
             See your personal events in DSM so gap filler knows when you're busy
           </p>
 
           <button
             type="button"
             onClick={() => setHowToOpen((v) => !v)}
-            className="flex items-center justify-between w-full"
-            style={POPPINS}
+            style={{
+              ...POPPINS,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 5,
+              color: "#1877D6",
+              fontSize: 13,
+              fontWeight: 700,
+            }}
           >
-            <span className="text-sm font-semibold" style={{ color: "#1A52A0" }}>
-              How to get your Google Calendar URL
-            </span>
+            <span>How to get your Google Calendar URL</span>
             <ChevronDown
-              size={16}
-              color="#1A52A0"
+              size={11}
+              color="#1877D6"
               style={{ transform: howToOpen ? "rotate(180deg)" : "none", transition: "transform 150ms" }}
             />
           </button>
@@ -432,13 +531,8 @@ function CalendarSyncPage() {
             </div>
           )}
 
-          <div style={{ marginTop: 12 }}>
-            <label
-              className="block text-xs font-semibold"
-              style={{ ...POPPINS, color: "#6B7280", marginBottom: 6 }}
-            >
-              Your Google Calendar ICS URL
-            </label>
+          <div style={{ marginTop: 16 }}>
+            <label style={FIELD_LABEL}>Your Google Calendar ICS URL</label>
             <input
               ref={inputRef}
               type="url"
@@ -446,38 +540,26 @@ function CalendarSyncPage() {
               onChange={(e) => setExternalCalendarUrl(e.target.value)}
               placeholder="https://calendar.google.com/calendar/ical/..."
               className="w-full"
-              style={{
-                ...POPPINS,
-                backgroundColor: "#F7FAFC",
-                borderWidth: "0.5px",
-                borderStyle: "solid",
-                borderColor: "#E2E6ED",
-                borderRadius: 10,
-                padding: "11px 14px",
-                fontSize: 12,
-                color: "#0F2044",
-                outline: "none",
-              }}
+              style={FIELD_INPUT}
             />
           </div>
 
           {syncError ? (
             <div
               style={{
-                marginTop: 8,
+                marginTop: 12,
                 background: "#FEF2F2",
-                border: "0.5px solid #FECACA",
-                borderRadius: 10,
+                borderRadius: 12,
                 padding: "12px 14px",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <AlertCircle size={14} color="#CC2229" />
-                <span className="text-xs" style={{ ...POPPINS, color: "#CC2229" }}>
+                <AlertCircle size={14} color="#FF3B30" />
+                <span className="text-xs" style={{ ...POPPINS, color: "#FF3B30", fontWeight: 600 }}>
                   Sync error: {syncError}
                 </span>
               </div>
-              <div className="text-xs" style={{ ...POPPINS, color: "#9CA3AF", marginTop: 4 }}>
+              <div className="text-xs" style={{ ...POPPINS, color: "#8A8A8E", marginTop: 4 }}>
                 This usually means your ICS URL has expired. Get a new one from Google Calendar.
               </div>
               <button
@@ -487,7 +569,7 @@ function CalendarSyncPage() {
                   inputRef.current?.focus();
                 }}
                 className="text-xs font-semibold"
-                style={{ ...POPPINS, color: "#1A52A0", marginTop: 6 }}
+                style={{ ...POPPINS, color: "#1877D6", marginTop: 6 }}
               >
                 Update URL →
               </button>
@@ -499,30 +581,28 @@ function CalendarSyncPage() {
               return (
                 <div
                   style={{
-                    marginTop: 8,
-                    background: "#E0FFF4",
-                    border: "0.5px solid #86EFAC",
-                    borderRadius: 10,
-                    padding: "12px 14px",
+                    marginTop: 12,
+                    background: "#E6F7EC",
+                    borderRadius: 14,
+                    padding: "14px 16px",
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: 10,
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <CheckCircle size={14} color="#16A34A" />
-                    <span
-                      className="text-xs font-semibold"
-                      style={{ ...POPPINS, color: "#16A34A" }}
-                    >
+                  <span style={STATUS_DOT}>
+                    <Check size={12} color="#FFFFFF" strokeWidth={3} />
+                  </span>
+                  <div>
+                    <div style={{ ...POPPINS, color: "#0F6B3D", fontSize: 14.5, fontWeight: 800 }}>
                       Last synced: {timeAgo(lastSynced)}
-                    </span>
-                  </div>
-                  {overdue && (
-                    <div
-                      className="text-xs"
-                      style={{ ...POPPINS, color: "#D97706", marginTop: 4 }}
-                    >
-                      ⚠️ Sync is overdue — tap Sync now to refresh
                     </div>
-                  )}
+                    {overdue && (
+                      <div style={{ ...POPPINS, color: "#3D8A63", fontSize: 11.5, lineHeight: 1.5 }}>
+                        Sync is overdue — tap Sync now to refresh
+                      </div>
+                    )}
+                  </div>
                 </div>
               );
             })()
@@ -532,13 +612,9 @@ function CalendarSyncPage() {
             type="button"
             onClick={() => runSync(externalCalendarUrl)}
             disabled={syncing || !externalCalendarUrl.trim()}
-            className="w-full rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2"
             style={{
-              ...POPPINS,
-              backgroundColor: "#1A52A0",
-              paddingTop: 12,
-              paddingBottom: 12,
-              marginTop: 12,
+              ...BTN_PRIMARY,
+              marginTop: 16,
               opacity: syncing || !externalCalendarUrl.trim() ? 0.6 : 1,
             }}
           >
@@ -552,29 +628,25 @@ function CalendarSyncPage() {
           </button>
 
           {lastSynced && !syncError && (
-            <div className="flex items-center justify-end" style={{ marginTop: 10 }}>
+            <div className="flex items-center justify-end" style={{ marginTop: 12 }}>
               <button
                 type="button"
                 onClick={() => runSync(savedUrl || externalCalendarUrl)}
                 disabled={syncing}
-                className="text-xs font-semibold"
-                style={{ ...POPPINS, color: "#1A52A0" }}
+                style={{ ...POPPINS, color: "#1877D6", fontSize: 13, fontWeight: 700 }}
               >
                 Sync now
               </button>
             </div>
           )}
 
-
-
           {savedUrl && (
-            <div style={{ marginTop: 10 }}>
+            <div style={{ marginTop: 14, textAlign: "center" }}>
               <button
                 type="button"
                 onClick={removeCalendar}
                 disabled={removing}
-                className="text-xs"
-                style={{ ...POPPINS, color: "#CC2229" }}
+                style={{ ...POPPINS, color: "#FF3B30", fontSize: 13, fontWeight: 700 }}
               >
                 {removing ? "Removing..." : "Remove calendar"}
               </button>
@@ -582,52 +654,46 @@ function CalendarSyncPage() {
           )}
         </div>
 
-        {/* ---- Divider ---- */}
-        <div style={{ height: 1, background: "#E2E6ED", margin: "24px 0" }} />
-
         {/* Section 2 — DSM lessons → Google */}
-        <SectionHeader>DSM LESSONS → GOOGLE</SectionHeader>
-        <div
-          style={{
-            backgroundColor: "#FFFFFF",
-            borderWidth: "0.5px",
-            borderStyle: "solid",
-            borderColor: "#E2E6ED",
-            borderRadius: 12,
-            padding: 16,
-          }}
-        >
-          <p className="text-xs" style={{ ...POPPINS, color: "#6B7280", marginBottom: 14 }}>
+        <SectionLabel>DSM lessons → Google</SectionLabel>
+        <div style={SECTION_CARD}>
+          <p style={DESC}>
             Connect your Google account so lessons you book in DSM appear in your Google Calendar straight away.
           </p>
 
           {conn ? (
             <>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <CheckCircle size={18} color="#16A34A" />
-                <span className="text-[14px] font-semibold" style={{ ...POPPINS, color: "#0B1F3A" }}>
-                  Connected to Google Calendar
+              <div
+                style={{
+                  background: "#E6F7EC",
+                  borderRadius: 14,
+                  padding: "14px 16px",
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 10,
+                }}
+              >
+                <span style={STATUS_DOT}>
+                  <Check size={12} color="#FFFFFF" strokeWidth={3} />
                 </span>
-              </div>
-              <div className="text-xs" style={{ ...POPPINS, color: "#6B7280", marginTop: 8 }}>
-                Connected on: {formatDate(conn.connected_at)}
-              </div>
-              <div className="text-xs" style={{ ...POPPINS, color: "#6B7280", marginTop: 2 }}>
-                Last synced: {formatDate(conn.last_synced_at)}
+                <div>
+                  <div style={{ ...POPPINS, color: "#0F6B3D", fontSize: 14.5, fontWeight: 800 }}>
+                    Connected to Google Calendar
+                  </div>
+                  <div style={{ ...POPPINS, color: "#3D8A63", fontSize: 11.5, lineHeight: 1.5 }}>
+                    Connected on: {formatDate(conn.connected_at)}
+                    {" · "}
+                    Last synced: {formatDate(conn.last_synced_at)}
+                  </div>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={disconnectGoogle}
                 disabled={disconnecting}
-                className="w-full rounded-xl text-sm font-semibold"
                 style={{
-                  ...POPPINS,
-                  marginTop: 14,
-                  paddingTop: 11,
-                  paddingBottom: 11,
-                  color: "#CC2229",
-                  background: "#FFFFFF",
-                  border: "1px solid #CC2229",
+                  ...BTN_OUTLINE_RED,
+                  marginTop: 16,
                   opacity: disconnecting ? 0.6 : 1,
                 }}
               >
@@ -639,14 +705,7 @@ function CalendarSyncPage() {
               type="button"
               onClick={connectGoogle}
               disabled={connecting}
-              className="w-full rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2"
-              style={{
-                ...POPPINS,
-                backgroundColor: "#1877D6",
-                paddingTop: 12,
-                paddingBottom: 12,
-                opacity: connecting ? 0.6 : 1,
-              }}
+              style={{ ...BTN_PRIMARY, opacity: connecting ? 0.6 : 1 }}
             >
               {connecting ? (
                 <>
@@ -663,35 +722,31 @@ function CalendarSyncPage() {
 
         {/* ICS Feed URL */}
 
-        <SectionHeader>YOUR ICS FEED URL</SectionHeader>
-        <Card className="flex flex-col gap-3">
+        <SectionLabel>Your ICS feed URL</SectionLabel>
+        <div style={SECTION_CARD}>
           <input
             readOnly
             value={icsUrl}
-            className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white"
-            style={{
-              fontFamily: "Poppins, sans-serif",
-              borderWidth: "0.5px",
-              borderStyle: "solid",
-              borderColor: "#EEF2F7",
-            }}
+            className="w-full"
+            style={FIELD_INPUT}
             onFocus={(e) => e.target.select()}
           />
-          <Button onClick={copyLink}>
+          <button type="button" onClick={copyLink} style={{ ...BTN_PRIMARY, marginTop: 12 }}>
             {copied ? (
-              <span className="inline-flex items-center gap-2">
+              <>
                 <Check size={16} /> Copied!
-              </span>
+              </>
             ) : (
-              <span className="inline-flex items-center gap-2">
+              <>
                 <Copy size={16} /> Copy link
-              </span>
+              </>
             )}
-          </Button>
-          <Button variant="ghost" onClick={shareLink}>
+          </button>
+          <button type="button" onClick={shareLink} style={{ ...BTN_OUTLINE, marginTop: 12 }}>
             Share link
-          </Button>
-        </Card>
+          </button>
+        </div>
+
 
         {/* How calendar sync works */}
         <div
