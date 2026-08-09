@@ -775,16 +775,18 @@ function TakePaymentPage() {
                   disabled={cardLoading}
                   style={{
                     width: "100%",
-                    height: 44,
-                    borderRadius: 10,
+                    padding: 17,
+                    borderRadius: 16,
                     background: NAVY,
                     color: "#fff",
                     border: "none",
-                    fontSize: 14,
-                    fontWeight: 600,
+                    fontSize: 16,
+                    fontWeight: 800,
+                    boxShadow: "0 4px 0 #050D1C",
                     opacity: cardLoading ? 0.7 : 1,
                     cursor: "pointer",
                   }}
+
                 >
                   {cardLoading ? "Loading…" : `Charge card · £${totalNum.toFixed(2)}`}
                 </button>
