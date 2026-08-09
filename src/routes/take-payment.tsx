@@ -669,11 +669,10 @@ function TakePaymentPage() {
                 style={{
                   flex: "0 0 auto",
                   minHeight: 0,
-                  padding: "6px 12px 8px",
+                  padding: "10px 16px 12px",
                   display: "grid",
                   gridTemplateColumns: "repeat(3, 1fr)",
-                  gridTemplateRows: "repeat(4, 52px)",
-                  gap: 6,
+                  gap: 10,
                 }}
               >
                 {numpadKeys.map((k) => (
@@ -681,42 +680,29 @@ function TakePaymentPage() {
                     key={k}
                     type="button"
                     onClick={() => press(k)}
-                    style={{
-                      height: 52,
-                      maxHeight: 52,
-                      padding: "4px 0",
-                      fontSize: 20,
-                      fontWeight: 600,
-                      border: "0.5px solid #EEF2F7",
-                      borderRadius: 8,
-                      background: "white",
-                      cursor: "pointer",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: NAVY,
-                    }}
+                    style={keyStyle}
                   >
-                    {k === "back" ? <Delete size={20} /> : k}
+                    {k === "back" ? <Delete size={22} color="#6B6B6F" /> : k}
                   </button>
                 ))}
               </div>
 
               {/* Generate QR button */}
-              <div style={{ padding: "0 16px 8px", flexShrink: 0 }}>
+              <div style={{ padding: "0 16px 12px", flexShrink: 0 }}>
                 <button
                   type="button"
                   onClick={generateQr}
                   disabled={qrGenerating}
                   style={{
                     width: "100%",
-                    height: 44,
-                    borderRadius: 10,
+                    padding: 17,
+                    borderRadius: 16,
                     background: NAVY,
                     color: "#fff",
                     border: "none",
-                    fontSize: 14,
-                    fontWeight: 600,
+                    fontSize: 16,
+                    fontWeight: 800,
+                    boxShadow: "0 4px 0 #050D1C",
                     opacity: qrGenerating ? 0.7 : 1,
                     cursor: "pointer",
                   }}
@@ -724,6 +710,7 @@ function TakePaymentPage() {
                   {qrGenerating ? "Generating…" : "Generate QR code"}
                 </button>
               </div>
+
             </>
           )}
 
