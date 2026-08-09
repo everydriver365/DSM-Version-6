@@ -10,6 +10,7 @@ import {
   IconNews,
 } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
+import { sanitizeNewsTitle } from "@/lib/newsText";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
 
 const NAVY = "#0B1F3A";
@@ -274,7 +275,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       .single()
       .then(({ data }) => {
         setNewsHero(data?.image_url ?? null);
-        setLatestNewsTitle(data?.title ?? null);
+        setLatestNewsTitle(sanitizeNewsTitle(data?.title));
         setLatestNewsSource(data?.source ?? null);
         setLatestNewsDate(
           data?.published_at
@@ -873,7 +874,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               whiteSpace: "nowrap",
             }}
           >
-            {latestNewsTitle ?? "Industry news & updates"}
+            {latestNewsTitle || "Industry news & updates"}
           </div>
         </div>
         <IconChevronRight size={14} color={HAIRLINE} style={{ flexShrink: 0 }} />

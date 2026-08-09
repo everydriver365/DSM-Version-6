@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ChevronLeft, ExternalLink, User, Clock, Calendar } from "lucide-react";
 import { IconNews, IconChevronRight } from "@tabler/icons-react";
+import { sanitizeNewsTitle } from "../lib/newsText";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 
@@ -23,7 +24,7 @@ function formatDate(iso: string | null | undefined) {
 
 function cleanContent(raw: string): string {
   if (!raw) return "";
-  return raw
+  return sanitizeNewsTitle(raw)
     .split("\n")
     .filter((line) => {
       const trimmed = line.trim();
@@ -207,7 +208,7 @@ function NewsArticlePage() {
             lineHeight: 1.3,
           }}
         >
-          {article.title}
+          {sanitizeNewsTitle(article.title)}
         </h1>
 
         {/* Meta row */}
@@ -386,7 +387,7 @@ function NewsArticlePage() {
                     overflow: "hidden",
                   }}
                 >
-                  {nextArticle.title}
+                  {sanitizeNewsTitle(nextArticle.title)}
                 </div>
                 <div style={{ fontSize: 11, color: "#9CA3AF", ...INTER }}>
                   {nextArticle.read_time_mins} min read
