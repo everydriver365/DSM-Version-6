@@ -380,8 +380,21 @@ function PaymentsPage() {
         <button
           type="button"
           onClick={() => { setUnifiedPayPupilId(pupilFilter && pupilFilter !== "all" ? pupilFilter : undefined); setUnifiedPayOpen(true); }}
-          className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
-          style={{ backgroundColor: TEAL }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            background: "#1A9B5C",
+            color: "#fff",
+            fontSize: 14,
+            fontWeight: 800,
+            padding: "11px 20px",
+            borderRadius: 14,
+            border: 0,
+            boxShadow: "0 4px 0 #0F6B3D",
+            cursor: "pointer",
+            ...POPPINS,
+          }}
         >
           <IconPlus stroke={1.5} size={16} color="#fff" /> Take payment
         </button>
@@ -389,34 +402,47 @@ function PaymentsPage() {
       <WorkspaceDots activeIndex={3} />
 
       {/* Summary stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "16px 16px 0", marginBottom: 14 }}>
-        <StatTile label="THIS MONTH" value={formatGBP(stats.monthReceived)} color="#1E8E3E" />
-        <StatTile
-          label="OUTSTANDING"
-          value={formatGBP(stats.outstanding)}
-          color={stats.outstanding > 0 ? "#CC2229" : "#B0BAC9"}
-        />
-        <StatTile
-          label="REFUNDED"
-          value={formatGBP(stats.monthRefunded)}
-          color={stats.monthRefunded > 0 ? "#B5661E" : "#B0BAC9"}
-        />
+      <div style={{ padding: "16px 16px 0", marginBottom: 14 }}>
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 20,
+            boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
+            display: "flex",
+            overflow: "hidden",
+          }}
+        >
+          <StatTile label="THIS MONTH" value={formatGBP(stats.monthReceived)} color="#1A9B5C" />
+          <StatTile
+            first={false}
+            label="OUTSTANDING"
+            value={formatGBP(stats.outstanding)}
+            color={stats.outstanding > 0 ? "#FF3B30" : "#C7C7CC"}
+          />
+          <StatTile
+            first={false}
+            label="REFUNDED"
+            value={formatGBP(stats.monthRefunded)}
+            color={stats.monthRefunded > 0 ? "#FF3B30" : "#C7C7CC"}
+          />
+        </div>
       </div>
+
 
       {/* Paid vs outstanding breakdown */}
       {paidBreakdown.totalDue > 0 && (
         <div style={{ padding: "0 16px", marginBottom: 14 }}>
           <div
             style={{
-              background: "#FFFFFF",
-              borderRadius: 16,
-              padding: "14px 16px",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              background: "#fff",
+              borderRadius: 20,
+              padding: 18,
+              boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: NAVY, ...POPPINS }}>Paid vs outstanding</div>
-              <div style={{ fontSize: 11, color: MUTED, ...POPPINS }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+              <div style={{ fontSize: 15.5, fontWeight: 800, color: "#000", ...POPPINS }}>Paid vs outstanding</div>
+              <div style={{ fontSize: 12.5, fontWeight: 600, color: "#8A8A8E", textAlign: "right", ...POPPINS }}>
                 {paidBreakdown.paidPercent >= 1
                   ? "Fully collected"
                   : paidBreakdown.paidPercent > 0
@@ -426,38 +452,39 @@ function PaymentsPage() {
             </div>
             <div
               style={{
-                height: 10,
-                borderRadius: 5,
-                background: "#F3F4F6",
+                height: 8,
+                borderRadius: 4,
+                background: "#F2F2F7",
                 overflow: "hidden",
-                marginBottom: 12,
+                marginBottom: 14,
                 display: "flex",
               }}
             >
               <div
                 style={{
                   width: `${Math.min(100, Math.round(paidBreakdown.paidPercent * 100))}%`,
-                  background: GREEN,
+                  background: "#1A9B5C",
                   height: "100%",
                 }}
               />
-              <div style={{ flex: 1, background: RED, height: "100%" }} />
+              <div style={{ flex: 1, background: "#FF3B30", height: "100%" }} />
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
               <div>
-                <div style={{ fontSize: 10, color: MUTED, marginBottom: 2, ...POPPINS }}>Total due</div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: NAVY, ...POPPINS }}>{formatGBP(paidBreakdown.totalDue)}</div>
+                <div style={{ fontSize: 11.5, fontWeight: 600, color: "#8A8A8E", marginBottom: 3, ...POPPINS }}>Total due</div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: "#000", ...POPPINS }}>{formatGBP(paidBreakdown.totalDue)}</div>
               </div>
               <div>
-                <div style={{ fontSize: 10, color: MUTED, marginBottom: 2, ...POPPINS }}>Paid</div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: GREEN, ...POPPINS }}>{formatGBP(paidBreakdown.totalPaid)}</div>
+                <div style={{ fontSize: 11.5, fontWeight: 600, color: "#8A8A8E", marginBottom: 3, ...POPPINS }}>Paid</div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: "#1A9B5C", ...POPPINS }}>{formatGBP(paidBreakdown.totalPaid)}</div>
               </div>
               <div>
-                <div style={{ fontSize: 10, color: MUTED, marginBottom: 2, ...POPPINS }}>Outstanding</div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: RED, ...POPPINS }}>{formatGBP(paidBreakdown.outstanding)}</div>
+                <div style={{ fontSize: 11.5, fontWeight: 600, color: "#8A8A8E", marginBottom: 3, ...POPPINS }}>Outstanding</div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: "#FF3B30", ...POPPINS }}>{formatGBP(paidBreakdown.outstanding)}</div>
               </div>
             </div>
           </div>
+
         </div>
       )}
 
@@ -466,10 +493,11 @@ function PaymentsPage() {
         type="button"
         onClick={() => setPupilPickerOpen(true)}
         style={{
-          background: "#FFFFFF",
-          borderRadius: 12,
-          padding: "9px 12px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+          background: "#fff",
+          borderRadius: 16,
+          padding: "14px 16px",
+          boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.06)",
+
           display: "flex",
           alignItems: "center",
           gap: 8,
@@ -508,7 +536,7 @@ function PaymentsPage() {
       {/* Period pills */}
       <div
         className="no-scrollbar"
-        style={{ display: "flex", gap: 6, padding: "0 16px", marginBottom: 10, overflowX: "auto", WebkitOverflowScrolling: "touch" }}
+        style={{ display: "flex", gap: 8, padding: "0 16px", marginBottom: 14, overflowX: "auto", WebkitOverflowScrolling: "touch" }}
       >
         {([["today","Today"],["week","This week"],["month","This month"],["year","This year"]] as [DatePreset,string][]).map(([v,l]) => {
           const active = datePreset === v;
@@ -518,20 +546,21 @@ function PaymentsPage() {
               type="button"
               onClick={() => setDatePreset(v)}
               style={{
-                padding: "7px 14px",
-                fontSize: 12,
-                fontWeight: 500,
-                borderRadius: 20,
+                padding: "10px 18px",
+                fontSize: 13.5,
+                fontWeight: 700,
+                borderRadius: 24,
                 border: 0,
-                background: active ? "#0B1F3A" : "#FFFFFF",
-                color: active ? "#FFFFFF" : "#8A94A6",
-                boxShadow: active ? "none" : "0 1px 3px rgba(0,0,0,0.06)",
+                background: active ? "#0B1F3A" : "#fff",
+                color: active ? "#fff" : "#0B1F3A",
+                boxShadow: active ? "0 3px 0 #050D1C" : "0 3px 0 #E4E4E8",
                 whiteSpace: "nowrap",
                 cursor: "pointer",
                 flexShrink: 0,
                 ...POPPINS,
               }}
             >
+
               {l}
             </button>
           );
@@ -553,17 +582,17 @@ function PaymentsPage() {
           groups.map((g) => (
             <div key={g.label + g.rows[0].id}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", marginBottom: 8 }}>
-                <div style={{ fontSize: 11, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em', ...POPPINS }}>{g.label}</div>
-                <div style={{ fontSize: 12, color: "#B0BAC9", ...POPPINS }}>{formatGBP(g.total)}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#8A8A8E', textTransform: 'uppercase', letterSpacing: '0.4px', ...POPPINS }}>{g.label}</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#000", ...POPPINS }}>{formatGBP(g.total)}</div>
               </div>
 
               <div
                 style={{
-                  background: "#FFFFFF",
-                  borderRadius: 16,
+                  background: "#fff",
+                  borderRadius: 20,
                   overflow: "hidden",
-                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-                  margin: "0 16px 14px",
+                  boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
+                  margin: "0 16px 16px",
                 }}
               >
                 {g.rows.map((row, i) => {
@@ -575,19 +604,19 @@ function PaymentsPage() {
                     <div
                       key={row.id}
                       style={{
-                        borderBottom: i < g.rows.length - 1 ? "1px solid #E4E8EF" : "none",
+                        borderTop: i > 0 ? "1px solid #EFEFF2" : "none",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 16px", minHeight: 66 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 13, padding: "14px 16px" }}>
                         <div
                           style={{
-                            width: 40,
-                            height: 40,
+                            width: 42,
+                            height: 42,
                             borderRadius: "50%",
                             background: avatarBg,
                             color: "#FFFFFF",
-                            fontSize: 14,
-                            fontWeight: 600,
+                            fontSize: 14.5,
+                            fontWeight: 800,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -604,9 +633,9 @@ function PaymentsPage() {
                         >
                           <div
                             style={{
-                              fontSize: 14,
-                              fontWeight: 500,
-                              color: "#0B1F3A",
+                              fontSize: 15,
+                              fontWeight: 800,
+                              color: "#000",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
@@ -615,15 +644,15 @@ function PaymentsPage() {
                           >
                             {displayPupilName(row.pupils?.name) || "Unknown pupil"}
                           </div>
-                          <div style={{ fontSize: 12, color: "#B0BAC9", marginTop: 1, ...POPPINS }}>
+                          <div style={{ fontSize: 12.5, fontWeight: 500, color: "#8A8A8E", marginTop: 2, ...POPPINS }}>
                             {methodLabel(isRefund ? "refund" : row.payment_method)} · {formatTime(row.created_at)}
                           </div>
                         </button>
                         <div
                           style={{
-                            fontSize: 15,
-                            fontWeight: 600,
-                            color: isRefund ? "#CC2229" : "#1E8E3E",
+                            fontSize: 15.5,
+                            fontWeight: 800,
+                            color: isRefund ? "#FF3B30" : "#1A9B5C",
                             flexShrink: 0,
                             ...POPPINS,
                           }}
@@ -636,11 +665,12 @@ function PaymentsPage() {
                               type="button"
                               aria-label="More"
                               onClick={onClick}
-                              style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: 0, cursor: "pointer" }}
+                              style={{ width: 28, height: 28, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: 0, cursor: "pointer", flexShrink: 0 }}
                             >
-                              <IconDotsVertical stroke={1.5} size={16} color="#B0BAC9" />
+                              <IconDotsVertical stroke={1.5} size={16} color="#B0B0B5" />
                             </button>
                           )}
+
                           items={[
                             ...(!isRefund ? [{ label: "Edit", onClick: () => { setEditingId(row.id); setExpandedId(row.id); } }] : []),
                             ...(!isRefund ? [{ label: "Refund", onClick: () => setRefundRow(row) }] : []),
@@ -708,23 +738,24 @@ function PaymentsPage() {
 }
 
 // ---------- small components ----------
-function StatTile({ label, value, color }: { label: string; value: string; color: string }) {
+function StatTile({ label, value, color, first = true }: { label: string; value: string; color: string; first?: boolean }) {
   return (
     <div
       style={{
-        background: "#FFFFFF",
-        borderRadius: 16,
-        padding: "12px 14px",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+        flex: 1,
+        padding: "16px 10px",
+        textAlign: "left",
+        borderLeft: first ? undefined : "1.5px dashed #E4E4E8",
+        minWidth: 0,
       }}
     >
       <div
         style={{
           fontSize: 10,
-          fontWeight: 500,
-          color: "#8A94A6",
-          letterSpacing: "0.03em",
-          marginBottom: 5,
+          fontWeight: 700,
+          color: "#8A8A8E",
+          textTransform: "uppercase",
+          letterSpacing: "0.3px",
           whiteSpace: "nowrap",
           lineHeight: 1.2,
           ...POPPINS,
@@ -732,8 +763,9 @@ function StatTile({ label, value, color }: { label: string; value: string; color
       >
         {label}
       </div>
-      <div style={{ fontSize: 18, fontWeight: 600, color, ...POPPINS }}>{value}</div>
+      <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.6px", marginTop: 6, color, ...POPPINS }}>{value}</div>
     </div>
+
   );
 }
 
