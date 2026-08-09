@@ -1699,6 +1699,38 @@ function ShowcasePage() {
                   });
                 })()
               )}
+
+              {/* Infinite-scroll sentinel / manual fallback */}
+              {(hasMoreComments || loadingMoreComments) && (
+                <div
+                  ref={loadMoreRef}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    padding: "8px 0 16px",
+                  }}
+                >
+                  <button
+                    type="button"
+                    disabled={loadingMoreComments}
+                    onClick={() =>
+                      playing && void loadCommentPage(playing.id, false)
+                    }
+                    style={{
+                      border: "none",
+                      background: "#F2F2F7",
+                      color: "#6B6B6F",
+                      borderRadius: 999,
+                      padding: "7px 16px",
+                      fontSize: 12.5,
+                      fontWeight: 700,
+                      ...POPPINS,
+                    }}
+                  >
+                    {loadingMoreComments ? "Loading…" : "Load more comments"}
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Replying-to strip */}
