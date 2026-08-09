@@ -398,25 +398,31 @@ function CommunityPage() {
     <div style={{ background: "#F7FAFC", minHeight: "100vh", paddingBottom: 80, fontFamily: "Poppins, sans-serif" }}>
       {/* TOP BAR */}
       <div style={{
-        background: "#0F2044", padding: "16px", display: "flex",
-        alignItems: "center", justifyContent: "space-between", color: "white",
+        background: "#0B1F3A", padding: "16px", display: "flex",
+        alignItems: "center", gap: 12, color: "white",
+        borderRadius: "0 0 28px 28px",
       }}>
         <button
           type="button"
           onClick={() => navigate({ to: "/home" as never })}
           aria-label="Back"
-          style={{ background: "none", border: "none", color: "white", cursor: "pointer", display: "flex" }}
+          style={{
+            width: 34, height: 34, borderRadius: 999,
+            background: "rgba(255,255,255,0.08)", border: "none", color: "white",
+            cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
+          }}
         >
-          <IconArrowLeft stroke={1.5} size={22} />
+          <IconArrowLeft stroke={1.5} size={19} />
         </button>
-        <div style={{ fontWeight: 700, fontSize: 18 }}>Community</div>
-        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>{" "}</div>
+        <div style={{ fontWeight: 800, fontSize: 24, letterSpacing: "-0.4px", color: "#fff" }}>Community</div>
       </div>
 
       {/* TABS */}
       <div style={{
-        background: "white", borderBottom: "0.5px solid #E2E6ED",
-        display: "flex", position: "sticky", top: 0, zIndex: 10,
+        background: "#F7FAFC",
+        display: "flex", gap: 6, overflowX: "auto",
+        padding: "12px 16px 8px", position: "sticky", top: 0, zIndex: 10,
       }}>
         {([
           { id: "alerts", label: "Alerts" },
@@ -433,11 +439,12 @@ function CommunityPage() {
               type="button"
               onClick={() => setActiveTab(t.id)}
               style={{
-                flex: 1, padding: "10px", textAlign: "center", fontSize: 11,
-                fontWeight: 600, background: "none", border: "none", cursor: "pointer",
-                borderBottom: active ? "2px solid #185FA5" : "2px solid transparent",
-                color: active ? "#185FA5" : "#8A93A3",
+                flexShrink: 0, padding: "9px 16px", borderRadius: 20,
+                fontSize: 13.5, fontWeight: 700, border: "none", cursor: "pointer",
+                background: active ? "#0B1F3A" : "transparent",
+                color: active ? "#fff" : "#6B6B6F",
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                whiteSpace: "nowrap",
               }}
             >
               {t.id === "rooms" && <IconLayoutGrid stroke={1.5} size={14} />}
