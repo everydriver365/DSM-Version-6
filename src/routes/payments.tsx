@@ -434,15 +434,15 @@ function PaymentsPage() {
         <div style={{ padding: "0 16px", marginBottom: 14 }}>
           <div
             style={{
-              background: "#FFFFFF",
-              borderRadius: 16,
-              padding: "14px 16px",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              background: "#fff",
+              borderRadius: 20,
+              padding: 18,
+              boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: NAVY, ...POPPINS }}>Paid vs outstanding</div>
-              <div style={{ fontSize: 11, color: MUTED, ...POPPINS }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+              <div style={{ fontSize: 15.5, fontWeight: 800, color: "#000", ...POPPINS }}>Paid vs outstanding</div>
+              <div style={{ fontSize: 12.5, fontWeight: 600, color: "#8A8A8E", textAlign: "right", ...POPPINS }}>
                 {paidBreakdown.paidPercent >= 1
                   ? "Fully collected"
                   : paidBreakdown.paidPercent > 0
@@ -452,38 +452,39 @@ function PaymentsPage() {
             </div>
             <div
               style={{
-                height: 10,
-                borderRadius: 5,
-                background: "#F3F4F6",
+                height: 8,
+                borderRadius: 4,
+                background: "#F2F2F7",
                 overflow: "hidden",
-                marginBottom: 12,
+                marginBottom: 14,
                 display: "flex",
               }}
             >
               <div
                 style={{
                   width: `${Math.min(100, Math.round(paidBreakdown.paidPercent * 100))}%`,
-                  background: GREEN,
+                  background: "#1A9B5C",
                   height: "100%",
                 }}
               />
-              <div style={{ flex: 1, background: RED, height: "100%" }} />
+              <div style={{ flex: 1, background: "#FF3B30", height: "100%" }} />
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
               <div>
-                <div style={{ fontSize: 10, color: MUTED, marginBottom: 2, ...POPPINS }}>Total due</div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: NAVY, ...POPPINS }}>{formatGBP(paidBreakdown.totalDue)}</div>
+                <div style={{ fontSize: 11.5, fontWeight: 600, color: "#8A8A8E", marginBottom: 3, ...POPPINS }}>Total due</div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: "#000", ...POPPINS }}>{formatGBP(paidBreakdown.totalDue)}</div>
               </div>
               <div>
-                <div style={{ fontSize: 10, color: MUTED, marginBottom: 2, ...POPPINS }}>Paid</div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: GREEN, ...POPPINS }}>{formatGBP(paidBreakdown.totalPaid)}</div>
+                <div style={{ fontSize: 11.5, fontWeight: 600, color: "#8A8A8E", marginBottom: 3, ...POPPINS }}>Paid</div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: "#1A9B5C", ...POPPINS }}>{formatGBP(paidBreakdown.totalPaid)}</div>
               </div>
               <div>
-                <div style={{ fontSize: 10, color: MUTED, marginBottom: 2, ...POPPINS }}>Outstanding</div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: RED, ...POPPINS }}>{formatGBP(paidBreakdown.outstanding)}</div>
+                <div style={{ fontSize: 11.5, fontWeight: 600, color: "#8A8A8E", marginBottom: 3, ...POPPINS }}>Outstanding</div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: "#FF3B30", ...POPPINS }}>{formatGBP(paidBreakdown.outstanding)}</div>
               </div>
             </div>
           </div>
+
         </div>
       )}
 
