@@ -1012,6 +1012,13 @@ function PupilThreadPage() {
         className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3"
         style={{ paddingBottom: 150, background: "#FFFFFF" }}
       >
+        {loadingOlder && (
+          <div className="flex items-center justify-center py-2 shrink-0">
+            <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
+              Loading earlier messages…
+            </div>
+          </div>
+        )}
         {messages.length === 0 ? (
           <div className="flex-1 flex items-center justify-center py-12">
             <div className="text-[13px] text-[#6B7280]" style={POPPINS}>
