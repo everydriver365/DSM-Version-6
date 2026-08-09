@@ -1283,6 +1283,77 @@ function AlertsTab({
         </div>
       </div>
 
+      {/* YOUR ACTIVE ALERTS */}
+      {myAlerts.length > 0 && (
+        <div style={{ marginBottom: 18 }}>
+          <div style={{
+            fontSize: 11, fontWeight: 600, color: '#9CA3AF',
+            textTransform: 'uppercase', letterSpacing: '0.08em',
+            padding: '0 2px 8px', fontFamily: 'Poppins, sans-serif',
+          }}>
+            Your active alerts · {myAlerts.length}
+          </div>
+          {myAlerts.map((a) => {
+            const cfg = TYPE_CONFIG[a.alert_type] ?? TYPE_CONFIG.other;
+            return (
+              <div
+                key={a.id}
+                onClick={() => setSelectedAlert(a)}
+                style={{
+                  background: "#fff", borderRadius: 16, marginBottom: 10,
+                  padding: "13px 14px 13px 13px", borderLeft: "3px solid #1877D6",
+                  display: "flex", alignItems: "center", gap: 12,
+                  boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)", cursor: "pointer",
+                }}
+              >
+                <div style={{
+                  width: 30, height: 30, flexShrink: 0,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <AlertSignIcon type={a.alert_type} size={30} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{
+                    fontSize: 14.5, fontWeight: 800, color: "#0B1F3A",
+                    whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                  }}>
+                    {a.description || cfg.label}
+                  </div>
+                  <div style={{
+                    fontSize: 12, fontWeight: 500, color: "#8A8A8E", marginTop: 1,
+                    whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                  }}>
+                    {a.location_name || formatCountdown(a.expires_at)}
+                  </div>
+                </div>
+                {(a.source ?? 'manual') !== 'tomtom' ? (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); handleCancel(a); }}
+                    aria-label="Cancel alert"
+                    style={{
+                      width: 26, height: 26, borderRadius: 8, background: "#FDEDEC",
+                      border: "none", display: "flex", alignItems: "center",
+                      justifyContent: "center", cursor: "pointer", padding: 0, flexShrink: 0,
+                    }}
+                  >
+                    <IconX size={12} color="#FF3B30" strokeWidth={2.4} />
+                  </button>
+                ) : (
+                  <div style={{
+                    flexShrink: 0, background: "#F2F2F7", color: "#6B6B6F",
+                    fontSize: 11, fontWeight: 700, padding: "5px 10px", borderRadius: 20,
+                    whiteSpace: "nowrap",
+                  }}>
+                    {formatCountdown(a.expires_at)}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       {/* SECTION 1 — Reported by instructors */}
       {instructorAlerts.length === 0 ? (
         myAlerts.length === 0 && officialAlerts.length === 0 ? (
