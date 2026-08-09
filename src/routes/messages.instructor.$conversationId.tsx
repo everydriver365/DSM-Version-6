@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   IconChevronLeft,
   IconSend,
@@ -153,6 +153,9 @@ function Avatar({
     </div>
   );
 }
+/** How many messages to fetch per page (initial load and each older page). */
+const PAGE_SIZE = 30;
+
 
 /**
  * Mark every unread DM addressed to me in this conversation as read.
@@ -270,6 +273,10 @@ function InstructorDMThread() {
   const [otherTyping, setOtherTyping] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const [hasMoreOlder, setHasMoreOlder] = useState(false);
+  const [loadingOlder, setLoadingOlder] = useState(false);
+  const loadingOlderRef = useRef(false);
+  const prependingRef = useRef(false);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const typingClearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const typingStopRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -323,17 +330,22 @@ function InstructorDMThread() {
         setMe(c.instructor_a_id === userId ? c.instructor_a : c.instructor_b);
       }
 
+      // Newest page first, reversed for display; older pages load on scroll.
       const { data: msgs } = await supabase
         .from("instructor_messages")
         .select("*")
         .eq("conversation_id", conversationId)
         .is("deleted_at", null)
-        .order("created_at", { ascending: true });
+        .order("created_at", { ascending: false })
+        .limit(PAGE_SIZE);
 
       if (!cancelled) {
-        setMessages((msgs ?? []) as unknown as DMMessage[]);
+        const page = ((msgs ?? []) as unknown as DMMessage[]).slice().reverse();
+        setMessages(page);
+        setHasMoreOlder(page.length >= PAGE_SIZE);
         setLoading(false);
       }
+
 
       const marked = await markConversationRead(conversationId, userId);
       broadcastRead(marked);
@@ -479,8 +491,73 @@ function InstructorDMThread() {
       });
       return;
     }
+    // Older messages were prepended — keep the reader where they are.
+    if (prependingRef.current) {
+      prependingRef.current = false;
+      return;
+    }
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, otherTyping]);
+
+  // ---- Infinite scroll: load older messages when the user nears the top ----
+  const loadOlder = useCallback(async () => {
+    const el = scrollerRef.current;
+    const oldest = messages[0];
+    if (!el || !oldest || loadingOlderRef.current || !hasMoreOlder) return;
+    loadingOlderRef.current = true;
+    setLoadingOlder(true);
+
+    const prevHeight = el.scrollHeight;
+    const prevTop = el.scrollTop;
+
+    const { data, error } = await supabase
+      .from("instructor_messages")
+      .select("*")
+      .eq("conversation_id", conversationId)
+      .is("deleted_at", null)
+      .lt("created_at", oldest.created_at)
+      .order("created_at", { ascending: false })
+      .limit(PAGE_SIZE);
+
+    if (error) {
+      console.error("[dm] older messages fetch error", error.message);
+      loadingOlderRef.current = false;
+      setLoadingOlder(false);
+      return;
+    }
+
+    const older = ((data ?? []) as unknown as DMMessage[]).slice().reverse();
+    setHasMoreOlder(older.length >= PAGE_SIZE);
+    if (older.length > 0) {
+      prependingRef.current = true;
+      setMessages((prev) => {
+        const seen = new Set(prev.map((m) => m.id));
+        return [...older.filter((m) => !seen.has(m.id)), ...prev];
+      });
+      requestAnimationFrame(() => {
+        const node = scrollerRef.current;
+        if (node) node.scrollTop = node.scrollHeight - prevHeight + prevTop;
+        loadingOlderRef.current = false;
+        setLoadingOlder(false);
+      });
+      return;
+    }
+
+    loadingOlderRef.current = false;
+    setLoadingOlder(false);
+  }, [messages, conversationId, hasMoreOlder]);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      if (el.scrollTop < 120) void loadOlder();
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [loadOlder]);
+
+
 
 
   /** Insert one message, keeping its optimistic row's delivery state in sync. */
@@ -648,6 +725,11 @@ function InstructorDMThread() {
       {/* MESSAGE LIST */}
       <JumpToLatestButton scrollerRef={scrollerRef} bottomOffset={92} />
       <div ref={scrollerRef} style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "16px 16px 12px" }}>
+        {loadingOlder && (
+          <div style={{ display: "flex", justifyContent: "center", padding: "6px 0 10px", fontSize: 12, color: GREY }}>
+            Loading earlier messages…
+          </div>
+        )}
         {loading ? (
           <div
             style={{
@@ -669,6 +751,7 @@ function InstructorDMThread() {
             <style>{`@keyframes dsmspin { to { transform: rotate(360deg); } }`}</style>
           </div>
         ) : messages.length === 0 ? (
+
           <div
             style={{
               display: "flex",

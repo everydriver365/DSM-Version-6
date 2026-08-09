@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IconAlertTriangle, IconChevronDown, IconChevronLeft, IconChevronUp, IconCircleCheck, IconPaperclip, IconPhone, IconSearch, IconSend, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -153,6 +153,9 @@ function HighlightedBody({ body, query }: { body: string; query: string }) {
 
 const SYSTEM_TYPES = ["call", "missed_call", "sms_event", "system", "event"];
 
+/** How many messages to fetch per page (initial load and each older page). */
+const PAGE_SIZE = 30;
+
 /**
  * Tell the bottom nav / home badge that messages were read. `delta` lets the
  * badge drop immediately; the repeats reconcile once the write has committed.
@@ -183,6 +186,11 @@ function PupilThreadPage() {
   const [pendingOffer, setPendingOffer] = useState<PendingOffer | null>(null);
   const [booking, setBooking] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const [hasMoreOlder, setHasMoreOlder] = useState(false);
+  const [loadingOlder, setLoadingOlder] = useState(false);
+  const loadingOlderRef = useRef(false);
+  const prependingRef = useRef(false);
+
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [matchIndex, setMatchIndex] = useState(0);
@@ -211,7 +219,8 @@ function PupilThreadPage() {
       const { data: sessionRes } = await supabase.auth.getSession();
       const token = sessionRes.session?.access_token;
       console.log("[dsm-messages] fetching for pupil:", pupilId, "instructor:", uid);
-      const url = `${SUPABASE_URL}/rest/v1/chat_messages?pupil_id=eq.${pupilId}&instructor_id=eq.${uid}&deleted_at=is.null&order=created_at.asc&select=id,pupil_id,instructor_id,sender_type,sender_id,body,created_at,read_at,deleted_at`;
+      // Newest page first, then reversed for display. Older pages load on scroll.
+      const url = `${SUPABASE_URL}/rest/v1/chat_messages?pupil_id=eq.${pupilId}&instructor_id=eq.${uid}&deleted_at=is.null&order=created_at.desc&limit=${PAGE_SIZE}&select=id,pupil_id,instructor_id,sender_type,sender_id,body,created_at,read_at,deleted_at`;
       console.log("[dsm-messages] fetch URL:", url);
       const res = await fetch(url, {
         headers: {
@@ -223,12 +232,14 @@ function PupilThreadPage() {
       try {
         const data = await res.json();
         console.log("[dsm-messages] result:", res.status, data);
-        if (res.ok && Array.isArray(data)) m = data as ChatMessage[];
+        if (res.ok && Array.isArray(data)) m = (data as ChatMessage[]).slice().reverse();
         else if (!res.ok) console.error("[pupil-thread] messages fetch error", data);
       } catch (e) {
         console.error("[pupil-thread] messages parse error", e);
       }
       setMessages(m);
+      setHasMoreOlder(m.length >= PAGE_SIZE);
+
 
       // Mark inbound messages read
       const { data: marked } = await supabase
@@ -346,6 +357,14 @@ function PupilThreadPage() {
     }
 
 
+    // A page of older messages was prepended — scroll position is restored by
+    // the loader itself, so never treat that growth as "new message arrived".
+    if (prependingRef.current) {
+      prependingRef.current = false;
+      prevCountRef.current = count;
+      return;
+    }
+
     const grew = count > prevCountRef.current;
     prevCountRef.current = count;
     if (!grew) return;
@@ -357,6 +376,69 @@ function PupilThreadPage() {
       el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
     });
   }, [messages]);
+
+  // ---- Infinite scroll: load older messages when the user nears the top ----
+  const loadOlder = useCallback(async () => {
+    const el = scrollerRef.current;
+    const oldest = messages[0];
+    if (!el || !oldest || !userId || loadingOlderRef.current || !hasMoreOlder) return;
+    loadingOlderRef.current = true;
+    setLoadingOlder(true);
+
+    // Anchor on the pre-prepend height so the view stays on the same message.
+    const prevHeight = el.scrollHeight;
+    const prevTop = el.scrollTop;
+
+    const { data, error } = await supabase
+      .from("chat_messages")
+      .select(
+        "id,pupil_id,instructor_id,sender_type,sender_id,body,created_at,read_at,deleted_at",
+      )
+      .eq("pupil_id", pupilId)
+      .eq("instructor_id", userId)
+      .is("deleted_at", null)
+      .lt("created_at", oldest.created_at)
+      .order("created_at", { ascending: false })
+      .limit(PAGE_SIZE);
+
+    if (error) {
+      console.error("[pupil-thread] older messages fetch error", error);
+      loadingOlderRef.current = false;
+      setLoadingOlder(false);
+      return;
+    }
+
+    const older = ((data ?? []) as unknown as ChatMessage[]).slice().reverse();
+    setHasMoreOlder(older.length >= PAGE_SIZE);
+    if (older.length > 0) {
+      prependingRef.current = true;
+      setMessages((prev) => {
+        const seen = new Set(prev.map((m) => m.id));
+        return [...older.filter((m) => !seen.has(m.id)), ...prev];
+      });
+      requestAnimationFrame(() => {
+        const node = scrollerRef.current;
+        if (node) node.scrollTop = node.scrollHeight - prevHeight + prevTop;
+        loadingOlderRef.current = false;
+        setLoadingOlder(false);
+      });
+      return;
+    }
+
+    loadingOlderRef.current = false;
+    setLoadingOlder(false);
+  }, [messages, userId, pupilId, hasMoreOlder]);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      if (el.scrollTop < 120) void loadOlder();
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [loadOlder]);
+
 
   // ---- Typing indicator -------------------------------------------------
   // Lightweight realtime broadcast: each side pings "typing" while composing.
@@ -930,6 +1012,13 @@ function PupilThreadPage() {
         className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3"
         style={{ paddingBottom: 150, background: "#FFFFFF" }}
       >
+        {loadingOlder && (
+          <div className="flex items-center justify-center py-2 shrink-0">
+            <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
+              Loading earlier messages…
+            </div>
+          </div>
+        )}
         {messages.length === 0 ? (
           <div className="flex-1 flex items-center justify-center py-12">
             <div className="text-[13px] text-[#6B7280]" style={POPPINS}>
