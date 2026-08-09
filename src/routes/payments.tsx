@@ -582,17 +582,17 @@ function PaymentsPage() {
           groups.map((g) => (
             <div key={g.label + g.rows[0].id}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", marginBottom: 8 }}>
-                <div style={{ fontSize: 11, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em', ...POPPINS }}>{g.label}</div>
-                <div style={{ fontSize: 12, color: "#B0BAC9", ...POPPINS }}>{formatGBP(g.total)}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#8A8A8E', textTransform: 'uppercase', letterSpacing: '0.4px', ...POPPINS }}>{g.label}</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#000", ...POPPINS }}>{formatGBP(g.total)}</div>
               </div>
 
               <div
                 style={{
-                  background: "#FFFFFF",
-                  borderRadius: 16,
+                  background: "#fff",
+                  borderRadius: 20,
                   overflow: "hidden",
-                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-                  margin: "0 16px 14px",
+                  boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
+                  margin: "0 16px 16px",
                 }}
               >
                 {g.rows.map((row, i) => {
@@ -604,19 +604,19 @@ function PaymentsPage() {
                     <div
                       key={row.id}
                       style={{
-                        borderBottom: i < g.rows.length - 1 ? "1px solid #E4E8EF" : "none",
+                        borderTop: i > 0 ? "1px solid #EFEFF2" : "none",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 16px", minHeight: 66 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 13, padding: "14px 16px" }}>
                         <div
                           style={{
-                            width: 40,
-                            height: 40,
+                            width: 42,
+                            height: 42,
                             borderRadius: "50%",
                             background: avatarBg,
                             color: "#FFFFFF",
-                            fontSize: 14,
-                            fontWeight: 600,
+                            fontSize: 14.5,
+                            fontWeight: 800,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -633,9 +633,9 @@ function PaymentsPage() {
                         >
                           <div
                             style={{
-                              fontSize: 14,
-                              fontWeight: 500,
-                              color: "#0B1F3A",
+                              fontSize: 15,
+                              fontWeight: 800,
+                              color: "#000",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
@@ -644,15 +644,15 @@ function PaymentsPage() {
                           >
                             {displayPupilName(row.pupils?.name) || "Unknown pupil"}
                           </div>
-                          <div style={{ fontSize: 12, color: "#B0BAC9", marginTop: 1, ...POPPINS }}>
+                          <div style={{ fontSize: 12.5, fontWeight: 500, color: "#8A8A8E", marginTop: 2, ...POPPINS }}>
                             {methodLabel(isRefund ? "refund" : row.payment_method)} · {formatTime(row.created_at)}
                           </div>
                         </button>
                         <div
                           style={{
-                            fontSize: 15,
-                            fontWeight: 600,
-                            color: isRefund ? "#CC2229" : "#1E8E3E",
+                            fontSize: 15.5,
+                            fontWeight: 800,
+                            color: isRefund ? "#FF3B30" : "#1A9B5C",
                             flexShrink: 0,
                             ...POPPINS,
                           }}
@@ -665,11 +665,12 @@ function PaymentsPage() {
                               type="button"
                               aria-label="More"
                               onClick={onClick}
-                              style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: 0, cursor: "pointer" }}
+                              style={{ width: 28, height: 28, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: 0, cursor: "pointer", flexShrink: 0 }}
                             >
-                              <IconDotsVertical stroke={1.5} size={16} color="#B0BAC9" />
+                              <IconDotsVertical stroke={1.5} size={16} color="#B0B0B5" />
                             </button>
                           )}
+
                           items={[
                             ...(!isRefund ? [{ label: "Edit", onClick: () => { setEditingId(row.id); setExpandedId(row.id); } }] : []),
                             ...(!isRefund ? [{ label: "Refund", onClick: () => setRefundRow(row) }] : []),
