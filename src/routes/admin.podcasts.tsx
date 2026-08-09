@@ -333,69 +333,111 @@ function AdminPodcasts() {
             key={p.id}
             style={{
               background: "#fff",
-              border: "0.5px solid #E2E6ED",
-              borderRadius: 12,
-              padding: 16,
-              margin: "0 16px 8px",
+              borderRadius: 20,
+              padding: 18,
+              margin: "0 16px 16px",
+              boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.07)",
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#CC2229" }}>
-                  EP {p.episode_number ?? "?"}
-                </div>
-                <div style={{ fontWeight: 700, color: "#0F2044", fontSize: 15, marginTop: 2 }}>
-                  {p.title}
-                </div>
-                <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
-                  {p.guest_name || "—"}
-                  {p.duration_minutes ? ` · ${p.duration_minutes} mins` : ""}
-                </div>
+              <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.5px", color: "#FF3B30" }}>
+                EP {p.episode_number ?? "?"}
               </div>
               <span
                 style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  padding: "3px 8px",
-                  borderRadius: 999,
-                  background: p.is_published ? "#DCFCE7" : "#FEF3C7",
-                  color: p.is_published ? "#166534" : "#92400E",
+                  fontSize: 11,
+                  fontWeight: 800,
+                  padding: "5px 12px",
+                  borderRadius: 20,
+                  background: p.is_published ? "#E6F7EC" : "#FFF6DC",
+                  color: p.is_published ? "#248A3D" : "#B8860B",
                   whiteSpace: "nowrap",
                 }}
               >
                 {p.is_published ? "Published" : "Draft"}
               </span>
             </div>
-            <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 8 }}>
+            <div style={{ fontWeight: 800, color: "#000", fontSize: 19, letterSpacing: "-0.3px", marginTop: 6 }}>
+              {p.title}
+            </div>
+            <div style={{ fontSize: 13.5, fontWeight: 500, color: "#8A8A8E", marginTop: 8 }}>
+              {p.guest_name || "—"}
+              {p.duration_minutes ? ` · ${p.duration_minutes} mins` : ""}
+            </div>
+            <div style={{ fontSize: 12.5, color: "#B0B0B5", marginTop: 6 }}>
               {p.play_count ?? 0} plays
             </div>
-            <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 9, marginTop: 14 }}>
               <button
                 type="button"
                 onClick={() => openEdit(p)}
-                style={btn("#0F2044", "#fff")}
+                style={{
+                  flex: 1,
+                  padding: 12,
+                  borderRadius: 13,
+                  border: 0,
+                  background: "#0B1F3A",
+                  color: "#fff",
+                  boxShadow: "0 3px 0 #050D1C",
+                  fontSize: 13.5,
+                  fontWeight: 700,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                  cursor: "pointer",
+                }}
               >
-                <IconPencil stroke={1.5} size={12} /> Edit
+                <IconPencil stroke={1.5} size={15} /> Edit
               </button>
               <button
                 type="button"
                 onClick={() => togglePublish(p)}
-                style={btn(p.is_published ? "#F3F4F6" : "#16A34A", p.is_published ? "#0F2044" : "#fff")}
+                style={{
+                  flex: 1,
+                  padding: 12,
+                  borderRadius: 13,
+                  border: 0,
+                  background: "#F2F2F7",
+                  color: "#6B6B6F",
+                  fontSize: 13.5,
+                  fontWeight: 700,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                  cursor: "pointer",
+                }}
               >
-                {p.is_published ? <IconEyeOff stroke={1.5} size={12} /> : <IconEye stroke={1.5} size={12} />}
+                {p.is_published ? <IconEyeOff stroke={1.5} size={15} /> : <IconEye stroke={1.5} size={15} />}
                 {p.is_published ? "Unpublish" : "Publish"}
               </button>
               <button
                 type="button"
                 onClick={() => handleDelete(p)}
-                style={btn("#fff", "#CC2229", "#CC2229")}
+                style={{
+                  flex: 1,
+                  padding: 12,
+                  borderRadius: 13,
+                  background: "#fff",
+                  color: "#FF3B30",
+                  border: "1.5px solid #FF3B30",
+                  fontSize: 13.5,
+                  fontWeight: 700,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                  cursor: "pointer",
+                }}
               >
-                <IconTrash stroke={1.5} size={12} /> Delete
+                <IconTrash stroke={1.5} size={15} /> Delete
               </button>
             </div>
           </div>
         ))
       )}
+
 
       {/* Bottom sheet */}
       {showSheet && (
