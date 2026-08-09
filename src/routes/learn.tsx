@@ -56,6 +56,19 @@ function getYouTubeEmbedUrl(url: string): string | null {
   return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1` : null;
 }
 
+// Display-only: append a "min" unit to the stored duration value.
+function formatDuration(d: string | number | null | undefined): string {
+  if (d == null) return "";
+  const raw = String(d).trim();
+  if (!raw) return "";
+  if (/min|hour|hr|sec/i.test(raw)) return raw;
+  if (/^\d+:\d{2}$/.test(raw)) {
+    const [m] = raw.split(":");
+    return `${Number(m)} min`;
+  }
+  if (/^\d+(\.\d+)?$/.test(raw)) return `${raw} min`;
+  return raw;
+
 const LEARN_VIDEO_CACHE = "dsm-learn-videos-v1";
 
 async function isVideoCached(url: string): Promise<boolean> {
