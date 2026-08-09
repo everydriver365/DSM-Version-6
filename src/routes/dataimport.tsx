@@ -149,6 +149,9 @@ function DataImportPage() {
     if (!userId || rows.length === 0) return;
     setImporting(true);
     setProgress(0);
+    setProcessed(0);
+    setLiveSuccess(0);
+    setLiveFailed(0);
     setFailures([]);
     setSuccessCount(null);
 
@@ -160,28 +163,31 @@ function DataImportPage() {
       const name = r.name?.trim() || [r.first_name, r.last_name].filter(Boolean).join(" ").trim();
       if (!name) {
         fails.push({ row: i + 2, reason: "Missing name" });
-        setProgress(Math.round(((i + 1) / rows.length) * 100));
-        continue;
+      } else {
+        const payload: Record<string, unknown> = {
+          instructor_id: userId,
+          name,
+          first_name: r.first_name?.trim() || null,
+          last_name: r.last_name?.trim() || null,
+          phone: r.phone?.trim() || null,
+          email: r.email?.trim() || null,
+          status: r.status?.trim() || "active",
+        };
+        const { error } = await supabase.from("pupils").insert(payload);
+        if (error) fails.push({ row: i + 2, reason: error.message });
+        else success++;
       }
-      const payload: Record<string, unknown> = {
-        instructor_id: userId,
-        name,
-        first_name: r.first_name?.trim() || null,
-        last_name: r.last_name?.trim() || null,
-        phone: r.phone?.trim() || null,
-        email: r.email?.trim() || null,
-        status: r.status?.trim() || "active",
-      };
-      const { error } = await supabase.from("pupils").insert(payload);
-      if (error) fails.push({ row: i + 2, reason: error.message });
-      else success++;
       setProgress(Math.round(((i + 1) / rows.length) * 100));
+      setProcessed(i + 1);
+      setLiveSuccess(success);
+      setLiveFailed(fails.length);
     }
 
     setSuccessCount(success);
     setFailures(fails);
     setImporting(false);
   };
+
 
   const preview = rows.slice(0, 5);
 
