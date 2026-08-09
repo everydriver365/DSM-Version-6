@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   IconPlayerPlay,
+  IconChevronLeft,
   IconChevronRight,
   IconRadio,
   IconBook,
@@ -81,6 +82,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   >([]);
 
   const [heroIndex, setHeroIndex] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const heroScrollRef = useRef<HTMLDivElement>(null);
   const [newsHero, setNewsHero] = useState<string | null>(null);
   const [latestNewsTitle, setLatestNewsTitle] = useState<string | null>(null);
@@ -396,6 +398,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onScroll={(e) => {
             const el = e.currentTarget;
             const w = el.clientWidth || 1;
+            const maxScroll = el.scrollWidth - w;
+            const progress = maxScroll > 0 ? el.scrollLeft / maxScroll : 0;
+            setScrollProgress(progress);
             const i = Math.round(el.scrollLeft / w);
             if (i !== heroIndex) setHeroIndex(i);
           }}
@@ -421,7 +426,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             return (
               <div
                 key={listing?.id ?? "empty"}
-                style={{ flex: "0 0 100%", scrollSnapAlign: "center" }}
+                style={{ flex: "0 0 100%", scrollSnapAlign: "center", position: "relative" }}
               >
                 <div
                   role="button"
@@ -612,37 +617,82 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     </div>
                   </div>
 
-                  {/* Pagination dots */}
-                  {heroCards.length > 1 && (
-                    <div
+                </div>
+                {heroCards.length > 1 && (
+                  <>
+                    <button
+                      aria-label="Previous listing"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const el = heroScrollRef.current;
+                        if (!el) return;
+                        const w = el.clientWidth;
+                        el.scrollTo({ left: Math.max(0, el.scrollLeft - w), behavior: "smooth" });
+                      }}
                       style={{
                         position: "absolute",
-                        bottom: 6,
-                        left: 0,
-                        right: 0,
+                        left: 8,
+                        top: "50%",
+                        transform: `translateY(-50%) scale(${1 + scrollProgress * 0.15})`,
+                        width: 28,
+                        height: 28,
+                        borderRadius: "50%",
+                        background: "rgba(255,255,255,0.92)",
+                        color: NAVY,
+                        border: "none",
                         display: "flex",
-                        justifyContent: "center",
                         alignItems: "center",
-                        gap: 5,
+                        justifyContent: "center",
+                        boxShadow: "0 2px 8px rgba(11,31,58,0.18)",
+                        opacity: heroIndex === 0 ? 0 : 0.25 + 0.75 * scrollProgress,
+                        transition: "opacity 0.2s ease, transform 0.2s ease",
                         zIndex: 3,
+                        cursor: "pointer",
+                        pointerEvents: heroIndex === 0 ? "none" : "auto",
+                        padding: 0,
                       }}
                     >
-                      {heroCards.map((_, di) => (
-                        <span
-                          key={di}
-                          style={{
-                            width: di === heroIndex ? 16 : 6,
-                            height: 6,
-                            borderRadius: di === heroIndex ? 4 : "50%",
-                            background:
-                              di === heroIndex ? BLUE : "rgba(11,31,58,0.18)",
-                            display: "inline-block",
-                          }}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
+                      <IconChevronLeft size={18} stroke={2.5} />
+                    </button>
+                    <button
+                      aria-label="Next listing"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const el = heroScrollRef.current;
+                        if (!el) return;
+                        const w = el.clientWidth;
+                        el.scrollTo({
+                          left: Math.min(el.scrollWidth - w, el.scrollLeft + w),
+                          behavior: "smooth",
+                        });
+                      }}
+                      style={{
+                        position: "absolute",
+                        right: 8,
+                        top: "50%",
+                        transform: `translateY(-50%) scale(${1 + (1 - scrollProgress) * 0.15})`,
+                        width: 28,
+                        height: 28,
+                        borderRadius: "50%",
+                        background: "rgba(255,255,255,0.92)",
+                        color: NAVY,
+                        border: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        boxShadow: "0 2px 8px rgba(11,31,58,0.18)",
+                        opacity: heroIndex === heroCards.length - 1 ? 0 : 0.25 + 0.75 * (1 - scrollProgress),
+                        transition: "opacity 0.2s ease, transform 0.2s ease",
+                        zIndex: 3,
+                        cursor: "pointer",
+                        pointerEvents: heroIndex === heroCards.length - 1 ? "none" : "auto",
+                        padding: 0,
+                      }}
+                    >
+                      <IconChevronRight size={18} stroke={2.5} />
+                    </button>
+                  </>
+                )}
               </div>
             );
           })}
