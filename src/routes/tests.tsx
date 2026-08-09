@@ -641,15 +641,15 @@ function TestCard({
             style={{
               display: "grid",
               placeItems: "center",
-              width: 28,
-              height: 28,
+              width: 26,
+              height: 26,
               borderRadius: 8,
               background: "transparent",
               border: "none",
               cursor: "pointer",
             }}
           >
-            <IconDotsVertical size={16} color="#9CA3AF" />
+            <IconDotsVertical size={16} color="#B0B0B5" />
           </button>
 
           {menuOpen && (
