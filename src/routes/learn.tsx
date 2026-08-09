@@ -56,6 +56,22 @@ function getYouTubeEmbedUrl(url: string): string | null {
   return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1` : null;
 }
 
+// Display-only: append a "min" unit to the stored duration value.
+function formatDuration(d: string | number | null | undefined): string {
+  if (d == null) return "";
+  const raw = String(d).trim();
+  if (!raw) return "";
+  if (/min|hour|hr|sec/i.test(raw)) return raw;
+  if (/^\d+:\d{2}$/.test(raw)) {
+    const [m] = raw.split(":");
+    return `${Number(m)} min`;
+  }
+  if (/^\d+(\.\d+)?$/.test(raw)) return `${raw} min`;
+  return raw;
+}
+
+
+
 const LEARN_VIDEO_CACHE = "dsm-learn-videos-v1";
 
 async function isVideoCached(url: string): Promise<boolean> {
@@ -161,7 +177,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
                 backgroundPosition: "center",
               }
             : null),
-          boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+          boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.08)",
         }}
       >
         {!thumb && (
@@ -190,17 +206,17 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
         >
           <div
             style={{
-              width: 40,
-              height: 40,
+              width: 44,
+              height: 44,
               borderRadius: "50%",
               background: "#fff",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+              boxShadow: "0 3px 10px rgba(0,0,0,0.25)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <IconPlayerPlay size={18} color={NAVY} stroke={2} style={{ marginLeft: 2 }} />
+            <IconPlayerPlay size={16} color={NAVY} stroke={2} fill={NAVY} style={{ marginLeft: 2 }} />
           </div>
         </div>
         <div
@@ -208,16 +224,15 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
             position: "absolute",
             bottom: 8,
             right: 8,
-            padding: "4px 8px",
-            borderRadius: 999,
-            background: "rgba(0,0,0,0.55)",
-            color: "white",
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: 0.2,
+            padding: "3px 8px",
+            borderRadius: 20,
+            background: "rgba(0,0,0,0.6)",
+            color: "#fff",
+            fontSize: 10.5,
+            fontWeight: 700,
           }}
         >
-          {v.duration}
+          {formatDuration(v.duration)}
         </div>
         {downloadable && (
           <button
@@ -228,11 +243,11 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
               position: "absolute",
               top: 8,
               right: 8,
-              width: 28,
-              height: 28,
+              width: 30,
+              height: 30,
               borderRadius: "50%",
               border: "none",
-              background: cached ? "#1E8E3E" : "rgba(0,0,0,0.55)",
+              background: cached ? "#1E8E3E" : "rgba(0,0,0,0.5)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -241,19 +256,20 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
             }}
           >
             {cached ? (
-              <IconCheck stroke={1.5} size={15} color="#FFFFFF" strokeWidth={3} />
+              <IconCheck stroke={1.5} size={13} color="#FFFFFF" strokeWidth={3} />
             ) : (
-              <IconDownload stroke={1.5} size={15} color="#FFFFFF" />
+              <IconDownload stroke={1.5} size={13} color="#FFFFFF" />
             )}
           </button>
         )}
       </div>
       <div
         style={{
-          marginTop: 8,
-          fontSize: 13,
-          fontWeight: 600,
-          color: NAVY,
+          marginTop: 10,
+          fontSize: 14.5,
+          fontWeight: 700,
+          letterSpacing: "-0.1px",
+          color: "#000",
           lineHeight: 1.3,
         }}
       >
@@ -264,22 +280,22 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
   );
 }
 
-function SectionLabel({ icon, label }: { icon: React.ReactNode; label: string }) {
+function SectionLabel({ icon, label, strong }: { icon: React.ReactNode; label: string; strong?: boolean }) {
   return (
     <div
       style={{
         display: "flex",
         alignItems: "center",
-        gap: 6,
+        gap: strong ? 7 : 6,
         padding: "0 16px 12px",
       }}
     >
       {icon}
       <span
         style={{
-          fontSize: 12,
-          fontWeight: 600,
-          color: GRAY_LABEL,
+          fontSize: strong ? 15 : 12,
+          fontWeight: strong ? 800 : 600,
+          color: strong ? NAVY : GRAY_LABEL,
           fontFamily: FONT,
         }}
       >
@@ -441,25 +457,23 @@ function LearnPage() {
       />
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
-      <div style={{ padding: "8px 16px 4px" }}>
-        <h1 style={{ fontSize: 26, fontWeight: 700, color: NAVY, margin: 0, lineHeight: 1.15 }}>
-          Learn
-        </h1>
-        <p style={{ fontSize: 14, color: GRAY_BODY, margin: "4px 0 0" }}>
+      <div style={{ padding: "8px 16px 0" }}>
+        <p style={{ fontSize: 14, fontWeight: 500, color: "#8A8A8E", margin: "0 0 22px" }}>
           Quick guides to get more out of DSM.
         </p>
       </div>
 
-      <div style={{ marginTop: 20 }}>
+      <div>
         <SectionLabel
-          icon={<IconPlayerPlay stroke={1.5} size={14} color={BLUE} />}
+          strong
+          icon={<IconPlayerPlay stroke={1.5} size={13} color={BLUE} fill={BLUE} />}
           label="How to"
         />
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: 12,
+            gap: 14,
             padding: "0 16px",
           }}
         >
