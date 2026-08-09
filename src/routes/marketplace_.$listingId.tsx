@@ -2,7 +2,7 @@ import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { IconArrowLeft, IconBriefcase, IconCamera, IconCar, IconCircleCheck, IconHeart, IconMapPin, IconPackage, IconSchool, IconShieldCheck, IconStar, IconTag, IconTool, IconX } from "@tabler/icons-react";
+import { IconArrowLeft, IconBriefcase, IconCamera, IconCar, IconChevronRight, IconCircleCheck, IconHeart, IconMapPin, IconPackage, IconSchool, IconShieldCheck, IconStar, IconTag, IconTool, IconX } from "@tabler/icons-react";
 import { BookOpen, Megaphone } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
