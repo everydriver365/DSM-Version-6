@@ -237,8 +237,12 @@ function TestsPage() {
         <button
           type="button"
           onClick={() => setAddOpen(true)}
-          className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
+          className="inline-flex items-center gap-2"
+          style={{
+            background: "#fff", color: "#0B1F3A", fontSize: 13.5, fontWeight: 800,
+            padding: "10px 18px", borderRadius: 14, border: "none",
+            boxShadow: "0 3px 0 #C7D0DC", ...POPPINS,
+          }}
         >
           <IconPlus stroke={1.5} size={15} />
           Add test
