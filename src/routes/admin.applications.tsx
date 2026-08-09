@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { IconChevronDown, IconChevronLeft, IconChevronUp } from "@tabler/icons-react";
+import { IconChevronDown, IconChevronLeft, IconChevronUp, IconClipboardList } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
