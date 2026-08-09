@@ -747,7 +747,11 @@ function TakePaymentPage() {
                     onClick={() => press(k)}
                     style={keyStyle}
                   >
-                    {k === "back" ? <Delete size={22} color="#6B6B6F" /> : k}
+                    {k === "back" ? (
+                      <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 22, height: 22 }}>
+                        <Delete size={22} color="#6B6B6F" style={{ display: "block" }} />
+                      </span>
+                    ) : k}
                   </button>
                 ))}
               </div>
@@ -855,7 +859,11 @@ function TakePaymentPage() {
                     onClick={() => press(k)}
                     style={keyStyle}
                   >
-                    {k === "back" ? <Delete size={22} color="#6B6B6F" /> : k}
+                    {k === "back" ? (
+                      <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 22, height: 22 }}>
+                        <Delete size={22} color="#6B6B6F" style={{ display: "block" }} />
+                      </span>
+                    ) : k}
                   </button>
                 ))}
               </div>
