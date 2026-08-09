@@ -1316,34 +1316,67 @@ function ShowcasePage() {
                 </div>
               ) : (
                 (() => {
-                  const displayedComments =
+                  const nameOf = (c: any) =>
+                    c?.instructor?.name ?? c?.author_name ?? "Instructor";
+                  const byId: Record<string, any> = {};
+                  comments.forEach((c: any) => (byId[c.id] = c));
+                  const roots = comments.filter(
+                    (c: any) => !c.parent_id || !byId[c.parent_id],
+                  );
+                  const repliesByParent: Record<string, any[]> = {};
+                  comments.forEach((c: any) => {
+                    if (!c.parent_id || !byId[c.parent_id]) return;
+                    (repliesByParent[c.parent_id] ??= []).push(c);
+                  });
+                  Object.values(repliesByParent).forEach((list) =>
+                    list.sort(
+                      (a, b) =>
+                        new Date(a.created_at).getTime() -
+                        new Date(b.created_at).getTime(),
+                    ),
+                  );
+                  const sortedRoots =
                     commentSort === "newest"
-                      ? [...comments].sort(
+                      ? [...roots].sort(
                           (a, b) =>
                             new Date(b.created_at).getTime() -
                             new Date(a.created_at).getTime(),
                         )
-                      : [...comments].sort(
+                      : [...roots].sort(
                           (a, b) =>
                             (commentLikeCounts[b.id] ?? 0) -
                             (commentLikeCounts[a.id] ?? 0),
                         );
-                  return displayedComments.map((c: any, i: number) => {
-                    const name = c.instructor?.name ?? c.author_name ?? "Instructor";
+
+                  const renderComment = (
+                    c: any,
+                    i: number,
+                    isReply: boolean,
+                    parent?: any,
+                  ) => {
+                    const name = nameOf(c);
+                    const liked = !!myCommentLikes[c.id];
+                    const count = commentLikeCounts[c.id] ?? 0;
+                    const isCreator =
+                      !!playing?.created_by && c.instructor_id === playing.created_by;
+                    const isMine = !!userId && c.instructor_id === userId;
+                    const avatar = isReply ? 28 : 36;
+                    // Replies always attach to the top-level thread parent.
+                    const threadParent = isReply ? (parent ?? c) : c;
                     return (
                       <div
                         key={c.id}
                         style={{
                           display: "flex",
                           gap: 11,
-                          marginBottom: 18,
+                          marginBottom: isReply ? 14 : 18,
                           alignItems: "flex-start",
                         }}
                       >
                         <div
                           style={{
-                            width: 36,
-                            height: 36,
+                            width: avatar,
+                            height: avatar,
                             flexShrink: 0,
                             borderRadius: "50%",
                             background: AVATAR_COLORS[i % AVATAR_COLORS.length],
@@ -1351,7 +1384,7 @@ function ShowcasePage() {
                             alignItems: "center",
                             justifyContent: "center",
                             color: "#fff",
-                            fontSize: 12,
+                            fontSize: isReply ? 10.5 : 12,
                             fontWeight: 700,
                             ...POPPINS,
                           }}
@@ -1364,11 +1397,12 @@ function ShowcasePage() {
                               display: "flex",
                               alignItems: "center",
                               gap: 7,
+                              flexWrap: "wrap",
                             }}
                           >
                             <span
                               style={{
-                                fontSize: 13.5,
+                                fontSize: isReply ? 12.5 : 13.5,
                                 fontWeight: 700,
                                 color: "#000",
                                 ...POPPINS,
@@ -1376,19 +1410,45 @@ function ShowcasePage() {
                             >
                               {name}
                             </span>
+                            {isCreator && (
+                              <span
+                                style={{
+                                  fontSize: 10,
+                                  fontWeight: 700,
+                                  color: "#fff",
+                                  background: BLUE,
+                                  borderRadius: 999,
+                                  padding: "2px 7px",
+                                  ...POPPINS,
+                                }}
+                              >
+                                Creator
+                              </span>
+                            )}
+                            {isMine && !isCreator && (
+                              <span
+                                style={{
+                                  fontSize: 10,
+                                  fontWeight: 700,
+                                  color: "#6B6B6F",
+                                  background: "#F2F2F7",
+                                  borderRadius: 999,
+                                  padding: "2px 7px",
+                                  ...POPPINS,
+                                }}
+                              >
+                                You
+                              </span>
+                            )}
                             <span
-                              style={{
-                                fontSize: 11,
-                                color: "#B0B0B5",
-                                ...POPPINS,
-                              }}
+                              style={{ fontSize: 11, color: "#B0B0B5", ...POPPINS }}
                             >
                               {timeAgo(c.created_at)}
                             </span>
                           </div>
                           <div
                             style={{
-                              fontSize: 14,
+                              fontSize: isReply ? 13.5 : 14,
                               fontWeight: 400,
                               color: NAVY,
                               marginTop: 3,
@@ -1396,48 +1456,147 @@ function ShowcasePage() {
                               ...POPPINS,
                             }}
                           >
-                            {c.body}
-                          </div>
-                          {(() => {
-                            const liked = !!myCommentLikes[c.id];
-                            const count = commentLikeCounts[c.id] ?? 0;
-                            return (
-                              <button
-                                type="button"
-                                onClick={() => toggleCommentLike(c.id)}
-                                aria-pressed={liked}
-                                aria-label={liked ? "Unlike comment" : "Like comment"}
+                            {isReply && parent && (
+                              <span
                                 style={{
-                                  marginTop: 7,
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: 5,
-                                  padding: "5px 10px",
-                                  borderRadius: 999,
-                                  border: "none",
-                                  background: liked ? "#E7F1FC" : "#F2F2F7",
-                                  color: liked ? BLUE : "#6B6B6F",
-                                  fontSize: 12,
+                                  color: BLUE,
                                   fontWeight: 600,
-                                  ...POPPINS,
+                                  marginRight: 5,
                                 }}
                               >
-                                <IconThumbUp
-                                  size={13}
-                                  stroke={liked ? 2.2 : 1.7}
-                                  fill={liked ? BLUE : "none"}
-                                />
-                                {count > 0 ? count : "Like"}
-                              </button>
-                            );
-                          })()}
+                                @{nameOf(parent)}
+                              </span>
+                            )}
+                            {c.body}
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 8,
+                              marginTop: 7,
+                            }}
+                          >
+                            <button
+                              type="button"
+                              onClick={() => toggleCommentLike(c.id)}
+                              aria-pressed={liked}
+                              aria-label={liked ? "Unlike comment" : "Like comment"}
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 5,
+                                padding: "5px 10px",
+                                borderRadius: 999,
+                                border: "none",
+                                background: liked ? "#E7F1FC" : "#F2F2F7",
+                                color: liked ? BLUE : "#6B6B6F",
+                                fontSize: 12,
+                                fontWeight: 600,
+                                ...POPPINS,
+                              }}
+                            >
+                              <IconThumbUp
+                                size={13}
+                                stroke={liked ? 2.2 : 1.7}
+                                fill={liked ? BLUE : "none"}
+                              />
+                              {count > 0 ? count : "Like"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setReplyTo({ id: threadParent.id, name })
+                              }
+                              aria-label={`Reply to ${name}`}
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 5,
+                                padding: "5px 10px",
+                                borderRadius: 999,
+                                border: "none",
+                                background: "#F2F2F7",
+                                color: "#6B6B6F",
+                                fontSize: 12,
+                                fontWeight: 600,
+                                ...POPPINS,
+                              }}
+                            >
+                              <IconMessageCircle size={13} stroke={1.7} />
+                              Reply
+                            </button>
+                          </div>
                         </div>
+                      </div>
+                    );
+                  };
+
+                  return sortedRoots.map((c: any, i: number) => {
+                    const replies = repliesByParent[c.id] ?? [];
+                    return (
+                      <div key={c.id}>
+                        {renderComment(c, i, false)}
+                        {replies.length > 0 && (
+                          <div
+                            style={{
+                              marginLeft: 18,
+                              paddingLeft: 16,
+                              borderLeft: "2px solid #ECECF1",
+                            }}
+                          >
+                            {replies.map((r: any, ri: number) =>
+                              renderComment(r, i + ri + 1, true, c),
+                            )}
+                          </div>
+                        )}
                       </div>
                     );
                   });
                 })()
               )}
             </div>
+
+            {/* Replying-to strip */}
+            {replyTo && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "8px 16px",
+                  background: "#F7F8FA",
+                  borderTop: "1px solid #E4E4E8",
+                }}
+              >
+                <IconMessageCircle size={14} stroke={1.7} color={BLUE} />
+                <span
+                  style={{ fontSize: 12.5, color: "#6B6B6F", flex: 1, ...POPPINS }}
+                >
+                  Replying to{" "}
+                  <span style={{ color: BLUE, fontWeight: 600 }}>
+                    @{replyTo.name}
+                  </span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setReplyTo(null)}
+                  aria-label="Cancel reply"
+                  style={{
+                    width: 22,
+                    height: 22,
+                    borderRadius: "50%",
+                    border: "none",
+                    background: "#E9E9EE",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <IconX size={12} color="#6B6B6F" />
+                </button>
+              </div>
+            )}
 
             {/* Compose bar */}
             <div
