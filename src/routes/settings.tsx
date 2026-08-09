@@ -840,36 +840,32 @@ function SettingsPage() {
 
 
       <div className="px-4">
-        <Label>ACCOUNT</Label>
-        <div style={{ backgroundColor: 'white', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
-          <MenuRow
-            icon={<User color="#1877D6" />}
-            iconBg="#E6F1FB"
+        <Label>Account</Label>
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)', marginBottom: 20 }}>
+          <AccountRow
+            icon={<User color="#1877D6" size={20} />}
+            iconBg="#E7F1FC"
             label="Profile"
             onClick={() => navigate({ to: "/profile" })}
             isFirst
-            isLast={false}
           />
-          <MenuRow
-            icon={<PoundSterling color="#CC2229" />}
-            iconBg="#FCEBEB"
+          <AccountRow
+            icon={<PoundSterling color="#FF3B30" size={20} />}
+            iconBg="#FDEDEC"
             label="Payments"
             onClick={() => navigate({ to: "/payments" })}
-            isLast={false}
           />
-          <MenuRow
-            icon={<Bell color="#B5661E" />}
-            iconBg="#FBEFE1"
+          <AccountRow
+            icon={<Bell color="#D68A1B" size={20} />}
+            iconBg="#FFF6DC"
             label="Notifications"
             onClick={() => navigate({ to: "/notificationsettings" })}
-            isLast={false}
           />
-          <MenuRow
-            icon={<Calendar color="#6B4FD6" />}
-            iconBg="#F0EBFF"
+          <AccountRow
+            icon={<Calendar color="#7B4FC9" size={20} />}
+            iconBg="#F3EEFB"
             label="Calendar sync"
             onClick={() => navigate({ to: "/calendarsync" })}
-            isLast={false}
             warning={
               calendarLastSynced &&
               Date.now() - new Date(calendarLastSynced).getTime() > 6 * 60 * 60 * 1000
@@ -877,43 +873,36 @@ function SettingsPage() {
                 : undefined
             }
           />
-          <MenuRow
-            icon={<Gift size={18} color="#00B5A5" />}
+          <AccountRow
+            icon={<Gift size={20} color="#00B5A5" />}
             iconBg="#CCFBF1"
             label="Referrals"
             onClick={() => navigate({ to: "/referrals" })}
-            isLast={false}
           />
-          <MenuRow
-            icon={<Zap size={18} color="#D97706" />}
+          <AccountRow
+            icon={<Zap size={20} color="#D97706" />}
             iconBg="#FEF3C7"
             label="Automations"
             onClick={() => navigate({ to: "/automations" })}
-            isLast={false}
           />
-          <MenuRow
-            icon={<Globe size={18} color="#1877D6" />}
+          <AccountRow
+            icon={<Globe size={20} color="#1877D6" />}
             iconBg="#E6F1FB"
             label="My mini website"
             onClick={() => navigate({ to: "/minisite" })}
-            isLast={false}
           />
-
-          <MenuRow
-            icon={<Landmark color="#1877D6" />}
+          <AccountRow
+            icon={<Landmark color="#1877D6" size={20} />}
             iconBg="#E6F1FB"
             label="Accounting integrations"
             onClick={() => navigate({ to: "/mtd" })}
-            isLast={false}
           />
-
-          <MenuRow
-            icon={<Crown color="#1877D6" />}
+          <AccountRow
+            icon={<Crown color="#1877D6" size={20} />}
             iconBg="#E6F1FB"
             label="My plan"
             value="DSM Free"
             onClick={() => navigate({ to: "/subscription" })}
-            isLast
           />
         </div>
 
