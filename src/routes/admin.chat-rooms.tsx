@@ -367,34 +367,30 @@ function AdminChatRooms() {
 
 
         {/* Filters */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 14 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
           <input
             type="text"
             placeholder="Search outcode…"
             value={filterOutcode}
             onChange={(e) => setFilterOutcode(e.target.value.toUpperCase())}
-            style={inputStyle}
+            style={{
+              background: "#fff",
+              border: "none",
+              borderRadius: 16,
+              padding: "13px 16px",
+              fontSize: 14,
+              fontFamily: "Poppins, sans-serif",
+              color: "#000",
+              width: "100%",
+              boxSizing: "border-box",
+              outline: "none",
+              boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.05)",
+            }}
           />
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={segmentWrapStyle}>
             {(["all", "local", "uk"] as const).map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setFilterType(t)}
-                style={{
-                  flex: 1,
-                  height: 36,
-                  borderRadius: 10,
-                  border: `1px solid ${filterType === t ? "#1877D6" : "#E2E8F0"}`,
-                  background: filterType === t ? "#EAF2FC" : "#fff",
-                  color: filterType === t ? "#1877D6" : "#6B7280",
-                  fontWeight: 600,
-                  fontSize: 13,
-                  cursor: "pointer",
-                  textTransform: "capitalize",
-                }}
-              >
-                {t}
+              <button key={t} type="button" onClick={() => setFilterType(t)} style={segmentStyle(filterType === t)}>
+                {t === "uk" ? "UK" : t === "all" ? "All" : "Local"}
               </button>
             ))}
           </div>
@@ -404,22 +400,23 @@ function AdminChatRooms() {
               alignItems: "center",
               justifyContent: "space-between",
               fontSize: 14,
-              color: "#0B1F3A",
+              fontWeight: 600,
+              color: "#000",
               cursor: "pointer",
               background: "#fff",
-              border: "1px solid #E2E8F0",
-              borderRadius: 10,
-              padding: "10px 12px",
+              border: "none",
+              borderRadius: 16,
+              padding: "13px 16px",
+              boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.05)",
             }}
           >
             Opt-in only
-            <input
-              type="checkbox"
+            <DSMCheckbox
               checked={filterOptIn === "opt-in"}
-              onChange={(e) => setFilterOptIn(e.target.checked ? "opt-in" : "all")}
-              style={{ width: 18, height: 18, accentColor: "#1877D6" }}
+              onChange={(v) => setFilterOptIn(v ? "opt-in" : "all")}
             />
           </label>
+
         </div>
 
         {loadingList ? (
