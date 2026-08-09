@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
-import { IconBriefcase, IconChevronLeft, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconPencil, IconSettings, IconShieldCheck, IconStar, IconTrash, IconUsers } from "@tabler/icons-react";
+import { IconBriefcase, IconChevronLeft, IconChevronRight, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconPencil, IconSettings, IconShieldCheck, IconStar, IconTrash, IconUsers } from "@tabler/icons-react";
 import { BookOpen, FileCheck, ShoppingBag, Video, PlayCircle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
