@@ -725,6 +725,11 @@ function InstructorDMThread() {
       {/* MESSAGE LIST */}
       <JumpToLatestButton scrollerRef={scrollerRef} bottomOffset={92} />
       <div ref={scrollerRef} style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "16px 16px 12px" }}>
+        {loadingOlder && (
+          <div style={{ display: "flex", justifyContent: "center", padding: "6px 0 10px", fontSize: 12, color: GREY }}>
+            Loading earlier messages…
+          </div>
+        )}
         {loading ? (
           <div
             style={{
