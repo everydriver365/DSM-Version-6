@@ -1375,7 +1375,7 @@ function AlertsTab({
               Report alert
             </button>
           </div>
-        ) : (
+        ) : myAlerts.length === 0 ? (
           <div style={{
             padding: 20, textAlign: "center", background: "#fff",
             border: "1.5px dashed #D1D1D6", borderRadius: 16,
@@ -1383,7 +1383,7 @@ function AlertsTab({
           }}>
             No instructor reports in your area
           </div>
-        )
+        ) : null
       ) : (
         <div style={{ marginBottom: 16 }}>
           <div style={{
