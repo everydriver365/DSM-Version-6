@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { X, StickyNote, Navigation as NavIcon, Phone, CheckSquare } from "lucide-react";
+import { X, StickyNote, Navigation as NavIcon, Phone, CheckSquare, ChevronLeft } from "lucide-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
@@ -155,7 +155,15 @@ function LiveSessionPage() {
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
         style={{ backgroundColor: "#1877D6" }}
       >
-        <div style={{ width: 28 }} />
+        <button
+          type="button"
+          aria-label="Back"
+          onClick={() => navigate({ to: "/home" })}
+          className="flex items-center justify-center"
+          style={{ width: 28, height: 28, background: "transparent", border: "none", cursor: "pointer" }}
+        >
+          <ChevronLeft size={24} color="#ffffff" />
+        </button>
         <div className="text-white text-[16px] font-semibold">Live session</div>
         <button
           type="button"
