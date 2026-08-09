@@ -235,9 +235,10 @@ function AdminApplicationsPage() {
           position: "sticky",
           top: 0,
           zIndex: 10,
-          background: RED,
+          background: "#0B1F3A",
           color: "#fff",
-          padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
+          borderRadius: "0 0 28px 28px",
+          padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 18px",
           display: "flex",
           alignItems: "center",
           gap: 12,
@@ -248,21 +249,24 @@ function AdminApplicationsPage() {
           onClick={() => navigate({ to: "/admin" })}
           aria-label="Back"
           style={{
-            width: 32,
-            height: 32,
+            width: 34,
+            height: 34,
             borderRadius: "50%",
-            background: "rgba(255,255,255,0.18)",
+            background: "rgba(255,255,255,0.08)",
             border: "none",
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
             color: "#fff",
+            flexShrink: 0,
           }}
         >
           <IconChevronLeft stroke={1.5} size={18} />
         </button>
-        <span style={{ fontSize: 16, fontWeight: 600 }}>Featured applications</span>
+        <span style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.4px", color: "#fff" }}>
+          Featured applications
+        </span>
       </div>
 
       {/* Stats */}
