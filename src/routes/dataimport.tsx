@@ -20,49 +20,38 @@ export const Route = createFileRoute("/dataimport")({
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
-const HEADERS = ["name", "first_name", "last_name", "phone", "email", "status"] as const;
-type Row = Record<(typeof HEADERS)[number], string>;
+const HEADERS = PUPIL_FIELDS;
+type Row = Record<PupilField, string>;
 
-function parseCSV(text: string): { rows: Row[]; errors: string[] } {
+function splitLine(line: string): string[] {
+  const out: string[] = [];
+  let cur = "";
+  let inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (inQ) {
+      if (c === '"' && line[i + 1] === '"') { cur += '"'; i++; }
+      else if (c === '"') inQ = false;
+      else cur += c;
+    } else {
+      if (c === '"') inQ = true;
+      else if (c === ",") { out.push(cur); cur = ""; }
+      else cur += c;
+    }
+  }
+  out.push(cur);
+  return out.map((s) => s.trim());
+}
+
+function parseCSV(text: string): { headers: string[]; records: string[][]; errors: string[] } {
   const errors: string[] = [];
   const lines = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n").filter((l) => l.trim().length > 0);
-  if (lines.length === 0) return { rows: [], errors: ["File is empty."] };
+  if (lines.length === 0) return { headers: [], records: [], errors: ["File is empty."] };
 
-  const splitLine = (line: string): string[] => {
-    const out: string[] = [];
-    let cur = "";
-    let inQ = false;
-    for (let i = 0; i < line.length; i++) {
-      const c = line[i];
-      if (inQ) {
-        if (c === '"' && line[i + 1] === '"') { cur += '"'; i++; }
-        else if (c === '"') inQ = false;
-        else cur += c;
-      } else {
-        if (c === '"') inQ = true;
-        else if (c === ",") { out.push(cur); cur = ""; }
-        else cur += c;
-      }
-    }
-    out.push(cur);
-    return out.map((s) => s.trim());
-  };
-
-  const header = splitLine(lines[0]).map((h) => h.toLowerCase());
-  const missing = HEADERS.filter((h) => !header.includes(h));
-  if (missing.length) errors.push(`Missing columns: ${missing.join(", ")}`);
-
-  const rows: Row[] = [];
-  for (let i = 1; i < lines.length; i++) {
-    const cells = splitLine(lines[i]);
-    const row: Row = { name: "", first_name: "", last_name: "", phone: "", email: "", status: "" };
-    HEADERS.forEach((h) => {
-      const idx = header.indexOf(h);
-      if (idx >= 0) row[h] = cells[idx] ?? "";
-    });
-    rows.push(row);
-  }
-  return { rows, errors };
+  const headers = splitLine(lines[0]);
+  const records = lines.slice(1).map(splitLine);
+  if (records.length === 0) errors.push("No data rows found below the header row.");
+  return { headers, records, errors };
 }
 
 function DataImportPage() {
@@ -70,12 +59,19 @@ function DataImportPage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
-  const [rows, setRows] = useState<Row[]>([]);
+  const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
+  const [records, setRecords] = useState<string[][]>([]);
+  const [mapping, setMapping] = useState<ColumnMapping | null>(null);
   const [parseErrors, setParseErrors] = useState<string[]>([]);
   const [importing, setImporting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [successCount, setSuccessCount] = useState<number | null>(null);
   const [failures, setFailures] = useState<{ row: number; reason: string }[]>([]);
+
+  const rows: Row[] = useMemo(
+    () => (mapping ? records.map((cells) => applyMapping(mapping, cells)) : []),
+    [mapping, records],
+  );
 
   useEffect(() => {
     (async () => {
@@ -101,10 +97,44 @@ function DataImportPage() {
     setFailures([]);
     setFileName(f.name);
     const text = await f.text();
-    const { rows, errors } = parseCSV(text);
-    setRows(rows);
-    setParseErrors(errors);
+    const { headers, records, errors } = parseCSV(text);
+    const auto = headers.length ? autoMapColumns(headers) : null;
+    setCsvHeaders(headers);
+    setRecords(records);
+    setMapping(auto);
+    const errs = [...errors];
+    if (auto && !mappingIsUsable(auto)) {
+      errs.push("Couldn't find a name column — pick one below before importing.");
+    }
+    setParseErrors(errs);
+    if (auto) {
+      const matched = PUPIL_FIELDS.filter((f2) => auto[f2].index >= 0).length;
+      if (matched > 0) toast.success(`Matched ${matched} of ${PUPIL_FIELDS.length} columns automatically`);
+    }
   };
+
+  const setFieldColumn = (field: PupilField, index: number) => {
+    setMapping((prev) => {
+      if (!prev) return prev;
+      const next = { ...prev } as ColumnMapping;
+      // A CSV column can only feed one field.
+      if (index >= 0) {
+        PUPIL_FIELDS.forEach((f2) => {
+          if (f2 !== field && next[f2].index === index) {
+            next[f2] = { index: -1, confidence: 0, via: "none" };
+          }
+        });
+      }
+      next[field] = { index, confidence: index >= 0 ? 1 : 0, via: index >= 0 ? "exact" : "none" };
+      setParseErrors((errs) =>
+        errs.filter((e) => !e.startsWith("Couldn't find a name column")).concat(
+          mappingIsUsable(next) ? [] : ["Couldn't find a name column — pick one below before importing."],
+        ),
+      );
+      return next;
+    });
+  };
+
 
   const runImport = async () => {
     if (!userId || rows.length === 0) return;
