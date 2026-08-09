@@ -220,36 +220,41 @@ function NewsIndexPage() {
                 >
                   <div
                     style={{
-                      fontSize: 14.5,
-                      fontWeight: 700,
+                      fontSize: 16.5,
+                      fontWeight: 800,
                       color: "#0B1F3A",
                       fontFamily: "Poppins, sans-serif",
-                      lineHeight: 1.3,
-                      whiteSpace: "nowrap",
+                      letterSpacing: "-0.2px",
+                      lineHeight: 1.25,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
                       overflow: "hidden",
-                      textOverflow: "ellipsis",
                       marginBottom: 6,
-                  }}
-                >
-                  {sanitizeNewsTitle(a.title)}
-                </div>
-                  <div
-                    style={{
-                      display: "inline-flex",
-                      marginBottom: 8,
-                      background: "#E6F1FB",
-                      color: "#1877D6",
-                      fontSize: 11.5,
-                      fontWeight: 700,
-                      fontFamily: "Poppins, sans-serif",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                      borderRadius: 9,
-                      padding: "5px 11px",
-                      alignSelf: "flex-start",
                     }}
                   >
-                    {a.source || "News"}
+                    {sanitizeNewsTitle(a.title)}
+                  </div>
+                  {(() => {
+                    const isOfficial = String(a.category ?? "").toLowerCase() === "official";
+                    return (
+                      <div
+                        style={{
+                          display: "inline-flex",
+                          marginBottom: 8,
+                          background: isOfficial ? "#0B1F3A" : "#E7F1FC",
+                          color: isOfficial ? "#FFFFFF" : "#1877D6",
+                          fontSize: 11,
+                          fontWeight: 800,
+                          fontFamily: "Poppins, sans-serif",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.3px",
+                          borderRadius: 20,
+                          padding: "5px 11px",
+                          alignSelf: "flex-start",
+                        }}
+                      >
+                        {a.category || a.source || "News"}
                   </div>
                   <div
                     style={{
