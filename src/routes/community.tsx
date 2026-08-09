@@ -1135,6 +1135,17 @@ function AlertsTab({
     return officialAlerts.filter((a) => types.includes(a.alert_type));
   }, [officialAlerts, tomtomFilter]);
 
+  const tomtomContentRef = useRef<HTMLDivElement>(null);
+  const [tomtomMaxHeight, setTomtomMaxHeight] = useState(0);
+  useEffect(() => {
+    if (tomtomOpen && tomtomContentRef.current) {
+      setTomtomMaxHeight(tomtomContentRef.current.scrollHeight);
+    } else {
+      setTomtomMaxHeight(0);
+    }
+  }, [tomtomOpen, filteredOfficialAlerts, tomtomFilter]);
+
+
 
   const handleUpvote = async (alert: Alert) => {
     if (!userId) return;
