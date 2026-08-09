@@ -1144,10 +1144,10 @@ function AlertsTab({
   return (
     <div style={{ padding: 16, paddingBottom: 100, marginBottom: 80 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>
+        <div style={{ fontSize: 19, fontWeight: 800, color: "#000", letterSpacing: "-0.3px" }}>
           Alerts near {coverageOutcodes.length > 1 ? "your coverage areas" : instructorArea}
         </div>
-        <div style={{ fontSize: 12, color: "#9CA3AF" }}>
+        <div style={{ fontSize: 13, fontWeight: 600, color: "#8A8A8E", flexShrink: 0, marginLeft: 10, textAlign: "right" }}>
           {otherAlerts.length === 0
             ? "0 active"
             : instructorReportedCount > 0 && officialCount > 0
