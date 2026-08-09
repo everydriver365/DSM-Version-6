@@ -1072,10 +1072,10 @@ function ShowcasePage() {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      gap: 10,
+                      gap: 12,
                       marginTop: 8,
-                      fontSize: 10,
-                      color: "#9CA3AF",
+                      fontSize: 11,
+                      color: "#8A8A8E",
                       ...POPPINS,
                     }}
                   >
@@ -1086,41 +1086,19 @@ function ShowcasePage() {
                       style={{
                         display: "inline-flex",
                         alignItems: "center",
-                        gap: 3,
+                        gap: 4,
                         background: "none",
                         border: "none",
                         padding: 0,
                         cursor: "pointer",
-                        color: upvoted ? BLUE : "#9CA3AF",
-                        fontSize: 10,
+                        color: upvoted ? BLUE : "#8A8A8E",
+                        fontSize: 11,
+                        fontWeight: 600,
                         ...POPPINS,
                       }}
                     >
-                      <IconThumbUp size={13} color={upvoted ? BLUE : "#9CA3AF"} />
+                      <IconThumbUp size={11} color={upvoted ? BLUE : "#8A8A8E"} />
                       {voteCounts[video.id]?.up ?? 0}
-                    </button>
-                    <button
-                      type="button"
-                      aria-label="Downvote"
-                      onClick={() => toggleVote(video.id, "down")}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 3,
-                        background: "none",
-                        border: "none",
-                        padding: 0,
-                        cursor: "pointer",
-                        color: downvoted ? RED : "#9CA3AF",
-                        fontSize: 10,
-                        ...POPPINS,
-                      }}
-                    >
-                      <IconThumbDown
-                        size={13}
-                        color={downvoted ? RED : "#9CA3AF"}
-                      />
-                      {voteCounts[video.id]?.down ?? 0}
                     </button>
 
                     <button
@@ -1130,34 +1108,39 @@ function ShowcasePage() {
                         openPlayer(video);
                         setCommentsOpen(true);
                       }}
-
                       style={{
                         display: "inline-flex",
                         alignItems: "center",
-                        gap: 3,
+                        gap: 4,
                         background: "none",
                         border: "none",
                         padding: 0,
                         cursor: "pointer",
-                        color: "#9CA3AF",
-                        fontSize: 10,
+                        color: "#8A8A8E",
+                        fontSize: 11,
+                        fontWeight: 600,
                         ...POPPINS,
                       }}
                     >
-                      <IconMessageCircle size={13} color="#9CA3AF" />
+                      <IconMessageCircle size={11} color="#8A8A8E" />
                       {commentCounts[video.id] ?? 0}
                     </button>
+
                     <span
                       style={{
                         display: "inline-flex",
                         alignItems: "center",
-                        gap: 3,
+                        gap: 4,
+                        fontSize: 11,
+                        fontWeight: 600,
+                        color: "#8A8A8E",
                       }}
                     >
-                      <IconEye size={12} color="#9CA3AF" />
+                      <IconEye size={11} color="#8A8A8E" />
                       {video.views ?? 0}
                     </span>
                   </div>
+
                 </div>
               </div>
             );
