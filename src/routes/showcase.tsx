@@ -1636,8 +1636,10 @@ function ShowcasePage() {
                     sendComment();
                   }
                 }}
-                placeholder="Add a comment..."
-                aria-label="Add a comment"
+                placeholder={
+                  replyTo ? `Reply to @${replyTo.name}...` : "Add a comment..."
+                }
+                aria-label={replyTo ? "Write a reply" : "Add a comment"}
                 style={{
                   flex: 1,
                   minWidth: 0,
