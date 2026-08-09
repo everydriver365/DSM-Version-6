@@ -174,6 +174,9 @@ function ShowcasePage() {
   const [commentSort, setCommentSort] = useState<"newest" | "top">("newest");
   const [sendingComment, setSendingComment] = useState(false);
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
+  // Per-comment likes
+  const [commentLikeCounts, setCommentLikeCounts] = useState<Record<string, number>>({});
+  const [myCommentLikes, setMyCommentLikes] = useState<Record<string, boolean>>({});
 
   // Reports
   const [reportOpen, setReportOpen] = useState(false);
@@ -274,14 +277,71 @@ function ShowcasePage() {
         .eq("video_id", playing.id)
         .is("deleted_at", null)
         .order("created_at", { ascending: true });
-      setComments(
-        ((data as any[] | null) ?? []).map((c) => ({
-          ...c,
-          instructor: Array.isArray(c.instructor) ? c.instructor[0] : c.instructor,
-        })),
+      const rows = ((data as any[] | null) ?? []).map((c) => ({
+        ...c,
+        instructor: Array.isArray(c.instructor) ? c.instructor[0] : c.instructor,
+      }));
+      setComments(rows);
+
+      const ids = rows.map((c) => c.id);
+      if (ids.length === 0) {
+        setCommentLikeCounts({});
+        setMyCommentLikes({});
+        return;
+      }
+      const { data: likeRows } = await db
+        .from("showcase_comment_likes")
+        .select("comment_id, instructor_id")
+        .in("comment_id", ids);
+      const counts: Record<string, number> = {};
+      const mine: Record<string, boolean> = {};
+      ((likeRows as { comment_id: string; instructor_id: string }[] | null) ?? []).forEach(
+        (r) => {
+          counts[r.comment_id] = (counts[r.comment_id] ?? 0) + 1;
+          if (userId && r.instructor_id === userId) mine[r.comment_id] = true;
+        },
       );
+      setCommentLikeCounts(counts);
+      setMyCommentLikes(mine);
     })();
-  }, [commentsOpen, playing]);
+  }, [commentsOpen, playing, userId]);
+
+  async function toggleCommentLike(commentId: string) {
+    if (!userId) {
+      toast.error("Sign in to like comments");
+      return;
+    }
+    const liked = !!myCommentLikes[commentId];
+    // optimistic
+    setMyCommentLikes((prev) => ({ ...prev, [commentId]: !liked }));
+    setCommentLikeCounts((prev) => ({
+      ...prev,
+      [commentId]: Math.max(0, (prev[commentId] ?? 0) + (liked ? -1 : 1)),
+    }));
+    try {
+      if (liked) {
+        const { error } = await db
+          .from("showcase_comment_likes")
+          .delete()
+          .eq("comment_id", commentId)
+          .eq("instructor_id", userId);
+        if (error) throw error;
+      } else {
+        const { error } = await db
+          .from("showcase_comment_likes")
+          .insert({ comment_id: commentId, instructor_id: userId });
+        if (error) throw error;
+      }
+    } catch (err: any) {
+      // revert
+      setMyCommentLikes((prev) => ({ ...prev, [commentId]: liked }));
+      setCommentLikeCounts((prev) => ({
+        ...prev,
+        [commentId]: Math.max(0, (prev[commentId] ?? 0) + (liked ? 1 : -1)),
+      }));
+      toast.error(err?.message ?? "Could not save like");
+    }
+  }
 
 
   const filtered =
@@ -1260,7 +1320,11 @@ function ShowcasePage() {
                             new Date(b.created_at).getTime() -
                             new Date(a.created_at).getTime(),
                         )
-                      : [...comments];
+                      : [...comments].sort(
+                          (a, b) =>
+                            (commentLikeCounts[b.id] ?? 0) -
+                            (commentLikeCounts[a.id] ?? 0),
+                        );
                   return displayedComments.map((c: any, i: number) => {
                     const name = c.instructor?.name ?? c.author_name ?? "Instructor";
                     return (
@@ -1331,6 +1395,39 @@ function ShowcasePage() {
                           >
                             {c.body}
                           </div>
+                          {(() => {
+                            const liked = !!myCommentLikes[c.id];
+                            const count = commentLikeCounts[c.id] ?? 0;
+                            return (
+                              <button
+                                type="button"
+                                onClick={() => toggleCommentLike(c.id)}
+                                aria-pressed={liked}
+                                aria-label={liked ? "Unlike comment" : "Like comment"}
+                                style={{
+                                  marginTop: 7,
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: 5,
+                                  padding: "5px 10px",
+                                  borderRadius: 999,
+                                  border: "none",
+                                  background: liked ? "#E7F1FC" : "#F2F2F7",
+                                  color: liked ? BLUE : "#6B6B6F",
+                                  fontSize: 12,
+                                  fontWeight: 600,
+                                  ...POPPINS,
+                                }}
+                              >
+                                <IconThumbUp
+                                  size={13}
+                                  stroke={liked ? 2.2 : 1.7}
+                                  fill={liked ? BLUE : "none"}
+                                />
+                                {count > 0 ? count : "Like"}
+                              </button>
+                            );
+                          })()}
                         </div>
                       </div>
                     );
