@@ -24,7 +24,7 @@ function formatDate(iso: string | null | undefined) {
 
 function cleanContent(raw: string): string {
   if (!raw) return "";
-  return raw
+  return sanitizeNewsTitle(raw)
     .split("\n")
     .filter((line) => {
       const trimmed = line.trim();
