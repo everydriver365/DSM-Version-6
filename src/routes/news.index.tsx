@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ChevronLeft, Clock, Newspaper } from "lucide-react";
+import { sanitizeNewsTitle } from "../lib/newsText";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 
@@ -217,10 +218,10 @@ function NewsIndexPage() {
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       marginBottom: 6,
-                    }}
-                  >
-                    {a.title}
-                  </div>
+                  }}
+                >
+                  {sanitizeNewsTitle(a.title)}
+                </div>
                   <div
                     style={{
                       display: "inline-flex",
