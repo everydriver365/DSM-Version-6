@@ -434,7 +434,29 @@ function TakePaymentPage() {
   };
 
   const NAVY = "#0B1F3A";
+  const fieldCardStyle: React.CSSProperties = {
+    background: "#fff",
+    borderRadius: 14,
+    padding: "13px 15px",
+    boxShadow: "0 3px 0 #E4E4E8",
+  };
+  const keyStyle: React.CSSProperties = {
+    background: "#fff",
+    borderRadius: 16,
+    padding: 20,
+    border: "none",
+    textAlign: "center",
+    color: NAVY,
+    fontSize: 24,
+    fontWeight: 800,
+    boxShadow: "0 3px 0 #E4E4E8",
+    cursor: "pointer",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+  };
   const numpadKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "back"];
+
   const numpadRows = [
     numpadKeys.slice(0, 3),
     numpadKeys.slice(3, 6),
