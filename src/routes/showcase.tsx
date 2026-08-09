@@ -727,101 +727,114 @@ function ShowcasePage() {
                   </button>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                  <button
-                    type="button"
-                    aria-label="Upvote"
-                    onClick={() => toggleVote(playing.id, "up")}
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  {/* Merged vote pill */}
+                  <div
                     style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      padding: 0,
                       display: "flex",
                       alignItems: "center",
-                      gap: 5,
+                      background: "#F2F2F7",
+                      borderRadius: 20,
+                      overflow: "hidden",
                     }}
                   >
-                    <IconThumbUp
-                      size={16}
-                      stroke={1.5}
-                      color={
-                        votes[playing.id] === "up" ? BLUE : "rgba(255,255,255,0.5)"
-                      }
-                    />
-                    <span style={{ fontSize: 12, color: "#fff", ...POPPINS }}>
+                    <button
+                      type="button"
+                      aria-label="Upvote"
+                      onClick={() => toggleVote(playing.id, "up")}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        padding: "9px 14px",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        background:
+                          votes[playing.id] === "up" ? BLUE : "transparent",
+                        color: votes[playing.id] === "up" ? "#fff" : BLUE,
+                        ...POPPINS,
+                      }}
+                    >
+                      <IconThumbUp
+                        size={15}
+                        stroke={1.8}
+                        color={votes[playing.id] === "up" ? "#fff" : BLUE}
+                      />
                       {voteCounts[playing.id]?.up ?? 0}
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    aria-label="Downvote"
-                    onClick={() => toggleVote(playing.id, "down")}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      padding: 0,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 5,
-                    }}
-                  >
-                    <IconThumbDown
-                      size={16}
-                      stroke={1.5}
-                      color={
-                        votes[playing.id] === "down" ? RED : "rgba(255,255,255,0.5)"
-                      }
+                    </button>
+                    <div
+                      style={{ width: 1, height: 18, background: "#E0E0E4" }}
                     />
-                    <span style={{ fontSize: 12, color: "#fff", ...POPPINS }}>
-                      {voteCounts[playing.id]?.down ?? 0}
-                    </span>
-                  </button>
+                    <button
+                      type="button"
+                      aria-label="Downvote"
+                      onClick={() => toggleVote(playing.id, "down")}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        padding: "9px 14px",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        background:
+                          votes[playing.id] === "down" ? RED : "transparent",
+                        color: votes[playing.id] === "down" ? "#fff" : "#6B6B6F",
+                        ...POPPINS,
+                      }}
+                    >
+                      <IconThumbDown
+                        size={15}
+                        stroke={1.8}
+                        color={
+                          votes[playing.id] === "down" ? "#fff" : "#6B6B6F"
+                        }
+                      />
+                    </button>
+                  </div>
 
+                  {/* Comment pill */}
                   <button
                     type="button"
                     aria-label="Comments"
                     onClick={() => setCommentsOpen(true)}
                     style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      padding: 0,
                       display: "flex",
                       alignItems: "center",
-                      gap: 5,
+                      gap: 6,
+                      background: "#F2F2F7",
+                      borderRadius: 20,
+                      padding: "9px 14px",
+                      border: "none",
+                      cursor: "pointer",
+                      color: "#6B6B6F",
+                      fontSize: 13,
+                      fontWeight: 700,
+                      ...POPPINS,
                     }}
                   >
-                    <IconMessageCircle
-                      size={16}
-                      stroke={1.5}
-                      color="rgba(255,255,255,0.5)"
-                    />
-                    <span style={{ fontSize: 12, color: "#fff", ...POPPINS }}>
-                      {commentCounts[playing.id] ?? 0}
-                    </span>
+                    <IconMessageCircle size={15} stroke={1.8} color="#6B6B6F" />
+                    {commentCounts[playing.id] ?? 0}
                   </button>
 
+                  {/* View count (non-interactive) */}
                   <div
                     style={{
                       display: "flex",
                       alignItems: "center",
                       gap: 5,
                       marginLeft: "auto",
+                      color: "#B0B0B5",
+                      fontSize: 12.5,
+                      fontWeight: 600,
+                      ...POPPINS,
                     }}
                   >
-                    <IconEye size={14} stroke={1.5} color="rgba(255,255,255,0.4)" />
-                    <span
-                      style={{
-                        fontSize: 11,
-                        color: "rgba(255,255,255,0.4)",
-                        ...POPPINS,
-                      }}
-                    >
-                      {playing.views ?? 0}
-                    </span>
+                    <IconEye size={14} stroke={1.8} color="#B0B0B5" />
+                    {playing.views ?? 0}
                   </div>
 
                   <button
@@ -832,16 +845,23 @@ function ShowcasePage() {
                       setReportOpen(true);
                     }}
                     style={{
+                      width: 30,
+                      height: 30,
+                      borderRadius: "50%",
                       background: "none",
                       border: "none",
                       cursor: "pointer",
                       padding: 0,
                       display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
                     }}
                   >
-                    <IconFlag size={14} stroke={1.5} color="rgba(255,255,255,0.4)" />
+                    <IconFlag size={14} stroke={1.8} color="#C7C7CC" />
                   </button>
                 </div>
+
 
                 {nextVideo && (
                   <div
