@@ -255,7 +255,9 @@ function NewsIndexPage() {
                         }}
                       >
                         {a.category || a.source || "News"}
-                  </div>
+                      </div>
+                    );
+                  })()}
                   <div
                     style={{
                       display: "flex",
