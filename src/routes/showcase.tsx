@@ -918,6 +918,10 @@ function ShowcasePage() {
                 )}
               </div>
             </div>
+                )
+              }
+            />
+            </div>
           )}
 
           {filtered.map((video) => {
