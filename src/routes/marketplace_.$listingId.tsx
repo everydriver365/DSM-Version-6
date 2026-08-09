@@ -53,6 +53,29 @@ interface Listing {
   marketplace_categories: { name: string; slug: string } | null;
 }
 
+/**
+ * Derives the hero status badge from the listing's own status fields.
+ * `is_active` is the sold/available flag; `listing_type` distinguishes
+ * wanted ads, services, rentals and jobs from straight for-sale items.
+ */
+const STATUS_LABELS: Record<string, { label: string; colour: string }> = {
+  wanted: { label: "Wanted", colour: "#1877D6" },
+  service: { label: "Service", colour: "#1877D6" },
+  job: { label: "Job", colour: "#7B4FD6" },
+  rental: { label: "To Rent", colour: "#E08A00" },
+  hire: { label: "To Hire", colour: "#E08A00" },
+};
+
+function listingStatusBadge(
+  listing: Pick<Listing, "is_active" | "listing_type"> | null | undefined,
+): { label: string; colour: string } {
+  if (!listing) return { label: "For Sale", colour: "#1A9B5C" };
+  if (!listing.is_active) return { label: "Sold", colour: "#6B7686" };
+  const key = (listing.listing_type ?? "").toLowerCase();
+  return STATUS_LABELS[key] ?? { label: "For Sale", colour: "#1A9B5C" };
+}
+
+
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ size?: number; color?: string }>> = {
   tracking: IconMapPin,
   hardware: IconCamera,
@@ -154,6 +177,7 @@ function ListingDetailPage() {
   const supplier = listing?.marketplace_suppliers;
   // A seller profile page only exists for supplier-backed listings.
   const hasSellerProfile = Boolean(listing?.supplier_id && supplier);
+  const statusBadge = listingStatusBadge(listing);
 
 
   const CARD: React.CSSProperties = {
@@ -292,13 +316,13 @@ function ListingDetailPage() {
               </div>
             )}
 
-            {/* Status badge */}
+            {/* Status badge — derived from the listing's status fields */}
             <div
               style={{
                 position: "absolute",
                 top: 12,
                 left: 12,
-                background: listing.is_active ? "#1A9B5C" : "#6B7686",
+                background: statusBadge.colour,
                 color: "#fff",
                 fontSize: 11,
                 fontWeight: 800,
@@ -306,7 +330,7 @@ function ListingDetailPage() {
                 borderRadius: 20,
               }}
             >
-              {listing.is_active ? "For Sale" : "Sold"}
+              {statusBadge.label}
             </div>
 
             {/* Pagination dots */}
