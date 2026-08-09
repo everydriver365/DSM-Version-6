@@ -8,6 +8,7 @@ import {
   IconBook,
   IconShoppingBag,
   IconNews,
+  IconBrowser,
 } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { sanitizeNewsTitle } from "@/lib/newsText";
@@ -358,7 +359,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           alignItems: "center",
           justifyContent: "space-between",
           marginTop: 18,
-          marginBottom: 10,
+          marginBottom: 12,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
@@ -389,7 +390,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         </span>
       </div>
 
-      {/* MARKETPLACE HERO CAROUSEL */}
+      {/* MARKETPLACE BANNER CAROUSEL */}
       <div
         ref={heroScrollRef}
         onScroll={(e) => {
@@ -405,20 +406,20 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           scrollSnapType: "x mandatory",
           scrollbarWidth: "none",
           WebkitOverflowScrolling: "touch",
-          paddingBottom: 8,
-          marginBottom: 18,
+          paddingBottom: 0,
+          marginBottom: 0,
         }}
       >
         {heroCards.map((listing) => {
-          const created = listing?.created_at ? new Date(listing.created_at).getTime() : 0;
-          const isNew = created > 0 && Date.now() - created < 14 * 24 * 60 * 60 * 1000;
           const cat = (listing?.category ?? "").toLowerCase();
-          const isWebsite = cat.includes("web") || cat.includes("site");
+          const isWebsite =
+            cat.includes("web") || cat.includes("site") || cat.includes("digital");
           const open = () =>
             navigate({
               to: listing ? ("/marketplace/$listingId" as never) : ("/marketplace" as never),
               params: listing ? ({ listingId: listing.id } as never) : undefined,
             });
+          const Icon = isWebsite ? IconBrowser : IconShoppingBag;
           return (
             <div
               key={listing?.id ?? "empty"}
@@ -428,303 +429,130 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 role="button"
                 tabIndex={0}
                 onClick={open}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") open();
+                }}
                 style={{
-                  position: "relative",
-                  height: 140,
-                  borderRadius: 22,
-                  overflow: "hidden",
+                  background: "linear-gradient(100deg, #0B1F3A 0%, #14509E 100%)",
+                  borderRadius: 16,
+                  padding: "14px 16px",
+                  boxShadow: "0 3px 0 #081730, 0 10px 22px rgba(11,31,58,0.3)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
                   cursor: "pointer",
-                  background: NAVY,
-                  boxShadow: "0 5px 0 #081730, 0 16px 32px rgba(11,31,58,0.35)",
                 }}
               >
-                {/* Listing image background */}
-                {listing?.imageUrl ? (
-                  <img
-                    src={listing.imageUrl}
-                    alt=""
-                    loading="lazy"
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      opacity: 0.5,
-                      zIndex: 1,
-                      borderRadius: 22,
-                      pointerEvents: "none",
-                    }}
-                  />
-                ) : (
-                  <div
-                    aria-hidden
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      background: BLUE,
-                      opacity: 0.5,
-                      zIndex: 1,
-                      borderRadius: 22,
-                    }}
-                  />
-                )}
-
-                {/* Bottom-to-top gradient so text stays readable */}
-                <div
-                  aria-hidden
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: `linear-gradient(to top, ${NAVY}e6 0%, ${NAVY}80 40%, ${NAVY}40 70%, transparent 100%)`,
-                    zIndex: 2,
-                    borderRadius: 22,
-                    pointerEvents: "none",
-                  }}
-                />
-
-                {isNew && (
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: 14,
-                      left: 14,
-                      background: "#fff",
-                      color: NAVY,
-                      fontSize: 10,
-                      fontWeight: 900,
-                      padding: "5px 10px",
-                      borderRadius: 8,
-                      fontFamily: FONT,
-                      zIndex: 3,
-                    }}
-                  >
-                    NEW
-                  </span>
-                )}
-
-                {!listing?.imageUrl && (
-                  <div
-                    aria-hidden
-                    style={{ position: "absolute", top: 16, right: 16, width: 150, zIndex: 2 }}
-                  >
-                    {isWebsite || !listing ? (
-                      <div
-                        style={{
-                          borderRadius: 10,
-                          border: "1.5px solid rgba(255,255,255,0.35)",
-                          background: "rgba(255,255,255,0.10)",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 4,
-                            padding: "6px 8px",
-                            background: "rgba(255,255,255,0.18)",
-                          }}
-                        >
-                          {[0, 1, 2].map((i) => (
-                            <span
-                              key={i}
-                              style={{
-                                width: 6,
-                                height: 6,
-                                borderRadius: "50%",
-                                background: "rgba(255,255,255,0.4)",
-                              }}
-                            />
-                          ))}
-                        </div>
-                        <div style={{ padding: 8 }}>
-                          <div style={{ height: 7, width: "70%", borderRadius: 3, background: "rgba(255,255,255,0.30)" }} />
-                          <div style={{ height: 6, width: "90%", borderRadius: 3, background: "rgba(255,255,255,0.16)", marginTop: 6 }} />
-                          <div style={{ height: 6, width: "55%", borderRadius: 3, background: "rgba(255,255,255,0.16)", marginTop: 5 }} />
-                          <div style={{ height: 14, width: 52, borderRadius: 5, background: "rgba(255,255,255,0.38)", marginTop: 9 }} />
-                        </div>
-                      </div>
-                    ) : (
-                      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                        <IconShoppingBag size={92} color="rgba(255,255,255,0.22)" stroke={1.5} />
-                      </div>
-                    )}
-                  </div>
-                )}
-
-
-                {/* Content */}
                 <div
                   style={{
-                    position: "absolute",
-                    left: 14,
-                    right: 14,
-                    bottom: 10,
-                    zIndex: 3,
                     display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "flex-end",
+                    alignItems: "center",
+                    gap: 12,
+                    minWidth: 0,
+                    flex: 1,
                   }}
                 >
                   <div
                     style={{
-                      color: "#fff",
-                      fontSize: 15,
-                      fontWeight: 700,
-                      letterSpacing: "-0.2px",
-                      maxWidth: "60%",
-                      fontFamily: FONT,
-                      lineHeight: 1.2,
-                    }}
-                  >
-                    {listing?.title ?? "Services & deals"}
-                  </div>
-                  <div
-                    style={{
-                      color: "rgba(255,255,255,0.7)",
-                      fontSize: 9,
-                      marginTop: 2,
-                      fontFamily: FONT,
-                    }}
-                  >
-                    {listing
-                      ? `${listing.category ?? "Services"} · DSM Marketplace`
-                      : `${listingCount ?? 0} listings available`}
-                  </div>
-                  <div
-                    style={{
+                      width: 38,
+                      height: 38,
+                      borderRadius: 11,
+                      background: "rgba(255,255,255,0.15)",
                       display: "flex",
-                      alignItems: "flex-end",
-                      justifyContent: "space-between",
-                      marginTop: 5,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
                     }}
                   >
-                    <div>
-                      <div
-                        style={{
-                          color: "rgba(255,255,255,0.6)",
-                          fontSize: 8,
-                          fontWeight: 600,
-                          letterSpacing: "0.4px",
-                          fontFamily: FONT,
-                        }}
-                      >
-                        FROM
-                      </div>
-                      <div
-                        style={{
-                          color: "#fff",
-                          fontSize: 15,
-                          fontWeight: 900,
-                          fontFamily: FONT,
-                          lineHeight: 1.1,
-                        }}
-                      >
-                        {listing?.price_display ?? "—"}
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        open();
-                      }}
+                    <Icon size={18} color="#fff" stroke={1.8} />
+                  </div>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div
                       style={{
-                        background: "#fff",
-                        color: NAVY,
-                        fontSize: 9,
-                        fontWeight: 700,
+                        color: "#fff",
+                        fontSize: 14,
+                        fontWeight: 800,
                         fontFamily: FONT,
-                        padding: "4px 8px",
-                        borderRadius: 6,
-                        border: "none",
-                        boxShadow: "0 1.5px 0 #B8C4D6",
-                        cursor: "pointer",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        lineHeight: 1.2,
                       }}
                     >
-                      View listing
-                    </button>
+                      {listing?.title ?? "Services & deals"}
+                    </div>
+                    <div
+                      style={{
+                        color: "rgba(255,255,255,0.65)",
+                        fontSize: 10.5,
+                        marginTop: 2,
+                        fontFamily: FONT,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {listing
+                        ? `${listing.category ?? "Services"} · DSM Marketplace`
+                        : `${listingCount ?? 0} listings available`}
+                    </div>
                   </div>
                 </div>
-
-                {/* Swipe indicators */}
-                {heroCards.length > 1 && (
-                  <>
-                    {heroIndex > 0 && (
-                      <button
-                        type="button"
-                        aria-label="Previous listing"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const el = heroScrollRef.current;
-                          if (!el) return;
-                          el.scrollBy({ left: -el.clientWidth, behavior: "smooth" });
-                        }}
-                        style={{
-                          position: "absolute",
-                          top: "50%",
-                          left: 8,
-                          transform: "translateY(-50%)",
-                          zIndex: 4,
-                          width: 28,
-                          height: 28,
-                          borderRadius: "50%",
-                          border: "none",
-                          background: "rgba(255,255,255,0.88)",
-                          color: NAVY,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          boxShadow: "0 2px 6px rgba(11,31,58,0.28)",
-                          cursor: "pointer",
-                          padding: 0,
-                        }}
-                      >
-                        <IconChevronLeft size={18} stroke={2.2} />
-                      </button>
-                    )}
-                    {heroIndex < heroCards.length - 1 && (
-                      <button
-                        type="button"
-                        aria-label="Next listing"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const el = heroScrollRef.current;
-                          if (!el) return;
-                          el.scrollBy({ left: el.clientWidth, behavior: "smooth" });
-                        }}
-                        style={{
-                          position: "absolute",
-                          top: "50%",
-                          right: 8,
-                          transform: "translateY(-50%)",
-                          zIndex: 4,
-                          width: 28,
-                          height: 28,
-                          borderRadius: "50%",
-                          border: "none",
-                          background: "rgba(255,255,255,0.88)",
-                          color: NAVY,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          boxShadow: "0 2px 6px rgba(11,31,58,0.28)",
-                          cursor: "pointer",
-                          padding: 0,
-                        }}
-                      >
-                        <IconChevronRight size={18} stroke={2.2} />
-                      </button>
-                    )}
-                  </>
-                )}
+                <div style={{ textAlign: "right", flexShrink: 0, marginLeft: 12 }}>
+                  <div
+                    style={{
+                      color: "#fff",
+                      fontSize: 15,
+                      fontWeight: 900,
+                      fontFamily: FONT,
+                      lineHeight: 1.1,
+                    }}
+                  >
+                    {listing?.price_display ?? "—"}
+                  </div>
+                  <div
+                    style={{
+                      color: "#fff",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      opacity: 0.8,
+                      marginTop: 1,
+                      fontFamily: FONT,
+                    }}
+                  >
+                    View listing
+                  </div>
+                </div>
               </div>
             </div>
           );
         })}
       </div>
 
+      {/* Pagination dots */}
+      {heroCards.length > 1 && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: 5,
+            marginTop: 8,
+          }}
+        >
+          {heroCards.map((listing, i) => (
+            <span
+              key={listing?.id ?? i}
+              style={{
+                width: i === heroIndex ? 16 : 6,
+                height: 6,
+                borderRadius: i === heroIndex ? 4 : "50%",
+                background: i === heroIndex ? BLUE : "#C7D0DC",
+                transition: "all 0.2s ease",
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       <SectionHeader>Discover</SectionHeader>
 
