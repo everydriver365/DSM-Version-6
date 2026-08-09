@@ -43,7 +43,7 @@ export default function JumpToLatestButton({
         el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
       }}
       style={{
-        position: "absolute",
+        position: "fixed",
         left: "50%",
         transform: "translateX(-50%)",
         bottom: bottomOffset,
