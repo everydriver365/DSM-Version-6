@@ -440,21 +440,34 @@ function TakePaymentPage() {
     padding: "13px 15px",
     boxShadow: "0 3px 0 #E4E4E8",
   };
+  // Every key is the same box on every device: padding is replaced by a fixed
+  // min-height with line-height 1, so digits, the "." and the backspace icon
+  // all centre identically instead of being sized by their own glyph metrics.
   const keyStyle: React.CSSProperties = {
     background: "#fff",
     borderRadius: 16,
-    padding: 20,
+    padding: 0,
+    minHeight: 64,
+    boxSizing: "border-box",
     border: "none",
+    WebkitAppearance: "none",
+    appearance: "none",
+    font: "inherit",
+    lineHeight: 1,
     textAlign: "center",
     color: NAVY,
     fontSize: 24,
     fontWeight: 800,
+    fontVariantNumeric: "tabular-nums",
     boxShadow: "0 3px 0 #E4E4E8",
     cursor: "pointer",
-    display: "inline-flex",
+    display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    WebkitTapHighlightColor: "transparent",
+    userSelect: "none",
   };
+
   const numpadKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "back"];
 
   const numpadRows = [
@@ -734,7 +747,11 @@ function TakePaymentPage() {
                     onClick={() => press(k)}
                     style={keyStyle}
                   >
-                    {k === "back" ? <Delete size={22} color="#6B6B6F" /> : k}
+                    {k === "back" ? (
+                      <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 22, height: 22 }}>
+                        <Delete size={22} color="#6B6B6F" style={{ display: "block" }} />
+                      </span>
+                    ) : k}
                   </button>
                 ))}
               </div>
@@ -842,7 +859,11 @@ function TakePaymentPage() {
                     onClick={() => press(k)}
                     style={keyStyle}
                   >
-                    {k === "back" ? <Delete size={22} color="#6B6B6F" /> : k}
+                    {k === "back" ? (
+                      <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 22, height: 22 }}>
+                        <Delete size={22} color="#6B6B6F" style={{ display: "block" }} />
+                      </span>
+                    ) : k}
                   </button>
                 ))}
               </div>
