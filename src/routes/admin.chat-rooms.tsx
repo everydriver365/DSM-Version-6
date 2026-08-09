@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Trash2 } from "lucide-react";
+import { Check, ChevronLeft, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
@@ -28,9 +28,10 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         left: 0,
         right: 0,
         zIndex: 40,
-        background: "#1877D6",
+        background: "#0B1F3A",
         color: "#fff",
-        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
+        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 16px",
+        borderRadius: "0 0 28px 28px",
         display: "flex",
         alignItems: "center",
         gap: 12,
@@ -41,37 +42,96 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         onClick={onBack}
         aria-label="Back"
         style={{
-          width: 32,
-          height: 32,
+          width: 34,
+          height: 34,
           borderRadius: "50%",
-          background: "rgba(255,255,255,0.15)",
+          background: "rgba(255,255,255,0.08)",
           border: "none",
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
           cursor: "pointer",
           color: "#fff",
+          flexShrink: 0,
         }}
       >
         <ChevronLeft size={18} />
       </button>
-      <span style={{ fontSize: 16, fontWeight: 600 }}>{title}</span>
+      <span style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.4px", color: "#fff" }}>{title}</span>
     </div>
   );
 }
 
 const inputStyle: React.CSSProperties = {
-  height: 44,
-  borderRadius: 10,
-  border: "1px solid #E2E8F0",
-  padding: "0 12px",
-  fontSize: 15,
+  background: "#F2F2F7",
+  borderRadius: 12,
+  border: "none",
+  padding: "13px 15px",
+  fontSize: 14,
   fontFamily: "Poppins, sans-serif",
-  color: "#0B1F3A",
-  background: "#fff",
+  color: "#000",
   width: "100%",
   boxSizing: "border-box",
+  outline: "none",
 };
+
+const segmentWrapStyle: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "row",
+  background: "#F2F2F7",
+  borderRadius: 14,
+  padding: 4,
+};
+
+function segmentStyle(active: boolean): React.CSSProperties {
+  return {
+    flex: 1,
+    padding: "11px 4px",
+    borderRadius: 10,
+    fontSize: 14,
+    fontWeight: 700,
+    textAlign: "center",
+    border: "none",
+    cursor: "pointer",
+    fontFamily: "Poppins, sans-serif",
+    background: active ? "#fff" : "transparent",
+    color: active ? "#1877D6" : "#6B6B6F",
+    boxShadow: active ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+  };
+}
+
+function DSMCheckbox({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <span style={{ display: "inline-flex", position: "relative", width: 22, height: 22, flexShrink: 0 }}>
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        style={{ position: "absolute", inset: 0, opacity: 0, margin: 0, width: 22, height: 22, cursor: "pointer" }}
+      />
+      <span
+        style={{
+          width: 22,
+          height: 22,
+          borderRadius: 7,
+          border: `1.5px solid ${checked ? "#1877D6" : "#D1D1D6"}`,
+          background: checked ? "#1877D6" : "transparent",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          pointerEvents: "none",
+        }}
+      >
+        {checked && <Check size={12} color="#fff" strokeWidth={3} />}
+      </span>
+    </span>
+  );
+}
+
+function titleCase(value: string) {
+  return value.replace(/\S+/g, (w) => (w.length > 4 ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w));
+}
+
 
 function AdminChatRooms() {
   const navigate = useNavigate();
@@ -225,17 +285,19 @@ function AdminChatRooms() {
           onSubmit={handleCreate}
           style={{
             background: "#fff",
-            border: "1px solid #E2E8F0",
-            borderRadius: 16,
-            padding: 16,
+            border: "none",
+            borderRadius: 20,
+            padding: 18,
             display: "flex",
             flexDirection: "column",
             gap: 12,
-            marginBottom: 20,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            marginBottom: 22,
+            boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
           }}
         >
-          <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A" }}>Create room</div>
+          <div style={{ fontSize: 17, fontWeight: 800, color: "#000", letterSpacing: "-0.2px", marginBottom: 2 }}>
+            Create room
+          </div>
           <input
             type="text"
             placeholder="Outcode (e.g. SO30)"
@@ -251,26 +313,10 @@ function AdminChatRooms() {
             onChange={(e) => setAreaName(e.target.value)}
             style={inputStyle}
           />
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={segmentWrapStyle}>
             {(["local", "uk"] as const).map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setRoomType(t)}
-                style={{
-                  flex: 1,
-                  height: 40,
-                  borderRadius: 10,
-                  border: `1px solid ${roomType === t ? "#1877D6" : "#E2E8F0"}`,
-                  background: roomType === t ? "#EAF2FC" : "#fff",
-                  color: roomType === t ? "#1877D6" : "#6B7280",
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: "pointer",
-                  textTransform: "uppercase",
-                }}
-              >
-                {t}
+              <button key={t} type="button" onClick={() => setRoomType(t)} style={segmentStyle(roomType === t)}>
+                {t === "uk" ? "UK" : "Local"}
               </button>
             ))}
           </div>
@@ -280,31 +326,30 @@ function AdminChatRooms() {
               alignItems: "center",
               justifyContent: "space-between",
               fontSize: 14,
-              color: "#0B1F3A",
+              color: "#000",
+              fontWeight: 600,
               cursor: "pointer",
             }}
           >
             Opt-in only
-            <input
-              type="checkbox"
-              checked={isOptIn}
-              onChange={(e) => setIsOptIn(e.target.checked)}
-              style={{ width: 18, height: 18, accentColor: "#1877D6" }}
-            />
+            <DSMCheckbox checked={isOptIn} onChange={setIsOptIn} />
           </label>
           {error && <div style={{ color: "#CC2229", fontSize: 13 }}>{error}</div>}
           <button
             type="submit"
             disabled={creating}
             style={{
-              height: 44,
-              borderRadius: 10,
+              width: "100%",
+              padding: 15,
+              borderRadius: 14,
               background: "#1877D6",
               color: "#fff",
               border: "none",
-              fontWeight: 600,
+              fontWeight: 800,
               fontSize: 15,
+              fontFamily: "Poppins, sans-serif",
               cursor: "pointer",
+              boxShadow: "0 4px 0 #0F52A8",
               opacity: creating ? 0.6 : 1,
             }}
           >
@@ -313,39 +358,39 @@ function AdminChatRooms() {
         </form>
 
         {/* List */}
-        <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", marginBottom: 10 }}>
-          Existing rooms{filteredRooms.length ? ` (${filteredRooms.length})` : ""}
+        <div style={{ fontSize: 19, fontWeight: 800, color: "#000", letterSpacing: "-0.3px", marginBottom: 12 }}>
+          Existing rooms
+          {filteredRooms.length ? (
+            <span style={{ fontSize: 15, fontWeight: 500, color: "#8A8A8E" }}> ({filteredRooms.length})</span>
+          ) : null}
         </div>
 
+
         {/* Filters */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 14 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
           <input
             type="text"
             placeholder="Search outcode…"
             value={filterOutcode}
             onChange={(e) => setFilterOutcode(e.target.value.toUpperCase())}
-            style={inputStyle}
+            style={{
+              background: "#fff",
+              border: "none",
+              borderRadius: 16,
+              padding: "13px 16px",
+              fontSize: 14,
+              fontFamily: "Poppins, sans-serif",
+              color: "#000",
+              width: "100%",
+              boxSizing: "border-box",
+              outline: "none",
+              boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.05)",
+            }}
           />
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={segmentWrapStyle}>
             {(["all", "local", "uk"] as const).map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setFilterType(t)}
-                style={{
-                  flex: 1,
-                  height: 36,
-                  borderRadius: 10,
-                  border: `1px solid ${filterType === t ? "#1877D6" : "#E2E8F0"}`,
-                  background: filterType === t ? "#EAF2FC" : "#fff",
-                  color: filterType === t ? "#1877D6" : "#6B7280",
-                  fontWeight: 600,
-                  fontSize: 13,
-                  cursor: "pointer",
-                  textTransform: "capitalize",
-                }}
-              >
-                {t}
+              <button key={t} type="button" onClick={() => setFilterType(t)} style={segmentStyle(filterType === t)}>
+                {t === "uk" ? "UK" : t === "all" ? "All" : "Local"}
               </button>
             ))}
           </div>
@@ -355,22 +400,23 @@ function AdminChatRooms() {
               alignItems: "center",
               justifyContent: "space-between",
               fontSize: 14,
-              color: "#0B1F3A",
+              fontWeight: 600,
+              color: "#000",
               cursor: "pointer",
               background: "#fff",
-              border: "1px solid #E2E8F0",
-              borderRadius: 10,
-              padding: "10px 12px",
+              border: "none",
+              borderRadius: 16,
+              padding: "13px 16px",
+              boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.05)",
             }}
           >
             Opt-in only
-            <input
-              type="checkbox"
+            <DSMCheckbox
               checked={filterOptIn === "opt-in"}
-              onChange={(e) => setFilterOptIn(e.target.checked ? "opt-in" : "all")}
-              style={{ width: 18, height: 18, accentColor: "#1877D6" }}
+              onChange={(v) => setFilterOptIn(v ? "opt-in" : "all")}
             />
           </label>
+
         </div>
 
         {loadingList ? (
@@ -378,47 +424,62 @@ function AdminChatRooms() {
         ) : filteredRooms.length === 0 ? (
           <div style={{ color: "#6B7280", fontSize: 14 }}>No rooms match your filters.</div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ display: "flex", flexDirection: "column" }}>
             {filteredRooms.map((room) => (
               <div
                 key={room.id}
                 style={{
                   background: "#fff",
-                  border: "1px solid #E2E8F0",
-                  borderRadius: 16,
-                  padding: 14,
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                  border: "none",
+                  borderRadius: 18,
+                  padding: 16,
+                  marginBottom: 12,
+                  boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
                 }}
               >
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>{room.outcode}</div>
-                    <div style={{ fontSize: 13, color: "#6B7280", marginTop: 2 }}>{room.area_name || "—"}</div>
+                    <div style={{ fontSize: 16.5, fontWeight: 800, color: "#000", letterSpacing: "-0.2px" }}>
+                      {room.outcode}
+                    </div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: "#8A8A8E", marginTop: 4 }}>
+                      {room.area_name ? titleCase(room.area_name) : "—"}
+                    </div>
                   </div>
                   <div
                     style={{
-                      fontSize: 12,
-                      fontWeight: 600,
+                      fontSize: 11,
+                      fontWeight: 800,
                       color: "#1877D6",
-                      background: "#EAF2FC",
-                      borderRadius: 999,
-                      padding: "4px 10px",
+                      background: "#E7F1FC",
+                      borderRadius: 20,
+                      padding: "5px 11px",
                       whiteSpace: "nowrap",
                     }}
                   >
                     {room.instructor_count ?? 0} instructors
                   </div>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    marginTop: 14,
+                    paddingTop: 13,
+                    borderTop: "1px solid #F0F0F2",
+                    flexWrap: "wrap",
+                  }}
+                >
                   <span
                     style={{
-                      fontSize: 11,
-                      fontWeight: 600,
+                      fontSize: 10.5,
+                      fontWeight: 800,
                       textTransform: "uppercase",
-                      color: room.room_type === "uk" ? "#0B1F3A" : "#166534",
-                      background: room.room_type === "uk" ? "#E7EBF2" : "#DCFCE7",
-                      borderRadius: 999,
-                      padding: "3px 8px",
+                      color: room.room_type === "uk" ? "#1877D6" : "#248A3D",
+                      background: room.room_type === "uk" ? "#E7F1FC" : "#E6F7EC",
+                      borderRadius: 20,
+                      padding: "4px 10px",
                     }}
                   >
                     {room.room_type || "local"}
@@ -426,18 +487,18 @@ function AdminChatRooms() {
                   {room.is_opt_in && (
                     <span
                       style={{
-                        fontSize: 11,
-                        fontWeight: 600,
+                        fontSize: 10.5,
+                        fontWeight: 800,
                         color: "#92400E",
                         background: "#FEF3C7",
-                        borderRadius: 999,
-                        padding: "3px 8px",
+                        borderRadius: 20,
+                        padding: "4px 10px",
                       }}
                     >
                       Opt-in
                     </span>
                   )}
-                  <span style={{ fontSize: 11, color: "#9CA3AF" }}>
+                  <span style={{ fontSize: 11.5, color: "#B0B0B5" }}>
                     {room.created_at ? new Date(room.created_at).toLocaleDateString("en-GB") : ""}
                   </span>
                   <button
@@ -449,25 +510,26 @@ function AdminChatRooms() {
                       display: "inline-flex",
                       alignItems: "center",
                       gap: 6,
-                      height: 32,
-                      padding: "0 12px",
-                      borderRadius: 10,
-                      border: "1px solid #CC2229",
+                      padding: "8px 14px",
+                      borderRadius: 11,
+                      border: "1.5px solid #FF3B30",
                       background: "#fff",
-                      color: "#CC2229",
-                      fontSize: 13,
-                      fontWeight: 600,
+                      color: "#FF3B30",
+                      fontSize: 12.5,
+                      fontWeight: 700,
+                      fontFamily: "Poppins, sans-serif",
                       cursor: "pointer",
                       opacity: deletingId === room.id ? 0.6 : 1,
                     }}
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={12} />
                     {deletingId === room.id ? "Deleting…" : "Delete"}
                   </button>
                 </div>
               </div>
             ))}
           </div>
+
         )}
       </div>
     </div>
