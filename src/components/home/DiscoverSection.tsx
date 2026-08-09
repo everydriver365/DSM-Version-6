@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   IconPlayerPlay,
+  IconChevronLeft,
   IconChevronRight,
   IconRadio,
   IconBook,
@@ -404,7 +405,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           scrollbarWidth: "none",
           WebkitOverflowScrolling: "touch",
           paddingBottom: 8,
-          marginBottom: heroCards.length > 1 ? 10 : 18,
+          marginBottom: 18,
         }}
       >
         {heroCards.map((listing) => {
@@ -645,37 +646,84 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     </button>
                   </div>
                 </div>
+
+                {/* Swipe indicators */}
+                {heroCards.length > 1 && (
+                  <>
+                    {heroIndex > 0 && (
+                      <button
+                        type="button"
+                        aria-label="Previous listing"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const el = heroScrollRef.current;
+                          if (!el) return;
+                          el.scrollBy({ left: -el.clientWidth, behavior: "smooth" });
+                        }}
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          left: 8,
+                          transform: "translateY(-50%)",
+                          zIndex: 4,
+                          width: 28,
+                          height: 28,
+                          borderRadius: "50%",
+                          border: "none",
+                          background: "rgba(255,255,255,0.88)",
+                          color: NAVY,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          boxShadow: "0 2px 6px rgba(11,31,58,0.28)",
+                          cursor: "pointer",
+                          padding: 0,
+                        }}
+                      >
+                        <IconChevronLeft size={18} stroke={2.2} />
+                      </button>
+                    )}
+                    {heroIndex < heroCards.length - 1 && (
+                      <button
+                        type="button"
+                        aria-label="Next listing"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const el = heroScrollRef.current;
+                          if (!el) return;
+                          el.scrollBy({ left: el.clientWidth, behavior: "smooth" });
+                        }}
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          right: 8,
+                          transform: "translateY(-50%)",
+                          zIndex: 4,
+                          width: 28,
+                          height: 28,
+                          borderRadius: "50%",
+                          border: "none",
+                          background: "rgba(255,255,255,0.88)",
+                          color: NAVY,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          boxShadow: "0 2px 6px rgba(11,31,58,0.28)",
+                          cursor: "pointer",
+                          padding: 0,
+                        }}
+                      >
+                        <IconChevronRight size={18} stroke={2.2} />
+                      </button>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* PAGINATION DOTS */}
-      {heroCards.length > 1 && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 5,
-            marginBottom: 22,
-          }}
-        >
-          {heroCards.map((l, i) => (
-            <span
-              key={l?.id ?? i}
-              style={{
-                width: i === heroIndex ? 16 : 6,
-                height: 6,
-                borderRadius: i === heroIndex ? 4 : "50%",
-                background: i === heroIndex ? BLUE : "#C7D0DC",
-                transition: "width 0.2s ease",
-              }}
-            />
-          ))}
-        </div>
-      )}
 
       <SectionHeader>Discover</SectionHeader>
 
