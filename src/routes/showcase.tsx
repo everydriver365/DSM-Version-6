@@ -495,6 +495,35 @@ function ShowcasePage() {
     }
   }
 
+  async function confirmReportComment() {
+    const commentId = reportCommentId;
+    if (!commentId) return;
+    if (!userId) {
+      toast.error("Sign in to report comments");
+      setReportCommentId(null);
+      return;
+    }
+    setReportCommentId(null);
+    setReportedComments((p) => ({ ...p, [commentId]: true }));
+    try {
+      const { error } = await db.from("showcase_comment_reports").insert({
+        comment_id: commentId,
+        instructor_id: userId,
+      });
+      if (error && error.code !== "23505") throw error;
+      toast.success("Reported — thanks, an admin will review it");
+    } catch (err: any) {
+      setReportedComments((p) => {
+        const next = { ...p };
+        delete next[commentId];
+        return next;
+      });
+      toast.error(err?.message ?? "Could not send report");
+    }
+  }
+
+
+
 
   async function handleUpload() {
     if (!videoFile || !uploadTitle.trim()) return;
