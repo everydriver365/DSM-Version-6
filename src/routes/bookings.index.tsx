@@ -36,7 +36,13 @@ interface BookingRow {
   pupil_email: string | null;
   amount_paid: number | null;
   booked_at: string | null;
-  instructor_courses: { name: string | null; price: number | null } | null;
+  instructor_courses: {
+    name: string | null;
+    price: number | null;
+    course_type: string | null;
+    total_hours: number | null;
+    pickup_area: string | null;
+  } | null;
 }
 
 function money(n: number | null | undefined) {
