@@ -970,14 +970,13 @@ function EnquirySheet({
   );
 }
 
-function SimilarCard({
+function MiniListingCard({
   listing,
   onOpen,
 }: {
   listing: Listing;
   onOpen: (id: string) => void;
 }) {
-  const supplier = listing.marketplace_suppliers;
   const cat = listing.marketplace_categories;
   const Icon = iconFor(cat?.slug);
   const img =
@@ -986,69 +985,58 @@ function SimilarCard({
     <div
       onClick={() => onOpen(listing.id)}
       style={{
-        width: 220,
+        width: 140,
         flexShrink: 0,
-        scrollSnapAlign: "start",
+        background: "#fff",
+        borderRadius: 16,
+        overflow: "hidden",
+        boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)",
         cursor: "pointer",
       }}
     >
       <div
         style={{
-          height: 110,
-          borderRadius: "12px 12px 0 0",
+          height: 100,
           background: img
-            ? `#F3F8FF url(${img}) center/cover`
-            : "linear-gradient(135deg,#0F2044,#1A52A0)",
+            ? `#E7EDF5 url(${img}) center/cover`
+            : "linear-gradient(135deg,#0B1F3A,#1877D6)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        {!img && <Icon size={36} color="#FFFFFF" />}
+        {!img && <Icon size={32} color="#FFFFFF" />}
       </div>
       <div
         style={{
-          background: "#FFFFFF",
-          border: "0.5px solid #E2E6ED",
-          borderTop: "none",
-          borderRadius: "0 0 12px 12px",
-          padding: 10,
+          color: "#0B1F3A",
+          fontSize: 12.5,
+          fontWeight: 700,
+          lineHeight: 1.3,
+          padding: "10px 12px 0",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
         }}
       >
-        <div
-          style={{
-            fontSize: 11,
-            color: "#6B7280",
-            marginBottom: 2,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {supplier?.name ?? "—"}
-        </div>
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 700,
-            color: "#0F2044",
-            lineHeight: 1.3,
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-            marginBottom: 4,
-          }}
-        >
-          {listing.title}
-        </div>
-        <div style={{ fontSize: 12, color: "#6B7280" }}>
-          {listing.price_display ?? "—"}
-        </div>
+        {listing.title}
+      </div>
+      <div
+        style={{
+          color: "#0B1F3A",
+          fontSize: 13.5,
+          fontWeight: 800,
+          marginTop: 5,
+          padding: "0 12px 12px",
+        }}
+      >
+        {listing.price_display ?? "POA"}
       </div>
     </div>
   );
 }
+
 
 // Silence unused imports lint when IconTag is only imported for icon parity
 void IconTag;
