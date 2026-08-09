@@ -646,6 +646,78 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     </button>
                   </div>
                 </div>
+
+                {/* Swipe indicators */}
+                {heroCards.length > 1 && (
+                  <>
+                    {heroIndex > 0 && (
+                      <button
+                        type="button"
+                        aria-label="Previous listing"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const el = heroScrollRef.current;
+                          if (!el) return;
+                          el.scrollBy({ left: -el.clientWidth, behavior: "smooth" });
+                        }}
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          left: 8,
+                          transform: "translateY(-50%)",
+                          zIndex: 4,
+                          width: 28,
+                          height: 28,
+                          borderRadius: "50%",
+                          border: "none",
+                          background: "rgba(255,255,255,0.88)",
+                          color: NAVY,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          boxShadow: "0 2px 6px rgba(11,31,58,0.28)",
+                          cursor: "pointer",
+                          padding: 0,
+                        }}
+                      >
+                        <IconChevronLeft size={18} stroke={2.2} />
+                      </button>
+                    )}
+                    {heroIndex < heroCards.length - 1 && (
+                      <button
+                        type="button"
+                        aria-label="Next listing"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const el = heroScrollRef.current;
+                          if (!el) return;
+                          el.scrollBy({ left: el.clientWidth, behavior: "smooth" });
+                        }}
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          right: 8,
+                          transform: "translateY(-50%)",
+                          zIndex: 4,
+                          width: 28,
+                          height: 28,
+                          borderRadius: "50%",
+                          border: "none",
+                          background: "rgba(255,255,255,0.88)",
+                          color: NAVY,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          boxShadow: "0 2px 6px rgba(11,31,58,0.28)",
+                          cursor: "pointer",
+                          padding: 0,
+                        }}
+                      >
+                        <IconChevronRight size={18} stroke={2.2} />
+                      </button>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           );
