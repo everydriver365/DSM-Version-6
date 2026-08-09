@@ -788,11 +788,10 @@ function TakePaymentPage() {
                 style={{
                   flex: "0 0 auto",
                   minHeight: 0,
-                  padding: "6px 12px 8px",
+                  padding: "10px 16px 12px",
                   display: "grid",
                   gridTemplateColumns: "repeat(3, 1fr)",
-                  gridTemplateRows: "repeat(4, 52px)",
-                  gap: 6,
+                  gap: 10,
                 }}
               >
                 {numpadKeys.map((k) => (
@@ -800,26 +799,13 @@ function TakePaymentPage() {
                     key={k}
                     type="button"
                     onClick={() => press(k)}
-                    style={{
-                      height: 52,
-                      maxHeight: 52,
-                      padding: "4px 0",
-                      fontSize: 20,
-                      fontWeight: 600,
-                      border: "0.5px solid #EEF2F7",
-                      borderRadius: 8,
-                      background: "white",
-                      cursor: "pointer",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: NAVY,
-                    }}
+                    style={keyStyle}
                   >
-                    {k === "back" ? <Delete size={20} /> : k}
+                    {k === "back" ? <Delete size={22} color="#6B6B6F" /> : k}
                   </button>
                 ))}
               </div>
+
 
               {/* Cash controls */}
               <div style={{ padding: "0 16px 8px", flexShrink: 0, display: "flex", gap: 6 }}>
