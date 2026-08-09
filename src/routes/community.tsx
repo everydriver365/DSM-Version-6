@@ -91,23 +91,53 @@ type ChatMessage = {
   instructors: { name: string | null; profile_image_url: string | null } | null;
 };
 
-const TYPE_CONFIG: Record<string, { label: string; bg: string; colour: string; Icon: any }> = {
-  roadworks:         { label: "Roadworks",     bg: "#FEF3C7", colour: "#D97706", Icon: IconCar },
-  road_closure:      { label: "Road closure",  bg: "#FEF3C7", colour: "#D97706", Icon: IconAlertTriangle },
-  heavy_traffic:     { label: "Heavy traffic", bg: "#FEF3C7", colour: "#D97706", Icon: IconCar },
-  hazard:            { label: "Hazard",        bg: "#FCEBEB", colour: "#A32D2D", Icon: IconAlertTriangle },
-  test_centre_busy:  { label: "TC busy",       bg: "#FCEBEB", colour: "#A32D2D", Icon: Building },
-  test_centre_delay: { label: "TC delay",      bg: "#FCEBEB", colour: "#A32D2D", Icon: IconClock },
-  examiner_tip:      { label: "Examiner tip",  bg: "#F5F3FF", colour: "#6B4FD6", Icon: IconSchool },
-  other:             { label: "Other",         bg: "#F3F4F6", colour: "#6B7280", Icon: IconInfoCircle },
+/**
+ * Severity drives every colour an alert type renders with, so the sign icon,
+ * label and pill can never drift apart.
+ *   critical → red   (danger to a lesson route)
+ *   caution  → amber (delays / disruption)
+ *   info     → blue/grey (advisory)
+ */
+type AlertSeverity = "critical" | "caution" | "info" | "neutral";
+
+const SEVERITY_COLOURS: Record<AlertSeverity, { bg: string; colour: string; sign: string }> = {
+  critical: { bg: "#FCEBEB", colour: "#A32D2D", sign: "#C8102E" },
+  caution:  { bg: "#FEF3C7", colour: "#D97706", sign: "#D97706" },
+  info:     { bg: "#F5F3FF", colour: "#6B4FD6", sign: "#005EB8" },
+  neutral:  { bg: "#F3F4F6", colour: "#6B7280", sign: "#9CA3AF" },
+};
+
+type AlertTypeConfig = { label: string; severity: AlertSeverity; bg: string; colour: string; sign: string; Icon: any };
+
+const defineType = (label: string, severity: AlertSeverity, Icon: any): AlertTypeConfig => ({
+  label, severity, Icon, ...SEVERITY_COLOURS[severity],
+});
+
+const TYPE_CONFIG: Record<string, AlertTypeConfig> = {
+  roadworks:         defineType("Roadworks",     "caution",  IconCar),
+  road_closure:      defineType("Road closure",  "critical", IconAlertTriangle),
+  heavy_traffic:     defineType("Heavy traffic", "caution",  IconCar),
+  congestion:        defineType("Congestion",    "caution",  IconCar),
+  accident:          defineType("Accident",      "critical", IconAlertTriangle),
+  collision:         defineType("Collision",     "critical", IconAlertTriangle),
+  hazard:            defineType("Hazard",        "critical", IconAlertTriangle),
+  flooding:          defineType("Flooding",      "critical", IconAlertTriangle),
+  weather:           defineType("Weather",       "caution",  IconAlertTriangle),
+  test_centre_busy:  defineType("TC busy",       "critical", Building),
+  test_centre_delay: defineType("TC delay",      "critical", IconClock),
+  examiner_tip:      defineType("Examiner tip",  "info",     IconSchool),
+  other:             defineType("Other",         "neutral",  IconInfoCircle),
 };
 
 const TYPE_ORDER = [
   "roadworks", "road_closure",
-  "heavy_traffic", "hazard",
+  "heavy_traffic", "congestion",
+  "accident", "collision",
+  "hazard", "flooding", "weather",
   "test_centre_busy", "test_centre_delay",
   "examiner_tip", "other",
 ];
+
 
 function minutesUntilMidnight(): number {
   const now = new Date();
