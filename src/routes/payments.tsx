@@ -536,7 +536,7 @@ function PaymentsPage() {
       {/* Period pills */}
       <div
         className="no-scrollbar"
-        style={{ display: "flex", gap: 6, padding: "0 16px", marginBottom: 10, overflowX: "auto", WebkitOverflowScrolling: "touch" }}
+        style={{ display: "flex", gap: 8, padding: "0 16px", marginBottom: 14, overflowX: "auto", WebkitOverflowScrolling: "touch" }}
       >
         {([["today","Today"],["week","This week"],["month","This month"],["year","This year"]] as [DatePreset,string][]).map(([v,l]) => {
           const active = datePreset === v;
@@ -546,20 +546,21 @@ function PaymentsPage() {
               type="button"
               onClick={() => setDatePreset(v)}
               style={{
-                padding: "7px 14px",
-                fontSize: 12,
-                fontWeight: 500,
-                borderRadius: 20,
+                padding: "10px 18px",
+                fontSize: 13.5,
+                fontWeight: 700,
+                borderRadius: 24,
                 border: 0,
-                background: active ? "#0B1F3A" : "#FFFFFF",
-                color: active ? "#FFFFFF" : "#8A94A6",
-                boxShadow: active ? "none" : "0 1px 3px rgba(0,0,0,0.06)",
+                background: active ? "#0B1F3A" : "#fff",
+                color: active ? "#fff" : "#0B1F3A",
+                boxShadow: active ? "0 3px 0 #050D1C" : "0 3px 0 #E4E4E8",
                 whiteSpace: "nowrap",
                 cursor: "pointer",
                 flexShrink: 0,
                 ...POPPINS,
               }}
             >
+
               {l}
             </button>
           );
