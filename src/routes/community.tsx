@@ -1516,12 +1516,19 @@ function AlertsTab({
           display: "flex", justifyContent: "space-between", alignItems: "center",
           padding: "11px 14px", fontSize: 13,
         };
-        const metaRows: { label: string; value: string }[] = [
+        const expirySuspicious = isExpirySuspicious(selectedAlert.expires_at);
+        const affectedRoads = extractRoads(selectedAlert.location_name, selectedAlert.description);
+        const metaRows: { label: string; value: string; danger?: boolean }[] = [
           ...(selectedAlert.location_name ? [{ label: "Location", value: selectedAlert.location_name }] : []),
+          ...(selectedAlert.area ? [{ label: "Area", value: selectedAlert.area }] : []),
+          ...(selectedAlert.outcode ? [{ label: "Postcode area", value: selectedAlert.outcode }] : []),
+          { label: "Alert type", value: cfg.label },
+          { label: "Source", value: selectedAlert.source === 'tomtom' ? "TomTom Traffic" : `Instructor · ${firstName(selectedAlert.instructors?.name)}` },
           { label: "Reported", value: selectedAlert.source === 'tomtom' ? "TomTom Traffic" : new Date(selectedAlert.created_at).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) },
-          { label: "Expires", value: formatCountdown(selectedAlert.expires_at) },
+          { label: "Expires", value: formatCountdown(selectedAlert.expires_at), danger: expirySuspicious },
           { label: "Confirmations", value: String(selectedAlert.upvotes) },
         ];
+
         return (
           <BottomSheet
             title={cfg.label}
