@@ -18,6 +18,14 @@ type Instructor = {
 
 const FEE = 14.99;
 
+const CARD_SHADOW = "0 1px 2px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.05)";
+
+function initialsOf(name: string | null) {
+  const parts = (name ?? "").trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  return (parts[0]![0]! + (parts[1]?.[0] ?? "")).toUpperCase();
+}
+
 function TopBar({ onBack }: { onBack: () => void }) {
   return (
     <div
@@ -27,9 +35,10 @@ function TopBar({ onBack }: { onBack: () => void }) {
         left: 0,
         right: 0,
         zIndex: 40,
-        background: "#1877D6",
+        background: "#0B1F3A",
         color: "#fff",
-        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
+        borderRadius: "0 0 28px 28px",
+        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 18px",
         display: "flex",
         alignItems: "center",
         gap: 12,
@@ -40,46 +49,45 @@ function TopBar({ onBack }: { onBack: () => void }) {
         onClick={onBack}
         aria-label="Back"
         style={{
-          width: 32,
-          height: 32,
+          width: 34,
+          height: 34,
           borderRadius: "50%",
-          background: "rgba(255,255,255,0.15)",
+          background: "rgba(255,255,255,0.08)",
           border: "none",
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
           cursor: "pointer",
           color: "#fff",
+          flexShrink: 0,
         }}
       >
         <IconChevronLeft stroke={1.5} size={18} />
       </button>
-      <span style={{ fontSize: 16, fontWeight: 600 }}>Featured listings</span>
+      <span style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.4px", color: "#fff" }}>
+        Featured listings
+      </span>
     </div>
   );
 }
 
-function StatCard({ label, value }: { label: string; value: string }) {
+function StatColumn({ label, value, divider }: { label: string; value: string; divider?: boolean }) {
   return (
     <div
       style={{
         flex: 1,
-        background: "#F8F9FB",
-        borderWidth: "0.5px",
-        borderStyle: "solid",
-        borderColor: "#EEF2F7",
-        borderRadius: 12,
-        padding: 14,
+        padding: 16,
+        borderLeft: divider ? "1px solid #EFEFF2" : undefined,
       }}
     >
-      <div style={{ fontSize: 22, fontWeight: 600, color: "#0B1F3A" }}>{value}</div>
+      <div style={{ fontSize: 26, fontWeight: 800, color: "#000", letterSpacing: "-0.5px" }}>{value}</div>
       <div
         style={{
-          fontSize: 11,
-          fontWeight: 500,
-          color: "#6B7280",
+          fontSize: 10.5,
+          fontWeight: 700,
+          color: "#8A8A8E",
           textTransform: "uppercase",
-          letterSpacing: "0.05em",
+          letterSpacing: "0.4px",
           marginTop: 4,
         }}
       >
@@ -98,27 +106,29 @@ function Toggle({ on, onChange, disabled }: { on: boolean; onChange: (v: boolean
       disabled={disabled}
       onClick={() => onChange(!on)}
       style={{
-        width: 44,
-        height: 26,
+        width: 46,
+        height: 28,
         borderRadius: 999,
-        background: on ? "#1877D6" : "#D1D5DB",
+        background: on ? "#1877D6" : "#E5E5EA",
         border: "none",
         position: "relative",
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.6 : 1,
         transition: "background 0.15s",
         flexShrink: 0,
+        padding: 0,
       }}
     >
       <span
         style={{
           position: "absolute",
-          top: 3,
-          left: on ? 21 : 3,
-          width: 20,
-          height: 20,
+          top: 2,
+          left: on ? 20 : 2,
+          width: 24,
+          height: 24,
           borderRadius: "50%",
           background: "#fff",
+          boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
           transition: "left 0.15s",
         }}
       />
