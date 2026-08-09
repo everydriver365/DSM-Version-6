@@ -1133,3 +1133,42 @@ function MiniListingCard({
 
 // Silence unused imports lint when IconTag is only imported for icon parity
 void IconTag;
+/** Lightweight neighbour panel shown while swiping toward another listing. */
+function ListingPeek({ listing }: { listing: Listing }) {
+  const photo = listing.image_urls?.[0] ?? listing.image_url ?? null;
+  return (
+    <div style={{ padding: 16 }}>
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 20,
+          overflow: "hidden",
+          boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            aspectRatio: "1 / 0.9",
+            background: photo
+              ? `#E7EDF5 url(${photo}) center/cover`
+              : "linear-gradient(150deg, #14335C 0%, #0B1F3A 100%)",
+          }}
+        />
+        <div style={{ padding: 16 }}>
+          <div style={{ color: "#0B1F3A", fontSize: 17, fontWeight: 800, lineHeight: 1.2 }}>
+            {listing.title}
+          </div>
+          {listing.price_display && (
+            <div style={{ color: "#1877D6", fontSize: 20, fontWeight: 800, marginTop: 6 }}>
+              {listing.price_display}
+            </div>
+          )}
+          <div style={{ color: "#8A8A8E", fontSize: 13, marginTop: 10 }}>
+            Release to open this listing…
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
