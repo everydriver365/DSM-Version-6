@@ -74,6 +74,9 @@ function DataImportPage() {
   const [parseErrors, setParseErrors] = useState<string[]>([]);
   const [importing, setImporting] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [processed, setProcessed] = useState(0);
+  const [liveSuccess, setLiveSuccess] = useState(0);
+  const [liveFailed, setLiveFailed] = useState(0);
   const [successCount, setSuccessCount] = useState<number | null>(null);
   const [failures, setFailures] = useState<{ row: number; reason: string }[]>([]);
 
@@ -149,6 +152,9 @@ function DataImportPage() {
     if (!userId || rows.length === 0) return;
     setImporting(true);
     setProgress(0);
+    setProcessed(0);
+    setLiveSuccess(0);
+    setLiveFailed(0);
     setFailures([]);
     setSuccessCount(null);
 
@@ -160,28 +166,31 @@ function DataImportPage() {
       const name = r.name?.trim() || [r.first_name, r.last_name].filter(Boolean).join(" ").trim();
       if (!name) {
         fails.push({ row: i + 2, reason: "Missing name" });
-        setProgress(Math.round(((i + 1) / rows.length) * 100));
-        continue;
+      } else {
+        const payload: Record<string, unknown> = {
+          instructor_id: userId,
+          name,
+          first_name: r.first_name?.trim() || null,
+          last_name: r.last_name?.trim() || null,
+          phone: r.phone?.trim() || null,
+          email: r.email?.trim() || null,
+          status: r.status?.trim() || "active",
+        };
+        const { error } = await supabase.from("pupils").insert(payload);
+        if (error) fails.push({ row: i + 2, reason: error.message });
+        else success++;
       }
-      const payload: Record<string, unknown> = {
-        instructor_id: userId,
-        name,
-        first_name: r.first_name?.trim() || null,
-        last_name: r.last_name?.trim() || null,
-        phone: r.phone?.trim() || null,
-        email: r.email?.trim() || null,
-        status: r.status?.trim() || "active",
-      };
-      const { error } = await supabase.from("pupils").insert(payload);
-      if (error) fails.push({ row: i + 2, reason: error.message });
-      else success++;
       setProgress(Math.round(((i + 1) / rows.length) * 100));
+      setProcessed(i + 1);
+      setLiveSuccess(success);
+      setLiveFailed(fails.length);
     }
 
     setSuccessCount(success);
     setFailures(fails);
     setImporting(false);
   };
+
 
   const preview = rows.slice(0, 5);
 
@@ -378,24 +387,64 @@ function DataImportPage() {
 
               {importing && (
                 <div
-                  className="mt-3 w-full"
+                  className="mt-3"
                   style={{
-                    height: 6,
-                    borderRadius: 999,
-                    backgroundColor: "#EEF2F7",
-                    overflow: "hidden",
+                    backgroundColor: "#FFFFFF",
+                    borderWidth: "0.5px",
+                    borderStyle: "solid",
+                    borderColor: "#EEF2F7",
+                    borderRadius: 12,
+                    padding: 14,
                   }}
                 >
+                  <div className="flex items-center justify-between">
+                    <div className="text-[13px] font-semibold text-[#0B1F3A]">
+                      Importing {processed} of {rows.length}
+                    </div>
+                    <div className="text-[13px] font-semibold" style={{ color: "#1877D6" }}>
+                      {progress}%
+                    </div>
+                  </div>
+
                   <div
+                    className="mt-2 w-full"
                     style={{
-                      width: `${progress}%`,
-                      height: "100%",
-                      backgroundColor: "#1877D6",
-                      transition: "width 0.2s",
+                      height: 6,
+                      borderRadius: 999,
+                      backgroundColor: "#EEF2F7",
+                      overflow: "hidden",
                     }}
-                  />
+                  >
+                    <div
+                      style={{
+                        width: `${progress}%`,
+                        height: "100%",
+                        backgroundColor: "#1877D6",
+                        transition: "width 0.2s",
+                      }}
+                    />
+                  </div>
+
+                  <div className="mt-2.5 flex items-center" style={{ gap: 14 }}>
+                    <div className="flex items-center" style={{ gap: 6 }}>
+                      <CheckCircle2 size={16} color="#1877D6" />
+                      <span className="text-[12px] text-[#0B1F3A]">
+                        <strong>{liveSuccess}</strong> imported
+                      </span>
+                    </div>
+                    <div className="flex items-center" style={{ gap: 6 }}>
+                      <AlertCircle size={16} color={liveFailed > 0 ? "#CC2229" : "#9AA3AF"} />
+                      <span
+                        className="text-[12px]"
+                        style={{ color: liveFailed > 0 ? "#CC2229" : "#6B7280" }}
+                      >
+                        <strong>{liveFailed}</strong> failed
+                      </span>
+                    </div>
+                  </div>
                 </div>
               )}
+
             </div>
           )}
 
