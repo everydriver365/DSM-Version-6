@@ -1220,7 +1220,7 @@ function AlertsTab({
 
   const renderAlertCard = (a: Alert) => {
     const cfg = TYPE_CONFIG[a.alert_type] ?? TYPE_CONFIG.other;
-    const alreadyUpvoted = !!userId && (a.upvoted_by ?? []).includes(userId);
+    
     const source = a.source ?? "manual";
     const reporter = firstName(a.instructors?.name);
     const suspicious = isExpirySuspicious(a.expires_at);
@@ -1229,94 +1229,38 @@ function AlertsTab({
         key={a.id}
         onClick={() => setSelectedAlert(a)}
         style={{
-          background: "#fff", borderRadius: 18, marginBottom: 12, overflow: "hidden",
-          boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)", cursor: "pointer",
+          background: "#fff", borderRadius: 16, marginBottom: 10,
+          padding: "13px 14px", display: "flex", alignItems: "center", gap: 12,
+          boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)", cursor: "pointer",
         }}
       >
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: 16 }}>
+        <div style={{
+          width: 30, height: 30, flexShrink: 0,
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}>
+          <AlertSignIcon type={a.alert_type} size={30} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{
-            width: 34, height: 34, display: "flex", alignItems: "center",
-            justifyContent: "center", flexShrink: 0,
+            fontSize: 14.5, fontWeight: 800, color: "#0B1F3A",
+            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
           }}>
-            <AlertSignIcon type={a.alert_type} size={34} />
+            {a.description || cfg.label}
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-              <div style={{
-                fontSize: 11, fontWeight: 800, textTransform: "uppercase",
-                color: cfg.colour, letterSpacing: 0.4,
-              }}>
-                {cfg.label}
-              </div>
-              <div style={{
-                fontSize: 11.5,
-                fontWeight: suspicious ? 800 : 500,
-                color: suspicious ? "#CC2229" : "#8A8A8E",
-                flexShrink: 0, textAlign: "right",
-              }}>
-                {formatCountdown(a.expires_at)}
-              </div>
-            </div>
-            <div style={{ fontSize: 16, fontWeight: 800, color: "#0B1F3A", marginTop: 3 }}>
-              {a.description}
-            </div>
-            {a.location_name && (
-              <div style={{ fontSize: 13, fontWeight: 500, color: "#6B6B6F", marginTop: 4, lineHeight: 1.4 }}>
-                {a.location_name}
-              </div>
-            )}
-            {source === "tomtom" ? (
-              <div style={{
-                display: "inline-block", background: "#E7F1FC", color: "#1877D6",
-                fontSize: 10.5, fontWeight: 800, padding: "3px 10px",
-                borderRadius: 20, marginTop: 6,
-              }}>
-                TomTom
-              </div>
-            ) : (
-              <div style={{
-                display: "inline-block", background: "#F2F2F7", color: "#6B6B6F",
-                fontSize: 10.5, fontWeight: 800, padding: "3px 10px",
-                borderRadius: 20, marginTop: 6,
-              }}>
-                {reporter}
-              </div>
-            )}
+          <div style={{
+            fontSize: 12, fontWeight: 500, color: "#8A8A8E", marginTop: 1,
+            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+          }}>
+            {a.location_name || (source === "tomtom" ? "Official traffic data" : `${reporter} reported this`)}
           </div>
         </div>
         <div style={{
-          display: "flex", justifyContent: "space-between", alignItems: "center",
-          padding: "12px 16px", borderTop: "1px solid #F0F0F2",
+          flexShrink: 0, background: "#F2F2F7",
+          color: suspicious ? "#CC2229" : "#6B6B6F",
+          fontSize: 11, fontWeight: 700, padding: "5px 10px", borderRadius: 20,
+          whiteSpace: "nowrap",
         }}>
-          <div style={{ fontSize: 12, fontWeight: 500, color: "#B0B0B5" }}>
-            {source === "tomtom" ? "Official traffic data" : `${reporter} reported this`}
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            {(commentCounts[a.id] ?? 0) > 0 && (
-              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                <IconMessageCircle stroke={1.5} size={13} color="#B0B0B5" />
-                <span style={{ fontSize: 12, color: "#B0B0B5" }}>{commentCounts[a.id] ?? 0}</span>
-              </div>
-            )}
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); handleUpvote(a); }}
-              style={{
-                display: "flex", alignItems: "center", gap: 5,
-                background: "#F2F2F7", border: "none", borderRadius: 10,
-                padding: "8px 14px", cursor: "pointer",
-              }}
-            >
-              <IconThumbUp stroke={1.5}
-                size={13}
-                color={alreadyUpvoted ? "#185FA5" : "#6B6B6F"}
-                fill={alreadyUpvoted ? "#185FA5" : "none"}
-              />
-              <span style={{ fontSize: 12.5, fontWeight: 700, color: alreadyUpvoted ? "#185FA5" : "#6B6B6F" }}>
-                {a.upvotes} confirmed
-              </span>
-            </button>
-          </div>
+          {formatCountdown(a.expires_at)}
         </div>
       </div>
     );
@@ -1339,6 +1283,77 @@ function AlertsTab({
         </div>
       </div>
 
+      {/* YOUR ACTIVE ALERTS */}
+      {myAlerts.length > 0 && (
+        <div style={{ marginBottom: 18 }}>
+          <div style={{
+            fontSize: 11, fontWeight: 600, color: '#9CA3AF',
+            textTransform: 'uppercase', letterSpacing: '0.08em',
+            padding: '0 2px 8px', fontFamily: 'Poppins, sans-serif',
+          }}>
+            Your active alerts · {myAlerts.length}
+          </div>
+          {myAlerts.map((a) => {
+            const cfg = TYPE_CONFIG[a.alert_type] ?? TYPE_CONFIG.other;
+            return (
+              <div
+                key={a.id}
+                onClick={() => setSelectedAlert(a)}
+                style={{
+                  background: "#fff", borderRadius: 16, marginBottom: 10,
+                  padding: "13px 14px 13px 13px", borderLeft: "3px solid #1877D6",
+                  display: "flex", alignItems: "center", gap: 12,
+                  boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)", cursor: "pointer",
+                }}
+              >
+                <div style={{
+                  width: 30, height: 30, flexShrink: 0,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <AlertSignIcon type={a.alert_type} size={30} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{
+                    fontSize: 14.5, fontWeight: 800, color: "#0B1F3A",
+                    whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                  }}>
+                    {a.description || cfg.label}
+                  </div>
+                  <div style={{
+                    fontSize: 12, fontWeight: 500, color: "#8A8A8E", marginTop: 1,
+                    whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                  }}>
+                    {a.location_name || formatCountdown(a.expires_at)}
+                  </div>
+                </div>
+                {(a.source ?? 'manual') !== 'tomtom' ? (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); handleCancel(a); }}
+                    aria-label="Cancel alert"
+                    style={{
+                      width: 26, height: 26, borderRadius: 8, background: "#FDEDEC",
+                      border: "none", display: "flex", alignItems: "center",
+                      justifyContent: "center", cursor: "pointer", padding: 0, flexShrink: 0,
+                    }}
+                  >
+                    <IconX size={12} color="#FF3B30" strokeWidth={2.4} />
+                  </button>
+                ) : (
+                  <div style={{
+                    flexShrink: 0, background: "#F2F2F7", color: "#6B6B6F",
+                    fontSize: 11, fontWeight: 700, padding: "5px 10px", borderRadius: 20,
+                    whiteSpace: "nowrap",
+                  }}>
+                    {formatCountdown(a.expires_at)}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       {/* SECTION 1 — Reported by instructors */}
       {instructorAlerts.length === 0 ? (
         myAlerts.length === 0 && officialAlerts.length === 0 ? (
@@ -1360,7 +1375,7 @@ function AlertsTab({
               Report alert
             </button>
           </div>
-        ) : (
+        ) : myAlerts.length === 0 ? (
           <div style={{
             padding: 20, textAlign: "center", background: "#fff",
             border: "1.5px dashed #D1D1D6", borderRadius: 16,
@@ -1368,7 +1383,7 @@ function AlertsTab({
           }}>
             No instructor reports in your area
           </div>
-        )
+        ) : null
       ) : (
         <div style={{ marginBottom: 16 }}>
           <div style={{
@@ -1449,105 +1464,6 @@ function AlertsTab({
 
             </>
           )}
-        </div>
-      )}
-
-
-      {myAlerts.length > 0 && (
-        <div style={{ marginTop: 24 }}>
-          <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 8 }}>
-            Your active alerts
-          </div>
-          {myAlerts.map((a) => {
-            const cfg = TYPE_CONFIG[a.alert_type] ?? TYPE_CONFIG.other;
-            return (
-              <div key={a.id} style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
-                <div onClick={() => setSelectedAlert(a)} style={{
-                  cursor: "pointer",
-                  background: "white",
-                  borderRadius: 16,
-                  boxShadow: "0 3px 10px rgba(11,31,58,0.08)",
-                  padding: "11px 12px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 11,
-                }}>
-                  <div style={{
-                    width: 38,
-                    height: 38,
-                    borderRadius: 12,
-                    flexShrink: 0,
-                    background: "transparent",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}>
-                    <AlertSignIcon type={a.alert_type} size={32} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}>
-                    <div style={{
-                      fontSize: 13.5,
-                      fontWeight: 700,
-                      color: "#0B1F3A",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      lineHeight: 1.2,
-                    }}>
-                      <span>{cfg.label}</span>
-                      <span style={{ color: "#C7CDD9" }}> · </span>
-                      <span>{a.description}</span>
-                    </div>
-                    {a.location_name && (
-                      <div style={{
-                        fontSize: 11,
-                        color: "#9CA3AF",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}>
-                        {a.location_name}
-                      </div>
-                    )}
-                  </div>
-                  <div style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 8 }}>
-                    <div style={{
-                      fontSize: 11,
-                      fontWeight: 700,
-                      color: "#0B1F3A",
-                      background: "#EEF2F7",
-                      padding: "4px 9px",
-                      borderRadius: 20,
-                      whiteSpace: "nowrap",
-                    }}>
-                      {formatCountdown(a.expires_at)}
-                    </div>
-                    {(a.source ?? 'manual') !== 'tomtom' && (
-                      <button
-                        type="button"
-                        onClick={(e) => { e.stopPropagation(); handleCancel(a); }}
-                        style={{
-                          width: 26,
-                          height: 26,
-                          borderRadius: "50%",
-                          background: "#0B1F3A",
-                          border: "none",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          cursor: "pointer",
-                          padding: 0,
-                        }}
-                        aria-label="Cancel alert"
-                      >
-                        <IconX stroke={1.5} size={13} color="white" strokeWidth={2.4} />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
         </div>
       )}
 
