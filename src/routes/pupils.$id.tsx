@@ -3389,15 +3389,33 @@ function PupilDetailPage() {
               prev ? prev.map((x) => (x.id === targetId ? { ...x, payment_status: "paid" } : x)) : prev,
             );
 
+            const method = "cash";
+            const lessonDateLabel = target.lesson_date
+              ? new Date(`${target.lesson_date}T00:00:00`).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })
+              : "no date";
+            const lessonTimeLabel = target.lesson_time ? String(target.lesson_time).slice(0, 5) : null;
+            const durationLabel = target.duration_minutes ? `${target.duration_minutes} min` : null;
+            const noteParts = [
+              `Marked paid from pupil profile`,
+              `Lesson ${lessonDateLabel}${lessonTimeLabel ? ` ${lessonTimeLabel}` : ""}${durationLabel ? ` (${durationLabel})` : ""}`,
+              `Method: ${method}`,
+              `Amount: £${Number(target.amount_due ?? 0).toFixed(2)}`,
+            ];
+
             try {
               await recordPayment({
                 pupilId: id,
                 targetLessonId: targetId,
                 amount: Number(target.amount_due ?? 0),
-                method: "cash",
-                notes: "Marked paid from pupil profile",
+                method,
+                notes: noteParts.join(" — "),
                 currentAccountBalance: 0,
               });
+
               toast.success("Marked as paid");
 
               // Reconcile with fresh data from the server
