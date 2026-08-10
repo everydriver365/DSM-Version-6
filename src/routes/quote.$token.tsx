@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckCircle2, Lock } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -12,19 +12,12 @@ const POPPINS = { fontFamily: "Poppins, sans-serif" as const };
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
-const RYFT_PUBLIC_KEY =
-  "pk_sandbox_QpmgBnWSyZXGthN4EtZy6XIXYu+oRRkEUeceUFKLrXS5zmRA7XWBrkAdD8E6FgTn";
-
-declare global {
-  interface Window {
-    Ryft?: any;
-  }
-}
 
 type Quote = {
   id: string;
   token: string;
   instructor_id: string;
+  pupil_id?: string | null;
   recipient_name: string;
   recipient_email: string | null;
   recipient_phone: string | null;
@@ -41,7 +34,16 @@ type Quote = {
   accepted_at: string | null;
 };
 
-type Instructor = { phone: string | null; email: string | null; full_name: string | null };
+type Instructor = {
+  phone: string | null;
+  email: string | null;
+  full_name: string | null;
+  bank_name?: string | null;
+  bank_account_name?: string | null;
+  bank_sort_code?: string | null;
+  bank_account_number?: string | null;
+};
+
 
 function formatDate(iso: string | null): string {
   if (!iso) return "—";
