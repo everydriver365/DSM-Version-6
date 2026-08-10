@@ -92,6 +92,7 @@ interface InstructorRow {
   klarna_enabled: boolean | null;
   clearpay_enabled: boolean | null;
   accepted_payment_methods: string[] | null;
+  square_merchant_id?: string | null;
 }
 
 interface UnpaidLesson {
