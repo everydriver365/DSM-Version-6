@@ -244,8 +244,9 @@ function DataImportPage() {
           </div>
 
           <div className="mt-3">
-            <Button variant="ghost" onClick={downloadTemplate}>
-              Download template
+            <Button onClick={downloadTemplate}>
+              <Download size={18} className="mr-2" />
+              Download CSV template
             </Button>
           </div>
 
