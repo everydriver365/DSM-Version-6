@@ -1406,6 +1406,49 @@ export function UnifiedPaymentSheet({
       >
         {savingPricing ? "Saving…" : footerLabel}
       </button>
+    ) : method === "card_square" ? (
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <button
+          type="button"
+          onClick={() => void generateSquareLink("link")}
+          disabled={squareLoading || amountNum <= 0}
+          style={{
+            width: "100%",
+            height: 52,
+            borderRadius: 16,
+            border: "none",
+            background: BLUE,
+            color: WHITE,
+            fontSize: 16,
+            fontWeight: 700,
+            fontFamily: FONT,
+            cursor: "pointer",
+            opacity: squareLoading || amountNum <= 0 ? 0.45 : 1,
+          }}
+        >
+          {squareLoading ? "Working…" : "Send payment link"}
+        </button>
+        <button
+          type="button"
+          onClick={() => void generateSquareLink("qr")}
+          disabled={squareLoading || amountNum <= 0}
+          style={{
+            width: "100%",
+            height: 52,
+            borderRadius: 16,
+            border: `1.5px solid ${BLUE}`,
+            background: "#fff",
+            color: BLUE,
+            fontSize: 16,
+            fontWeight: 700,
+            fontFamily: FONT,
+            cursor: "pointer",
+            opacity: squareLoading || amountNum <= 0 ? 0.45 : 1,
+          }}
+        >
+          Show QR code
+        </button>
+      </div>
     ) : (
       <button
         type="button"
