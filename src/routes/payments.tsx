@@ -620,8 +620,8 @@ function PaymentsPage() {
                       <div style={{ display: "flex", alignItems: "center", gap: 13, padding: 16 }}>
                         <div
                           style={{
-                            width: 42,
-                            height: 42,
+                            width: 44,
+                            height: 44,
                             borderRadius: "50%",
                             background: avatarBg,
                             color: "#FFFFFF",
