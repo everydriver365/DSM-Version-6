@@ -153,38 +153,35 @@ function MorePage() {
             subtitle={`Nothing matched "${searchQuery}"`}
           />
         ) : (
-          <div style={{ marginTop: 12, background: '#fff', borderRadius: 16, boxShadow: '0 1px 3px rgba(11,31,58,0.06)', margin: '0 16px', overflow: 'hidden' }}>
-            {filtered.map((tool, index) => (
-              <>
-                <button
-                  key={tool.label}
-                  onClick={() => go(tool.route)}
-                  style={{
-                    width: '100%',
-                    background: 'transparent',
-                    border: 'none',
-                    padding: '12px 16px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 12,
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}
-                >
-                  <div style={{ width: 36, height: 36, borderRadius: 10, background: tool.colour + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <tool.icon size={18} color={tool.colour} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 600, fontSize: 13, color: '#0F2044' }}>{tool.label}</div>
-                    <div style={{ fontSize: 12, color: '#9CA3AF' }}>{tool.sub}</div>
-                  </div>
-                  <span style={{ fontSize: 10, color: '#9CA3AF', marginLeft: 'auto' }}>{tool.group}</span>
-                </button>
-                {index < filtered.length - 1 && (
-                  <div key={`sep-${tool.label}`} style={{ height: 1, background: '#E4E8EF', marginLeft: 60 }} />
-                )}
-              </>
+          <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {filtered.map((tool) => (
+              <button
+                key={tool.label}
+                onClick={() => go(tool.route)}
+                style={{
+                  width: '100%',
+                  background: '#fff',
+                  border: 'none',
+                  borderRadius: 16,
+                  padding: '12px 16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  fontFamily: 'Poppins, sans-serif',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                }}
+              >
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: tool.colour + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <tool.icon size={18} color={tool.colour} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontWeight: 600, fontSize: 13, color: '#0F2044' }}>{tool.label}</div>
+                  <div style={{ fontSize: 12, color: '#9CA3AF' }}>{tool.sub}</div>
+                </div>
+                <span style={{ fontSize: 10, color: '#9CA3AF', marginLeft: 'auto' }}>{tool.group}</span>
+              </button>
             ))}
           </div>
         )
@@ -272,55 +269,51 @@ function MorePage() {
               </div>
               <div
                 style={{
-                  background: '#fff',
-                  borderRadius: 16,
-                  boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
-                  margin: '0 16px 4px',
-                  overflow: 'hidden',
+                  margin: '0 16px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 8,
                 }}
               >
-                {items.map((tool, index) => (
-                  <>
-                    <button
-                      key={tool.label}
-                      onClick={() => go(tool.route)}
+                {items.map((tool) => (
+                  <button
+                    key={tool.label}
+                    onClick={() => go(tool.route)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      padding: '13px 16px',
+                      background: '#fff',
+                      border: 'none',
+                      borderRadius: 16,
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      width: '100%',
+                      fontFamily: 'Poppins, sans-serif',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                    }}
+                  >
+                    <div
                       style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: 10,
+                        background: tool.colour + '15',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: 12,
-                        padding: '13px 16px',
-                        background: 'transparent',
-                        border: 'none',
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                        width: '100%',
-                        fontFamily: 'Poppins, sans-serif',
+                        justifyContent: 'center',
+                        flexShrink: 0,
                       }}
                     >
-                      <div
-                        style={{
-                          width: 36,
-                          height: 36,
-                          borderRadius: 10,
-                          background: tool.colour + '15',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                        }}
-                      >
-                        <tool.icon size={18} color={tool.colour} />
-                      </div>
-                      <div>
-                        <div style={{ fontWeight: 500, fontSize: 15, color: '#0B1F3A' }}>{tool.label}</div>
-                        <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 1 }}>{tool.sub}</div>
-                      </div>
-                      <IconChevronRight size={14} color="#C7D0DC" style={{ marginLeft: 'auto', flexShrink: 0 }} />
-                    </button>
-                    {index < items.length - 1 && (
-                      <div key={`sep-${tool.label}`} style={{ height: 1, background: '#E4E8EF', marginLeft: 60 }} />
-                    )}
-                  </>
+                      <tool.icon size={18} color={tool.colour} />
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 500, fontSize: 15, color: '#0B1F3A' }}>{tool.label}</div>
+                      <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 1 }}>{tool.sub}</div>
+                    </div>
+                    <IconChevronRight size={14} color="#C7D0DC" style={{ marginLeft: 'auto', flexShrink: 0 }} />
+                  </button>
                 ))}
               </div>
             </div>
