@@ -229,7 +229,7 @@ function PublicQuotePage() {
 
   const depositAmount = Number(quote.deposit_amount || 0);
   const needsDeposit = accepted && depositAmount > 0 && !depositPaid;
-  const depositDoneNow = payStatus === "paid";
+  const depositDoneNow = false; // Square payment completes off-site; status refreshes on reload
 
   return (
     <div style={{ ...POPPINS, minHeight: "100vh", background: "#fff" }}>
