@@ -628,55 +628,17 @@ function DataImportPage() {
             </div>
           )}
 
-          {/* SUCCESS */}
-          {successCount !== null && !importing && (
-            <div
-              className="mt-4 flex items-center"
-              style={{
-                gap: 10,
-                backgroundColor: "#F3F8FF",
-                borderWidth: "0.5px",
-                borderStyle: "solid",
-                borderColor: "#1877D6",
-                borderRadius: 12,
-                padding: 14,
-              }}
-            >
-              <CheckCircle2 size={20} color="#1877D6" />
-              <div className="text-[13px] text-[#0B1F3A] font-medium">
-                {successCount} pupils imported successfully
-              </div>
-            </div>
+          {/* RESULTS */}
+          {showResults && !importing && (
+            <ImportResults
+              imported={importedRows}
+              failed={failures}
+              retrying={retrying}
+              onRetry={retryFailures}
+              onDismiss={() => setShowResults(false)}
+            />
           )}
 
-          {/* FAILURES */}
-          {failures.length > 0 && !importing && (
-            <div
-              className="mt-3"
-              style={{
-                backgroundColor: "#FEF2F2",
-                borderWidth: "0.5px",
-                borderStyle: "solid",
-                borderColor: "#1877D6",
-                borderRadius: 12,
-                padding: 14,
-              }}
-            >
-              <div className="flex items-center" style={{ gap: 8 }}>
-                <AlertCircle size={18} color="#1877D6" />
-                <div className="text-[13px] font-semibold text-[#7F1D1D]">
-                  {failures.length} row{failures.length === 1 ? "" : "s"} failed
-                </div>
-              </div>
-              <div className="mt-2 flex flex-col" style={{ gap: 4 }}>
-                {failures.map((f, i) => (
-                  <div key={i} className="text-[12px] text-[#7F1D1D]">
-                    Row {f.row}: {f.reason}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
           <SectionHeader>IMPORT HISTORY</SectionHeader>
           <div
