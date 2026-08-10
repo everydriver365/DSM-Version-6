@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Info, Copy, Check, Calendar, CalendarPlus, AlertTriangle, ChevronDown, Loader2, AlertCircle } from "lucide-react";
+import { ArrowLeft, Info, Copy, Check, Calendar, CalendarPlus, AlertTriangle, ChevronDown, Loader2, AlertCircle, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
@@ -35,7 +35,10 @@ function formatDate(iso: string | null | undefined): string {
 interface GoogleConnection {
   connected_at: string | null;
   last_synced_at: string | null;
+  refresh_error: string | null;
+  disconnected_at: string | null;
 }
+
 
 export const Route = createFileRoute("/calendarsync")({
   head: () => ({
@@ -174,6 +177,8 @@ function CalendarSyncPage() {
   const [conn, setConn] = useState<GoogleConnection | null>(null);
   const [connecting, setConnecting] = useState(false);
   const [disconnecting, setDisconnecting] = useState(false);
+  const [syncingGoogle, setSyncingGoogle] = useState(false);
+
 
   useEffect(() => {
     (async () => {
@@ -238,9 +243,10 @@ function CalendarSyncPage() {
       try {
         const { data: row } = await supabase
           .from("google_calendar_connections")
-          .select("connected_at, last_synced_at")
+          .select("connected_at, last_synced_at, refresh_error, disconnected_at")
           .eq("instructor_id", uid)
           .maybeSingle();
+
         setConn((row as GoogleConnection | null) ?? null);
       } catch {
         // table may not exist yet
@@ -257,7 +263,10 @@ function CalendarSyncPage() {
       toast.error("Google Calendar access was denied");
     } else if (err === "token_failed") {
       toast.error("Could not complete Google Calendar connection");
+    } else if (err === "token_refresh") {
+      toast.error("Google Calendar connection expired. Please reconnect.");
     }
+
     if (connected || err) {
       params.delete("connected");
       params.delete("error");
@@ -306,13 +315,66 @@ function CalendarSyncPage() {
       toast.error("Could not disconnect Google Calendar");
     } finally {
       setDisconnecting(false);
+  }
+
+  async function syncGoogle() {
+    if (!userId) return;
+    setSyncingGoogle(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Not signed in");
+
+      const res = await fetch("/api/public/google-calendar-sync", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        if (data.reconnect_required) {
+          // Mark the row locally so the UI shows the reconnect prompt.
+          setConn((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  refresh_error: data.error || "Reconnect required",
+                  disconnected_at: new Date().toISOString(),
+                  last_synced_at: null,
+                }
+              : null,
+          );
+          toast.error(data.error || "Google Calendar connection expired. Please reconnect.");
+          return;
+        }
+        throw new Error(data.error || "Sync failed");
+      }
+      setConn((prev) =>
+        prev
+          ? {
+              ...prev,
+              last_synced_at: data.last_synced_at ?? new Date().toISOString(),
+              refresh_error: null,
+              disconnected_at: null,
+            }
+          : null,
+      );
+      const count = (data.created || 0) + (data.updated || 0);
+      toast.success(
+        count > 0
+          ? `Synced ${count} lesson${count !== 1 ? "s" : ""} to Google Calendar`
+          : "Google Calendar is up to date",
+      );
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not sync to Google Calendar");
+    } finally {
+      setSyncingGoogle(false);
     }
   }
 
-
-
   async function runSync(urlToUse: string) {
-    if (!userId) return;
+
     const trimmed = urlToUse.trim();
     if (!trimmed) {
       toast.error("Paste your Google Calendar ICS URL first");
@@ -663,42 +725,101 @@ function CalendarSyncPage() {
 
           {conn ? (
             <>
-              <div
-                style={{
-                  background: "#E6F7EC",
-                  borderRadius: 14,
-                  padding: "14px 16px",
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: 10,
-                }}
-              >
-                <span style={STATUS_DOT}>
-                  <Check size={12} color="#FFFFFF" strokeWidth={3} />
-                </span>
-                <div>
-                  <div style={{ ...POPPINS, color: "#0F6B3D", fontSize: 14.5, fontWeight: 800 }}>
-                    Connected to Google Calendar
-                  </div>
-                  <div style={{ ...POPPINS, color: "#3D8A63", fontSize: 11.5, lineHeight: 1.5 }}>
-                    Connected on: {formatDate(conn.connected_at)}
-                    {" · "}
-                    Last synced: {formatDate(conn.last_synced_at)}
+              {conn.disconnected_at || conn.refresh_error ? (
+                <div
+                  style={{
+                    background: "#FCE8E8",
+                    borderRadius: 14,
+                    padding: "14px 16px",
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: 10,
+                  }}
+                >
+                  <span
+                    style={{
+                      ...STATUS_DOT,
+                      background: "#CC2229",
+                    }}
+                  >
+                    <AlertTriangle size={12} color="#FFFFFF" strokeWidth={3} />
+                  </span>
+                  <div>
+                    <div
+                      style={{ ...POPPINS, color: "#CC2229", fontSize: 14.5, fontWeight: 800 }}
+                    >
+                      Google Calendar connection expired
+                    </div>
+                    <div
+                      style={{ ...POPPINS, color: "#B54545", fontSize: 11.5, lineHeight: 1.5 }}
+                    >
+                      {conn.refresh_error
+                        ? String(conn.refresh_error).slice(0, 120)
+                        : "Please reconnect your account to keep calendars in sync."}
+                    </div>
                   </div>
                 </div>
+              ) : (
+                <div
+                  style={{
+                    background: "#E6F7EC",
+                    borderRadius: 14,
+                    padding: "14px 16px",
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: 10,
+                  }}
+                >
+                  <span style={STATUS_DOT}>
+                    <Check size={12} color="#FFFFFF" strokeWidth={3} />
+                  </span>
+                  <div>
+                    <div
+                      style={{ ...POPPINS, color: "#0F6B3D", fontSize: 14.5, fontWeight: 800 }}
+                    >
+                      Connected to Google Calendar
+                    </div>
+                    <div
+                      style={{ ...POPPINS, color: "#3D8A63", fontSize: 11.5, lineHeight: 1.5 }}
+                    >
+                      Connected on: {formatDate(conn.connected_at)}
+                      {" · "}
+                      Last synced: {formatDate(conn.last_synced_at)}
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 16 }}>
+                {!conn.disconnected_at && !conn.refresh_error && (
+                  <button
+                    type="button"
+                    onClick={syncGoogle}
+                    disabled={syncingGoogle}
+                    style={{ ...BTN_PRIMARY, opacity: syncingGoogle ? 0.6 : 1 }}
+                  >
+                    {syncingGoogle ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin" /> Syncing…
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw size={16} /> Sync now
+                      </>
+                    )}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={disconnectGoogle}
+                  disabled={disconnecting}
+                  style={{
+                    ...BTN_OUTLINE,
+                    opacity: disconnecting ? 0.6 : 1,
+                  }}
+                >
+                  {disconnecting ? "Disconnecting…" : "Disconnect"}
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={disconnectGoogle}
-                disabled={disconnecting}
-                style={{
-                  ...BTN_OUTLINE_RED,
-                  marginTop: 16,
-                  opacity: disconnecting ? 0.6 : 1,
-                }}
-              >
-                {disconnecting ? "Disconnecting…" : "Disconnect"}
-              </button>
             </>
           ) : (
             <button
@@ -718,6 +839,7 @@ function CalendarSyncPage() {
               )}
             </button>
           )}
+
         </div>
 
         {/* ICS Feed URL */}
@@ -1031,4 +1153,5 @@ function CalendarSyncPage() {
       </div>
     </PageLayout>
   );
+}
 }
