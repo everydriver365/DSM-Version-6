@@ -1003,7 +1003,7 @@ function SettingsPage() {
         </div>
 
         <Label>LESSON REMINDERS</Label>
-        <div style={{ backgroundColor: 'white', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
+        <SectionCard>
           <MenuRow
             icon={<Clock color="#B5661E" />}
             iconBg="#FBEFE1"
