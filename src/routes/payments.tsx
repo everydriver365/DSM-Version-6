@@ -509,7 +509,7 @@ function PaymentsPage() {
           display: "flex",
           alignItems: "center",
           gap: 8,
-          margin: "0 16px 12px",
+          margin: "0 16px 14px",
           cursor: "pointer",
           border: 0,
           width: "calc(100% - 32px)",
@@ -596,14 +596,13 @@ function PaymentsPage() {
 
               <div
                 style={{
-                  background: "#fff",
-                  borderRadius: 20,
-                  overflow: "hidden",
-                  boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
-                  margin: "0 16px 16px",
+                  margin: '0 16px 16px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 8,
                 }}
               >
-                {g.rows.map((row, i) => {
+                {g.rows.map((row) => {
                   const isRefund = row.payment_status === "refund";
                   const amt = Number(row.lesson_cost ?? 0);
                   const isOpen = expandedId === row.id;
@@ -612,7 +611,10 @@ function PaymentsPage() {
                     <div
                       key={row.id}
                       style={{
-                        borderTop: i > 0 ? "1px solid #EFEFF2" : "none",
+                        background: "#fff",
+                        borderRadius: 16,
+                        overflow: "hidden",
+                        boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: 13, padding: "14px 16px" }}>
