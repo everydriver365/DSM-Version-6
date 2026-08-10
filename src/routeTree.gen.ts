@@ -166,6 +166,7 @@ import { Route as LessonsRescheduleIdRouteImport } from './routes/lessons.resche
 import { Route as LessonsFeedbackIdRouteImport } from './routes/lessons.feedback.$id'
 import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
 import { Route as DsmLivePodcastPodcastIdRouteImport } from './routes/dsm-live.podcast.$podcastId'
+import { Route as ApiPublicGoogleCalendarSyncRouteImport } from './routes/api/public/google-calendar-sync'
 import { Route as ApiPublicCarplayV1LessonRouteImport } from './routes/api/public/carplay/v1/lesson'
 import { Route as ApiPublicCarplayV1DirectionsRouteImport } from './routes/api/public/carplay/v1/directions'
 import { Route as ApiPublicCarplayV1DevicesRouteImport } from './routes/api/public/carplay/v1/devices'
@@ -957,6 +958,12 @@ const DsmLivePodcastPodcastIdRoute = DsmLivePodcastPodcastIdRouteImport.update({
   path: '/podcast/$podcastId',
   getParentRoute: () => DsmLiveRoute,
 } as any)
+const ApiPublicGoogleCalendarSyncRoute =
+  ApiPublicGoogleCalendarSyncRouteImport.update({
+    id: '/api/public/google-calendar-sync',
+    path: '/api/public/google-calendar-sync',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCarplayV1LessonRoute =
   ApiPublicCarplayV1LessonRouteImport.update({
     id: '/api/public/carplay/v1/lesson',
@@ -1127,6 +1134,7 @@ export interface FileRoutesByFullPath {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/api/public/google-calendar-sync': typeof ApiPublicGoogleCalendarSyncRoute
   '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
@@ -1286,6 +1294,7 @@ export interface FileRoutesByTo {
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
   '/quotes': typeof QuotesIndexRoute
+  '/api/public/google-calendar-sync': typeof ApiPublicGoogleCalendarSyncRoute
   '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
@@ -1450,6 +1459,7 @@ export interface FileRoutesById {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/api/public/google-calendar-sync': typeof ApiPublicGoogleCalendarSyncRoute
   '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
@@ -1614,6 +1624,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/api/public/google-calendar-sync'
     | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
@@ -1773,6 +1784,7 @@ export interface FileRouteTypes {
     | '/notes'
     | '/pupils'
     | '/quotes'
+    | '/api/public/google-calendar-sync'
     | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
@@ -1936,6 +1948,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/api/public/google-calendar-sync'
     | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
@@ -2077,6 +2090,7 @@ export interface RootRouteChildren {
   NewsIndexRoute: typeof NewsIndexRoute
   NotesIndexRoute: typeof NotesIndexRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
+  ApiPublicGoogleCalendarSyncRoute: typeof ApiPublicGoogleCalendarSyncRoute
   LessonsEditIdRoute: typeof LessonsEditIdRoute
   LessonsFeedbackIdRoute: typeof LessonsFeedbackIdRoute
   LessonsRescheduleIdRoute: typeof LessonsRescheduleIdRoute
@@ -3193,6 +3207,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DsmLivePodcastPodcastIdRouteImport
       parentRoute: typeof DsmLiveRoute
     }
+    '/api/public/google-calendar-sync': {
+      id: '/api/public/google-calendar-sync'
+      path: '/api/public/google-calendar-sync'
+      fullPath: '/api/public/google-calendar-sync'
+      preLoaderRoute: typeof ApiPublicGoogleCalendarSyncRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/carplay/v1/lesson': {
       id: '/api/public/carplay/v1/lesson'
       path: '/api/public/carplay/v1/lesson'
@@ -3463,6 +3484,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsIndexRoute: NewsIndexRoute,
   NotesIndexRoute: NotesIndexRoute,
   PupilsIndexRoute: PupilsIndexRoute,
+  ApiPublicGoogleCalendarSyncRoute: ApiPublicGoogleCalendarSyncRoute,
   LessonsEditIdRoute: LessonsEditIdRoute,
   LessonsFeedbackIdRoute: LessonsFeedbackIdRoute,
   LessonsRescheduleIdRoute: LessonsRescheduleIdRoute,
