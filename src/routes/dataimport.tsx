@@ -185,6 +185,20 @@ function DataImportPage() {
   };
 
 
+  const insertRow = async (r: Row) => {
+    const payload: Record<string, unknown> = {
+      instructor_id: userId,
+      name: resolveName(r),
+      first_name: r.first_name?.trim() || null,
+      last_name: r.last_name?.trim() || null,
+      phone: r.phone?.trim() || null,
+      email: r.email?.trim() || null,
+      status: r.status?.trim() || "active",
+    };
+    const { error } = await supabase.from("pupils").insert(payload);
+    return error?.message ?? null;
+  };
+
   const runImport = async () => {
     if (!userId || rows.length === 0) return;
     setImporting(true);
@@ -193,30 +207,26 @@ function DataImportPage() {
     setLiveSuccess(0);
     setLiveFailed(0);
     setFailures([]);
+    setImportedRows([]);
     setSuccessCount(null);
+    setShowResults(false);
 
     let success = 0;
-    const fails: { row: number; reason: string }[] = [];
+    const fails: FailedResult[] = [];
+    const ok: ImportedResult[] = [];
 
     for (let i = 0; i < rows.length; i++) {
       const r = rows[i];
       const v = validations[i];
-      const name = resolveName(r);
       if (!v.valid) {
-        fails.push({ row: i + 2, reason: v.errors.map((e) => e.message).join(", ") });
+        fails.push({ row: i + 2, reason: v.errors.map((e) => e.message).join(", "), data: r });
       } else {
-        const payload: Record<string, unknown> = {
-          instructor_id: userId,
-          name,
-          first_name: r.first_name?.trim() || null,
-          last_name: r.last_name?.trim() || null,
-          phone: r.phone?.trim() || null,
-          email: r.email?.trim() || null,
-          status: r.status?.trim() || "active",
-        };
-        const { error } = await supabase.from("pupils").insert(payload);
-        if (error) fails.push({ row: i + 2, reason: error.message });
-        else success++;
+        const err = await insertRow(r);
+        if (err) fails.push({ row: i + 2, reason: err, data: r });
+        else {
+          success++;
+          ok.push({ row: i + 2, name: resolveName(r) });
+        }
       }
 
       setProgress(Math.round(((i + 1) / rows.length) * 100));
@@ -227,8 +237,41 @@ function DataImportPage() {
 
     setSuccessCount(success);
     setFailures(fails);
+    setImportedRows(ok);
+    setShowResults(true);
     setImporting(false);
   };
+
+  const retryFailures = async (retryRows: FailedResult[]) => {
+    if (!userId || retryRows.length === 0) return;
+    setRetrying(true);
+    const stillFailed: FailedResult[] = [];
+    const newlyImported: ImportedResult[] = [];
+
+    for (const f of retryRows) {
+      const err = await insertRow(f.data as Row);
+      if (err) stillFailed.push({ ...f, reason: err });
+      else newlyImported.push({ row: f.row, name: resolveName(f.data) });
+    }
+
+    const retriedRowNumbers = new Set(retryRows.map((f) => f.row));
+    setFailures((prev) => [
+      ...prev.filter((f) => !retriedRowNumbers.has(f.row)),
+      ...stillFailed,
+    ].sort((a, b) => a.row - b.row));
+    setImportedRows((prev) => [...prev, ...newlyImported].sort((a, b) => a.row - b.row));
+    setSuccessCount((prev) => (prev ?? 0) + newlyImported.length);
+    setRetrying(false);
+
+    if (newlyImported.length > 0) {
+      toast.success(`${newlyImported.length} row${newlyImported.length === 1 ? "" : "s"} imported on retry`);
+    }
+    if (stillFailed.length > 0) {
+      toast.error(`${stillFailed.length} row${stillFailed.length === 1 ? "" : "s"} still failing`);
+    }
+  };
+
+
 
 
   const preview = rows.slice(0, 5);
