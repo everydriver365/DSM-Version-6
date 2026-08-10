@@ -2319,6 +2319,7 @@ function MenuRow({
   labelColor?: string;
   hideChevron?: boolean;
   warning?: string;
+  disabled?: boolean;
 }) {
   const dividerStyle: React.CSSProperties | undefined =
     isLast === undefined
