@@ -432,13 +432,18 @@ function LoginPage() {
 
 
           {error && (
-            <p
-              className="text-[13px] text-[#1877D6] text-center"
+            <div
+              className="rounded-[12px] bg-[#FDECEC] border border-[#F5C2C4] px-3 py-2.5"
               role="alert"
-              style={{ fontFamily: "Poppins, sans-serif" }}
+              aria-live="assertive"
             >
-              {error}
-            </p>
+              <p
+                className="text-[13px] font-medium text-[#CC2229] text-center"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                {error}
+              </p>
+            </div>
           )}
         </div>
       </form>
