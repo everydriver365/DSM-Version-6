@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckCircle2, Lock } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -12,19 +12,12 @@ const POPPINS = { fontFamily: "Poppins, sans-serif" as const };
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
-const RYFT_PUBLIC_KEY =
-  "pk_sandbox_QpmgBnWSyZXGthN4EtZy6XIXYu+oRRkEUeceUFKLrXS5zmRA7XWBrkAdD8E6FgTn";
-
-declare global {
-  interface Window {
-    Ryft?: any;
-  }
-}
 
 type Quote = {
   id: string;
   token: string;
   instructor_id: string;
+  pupil_id?: string | null;
   recipient_name: string;
   recipient_email: string | null;
   recipient_phone: string | null;
@@ -41,7 +34,16 @@ type Quote = {
   accepted_at: string | null;
 };
 
-type Instructor = { phone: string | null; email: string | null; full_name: string | null };
+type Instructor = {
+  phone: string | null;
+  email: string | null;
+  full_name: string | null;
+  bank_name?: string | null;
+  bank_account_name?: string | null;
+  bank_sort_code?: string | null;
+  bank_account_number?: string | null;
+};
+
 
 function formatDate(iso: string | null): string {
   if (!iso) return "—";
@@ -81,11 +83,12 @@ function PublicQuotePage() {
   const [accepted, setAccepted] = useState(false);
   const [depositPaid, setDepositPaid] = useState(false);
 
-  // Deposit payment state
-  const [payStatus, setPayStatus] = useState<"idle" | "creating" | "ready" | "paying" | "paid" | "error">("idle");
+  // Deposit payment state (Square)
+  const [payStatus, setPayStatus] = useState<"idle" | "creating" | "ready" | "error">("idle");
   const [payError, setPayError] = useState<string>("");
-  const [clientSecret, setClientSecret] = useState<string>("");
-  const ryftInitedRef = useRef(false);
+  const [payUrl, setPayUrl] = useState<string>("");
+  const [noSquare, setNoSquare] = useState(false);
+
 
   useEffect(() => {
     (async () => {
@@ -116,7 +119,7 @@ function PublicQuotePage() {
       if (q.instructor_id) {
         const { data: ins } = await supabase
           .from("instructors")
-          .select("phone, email, full_name")
+          .select("*")
           .eq("id", q.instructor_id)
           .maybeSingle();
         if (ins) setInstructor(ins as Instructor);
@@ -172,134 +175,40 @@ function PublicQuotePage() {
     const amountPence = Math.max(3, Math.round(Number(quote.deposit_amount) * 100));
     setPayStatus("creating");
     setPayError("");
+    setNoSquare(false);
     try {
-      console.log("[quote] create-ryft-payment request:", { amountPence, quote_id: quote.id });
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/create-ryft-payment`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          apikey: SUPABASE_ANON_KEY,
-        },
-        body: JSON.stringify({
-          amount: amountPence,
-          currency: "GBP",
+      const { data, error } = await supabase.functions.invoke("square-create-payment-link", {
+        body: {
+          instructor_id: quote.instructor_id,
+          pupil_id: quote.pupil_id ?? null,
+          lesson_id: null,
+          amount_pence: amountPence,
           description: `Deposit for driving lessons — ${quote.recipient_name}`,
           metadata: {
             quote_id: quote.id,
-            instructor_id: quote.instructor_id,
             pupil_name: quote.recipient_name,
             pupil_email: quote.recipient_email || "",
             type: "quote_deposit",
           },
-        }),
+        },
       });
-      const json = await res.json();
-      console.log("[quote] create-ryft-payment response:", res.status, json);
-      if (!res.ok) throw new Error(json?.error || json?.message || `Failed to create payment (${res.status})`);
-      if (!json.clientSecret) throw new Error("No clientSecret returned");
-      setClientSecret(json.clientSecret);
+      if (error) throw error;
+      const res = data as { no_square?: boolean; url?: string } | null;
+      if (res?.no_square) {
+        setNoSquare(true);
+        setPayStatus("idle");
+        return;
+      }
+      if (!res?.url) throw new Error("No payment link returned");
+      setPayUrl(res.url);
+      setPayStatus("ready");
     } catch (e: any) {
-      console.error("[quote] create-ryft-payment failed:", e);
+      console.error("[quote] square-create-payment-link failed:", e);
       setPayStatus("error");
       setPayError(e?.message || "Failed to start payment");
     }
   }
 
-  // Initialise Ryft once we have a clientSecret
-  useEffect(() => {
-    if (!clientSecret || !quote) return;
-    if (ryftInitedRef.current) return;
-    ryftInitedRef.current = true;
-
-    const SDK_URL = "https://embedded.ryftpay.com/v2/ryft.min.js";
-    const existing = document.querySelector(`script[src="${SDK_URL}"]`) as HTMLScriptElement | null;
-
-    const onApproved = async () => {
-      setPayStatus("paid");
-      setDepositPaid(true);
-      try {
-        await supabase
-          .from("quotes")
-          .update({ deposit_paid: true, deposit_paid_at: new Date().toISOString() })
-          .eq("token", token);
-      } catch (err) {
-        console.error("[quote] mark deposit paid failed:", err);
-      }
-      try {
-        await fetch(`${SUPABASE_URL}/rest/v1/instructor_notifications`, {
-          method: "POST",
-          headers: {
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-            "Content-Type": "application/json",
-            Prefer: "return=minimal",
-          },
-          body: JSON.stringify({
-            instructor_id: quote.instructor_id,
-            title: "Deposit received! 💰",
-            body: `${quote.recipient_name} paid £${Number(quote.deposit_amount).toFixed(2)} deposit`,
-            type: "payment",
-            read: false,
-            reference_id: quote.id,
-            reference_type: "quote",
-          }),
-        });
-      } catch (err) {
-        console.error("[quote] notify deposit failed:", err);
-      }
-    };
-
-    const init = () => {
-      try {
-        if (!window.Ryft) throw new Error("Ryft SDK not loaded");
-        window.Ryft.init({
-          publicKey: RYFT_PUBLIC_KEY,
-          clientSecret,
-          googlePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
-          applePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
-        });
-        try { window.Ryft?.googlePay?.mount?.("#google-pay-container"); } catch (e) { console.warn("Google Pay unavailable:", e); }
-        try { window.Ryft?.applePay?.mount?.("#apple-pay-container"); } catch (e) { console.warn("Apple Pay unavailable:", e); }
-        window.Ryft.addEventHandler("paymentSuccess", (evt: any) => {
-          console.log("[quote] Ryft paymentSuccess:", evt);
-          const status = evt?.paymentSession?.status;
-          if (!status || status === "Approved" || status === "Captured") onApproved();
-        });
-        window.Ryft.addEventHandler("paymentError", (e: any) => {
-          console.error("[quote] Ryft paymentError:", e);
-          const msg =
-            e?.error?.message ||
-            e?.errors?.[0]?.message ||
-            e?.message ||
-            (typeof e === "string" ? e : "") ||
-            "Payment failed. Please try again.";
-          setPayStatus("error");
-          setPayError(msg);
-        });
-        setPayStatus("ready");
-      } catch (e: any) {
-        setPayStatus("error");
-        setPayError(e?.message || "Failed to initialise payment");
-      }
-    };
-
-    if (existing && window.Ryft) {
-      init();
-    } else {
-      const s = existing || document.createElement("script");
-      if (!existing) {
-        s.src = SDK_URL;
-        s.async = true;
-        document.body.appendChild(s);
-      }
-      s.addEventListener("load", init, { once: true });
-      s.addEventListener("error", () => {
-        setPayStatus("error");
-        setPayError("Could not load payment SDK");
-      }, { once: true });
-    }
-  }, [clientSecret, quote, token]);
 
   function askQuestion() {
     if (!instructor) return;
@@ -320,7 +229,7 @@ function PublicQuotePage() {
 
   const depositAmount = Number(quote.deposit_amount || 0);
   const needsDeposit = accepted && depositAmount > 0 && !depositPaid;
-  const depositDoneNow = payStatus === "paid";
+  const depositDoneNow = false; // Square payment completes off-site; status refreshes on reload
 
   return (
     <div style={{ ...POPPINS, minHeight: "100vh", background: "#fff" }}>
@@ -408,7 +317,21 @@ function PublicQuotePage() {
                     </div>
                   )}
 
-                  {!clientSecret ? (
+                  {noSquare && (
+                    <div style={{ background: "#FFFBEB", color: "#92400E", padding: 12, borderRadius: 8, fontSize: 13, marginBottom: 12 }}>
+                      Your instructor hasn't connected Square yet. Please pay by bank transfer or contact your instructor directly.
+                      {(instructor?.bank_account_name || instructor?.bank_sort_code || instructor?.bank_account_number) && (
+                        <div style={{ marginTop: 8, color: "#0B1F3A" }}>
+                          {instructor?.bank_name && <div>Bank: {instructor.bank_name}</div>}
+                          {instructor?.bank_account_name && <div>Account name: {instructor.bank_account_name}</div>}
+                          {instructor?.bank_sort_code && <div>Sort code: {instructor.bank_sort_code}</div>}
+                          {instructor?.bank_account_number && <div>Account number: {instructor.bank_account_number}</div>}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {!payUrl ? (
                     <button
                       disabled={payStatus === "creating"}
                       onClick={startDepositPayment}
@@ -423,47 +346,32 @@ function PublicQuotePage() {
                     </button>
                   ) : (
                     <div>
-                      <div id="google-pay-container" style={{ marginBottom: 12 }} />
-                      <div id="apple-pay-container" style={{ marginBottom: 12 }} />
-                      <div style={{ textAlign: "center", color: "#9CA3AF", fontSize: 13, marginBottom: 12 }}>— or pay by card —</div>
-                      <div className="Ryft--paysection">
-                        <form
-                          id="ryft-pay-form"
-                          className="Ryft--payform"
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            setPayError("");
-                            setPayStatus("paying");
-                            try {
-                              window.Ryft?.attemptPayment?.();
-                            } catch (err: any) {
-                              setPayStatus("error");
-                              setPayError(err?.message || "Payment failed");
-                            }
-                          }}
-                        >
-                          <button
-                            id="pay-btn"
-                            type="submit"
-                            disabled={payStatus === "paying"}
-                            style={{
-                              width: "100%", background: "#1877D6", color: "#fff",
-                              border: 0, borderRadius: 10, padding: "14px 16px",
-                              fontSize: 16, fontWeight: 600, cursor: "pointer",
-                              opacity: payStatus === "paying" ? 0.6 : 1,
-                            }}
-                          >
-                            {payStatus === "paying" ? "Processing…" : `Pay £${depositAmount.toFixed(2)}`}
-                          </button>
-                        </form>
+                      <a
+                        href={payUrl}
+                        style={{
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          width: "100%", height: 48, background: "#1877D6", color: "#fff",
+                          borderRadius: 10, fontSize: 15, fontWeight: 600, textDecoration: "none",
+                        }}
+                      >
+                        Pay now
+                      </a>
+                      <div style={{ textAlign: "center", color: "#9CA3AF", fontSize: 13, margin: "16px 0 8px" }}>— or scan to pay —</div>
+                      <div style={{ display: "flex", justifyContent: "center" }}>
+                        <img
+                          src={`https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=${encodeURIComponent(payUrl)}&choe=UTF-8`}
+                          alt="QR code to pay your deposit"
+                          width={250}
+                          height={250}
+                          style={{ borderRadius: 8 }}
+                        />
                       </div>
-                      {payStatus === "ready" || payStatus === "creating" ? (
-                        <p style={{ textAlign: "center", color: "#94a3b8", fontSize: 12, marginTop: 12 }}>
-                          Secured by Ryft
-                        </p>
-                      ) : null}
+                      <p style={{ textAlign: "center", color: "#94a3b8", fontSize: 12, marginTop: 12 }}>
+                        Secured by Square
+                      </p>
                     </div>
                   )}
+
                 </div>
               )}
 
