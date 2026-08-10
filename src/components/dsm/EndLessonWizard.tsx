@@ -1534,80 +1534,20 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 <span style={{ color: "#6B7280" }}>Payment</span>
                 <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{finalPaymentLabel}</span>
               </div>
-              {lastRefundResult && (
+              {sortedRefunds.length > 0 && (
                 <div className="mt-2 pt-2" style={{ borderTop: "1px solid #EEF2F7" }}>
                   <div className="text-[12px] mb-1" style={{ color: "#CC2229", fontWeight: 700 }}>
                     Refund activity
                   </div>
-                  <div className="flex justify-between text-[12px] py-0.5">
-                    <span style={{ color: "#6B7280" }}>Status</span>
-                    <span
-                      style={{
-                        color:
-                          lastRefundResult.status === "failed"
-                            ? "#CC2229"
-                            : lastRefundResult.status === "pending"
-                              ? "#F59E0B"
-                              : "#1A9B5C",
-                        fontWeight: 700,
-                        textTransform: "capitalize",
-                      }}
+                  {sortedRefunds.map((refund, idx) => (
+                    <div
+                      key={refund.historyId ?? `${refund.createdAt ?? idx}-${idx}`}
+                      className={idx > 0 ? "mt-2 pt-2" : undefined}
+                      style={idx > 0 ? { borderTop: "1px solid #EEF2F7" } : undefined}
                     >
-                      {lastRefundResult.status ?? "succeeded"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-[12px] py-0.5">
-                    <span style={{ color: "#6B7280" }}>Refunded</span>
-                    <span style={{ color: "#CC2229", fontWeight: 600 }}>
-                      £{(lastRefundResult.amount ?? lastRefundResult.amountReversed).toFixed(2)}
-                      {lastRefundResult.method ? ` · ${lastRefundResult.method}` : ""}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-[12px] py-0.5">
-                    <span style={{ color: "#6B7280" }}>Reversed off lessons</span>
-                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.amountReversed.toFixed(2)}</span>
-                  </div>
-                  {lastRefundResult.fromAccountCredit > 0 && (
-                    <div className="flex justify-between text-[12px] py-0.5">
-                      <span style={{ color: "#6B7280" }}>From account credit</span>
-                      <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.fromAccountCredit.toFixed(2)}</span>
+                      <RefundAuditRows refund={refund} compact />
                     </div>
-                  )}
-                  <div className="flex justify-between text-[12px] py-0.5">
-                    <span style={{ color: "#6B7280" }}>Account balance</span>
-                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.newAccountBalance.toFixed(2)}</span>
-                  </div>
-                  {lastRefundResult.createdAt && (
-                    <div className="flex justify-between text-[12px] py-0.5">
-                      <span style={{ color: "#6B7280" }}>Recorded</span>
-                      <span style={{ color: "#0B1F3A", fontWeight: 600 }}>
-                        {new Date(lastRefundResult.createdAt).toLocaleString("en-GB", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                    </div>
-                  )}
-                  {lastRefundResult.historyId && (
-                    <div className="flex justify-between text-[12px] py-0.5 gap-3">
-                      <span style={{ color: "#6B7280" }}>Transaction ID</span>
-                      <span
-                        style={{
-                          color: "#0B1F3A",
-                          fontWeight: 600,
-                          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-                          fontSize: 11,
-                          wordBreak: "break-all",
-                          textAlign: "right",
-                        }}
-                      >
-                        {lastRefundResult.historyId}
-                      </span>
-                    </div>
-                  )}
+                  ))}
                 </div>
               )}
 
