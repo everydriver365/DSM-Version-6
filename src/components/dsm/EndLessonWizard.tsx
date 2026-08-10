@@ -1481,6 +1481,23 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                     Refund activity
                   </div>
                   <div className="flex justify-between text-[12px] py-0.5">
+                    <span style={{ color: "#6B7280" }}>Status</span>
+                    <span
+                      style={{
+                        color:
+                          lastRefundResult.status === "failed"
+                            ? "#CC2229"
+                            : lastRefundResult.status === "pending"
+                              ? "#F59E0B"
+                              : "#1A9B5C",
+                        fontWeight: 700,
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      {lastRefundResult.status ?? "succeeded"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-[12px] py-0.5">
                     <span style={{ color: "#6B7280" }}>Refunded</span>
                     <span style={{ color: "#CC2229", fontWeight: 600 }}>
                       £{(lastRefundResult.amount ?? lastRefundResult.amountReversed).toFixed(2)}
@@ -1534,6 +1551,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                   )}
                 </div>
               )}
+
               {paymentRecorded && lastPaymentResult && (
 
                 <div className="mt-2 pt-2" style={{ borderTop: "1px solid #EEF2F7" }}>
