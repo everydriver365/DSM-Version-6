@@ -517,7 +517,28 @@ function NeedsAttentionRow({ item }: { item: NAItem }) {
           {item.subtitle}
         </div>
       </div>
+      {item.actionLabel && item.onAction && (
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); item.onAction?.(); }}
+          style={{
+            flexShrink: 0,
+            background: chipBg,
+            color: accent,
+            border: 'none',
+            borderRadius: 999,
+            padding: '6px 12px',
+            fontSize: 11,
+            fontWeight: 700,
+            fontFamily: 'Poppins, sans-serif',
+            cursor: 'pointer',
+          }}
+        >
+          {item.actionLabel}
+        </button>
+      )}
       <IconChevronRight stroke={1.5} size={15} color="#B0BAC9" />
+
     </div>
   );
 }
