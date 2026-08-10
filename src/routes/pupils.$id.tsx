@@ -25,7 +25,7 @@ import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
 
 import { resolveHourlyRate } from "../lib/pricing/resolveRate";
 import { deletePaymentRecord } from "./payments";
-import { getPupilBalance, type PupilBalance } from "@/lib/payments";
+import { getPupilBalance, recordPayment, type PupilBalance } from "@/lib/payments";
 import { buildTripReport, type ReportSegment, type Coord } from "@/lib/tripReport";
 import { formatCountdown } from "@/lib/dateHelpers";
 

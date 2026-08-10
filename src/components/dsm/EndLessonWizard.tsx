@@ -1056,7 +1056,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
 
             <button
               type="button"
-              onClick={recordPayment}
+              onClick={handleRecordPayment}
               disabled={paymentSaving}
               className="mt-5 w-full h-11 rounded-lg text-[14px] font-semibold text-white flex items-center justify-center gap-2"
               style={{
