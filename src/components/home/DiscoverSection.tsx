@@ -114,6 +114,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const [latestNewsTitle, setLatestNewsTitle] = useState<string | null>(null);
   const [latestNewsSource, setLatestNewsSource] = useState<string | null>(null);
   const [latestNewsDate, setLatestNewsDate] = useState<string | null>(null);
+  const [newsItems, setNewsItems] = useState<
+    { id: string; title: string | null; image_url: string | null }[]
+  >([]);
+  const [newsIndex, setNewsIndex] = useState(0);
+  const newsScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
