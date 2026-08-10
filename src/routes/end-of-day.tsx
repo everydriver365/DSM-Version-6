@@ -6,7 +6,7 @@ import { IconAlertTriangle, IconArrowLeft, IconCalendarOff, IconCar, IconChevron
 import { Receipt, Calendar as CalendarIcon } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { EmptyState } from "@/components/dsm/EmptyState";
-import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
+import { EndLessonWizard } from "../components/dsm/EndLessonWizard.tsx";
 import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
 import { LogMileageSheet } from "@/components/mileage/LogMileageSheet";
 
