@@ -2388,9 +2388,9 @@ function MenuRow({
           style={{
             background: "#E6F1FB",
             color: "#1877D6",
-            fontSize: 10,
-            fontWeight: 600,
-            padding: "3px 9px",
+            fontSize: 11,
+            fontWeight: 700,
+            padding: "4px 10px",
             borderRadius: 20,
             marginRight: 4,
             ...POPPINS,
@@ -2400,9 +2400,9 @@ function MenuRow({
         </span>
       ) : null}
       {hideChevron ? null : expanded ? (
-        <ChevronDown size={15} color="#B0BAC9" />
+        <ChevronDown size={15} color="#C7C7CC" />
       ) : (
-        <ChevronRight size={15} color="#B0BAC9" />
+        <ChevronRight size={15} color="#C7C7CC" />
       )}
     </button>
   );
