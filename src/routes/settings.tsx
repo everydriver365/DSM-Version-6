@@ -889,7 +889,7 @@ function SettingsPage() {
             value="DSM Free"
             onClick={() => navigate({ to: "/subscription" })}
           />
-        </div>
+        </SectionCard>
 
         <Label>REALTIME BADGES</Label>
         <SectionCard>
