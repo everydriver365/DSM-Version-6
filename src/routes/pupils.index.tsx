@@ -544,6 +544,10 @@ function PupilsIndexPage() {
     return withIndex.map((x) => x.p);
   }, [pupils, query, unreadMap, sortBy, balanceMap, nextLessonMap]);
 
+  // Visual grouping only — derived from the same data already fetched.
+  const needsAttention = (filtered ?? []).filter((p: any) => (balanceMap[p.id] || 0) > 0);
+  const activePupils = (filtered ?? []).filter((p: any) => !((balanceMap[p.id] || 0) > 0));
+
 
   const renderRow = (p: any, idx: number, total: number) => {
     const balanceOwed = balanceMap[p.id] || 0;
@@ -628,7 +632,7 @@ function PupilsIndexPage() {
               <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 3, ...POPPINS }}>
                 {lp
                   ? `Last seen: ${formatRelativeDate(lp.date)}`
-                  : `· Next: ${formatShortDate(nextLesson)}`}
+                  : `Next: ${formatShortDate(nextLesson)}`}
               </div>
             )}
           </div>
@@ -837,38 +841,73 @@ function PupilsIndexPage() {
           />
         ) : (
           <>
+            {needsAttention.length > 0 && (
+              <>
+                <div
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: '#FF3B30',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    padding: '16px 16px 6px',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}
+                >
+                  Needs Attention
+                </div>
+                <div style={{ margin: '0 16px' }}>
+                  {needsAttention.map((p, index) => (
+                    <div
+                      key={p.id}
+                      style={{
+                        background: '#fff',
+                        borderRadius: 16,
+                        padding: 14,
+                        boxShadow: '0 3px 0 #F7C9C6, 0 8px 18px rgba(255,59,48,0.1)',
+                        border: '1.5px solid #FDEDEC',
+                        marginBottom: 10,
+                      }}
+                    >
+                      {renderRow(p, index, needsAttention.length)}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
             <div
               style={{
-                fontSize: 11,
-                fontWeight: 600,
-                color: '#9CA3AF',
+                fontSize: 12,
+                fontWeight: 700,
+                color: '#8A8A8E',
                 textTransform: 'uppercase',
-                letterSpacing: '0.08em',
+                letterSpacing: '0.5px',
                 padding: '16px 16px 6px',
                 fontFamily: 'Poppins, sans-serif',
               }}
             >
-              ACTIVE · {filtered.length}
+              Active · {activePupils.length}
             </div>
             <div
               style={{
                 margin: '0 16px',
                 background: '#fff',
                 borderRadius: 16,
-                boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
                 overflow: 'hidden',
               }}
             >
-              {filtered.map((p, index) => (
+              {activePupils.map((p, index) => (
                 <div key={p.id}>
-                  {renderRow(p, index, filtered.length)}
-                  {index < filtered.length - 1 && (
-                    <div style={{ height: 1, background: '#E4E8EF', marginLeft: 72 }} />
+                  {renderRow(p, index, activePupils.length)}
+                  {index < activePupils.length - 1 && (
+                    <div style={{ height: 1, background: '#EFEFF2', marginLeft: 72 }} />
                   )}
                 </div>
               ))}
             </div>
           </>
+
         )}
 
       </div>
