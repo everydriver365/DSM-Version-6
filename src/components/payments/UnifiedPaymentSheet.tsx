@@ -404,7 +404,7 @@ export function UnifiedPaymentSheet({
   const [paymentDate, setPaymentDate] = useState(todayIso);
   const [saving, setSaving] = useState(false);
   const [qrUrl, setQrUrl] = useState<string | null>(null);
-  const [qrPaymentId, setQrPaymentId] = useState<string | null>(null);
+  
   const [qrFullscreen, setQrFullscreen] = useState(false);
   const [payUrl, setPayUrl] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
