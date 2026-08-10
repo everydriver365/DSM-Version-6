@@ -2292,6 +2292,10 @@ function SettingsPage() {
   );
 }
 
+// Shared interaction styling for every grouped row (hover / focus / disabled).
+const ROW_INTERACTION =
+  "transition-colors duration-150 hover:bg-[#F6F7F9] active:bg-[#EFF1F4] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#1877D6] disabled:opacity-50 disabled:pointer-events-none";
+
 function MenuRow({
   icon,
   iconBg,
