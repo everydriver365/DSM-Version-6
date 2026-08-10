@@ -193,9 +193,10 @@ function DataImportPage() {
 
     for (let i = 0; i < rows.length; i++) {
       const r = rows[i];
-      const name = r.name?.trim() || [r.first_name, r.last_name].filter(Boolean).join(" ").trim();
-      if (!name) {
-        fails.push({ row: i + 2, reason: "Missing name" });
+      const v = validations[i];
+      const name = resolveName(r);
+      if (!v.valid) {
+        fails.push({ row: i + 2, reason: v.errors.map((e) => e.message).join(", ") });
       } else {
         const payload: Record<string, unknown> = {
           instructor_id: userId,
@@ -210,6 +211,7 @@ function DataImportPage() {
         if (error) fails.push({ row: i + 2, reason: error.message });
         else success++;
       }
+
       setProgress(Math.round(((i + 1) / rows.length) * 100));
       setProcessed(i + 1);
       setLiveSuccess(success);
