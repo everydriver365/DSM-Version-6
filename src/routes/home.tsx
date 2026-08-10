@@ -587,103 +587,7 @@ function NeedsAttentionSection({ items }: { items: NAItem[] }) {
     </div>
   );
 }
-
-
-/** Compact "how is my day looking?" hero shown at the top of the dashboard. */
-function MorningBriefCard({
-  lessonCount,
-  completedCount,
-  earnings,
-  nextLabel,
-  onOpenSchedule,
-  onOpenPayments,
-}: {
-  lessonCount: number;
-  completedCount: number;
-  earnings: number;
-  nextLabel: string;
-  onOpenSchedule: () => void;
-  onOpenPayments: () => void;
-}) {
-  const metricLabel: React.CSSProperties = {
-    fontSize: 10,
-    fontWeight: 600,
-    color: '#8A94A6',
-    textTransform: 'uppercase',
-    letterSpacing: '0.06em',
-    marginTop: 2,
-  };
-  const metricValue: React.CSSProperties = {
-    fontSize: 19,
-    fontWeight: 700,
-    color: '#0B1F3A',
-    lineHeight: 1.1,
-  };
-  return (
-    <div style={SECTION_WRAPPER_STYLE}>
-      <div style={SECTION_HEADER_STYLE}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
-          <span style={SECTION_TITLE_TEXT_STYLE}>Morning brief</span>
-        </div>
-        <button type="button" onClick={onOpenSchedule} style={SECTION_LINK_STYLE}>
-          Plan my day <IconChevronRight size={14} stroke={2.2} />
-        </button>
-      </div>
-      <div
-        style={{
-          background: '#FFFFFF',
-          borderRadius: 16,
-          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-          padding: 14,
-          fontFamily: 'Poppins, sans-serif',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-          <div style={{ width: 34, height: 34, borderRadius: 11, background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <IconClock size={18} color="#1877D6" />
-          </div>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {nextLabel}
-            </div>
-            <div style={{ fontSize: 11, color: '#8A94A6', marginTop: 1 }}>Your day at a glance</div>
-          </div>
-        </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button
-            type="button"
-            onClick={onOpenSchedule}
-            style={{ flex: 1, minWidth: 0, textAlign: 'left', background: '#F6F8FC', border: 'none', borderRadius: 12, padding: 10, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
-          >
-            <div style={metricValue}>{lessonCount}</div>
-            <div style={metricLabel}>Lessons</div>
-          </button>
-          <button
-            type="button"
-            onClick={onOpenSchedule}
-            style={{ flex: 1, minWidth: 0, textAlign: 'left', background: '#F6F8FC', border: 'none', borderRadius: 12, padding: 10, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
-          >
-            <div style={{ ...metricValue, color: '#1E8E3E' }}>{completedCount}</div>
-            <div style={metricLabel}>Done</div>
-          </button>
-          <button
-            type="button"
-            onClick={onOpenPayments}
-            style={{ flex: 1, minWidth: 0, textAlign: 'left', background: '#F6F8FC', border: 'none', borderRadius: 12, padding: 10, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
-          >
-            <div style={metricValue}>£{Math.round(earnings)}</div>
-            <div style={metricLabel}>Expected</div>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
-
-
+/** Pupil status normalisation helpers. */
 function normalizePupilStatus(status: string | null | undefined) {
   const normalized = (status ?? "active").toLowerCase();
   return normalized || "active";
@@ -4819,36 +4723,6 @@ function HomePage() {
         ))}
       </div>
       </div>
-
-      {/* ============ MORNING BRIEF ============ */}
-      {(() => {
-        const todayList = (todayLessons ?? []) as any[];
-        const completedToday = todayList.filter((l) => l.status === 'completed').length;
-        const expectedToday = todayList
-          .filter((l) => l.status !== 'cancelled')
-          .reduce((s, l) => s + Number(l.amount_due ?? 0), 0);
-        const nowMs = Date.now();
-        const upcomingToday = todayList
-          .filter((l) => l.status !== 'cancelled' && l.status !== 'completed')
-          .map((l) => ({ l, t: new Date(`${l.lesson_date}T${String(l.lesson_time || '00:00:00').slice(0, 8)}`).getTime() }))
-          .filter((x) => x.t >= nowMs)
-          .sort((a, b) => a.t - b.t)[0];
-        const nextLabel = upcomingToday
-          ? `Next: ${String(upcomingToday.l.lesson_time || '').slice(0, 5)} · ${upcomingToday.l.pupils?.first_name || upcomingToday.l.pupils?.name || 'Pupil'}`
-          : todayList.length > 0
-            ? 'No more lessons today'
-            : 'Nothing booked today';
-        return (
-          <MorningBriefCard
-            lessonCount={todayList.length}
-            completedCount={completedToday}
-            earnings={expectedToday}
-            nextLabel={nextLabel}
-            onOpenSchedule={() => navigate({ to: '/schedule' })}
-            onOpenPayments={() => navigate({ to: '/payments' })}
-          />
-        );
-      })()}
 
       {/* ============ NEEDS ATTENTION ============ */}
       <div style={{ marginBottom: 16 }}>
