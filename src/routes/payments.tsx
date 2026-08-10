@@ -509,7 +509,7 @@ function PaymentsPage() {
           display: "flex",
           alignItems: "center",
           gap: 8,
-          margin: "0 16px 12px",
+          margin: "0 16px 14px",
           cursor: "pointer",
           border: 0,
           width: "calc(100% - 32px)",
