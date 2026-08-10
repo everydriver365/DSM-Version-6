@@ -1305,7 +1305,7 @@ function SchedulePage() {
                                   background: "#FFFFFF",
                                   borderRadius: 16,
                                   padding: "14px 16px",
-                                  marginBottom: 10,
+                                  marginBottom: 8,
                                   boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
                                   display: "flex",
                                   alignItems: "stretch",
@@ -1523,7 +1523,7 @@ function SchedulePage() {
 
 
                           return (
-                            <div key={e.id} style={{ position: "relative", marginBottom: 16 }}>
+                            <div key={e.id} style={{ position: "relative", marginBottom: 8 }}>
                               <div style={{ position: "relative", overflow: "hidden", borderRadius: 16 }}>
                                 <div
                                   onClick={onCardClick}
