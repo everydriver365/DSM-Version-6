@@ -258,7 +258,7 @@ function OutstandingPage() {
             </div>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {sections.filter((s) => s.count > 0).map((s) => {
               const isOpen = open[s.key] ?? true;
               return (

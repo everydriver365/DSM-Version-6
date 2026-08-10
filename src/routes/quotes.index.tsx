@@ -250,7 +250,7 @@ function QuotesPage() {
             </button>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {filtered.map((q) => {
               const sLower = (q.status || "").toLowerCase();
               const displayStatus: string = isExpired(q) && q.status === "pending" ? "expired" : sLower;
