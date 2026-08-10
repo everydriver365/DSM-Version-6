@@ -2292,6 +2292,10 @@ function SettingsPage() {
   );
 }
 
+// Shared interaction styling for every grouped row (hover / focus / disabled).
+const ROW_INTERACTION =
+  "transition-colors duration-150 hover:bg-[#F6F7F9] active:bg-[#EFF1F4] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#1877D6] disabled:opacity-50 disabled:pointer-events-none";
+
 function MenuRow({
   icon,
   iconBg,
@@ -2305,6 +2309,7 @@ function MenuRow({
   labelColor,
   hideChevron,
   warning,
+  disabled,
 }: {
   icon: React.ReactNode;
   iconBg: string;
@@ -2318,6 +2323,7 @@ function MenuRow({
   labelColor?: string;
   hideChevron?: boolean;
   warning?: string;
+  disabled?: boolean;
 }) {
   const dividerStyle: React.CSSProperties | undefined =
     isLast === undefined
@@ -2332,7 +2338,8 @@ function MenuRow({
     <button
       type="button"
       onClick={onClick}
-      className="w-full flex items-center text-left [&_svg]:!w-[17px] [&_svg]:!h-[17px]"
+      disabled={disabled}
+      className={`w-full flex items-center text-left [&_svg]:!w-[17px] [&_svg]:!h-[17px] ${ROW_INTERACTION}`}
       style={{
         gap: 14,
         padding: "15px 16px",
@@ -2417,6 +2424,7 @@ function AccountRow({
   onClick,
   isFirst,
   warning,
+  disabled,
 }: {
   icon: React.ReactNode;
   iconBg: string;
@@ -2426,17 +2434,18 @@ function AccountRow({
   onClick: () => void;
   isFirst?: boolean;
   warning?: string;
+  disabled?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="w-full flex items-center text-left"
+      disabled={disabled}
+      className={`w-full flex items-center text-left bg-white ${ROW_INTERACTION}`}
       style={{
         gap: 14,
         padding: "15px 16px",
         borderTop: isFirst ? undefined : "1px solid #EFEFF2",
-        background: "#FFFFFF",
       }}
     >
       <div
