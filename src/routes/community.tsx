@@ -878,7 +878,7 @@ function RoomsTab({
   }
 
   const rowStyle: React.CSSProperties = {
-    background: "#fff", borderRadius: 18, padding: 14, marginBottom: 12,
+    background: "#fff", borderRadius: 18, padding: 14,
     display: "flex", alignItems: "center", gap: 13,
     boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
   };
@@ -962,7 +962,7 @@ function RoomsTab({
         ) : myRooms.length === 0 ? (
           <div style={{ fontSize: 13, color: "#8A8A8E" }}>You haven’t joined any rooms yet.</div>
         ) : (
-          <div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {myRooms.map((room) => (
               <RoomRow
                 key={room.id}
@@ -998,7 +998,7 @@ function RoomsTab({
         {loading ? null : availableRooms.length === 0 ? (
           <div style={{ fontSize: 13, color: "#8A8A8E" }}>No other rooms found.</div>
         ) : (
-          <div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {availableRooms.map((room) => (
               <RoomRow
                 key={room.id}

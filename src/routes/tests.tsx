@@ -267,7 +267,7 @@ function TestsPage() {
             {section.items.length === 0 ? (
               <EmptyState title={section.emptyText} subtitle="Nothing to show here" />
             ) : (
-              <div className="flex flex-col">
+              <div className="flex flex-col" style={{ gap: 8 }}>
                 {section.items.map((t) => (
                   <TestCard
                     key={`${section.key}-${t.id}`}
@@ -533,7 +533,7 @@ function TestCard({
     <div
       style={{
         position: "relative", background: "#fff", borderRadius: 18, padding: 16,
-        marginBottom: 12, boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+        boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
       }}
     >
       <div className="flex items-start" style={{ gap: 12 }}>

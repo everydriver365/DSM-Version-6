@@ -607,7 +607,7 @@ function JobsPage() {
             </div>
           </div>
         ) : (
-          <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
             {jobs.map((job) => (
               <JobCard
                 key={job.id}
@@ -642,7 +642,7 @@ function JobsPage() {
             </div>
           </div>
         ) : (
-          <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
             {claimedJobs.map((job) => (
               <JobCard
                 key={job.id}

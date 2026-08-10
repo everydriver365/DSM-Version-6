@@ -355,7 +355,7 @@ function MarketplacePage() {
         </div>
 
         {loading ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
@@ -371,7 +371,7 @@ function MarketplacePage() {
         ) : topMarketplace.length === 0 ? (
           <div style={{ fontSize: 13, color: "#64748B" }}>No products yet.</div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {topMarketplace.map((l, idx) =>
               idx === 0 ? (
                 <FeaturedCard key={l.id} listing={l} onOpen={openListing} />
@@ -419,7 +419,7 @@ function MarketplacePage() {
                 List free →
               </button>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
 
               {forSale.map((l) => (
                 <ProductCard key={l.id} listing={l} onOpen={openListing} />

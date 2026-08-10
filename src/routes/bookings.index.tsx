@@ -276,7 +276,7 @@ function BookingsListPage() {
             </div>
           </div>
         ) : (
-          <div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {filtered.map((b) => {
               const badge = statusBadge(b.status);
               const price = b.instructor_courses?.price ?? 0;
@@ -295,7 +295,6 @@ function BookingsListPage() {
                     background: "#fff",
                     borderRadius: 18,
                     padding: 16,
-                    marginBottom: 12,
                     cursor: "pointer",
                     boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
                   }}
