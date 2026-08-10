@@ -290,12 +290,10 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   useEffect(() => {
     if (!open) return;
     const onRefund = (e: Event) => {
-      const detail = (e as CustomEvent).detail as
-        | (RecordRefundResult & { pupilId?: string; amount?: number; method?: string | null; createdAt?: string })
-        | undefined;
+      const detail = (e as CustomEvent).detail as RefundDetail | undefined;
       if (!detail) return;
       if (detail.pupilId && detail.pupilId !== pupilId) return;
-      setLastRefundResult(detail);
+      setRefundResults((prev) => [...prev, detail]);
     };
     window.addEventListener("dsm-refund-recorded", onRefund as EventListener);
     return () => window.removeEventListener("dsm-refund-recorded", onRefund as EventListener);
