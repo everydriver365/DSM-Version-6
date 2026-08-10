@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
-import { IconCircleCheck, IconGift, IconLoader2 } from "@tabler/icons-react";
+import { IconCircleCheck, IconGift, IconLoader2, IconPrinter } from "@tabler/icons-react";
 import { Banknote, ArrowLeftRight, PartyPopper, QrCode } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -35,6 +35,7 @@ import { toast } from "sonner";
 import { supabase } from "../../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
 import { recordPayment, type RecordPaymentResult } from "@/lib/payments";
+import { PaymentReceipt } from "@/components/dsm/PaymentReceipt";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
@@ -179,6 +180,9 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   const [paymentRecorded, setPaymentRecorded] = useState(false);
   const [paymentSaving, setPaymentSaving] = useState(false);
   const [lastPaymentResult, setLastPaymentResult] = useState<RecordPaymentResult | null>(null);
+  const [receiptOpen, setReceiptOpen] = useState(false);
+  const [recordedPaymentMethod, setRecordedPaymentMethod] = useState<string>("cash");
+  const [recordedPaymentAmount, setRecordedPaymentAmount] = useState<number>(0);
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [qrPaymentId, setQrPaymentId] = useState<string | null>(null);
   const [qrGenerating, setQrGenerating] = useState(false);
@@ -237,6 +241,10 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     );
     setPaymentRecorded(false);
     setPaymentSaving(false);
+    setLastPaymentResult(null);
+    setReceiptOpen(false);
+    setRecordedPaymentMethod("cash");
+    setRecordedPaymentAmount(0);
     setQrUrl(null);
     setQrPaymentId(null);
     setQrGenerating(false);
@@ -392,6 +400,14 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
       }
 
       setPaymentRecorded(true);
+      setRecordedPaymentMethod(
+        paymentMethod === "waived"
+          ? "waived"
+          : paymentMethod === "already_paid"
+            ? "already_paid"
+            : paymentMethod,
+      );
+      setRecordedPaymentAmount(amt);
       setFinalPaymentLabel(
         paymentMethod === "cash"
           ? "Paid · Cash"
@@ -513,6 +529,8 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             balanceOwedDelta: amt,
           });
           setPaymentRecorded(true);
+          setRecordedPaymentMethod("card_qr");
+          setRecordedPaymentAmount(amt);
           setFinalPaymentLabel("Paid · Card (QR)");
           toast.success("Payment received");
           setStep(3);
@@ -871,7 +889,8 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   })();
 
   return (
-    <BottomSheet
+    <>
+      <BottomSheet
       title="End of lesson"
       subtitle={pupilName ?? undefined}
       onClose={() => !completing && !paymentSaving && onClose()}
@@ -1185,6 +1204,24 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                     <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{lastPaymentResult.lessonsLeftPartial}</span>
                   </div>
                 )}
+                <button
+                  type="button"
+                  onClick={() => setReceiptOpen(true)}
+                  className="mt-2 w-full flex items-center justify-center gap-2"
+                  style={{
+                    padding: "8px 0",
+                    borderRadius: 8,
+                    backgroundColor: "#fff",
+                    border: "0.5px solid #EEF2F7",
+                    color: "#1877D6",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  <IconPrinter stroke={1.5} size={14} />
+                  Print receipt
+                </button>
               </div>
             )}
 
@@ -1400,6 +1437,24 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                       <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{lastPaymentResult.lessonsLeftPartial}</span>
                     </div>
                   )}
+                  <button
+                    type="button"
+                    onClick={() => setReceiptOpen(true)}
+                    className="mt-2 w-full flex items-center justify-center gap-2"
+                    style={{
+                      padding: "8px 0",
+                      borderRadius: 8,
+                      backgroundColor: "#fff",
+                      border: "0.5px solid #EEF2F7",
+                      color: "#1877D6",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <IconPrinter stroke={1.5} size={14} />
+                    Print receipt
+                  </button>
                 </div>
               )}
             </div>
@@ -1424,8 +1479,20 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
         `}</style>
       </div>
     </BottomSheet>
-
-  );
+    {receiptOpen && lastPaymentResult && (
+      <PaymentReceipt
+        pupilName={pupilName}
+        lessonDate={lessonDate}
+        startTime={startTime}
+        durationMinutes={durationMinutes}
+        lessonCost={lessonCost}
+        amountPaid={recordedPaymentAmount}
+        method={recordedPaymentMethod}
+        result={lastPaymentResult}
+        onClose={() => setReceiptOpen(false)}
+      />
+    )}
+  </>);
 }
 
 export default EndLessonWizard;
