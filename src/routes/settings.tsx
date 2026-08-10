@@ -805,38 +805,23 @@ function SettingsPage() {
 
       <div
         className="mx-4"
-        onClick={() => navigate({ to: "/availability-settings" as never })}
         style={{
           background: "#FFFFFF",
           borderRadius: 20,
-          padding: 18,
+          overflow: "hidden",
           boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
-          display: "flex",
-          alignItems: "center",
-          gap: 14,
-          cursor: "pointer",
         }}
       >
-        <div
-          className="flex items-center justify-center"
-          style={{ width: 44, height: 44, borderRadius: 13, background: "#E7F1FC", flexShrink: 0 }}
-        >
-          <Clock color="#1877D6" size={20} />
-        </div>
-        <div className="flex-1 min-w-0 flex flex-col">
-          <span
-            style={{ fontSize: 16, fontWeight: 800, color: "#000000", letterSpacing: -0.1, ...POPPINS }}
-          >
-            Availability & working hours
-          </span>
-          <span
-            style={{ fontSize: 12.5, color: "#8A8A8E", marginTop: 3, lineHeight: 1.4, ...POPPINS }}
-          >
-            Working days, hours, buffers, lunch break, time off, travel time
-          </span>
-        </div>
-        <ChevronRight color="#C7C7CC" size={16} />
+        <AccountRow
+          icon={<Clock color="#1877D6" size={20} />}
+          iconBg="#E7F1FC"
+          label="Availability & working hours"
+          subLabel="Working days, hours, buffers, lunch break, time off, travel time"
+          onClick={() => navigate({ to: "/availability-settings" as never })}
+          isFirst
+        />
       </div>
+
 
 
       <div className="px-4">
