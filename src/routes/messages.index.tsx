@@ -1302,8 +1302,8 @@ function MessagesIndexPage() {
                     {index < visibleItems.length - 1 && (
                       <div style={{
                         height: 1,
-                        background: '#E4E8EF',
-                        marginLeft: 74,
+                        background: '#EFEFF2',
+                        marginLeft: 79,
                       }} />
                     )}
                   </div>
