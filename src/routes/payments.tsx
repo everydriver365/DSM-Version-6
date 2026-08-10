@@ -270,6 +270,16 @@ function PaymentsPage() {
 
   useEffect(() => { if (userId) refetch(); /* eslint-disable-next-line */ }, [userId]);
 
+  // Keep totals and history in sync with payments recorded elsewhere.
+  useEffect(() => {
+    if (!userId) return;
+    const onPaymentRecorded = () => { refetch(); };
+    window.addEventListener("dsm-payment-recorded", onPaymentRecorded);
+    return () => window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
+    /* eslint-disable-next-line */
+  }, [userId]);
+
+
   useEffect(() => {
     if (!userId) return;
     (async () => {
