@@ -413,7 +413,7 @@ function PupilDetailPage() {
   const [totalPaid, setTotalPaid] = useState<number>(0);
   const [pricingType, setPricingType] = useState<PupilBalance["pricingType"] | null>(null);
   const [paymentHistory, setPaymentHistory] = useState<
-    { id: string; lesson_id: string | null; lesson_cost: number | null; payment_method: string | null; created_at: string; notes: string | null }[]
+    { id: string; lesson_id: string | null; lesson_cost: number | null; payment_method: string | null; payment_status?: string | null; created_at: string; notes: string | null }[]
   >([]);
   const [paymentHistoryRefresh, setPaymentHistoryRefresh] = useState(0);
   const [markPaidLoading, setMarkPaidLoading] = useState(false);
@@ -1105,9 +1105,9 @@ function PupilDetailPage() {
 
     supabase
       .from("lesson_history")
-      .select("id, lesson_id, lesson_cost, payment_method, created_at, notes")
+      .select("id, lesson_id, lesson_cost, payment_method, payment_status, created_at, notes")
       .eq("pupil_id", id)
-      .eq("payment_status", "paid")
+      .in("payment_status", ["paid", "refunded"])
       .is("deleted_at", null)
       .order("created_at", { ascending: false })
       .limit(20)
@@ -1244,7 +1244,11 @@ function PupilDetailPage() {
   useEffect(() => {
     const onPaymentRecorded = () => setPaymentHistoryRefresh((k) => k + 1);
     window.addEventListener("dsm-payment-recorded", onPaymentRecorded);
-    return () => window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
+    window.addEventListener("dsm-refund-recorded", onPaymentRecorded);
+    return () => {
+      window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
+      window.removeEventListener("dsm-refund-recorded", onPaymentRecorded);
+    };
   }, []);
 
   // Recompute live "owed" from the pupil's CURRENT rates.
@@ -1884,16 +1888,38 @@ function PupilDetailPage() {
                       className="flex flex-col"
                       style={{ background: "#FFFFFF", borderRadius: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.05)", overflow: "hidden" }}
                     >
-                      {paymentHistory.map((p, pi) => (
+                      {paymentHistory.map((p, pi) => {
+                        const isRefund = p.payment_status === "refunded" || Number(p.lesson_cost ?? 0) < 0;
+                        const amt = Math.abs(Number(p.lesson_cost ?? 0));
+                        return (
                         <div
                           key={p.id}
                           className="flex items-center justify-between px-4 py-3"
                           style={{ borderTop: pi === 0 ? "none" : "1px solid #E9E9EC" }}
                         >
                           <div className="flex flex-col">
-                            <span style={{ fontSize: 16, fontWeight: 700, color: "#000000", ...POPPINS }}>
-                              £{Number(p.lesson_cost ?? 0).toFixed(2)}
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <span style={{ fontSize: 16, fontWeight: 700, color: isRefund ? "#CC2229" : "#000000", ...POPPINS }}>
+                                {isRefund ? "−" : ""}£{amt.toFixed(2)}
+                              </span>
+                              {isRefund && (
+                                <span
+                                  style={{
+                                    fontSize: 10.5,
+                                    fontWeight: 700,
+                                    color: "#CC2229",
+                                    background: "rgba(204,34,41,0.10)",
+                                    borderRadius: 999,
+                                    padding: "2px 8px",
+                                    letterSpacing: "0.3px",
+                                    textTransform: "uppercase",
+                                    ...POPPINS,
+                                  }}
+                                >
+                                  Refund
+                                </span>
+                              )}
+                            </div>
                             <span style={{ fontSize: 12.5, color: "#8A8A8E", ...POPPINS }}>
                               {new Date(p.created_at).toLocaleDateString("en-GB", {
                                 day: "2-digit",
@@ -1943,7 +1969,8 @@ function PupilDetailPage() {
                             <IconX stroke={1.5} size={14} />
                           </button>
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 )}
