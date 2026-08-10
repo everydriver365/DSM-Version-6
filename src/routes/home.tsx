@@ -464,7 +464,11 @@ type NAItem = {
   primary: string;
   subtitle: string;
   onClick: () => void;
+  /** Optional one-tap action rendered as a secondary button on the row. */
+  actionLabel?: string;
+  onAction?: () => void;
 };
+
 
 const NA_CATEGORY_ORDER: NAItem['key'][] = ['certs_expired', 'cancellations', 'reschedules', 'birthday', 'certs_expiring', 'tests', 'jobs', 'calls', 'enq'];
 
@@ -513,7 +517,28 @@ function NeedsAttentionRow({ item }: { item: NAItem }) {
           {item.subtitle}
         </div>
       </div>
+      {item.actionLabel && item.onAction && (
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); item.onAction?.(); }}
+          style={{
+            flexShrink: 0,
+            background: chipBg,
+            color: accent,
+            border: 'none',
+            borderRadius: 999,
+            padding: '6px 12px',
+            fontSize: 11,
+            fontWeight: 700,
+            fontFamily: 'Poppins, sans-serif',
+            cursor: 'pointer',
+          }}
+        >
+          {item.actionLabel}
+        </button>
+      )}
       <IconChevronRight stroke={1.5} size={15} color="#B0BAC9" />
+
     </div>
   );
 }
@@ -558,6 +583,99 @@ function NeedsAttentionSection({ items }: { items: NAItem[] }) {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {sorted.map((it) => <NeedsAttentionRow key={it.key} item={it} />)}
+      </div>
+    </div>
+  );
+}
+
+
+/** Compact "how is my day looking?" hero shown at the top of the dashboard. */
+function MorningBriefCard({
+  lessonCount,
+  completedCount,
+  earnings,
+  nextLabel,
+  onOpenSchedule,
+  onOpenPayments,
+}: {
+  lessonCount: number;
+  completedCount: number;
+  earnings: number;
+  nextLabel: string;
+  onOpenSchedule: () => void;
+  onOpenPayments: () => void;
+}) {
+  const metricLabel: React.CSSProperties = {
+    fontSize: 10,
+    fontWeight: 600,
+    color: '#8A94A6',
+    textTransform: 'uppercase',
+    letterSpacing: '0.06em',
+    marginTop: 2,
+  };
+  const metricValue: React.CSSProperties = {
+    fontSize: 19,
+    fontWeight: 700,
+    color: '#0B1F3A',
+    lineHeight: 1.1,
+  };
+  return (
+    <div style={SECTION_WRAPPER_STYLE}>
+      <div style={SECTION_HEADER_STYLE}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+          <span style={SECTION_TITLE_TEXT_STYLE}>Morning brief</span>
+        </div>
+        <button type="button" onClick={onOpenSchedule} style={SECTION_LINK_STYLE}>
+          Plan my day <IconChevronRight size={14} stroke={2.2} />
+        </button>
+      </div>
+      <div
+        style={{
+          background: '#FFFFFF',
+          borderRadius: 16,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+          padding: 14,
+          fontFamily: 'Poppins, sans-serif',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+          <div style={{ width: 34, height: 34, borderRadius: 11, background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <IconClock size={18} color="#1877D6" />
+          </div>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {nextLabel}
+            </div>
+            <div style={{ fontSize: 11, color: '#8A94A6', marginTop: 1 }}>Your day at a glance</div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button
+            type="button"
+            onClick={onOpenSchedule}
+            style={{ flex: 1, minWidth: 0, textAlign: 'left', background: '#F6F8FC', border: 'none', borderRadius: 12, padding: 10, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+          >
+            <div style={metricValue}>{lessonCount}</div>
+            <div style={metricLabel}>Lessons</div>
+          </button>
+          <button
+            type="button"
+            onClick={onOpenSchedule}
+            style={{ flex: 1, minWidth: 0, textAlign: 'left', background: '#F6F8FC', border: 'none', borderRadius: 12, padding: 10, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+          >
+            <div style={{ ...metricValue, color: '#1E8E3E' }}>{completedCount}</div>
+            <div style={metricLabel}>Done</div>
+          </button>
+          <button
+            type="button"
+            onClick={onOpenPayments}
+            style={{ flex: 1, minWidth: 0, textAlign: 'left', background: '#F6F8FC', border: 'none', borderRadius: 12, padding: 10, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+          >
+            <div style={metricValue}>£{Math.round(earnings)}</div>
+            <div style={metricLabel}>Expected</div>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -4700,6 +4818,80 @@ function HomePage() {
           </button>
         ))}
       </div>
+      </div>
+
+      {/* ============ MORNING BRIEF ============ */}
+      {(() => {
+        const todayList = (todayLessons ?? []) as any[];
+        const completedToday = todayList.filter((l) => l.status === 'completed').length;
+        const expectedToday = todayList
+          .filter((l) => l.status !== 'cancelled')
+          .reduce((s, l) => s + Number(l.amount_due ?? 0), 0);
+        const nowMs = Date.now();
+        const upcomingToday = todayList
+          .filter((l) => l.status !== 'cancelled' && l.status !== 'completed')
+          .map((l) => ({ l, t: new Date(`${l.lesson_date}T${String(l.lesson_time || '00:00:00').slice(0, 8)}`).getTime() }))
+          .filter((x) => x.t >= nowMs)
+          .sort((a, b) => a.t - b.t)[0];
+        const nextLabel = upcomingToday
+          ? `Next: ${String(upcomingToday.l.lesson_time || '').slice(0, 5)} · ${upcomingToday.l.pupils?.first_name || upcomingToday.l.pupils?.name || 'Pupil'}`
+          : todayList.length > 0
+            ? 'No more lessons today'
+            : 'Nothing booked today';
+        return (
+          <MorningBriefCard
+            lessonCount={todayList.length}
+            completedCount={completedToday}
+            earnings={expectedToday}
+            nextLabel={nextLabel}
+            onOpenSchedule={() => navigate({ to: '/schedule' })}
+            onOpenPayments={() => navigate({ to: '/payments' })}
+          />
+        );
+      })()}
+
+      {/* ============ NEEDS ATTENTION ============ */}
+      <div style={{ marginBottom: 16 }}>
+        <NeedsAttentionSection
+          items={[
+            {
+              key: 'tests',
+              count: naTests,
+              primary: `${naTests} test${naTests === 1 ? '' : 's'} in the next 7 days`,
+              subtitle: 'Check readiness and confirm details',
+              onClick: () => navigate({ to: '/tests' }),
+              actionLabel: 'View',
+              onAction: () => navigate({ to: '/tests' }),
+            },
+            {
+              key: 'jobs',
+              count: naJobs,
+              primary: `${naJobs} open job${naJobs === 1 ? '' : 's'}`,
+              subtitle: 'Cover work available near you',
+              onClick: () => navigate({ to: '/jobs' }),
+              actionLabel: 'Browse',
+              onAction: () => navigate({ to: '/jobs' }),
+            },
+            {
+              key: 'calls',
+              count: naCalls,
+              primary: `${naCalls} callback${naCalls === 1 ? '' : 's'} waiting`,
+              subtitle: 'Pupils asked you to ring them back',
+              onClick: () => navigate({ to: '/messages' }),
+              actionLabel: 'Call',
+              onAction: () => navigate({ to: '/messages' }),
+            },
+            {
+              key: 'enq',
+              count: naEnquiries,
+              primary: `${naEnquiries} new enquir${naEnquiries === 1 ? 'y' : 'ies'}`,
+              subtitle: 'Reply quickly to win the booking',
+              onClick: () => navigate({ to: '/enquiries' }),
+              actionLabel: 'Reply',
+              onAction: () => navigate({ to: '/enquiries' }),
+            },
+          ]}
+        />
       </div>
 
 

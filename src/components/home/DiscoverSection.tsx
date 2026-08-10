@@ -348,9 +348,89 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     return () => clearInterval(id);
   }, []);
 
-  type HeroListing = (typeof featuredListings)[number];
-  const heroCards: (HeroListing | null)[] =
-    featuredListings.length > 0 ? featuredListings : [null];
+  type HeroCard = {
+    id: string;
+    title: string;
+    category: string | null;
+    priceLabel: string;
+    priceCaption: string;
+    imageUrl: string | null;
+    badge: string;
+    badgeColor: string;
+    footer: string;
+    Icon: React.ComponentType<{ size?: number; color?: string; stroke?: number; opacity?: number }>;
+    onOpen: () => void;
+  };
+
+  const liveHighlight = liveSorted[0] ?? null;
+  const liveHighlightStart = liveHighlight
+    ? startMs(liveHighlight.session_date, liveHighlight.session_time)
+    : 0;
+  const liveHighlightIsNow = liveHighlight ? isLiveNow(liveHighlight) : false;
+  const liveHighlightSoon =
+    !!liveHighlightStart &&
+    liveHighlightStart - Date.now() > 0 &&
+    liveHighlightStart - Date.now() < 24 * 60 * 60 * 1000;
+
+  const liveCard: HeroCard | null =
+    liveHighlight && (liveHighlightIsNow || liveHighlightSoon)
+      ? {
+          id: `live-${liveHighlight.id}`,
+          title: liveHighlight.title || "DSM Live session",
+          category: "Live",
+          priceLabel: liveHighlightIsNow
+            ? "Now"
+            : new Date(liveHighlightStart).toLocaleTimeString("en-GB", {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+          priceCaption: liveHighlightIsNow ? "ON AIR" : "STARTS",
+          imageUrl: liveHighlight.image_url ?? liveHero,
+          badge: liveHighlightIsNow ? "LIVE NOW" : "UPCOMING",
+          badgeColor: liveHighlightIsNow ? RED : BLUE,
+          footer: "DSM Live",
+          Icon: IconRadio,
+          onOpen: () => navigate({ to: "/live-sessions" as never }),
+        }
+      : null;
+
+  const listingCards: HeroCard[] = featuredListings.map((listing) => ({
+    id: listing.id,
+    title: listing.title ?? "Services & deals",
+    category: listing.category,
+    priceLabel: listing.price_display ?? "—",
+    priceCaption: "PRICE",
+    imageUrl: listing.imageUrl,
+    badge: "FOR SALE",
+    badgeColor: "#1A9B5C",
+    footer: "DSM Marketplace",
+    Icon: categoryIcon(listing.category),
+    onOpen: () =>
+      navigate({
+        to: "/marketplace/$listingId" as never,
+        params: { listingId: listing.id } as never,
+      }),
+  }));
+
+  const marketplaceFallback: HeroCard = {
+    id: "empty",
+    title: "Services & deals",
+    category: null,
+    priceLabel: "—",
+    priceCaption: "PRICE",
+    imageUrl: null,
+    badge: "FOR SALE",
+    badgeColor: "#1A9B5C",
+    footer: "DSM Marketplace",
+    Icon: categoryIcon(null),
+    onOpen: () => navigate({ to: "/marketplace" as never }),
+  };
+
+  const heroCards: HeroCard[] = [
+    ...(liveCard ? [liveCard] : []),
+    ...(listingCards.length > 0 ? listingCards : [marketplaceFallback]),
+  ];
+
 
   const chipIconWrap: React.CSSProperties = {
     width: 26,
@@ -459,17 +539,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           }}
         >
           {heroCards.map((listing) => {
-            const Icon = categoryIcon(listing?.category);
+            const Icon = listing.Icon;
 
-            const open = () =>
-              navigate({
-                to: listing ? ("/marketplace/$listingId" as never) : ("/marketplace" as never),
-                params: listing ? ({ listingId: listing.id } as never) : undefined,
-              });
+            const open = listing.onOpen;
             return (
               <div
-                key={listing?.id ?? "empty"}
+                key={listing.id}
                 style={{ flex: "0 0 100%", scrollSnapAlign: "center", position: "relative" }}
+
               >
                 <div
                   role="button"
@@ -552,7 +629,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       top: 12,
                       left: 14,
                       zIndex: 2,
-                      background: "#1A9B5C",
+                      background: listing.badgeColor,
                       color: "#fff",
                       fontSize: 10,
                       fontWeight: 900,
@@ -563,8 +640,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       fontFamily: FONT,
                     }}
                   >
-                    FOR SALE
+                    {listing.badge}
                   </span>
+
 
                   {/* Content panel */}
                   <div
@@ -613,7 +691,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                           overflow: "hidden",
                         }}
                       >
-                        {listing?.title ?? "Services & deals"}
+                        {listing.title}
                       </div>
                       <div
                         style={{
@@ -623,7 +701,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                           marginTop: 2,
                         }}
                       >
-                        DSM Marketplace
+                        {listing.footer}
                       </div>
                     </div>
 
@@ -644,7 +722,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                             letterSpacing: "0.3px",
                           }}
                         >
-                          PRICE
+                          {listing.priceCaption}
                         </div>
                         <div
                           style={{
@@ -658,8 +736,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {listing?.price_display ?? "—"}
+                          {listing.priceLabel}
                         </div>
+
                       </div>
                       <span
                         style={{
