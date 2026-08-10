@@ -4595,49 +4595,6 @@ function HomePage() {
       </div>
       </div>
 
-      {/* ============ NEEDS ATTENTION ============ */}
-      <div style={{ marginBottom: 16 }}>
-        <NeedsAttentionSection
-          items={[
-            {
-              key: 'tests',
-              count: naTests,
-              primary: `${naTests} test${naTests === 1 ? '' : 's'} in the next 7 days`,
-              subtitle: 'Check readiness and confirm details',
-              onClick: () => navigate({ to: '/tests' }),
-              actionLabel: 'View',
-              onAction: () => navigate({ to: '/tests' }),
-            },
-            {
-              key: 'jobs',
-              count: naJobs,
-              primary: `${naJobs} open job${naJobs === 1 ? '' : 's'}`,
-              subtitle: 'Cover work available near you',
-              onClick: () => navigate({ to: '/jobs' }),
-              actionLabel: 'Browse',
-              onAction: () => navigate({ to: '/jobs' }),
-            },
-            {
-              key: 'calls',
-              count: naCalls,
-              primary: `${naCalls} callback${naCalls === 1 ? '' : 's'} waiting`,
-              subtitle: 'Pupils asked you to ring them back',
-              onClick: () => navigate({ to: '/messages' }),
-              actionLabel: 'Call',
-              onAction: () => navigate({ to: '/messages' }),
-            },
-            {
-              key: 'enq',
-              count: naEnquiries,
-              primary: `${naEnquiries} new enquir${naEnquiries === 1 ? 'y' : 'ies'}`,
-              subtitle: 'Reply quickly to win the booking',
-              onClick: () => navigate({ to: '/enquiries' }),
-              actionLabel: 'Reply',
-              onAction: () => navigate({ to: '/enquiries' }),
-            },
-          ]}
-        />
-      </div>
 
 
       {/* ============ NEXT LESSON CARD ============ */}
