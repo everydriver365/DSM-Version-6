@@ -1580,7 +1580,8 @@ function InboxRow({
         display: "flex",
         alignItems: "center",
         gap: 13,
-        padding: 16,
+        padding: "18px 16px",
+        borderRadius: 16,
         cursor: "pointer",
         WebkitTapHighlightColor: "transparent",
       }}
