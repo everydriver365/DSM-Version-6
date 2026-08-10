@@ -5,7 +5,7 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
-import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
+import { EndLessonWizard } from "../components/dsm/EndLessonWizard.tsx";
 
 export const Route = createFileRoute("/weekly-report")({
   head: () => ({

@@ -9,7 +9,7 @@ import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
 
-import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
+import { EndLessonWizard } from "@/components/dsm/EndLessonWizard.tsx";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";

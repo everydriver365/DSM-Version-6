@@ -21,7 +21,7 @@ import { DL25Sheet } from "./tests";
 import { ChangeDateTimeSheet } from "../components/lessons/ChangeDateTimeSheet";
 import { CancelLessonSheet } from "../components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "../components/lessons/DeleteLessonSheet";
-import { EndLessonWizard } from "../components/dsm/EndLessonWizard";
+import { EndLessonWizard } from "../components/dsm/EndLessonWizard.tsx";
 
 import { resolveHourlyRate } from "../lib/pricing/resolveRate";
 import { deletePaymentRecord } from "./payments";

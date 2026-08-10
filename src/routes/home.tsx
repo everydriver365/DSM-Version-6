@@ -7,7 +7,7 @@ import { recordPayment, recordRefund } from "@/lib/payments";
 import { buildPickup, getPickupParts } from "@/lib/pickup";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { QuickActionsMenu, type QuickAction } from "@/components/dsm/QuickActionsMenu";
-import { EndLessonWizard } from "@/components/dsm/EndLessonWizard";
+import { EndLessonWizard } from "@/components/dsm/EndLessonWizard.tsx";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
 import { getLessonWeather, type LessonWeather } from "@/lib/lesson-weather.functions";
 import { getLessonDriveTime, type LessonDriveTime } from "@/lib/lesson-drive-time.functions";
