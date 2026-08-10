@@ -416,6 +416,7 @@ function PupilDetailPage() {
     { id: string; lesson_id: string | null; lesson_cost: number | null; payment_method: string | null; created_at: string; notes: string | null }[]
   >([]);
   const [paymentHistoryRefresh, setPaymentHistoryRefresh] = useState(0);
+  const [markPaidLoading, setMarkPaidLoading] = useState(false);
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
@@ -3360,10 +3361,12 @@ function PupilDetailPage() {
             window.location.href = `sms:${phone}?&body=${encodeURIComponent(msg)}`;
           };
           const markPaid = async () => {
-            if (!focus) return;
+            if (!focus || markPaidLoading) return;
             const target = focus;
             const previousStatus = target.payment_status;
             const targetId = target.id;
+
+            setMarkPaidLoading(true);
 
             // Optimistically mark the lesson as paid immediately
             setLessons((prev) =>
@@ -3437,6 +3440,8 @@ function PupilDetailPage() {
                     )
                   : prev,
               );
+            } finally {
+              setMarkPaidLoading(false);
             }
           };
 
@@ -3630,9 +3635,31 @@ function PupilDetailPage() {
                   </div>
                   <button
                     onClick={markPaid}
-                    style={{ background: "#137333", color: "#FFF", border: "none", borderRadius: 999, padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer", ...POPPINS }}
+                    disabled={markPaidLoading}
+                    style={{
+                      background: markPaidLoading ? "#9CA3AF" : "#137333",
+                      color: "#FFF",
+                      border: "none",
+                      borderRadius: 999,
+                      padding: "8px 14px",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: markPaidLoading ? "not-allowed" : "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                      opacity: markPaidLoading ? 0.8 : 1,
+                      ...POPPINS,
+                    }}
                   >
-                    Mark paid
+                    {markPaidLoading ? (
+                      <>
+                        <IconLoader2 size={14} stroke={2.5} className="animate-spin" />
+                        <span>Saving…</span>
+                      </>
+                    ) : (
+                      <span>Mark paid</span>
+                    )}
                   </button>
                 </div>
               )}
