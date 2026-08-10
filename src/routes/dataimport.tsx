@@ -18,6 +18,10 @@ import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import ImportResults, {
+  type FailedResult,
+  type ImportedResult,
+} from "@/components/dsm/ImportResults";
 
 export const Route = createFileRoute("/dataimport")({
   head: () => ({
@@ -80,7 +84,10 @@ function DataImportPage() {
   const [liveSuccess, setLiveSuccess] = useState(0);
   const [liveFailed, setLiveFailed] = useState(0);
   const [successCount, setSuccessCount] = useState<number | null>(null);
-  const [failures, setFailures] = useState<{ row: number; reason: string }[]>([]);
+  const [failures, setFailures] = useState<FailedResult[]>([]);
+  const [importedRows, setImportedRows] = useState<ImportedResult[]>([]);
+  const [retrying, setRetrying] = useState(false);
+  const [showResults, setShowResults] = useState(false);
 
   const rows: Row[] = useMemo(
     () => (mapping ? records.map((cells) => applyMapping(mapping, cells)) : []),
@@ -178,6 +185,20 @@ function DataImportPage() {
   };
 
 
+  const insertRow = async (r: Row) => {
+    const payload: Record<string, unknown> = {
+      instructor_id: userId,
+      name: resolveName(r),
+      first_name: r.first_name?.trim() || null,
+      last_name: r.last_name?.trim() || null,
+      phone: r.phone?.trim() || null,
+      email: r.email?.trim() || null,
+      status: r.status?.trim() || "active",
+    };
+    const { error } = await supabase.from("pupils").insert(payload);
+    return error?.message ?? null;
+  };
+
   const runImport = async () => {
     if (!userId || rows.length === 0) return;
     setImporting(true);
@@ -186,30 +207,26 @@ function DataImportPage() {
     setLiveSuccess(0);
     setLiveFailed(0);
     setFailures([]);
+    setImportedRows([]);
     setSuccessCount(null);
+    setShowResults(false);
 
     let success = 0;
-    const fails: { row: number; reason: string }[] = [];
+    const fails: FailedResult[] = [];
+    const ok: ImportedResult[] = [];
 
     for (let i = 0; i < rows.length; i++) {
       const r = rows[i];
       const v = validations[i];
-      const name = resolveName(r);
       if (!v.valid) {
-        fails.push({ row: i + 2, reason: v.errors.map((e) => e.message).join(", ") });
+        fails.push({ row: i + 2, reason: v.errors.map((e) => e.message).join(", "), data: r });
       } else {
-        const payload: Record<string, unknown> = {
-          instructor_id: userId,
-          name,
-          first_name: r.first_name?.trim() || null,
-          last_name: r.last_name?.trim() || null,
-          phone: r.phone?.trim() || null,
-          email: r.email?.trim() || null,
-          status: r.status?.trim() || "active",
-        };
-        const { error } = await supabase.from("pupils").insert(payload);
-        if (error) fails.push({ row: i + 2, reason: error.message });
-        else success++;
+        const err = await insertRow(r);
+        if (err) fails.push({ row: i + 2, reason: err, data: r });
+        else {
+          success++;
+          ok.push({ row: i + 2, name: resolveName(r) });
+        }
       }
 
       setProgress(Math.round(((i + 1) / rows.length) * 100));
@@ -220,8 +237,41 @@ function DataImportPage() {
 
     setSuccessCount(success);
     setFailures(fails);
+    setImportedRows(ok);
+    setShowResults(true);
     setImporting(false);
   };
+
+  const retryFailures = async (retryRows: FailedResult[]) => {
+    if (!userId || retryRows.length === 0) return;
+    setRetrying(true);
+    const stillFailed: FailedResult[] = [];
+    const newlyImported: ImportedResult[] = [];
+
+    for (const f of retryRows) {
+      const err = await insertRow(f.data as Row);
+      if (err) stillFailed.push({ ...f, reason: err });
+      else newlyImported.push({ row: f.row, name: resolveName(f.data) });
+    }
+
+    const retriedRowNumbers = new Set(retryRows.map((f) => f.row));
+    setFailures((prev) => [
+      ...prev.filter((f) => !retriedRowNumbers.has(f.row)),
+      ...stillFailed,
+    ].sort((a, b) => a.row - b.row));
+    setImportedRows((prev) => [...prev, ...newlyImported].sort((a, b) => a.row - b.row));
+    setSuccessCount((prev) => (prev ?? 0) + newlyImported.length);
+    setRetrying(false);
+
+    if (newlyImported.length > 0) {
+      toast.success(`${newlyImported.length} row${newlyImported.length === 1 ? "" : "s"} imported on retry`);
+    }
+    if (stillFailed.length > 0) {
+      toast.error(`${stillFailed.length} row${stillFailed.length === 1 ? "" : "s"} still failing`);
+    }
+  };
+
+
 
 
   const preview = rows.slice(0, 5);
@@ -578,55 +628,17 @@ function DataImportPage() {
             </div>
           )}
 
-          {/* SUCCESS */}
-          {successCount !== null && !importing && (
-            <div
-              className="mt-4 flex items-center"
-              style={{
-                gap: 10,
-                backgroundColor: "#F3F8FF",
-                borderWidth: "0.5px",
-                borderStyle: "solid",
-                borderColor: "#1877D6",
-                borderRadius: 12,
-                padding: 14,
-              }}
-            >
-              <CheckCircle2 size={20} color="#1877D6" />
-              <div className="text-[13px] text-[#0B1F3A] font-medium">
-                {successCount} pupils imported successfully
-              </div>
-            </div>
+          {/* RESULTS */}
+          {showResults && !importing && (
+            <ImportResults
+              imported={importedRows}
+              failed={failures}
+              retrying={retrying}
+              onRetry={retryFailures}
+              onDismiss={() => setShowResults(false)}
+            />
           )}
 
-          {/* FAILURES */}
-          {failures.length > 0 && !importing && (
-            <div
-              className="mt-3"
-              style={{
-                backgroundColor: "#FEF2F2",
-                borderWidth: "0.5px",
-                borderStyle: "solid",
-                borderColor: "#1877D6",
-                borderRadius: 12,
-                padding: 14,
-              }}
-            >
-              <div className="flex items-center" style={{ gap: 8 }}>
-                <AlertCircle size={18} color="#1877D6" />
-                <div className="text-[13px] font-semibold text-[#7F1D1D]">
-                  {failures.length} row{failures.length === 1 ? "" : "s"} failed
-                </div>
-              </div>
-              <div className="mt-2 flex flex-col" style={{ gap: 4 }}>
-                {failures.map((f, i) => (
-                  <div key={i} className="text-[12px] text-[#7F1D1D]">
-                    Row {f.row}: {f.reason}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
           <SectionHeader>IMPORT HISTORY</SectionHeader>
           <div
