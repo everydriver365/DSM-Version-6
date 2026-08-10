@@ -2457,7 +2457,7 @@ function AccountRow({
       <div className="flex-1 min-w-0 flex flex-col">
         <span
           className="truncate flex items-center gap-2"
-          style={{ fontSize: 16, fontWeight: 700, color: "#000000", ...POPPINS }}
+          style={{ fontSize: 14, fontWeight: 500, color: "#0B1F3A", ...POPPINS }}
         >
           {label}
           {warning ? (
@@ -2486,7 +2486,7 @@ function AccountRow({
           <span
             className="truncate"
             title={subLabel}
-            style={{ fontSize: 12, color: "#8A8A8E", ...POPPINS, marginTop: 2 }}
+            style={{ fontSize: 11, color: "#9CA3AF", ...POPPINS, marginTop: 2 }}
           >
             {subLabel}
           </span>
