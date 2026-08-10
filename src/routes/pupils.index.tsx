@@ -545,8 +545,8 @@ function PupilsIndexPage() {
   }, [pupils, query, unreadMap, sortBy, balanceMap, nextLessonMap]);
 
   // Visual grouping only — derived from the same data already fetched.
-  const needsAttention = filtered.filter((p: any) => (balanceMap[p.id] || 0) > 0);
-  const activePupils = filtered.filter((p: any) => !((balanceMap[p.id] || 0) > 0));
+  const needsAttention = (filtered ?? []).filter((p: any) => (balanceMap[p.id] || 0) > 0);
+  const activePupils = (filtered ?? []).filter((p: any) => !((balanceMap[p.id] || 0) > 0));
 
 
   const renderRow = (p: any, idx: number, total: number) => {
