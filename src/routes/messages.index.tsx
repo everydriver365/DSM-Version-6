@@ -1689,22 +1689,31 @@ function InboxRow({
       </div>
 
       {/* Timestamp / unread dot */}
-      <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-        {muted && <IconBellOff size={14} color={GREY} stroke={1.8} />}
-        <span style={{ fontSize: 13, fontWeight: unread ? 700 : 400, color: unread ? BLUE : GREY }}>
+      <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+        {muted && <IconBellOff size={14} color={GREY} stroke={1.8} style={{ marginRight: 6 }} />}
+        <span
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            fontSize: 13,
+            fontWeight: unread ? 700 : 400,
+            color: unread ? BLUE : GREY,
+          }}
+        >
           {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
+          {unread && (
+            <span
+              style={{
+                width: 9,
+                height: 9,
+                borderRadius: "50%",
+                background: BLUE,
+                flexShrink: 0,
+              }}
+            />
+          )}
         </span>
-        {unread && (
-          <span
-            style={{
-              width: 9,
-              height: 9,
-              borderRadius: "50%",
-              background: BLUE,
-              flexShrink: 0,
-            }}
-          />
-        )}
       </div>
     </div>
   );
