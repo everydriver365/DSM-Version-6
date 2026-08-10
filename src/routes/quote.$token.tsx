@@ -175,134 +175,40 @@ function PublicQuotePage() {
     const amountPence = Math.max(3, Math.round(Number(quote.deposit_amount) * 100));
     setPayStatus("creating");
     setPayError("");
+    setNoSquare(false);
     try {
-      console.log("[quote] create-ryft-payment request:", { amountPence, quote_id: quote.id });
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/create-ryft-payment`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          apikey: SUPABASE_ANON_KEY,
-        },
-        body: JSON.stringify({
-          amount: amountPence,
-          currency: "GBP",
+      const { data, error } = await supabase.functions.invoke("square-create-payment-link", {
+        body: {
+          instructor_id: quote.instructor_id,
+          pupil_id: quote.pupil_id ?? null,
+          lesson_id: null,
+          amount_pence: amountPence,
           description: `Deposit for driving lessons — ${quote.recipient_name}`,
           metadata: {
             quote_id: quote.id,
-            instructor_id: quote.instructor_id,
             pupil_name: quote.recipient_name,
             pupil_email: quote.recipient_email || "",
             type: "quote_deposit",
           },
-        }),
+        },
       });
-      const json = await res.json();
-      console.log("[quote] create-ryft-payment response:", res.status, json);
-      if (!res.ok) throw new Error(json?.error || json?.message || `Failed to create payment (${res.status})`);
-      if (!json.clientSecret) throw new Error("No clientSecret returned");
-      setClientSecret(json.clientSecret);
+      if (error) throw error;
+      const res = data as { no_square?: boolean; url?: string } | null;
+      if (res?.no_square) {
+        setNoSquare(true);
+        setPayStatus("idle");
+        return;
+      }
+      if (!res?.url) throw new Error("No payment link returned");
+      setPayUrl(res.url);
+      setPayStatus("ready");
     } catch (e: any) {
-      console.error("[quote] create-ryft-payment failed:", e);
+      console.error("[quote] square-create-payment-link failed:", e);
       setPayStatus("error");
       setPayError(e?.message || "Failed to start payment");
     }
   }
 
-  // Initialise Ryft once we have a clientSecret
-  useEffect(() => {
-    if (!clientSecret || !quote) return;
-    if (ryftInitedRef.current) return;
-    ryftInitedRef.current = true;
-
-    const SDK_URL = "https://embedded.ryftpay.com/v2/ryft.min.js";
-    const existing = document.querySelector(`script[src="${SDK_URL}"]`) as HTMLScriptElement | null;
-
-    const onApproved = async () => {
-      setPayStatus("paid");
-      setDepositPaid(true);
-      try {
-        await supabase
-          .from("quotes")
-          .update({ deposit_paid: true, deposit_paid_at: new Date().toISOString() })
-          .eq("token", token);
-      } catch (err) {
-        console.error("[quote] mark deposit paid failed:", err);
-      }
-      try {
-        await fetch(`${SUPABASE_URL}/rest/v1/instructor_notifications`, {
-          method: "POST",
-          headers: {
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-            "Content-Type": "application/json",
-            Prefer: "return=minimal",
-          },
-          body: JSON.stringify({
-            instructor_id: quote.instructor_id,
-            title: "Deposit received! 💰",
-            body: `${quote.recipient_name} paid £${Number(quote.deposit_amount).toFixed(2)} deposit`,
-            type: "payment",
-            read: false,
-            reference_id: quote.id,
-            reference_type: "quote",
-          }),
-        });
-      } catch (err) {
-        console.error("[quote] notify deposit failed:", err);
-      }
-    };
-
-    const init = () => {
-      try {
-        if (!window.Ryft) throw new Error("Ryft SDK not loaded");
-        window.Ryft.init({
-          publicKey: RYFT_PUBLIC_KEY,
-          clientSecret,
-          googlePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
-          applePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
-        });
-        try { window.Ryft?.googlePay?.mount?.("#google-pay-container"); } catch (e) { console.warn("Google Pay unavailable:", e); }
-        try { window.Ryft?.applePay?.mount?.("#apple-pay-container"); } catch (e) { console.warn("Apple Pay unavailable:", e); }
-        window.Ryft.addEventHandler("paymentSuccess", (evt: any) => {
-          console.log("[quote] Ryft paymentSuccess:", evt);
-          const status = evt?.paymentSession?.status;
-          if (!status || status === "Approved" || status === "Captured") onApproved();
-        });
-        window.Ryft.addEventHandler("paymentError", (e: any) => {
-          console.error("[quote] Ryft paymentError:", e);
-          const msg =
-            e?.error?.message ||
-            e?.errors?.[0]?.message ||
-            e?.message ||
-            (typeof e === "string" ? e : "") ||
-            "Payment failed. Please try again.";
-          setPayStatus("error");
-          setPayError(msg);
-        });
-        setPayStatus("ready");
-      } catch (e: any) {
-        setPayStatus("error");
-        setPayError(e?.message || "Failed to initialise payment");
-      }
-    };
-
-    if (existing && window.Ryft) {
-      init();
-    } else {
-      const s = existing || document.createElement("script");
-      if (!existing) {
-        s.src = SDK_URL;
-        s.async = true;
-        document.body.appendChild(s);
-      }
-      s.addEventListener("load", init, { once: true });
-      s.addEventListener("error", () => {
-        setPayStatus("error");
-        setPayError("Could not load payment SDK");
-      }, { once: true });
-    }
-  }, [clientSecret, quote, token]);
 
   function askQuestion() {
     if (!instructor) return;
