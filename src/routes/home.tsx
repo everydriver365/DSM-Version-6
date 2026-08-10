@@ -4022,7 +4022,7 @@ function HomePage() {
   }).length;
   const naCalls: number = 0; // TODO: wire missed calls
   const naEnquiries = pendingSwapCount || 0;
-  const naUrgentCount = [naJobs, naTests, naCalls, naEnquiries].filter((n) => n > 0).length;
+
 
   const timeAgo = (iso: string) => {
     const diff = Math.max(0, Date.now() - new Date(iso).getTime());
