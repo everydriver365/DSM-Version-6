@@ -34,7 +34,7 @@ function slugify(s: string) {
 import { toast } from "sonner";
 import { supabase } from "../../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
-import { recordPayment, type RecordPaymentResult } from "@/lib/payments";
+import { recordPayment, type RecordPaymentResult, type RecordRefundResult } from "@/lib/payments";
 import { PaymentReceipt } from "@/components/dsm/PaymentReceipt";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
