@@ -2210,6 +2210,24 @@ export function UnifiedPaymentSheet({
               })}
             </Group>
 
+            {/* Card via EveryDriver warning */}
+            {method === "card_evd" && (
+              <div
+                style={{
+                  background: "#FEF3C7",
+                  borderRadius: 12,
+                  padding: "12px 14px",
+                  marginBottom: 12,
+                  fontSize: 13,
+                  lineHeight: 1.5,
+                  color: "#92400E",
+                }}
+              >
+                Payments take up to 2 days to reach you. Connect Square in your profile for
+                instant payouts.
+              </div>
+            )}
+
             {/* 1% fee note */}
             {feeApplies && amountNum > 0 && (
               <div
