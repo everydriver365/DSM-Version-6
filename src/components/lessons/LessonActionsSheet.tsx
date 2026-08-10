@@ -106,6 +106,80 @@ function Chevron() {
   );
 }
 
+const ACTION_ROW_LABEL: React.CSSProperties = {
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 15,
+  fontWeight: 700,
+  color: NAVY,
+  minWidth: 0,
+};
+
+const ACTION_CARD: React.CSSProperties = {
+  background: "#fff",
+  borderRadius: 18,
+  overflow: "hidden",
+  boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+  marginBottom: 10,
+};
+
+const ACTION_ROW_BASE: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: 13,
+  padding: "15px 16px",
+  width: "100%",
+  textAlign: "left",
+  border: "none",
+  background: "none",
+  cursor: "pointer",
+  fontFamily: "Poppins, sans-serif",
+};
+
+const SECTION_LABEL_STYLE: React.CSSProperties = {
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 11.5,
+  fontWeight: 700,
+  color: "#8A8A8E",
+  textTransform: "uppercase",
+  letterSpacing: 0.5,
+  margin: "4px 4px 10px",
+};
+
+function ChevronRight() {
+  return (
+    <span style={{ marginLeft: "auto", display: "flex", flexShrink: 0 }}>
+      <IconChevronRight size={15} stroke={1.8} color="#C7C7CC" />
+    </span>
+  );
+}
+
+function TintedIcon({
+  icon: Icon,
+  bg,
+  color,
+}: {
+  icon: React.ComponentType<{ size?: number; stroke?: number; color?: string }>;
+  bg: string;
+  color: string;
+}) {
+  return (
+    <div
+      style={{
+        width: 34,
+        height: 34,
+        borderRadius: 10,
+        background: bg,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+      }}
+    >
+      <Icon size={20} stroke={1.8} color={color} />
+    </div>
+  );
+}
+
 
 function formatLessonTime(time: string): string {
   const [hStr, mStr] = (time ?? "00:00").split(":");
@@ -998,277 +1072,340 @@ export function LessonActionsSheet({
         )}
 
         {inlineView === "main" && (
-        <>
-        {/* SECTION 1 — Lesson info (read only) */}
-        <SheetGroup>
-          <SheetRow>
-            <IconClock size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>
-              {timeLabel}
-              {lesson.duration_minutes ? ` · ${lesson.duration_minutes} min` : ""}
-            </span>
-          </SheetRow>
-          <SheetRow>
-            <IconMapPin size={20} stroke={1.8} color="#6B7686" />
-            <span style={{ ...rowLabel, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              {pickupValue || "No address set"}
-            </span>
-            <button
-              type="button"
-              onClick={() => setIsEditingPickup((v) => !v)}
-              aria-label="Edit pickup address"
-              style={{ marginLeft: "auto", background: "none", border: "none", padding: 0, cursor: "pointer", color: "#8E8E93", display: "flex" }}
-            >
-              <IconPencil stroke={1.5} size={16} />
-            </button>
-          </SheetRow>
-          {isEditingPickup ? (
-            <SheetRow>
-              <input
-                value={pickupValue}
-                onChange={(e) => {
-                  setPickupValue(e.target.value);
-                  setPickupState("idle");
-                  verifiedForRef.current = null;
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    verifyAndSavePickup();
-                  }
-                }}
-                placeholder="Enter pickup address"
-                style={fieldInput}
-                autoFocus
-              />
-              <button
-                type="button"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={verifyAndSavePickup}
-                disabled={pickupState === "checking"}
-                aria-label="Verify and save pickup address"
-                style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: 10,
-                  border: "1px solid #B7E4C7",
-                  background: pickupState === "checking" ? "#F5F7FA" : "#E8F5E9",
-                  color: "#1F6B2E",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <IconCircleCheck size={18} stroke={1.8} />
-              </button>
-            </SheetRow>
-          ) : null}
-          <SheetRow>
-            <IconCurrencyPound size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>
-              {balance > 0 ? `£${balance.toFixed(2)} due` : "Nothing outstanding"}
-            </span>
-            {payPill && (
-              <span
-                style={{
-                  marginLeft: "auto",
-                  fontFamily: "Poppins, sans-serif",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: payPill.fg,
-                  background: payPill.bg,
-                  borderRadius: 999,
-                  padding: "3px 10px",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {payPill.label}
-              </span>
-            )}
-          </SheetRow>
-        </SheetGroup>
-
-        {/* SECTION 2 — Primary actions */}
-        <SheetGroup>
-          <SheetRow
-            onClick={() => {
-              setMessageOpen(true);
-            }}
-          >
-            <IconMessage size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>Message pupil</span>
-            <Chevron />
-          </SheetRow>
-          <SheetRow
-            onClick={() => {
-              if (!phone) {
-                toast("No phone number");
-                return;
-              }
-              window.location.href = `tel:${phone}`;
-            }}
-          >
-            <IconPhone size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>Call pupil</span>
-            <Chevron />
-          </SheetRow>
-          <SheetRow onClick={openMaps}>
-            <IconMap size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>View route</span>
-            <Chevron />
-          </SheetRow>
-          <SheetRow onClick={() => setUnifiedPayOpen(true)}>
-            <IconCurrencyPound size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>Take payment</span>
-            <Chevron />
-          </SheetRow>
-          <SheetRow onClick={onEol}>
-            <IconCheck size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>Mark complete</span>
-            <Chevron />
-          </SheetRow>
-        </SheetGroup>
-
-        {/* SECTION 3 — Edit actions */}
-        <SheetGroup>
-          <SheetRow onClick={() => navigate({ to: "/lessons/edit/$id", params: { id: lesson.id } })}>
-            <IconPencil size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>Edit lesson</span>
-            <Chevron />
-          </SheetRow>
-          <SheetRow onClick={() => setInlineView("reschedule")}>
-            <IconRepeat size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>Reschedule</span>
-            <Chevron />
-          </SheetRow>
-          <SheetRow onClick={() => setInlineView("duration")}>
-            <IconClock size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>Change duration</span>
-            <Chevron />
-          </SheetRow>
-          <SheetRow onClick={() => setInlineView("note")}>
-            <IconNotes size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>Add note</span>
-            <Chevron />
-          </SheetRow>
-        </SheetGroup>
-
-        {/* SECTION 3b — On the road */}
-        <SheetGroup>
-          <SheetRow
-            onClick={() => {
-              setGoingActive(true);
-              sendSms(`Hi ${firstName}, on the way!`);
-            }}
-          >
-            <IconNavigation size={20} stroke={1.8} color={goingActive ? "#1877D6" : "#6B7686"} />
-            <span style={rowLabel}>Tell pupil I'm on the way</span>
-            <Chevron />
-          </SheetRow>
-          <SheetRow
-            onClick={() =>
-              navigate({
-                to: "/live",
-                search: { autostart: "1", lessonId: lesson.id, pupilId: lesson.pupil_id },
-              } as never)
-            }
-          >
-            <IconRoute size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>Track lesson live</span>
-            <Chevron />
-          </SheetRow>
-          <SheetRow onClick={onOpenLate}>
-            <IconClockExclamation size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>Running late</span>
-            <Chevron />
-          </SheetRow>
-          <SheetRow onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}>
-            <IconCurrentLocation size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>I'm here</span>
-            <Chevron />
-          </SheetRow>
-          <SheetRow onClick={onOpenLesson}>
-            <IconClipboardList size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>Lesson prep</span>
-            <Chevron />
-          </SheetRow>
-          <SheetRow
-            onClick={() =>
-              navigate({ to: "/pupils/$id", params: { id: lesson.pupil_id }, search: { lessonId: lesson.id } } as never)
-            }
-          >
-            <IconClipboardList size={20} stroke={1.8} color="#6B7686" />
-            <span style={rowLabel}>View full pupil profile</span>
-            <Chevron />
-          </SheetRow>
-        </SheetGroup>
-
-        {/* what3words */}
-        <SheetGroup>
-          <SheetRow>
-            <span style={{ color: "#E11F26", fontWeight: 700, fontFamily: "Poppins, sans-serif", fontSize: 15 }}>
-              ///
-            </span>
-            {[0, 1, 2].map((i) => (
-              <Fragment key={i}>
-                {i > 0 && <span style={{ color: NAVY, fontWeight: 700 }}>.</span>}
-                <input
-                  value={w3w[i]}
-                  onChange={(e) => {
-                    const next = [...w3w] as [string, string, string];
-                    next[i] = e.target.value.replace(/[^a-zA-Z\u00C0-\u024F-]/g, "");
-                    setW3w(next);
-                    setW3wState("idle");
-                  }}
-                  onBlur={verifyAndSaveW3w}
-                  placeholder={`word${i + 1}`}
-                  style={{ ...fieldInput, textAlign: "center", padding: "9px 6px" }}
-                />
-              </Fragment>
-            ))}
-          </SheetRow>
-          {w3wState !== "idle" ? (
-            <SheetRow>{statusLine(w3wState, "Verified via what3words", "Not a recognised what3words address")}</SheetRow>
-          ) : null}
-        </SheetGroup>
-
-        {/* Last lesson */}
-        <SheetGroup>
-          <SheetRow>
-            <IconNotes size={20} stroke={1.8} color="#6B7686" />
-            {prev ? (
-              <div style={{ minWidth: 0 }}>
-                <div style={rowLabel}>
-                  {new Date(prev.lesson_date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })} ·{" "}
-                  <span style={{ textTransform: "capitalize", color: "#6B7686" }}>{prev.status}</span>
+          <>
+            {/* CHANGE 2 — Lesson info card (time / location / payment) */}
+            <div style={ACTION_CARD}>
+              <div style={{ ...ACTION_ROW_BASE, borderTop: "none", cursor: "default" }}>
+                <TintedIcon icon={IconClock} bg="#E7F1FC" color="#1877D6" />
+                <span style={ACTION_ROW_LABEL}>
+                  {timeLabel}
+                  {lesson.duration_minutes ? ` · ${lesson.duration_minutes} min` : ""}
+                </span>
+              </div>
+              <div style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2", cursor: "default" }}>
+                <TintedIcon icon={IconMapPin} bg="#F3EEFB" color="#7B4FC9" />
+                <span style={{ ...ACTION_ROW_LABEL, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
+                  {pickupValue || "No address set"}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsEditingPickup((v) => !v)}
+                  aria-label="Edit pickup address"
+                  style={{ marginLeft: "auto", background: "none", border: "none", padding: 0, cursor: "pointer", color: "#B0B0B5", display: "flex" }}
+                >
+                  <IconPencil stroke={1.5} size={15} />
+                </button>
+              </div>
+              {isEditingPickup ? (
+                <div style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}>
+                  <input
+                    value={pickupValue}
+                    onChange={(e) => {
+                      setPickupValue(e.target.value);
+                      setPickupState("idle");
+                      verifiedForRef.current = null;
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        verifyAndSavePickup();
+                      }
+                    }}
+                    placeholder="Enter pickup address"
+                    style={fieldInput}
+                    autoFocus
+                  />
+                  <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={verifyAndSavePickup}
+                    disabled={pickupState === "checking"}
+                    aria-label="Verify and save pickup address"
+                    style={{
+                      width: 34,
+                      height: 34,
+                      borderRadius: 10,
+                      border: "1px solid #B7E4C7",
+                      background: pickupState === "checking" ? "#F5F7FA" : "#E8F5E9",
+                      color: "#1F6B2E",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <IconCircleCheck size={18} stroke={1.8} />
+                  </button>
                 </div>
-                {prev.notes && (
-                  <div style={{ marginTop: 3, color: "#6B7686", fontSize: 12, fontFamily: "Poppins, sans-serif", lineHeight: 1.4 }}>
-                    {prev.notes}
-                  </div>
+              ) : null}
+              <div style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2", cursor: "default" }}>
+                <TintedIcon icon={IconCurrencyPound} bg="#E6F7EC" color="#248A3D" />
+                <span style={ACTION_ROW_LABEL}>
+                  {balance > 0 ? `£${balance.toFixed(2)} due` : "Nothing outstanding"}
+                </span>
+                {payPill && (
+                  <span
+                    style={{
+                      marginLeft: "auto",
+                      fontFamily: "Poppins, sans-serif",
+                      fontSize: 11.5,
+                      fontWeight: 800,
+                      color: payPill.fg,
+                      background: "#E6F7EC",
+                      borderRadius: 20,
+                      padding: "5px 12px",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {payPill.label}
+                  </span>
                 )}
               </div>
-            ) : (
-              <span style={{ ...rowLabel, color: "#8A93A3" }}>No previous lesson</span>
-            )}
-          </SheetRow>
-        </SheetGroup>
+            </div>
 
-        {/* SECTION 4 — Destructive */}
-        <div style={{ marginTop: 12 }}>
-          <SheetGroup>
-            <SheetRow onClick={() => setInlineView("cancel")}>
-              <IconX size={20} stroke={1.8} color="#CC2229" />
-              <span style={{ ...rowLabel, color: "#CC2229" }}>Cancel lesson</span>
-            </SheetRow>
-            <SheetRow onClick={() => setInlineView("delete")}>
-              <IconTrash size={20} stroke={1.8} color="#CC2229" />
-              <span style={{ ...rowLabel, color: "#CC2229" }}>Delete lesson</span>
-            </SheetRow>
-          </SheetGroup>
-        </div>
-        </>
+            {/* CHANGE 3 — Quick Actions */}
+            <div style={SECTION_LABEL_STYLE}>Quick Actions</div>
+            <div style={ACTION_CARD}>
+              <button
+                type="button"
+                onClick={() => {
+                  setMessageOpen(true);
+                }}
+                style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
+              >
+                <TintedIcon icon={IconMessage} bg="#E7F1FC" color="#1877D6" />
+                <span style={ACTION_ROW_LABEL}>Message pupil</span>
+                <ChevronRight />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!phone) {
+                    toast("No phone number");
+                    return;
+                  }
+                  window.location.href = `tel:${phone}`;
+                }}
+                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
+              >
+                <TintedIcon icon={IconPhone} bg="#E6F7EC" color="#248A3D" />
+                <span style={ACTION_ROW_LABEL}>Call pupil</span>
+                <ChevronRight />
+              </button>
+              <button
+                type="button"
+                onClick={openMaps}
+                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
+              >
+                <TintedIcon icon={IconMap} bg="#F3EEFB" color="#7B4FC9" />
+                <span style={ACTION_ROW_LABEL}>View route</span>
+                <ChevronRight />
+              </button>
+              <button
+                type="button"
+                onClick={() => setUnifiedPayOpen(true)}
+                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
+              >
+                <TintedIcon icon={IconCurrencyPound} bg="#E0F7F5" color="#0E9488" />
+                <span style={ACTION_ROW_LABEL}>Take payment</span>
+                <ChevronRight />
+              </button>
+              <button
+                type="button"
+                onClick={onEol}
+                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
+              >
+                <TintedIcon icon={IconCheck} bg="#E6F7EC" color="#248A3D" />
+                <span style={ACTION_ROW_LABEL}>Mark complete</span>
+                <ChevronRight />
+              </button>
+            </div>
+
+            {/* On the road — kept with existing functionality */}
+            <div style={SECTION_LABEL_STYLE}>On the road</div>
+            <div style={ACTION_CARD}>
+              <button
+                type="button"
+                onClick={() => {
+                  setGoingActive(true);
+                  sendSms(`Hi ${firstName}, on the way!`);
+                }}
+                style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
+              >
+                <TintedIcon icon={IconNavigation} bg="#E7F1FC" color="#1877D6" />
+                <span style={ACTION_ROW_LABEL}>Tell pupil I'm on the way</span>
+                <ChevronRight />
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  navigate({
+                    to: "/live",
+                    search: { autostart: "1", lessonId: lesson.id, pupilId: lesson.pupil_id },
+                  } as never)
+                }
+                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
+              >
+                <TintedIcon icon={IconRoute} bg="#F3EEFB" color="#7B4FC9" />
+                <span style={ACTION_ROW_LABEL}>Track lesson live</span>
+                <ChevronRight />
+              </button>
+              <button
+                type="button"
+                onClick={onOpenLate}
+                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
+              >
+                <TintedIcon icon={IconClockExclamation} bg="#FFF6DC" color="#D68A1B" />
+                <span style={ACTION_ROW_LABEL}>Running late</span>
+                <ChevronRight />
+              </button>
+              <button
+                type="button"
+                onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
+                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
+              >
+                <TintedIcon icon={IconCurrentLocation} bg="#E7F1FC" color="#1877D6" />
+                <span style={ACTION_ROW_LABEL}>I'm here</span>
+                <ChevronRight />
+              </button>
+              <button
+                type="button"
+                onClick={onOpenLesson}
+                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
+              >
+                <TintedIcon icon={IconClipboardList} bg="#F2F2F7" color="#6B6B6F" />
+                <span style={ACTION_ROW_LABEL}>Lesson prep</span>
+                <ChevronRight />
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  navigate({ to: "/pupils/$id", params: { id: lesson.pupil_id }, search: { lessonId: lesson.id } } as never)
+                }
+                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
+              >
+                <TintedIcon icon={IconClipboardList} bg="#F2F2F7" color="#6B6B6F" />
+                <span style={ACTION_ROW_LABEL}>View full pupil profile</span>
+                <ChevronRight />
+              </button>
+            </div>
+
+            {/* CHANGE 4 — Manage */}
+            <div style={{ ...SECTION_LABEL_STYLE, marginTop: 20 }}>Manage</div>
+            <div style={ACTION_CARD}>
+              <button
+                type="button"
+                onClick={() => navigate({ to: "/lessons/edit/$id", params: { id: lesson.id } })}
+                style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
+              >
+                <TintedIcon icon={IconPencil} bg="#FFF6DC" color="#D68A1B" />
+                <span style={ACTION_ROW_LABEL}>Edit lesson</span>
+                <ChevronRight />
+              </button>
+              <button
+                type="button"
+                onClick={() => setInlineView("reschedule")}
+                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
+              >
+                <TintedIcon icon={IconRepeat} bg="#E7F1FC" color="#1877D6" />
+                <span style={ACTION_ROW_LABEL}>Reschedule</span>
+                <ChevronRight />
+              </button>
+              <button
+                type="button"
+                onClick={() => setInlineView("duration")}
+                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
+              >
+                <TintedIcon icon={IconClock} bg="#F3EEFB" color="#7B4FC9" />
+                <span style={ACTION_ROW_LABEL}>Change duration</span>
+                <ChevronRight />
+              </button>
+              <button
+                type="button"
+                onClick={() => setInlineView("note")}
+                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
+              >
+                <TintedIcon icon={IconNotes} bg="#F2F2F7" color="#6B6B6F" />
+                <span style={ACTION_ROW_LABEL}>Add note</span>
+                <ChevronRight />
+              </button>
+              <button
+                type="button"
+                onClick={() => setInlineView("cancel")}
+                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
+              >
+                <TintedIcon icon={IconX} bg="#FDEDEC" color="#FF3B30" />
+                <span style={{ ...ACTION_ROW_LABEL, color: "#FF3B30" }}>Cancel lesson</span>
+                <ChevronRight />
+              </button>
+            </div>
+
+            {/* Delete lesson — kept for existing functionality, styled as destructive */}
+            <div style={{ marginTop: 10 }}>
+              <div style={ACTION_CARD}>
+                <button
+                  type="button"
+                  onClick={() => setInlineView("delete")}
+                  style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
+                >
+                  <TintedIcon icon={IconTrash} bg="#FDEDEC" color="#FF3B30" />
+                  <span style={{ ...ACTION_ROW_LABEL, color: "#FF3B30" }}>Delete lesson</span>
+                  <ChevronRight />
+                </button>
+              </div>
+            </div>
+
+            {/* what3words */}
+            <SheetGroup>
+              <SheetRow>
+                <span style={{ color: "#E11F26", fontWeight: 700, fontFamily: "Poppins, sans-serif", fontSize: 15 }}>
+                  ///
+                </span>
+                {[0, 1, 2].map((i) => (
+                  <Fragment key={i}>
+                    {i > 0 && <span style={{ color: NAVY, fontWeight: 700 }}>.</span>}
+                    <input
+                      value={w3w[i]}
+                      onChange={(e) => {
+                        const next = [...w3w] as [string, string, string];
+                        next[i] = e.target.value.replace(/[^a-zA-Z\u00C0-\u024F-]/g, "");
+                        setW3w(next);
+                        setW3wState("idle");
+                      }}
+                      onBlur={verifyAndSaveW3w}
+                      placeholder={`word${i + 1}`}
+                      style={{ ...fieldInput, textAlign: "center", padding: "9px 6px" }}
+                    />
+                  </Fragment>
+                ))}
+              </SheetRow>
+              {w3wState !== "idle" ? (
+                <SheetRow>{statusLine(w3wState, "Verified via what3words", "Not a recognised what3words address")}</SheetRow>
+              ) : null}
+            </SheetGroup>
+
+            {/* Last lesson */}
+            <SheetGroup>
+              <SheetRow>
+                <IconNotes size={20} stroke={1.8} color="#6B7686" />
+                {prev ? (
+                  <div style={{ minWidth: 0 }}>
+                    <div style={rowLabel}>
+                      {new Date(prev.lesson_date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })} ·{" "}
+                      <span style={{ textTransform: "capitalize", color: "#6B7686" }}>{prev.status}</span>
+                    </div>
+                    {prev.notes && (
+                      <div style={{ marginTop: 3, color: "#6B7686", fontSize: 12, fontFamily: "Poppins, sans-serif", lineHeight: 1.4 }}>
+                        {prev.notes}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <span style={{ ...rowLabel, color: "#8A93A3" }}>No previous lesson</span>
+                )}
+              </SheetRow>
+            </SheetGroup>
+          </>
         )}
 
       </BottomSheet>

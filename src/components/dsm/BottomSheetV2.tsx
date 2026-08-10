@@ -74,34 +74,34 @@ export function BottomSheet({ title, subtitle, onClose, children, footer }: Bott
         <div className="px-5 pt-2 pb-4 shrink-0">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <h2
-                style={{
-                  color: navy,
-                  fontSize: 26,
-                  fontWeight: 800,
-                  letterSpacing: "-0.6px",
-                  lineHeight: 1.15,
-                }}
-              >
-                {title}
-              </h2>
-              {subtitle && (
-                <div
-                  className="mt-1"
-                  style={{ color: subtle, fontSize: 14, fontWeight: 500 }}
+                <h2
+                  style={{
+                    color: navy,
+                    fontSize: 26,
+                    fontWeight: 800,
+                    letterSpacing: "-0.5px",
+                    lineHeight: 1.15,
+                  }}
                 >
-                  {subtitle}
-                </div>
-              )}
+                  {title}
+                </h2>
+                {subtitle && (
+                  <div
+                    className="mt-1"
+                    style={{ color: "#8A8A8E", fontSize: 13.5, fontWeight: 500 }}
+                  >
+                    {subtitle}
+                  </div>
+                )}
             </div>
             <button
               onClick={onClose}
               className="flex items-center justify-center rounded-full shrink-0 active:opacity-80"
               aria-label="Close"
               type="button"
-              style={{ width: 30, height: 30, backgroundColor: canvas }}
+              style={{ width: 30, height: 30, backgroundColor: "#E5E5EA" }}
             >
-              <IconX stroke={1.5} size={16} color={subtle} />
+              <IconX stroke={1.5} size={13} color="#6B6B6F" />
             </button>
           </div>
         </div>
