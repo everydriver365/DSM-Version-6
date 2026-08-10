@@ -1324,53 +1324,20 @@ function SettingsPage() {
         </SectionCard>
 
         <Label>COVERAGE AREA</Label>
-        <div
-          onClick={() => navigate({ to: "/coverage-areas" as never })}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              navigate({ to: "/coverage-areas" as never });
-            }
-          }}
-          style={{
-            margin: "0 0 0 0",
-            backgroundColor: "#fff",
-            border: "0.5px solid #E2E6ED",
-            borderRadius: 12,
-            padding: 16,
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            cursor: "pointer",
-            ...POPPINS,
-          }}
-        >
-          <div
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 12,
-              backgroundColor: "#E0F4FF",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            <MapPin size={22} color="#1877D6" />
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>Coverage areas</div>
-            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
-              {coverageAreaCount > 0
+        <SectionCard>
+          <AccountRow
+            icon={<MapPin size={20} color="#1877D6" />}
+            iconBg="#E0F4FF"
+            label="Coverage areas"
+            subLabel={
+              coverageAreaCount > 0
                 ? `${coverageAreaCount} ${coverageAreaCount === 1 ? "area" : "areas"} defined`
-                : "No areas set"}
-            </div>
-          </div>
-          <ChevronRight size={18} color="#D1D5DB" />
-        </div>
+                : "No areas set"
+            }
+            onClick={() => navigate({ to: "/coverage-areas" as never })}
+            isFirst
+          />
+        </SectionCard>
 
 
         <Label>PRICING RULES</Label>
