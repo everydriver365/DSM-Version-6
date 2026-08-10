@@ -791,6 +791,8 @@ export function UnifiedPaymentSheet({
   const methodAllowed = (m: PayMethod) => {
     if (m === "klarna") return !!instructor?.klarna_enabled;
     if (m === "clearpay") return !!instructor?.clearpay_enabled;
+    if (m === "card_square") return squareConnected;
+    if (m === "card_evd") return !squareConnected;
     if (!accepted || accepted.length === 0) return true;
 
     // Normalise: lowercase and strip spaces/special chars for comparison
@@ -814,6 +816,8 @@ export function UnifiedPaymentSheet({
     [
       { key: "cash" as const, Icon: Banknote },
       { key: "bank_transfer" as const, Icon: Landmark },
+      { key: "card_square" as const, Icon: IconCreditCard },
+      { key: "card_evd" as const, Icon: IconCreditCard },
       { key: "qr" as const, Icon: QrCode },
       { key: "link" as const, Icon: Link2 },
       { key: "klarna" as const, Icon: IconCreditCard },
@@ -821,68 +825,85 @@ export function UnifiedPaymentSheet({
     ] as { key: PayMethod; Icon: typeof Banknote }[]
   ).filter((m) => methodAllowed(m.key));
 
-  const isRemote = method === "qr" || method === "link";
+  const isRemote = method === "qr" || method === "link" || method === "card_square";
 
-  // ---- QR / pay link -----------------------------------------------------
-  const createRyftPayment = useCallback(
-    async (kind: "qr" | "link"): Promise<{ url: string; paymentId: string | null } | null> => {
-      if (amountNum <= 0) {
-        toast.error("Enter an amount first");
-        return null;
+  // ---- Square payment link ----------------------------------------------
+  const createSquarePayment = useCallback(async (): Promise<string | null> => {
+    if (amountNum <= 0) {
+      toast.error("Enter an amount first");
+      return null;
+    }
+    const { data, error } = await supabase.functions.invoke("square-create-payment-link", {
+      body: {
+        instructor_id: instructorId,
+        pupil_id: pupilId ?? null,
+        lesson_id: null,
+        amount_pence: Math.round(amountNum * 100),
+        description: note.trim() || "Driving lesson",
+      },
+    });
+    if (error) throw error;
+    const res = data as { no_square?: boolean; url?: string } | null;
+    if (res?.no_square) {
+      toast.error("Square not connected. Connect Square in your profile.");
+      return null;
+    }
+    if (!res?.url) throw new Error("No payment link returned");
+    return res.url;
+  }, [amountNum, instructorId, pupilId, note]);
+
+  async function generateSquareLink(type: "link" | "qr") {
+    setSquareLoading(true);
+    try {
+      const url = await createSquarePayment();
+      if (!url) return;
+      setSquareLink(url);
+      if (type === "link") {
+        const pupilPhone = pupil?.phone ?? "";
+        const msg = encodeURIComponent(
+          `Hi, please pay £${amountNum.toFixed(2)} for your driving lesson here: ${url}`,
+        );
+        window.location.href = `sms:${pupilPhone}?&body=${msg}`;
+        toast.success("Payment link ready");
+      } else {
+        setShowQR(true);
       }
-      setGenerating(true);
-      try {
-        const amountPence = Math.round(amountNum * 100);
-        const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
-          body: {
-            amount: amountPence,
-            payment_type: kind,
-            instructor_id: instructorId,
-            pupil_id: pupilId ?? undefined,
-            pupil_name: pupil?.name ?? undefined,
-            description: note.trim() || "Payment",
-          },
-        });
-        if (error) throw error;
-        const clientSecret =
-          (data as { clientSecret?: string; client_secret?: string })?.clientSecret ??
-          (data as { client_secret?: string })?.client_secret ??
-          null;
-        const pid =
-          (data as { paymentId?: string; id?: string })?.paymentId ??
-          (data as { id?: string })?.id ??
-          null;
-        if (!clientSecret) throw new Error("No client secret returned");
-        const url = `https://drivingschoolmanager.co.uk/pay?cs=${clientSecret}&amount=${amountPence}&desc=${encodeURIComponent(
-          note.trim() || "Payment",
-        )}`;
-        return { url, paymentId: pid };
-      } catch (e) {
-        console.error("[UnifiedPaymentSheet] createRyftPayment", e);
-        toast.error("Couldn't generate payment");
-        return null;
-      } finally {
-        setGenerating(false);
-      }
-    },
-    [amountNum, instructorId, pupilId, pupil, note],
-  );
+    } catch (e) {
+      toast.error((e as Error)?.message ?? "Failed");
+    } finally {
+      setSquareLoading(false);
+    }
+  }
 
   const generateQr = async () => {
-    const res = await createRyftPayment("qr");
-    if (!res) return;
-    setQrUrl(res.url);
-    setQrPaymentId(res.paymentId);
-    setQrFullscreen(true);
-    toast.success("QR code ready");
+    setGenerating(true);
+    try {
+      const url = await createSquarePayment();
+      if (!url) return;
+      setQrUrl(url);
+      setQrFullscreen(true);
+      toast.success("QR code ready");
+    } catch (e) {
+      console.error("[UnifiedPaymentSheet] generateQr", e);
+      toast.error("Couldn't generate payment");
+    } finally {
+      setGenerating(false);
+    }
   };
 
   const generateLink = async () => {
-    const res = await createRyftPayment("link");
-    if (!res) return;
-    setPayUrl(res.url);
-    setQrPaymentId(res.paymentId);
-    toast.success("Payment link ready");
+    setGenerating(true);
+    try {
+      const url = await createSquarePayment();
+      if (!url) return;
+      setPayUrl(url);
+      toast.success("Payment link ready");
+    } catch (e) {
+      console.error("[UnifiedPaymentSheet] generateLink", e);
+      toast.error("Couldn't generate payment");
+    } finally {
+      setGenerating(false);
+    }
   };
 
   // ---- payment write -----------------------------------------------------
