@@ -785,59 +785,31 @@ function TakePaymentPage() {
 
           {tab === "card" && (
             <div style={{ flex: 1, minHeight: 0, padding: "8px 16px", display: "flex", flexDirection: "column", overflow: "auto" }}>
-              {!cardSessionId && (
-                <button
-                  type="button"
-                  onClick={startCard}
-                  disabled={cardLoading}
-                  style={{
-                    width: "100%",
-                    padding: 17,
-                    borderRadius: 16,
-                    background: NAVY,
-                    color: "#fff",
-                    border: "none",
-                    fontSize: 16,
-                    fontWeight: 800,
-                    boxShadow: "0 4px 0 #050D1C",
-                    opacity: cardLoading ? 0.7 : 1,
-                    cursor: "pointer",
-                  }}
-
-                >
-                  {cardLoading ? "Loading…" : `Charge card · £${totalNum.toFixed(2)}`}
-                </button>
-              )}
-              {cardSessionId && (
-                <>
-                  <div id="google-pay-container" style={{ marginBottom: 12 }} />
-                  <div id="apple-pay-container" style={{ marginBottom: 12 }} />
-                  <div style={{ textAlign: 'center', color: '#9CA3AF', fontSize: 13, marginBottom: 12 }}>— or pay by card —</div>
-                  <div className="Ryft--paysection">
-                    <form id="ryft-pay-form" className="Ryft--payform">
-                      <button
-                        id="pay-btn"
-                        type="submit"
-                        style={{
-                          width: "100%",
-                          marginTop: 12,
-                          background: "#0B1F3A",
-                          color: "#fff",
-                          border: 0,
-                          borderRadius: 10,
-                          padding: "14px 16px",
-                          fontSize: 16,
-                          fontWeight: 600,
-                          cursor: "pointer",
-                        }}
-                      >
-                        Pay £{totalNum.toFixed(2)}
-                      </button>
-                    </form>
-                  </div>
-                </>
-              )}
+              <button
+                type="button"
+                onClick={startCard}
+                disabled={cardLoading}
+                style={{
+                  width: "100%",
+                  padding: 17,
+                  borderRadius: 16,
+                  background: NAVY,
+                  color: "#fff",
+                  border: "none",
+                  fontSize: 16,
+                  fontWeight: 800,
+                  boxShadow: "0 4px 0 #050D1C",
+                  opacity: cardLoading ? 0.7 : 1,
+                  cursor: "pointer",
+                }}
+              >
+                {cardLoading ? "Loading…" : `Pay by card with Square · £${totalNum.toFixed(2)}`}
+              </button>
+              <div style={{ textAlign: "center", color: "#9CA3AF", fontSize: 13, marginTop: 12 }}>
+                Opens a secure Square checkout page
+              </div>
             </div>
+
           )}
 
           {tab === "cash" && (
