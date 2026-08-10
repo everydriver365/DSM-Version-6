@@ -539,17 +539,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           }}
         >
           {heroCards.map((listing) => {
-            const Icon = categoryIcon(listing?.category);
+            const Icon = listing.Icon;
 
-            const open = () =>
-              navigate({
-                to: listing ? ("/marketplace/$listingId" as never) : ("/marketplace" as never),
-                params: listing ? ({ listingId: listing.id } as never) : undefined,
-              });
+            const open = listing.onOpen;
             return (
               <div
-                key={listing?.id ?? "empty"}
+                key={listing.id}
                 style={{ flex: "0 0 100%", scrollSnapAlign: "center", position: "relative" }}
+
               >
                 <div
                   role="button"
