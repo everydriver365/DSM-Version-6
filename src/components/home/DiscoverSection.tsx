@@ -463,7 +463,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     position: "relative",
                     borderRadius: 20,
                     overflow: "hidden",
-                    height: 192,
+                    height: 210,
                     background: "#fff",
                     boxShadow:
                       "0 6px 0 #E4E4E8, 0 16px 32px rgba(11,31,58,0.12)",
@@ -554,7 +554,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       top: 0,
                       left: "46%",
                       right: 0,
-                      bottom: 26,
+                      bottom: 34,
                       padding: "16px 16px 0 12px",
                       display: "flex",
                       flexDirection: "column",
