@@ -568,7 +568,9 @@ export function UnifiedPaymentSheet({
           .order("name"),
         supabase
           .from("instructors")
-          .select("name, hourly_rate, klarna_enabled, clearpay_enabled, accepted_payment_methods")
+          .select(
+            "name, hourly_rate, klarna_enabled, clearpay_enabled, accepted_payment_methods, square_merchant_id",
+          )
           .eq("id", uid)
           .maybeSingle(),
       ]);
@@ -576,7 +578,10 @@ export function UnifiedPaymentSheet({
       if (pErr) console.warn("[UnifiedPaymentSheet] pupils", pErr);
       if (iErr) console.warn("[UnifiedPaymentSheet] instructor", iErr);
       setPupils((ps ?? []) as unknown as PupilRow[]);
-      if (ins) setInstructor(ins as unknown as InstructorRow);
+      if (ins) {
+        setInstructor(ins as unknown as InstructorRow);
+        setSquareConnected(!!(ins as unknown as InstructorRow).square_merchant_id);
+      }
     })();
     return () => {
       cancelled = true;
