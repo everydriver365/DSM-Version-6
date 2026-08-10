@@ -87,6 +87,22 @@ function DataImportPage() {
     [mapping, records],
   );
 
+  const validations = useMemo(() => validatePupilRows(rows), [rows]);
+  const invalidRowCount = useMemo(() => validations.filter((v) => !v.valid).length, [validations]);
+  const warningRowCount = useMemo(
+    () => validations.filter((v) => v.valid && v.warnings.length > 0).length,
+    [validations],
+  );
+  const validRowCount = rows.length - invalidRowCount;
+  const invalidList = useMemo(
+    () =>
+      validations
+        .map((v, i) => ({ row: i + 2, issues: v.errors }))
+        .filter((x) => x.issues.length > 0),
+    [validations],
+  );
+
+
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
