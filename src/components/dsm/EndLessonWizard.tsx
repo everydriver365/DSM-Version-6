@@ -503,6 +503,15 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             console.warn("[eol-wizard] qr history insert failed", e);
           }
           setBalance(newBalance);
+          setLastPaymentResult({
+            amountApplied: amt,
+            overpayment: newBalance > 0 ? newBalance : 0,
+            newAccountBalance: newBalance,
+            newPrepaidHours: 0,
+            lessonsFullyPaid: 1,
+            lessonsLeftPartial: 0,
+            balanceOwedDelta: amt,
+          });
           setPaymentRecorded(true);
           setFinalPaymentLabel("Paid · Card (QR)");
           toast.success("Payment received");
