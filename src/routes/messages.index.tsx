@@ -1641,8 +1641,8 @@ function InboxRow({
         <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
           <div
             style={{
-              fontSize: 14,
-              fontWeight: unread ? 800 : 600,
+              fontSize: 15.5,
+              fontWeight: unread ? 800 : 700,
               color: NAVY,
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -1655,12 +1655,12 @@ function InboxRow({
             <span
               style={{
                 flexShrink: 0,
-                fontSize: 8,
-                fontWeight: 700,
+                fontSize: 9.5,
+                fontWeight: 800,
                 color: BLUE,
-                background: "#E6F1FB",
-                borderRadius: 4,
-                padding: "2px 5px",
+                background: "#E7F1FC",
+                borderRadius: 20,
+                padding: "2px 8px",
                 letterSpacing: 0.4,
               }}
             >
@@ -1670,9 +1670,9 @@ function InboxRow({
         </div>
         <div
           style={{
-            fontSize: 14,
+            fontSize: 13.5,
             fontWeight: unread ? 600 : 400,
-            color: unread ? NAVY : GREY,
+            color: unread ? NAVY : "#8A8A8E",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
