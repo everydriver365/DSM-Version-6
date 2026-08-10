@@ -1291,6 +1291,7 @@ function SchedulePage() {
                             return (
                               <div
                                 key={e.id}
+                                className="focus-within:ring-2 focus-within:ring-[#1A9B5C] focus-within:ring-offset-2"
                                 style={{
                                   background: "#FFFFFF",
                                   borderRadius: 16,
