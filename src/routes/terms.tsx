@@ -88,7 +88,7 @@ function TermsPage() {
 
         <Section title="5. Payments">
           <p>
-            Payment processing is handled by Ryft. A platform fee of 1% applies to single card payments. Course payments use the school skim amount. Fees subject to change with 30 days notice.
+            Payment processing is handled by Square. A platform fee of 1% applies to card payments processed through DSM. Instructors pay Square's standard card processing fee. Course payments use the school skim amount. Fees subject to change with 30 days notice.
           </p>
         </Section>
 
