@@ -23,7 +23,7 @@ import { LessonActionsSheet } from "@/components/lessons/LessonActionsSheet";
 import { WelcomeOverlay } from "@/components/dsm/WelcomeOverlay";
 
 
-import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconAward, IconBell, IconBolt, IconBriefcase, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconChartBar, IconCheckbox, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconCircleX, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDots, IconDotsVertical, IconFileText, IconGift, IconHeart, IconInbox, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPlay, IconPlus, IconRadio, IconReceipt, IconRefresh, IconSchool, IconSearch, IconSend, IconSettings, IconShield, IconSparkles, IconSpeakerphone, IconStar, IconSteeringWheel, IconSun, IconTag, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserPlus, IconUsers, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
+import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconAward, IconBell, IconBolt, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconChartBar, IconCheckbox, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDots, IconDotsVertical, IconFileText, IconGift, IconHeart, IconInbox, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPlay, IconPlus, IconRadio, IconReceipt, IconRefresh, IconSchool, IconSearch, IconSend, IconSettings, IconShield, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserPlus, IconUsers, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
 import { CalendarOff, Receipt, BookOpen, HelpCircle, Calculator, Fuel, FolderOpen, FileSignature, ToggleLeft, Crown, UserCircle, PlayCircle, CheckCheck, FileSpreadsheet, ArrowLeftRight, Megaphone, Sparkles, FileCheck, Headphones, Infinity, Move, Video, ShieldAlert, Building2 as Building, Calendar as CalendarIcon, Settings as SettingsIcon } from "lucide-react";
 
 
@@ -458,135 +458,6 @@ function formatMins(mins: number) {
 }
 
 
-type NAItem = {
-  key: 'tests' | 'jobs' | 'calls' | 'enq' | 'cancellations' | 'reschedules' | 'certs_expired' | 'certs_expiring' | 'birthday';
-  count: number;
-  primary: string;
-  subtitle: string;
-  onClick: () => void;
-  /** Optional one-tap action rendered as a secondary button on the row. */
-  actionLabel?: string;
-  onAction?: () => void;
-};
-
-
-const NA_CATEGORY_ORDER: NAItem['key'][] = ['certs_expired', 'cancellations', 'reschedules', 'birthday', 'certs_expiring', 'tests', 'jobs', 'calls', 'enq'];
-
-const NA_CATEGORY_STYLES: Record<NAItem['key'], { chipBg: string; accent: string; Icon: React.ComponentType<{ size?: number; color?: string }> }> = {
-  tests: { chipBg: '#E6F1FB', accent: '#1877D6', Icon: IconSteeringWheel },
-  jobs:  { chipBg: '#FBEFE1', accent: '#B5661E', Icon: IconBriefcase },
-  calls: { chipBg: '#F0EBFF', accent: '#6B4FD6', Icon: IconPhone },
-  enq:   { chipBg: '#EAF3DE', accent: '#2E9E5B', Icon: IconMessageCircle },
-  cancellations: { chipBg: '#FEF2F2', accent: '#CC2229', Icon: IconCircleX },
-  reschedules:   { chipBg: '#FFFBEB', accent: '#D97706', Icon: IconRefresh },
-  certs_expired:  { chipBg: '#FEF2F2', accent: '#CC2229', Icon: IconAlertCircle },
-  certs_expiring: { chipBg: '#FFFBEB', accent: '#D97706', Icon: IconClock },
-  birthday: { chipBg: '#F0EBFF', accent: '#6B4FD6', Icon: IconGift },
-};
-
-
-const NA_CARD_STYLE: React.CSSProperties = {
-  background: '#FFFFFF',
-  borderRadius: 16,
-  padding: '12px 16px',
-  boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-  display: 'flex',
-  alignItems: 'center',
-  gap: 12,
-  boxSizing: 'border-box',
-};
-
-function NeedsAttentionRow({ item }: { item: NAItem }) {
-  const { chipBg, accent, Icon } = NA_CATEGORY_STYLES[item.key];
-  return (
-    <div
-      onClick={item.onClick}
-      role="button"
-      tabIndex={0}
-      className="cf-tap"
-      style={{ ...NA_CARD_STYLE, cursor: 'pointer' }}
-    >
-      <div style={{ width: 36, height: 36, borderRadius: 11, background: chipBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <Icon size={18} color={accent} />
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 500, color: '#12142B', fontFamily: 'Poppins, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {item.primary}
-        </div>
-        <div style={{ fontSize: 11, color: '#8A94A6', marginTop: 1, fontFamily: 'Poppins, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {item.subtitle}
-        </div>
-      </div>
-      {item.actionLabel && item.onAction && (
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); item.onAction?.(); }}
-          style={{
-            flexShrink: 0,
-            background: chipBg,
-            color: accent,
-            border: 'none',
-            borderRadius: 999,
-            padding: '6px 12px',
-            fontSize: 11,
-            fontWeight: 700,
-            fontFamily: 'Poppins, sans-serif',
-            cursor: 'pointer',
-          }}
-        >
-          {item.actionLabel}
-        </button>
-      )}
-      <IconChevronRight stroke={1.5} size={15} color="#B0BAC9" />
-
-    </div>
-  );
-}
-
-function NeedsAttentionAllClear() {
-  return (
-    <div style={NA_CARD_STYLE}>
-      <div style={{ width: 36, height: 36, borderRadius: 11, background: '#EAF3DE', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <IconCircleCheck stroke={1.5} size={18} color="#2E9E5B" />
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 500, color: '#12142B', fontFamily: 'Poppins, sans-serif' }}>All clear</div>
-        <div style={{ fontSize: 11, color: '#8A94A6', marginTop: 1, fontFamily: 'Poppins, sans-serif' }}>Nothing needs your attention</div>
-      </div>
-    </div>
-  );
-}
-
-function NeedsAttentionSection({ items }: { items: NAItem[] }) {
-  const active = items.filter((i) => i.count > 0);
-  if (active.length === 0) {
-    return (
-      <div style={{ margin: '0 16px' }}>
-        <NeedsAttentionAllClear />
-      </div>
-    );
-  }
-  const sorted = [...active].sort((a, b) => {
-    if (b.count !== a.count) return b.count - a.count;
-    return NA_CATEGORY_ORDER.indexOf(a.key) - NA_CATEGORY_ORDER.indexOf(b.key);
-  }).slice(0, 6);
-  return (
-      <div style={{ margin: '0 16px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
-            <span style={SECTION_TITLE_TEXT_STYLE}>Needs attention</span>
-          </div>
-          <div style={{ background: '#FCEBEB', color: '#CC2229', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 999, fontFamily: 'Poppins, sans-serif' }}>
-          {active.length} urgent
-        </div>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {sorted.map((it) => <NeedsAttentionRow key={it.key} item={it} />)}
-      </div>
-    </div>
-  );
-}
 /** Pupil status normalisation helpers. */
 function normalizePupilStatus(status: string | null | undefined) {
   const normalized = (status ?? "active").toLowerCase();
@@ -4151,7 +4022,7 @@ function HomePage() {
   }).length;
   const naCalls: number = 0; // TODO: wire missed calls
   const naEnquiries = pendingSwapCount || 0;
-  const naUrgentCount = [naJobs, naTests, naCalls, naEnquiries].filter((n) => n > 0).length;
+
 
   const timeAgo = (iso: string) => {
     const diff = Math.max(0, Date.now() - new Date(iso).getTime());
@@ -4724,49 +4595,6 @@ function HomePage() {
       </div>
       </div>
 
-      {/* ============ NEEDS ATTENTION ============ */}
-      <div style={{ marginBottom: 16 }}>
-        <NeedsAttentionSection
-          items={[
-            {
-              key: 'tests',
-              count: naTests,
-              primary: `${naTests} test${naTests === 1 ? '' : 's'} in the next 7 days`,
-              subtitle: 'Check readiness and confirm details',
-              onClick: () => navigate({ to: '/tests' }),
-              actionLabel: 'View',
-              onAction: () => navigate({ to: '/tests' }),
-            },
-            {
-              key: 'jobs',
-              count: naJobs,
-              primary: `${naJobs} open job${naJobs === 1 ? '' : 's'}`,
-              subtitle: 'Cover work available near you',
-              onClick: () => navigate({ to: '/jobs' }),
-              actionLabel: 'Browse',
-              onAction: () => navigate({ to: '/jobs' }),
-            },
-            {
-              key: 'calls',
-              count: naCalls,
-              primary: `${naCalls} callback${naCalls === 1 ? '' : 's'} waiting`,
-              subtitle: 'Pupils asked you to ring them back',
-              onClick: () => navigate({ to: '/messages' }),
-              actionLabel: 'Call',
-              onAction: () => navigate({ to: '/messages' }),
-            },
-            {
-              key: 'enq',
-              count: naEnquiries,
-              primary: `${naEnquiries} new enquir${naEnquiries === 1 ? 'y' : 'ies'}`,
-              subtitle: 'Reply quickly to win the booking',
-              onClick: () => navigate({ to: '/enquiries' }),
-              actionLabel: 'Reply',
-              onAction: () => navigate({ to: '/enquiries' }),
-            },
-          ]}
-        />
-      </div>
 
 
       {/* ============ NEXT LESSON CARD ============ */}
