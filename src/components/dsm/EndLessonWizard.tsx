@@ -301,9 +301,14 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
 
   const sortedRefunds = useMemo(
     () =>
-      [...refundResults].sort(
-        (a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime(),
-      ),
+      [...refundResults].sort((a, b) => {
+        const aDate = a.createdAt ? new Date(a.createdAt).getTime() : null;
+        const bDate = b.createdAt ? new Date(b.createdAt).getTime() : null;
+        if (aDate && bDate) return bDate - aDate;
+        if (aDate && !bDate) return -1;
+        if (!aDate && bDate) return 1;
+        return 0;
+      }),
     [refundResults],
   );
 
