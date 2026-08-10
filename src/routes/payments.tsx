@@ -662,7 +662,8 @@ function PaymentsPage() {
                           style={{
                             fontSize: 15.5,
                             fontWeight: 800,
-                            color: isRefund ? "#FF3B30" : "#1A9B5C",
+                            color: isNonRevenue ? "#B0B0B5" : isRefund ? "#FF3B30" : "#1A9B5C",
+                            textAlign: "right",
                             flexShrink: 0,
                             ...POPPINS,
                           }}
