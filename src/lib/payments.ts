@@ -402,7 +402,10 @@ export interface RecordRefundResult {
   newAccountBalance: number;
   /** Id of the refund audit row in lesson_history, when written. */
   historyId: string | null;
+  /** Overall status of the refund operation for audit display. */
+  status: "succeeded" | "pending" | "failed";
 }
+
 
 /**
  * Records a refund. Callers pass a POSITIVE amount — this helper owns the
