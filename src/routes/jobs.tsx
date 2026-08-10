@@ -480,7 +480,7 @@ function JobsPage() {
       return;
     }
 
-    // Create a Ryft payment link and text it to the pupil.
+    // Create a Square payment link and text it to the pupil.
     try {
       const worth = (job.course_hours ?? 0) * (job.offered_rate ?? 0);
       const alreadyPaid = job.amount_paid != null ? Number(job.amount_paid) : 0;
@@ -493,21 +493,20 @@ function JobsPage() {
         return;
       }
 
-      const { data: paymentData, error: payError } = await supabase.functions.invoke("create-ryft-payment", {
+      const { data: paymentData, error: payError } = await supabase.functions.invoke("square-create-payment-link", {
         body: {
-          amount: amountPence,
-          currency: "GBP",
-          payment_type: "course",
           instructor_id: uid,
+          amount_pence: amountPence,
+          description: "Driving course",
           metadata: { jobOfferId: job.id, pupil_email: job.pupil_email, pupil_name: job.pupil_name },
         },
       });
-      if (payError || !paymentData?.paymentUrl) {
+      if (payError || paymentData?.no_square || !paymentData?.url) {
         toast.error("Job claimed, but payment link failed");
         load();
         return;
       }
-      const paymentUrl = paymentData.paymentUrl as string;
+      const paymentUrl = paymentData.url as string;
       const pupilName = job.pupil_name || "there";
 
       if (job.pupil_phone) {

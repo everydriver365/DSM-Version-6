@@ -328,6 +328,69 @@ function ProfilePage() {
   // Danger zone
   const [deleteConfirm, setDeleteConfirm] = useState("");
 
+  // --- Square payments connection ---
+  const [squareConnected, setSquareConnected] = useState(false);
+  const [squareMerchantId, setSquareMerchantId] = useState<string | null>(null);
+  const [squareBusy, setSquareBusy] = useState(false);
+
+  const loadSquare = async (uid: string) => {
+    const { data, error } = await supabase
+      .from("instructors")
+      .select("square_merchant_id")
+      .eq("id", uid)
+      .maybeSingle();
+    if (error) {
+      console.warn("[profile] load square_merchant_id", error);
+      return;
+    }
+    const mid = (data as { square_merchant_id?: string | null } | null)?.square_merchant_id ?? null;
+    setSquareMerchantId(mid);
+    setSquareConnected(Boolean(mid));
+  };
+
+  const connectSquare = async () => {
+    if (!userId) return;
+    setSquareBusy(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("square-oauth-start", {
+        body: { instructor_id: userId, redirect_to: window.location.origin + "/profile" },
+      });
+      if (error) throw error;
+      const url = (data as { url?: string } | null)?.url;
+      if (!url) throw new Error("No Square authorisation URL returned");
+      window.location.href = url;
+    } catch (e) {
+      console.error("[profile] connectSquare failed", e);
+      toast.error("Couldn't start Square connection");
+    } finally {
+      setSquareBusy(false);
+    }
+  };
+
+  const disconnectSquare = async () => {
+    if (!userId) return;
+    setSquareBusy(true);
+    try {
+      const { error } = await supabase
+        .from("instructors")
+        .update({ square_merchant_id: null })
+        .eq("id", userId);
+      if (error) throw error;
+      setSquareMerchantId(null);
+      setSquareConnected(false);
+      toast.success("Square disconnected");
+    } catch (e) {
+      console.error("[profile] disconnectSquare failed", e);
+      toast.error("Couldn't disconnect Square");
+    } finally {
+      setSquareBusy(false);
+    }
+  };
+
+  useEffect(() => {
+    if (userId) void loadSquare(userId);
+  }, [userId]);
+
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
@@ -1151,6 +1214,66 @@ function ProfilePage() {
         {/* Integrations */}
         <AccordionCard sectionKey="integrations" isOpen={expanded.integrations} onToggle={() => toggleSection("integrations")}>
           <div className="flex flex-col gap-3">
+            {/* PAYMENTS */}
+            <div className="text-[11px] font-semibold tracking-wide text-[#6B7280]" style={POPPINS}>
+              PAYMENTS
+            </div>
+
+            <div
+              className="rounded-lg bg-white px-3 py-3"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className="flex items-center justify-center rounded-lg"
+                  style={{ width: 36, height: 36, backgroundColor: "#0B1F3A", color: "#fff", fontWeight: 800 }}
+                >
+                  S
+                </div>
+                <div className="flex-1">
+                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Square</div>
+                  <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
+                    {squareConnected
+                      ? `Connected${squareMerchantId ? ` · ${squareMerchantId}` : ""}`
+                      : "Take card payments, payment links and QR codes"}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={squareConnected ? disconnectSquare : connectSquare}
+                  disabled={squareBusy}
+                  className="rounded-lg px-3 py-2 text-[13px] font-semibold text-white"
+                  style={{
+                    ...POPPINS,
+                    backgroundColor: squareConnected ? "#CC2229" : "#1877D6",
+                    border: "none",
+                    opacity: squareBusy ? 0.7 : 1,
+                  }}
+                >
+                  {squareBusy ? "…" : squareConnected ? "Disconnect" : "Connect"}
+                </button>
+              </div>
+            </div>
+
+            {!squareConnected && (
+              <div
+                className="rounded-lg p-3"
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#FCD34D", backgroundColor: "#FFFBEB" }}
+              >
+                <div className="flex items-start gap-2">
+                  <IconAlertTriangle stroke={1.5} size={18} color="#B45309" />
+                  <div className="text-[12px]" style={{ ...POPPINS, color: "#92400E" }}>
+                    Square isn't connected. Card payments will be taken via EveryDriver and paid out to
+                    you separately. Connect Square to get paid directly and instantly.
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="text-[11px] font-semibold tracking-wide text-[#6B7280] mt-1" style={POPPINS}>
+              CALENDARS
+            </div>
+
             <Link
               to="/calendarsync"
               className="flex items-center gap-3 rounded-lg bg-white px-3 py-3 hover:bg-[#F8F9FB]"

@@ -242,21 +242,20 @@ export function PaymentDetailsSheet({
     }
     setSendingLink(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
+      const { data, error } = await supabase.functions.invoke("square-create-payment-link", {
         body: {
-          amount: amountDue > 0 ? amountDue : 0,
           pupil_id: pupilId,
-          pupil_name: pupilName,
           lesson_id: lessonId,
+          amount_pence: Math.round((amountDue > 0 ? amountDue : 0) * 100),
           description: `Lesson payment · ${pupilName}`,
-          commission: 1,
         },
       });
       if (error) throw error;
-      const url =
-        (data as { paymentUrl?: string; url?: string })?.paymentUrl ??
-        (data as { url?: string })?.url ??
-        null;
+      if ((data as { no_square?: boolean } | null)?.no_square) {
+        toast.error("Square not connected. Connect Square in your profile.");
+        return;
+      }
+      const url = (data as { url?: string } | null)?.url ?? null;
       if (!url) throw new Error("No payment URL returned");
       const body = encodeURIComponent(
         `Hi ${firstName}, here's your secure payment link for £${amountDue.toFixed(2)}: ${url}`,

@@ -550,111 +550,35 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     setQrGenerating(true);
     try {
       const amt = Number(amount) || lessonCost;
-      const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
+      const { data, error } = await supabase.functions.invoke("square-create-payment-link", {
         body: {
-          amount: amt,
-          pupil_id: pupilId,
-          pupil_name: pupilName,
-          lesson_id: lessonId,
           instructor_id: instructorId,
+          pupil_id: pupilId,
+          lesson_id: lessonId,
+          amount_pence: Math.round(amt * 100),
           description: `Lesson payment · ${pupilName}`,
-          commission: 1,
         },
       });
       if (error) throw error;
-      const url = (data as { paymentUrl?: string; url?: string })?.paymentUrl
-        ?? (data as { url?: string })?.url
-        ?? null;
-      const pid = (data as { paymentId?: string; id?: string })?.paymentId
-        ?? (data as { id?: string })?.id
-        ?? null;
+      const res = data as { no_square?: boolean; url?: string; id?: string } | null;
+      if (res?.no_square) {
+        toast.error("Square not connected. Connect Square in your profile.");
+        return;
+      }
+      const url = res?.url ?? null;
       if (!url) throw new Error("No payment URL returned");
       setQrUrl(url);
-      setQrPaymentId(pid);
-      toast.success("Payment link ready — pupil can scan");
+      setQrPaymentId(res?.id ?? null);
+      toast.success("Square payment link ready — pupil can scan");
     } catch (e) {
-      console.error("[eol-wizard] create-ryft-payment failed", e);
+      console.error("[eol-wizard] square-create-payment-link failed", e);
       toast.error("Couldn't generate payment link");
     } finally {
       setQrGenerating(false);
     }
   };
 
-  // Poll Ryft payment status every 5s while QR is shown
-  useEffect(() => {
-    if (!qrPaymentId || paymentRecorded) return;
-    const t = setInterval(async () => {
-      try {
-        const { data } = await supabase.functions.invoke("get-ryft-payment-status", {
-          body: { paymentId: qrPaymentId },
-        });
-        const status = (data as { status?: string })?.status;
-        if (status === "succeeded" || status === "completed" || status === "paid") {
-          clearInterval(t);
-          const amt = Number(amount) || lessonCost;
-          const newBalance = balance + (amt - lessonCost);
-          // NOTE: never write amount_due on payment — copy paid_amount from
-          // the row's existing amount_due.
-          const { data: lRowQr } = await supabase
-            .from("lessons")
-            .select("amount_due")
-            .eq("id", lessonId)
-            .maybeSingle();
-          const dueQr = Number((lRowQr as { amount_due?: number | null } | null)?.amount_due ?? lessonCost);
-          await supabase
-            .from("lessons")
-            .update({
-              payment_status: "paid",
-              paid_amount: dueQr,
-              paid_at: new Date().toISOString(),
-            })
-            .eq("id", lessonId);
 
-          await supabase
-            .from("pupils")
-            .update({ balance_owed: -newBalance })
-            .eq("id", pupilId);
-          try {
-            await supabase.from("lesson_history").insert({
-              lesson_id: lessonId,
-              instructor_id: instructorId,
-              pupil_id: pupilId,
-              lesson_date: lessonDate,
-              lesson_time: startTime,
-              duration_minutes: durationMinutes,
-              payment_status: "paid",
-              payment_method: "card_qr",
-              lesson_cost: amt,
-              amount: amt,
-              payment_link: qrUrl,
-              qr_payment_id: qrPaymentId,
-            });
-          } catch (e) {
-            console.warn("[eol-wizard] qr history insert failed", e);
-          }
-          setBalance(newBalance);
-          setLastPaymentResult({
-            amountApplied: amt,
-            overpayment: newBalance > 0 ? newBalance : 0,
-            newAccountBalance: newBalance,
-            newPrepaidHours: 0,
-            lessonsFullyPaid: 1,
-            lessonsLeftPartial: 0,
-            balanceOwedDelta: amt,
-          });
-          setPaymentRecorded(true);
-          setRecordedPaymentMethod("card_qr");
-          setRecordedPaymentAmount(amt);
-          setFinalPaymentLabel("Paid · Card (QR)");
-          toast.success("Payment received");
-          setStep(3);
-        }
-      } catch (e) {
-        console.warn("[eol-wizard] qr poll failed", e);
-      }
-    }, 5000);
-    return () => clearInterval(t);
-  }, [qrPaymentId, paymentRecorded, qrUrl, amount, lessonCost, balance, lessonId, pupilId, instructorId, lessonDate, startTime, durationMinutes]);
 
 
   const completeEol = async () => {

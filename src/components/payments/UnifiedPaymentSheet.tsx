@@ -52,7 +52,15 @@ function fmtDate(iso: string | null | undefined): string {
 // Types
 // ---------------------------------------------------------------------------
 type PricingType = "block" | "national_intensives" | "standard" | "custom";
-type PayMethod = "cash" | "bank_transfer" | "qr" | "link" | "klarna" | "clearpay";
+type PayMethod =
+  | "cash"
+  | "bank_transfer"
+  | "qr"
+  | "link"
+  | "klarna"
+  | "clearpay"
+  | "card_square"
+  | "card_evd";
 type TabKey = "payment" | "pricing";
 
 export interface UnifiedPaymentSheetProps {
@@ -84,6 +92,7 @@ interface InstructorRow {
   klarna_enabled: boolean | null;
   clearpay_enabled: boolean | null;
   accepted_payment_methods: string[] | null;
+  square_merchant_id?: string | null;
 }
 
 interface UnpaidLesson {
@@ -123,6 +132,8 @@ const METHOD_LABEL: Record<PayMethod, string> = {
   link: "Pay link",
   klarna: "Klarna",
   clearpay: "Clearpay",
+  card_square: "Card (Square)",
+  card_evd: "Card (via EveryDriver)",
 };
 
 /** Canonical DB value for every PayMethod variant. */
@@ -133,6 +144,8 @@ const METHOD_DB: Record<PayMethod, string> = {
   link: "card_link",
   klarna: "klarna",
   clearpay: "clearpay",
+  card_square: "card_square",
+  card_evd: "card_link",
 };
 
 /** Map any UI method (or already-canonical string) to its DB value. */
@@ -391,10 +404,14 @@ export function UnifiedPaymentSheet({
   const [paymentDate, setPaymentDate] = useState(todayIso);
   const [saving, setSaving] = useState(false);
   const [qrUrl, setQrUrl] = useState<string | null>(null);
-  const [qrPaymentId, setQrPaymentId] = useState<string | null>(null);
+  
   const [qrFullscreen, setQrFullscreen] = useState(false);
   const [payUrl, setPayUrl] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
+  const [squareConnected, setSquareConnected] = useState(false);
+  const [squareLoading, setSquareLoading] = useState(false);
+  const [squareLink, setSquareLink] = useState<string | null>(null);
+  const [showQR, setShowQR] = useState(false);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
   const [refundAmount, setRefundAmount] = useState("");
   const [refundReason, setRefundReason] = useState("");
@@ -481,7 +498,7 @@ export function UnifiedPaymentSheet({
     setPartial(false);
     setQrUrl(null);
     setPayUrl(null);
-    setQrPaymentId(null);
+
   }, []);
 
   useEffect(() => {
@@ -505,7 +522,7 @@ export function UnifiedPaymentSheet({
     setNote("");
     setPaymentDate(todayIso());
     setQrUrl(null);
-    setQrPaymentId(null);
+
     setQrFullscreen(false);
     setPayUrl(null);
     setRefundRow(null);
@@ -551,7 +568,9 @@ export function UnifiedPaymentSheet({
           .order("name"),
         supabase
           .from("instructors")
-          .select("name, hourly_rate, klarna_enabled, clearpay_enabled, accepted_payment_methods")
+          .select(
+            "name, hourly_rate, klarna_enabled, clearpay_enabled, accepted_payment_methods, square_merchant_id",
+          )
           .eq("id", uid)
           .maybeSingle(),
       ]);
@@ -559,7 +578,10 @@ export function UnifiedPaymentSheet({
       if (pErr) console.warn("[UnifiedPaymentSheet] pupils", pErr);
       if (iErr) console.warn("[UnifiedPaymentSheet] instructor", iErr);
       setPupils((ps ?? []) as unknown as PupilRow[]);
-      if (ins) setInstructor(ins as unknown as InstructorRow);
+      if (ins) {
+        setInstructor(ins as unknown as InstructorRow);
+        setSquareConnected(!!(ins as unknown as InstructorRow).square_merchant_id);
+      }
     })();
     return () => {
       cancelled = true;
@@ -769,6 +791,8 @@ export function UnifiedPaymentSheet({
   const methodAllowed = (m: PayMethod) => {
     if (m === "klarna") return !!instructor?.klarna_enabled;
     if (m === "clearpay") return !!instructor?.clearpay_enabled;
+    if (m === "card_square") return squareConnected;
+    if (m === "card_evd") return !squareConnected;
     if (!accepted || accepted.length === 0) return true;
 
     // Normalise: lowercase and strip spaces/special chars for comparison
@@ -792,6 +816,8 @@ export function UnifiedPaymentSheet({
     [
       { key: "cash" as const, Icon: Banknote },
       { key: "bank_transfer" as const, Icon: Landmark },
+      { key: "card_square" as const, Icon: IconCreditCard },
+      { key: "card_evd" as const, Icon: IconCreditCard },
       { key: "qr" as const, Icon: QrCode },
       { key: "link" as const, Icon: Link2 },
       { key: "klarna" as const, Icon: IconCreditCard },
@@ -799,68 +825,85 @@ export function UnifiedPaymentSheet({
     ] as { key: PayMethod; Icon: typeof Banknote }[]
   ).filter((m) => methodAllowed(m.key));
 
-  const isRemote = method === "qr" || method === "link";
+  const isRemote = method === "qr" || method === "link" || method === "card_square";
 
-  // ---- QR / pay link -----------------------------------------------------
-  const createRyftPayment = useCallback(
-    async (kind: "qr" | "link"): Promise<{ url: string; paymentId: string | null } | null> => {
-      if (amountNum <= 0) {
-        toast.error("Enter an amount first");
-        return null;
+  // ---- Square payment link ----------------------------------------------
+  const createSquarePayment = useCallback(async (): Promise<string | null> => {
+    if (amountNum <= 0) {
+      toast.error("Enter an amount first");
+      return null;
+    }
+    const { data, error } = await supabase.functions.invoke("square-create-payment-link", {
+      body: {
+        instructor_id: instructorId,
+        pupil_id: pupilId ?? null,
+        lesson_id: null,
+        amount_pence: Math.round(amountNum * 100),
+        description: note.trim() || "Driving lesson",
+      },
+    });
+    if (error) throw error;
+    const res = data as { no_square?: boolean; url?: string } | null;
+    if (res?.no_square) {
+      toast.error("Square not connected. Connect Square in your profile.");
+      return null;
+    }
+    if (!res?.url) throw new Error("No payment link returned");
+    return res.url;
+  }, [amountNum, instructorId, pupilId, note]);
+
+  async function generateSquareLink(type: "link" | "qr") {
+    setSquareLoading(true);
+    try {
+      const url = await createSquarePayment();
+      if (!url) return;
+      setSquareLink(url);
+      if (type === "link") {
+        const pupilPhone = pupil?.phone ?? "";
+        const msg = encodeURIComponent(
+          `Hi, please pay £${amountNum.toFixed(2)} for your driving lesson here: ${url}`,
+        );
+        window.location.href = `sms:${pupilPhone}?&body=${msg}`;
+        toast.success("Payment link ready");
+      } else {
+        setShowQR(true);
       }
-      setGenerating(true);
-      try {
-        const amountPence = Math.round(amountNum * 100);
-        const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
-          body: {
-            amount: amountPence,
-            payment_type: kind,
-            instructor_id: instructorId,
-            pupil_id: pupilId ?? undefined,
-            pupil_name: pupil?.name ?? undefined,
-            description: note.trim() || "Payment",
-          },
-        });
-        if (error) throw error;
-        const clientSecret =
-          (data as { clientSecret?: string; client_secret?: string })?.clientSecret ??
-          (data as { client_secret?: string })?.client_secret ??
-          null;
-        const pid =
-          (data as { paymentId?: string; id?: string })?.paymentId ??
-          (data as { id?: string })?.id ??
-          null;
-        if (!clientSecret) throw new Error("No client secret returned");
-        const url = `https://drivingschoolmanager.co.uk/pay?cs=${clientSecret}&amount=${amountPence}&desc=${encodeURIComponent(
-          note.trim() || "Payment",
-        )}`;
-        return { url, paymentId: pid };
-      } catch (e) {
-        console.error("[UnifiedPaymentSheet] createRyftPayment", e);
-        toast.error("Couldn't generate payment");
-        return null;
-      } finally {
-        setGenerating(false);
-      }
-    },
-    [amountNum, instructorId, pupilId, pupil, note],
-  );
+    } catch (e) {
+      toast.error((e as Error)?.message ?? "Failed");
+    } finally {
+      setSquareLoading(false);
+    }
+  }
 
   const generateQr = async () => {
-    const res = await createRyftPayment("qr");
-    if (!res) return;
-    setQrUrl(res.url);
-    setQrPaymentId(res.paymentId);
-    setQrFullscreen(true);
-    toast.success("QR code ready");
+    setGenerating(true);
+    try {
+      const url = await createSquarePayment();
+      if (!url) return;
+      setQrUrl(url);
+      setQrFullscreen(true);
+      toast.success("QR code ready");
+    } catch (e) {
+      console.error("[UnifiedPaymentSheet] generateQr", e);
+      toast.error("Couldn't generate payment");
+    } finally {
+      setGenerating(false);
+    }
   };
 
   const generateLink = async () => {
-    const res = await createRyftPayment("link");
-    if (!res) return;
-    setPayUrl(res.url);
-    setQrPaymentId(res.paymentId);
-    toast.success("Payment link ready");
+    setGenerating(true);
+    try {
+      const url = await createSquarePayment();
+      if (!url) return;
+      setPayUrl(url);
+      toast.success("Payment link ready");
+    } catch (e) {
+      console.error("[UnifiedPaymentSheet] generateLink", e);
+      toast.error("Couldn't generate payment");
+    } finally {
+      setGenerating(false);
+    }
   };
 
   // ---- payment write -----------------------------------------------------
@@ -944,7 +987,7 @@ export function UnifiedPaymentSheet({
         setPaymentDate(todayIso());
         setQrUrl(null);
         setPayUrl(null);
-        setQrPaymentId(null);
+
         onSaved?.();
       } catch (e) {
         console.error("[UnifiedPaymentSheet] handleRecordPayment", e);
@@ -976,27 +1019,7 @@ export function UnifiedPaymentSheet({
   );
 
 
-  // ---- QR polling --------------------------------------------------------
-  useEffect(() => {
-    if (!qrPaymentId) return;
-    const t = setInterval(async () => {
-      try {
-        const { data } = await supabase.functions.invoke("get-ryft-payment-status", {
-          body: { paymentId: qrPaymentId },
-        });
-        const status = (data as { status?: string })?.status;
-        if (status === "succeeded" || status === "completed" || status === "paid") {
-          clearInterval(t);
-          setQrPaymentId(null);
-          setQrFullscreen(false);
-          await handleRecordPayment(method === "link" ? "link" : "qr");
-        }
-      } catch (e) {
-        console.warn("[UnifiedPaymentSheet] qr poll", e);
-      }
-    }, 5000);
-    return () => clearInterval(t);
-  }, [qrPaymentId, method, handleRecordPayment, handleClose]);
+
 
   // ---- pay link delivery -------------------------------------------------
   const copyLink = async () => {
@@ -1324,7 +1347,7 @@ export function UnifiedPaymentSheet({
     return `Standard rate · ${unpaidLessons.length} unpaid`;
   })();
 
-  const feeApplies = method === "qr" || method === "link";
+  const feeApplies = method === "qr" || method === "link" || method === "card_square";
   const netAfterFee = amountNum * 0.99;
 
   const primaryLabel = customMode
@@ -1383,6 +1406,49 @@ export function UnifiedPaymentSheet({
       >
         {savingPricing ? "Saving…" : footerLabel}
       </button>
+    ) : method === "card_square" ? (
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <button
+          type="button"
+          onClick={() => void generateSquareLink("link")}
+          disabled={squareLoading || amountNum <= 0}
+          style={{
+            width: "100%",
+            height: 52,
+            borderRadius: 16,
+            border: "none",
+            background: BLUE,
+            color: WHITE,
+            fontSize: 16,
+            fontWeight: 700,
+            fontFamily: FONT,
+            cursor: "pointer",
+            opacity: squareLoading || amountNum <= 0 ? 0.45 : 1,
+          }}
+        >
+          {squareLoading ? "Working…" : "Send payment link"}
+        </button>
+        <button
+          type="button"
+          onClick={() => void generateSquareLink("qr")}
+          disabled={squareLoading || amountNum <= 0}
+          style={{
+            width: "100%",
+            height: 52,
+            borderRadius: 16,
+            border: `1.5px solid ${BLUE}`,
+            background: "#fff",
+            color: BLUE,
+            fontSize: 16,
+            fontWeight: 700,
+            fontFamily: FONT,
+            cursor: "pointer",
+            opacity: squareLoading || amountNum <= 0 ? 0.45 : 1,
+          }}
+        >
+          Show QR code
+        </button>
+      </div>
     ) : (
       <button
         type="button"
@@ -1415,6 +1481,68 @@ export function UnifiedPaymentSheet({
       footer={paymentSuccess || editPayment || deletePayment ? null : footer}
     >
       <style>{`@keyframes ups-pulse{0%,100%{opacity:1}50%{opacity:.4}}`}</style>
+
+      {showQR && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 300,
+            background: "rgba(0,0,0,0.8)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 20,
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 20,
+              padding: 24,
+              textAlign: "center",
+              maxWidth: 320,
+              width: "100%",
+            }}
+          >
+            <div style={{ fontSize: 18, fontWeight: 700, color: NAVY }}>Scan to pay</div>
+            <div style={{ fontSize: 32, fontWeight: 800, color: BLUE, marginBottom: 16 }}>
+              £{amountNum.toFixed(2)}
+            </div>
+            <img
+              src={`https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=${encodeURIComponent(
+                squareLink ?? "",
+              )}&choe=UTF-8`}
+              alt="Square payment QR code"
+              width={250}
+              height={250}
+              style={{ borderRadius: 12, maxWidth: "100%" }}
+            />
+            <div style={{ fontSize: 13, color: "#6B7686", marginTop: 12 }}>
+              Pupil scans this with their camera
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowQR(false)}
+              style={{
+                width: "100%",
+                marginTop: 16,
+                height: 46,
+                borderRadius: 12,
+                border: "none",
+                background: "#EEF2F7",
+                color: "#6B7686",
+                fontSize: 15,
+                fontWeight: 600,
+                fontFamily: FONT,
+                cursor: "pointer",
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       <div style={{ fontFamily: FONT, background: "transparent", paddingBottom: 4, position: "relative" }}>
         {paymentSuccess && (
@@ -2133,7 +2261,7 @@ export function UnifiedPaymentSheet({
                       setMethod(key);
                       setQrUrl(null);
                       setPayUrl(null);
-                      setQrPaymentId(null);
+
                     }}
                   >
                     <Radio selected={active} />
@@ -2143,6 +2271,24 @@ export function UnifiedPaymentSheet({
                 );
               })}
             </Group>
+
+            {/* Card via EveryDriver warning */}
+            {method === "card_evd" && (
+              <div
+                style={{
+                  background: "#FEF3C7",
+                  borderRadius: 12,
+                  padding: "12px 14px",
+                  marginBottom: 12,
+                  fontSize: 13,
+                  lineHeight: 1.5,
+                  color: "#92400E",
+                }}
+              >
+                Payments take up to 2 days to reach you. Connect Square in your profile for
+                instant payouts.
+              </div>
+            )}
 
             {/* 1% fee note */}
             {feeApplies && amountNum > 0 && (

@@ -6,8 +6,6 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { recordPayment, recordPaymentWithPackage } from "@/lib/payments";
 
-const RYFT_PUBLIC_KEY =
-  "pk_sandbox_QpmgBnWSyZXGthN4EtZy6XIXYu+oRRkEUeceUFKLrXS5zmRA7XWBrkAdD8E6FgTn";
 
 export const Route = createFileRoute("/take-payment")({
   head: () => ({ meta: [{ title: "Take payment" }] }),
@@ -194,7 +192,7 @@ function TakePaymentPage() {
     });
   };
 
-  // --- QR flow ---
+  // --- QR flow (Square payment link) ---
   const generateQr = async () => {
     if (amountNum <= 0) {
       toast.error("Enter an amount first");
@@ -202,31 +200,27 @@ function TakePaymentPage() {
     }
     setQrGenerating(true);
     try {
-      const amountPence = Math.round(totalNum * 100);
-      const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
+      const { data: u } = await supabase.auth.getUser();
+      const instructorId = u?.user?.id ?? null;
+      const { data, error } = await supabase.functions.invoke("square-create-payment-link", {
         body: {
-          amount: amountPence,
-          pupil_id: pupilId || undefined,
-          pupil_name: pupilName || undefined,
+          instructor_id: instructorId,
+          pupil_id: pupilId || null,
+          lesson_id: lessonId,
+          amount_pence: Math.round(totalNum * 100),
           description: description || "Payment",
-          payment_type: "qr",
-          fee_absorbed_by_instructor: !passBookingFee,
         },
       });
       if (error) throw error;
-      const clientSecret =
-        (data as { clientSecret?: string; client_secret?: string })?.clientSecret ??
-        (data as { client_secret?: string })?.client_secret ??
-        null;
-      const pid =
-        (data as { paymentId?: string; id?: string })?.paymentId ??
-        (data as { id?: string })?.id ??
-        null;
-      if (!clientSecret) throw new Error("No client secret returned");
-      const url = `https://drivingschoolmanager.co.uk/pay?cs=${clientSecret}&amount=${amountPence}&desc=${encodeURIComponent(description || "Payment")}`;
-      setQrUrl(url);
-      setQrPaymentId(pid);
-      toast.success("Payment link ready");
+      const res = data as { no_square?: boolean; url?: string; id?: string } | null;
+      if (res?.no_square) {
+        toast.error("Square not connected. Connect Square in your profile.");
+        return;
+      }
+      if (!res?.url) throw new Error("No payment URL returned");
+      setQrUrl(res.url);
+      setQrPaymentId(res.id ?? null);
+      toast.success("Square payment link ready");
     } catch (e) {
       console.error("[take-payment] generateQr", e);
       toast.error("Couldn't generate payment link");
@@ -255,80 +249,35 @@ function TakePaymentPage() {
     toast.success("Link copied");
   };
 
-  // Poll QR payment status
-  useEffect(() => {
-    if (!qrPaymentId) return;
-    const t = setInterval(async () => {
-      try {
-        const { data } = await supabase.functions.invoke("get-ryft-payment-status", {
-          body: { paymentId: qrPaymentId },
-        });
-        const status = (data as { status?: string })?.status;
-        if (status === "succeeded" || status === "completed" || status === "paid") {
-          clearInterval(t);
-          const { data: u } = await supabase.auth.getUser();
-          const instructorId = u?.user?.id ?? null;
-          await recordPaymentSideEffects({
-            instructorId,
-            pupilIdForPayment: pupilId || null,
-            amountPaid: totalNum,
-            method: "card",
-          });
-          toast.success("Payment recorded — balance updated");
-          setRecorded(`£${totalNum.toFixed(2)} received via card (QR)`);
-          setQrPaymentId(null);
-        }
-      } catch (e) {
-        console.warn("[take-payment] qr poll", e);
-      }
-    }, 5000);
-    return () => clearInterval(t);
-  }, [qrPaymentId, totalNum]);
 
-  // --- Card (Ryft embedded) ---
-  useEffect(() => {
-    if (tab !== "card") return;
-    if (document.querySelector('script[data-ryft="1"]')) return;
-    const s = document.createElement("script");
-    s.src = "https://embedded.ryftpay.com/v2/ryft.min.js";
-    s.async = true;
-    s.dataset.ryft = "1";
-    document.head.appendChild(s);
-  }, [tab]);
 
+  // --- Card (Square hosted checkout) ---
   const startCard = async () => {
-    console.log("[take-payment] Charge card clicked");
     if (amountNum <= 0) {
       toast.error("Enter an amount first");
       return;
     }
     setCardLoading(true);
     try {
-      const amountPence = Math.round(totalNum * 100);
-      const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
+      const { data: u } = await supabase.auth.getUser();
+      const instructorId = u?.user?.id ?? null;
+      const { data, error } = await supabase.functions.invoke("square-create-payment-link", {
         body: {
-          amount: amountPence,
-          pupil_id: pupilId || undefined,
-          pupil_name: pupilName || undefined,
+          instructor_id: instructorId,
+          pupil_id: pupilId || null,
+          lesson_id: lessonId,
+          amount_pence: Math.round(totalNum * 100),
           description: description || "Payment",
-          mode: "embedded",
-          payment_type: "qr",
-          fee_absorbed_by_instructor: !passBookingFee,
         },
       });
       if (error) throw error;
-      const clientSecret =
-        (data as { clientSecret?: string; client_secret?: string })?.clientSecret ??
-        (data as { client_secret?: string })?.client_secret;
-      const pid =
-        (data as { paymentId?: string; id?: string })?.paymentId ??
-        (data as { id?: string })?.id ??
-        null;
-      if (!clientSecret) throw new Error("No client secret returned");
-      // Set both state values — the useEffect below will run Ryft.init()
-      // AFTER React has rendered the form HTML into the DOM.
-      setCardClientSecret(clientSecret);
-      setCardSessionId(pid ?? clientSecret);
+      const res = data as { no_square?: boolean; url?: string } | null;
+      if (res?.no_square) {
+        toast.error("Square not connected. Connect Square in your profile.");
+        return;
+      }
+      if (!res?.url) throw new Error("No payment URL returned");
+      window.location.href = res.url;
     } catch (e) {
       console.error("[take-payment] startCard", e);
       toast.error("Couldn't start card payment");
@@ -337,72 +286,7 @@ function TakePaymentPage() {
     }
   };
 
-  // Initialise Ryft AFTER the form HTML is in the DOM
-  useEffect(() => {
-    if (!cardSessionId || !cardClientSecret) return;
-    let cancelled = false;
-    (async () => {
-      // Wait for Ryft SDK to load
-      const w = window as unknown as { Ryft?: any };
-      let waited = 0;
-      while (!w.Ryft && waited < 5000) {
-        await new Promise((r) => setTimeout(r, 100));
-        waited += 100;
-      }
-      if (cancelled) return;
-      console.log("[take-payment] Ryft available:", !!w.Ryft);
-      console.log("[take-payment] clientSecret:", cardClientSecret);
-      if (!w.Ryft) {
-        toast.error("Ryft SDK didn't load");
-        return;
-      }
-      // Wait one more frame to guarantee the form HTML is committed
-      await new Promise((r) => requestAnimationFrame(() => r(null)));
-      if (cancelled) return;
-      // Confirm the form element exists before init
-      if (!document.getElementById("ryft-pay-form")) {
-        console.warn("[take-payment] ryft-pay-form not in DOM yet");
-        return;
-      }
-      try {
-        const initResult = w.Ryft.init({
-          publicKey: RYFT_PUBLIC_KEY,
-          clientSecret: cardClientSecret,
-          googlePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
-          applePay: { merchantName: "EveryDriver", merchantCountryCode: "GB" },
-        });
-        console.log("[take-payment] Ryft init result:", initResult);
-        try {
-          if (w.Ryft.googlePay) w.Ryft.googlePay.mount("#google-pay-container");
-        } catch (e) { console.warn("Google Pay not available:", e); }
-        try {
-          if (w.Ryft.applePay) w.Ryft.applePay.mount("#apple-pay-container");
-        } catch (e) { console.warn("Apple Pay not available:", e); }
-        w.Ryft.addEventHandler("paymentSuccess", () => {
-          (async () => {
-            const { data: u } = await supabase.auth.getUser();
-            const instructorId = u?.user?.id ?? null;
-            await recordPaymentSideEffects({
-              instructorId,
-              pupilIdForPayment: pupilId || null,
-              amountPaid: totalNum,
-              method: "card",
-            });
-            toast.success("Payment recorded — balance updated");
-            setRecorded(`£${totalNum.toFixed(2)} received via card`);
-          })();
-        });
-        w.Ryft.addEventHandler("paymentError", (err: any) => {
-          console.error("[take-payment] ryft error", err);
-          toast.error("Card payment failed");
-        });
-      } catch (e) {
-        console.error("[take-payment] Ryft.init failed", e);
-        toast.error("Couldn't initialise card form");
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [cardSessionId, cardClientSecret, totalNum]);
+
 
 
   // --- Cash / transfer ---
@@ -785,59 +669,31 @@ function TakePaymentPage() {
 
           {tab === "card" && (
             <div style={{ flex: 1, minHeight: 0, padding: "8px 16px", display: "flex", flexDirection: "column", overflow: "auto" }}>
-              {!cardSessionId && (
-                <button
-                  type="button"
-                  onClick={startCard}
-                  disabled={cardLoading}
-                  style={{
-                    width: "100%",
-                    padding: 17,
-                    borderRadius: 16,
-                    background: NAVY,
-                    color: "#fff",
-                    border: "none",
-                    fontSize: 16,
-                    fontWeight: 800,
-                    boxShadow: "0 4px 0 #050D1C",
-                    opacity: cardLoading ? 0.7 : 1,
-                    cursor: "pointer",
-                  }}
-
-                >
-                  {cardLoading ? "Loading…" : `Charge card · £${totalNum.toFixed(2)}`}
-                </button>
-              )}
-              {cardSessionId && (
-                <>
-                  <div id="google-pay-container" style={{ marginBottom: 12 }} />
-                  <div id="apple-pay-container" style={{ marginBottom: 12 }} />
-                  <div style={{ textAlign: 'center', color: '#9CA3AF', fontSize: 13, marginBottom: 12 }}>— or pay by card —</div>
-                  <div className="Ryft--paysection">
-                    <form id="ryft-pay-form" className="Ryft--payform">
-                      <button
-                        id="pay-btn"
-                        type="submit"
-                        style={{
-                          width: "100%",
-                          marginTop: 12,
-                          background: "#0B1F3A",
-                          color: "#fff",
-                          border: 0,
-                          borderRadius: 10,
-                          padding: "14px 16px",
-                          fontSize: 16,
-                          fontWeight: 600,
-                          cursor: "pointer",
-                        }}
-                      >
-                        Pay £{totalNum.toFixed(2)}
-                      </button>
-                    </form>
-                  </div>
-                </>
-              )}
+              <button
+                type="button"
+                onClick={startCard}
+                disabled={cardLoading}
+                style={{
+                  width: "100%",
+                  padding: 17,
+                  borderRadius: 16,
+                  background: NAVY,
+                  color: "#fff",
+                  border: "none",
+                  fontSize: 16,
+                  fontWeight: 800,
+                  boxShadow: "0 4px 0 #050D1C",
+                  opacity: cardLoading ? 0.7 : 1,
+                  cursor: "pointer",
+                }}
+              >
+                {cardLoading ? "Loading…" : `Pay by card with Square · £${totalNum.toFixed(2)}`}
+              </button>
+              <div style={{ textAlign: "center", color: "#9CA3AF", fontSize: 13, marginTop: 12 }}>
+                Opens a secure Square checkout page
+              </div>
             </div>
+
           )}
 
           {tab === "cash" && (
