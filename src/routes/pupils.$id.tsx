@@ -1969,7 +1969,8 @@ function PupilDetailPage() {
                             <IconX stroke={1.5} size={14} />
                           </button>
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 )}
