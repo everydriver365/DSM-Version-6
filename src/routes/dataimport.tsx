@@ -374,6 +374,68 @@ function DataImportPage() {
           )}
 
 
+          {/* VALIDATION SUMMARY */}
+          {rows.length > 0 && (
+            <div
+              className="mt-4"
+              style={{
+                backgroundColor: "#FFFFFF",
+                borderWidth: "0.5px",
+                borderStyle: "solid",
+                borderColor: invalidRowCount > 0 ? "#CC2229" : "#EEF2F7",
+                borderRadius: 12,
+                padding: 14,
+              }}
+            >
+              <div className="flex items-center" style={{ gap: 10 }}>
+                {invalidRowCount > 0 ? (
+                  <AlertCircle size={20} color="#CC2229" />
+                ) : (
+                  <CheckCircle2 size={20} color="#1877D6" />
+                )}
+                <div className="text-[13px] font-semibold text-[#0B1F3A]">
+                  {invalidRowCount > 0
+                    ? `${invalidRowCount} row${invalidRowCount === 1 ? "" : "s"} need fixing`
+                    : "All rows look good"}
+                </div>
+              </div>
+              <div className="mt-1 text-[12px] text-[#6B7280]">
+                {validRowCount} of {rows.length} rows ready to import
+                {warningRowCount > 0 ? ` · ${warningRowCount} with warnings` : ""}
+                {invalidRowCount > 0 ? " · invalid rows will be skipped" : ""}
+              </div>
+
+              {invalidList.length > 0 && (
+                <div className="mt-3 flex flex-col" style={{ gap: 6 }}>
+                  {invalidList.slice(0, 20).map((x) => (
+                    <div
+                      key={x.row}
+                      className="text-[12px]"
+                      style={{
+                        backgroundColor: "#FDF2F2",
+                        borderRadius: 8,
+                        padding: "8px 10px",
+                        color: "#0B1F3A",
+                      }}
+                    >
+                      <strong>Row {x.row}</strong>
+                      {x.issues.map((iss, k) => (
+                        <div key={k} style={{ color: "#CC2229" }}>
+                          {FIELD_LABELS[iss.field as PupilField] ?? iss.field}: {iss.message}
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                  {invalidList.length > 20 && (
+                    <div className="text-[12px] text-[#6B7280]">
+                      + {invalidList.length - 20} more rows with errors
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* PREVIEW */}
           {rows.length > 0 && (
             <div className="mt-4">
@@ -398,13 +460,43 @@ function DataImportPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {preview.map((r, i) => (
-                      <tr key={i} style={{ borderTop: "0.5px solid #EEF2F7" }}>
-                        {HEADERS.map((h) => (
-                          <td key={h} className="px-2 py-2 text-[#0B1F3A] whitespace-nowrap">{r[h]}</td>
-                        ))}
-                      </tr>
-                    ))}
+                    {preview.map((r, i) => {
+                      const v = validations[i];
+                      return (
+                        <tr key={i} style={{ borderTop: "0.5px solid #EEF2F7" }}>
+                          {HEADERS.map((h) => {
+                            const err = (v?.errorByField as Record<string, string | undefined>)?.[h];
+                            const warn = (v?.warningByField as Record<string, string | undefined>)?.[h];
+                            return (
+                              <td
+                                key={h}
+                                className="px-2 py-2 align-top"
+                                style={{
+                                  color: err ? "#CC2229" : "#0B1F3A",
+                                  backgroundColor: err ? "#FDF2F2" : warn ? "#FFF8EC" : undefined,
+                                  minWidth: 90,
+                                }}
+                              >
+                                <div className="whitespace-nowrap">{r[h] || "—"}</div>
+                                {(err || warn) && (
+                                  <div
+                                    className="flex items-start mt-0.5 text-[10px]"
+                                    style={{ gap: 3, color: err ? "#CC2229" : "#B26B00", maxWidth: 170 }}
+                                  >
+                                    {err ? (
+                                      <AlertCircle size={11} style={{ flexShrink: 0, marginTop: 1 }} />
+                                    ) : (
+                                      <AlertTriangle size={11} style={{ flexShrink: 0, marginTop: 1 }} />
+                                    )}
+                                    <span>{err || warn}</span>
+                                  </div>
+                                )}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -412,11 +504,16 @@ function DataImportPage() {
               <div className="mt-4">
                 <Button
                   onClick={runImport}
-                  disabled={importing || !userId || parseErrors.length > 0}
+                  disabled={importing || !userId || parseErrors.length > 0 || validRowCount === 0}
                 >
-                  {importing ? `Importing… ${progress}%` : `Import ${rows.length} pupils`}
+                  {importing
+                    ? `Importing… ${progress}%`
+                    : validRowCount === 0
+                      ? "Fix errors to import"
+                      : `Import ${validRowCount} valid pupil${validRowCount === 1 ? "" : "s"}`}
                 </Button>
               </div>
+
 
               {importing && (
                 <div
