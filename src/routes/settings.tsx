@@ -1068,7 +1068,7 @@ function SettingsPage() {
                     style={{
                       ...POPPINS,
                       padding: "10px 12px",
-                      border: "0.5px solid #EEF2F7",
+                      border: "1px solid #E2E6ED",
                       borderRadius: 8,
                       background: "#FFFFFF",
                     }}
@@ -1123,7 +1123,7 @@ function SettingsPage() {
                       width: 72,
                       height: 36,
                       borderRadius: 8,
-                      border: "1px solid #EEF2F7",
+                      border: "1px solid #E2E6ED",
                       padding: "0 8px",
                       ...POPPINS,
                     }}
@@ -1148,7 +1148,7 @@ function SettingsPage() {
                   style={{
                     height: 36,
                     borderRadius: 8,
-                    border: "1px solid #EEF2F7",
+                    border: "1px solid #E2E6ED",
                     padding: "0 8px",
                     backgroundColor: "#fff",
                     ...POPPINS,
@@ -1185,7 +1185,7 @@ function SettingsPage() {
                   style={{
                     height: 36,
                     borderRadius: 8,
-                    border: "1px solid #EEF2F7",
+                    border: "1px solid #E2E6ED",
                     padding: "0 8px",
                     backgroundColor: "#fff",
                     ...POPPINS,
@@ -1228,7 +1228,7 @@ function SettingsPage() {
                       void saveBuffers(v);
                     }}
                     className="text-[13px]"
-                    style={{ height: 36, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0B1F3A", ...POPPINS }}
+                    style={{ height: 36, borderRadius: 8, border: "1px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0B1F3A", ...POPPINS }}
                   >
                     {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
                       <option key={m} value={m}>{m} min</option>
@@ -1257,7 +1257,7 @@ function SettingsPage() {
                   style={{
                     height: 36,
                     borderRadius: 8,
-                    border: "1px solid #EEF2F7",
+                    border: "1px solid #E2E6ED",
                     padding: "0 8px",
                     backgroundColor: "#fff",
                     ...POPPINS,
@@ -1373,7 +1373,7 @@ function SettingsPage() {
                         display: "flex",
                         alignItems: "center",
                         gap: 8,
-                        border: "0.5px solid #EEF2F7",
+                        border: "1px solid #E2E6ED",
                         borderRadius: 10,
                         padding: 12,
                         background: "#fff",
@@ -1452,7 +1452,7 @@ function SettingsPage() {
                     placeholder="e.g. Evening Surcharge"
                     style={{
                       width: "100%", height: 44, padding: "0 12px",
-                      border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
+                      border: "1px solid #E2E6ED", borderRadius: 10, fontSize: 14,
                       marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
                     }}
                   />
@@ -1463,7 +1463,7 @@ function SettingsPage() {
                     onChange={(e) => setRuleType(e.target.value as RuleType)}
                     style={{
                       width: "100%", height: 44, padding: "0 12px",
-                      border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
+                      border: "1px solid #E2E6ED", borderRadius: 10, fontSize: 14,
                       marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
                     }}
                   >
@@ -1482,7 +1482,7 @@ function SettingsPage() {
                         onChange={(e) => setRuleTime(e.target.value)}
                         style={{
                           width: "100%", height: 44, padding: "0 12px",
-                          border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
+                          border: "1px solid #E2E6ED", borderRadius: 10, fontSize: 14,
                           marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
                         }}
                       />
@@ -1498,7 +1498,7 @@ function SettingsPage() {
                             key={d.key}
                             style={{
                               display: "inline-flex", alignItems: "center", gap: 6,
-                              padding: "6px 10px", border: "0.5px solid #EEF2F7",
+                              padding: "6px 10px", border: "1px solid #E2E6ED",
                               borderRadius: 8, fontSize: 13, cursor: "pointer", ...POPPINS,
                             }}
                           >
@@ -1531,7 +1531,7 @@ function SettingsPage() {
                           placeholder="SO22, SO23 9AX"
                           style={{
                             width: "100%", height: 44, padding: "0 12px",
-                            border: `0.5px solid ${invalid.length ? "#1877D6" : "#EEF2F7"}`,
+                            border: `1px solid ${invalid.length ? "#1877D6" : "#E2E6ED"}`,
                             borderRadius: 10, fontSize: 14,
                             marginTop: 6, marginBottom: invalid.length || entries.length ? 4 : 12,
                             background: "#fff", color: "#0B1F3A",
@@ -1570,7 +1570,7 @@ function SettingsPage() {
                         onChange={(e) => setRuleHours(Number(e.target.value))}
                         style={{
                           width: "100%", height: 44, padding: "0 12px",
-                          border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
+                          border: "1px solid #E2E6ED", borderRadius: 10, fontSize: 14,
                           marginTop: 6, marginBottom: 12, background: "#fff", color: "#0B1F3A", ...POPPINS,
                         }}
                       />
@@ -1585,7 +1585,7 @@ function SettingsPage() {
                         onChange={(e) => setRuleAdjType(e.target.value as AdjType)}
                         style={{
                           width: "100%", height: 44, padding: "0 12px",
-                          border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
+                          border: "1px solid #E2E6ED", borderRadius: 10, fontSize: 14,
                           marginTop: 6, background: "#fff", color: "#0B1F3A", ...POPPINS,
                         }}
                       >
@@ -1602,7 +1602,7 @@ function SettingsPage() {
                         onChange={(e) => setRuleAdjValue(Number(e.target.value))}
                         style={{
                           width: "100%", height: 44, padding: "0 12px",
-                          border: "0.5px solid #EEF2F7", borderRadius: 10, fontSize: 14,
+                          border: "1px solid #E2E6ED", borderRadius: 10, fontSize: 14,
                           marginTop: 6, background: "#fff", color: "#0B1F3A", ...POPPINS,
                         }}
                       />
@@ -1851,7 +1851,7 @@ function SettingsPage() {
               <div className="text-[12px] text-[#9CA3AF]" style={{ ...POPPINS, marginBottom: 12 }}>Set different charges based on how much notice the pupil gives:</div>
 
               {cancellationTiers.map((tier, i) => (
-                <div key={i} className="flex items-center" style={{ gap: 8, padding: "10px 12px", background: "#F7FAFC", border: "0.5px solid #E2E6ED", borderRadius: 10, marginBottom: 6 }}>
+                <div key={i} className="flex items-center" style={{ gap: 8, padding: "10px 12px", background: "#F7FAFC", border: "1px solid #E2E6ED", borderRadius: 10, marginBottom: 6 }}>
                   <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Less than</span>
                   <input
                     type="number"
@@ -1862,7 +1862,7 @@ function SettingsPage() {
                       setCancellationTiers((prev) => prev.map((t, idx) => idx === i ? { ...t, hours: v } : t));
                     }}
                     className="bg-white"
-                    style={{ width: 60, textAlign: "center", border: "0.5px solid #E2E6ED", borderRadius: 6, padding: "6px 4px", fontSize: 13, color: "#0B1F3A", ...POPPINS }}
+                    style={{ width: 60, textAlign: "center", border: "1px solid #E2E6ED", borderRadius: 6, padding: "6px 4px", fontSize: 13, color: "#0B1F3A", ...POPPINS }}
                   />
                   <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>hours notice</span>
                   <span className="text-[12px]" style={{ color: "#9CA3AF", ...POPPINS }}>→</span>
@@ -1873,7 +1873,7 @@ function SettingsPage() {
                       setCancellationTiers((prev) => prev.map((t, idx) => idx === i ? { ...t, charge_percent: v } : t));
                     }}
                     className="bg-white"
-                    style={{ border: "0.5px solid #E2E6ED", borderRadius: 6, padding: "6px 4px", fontSize: 13, color: "#0B1F3A", ...POPPINS }}
+                    style={{ border: "1px solid #E2E6ED", borderRadius: 6, padding: "6px 4px", fontSize: 13, color: "#0B1F3A", ...POPPINS }}
                   >
                     {[0, 25, 50, 75, 100].map((p) => <option key={p} value={p}>{p}</option>)}
                   </select>
@@ -2079,7 +2079,7 @@ function SettingsPage() {
                 value={taxCode}
                 onChange={(e) => setTaxCode(e.target.value.toUpperCase())}
                 className="w-full text-[14px] text-[#0B1F3A]"
-                style={{ padding: "10px 12px", border: "0.5px solid #EEF2F7", borderRadius: 8, background: "#FFFFFF", ...POPPINS }}
+                style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: "#FFFFFF", ...POPPINS }}
               />
               <FieldLabel>Vehicle type</FieldLabel>
               <div className="flex gap-2">
@@ -2095,7 +2095,7 @@ function SettingsPage() {
                     style={{
                       padding: "9px 10px",
                       borderRadius: 8,
-                      border: "0.5px solid #EEF2F7",
+                      border: "1px solid #E2E6ED",
                       background: isElectric === opt.key ? "#1877D6" : "#FFFFFF",
                       color: isElectric === opt.key ? "#FFFFFF" : "#0B1F3A",
                       fontWeight: 500,
@@ -2111,22 +2111,22 @@ function SettingsPage() {
                   <FieldLabel>Vehicle MPG</FieldLabel>
                   <input type="number" value={vehicleMpg} onChange={(e) => setVehicleMpg(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "0.5px solid #EEF2F7", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
+                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
                   <FieldLabel>Fuel cost per litre (£)</FieldLabel>
                   <input type="number" step="0.01" value={fuelCostPerLitre} onChange={(e) => setFuelCostPerLitre(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "0.5px solid #EEF2F7", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
+                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
                 </>
               ) : (
                 <>
                   <FieldLabel>Battery capacity (kWh)</FieldLabel>
                   <input type="number" value={batteryKwh} onChange={(e) => setBatteryKwh(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "0.5px solid #EEF2F7", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
+                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
                   <FieldLabel>Electricity cost per kWh (£)</FieldLabel>
                   <input type="number" step="0.01" value={electricityCostPerKwh} onChange={(e) => setElectricityCostPerKwh(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "0.5px solid #EEF2F7", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
+                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
                 </>
               )}
               <FieldLabel>Allowable deductions</FieldLabel>
@@ -2189,7 +2189,7 @@ function SettingsPage() {
                       readOnly
                       value={referralCode}
                       className="flex-1 text-[14px] text-[#0B1F3A] font-mono"
-                      style={{ padding: "10px 12px", border: "0.5px solid #EEF2F7", borderRadius: 8, background: "#F7FAFC", ...POPPINS }}
+                      style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: "#F7FAFC", ...POPPINS }}
                     />
                     <button
                       type="button"
@@ -2212,9 +2212,9 @@ function SettingsPage() {
                       value={referralDiscountAmount}
                       onChange={(e) => setReferralDiscountAmount(Number(e.target.value) || 0)}
                       className="flex-1 text-[14px] text-[#0B1F3A]"
-                      style={{ padding: "10px 12px", border: "0.5px solid #EEF2F7", borderRadius: 8, background: "#FFFFFF", ...POPPINS }}
+                      style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: "#FFFFFF", ...POPPINS }}
                     />
-                    <div className="flex" style={{ border: "0.5px solid #EEF2F7", borderRadius: 8, overflow: "hidden" }}>
+                    <div className="flex" style={{ border: "1px solid #E2E6ED", borderRadius: 8, overflow: "hidden" }}>
                       {(["fixed", "percent"] as const).map((t) => (
                         <button
                           key={t}
@@ -2579,7 +2579,7 @@ function PoundInput({ value, onChange }: { value: number; onChange: (n: number) 
         className="flex-1 text-[14px] text-[#0B1F3A]"
         style={{
           padding: "10px 12px",
-          border: "0.5px solid #EEF2F7",
+          border: "1px solid #E2E6ED",
           borderRadius: 8,
           background: "#FFFFFF",
           ...POPPINS,
@@ -2605,7 +2605,7 @@ function SelectBox({
       className="w-full text-[14px] text-[#0B1F3A]"
       style={{
         padding: "10px 12px",
-        border: "0.5px solid #EEF2F7",
+        border: "1px solid #E2E6ED",
         borderRadius: 8,
         background: "#FFFFFF",
         ...POPPINS,
