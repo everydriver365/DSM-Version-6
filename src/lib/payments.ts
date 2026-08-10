@@ -402,7 +402,10 @@ export interface RecordRefundResult {
   newAccountBalance: number;
   /** Id of the refund audit row in lesson_history, when written. */
   historyId: string | null;
+  /** Overall status of the refund operation for audit display. */
+  status: "succeeded" | "pending" | "failed";
 }
+
 
 /**
  * Records a refund. Callers pass a POSITIVE amount — this helper owns the
@@ -523,14 +526,28 @@ export async function recordRefund(
     }
   }
 
-  const refundResult: RecordRefundResult = { amountReversed, fromAccountCredit, newAccountBalance, historyId };
+  const refundResult: RecordRefundResult = {
+    amountReversed,
+    fromAccountCredit,
+    newAccountBalance,
+    historyId,
+    status: "succeeded",
+  };
 
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     window.dispatchEvent(
-      new CustomEvent('dsm-refund-recorded', {
-        detail: { ...refundResult, pupilId, amount, method: method ?? null, notes: notes ?? null, createdAt: now },
+      new CustomEvent("dsm-refund-recorded", {
+        detail: {
+          ...refundResult,
+          pupilId,
+          amount,
+          method: method ?? null,
+          notes: notes ?? null,
+          createdAt: now,
+        },
       }),
     );
+
     setTimeout(() => {
       window.dispatchEvent(
         new Event('dsm-payment-recorded')
