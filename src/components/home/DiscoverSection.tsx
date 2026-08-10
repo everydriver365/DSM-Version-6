@@ -300,19 +300,33 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
     supabase
       .from("news_articles")
-      .select("image_url, title, source, published_at")
+      .select("id, image_url, title, source, published_at")
       .not("image_url", "is", null)
       .eq("is_hidden", false)
       .order("published_at", { ascending: false })
-      .limit(1)
-      .single()
+      .limit(8)
       .then(({ data }) => {
-        setNewsHero(data?.image_url ?? null);
-        setLatestNewsTitle(sanitizeNewsTitle(data?.title));
-        setLatestNewsSource(data?.source ?? null);
+        const rows = (data ?? []) as {
+          id: string;
+          image_url: string | null;
+          title: string | null;
+          source: string | null;
+          published_at: string | null;
+        }[];
+        setNewsItems(
+          rows.map((r) => ({
+            id: String(r.id),
+            title: sanitizeNewsTitle(r.title),
+            image_url: r.image_url ?? null,
+          })),
+        );
+        const first = rows[0];
+        setNewsHero(first?.image_url ?? null);
+        setLatestNewsTitle(sanitizeNewsTitle(first?.title));
+        setLatestNewsSource(first?.source ?? null);
         setLatestNewsDate(
-          data?.published_at
-            ? new Date(data.published_at).toLocaleDateString("en-GB", {
+          first?.published_at
+            ? new Date(first.published_at).toLocaleDateString("en-GB", {
                 day: "numeric",
                 month: "short",
               })
