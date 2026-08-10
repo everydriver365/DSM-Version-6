@@ -3635,9 +3635,31 @@ function PupilDetailPage() {
                   </div>
                   <button
                     onClick={markPaid}
-                    style={{ background: "#137333", color: "#FFF", border: "none", borderRadius: 999, padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer", ...POPPINS }}
+                    disabled={markPaidLoading}
+                    style={{
+                      background: markPaidLoading ? "#9CA3AF" : "#137333",
+                      color: "#FFF",
+                      border: "none",
+                      borderRadius: 999,
+                      padding: "8px 14px",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: markPaidLoading ? "not-allowed" : "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                      opacity: markPaidLoading ? 0.8 : 1,
+                      ...POPPINS,
+                    }}
                   >
-                    Mark paid
+                    {markPaidLoading ? (
+                      <>
+                        <IconLoader2 size={14} stroke={2.5} style={{ animation: "spin 1s linear infinite" }} />
+                        <span>Saving…</span>
+                      </>
+                    ) : (
+                      <span>Mark paid</span>
+                    )}
                   </button>
                 </div>
               )}
