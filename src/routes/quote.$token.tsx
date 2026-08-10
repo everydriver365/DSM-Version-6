@@ -317,7 +317,21 @@ function PublicQuotePage() {
                     </div>
                   )}
 
-                  {!clientSecret ? (
+                  {noSquare && (
+                    <div style={{ background: "#FFFBEB", color: "#92400E", padding: 12, borderRadius: 8, fontSize: 13, marginBottom: 12 }}>
+                      Your instructor hasn't connected Square yet. Please pay by bank transfer or contact your instructor directly.
+                      {(instructor?.bank_account_name || instructor?.bank_sort_code || instructor?.bank_account_number) && (
+                        <div style={{ marginTop: 8, color: "#0B1F3A" }}>
+                          {instructor?.bank_name && <div>Bank: {instructor.bank_name}</div>}
+                          {instructor?.bank_account_name && <div>Account name: {instructor.bank_account_name}</div>}
+                          {instructor?.bank_sort_code && <div>Sort code: {instructor.bank_sort_code}</div>}
+                          {instructor?.bank_account_number && <div>Account number: {instructor.bank_account_number}</div>}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {!payUrl ? (
                     <button
                       disabled={payStatus === "creating"}
                       onClick={startDepositPayment}
@@ -332,47 +346,32 @@ function PublicQuotePage() {
                     </button>
                   ) : (
                     <div>
-                      <div id="google-pay-container" style={{ marginBottom: 12 }} />
-                      <div id="apple-pay-container" style={{ marginBottom: 12 }} />
-                      <div style={{ textAlign: "center", color: "#9CA3AF", fontSize: 13, marginBottom: 12 }}>— or pay by card —</div>
-                      <div className="Ryft--paysection">
-                        <form
-                          id="ryft-pay-form"
-                          className="Ryft--payform"
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            setPayError("");
-                            setPayStatus("paying");
-                            try {
-                              window.Ryft?.attemptPayment?.();
-                            } catch (err: any) {
-                              setPayStatus("error");
-                              setPayError(err?.message || "Payment failed");
-                            }
-                          }}
-                        >
-                          <button
-                            id="pay-btn"
-                            type="submit"
-                            disabled={payStatus === "paying"}
-                            style={{
-                              width: "100%", background: "#1877D6", color: "#fff",
-                              border: 0, borderRadius: 10, padding: "14px 16px",
-                              fontSize: 16, fontWeight: 600, cursor: "pointer",
-                              opacity: payStatus === "paying" ? 0.6 : 1,
-                            }}
-                          >
-                            {payStatus === "paying" ? "Processing…" : `Pay £${depositAmount.toFixed(2)}`}
-                          </button>
-                        </form>
+                      <a
+                        href={payUrl}
+                        style={{
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          width: "100%", height: 48, background: "#1877D6", color: "#fff",
+                          borderRadius: 10, fontSize: 15, fontWeight: 600, textDecoration: "none",
+                        }}
+                      >
+                        Pay now
+                      </a>
+                      <div style={{ textAlign: "center", color: "#9CA3AF", fontSize: 13, margin: "16px 0 8px" }}>— or scan to pay —</div>
+                      <div style={{ display: "flex", justifyContent: "center" }}>
+                        <img
+                          src={`https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=${encodeURIComponent(payUrl)}&choe=UTF-8`}
+                          alt="QR code to pay your deposit"
+                          width={250}
+                          height={250}
+                          style={{ borderRadius: 8 }}
+                        />
                       </div>
-                      {payStatus === "ready" || payStatus === "creating" ? (
-                        <p style={{ textAlign: "center", color: "#94a3b8", fontSize: 12, marginTop: 12 }}>
-                          Secured by Ryft
-                        </p>
-                      ) : null}
+                      <p style={{ textAlign: "center", color: "#94a3b8", fontSize: 12, marginTop: 12 }}>
+                        Secured by Square
+                      </p>
                     </div>
                   )}
+
                 </div>
               )}
 
