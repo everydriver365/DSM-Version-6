@@ -1284,49 +1284,19 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               Any skills to update?
             </div>
 
-            {lastRefundResult && (
+            {sortedRefunds.length > 0 && (
               <div className="mt-3 p-3" style={{ borderRadius: 10, backgroundColor: "#FEF2F2", border: "0.5px solid #FBD5D5" }}>
                 <div className="text-[13px] mb-2" style={{ color: "#CC2229", fontWeight: 700 }}>
                   Refund activity
                 </div>
-                <div className="flex justify-between text-[12px] py-1">
-                  <span style={{ color: "#6B7280" }}>Status</span>
-                  <span
-                    style={{
-                      color:
-                        lastRefundResult.status === "failed"
-                          ? "#CC2229"
-                          : lastRefundResult.status === "pending"
-                            ? "#F59E0B"
-                            : "#1A9B5C",
-                      fontWeight: 700,
-                      textTransform: "capitalize",
-                    }}
+                {sortedRefunds.map((refund, idx) => (
+                  <div
+                    key={refund.historyId ?? `${refund.createdAt ?? idx}-${idx}`}
+                    className={idx > 0 ? "mt-2 pt-2 border-t border-[#FBD5D5]" : undefined}
                   >
-                    {lastRefundResult.status ?? "succeeded"}
-                  </span>
-                </div>
-                <div className="flex justify-between text-[12px] py-1">
-                  <span style={{ color: "#6B7280" }}>Refunded</span>
-                  <span style={{ color: "#CC2229", fontWeight: 600 }}>
-                    £{(lastRefundResult.amount ?? lastRefundResult.amountReversed).toFixed(2)}
-                    {lastRefundResult.method ? ` · ${lastRefundResult.method}` : ""}
-                  </span>
-                </div>
-                <div className="flex justify-between text-[12px] py-1">
-                  <span style={{ color: "#6B7280" }}>Reversed off lessons</span>
-                  <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.amountReversed.toFixed(2)}</span>
-                </div>
-                {lastRefundResult.fromAccountCredit > 0 && (
-                  <div className="flex justify-between text-[12px] py-1">
-                    <span style={{ color: "#6B7280" }}>From account credit</span>
-                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.fromAccountCredit.toFixed(2)}</span>
+                    <RefundAuditRows refund={refund} />
                   </div>
-                )}
-                <div className="flex justify-between text-[12px] py-1">
-                  <span style={{ color: "#6B7280" }}>Account balance</span>
-                  <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.newAccountBalance.toFixed(2)}</span>
-                </div>
+                ))}
               </div>
             )}
 
