@@ -1691,9 +1691,9 @@ function InboxRow({
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
-            fontSize: 13,
+            fontSize: 12,
             fontWeight: unread ? 700 : 400,
-            color: unread ? BLUE : GREY,
+            color: unread ? BLUE : "#B0B0B5",
           }}
         >
           {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
