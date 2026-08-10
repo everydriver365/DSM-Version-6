@@ -1483,6 +1483,37 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                     <span style={{ color: "#6B7280" }}>Account balance</span>
                     <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.newAccountBalance.toFixed(2)}</span>
                   </div>
+                  {lastRefundResult.createdAt && (
+                    <div className="flex justify-between text-[12px] py-0.5">
+                      <span style={{ color: "#6B7280" }}>Recorded</span>
+                      <span style={{ color: "#0B1F3A", fontWeight: 600 }}>
+                        {new Date(lastRefundResult.createdAt).toLocaleString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                  )}
+                  {lastRefundResult.historyId && (
+                    <div className="flex justify-between text-[12px] py-0.5 gap-3">
+                      <span style={{ color: "#6B7280" }}>Transaction ID</span>
+                      <span
+                        style={{
+                          color: "#0B1F3A",
+                          fontWeight: 600,
+                          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+                          fontSize: 11,
+                          wordBreak: "break-all",
+                          textAlign: "right",
+                        }}
+                      >
+                        {lastRefundResult.historyId}
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
               {paymentRecorded && lastPaymentResult && (
