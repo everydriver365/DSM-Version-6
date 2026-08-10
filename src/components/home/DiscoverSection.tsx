@@ -885,76 +885,148 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       </div>
 
 
-      {/* ROW 3 — INDUSTRY NEWS ROW */}
-      <div
-        role="button"
-        tabIndex={0}
-        onClick={() => navigate({ to: "/news" as never })}
-        style={{
-          background: "#fff",
-          border: `0.5px solid ${HAIRLINE}`,
-          borderRadius: 14,
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          padding: "10px 12px",
-          cursor: "pointer",
-          marginBottom: 8,
-        }}
-      >
-        <div
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 8,
-            flexShrink: 0,
-            overflow: "hidden",
-            background: newsHero ? undefined : "linear-gradient(135deg, #1877D6, #0B1F3A)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {newsHero ? (
-            <img
-              src={newsHero}
-              alt=""
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          ) : (
-            <IconNews size={18} color="#fff" />
-          )}
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div
-            style={{
-              fontSize: 8,
-              fontWeight: 700,
-              color: BLUE,
-              textTransform: "uppercase",
-              marginBottom: 1,
-            }}
-          >
-            DVSA · DIA · More
+      {/* ROW 3 — INDUSTRY NEWS ROW (swipeable) */}
+      {(() => {
+        const panels =
+          newsItems.length > 0
+            ? newsItems
+            : [{ id: "fallback", title: latestNewsTitle, image_url: newsHero }];
+        const multi = panels.length > 1;
+        return (
+          <div style={{ marginBottom: 8 }}>
+            <div
+              ref={newsScrollRef}
+              onScroll={(e) => {
+                const el = e.currentTarget;
+                const w = el.clientWidth || 1;
+                setNewsIndex(Math.round(el.scrollLeft / w));
+              }}
+              style={{
+                display: "flex",
+                overflowX: multi ? "auto" : "hidden",
+                scrollSnapType: multi ? "x mandatory" : undefined,
+                WebkitOverflowScrolling: "touch",
+                scrollbarWidth: "none",
+                gap: 0,
+              }}
+              className="no-scrollbar"
+            >
+              {panels.map((item) => (
+                <div
+                  key={item.id}
+                  style={{
+                    flex: "0 0 100%",
+                    scrollSnapAlign: "center",
+                    boxSizing: "border-box",
+                  }}
+                >
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => navigate({ to: "/news" as never })}
+                    style={{
+                      background: "#fff",
+                      border: `0.5px solid ${HAIRLINE}`,
+                      borderRadius: 14,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      padding: "10px 12px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 8,
+                        flexShrink: 0,
+                        overflow: "hidden",
+                        background: item.image_url
+                          ? undefined
+                          : "linear-gradient(135deg, #1877D6, #0B1F3A)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {item.image_url ? (
+                        <img
+                          src={item.image_url}
+                          alt=""
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      ) : (
+                        <IconNews size={18} color="#fff" />
+                      )}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div
+                        style={{
+                          fontSize: 8,
+                          fontWeight: 700,
+                          color: BLUE,
+                          textTransform: "uppercase",
+                          marginBottom: 1,
+                        }}
+                      >
+                        DVSA · DIA · More
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 10,
+                          color: "#9CA3AF",
+                          fontFamily: FONT,
+                          marginBottom: 3,
+                        }}
+                      >
+                        {newsCount ?? 0} articles
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 600,
+                          color: NAVY,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {item.title || "Industry news & updates"}
+                      </div>
+                    </div>
+                    <IconChevronRight size={14} color={HAIRLINE} style={{ flexShrink: 0 }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            {multi && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 6,
+                  marginTop: 8,
+                }}
+              >
+                {panels.map((p, i) => (
+                  <span
+                    key={p.id}
+                    style={{
+                      width: i === newsIndex ? 16 : 6,
+                      height: 6,
+                      borderRadius: i === newsIndex ? 4 : "50%",
+                      background: i === newsIndex ? BLUE : "rgba(11,31,58,0.18)",
+                      transition: "width 0.25s ease, background 0.25s ease",
+                    }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-          <div style={{ fontSize: 10, color: "#9CA3AF", fontFamily: FONT, marginBottom: 3 }}>
-            {newsCount ?? 0} articles
-          </div>
-          <div
-            style={{
-              fontSize: 12,
-              fontWeight: 600,
-              color: NAVY,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {latestNewsTitle || "Industry news & updates"}
-          </div>
-        </div>
-        <IconChevronRight size={14} color={HAIRLINE} style={{ flexShrink: 0 }} />
-      </div>
+        );
+      })()}
 
       {/* BELOW — DSM LIVE SESSIONS */}
       <div ref={liveRef} />
