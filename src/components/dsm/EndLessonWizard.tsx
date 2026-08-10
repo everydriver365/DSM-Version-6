@@ -299,6 +299,13 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     return () => window.removeEventListener("dsm-refund-recorded", onRefund as EventListener);
   }, [open, pupilId]);
 
+  const sortedRefunds = useMemo(
+    () =>
+      [...refundResults].sort(
+        (a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime(),
+      ),
+    [refundResults],
+  );
 
   const baseCost = +(hourlyRate * (durationMinutes / 60)).toFixed(2);
   const pricing = applyPricingRules(baseCost, pricingRules, {
