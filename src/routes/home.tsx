@@ -464,7 +464,11 @@ type NAItem = {
   primary: string;
   subtitle: string;
   onClick: () => void;
+  /** Optional one-tap action rendered as a secondary button on the row. */
+  actionLabel?: string;
+  onAction?: () => void;
 };
+
 
 const NA_CATEGORY_ORDER: NAItem['key'][] = ['certs_expired', 'cancellations', 'reschedules', 'birthday', 'certs_expiring', 'tests', 'jobs', 'calls', 'enq'];
 
