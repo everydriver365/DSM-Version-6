@@ -4820,6 +4820,80 @@ function HomePage() {
       </div>
       </div>
 
+      {/* ============ MORNING BRIEF ============ */}
+      {(() => {
+        const todayList = (todayLessons ?? []) as any[];
+        const completedToday = todayList.filter((l) => l.status === 'completed').length;
+        const expectedToday = todayList
+          .filter((l) => l.status !== 'cancelled')
+          .reduce((s, l) => s + Number(l.amount_due ?? 0), 0);
+        const nowMs = Date.now();
+        const upcomingToday = todayList
+          .filter((l) => l.status !== 'cancelled' && l.status !== 'completed')
+          .map((l) => ({ l, t: new Date(`${l.lesson_date}T${String(l.lesson_time || '00:00:00').slice(0, 8)}`).getTime() }))
+          .filter((x) => x.t >= nowMs)
+          .sort((a, b) => a.t - b.t)[0];
+        const nextLabel = upcomingToday
+          ? `Next: ${String(upcomingToday.l.lesson_time || '').slice(0, 5)} · ${upcomingToday.l.pupils?.first_name || upcomingToday.l.pupils?.name || 'Pupil'}`
+          : todayList.length > 0
+            ? 'No more lessons today'
+            : 'Nothing booked today';
+        return (
+          <MorningBriefCard
+            lessonCount={todayList.length}
+            completedCount={completedToday}
+            earnings={expectedToday}
+            nextLabel={nextLabel}
+            onOpenSchedule={() => navigate({ to: '/schedule' })}
+            onOpenPayments={() => navigate({ to: '/payments' })}
+          />
+        );
+      })()}
+
+      {/* ============ NEEDS ATTENTION ============ */}
+      <div style={{ marginBottom: 16 }}>
+        <NeedsAttentionSection
+          items={[
+            {
+              key: 'tests',
+              count: naTests,
+              primary: `${naTests} test${naTests === 1 ? '' : 's'} in the next 7 days`,
+              subtitle: 'Check readiness and confirm details',
+              onClick: () => navigate({ to: '/tests' }),
+              actionLabel: 'View',
+              onAction: () => navigate({ to: '/tests' }),
+            },
+            {
+              key: 'jobs',
+              count: naJobs,
+              primary: `${naJobs} open job${naJobs === 1 ? '' : 's'}`,
+              subtitle: 'Cover work available near you',
+              onClick: () => navigate({ to: '/jobs' }),
+              actionLabel: 'Browse',
+              onAction: () => navigate({ to: '/jobs' }),
+            },
+            {
+              key: 'calls',
+              count: naCalls,
+              primary: `${naCalls} callback${naCalls === 1 ? '' : 's'} waiting`,
+              subtitle: 'Pupils asked you to ring them back',
+              onClick: () => navigate({ to: '/messages' }),
+              actionLabel: 'Call',
+              onAction: () => navigate({ to: '/messages' }),
+            },
+            {
+              key: 'enq',
+              count: naEnquiries,
+              primary: `${naEnquiries} new enquir${naEnquiries === 1 ? 'y' : 'ies'}`,
+              subtitle: 'Reply quickly to win the booking',
+              onClick: () => navigate({ to: '/enquiries' }),
+              actionLabel: 'Reply',
+              onAction: () => navigate({ to: '/enquiries' }),
+            },
+          ]}
+        />
+      </div>
+
 
       {/* ============ NEXT LESSON CARD ============ */}
 
