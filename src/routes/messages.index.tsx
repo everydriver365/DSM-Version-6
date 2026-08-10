@@ -1284,19 +1284,15 @@ function MessagesIndexPage() {
                 <div style={{ fontSize: 14, color: GREY }}>No conversations</div>
               </div>
             ) : (
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 8,
-              }}>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
                 {visibleItems.map((item) => (
                   <div
                     key={item.key}
                     style={{
                       background: item.unread > 0 ? '#F0F7FF' : '#fff',
                       borderRadius: 16,
-                      boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
-                      overflow: 'hidden',
+                      marginBottom: 10,
+                      boxShadow: '0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)',
                     }}
                   >
                     <InboxRow
@@ -1584,7 +1580,8 @@ function InboxRow({
         display: "flex",
         alignItems: "center",
         gap: 13,
-        padding: 16,
+        padding: "18px 16px",
+        borderRadius: 16,
         cursor: "pointer",
         WebkitTapHighlightColor: "transparent",
       }}
@@ -1644,8 +1641,8 @@ function InboxRow({
         <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
           <div
             style={{
-              fontSize: 14,
-              fontWeight: unread ? 800 : 600,
+              fontSize: 15.5,
+              fontWeight: unread ? 800 : 700,
               color: NAVY,
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -1658,12 +1655,12 @@ function InboxRow({
             <span
               style={{
                 flexShrink: 0,
-                fontSize: 8,
-                fontWeight: 700,
+                fontSize: 9.5,
+                fontWeight: 800,
                 color: BLUE,
-                background: "#E6F1FB",
-                borderRadius: 4,
-                padding: "2px 5px",
+                background: "#E7F1FC",
+                borderRadius: 20,
+                padding: "2px 8px",
                 letterSpacing: 0.4,
               }}
             >
@@ -1673,9 +1670,9 @@ function InboxRow({
         </div>
         <div
           style={{
-            fontSize: 14,
+            fontSize: 13.5,
             fontWeight: unread ? 600 : 400,
-            color: unread ? NAVY : GREY,
+            color: unread ? NAVY : "#8A8A8E",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -1694,9 +1691,9 @@ function InboxRow({
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
-            fontSize: 13,
+            fontSize: 12,
             fontWeight: unread ? 700 : 400,
-            color: unread ? BLUE : GREY,
+            color: unread ? BLUE : "#B0B0B5",
           }}
         >
           {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
