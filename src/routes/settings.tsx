@@ -1000,7 +1000,7 @@ function SettingsPage() {
               </div>
             </div>
           )}
-        </div>
+        </SectionCard>
 
         <Label>LESSON REMINDERS</Label>
         <SectionCard>
