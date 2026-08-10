@@ -1,8 +1,9 @@
-# Home dashboard improvement options
+# Home dashboard improvements
 
-The home screen already contains a Next lesson map, Needs attention list, Today's lessons tile, a swipeable stats card, Quick actions, and a Discover section. Four concrete improvements would make it feel more like a true daily command centre.
+The home screen already contains a Next lesson map, Needs attention list, Today's lessons tile, a swipeable stats card, Quick actions, and a Discover section. Three changes will make it feel like a true daily command centre. All work stays in `src/routes/home.tsx` and the Discover component.
 
-## Option A — Morning Brief hero card
+## 1 — Morning Brief hero card
+
 
 Add a compact, always-first card that answers "how is my day looking?" in one glance.
 
