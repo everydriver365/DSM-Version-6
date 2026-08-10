@@ -1347,7 +1347,7 @@ export function UnifiedPaymentSheet({
     return `Standard rate · ${unpaidLessons.length} unpaid`;
   })();
 
-  const feeApplies = method === "qr" || method === "link";
+  const feeApplies = method === "qr" || method === "link" || method === "card_square";
   const netAfterFee = amountNum * 0.99;
 
   const primaryLabel = customMode
