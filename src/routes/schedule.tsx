@@ -1289,126 +1289,100 @@ function SchedulePage() {
                           if (e.kind === 'gap-row') {
                             const preview = previewMatchForGap({ date: row.key, dayName, startMin: e.startMins, durationMin: e.mins, allPupils, allAvailability });
                             return (
-                              <div key={e.id} style={{ position: "relative", paddingTop: 10, marginBottom: 16 }}>
-                                {preview.count > 0 && (
-                                  <div
-                                    style={{
-                                      position: "absolute",
-                                      top: -8,
-                                      left: 14,
-                                      background: "#B5661E",
-                                      color: "#FFFFFF",
-                                      fontSize: 9,
-                                      fontWeight: 700,
-                                      padding: "3px 9px",
-                                      borderRadius: 999,
-                                      letterSpacing: 0.3,
-                                      zIndex: 2,
-                                    }}
-                                  >
-                                    FILL THIS GAP
-                                  </div>
-                                )}
+                              <div
+                                key={e.id}
+                                style={{
+                                  background: "#FFFFFF",
+                                  borderRadius: 16,
+                                  padding: "14px 16px",
+                                  marginBottom: 10,
+                                  boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
+                                  display: "flex",
+                                  alignItems: "stretch",
+                                  gap: 12,
+                                  ...POPPINS,
+                                }}
+                              >
                                 <div
-                                  onClick={() => navigate({ to: '/gaps' as never })}
-                                  role="button"
-                                  tabIndex={0}
+                                  aria-hidden
                                   style={{
-                                    position: "relative",
-                                    background: "#1877D6",
-                                    borderRadius: 12,
-                                    boxShadow: "0 4px 16px rgba(26, 82, 160, 0.28), 0 1px 3px rgba(0,0,0,0.1)",
-                                    padding: "20px 14px 12px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 10,
+                                    width: 3,
+                                    borderRadius: 2,
+                                    background: "#1A9B5C",
+                                    flexShrink: 0,
+                                    alignSelf: "stretch",
+                                  }}
+                                />
+                                <div style={{ minWidth: 66, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0B1F3A", fontVariantNumeric: "tabular-nums", lineHeight: 1.2 }}>
+                                    {e.startTime}
+                                  </div>
+                                  <div style={{ fontSize: 10.5, color: "#B0B0B5", marginTop: 1, lineHeight: 1.2 }}>
+                                    {formatMins(e.mins)}
+                                  </div>
+                                </div>
+                                <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                                  <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                                    <span style={{ fontSize: 13, fontWeight: 800, color: "#1A9B5C" }}>Free slot</span>
+                                    <span style={{ fontSize: 12, fontWeight: 700, color: "#0B1F3A" }}>£{e.potential}</span>
+                                  </div>
+                                  {preview.count > 0 && (
+                                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 3 }}>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        {preview.topPupils.map((p, idx) => {
+                                          const initials = (p.name ?? p.first_name ?? "P")
+                                            .split(/\s+/)
+                                            .map((s) => s.charAt(0))
+                                            .join("")
+                                            .slice(0, 2)
+                                            .toUpperCase();
+                                          return (
+                                            <div
+                                              key={idx}
+                                              style={{
+                                                width: 18,
+                                                height: 18,
+                                                borderRadius: "50%",
+                                                background: p.calendar_colour ?? "#0B1F3A",
+                                                border: "1.5px solid #FFFFFF",
+                                                marginLeft: idx === 0 ? 0 : -5,
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                color: "#FFFFFF",
+                                                fontSize: 7,
+                                                fontWeight: 800,
+                                              }}
+                                            >
+                                              {initials}
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                      <div style={{ fontSize: 10.5, color: "#8A8A8E", fontWeight: 500 }}>
+                                        {preview.count} pupil{preview.count === 1 ? "" : "s"} may fit
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => navigate({ to: '/gaps' as never })}
+                                  style={{
+                                    flexShrink: 0,
+                                    alignSelf: "center",
+                                    background: "#1A9B5C",
+                                    color: "#FFFFFF",
+                                    fontSize: 12,
+                                    fontWeight: 800,
+                                    padding: "8px 15px",
+                                    borderRadius: 9,
+                                    border: "none",
                                     cursor: "pointer",
-                                    overflow: "hidden",
-                                    ...POPPINS,
                                   }}
                                 >
-                                  <div
-                                    aria-hidden
-                                    style={{
-                                      position: "absolute",
-                                      top: -20,
-                                      right: -20,
-                                      width: 80,
-                                      height: 80,
-                                      borderRadius: "50%",
-                                      background: "rgba(255,255,255,0.08)",
-                                      filter: "blur(20px)",
-                                    }}
-                                  />
-                                  <div style={{ flex: 1, minWidth: 0, position: "relative", zIndex: 1 }}>
-                                    <div style={{ fontSize: 13, fontWeight: 600, color: "#FFFFFF", fontVariantNumeric: "tabular-nums" }}>
-                                      {e.startTime} – {e.endTime}
-                                    </div>
-                                    <div style={{ fontSize: 11, color: "#A7C8F0", marginTop: 2 }}>
-                                      {formatMins(e.mins)} free
-                                    </div>
-                                    {preview.count > 0 && (
-                                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
-                                        <div style={{ display: "flex", alignItems: "center" }}>
-                                          {preview.topPupils.map((p, idx) => {
-                                            const initials = (p.name ?? p.first_name ?? "P")
-                                              .split(/\s+/)
-                                              .map((s) => s.charAt(0))
-                                              .join("")
-                                              .slice(0, 2)
-                                              .toUpperCase();
-                                            return (
-                                              <div
-                                                key={idx}
-                                                style={{
-                                                  width: 24,
-                                                  height: 24,
-                                                  borderRadius: "50%",
-                                                  background: p.calendar_colour ?? "#6B7280",
-                                                  border: "2px solid #FFFFFF",
-                                                  marginRight: idx === preview.topPupils.length - 1 ? 0 : -8,
-                                                  display: "flex",
-                                                  alignItems: "center",
-                                                  justifyContent: "center",
-                                                  color: "#FFFFFF",
-                                                  fontSize: 10,
-                                                  fontWeight: 600,
-                                                }}
-                                              >
-                                                {initials}
-                                              </div>
-                                            );
-                                          })}
-                                        </div>
-                                        <div style={{ fontSize: 11, color: "#A7C8F0" }}>
-                                          {preview.count} pupil{preview.count === 1 ? "" : "s"} may fit
-                                        </div>
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div style={{ fontSize: 14, fontWeight: 700, color: "#86EFAC", position: "relative", zIndex: 1 }}>
-                                    £{e.potential}
-                                  </div>
-                                  <button
-                                    type="button"
-                                    onClick={(ev) => { ev.stopPropagation(); navigate({ to: '/gaps' as never }); }}
-                                    style={{
-                                      position: "relative",
-                                      zIndex: 1,
-                                      background: "#FFFFFF",
-                                      color: "#1877D6",
-                                      fontSize: 12,
-                                      fontWeight: 600,
-                                      padding: "8px 12px",
-                                      borderRadius: 9,
-                                      border: "none",
-                                      cursor: "pointer",
-                                      boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
-                                    }}
-                                  >
-                                    Fill
-                                  </button>
-                                </div>
+                                  Fill
+                                </button>
                               </div>
                             );
                           }
