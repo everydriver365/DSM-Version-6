@@ -1069,7 +1069,7 @@ function SettingsPage() {
                       ...POPPINS,
                       padding: "10px 12px",
                       border: "1px solid #E2E6ED",
-                      borderRadius: 8,
+                      borderRadius: 10,
                       background: "#FFFFFF",
                     }}
                   >
@@ -1122,7 +1122,7 @@ function SettingsPage() {
                     style={{
                       width: 72,
                       height: 36,
-                      borderRadius: 8,
+                      borderRadius: 10,
                       border: "1px solid #E2E6ED",
                       padding: "0 8px",
                       ...POPPINS,
@@ -1147,7 +1147,7 @@ function SettingsPage() {
                   className="text-[13px] text-[#0B1F3A]"
                   style={{
                     height: 36,
-                    borderRadius: 8,
+                    borderRadius: 10,
                     border: "1px solid #E2E6ED",
                     padding: "0 8px",
                     backgroundColor: "#fff",
@@ -1184,7 +1184,7 @@ function SettingsPage() {
                   className="text-[13px] text-[#0B1F3A]"
                   style={{
                     height: 36,
-                    borderRadius: 8,
+                    borderRadius: 10,
                     border: "1px solid #E2E6ED",
                     padding: "0 8px",
                     backgroundColor: "#fff",
@@ -1256,7 +1256,7 @@ function SettingsPage() {
                   className="text-[13px] text-[#0B1F3A]"
                   style={{
                     height: 36,
-                    borderRadius: 8,
+                    borderRadius: 10,
                     border: "1px solid #E2E6ED",
                     padding: "0 8px",
                     backgroundColor: "#fff",
@@ -1499,7 +1499,7 @@ function SettingsPage() {
                             style={{
                               display: "inline-flex", alignItems: "center", gap: 6,
                               padding: "6px 10px", border: "1px solid #E2E6ED",
-                              borderRadius: 8, fontSize: 13, cursor: "pointer", ...POPPINS,
+                              borderRadius: 10, fontSize: 13, cursor: "pointer", ...POPPINS,
                             }}
                           >
                             <input
@@ -1862,7 +1862,7 @@ function SettingsPage() {
                       setCancellationTiers((prev) => prev.map((t, idx) => idx === i ? { ...t, hours: v } : t));
                     }}
                     className="bg-white"
-                    style={{ width: 60, textAlign: "center", border: "1px solid #E2E6ED", borderRadius: 6, padding: "6px 4px", fontSize: 13, color: "#0B1F3A", ...POPPINS }}
+                    style={{ width: 60, textAlign: "center", border: "1px solid #E2E6ED", borderRadius: 10, padding: "6px 4px", fontSize: 13, color: "#0B1F3A", ...POPPINS }}
                   />
                   <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>hours notice</span>
                   <span className="text-[12px]" style={{ color: "#9CA3AF", ...POPPINS }}>→</span>
@@ -1873,7 +1873,7 @@ function SettingsPage() {
                       setCancellationTiers((prev) => prev.map((t, idx) => idx === i ? { ...t, charge_percent: v } : t));
                     }}
                     className="bg-white"
-                    style={{ border: "1px solid #E2E6ED", borderRadius: 6, padding: "6px 4px", fontSize: 13, color: "#0B1F3A", ...POPPINS }}
+                    style={{ border: "1px solid #E2E6ED", borderRadius: 10, padding: "6px 4px", fontSize: 13, color: "#0B1F3A", ...POPPINS }}
                   >
                     {[0, 25, 50, 75, 100].map((p) => <option key={p} value={p}>{p}</option>)}
                   </select>
@@ -2094,7 +2094,7 @@ function SettingsPage() {
                     className="flex-1 text-[13px]"
                     style={{
                       padding: "9px 10px",
-                      borderRadius: 8,
+                      borderRadius: 10,
                       border: "1px solid #E2E6ED",
                       background: isElectric === opt.key ? "#1877D6" : "#FFFFFF",
                       color: isElectric === opt.key ? "#FFFFFF" : "#0B1F3A",
@@ -2200,7 +2200,7 @@ function SettingsPage() {
                         } catch { toast.error("Copy failed"); }
                       }}
                       className="flex items-center gap-1 text-[13px]"
-                      style={{ padding: "10px 14px", borderRadius: 8, background: "#EEF2F7", color: "#0B1F3A", border: "none", cursor: "pointer", ...POPPINS }}
+                      style={{ padding: "10px 14px", borderRadius: 10, background: "#EEF2F7", color: "#0B1F3A", border: "none", cursor: "pointer", ...POPPINS }}
                     >
                       <Copy size={14} /> Copy
                     </button>
@@ -2580,7 +2580,7 @@ function PoundInput({ value, onChange }: { value: number; onChange: (n: number) 
         style={{
           padding: "10px 12px",
           border: "1px solid #E2E6ED",
-          borderRadius: 8,
+          borderRadius: 10,
           background: "#FFFFFF",
           ...POPPINS,
         }}
@@ -2606,7 +2606,7 @@ function SelectBox({
       style={{
         padding: "10px 12px",
         border: "1px solid #E2E6ED",
-        borderRadius: 8,
+        borderRadius: 10,
         background: "#FFFFFF",
         ...POPPINS,
       }}
