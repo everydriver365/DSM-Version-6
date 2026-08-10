@@ -1087,7 +1087,7 @@ function SettingsPage() {
               )}
             </div>
           )}
-        </div>
+        </SectionCard>
 
         <Label>RATES & SCHEDULING</Label>
         <SectionCard>
