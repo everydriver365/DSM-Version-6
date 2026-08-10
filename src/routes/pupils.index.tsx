@@ -864,7 +864,7 @@ function PupilsIndexPage() {
                 >
                   Needs Attention
                 </div>
-                <div style={{ margin: '0 16px' }}>
+                <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {needsAttention.map((p, index) => (
                     <div
                       key={p.id}
@@ -874,46 +874,12 @@ function PupilsIndexPage() {
                         padding: 14,
                         boxShadow: '0 3px 0 #F7C9C6, 0 8px 18px rgba(255,59,48,0.1)',
                         border: '1.5px solid #FDEDEC',
-                        marginBottom: 10,
                       }}
                     >
                       {renderRow(p, index, needsAttention.length)}
                     </div>
                   ))}
                 </div>
-              </>
-            )}
-            <div
-              style={{
-                fontSize: 12,
-                fontWeight: 700,
-                color: '#8A8A8E',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                padding: '16px 16px 6px',
-                fontFamily: 'Poppins, sans-serif',
-              }}
-            >
-              Active · {activePupils.length}
-            </div>
-            <div
-              style={{
-                margin: '0 16px',
-                background: '#fff',
-                borderRadius: 16,
-                boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                overflow: 'hidden',
-              }}
-            >
-              {activePupils.map((p, index) => (
-                <div key={p.id}>
-                  {renderRow(p, index, activePupils.length)}
-                  {index < activePupils.length - 1 && (
-                    <div style={{ height: 1, background: '#EFEFF2', marginLeft: 72 }} />
-                  )}
-                </div>
-              ))}
-            </div>
           </>
 
         )}
