@@ -2323,10 +2323,10 @@ function MenuRow({
     isLast === undefined
       ? isFirst
         ? undefined
-        : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }
+        : { borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2" }
       : isLast
         ? undefined
-        : { borderBottomWidth: "0.5px", borderBottomStyle: "solid", borderBottomColor: "#EEF2F7" };
+        : { borderBottomWidth: "1px", borderBottomStyle: "solid", borderBottomColor: "#EFEFF2" };
 
   return (
     <button
@@ -2334,14 +2334,14 @@ function MenuRow({
       onClick={onClick}
       className="w-full flex items-center text-left [&_svg]:!w-[17px] [&_svg]:!h-[17px]"
       style={{
-        gap: 12,
-        padding: "13px 16px",
+        gap: 14,
+        padding: "15px 16px",
         ...dividerStyle,
       }}
     >
       <div
         className="flex items-center justify-center"
-        style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 10, backgroundColor: iconBg, flexShrink: 0 }}
+        style={{ width: 38, height: 38, minWidth: 38, minHeight: 38, borderRadius: 11, backgroundColor: iconBg, flexShrink: 0 }}
       >
         {icon}
       </div>
