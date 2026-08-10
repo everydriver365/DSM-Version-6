@@ -203,6 +203,22 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   const [pricingRules, setPricingRules] = useState<PricingRule[]>([]);
   const [pupilPostcode, setPupilPostcode] = useState<string | undefined>(undefined);
 
+  // Refund audit: capture refunds recorded for this pupil while the wizard is open.
+  useEffect(() => {
+    if (!open) return;
+    const onRefund = (e: Event) => {
+      const detail = (e as CustomEvent).detail as
+        | (RecordRefundResult & { pupilId?: string; amount?: number; method?: string | null; createdAt?: string })
+        | undefined;
+      if (!detail) return;
+      if (detail.pupilId && detail.pupilId !== pupilId) return;
+      setLastRefundResult(detail);
+    };
+    window.addEventListener("dsm-refund-recorded", onRefund as EventListener);
+    return () => window.removeEventListener("dsm-refund-recorded", onRefund as EventListener);
+  }, [open, pupilId]);
+
+
   const baseCost = +(hourlyRate * (durationMinutes / 60)).toFixed(2);
   const pricing = applyPricingRules(baseCost, pricingRules, {
     lessonDate,
