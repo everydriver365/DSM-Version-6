@@ -52,7 +52,15 @@ function fmtDate(iso: string | null | undefined): string {
 // Types
 // ---------------------------------------------------------------------------
 type PricingType = "block" | "national_intensives" | "standard" | "custom";
-type PayMethod = "cash" | "bank_transfer" | "qr" | "link" | "klarna" | "clearpay";
+type PayMethod =
+  | "cash"
+  | "bank_transfer"
+  | "qr"
+  | "link"
+  | "klarna"
+  | "clearpay"
+  | "card_square"
+  | "card_evd";
 type TabKey = "payment" | "pricing";
 
 export interface UnifiedPaymentSheetProps {
