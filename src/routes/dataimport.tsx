@@ -93,14 +93,26 @@ function DataImportPage() {
   }, []);
 
   const downloadTemplate = () => {
-    const csv = HEADERS.join(",") + "\n";
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const header = HEADERS.join(",");
+    const sample = [
+      "John Smith",
+      "John",
+      "Smith",
+      "07700 900123",
+      "john.smith@example.com",
+      "active",
+    ].join(",");
+    const csv = `${header}\n${sample}\n`;
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = "pupils_template.csv";
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    toast.success("Template downloaded");
   };
 
   const onFile = async (f: File | null) => {
