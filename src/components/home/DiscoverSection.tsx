@@ -927,19 +927,19 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     style={{
                       background: "#fff",
                       border: `0.5px solid ${HAIRLINE}`,
-                      borderRadius: 14,
+                      borderRadius: 16,
                       display: "flex",
                       alignItems: "center",
-                      gap: 10,
-                      padding: "10px 12px",
+                      gap: 12,
+                      padding: "12px 14px",
                       cursor: "pointer",
                     }}
                   >
                     <div
                       style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 8,
+                        width: 48,
+                        height: 48,
+                        borderRadius: 10,
                         flexShrink: 0,
                         overflow: "hidden",
                         background: item.image_url
@@ -957,24 +957,24 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                           style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />
                       ) : (
-                        <IconNews size={18} color="#fff" />
+                        <IconNews size={20} color="#fff" />
                       )}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div
                         style={{
-                          fontSize: 8,
+                          fontSize: 9,
                           fontWeight: 700,
                           color: BLUE,
                           textTransform: "uppercase",
-                          marginBottom: 1,
+                          marginBottom: 2,
                         }}
                       >
                         DVSA · DIA · More
                       </div>
                       <div
                         style={{
-                          fontSize: 10,
+                          fontSize: 11,
                           color: "#9CA3AF",
                           fontFamily: FONT,
                           marginBottom: 3,
@@ -984,7 +984,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       </div>
                       <div
                         style={{
-                          fontSize: 12,
+                          fontSize: 13,
                           fontWeight: 600,
                           color: NAVY,
                           overflow: "hidden",
@@ -995,7 +995,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                         {item.title || "Industry news & updates"}
                       </div>
                     </div>
-                    <IconChevronRight size={14} color={HAIRLINE} style={{ flexShrink: 0 }} />
+                    <IconChevronRight size={16} color={HAIRLINE} style={{ flexShrink: 0 }} />
                   </div>
                 </div>
               ))}
