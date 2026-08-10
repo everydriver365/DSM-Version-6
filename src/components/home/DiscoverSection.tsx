@@ -348,9 +348,89 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     return () => clearInterval(id);
   }, []);
 
-  type HeroListing = (typeof featuredListings)[number];
-  const heroCards: (HeroListing | null)[] =
-    featuredListings.length > 0 ? featuredListings : [null];
+  type HeroCard = {
+    id: string;
+    title: string;
+    category: string | null;
+    priceLabel: string;
+    priceCaption: string;
+    imageUrl: string | null;
+    badge: string;
+    badgeColor: string;
+    footer: string;
+    Icon: React.ComponentType<{ size?: number; color?: string; stroke?: number; opacity?: number }>;
+    onOpen: () => void;
+  };
+
+  const liveHighlight = liveSorted[0] ?? null;
+  const liveHighlightStart = liveHighlight
+    ? startMs(liveHighlight.session_date, liveHighlight.session_time)
+    : 0;
+  const liveHighlightIsNow = liveHighlight ? isLiveNow(liveHighlight) : false;
+  const liveHighlightSoon =
+    !!liveHighlightStart &&
+    liveHighlightStart - Date.now() > 0 &&
+    liveHighlightStart - Date.now() < 24 * 60 * 60 * 1000;
+
+  const liveCard: HeroCard | null =
+    liveHighlight && (liveHighlightIsNow || liveHighlightSoon)
+      ? {
+          id: `live-${liveHighlight.id}`,
+          title: liveHighlight.title || "DSM Live session",
+          category: "Live",
+          priceLabel: liveHighlightIsNow
+            ? "Now"
+            : new Date(liveHighlightStart).toLocaleTimeString("en-GB", {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+          priceCaption: liveHighlightIsNow ? "ON AIR" : "STARTS",
+          imageUrl: liveHighlight.image_url ?? liveHero,
+          badge: liveHighlightIsNow ? "LIVE NOW" : "UPCOMING",
+          badgeColor: liveHighlightIsNow ? RED : BLUE,
+          footer: "DSM Live",
+          Icon: IconRadio,
+          onOpen: () => navigate({ to: "/live-sessions" as never }),
+        }
+      : null;
+
+  const listingCards: HeroCard[] = featuredListings.map((listing) => ({
+    id: listing.id,
+    title: listing.title ?? "Services & deals",
+    category: listing.category,
+    priceLabel: listing.price_display ?? "—",
+    priceCaption: "PRICE",
+    imageUrl: listing.imageUrl,
+    badge: "FOR SALE",
+    badgeColor: "#1A9B5C",
+    footer: "DSM Marketplace",
+    Icon: categoryIcon(listing.category),
+    onOpen: () =>
+      navigate({
+        to: "/marketplace/$listingId" as never,
+        params: { listingId: listing.id } as never,
+      }),
+  }));
+
+  const marketplaceFallback: HeroCard = {
+    id: "empty",
+    title: "Services & deals",
+    category: null,
+    priceLabel: "—",
+    priceCaption: "PRICE",
+    imageUrl: null,
+    badge: "FOR SALE",
+    badgeColor: "#1A9B5C",
+    footer: "DSM Marketplace",
+    Icon: categoryIcon(null),
+    onOpen: () => navigate({ to: "/marketplace" as never }),
+  };
+
+  const heroCards: HeroCard[] = [
+    ...(liveCard ? [liveCard] : []),
+    ...(listingCards.length > 0 ? listingCards : [marketplaceFallback]),
+  ];
+
 
   const chipIconWrap: React.CSSProperties = {
     width: 26,
