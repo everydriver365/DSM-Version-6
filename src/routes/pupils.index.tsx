@@ -628,7 +628,7 @@ function PupilsIndexPage() {
               <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 3, ...POPPINS }}>
                 {lp
                   ? `Last seen: ${formatRelativeDate(lp.date)}`
-                  : `· Next: ${formatShortDate(nextLesson)}`}
+                  : `Next: ${formatShortDate(nextLesson)}`}
               </div>
             )}
           </div>
