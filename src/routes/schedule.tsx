@@ -296,6 +296,15 @@ function SchedulePage() {
 
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
   const [lessonsReloadKey, setLessonsReloadKey] = useState(0);
+
+  // Any payment recorded anywhere in the app should refresh schedule tiles
+  // so paid/unpaid badges stay in sync.
+  useEffect(() => {
+    const onPaymentRecorded = () => setLessonsReloadKey((k) => k + 1);
+    window.addEventListener("dsm-payment-recorded", onPaymentRecorded);
+    return () => window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
+  }, []);
+
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
