@@ -151,7 +151,7 @@ function NewsIndexPage() {
             </p>
           </div>
         ) : (
-          <div style={{ padding: "16px" }}>
+          <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: 8 }}>
             {filtered.map((a) => (
               <div
                 key={a.id}
@@ -178,7 +178,6 @@ function NewsIndexPage() {
                   border: "1px solid #E3E8F0",
                   borderRadius: 16,
                   padding: 12,
-                  marginBottom: 12,
                   cursor: "pointer",
                 }}
               >
