@@ -1239,6 +1239,13 @@ function PupilDetailPage() {
     };
   }, [id, paymentHistoryRefresh]);
 
+  // Refetch pupil + lessons data whenever a payment is recorded anywhere in the app.
+  useEffect(() => {
+    const onPaymentRecorded = () => setPaymentHistoryRefresh((k) => k + 1);
+    window.addEventListener("dsm-payment-recorded", onPaymentRecorded);
+    return () => window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
+  }, []);
+
   // Recompute live "owed" from the pupil's CURRENT rates.
   // Priority (per resolveHourlyRate): pupil custom rate (per-duration) >
   // postcode rate > instructor default. Falls back to stored amount_due
