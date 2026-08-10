@@ -943,7 +943,7 @@ function SettingsPage() {
         </SectionCard>
 
         <Label>PAYMENTS</Label>
-        <div style={{ backgroundColor: 'white', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
+        <SectionCard>
           <MenuRow
             icon={<PoundSterling color="#CC2229" />}
             iconBg="#FCEBEB"
