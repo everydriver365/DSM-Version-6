@@ -597,9 +597,6 @@ function PaymentsPage() {
               <div
                 style={{
                   margin: '0 16px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 8,
                 }}
               >
                 {g.rows.map((row) => {
@@ -607,21 +604,24 @@ function PaymentsPage() {
                   const amt = Number(row.lesson_cost ?? 0);
                   const isOpen = expandedId === row.id;
                   const avatarBg = pupilAvatarColor(row.pupil_id);
+                  const isNonRevenue =
+                    amt === 0 || String(row.payment_method ?? "").toLowerCase().includes("cancel");
                   return (
                     <div
                       key={row.id}
                       style={{
                         background: "#fff",
                         borderRadius: 16,
-                        overflow: "hidden",
-                        boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                        marginBottom: 10,
+                        opacity: isNonRevenue ? 0.65 : 1,
+                        boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: 13, padding: "14px 16px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 13, padding: 16 }}>
                         <div
                           style={{
-                            width: 42,
-                            height: 42,
+                            width: 44,
+                            height: 44,
                             borderRadius: "50%",
                             background: avatarBg,
                             color: "#FFFFFF",
@@ -662,7 +662,8 @@ function PaymentsPage() {
                           style={{
                             fontSize: 15.5,
                             fontWeight: 800,
-                            color: isRefund ? "#FF3B30" : "#1A9B5C",
+                            color: isNonRevenue ? "#B0B0B5" : isRefund ? "#FF3B30" : "#1A9B5C",
+                            textAlign: "right",
                             flexShrink: 0,
                             ...POPPINS,
                           }}
