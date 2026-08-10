@@ -1019,27 +1019,7 @@ export function UnifiedPaymentSheet({
   );
 
 
-  // ---- QR polling --------------------------------------------------------
-  useEffect(() => {
-    if (!qrPaymentId) return;
-    const t = setInterval(async () => {
-      try {
-        const { data } = await supabase.functions.invoke("get-ryft-payment-status", {
-          body: { paymentId: qrPaymentId },
-        });
-        const status = (data as { status?: string })?.status;
-        if (status === "succeeded" || status === "completed" || status === "paid") {
-          clearInterval(t);
-          setQrPaymentId(null);
-          setQrFullscreen(false);
-          await handleRecordPayment(method === "link" ? "link" : "qr");
-        }
-      } catch (e) {
-        console.warn("[UnifiedPaymentSheet] qr poll", e);
-      }
-    }, 5000);
-    return () => clearInterval(t);
-  }, [qrPaymentId, method, handleRecordPayment, handleClose]);
+
 
   // ---- pay link delivery -------------------------------------------------
   const copyLink = async () => {
