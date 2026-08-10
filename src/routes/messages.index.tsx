@@ -1585,7 +1585,6 @@ function InboxRow({
         alignItems: "center",
         gap: 13,
         padding: 16,
-        background: item.unread > 0 ? '#F0F7FF' : '#fff',
         cursor: "pointer",
         WebkitTapHighlightColor: "transparent",
       }}
