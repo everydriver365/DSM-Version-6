@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
+    "prebuild": "rm -f src/components/dsm/EndLessonWizard.js src/components/dsm/EndLessonWizard.js.map",
     "build": "vite build",
+    "prebuild:dev": "rm -f src/components/dsm/EndLessonWizard.js src/components/dsm/EndLessonWizard.js.map",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
