@@ -2424,6 +2424,7 @@ function AccountRow({
   onClick,
   isFirst,
   warning,
+  disabled,
 }: {
   icon: React.ReactNode;
   iconBg: string;
@@ -2433,17 +2434,18 @@ function AccountRow({
   onClick: () => void;
   isFirst?: boolean;
   warning?: string;
+  disabled?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="w-full flex items-center text-left"
+      disabled={disabled}
+      className={`w-full flex items-center text-left bg-white ${ROW_INTERACTION}`}
       style={{
         gap: 14,
         padding: "15px 16px",
         borderTop: isFirst ? undefined : "1px solid #EFEFF2",
-        background: "#FFFFFF",
       }}
     >
       <div
