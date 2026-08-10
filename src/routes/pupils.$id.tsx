@@ -3353,11 +3353,25 @@ function PupilDetailPage() {
             window.location.href = `sms:${phone}?&body=${encodeURIComponent(msg)}`;
           };
           const markPaid = async () => {
-            const { error } = await supabase.from("lessons").update({ payment_status: "paid" }).eq("id", focus!.id);
-            if (error) { toast.error("Could not mark as paid"); return; }
-            toast.success("Marked as paid");
-            setLessons((prev) => prev ? prev.map((x) => x.id === focus!.id ? { ...x, payment_status: "paid" } : x) : prev);
-            setPastLessons((prev) => prev ? prev.map((x) => x.id === focus!.id ? { ...x, payment_status: "paid" } : x) : prev);
+            if (!focus) return;
+            const target = focus;
+            try {
+              await recordPayment({
+                pupilId: id,
+                targetLessonId: target.id,
+                amount: Number(target.amount_due ?? 0),
+                method: "cash",
+                notes: "Marked paid from pupil profile",
+                currentAccountBalance: 0,
+              });
+              toast.success("Marked as paid");
+              setLessons((prev) => prev ? prev.map((x) => x.id === target.id ? { ...x, payment_status: "paid" } : x) : prev);
+              setPastLessons((prev) => prev ? prev.map((x) => x.id === target.id ? { ...x, payment_status: "paid" } : x) : prev);
+              window.dispatchEvent(new Event("dsm-payment-recorded"));
+            } catch (e) {
+              console.error("[pupil] markPaid failed", e);
+              toast.error("Could not mark as paid");
+            }
           };
 
           const segBase: React.CSSProperties = {

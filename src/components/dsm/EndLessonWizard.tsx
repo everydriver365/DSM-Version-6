@@ -34,6 +34,7 @@ function slugify(s: string) {
 import { toast } from "sonner";
 import { supabase } from "../../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
+import { recordPayment } from "@/lib/payments";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
@@ -347,83 +348,56 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
 
   if (!open) return null;
 
-  const recordPayment = async () => {
+  const handleRecordPayment = async () => {
     setPaymentSaving(true);
-    const amt = Number(amount) || 0;
-    const newBalance = balance + (amt - lessonCost);
-
-    const paymentStatus =
-      paymentMethod === "waived"
-        ? "waived"
-        : paymentMethod === "already_paid"
-          ? "paid"
-          : "paid";
-
-    // NOTE: never write amount_due on payment — it's set at lesson creation
-    // and is the source of truth for lesson value. paid_amount always mirrors
-    // the row's existing amount_due for a full payment.
-    const { data: lRow } = await supabase
-      .from("lessons")
-      .select("amount_due")
-      .eq("id", lessonId)
-      .maybeSingle();
-    const dueForPay = Number((lRow as { amount_due?: number | null } | null)?.amount_due ?? lessonCost);
-    const { error: lErr } = await supabase
-      .from("lessons")
-      .update({
-        payment_status: paymentStatus,
-        paid_amount: dueForPay,
-        paid_at: new Date().toISOString(),
-      })
-      .eq("id", lessonId);
-
-    if (lErr) {
-      console.error("[eol-wizard] payment lesson update", lErr);
-      toast.error("Couldn't record payment");
-      setPaymentSaving(false);
-      return;
-    }
-
-
-    if (paymentMethod !== "waived") {
-      const { error: pErr } = await supabase
-        .from("pupils")
-        .update({ balance_owed: -newBalance })
-        .eq("id", pupilId);
-      if (pErr) console.warn("[eol-wizard] balance update failed", pErr);
-      else setBalance(newBalance);
-    }
-
     try {
-      await supabase.from("lesson_history").insert({
-        lesson_id: lessonId,
-        instructor_id: instructorId,
-        pupil_id: pupilId,
-        lesson_date: lessonDate,
-        lesson_time: startTime,
-        duration_minutes: durationMinutes,
-        payment_status: paymentStatus,
-        payment_method: paymentMethod,
-        lesson_cost: amt,
-        amount: amt,
-      });
-    } catch (e) {
-      console.warn("[eol-wizard] payment history insert failed", e);
-    }
+      const amt = Number(amount) || 0;
+      if (amt > 0) {
+        const res = await recordPayment({
+          pupilId,
+          targetLessonId: lessonId,
+          amount: amt,
+          method:
+            paymentMethod === "waived"
+              ? "waived"
+              : paymentMethod === "already_paid"
+                ? "cash"
+                : paymentMethod,
+          notes: null,
+          currentAccountBalance: balance,
+        });
+        setBalance(res.newAccountBalance);
+      } else {
+        // Zero payment — just mark the lesson.
+        const { error } = await supabase
+          .from("lessons")
+          .update({
+            payment_status: paymentMethod === "waived" ? "waived" : "paid",
+            paid_at: new Date().toISOString(),
+            paid_amount: 0,
+          })
+          .eq("id", lessonId);
+        if (error) throw error;
+      }
 
-    setPaymentRecorded(true);
-    setFinalPaymentLabel(
-      paymentMethod === "cash"
-        ? "Paid · Cash"
-        : paymentMethod === "bank"
-          ? "Paid · Bank transfer"
-          : paymentMethod === "waived"
-            ? "Waived"
-            : "Already paid",
-    );
-    setPaymentSaving(false);
-    toast.success("Payment recorded");
-    setStep(3);
+      setPaymentRecorded(true);
+      setFinalPaymentLabel(
+        paymentMethod === "cash"
+          ? "Paid · Cash"
+          : paymentMethod === "bank"
+            ? "Paid · Bank transfer"
+            : paymentMethod === "waived"
+              ? "Waived"
+              : "Already paid",
+      );
+      toast.success("Payment recorded");
+      setStep(3);
+    } catch (e) {
+      console.error("[eol-wizard] payment failed", e);
+      toast.error((e as Error)?.message ?? "Couldn't record payment");
+    } finally {
+      setPaymentSaving(false);
+    }
   };
 
   const skipPayment = () => {
