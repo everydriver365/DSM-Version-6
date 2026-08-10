@@ -3654,7 +3654,7 @@ function PupilDetailPage() {
                   >
                     {markPaidLoading ? (
                       <>
-                        <IconLoader2 size={14} stroke={2.5} style={{ animation: "spin 1s linear infinite" }} />
+                        <IconLoader2 size={14} stroke={2.5} className="animate-spin" />
                         <span>Saving…</span>
                       </>
                     ) : (
