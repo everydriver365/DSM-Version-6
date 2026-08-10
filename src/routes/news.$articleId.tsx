@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ChevronLeft, ExternalLink, User, Clock, Calendar } from "lucide-react";
 
-import { sanitizeNewsTitle } from "../lib/newsText";
+import { sanitizeNewsContent, sanitizeNewsTitle } from "../lib/newsText";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
@@ -25,7 +25,7 @@ function formatDate(iso: string | null | undefined) {
 
 function cleanContent(raw: string): string {
   if (!raw) return "";
-  return sanitizeNewsTitle(raw)
+  return sanitizeNewsContent(raw)
     .split("\n")
     .filter((line) => {
       const trimmed = line.trim();

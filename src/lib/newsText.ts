@@ -31,7 +31,12 @@ export function sanitizeNewsContent(raw: string | null | undefined): string {
   if (!raw) return "";
 
   return decodeHtmlEntities(raw)
-    .replace(/<[^>]*>/g, " ") // strip HTML tags
-    .replace(/\s+/g, " ") // collapse whitespace
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<[^>]*>/g, " ") // strip remaining HTML tags
+    .replace(/\r\n?/g, "\n")
+    .replace(/[^\S\n]+/g, " ") // collapse spaces/tabs but keep newlines
+    .replace(/ *\n */g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
