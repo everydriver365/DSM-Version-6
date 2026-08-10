@@ -145,8 +145,16 @@ function PupilsIndexPage() {
   const [nextLessonMap, setNextLessonMap] = useState<Record<string, string>>({});
   const [testDateMap, setTestDateMap] = useState<Record<string, string>>({});
   const [sortBy, setSortBy] = useState<"name" | "balance" | "next_lesson">("name");
-
   const navigate = useNavigate();
+
+  // Refresh balances/owing badges whenever a payment is recorded anywhere.
+  useEffect(() => {
+    const onPaymentRecorded = () => setReloadKey((k) => k + 1);
+    window.addEventListener("dsm-payment-recorded", onPaymentRecorded);
+    return () => window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
+  }, []);
+
+
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
