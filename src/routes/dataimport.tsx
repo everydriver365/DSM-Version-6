@@ -18,6 +18,10 @@ import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import ImportResults, {
+  type FailedResult,
+  type ImportedResult,
+} from "@/components/dsm/ImportResults";
 
 export const Route = createFileRoute("/dataimport")({
   head: () => ({
