@@ -6,8 +6,6 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { recordPayment, recordPaymentWithPackage } from "@/lib/payments";
 
-const RYFT_PUBLIC_KEY =
-  "pk_sandbox_QpmgBnWSyZXGthN4EtZy6XIXYu+oRRkEUeceUFKLrXS5zmRA7XWBrkAdD8E6FgTn";
 
 export const Route = createFileRoute("/take-payment")({
   head: () => ({ meta: [{ title: "Take payment" }] }),
