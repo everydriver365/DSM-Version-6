@@ -3363,8 +3363,21 @@ function PupilDetailPage() {
           const markPaid = async () => {
             if (!focus || markPaidLoading) return;
             const target = focus;
-            const previousStatus = target.payment_status;
             const targetId = target.id;
+
+            // Snapshot the entire lesson state before we touch it so we can
+            // roll back reliably if either the payment call or the subsequent
+            // reconciliation refetch fails.
+            const snapshot = {
+              lessons: [...(lessons ?? [])],
+              pastLessons: [...(pastLessons ?? [])],
+              previousStatus: target.payment_status,
+            };
+
+            const rollback = () => {
+              setLessons(snapshot.lessons);
+              setPastLessons(snapshot.pastLessons);
+            };
 
             setMarkPaidLoading(true);
 
@@ -3386,7 +3399,6 @@ function PupilDetailPage() {
                 currentAccountBalance: 0,
               });
               toast.success("Marked as paid");
-              window.dispatchEvent(new Event("dsm-payment-recorded"));
 
               // Reconcile with fresh data from the server
               const today = ymd(new Date());
@@ -3416,30 +3428,17 @@ function PupilDetailPage() {
                   .limit(50),
               ]);
 
-              if (activeRes.error) console.error("[pupil] reconcile lessons error", activeRes.error);
-              if (pastRes.error) console.error("[pupil] reconcile past lessons error", pastRes.error);
+              if (activeRes.error || pastRes.error) {
+                console.error("[pupil] reconcile lessons error", activeRes.error, pastRes.error);
+                throw new Error("Could not refresh lesson data");
+              }
 
               setLessons((activeRes.data as Lesson[]) ?? []);
               setPastLessons((pastRes.data as Lesson[]) ?? []);
             } catch (e) {
               console.error("[pupil] markPaid failed", e);
               toast.error("Could not mark as paid");
-
-              // Roll back the optimistic update on failure
-              setLessons((prev) =>
-                prev
-                  ? prev.map((x) =>
-                      x.id === targetId ? { ...x, payment_status: previousStatus } : x,
-                    )
-                  : prev,
-              );
-              setPastLessons((prev) =>
-                prev
-                  ? prev.map((x) =>
-                      x.id === targetId ? { ...x, payment_status: previousStatus } : x,
-                    )
-                  : prev,
-              );
+              rollback();
             } finally {
               setMarkPaidLoading(false);
             }
