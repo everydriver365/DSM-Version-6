@@ -424,7 +424,7 @@ function AdminChatRooms() {
         ) : filteredRooms.length === 0 ? (
           <div style={{ color: "#6B7280", fontSize: 14 }}>No rooms match your filters.</div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {filteredRooms.map((room) => (
               <div
                 key={room.id}
@@ -433,7 +433,6 @@ function AdminChatRooms() {
                   border: "none",
                   borderRadius: 18,
                   padding: 16,
-                  marginBottom: 12,
                   boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
                 }}
               >
