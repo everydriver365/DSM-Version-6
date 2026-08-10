@@ -34,7 +34,7 @@ function slugify(s: string) {
 import { toast } from "sonner";
 import { supabase } from "../../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
-import { recordPayment, type RecordPaymentResult } from "@/lib/payments";
+import { recordPayment, type RecordPaymentResult, type RecordRefundResult } from "@/lib/payments";
 import { PaymentReceipt } from "@/components/dsm/PaymentReceipt";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
@@ -180,6 +180,10 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   const [paymentRecorded, setPaymentRecorded] = useState(false);
   const [paymentSaving, setPaymentSaving] = useState(false);
   const [lastPaymentResult, setLastPaymentResult] = useState<RecordPaymentResult | null>(null);
+  const [lastRefundResult, setLastRefundResult] = useState<
+    (RecordRefundResult & { pupilId?: string; amount?: number; method?: string | null; createdAt?: string }) | null
+  >(null);
+
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [recordedPaymentMethod, setRecordedPaymentMethod] = useState<string>("cash");
   const [recordedPaymentAmount, setRecordedPaymentAmount] = useState<number>(0);
@@ -198,6 +202,22 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
 
   const [pricingRules, setPricingRules] = useState<PricingRule[]>([]);
   const [pupilPostcode, setPupilPostcode] = useState<string | undefined>(undefined);
+
+  // Refund audit: capture refunds recorded for this pupil while the wizard is open.
+  useEffect(() => {
+    if (!open) return;
+    const onRefund = (e: Event) => {
+      const detail = (e as CustomEvent).detail as
+        | (RecordRefundResult & { pupilId?: string; amount?: number; method?: string | null; createdAt?: string })
+        | undefined;
+      if (!detail) return;
+      if (detail.pupilId && detail.pupilId !== pupilId) return;
+      setLastRefundResult(detail);
+    };
+    window.addEventListener("dsm-refund-recorded", onRefund as EventListener);
+    return () => window.removeEventListener("dsm-refund-recorded", onRefund as EventListener);
+  }, [open, pupilId]);
+
 
   const baseCost = +(hourlyRate * (durationMinutes / 60)).toFixed(2);
   const pricing = applyPricingRules(baseCost, pricingRules, {
@@ -1175,7 +1195,36 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               Any skills to update?
             </div>
 
+            {lastRefundResult && (
+              <div className="mt-3 p-3" style={{ borderRadius: 10, backgroundColor: "#FEF2F2", border: "0.5px solid #FBD5D5" }}>
+                <div className="text-[13px] mb-2" style={{ color: "#CC2229", fontWeight: 700 }}>
+                  Refund activity
+                </div>
+                <div className="flex justify-between text-[12px] py-1">
+                  <span style={{ color: "#6B7280" }}>Refunded</span>
+                  <span style={{ color: "#CC2229", fontWeight: 600 }}>
+                    £{(lastRefundResult.amount ?? lastRefundResult.amountReversed).toFixed(2)}
+                    {lastRefundResult.method ? ` · ${lastRefundResult.method}` : ""}
+                  </span>
+                </div>
+                <div className="flex justify-between text-[12px] py-1">
+                  <span style={{ color: "#6B7280" }}>Reversed off lessons</span>
+                  <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.amountReversed.toFixed(2)}</span>
+                </div>
+                {lastRefundResult.fromAccountCredit > 0 && (
+                  <div className="flex justify-between text-[12px] py-1">
+                    <span style={{ color: "#6B7280" }}>From account credit</span>
+                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.fromAccountCredit.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-[12px] py-1">
+                  <span style={{ color: "#6B7280" }}>Account balance</span>
+                  <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.newAccountBalance.toFixed(2)}</span>
+                </div>
+              </div>
+            )}
             {paymentRecorded && lastPaymentResult && (
+
               <div className="mt-3 p-3" style={{ borderRadius: 10, backgroundColor: "#F8F9FB", border: "0.5px solid #EEF2F7" }}>
                 <div className="text-[13px] mb-2" style={{ color: "#0B1F3A", fontWeight: 700 }}>
                   Payment activity
@@ -1408,7 +1457,36 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 <span style={{ color: "#6B7280" }}>Payment</span>
                 <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{finalPaymentLabel}</span>
               </div>
+              {lastRefundResult && (
+                <div className="mt-2 pt-2" style={{ borderTop: "1px solid #EEF2F7" }}>
+                  <div className="text-[12px] mb-1" style={{ color: "#CC2229", fontWeight: 700 }}>
+                    Refund activity
+                  </div>
+                  <div className="flex justify-between text-[12px] py-0.5">
+                    <span style={{ color: "#6B7280" }}>Refunded</span>
+                    <span style={{ color: "#CC2229", fontWeight: 600 }}>
+                      £{(lastRefundResult.amount ?? lastRefundResult.amountReversed).toFixed(2)}
+                      {lastRefundResult.method ? ` · ${lastRefundResult.method}` : ""}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-[12px] py-0.5">
+                    <span style={{ color: "#6B7280" }}>Reversed off lessons</span>
+                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.amountReversed.toFixed(2)}</span>
+                  </div>
+                  {lastRefundResult.fromAccountCredit > 0 && (
+                    <div className="flex justify-between text-[12px] py-0.5">
+                      <span style={{ color: "#6B7280" }}>From account credit</span>
+                      <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.fromAccountCredit.toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-[12px] py-0.5">
+                    <span style={{ color: "#6B7280" }}>Account balance</span>
+                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.newAccountBalance.toFixed(2)}</span>
+                  </div>
+                </div>
+              )}
               {paymentRecorded && lastPaymentResult && (
+
                 <div className="mt-2 pt-2" style={{ borderTop: "1px solid #EEF2F7" }}>
                   <div className="text-[12px] mb-1" style={{ color: "#0B1F3A", fontWeight: 700 }}>
                     Payment activity
