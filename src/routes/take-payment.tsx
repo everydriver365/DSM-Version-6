@@ -194,7 +194,7 @@ function TakePaymentPage() {
     });
   };
 
-  // --- QR flow ---
+  // --- QR flow (Square payment link) ---
   const generateQr = async () => {
     if (amountNum <= 0) {
       toast.error("Enter an amount first");
@@ -202,31 +202,27 @@ function TakePaymentPage() {
     }
     setQrGenerating(true);
     try {
-      const amountPence = Math.round(totalNum * 100);
-      const { data, error } = await supabase.functions.invoke("create-ryft-payment", {
+      const { data: u } = await supabase.auth.getUser();
+      const instructorId = u?.user?.id ?? null;
+      const { data, error } = await supabase.functions.invoke("square-create-payment-link", {
         body: {
-          amount: amountPence,
-          pupil_id: pupilId || undefined,
-          pupil_name: pupilName || undefined,
+          instructor_id: instructorId,
+          pupil_id: pupilId || null,
+          lesson_id: lessonId,
+          amount_pence: Math.round(totalNum * 100),
           description: description || "Payment",
-          payment_type: "qr",
-          fee_absorbed_by_instructor: !passBookingFee,
         },
       });
       if (error) throw error;
-      const clientSecret =
-        (data as { clientSecret?: string; client_secret?: string })?.clientSecret ??
-        (data as { client_secret?: string })?.client_secret ??
-        null;
-      const pid =
-        (data as { paymentId?: string; id?: string })?.paymentId ??
-        (data as { id?: string })?.id ??
-        null;
-      if (!clientSecret) throw new Error("No client secret returned");
-      const url = `https://drivingschoolmanager.co.uk/pay?cs=${clientSecret}&amount=${amountPence}&desc=${encodeURIComponent(description || "Payment")}`;
-      setQrUrl(url);
-      setQrPaymentId(pid);
-      toast.success("Payment link ready");
+      const res = data as { no_square?: boolean; url?: string; id?: string } | null;
+      if (res?.no_square) {
+        toast.error("Square not connected. Connect Square in your profile.");
+        return;
+      }
+      if (!res?.url) throw new Error("No payment URL returned");
+      setQrUrl(res.url);
+      setQrPaymentId(res.id ?? null);
+      toast.success("Square payment link ready");
     } catch (e) {
       console.error("[take-payment] generateQr", e);
       toast.error("Couldn't generate payment link");
@@ -255,35 +251,7 @@ function TakePaymentPage() {
     toast.success("Link copied");
   };
 
-  // Poll QR payment status
-  useEffect(() => {
-    if (!qrPaymentId) return;
-    const t = setInterval(async () => {
-      try {
-        const { data } = await supabase.functions.invoke("get-ryft-payment-status", {
-          body: { paymentId: qrPaymentId },
-        });
-        const status = (data as { status?: string })?.status;
-        if (status === "succeeded" || status === "completed" || status === "paid") {
-          clearInterval(t);
-          const { data: u } = await supabase.auth.getUser();
-          const instructorId = u?.user?.id ?? null;
-          await recordPaymentSideEffects({
-            instructorId,
-            pupilIdForPayment: pupilId || null,
-            amountPaid: totalNum,
-            method: "card",
-          });
-          toast.success("Payment recorded — balance updated");
-          setRecorded(`£${totalNum.toFixed(2)} received via card (QR)`);
-          setQrPaymentId(null);
-        }
-      } catch (e) {
-        console.warn("[take-payment] qr poll", e);
-      }
-    }, 5000);
-    return () => clearInterval(t);
-  }, [qrPaymentId, totalNum]);
+
 
   // --- Card (Square hosted checkout) ---
   const startCard = async () => {
