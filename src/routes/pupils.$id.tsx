@@ -3355,22 +3355,81 @@ function PupilDetailPage() {
           const markPaid = async () => {
             if (!focus) return;
             const target = focus;
+            const previousStatus = target.payment_status;
+            const targetId = target.id;
+
+            // Optimistically mark the lesson as paid immediately
+            setLessons((prev) =>
+              prev ? prev.map((x) => (x.id === targetId ? { ...x, payment_status: "paid" } : x)) : prev,
+            );
+            setPastLessons((prev) =>
+              prev ? prev.map((x) => (x.id === targetId ? { ...x, payment_status: "paid" } : x)) : prev,
+            );
+
             try {
               await recordPayment({
                 pupilId: id,
-                targetLessonId: target.id,
+                targetLessonId: targetId,
                 amount: Number(target.amount_due ?? 0),
                 method: "cash",
                 notes: "Marked paid from pupil profile",
                 currentAccountBalance: 0,
               });
               toast.success("Marked as paid");
-              setLessons((prev) => prev ? prev.map((x) => x.id === target.id ? { ...x, payment_status: "paid" } : x) : prev);
-              setPastLessons((prev) => prev ? prev.map((x) => x.id === target.id ? { ...x, payment_status: "paid" } : x) : prev);
               window.dispatchEvent(new Event("dsm-payment-recorded"));
+
+              // Reconcile with fresh data from the server
+              const today = ymd(new Date());
+              const [activeRes, pastRes] = await Promise.all([
+                supabase
+                  .from("lessons")
+                  .select(
+                    "id, lesson_date, lesson_time, duration_minutes, status, amount_due, paid_amount, payment_status, notes, eol_completed, pickup_location",
+                  )
+                  .eq("pupil_id", id)
+                  .is("deleted_at", null)
+                  .neq("status", "cancelled")
+                  .neq("status", "completed")
+                  .gte("lesson_date", today)
+                  .order("lesson_date", { ascending: true })
+                  .order("lesson_time", { ascending: true }),
+                supabase
+                  .from("lessons")
+                  .select(
+                    "id, lesson_date, lesson_time, duration_minutes, status, amount_due, paid_amount, payment_status, notes, eol_completed, cancellation_reason, pickup_location",
+                  )
+                  .eq("pupil_id", id)
+                  .is("deleted_at", null)
+                  .or(`status.eq.completed,status.eq.cancelled,lesson_date.lt.${today}`)
+                  .order("lesson_date", { ascending: false })
+                  .order("lesson_time", { ascending: false })
+                  .limit(50),
+              ]);
+
+              if (activeRes.error) console.error("[pupil] reconcile lessons error", activeRes.error);
+              if (pastRes.error) console.error("[pupil] reconcile past lessons error", pastRes.error);
+
+              setLessons((activeRes.data as Lesson[]) ?? []);
+              setPastLessons((pastRes.data as Lesson[]) ?? []);
             } catch (e) {
               console.error("[pupil] markPaid failed", e);
               toast.error("Could not mark as paid");
+
+              // Roll back the optimistic update on failure
+              setLessons((prev) =>
+                prev
+                  ? prev.map((x) =>
+                      x.id === targetId ? { ...x, payment_status: previousStatus } : x,
+                    )
+                  : prev,
+              );
+              setPastLessons((prev) =>
+                prev
+                  ? prev.map((x) =>
+                      x.id === targetId ? { ...x, payment_status: previousStatus } : x,
+                    )
+                  : prev,
+              );
             }
           };
 
