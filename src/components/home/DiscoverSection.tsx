@@ -691,7 +691,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                           overflow: "hidden",
                         }}
                       >
-                        {listing?.title ?? "Services & deals"}
+                        {listing.title}
                       </div>
                       <div
                         style={{
@@ -701,7 +701,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                           marginTop: 2,
                         }}
                       >
-                        DSM Marketplace
+                        {listing.footer}
                       </div>
                     </div>
 
@@ -722,7 +722,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                             letterSpacing: "0.3px",
                           }}
                         >
-                          PRICE
+                          {listing.priceCaption}
                         </div>
                         <div
                           style={{
@@ -736,8 +736,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {listing?.price_display ?? "—"}
+                          {listing.priceLabel}
                         </div>
+
                       </div>
                       <span
                         style={{
