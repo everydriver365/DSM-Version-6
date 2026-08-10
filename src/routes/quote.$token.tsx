@@ -119,7 +119,7 @@ function PublicQuotePage() {
       if (q.instructor_id) {
         const { data: ins } = await supabase
           .from("instructors")
-          .select("phone, email, full_name")
+          .select("*")
           .eq("id", q.instructor_id)
           .maybeSingle();
         if (ins) setInstructor(ins as Instructor);
