@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { IconCircleCheck, IconGift, IconLoader2, IconPrinter } from "@tabler/icons-react";
 import { Banknote, ArrowLeftRight, PartyPopper, QrCode } from "lucide-react";
@@ -71,6 +71,91 @@ export interface EndLessonWizardProps {
 }
 
 type PaymentMethod = "cash" | "bank" | "already_paid" | "waived";
+
+type RefundDetail = RecordRefundResult & {
+  pupilId?: string;
+  amount?: number;
+  method?: string | null;
+  createdAt?: string;
+};
+
+function RefundAuditRows({ refund, compact }: { refund: RefundDetail; compact?: boolean }) {
+  const rowClass = compact ? "flex justify-between text-[12px] py-0.5" : "flex justify-between text-[12px] py-1";
+  return (
+    <>
+      <div className={rowClass}>
+        <span style={{ color: "#6B7280" }}>Status</span>
+        <span
+          style={{
+            color:
+              refund.status === "failed"
+                ? "#CC2229"
+                : refund.status === "pending"
+                  ? "#F59E0B"
+                  : "#1A9B5C",
+            fontWeight: 700,
+            textTransform: "capitalize",
+          }}
+        >
+          {refund.status ?? "succeeded"}
+        </span>
+      </div>
+      <div className={rowClass}>
+        <span style={{ color: "#6B7280" }}>Refunded</span>
+        <span style={{ color: "#CC2229", fontWeight: 600 }}>
+          £{(refund.amount ?? refund.amountReversed).toFixed(2)}
+          {refund.method ? ` · ${refund.method}` : ""}
+        </span>
+      </div>
+      <div className={rowClass}>
+        <span style={{ color: "#6B7280" }}>Reversed off lessons</span>
+        <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{refund.amountReversed.toFixed(2)}</span>
+      </div>
+      {refund.fromAccountCredit > 0 && (
+        <div className={rowClass}>
+          <span style={{ color: "#6B7280" }}>From account credit</span>
+          <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{refund.fromAccountCredit.toFixed(2)}</span>
+        </div>
+      )}
+      <div className={rowClass}>
+        <span style={{ color: "#6B7280" }}>Account balance</span>
+        <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{refund.newAccountBalance.toFixed(2)}</span>
+      </div>
+      {refund.createdAt && (
+        <div className={rowClass}>
+          <span style={{ color: "#6B7280" }}>Recorded</span>
+          <span style={{ color: "#0B1F3A", fontWeight: 600 }}>
+            {new Date(refund.createdAt).toLocaleString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+        </div>
+      )}
+      {refund.historyId && (
+        <div className={`${rowClass} gap-3`}>
+          <span style={{ color: "#6B7280" }}>Transaction ID</span>
+          <span
+            style={{
+              color: "#0B1F3A",
+              fontWeight: 600,
+              fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+              fontSize: 11,
+              wordBreak: "break-all",
+              textAlign: "right",
+            }}
+          >
+            {refund.historyId}
+          </span>
+        </div>
+      )}
+    </>
+  );
+}
+
 
 const COMPETENCIES = [
   "Cockpit checks",
@@ -180,9 +265,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   const [paymentRecorded, setPaymentRecorded] = useState(false);
   const [paymentSaving, setPaymentSaving] = useState(false);
   const [lastPaymentResult, setLastPaymentResult] = useState<RecordPaymentResult | null>(null);
-  const [lastRefundResult, setLastRefundResult] = useState<
-    (RecordRefundResult & { pupilId?: string; amount?: number; method?: string | null; createdAt?: string }) | null
-  >(null);
+  const [refundResults, setRefundResults] = useState<RefundDetail[]>([]);
 
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [recordedPaymentMethod, setRecordedPaymentMethod] = useState<string>("cash");
@@ -207,17 +290,22 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   useEffect(() => {
     if (!open) return;
     const onRefund = (e: Event) => {
-      const detail = (e as CustomEvent).detail as
-        | (RecordRefundResult & { pupilId?: string; amount?: number; method?: string | null; createdAt?: string })
-        | undefined;
+      const detail = (e as CustomEvent).detail as RefundDetail | undefined;
       if (!detail) return;
       if (detail.pupilId && detail.pupilId !== pupilId) return;
-      setLastRefundResult(detail);
+      setRefundResults((prev) => [...prev, detail]);
     };
     window.addEventListener("dsm-refund-recorded", onRefund as EventListener);
     return () => window.removeEventListener("dsm-refund-recorded", onRefund as EventListener);
   }, [open, pupilId]);
 
+  const sortedRefunds = useMemo(
+    () =>
+      [...refundResults].sort(
+        (a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime(),
+      ),
+    [refundResults],
+  );
 
   const baseCost = +(hourlyRate * (durationMinutes / 60)).toFixed(2);
   const pricing = applyPricingRules(baseCost, pricingRules, {
@@ -262,6 +350,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     setPaymentRecorded(false);
     setPaymentSaving(false);
     setLastPaymentResult(null);
+    setRefundResults([]);
     setReceiptOpen(false);
     setRecordedPaymentMethod("cash");
     setRecordedPaymentAmount(0);
@@ -1195,49 +1284,19 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               Any skills to update?
             </div>
 
-            {lastRefundResult && (
+            {sortedRefunds.length > 0 && (
               <div className="mt-3 p-3" style={{ borderRadius: 10, backgroundColor: "#FEF2F2", border: "0.5px solid #FBD5D5" }}>
                 <div className="text-[13px] mb-2" style={{ color: "#CC2229", fontWeight: 700 }}>
                   Refund activity
                 </div>
-                <div className="flex justify-between text-[12px] py-1">
-                  <span style={{ color: "#6B7280" }}>Status</span>
-                  <span
-                    style={{
-                      color:
-                        lastRefundResult.status === "failed"
-                          ? "#CC2229"
-                          : lastRefundResult.status === "pending"
-                            ? "#F59E0B"
-                            : "#1A9B5C",
-                      fontWeight: 700,
-                      textTransform: "capitalize",
-                    }}
+                {sortedRefunds.map((refund, idx) => (
+                  <div
+                    key={refund.historyId ?? `${refund.createdAt ?? idx}-${idx}`}
+                    className={idx > 0 ? "mt-2 pt-2 border-t border-[#FBD5D5]" : undefined}
                   >
-                    {lastRefundResult.status ?? "succeeded"}
-                  </span>
-                </div>
-                <div className="flex justify-between text-[12px] py-1">
-                  <span style={{ color: "#6B7280" }}>Refunded</span>
-                  <span style={{ color: "#CC2229", fontWeight: 600 }}>
-                    £{(lastRefundResult.amount ?? lastRefundResult.amountReversed).toFixed(2)}
-                    {lastRefundResult.method ? ` · ${lastRefundResult.method}` : ""}
-                  </span>
-                </div>
-                <div className="flex justify-between text-[12px] py-1">
-                  <span style={{ color: "#6B7280" }}>Reversed off lessons</span>
-                  <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.amountReversed.toFixed(2)}</span>
-                </div>
-                {lastRefundResult.fromAccountCredit > 0 && (
-                  <div className="flex justify-between text-[12px] py-1">
-                    <span style={{ color: "#6B7280" }}>From account credit</span>
-                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.fromAccountCredit.toFixed(2)}</span>
+                    <RefundAuditRows refund={refund} />
                   </div>
-                )}
-                <div className="flex justify-between text-[12px] py-1">
-                  <span style={{ color: "#6B7280" }}>Account balance</span>
-                  <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.newAccountBalance.toFixed(2)}</span>
-                </div>
+                ))}
               </div>
             )}
 
@@ -1475,80 +1534,20 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 <span style={{ color: "#6B7280" }}>Payment</span>
                 <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{finalPaymentLabel}</span>
               </div>
-              {lastRefundResult && (
+              {sortedRefunds.length > 0 && (
                 <div className="mt-2 pt-2" style={{ borderTop: "1px solid #EEF2F7" }}>
                   <div className="text-[12px] mb-1" style={{ color: "#CC2229", fontWeight: 700 }}>
                     Refund activity
                   </div>
-                  <div className="flex justify-between text-[12px] py-0.5">
-                    <span style={{ color: "#6B7280" }}>Status</span>
-                    <span
-                      style={{
-                        color:
-                          lastRefundResult.status === "failed"
-                            ? "#CC2229"
-                            : lastRefundResult.status === "pending"
-                              ? "#F59E0B"
-                              : "#1A9B5C",
-                        fontWeight: 700,
-                        textTransform: "capitalize",
-                      }}
+                  {sortedRefunds.map((refund, idx) => (
+                    <div
+                      key={refund.historyId ?? `${refund.createdAt ?? idx}-${idx}`}
+                      className={idx > 0 ? "mt-2 pt-2" : undefined}
+                      style={idx > 0 ? { borderTop: "1px solid #EEF2F7" } : undefined}
                     >
-                      {lastRefundResult.status ?? "succeeded"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-[12px] py-0.5">
-                    <span style={{ color: "#6B7280" }}>Refunded</span>
-                    <span style={{ color: "#CC2229", fontWeight: 600 }}>
-                      £{(lastRefundResult.amount ?? lastRefundResult.amountReversed).toFixed(2)}
-                      {lastRefundResult.method ? ` · ${lastRefundResult.method}` : ""}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-[12px] py-0.5">
-                    <span style={{ color: "#6B7280" }}>Reversed off lessons</span>
-                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.amountReversed.toFixed(2)}</span>
-                  </div>
-                  {lastRefundResult.fromAccountCredit > 0 && (
-                    <div className="flex justify-between text-[12px] py-0.5">
-                      <span style={{ color: "#6B7280" }}>From account credit</span>
-                      <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.fromAccountCredit.toFixed(2)}</span>
+                      <RefundAuditRows refund={refund} compact />
                     </div>
-                  )}
-                  <div className="flex justify-between text-[12px] py-0.5">
-                    <span style={{ color: "#6B7280" }}>Account balance</span>
-                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastRefundResult.newAccountBalance.toFixed(2)}</span>
-                  </div>
-                  {lastRefundResult.createdAt && (
-                    <div className="flex justify-between text-[12px] py-0.5">
-                      <span style={{ color: "#6B7280" }}>Recorded</span>
-                      <span style={{ color: "#0B1F3A", fontWeight: 600 }}>
-                        {new Date(lastRefundResult.createdAt).toLocaleString("en-GB", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                    </div>
-                  )}
-                  {lastRefundResult.historyId && (
-                    <div className="flex justify-between text-[12px] py-0.5 gap-3">
-                      <span style={{ color: "#6B7280" }}>Transaction ID</span>
-                      <span
-                        style={{
-                          color: "#0B1F3A",
-                          fontWeight: 600,
-                          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-                          fontSize: 11,
-                          wordBreak: "break-all",
-                          textAlign: "right",
-                        }}
-                      >
-                        {lastRefundResult.historyId}
-                      </span>
-                    </div>
-                  )}
+                  ))}
                 </div>
               )}
 
