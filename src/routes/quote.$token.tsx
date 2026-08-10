@@ -83,11 +83,12 @@ function PublicQuotePage() {
   const [accepted, setAccepted] = useState(false);
   const [depositPaid, setDepositPaid] = useState(false);
 
-  // Deposit payment state
-  const [payStatus, setPayStatus] = useState<"idle" | "creating" | "ready" | "paying" | "paid" | "error">("idle");
+  // Deposit payment state (Square)
+  const [payStatus, setPayStatus] = useState<"idle" | "creating" | "ready" | "error">("idle");
   const [payError, setPayError] = useState<string>("");
-  const [clientSecret, setClientSecret] = useState<string>("");
-  const ryftInitedRef = useRef(false);
+  const [payUrl, setPayUrl] = useState<string>("");
+  const [noSquare, setNoSquare] = useState(false);
+
 
   useEffect(() => {
     (async () => {
