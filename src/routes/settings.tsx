@@ -2305,6 +2305,7 @@ function MenuRow({
   labelColor,
   hideChevron,
   warning,
+  disabled,
 }: {
   icon: React.ReactNode;
   iconBg: string;
