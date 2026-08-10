@@ -826,7 +826,7 @@ function SettingsPage() {
 
       <div className="px-4">
         <Label>Account</Label>
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)', marginBottom: 20 }}>
+        <SectionCard>
           <AccountRow
             icon={<User color="#1877D6" size={20} />}
             iconBg="#E7F1FC"
