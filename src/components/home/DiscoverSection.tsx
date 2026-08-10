@@ -629,7 +629,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       top: 12,
                       left: 14,
                       zIndex: 2,
-                      background: "#1A9B5C",
+                      background: listing.badgeColor,
                       color: "#fff",
                       fontSize: 10,
                       fontWeight: 900,
@@ -640,8 +640,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       fontFamily: FONT,
                     }}
                   >
-                    FOR SALE
+                    {listing.badge}
                   </span>
+
 
                   {/* Content panel */}
                   <div
