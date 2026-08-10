@@ -76,7 +76,16 @@ function LoginPage() {
     const { data, error: err } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (err) {
-      setError(err.message);
+      const msg = err.message?.toLowerCase() ?? "";
+      if (msg.includes("invalid login credentials")) {
+        setError("Incorrect email or password. Please try again.");
+      } else if (msg.includes("email not confirmed")) {
+        setError("Please confirm your email address before signing in.");
+      } else if (msg.includes("rate limit") || msg.includes("too many")) {
+        setError("Too many attempts. Please wait a moment and try again.");
+      } else {
+        setError(err.message);
+      }
       return;
     }
     const userId = data.session?.user?.id ?? null;
@@ -423,13 +432,18 @@ function LoginPage() {
 
 
           {error && (
-            <p
-              className="text-[13px] text-[#1877D6] text-center"
+            <div
+              className="rounded-[12px] bg-[#FDECEC] border border-[#F5C2C4] px-3 py-2.5"
               role="alert"
-              style={{ fontFamily: "Poppins, sans-serif" }}
+              aria-live="assertive"
             >
-              {error}
-            </p>
+              <p
+                className="text-[13px] font-medium text-[#CC2229] text-center"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                {error}
+              </p>
+            </div>
           )}
         </div>
       </form>
