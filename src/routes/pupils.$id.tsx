@@ -3361,10 +3361,12 @@ function PupilDetailPage() {
             window.location.href = `sms:${phone}?&body=${encodeURIComponent(msg)}`;
           };
           const markPaid = async () => {
-            if (!focus) return;
+            if (!focus || markPaidLoading) return;
             const target = focus;
             const previousStatus = target.payment_status;
             const targetId = target.id;
+
+            setMarkPaidLoading(true);
 
             // Optimistically mark the lesson as paid immediately
             setLessons((prev) =>
@@ -3438,6 +3440,8 @@ function PupilDetailPage() {
                     )
                   : prev,
               );
+            } finally {
+              setMarkPaidLoading(false);
             }
           };
 
