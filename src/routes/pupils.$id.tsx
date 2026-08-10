@@ -416,6 +416,7 @@ function PupilDetailPage() {
     { id: string; lesson_id: string | null; lesson_cost: number | null; payment_method: string | null; created_at: string; notes: string | null }[]
   >([]);
   const [paymentHistoryRefresh, setPaymentHistoryRefresh] = useState(0);
+  const [markPaidLoading, setMarkPaidLoading] = useState(false);
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
