@@ -949,7 +949,7 @@ function SettingsPage() {
           />
 
           {expanded === "payments" && (
-            <div className="px-4 pb-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+            <div className="px-4 pb-4" style={{ borderTop: "1px solid #EFEFF2" }}>
               <div className="flex items-start gap-3 pt-3">
                 <div className="flex-1 min-w-0">
                   <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
@@ -1009,7 +1009,7 @@ function SettingsPage() {
             isLast
           />
           {expanded === "lessons" && (
-            <div className="px-4 pb-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+            <div className="px-4 pb-4" style={{ borderTop: "1px solid #EFEFF2" }}>
               <div className="flex items-start gap-3 pt-3">
                 <div className="flex-1 min-w-0">
                   <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
@@ -1057,7 +1057,7 @@ function SettingsPage() {
               </div>
 
               {sendLessonReminders && (
-                <div className="mt-4 pt-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+                <div className="mt-4 pt-4" style={{ borderTop: "1px solid #EFEFF2" }}>
                   <div className="text-[14px] font-medium text-[#0B1F3A] mb-2" style={POPPINS}>
                     Reminder timing
                   </div>
@@ -1094,7 +1094,7 @@ function SettingsPage() {
             isFirst
           />
           {expanded === "rates" && (
-            <div className="px-4 pb-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+            <div className="px-4 pb-4" style={{ borderTop: "1px solid #EFEFF2" }}>
               {/* Hourly rate */}
               <div className="flex items-start gap-3 pt-4">
                 <div className="flex-1 min-w-0">
@@ -1134,7 +1134,7 @@ function SettingsPage() {
               {/* Default lesson duration */}
               <div
                 className="flex items-center gap-3 pt-4 mt-4"
-                style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+                style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2" }}
               >
                 <div className="flex-1 min-w-0">
                   <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
@@ -1168,7 +1168,7 @@ function SettingsPage() {
               {/* Buffer between lessons */}
               <div
                 className="flex items-center gap-3 pt-4 mt-4"
-                style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+                style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2" }}
               >
                 <div className="flex-1 min-w-0">
                   <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
@@ -1204,7 +1204,7 @@ function SettingsPage() {
               {/* Lesson buffers (before/after) */}
               <div
                 className="pt-4 mt-4"
-                style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+                style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2" }}
               >
                 <div className="flex items-center gap-2 mb-1">
                   <Clock size={14} color="#0B1F3A" />
@@ -1228,7 +1228,7 @@ function SettingsPage() {
                       void saveBuffers(v);
                     }}
                     className="text-[13px]"
-                    style={{ height: 36, borderRadius: 8, border: "1px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0B1F3A", ...POPPINS }}
+                    style={{ height: 36, borderRadius: 10, border: "1px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0B1F3A", ...POPPINS }}
                   >
                     {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
                       <option key={m} value={m}>{m} min</option>
@@ -1240,7 +1240,7 @@ function SettingsPage() {
               {/* Minimum gap shown on schedule */}
               <div
                 className="flex items-center gap-3 pt-4 mt-4"
-                style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+                style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2" }}
               >
                 <div className="flex-1 min-w-0">
                   <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
@@ -1345,7 +1345,7 @@ function SettingsPage() {
             isFirst
           />
           {expanded === "pricing" && (
-            <div className="px-4 pb-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+            <div className="px-4 pb-4" style={{ borderTop: "1px solid #EFEFF2" }}>
               <MenuRow
                 icon={<MapPin size={18} color="#0369A1" />}
                 iconBg="#E0F2FE"
@@ -1354,7 +1354,7 @@ function SettingsPage() {
                 isFirst
               />
 
-              <div className="pt-4" style={{ borderTop: "0.5px solid #EEF2F7" }}>
+              <div className="pt-4" style={{ borderTop: "1px solid #EFEFF2" }}>
                 <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 14, ...POPPINS }}>
                   Automatically adjust lesson prices based on time, day, location, or booking notice.
                 </p>
@@ -1439,7 +1439,7 @@ function SettingsPage() {
                   ))}
                 </div>
 
-                <div style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
+                <div style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", marginBottom: 10, ...POPPINS }}>
                     Add new rule
                   </div>
@@ -1726,7 +1726,7 @@ function SettingsPage() {
           {/* Row 2: Featured status */}
           <div
             className="px-4 py-3 flex items-center gap-3"
-            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+            style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2" }}
           >
             <div
               className="flex items-center justify-center"
@@ -1803,7 +1803,7 @@ function SettingsPage() {
               window.open(`https://everydriver.co.uk/i/${appSlug}`, "_blank", "noopener,noreferrer");
             }}
             className="w-full flex items-center gap-3 px-4 py-3 text-left"
-            style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+            style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2" }}
           >
             <div
               className="flex items-center justify-center"
@@ -1834,7 +1834,7 @@ function SettingsPage() {
             isLast
           />
           {expanded === "noshow" && (
-            <div className="px-4 pb-4 flex flex-col" style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
+            <div className="px-4 pb-4 flex flex-col" style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
               {/* No-show charge */}
               <div className="text-[14px] text-[#0B1F3A]" style={POPPINS}>No-show charge</div>
               <div className="mt-2">
@@ -1927,7 +1927,7 @@ function SettingsPage() {
             isLast
           />
           {expanded === "reminders2" && (
-            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
+            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
               <div className="flex items-start gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Send lesson reminders to pupils</div>
@@ -1988,7 +1988,7 @@ function SettingsPage() {
             isLast
           />
           {expanded === "deposit" && (
-            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
+            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
               <div className="flex items-start gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Require a deposit to book</div>
@@ -2029,7 +2029,7 @@ function SettingsPage() {
             isLast
           />
           {expanded === "paymethods" && (
-            <div className="px-4 pb-4 flex flex-col gap-3" style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
+            <div className="px-4 pb-4 flex flex-col gap-3" style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
               <FieldLabel>Accepted payment methods</FieldLabel>
               <div className="flex flex-col gap-2">
                 {PAYMENT_METHODS.map((m) => {
@@ -2072,14 +2072,14 @@ function SettingsPage() {
             isLast
           />
           {expanded === "tax" && (
-            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
+            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
               <FieldLabel>Tax code</FieldLabel>
               <input
                 type="text"
                 value={taxCode}
                 onChange={(e) => setTaxCode(e.target.value.toUpperCase())}
                 className="w-full text-[14px] text-[#0B1F3A]"
-                style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: "#FFFFFF", ...POPPINS }}
+                style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 10, background: "#FFFFFF", ...POPPINS }}
               />
               <FieldLabel>Vehicle type</FieldLabel>
               <div className="flex gap-2">
@@ -2111,22 +2111,22 @@ function SettingsPage() {
                   <FieldLabel>Vehicle MPG</FieldLabel>
                   <input type="number" value={vehicleMpg} onChange={(e) => setVehicleMpg(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
+                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 10, background: "#FFFFFF", ...POPPINS }} />
                   <FieldLabel>Fuel cost per litre (£)</FieldLabel>
                   <input type="number" step="0.01" value={fuelCostPerLitre} onChange={(e) => setFuelCostPerLitre(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
+                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 10, background: "#FFFFFF", ...POPPINS }} />
                 </>
               ) : (
                 <>
                   <FieldLabel>Battery capacity (kWh)</FieldLabel>
                   <input type="number" value={batteryKwh} onChange={(e) => setBatteryKwh(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
+                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 10, background: "#FFFFFF", ...POPPINS }} />
                   <FieldLabel>Electricity cost per kWh (£)</FieldLabel>
                   <input type="number" step="0.01" value={electricityCostPerKwh} onChange={(e) => setElectricityCostPerKwh(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: "#FFFFFF", ...POPPINS }} />
+                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 10, background: "#FFFFFF", ...POPPINS }} />
                 </>
               )}
               <FieldLabel>Allowable deductions</FieldLabel>
@@ -2168,7 +2168,7 @@ function SettingsPage() {
             isLast
           />
           {expanded === "referral" && (
-            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "0.5px solid #EEF2F7", paddingTop: 14 }}>
+            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
               <div className="flex items-start gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Enable referral programme</div>
@@ -2189,7 +2189,7 @@ function SettingsPage() {
                       readOnly
                       value={referralCode}
                       className="flex-1 text-[14px] text-[#0B1F3A] font-mono"
-                      style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: "#F7FAFC", ...POPPINS }}
+                      style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 10, background: "#F7FAFC", ...POPPINS }}
                     />
                     <button
                       type="button"
@@ -2212,9 +2212,9 @@ function SettingsPage() {
                       value={referralDiscountAmount}
                       onChange={(e) => setReferralDiscountAmount(Number(e.target.value) || 0)}
                       className="flex-1 text-[14px] text-[#0B1F3A]"
-                      style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: "#FFFFFF", ...POPPINS }}
+                      style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 10, background: "#FFFFFF", ...POPPINS }}
                     />
-                    <div className="flex" style={{ border: "1px solid #E2E6ED", borderRadius: 8, overflow: "hidden" }}>
+                    <div className="flex" style={{ border: "1px solid #E2E6ED", borderRadius: 10, overflow: "hidden" }}>
                       {(["fixed", "percent"] as const).map((t) => (
                         <button
                           key={t}
@@ -2548,7 +2548,7 @@ function PlaceholderBlock({ text }: { text: string }) {
   return (
     <div
       className="px-4 py-4 text-[13px] text-[#6B7280]"
-      style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7", ...POPPINS }}
+      style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2", ...POPPINS }}
     >
       {text}
     </div>
