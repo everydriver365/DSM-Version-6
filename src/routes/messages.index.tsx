@@ -1302,8 +1302,8 @@ function MessagesIndexPage() {
                     {index < visibleItems.length - 1 && (
                       <div style={{
                         height: 1,
-                        background: '#E4E8EF',
-                        marginLeft: 74,
+                        background: '#EFEFF2',
+                        marginLeft: 79,
                       }} />
                     )}
                   </div>
@@ -1584,8 +1584,8 @@ function InboxRow({
       style={{
         display: "flex",
         alignItems: "center",
-        gap: 12,
-        padding: "12px 16px",
+        gap: 13,
+        padding: 16,
         background: item.unread > 0 ? '#F0F7FF' : '#fff',
         cursor: "pointer",
         WebkitTapHighlightColor: "transparent",
@@ -1639,30 +1639,6 @@ function InboxRow({
             <IconPinFilled size={11} color="#BA7517" />
           </span>
         )}
-        {unread && (
-          <span
-            style={{
-              position: "absolute",
-              bottom: -2,
-              right: -2,
-              minWidth: 18,
-              height: 18,
-              padding: "0 5px",
-              borderRadius: 9,
-              background: RED,
-              color: "#FFFFFF",
-              border: "2px solid #FFFFFF",
-              fontSize: 11,
-              fontWeight: 600,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              lineHeight: 1,
-            }}
-          >
-            {item.unread > 99 ? "99+" : item.unread}
-          </span>
-        )}
       </div>
 
       {/* Content */}
@@ -1671,7 +1647,7 @@ function InboxRow({
           <div
             style={{
               fontSize: 14,
-              fontWeight: 600,
+              fontWeight: unread ? 800 : 600,
               color: NAVY,
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -1700,24 +1676,35 @@ function InboxRow({
         <div
           style={{
             fontSize: 14,
-            fontWeight: unread ? 500 : 400,
+            fontWeight: unread ? 600 : 400,
             color: unread ? NAVY : GREY,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
-            marginTop: 2,
+            marginTop: 3,
           }}
         >
           {item.preview}
         </div>
       </div>
 
-      {/* Timestamp */}
+      {/* Timestamp / unread dot */}
       <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
         {muted && <IconBellOff size={14} color={GREY} stroke={1.8} />}
-        <span style={{ fontSize: 13, color: GREY }}>
+        <span style={{ fontSize: 13, fontWeight: unread ? 700 : 400, color: unread ? BLUE : GREY }}>
           {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
         </span>
+        {unread && (
+          <span
+            style={{
+              width: 9,
+              height: 9,
+              borderRadius: "50%",
+              background: BLUE,
+              flexShrink: 0,
+            }}
+          />
+        )}
       </div>
     </div>
   );
