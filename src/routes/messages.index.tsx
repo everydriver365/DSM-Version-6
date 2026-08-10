@@ -1285,27 +1285,26 @@ function MessagesIndexPage() {
               </div>
             ) : (
               <div style={{
-                margin: '0 16px',
-                background: '#fff',
-                borderRadius: 16,
-                boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
-                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 8,
               }}>
-                {visibleItems.map((item, index) => (
-                  <div key={item.key}>
+                {visibleItems.map((item) => (
+                  <div
+                    key={item.key}
+                    style={{
+                      background: item.unread > 0 ? '#F0F7FF' : '#fff',
+                      borderRadius: 16,
+                      boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+                      overflow: 'hidden',
+                    }}
+                  >
                     <InboxRow
                       item={item}
                       pinned={pinned.has(item.key)}
                       muted={muted.has(item.key)}
                       onLongPress={() => setMenuItem(item)}
                     />
-                    {index < visibleItems.length - 1 && (
-                      <div style={{
-                        height: 1,
-                        background: '#EFEFF2',
-                        marginLeft: 79,
-                      }} />
-                    )}
                   </div>
                 ))}
               </div>
