@@ -413,7 +413,7 @@ function PupilDetailPage() {
   const [totalPaid, setTotalPaid] = useState<number>(0);
   const [pricingType, setPricingType] = useState<PupilBalance["pricingType"] | null>(null);
   const [paymentHistory, setPaymentHistory] = useState<
-    { id: string; lesson_id: string | null; lesson_cost: number | null; payment_method: string | null; created_at: string; notes: string | null }[]
+    { id: string; lesson_id: string | null; lesson_cost: number | null; payment_method: string | null; payment_status?: string | null; created_at: string; notes: string | null }[]
   >([]);
   const [paymentHistoryRefresh, setPaymentHistoryRefresh] = useState(0);
   const [markPaidLoading, setMarkPaidLoading] = useState(false);
@@ -1105,9 +1105,9 @@ function PupilDetailPage() {
 
     supabase
       .from("lesson_history")
-      .select("id, lesson_id, lesson_cost, payment_method, created_at, notes")
+      .select("id, lesson_id, lesson_cost, payment_method, payment_status, created_at, notes")
       .eq("pupil_id", id)
-      .eq("payment_status", "paid")
+      .in("payment_status", ["paid", "refunded"])
       .is("deleted_at", null)
       .order("created_at", { ascending: false })
       .limit(20)
@@ -1244,7 +1244,11 @@ function PupilDetailPage() {
   useEffect(() => {
     const onPaymentRecorded = () => setPaymentHistoryRefresh((k) => k + 1);
     window.addEventListener("dsm-payment-recorded", onPaymentRecorded);
-    return () => window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
+    window.addEventListener("dsm-refund-recorded", onPaymentRecorded);
+    return () => {
+      window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
+      window.removeEventListener("dsm-refund-recorded", onPaymentRecorded);
+    };
   }, []);
 
   // Recompute live "owed" from the pupil's CURRENT rates.
