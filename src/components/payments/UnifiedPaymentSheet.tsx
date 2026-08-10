@@ -498,7 +498,7 @@ export function UnifiedPaymentSheet({
     setPartial(false);
     setQrUrl(null);
     setPayUrl(null);
-    setQrPaymentId(null);
+
   }, []);
 
   useEffect(() => {
@@ -522,7 +522,7 @@ export function UnifiedPaymentSheet({
     setNote("");
     setPaymentDate(todayIso());
     setQrUrl(null);
-    setQrPaymentId(null);
+
     setQrFullscreen(false);
     setPayUrl(null);
     setRefundRow(null);
@@ -987,7 +987,7 @@ export function UnifiedPaymentSheet({
         setPaymentDate(todayIso());
         setQrUrl(null);
         setPayUrl(null);
-        setQrPaymentId(null);
+
         onSaved?.();
       } catch (e) {
         console.error("[UnifiedPaymentSheet] handleRecordPayment", e);
@@ -2199,7 +2199,7 @@ export function UnifiedPaymentSheet({
                       setMethod(key);
                       setQrUrl(null);
                       setPayUrl(null);
-                      setQrPaymentId(null);
+
                     }}
                   >
                     <Radio selected={active} />
