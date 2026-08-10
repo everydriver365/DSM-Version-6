@@ -1482,6 +1482,68 @@ export function UnifiedPaymentSheet({
     >
       <style>{`@keyframes ups-pulse{0%,100%{opacity:1}50%{opacity:.4}}`}</style>
 
+      {showQR && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 300,
+            background: "rgba(0,0,0,0.8)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 20,
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 20,
+              padding: 24,
+              textAlign: "center",
+              maxWidth: 320,
+              width: "100%",
+            }}
+          >
+            <div style={{ fontSize: 18, fontWeight: 700, color: NAVY }}>Scan to pay</div>
+            <div style={{ fontSize: 32, fontWeight: 800, color: BLUE, marginBottom: 16 }}>
+              £{amountNum.toFixed(2)}
+            </div>
+            <img
+              src={`https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=${encodeURIComponent(
+                squareLink ?? "",
+              )}&choe=UTF-8`}
+              alt="Square payment QR code"
+              width={250}
+              height={250}
+              style={{ borderRadius: 12, maxWidth: "100%" }}
+            />
+            <div style={{ fontSize: 13, color: "#6B7686", marginTop: 12 }}>
+              Pupil scans this with their camera
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowQR(false)}
+              style={{
+                width: "100%",
+                marginTop: 16,
+                height: 46,
+                borderRadius: 12,
+                border: "none",
+                background: "#EEF2F7",
+                color: "#6B7686",
+                fontSize: 15,
+                fontWeight: 600,
+                fontFamily: FONT,
+                cursor: "pointer",
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
       <div style={{ fontFamily: FONT, background: "transparent", paddingBottom: 4, position: "relative" }}>
         {paymentSuccess && (
           <div
