@@ -880,10 +880,38 @@ function PupilsIndexPage() {
                     </div>
                   ))}
                 </div>
+              </>
+            )}
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                color: '#8A8A8E',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                padding: '16px 16px 6px',
+                fontFamily: 'Poppins, sans-serif',
+              }}
+            >
+              Active · {activePupils.length}
+            </div>
+            <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {activePupils.map((p) => (
+                <div
+                  key={p.id}
+                  style={{
+                    background: '#fff',
+                    borderRadius: 16,
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {renderRow(p, 0, activePupils.length)}
+                </div>
+              ))}
+            </div>
           </>
-
         )}
-
       </div>
 
 
