@@ -833,20 +833,22 @@ function PupilsIndexPage() {
         {filtered === null ? (
           <SkeletonCard rows={5} />
         ) : filtered.length === 0 ? (
-          <EmptyState
-            icon={IconUsers}
-            title="No active pupils"
-            description="Add your first pupil to start tracking lessons."
-            action={
-              <Link
-                to="/pupils/new"
-                className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
-                style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
-              >
-                <IconPlus stroke={1.5} size={16} /> Add pupil
-              </Link>
-            }
-          />
+          <div style={{ margin: '0 16px', background: '#fff', borderRadius: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+            <EmptyState
+              icon={IconUsers}
+              title="No active pupils"
+              description="Add your first pupil to start tracking lessons."
+              action={
+                <Link
+                  to="/pupils/new"
+                  className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
+                  style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
+                >
+                  <IconPlus stroke={1.5} size={16} /> Add pupil
+                </Link>
+              }
+            />
+          </div>
         ) : (
           <>
             {needsAttention.length > 0 && (
