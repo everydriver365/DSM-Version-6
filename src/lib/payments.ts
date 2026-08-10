@@ -526,14 +526,28 @@ export async function recordRefund(
     }
   }
 
-  const refundResult: RecordRefundResult = { amountReversed, fromAccountCredit, newAccountBalance, historyId };
+  const refundResult: RecordRefundResult = {
+    amountReversed,
+    fromAccountCredit,
+    newAccountBalance,
+    historyId,
+    status: "succeeded",
+  };
 
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     window.dispatchEvent(
-      new CustomEvent('dsm-refund-recorded', {
-        detail: { ...refundResult, pupilId, amount, method: method ?? null, notes: notes ?? null, createdAt: now },
+      new CustomEvent("dsm-refund-recorded", {
+        detail: {
+          ...refundResult,
+          pupilId,
+          amount,
+          method: method ?? null,
+          notes: notes ?? null,
+          createdAt: now,
+        },
       }),
     );
+
     setTimeout(() => {
       window.dispatchEvent(
         new Event('dsm-payment-recorded')
