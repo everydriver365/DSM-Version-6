@@ -72,6 +72,91 @@ export interface EndLessonWizardProps {
 
 type PaymentMethod = "cash" | "bank" | "already_paid" | "waived";
 
+type RefundDetail = RecordRefundResult & {
+  pupilId?: string;
+  amount?: number;
+  method?: string | null;
+  createdAt?: string;
+};
+
+function RefundAuditRows({ refund, compact }: { refund: RefundDetail; compact?: boolean }) {
+  const rowClass = compact ? "flex justify-between text-[12px] py-0.5" : "flex justify-between text-[12px] py-1";
+  return (
+    <>
+      <div className={rowClass}>
+        <span style={{ color: "#6B7280" }}>Status</span>
+        <span
+          style={{
+            color:
+              refund.status === "failed"
+                ? "#CC2229"
+                : refund.status === "pending"
+                  ? "#F59E0B"
+                  : "#1A9B5C",
+            fontWeight: 700,
+            textTransform: "capitalize",
+          }}
+        >
+          {refund.status ?? "succeeded"}
+        </span>
+      </div>
+      <div className={rowClass}>
+        <span style={{ color: "#6B7280" }}>Refunded</span>
+        <span style={{ color: "#CC2229", fontWeight: 600 }}>
+          £{(refund.amount ?? refund.amountReversed).toFixed(2)}
+          {refund.method ? ` · ${refund.method}` : ""}
+        </span>
+      </div>
+      <div className={rowClass}>
+        <span style={{ color: "#6B7280" }}>Reversed off lessons</span>
+        <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{refund.amountReversed.toFixed(2)}</span>
+      </div>
+      {refund.fromAccountCredit > 0 && (
+        <div className={rowClass}>
+          <span style={{ color: "#6B7280" }}>From account credit</span>
+          <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{refund.fromAccountCredit.toFixed(2)}</span>
+        </div>
+      )}
+      <div className={rowClass}>
+        <span style={{ color: "#6B7280" }}>Account balance</span>
+        <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{refund.newAccountBalance.toFixed(2)}</span>
+      </div>
+      {refund.createdAt && (
+        <div className={rowClass}>
+          <span style={{ color: "#6B7280" }}>Recorded</span>
+          <span style={{ color: "#0B1F3A", fontWeight: 600 }}>
+            {new Date(refund.createdAt).toLocaleString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+        </div>
+      )}
+      {refund.historyId && (
+        <div className={`${rowClass} gap-3`}>
+          <span style={{ color: "#6B7280" }}>Transaction ID</span>
+          <span
+            style={{
+              color: "#0B1F3A",
+              fontWeight: 600,
+              fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+              fontSize: 11,
+              wordBreak: "break-all",
+              textAlign: "right",
+            }}
+          >
+            {refund.historyId}
+          </span>
+        </div>
+      )}
+    </>
+  );
+}
+
+
 const COMPETENCIES = [
   "Cockpit checks",
   "Moving off",
