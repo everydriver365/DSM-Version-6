@@ -265,9 +265,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   const [paymentRecorded, setPaymentRecorded] = useState(false);
   const [paymentSaving, setPaymentSaving] = useState(false);
   const [lastPaymentResult, setLastPaymentResult] = useState<RecordPaymentResult | null>(null);
-  const [lastRefundResult, setLastRefundResult] = useState<
-    (RecordRefundResult & { pupilId?: string; amount?: number; method?: string | null; createdAt?: string }) | null
-  >(null);
+  const [refundResults, setRefundResults] = useState<RefundDetail[]>([]);
 
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [recordedPaymentMethod, setRecordedPaymentMethod] = useState<string>("cash");
