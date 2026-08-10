@@ -34,7 +34,7 @@ function slugify(s: string) {
 import { toast } from "sonner";
 import { supabase } from "../../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
-import { recordPayment } from "@/lib/payments";
+import { recordPayment, type RecordPaymentResult } from "@/lib/payments";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
@@ -178,6 +178,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
   const [amount, setAmount] = useState<string>("");
   const [paymentRecorded, setPaymentRecorded] = useState(false);
   const [paymentSaving, setPaymentSaving] = useState(false);
+  const [lastPaymentResult, setLastPaymentResult] = useState<RecordPaymentResult | null>(null);
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [qrPaymentId, setQrPaymentId] = useState<string | null>(null);
   const [qrGenerating, setQrGenerating] = useState(false);
@@ -367,6 +368,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
           currentAccountBalance: balance,
         });
         setBalance(res.newAccountBalance);
+        setLastPaymentResult(res);
       } else {
         // Zero payment — just mark the lesson.
         const { error } = await supabase
@@ -378,6 +380,15 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
           })
           .eq("id", lessonId);
         if (error) throw error;
+        setLastPaymentResult({
+          amountApplied: 0,
+          overpayment: 0,
+          newAccountBalance: balance,
+          newPrepaidHours: 0,
+          lessonsFullyPaid: 1,
+          lessonsLeftPartial: 0,
+          balanceOwedDelta: 0,
+        });
       }
 
       setPaymentRecorded(true);
@@ -492,6 +503,15 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             console.warn("[eol-wizard] qr history insert failed", e);
           }
           setBalance(newBalance);
+          setLastPaymentResult({
+            amountApplied: amt,
+            overpayment: newBalance > 0 ? newBalance : 0,
+            newAccountBalance: newBalance,
+            newPrepaidHours: 0,
+            lessonsFullyPaid: 1,
+            lessonsLeftPartial: 0,
+            balanceOwedDelta: amt,
+          });
           setPaymentRecorded(true);
           setFinalPaymentLabel("Paid · Card (QR)");
           toast.success("Payment received");
@@ -1136,6 +1156,38 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               Any skills to update?
             </div>
 
+            {paymentRecorded && lastPaymentResult && (
+              <div className="mt-3 p-3" style={{ borderRadius: 10, backgroundColor: "#F8F9FB", border: "0.5px solid #EEF2F7" }}>
+                <div className="text-[13px] mb-2" style={{ color: "#0B1F3A", fontWeight: 700 }}>
+                  Payment activity
+                </div>
+                <div className="flex justify-between text-[12px] py-1">
+                  <span style={{ color: "#6B7280" }}>Amount applied</span>
+                  <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastPaymentResult.amountApplied.toFixed(2)}</span>
+                </div>
+                {lastPaymentResult.overpayment > 0 && (
+                  <div className="flex justify-between text-[12px] py-1">
+                    <span style={{ color: "#6B7280" }}>Overpayment</span>
+                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastPaymentResult.overpayment.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-[12px] py-1">
+                  <span style={{ color: "#6B7280" }}>Account balance</span>
+                  <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastPaymentResult.newAccountBalance.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-[12px] py-1">
+                  <span style={{ color: "#6B7280" }}>Lessons fully paid</span>
+                  <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{lastPaymentResult.lessonsFullyPaid}</span>
+                </div>
+                {lastPaymentResult.lessonsLeftPartial > 0 && (
+                  <div className="flex justify-between text-[12px] py-1">
+                    <span style={{ color: "#6B7280" }}>Left partially paid</span>
+                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{lastPaymentResult.lessonsLeftPartial}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="mt-3 flex flex-col gap-2">
               {COMPETENCIES.map((c) => {
                 const current = levels[c] ?? "not_started";
@@ -1319,6 +1371,37 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 <span style={{ color: "#6B7280" }}>Payment</span>
                 <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{finalPaymentLabel}</span>
               </div>
+              {paymentRecorded && lastPaymentResult && (
+                <div className="mt-2 pt-2" style={{ borderTop: "1px solid #EEF2F7" }}>
+                  <div className="text-[12px] mb-1" style={{ color: "#0B1F3A", fontWeight: 700 }}>
+                    Payment activity
+                  </div>
+                  <div className="flex justify-between text-[12px] py-0.5">
+                    <span style={{ color: "#6B7280" }}>Amount applied</span>
+                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastPaymentResult.amountApplied.toFixed(2)}</span>
+                  </div>
+                  {lastPaymentResult.overpayment > 0 && (
+                    <div className="flex justify-between text-[12px] py-0.5">
+                      <span style={{ color: "#6B7280" }}>Overpayment</span>
+                      <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastPaymentResult.overpayment.toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-[12px] py-0.5">
+                    <span style={{ color: "#6B7280" }}>Account balance</span>
+                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastPaymentResult.newAccountBalance.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-[12px] py-0.5">
+                    <span style={{ color: "#6B7280" }}>Lessons fully paid</span>
+                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{lastPaymentResult.lessonsFullyPaid}</span>
+                  </div>
+                  {lastPaymentResult.lessonsLeftPartial > 0 && (
+                    <div className="flex justify-between text-[12px] py-0.5">
+                      <span style={{ color: "#6B7280" }}>Left partially paid</span>
+                      <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{lastPaymentResult.lessonsLeftPartial}</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
           </div>
