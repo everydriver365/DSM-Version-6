@@ -343,6 +343,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     setPaymentRecorded(false);
     setPaymentSaving(false);
     setLastPaymentResult(null);
+    setRefundResults([]);
     setReceiptOpen(false);
     setRecordedPaymentMethod("cash");
     setRecordedPaymentAmount(0);
