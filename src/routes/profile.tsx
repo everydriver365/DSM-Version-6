@@ -328,6 +328,69 @@ function ProfilePage() {
   // Danger zone
   const [deleteConfirm, setDeleteConfirm] = useState("");
 
+  // --- Square payments connection ---
+  const [squareConnected, setSquareConnected] = useState(false);
+  const [squareMerchantId, setSquareMerchantId] = useState<string | null>(null);
+  const [squareBusy, setSquareBusy] = useState(false);
+
+  const loadSquare = async (uid: string) => {
+    const { data, error } = await supabase
+      .from("instructors")
+      .select("square_merchant_id")
+      .eq("id", uid)
+      .maybeSingle();
+    if (error) {
+      console.warn("[profile] load square_merchant_id", error);
+      return;
+    }
+    const mid = (data as { square_merchant_id?: string | null } | null)?.square_merchant_id ?? null;
+    setSquareMerchantId(mid);
+    setSquareConnected(Boolean(mid));
+  };
+
+  const connectSquare = async () => {
+    if (!userId) return;
+    setSquareBusy(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("square-oauth-start", {
+        body: { instructor_id: userId, redirect_to: window.location.origin + "/profile" },
+      });
+      if (error) throw error;
+      const url = (data as { url?: string } | null)?.url;
+      if (!url) throw new Error("No Square authorisation URL returned");
+      window.location.href = url;
+    } catch (e) {
+      console.error("[profile] connectSquare failed", e);
+      toast.error("Couldn't start Square connection");
+    } finally {
+      setSquareBusy(false);
+    }
+  };
+
+  const disconnectSquare = async () => {
+    if (!userId) return;
+    setSquareBusy(true);
+    try {
+      const { error } = await supabase
+        .from("instructors")
+        .update({ square_merchant_id: null })
+        .eq("id", userId);
+      if (error) throw error;
+      setSquareMerchantId(null);
+      setSquareConnected(false);
+      toast.success("Square disconnected");
+    } catch (e) {
+      console.error("[profile] disconnectSquare failed", e);
+      toast.error("Couldn't disconnect Square");
+    } finally {
+      setSquareBusy(false);
+    }
+  };
+
+  useEffect(() => {
+    if (userId) void loadSquare(userId);
+  }, [userId]);
+
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
