@@ -131,6 +131,8 @@ const METHOD_LABEL: Record<PayMethod, string> = {
   link: "Pay link",
   klarna: "Klarna",
   clearpay: "Clearpay",
+  card_square: "Card (Square)",
+  card_evd: "Card (via EveryDriver)",
 };
 
 /** Canonical DB value for every PayMethod variant. */
@@ -141,6 +143,8 @@ const METHOD_DB: Record<PayMethod, string> = {
   link: "card_link",
   klarna: "klarna",
   clearpay: "clearpay",
+  card_square: "card_square",
+  card_evd: "card_link",
 };
 
 /** Map any UI method (or already-canonical string) to its DB value. */
