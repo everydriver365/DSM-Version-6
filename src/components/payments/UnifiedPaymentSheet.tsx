@@ -408,6 +408,10 @@ export function UnifiedPaymentSheet({
   const [qrFullscreen, setQrFullscreen] = useState(false);
   const [payUrl, setPayUrl] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
+  const [squareConnected, setSquareConnected] = useState(false);
+  const [squareLoading, setSquareLoading] = useState(false);
+  const [squareLink, setSquareLink] = useState<string | null>(null);
+  const [showQR, setShowQR] = useState(false);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
   const [refundAmount, setRefundAmount] = useState("");
   const [refundReason, setRefundReason] = useState("");
