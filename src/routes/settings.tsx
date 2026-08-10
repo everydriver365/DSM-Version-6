@@ -2334,7 +2334,8 @@ function MenuRow({
     <button
       type="button"
       onClick={onClick}
-      className="w-full flex items-center text-left [&_svg]:!w-[17px] [&_svg]:!h-[17px]"
+      disabled={disabled}
+      className={`w-full flex items-center text-left [&_svg]:!w-[17px] [&_svg]:!h-[17px] ${ROW_INTERACTION}`}
       style={{
         gap: 14,
         padding: "15px 16px",
