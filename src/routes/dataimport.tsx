@@ -80,7 +80,10 @@ function DataImportPage() {
   const [liveSuccess, setLiveSuccess] = useState(0);
   const [liveFailed, setLiveFailed] = useState(0);
   const [successCount, setSuccessCount] = useState<number | null>(null);
-  const [failures, setFailures] = useState<{ row: number; reason: string }[]>([]);
+  const [failures, setFailures] = useState<FailedResult[]>([]);
+  const [importedRows, setImportedRows] = useState<ImportedResult[]>([]);
+  const [retrying, setRetrying] = useState(false);
+  const [showResults, setShowResults] = useState(false);
 
   const rows: Row[] = useMemo(
     () => (mapping ? records.map((cells) => applyMapping(mapping, cells)) : []),
