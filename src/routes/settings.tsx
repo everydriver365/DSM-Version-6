@@ -35,7 +35,7 @@ import {
 import { toast } from "sonner";
 
 
-import { SectionHeader } from "../components/dsm/SectionHeader";
+
 import {
   readMinGapMinutes,
   writeMinGapMinutes,
@@ -803,30 +803,24 @@ function SettingsPage() {
         </div>
       </div>
 
-      <div
-        className="mx-4"
-        style={{
-          background: "#FFFFFF",
-          borderRadius: 20,
-          overflow: "hidden",
-          boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
-        }}
-      >
-        <AccountRow
-          icon={<Clock color="#1877D6" size={20} />}
-          iconBg="#E7F1FC"
-          label="Availability & working hours"
-          subLabel="Working days, hours, buffers, lunch break, time off, travel time"
-          onClick={() => navigate({ to: "/availability-settings" as never })}
-          isFirst
-        />
+      <div className="px-4">
+        <SectionCard>
+          <AccountRow
+            icon={<Clock color="#1877D6" size={20} />}
+            iconBg="#E7F1FC"
+            label="Availability & working hours"
+            subLabel="Working days, hours, buffers, lunch break, time off, travel time"
+            onClick={() => navigate({ to: "/availability-settings" as never })}
+            isFirst
+          />
+        </SectionCard>
       </div>
 
 
 
       <div className="px-4">
         <Label>Account</Label>
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)', marginBottom: 20 }}>
+        <SectionCard>
           <AccountRow
             icon={<User color="#1877D6" size={20} />}
             iconBg="#E7F1FC"
@@ -889,7 +883,7 @@ function SettingsPage() {
             value="DSM Free"
             onClick={() => navigate({ to: "/subscription" })}
           />
-        </div>
+        </SectionCard>
 
         <Label>REALTIME BADGES</Label>
         <SectionCard>
@@ -943,7 +937,7 @@ function SettingsPage() {
         </SectionCard>
 
         <Label>PAYMENTS</Label>
-        <div style={{ backgroundColor: 'white', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
+        <SectionCard>
           <MenuRow
             icon={<PoundSterling color="#CC2229" />}
             iconBg="#FCEBEB"
@@ -1000,10 +994,10 @@ function SettingsPage() {
               </div>
             </div>
           )}
-        </div>
+        </SectionCard>
 
         <Label>LESSON REMINDERS</Label>
-        <div style={{ backgroundColor: 'white', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: '20px' }}>
+        <SectionCard>
           <MenuRow
             icon={<Clock color="#B5661E" />}
             iconBg="#FBEFE1"
@@ -1087,7 +1081,7 @@ function SettingsPage() {
               )}
             </div>
           )}
-        </div>
+        </SectionCard>
 
         <Label>RATES & SCHEDULING</Label>
         <SectionCard>
@@ -1297,7 +1291,7 @@ function SettingsPage() {
           )}
         </SectionCard>
 
-        <SectionHeader>LESSON TRACKING</SectionHeader>
+        <Label>LESSON TRACKING</Label>
         <SectionCard>
           <div className="px-4 py-4 flex flex-col gap-4">
             <div className="flex items-start gap-3">
@@ -1324,53 +1318,20 @@ function SettingsPage() {
         </SectionCard>
 
         <Label>COVERAGE AREA</Label>
-        <div
-          onClick={() => navigate({ to: "/coverage-areas" as never })}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              navigate({ to: "/coverage-areas" as never });
-            }
-          }}
-          style={{
-            margin: "0 0 0 0",
-            backgroundColor: "#fff",
-            border: "0.5px solid #E2E6ED",
-            borderRadius: 12,
-            padding: 16,
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            cursor: "pointer",
-            ...POPPINS,
-          }}
-        >
-          <div
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 12,
-              backgroundColor: "#E0F4FF",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            <MapPin size={22} color="#1877D6" />
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>Coverage areas</div>
-            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
-              {coverageAreaCount > 0
+        <SectionCard>
+          <AccountRow
+            icon={<MapPin size={20} color="#1877D6" />}
+            iconBg="#E0F4FF"
+            label="Coverage areas"
+            subLabel={
+              coverageAreaCount > 0
                 ? `${coverageAreaCount} ${coverageAreaCount === 1 ? "area" : "areas"} defined`
-                : "No areas set"}
-            </div>
-          </div>
-          <ChevronRight size={18} color="#D1D5DB" />
-        </div>
+                : "No areas set"
+            }
+            onClick={() => navigate({ to: "/coverage-areas" as never })}
+            isFirst
+          />
+        </SectionCard>
 
 
         <Label>PRICING RULES</Label>
@@ -2570,9 +2531,9 @@ function SectionCard({ children, style }: { children: React.ReactNode; style?: R
     <div
       style={{
         background: "#FFFFFF",
-        borderRadius: 16,
+        borderRadius: 20,
         overflow: "hidden",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+        boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
         marginBottom: 20,
         ...style,
       }}
