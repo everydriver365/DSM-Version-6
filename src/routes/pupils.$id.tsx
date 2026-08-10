@@ -3433,8 +3433,27 @@ function PupilDetailPage() {
                 throw new Error("Could not refresh lesson data");
               }
 
-              setLessons((activeRes.data as Lesson[]) ?? []);
-              setPastLessons((pastRes.data as Lesson[]) ?? []);
+              const freshActive = (activeRes.data as Lesson[]) ?? [];
+              const freshPast = (pastRes.data as Lesson[]) ?? [];
+              setLessons(freshActive);
+              setPastLessons(freshPast);
+
+              // Tell the user if the server disagreed with our optimistic update
+              const reconciled = [...freshActive, ...freshPast].find((x) => x.id === targetId);
+              if (!reconciled) {
+                toast.info("This lesson is no longer in the list after refreshing.");
+              } else if (reconciled.payment_status !== "paid") {
+                const status = reconciled.payment_status
+                  ? String(reconciled.payment_status).replace(/_/g, " ")
+                  : "unpaid";
+                toast.warning(`Server recorded this lesson as “${status}”, not paid.`, {
+                  description:
+                    Number(reconciled.paid_amount ?? 0) > 0
+                      ? `£${Number(reconciled.paid_amount).toFixed(2)} of £${Number(reconciled.amount_due ?? 0).toFixed(2)} received.`
+                      : undefined,
+                });
+              }
+
             } catch (e) {
               console.error("[pupil] markPaid failed", e);
               toast.error("Could not mark as paid");
