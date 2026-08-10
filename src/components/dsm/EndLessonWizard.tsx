@@ -368,6 +368,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
           currentAccountBalance: balance,
         });
         setBalance(res.newAccountBalance);
+        setLastPaymentResult(res);
       } else {
         // Zero payment — just mark the lesson.
         const { error } = await supabase
@@ -379,6 +380,15 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
           })
           .eq("id", lessonId);
         if (error) throw error;
+        setLastPaymentResult({
+          amountApplied: 0,
+          overpayment: 0,
+          newAccountBalance: balance,
+          newPrepaidHours: 0,
+          lessonsFullyPaid: 1,
+          lessonsLeftPartial: 0,
+          balanceOwedDelta: 0,
+        });
       }
 
       setPaymentRecorded(true);
