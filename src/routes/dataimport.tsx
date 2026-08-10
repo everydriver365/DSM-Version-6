@@ -9,7 +9,9 @@ import {
   type ColumnMapping,
   type PupilField,
 } from "@/lib/csvColumnMapping";
-import { ChevronLeft, Info, Upload, CheckCircle2, AlertCircle, Download } from "lucide-react";
+import { validatePupilRows, resolveName } from "@/lib/pupilRowValidation";
+import { ChevronLeft, Info, Upload, CheckCircle2, AlertCircle, Download, AlertTriangle } from "lucide-react";
+
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { SectionHeader } from "../components/dsm/SectionHeader";
