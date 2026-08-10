@@ -803,23 +803,17 @@ function SettingsPage() {
         </div>
       </div>
 
-      <div
-        className="mx-4"
-        style={{
-          background: "#FFFFFF",
-          borderRadius: 20,
-          overflow: "hidden",
-          boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
-        }}
-      >
-        <AccountRow
-          icon={<Clock color="#1877D6" size={20} />}
-          iconBg="#E7F1FC"
-          label="Availability & working hours"
-          subLabel="Working days, hours, buffers, lunch break, time off, travel time"
-          onClick={() => navigate({ to: "/availability-settings" as never })}
-          isFirst
-        />
+      <div className="px-4">
+        <SectionCard>
+          <AccountRow
+            icon={<Clock color="#1877D6" size={20} />}
+            iconBg="#E7F1FC"
+            label="Availability & working hours"
+            subLabel="Working days, hours, buffers, lunch break, time off, travel time"
+            onClick={() => navigate({ to: "/availability-settings" as never })}
+            isFirst
+          />
+        </SectionCard>
       </div>
 
 
