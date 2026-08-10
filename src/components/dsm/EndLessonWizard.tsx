@@ -1156,6 +1156,38 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               Any skills to update?
             </div>
 
+            {paymentRecorded && lastPaymentResult && (
+              <div className="mt-3 p-3" style={{ borderRadius: 10, backgroundColor: "#F8F9FB", border: "0.5px solid #EEF2F7" }}>
+                <div className="text-[13px] mb-2" style={{ color: "#0B1F3A", fontWeight: 700 }}>
+                  Payment activity
+                </div>
+                <div className="flex justify-between text-[12px] py-1">
+                  <span style={{ color: "#6B7280" }}>Amount applied</span>
+                  <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastPaymentResult.amountApplied.toFixed(2)}</span>
+                </div>
+                {lastPaymentResult.overpayment > 0 && (
+                  <div className="flex justify-between text-[12px] py-1">
+                    <span style={{ color: "#6B7280" }}>Overpayment</span>
+                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastPaymentResult.overpayment.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-[12px] py-1">
+                  <span style={{ color: "#6B7280" }}>Account balance</span>
+                  <span style={{ color: "#0B1F3A", fontWeight: 600 }}>£{lastPaymentResult.newAccountBalance.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-[12px] py-1">
+                  <span style={{ color: "#6B7280" }}>Lessons fully paid</span>
+                  <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{lastPaymentResult.lessonsFullyPaid}</span>
+                </div>
+                {lastPaymentResult.lessonsLeftPartial > 0 && (
+                  <div className="flex justify-between text-[12px] py-1">
+                    <span style={{ color: "#6B7280" }}>Left partially paid</span>
+                    <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{lastPaymentResult.lessonsLeftPartial}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="mt-3 flex flex-col gap-2">
               {COMPETENCIES.map((c) => {
                 const current = levels[c] ?? "not_started";
