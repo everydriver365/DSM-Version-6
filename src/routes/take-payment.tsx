@@ -895,11 +895,6 @@ function TakePaymentPage() {
             <div style={{ fontSize: 40, fontWeight: 700, marginTop: 4, lineHeight: 1.05 }}>
               £{totalNum.toFixed(2)}
             </div>
-            {passBookingFee && (
-              <div style={{ fontSize: 12, opacity: 0.8, marginTop: 4 }}>
-                1% fee (£{(amountNum * 0.01).toFixed(2)}) deducted from your payout
-              </div>
-            )}
             {(pupilName || description) && (
               <div style={{ marginTop: 10 }}>
                 {pupilName && (
