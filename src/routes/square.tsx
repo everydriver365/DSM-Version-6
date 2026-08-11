@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import squareLogo from "../assets/square-logo.png.asset.json";
 import {
   IconCreditCard,
   IconChevronLeft,
@@ -347,14 +348,19 @@ function SquarePage() {
                   width: 44,
                   height: 44,
                   borderRadius: 14,
-                  background: "rgba(255,255,255,0.2)",
+                  background: "#fff",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <IconCreditCard size={22} color="#fff" />
+                <img
+                  src={squareLogo.url}
+                  alt="Square"
+                  style={{ width: 26, height: 26, objectFit: "contain" }}
+                />
               </div>
+
               <div>
                 <div style={{ fontSize: 18, fontWeight: 700 }}>
                   Accept card payments
