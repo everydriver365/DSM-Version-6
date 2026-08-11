@@ -136,6 +136,43 @@ function EnquiriesPage() {
   const [activities, setActivities] = useState<Record<string, EnquiryActivity[]>>({});
   const [noteText, setNoteText] = useState("");
   const [savingNote, setSavingNote] = useState(false);
+  const [smsText, setSmsText] = useState("");
+  const [showSmsComposer, setShowSmsComposer] = useState(false);
+
+  function defaultSmsText(enquiry: EnquiryRow) {
+    const first = enquiry.name?.split(" ")[0] ?? "";
+    return `Hi ${first}, thanks for your enquiry about driving lessons. I'd love to help — when would be a good time to chat?`;
+  }
+
+  async function sendSms(enquiry: EnquiryRow, message: string) {
+    if (!enquiry.phone) {
+      toast.error("No phone number");
+      return;
+    }
+    if (!message.trim()) {
+      toast.error("Message is empty");
+      return;
+    }
+    setBusyId(enquiry.id);
+    try {
+      const { error } = await supabase.functions.invoke("send-sms", {
+        body: { to: enquiry.phone, message, instructor_id: userId },
+      });
+      if (error) throw error;
+      await logActivity(enquiry.id, "sms", `SMS sent: "${message}"`, new Date().toISOString());
+      if ((enquiry.status ?? "new") === "new") {
+        await markContacted(enquiry);
+      }
+      setShowSmsComposer(false);
+      setSmsText("");
+      toast.success("SMS sent");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not send SMS");
+    } finally {
+      setBusyId(null);
+    }
+  }
+
 
   useEffect(() => {
     (async () => {
