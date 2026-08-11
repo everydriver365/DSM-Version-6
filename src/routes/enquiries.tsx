@@ -215,6 +215,16 @@ function EnquiriesPage() {
         [enquiryId]: [...(prev[enquiryId] ?? []), data as EnquiryActivity],
       }));
     }
+    return (data as EnquiryActivity | null) ?? null;
+  }
+
+  async function removeActivity(enquiryId: string, activityId: string | undefined) {
+    if (!activityId) return;
+    await supabase.from("enquiry_activities").delete().eq("id", activityId);
+    setActivities((prev) => ({
+      ...prev,
+      [enquiryId]: (prev[enquiryId] ?? []).filter((a) => a.id !== activityId),
+    }));
   }
 
   async function markContacted(enquiry: EnquiryRow) {
@@ -226,10 +236,26 @@ function EnquiriesPage() {
         .update({ status: "contacted", contacted_at: now })
         .eq("id", enquiry.id);
 
-      await logActivity(enquiry.id, "call", "Marked as contacted", now);
+      const act = await logActivity(enquiry.id, "call", "Marked as contacted", now);
 
       updateEnquiry(enquiry.id, { status: "contacted", contacted_at: now });
-      toast.success("Marked as contacted");
+      toast.success("Marked as contacted", {
+        duration: 6000,
+        action: {
+          label: "Undo",
+          onClick: () => {
+            void (async () => {
+              await supabase
+                .from("enquiries")
+                .update({ status: "new", contacted_at: null })
+                .eq("id", enquiry.id);
+              await removeActivity(enquiry.id, act?.id);
+              updateEnquiry(enquiry.id, { status: "new", contacted_at: null });
+              toast.success("Undone");
+            })();
+          },
+        },
+      });
     } catch {
       toast.error("Could not update");
     } finally {
@@ -318,7 +344,7 @@ function EnquiriesPage() {
         });
       }
 
-      await logActivity(
+      const act = await logActivity(
         enquiry.id,
         "status_change",
         sendToJobs ? "Declined — sent to Jobs board" : "Enquiry declined",
@@ -330,7 +356,26 @@ function EnquiriesPage() {
         sent_to_jobs_at: sendToJobs ? now : null,
       });
 
-      toast.success(sendToJobs ? "Sent to Jobs board" : "Enquiry declined");
+      toast.success(sendToJobs ? "Sent to Jobs board" : "Enquiry declined", {
+        duration: 6000,
+        action: {
+          label: "Undo",
+          onClick: () => {
+            void (async () => {
+              await supabase
+                .from("enquiries")
+                .update({ status: "new", sent_to_jobs_at: null })
+                .eq("id", enquiry.id);
+              if (sendToJobs) {
+                await supabase.from("job_offers").delete().eq("enquiry_id", enquiry.id);
+              }
+              await removeActivity(enquiry.id, act?.id);
+              updateEnquiry(enquiry.id, { status: "new", sent_to_jobs_at: null });
+              toast.success("Undone");
+            })();
+          },
+        },
+      });
     } catch {
       toast.error("Couldn't decline");
     } finally {
@@ -342,9 +387,21 @@ function EnquiriesPage() {
     if (!noteText.trim() || !userId) return;
     setSavingNote(true);
     try {
-      await logActivity(enquiryId, "note", noteText.trim(), new Date().toISOString());
+      const act = await logActivity(enquiryId, "note", noteText.trim(), new Date().toISOString());
       setNoteText("");
-      toast.success("Note added");
+      toast.success("Note added", {
+        duration: 6000,
+        action: {
+          label: "Undo",
+          onClick: () => {
+            void (async () => {
+              if (!act?.id) return;
+              await removeActivity(enquiryId, act.id);
+              toast.success("Note removed");
+            })();
+          },
+        },
+      });
     } catch {
       toast.error("Couldn't add note");
     } finally {
