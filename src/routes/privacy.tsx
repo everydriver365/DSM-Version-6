@@ -64,7 +64,7 @@ function PrivacyPage() {
             <li>Pupil data: names, contact details, lesson history, test dates</li>
             <li>Lesson data: dates, times, locations, GPS routes, notes</li>
             <li>
-              Payment data: transaction records — card numbers never stored, processed by Ryft
+              Payment data: transaction records — card numbers never stored, processed by Square
             </li>
             <li>Location data: GPS only when live tracking is active</li>
             <li>Calendar data: Google Calendar events when you connect via OAuth</li>
@@ -77,7 +77,7 @@ function PrivacyPage() {
             <li>To provide the DSM platform</li>
             <li>To send lesson reminders and SMS to pupils on your behalf</li>
             <li>To sync lessons with Google Calendar when connected</li>
-            <li>To process payments via Ryft</li>
+            <li>To process payments via Square</li>
             <li>To generate financial reports</li>
             <li>To improve the platform</li>
           </ul>
@@ -127,7 +127,7 @@ function PrivacyPage() {
 
         <Section title="Data sharing">
           <p>
-            We do not sell your data. We share only with: Supabase (database and auth), Ryft (payments), Twilio (SMS), Google (calendar sync when connected), Resend (email).
+            We do not sell your data. We share only with: Supabase (database and auth), Square (payments), Twilio (SMS), Google (calendar sync when connected), Resend (email).
           </p>
         </Section>
 

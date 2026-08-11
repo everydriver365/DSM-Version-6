@@ -97,7 +97,6 @@ function SettingsPage() {
   
   const [expanded, setExpanded] = useState<ExpandKey>(null);
   const [signOutOpen, setSignOutOpen] = useState(false);
-  const [passBookingFee, setPassBookingFee] = useState<boolean>(true);
   const [hourlyRate, setHourlyRate] = useState<number>(35);
   const [defaultDuration, setDefaultDuration] = useState<number>(60);
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
@@ -359,7 +358,7 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, pass_booking_fee, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_after, home_postcode, address, city, lat, lng, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug, external_calendar_last_synced_at")
+        .select("name, profile_image_url, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_after, home_postcode, address, city, lat, lng, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug, external_calendar_last_synced_at")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
@@ -367,9 +366,6 @@ function SettingsPage() {
       if (instructor?.profile_image_url) setAvatarUrl(instructor.profile_image_url);
       const lastSync = (instructor as unknown as { external_calendar_last_synced_at?: string | null } | null)?.external_calendar_last_synced_at;
       if (lastSync) setCalendarLastSynced(lastSync);
-      if (instructor && typeof (instructor as { pass_booking_fee?: boolean }).pass_booking_fee === "boolean") {
-        setPassBookingFee((instructor as { pass_booking_fee: boolean }).pass_booking_fee);
-      }
       if (instructor && typeof (instructor as { hourly_rate?: number }).hourly_rate === "number") {
         setHourlyRate((instructor as { hourly_rate: number }).hourly_rate);
       }
@@ -529,19 +525,6 @@ function SettingsPage() {
 
 
 
-  async function togglePassBookingFee() {
-    const next = !passBookingFee;
-    setPassBookingFee(next);
-    if (!userId) return;
-    const { error } = await supabase
-      .from("instructors")
-      .update({ pass_booking_fee: next })
-      .eq("id", userId);
-    if (error) {
-      console.error("[settings] toggle pass_booking_fee error", error);
-      setPassBookingFee(!next);
-    }
-  }
 
   async function toggleSendLessonReminders() {
     const next = !sendLessonReminders;
@@ -952,65 +935,6 @@ function SettingsPage() {
           </div>
         </SectionCard>
 
-        <Label>PAYMENTS</Label>
-        <SectionCard>
-          <MenuRow
-            icon={<PoundSterling color="#CC2229" />}
-            iconBg="#FCEBEB"
-            label="Pass booking fee to pupil"
-            expanded={expanded === "payments"}
-            onClick={() => setExpanded(expanded === "payments" ? null : "payments")}
-            isFirst
-            isLast
-          />
-
-          {expanded === "payments" && (
-            <div className="px-4 pb-4" style={{ borderTop: "1px solid #EFEFF2" }}>
-              <div className="flex items-start gap-3 pt-3">
-                <div className="flex-1 min-w-0">
-                  <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
-                    Toggle on to add the booking fee to the pupil's total, off to absorb it yourself.
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={passBookingFee}
-                  aria-label="Pass booking fee to pupil"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    togglePassBookingFee();
-                  }}
-                  style={{
-                    width: 44,
-                    height: 26,
-                    borderRadius: 13,
-                    background: passBookingFee ? "#1877D6" : "#D1D5DB",
-                    border: "none",
-                    position: "relative",
-                    cursor: "pointer",
-                    flexShrink: 0,
-                    transition: "background 0.2s",
-                  }}
-                >
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: 3,
-                      left: passBookingFee ? 21 : 3,
-                      width: 20,
-                      height: 20,
-                      borderRadius: "50%",
-                      background: "#fff",
-                      transition: "left 0.2s",
-                      boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
-                    }}
-                  />
-                </button>
-              </div>
-            </div>
-          )}
-        </SectionCard>
 
         <Label>LESSON REMINDERS</Label>
         <SectionCard>
