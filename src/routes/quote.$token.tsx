@@ -4,6 +4,25 @@ import { CheckCircle2, Lock } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
 export const Route = createFileRoute("/quote/$token")({
+  head: () => ({
+    meta: [
+      { title: "Your driving lesson quote" },
+      {
+        name: "description",
+        content:
+          "View and accept your driving lesson quote, then pay securely by card or bank transfer.",
+      },
+      { property: "og:title", content: "Your driving lesson quote" },
+      {
+        property: "og:description",
+        content:
+          "View and accept your driving lesson quote, then pay securely by card or bank transfer.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "robots", content: "noindex" },
+    ],
+  }),
   component: PublicQuotePage,
 });
 
