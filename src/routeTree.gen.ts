@@ -49,6 +49,7 @@ import { Route as PostcodeRatesRouteImport } from './routes/postcode-rates'
 import { Route as PipelineRouteImport } from './routes/pipeline'
 import { Route as PerformanceRouteImport } from './routes/performance'
 import { Route as PaymentsRouteImport } from './routes/payments'
+import { Route as PaymentCompleteRouteImport } from './routes/payment-complete'
 import { Route as PayRouteImport } from './routes/pay'
 import { Route as OutstandingRouteImport } from './routes/outstanding'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -370,6 +371,11 @@ const PerformanceRoute = PerformanceRouteImport.update({
 const PaymentsRoute = PaymentsRouteImport.update({
   id: '/payments',
   path: '/payments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentCompleteRoute = PaymentCompleteRouteImport.update({
+  id: '/payment-complete',
+  path: '/payment-complete',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PayRoute = PayRouteImport.update({
@@ -1047,6 +1053,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/outstanding': typeof OutstandingRoute
   '/pay': typeof PayRoute
+  '/payment-complete': typeof PaymentCompleteRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
@@ -1208,6 +1215,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/outstanding': typeof OutstandingRoute
   '/pay': typeof PayRoute
+  '/payment-complete': typeof PaymentCompleteRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
@@ -1372,6 +1380,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/outstanding': typeof OutstandingRoute
   '/pay': typeof PayRoute
+  '/payment-complete': typeof PaymentCompleteRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
   '/pipeline': typeof PipelineRoute
@@ -1537,6 +1546,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/outstanding'
     | '/pay'
+    | '/payment-complete'
     | '/payments'
     | '/performance'
     | '/pipeline'
@@ -1698,6 +1708,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/outstanding'
     | '/pay'
+    | '/payment-complete'
     | '/payments'
     | '/performance'
     | '/pipeline'
@@ -1861,6 +1872,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/outstanding'
     | '/pay'
+    | '/payment-complete'
     | '/payments'
     | '/performance'
     | '/pipeline'
@@ -2026,6 +2038,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   OutstandingRoute: typeof OutstandingRoute
   PayRoute: typeof PayRoute
+  PaymentCompleteRoute: typeof PaymentCompleteRoute
   PaymentsRoute: typeof PaymentsRoute
   PerformanceRoute: typeof PerformanceRoute
   PipelineRoute: typeof PipelineRoute
@@ -2385,6 +2398,13 @@ declare module '@tanstack/react-router' {
       path: '/payments'
       fullPath: '/payments'
       preLoaderRoute: typeof PaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-complete': {
+      id: '/payment-complete'
+      path: '/payment-complete'
+      fullPath: '/payment-complete'
+      preLoaderRoute: typeof PaymentCompleteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pay': {
@@ -3420,6 +3440,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   OutstandingRoute: OutstandingRoute,
   PayRoute: PayRoute,
+  PaymentCompleteRoute: PaymentCompleteRoute,
   PaymentsRoute: PaymentsRoute,
   PerformanceRoute: PerformanceRoute,
   PipelineRoute: PipelineRoute,
@@ -3501,3 +3522,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
