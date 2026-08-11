@@ -1085,6 +1085,11 @@ function AlertsTab({
       window.dispatchEvent(new Event(open ? "dsm-sheet-open" : "dsm-sheet-close"));
     }
   };
+  useEffect(() => {
+    const handler = () => setReportSheetOpenWithEvent(true);
+    window.addEventListener("dsm-open-report-sheet", handler);
+    return () => window.removeEventListener("dsm-open-report-sheet", handler);
+  }, []);
 
   const load = async () => {
     const { data } = await supabase
