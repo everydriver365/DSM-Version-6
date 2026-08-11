@@ -924,8 +924,24 @@ function EnquiriesPage() {
                   Icon={IconMessage}
                   chipBg="#E7F1FC"
                   chipColor="#1877D6"
-                  description="Opens a text message to their phone number in your phone's messaging app. You'll still need to tap Mark contacted to update the status."
-                  href={enquiry.phone ? `sms:${enquiry.phone}` : undefined}
+                  description="Sends a text message and automatically logs this as your first contact."
+                  onClick={
+                    enquiry.phone
+                      ? () => {
+                          void (async () => {
+                            const first = enquiry.name?.split(" ")[0] ?? "";
+                            const body = encodeURIComponent(
+                              `Hi ${first}, thanks for your enquiry about driving lessons. I'd love to help — when would be a good time to chat?`,
+                            );
+                            window.location.href = `sms:${enquiry.phone}?&body=${body}`;
+                            if (enquiry.status === "new") {
+                              await markContacted(enquiry);
+                            }
+                          })();
+                        }
+                      : undefined
+                  }
+
                 />
                 <ActionRow
                   label="Accept enquiry"
@@ -941,7 +957,7 @@ function EnquiriesPage() {
                   Icon={IconBriefcase}
                   chipBg="#FFF6DC"
                   chipColor="#D68A1B"
-                  description="Posts this enquiry to the Jobs board so another local instructor can pick it up — it moves out of your active list into 'On jobs board'."
+                  description="Posts to the Jobs board for another local instructor to pick up — moves to your On jobs board section, not deleted."
                   onClick={() => void declineEnquiry(enquiry, true)}
                 />
                 <ActionRow
