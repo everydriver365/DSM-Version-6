@@ -1,5 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import squareLogo from "../assets/square-logo.png.asset.json";
+
 
 
 import {
@@ -2076,8 +2078,9 @@ function SettingsPage() {
         {/* Section 4b — Square (standalone tile) */}
         <SectionCard>
           <MenuRow
-            icon={<CreditCard color="#FFFFFF" />}
-            iconBg="linear-gradient(135deg, #F59E0B, #D97706)"
+            icon={<img src={squareLogo.url} alt="Square" style={{ width: 22, height: 22, objectFit: "contain" }} />}
+            iconBg="#FFFFFF"
+
             label="Square"
             subLabel={squareConnected ? "Connected — taking card payments" : "Set up card payments"}
             value={squareConnected ? "Connected" : undefined}
