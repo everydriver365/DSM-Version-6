@@ -1119,7 +1119,10 @@ function EnquiriesPage() {
         )}
       </div>
 
-      {selected && <DetailSheet enquiry={selected} />}
+      {/* Called as a plain function, not <DetailSheet />, so the sheet's JSX is
+          inlined into this component's tree and the note input keeps its
+          identity (and focus) across re-renders. */}
+      {selected && DetailSheet({ enquiry: selected })}
     </div>
   );
 }
