@@ -159,6 +159,27 @@ function EnquiriesPage() {
     })();
   }, []);
 
+  // Always refresh the activity log when a detail sheet opens
+  useEffect(() => {
+    if (!selectedId) return;
+    let cancelled = false;
+    void (async () => {
+      const { data } = await supabase
+        .from("enquiry_activities")
+        .select("*")
+        .eq("enquiry_id", selectedId)
+        .order("created_at", { ascending: true });
+      if (cancelled) return;
+      setActivities((prev) => ({
+        ...prev,
+        [selectedId]: (data as EnquiryActivity[] | null) ?? [],
+      }));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedId]);
+
   async function loadActivities(enquiryId: string) {
     if (activities[enquiryId]) return;
     const { data } = await supabase
