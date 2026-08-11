@@ -320,9 +320,15 @@ function EnquiriesPage() {
 
   /* ---------------- rows ---------------- */
 
-  function EnquiryRowItem({ enquiry, isLast }: { enquiry: EnquiryRow; isLast: boolean }) {
-    const meta = metaFor(enquiry.status);
-    const Icon = meta.Icon;
+  function formatPhone(raw: string) {
+    if (/\s/.test(raw)) return raw;
+    const digits = raw.replace(/[^\d+]/g, "");
+    if (/^0\d{10}$/.test(digits)) return `${digits.slice(0, 5)} ${digits.slice(5)}`;
+    if (/^0\d{9}$/.test(digits)) return `${digits.slice(0, 4)} ${digits.slice(4)}`;
+    return raw;
+  }
+
+  function EnquiryRowItem({ enquiry }: { enquiry: EnquiryRow }) {
     return (
       <button
         type="button"
@@ -334,72 +340,93 @@ function EnquiriesPage() {
         className="w-full active:opacity-70"
         style={{
           display: "flex",
-          alignItems: "center",
-          gap: 12,
-          padding: "14px 16px",
+          alignItems: "flex-start",
+          gap: 13,
+          padding: 16,
           background: "#fff",
           border: "none",
           textAlign: "left",
-          borderBottom: isLast ? "none" : "1px solid #F0F1F4",
+          borderRadius: 16,
+          marginBottom: 10,
+          boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
         }}
       >
         <div
           style={{
-            width: 36,
-            height: 36,
-            borderRadius: 18,
-            background: meta.bg,
+            width: 42,
+            height: 42,
+            borderRadius: 21,
+            background: "#E7F1FC",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
           }}
         >
-          <Icon size={18} stroke={2} color={meta.color} />
+          <IconMail size={18} stroke={2} color="#1877D6" />
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A", ...POPPINS }}>
+          <div style={{ fontSize: 16.5, fontWeight: 800, color: "#0B1F3A", ...POPPINS }}>
             {enquiry.name ?? "Unknown"}
           </div>
-          {(enquiry.course_interest || enquiry.postcode) && (
-            <div style={{ fontSize: 13, color: "#4A5568", marginTop: 1, ...POPPINS }}>
-              {[enquiry.course_interest, enquiry.postcode].filter(Boolean).join(" · ")}
+          {enquiry.postcode && (
+            <div
+              style={{
+                background: "#F2F2F7",
+                color: "#6B6B6F",
+                fontSize: 11,
+                fontWeight: 700,
+                padding: "3px 9px",
+                borderRadius: 20,
+                marginTop: 5,
+                width: "fit-content",
+                ...POPPINS,
+              }}
+            >
+              {enquiry.postcode}
             </div>
           )}
           <div
             style={{
-              fontSize: 11,
-              color: "#9CA3AF",
-              marginTop: 3,
+              marginTop: 9,
               display: "flex",
               alignItems: "center",
-              gap: 8,
+              gap: 10,
+              flexWrap: "wrap",
               ...POPPINS,
             }}
           >
-            <span>{timeAgo(enquiry.created_at)}</span>
+            <span style={{ color: "#B0B0B5", fontSize: 12, fontWeight: 500 }}>
+              {timeAgo(enquiry.created_at)}
+            </span>
             {enquiry.phone && (
               <span
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: 3,
-                  background: "#EFF6FF",
+                  gap: 5,
+                  background: "#E7F1FC",
                   color: "#1877D6",
                   borderRadius: 20,
-                  padding: "2px 8px",
-                  fontWeight: 700,
+                  padding: "6px 12px",
+                  fontSize: 12.5,
+                  fontWeight: 800,
                 }}
               >
-                <IconPhone size={11} stroke={2} color="#1877D6" />
-                {enquiry.phone}
+                <IconPhone size={12} stroke={2} color="#1877D6" />
+                {formatPhone(enquiry.phone)}
               </span>
             )}
           </div>
         </div>
 
-        <IconChevronRight size={16} stroke={2} color="#C7C7CC" />
+        <IconChevronRight
+          size={14}
+          stroke={2}
+          color="#C7C7CC"
+          style={{ marginTop: 4, flexShrink: 0 }}
+        />
       </button>
     );
   }
@@ -409,16 +436,16 @@ function EnquiriesPage() {
     return (
       <div>
         <div style={SECTION_HEADER}>
-          {title} · {rows.length}
+          {title} ·{" "}
+          <span style={{ color: "#FF3B30", fontWeight: 800 }}>{rows.length}</span>
         </div>
-        <div style={CARD}>
-          {rows.map((e, i) => (
-            <EnquiryRowItem key={e.id} enquiry={e} isLast={i === rows.length - 1} />
-          ))}
-        </div>
+        {rows.map((e) => (
+          <EnquiryRowItem key={e.id} enquiry={e} />
+        ))}
       </div>
     );
   }
+
 
   /* ---------------- detail sheet ---------------- */
 
