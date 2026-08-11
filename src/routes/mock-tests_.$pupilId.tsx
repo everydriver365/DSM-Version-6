@@ -7,7 +7,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 import { supabase } from "../lib/supabaseClient";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
-export const Route = createFileRoute("/mock-tests/$pupilId")({
+export const Route = createFileRoute("/mock-tests_/$pupilId")({
   head: () => ({ meta: [{ title: "Mock tests — DSM by EveryDriver" }] }),
   component: MockTestsPage,
 });

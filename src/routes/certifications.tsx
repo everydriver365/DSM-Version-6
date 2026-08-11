@@ -101,7 +101,7 @@ function CertificationsPage() {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        navigate({ to: "/auth" as never });
+        navigate({ to: "/login" });
         return;
       }
       setUserId(user.id);
