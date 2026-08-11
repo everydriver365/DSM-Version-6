@@ -223,6 +223,18 @@ function TakePaymentPage() {
       if (!res?.url) throw new Error("No payment URL returned");
       setQrUrl(res.url);
       setQrPaymentId(res.id ?? null);
+      // Pending until Square's webhook confirms the pupil actually paid.
+      setIntentId(
+        await createSquareIntent({
+          instructorId,
+          pupilId: pupilId || null,
+          lessonId: lessonId || null,
+          amountPence,
+          description: description || "Payment",
+          paymentLinkId: res.id ?? null,
+          checkoutUrl: res.url,
+        }),
+      );
       toast.success("Square payment link ready");
     } catch (e) {
       console.error("[take-payment] generateQr", e);
