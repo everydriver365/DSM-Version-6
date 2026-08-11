@@ -937,7 +937,7 @@ function EnquiriesPage() {
 
           {/* Activity */}
           <div style={{ ...SECTION_HEADER, marginTop: 20 }}>Activity</div>
-          <div style={{ ...CARD, padding: 16 }}>
+          <div style={{ ...CARD, padding: "6px 0" }}>
             {(() => {
               const items: {
                 title: string;
@@ -945,61 +945,101 @@ function EnquiriesPage() {
                 pending?: boolean;
                 type?: string;
               }[] = [];
-              items.push({ title: "Enquiry received", at: enquiry.created_at });
+              items.push({ title: "Enquiry received", at: enquiry.created_at, type: "received" });
               list.forEach((a) =>
                 items.push({ title: a.body ?? a.type, at: a.created_at, type: a.type ?? undefined }),
               );
-              if (status === "new") items.push({ title: "Awaiting contact", at: null, pending: true });
+              if (status === "new")
+                items.push({ title: "Awaiting contact", at: null, pending: true, type: "pending" });
+
+              const meta = (type?: string, pending?: boolean) => {
+                if (pending) return { label: "Pending", color: "#9CA3AF" };
+                switch (type) {
+                  case "note":
+                    return { label: "Note", color: "#F59E0B" };
+                  case "call":
+                    return { label: "Call / Contact", color: "#1877D6" };
+                  case "sms":
+                    return { label: "SMS sent", color: "#7C3AED" };
+                  case "status_change":
+                    return { label: "Status", color: "#15803D" };
+                  case "received":
+                    return { label: "Enquiry", color: "#1877D6" };
+                  default:
+                    return { label: "Activity", color: "#9CA3AF" };
+                }
+              };
+
               return items.map((it, i) => {
-                const last = i === items.length - 1;
-                const isNote = it.type === "note";
-                const dot = it.pending
-                  ? "#D1D1D6"
-                  : isNote
-                    ? "#F59E0B"
-                    : it.type === "call"
-                      ? "#1877D6"
-                      : it.type === "status_change"
-                        ? "#15803D"
-                        : "#1877D6";
+                const { label, color } = meta(it.type, it.pending);
                 return (
-                  <div key={`${it.title}-${i}`} style={{ display: "flex", gap: 12 }}>
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                      <span
-                        style={{
-                          width: 9,
-                          height: 9,
-                          borderRadius: 5,
-                          marginTop: 5,
-                          background: dot,
-                          flexShrink: 0,
-                        }}
-                      />
-                      {!last && <span style={{ width: 1.5, flex: 1, background: "#E4E4E8" }} />}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0, paddingBottom: last ? 0 : 14 }}>
+                  <div
+                    key={`${it.title}-${i}`}
+                    style={{
+                      display: "flex",
+                      gap: 10,
+                      padding: "10px 16px",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: color,
+                        flexShrink: 0,
+                        marginTop: 6,
+                      }}
+                    />
+                    <div style={{ flex: 1, minWidth: 0 }}>
                       <div
                         style={{
-                          color: it.pending ? "#B0B0B5" : "#0B1F3A",
-                          fontSize: 13.5,
-                          fontWeight: isNote ? 500 : 700,
-                          fontStyle: isNote ? "italic" : "normal",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: 2,
+                          gap: 8,
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 11,
+                            fontWeight: 600,
+                            color,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                            ...POPPINS,
+                          }}
+                        >
+                          {label}
+                        </div>
+                        <div style={{ fontSize: 11, color: "#9CA3AF", flexShrink: 0, ...POPPINS }}>
+                          {it.at ? timeAgo(it.at) : ""}
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 13,
+                          color: it.pending ? "#9CA3AF" : "#0B1F3A",
+                          fontStyle: it.type === "note" ? "italic" : "normal",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                          lineHeight: 1.4,
                           ...POPPINS,
                         }}
                       >
                         {it.title}
                       </div>
-                      {it.at && (
-                        <div style={{ color: "#8A8A8E", fontSize: 11.5, ...POPPINS }}>
-                          {fullDate(it.at)}
-                        </div>
-                      )}
                     </div>
                   </div>
                 );
               });
             })()}
           </div>
+
 
           {/* Actions */}
           <div style={{ ...SECTION_HEADER, marginTop: 20 }}>Actions</div>
