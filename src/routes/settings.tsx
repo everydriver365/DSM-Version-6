@@ -182,6 +182,20 @@ function SettingsPage() {
   const [morningBriefing, setMorningBriefing] = useState<boolean>(false);
   const [autoTrackLessons, setAutoTrackLessons] = useState<boolean>(false);
 
+  // === Square card payments (standalone tile) ===
+  const [squareConnected, setSquareConnected] = useState(false);
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return;
+      const { data: inst } = await supabase
+        .from("instructors")
+        .select("square_merchant_id")
+        .eq("id", data.user.id)
+        .maybeSingle();
+      setSquareConnected(!!inst?.square_merchant_id);
+    });
+  }, []);
+
   // === Section: Deposit / Payment options / Tax & expenses / Referral (instructors table) ===
   const [depositEnabled, setDepositEnabled] = useState<boolean>(false);
   const [depositAmount, setDepositAmount] = useState<number>(50);
@@ -2058,6 +2072,22 @@ function SettingsPage() {
             </div>
           )}
         </SectionCard>
+
+        {/* Section 4b — Square (standalone tile) */}
+        <SectionCard>
+          <MenuRow
+            icon={<CreditCard color="#FFFFFF" />}
+            iconBg="linear-gradient(135deg, #F59E0B, #D97706)"
+            label="Square"
+            subLabel={squareConnected ? "Connected — taking card payments" : "Set up card payments"}
+            value={squareConnected ? "Connected" : undefined}
+            onClick={() => navigate({ to: "/profile" as never, hash: "square" as never })}
+            isFirst
+            isLast
+          />
+        </SectionCard>
+
+
 
         {/* Section 5 — Tax & expenses */}
         <SectionCard>
