@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { useAdminGate } from "./admin";
+import { pupilColour } from "@/components/PupilAvatar";
 
 
 
@@ -68,12 +69,8 @@ function formatStamp(iso: string) {
   return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 }
 
-const AVATAR_PALETTE = ["#1877D6", "#6B4FD6", "#3B6D11", "#C4501E", "#0C8577", "#CC2229", "#854F0B", "#185F8A"];
-function avatarColor(id: string) {
-  let h = 0;
-  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
-  return AVATAR_PALETTE[h % AVATAR_PALETTE.length];
-}
+// Shared deterministic pupil colour so the same pupil looks identical everywhere.
+const avatarColor = (id: string) => pupilColour(id);
 
 interface Pupil {
   id: string;
