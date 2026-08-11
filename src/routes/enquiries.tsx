@@ -204,7 +204,11 @@ function EnquiriesPage() {
   }
 
   async function logActivity(enquiryId: string, type: string, body: string, at: string) {
-    const { data } = await supabase
+    if (!userId) {
+      console.error("[enquiries] logActivity called without userId");
+      return null;
+    }
+    const { data, error } = await supabase
       .from("enquiry_activities")
       .insert({
         enquiry_id: enquiryId,
@@ -215,6 +219,10 @@ function EnquiriesPage() {
       })
       .select()
       .single();
+    if (error) {
+      console.error("[enquiries] activity insert failed:", error);
+      return null;
+    }
     if (data) appendActivity(enquiryId, data as EnquiryActivity);
     return (data as EnquiryActivity | null) ?? null;
   }
