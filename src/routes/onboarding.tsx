@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { IconCalendar, IconCheck, IconCircleCheck, IconClock, IconUserPlus, IconWorld } from "@tabler/icons-react";
+import { IconAlertTriangle, IconCalendar, IconCheck, IconChevronRight, IconCircleCheck, IconClock, IconCreditCard, IconExternalLink, IconUserPlus, IconWorld } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
 
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/onboarding")({
 });
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
-const TOTAL_STEPS = 9;
+const TOTAL_STEPS = 10;
 
 type WebsiteChoice = "yes" | "existing" | "later" | null;
 
@@ -479,6 +479,83 @@ function OnboardingPage() {
         )}
 
         {step === 9 && (
+          <div>
+            <StepHeader title="Get paid by card" subtitle="Connect Square for instant card payments" />
+
+            <GroupCard>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  if (!userId) return;
+                  window.open(
+                    `https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/square-oauth-start?instructor_id=${userId}`,
+                    "_blank",
+                  );
+                }}
+                style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", cursor: "pointer" }}
+              >
+                <div className="h-9 w-9 rounded-full bg-[#E6F1FB] flex items-center justify-center" style={{ flexShrink: 0 }}>
+                  <IconCreditCard stroke={1.5} size={20} color="#1877D6" />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Connect Square</div>
+                  <div style={{ fontSize: 13, color: "#6B7686", ...POPPINS }}>
+                    Already have a Square account? Connect it here
+                  </div>
+                </div>
+                <IconChevronRight stroke={1.5} size={18} color="#9CA3AF" />
+              </div>
+
+              <div style={{ height: 1, background: "#EEF2F7", marginLeft: 60 }} />
+
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => window.open("https://squareup.com/i/EVERYDRIVE", "_blank")}
+                style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", cursor: "pointer" }}
+              >
+                <div className="h-9 w-9 rounded-full bg-[#FEF3C7] flex items-center justify-center" style={{ flexShrink: 0 }}>
+                  <IconExternalLink stroke={1.5} size={20} color="#D97706" />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Get a Square account</div>
+                  <div style={{ fontSize: 13, color: "#6B7686", ...POPPINS }}>Free to sign up via our partner link</div>
+                </div>
+                <IconChevronRight stroke={1.5} size={18} color="#9CA3AF" />
+              </div>
+            </GroupCard>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                background: "#FEF3C7",
+                border: "1px solid #FDE68A",
+                borderRadius: 12,
+                padding: "12px 14px",
+                marginBottom: 4,
+              }}
+            >
+              <IconAlertTriangle stroke={1.5} size={18} color="#D97706" style={{ flexShrink: 0, marginTop: 1 }} />
+              <div style={{ fontSize: 13, color: "#92400E", ...POPPINS }}>
+                Without Square, card payments take up to <strong>2 days</strong> to reach you via EveryDriver. Connect
+                Square for instant payouts.
+              </div>
+            </div>
+
+            <Cta onClick={next}>I&apos;ve connected Square — continue</Cta>
+            <button
+              type="button"
+              onClick={next}
+              style={{ ...POPPINS, fontSize: 13, color: "rgba(255,255,255,0.5)", background: "none", border: "none", marginTop: 12, width: "100%" }}
+            >
+              Skip for now — I&apos;ll set this up later
+            </button>
+          </div>
+        )}
+
+        {step === 10 && (
           <div>
             <div className="flex justify-center mb-4">
               <div
