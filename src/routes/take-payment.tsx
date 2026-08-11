@@ -947,9 +947,24 @@ function TakePaymentPage() {
             >
               <QRCodeSVG value={qrUrl} size={qrSize} />
             </div>
-            <div style={{ fontSize: 12, color: "#fff", opacity: 0.7 }}>
-              Waiting for payment…
-            </div>
+            {intentPaid ? (
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: "#fff",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
+                <CircleCheck size={16} /> Payment received
+              </div>
+            ) : (
+              <div style={{ fontSize: 12, color: "#fff", opacity: 0.7 }}>
+                Waiting for payment…
+              </div>
+            )}
           </div>
 
           {/* Bottom section (flex 0) */}
