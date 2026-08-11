@@ -159,6 +159,27 @@ function EnquiriesPage() {
     })();
   }, []);
 
+  // Always refresh the activity log when a detail sheet opens
+  useEffect(() => {
+    if (!selectedId) return;
+    let cancelled = false;
+    void (async () => {
+      const { data } = await supabase
+        .from("enquiry_activities")
+        .select("*")
+        .eq("enquiry_id", selectedId)
+        .order("created_at", { ascending: true });
+      if (cancelled) return;
+      setActivities((prev) => ({
+        ...prev,
+        [selectedId]: (data as EnquiryActivity[] | null) ?? [],
+      }));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedId]);
+
   async function loadActivities(enquiryId: string) {
     if (activities[enquiryId]) return;
     const { data } = await supabase
@@ -851,14 +872,29 @@ function EnquiriesPage() {
           <div style={{ ...SECTION_HEADER, marginTop: 20 }}>Activity</div>
           <div style={{ ...CARD, padding: 16 }}>
             {(() => {
-              const items: { title: string; at: string | null; pending?: boolean }[] = [];
+              const items: {
+                title: string;
+                at: string | null;
+                pending?: boolean;
+                type?: string;
+              }[] = [];
               items.push({ title: "Enquiry received", at: enquiry.created_at });
               list.forEach((a) =>
-                items.push({ title: a.body ?? a.type, at: a.created_at }),
+                items.push({ title: a.body ?? a.type, at: a.created_at, type: a.type ?? undefined }),
               );
               if (status === "new") items.push({ title: "Awaiting contact", at: null, pending: true });
               return items.map((it, i) => {
                 const last = i === items.length - 1;
+                const isNote = it.type === "note";
+                const dot = it.pending
+                  ? "#D1D1D6"
+                  : isNote
+                    ? "#F59E0B"
+                    : it.type === "call"
+                      ? "#1877D6"
+                      : it.type === "status_change"
+                        ? "#15803D"
+                        : "#1877D6";
                 return (
                   <div key={`${it.title}-${i}`} style={{ display: "flex", gap: 12 }}>
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -868,7 +904,7 @@ function EnquiriesPage() {
                           height: 9,
                           borderRadius: 5,
                           marginTop: 5,
-                          background: it.pending ? "#D1D1D6" : "#1877D6",
+                          background: dot,
                           flexShrink: 0,
                         }}
                       />
@@ -879,7 +915,8 @@ function EnquiriesPage() {
                         style={{
                           color: it.pending ? "#B0B0B5" : "#0B1F3A",
                           fontSize: 13.5,
-                          fontWeight: 700,
+                          fontWeight: isNote ? 500 : 700,
+                          fontStyle: isNote ? "italic" : "normal",
                           ...POPPINS,
                         }}
                       >
