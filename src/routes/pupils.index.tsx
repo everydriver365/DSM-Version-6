@@ -734,6 +734,20 @@ function PupilsIndexPage() {
         </span>
         <div className="flex items-center" style={{ gap: 8 }}>
           <Link
+            to="/pupils/new"
+            aria-label="Add pupil"
+            className="flex items-center justify-center"
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              backgroundColor: "#1877D6",
+              flexShrink: 0,
+            }}
+          >
+            <IconPlus size={18} color="#FFFFFF" stroke={2} />
+          </Link>
+          <Link
             to="/broadcast"
             aria-label="Message all pupils"
             className="inline-flex items-center gap-1.5"
