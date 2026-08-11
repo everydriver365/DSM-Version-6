@@ -58,7 +58,7 @@ const allTools: Tool[] = [
   { icon: MapPin, colour: '#6B7280', label: 'Mileage', sub: 'Log miles', route: '/mileage', group: 'Business' },
   { icon: FileText, colour: '#1A52A0', label: 'Invoices', sub: 'Billing', route: '/invoices', group: 'Business' },
   { icon: MapPin, colour: '#1A52A0', label: 'Coverage areas', sub: 'Service areas', route: '/coverage-areas', group: 'Business' },
-  { icon: IconCreditCard, colour: '#F59E0B', label: 'Square Settings', sub: 'Card payment setup', route: '/profile', group: 'Business' },
+  { icon: IconCreditCard, colour: '#F59E0B', label: 'Square Settings', sub: 'Card payment setup', route: '/square', group: 'Business' },
 
   // Payments
   { icon: IconCreditCard, colour: '#D97706', label: 'Square Payments', sub: 'Set up card payments', route: '/profile', group: 'Payments', gradient: 'linear-gradient(135deg, #F59E0B, #D97706)' },
