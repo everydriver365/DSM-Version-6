@@ -732,46 +732,66 @@ function EnquiriesPage() {
 
           {/* Actions */}
           <div style={SECTION_HEADER}>Actions</div>
-          <div style={{ ...CARD, opacity: busy ? 0.6 : 1 }}>
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 18,
+              overflow: "hidden",
+              boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+              opacity: busy ? 0.6 : 1,
+            }}
+          >
             {open && (
               <>
-                <DetailRow
+                <ActionRow
                   label="Mark contacted"
                   Icon={IconCheck}
+                  chipBg="#F2F2F7"
+                  chipColor="#6B6B6F"
+                  isFirst
                   onClick={() => void markContacted(enquiry)}
                 />
-                <DetailRow
+                <ActionRow
                   label="Send SMS"
                   Icon={IconMessage}
+                  chipBg="#E7F1FC"
+                  chipColor="#1877D6"
                   href={enquiry.phone ? `sms:${enquiry.phone}` : undefined}
                 />
-                <DetailRow
+                <ActionRow
                   label="Accept enquiry"
                   Icon={IconCheck}
-                  color="#1877D6"
+                  chipBg="#E6F7EC"
+                  chipColor="#248A3D"
+                  labelColor="#248A3D"
                   onClick={() => void acceptEnquiry(enquiry)}
                 />
-                <DetailRow
+                <ActionRow
                   label="Can't help — send to Jobs"
                   Icon={IconBriefcase}
+                  chipBg="#FFF6DC"
+                  chipColor="#D68A1B"
                   onClick={() => void declineEnquiry(enquiry, true)}
                 />
-                <DetailRow
+                <ActionRow
                   label="Decline"
                   Icon={IconX}
-                  color="#CC2229"
+                  chipBg="#FDEDEC"
+                  chipColor="#FF3B30"
+                  labelColor="#FF3B30"
                   onClick={() => void declineEnquiry(enquiry, false)}
-                  isLast
                 />
               </>
             )}
 
             {status === "accepted" && (
-              <DetailRow
+              <ActionRow
                 label="View pupil profile"
-                Icon={IconChevronRight}
-                color="#1877D6"
-                isLast
+                Icon={IconCheck}
+                chipBg="#E6F7EC"
+                chipColor="#248A3D"
+                labelColor="#248A3D"
+                isFirst
                 onClick={() => {
                   const pid = newPupilIds[enquiry.id];
                   if (pid) {
@@ -787,17 +807,27 @@ function EnquiriesPage() {
             )}
 
             {status === "on_jobs" && (
-              <DetailRow
+              <ActionRow
                 label="Sent to Jobs board"
                 Icon={IconBriefcase}
+                chipBg="#FFF6DC"
+                chipColor="#D68A1B"
                 value={timeAgo(enquiry.sent_to_jobs_at)}
-                isLast
+                isFirst
               />
             )}
 
             {status === "declined" && (
-              <DetailRow label="Enquiry declined" Icon={IconX} color="#CC2229" isLast />
+              <ActionRow
+                label="Enquiry declined"
+                Icon={IconX}
+                chipBg="#FDEDEC"
+                chipColor="#FF3B30"
+                labelColor="#FF3B30"
+                isFirst
+              />
             )}
+
           </div>
 
           {/* Activity */}
