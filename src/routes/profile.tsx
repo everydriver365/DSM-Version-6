@@ -1311,7 +1311,141 @@ function ProfilePage() {
                 </div>
               </div>
             </Link>
+
+            {/* CARD PAYMENTS */}
+            <div className="text-[11px] font-semibold tracking-wide text-[#6B7280] mt-1" style={POPPINS}>
+              CARD PAYMENTS
+            </div>
+
+            <div
+              className="overflow-hidden rounded-2xl bg-white"
+              style={{ boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)" }}
+            >
+              {squareConnected ? (
+                <div className="flex items-center gap-3" style={{ padding: "14px 16px" }}>
+                  <div
+                    className="flex items-center justify-center rounded-[11px]"
+                    style={{ width: 38, height: 38, backgroundColor: "#E6F6EE" }}
+                  >
+                    <IconCheck size={20} stroke={2} color="#1A9B5C" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                      Square connected
+                    </div>
+                    <div className="text-[11px] text-[#9CA3AF]" style={POPPINS}>
+                      {squareConnectedAt
+                        ? `Connected ${new Date(squareConnectedAt).toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}`
+                        : "Card payments enabled"}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={squareBusy}
+                    onClick={disconnectSquare}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: "#CC2229",
+                      fontFamily: "Poppins, sans-serif",
+                      flexShrink: 0,
+                      opacity: squareBusy ? 0.6 : 1,
+                    }}
+                  >
+                    Disconnect
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <button
+                    type="button"
+                    disabled={squareBusy}
+                    onClick={connectSquare}
+                    className="w-full text-left hover:bg-[#F6F7F9]"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      padding: "14px 16px",
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <div
+                      className="flex items-center justify-center rounded-[11px]"
+                      style={{ width: 38, height: 38, backgroundColor: "#E7F1FC" }}
+                    >
+                      <IconCreditCard size={20} stroke={1.7} color="#1877D6" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                        Connect Square
+                      </div>
+                      <div className="text-[11px] text-[#9CA3AF]" style={POPPINS}>
+                        Accept card payments instantly
+                      </div>
+                    </div>
+                    <IconChevronRight size={18} stroke={1.7} color="#C7CBD1" />
+                  </button>
+
+                  <div style={{ height: 1, backgroundColor: "#EFEFF2", marginLeft: 66 }} />
+
+                  <button
+                    type="button"
+                    onClick={() => window.open("https://squareup.com/i/EVERYDRIVE", "_blank")}
+                    className="w-full text-left hover:bg-[#F6F7F9]"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      padding: "14px 16px",
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <div
+                      className="flex items-center justify-center rounded-[11px]"
+                      style={{ width: 38, height: 38, backgroundColor: "#F3F4F6" }}
+                    >
+                      <IconExternalLink size={20} stroke={1.7} color="#0B1F3A" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                        Get a Square account
+                      </div>
+                      <div className="text-[11px] text-[#9CA3AF]" style={POPPINS}>
+                        Free to sign up via our partner link
+                      </div>
+                    </div>
+                    <IconChevronRight size={18} stroke={1.7} color="#C7CBD1" />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {!squareConnected && (
+              <div
+                className="flex items-start gap-2 rounded-xl p-3"
+                style={{ backgroundColor: "#FFFBEB", borderWidth: "1px", borderStyle: "solid", borderColor: "#FCD34D" }}
+              >
+                <IconAlertTriangle size={18} stroke={1.6} color="#B45309" style={{ flexShrink: 0 }} />
+                <div className="text-[12px]" style={{ ...POPPINS, color: "#92400E" }}>
+                  Without Square, card payments take up to 2 days to reach you via EveryDriver. Connect
+                  Square for instant payouts.
+                </div>
+              </div>
+            )}
           </div>
+
         </AccordionCard>
 
         {/* Danger zone */}
