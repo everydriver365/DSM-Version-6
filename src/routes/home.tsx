@@ -4021,18 +4021,7 @@ function HomePage() {
     return days >= 0 && days <= 7;
   }).length;
   const naCalls: number = 0; // TODO: wire missed calls
-  const [naEnquiries, setNaEnquiries] = useState(0);
-  useEffect(() => {
-    if (!userId) return;
-    void supabase
-      .from("enquiries")
-      .select("id", { count: "exact", head: true })
-      .eq("instructor_id", userId)
-      .eq("status", "new")
-      .then(({ count }) => {
-        setNaEnquiries(count ?? 0);
-      });
-  }, [userId]);
+  // naEnquiries is fetched above (hook must run before early returns)
 
 
   const timeAgo = (iso: string) => {
