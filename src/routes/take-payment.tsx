@@ -461,7 +461,7 @@ function TakePaymentPage() {
           style={{
             textAlign: "center",
             flexShrink: 0,
-            padding: passBookingFee ? "10px 16px 0" : "10px 16px",
+            padding: "10px 16px",
             fontSize: 46,
             fontWeight: 900,
             letterSpacing: "-1.5px",
@@ -471,21 +471,7 @@ function TakePaymentPage() {
         >
           £{totalNum.toFixed(2)}
         </div>
-        {passBookingFee && (
-          <div
-            style={{
-              textAlign: "center",
-              flexShrink: 0,
-              padding: "0 16px 4px",
-              marginTop: 4,
-              fontSize: 13,
-              fontWeight: 500,
-              color: "#8A8A8E",
-            }}
-          >
-            1% fee (£{(amountNum * 0.01).toFixed(2)}) deducted from your payout
-          </div>
-        )}
+
 
         {/* Pupil + Description — compact single row */}
         <div
@@ -909,11 +895,6 @@ function TakePaymentPage() {
             <div style={{ fontSize: 40, fontWeight: 700, marginTop: 4, lineHeight: 1.05 }}>
               £{totalNum.toFixed(2)}
             </div>
-            {passBookingFee && (
-              <div style={{ fontSize: 12, opacity: 0.8, marginTop: 4 }}>
-                1% fee (£{(amountNum * 0.01).toFixed(2)}) deducted from your payout
-              </div>
-            )}
             {(pupilName || description) && (
               <div style={{ marginTop: 10 }}>
                 {pupilName && (

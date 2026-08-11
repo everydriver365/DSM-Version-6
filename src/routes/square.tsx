@@ -291,7 +291,6 @@ function SquarePage() {
 
             <SectionHeader>Fees</SectionHeader>
             <Card>
-              <InfoRow label="DSM platform fee" value="1% per transaction" divider />
               <InfoRow label="Card processing" value="Square's standard rate" divider />
               <InfoRow label="Payout speed" value="Instant to your bank" />
             </Card>
@@ -474,7 +473,7 @@ function SquarePage() {
 
             <SectionHeader>Fees</SectionHeader>
             <Card>
-              <InfoRow label="DSM platform fee" value="1% per transaction" divider />
+              
               <InfoRow
                 label="Card processing"
                 value="Square's standard rate (~1.75%)"
