@@ -412,6 +412,10 @@ export function UnifiedPaymentSheet({
   const [squareLoading, setSquareLoading] = useState(false);
   const [squareLink, setSquareLink] = useState<string | null>(null);
   const [showQR, setShowQR] = useState(false);
+  // A Square link is only a request for payment; the webhook settles the
+  // intent, and this watches for that so the sheet can say "paid".
+  const [squareIntentId, setSquareIntentId] = useState<string | null>(null);
+  const [squareIntentPaid, setSquareIntentPaid] = useState(false);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
   const [refundAmount, setRefundAmount] = useState("");
   const [refundReason, setRefundReason] = useState("");
