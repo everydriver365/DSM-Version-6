@@ -957,7 +957,7 @@ function EnquiriesPage() {
                   Icon={IconBriefcase}
                   chipBg="#FFF6DC"
                   chipColor="#D68A1B"
-                  description="Posts this enquiry to the Jobs board so another local instructor can pick it up — it moves out of your active list into 'On jobs board'."
+                  description="Posts to the Jobs board for another local instructor to pick up — moves to your On jobs board section, not deleted."
                   onClick={() => void declineEnquiry(enquiry, true)}
                 />
                 <ActionRow
