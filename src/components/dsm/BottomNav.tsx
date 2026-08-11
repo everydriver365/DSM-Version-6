@@ -104,6 +104,9 @@ function useUnreadMessages(): number {
     };
     window.addEventListener("dsm-message-received", onPing);
     window.addEventListener("dsm-messages-read", onPing);
+    // The inbox recounts instructor DMs on its own realtime feed; mirror that
+    // into the badge so it updates without waiting for the 60s poll.
+    window.addEventListener("dsm-instructor-dm-unread", onPing);
 
     const channel = supabase
       .channel(`unread-badge-${uid}`)
