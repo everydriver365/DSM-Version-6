@@ -3,7 +3,7 @@ import React from "react";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { recordPayment, recordRefund } from "@/lib/payments";
+import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { buildPickup, getPickupParts } from "@/lib/pickup";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { QuickActionsMenu, type QuickAction } from "@/components/dsm/QuickActionsMenu";
