@@ -331,22 +331,26 @@ function ProfilePage() {
   // --- Square payments connection ---
   const [squareConnected, setSquareConnected] = useState(false);
   const [squareMerchantId, setSquareMerchantId] = useState<string | null>(null);
+  const [squareConnectedAt, setSquareConnectedAt] = useState<string | null>(null);
   const [squareBusy, setSquareBusy] = useState(false);
 
   const loadSquare = async (uid: string) => {
     const { data, error } = await supabase
       .from("instructors")
-      .select("square_merchant_id")
+      .select("square_merchant_id, square_connected_at")
       .eq("id", uid)
       .maybeSingle();
     if (error) {
       console.warn("[profile] load square_merchant_id", error);
       return;
     }
-    const mid = (data as { square_merchant_id?: string | null } | null)?.square_merchant_id ?? null;
+    const row = data as { square_merchant_id?: string | null; square_connected_at?: string | null } | null;
+    const mid = row?.square_merchant_id ?? null;
     setSquareMerchantId(mid);
+    setSquareConnectedAt(row?.square_connected_at ?? null);
     setSquareConnected(Boolean(mid));
   };
+
 
   const connectSquare = async () => {
     if (!userId) return;
