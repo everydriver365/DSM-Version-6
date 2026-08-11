@@ -2296,26 +2296,6 @@ export function UnifiedPaymentSheet({
               </div>
             )}
 
-            {/* 1% fee note */}
-            {feeApplies && amountNum > 0 && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  background: AMBER_BG,
-                  border: `1px solid ${BORDER}`,
-                  borderRadius: 8,
-                  padding: "8px 12px",
-                  marginBottom: 12,
-                  fontSize: 11,
-                  color: AMBER,
-                }}
-              >
-                <span>1% platform fee</span>
-                <strong>You receive {money(netAfterFee)}</strong>
-              </div>
-            )}
 
             {/* QR */}
             {method === "qr" && qrUrl && (
