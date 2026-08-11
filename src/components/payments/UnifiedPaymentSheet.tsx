@@ -8,6 +8,7 @@ import { IconCircleCheck, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { recordPayment, recordRefund, recordStandalonePayment, correctPaymentRecord, getPupilBalance, type PupilBalance } from "@/lib/payments";
+import { createSquareIntent, watchSquareIntent } from "@/lib/squareIntents";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -412,6 +413,10 @@ export function UnifiedPaymentSheet({
   const [squareLoading, setSquareLoading] = useState(false);
   const [squareLink, setSquareLink] = useState<string | null>(null);
   const [showQR, setShowQR] = useState(false);
+  // A Square link is only a request for payment; the webhook settles the
+  // intent, and this watches for that so the sheet can say "paid".
+  const [squareIntentId, setSquareIntentId] = useState<string | null>(null);
+  const [squareIntentPaid, setSquareIntentPaid] = useState(false);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
   const [refundAmount, setRefundAmount] = useState("");
   const [refundReason, setRefundReason] = useState("");
@@ -917,7 +922,7 @@ export function UnifiedPaymentSheet({
       },
     });
     if (error) throw error;
-    const res = data as { no_square?: boolean; url?: string; long_url?: string } | null;
+    const res = data as { no_square?: boolean; url?: string; long_url?: string; id?: string } | null;
     if (res?.no_square) {
       toast.error("Square not connected. Connect Square in your profile.");
       return null;
@@ -925,8 +930,33 @@ export function UnifiedPaymentSheet({
     // Square hosted checkout URL (checkout.square.site/...) — never a redirect URL
     const checkoutUrl = res?.url ?? res?.long_url ?? null;
     if (!checkoutUrl) throw new Error("No payment link returned");
+    if (instructorId) {
+      setSquareIntentPaid(false);
+      setSquareIntentId(
+        await createSquareIntent({
+          instructorId,
+          pupilId: pupilId ?? null,
+          amountPence: Math.round(amountNum * 100),
+          description: note.trim() || "Driving lesson",
+          paymentLinkId: res?.id ?? null,
+          checkoutUrl,
+        }),
+      );
+    }
     return checkoutUrl;
   }, [amountNum, instructorId, pupilId, note]);
+
+  useEffect(() => {
+    if (!squareIntentId) return;
+    const stop = watchSquareIntent(squareIntentId, (status) => {
+      if (status !== "paid") return;
+      setSquareIntentPaid(true);
+      toast.success("Payment received");
+      window.dispatchEvent(new Event("dsm-payment-recorded"));
+      stop();
+    });
+    return stop;
+  }, [squareIntentId]);
 
   async function generateSquareLink(type: "link" | "qr") {
     if (!instructorId) {
@@ -3270,16 +3300,22 @@ export function UnifiedPaymentSheet({
           <div style={{ fontSize: 16, fontWeight: 600, color: WHITE, marginTop: 16 }}>
             Scan to pay {money(amountNum)}
           </div>
-          <div
-            style={{
-              fontSize: 12,
-              color: MUTED,
-              marginTop: 8,
-              animation: "ups-pulse 1.6s ease-in-out infinite",
-            }}
-          >
-            ● Waiting for payment...
-          </div>
+          {squareIntentPaid ? (
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#22C55E", marginTop: 8 }}>
+              ● Payment received
+            </div>
+          ) : (
+            <div
+              style={{
+                fontSize: 12,
+                color: MUTED,
+                marginTop: 8,
+                animation: "ups-pulse 1.6s ease-in-out infinite",
+              }}
+            >
+              ● Waiting for payment...
+            </div>
+          )}
           <div
             style={{
               position: "absolute",

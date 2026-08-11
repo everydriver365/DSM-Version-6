@@ -5,6 +5,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { recordPayment, recordPaymentWithPackage } from "@/lib/payments";
+import { createSquareIntent, watchSquareIntent } from "@/lib/squareIntents";
 
 
 export const Route = createFileRoute("/take-payment")({
@@ -62,6 +63,25 @@ function TakePaymentPage() {
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [qrPaymentId, setQrPaymentId] = useState<string | null>(null);
   const [qrGenerating, setQrGenerating] = useState(false);
+
+  // Square settlement: a generated link is only a request for payment. The
+  // intent row is settled by the Square webhook, and we watch it here so the
+  // instructor sees "paid" the moment the pupil actually pays.
+  const [intentId, setIntentId] = useState<string | null>(null);
+  const [intentPaid, setIntentPaid] = useState(false);
+
+  useEffect(() => {
+    if (!intentId) return;
+    setIntentPaid(false);
+    const stop = watchSquareIntent(intentId, (status) => {
+      if (status !== "paid") return;
+      setIntentPaid(true);
+      toast.success("Payment received");
+      window.dispatchEvent(new Event("dsm-payment-recorded"));
+      stop();
+    });
+    return stop;
+  }, [intentId]);
 
   // Card
   const [cardLoading, setCardLoading] = useState(false);
@@ -203,6 +223,18 @@ function TakePaymentPage() {
       if (!res?.url) throw new Error("No payment URL returned");
       setQrUrl(res.url);
       setQrPaymentId(res.id ?? null);
+      // Pending until Square's webhook confirms the pupil actually paid.
+      setIntentId(
+        await createSquareIntent({
+          instructorId,
+          pupilId: pupilId || null,
+          lessonId: lessonId || null,
+          amountPence,
+          description: description || "Payment",
+          paymentLinkId: res.id ?? null,
+          checkoutUrl: res.url,
+        }),
+      );
       toast.success("Square payment link ready");
     } catch (e) {
       console.error("[take-payment] generateQr", e);
@@ -263,12 +295,22 @@ function TakePaymentPage() {
         },
       });
       if (error) throw error;
-      const res = data as { no_square?: boolean; url?: string } | null;
+      const res = data as { no_square?: boolean; url?: string; id?: string } | null;
       if (res?.no_square) {
         toast.error("Square not connected. Connect Square in your profile.");
         return;
       }
       if (!res?.url) throw new Error("No payment URL returned");
+      // Record the pending intent before leaving the app — the webhook settles it.
+      await createSquareIntent({
+        instructorId,
+        pupilId: pupilId || null,
+        lessonId: lessonId || null,
+        amountPence,
+        description: description || "Payment",
+        paymentLinkId: res.id ?? null,
+        checkoutUrl: res.url,
+      });
       window.location.href = res.url;
     } catch (e) {
       console.error("[take-payment] startCard", e);
@@ -905,9 +947,24 @@ function TakePaymentPage() {
             >
               <QRCodeSVG value={qrUrl} size={qrSize} />
             </div>
-            <div style={{ fontSize: 12, color: "#fff", opacity: 0.7 }}>
-              Waiting for payment…
-            </div>
+            {intentPaid ? (
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: "#fff",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
+                <CircleCheck size={16} /> Payment received
+              </div>
+            ) : (
+              <div style={{ fontSize: 12, color: "#fff", opacity: 0.7 }}>
+                Waiting for payment…
+              </div>
+            )}
           </div>
 
           {/* Bottom section (flex 0) */}

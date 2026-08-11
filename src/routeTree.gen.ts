@@ -168,6 +168,7 @@ import { Route as LessonsRescheduleIdRouteImport } from './routes/lessons.resche
 import { Route as LessonsFeedbackIdRouteImport } from './routes/lessons.feedback.$id'
 import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
 import { Route as DsmLivePodcastPodcastIdRouteImport } from './routes/dsm-live.podcast.$podcastId'
+import { Route as ApiPublicSquareWebhookRouteImport } from './routes/api/public/square-webhook'
 import { Route as ApiPublicCarplayV1LessonRouteImport } from './routes/api/public/carplay/v1/lesson'
 import { Route as ApiPublicCarplayV1DirectionsRouteImport } from './routes/api/public/carplay/v1/directions'
 import { Route as ApiPublicCarplayV1DevicesRouteImport } from './routes/api/public/carplay/v1/devices'
@@ -969,6 +970,11 @@ const DsmLivePodcastPodcastIdRoute = DsmLivePodcastPodcastIdRouteImport.update({
   path: '/podcast/$podcastId',
   getParentRoute: () => DsmLiveRoute,
 } as any)
+const ApiPublicSquareWebhookRoute = ApiPublicSquareWebhookRouteImport.update({
+  id: '/api/public/square-webhook',
+  path: '/api/public/square-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCarplayV1LessonRoute =
   ApiPublicCarplayV1LessonRouteImport.update({
     id: '/api/public/carplay/v1/lesson',
@@ -1141,6 +1147,7 @@ export interface FileRoutesByFullPath {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
   '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
@@ -1302,6 +1309,7 @@ export interface FileRoutesByTo {
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
   '/quotes': typeof QuotesIndexRoute
+  '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
   '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
@@ -1468,6 +1476,7 @@ export interface FileRoutesById {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
   '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
   '/lessons/feedback/$id': typeof LessonsFeedbackIdRoute
@@ -1634,6 +1643,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/api/public/square-webhook'
     | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
@@ -1795,6 +1805,7 @@ export interface FileRouteTypes {
     | '/notes'
     | '/pupils'
     | '/quotes'
+    | '/api/public/square-webhook'
     | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
@@ -1960,6 +1971,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/api/public/square-webhook'
     | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
     | '/lessons/feedback/$id'
@@ -2104,6 +2116,7 @@ export interface RootRouteChildren {
   NewsIndexRoute: typeof NewsIndexRoute
   NotesIndexRoute: typeof NotesIndexRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
+  ApiPublicSquareWebhookRoute: typeof ApiPublicSquareWebhookRoute
   LessonsEditIdRoute: typeof LessonsEditIdRoute
   LessonsFeedbackIdRoute: typeof LessonsFeedbackIdRoute
   LessonsRescheduleIdRoute: typeof LessonsRescheduleIdRoute
@@ -3235,6 +3248,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DsmLivePodcastPodcastIdRouteImport
       parentRoute: typeof DsmLiveRoute
     }
+    '/api/public/square-webhook': {
+      id: '/api/public/square-webhook'
+      path: '/api/public/square-webhook'
+      fullPath: '/api/public/square-webhook'
+      preLoaderRoute: typeof ApiPublicSquareWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/carplay/v1/lesson': {
       id: '/api/public/carplay/v1/lesson'
       path: '/api/public/carplay/v1/lesson'
@@ -3486,6 +3506,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsIndexRoute: NewsIndexRoute,
   NotesIndexRoute: NotesIndexRoute,
   PupilsIndexRoute: PupilsIndexRoute,
+  ApiPublicSquareWebhookRoute: ApiPublicSquareWebhookRoute,
   LessonsEditIdRoute: LessonsEditIdRoute,
   LessonsFeedbackIdRoute: LessonsFeedbackIdRoute,
   LessonsRescheduleIdRoute: LessonsRescheduleIdRoute,
