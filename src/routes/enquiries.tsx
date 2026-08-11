@@ -180,8 +180,14 @@ function EnquiriesPage() {
     };
   }, [selectedId]);
 
+  function appendActivity(enquiryId: string, activity: EnquiryActivity) {
+    setActivities((prev) => ({
+      ...prev,
+      [enquiryId]: [...(prev[enquiryId] ?? []), activity],
+    }));
+  }
+
   async function loadActivities(enquiryId: string) {
-    if (activities[enquiryId]) return;
     const { data } = await supabase
       .from("enquiry_activities")
       .select("*")
@@ -209,14 +215,10 @@ function EnquiriesPage() {
       })
       .select()
       .single();
-    if (data) {
-      setActivities((prev) => ({
-        ...prev,
-        [enquiryId]: [...(prev[enquiryId] ?? []), data as EnquiryActivity],
-      }));
-    }
+    if (data) appendActivity(enquiryId, data as EnquiryActivity);
     return (data as EnquiryActivity | null) ?? null;
   }
+
 
   async function removeActivity(enquiryId: string, activityId: string | undefined) {
     if (!activityId) return;
