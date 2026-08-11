@@ -921,7 +921,7 @@ export function UnifiedPaymentSheet({
       },
     });
     if (error) throw error;
-    const res = data as { no_square?: boolean; url?: string; long_url?: string } | null;
+    const res = data as { no_square?: boolean; url?: string; long_url?: string; id?: string } | null;
     if (res?.no_square) {
       toast.error("Square not connected. Connect Square in your profile.");
       return null;
@@ -929,8 +929,33 @@ export function UnifiedPaymentSheet({
     // Square hosted checkout URL (checkout.square.site/...) — never a redirect URL
     const checkoutUrl = res?.url ?? res?.long_url ?? null;
     if (!checkoutUrl) throw new Error("No payment link returned");
+    if (instructorId) {
+      setSquareIntentPaid(false);
+      setSquareIntentId(
+        await createSquareIntent({
+          instructorId,
+          pupilId: pupilId ?? null,
+          amountPence: Math.round(amountNum * 100),
+          description: note.trim() || "Driving lesson",
+          paymentLinkId: res?.id ?? null,
+          checkoutUrl,
+        }),
+      );
+    }
     return checkoutUrl;
   }, [amountNum, instructorId, pupilId, note]);
+
+  useEffect(() => {
+    if (!squareIntentId) return;
+    const stop = watchSquareIntent(squareIntentId, (status) => {
+      if (status !== "paid") return;
+      setSquareIntentPaid(true);
+      toast.success("Payment received");
+      window.dispatchEvent(new Event("dsm-payment-recorded"));
+      stop();
+    });
+    return stop;
+  }, [squareIntentId]);
 
   async function generateSquareLink(type: "link" | "qr") {
     if (!instructorId) {
