@@ -8691,8 +8691,11 @@ function HomePage() {
           onClick={() => navigate({ to: '/community' as never })}
           style={{
             position: 'fixed',
-            bottom: 'calc(80px + env(safe-area-inset-bottom, 0px) + 12px)',
-            right: 16,
+            bottom: 'calc(80px + env(safe-area-inset-bottom, 0px) + 16px)',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 50,
+            whiteSpace: 'nowrap',
             background: '#CC2229',
             border: 'none',
             borderRadius: '50%',
@@ -8703,7 +8706,6 @@ function HomePage() {
             justifyContent: 'center',
             cursor: 'pointer',
             boxShadow: '0 4px 12px rgba(204,34,41,0.4)',
-            zIndex: 40,
           }}
           aria-label="Report local issue"
         >
