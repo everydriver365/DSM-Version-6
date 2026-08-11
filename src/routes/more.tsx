@@ -58,6 +58,11 @@ const allTools: Tool[] = [
   { icon: FileText, colour: '#1A52A0', label: 'Invoices', sub: 'Billing', route: '/invoices', group: 'Business' },
   { icon: MapPin, colour: '#1A52A0', label: 'Coverage areas', sub: 'Service areas', route: '/coverage-areas', group: 'Business' },
 
+  // Payments
+  { icon: IconCreditCard, colour: '#D97706', label: 'Square Payments', sub: 'Set up card payments', route: '/profile', group: 'Payments', gradient: 'linear-gradient(135deg, #F59E0B, #D97706)' },
+
+
+
 
   // Reports
   { icon: BarChart3, colour: '#1A52A0', label: 'MTD', sub: 'Month to date', route: '/mtd', group: 'Reports' },
