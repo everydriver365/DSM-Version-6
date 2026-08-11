@@ -1,15 +1,35 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Inbox, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp, CheckCircle } from "lucide-react";
+import {
+  IconMail,
+  IconCheck,
+  IconX,
+  IconInbox,
+  IconChevronRight,
+} from "@tabler/icons-react";
 import { toast } from "sonner";
-import { Card } from "../components/dsm/Card";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import { EmptyState } from "@/components/dsm/EmptyState";
 
 export const Route = createFileRoute("/enquiries")({
   head: () => ({
-    meta: [{ title: "Enquiries — DSM by EveryDriver" }],
+    meta: [
+      { title: "Enquiries — DSM by EveryDriver" },
+      {
+        name: "description",
+        content:
+          "Review, accept or decline new pupil enquiries and turn them into pupil records.",
+      },
+      { property: "og:title", content: "Enquiries — DSM by EveryDriver" },
+      {
+        property: "og:description",
+        content: "Review, accept or decline new pupil enquiries.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
   }),
   component: EnquiriesPage,
 });
@@ -42,43 +62,29 @@ interface EnquiryRow {
   created_at: string | null;
 }
 
-function stripPhone(s: string) {
-  return s
-    .replace(/(?:phone|tel|mobile|mob)\s*[:\-]?\s*\+?[\d\s().-]{7,}/gi, "")
-    .replace(/\+?\d[\d\s().-]{8,}\d/g, "")
-    .replace(/\s{2,}/g, " ")
-    .trim();
-}
-
-function formatShortDate(iso: string) {
+function timeAgo(iso: string) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 30) return `${days}d ago`;
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-}
-
-
-function formatLongDate(iso: string | null) {
-  if (!iso) return "—";
-  return new Date(iso).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
 }
 
 function EnquiriesPage() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
   const [items, setItems] = useState<EnquiryNotification[]>([]);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [enquiryById, setEnquiryById] = useState<Record<string, EnquiryRow | null>>({});
-  const [loadingEnquiryId, setLoadingEnquiryId] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [showDeclined, setShowDeclined] = useState(false);
-  const [showAccepted, setShowAccepted] = useState(false);
+  const [newPupilIds, setNewPupilIds] = useState<Record<string, string>>({});
 
   useEffect(() => {
     let mounted = true;
-    supabase.auth.getSession().then(({ data, error }) => {
-      console.log("[enquiries] getSession", { user: data.session?.user?.id ?? null, error });
+    supabase.auth.getSession().then(({ data }) => {
       if (mounted) setUserId(data.session?.user?.id ?? null);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -104,7 +110,6 @@ function EnquiriesPage() {
     const list = (data ?? []) as EnquiryNotification[];
     setItems(list);
 
-    // Batch-fetch all referenced enquiries so we can render status badges + filter declined
     const refIds = list.map((n) => n.reference_id).filter((x): x is string => !!x);
     if (refIds.length > 0) {
       const { data: rows, error: e2 } = await supabase
@@ -126,56 +131,6 @@ function EnquiriesPage() {
     if (userId) load(userId);
   }, [userId]);
 
-  async function markRead(n: EnquiryNotification) {
-    if (n.read) return;
-    setItems((prev) => prev.map((x) => (x.id === n.id ? { ...x, read: true } : x)));
-    const { error } = await supabase
-      .from("instructor_notifications")
-      .update({ read: true })
-      .eq("id", n.id);
-    if (error) {
-      console.error("[enquiries] mark read error", error);
-      setItems((prev) => prev.map((x) => (x.id === n.id ? { ...x, read: false } : x)));
-    }
-  }
-
-  async function fetchEnquiry(refId: string) {
-    if (enquiryById[refId] != null) return;
-    setLoadingEnquiryId(refId);
-    const { data, error } = await supabase
-      .from("enquiries")
-      .select("*")
-      .eq("id", refId)
-      .maybeSingle();
-    if (error) {
-      console.error("[enquiries] enquiry fetch error", error);
-      toast.error("Couldn't load enquiry details");
-    }
-    setEnquiryById((prev) => ({ ...prev, [refId]: (data as EnquiryRow | null) ?? null }));
-    setLoadingEnquiryId(null);
-  }
-
-  async function toggleExpand(n: EnquiryNotification) {
-    const willExpand = expandedId !== n.id;
-    setExpandedId(willExpand ? n.id : null);
-    if (willExpand && n.reference_id) {
-      void fetchEnquiry(n.reference_id);
-    }
-    if (willExpand && !n.read) {
-      void markRead(n);
-    }
-  }
-
-  async function getInstructorName(uid: string): Promise<string> {
-    const { data } = await supabase
-      .from("instructors")
-      .select("name")
-      .eq("id", uid)
-      .maybeSingle();
-    const name = (data as { name?: string | null } | null)?.name;
-    return (name && name.trim()) || "An instructor";
-  }
-
   async function acceptEnquiry(enquiry: EnquiryRow) {
     if (!userId) return;
     setBusyId(enquiry.id);
@@ -190,45 +145,47 @@ function EnquiriesPage() {
         return;
       }
 
-      const instructorName = await getInstructorName(userId);
-      const message =
-        `Instructor ${instructorName} has accepted the enquiry from ${enquiry.name ?? "(no name)"} ` +
-        `for a ${enquiry.course_interest ?? "(no course)"} course near ${enquiry.postcode ?? "(no postcode)"}. ` +
-        `Please contact the pupil to complete the booking.\n\n` +
-        `Pupil: ${enquiry.name ?? ""}\n` +
-        `Email: ${enquiry.email ?? ""}\n` +
-        `Phone: ${enquiry.phone ?? ""}\n` +
-        `Course: ${enquiry.course_interest ?? ""}\n` +
-        `Hours: ${enquiry.requested_hours ?? ""}\n` +
-        `Transmission: ${enquiry.transmission ?? ""}\n` +
-        `Timing: ${enquiry.preferred_timing ?? ""}`;
+      const { data: newPupil, error: pupilErr } = await supabase
+        .from("pupils")
+        .insert({
+          instructor_id: userId,
+          name: enquiry.name ?? "New pupil",
+          email: enquiry.email ?? null,
+          phone: enquiry.phone ?? null,
+          postcode: enquiry.postcode ?? null,
+          notes: [
+            enquiry.course_interest ? `Course: ${enquiry.course_interest}` : null,
+            enquiry.transmission ? `Transmission: ${enquiry.transmission}` : null,
+            enquiry.requested_hours ? `Hours: ${enquiry.requested_hours}` : null,
+            enquiry.preferred_timing ? `Timing: ${enquiry.preferred_timing}` : null,
+            enquiry.preferred_start_date ? `Start: ${enquiry.preferred_start_date}` : null,
+            enquiry.notes ?? null,
+          ]
+            .filter(Boolean)
+            .join("\n"),
+          status: "enquiry",
+          created_at: new Date().toISOString(),
+        })
+        .select("id")
+        .single();
 
-      const { error: csErr } = await supabase.from("contact_submissions").insert({
-        name: enquiry.name ?? "Enquiry",
-        email: "admin@everydriver.co.uk",
-        subject: "Instructor accepted enquiry — please book",
-        message,
-      });
-      if (csErr) console.warn("[enquiries] contact_submissions insert error", csErr);
+      if (pupilErr) {
+        console.warn("[enquiries] pupil create error", pupilErr);
+      }
 
-      const { error: adminErr } = await supabase.from("instructor_notifications").insert({
-        instructor_id: null,
-        type: "admin_enquiry_accepted",
-        title: `Instructor accepted enquiry — ${enquiry.name ?? ""}`,
-        body: message,
-        reference_id: enquiry.id,
-        read: false,
-      });
-      if (adminErr) console.warn("[enquiries] admin notification insert error", adminErr);
+      const newPupilId = (newPupil as { id?: string } | null)?.id ?? null;
+      if (newPupilId) {
+        setNewPupilIds((prev) => ({ ...prev, [enquiry.id]: newPupilId }));
+      }
 
       setEnquiryById((prev) => ({ ...prev, [enquiry.id]: { ...enquiry, status: "accepted" } }));
-      toast.success("Enquiry accepted — admin notified");
+      toast.success(newPupilId ? "Enquiry accepted — pupil created" : "Enquiry accepted");
     } finally {
       setBusyId(null);
     }
   }
 
-  async function declineEnquiry(enquiry: EnquiryRow, notificationId: string) {
+  async function declineEnquiry(enquiry: EnquiryRow) {
     setBusyId(enquiry.id);
     try {
       const { error } = await supabase
@@ -241,7 +198,6 @@ function EnquiriesPage() {
         return;
       }
       setEnquiryById((prev) => ({ ...prev, [enquiry.id]: { ...enquiry, status: "declined" } }));
-      setExpandedId((cur) => (cur === notificationId ? null : cur));
       toast.success("Enquiry declined");
     } finally {
       setBusyId(null);
@@ -256,6 +212,57 @@ function EnquiriesPage() {
   const newItems = items.filter((n) => statusOf(n) === "new");
   const acceptedItems = items.filter((n) => statusOf(n) === "accepted");
   const declinedItems = items.filter((n) => statusOf(n) === "declined");
+  const isEmpty = items.length === 0;
+
+  function renderSection(label: string, list: EnquiryNotification[], status: string) {
+    if (list.length === 0) return null;
+    return (
+      <div style={{ marginBottom: 20 }}>
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 600,
+            color: "#9CA3AF",
+            textTransform: "uppercase",
+            letterSpacing: "0.08em",
+            margin: "0 16px 8px",
+          }}
+        >
+          {label} · {list.length}
+        </div>
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 16,
+            boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+            overflow: "hidden",
+            margin: "0 16px 4px",
+          }}
+        >
+          {list.map((n, i) => (
+            <EnquiryRowItem
+              key={n.id}
+              n={n}
+              enquiry={n.reference_id ? enquiryById[n.reference_id] ?? null : null}
+              status={status}
+              first={i === 0}
+              busy={
+                busyId != null && n.reference_id != null && busyId === enquiryById[n.reference_id]?.id
+              }
+              pupilId={
+                n.reference_id ? newPupilIds[enquiryById[n.reference_id]?.id ?? ""] ?? null : null
+              }
+              onAccept={acceptEnquiry}
+              onDecline={declineEnquiry}
+              onViewPupil={(id) =>
+                navigate({ to: "/pupils/$id" as never, params: { id } as never })
+              }
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <PageLayout className="pb-8" style={POPPINS}>
@@ -271,135 +278,18 @@ function EnquiriesPage() {
       />
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
-      <div className="px-4 mt-3">
-        {newItems.length === 0 && acceptedItems.length === 0 && declinedItems.length === 0 ? (
-          <div
-            className="flex flex-col items-center justify-center text-[13px]"
-            style={{ color: "#6B7280", padding: "32px 0" }}
-          >
-            <Inbox size={24} color="#6B7280" />
-            <div className="mt-2">No enquiries</div>
-          </div>
+      <div className="mt-3">
+        {isEmpty ? (
+          <EmptyState
+            icon={<IconInbox size={32} color="#9CA3AF" stroke={1.5} />}
+            title="No enquiries yet"
+            subtitle="Enquiries from EveryDriver will appear here"
+          />
         ) : (
           <>
-            <div
-              className="text-[11px] font-semibold tracking-wider"
-              style={{ color: "#6B7280", marginBottom: 8 }}
-            >
-              NEW ENQUIRIES
-            </div>
-            <div className="flex flex-col" style={{ gap: 8 }}>
-              {newItems.length === 0 ? (
-                <div className="text-[13px]" style={{ color: "#6B7280", padding: "4px 0" }}>
-                  No new enquiries.
-                </div>
-              ) : (
-                newItems.map((n) => (
-                  <EnquiryCard
-                    key={n.id}
-                    n={n}
-                    enquiry={n.reference_id ? enquiryById[n.reference_id] ?? null : null}
-                    loading={loadingEnquiryId === n.reference_id}
-                    expanded={expandedId === n.id}
-                    busy={busyId != null && n.reference_id != null && busyId === enquiryById[n.reference_id]?.id}
-                    onToggle={() => toggleExpand(n)}
-                    onClose={() => setExpandedId(null)}
-                    onAccept={(e) => acceptEnquiry(e)}
-                    onDecline={(e) => declineEnquiry(e, n.id)}
-                  />
-                ))
-              )}
-            </div>
-
-            {acceptedItems.length > 0 && (
-              <div className="mt-6">
-                <button
-                  type="button"
-                  onClick={() => setShowAccepted((v) => !v)}
-                  className="flex items-center justify-between w-full"
-                  style={{
-                    padding: "10px 12px",
-                    borderRadius: 8,
-                    backgroundColor: "#1877D6",
-                    color: "#FFFFFF",
-                    fontSize: 13,
-                    fontWeight: 600,
-                  }}
-                >
-                  <span className="flex items-center" style={{ gap: 6 }}>
-                    <CheckCircle size={16} color="#FFFFFF" />
-                    Accepted ({acceptedItems.length})
-                  </span>
-                  {showAccepted ? (
-                    <ChevronUp size={16} color="#FFFFFF" />
-                  ) : (
-                    <ChevronDown size={16} color="#FFFFFF" />
-                  )}
-                </button>
-                {showAccepted && (
-                  <div className="flex flex-col mt-2" style={{ gap: 8 }}>
-                    {acceptedItems.map((n) => (
-                      <EnquiryCard
-                        key={n.id}
-                        n={n}
-                        enquiry={n.reference_id ? enquiryById[n.reference_id] ?? null : null}
-                        loading={loadingEnquiryId === n.reference_id}
-                        expanded={expandedId === n.id}
-                        busy={false}
-                        subtitleOverride="Waiting for admin to book"
-                        onToggle={() => toggleExpand(n)}
-                        onClose={() => setExpandedId(null)}
-                        onAccept={(e) => acceptEnquiry(e)}
-                        onDecline={(e) => declineEnquiry(e, n.id)}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {declinedItems.length > 0 && (
-              <div className="mt-6">
-                <button
-                  type="button"
-                  onClick={() => setShowDeclined((v) => !v)}
-                  className="flex items-center justify-between w-full"
-                  style={{
-                    padding: "10px 12px",
-                    borderRadius: 8,
-                    backgroundColor: "#F3F4F6",
-                    color: "#6B7280",
-                    fontSize: 13,
-                    fontWeight: 600,
-                  }}
-                >
-                  <span>Declined ({declinedItems.length})</span>
-                  {showDeclined ? (
-                    <ChevronUp size={16} color="#6B7280" />
-                  ) : (
-                    <ChevronDown size={16} color="#6B7280" />
-                  )}
-                </button>
-                {showDeclined && (
-                  <div className="flex flex-col mt-2" style={{ gap: 8 }}>
-                    {declinedItems.map((n) => (
-                      <EnquiryCard
-                        key={n.id}
-                        n={n}
-                        enquiry={n.reference_id ? enquiryById[n.reference_id] ?? null : null}
-                        loading={loadingEnquiryId === n.reference_id}
-                        expanded={expandedId === n.id}
-                        busy={false}
-                        onToggle={() => toggleExpand(n)}
-                        onClose={() => setExpandedId(null)}
-                        onAccept={(e) => acceptEnquiry(e)}
-                        onDecline={(e) => declineEnquiry(e, n.id)}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
+            {renderSection("New", newItems, "new")}
+            {renderSection("Accepted", acceptedItems, "accepted")}
+            {renderSection("Declined", declinedItems, "declined")}
           </>
         )}
       </div>
@@ -407,219 +297,152 @@ function EnquiriesPage() {
   );
 }
 
-function StatusBadge({ status }: { status: string }) {
-  if (status === "accepted") {
-    return (
-      <span
-        className="text-[11px] font-semibold text-white"
-        style={{ backgroundColor: "#1877D6", padding: "2px 8px", borderRadius: 999 }}
-      >
-        Accepted ✓
-      </span>
-    );
-  }
-  if (status === "declined") {
-    return (
-      <span
-        className="text-[11px] font-semibold"
-        style={{
-          color: "#6B7280",
-          backgroundColor: "#F3F4F6",
-          padding: "2px 8px",
-          borderRadius: 999,
-        }}
-      >
-        Declined
-      </span>
-    );
-  }
+function StatusIcon({ status }: { status: string }) {
+  const map: Record<string, { bg: string; node: React.ReactNode }> = {
+    new: { bg: "#1877D6", node: <IconMail size={18} color="#FFFFFF" stroke={1.8} /> },
+    accepted: { bg: "#DCFCE7", node: <IconCheck size={18} color="#15803D" stroke={2} /> },
+    declined: { bg: "#FCE9E9", node: <IconX size={18} color="#CC2229" stroke={2} /> },
+  };
+  const conf = map[status] ?? map.new;
   return (
-    <span
-      className="text-[11px] font-semibold text-white"
-      style={{ backgroundColor: "#1877D6", padding: "2px 8px", borderRadius: 999 }}
+    <div
+      style={{
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        background: conf.bg,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+      }}
     >
-      New
-    </span>
+      {conf.node}
+    </div>
   );
 }
 
-function EnquiryCard({
+function EnquiryRowItem({
   n,
   enquiry,
-  loading,
-  expanded,
+  status,
+  first,
   busy,
-  onToggle,
-  onClose,
+  pupilId,
   onAccept,
   onDecline,
-  subtitleOverride,
+  onViewPupil,
 }: {
   n: EnquiryNotification;
   enquiry: EnquiryRow | null;
-  loading: boolean;
-  expanded: boolean;
+  status: string;
+  first: boolean;
   busy: boolean;
-  onToggle: () => void;
-  onClose: () => void;
+  pupilId: string | null;
   onAccept: (e: EnquiryRow) => void;
   onDecline: (e: EnquiryRow) => void;
-  subtitleOverride?: string;
+  onViewPupil: (id: string) => void;
 }) {
-  const status = (enquiry?.status ?? "new").toLowerCase();
-  const isDeclined = status === "declined";
-  const subtitle = subtitleOverride ?? (n.body ? stripPhone(n.body) : "");
+  const name = enquiry?.name ?? n.title ?? "Enquiry";
+  const meta = [enquiry?.course_interest, enquiry?.postcode].filter(Boolean).join(" · ");
+
   return (
-    <div>
-      <button type="button" onClick={onToggle} className="text-left w-full">
-        <Card>
-          <div className="flex items-start justify-between" style={{ gap: 8 }}>
-            <div className="min-w-0 flex-1">
-              <div
-                className="text-[14px] font-semibold truncate"
-                style={{ color: "#0B1F3A" }}
-              >
-                {n.title ?? "Enquiry"}
-              </div>
-              {subtitle && !expanded && (
-                <div
-                  className="text-[13px] mt-0.5 truncate"
-                  style={{ color: "#6B7280" }}
-                >
-                  {subtitle}
-                </div>
-              )}
-            </div>
-            <div className="flex flex-col items-end" style={{ gap: 4 }}>
-              <span className="text-[11px]" style={{ color: "#6B7280" }}>
-                {formatShortDate(n.created_at)}
-              </span>
-              <StatusBadge status={status} />
-            </div>
+    <div
+      style={{
+        padding: "14px 16px",
+        display: "flex",
+        gap: 12,
+        alignItems: "flex-start",
+        borderTop: first ? "none" : "1px solid #E4E8EF",
+        marginLeft: 0,
+      }}
+    >
+      <StatusIcon status={status} />
+      <div style={{ minWidth: 0, flex: 1 }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{name}</div>
+        {meta && <div style={{ fontSize: 12, color: "#6B7686", marginTop: 2 }}>{meta}</div>}
+        {enquiry?.phone && (
+          <a
+            href={`tel:${enquiry.phone}`}
+            style={{ fontSize: 12, color: "#1877D6", display: "inline-block", marginTop: 2 }}
+          >
+            {enquiry.phone}
+          </a>
+        )}
+        <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>{timeAgo(n.created_at)}</div>
+        {enquiry?.notes && (
+          <div style={{ fontSize: 12, color: "#6B7686", fontStyle: "italic", marginTop: 4 }}>
+            {enquiry.notes}
           </div>
+        )}
 
-          {expanded && (
-            <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #EEF2F7" }}>
-              {loading && enquiry == null ? (
-                <div className="text-[13px]" style={{ color: "#6B7280" }}>
-                  Loading…
-                </div>
-              ) : enquiry == null ? (
-                <div className="text-[13px]" style={{ color: "#6B7280" }}>
-                  Enquiry details unavailable.
-                </div>
-              ) : (
-                <DetailGrid enquiry={enquiry} receivedAt={n.created_at} />
-              )}
+        {status === "new" && (
+          <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+            <button
+              type="button"
+              disabled={!enquiry || busy}
+              onClick={() => enquiry && onAccept(enquiry)}
+              style={{
+                background: "#1877D6",
+                color: "#fff",
+                border: "none",
+                borderRadius: 20,
+                padding: "8px 16px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                opacity: enquiry && !busy ? 1 : 0.5,
+                ...POPPINS,
+              }}
+            >
+              Accept
+            </button>
+            <button
+              type="button"
+              disabled={!enquiry || busy}
+              onClick={() => enquiry && onDecline(enquiry)}
+              style={{
+                background: "#EEF2F7",
+                color: "#CC2229",
+                border: "none",
+                borderRadius: 20,
+                padding: "8px 16px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                opacity: enquiry && !busy ? 1 : 0.5,
+                ...POPPINS,
+              }}
+            >
+              Decline
+            </button>
+          </div>
+        )}
 
-              {!isDeclined && (
-                <div
-                  className="mt-3 grid"
-                  style={{ gridTemplateColumns: "1fr 1fr", gap: 8 }}
-                >
-                  <button
-                    type="button"
-                    disabled={!enquiry || busy || status === "accepted"}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (enquiry && status !== "accepted") onAccept(enquiry);
-                    }}
-                    className="inline-flex items-center justify-center gap-1 text-[13px] font-medium text-white"
-                    style={{
-                      height: 38,
-                      borderRadius: 8,
-                      backgroundColor: "#1877D6",
-                      opacity: enquiry && !busy && status !== "accepted" ? 1 : 0.5,
-                      ...POPPINS,
-                    }}
-                  >
-                    <ThumbsUp size={14} color="#FFFFFF" />{" "}
-                    {status === "accepted" ? "Accepted" : "Accept enquiry"}
-                  </button>
-                  <button
-                    type="button"
-                    disabled={!enquiry || busy}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (enquiry) onDecline(enquiry);
-                    }}
-                    className="inline-flex items-center justify-center gap-1 text-[13px] font-medium text-white"
-                    style={{
-                      height: 38,
-                      borderRadius: 8,
-                      backgroundColor: "#DC2626",
-                      opacity: enquiry && !busy ? 1 : 0.5,
-                      ...POPPINS,
-                    }}
-                  >
-                    <ThumbsDown size={14} color="#FFFFFF" /> Decline
-                  </button>
-                </div>
-              )}
-
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClose();
-                }}
-                className="mt-2 inline-flex items-center justify-center w-full text-[12px] font-medium"
-                style={{
-                  height: 32,
-                  borderRadius: 8,
-                  backgroundColor: "#F3F4F6",
-                  color: "#6B7280",
-                  ...POPPINS,
-                }}
-              >
-                Close
-              </button>
-            </div>
-          )}
-        </Card>
-      </button>
-    </div>
-  );
-}
-
-function DetailRow({ label, value }: { label: string; value: string | null | undefined }) {
-  const shown = value && String(value).trim().length > 0 ? String(value) : "—";
-  return (
-    <div className="flex items-start" style={{ gap: 8 }}>
-      <div
-        className="text-[12px] font-medium"
-        style={{ color: "#6B7280", width: 116, flexShrink: 0 }}
-      >
-        {label}
+        {status === "accepted" && pupilId && (
+          <button
+            type="button"
+            onClick={() => onViewPupil(pupilId)}
+            style={{
+              background: "#1877D6",
+              color: "#fff",
+              border: "none",
+              borderRadius: 20,
+              padding: "8px 16px",
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: "pointer",
+              fontFamily: "Poppins, sans-serif",
+              marginTop: 8,
+            }}
+          >
+            View pupil →
+          </button>
+        )}
       </div>
-      <div className="text-[13px] flex-1" style={{ color: "#0B1F3A", wordBreak: "break-word" }}>
-        {shown}
-      </div>
-    </div>
-  );
-}
-
-function DetailGrid({ enquiry, receivedAt }: { enquiry: EnquiryRow; receivedAt: string }) {
-  return (
-    <div className="flex flex-col" style={{ gap: 6 }}>
-      <DetailRow label="Name" value={enquiry.name} />
-      <DetailRow label="Email" value={enquiry.email} />
-      
-      <DetailRow label="Course" value={enquiry.course_interest} />
-      <DetailRow label="Transmission" value={enquiry.transmission} />
-      <DetailRow
-        label="Hours requested"
-        value={enquiry.requested_hours != null ? String(enquiry.requested_hours) : null}
-      />
-      <DetailRow label="Preferred timing" value={enquiry.preferred_timing} />
-      <DetailRow
-        label="Preferred start"
-        value={enquiry.preferred_start_date ? formatLongDate(enquiry.preferred_start_date) : null}
-      />
-      <DetailRow label="Postcode" value={enquiry.postcode} />
-      <DetailRow label="Notes" value={enquiry.notes} />
-      <DetailRow label="Received" value={formatLongDate(receivedAt)} />
-      {enquiry.status && <DetailRow label="Status" value={enquiry.status} />}
+      {status === "accepted" && !pupilId && (
+        <IconChevronRight size={16} color="#9CA3AF" stroke={1.8} />
+      )}
     </div>
   );
 }
