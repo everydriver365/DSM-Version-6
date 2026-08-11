@@ -8,6 +8,7 @@ import { IconCircleCheck, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { recordPayment, recordRefund, recordStandalonePayment, correctPaymentRecord, getPupilBalance, type PupilBalance } from "@/lib/payments";
+import { createSquareIntent, watchSquareIntent } from "@/lib/squareIntents";
 import {
   AlertDialog,
   AlertDialogAction,
