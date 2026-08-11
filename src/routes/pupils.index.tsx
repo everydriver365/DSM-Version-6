@@ -928,26 +928,6 @@ function PupilsIndexPage() {
         }
       `}</style>
 
-      {/* FAB */}
-      <Link
-        to="/pupils/new"
-        aria-label="Add pupil"
-        className="fixed z-50 flex items-center justify-center rounded-full"
-        style={{
-          width: 52,
-          height: 52,
-          backgroundColor: "#1877D6",
-          color: "#FFFFFF",
-          position: "fixed",
-          bottom: "calc(80px + env(safe-area-inset-bottom, 0px) + 16px)",
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 50,
-          whiteSpace: "nowrap",
-        }}
-      >
-        <IconPlus stroke={1.5} size={24} color="#FFFFFF" />
-      </Link>
 
       <UnifiedPaymentSheet
         open={unifiedPayOpen}

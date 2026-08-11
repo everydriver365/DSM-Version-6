@@ -1574,30 +1574,6 @@ function AlertsTab({
         </div>
       )}
 
-      {/* REPORT FAB */}
-      <button
-        type="button"
-        onClick={() => {
-          console.log("[community] FAB tapped");
-          console.log("[community] agreed:", typeof window !== "undefined" ? localStorage.getItem("community_agreed") : "n/a");
-          console.log("[community] instructor area:", instructorArea, instructorOutcode);
-          console.log("[community] userId:", userId);
-          setReportSheetOpenWithEvent(true);
-        }}
-        aria-label="Report local issue"
-        style={{
-          position: "fixed",
-          bottom: "calc(80px + env(safe-area-inset-bottom, 0px) + 16px)",
-          left: "50%",
-          transform: "translateX(-50%)",
-          whiteSpace: "nowrap",
-          background: "#CC2229", border: "none", borderRadius: "50%",
-          width: 56, height: 56, display: "flex", alignItems: "center", justifyContent: "center",
-          cursor: "pointer", boxShadow: "0 4px 12px rgba(204,34,41,0.4)", zIndex: 50, color: "white",
-        }}
-      >
-        <IconPlus stroke={1.5} size={24} />
-      </button>
 
       {reportSheetOpen && (
         <ReportSheet
