@@ -527,6 +527,7 @@ function EnquiriesPage() {
     onClick,
     isFirst,
     value,
+    description,
   }: {
     label: string;
     Icon: typeof IconMail;
@@ -537,56 +538,72 @@ function EnquiriesPage() {
     onClick?: () => void;
     isFirst?: boolean;
     value?: string | null;
+    description?: string;
   }) {
     const inner = (
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 13,
-          padding: "15px 16px",
+          padding: "14px 16px",
           borderTop: isFirst ? "none" : "1px solid #EFEFF2",
         }}
       >
-        <div
-          style={{
-            width: 34,
-            height: 34,
-            borderRadius: 10,
-            background: chipBg,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
-          <Icon size={18} stroke={2} color={chipColor} />
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 9,
+              background: chipBg,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <Icon size={17} stroke={2} color={chipColor} />
+          </div>
+          <div
+            style={{
+              fontSize: 14.5,
+              fontWeight: 700,
+              color: labelColor ?? "#0B1F3A",
+              ...POPPINS,
+            }}
+          >
+            {label}
+          </div>
+          <div
+            style={{
+              marginLeft: "auto",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            {value && (
+              <span style={{ fontSize: 13, color: "#8A8A8E", ...POPPINS }}>{value}</span>
+            )}
+            <IconChevronRight size={13} stroke={2} color="#C7C7CC" />
+          </div>
         </div>
-        <div
-          style={{
-            fontSize: 15,
-            fontWeight: 700,
-            color: labelColor ?? "#0B1F3A",
-            ...POPPINS,
-          }}
-        >
-          {label}
-        </div>
-        <div
-          style={{
-            marginLeft: "auto",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          {value && (
-            <span style={{ fontSize: 13.5, color: "#8A8A8E", ...POPPINS }}>{value}</span>
-          )}
-          <IconChevronRight size={14} stroke={2} color="#C7C7CC" />
-        </div>
+        {description && (
+          <div
+            style={{
+              marginTop: 6,
+              marginLeft: 44,
+              color: "#8A8A8E",
+              fontSize: 11.5,
+              fontWeight: 500,
+              lineHeight: 1.4,
+              ...POPPINS,
+            }}
+          >
+            {description}
+          </div>
+        )}
       </div>
     );
+
 
     if (href) {
       return (
