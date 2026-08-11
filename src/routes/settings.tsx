@@ -2084,7 +2084,7 @@ function SettingsPage() {
             label="Square"
             subLabel={squareConnected ? "Connected — taking card payments" : "Set up card payments"}
             value={squareConnected ? "Connected" : undefined}
-            onClick={() => navigate({ to: "/profile" as never, hash: "square" as never })}
+            onClick={() => navigate({ to: "/square" as never })}
             isFirst
             isLast
           />

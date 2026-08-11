@@ -61,7 +61,7 @@ const allTools: Tool[] = [
   { icon: IconCreditCard, colour: '#F59E0B', label: 'Square Settings', sub: 'Card payment setup', route: '/square', group: 'Business' },
 
   // Payments
-  { icon: IconCreditCard, colour: '#D97706', label: 'Square Payments', sub: 'Set up card payments', route: '/profile', group: 'Payments', gradient: 'linear-gradient(135deg, #F59E0B, #D97706)' },
+  { icon: IconCreditCard, colour: '#D97706', label: 'Square Payments', sub: 'Set up card payments', route: '/square', group: 'Payments', gradient: 'linear-gradient(135deg, #F59E0B, #D97706)' },
 
 
 
@@ -111,8 +111,7 @@ function MorePage() {
   const go = (route: string) => navigate({ to: route as never });
 
   const goSquare = () => {
-    try { sessionStorage.setItem('dsm-scroll-to', 'square'); } catch { /* ignore */ }
-    navigate({ to: '/profile' as never, hash: 'square' as never });
+    navigate({ to: '/square' as never });
   };
 
   return (
