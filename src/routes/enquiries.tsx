@@ -765,7 +765,18 @@ function EnquiriesPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#F3F8FF", paddingBottom: 90 }}>
-      <InstructorTopBar title="Enquiries" />
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Enquiries"
+        titleStyle={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.5px", color: "#fff" }}
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       <div style={{ padding: "4px 16px 24px" }}>
         {loading ? (
