@@ -37,6 +37,7 @@ type Tool = {
   sub: string;
   route: string;
   group: string;
+  gradient?: string;
 };
 
 const allTools: Tool[] = [
