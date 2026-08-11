@@ -1,5 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import squareLogo from "../assets/square-logo.png.asset.json";
+
 
 
 import {
