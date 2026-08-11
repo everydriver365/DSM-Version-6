@@ -103,13 +103,14 @@ const CARD: React.CSSProperties = {
 
 const SECTION_HEADER: React.CSSProperties = {
   fontSize: 12,
-  fontWeight: 800,
-  letterSpacing: "0.6px",
-  color: "#6B7280",
+  fontWeight: 700,
+  letterSpacing: "0.5px",
+  color: "#8A8A8E",
   textTransform: "uppercase",
   margin: "18px 4px 8px",
   ...POPPINS,
 };
+
 
 function EnquiriesPage() {
   const navigate = useNavigate();
