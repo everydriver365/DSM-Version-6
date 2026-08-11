@@ -502,7 +502,31 @@ function CommunityPage() {
         >
           <IconArrowLeft stroke={1.5} size={19} />
         </button>
-        <div style={{ fontWeight: 800, fontSize: 24, letterSpacing: "-0.4px", color: "#fff" }}>Community</div>
+        <div style={{ fontWeight: 800, fontSize: 24, letterSpacing: "-0.4px", color: "#fff", flex: 1, minWidth: 0 }}>Community</div>
+        <button
+          type="button"
+          onClick={() => {
+            console.log("[community] FAB tapped");
+            console.log("[community] agreed:", typeof window !== "undefined" ? localStorage.getItem("community_agreed") : "n/a");
+            console.log("[community] instructor area:", instructorArea, instructorOutcode);
+            console.log("[community] userId:", userId);
+            setReportSheetOpenWithEvent(true);
+          }}
+          aria-label="Report local issue"
+          style={{
+            width: 34, height: 34,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.15)",
+            border: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            flexShrink: 0,
+          }}
+        >
+          <IconPlus size={18} color="#fff" stroke={2} />
+        </button>
       </div>
 
       {/* TABS */}
