@@ -296,10 +296,15 @@ function MorePage() {
                   gap: 8,
                 }}
               >
-                {items.map((tool) => (
+                {items.map((tool) => {
+                  const isSquare = tool.label === 'Square Payments';
+                  const sub = isSquare
+                    ? (squareConnected ? 'Connected' : 'Set up card payments')
+                    : tool.sub;
+                  return (
                   <button
                     key={tool.label}
-                    onClick={() => go(tool.route)}
+                    onClick={() => (isSquare ? goSquare() : go(tool.route))}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -320,22 +325,29 @@ function MorePage() {
                         width: 36,
                         height: 36,
                         borderRadius: 10,
-                        background: tool.colour + '15',
+                        background: tool.gradient ?? tool.colour + '15',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
                       }}
                     >
-                      <tool.icon size={18} color={tool.colour} />
+                      <tool.icon size={tool.gradient ? 20 : 18} color={tool.gradient ? '#fff' : tool.colour} />
                     </div>
                     <div>
                       <div style={{ fontWeight: 500, fontSize: 15, color: '#0B1F3A' }}>{tool.label}</div>
-                      <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 1 }}>{tool.sub}</div>
+                      <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 1, display: 'flex', alignItems: 'center', gap: 5 }}>
+                        {isSquare && squareConnected && (
+                          <span style={{ width: 7, height: 7, borderRadius: 999, background: '#16A34A', flexShrink: 0 }} />
+                        )}
+                        {sub}
+                      </div>
                     </div>
                     <IconChevronRight size={14} color="#C7D0DC" style={{ marginLeft: 'auto', flexShrink: 0 }} />
                   </button>
-                ))}
+                  );
+                })}
+
               </div>
             </div>
           );
