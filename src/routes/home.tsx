@@ -8691,8 +8691,11 @@ function HomePage() {
           onClick={() => navigate({ to: '/community' as never })}
           style={{
             position: 'fixed',
-            bottom: 'calc(80px + env(safe-area-inset-bottom, 0px) + 12px)',
-            right: 16,
+            bottom: 'calc(80px + env(safe-area-inset-bottom, 0px) + 16px)',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 50,
+            whiteSpace: 'nowrap',
             background: '#CC2229',
             border: 'none',
             borderRadius: '50%',

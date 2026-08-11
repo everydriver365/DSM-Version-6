@@ -938,8 +938,12 @@ function PupilsIndexPage() {
           height: 52,
           backgroundColor: "#1877D6",
           color: "#FFFFFF",
-          right: 16,
-          bottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)",
+          position: "fixed",
+          bottom: "calc(80px + env(safe-area-inset-bottom, 0px) + 16px)",
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 50,
+          whiteSpace: "nowrap",
         }}
       >
         <IconPlus stroke={1.5} size={24} color="#FFFFFF" />
