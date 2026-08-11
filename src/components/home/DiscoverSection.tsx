@@ -390,7 +390,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           badgeColor: liveHighlightIsNow ? RED : BLUE,
           footer: "DSM Live",
           Icon: IconRadio,
-          onOpen: () => navigate({ to: "/live-sessions" as never }),
+          onOpen: () =>
+            navigate({
+              to: "/dsm-live/$sessionId",
+              params: { sessionId: String(liveHighlight.id) },
+            }),
         }
       : null;
 

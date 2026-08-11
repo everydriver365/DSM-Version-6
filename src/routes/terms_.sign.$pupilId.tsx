@@ -4,7 +4,7 @@ import { IconArrowLeft, IconCircleCheck } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/terms/sign/$pupilId")({
+export const Route = createFileRoute("/terms_/sign/$pupilId")({
   component: SignTermsPage,
   head: () => ({
     meta: [

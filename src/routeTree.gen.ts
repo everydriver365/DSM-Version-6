@@ -125,7 +125,7 @@ import { Route as PupilsNewRouteImport } from './routes/pupils.new'
 import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
 import { Route as NotesIdRouteImport } from './routes/notes.$id'
 import { Route as NewsArticleIdRouteImport } from './routes/news.$articleId'
-import { Route as MockTestsPupilIdRouteImport } from './routes/mock-tests.$pupilId'
+import { Route as MockTestsPupilIdRouteImport } from './routes/mock-tests_.$pupilId'
 import { Route as MessagesPupilIdRouteImport } from './routes/messages.$pupilId'
 import { Route as MarketplaceListRouteImport } from './routes/marketplace_.list'
 import { Route as MarketplaceEditRouteImport } from './routes/marketplace_.edit'
@@ -156,7 +156,7 @@ import { Route as MarketingHowItWorksRouteImport } from './routes/_marketing.how
 import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
 import { Route as MarketingContactRouteImport } from './routes/_marketing.contact'
 import { Route as MarketingAboutRouteImport } from './routes/_marketing.about'
-import { Route as TermsSignPupilIdRouteImport } from './routes/terms.sign.$pupilId'
+import { Route as TermsSignPupilIdRouteImport } from './routes/terms_.sign.$pupilId'
 import { Route as PupilsSyllabusIdRouteImport } from './routes/pupils.syllabus.$id'
 import { Route as PupilsProgressIdRouteImport } from './routes/pupils.progress.$id'
 import { Route as PupilsPaymentsIdRouteImport } from './routes/pupils.payments.$id'
@@ -753,9 +753,9 @@ const NewsArticleIdRoute = NewsArticleIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const MockTestsPupilIdRoute = MockTestsPupilIdRouteImport.update({
-  id: '/$pupilId',
-  path: '/$pupilId',
-  getParentRoute: () => MockTestsRoute,
+  id: '/mock-tests_/$pupilId',
+  path: '/mock-tests/$pupilId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const MessagesPupilIdRoute = MessagesPupilIdRouteImport.update({
   id: '/$pupilId',
@@ -908,9 +908,9 @@ const MarketingAboutRoute = MarketingAboutRouteImport.update({
   getParentRoute: () => MarketingRoute,
 } as any)
 const TermsSignPupilIdRoute = TermsSignPupilIdRouteImport.update({
-  id: '/sign/$pupilId',
-  path: '/sign/$pupilId',
-  getParentRoute: () => TermsRoute,
+  id: '/terms_/sign/$pupilId',
+  path: '/terms/sign/$pupilId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const PupilsSyllabusIdRoute = PupilsSyllabusIdRouteImport.update({
   id: '/pupils/syllabus/$id',
@@ -1042,7 +1042,7 @@ export interface FileRoutesByFullPath {
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
-  '/mock-tests': typeof MockTestsRouteWithChildren
+  '/mock-tests': typeof MockTestsRoute
   '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
   '/more': typeof MoreRoute
@@ -1082,7 +1082,7 @@ export interface FileRoutesByFullPath {
   '/take-payment': typeof TakePaymentRoute
   '/tax': typeof TaxRoute
   '/tax-report': typeof TaxReportRoute
-  '/terms': typeof TermsRouteWithChildren
+  '/terms': typeof TermsRoute
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
@@ -1204,7 +1204,7 @@ export interface FileRoutesByTo {
   '/marketplace-token-preview': typeof MarketplaceTokenPreviewRoute
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
-  '/mock-tests': typeof MockTestsRouteWithChildren
+  '/mock-tests': typeof MockTestsRoute
   '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
   '/more': typeof MoreRoute
@@ -1243,7 +1243,7 @@ export interface FileRoutesByTo {
   '/take-payment': typeof TakePaymentRoute
   '/tax': typeof TaxRoute
   '/tax-report': typeof TaxReportRoute
-  '/terms': typeof TermsRouteWithChildren
+  '/terms': typeof TermsRoute
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
@@ -1369,7 +1369,7 @@ export interface FileRoutesById {
   '/messages': typeof MessagesRouteWithChildren
   '/mileage': typeof MileageRoute
   '/minisite': typeof MinisiteRoute
-  '/mock-tests': typeof MockTestsRouteWithChildren
+  '/mock-tests': typeof MockTestsRoute
   '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
   '/more': typeof MoreRoute
@@ -1409,7 +1409,7 @@ export interface FileRoutesById {
   '/take-payment': typeof TakePaymentRoute
   '/tax': typeof TaxRoute
   '/tax-report': typeof TaxReportRoute
-  '/terms': typeof TermsRouteWithChildren
+  '/terms': typeof TermsRoute
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
@@ -1451,7 +1451,7 @@ export interface FileRoutesById {
   '/marketplace_/edit': typeof MarketplaceEditRoute
   '/marketplace_/list': typeof MarketplaceListRoute
   '/messages/$pupilId': typeof MessagesPupilIdRoute
-  '/mock-tests/$pupilId': typeof MockTestsPupilIdRoute
+  '/mock-tests_/$pupilId': typeof MockTestsPupilIdRoute
   '/news/$articleId': typeof NewsArticleIdRoute
   '/notes/$id': typeof NotesIdRoute
   '/pupils/$id': typeof PupilsIdRoute
@@ -1479,7 +1479,7 @@ export interface FileRoutesById {
   '/pupils/payments/$id': typeof PupilsPaymentsIdRoute
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
   '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
-  '/terms/sign/$pupilId': typeof TermsSignPupilIdRoute
+  '/terms_/sign/$pupilId': typeof TermsSignPupilIdRoute
   '/api/public/carplay/v1/dashboard': typeof ApiPublicCarplayV1DashboardRoute
   '/api/public/carplay/v1/devices': typeof ApiPublicCarplayV1DevicesRoute
   '/api/public/carplay/v1/directions': typeof ApiPublicCarplayV1DirectionsRoute
@@ -1943,7 +1943,7 @@ export interface FileRouteTypes {
     | '/marketplace_/edit'
     | '/marketplace_/list'
     | '/messages/$pupilId'
-    | '/mock-tests/$pupilId'
+    | '/mock-tests_/$pupilId'
     | '/news/$articleId'
     | '/notes/$id'
     | '/pupils/$id'
@@ -1971,7 +1971,7 @@ export interface FileRouteTypes {
     | '/pupils/payments/$id'
     | '/pupils/progress/$id'
     | '/pupils/syllabus/$id'
-    | '/terms/sign/$pupilId'
+    | '/terms_/sign/$pupilId'
     | '/api/public/carplay/v1/dashboard'
     | '/api/public/carplay/v1/devices'
     | '/api/public/carplay/v1/directions'
@@ -2027,7 +2027,7 @@ export interface RootRouteChildren {
   MessagesRoute: typeof MessagesRouteWithChildren
   MileageRoute: typeof MileageRoute
   MinisiteRoute: typeof MinisiteRoute
-  MockTestsRoute: typeof MockTestsRouteWithChildren
+  MockTestsRoute: typeof MockTestsRoute
   MonthToDateRoute: typeof MonthToDateRoute
   MonthendRoute: typeof MonthendRoute
   MoreRoute: typeof MoreRoute
@@ -2067,7 +2067,7 @@ export interface RootRouteChildren {
   TakePaymentRoute: typeof TakePaymentRoute
   TaxRoute: typeof TaxRoute
   TaxReportRoute: typeof TaxReportRoute
-  TermsRoute: typeof TermsRouteWithChildren
+  TermsRoute: typeof TermsRoute
   TestdayRoute: typeof TestdayRoute
   TestsRoute: typeof TestsRoute
   TodosRoute: typeof TodosRoute
@@ -2091,6 +2091,7 @@ export interface RootRouteChildren {
   MarketplaceApplyRoute: typeof MarketplaceApplyRoute
   MarketplaceEditRoute: typeof MarketplaceEditRoute
   MarketplaceListRoute: typeof MarketplaceListRoute
+  MockTestsPupilIdRoute: typeof MockTestsPupilIdRoute
   NewsArticleIdRoute: typeof NewsArticleIdRoute
   NotesIdRoute: typeof NotesIdRoute
   PupilsIdRoute: typeof PupilsIdRoute
@@ -2112,6 +2113,7 @@ export interface RootRouteChildren {
   PupilsPaymentsIdRoute: typeof PupilsPaymentsIdRoute
   PupilsProgressIdRoute: typeof PupilsProgressIdRoute
   PupilsSyllabusIdRoute: typeof PupilsSyllabusIdRoute
+  TermsSignPupilIdRoute: typeof TermsSignPupilIdRoute
   ApiPublicCarplayV1DashboardRoute: typeof ApiPublicCarplayV1DashboardRoute
   ApiPublicCarplayV1DevicesRoute: typeof ApiPublicCarplayV1DevicesRoute
   ApiPublicCarplayV1DirectionsRoute: typeof ApiPublicCarplayV1DirectionsRoute
@@ -2932,12 +2934,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsArticleIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/mock-tests/$pupilId': {
-      id: '/mock-tests/$pupilId'
-      path: '/$pupilId'
+    '/mock-tests_/$pupilId': {
+      id: '/mock-tests_/$pupilId'
+      path: '/mock-tests/$pupilId'
       fullPath: '/mock-tests/$pupilId'
       preLoaderRoute: typeof MockTestsPupilIdRouteImport
-      parentRoute: typeof MockTestsRoute
+      parentRoute: typeof rootRouteImport
     }
     '/messages/$pupilId': {
       id: '/messages/$pupilId'
@@ -3149,12 +3151,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketingAboutRouteImport
       parentRoute: typeof MarketingRoute
     }
-    '/terms/sign/$pupilId': {
-      id: '/terms/sign/$pupilId'
-      path: '/sign/$pupilId'
+    '/terms_/sign/$pupilId': {
+      id: '/terms_/sign/$pupilId'
+      path: '/terms/sign/$pupilId'
       fullPath: '/terms/sign/$pupilId'
       preLoaderRoute: typeof TermsSignPupilIdRouteImport
-      parentRoute: typeof TermsRoute
+      parentRoute: typeof rootRouteImport
     }
     '/pupils/syllabus/$id': {
       id: '/pupils/syllabus/$id'
@@ -3345,18 +3347,6 @@ const MessagesRouteWithChildren = MessagesRoute._addFileChildren(
   MessagesRouteChildren,
 )
 
-interface MockTestsRouteChildren {
-  MockTestsPupilIdRoute: typeof MockTestsPupilIdRoute
-}
-
-const MockTestsRouteChildren: MockTestsRouteChildren = {
-  MockTestsPupilIdRoute: MockTestsPupilIdRoute,
-}
-
-const MockTestsRouteWithChildren = MockTestsRoute._addFileChildren(
-  MockTestsRouteChildren,
-)
-
 interface QuotesRouteChildren {
   QuotesNewRoute: typeof QuotesNewRoute
   QuotesIndexRoute: typeof QuotesIndexRoute
@@ -3369,16 +3359,6 @@ const QuotesRouteChildren: QuotesRouteChildren = {
 
 const QuotesRouteWithChildren =
   QuotesRoute._addFileChildren(QuotesRouteChildren)
-
-interface TermsRouteChildren {
-  TermsSignPupilIdRoute: typeof TermsSignPupilIdRoute
-}
-
-const TermsRouteChildren: TermsRouteChildren = {
-  TermsSignPupilIdRoute: TermsSignPupilIdRoute,
-}
-
-const TermsRouteWithChildren = TermsRoute._addFileChildren(TermsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -3429,7 +3409,7 @@ const rootRouteChildren: RootRouteChildren = {
   MessagesRoute: MessagesRouteWithChildren,
   MileageRoute: MileageRoute,
   MinisiteRoute: MinisiteRoute,
-  MockTestsRoute: MockTestsRouteWithChildren,
+  MockTestsRoute: MockTestsRoute,
   MonthToDateRoute: MonthToDateRoute,
   MonthendRoute: MonthendRoute,
   MoreRoute: MoreRoute,
@@ -3469,7 +3449,7 @@ const rootRouteChildren: RootRouteChildren = {
   TakePaymentRoute: TakePaymentRoute,
   TaxRoute: TaxRoute,
   TaxReportRoute: TaxReportRoute,
-  TermsRoute: TermsRouteWithChildren,
+  TermsRoute: TermsRoute,
   TestdayRoute: TestdayRoute,
   TestsRoute: TestsRoute,
   TodosRoute: TodosRoute,
@@ -3493,6 +3473,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarketplaceApplyRoute: MarketplaceApplyRoute,
   MarketplaceEditRoute: MarketplaceEditRoute,
   MarketplaceListRoute: MarketplaceListRoute,
+  MockTestsPupilIdRoute: MockTestsPupilIdRoute,
   NewsArticleIdRoute: NewsArticleIdRoute,
   NotesIdRoute: NotesIdRoute,
   PupilsIdRoute: PupilsIdRoute,
@@ -3514,6 +3495,7 @@ const rootRouteChildren: RootRouteChildren = {
   PupilsPaymentsIdRoute: PupilsPaymentsIdRoute,
   PupilsProgressIdRoute: PupilsProgressIdRoute,
   PupilsSyllabusIdRoute: PupilsSyllabusIdRoute,
+  TermsSignPupilIdRoute: TermsSignPupilIdRoute,
   ApiPublicCarplayV1DashboardRoute: ApiPublicCarplayV1DashboardRoute,
   ApiPublicCarplayV1DevicesRoute: ApiPublicCarplayV1DevicesRoute,
   ApiPublicCarplayV1DirectionsRoute: ApiPublicCarplayV1DirectionsRoute,
@@ -3522,13 +3504,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

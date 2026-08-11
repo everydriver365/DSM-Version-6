@@ -3,7 +3,7 @@ import React from "react";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { recordPayment, recordRefund } from "@/lib/payments";
+import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { buildPickup, getPickupParts } from "@/lib/pickup";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { QuickActionsMenu, type QuickAction } from "@/components/dsm/QuickActionsMenu";
@@ -8435,14 +8435,21 @@ function HomePage() {
         onViewMTD={() => { setEarningsOpen(false); navigate({ to: "/month-to-date" }); }}
         onEdit={async (row, updates) => {
           const iso = updates.date ? new Date(updates.date + "T12:00:00").toISOString() : row.date;
-          const { error } = await supabase
+          // Use the shared corrector so lessons.paid_amount / payment_status
+          // stay in sync with the corrected audit row.
+          const { data: hRow } = await supabase
             .from("lesson_history")
-            .update({
-              lesson_cost: updates.amount,
-              payment_method: updates.method,
-              created_at: iso,
-            })
-            .eq("id", row.id);
+            .select("lesson_id")
+            .eq("id", row.id)
+            .maybeSingle();
+          const { error } = await correctPaymentRecord({
+            lessonHistoryId: row.id,
+            lessonId: (hRow as { lesson_id?: string | null } | null)?.lesson_id ?? null,
+            newAmount: updates.amount,
+            method: updates.method,
+            dateIso: iso,
+            notes: null,
+          });
           if (error) {
             console.error("[home] earnings edit failed", error);
             toast.error("Couldn't update payment");

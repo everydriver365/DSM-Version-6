@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { IconCircleCheck, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
-import { recordPayment, recordRefund, recordStandalonePayment, getPupilBalance, type PupilBalance } from "@/lib/payments";
+import { recordPayment, recordRefund, recordStandalonePayment, correctPaymentRecord, getPupilBalance, type PupilBalance } from "@/lib/payments";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -725,16 +725,32 @@ export function UnifiedPaymentSheet({
     }
     setSavingEdit(true);
     try {
-      const { error } = await supabase
+      // Find the lesson this payment was applied to so the correction can
+      // resync lessons.paid_amount / payment_status, not just the audit row.
+      const { data: hRow } = await supabase
         .from("lesson_history")
-        .update({
-          amount_paid: newAmount,
-          payment_method: editPayment.method,
-          lesson_date: editPayment.date,
-          notes: editPayment.notes.trim() || null,
-        })
+        .select("lesson_id")
+        .eq("id", editPayment.historyId)
+        .maybeSingle();
+      const lessonId = (hRow as { lesson_id?: string | null } | null)?.lesson_id ?? null;
+
+      const { error } = await correctPaymentRecord({
+        lessonHistoryId: editPayment.historyId,
+        lessonId,
+        newAmount,
+        method: editPayment.method,
+        dateIso: new Date(`${editPayment.date}T12:00:00`).toISOString(),
+        notes: editPayment.notes.trim() || null,
+      });
+      if (error) throw new Error(error);
+
+      // Fields the shared helper doesn't own.
+      const { error: extraErr } = await supabase
+        .from("lesson_history")
+        .update({ amount_paid: newAmount, lesson_date: editPayment.date })
         .eq("id", editPayment.historyId);
-      if (error) throw error;
+      if (extraErr) throw extraErr;
+
       if (pupilId) {
         setBalance(await getPupilBalance(pupilId));
         await loadPupilData(pupilId);
@@ -759,12 +775,70 @@ export function UnifiedPaymentSheet({
     if (!deletePayment) return;
     setSavingEdit(true);
     try {
+      const nowIso = new Date().toISOString();
+
+      // Read the audit row first so the lesson + legacy payments row can be
+      // unwound too — deleting only the history row desyncs the lesson.
+      const { data: hRow, error: hFetchErr } = await supabase
+        .from("lesson_history")
+        .select("id, lesson_id, pupil_id, amount_paid, lesson_cost, payment_method, created_at")
+        .eq("id", deletePayment.historyId)
+        .maybeSingle();
+      if (hFetchErr) throw hFetchErr;
+
+      const row = hRow as {
+        lesson_id?: string | null;
+        pupil_id?: string | null;
+        amount_paid?: number | null;
+        lesson_cost?: number | null;
+        payment_method?: string | null;
+        created_at?: string | null;
+      } | null;
+      const reversedAmount = Number(row?.amount_paid ?? row?.lesson_cost ?? 0);
+      const targetPupilId = row?.pupil_id ?? pupilId ?? null;
+
+      // 1. Reverse the lesson allocation + any account credit via the shared
+      //    refund helper (audited), rather than patching balances by hand.
+      if (targetPupilId && reversedAmount > 0) {
+        const { data: pRow } = await supabase
+          .from("pupils")
+          .select("account_balance")
+          .eq("id", targetPupilId)
+          .maybeSingle();
+        await recordRefund({
+          pupilId: targetPupilId,
+          amount: reversedAmount,
+          method: row?.payment_method ?? "refund",
+          notes: "Payment record deleted",
+          currentAccountBalance: Number(
+            (pRow as { account_balance?: number | null } | null)?.account_balance ?? 0,
+          ),
+          notify: false,
+        });
+      }
+
+      // 2. Soft-delete the legacy payments row(s) for this payment.
+      if (targetPupilId && reversedAmount > 0) {
+        const { error: payErr } = await supabase
+          .from("payments")
+          .update({ deleted_at: nowIso })
+          .eq("pupil_id", targetPupilId)
+          .eq("amount", reversedAmount)
+          .is("deleted_at", null);
+        if (payErr) console.error("[UnifiedPaymentSheet] payments soft-delete", payErr);
+      }
+
+      // 3. Soft-delete the audit row itself.
       const { error } = await supabase
         .from("lesson_history")
-        .update({ deleted_at: new Date().toISOString() })
+        .update({ deleted_at: nowIso })
         .eq("id", deletePayment.historyId);
       if (error) throw error;
-      if (pupilId) await getPupilBalance(pupilId);
+
+      if (pupilId) {
+        setBalance(await getPupilBalance(pupilId));
+        await loadPupilData(pupilId);
+      }
       toast.success("Payment removed");
       if (typeof window !== "undefined") window.dispatchEvent(new Event("dsm-payment-recorded"));
       setDeletePayment(null);
@@ -777,7 +851,7 @@ export function UnifiedPaymentSheet({
     } finally {
       setSavingEdit(false);
     }
-  }, [deletePayment, pupilId, onSaved, handleClose]);
+  }, [deletePayment, pupilId, loadPupilData, onSaved, handleClose]);
 
   // ---- filtered pupil list ----------------------------------------------
   const filtered = useMemo(() => {
