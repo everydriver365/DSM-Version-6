@@ -483,7 +483,7 @@ function TakePaymentPage() {
               color: "#8A8A8E",
             }}
           >
-            £{amountNum.toFixed(2)} + 1% fee (£{(amountNum * 0.01).toFixed(2)})
+            1% fee (£{(amountNum * 0.01).toFixed(2)}) deducted from your payout
           </div>
         )}
 
