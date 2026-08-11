@@ -1055,21 +1055,44 @@ function EnquiriesPage() {
                           {it.at ? timeAgo(it.at) : ""}
                         </div>
                       </div>
-                      <div
-                        style={{
-                          fontSize: 13,
-                          color: it.pending ? "#9CA3AF" : "#0B1F3A",
-                          fontStyle: it.type === "note" ? "italic" : "normal",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                          lineHeight: 1.4,
-                          ...POPPINS,
-                        }}
-                      >
-                        {it.title}
-                      </div>
+                      {it.type === "sms" ? (
+                        <div
+                          style={{
+                            background: "#F0F7FF",
+                            borderRadius: 8,
+                            padding: "8px 10px",
+                            fontSize: 13,
+                            color: "#0B1F3A",
+                            fontStyle: "italic",
+                            lineHeight: 1.5,
+                            marginTop: 4,
+                            ...POPPINS,
+                          }}
+                        >
+                          {(it.title ?? "").replace(/^SMS sent:\s*"?/, "").replace(/"$/, "")}
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            fontSize: 13,
+                            color: it.pending ? "#9CA3AF" : "#0B1F3A",
+                            fontStyle: it.type === "note" ? "italic" : "normal",
+                            lineHeight: 1.5,
+                            ...(it.type === "status_change" || it.type === "call"
+                              ? {
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 2,
+                                  WebkitBoxOrient: "vertical" as const,
+                                  overflow: "hidden",
+                                }
+                              : {}),
+                            ...POPPINS,
+                          }}
+                        >
+                          {it.title}
+                        </div>
+                      )}
+
                     </div>
                   </div>
                 );
