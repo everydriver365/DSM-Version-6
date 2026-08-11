@@ -165,6 +165,7 @@ function useUnreadMessages(): number {
       window.clearInterval(interval);
       window.removeEventListener("dsm-message-received", onPing);
       window.removeEventListener("dsm-messages-read", onPing);
+      window.removeEventListener("dsm-instructor-dm-unread", onPing);
       supabase.removeChannel(channel);
     };
   }, [uid, load]);
