@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { IconAlertTriangle, IconBell, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronDown, IconDeviceMobile, IconLoader2, IconMail, IconShield, IconUser } from "@tabler/icons-react";
+import { IconAlertTriangle, IconBell, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconCreditCard, IconDeviceMobile, IconExternalLink, IconLoader2, IconMail, IconShield, IconUser } from "@tabler/icons-react";
 import { Puzzle, Apple, Calendar as CalendarIcon } from "lucide-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
