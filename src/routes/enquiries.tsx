@@ -920,7 +920,20 @@ function EnquiriesPage() {
       <InstructorTopBar
         firstName=""
         pageTitle="Enquiries"
-        titleStyle={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.5px", color: "#fff" }}
+        titleStyle={{
+          fontSize: 24,
+          fontWeight: 800,
+          letterSpacing: "-0.4px",
+          color: "#fff",
+          textShadow: "none",
+          mixBlendMode: "normal",
+          filter: "none",
+          WebkitTextStroke: "0",
+          WebkitFontSmoothing: "antialiased",
+          MozOsxFontSmoothing: "grayscale",
+          fontFamily: "Sora, Poppins, sans-serif",
+        }}
+
         onBack={() => navigate({ to: "/home" as never })}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
