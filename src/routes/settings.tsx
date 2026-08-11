@@ -2073,6 +2073,22 @@ function SettingsPage() {
           )}
         </SectionCard>
 
+        {/* Section 4b — Square (standalone tile) */}
+        <SectionCard>
+          <MenuRow
+            icon={<CreditCard color="#FFFFFF" />}
+            iconBg="linear-gradient(135deg, #F59E0B, #D97706)"
+            label="Square"
+            subLabel={squareConnected ? "Connected — taking card payments" : "Set up card payments"}
+            value={squareConnected ? "Connected" : undefined}
+            onClick={() => navigate({ to: "/profile" as never, hash: "square" as never })}
+            isFirst
+            isLast
+          />
+        </SectionCard>
+
+
+
         {/* Section 5 — Tax & expenses */}
         <SectionCard>
           <MenuRow
