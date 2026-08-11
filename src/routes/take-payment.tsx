@@ -153,7 +153,6 @@ function TakePaymentPage() {
 
   const amountNum = Number(amount) || 0;
   // Pupil always pays the exact amount entered — the fee is deducted server-side from the payout
-  const totalNum = amountNum;
 
   const press = (key: string) => {
     setAmount((prev) => {
@@ -180,7 +179,7 @@ function TakePaymentPage() {
         toast.error("Not signed in — please log in again");
         return;
       }
-      const amountPence = Math.round(totalNum * 100);
+      const amountPence = Math.round(amountNum * 100);
       if (!amountPence || amountPence <= 0) {
         toast.error("Enter an amount first");
         return;
@@ -249,7 +248,7 @@ function TakePaymentPage() {
         toast.error("Not signed in — please log in again");
         return;
       }
-      const amountPence = Math.round(totalNum * 100);
+      const amountPence = Math.round(amountNum * 100);
       if (!amountPence || amountPence <= 0) {
         toast.error("Enter an amount first");
         return;
@@ -443,7 +442,7 @@ function TakePaymentPage() {
             lineHeight: 1.05,
           }}
         >
-          £{totalNum.toFixed(2)}
+          £{amountNum.toFixed(2)}
         </div>
 
 
@@ -673,7 +672,7 @@ function TakePaymentPage() {
                   cursor: "pointer",
                 }}
               >
-                {cardLoading ? "Loading…" : `Pay by card with Square · £${totalNum.toFixed(2)}`}
+                {cardLoading ? "Loading…" : `Pay by card with Square · £${amountNum.toFixed(2)}`}
               </button>
               <div style={{ textAlign: "center", color: "#9CA3AF", fontSize: 13, marginTop: 12 }}>
                 Opens a secure Square checkout page
@@ -867,7 +866,7 @@ function TakePaymentPage() {
           >
             <div style={{ fontSize: 16, fontWeight: 500, opacity: 0.85 }}>Scan to pay</div>
             <div style={{ fontSize: 40, fontWeight: 700, marginTop: 4, lineHeight: 1.05 }}>
-              £{totalNum.toFixed(2)}
+              £{amountNum.toFixed(2)}
             </div>
             {(pupilName || description) && (
               <div style={{ marginTop: 10 }}>
