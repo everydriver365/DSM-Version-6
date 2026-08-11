@@ -136,6 +136,43 @@ function EnquiriesPage() {
   const [activities, setActivities] = useState<Record<string, EnquiryActivity[]>>({});
   const [noteText, setNoteText] = useState("");
   const [savingNote, setSavingNote] = useState(false);
+  const [smsText, setSmsText] = useState("");
+  const [showSmsComposer, setShowSmsComposer] = useState(false);
+
+  function defaultSmsText(enquiry: EnquiryRow) {
+    const first = enquiry.name?.split(" ")[0] ?? "";
+    return `Hi ${first}, thanks for your enquiry about driving lessons. I'd love to help — when would be a good time to chat?`;
+  }
+
+  async function sendSms(enquiry: EnquiryRow, message: string) {
+    if (!enquiry.phone) {
+      toast.error("No phone number");
+      return;
+    }
+    if (!message.trim()) {
+      toast.error("Message is empty");
+      return;
+    }
+    setBusyId(enquiry.id);
+    try {
+      const { error } = await supabase.functions.invoke("send-sms", {
+        body: { to: enquiry.phone, message, instructor_id: userId },
+      });
+      if (error) throw error;
+      await logActivity(enquiry.id, "sms", `SMS sent: "${message}"`, new Date().toISOString());
+      if ((enquiry.status ?? "new") === "new") {
+        await markContacted(enquiry);
+      }
+      setShowSmsComposer(false);
+      setSmsText("");
+      toast.success("SMS sent");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not send SMS");
+    } finally {
+      setBusyId(null);
+    }
+  }
+
 
   useEffect(() => {
     (async () => {
@@ -1063,36 +1100,98 @@ function EnquiriesPage() {
                   description="Logs that you've reached out (call, text, or in person) — updates status and records the time, but doesn't send anything automatically."
                   onClick={() => void markContacted(enquiry)}
                 />
-                <ActionRow
-                  label="Send SMS"
-                  Icon={IconMessage}
-                  chipBg="#E7F1FC"
-                  chipColor="#1877D6"
-                  description="Sends a text message and automatically logs this as your first contact."
-                  onClick={
-                    enquiry.phone
-                      ? () => {
-                          void (async () => {
-                            const first = enquiry.name?.split(" ")[0] ?? "";
-                            const body = encodeURIComponent(
-                              `Hi ${first}, thanks for your enquiry about driving lessons. I'd love to help — when would be a good time to chat?`,
-                            );
-                            window.location.href = `sms:${enquiry.phone}?&body=${body}`;
-                            await logActivity(
-                              enquiry.id,
-                              "sms",
-                              "Text message sent",
-                              new Date().toISOString(),
-                            );
-                            if (enquiry.status === "new") {
-                              await markContacted(enquiry);
-                            }
-                          })();
-                        }
-                      : undefined
-                  }
+                {showSmsComposer ? (
+                  <div style={{ padding: 14, borderBottom: "1px solid #F0F0F3" }}>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 700,
+                        color: "#1877D6",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                        marginBottom: 8,
+                        ...POPPINS,
+                      }}
+                    >
+                      Text message
+                    </div>
+                    <textarea
+                      value={smsText}
+                      onChange={(e) => setSmsText(e.target.value)}
+                      rows={4}
+                      style={{
+                        width: "100%",
+                        border: "1px solid #E4E4E8",
+                        borderRadius: 12,
+                        padding: 10,
+                        fontSize: 14,
+                        color: "#0B1F3A",
+                        outline: "none",
+                        resize: "vertical",
+                        ...POPPINS,
+                      }}
+                    />
+                    <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                      <button
+                        type="button"
+                        disabled={busy || !smsText.trim()}
+                        onClick={() => void sendSms(enquiry, smsText)}
+                        className="active:opacity-70"
+                        style={{
+                          flex: 1,
+                          background: smsText.trim() ? "#1877D6" : "#E5E5EA",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: 12,
+                          padding: "10px 12px",
+                          fontSize: 14,
+                          fontWeight: 700,
+                          ...POPPINS,
+                        }}
+                      >
+                        {busy ? "Sending..." : "Send"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowSmsComposer(false);
+                          setSmsText("");
+                        }}
+                        className="active:opacity-70"
+                        style={{
+                          flex: 1,
+                          background: "#F2F2F7",
+                          color: "#0B1F3A",
+                          border: "none",
+                          borderRadius: 12,
+                          padding: "10px 12px",
+                          fontSize: 14,
+                          fontWeight: 700,
+                          ...POPPINS,
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <ActionRow
+                    label="Send SMS"
+                    Icon={IconMessage}
+                    chipBg="#E7F1FC"
+                    chipColor="#1877D6"
+                    description="Sends a text message and automatically logs this as your first contact."
+                    onClick={
+                      enquiry.phone
+                        ? () => {
+                            setSmsText(defaultSmsText(enquiry));
+                            setShowSmsComposer(true);
+                          }
+                        : undefined
+                    }
+                  />
+                )}
 
-                />
                 <ActionRow
                   label="Accept enquiry"
                   Icon={IconCheck}
