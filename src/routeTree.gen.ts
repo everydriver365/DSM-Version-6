@@ -26,6 +26,7 @@ import { Route as TaxRouteImport } from './routes/tax'
 import { Route as TakePaymentRouteImport } from './routes/take-payment'
 import { Route as SubscriptionRouteImport } from './routes/subscription'
 import { Route as StandardsRouteImport } from './routes/standards'
+import { Route as SquareRouteImport } from './routes/square'
 import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SearchRouteImport } from './routes/search'
@@ -254,6 +255,11 @@ const SubscriptionRoute = SubscriptionRouteImport.update({
 const StandardsRoute = StandardsRouteImport.update({
   id: '/standards',
   path: '/standards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SquareRoute = SquareRouteImport.update({
+  id: '/square',
+  path: '/square',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShowcaseRoute = ShowcaseRouteImport.update({
@@ -1063,6 +1069,7 @@ export interface FileRoutesByFullPath {
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/showcase': typeof ShowcaseRoute
+  '/square': typeof SquareRoute
   '/standards': typeof StandardsRoute
   '/subscription': typeof SubscriptionRoute
   '/take-payment': typeof TakePaymentRoute
@@ -1222,6 +1229,7 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/showcase': typeof ShowcaseRoute
+  '/square': typeof SquareRoute
   '/standards': typeof StandardsRoute
   '/subscription': typeof SubscriptionRoute
   '/take-payment': typeof TakePaymentRoute
@@ -1386,6 +1394,7 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/showcase': typeof ShowcaseRoute
+  '/square': typeof SquareRoute
   '/standards': typeof StandardsRoute
   '/subscription': typeof SubscriptionRoute
   '/take-payment': typeof TakePaymentRoute
@@ -1550,6 +1559,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/settings'
     | '/showcase'
+    | '/square'
     | '/standards'
     | '/subscription'
     | '/take-payment'
@@ -1709,6 +1719,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/settings'
     | '/showcase'
+    | '/square'
     | '/standards'
     | '/subscription'
     | '/take-payment'
@@ -1872,6 +1883,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/settings'
     | '/showcase'
+    | '/square'
     | '/standards'
     | '/subscription'
     | '/take-payment'
@@ -2036,6 +2048,7 @@ export interface RootRouteChildren {
   SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
   ShowcaseRoute: typeof ShowcaseRoute
+  SquareRoute: typeof SquareRoute
   StandardsRoute: typeof StandardsRoute
   SubscriptionRoute: typeof SubscriptionRoute
   TakePaymentRoute: typeof TakePaymentRoute
@@ -2211,6 +2224,13 @@ declare module '@tanstack/react-router' {
       path: '/standards'
       fullPath: '/standards'
       preLoaderRoute: typeof StandardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/square': {
+      id: '/square'
+      path: '/square'
+      fullPath: '/square'
+      preLoaderRoute: typeof SquareRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/showcase': {
@@ -3422,6 +3442,7 @@ const rootRouteChildren: RootRouteChildren = {
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
   ShowcaseRoute: ShowcaseRoute,
+  SquareRoute: SquareRoute,
   StandardsRoute: StandardsRoute,
   SubscriptionRoute: SubscriptionRoute,
   TakePaymentRoute: TakePaymentRoute,
