@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { IconChevronLeft, IconSearch, IconX } from "@tabler/icons-react";
+import { IconChevronLeft, IconChevronRight, IconSearch, IconX } from "@tabler/icons-react";
 import { Map as MapIcon } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { PupilAvatar } from "../components/PupilAvatar";
@@ -1384,7 +1384,8 @@ function LivePage() {
           height: 52,
           paddingLeft: 16,
           paddingTop: "env(safe-area-inset-top, 0px)",
-          background: "rgba(10,22,40,0.85)",
+          background:
+            "linear-gradient(180deg, rgba(11,31,58,0.85) 0%, rgba(11,31,58,0.3) 100%)",
           backdropFilter: "blur(8px)",
           WebkitBackdropFilter: "blur(8px)",
         }}
@@ -1402,31 +1403,37 @@ function LivePage() {
           }}
           className="flex items-center justify-center"
           style={{
-            width: "auto",
-            height: 28,
-            padding: "0 10px",
-            borderRadius: 6,
-            background: "#CC2229",
+            padding: "8px 16px",
+            borderRadius: 10,
+            background: "#FF3B30",
             color: "#FFFFFF",
-            fontSize: 12,
-            fontWeight: 700,
+            fontSize: 13,
+            fontWeight: 800,
+            letterSpacing: "0.3px",
+            boxShadow: "0 3px 0 #B02318",
             border: "none",
             cursor: "pointer",
           }}
         >
           END
         </button>
-        <div className="flex-1 text-center text-white font-semibold" style={{ fontSize: 16 }}>
+        <div className="flex-1 text-center" style={{ color: "#fff", fontSize: 17, fontWeight: 800 }}>
           Live tracking
         </div>
         <div className="flex items-center justify-center" style={{ width: 52, height: 52 }}>
           <span
+            aria-label={
+              tracking ? (((currentSpeed ?? 0) > 1) ? "Tracking movement" : "Tracking paused") : "Not tracking"
+            }
+            title={
+              tracking ? (((currentSpeed ?? 0) > 1) ? "Tracking movement" : "Tracking paused") : "Not tracking"
+            }
             style={{
-              width: 10,
-              height: 10,
-              borderRadius: 5,
-              background: tracking ? "#EF4444" : "#6B7280",
-              animation: tracking ? "liveDotPulse 1.4s ease-in-out infinite" : undefined,
+              width: 9,
+              height: 9,
+              borderRadius: "50%",
+              background: tracking ? (((currentSpeed ?? 0) > 1) ? "#34C759" : "#FF3B30") : "#8A8A8E",
+              animation: tracking && ((currentSpeed ?? 0) > 1) ? "liveDotPulse 1.4s ease-in-out infinite" : undefined,
             }}
           />
         </div>
@@ -1964,17 +1971,17 @@ function LivePage() {
           <div
             className="relative w-full max-w-md flex flex-col"
             style={{
-              background: "#fff",
-              borderRadius: "16px 16px 0 0",
+              background: "#F2F2F7",
+              borderRadius: "22px 22px 0 0",
               maxHeight: "80vh",
               paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
             }}
           >
-            <div className="flex justify-center pt-3 pb-1">
-              <div style={{ width: 40, height: 5, borderRadius: 3, background: "#C7CDD6" }} />
+            <div className="flex justify-center pb-1" style={{ marginTop: 10 }}>
+              <div style={{ width: 36, height: 5, borderRadius: 3, background: "#D1D1D6" }} />
             </div>
             <div className="flex items-center justify-between px-5 pt-2 pb-3">
-              <div style={{ fontSize: 17, fontWeight: 700, color: "#0B1F3A" }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: "#0B1F3A", letterSpacing: "-0.3px" }}>
                 Select pupil
               </div>
               <button
@@ -1983,22 +1990,25 @@ function LivePage() {
                   setPupilPickerOpen(false);
                   setPupilSearchQuery("");
                 }}
-                className="p-1 rounded-full active:bg-black/5"
+                className="flex items-center justify-center active:opacity-70"
+                style={{ width: 30, height: 30, borderRadius: 15, background: "#E5E5EA", border: "none" }}
                 aria-label="Close"
               >
-                <IconX stroke={1.5} size={20} color="#8A93A3" />
+                <IconX stroke={2} size={13} color="#6B6B6F" />
               </button>
             </div>
             <div className="px-4 pb-3">
               <div
-                className="flex items-center gap-2"
+                className="flex items-center"
                 style={{
-                  background: "#F3F4F6",
-                  borderRadius: 10,
-                  padding: "10px 12px",
+                  background: "#fff",
+                  borderRadius: 14,
+                  padding: "13px 16px",
+                  gap: 10,
+                  boxShadow: "0 3px 0 #E4E4E8",
                 }}
               >
-                <IconSearch stroke={1.5} size={16} color="#6B7280" />
+                <IconSearch stroke={1.5} size={16} color="#8A8A8E" />
                 <input
                   type="text"
                   value={pupilSearchQuery}
@@ -2010,9 +2020,10 @@ function LivePage() {
                     background: "transparent",
                     outline: "none",
                     flex: 1,
-                    fontSize: 16,
+                    fontSize: 14.5,
                     color: "#0B1F3A",
                   }}
+                  className="live-pupil-search"
                 />
               </div>
             </div>
@@ -2055,13 +2066,23 @@ function LivePage() {
                       setTrackingPupilName(display);
                       void startTracking(null, p.id);
                     }}
-                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl active:bg-black/5"
-                    style={{ background: "transparent", border: "none", textAlign: "left" }}
+                    className="w-full flex items-center active:opacity-80"
+                    style={{
+                      background: "#fff",
+                      border: "none",
+                      textAlign: "left",
+                      borderRadius: 16,
+                      padding: "14px 16px",
+                      marginBottom: 10,
+                      gap: 13,
+                      boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
+                    }}
                   >
-                    <PupilAvatar pupil={p} pupilId={p.id} size={36} />
-                    <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A" }}>
+                    <PupilAvatar pupil={p} pupilId={p.id} size={44} />
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
                       {display}
                     </div>
+                    <IconChevronRight size={14} stroke={2} color="#C7C7CC" style={{ marginLeft: "auto" }} />
                   </button>
                 ));
               })()}

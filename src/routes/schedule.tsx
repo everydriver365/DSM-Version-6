@@ -1,3 +1,4 @@
+import { pupilColour } from "@/components/PupilAvatar";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { IconArrowLeft, IconArrowRight, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
@@ -127,38 +128,7 @@ function detectGaps(
 }
 
 
-// Deterministic pupil colour palette. Same pupil_id -> same colour everywhere.
-const PUPIL_PALETTE = [
-  "#1877D6",
-  "#6B4FD6",
-  "#3B6D11",
-  "#C4501E",
-  "#0C8577",
-  "#CC2229",
-  "#854F0B",
-  "#185F8A",
-];
-function hashString(s: string): number {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-  return Math.abs(h);
-}
-// Name-based colour overrides. Central place to pin a pupil to a specific
-// palette colour regardless of the hash outcome.
-const PUPIL_COLOUR_OVERRIDES: Record<string, string> = {
-  "joseph thorne": "#3B6D11",
-};
-function pupilColour(
-  pupilId: string | null | undefined,
-  fallback?: string | null,
-  name?: string | null,
-): string {
-  const key = (name ?? "").trim().toLowerCase();
-  if (key && PUPIL_COLOUR_OVERRIDES[key]) return PUPIL_COLOUR_OVERRIDES[key];
-  if (fallback && /^#[0-9a-fA-F]{3,8}$/.test(fallback)) return fallback;
-  if (!pupilId) return PUPIL_PALETTE[0];
-  return PUPIL_PALETTE[hashString(pupilId) % PUPIL_PALETTE.length];
-}
+// Deterministic pupil colour — shared with PupilAvatar so colours match everywhere.
 
 
 
