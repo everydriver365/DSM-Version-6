@@ -697,64 +697,201 @@ function EnquiriesPage() {
         </div>
 
         <div style={{ padding: "4px 16px 40px" }}>
-          {/* Contact */}
-          <div style={SECTION_HEADER}>Contact</div>
-          <div style={CARD}>
-            <DetailRow
-              label="Phone"
-              value={enquiry.phone ?? "—"}
-              Icon={IconPhone}
-              href={enquiry.phone ? `tel:${enquiry.phone}` : undefined}
-            />
-            <DetailRow
-              label="Email"
-              value={enquiry.email ?? "—"}
-              Icon={IconMail}
-              href={enquiry.email ? `mailto:${enquiry.email}` : undefined}
-            />
-            <DetailRow label="Postcode" value={enquiry.postcode ?? "—"} Icon={IconInbox} isLast />
-          </div>
+          {(() => {
+            const banner =
+              status === "new"
+                ? { dot: "#FF3B30", text: "New — not yet contacted" }
+                : status === "contacted"
+                  ? { dot: "#1877D6", text: "Contacted" }
+                  : status === "accepted"
+                    ? { dot: "#248A3D", text: "Accepted" }
+                    : status === "on_jobs"
+                      ? { dot: "#D68A1B", text: "Sent to Jobs board" }
+                      : { dot: "#B0B0B5", text: "Declined" };
+            const lastChange =
+              (list.length ? list[list.length - 1]!.created_at : null) ??
+              enquiry.sent_to_jobs_at ??
+              enquiry.contacted_at ??
+              enquiry.created_at;
+            return (
+              <div
+                style={{
+                  ...CARD,
+                  padding: "14px 16px",
+                  marginBottom: 16,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+                  <span
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: 5,
+                      background: banner.dot,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span style={{ color: "#0B1F3A", fontSize: 14.5, fontWeight: 800, ...POPPINS }}>
+                    {banner.text}
+                  </span>
+                </div>
+                <span style={{ color: "#8A8A8E", fontSize: 12, fontWeight: 500, ...POPPINS }}>
+                  {timeAgo(lastChange)}
+                </span>
+              </div>
+            );
+          })()}
 
-          {/* Course */}
-          <div style={SECTION_HEADER}>Course details</div>
-          <div style={CARD}>
-            <DetailRow label="Course interest" value={enquiry.course_interest ?? "—"} />
-            <DetailRow label="Transmission" value={enquiry.transmission ?? "—"} />
-            <DetailRow
-              label="Hours requested"
-              value={enquiry.requested_hours ? `${enquiry.requested_hours} hrs` : "—"}
-            />
-            <DetailRow label="Preferred timing" value={enquiry.preferred_timing ?? "—"} />
-            <DetailRow
-              label="Preferred start"
-              value={
-                enquiry.preferred_start_date
-                  ? new Date(enquiry.preferred_start_date).toLocaleDateString("en-GB")
-                  : "—"
-              }
-              isLast
-            />
-          </div>
+          {/* Enquiry details */}
+          <div style={SECTION_HEADER}>Enquiry details</div>
+          <div style={{ ...CARD, padding: 16 }}>
+            {(() => {
+              const rows: { label: string; value: string }[] = [];
+              if (enquiry.course_interest)
+                rows.push({ label: "Course type", value: enquiry.course_interest });
+              if (enquiry.transmission)
+                rows.push({ label: "Transmission", value: enquiry.transmission });
+              if (enquiry.requested_hours)
+                rows.push({ label: "Hours requested", value: `${enquiry.requested_hours} hrs` });
+              if (enquiry.preferred_timing)
+                rows.push({ label: "Preferred timing", value: enquiry.preferred_timing });
+              if (enquiry.preferred_start_date)
+                rows.push({
+                  label: "Preferred start",
+                  value: new Date(enquiry.preferred_start_date).toLocaleDateString("en-GB"),
+                });
+              if (enquiry.postcode) rows.push({ label: "Postcode", value: enquiry.postcode });
+              if (enquiry.phone)
+                rows.push({ label: "Phone", value: formatPhone(enquiry.phone) });
+              if (enquiry.email) rows.push({ label: "Email", value: enquiry.email });
+              if (enquiry.created_at)
+                rows.push({
+                  label: "Received",
+                  value: fullDate(enquiry.created_at),
+                });
+              return rows.map((r, i) => (
+                <div
+                  key={r.label}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: 12,
+                    padding: "9px 0",
+                    borderTop: i === 0 ? "none" : "1px solid #F0F0F2",
+                  }}
+                >
+                  <span style={{ color: "#8A8A8E", fontSize: 13, fontWeight: 600, ...POPPINS }}>
+                    {r.label}
+                  </span>
+                  <span
+                    style={{
+                      color: "#0B1F3A",
+                      fontSize: 13.5,
+                      fontWeight: 700,
+                      textAlign: "right",
+                      ...POPPINS,
+                    }}
+                  >
+                    {r.value}
+                  </span>
+                </div>
+              ));
+            })()}
 
-          {enquiry.notes && (
-            <>
-              <div style={SECTION_HEADER}>Their message</div>
-              <div style={{ ...CARD, padding: "13px 16px" }}>
-                <div style={{ fontSize: 14, color: "#4A5568", fontStyle: "italic", ...POPPINS }}>
-                  &ldquo;{enquiry.notes}&rdquo;
+            {enquiry.notes && (
+              <div style={{ marginTop: 14 }}>
+                <div
+                  style={{
+                    color: "#8A8A8E",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    letterSpacing: "0.3px",
+                    textTransform: "uppercase",
+                    marginBottom: 6,
+                    ...POPPINS,
+                  }}
+                >
+                  Message
+                </div>
+                <div
+                  style={{
+                    background: "#F7F9FC",
+                    padding: 12,
+                    borderRadius: 10,
+                    color: "#0B1F3A",
+                    fontSize: 13.5,
+                    fontWeight: 500,
+                    lineHeight: 1.5,
+                    ...POPPINS,
+                  }}
+                >
+                  {enquiry.notes}
                 </div>
               </div>
-            </>
-          )}
+            )}
+          </div>
+
+          {/* Activity */}
+          <div style={{ ...SECTION_HEADER, marginTop: 20 }}>Activity</div>
+          <div style={{ ...CARD, padding: 16 }}>
+            {(() => {
+              const items: { title: string; at: string | null; pending?: boolean }[] = [];
+              items.push({ title: "Enquiry received", at: enquiry.created_at });
+              list.forEach((a) =>
+                items.push({ title: a.body ?? a.type, at: a.created_at }),
+              );
+              if (status === "new") items.push({ title: "Awaiting contact", at: null, pending: true });
+              return items.map((it, i) => {
+                const last = i === items.length - 1;
+                return (
+                  <div key={`${it.title}-${i}`} style={{ display: "flex", gap: 12 }}>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                      <span
+                        style={{
+                          width: 9,
+                          height: 9,
+                          borderRadius: 5,
+                          marginTop: 5,
+                          background: it.pending ? "#D1D1D6" : "#1877D6",
+                          flexShrink: 0,
+                        }}
+                      />
+                      {!last && <span style={{ width: 1.5, flex: 1, background: "#E4E4E8" }} />}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0, paddingBottom: last ? 0 : 14 }}>
+                      <div
+                        style={{
+                          color: it.pending ? "#B0B0B5" : "#0B1F3A",
+                          fontSize: 13.5,
+                          fontWeight: 700,
+                          ...POPPINS,
+                        }}
+                      >
+                        {it.title}
+                      </div>
+                      {it.at && (
+                        <div style={{ color: "#8A8A8E", fontSize: 11.5, ...POPPINS }}>
+                          {fullDate(it.at)}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              });
+            })()}
+          </div>
 
           {/* Actions */}
-          <div style={SECTION_HEADER}>Actions</div>
+          <div style={{ ...SECTION_HEADER, marginTop: 20 }}>Actions</div>
           <div
             style={{
               background: "#fff",
-              borderRadius: 18,
+              borderRadius: 16,
               overflow: "hidden",
-              boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+              boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
               opacity: busy ? 0.6 : 1,
             }}
           >
@@ -766,6 +903,7 @@ function EnquiriesPage() {
                   chipBg="#F2F2F7"
                   chipColor="#6B6B6F"
                   isFirst
+                  description="Logs that you've reached out (call, text, or in person) — updates status and records the time, but doesn't send anything automatically."
                   onClick={() => void markContacted(enquiry)}
                 />
                 <ActionRow
@@ -773,6 +911,7 @@ function EnquiriesPage() {
                   Icon={IconMessage}
                   chipBg="#E7F1FC"
                   chipColor="#1877D6"
+                  description="Opens a text message to their phone number in your phone's messaging app. You'll still need to tap Mark contacted to update the status."
                   href={enquiry.phone ? `sms:${enquiry.phone}` : undefined}
                 />
                 <ActionRow
@@ -781,6 +920,7 @@ function EnquiriesPage() {
                   chipBg="#E6F7EC"
                   chipColor="#248A3D"
                   labelColor="#248A3D"
+                  description="Converts this enquiry into a pupil record so you can schedule their first lesson. This can't be undone from here."
                   onClick={() => void acceptEnquiry(enquiry)}
                 />
                 <ActionRow
@@ -788,6 +928,7 @@ function EnquiriesPage() {
                   Icon={IconBriefcase}
                   chipBg="#FFF6DC"
                   chipColor="#D68A1B"
+                  description="Posts this enquiry to the Jobs board so another local instructor can pick it up — it moves out of your active list into 'On jobs board'."
                   onClick={() => void declineEnquiry(enquiry, true)}
                 />
                 <ActionRow
@@ -796,6 +937,7 @@ function EnquiriesPage() {
                   chipBg="#FDEDEC"
                   chipColor="#FF3B30"
                   labelColor="#FF3B30"
+                  description="Closes this enquiry with no further action. It's archived, not deleted — you can still find it under Declined."
                   onClick={() => void declineEnquiry(enquiry, false)}
                 />
               </>
@@ -844,42 +986,8 @@ function EnquiriesPage() {
                 isFirst
               />
             )}
-
           </div>
 
-          {/* Activity */}
-          <div style={SECTION_HEADER}>Activity</div>
-          <div style={{ ...CARD, padding: list.length ? "14px 16px" : "18px 16px" }}>
-            {list.length === 0 && (
-              <div style={{ fontSize: 13.5, color: "#9CA3AF", ...POPPINS }}>No activity yet</div>
-            )}
-            {list.map((a) => {
-              const dot =
-                a.type === "note" ? "#1877D6" : a.type === "call" ? "#15803D" : "#CC2229";
-              return (
-                <div key={a.id} style={{ display: "flex", gap: 10, marginBottom: 12 }}>
-                  <div
-                    style={{
-                      width: 9,
-                      height: 9,
-                      borderRadius: 5,
-                      background: dot,
-                      marginTop: 5,
-                      flexShrink: 0,
-                    }}
-                  />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, color: "#0B1F3A", fontWeight: 600, ...POPPINS }}>
-                      {a.body}
-                    </div>
-                    <div style={{ fontSize: 11.5, color: "#9CA3AF", ...POPPINS }}>
-                      {timeAgo(a.created_at)}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
 
           {/* Add note */}
           <div style={SECTION_HEADER}>Add note</div>
