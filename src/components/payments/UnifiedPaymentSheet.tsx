@@ -843,13 +843,15 @@ export function UnifiedPaymentSheet({
       },
     });
     if (error) throw error;
-    const res = data as { no_square?: boolean; url?: string } | null;
+    const res = data as { no_square?: boolean; url?: string; long_url?: string } | null;
     if (res?.no_square) {
       toast.error("Square not connected. Connect Square in your profile.");
       return null;
     }
-    if (!res?.url) throw new Error("No payment link returned");
-    return res.url;
+    // Square hosted checkout URL (checkout.square.site/...) — never a redirect URL
+    const checkoutUrl = res?.url ?? res?.long_url ?? null;
+    if (!checkoutUrl) throw new Error("No payment link returned");
+    return checkoutUrl;
   }, [amountNum, instructorId, pupilId, note]);
 
   async function generateSquareLink(type: "link" | "qr") {
