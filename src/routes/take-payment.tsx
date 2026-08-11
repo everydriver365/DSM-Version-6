@@ -202,15 +202,25 @@ function TakePaymentPage() {
     try {
       const { data: u } = await supabase.auth.getUser();
       const instructorId = u?.user?.id ?? null;
+      if (!instructorId) {
+        toast.error("Not signed in — please log in again");
+        return;
+      }
+      const amountPence = Math.round(totalNum * 100);
+      if (!amountPence || amountPence <= 0) {
+        toast.error("Enter an amount first");
+        return;
+      }
       const { data, error } = await supabase.functions.invoke("square-create-payment-link", {
         body: {
           instructor_id: instructorId,
           pupil_id: pupilId || null,
           lesson_id: lessonId,
-          amount_pence: Math.round(totalNum * 100),
+          amount_pence: amountPence,
           description: description || "Payment",
         },
       });
+
       if (error) throw error;
       const res = data as { no_square?: boolean; url?: string; id?: string } | null;
       if (res?.no_square) {
