@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { IconChevronRight, IconSearch, IconCreditCard } from "@tabler/icons-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "../lib/supabaseClient";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { PageLayout } from "@/components/PageLayout";
 import { EmptyState } from "@/components/dsm/EmptyState";
