@@ -1971,17 +1971,17 @@ function LivePage() {
           <div
             className="relative w-full max-w-md flex flex-col"
             style={{
-              background: "#fff",
-              borderRadius: "16px 16px 0 0",
+              background: "#F2F2F7",
+              borderRadius: "22px 22px 0 0",
               maxHeight: "80vh",
               paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
             }}
           >
-            <div className="flex justify-center pt-3 pb-1">
-              <div style={{ width: 40, height: 5, borderRadius: 3, background: "#C7CDD6" }} />
+            <div className="flex justify-center pb-1" style={{ marginTop: 10 }}>
+              <div style={{ width: 36, height: 5, borderRadius: 3, background: "#D1D1D6" }} />
             </div>
             <div className="flex items-center justify-between px-5 pt-2 pb-3">
-              <div style={{ fontSize: 17, fontWeight: 700, color: "#0B1F3A" }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: "#0B1F3A", letterSpacing: "-0.3px" }}>
                 Select pupil
               </div>
               <button
@@ -1990,22 +1990,25 @@ function LivePage() {
                   setPupilPickerOpen(false);
                   setPupilSearchQuery("");
                 }}
-                className="p-1 rounded-full active:bg-black/5"
+                className="flex items-center justify-center active:opacity-70"
+                style={{ width: 30, height: 30, borderRadius: 15, background: "#E5E5EA", border: "none" }}
                 aria-label="Close"
               >
-                <IconX stroke={1.5} size={20} color="#8A93A3" />
+                <IconX stroke={2} size={13} color="#6B6B6F" />
               </button>
             </div>
             <div className="px-4 pb-3">
               <div
-                className="flex items-center gap-2"
+                className="flex items-center"
                 style={{
-                  background: "#F3F4F6",
-                  borderRadius: 10,
-                  padding: "10px 12px",
+                  background: "#fff",
+                  borderRadius: 14,
+                  padding: "13px 16px",
+                  gap: 10,
+                  boxShadow: "0 3px 0 #E4E4E8",
                 }}
               >
-                <IconSearch stroke={1.5} size={16} color="#6B7280" />
+                <IconSearch stroke={1.5} size={16} color="#8A8A8E" />
                 <input
                   type="text"
                   value={pupilSearchQuery}
@@ -2017,9 +2020,10 @@ function LivePage() {
                     background: "transparent",
                     outline: "none",
                     flex: 1,
-                    fontSize: 16,
+                    fontSize: 14.5,
                     color: "#0B1F3A",
                   }}
+                  className="live-pupil-search"
                 />
               </div>
             </div>
@@ -2062,13 +2066,23 @@ function LivePage() {
                       setTrackingPupilName(display);
                       void startTracking(null, p.id);
                     }}
-                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl active:bg-black/5"
-                    style={{ background: "transparent", border: "none", textAlign: "left" }}
+                    className="w-full flex items-center active:opacity-80"
+                    style={{
+                      background: "#fff",
+                      border: "none",
+                      textAlign: "left",
+                      borderRadius: 16,
+                      padding: "14px 16px",
+                      marginBottom: 10,
+                      gap: 13,
+                      boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
+                    }}
                   >
-                    <PupilAvatar pupil={p} pupilId={p.id} size={36} />
-                    <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A" }}>
+                    <PupilAvatar pupil={p} pupilId={p.id} size={44} />
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
                       {display}
                     </div>
+                    <IconChevronRight size={14} stroke={2} color="#C7C7CC" style={{ marginLeft: "auto" }} />
                   </button>
                 ));
               })()}
