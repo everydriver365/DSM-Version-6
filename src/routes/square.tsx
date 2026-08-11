@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import squareLogo from "../assets/square-logo.png.asset.json";
 import {
   IconCreditCard,
   IconChevronLeft,
