@@ -78,11 +78,25 @@ const allTools: Tool[] = [
   { icon: Users, colour: '#00B5A5', label: 'Community', sub: 'Connect with ADIs', route: '/community', group: 'Community' },
 ];
 
-const GROUP_ORDER = ['Teaching', 'Business', 'Admin', 'Reports', 'Community'] as const;
+const GROUP_ORDER = ['Teaching', 'Business', 'Payments', 'Admin', 'Reports', 'Community'] as const;
 
 function MorePage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [squareConnected, setSquareConnected] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return;
+      const { data: inst } = await supabase
+        .from('instructors')
+        .select('square_merchant_id')
+        .eq('id', data.user.id)
+        .maybeSingle();
+      setSquareConnected(!!inst?.square_merchant_id);
+    });
+  }, []);
+
 
   const q = searchQuery.trim().toLowerCase();
   const filtered = q
