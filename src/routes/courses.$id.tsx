@@ -1151,6 +1151,9 @@ function AddBookingSheet({
         duration_minutes: durationMinutes,
         status: "confirmed",
         notes: `Course booking: ${course.name} — ${name.trim()}`,
+        amount_due: course.price ?? 0,
+        payment_status:
+          parseFloat(amount || "0") >= (course.price ?? 0) ? "paid" : "unpaid",
       });
       if (lessonErr) console.error("[courses.$id] auto-create lesson", lessonErr);
     }
