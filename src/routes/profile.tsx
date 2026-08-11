@@ -377,11 +377,20 @@ function ProfilePage() {
     try {
       const { error } = await supabase
         .from("instructors")
-        .update({ square_merchant_id: null })
+        .update({
+          square_access_token: null,
+          square_refresh_token: null,
+          square_merchant_id: null,
+          square_location_id: null,
+          square_connected_at: null,
+          square_token_expires_at: null,
+        })
         .eq("id", userId);
       if (error) throw error;
       setSquareMerchantId(null);
+      setSquareConnectedAt(null);
       setSquareConnected(false);
+
       toast.success("Square disconnected");
     } catch (e) {
       console.error("[profile] disconnectSquare failed", e);
