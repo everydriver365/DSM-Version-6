@@ -419,3 +419,7 @@ time,
 :is(.text-\[13px\], .text-\[15px\], [style*="font-size: 13px"], [style*="font-size:13px"], [style*="font-size: 15px"], [style*="font-size:15px"]):not([data-marketing] *):not([data-marketing]) {
   font-size: 14px !important;
 }
+
+.live-pupil-search::placeholder {
+  color: #B0B0B5;
+}
