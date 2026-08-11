@@ -1423,17 +1423,17 @@ function LivePage() {
         <div className="flex items-center justify-center" style={{ width: 52, height: 52 }}>
           <span
             aria-label={
-              tracking ? (isMoving ? "Tracking movement" : "Tracking paused") : "Not tracking"
+              tracking ? (((currentSpeed ?? 0) > 1) ? "Tracking movement" : "Tracking paused") : "Not tracking"
             }
             title={
-              tracking ? (isMoving ? "Tracking movement" : "Tracking paused") : "Not tracking"
+              tracking ? (((currentSpeed ?? 0) > 1) ? "Tracking movement" : "Tracking paused") : "Not tracking"
             }
             style={{
               width: 9,
               height: 9,
               borderRadius: "50%",
-              background: tracking ? (isMoving ? "#34C759" : "#FF3B30") : "#8A8A8E",
-              animation: tracking && isMoving ? "liveDotPulse 1.4s ease-in-out infinite" : undefined,
+              background: tracking ? (((currentSpeed ?? 0) > 1) ? "#34C759" : "#FF3B30") : "#8A8A8E",
+              animation: tracking && ((currentSpeed ?? 0) > 1) ? "liveDotPulse 1.4s ease-in-out infinite" : undefined,
             }}
           />
         </div>
