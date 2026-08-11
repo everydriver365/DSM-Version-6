@@ -30,7 +30,6 @@ function TakePaymentPage() {
   const [hoursBought, setHoursBought] = useState<string>("");
   const [tab, setTab] = useState<Tab>("qr");
   const pupilName = pupils.find((p) => p.id === pupilId)?.name ?? "";
-  const [passBookingFee, setPassBookingFee] = useState<boolean>(true);
 
   // Load instructor's booking-fee preference
   useEffect(() => {
