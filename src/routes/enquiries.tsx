@@ -103,13 +103,14 @@ const CARD: React.CSSProperties = {
 
 const SECTION_HEADER: React.CSSProperties = {
   fontSize: 12,
-  fontWeight: 800,
-  letterSpacing: "0.6px",
-  color: "#6B7280",
+  fontWeight: 700,
+  letterSpacing: "0.5px",
+  color: "#8A8A8E",
   textTransform: "uppercase",
   margin: "18px 4px 8px",
   ...POPPINS,
 };
+
 
 function EnquiriesPage() {
   const navigate = useNavigate();
@@ -319,9 +320,15 @@ function EnquiriesPage() {
 
   /* ---------------- rows ---------------- */
 
-  function EnquiryRowItem({ enquiry, isLast }: { enquiry: EnquiryRow; isLast: boolean }) {
-    const meta = metaFor(enquiry.status);
-    const Icon = meta.Icon;
+  function formatPhone(raw: string) {
+    if (/\s/.test(raw)) return raw;
+    const digits = raw.replace(/[^\d+]/g, "");
+    if (/^0\d{10}$/.test(digits)) return `${digits.slice(0, 5)} ${digits.slice(5)}`;
+    if (/^0\d{9}$/.test(digits)) return `${digits.slice(0, 4)} ${digits.slice(4)}`;
+    return raw;
+  }
+
+  function EnquiryRowItem({ enquiry }: { enquiry: EnquiryRow }) {
     return (
       <button
         type="button"
@@ -333,72 +340,93 @@ function EnquiriesPage() {
         className="w-full active:opacity-70"
         style={{
           display: "flex",
-          alignItems: "center",
-          gap: 12,
-          padding: "14px 16px",
+          alignItems: "flex-start",
+          gap: 13,
+          padding: 16,
           background: "#fff",
           border: "none",
           textAlign: "left",
-          borderBottom: isLast ? "none" : "1px solid #F0F1F4",
+          borderRadius: 16,
+          marginBottom: 10,
+          boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
         }}
       >
         <div
           style={{
-            width: 36,
-            height: 36,
-            borderRadius: 18,
-            background: meta.bg,
+            width: 42,
+            height: 42,
+            borderRadius: 21,
+            background: "#E7F1FC",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
           }}
         >
-          <Icon size={18} stroke={2} color={meta.color} />
+          <IconMail size={18} stroke={2} color="#1877D6" />
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A", ...POPPINS }}>
+          <div style={{ fontSize: 16.5, fontWeight: 800, color: "#0B1F3A", ...POPPINS }}>
             {enquiry.name ?? "Unknown"}
           </div>
-          {(enquiry.course_interest || enquiry.postcode) && (
-            <div style={{ fontSize: 13, color: "#4A5568", marginTop: 1, ...POPPINS }}>
-              {[enquiry.course_interest, enquiry.postcode].filter(Boolean).join(" · ")}
+          {enquiry.postcode && (
+            <div
+              style={{
+                background: "#F2F2F7",
+                color: "#6B6B6F",
+                fontSize: 11,
+                fontWeight: 700,
+                padding: "3px 9px",
+                borderRadius: 20,
+                marginTop: 5,
+                width: "fit-content",
+                ...POPPINS,
+              }}
+            >
+              {enquiry.postcode}
             </div>
           )}
           <div
             style={{
-              fontSize: 11,
-              color: "#9CA3AF",
-              marginTop: 3,
+              marginTop: 9,
               display: "flex",
               alignItems: "center",
-              gap: 8,
+              gap: 10,
+              flexWrap: "wrap",
               ...POPPINS,
             }}
           >
-            <span>{timeAgo(enquiry.created_at)}</span>
+            <span style={{ color: "#B0B0B5", fontSize: 12, fontWeight: 500 }}>
+              {timeAgo(enquiry.created_at)}
+            </span>
             {enquiry.phone && (
               <span
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: 3,
-                  background: "#EFF6FF",
+                  gap: 5,
+                  background: "#E7F1FC",
                   color: "#1877D6",
                   borderRadius: 20,
-                  padding: "2px 8px",
-                  fontWeight: 700,
+                  padding: "6px 12px",
+                  fontSize: 12.5,
+                  fontWeight: 800,
                 }}
               >
-                <IconPhone size={11} stroke={2} color="#1877D6" />
-                {enquiry.phone}
+                <IconPhone size={12} stroke={2} color="#1877D6" />
+                {formatPhone(enquiry.phone)}
               </span>
             )}
           </div>
         </div>
 
-        <IconChevronRight size={16} stroke={2} color="#C7C7CC" />
+        <IconChevronRight
+          size={14}
+          stroke={2}
+          color="#C7C7CC"
+          style={{ marginTop: 4, flexShrink: 0 }}
+        />
       </button>
     );
   }
@@ -408,16 +436,16 @@ function EnquiriesPage() {
     return (
       <div>
         <div style={SECTION_HEADER}>
-          {title} · {rows.length}
+          {title} ·{" "}
+          <span style={{ color: "#FF3B30", fontWeight: 800 }}>{rows.length}</span>
         </div>
-        <div style={CARD}>
-          {rows.map((e, i) => (
-            <EnquiryRowItem key={e.id} enquiry={e} isLast={i === rows.length - 1} />
-          ))}
-        </div>
+        {rows.map((e) => (
+          <EnquiryRowItem key={e.id} enquiry={e} />
+        ))}
       </div>
     );
   }
+
 
   /* ---------------- detail sheet ---------------- */
 
@@ -488,6 +516,100 @@ function EnquiriesPage() {
     }
     return inner;
   }
+
+  function ActionRow({
+    label,
+    Icon,
+    chipBg,
+    chipColor,
+    labelColor,
+    href,
+    onClick,
+    isFirst,
+    value,
+  }: {
+    label: string;
+    Icon: typeof IconMail;
+    chipBg: string;
+    chipColor: string;
+    labelColor?: string;
+    href?: string;
+    onClick?: () => void;
+    isFirst?: boolean;
+    value?: string | null;
+  }) {
+    const inner = (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 13,
+          padding: "15px 16px",
+          borderTop: isFirst ? "none" : "1px solid #EFEFF2",
+        }}
+      >
+        <div
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: 10,
+            background: chipBg,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <Icon size={18} stroke={2} color={chipColor} />
+        </div>
+        <div
+          style={{
+            fontSize: 15,
+            fontWeight: 700,
+            color: labelColor ?? "#0B1F3A",
+            ...POPPINS,
+          }}
+        >
+          {label}
+        </div>
+        <div
+          style={{
+            marginLeft: "auto",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          {value && (
+            <span style={{ fontSize: 13.5, color: "#8A8A8E", ...POPPINS }}>{value}</span>
+          )}
+          <IconChevronRight size={14} stroke={2} color="#C7C7CC" />
+        </div>
+      </div>
+    );
+
+    if (href) {
+      return (
+        <a href={href} style={{ display: "block", textDecoration: "none" }}>
+          {inner}
+        </a>
+      );
+    }
+    if (onClick) {
+      return (
+        <button
+          type="button"
+          onClick={onClick}
+          className="w-full active:opacity-70"
+          style={{ background: "transparent", border: "none", textAlign: "left", display: "block" }}
+        >
+          {inner}
+        </button>
+      );
+    }
+    return inner;
+  }
+
 
   function DetailSheet({ enquiry }: { enquiry: EnquiryRow }) {
     const meta = metaFor(enquiry.status);
@@ -610,46 +732,66 @@ function EnquiriesPage() {
 
           {/* Actions */}
           <div style={SECTION_HEADER}>Actions</div>
-          <div style={{ ...CARD, opacity: busy ? 0.6 : 1 }}>
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 18,
+              overflow: "hidden",
+              boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+              opacity: busy ? 0.6 : 1,
+            }}
+          >
             {open && (
               <>
-                <DetailRow
+                <ActionRow
                   label="Mark contacted"
                   Icon={IconCheck}
+                  chipBg="#F2F2F7"
+                  chipColor="#6B6B6F"
+                  isFirst
                   onClick={() => void markContacted(enquiry)}
                 />
-                <DetailRow
+                <ActionRow
                   label="Send SMS"
                   Icon={IconMessage}
+                  chipBg="#E7F1FC"
+                  chipColor="#1877D6"
                   href={enquiry.phone ? `sms:${enquiry.phone}` : undefined}
                 />
-                <DetailRow
+                <ActionRow
                   label="Accept enquiry"
                   Icon={IconCheck}
-                  color="#1877D6"
+                  chipBg="#E6F7EC"
+                  chipColor="#248A3D"
+                  labelColor="#248A3D"
                   onClick={() => void acceptEnquiry(enquiry)}
                 />
-                <DetailRow
+                <ActionRow
                   label="Can't help — send to Jobs"
                   Icon={IconBriefcase}
+                  chipBg="#FFF6DC"
+                  chipColor="#D68A1B"
                   onClick={() => void declineEnquiry(enquiry, true)}
                 />
-                <DetailRow
+                <ActionRow
                   label="Decline"
                   Icon={IconX}
-                  color="#CC2229"
+                  chipBg="#FDEDEC"
+                  chipColor="#FF3B30"
+                  labelColor="#FF3B30"
                   onClick={() => void declineEnquiry(enquiry, false)}
-                  isLast
                 />
               </>
             )}
 
             {status === "accepted" && (
-              <DetailRow
+              <ActionRow
                 label="View pupil profile"
-                Icon={IconChevronRight}
-                color="#1877D6"
-                isLast
+                Icon={IconCheck}
+                chipBg="#E6F7EC"
+                chipColor="#248A3D"
+                labelColor="#248A3D"
+                isFirst
                 onClick={() => {
                   const pid = newPupilIds[enquiry.id];
                   if (pid) {
@@ -665,17 +807,27 @@ function EnquiriesPage() {
             )}
 
             {status === "on_jobs" && (
-              <DetailRow
+              <ActionRow
                 label="Sent to Jobs board"
                 Icon={IconBriefcase}
+                chipBg="#FFF6DC"
+                chipColor="#D68A1B"
                 value={timeAgo(enquiry.sent_to_jobs_at)}
-                isLast
+                isFirst
               />
             )}
 
             {status === "declined" && (
-              <DetailRow label="Enquiry declined" Icon={IconX} color="#CC2229" isLast />
+              <ActionRow
+                label="Enquiry declined"
+                Icon={IconX}
+                chipBg="#FDEDEC"
+                chipColor="#FF3B30"
+                labelColor="#FF3B30"
+                isFirst
+              />
             )}
+
           </div>
 
           {/* Activity */}
@@ -768,7 +920,20 @@ function EnquiriesPage() {
       <InstructorTopBar
         firstName=""
         pageTitle="Enquiries"
-        titleStyle={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.5px", color: "#fff" }}
+        titleStyle={{
+          fontSize: 24,
+          fontWeight: 800,
+          letterSpacing: "-0.4px",
+          color: "#fff",
+          textShadow: "none",
+          mixBlendMode: "normal",
+          filter: "none",
+          WebkitTextStroke: "0",
+          WebkitFontSmoothing: "antialiased",
+          MozOsxFontSmoothing: "grayscale",
+          fontFamily: "Sora, Poppins, sans-serif",
+        }}
+
         onBack={() => navigate({ to: "/home" as never })}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
