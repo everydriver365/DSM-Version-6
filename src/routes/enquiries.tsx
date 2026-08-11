@@ -79,6 +79,19 @@ function timeAgo(iso: string | null) {
   return `${Math.floor(hrs / 24)}d ago`;
 }
 
+function fullDate(iso: string | null) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return d.toLocaleString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+
 const STATUS_META: Record<
   string,
   { label: string; bg: string; color: string; Icon: typeof IconMail }
