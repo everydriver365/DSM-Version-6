@@ -63,6 +63,25 @@ function TakePaymentPage() {
   const [qrPaymentId, setQrPaymentId] = useState<string | null>(null);
   const [qrGenerating, setQrGenerating] = useState(false);
 
+  // Square settlement: a generated link is only a request for payment. The
+  // intent row is settled by the Square webhook, and we watch it here so the
+  // instructor sees "paid" the moment the pupil actually pays.
+  const [intentId, setIntentId] = useState<string | null>(null);
+  const [intentPaid, setIntentPaid] = useState(false);
+
+  useEffect(() => {
+    if (!intentId) return;
+    setIntentPaid(false);
+    const stop = watchSquareIntent(intentId, (status) => {
+      if (status !== "paid") return;
+      setIntentPaid(true);
+      toast.success("Payment received");
+      window.dispatchEvent(new Event("dsm-payment-recorded"));
+      stop();
+    });
+    return stop;
+  }, [intentId]);
+
   // Card
   const [cardLoading, setCardLoading] = useState(false);
   const [cardSessionId, setCardSessionId] = useState<string | null>(null);
