@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Search, X, Briefcase, RefreshCw, Award, ArrowLeftRight, GraduationCap,
   ClipboardCheck, FileText, Receipt, Fuel, Car, MapPin, Calendar,
@@ -8,8 +8,9 @@ import {
   Moon, TrendingUp, Activity, Radio, ShoppingBag, Users, GraduationCap as GraduationCapIcon,
   PlayCircle,
 } from "lucide-react";
-import { IconChevronRight, IconSearch } from "@tabler/icons-react";
+import { IconChevronRight, IconSearch, IconCreditCard } from "@tabler/icons-react";
 import { toast } from "sonner";
+import { supabase } from "../lib/supabaseClient";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { PageLayout } from "@/components/PageLayout";
 import { EmptyState } from "@/components/dsm/EmptyState";
@@ -36,6 +37,7 @@ type Tool = {
   sub: string;
   route: string;
   group: string;
+  gradient?: string;
 };
 
 const allTools: Tool[] = [
@@ -57,6 +59,11 @@ const allTools: Tool[] = [
   { icon: FileText, colour: '#1A52A0', label: 'Invoices', sub: 'Billing', route: '/invoices', group: 'Business' },
   { icon: MapPin, colour: '#1A52A0', label: 'Coverage areas', sub: 'Service areas', route: '/coverage-areas', group: 'Business' },
 
+  // Payments
+  { icon: IconCreditCard, colour: '#D97706', label: 'Square Payments', sub: 'Set up card payments', route: '/profile', group: 'Payments', gradient: 'linear-gradient(135deg, #F59E0B, #D97706)' },
+
+
+
 
   // Reports
   { icon: BarChart3, colour: '#1A52A0', label: 'MTD', sub: 'Month to date', route: '/mtd', group: 'Reports' },
@@ -71,11 +78,25 @@ const allTools: Tool[] = [
   { icon: Users, colour: '#00B5A5', label: 'Community', sub: 'Connect with ADIs', route: '/community', group: 'Community' },
 ];
 
-const GROUP_ORDER = ['Teaching', 'Business', 'Admin', 'Reports', 'Community'] as const;
+const GROUP_ORDER = ['Teaching', 'Business', 'Payments', 'Admin', 'Reports', 'Community'] as const;
 
 function MorePage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [squareConnected, setSquareConnected] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return;
+      const { data: inst } = await supabase
+        .from('instructors')
+        .select('square_merchant_id')
+        .eq('id', data.user.id)
+        .maybeSingle();
+      setSquareConnected(!!inst?.square_merchant_id);
+    });
+  }, []);
+
 
   const q = searchQuery.trim().toLowerCase();
   const filtered = q
@@ -87,6 +108,11 @@ function MorePage() {
     : allTools;
 
   const go = (route: string) => navigate({ to: route as never });
+
+  const goSquare = () => {
+    try { sessionStorage.setItem('dsm-scroll-to', 'square'); } catch { /* ignore */ }
+    navigate({ to: '/profile' as never, hash: 'square' as never });
+  };
 
   return (
     <PageLayout className="pb-20" style={{ fontFamily: 'Poppins, sans-serif' }}>
@@ -275,10 +301,15 @@ function MorePage() {
                   gap: 8,
                 }}
               >
-                {items.map((tool) => (
+                {items.map((tool) => {
+                  const isSquare = tool.label === 'Square Payments';
+                  const sub = isSquare
+                    ? (squareConnected ? 'Connected' : 'Set up card payments')
+                    : tool.sub;
+                  return (
                   <button
                     key={tool.label}
-                    onClick={() => go(tool.route)}
+                    onClick={() => (isSquare ? goSquare() : go(tool.route))}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -299,22 +330,29 @@ function MorePage() {
                         width: 36,
                         height: 36,
                         borderRadius: 10,
-                        background: tool.colour + '15',
+                        background: tool.gradient ?? tool.colour + '15',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
                       }}
                     >
-                      <tool.icon size={18} color={tool.colour} />
+                      <tool.icon size={tool.gradient ? 20 : 18} color={tool.gradient ? '#fff' : tool.colour} />
                     </div>
                     <div>
                       <div style={{ fontWeight: 500, fontSize: 15, color: '#0B1F3A' }}>{tool.label}</div>
-                      <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 1 }}>{tool.sub}</div>
+                      <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 1, display: 'flex', alignItems: 'center', gap: 5 }}>
+                        {isSquare && squareConnected && (
+                          <span style={{ width: 7, height: 7, borderRadius: 999, background: '#16A34A', flexShrink: 0 }} />
+                        )}
+                        {sub}
+                      </div>
                     </div>
                     <IconChevronRight size={14} color="#C7D0DC" style={{ marginLeft: 'auto', flexShrink: 0 }} />
                   </button>
-                ))}
+                  );
+                })}
+
               </div>
             </div>
           );
