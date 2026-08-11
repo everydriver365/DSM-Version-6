@@ -506,11 +506,10 @@ function CommunityPage() {
         <button
           type="button"
           onClick={() => {
-            console.log("[community] FAB tapped");
-            console.log("[community] agreed:", typeof window !== "undefined" ? localStorage.getItem("community_agreed") : "n/a");
-            console.log("[community] instructor area:", instructorArea, instructorOutcode);
-            console.log("[community] userId:", userId);
-            setReportSheetOpenWithEvent(true);
+            setActiveTab("alerts");
+            if (typeof window !== "undefined") {
+              window.dispatchEvent(new Event("dsm-open-report-sheet"));
+            }
           }}
           aria-label="Report local issue"
           style={{
