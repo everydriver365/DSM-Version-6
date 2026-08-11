@@ -295,12 +295,22 @@ function TakePaymentPage() {
         },
       });
       if (error) throw error;
-      const res = data as { no_square?: boolean; url?: string } | null;
+      const res = data as { no_square?: boolean; url?: string; id?: string } | null;
       if (res?.no_square) {
         toast.error("Square not connected. Connect Square in your profile.");
         return;
       }
       if (!res?.url) throw new Error("No payment URL returned");
+      // Record the pending intent before leaving the app — the webhook settles it.
+      await createSquareIntent({
+        instructorId,
+        pupilId: pupilId || null,
+        lessonId: lessonId || null,
+        amountPence,
+        description: description || "Payment",
+        paymentLinkId: res.id ?? null,
+        checkoutUrl: res.url,
+      });
       window.location.href = res.url;
     } catch (e) {
       console.error("[take-payment] startCard", e);
