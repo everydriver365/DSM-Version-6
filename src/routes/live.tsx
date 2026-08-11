@@ -1384,7 +1384,8 @@ function LivePage() {
           height: 52,
           paddingLeft: 16,
           paddingTop: "env(safe-area-inset-top, 0px)",
-          background: "rgba(10,22,40,0.85)",
+          background:
+            "linear-gradient(180deg, rgba(11,31,58,0.85) 0%, rgba(11,31,58,0.3) 100%)",
           backdropFilter: "blur(8px)",
           WebkitBackdropFilter: "blur(8px)",
         }}
@@ -1402,31 +1403,37 @@ function LivePage() {
           }}
           className="flex items-center justify-center"
           style={{
-            width: "auto",
-            height: 28,
-            padding: "0 10px",
-            borderRadius: 6,
-            background: "#CC2229",
+            padding: "8px 16px",
+            borderRadius: 10,
+            background: "#FF3B30",
             color: "#FFFFFF",
-            fontSize: 12,
-            fontWeight: 700,
+            fontSize: 13,
+            fontWeight: 800,
+            letterSpacing: "0.3px",
+            boxShadow: "0 3px 0 #B02318",
             border: "none",
             cursor: "pointer",
           }}
         >
           END
         </button>
-        <div className="flex-1 text-center text-white font-semibold" style={{ fontSize: 16 }}>
+        <div className="flex-1 text-center" style={{ color: "#fff", fontSize: 17, fontWeight: 800 }}>
           Live tracking
         </div>
         <div className="flex items-center justify-center" style={{ width: 52, height: 52 }}>
           <span
+            aria-label={
+              tracking ? (isMoving ? "Tracking movement" : "Tracking paused") : "Not tracking"
+            }
+            title={
+              tracking ? (isMoving ? "Tracking movement" : "Tracking paused") : "Not tracking"
+            }
             style={{
-              width: 10,
-              height: 10,
-              borderRadius: 5,
-              background: tracking ? "#EF4444" : "#6B7280",
-              animation: tracking ? "liveDotPulse 1.4s ease-in-out infinite" : undefined,
+              width: 9,
+              height: 9,
+              borderRadius: "50%",
+              background: tracking ? (isMoving ? "#34C759" : "#FF3B30") : "#8A8A8E",
+              animation: tracking && isMoving ? "liveDotPulse 1.4s ease-in-out infinite" : undefined,
             }}
           />
         </div>
