@@ -4021,7 +4021,18 @@ function HomePage() {
     return days >= 0 && days <= 7;
   }).length;
   const naCalls: number = 0; // TODO: wire missed calls
-  const naEnquiries = pendingSwapCount || 0;
+  const [naEnquiries, setNaEnquiries] = useState(0);
+  useEffect(() => {
+    if (!userId) return;
+    void supabase
+      .from("enquiries")
+      .select("id", { count: "exact", head: true })
+      .eq("instructor_id", userId)
+      .eq("status", "new")
+      .then(({ count }) => {
+        setNaEnquiries(count ?? 0);
+      });
+  }, [userId]);
 
 
   const timeAgo = (iso: string) => {
@@ -4565,7 +4576,7 @@ function HomePage() {
       </div>
 
       {/* ============ OVERLAPPING STAT TILES ============ */}
-      {/* NOTE: naCalls (callbacks) and naJobs (open jobs) are not yet wired to a real table — showing 0 as placeholder. naEnquiries is derived from pendingSwapCount today. */}
+      {/* NOTE: naCalls (callbacks) and naJobs (open jobs) are not yet wired to a real table — showing 0 as placeholder. naEnquiries is a live count of new enquiries. */}
       <div style={SECTION_WRAPPER_STYLE}>
         <div style={{ padding: '0 16px', marginTop: -22, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
         {[
