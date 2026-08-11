@@ -8706,7 +8706,6 @@ function HomePage() {
             justifyContent: 'center',
             cursor: 'pointer',
             boxShadow: '0 4px 12px rgba(204,34,41,0.4)',
-            zIndex: 40,
           }}
           aria-label="Report local issue"
         >
