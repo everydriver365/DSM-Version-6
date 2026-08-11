@@ -855,6 +855,10 @@ export function UnifiedPaymentSheet({
   }, [amountNum, instructorId, pupilId, note]);
 
   async function generateSquareLink(type: "link" | "qr") {
+    if (!instructorId) {
+      toast.error("Not logged in — please try again");
+      return;
+    }
     setSquareLoading(true);
     try {
       const url = await createSquarePayment();
