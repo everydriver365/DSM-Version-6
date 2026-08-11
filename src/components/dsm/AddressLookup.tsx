@@ -8,11 +8,14 @@ import { IconCheck, IconLoader2, IconMapPin, IconSearch, IconX } from "@tabler/i
 
 const POPPINS = { fontFamily: "Poppins, system-ui, sans-serif" } as const;
 
-// Prefer the Lovable-managed browser key (referrer-restricted to *.lovable.app / *.lovableproject.com);
-// fall back to the legacy hardcoded key if the connector env var is missing at build time.
+// Lovable-managed browser key (referrer-restricted to *.lovable.app / *.lovableproject.com).
 const GOOGLE_MAPS_KEY =
-  (import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined)
-  || "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
+  (import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string) ?? "";
+
+if (!GOOGLE_MAPS_KEY) {
+  console.warn("[AddressLookup] Google Maps key not configured");
+}
+
 const SCRIPT_ID = "google-maps-places-script";
 
 export interface AddressLookupResult {
