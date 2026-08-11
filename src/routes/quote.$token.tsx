@@ -66,7 +66,7 @@ function MessagePage({ title, body }: { title: string; body: string }) {
   return (
     <div style={{ ...POPPINS, minHeight: "100vh", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div style={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
-        <div style={{ fontSize: 20, fontWeight: 700, color: "#0B1F3A", marginBottom: 8 }}>{title}</div>
+        <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginBottom: 8 }}>{title}</div>
         <div style={{ fontSize: 14, color: "#6B7280" }}>{body}</div>
       </div>
     </div>
