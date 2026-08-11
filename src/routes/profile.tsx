@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { IconAlertTriangle, IconBell, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronDown, IconDeviceMobile, IconLoader2, IconMail, IconShield, IconUser } from "@tabler/icons-react";
+import { IconAlertTriangle, IconBell, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconCreditCard, IconDeviceMobile, IconExternalLink, IconLoader2, IconMail, IconShield, IconUser } from "@tabler/icons-react";
 import { Puzzle, Apple, Calendar as CalendarIcon } from "lucide-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
@@ -331,22 +331,26 @@ function ProfilePage() {
   // --- Square payments connection ---
   const [squareConnected, setSquareConnected] = useState(false);
   const [squareMerchantId, setSquareMerchantId] = useState<string | null>(null);
+  const [squareConnectedAt, setSquareConnectedAt] = useState<string | null>(null);
   const [squareBusy, setSquareBusy] = useState(false);
 
   const loadSquare = async (uid: string) => {
     const { data, error } = await supabase
       .from("instructors")
-      .select("square_merchant_id")
+      .select("square_merchant_id, square_connected_at")
       .eq("id", uid)
       .maybeSingle();
     if (error) {
       console.warn("[profile] load square_merchant_id", error);
       return;
     }
-    const mid = (data as { square_merchant_id?: string | null } | null)?.square_merchant_id ?? null;
+    const row = data as { square_merchant_id?: string | null; square_connected_at?: string | null } | null;
+    const mid = row?.square_merchant_id ?? null;
     setSquareMerchantId(mid);
+    setSquareConnectedAt(row?.square_connected_at ?? null);
     setSquareConnected(Boolean(mid));
   };
+
 
   const connectSquare = async () => {
     if (!userId) return;
@@ -373,11 +377,20 @@ function ProfilePage() {
     try {
       const { error } = await supabase
         .from("instructors")
-        .update({ square_merchant_id: null })
+        .update({
+          square_access_token: null,
+          square_refresh_token: null,
+          square_merchant_id: null,
+          square_location_id: null,
+          square_connected_at: null,
+          square_token_expires_at: null,
+        })
         .eq("id", userId);
       if (error) throw error;
       setSquareMerchantId(null);
+      setSquareConnectedAt(null);
       setSquareConnected(false);
+
       toast.success("Square disconnected");
     } catch (e) {
       console.error("[profile] disconnectSquare failed", e);
@@ -1214,61 +1227,8 @@ function ProfilePage() {
         {/* Integrations */}
         <AccordionCard sectionKey="integrations" isOpen={expanded.integrations} onToggle={() => toggleSection("integrations")}>
           <div className="flex flex-col gap-3">
-            {/* PAYMENTS */}
-            <div className="text-[11px] font-semibold tracking-wide text-[#6B7280]" style={POPPINS}>
-              PAYMENTS
-            </div>
+            {/* CALENDARS */}
 
-            <div
-              className="rounded-lg bg-white px-3 py-3"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className="flex items-center justify-center rounded-lg"
-                  style={{ width: 36, height: 36, backgroundColor: "#0B1F3A", color: "#fff", fontWeight: 800 }}
-                >
-                  S
-                </div>
-                <div className="flex-1">
-                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Square</div>
-                  <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
-                    {squareConnected
-                      ? `Connected${squareMerchantId ? ` · ${squareMerchantId}` : ""}`
-                      : "Take card payments, payment links and QR codes"}
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={squareConnected ? disconnectSquare : connectSquare}
-                  disabled={squareBusy}
-                  className="rounded-lg px-3 py-2 text-[13px] font-semibold text-white"
-                  style={{
-                    ...POPPINS,
-                    backgroundColor: squareConnected ? "#CC2229" : "#1877D6",
-                    border: "none",
-                    opacity: squareBusy ? 0.7 : 1,
-                  }}
-                >
-                  {squareBusy ? "…" : squareConnected ? "Disconnect" : "Connect"}
-                </button>
-              </div>
-            </div>
-
-            {!squareConnected && (
-              <div
-                className="rounded-lg p-3"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#FCD34D", backgroundColor: "#FFFBEB" }}
-              >
-                <div className="flex items-start gap-2">
-                  <IconAlertTriangle stroke={1.5} size={18} color="#B45309" />
-                  <div className="text-[12px]" style={{ ...POPPINS, color: "#92400E" }}>
-                    Square isn't connected. Card payments will be taken via EveryDriver and paid out to
-                    you separately. Connect Square to get paid directly and instantly.
-                  </div>
-                </div>
-              </div>
-            )}
 
             <div className="text-[11px] font-semibold tracking-wide text-[#6B7280] mt-1" style={POPPINS}>
               CALENDARS
@@ -1311,7 +1271,141 @@ function ProfilePage() {
                 </div>
               </div>
             </Link>
+
+            {/* CARD PAYMENTS */}
+            <div className="text-[11px] font-semibold tracking-wide text-[#6B7280] mt-1" style={POPPINS}>
+              CARD PAYMENTS
+            </div>
+
+            <div
+              className="overflow-hidden rounded-2xl bg-white"
+              style={{ boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)" }}
+            >
+              {squareConnected ? (
+                <div className="flex items-center gap-3" style={{ padding: "14px 16px" }}>
+                  <div
+                    className="flex items-center justify-center rounded-[11px]"
+                    style={{ width: 38, height: 38, backgroundColor: "#E6F6EE" }}
+                  >
+                    <IconCheck size={20} stroke={2} color="#1A9B5C" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                      Square connected
+                    </div>
+                    <div className="text-[11px] text-[#9CA3AF]" style={POPPINS}>
+                      {squareConnectedAt
+                        ? `Connected ${new Date(squareConnectedAt).toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}`
+                        : "Card payments enabled"}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={squareBusy}
+                    onClick={disconnectSquare}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: "#CC2229",
+                      fontFamily: "Poppins, sans-serif",
+                      flexShrink: 0,
+                      opacity: squareBusy ? 0.6 : 1,
+                    }}
+                  >
+                    Disconnect
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <button
+                    type="button"
+                    disabled={squareBusy}
+                    onClick={connectSquare}
+                    className="w-full text-left hover:bg-[#F6F7F9]"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      padding: "14px 16px",
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <div
+                      className="flex items-center justify-center rounded-[11px]"
+                      style={{ width: 38, height: 38, backgroundColor: "#E7F1FC" }}
+                    >
+                      <IconCreditCard size={20} stroke={1.7} color="#1877D6" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                        Connect Square
+                      </div>
+                      <div className="text-[11px] text-[#9CA3AF]" style={POPPINS}>
+                        Accept card payments instantly
+                      </div>
+                    </div>
+                    <IconChevronRight size={18} stroke={1.7} color="#C7CBD1" />
+                  </button>
+
+                  <div style={{ height: 1, backgroundColor: "#EFEFF2", marginLeft: 66 }} />
+
+                  <button
+                    type="button"
+                    onClick={() => window.open("https://squareup.com/i/EVERYDRIVE", "_blank")}
+                    className="w-full text-left hover:bg-[#F6F7F9]"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      padding: "14px 16px",
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <div
+                      className="flex items-center justify-center rounded-[11px]"
+                      style={{ width: 38, height: 38, backgroundColor: "#F3F4F6" }}
+                    >
+                      <IconExternalLink size={20} stroke={1.7} color="#0B1F3A" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                        Get a Square account
+                      </div>
+                      <div className="text-[11px] text-[#9CA3AF]" style={POPPINS}>
+                        Free to sign up via our partner link
+                      </div>
+                    </div>
+                    <IconChevronRight size={18} stroke={1.7} color="#C7CBD1" />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {!squareConnected && (
+              <div
+                className="flex items-start gap-2 rounded-xl p-3"
+                style={{ backgroundColor: "#FFFBEB", borderWidth: "1px", borderStyle: "solid", borderColor: "#FCD34D" }}
+              >
+                <IconAlertTriangle size={18} stroke={1.6} color="#B45309" style={{ flexShrink: 0 }} />
+                <div className="text-[12px]" style={{ ...POPPINS, color: "#92400E" }}>
+                  Without Square, card payments take up to 2 days to reach you via EveryDriver. Connect
+                  Square for instant payouts.
+                </div>
+              </div>
+            )}
           </div>
+
         </AccordionCard>
 
         {/* Danger zone */}
