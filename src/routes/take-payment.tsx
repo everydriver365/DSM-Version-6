@@ -178,8 +178,8 @@ function TakePaymentPage() {
   }, [recorded, navigate]);
 
   const amountNum = Number(amount) || 0;
-  const bookingFee = amountNum * 0.01;
-  const totalNum = amountNum + (passBookingFee ? bookingFee : 0);
+  // Pupil always pays the exact amount entered — the fee is deducted server-side from the payout
+  const totalNum = amountNum;
 
   const press = (key: string) => {
     setAmount((prev) => {
