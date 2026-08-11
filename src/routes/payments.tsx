@@ -884,41 +884,21 @@ function RefundSheet({ row, userId, onClose, onSaved }: { row: HistoryRow; userI
       return;
     }
     setSaving(true);
-    const { data: { session } } = await supabase.auth.getSession();
-    const token = session?.access_token;
-    if (!token) { setSaving(false); return; }
-    const SUPABASE_URL = (supabase as any).supabaseUrl as string;
-    const SUPABASE_ANON_KEY = (supabase as any).supabaseKey as string;
-    const now = new Date().toISOString();
-    await fetch(`${SUPABASE_URL}/rest/v1/lesson_history`, {
-      method: "POST",
-      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}`, "Content-Type": "application/json", Prefer: "return=minimal" },
-      body: JSON.stringify({
-        instructor_id: userId,
-        pupil_id: row.pupil_id,
-        lesson_id: row.lesson_id,
-        lesson_cost: -Math.abs(refundAmount),
-        payment_status: "refund",
-        payment_method: "refund",
-        created_at: now,
-        notes: reason || null,
-      }),
+    const { data: pRow } = await supabase
+      .from("pupils")
+      .select("account_balance")
+      .eq("id", row.pupil_id)
+      .maybeSingle();
+    const currentBalance = Number(
+      (pRow as { account_balance?: number | null } | null)?.account_balance ?? 0,
+    );
+    await recordRefund({
+      pupilId: row.pupil_id,
+      amount: refundAmount,
+      method: row.payment_method ?? "cash",
+      notes: reason || "Refund issued from payments page",
+      currentAccountBalance: currentBalance,
     });
-    if (row.lesson_id) {
-      await supabase.from("lessons").update({
-        payment_status: "unpaid", paid_at: null, paid_amount: null, payment_method: null,
-      }).eq("id", row.lesson_id);
-    } else {
-      const { data: pRow } = await supabase.from("pupils").select("account_balance").eq("id", row.pupil_id).maybeSingle();
-      const current = Number((pRow as { account_balance?: number | null } | null)?.account_balance ?? 0);
-      await recordRefund({
-        pupilId: row.pupil_id,
-        amount: refundAmount,
-        method: row.payment_method ?? "cash",
-        notes: "Refund issued from payments page",
-        currentAccountBalance: current,
-      });
-    }
     // Recompute this pupil's outstanding balance (unpaid lessons + account credit)
     const [{ data: unpaidRows }, { data: pupilRow }] = await Promise.all([
       supabase
