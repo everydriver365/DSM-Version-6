@@ -478,7 +478,7 @@ function TakePaymentPage() {
             alignItems: "stretch",
           }}
         >
-          <div style={{ ...fieldCardStyle, flex: 1.1, position: "relative", display: "flex", alignItems: "center" }}>
+          <div style={{ ...fieldCardStyle, width: 118, flexShrink: 0, position: "relative", display: "flex", alignItems: "center" }}>
             <select
               value={pupilId}
               onChange={(e) => setPupilId(e.target.value)}
@@ -494,6 +494,9 @@ function TakePaymentPage() {
                 fontWeight: 700,
                 color: NAVY,
                 paddingRight: 16,
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
               }}
             >
               <option value="">For (optional)</option>
@@ -512,16 +515,20 @@ function TakePaymentPage() {
             placeholder="Description"
             style={{
               ...fieldCardStyle,
-              flex: 1.6,
+              flex: 1,
               minWidth: 0,
               border: "none",
               outline: "none",
               fontSize: 14,
               fontWeight: 500,
               color: NAVY,
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
             }}
           />
-          <div style={{ ...fieldCardStyle, width: 70, flexShrink: 0, padding: "13px 10px" }}>
+          <div style={{ ...fieldCardStyle, width: 52, flexShrink: 0, padding: "11px 10px" }}>
+
             <input
               type="number"
               inputMode="decimal"
