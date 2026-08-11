@@ -182,6 +182,20 @@ function SettingsPage() {
   const [morningBriefing, setMorningBriefing] = useState<boolean>(false);
   const [autoTrackLessons, setAutoTrackLessons] = useState<boolean>(false);
 
+  // === Square card payments (standalone tile) ===
+  const [squareConnected, setSquareConnected] = useState(false);
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return;
+      const { data: inst } = await supabase
+        .from("instructors")
+        .select("square_merchant_id")
+        .eq("id", data.user.id)
+        .maybeSingle();
+      setSquareConnected(!!inst?.square_merchant_id);
+    });
+  }, []);
+
   // === Section: Deposit / Payment options / Tax & expenses / Referral (instructors table) ===
   const [depositEnabled, setDepositEnabled] = useState<boolean>(false);
   const [depositAmount, setDepositAmount] = useState<number>(50);
