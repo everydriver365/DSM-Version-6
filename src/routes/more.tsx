@@ -109,6 +109,11 @@ function MorePage() {
 
   const go = (route: string) => navigate({ to: route as never });
 
+  const goSquare = () => {
+    try { sessionStorage.setItem('dsm-scroll-to', 'square'); } catch { /* ignore */ }
+    navigate({ to: '/profile' as never, hash: 'square' as never });
+  };
+
   return (
     <PageLayout className="pb-20" style={{ fontFamily: 'Poppins, sans-serif' }}>
       <InstructorTopBar
