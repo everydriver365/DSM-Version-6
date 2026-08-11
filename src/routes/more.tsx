@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Search, X, Briefcase, RefreshCw, Award, ArrowLeftRight, GraduationCap,
   ClipboardCheck, FileText, Receipt, Fuel, Car, MapPin, Calendar,
@@ -8,8 +8,9 @@ import {
   Moon, TrendingUp, Activity, Radio, ShoppingBag, Users, GraduationCap as GraduationCapIcon,
   PlayCircle,
 } from "lucide-react";
-import { IconChevronRight, IconSearch } from "@tabler/icons-react";
+import { IconChevronRight, IconSearch, IconCreditCard } from "@tabler/icons-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { PageLayout } from "@/components/PageLayout";
 import { EmptyState } from "@/components/dsm/EmptyState";
