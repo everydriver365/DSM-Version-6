@@ -3300,16 +3300,22 @@ export function UnifiedPaymentSheet({
           <div style={{ fontSize: 16, fontWeight: 600, color: WHITE, marginTop: 16 }}>
             Scan to pay {money(amountNum)}
           </div>
-          <div
-            style={{
-              fontSize: 12,
-              color: MUTED,
-              marginTop: 8,
-              animation: "ups-pulse 1.6s ease-in-out infinite",
-            }}
-          >
-            ● Waiting for payment...
-          </div>
+          {squareIntentPaid ? (
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#22C55E", marginTop: 8 }}>
+              ● Payment received
+            </div>
+          ) : (
+            <div
+              style={{
+                fontSize: 12,
+                color: MUTED,
+                marginTop: 8,
+                animation: "ups-pulse 1.6s ease-in-out infinite",
+              }}
+            >
+              ● Waiting for payment...
+            </div>
+          )}
           <div
             style={{
               position: "absolute",
