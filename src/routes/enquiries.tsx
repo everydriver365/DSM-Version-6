@@ -517,6 +517,100 @@ function EnquiriesPage() {
     return inner;
   }
 
+  function ActionRow({
+    label,
+    Icon,
+    chipBg,
+    chipColor,
+    labelColor,
+    href,
+    onClick,
+    isFirst,
+    value,
+  }: {
+    label: string;
+    Icon: typeof IconMail;
+    chipBg: string;
+    chipColor: string;
+    labelColor?: string;
+    href?: string;
+    onClick?: () => void;
+    isFirst?: boolean;
+    value?: string | null;
+  }) {
+    const inner = (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 13,
+          padding: "15px 16px",
+          borderTop: isFirst ? "none" : "1px solid #EFEFF2",
+        }}
+      >
+        <div
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: 10,
+            background: chipBg,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <Icon size={18} stroke={2} color={chipColor} />
+        </div>
+        <div
+          style={{
+            fontSize: 15,
+            fontWeight: 700,
+            color: labelColor ?? "#0B1F3A",
+            ...POPPINS,
+          }}
+        >
+          {label}
+        </div>
+        <div
+          style={{
+            marginLeft: "auto",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          {value && (
+            <span style={{ fontSize: 13.5, color: "#8A8A8E", ...POPPINS }}>{value}</span>
+          )}
+          <IconChevronRight size={14} stroke={2} color="#C7C7CC" />
+        </div>
+      </div>
+    );
+
+    if (href) {
+      return (
+        <a href={href} style={{ display: "block", textDecoration: "none" }}>
+          {inner}
+        </a>
+      );
+    }
+    if (onClick) {
+      return (
+        <button
+          type="button"
+          onClick={onClick}
+          className="w-full active:opacity-70"
+          style={{ background: "transparent", border: "none", textAlign: "left", display: "block" }}
+        >
+          {inner}
+        </button>
+      );
+    }
+    return inner;
+  }
+
+
   function DetailSheet({ enquiry }: { enquiry: EnquiryRow }) {
     const meta = metaFor(enquiry.status);
     const status = enquiry.status ?? "new";
