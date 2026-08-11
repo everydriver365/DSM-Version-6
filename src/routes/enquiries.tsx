@@ -215,6 +215,16 @@ function EnquiriesPage() {
         [enquiryId]: [...(prev[enquiryId] ?? []), data as EnquiryActivity],
       }));
     }
+    return (data as EnquiryActivity | null) ?? null;
+  }
+
+  async function removeActivity(enquiryId: string, activityId: string | undefined) {
+    if (!activityId) return;
+    await supabase.from("enquiry_activities").delete().eq("id", activityId);
+    setActivities((prev) => ({
+      ...prev,
+      [enquiryId]: (prev[enquiryId] ?? []).filter((a) => a.id !== activityId),
+    }));
   }
 
   async function markContacted(enquiry: EnquiryRow) {
@@ -226,10 +236,26 @@ function EnquiriesPage() {
         .update({ status: "contacted", contacted_at: now })
         .eq("id", enquiry.id);
 
-      await logActivity(enquiry.id, "call", "Marked as contacted", now);
+      const act = await logActivity(enquiry.id, "call", "Marked as contacted", now);
 
       updateEnquiry(enquiry.id, { status: "contacted", contacted_at: now });
-      toast.success("Marked as contacted");
+      toast.success("Marked as contacted", {
+        duration: 6000,
+        action: {
+          label: "Undo",
+          onClick: () => {
+            void (async () => {
+              await supabase
+                .from("enquiries")
+                .update({ status: "new", contacted_at: null })
+                .eq("id", enquiry.id);
+              await removeActivity(enquiry.id, act?.id);
+              updateEnquiry(enquiry.id, { status: "new", contacted_at: null });
+              toast.success("Undone");
+            })();
+          },
+        },
+      });
     } catch {
       toast.error("Could not update");
     } finally {
