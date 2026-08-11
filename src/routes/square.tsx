@@ -497,8 +497,8 @@ function SquarePage() {
                 style={{ flexShrink: 0, marginTop: 1 }}
               />
               <div style={{ fontSize: 12.5, color: "#92400E", lineHeight: 1.5 }}>
-                Without Square, card payments take up to 2 days to reach you via
-                EveryDriver. Connect Square for instant payouts.
+                Without Square, card payments take up to <strong>2 days</strong>{" "}
+                to reach you via EveryDriver. Connect Square for instant payouts.
               </div>
             </div>
           </>
