@@ -1028,6 +1028,12 @@ function EnquiriesPage() {
                               `Hi ${first}, thanks for your enquiry about driving lessons. I'd love to help — when would be a good time to chat?`,
                             );
                             window.location.href = `sms:${enquiry.phone}?&body=${body}`;
+                            await logActivity(
+                              enquiry.id,
+                              "sms",
+                              "Text message sent",
+                              new Date().toISOString(),
+                            );
                             if (enquiry.status === "new") {
                               await markContacted(enquiry);
                             }
