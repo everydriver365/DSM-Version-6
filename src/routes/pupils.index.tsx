@@ -734,6 +734,20 @@ function PupilsIndexPage() {
         </span>
         <div className="flex items-center" style={{ gap: 8 }}>
           <Link
+            to="/pupils/new"
+            aria-label="Add pupil"
+            className="flex items-center justify-center"
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              backgroundColor: "#1877D6",
+              flexShrink: 0,
+            }}
+          >
+            <IconPlus size={18} color="#FFFFFF" stroke={2} />
+          </Link>
+          <Link
             to="/broadcast"
             aria-label="Message all pupils"
             className="inline-flex items-center gap-1.5"
@@ -928,26 +942,6 @@ function PupilsIndexPage() {
         }
       `}</style>
 
-      {/* FAB */}
-      <Link
-        to="/pupils/new"
-        aria-label="Add pupil"
-        className="fixed z-50 flex items-center justify-center rounded-full"
-        style={{
-          width: 52,
-          height: 52,
-          backgroundColor: "#1877D6",
-          color: "#FFFFFF",
-          position: "fixed",
-          bottom: "calc(80px + env(safe-area-inset-bottom, 0px) + 16px)",
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 50,
-          whiteSpace: "nowrap",
-        }}
-      >
-        <IconPlus stroke={1.5} size={24} color="#FFFFFF" />
-      </Link>
 
       <UnifiedPaymentSheet
         open={unifiedPayOpen}
