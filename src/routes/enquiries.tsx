@@ -18,7 +18,9 @@ import {
   IconBriefcase,
   IconArrowLeft,
   IconArrowBackUp,
+  IconArrowRight,
   IconAlertTriangle,
+
 } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/enquiries")({
@@ -98,6 +100,14 @@ function isValidPostcode(value: string | null) {
   const pattern = /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i;
   return pattern.test(value.trim());
 }
+
+/** Display-only: insert the space before the inward code (SO302TD -> SO30 2TD). */
+function formatPostcode(value: string) {
+  const raw = value.trim().toUpperCase().replace(/\s+/g, "");
+  if (!/^[A-Z]{1,2}\d[A-Z\d]?\d[A-Z]{2}$/.test(raw)) return value.trim();
+  return `${raw.slice(0, raw.length - 3)} ${raw.slice(-3)}`;
+}
+
 
 
 const STATUS_META: Record<
@@ -815,6 +825,10 @@ function EnquiriesPage() {
     isFirst,
     value,
     description,
+    actionBg,
+    actionColor,
+    actionBorder,
+    actionShadow,
   }: {
     label: string;
     Icon: typeof IconMail;
@@ -826,71 +840,89 @@ function EnquiriesPage() {
     isFirst?: boolean;
     value?: string | null;
     description?: string;
+    actionBg?: string;
+    actionColor?: string;
+    actionBorder?: string;
+    actionShadow?: string;
   }) {
     const inner = (
       <div
         style={{
-          padding: "14px 16px",
+          padding: "15px 16px",
+          display: "flex",
+          alignItems: "center",
+          gap: 13,
           borderTop: isFirst ? "none" : "1px solid #EFEFF2",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: 10,
+            background: chipBg,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <Icon size={18} stroke={2} color={chipColor} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: 9,
-              background: chipBg,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            <Icon size={17} stroke={2} color={chipColor} />
-          </div>
-          <div
-            style={{
-              fontSize: 14.5,
-              fontWeight: 700,
+              fontSize: 15,
+              fontWeight: 800,
               color: labelColor ?? "#0B1F3A",
               ...POPPINS,
             }}
           >
             {label}
           </div>
-          <div
+          {description && (
+            <div
+              style={{
+                marginTop: 2,
+                color: "#8A8A8E",
+                fontSize: 11.5,
+                fontWeight: 500,
+                lineHeight: 1.35,
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical" as const,
+                overflow: "hidden",
+                ...POPPINS,
+              }}
+            >
+              {description}
+            </div>
+          )}
+        </div>
+        {value && (
+          <span style={{ fontSize: 12, color: "#8A8A8E", flexShrink: 0, ...POPPINS }}>{value}</span>
+        )}
+        {(onClick || href) && (
+          <span
+            aria-hidden
             style={{
-              marginLeft: "auto",
+              width: 38,
+              height: 38,
+              borderRadius: 19,
+              flexShrink: 0,
               display: "flex",
               alignItems: "center",
-              gap: 8,
+              justifyContent: "center",
+              background: actionBg ?? "#F2F2F7",
+              border: actionBorder ?? "none",
+              boxShadow: actionShadow ?? "none",
             }}
           >
-            {value && (
-              <span style={{ fontSize: 13, color: "#8A8A8E", ...POPPINS }}>{value}</span>
-            )}
-            <IconChevronRight size={13} stroke={2} color="#C7C7CC" />
-          </div>
-        </div>
-        {description && (
-          <div
-            style={{
-              marginTop: 6,
-              marginLeft: 44,
-              color: "#8A8A8E",
-              fontSize: 11.5,
-              fontWeight: 500,
-              lineHeight: 1.4,
-              ...POPPINS,
-            }}
-          >
-            {description}
-          </div>
+            <IconArrowRight size={15} stroke={2.4} color={actionColor ?? "#0B1F3A"} />
+          </span>
         )}
       </div>
     );
-
 
     if (href) {
       return (
@@ -915,6 +947,7 @@ function EnquiriesPage() {
   }
 
 
+
   function DetailSheet({ enquiry }: { enquiry: EnquiryRow }) {
     const meta = metaFor(enquiry.status);
     const status = enquiry.status ?? "new";
@@ -933,11 +966,11 @@ function EnquiriesPage() {
             top: 0,
             zIndex: 2,
             background: "#0B1F3A",
-            padding: "calc(12px + env(safe-area-inset-top, 0px)) 16px 14px",
-            borderRadius: "0 0 18px 18px",
+            padding: "calc(12px + env(safe-area-inset-top, 0px)) 16px 16px",
+            borderRadius: "0 0 28px 28px",
             display: "flex",
             alignItems: "center",
-            gap: 10,
+            gap: 12,
           }}
         >
           <button
@@ -946,23 +979,27 @@ function EnquiriesPage() {
             onClick={() => setSelectedId(null)}
             className="flex items-center justify-center active:opacity-70"
             style={{
-              width: 30,
-              height: 30,
-              borderRadius: 15,
-              background: "rgba(255,255,255,0.14)",
+              width: 34,
+              height: 34,
+              borderRadius: 17,
+              background: "rgba(255,255,255,0.08)",
               border: "none",
+              flexShrink: 0,
             }}
           >
-            <IconArrowLeft size={16} stroke={2} color="#fff" />
+            <IconArrowLeft size={17} stroke={2} color="#fff" />
           </button>
           <div
             style={{
               flex: 1,
               minWidth: 0,
               color: "#fff",
-              fontSize: 18,
+              fontSize: 19,
               fontWeight: 800,
               letterSpacing: "-0.3px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
               ...POPPINS,
             }}
           >
@@ -970,18 +1007,20 @@ function EnquiriesPage() {
           </div>
           <span
             style={{
-              background: meta.bg,
-              color: meta.color,
+              background: "#1877D6",
+              color: "#fff",
               borderRadius: 20,
-              padding: "4px 10px",
-              fontSize: 11.5,
+              padding: "6px 14px",
+              fontSize: 12,
               fontWeight: 800,
+              flexShrink: 0,
               ...POPPINS,
             }}
           >
             {meta.label}
           </span>
         </div>
+
 
         <div style={{ padding: "4px 16px 40px" }}>
           {(() => {
@@ -1050,7 +1089,9 @@ function EnquiriesPage() {
                   label: "Preferred start",
                   value: new Date(enquiry.preferred_start_date).toLocaleDateString("en-GB"),
                 });
-              if (enquiry.postcode) rows.push({ label: "Postcode", value: enquiry.postcode });
+              if (enquiry.postcode)
+                rows.push({ label: "Postcode", value: formatPostcode(enquiry.postcode) });
+
               if (enquiry.phone)
                 rows.push({ label: "Phone", value: formatPhone(enquiry.phone) });
               if (enquiry.email) rows.push({ label: "Email", value: enquiry.email });
@@ -1123,125 +1164,186 @@ function EnquiriesPage() {
 
           {/* Activity */}
           <div style={{ ...SECTION_HEADER, marginTop: 20 }}>Activity</div>
-          <div style={{ ...CARD, padding: "6px 0" }}>
+          <div style={{ ...CARD, padding: "18px 16px" }}>
             {(() => {
-              const items: {
-                title: string;
+              type Msg = { text: string; at: string; outgoing: boolean };
+              type Item = {
+                kind: "event" | "conversation";
+                title?: string;
                 at: string | null;
                 pending?: boolean;
                 type?: string;
-              }[] = [];
-              items.push({ title: "Enquiry received", at: enquiry.created_at, type: "received" });
-              list.forEach((a) =>
-                items.push({ title: a.body ?? a.type, at: a.created_at, type: a.type ?? undefined }),
-              );
-              if (status === "new")
-                items.push({ title: "Awaiting contact", at: null, pending: true, type: "pending" });
+                messages?: Msg[];
+              };
 
-              const meta = (type?: string, pending?: boolean) => {
-                if (pending) return { label: "Pending", color: "#9CA3AF" };
-                switch (type) {
+              const items: Item[] = [];
+              items.push({
+                kind: "event",
+                title: "Enquiry received",
+                at: enquiry.created_at,
+                type: "received",
+              });
+
+              const isMsg = (t: string | null) => t === "sms" || t === "sms_reply";
+              const cleanBody = (b: string | null) =>
+                (b ?? "").replace(/^SMS (sent|reply):\s*"?/i, "").replace(/"$/, "");
+
+              list.forEach((a) => {
+                if (isMsg(a.type)) {
+                  const prev = items[items.length - 1];
+                  const msg: Msg = {
+                    text: cleanBody(a.body),
+                    at: a.created_at,
+                    outgoing: a.type === "sms",
+                  };
+                  if (prev && prev.kind === "conversation") {
+                    prev.messages!.push(msg);
+                    prev.at = a.created_at;
+                  } else {
+                    items.push({ kind: "conversation", at: a.created_at, messages: [msg] });
+                  }
+                } else {
+                  items.push({
+                    kind: "event",
+                    title: a.body ?? a.type,
+                    at: a.created_at,
+                    type: a.type ?? undefined,
+                  });
+                }
+              });
+
+              if (status === "new")
+                items.push({
+                  kind: "event",
+                  title: "Pending — Awaiting contact",
+                  at: null,
+                  pending: true,
+                  type: "pending",
+                });
+
+              const metaFor = (it: Item) => {
+                if (it.kind === "conversation")
+                  return { label: "Conversation", color: "#7B4FC9", dot: "#7B4FC9" };
+                if (it.pending) return { label: "Pending", color: "#B0B0B5", dot: "#D1D1D6" };
+                switch (it.type) {
                   case "note":
-                    return { label: "Note", color: "#F59E0B" };
+                    return { label: "Note", color: "#D68A1B", dot: "#D68A1B" };
                   case "call":
-                    return { label: "Call / Contact", color: "#1877D6" };
-                  case "sms":
-                    return { label: "SMS sent", color: "#7C3AED" };
+                    return { label: "Call / Contact", color: "#1877D6", dot: "#1877D6" };
                   case "status_change":
-                    return { label: "Status", color: "#15803D" };
+                    return { label: "Status", color: "#248A3D", dot: "#248A3D" };
                   case "received":
-                    return { label: "Enquiry", color: "#1877D6" };
+                    return { label: "Enquiry", color: "#1877D6", dot: "#1877D6" };
                   default:
-                    return { label: "Activity", color: "#9CA3AF" };
+                    return { label: "Activity", color: "#8A8A8E", dot: "#B0B0B5" };
                 }
               };
 
               return items.map((it, i) => {
-                const { label, color } = meta(it.type, it.pending);
+                const { label, color, dot } = metaFor(it);
+                const showLine = !it.pending && i < items.length - 1;
                 return (
-                  <div
-                    key={`${it.title}-${i}`}
-                    style={{
-                      display: "flex",
-                      gap: 10,
-                      padding: "10px 16px",
-                      alignItems: "flex-start",
-                    }}
-                  >
+                  <div key={`${label}-${i}`} style={{ display: "flex", gap: 12 }}>
                     <div
                       style={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: "50%",
-                        background: color,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                         flexShrink: 0,
-                        marginTop: 6,
+                        paddingTop: 3,
                       }}
-                    />
-                    <div style={{ flex: 1, minWidth: 0 }}>
+                    >
+                      <span
+                        style={{ width: 9, height: 9, borderRadius: "50%", background: dot }}
+                      />
+                      {showLine && (
+                        <span style={{ width: 1.5, flex: 1, background: "#E4E4E8", marginTop: 4 }} />
+                      )}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0, paddingBottom: showLine ? 16 : 0 }}>
                       <div
                         style={{
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "center",
-                          marginBottom: 2,
                           gap: 8,
                         }}
                       >
-                        <div
+                        <span
                           style={{
                             fontSize: 11,
-                            fontWeight: 600,
-                            color,
+                            fontWeight: 800,
+                            letterSpacing: "0.4px",
                             textTransform: "uppercase",
-                            letterSpacing: "0.06em",
+                            color,
                             ...POPPINS,
                           }}
                         >
                           {label}
-                        </div>
-                        <div style={{ fontSize: 11, color: "#9CA3AF", flexShrink: 0, ...POPPINS }}>
-                          {it.at ? timeAgo(it.at) : ""}
-                        </div>
-                      </div>
-                      {it.type === "sms" ? (
-                        <div
-                          style={{
-                            background: "#F0F7FF",
-                            borderRadius: 8,
-                            padding: "8px 10px",
-                            fontSize: 13,
-                            color: "#0B1F3A",
-                            fontStyle: "italic",
-                            lineHeight: 1.5,
-                            marginTop: 4,
-                            ...POPPINS,
-                          }}
+                        </span>
+                        <span
+                          style={{ fontSize: 11, color: "#B0B0B5", flexShrink: 0, ...POPPINS }}
                         >
-                          {(it.title ?? "").replace(/^SMS sent:\s*"?/, "").replace(/"$/, "")}
+                          {it.at ? timeAgo(it.at) : ""}
+                        </span>
+                      </div>
+
+                      {it.kind === "conversation" ? (
+                        <div style={{ marginTop: 8, display: "grid", gap: 10 }}>
+                          {it.messages!.map((m, mi) => (
+                            <div
+                              key={mi}
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: m.outgoing ? "flex-end" : "flex-start",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  maxWidth: "82%",
+                                  padding: "9px 13px",
+                                  fontSize: 13,
+                                  lineHeight: 1.45,
+                                  borderRadius: 14,
+                                  background: m.outgoing ? "#1877D6" : "#F2F2F7",
+                                  color: m.outgoing ? "#fff" : "#0B1F3A",
+                                  ...(m.outgoing
+                                    ? { borderBottomRightRadius: 4 }
+                                    : { borderBottomLeftRadius: 4 }),
+                                  ...POPPINS,
+                                }}
+                              >
+                                {m.text}
+                              </div>
+                              <div
+                                style={{
+                                  marginTop: 3,
+                                  fontSize: 10,
+                                  color: "#B0B0B5",
+                                  ...POPPINS,
+                                }}
+                              >
+                                {m.outgoing ? "You" : (enquiry.name ?? "Reply")} ·{" "}
+                                {timeAgo(m.at)}
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       ) : (
                         <div
                           style={{
-                            fontSize: 13,
-                            color: it.pending ? "#9CA3AF" : "#0B1F3A",
-                            fontStyle: it.type === "note" ? "italic" : "normal",
-                            lineHeight: 1.5,
-                            ...(it.type === "status_change" || it.type === "call"
-                              ? {
-                                  display: "-webkit-box",
-                                  WebkitLineClamp: 2,
-                                  WebkitBoxOrient: "vertical" as const,
-                                  overflow: "hidden",
-                                }
-                              : {}),
+                            marginTop: 3,
+                            fontSize: 13.5,
+                            fontWeight: it.pending ? 500 : 600,
+                            color: it.pending ? "#B0B0B5" : "#0B1F3A",
+                            lineHeight: 1.45,
                             ...POPPINS,
                           }}
                         >
                           {it.title}
                         </div>
                       )}
-
                     </div>
                   </div>
                 );
@@ -1250,14 +1352,15 @@ function EnquiriesPage() {
           </div>
 
 
+
           {/* Actions */}
           <div style={{ ...SECTION_HEADER, marginTop: 20 }}>Actions</div>
           <div
             style={{
               background: "#fff",
-              borderRadius: 16,
+              borderRadius: 18,
               overflow: "hidden",
-              boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
+              boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
               opacity: busy ? 0.6 : 1,
             }}
           >
@@ -1269,9 +1372,12 @@ function EnquiriesPage() {
                   chipBg="#F2F2F7"
                   chipColor="#6B6B6F"
                   isFirst
-                  description="Logs that you've reached out (call, text, or in person) — updates status and records the time, but doesn't send anything automatically."
+                  actionBg="#F2F2F7"
+                  actionColor="#0B1F3A"
+                  description="Logs that you've reached out — doesn't send anything automatically."
                   onClick={() => void markContacted(enquiry)}
                 />
+
                 {showSmsComposer ? (
                   <div style={{ padding: 14, borderBottom: "1px solid #F0F0F3" }}>
                     <div
@@ -1352,7 +1458,10 @@ function EnquiriesPage() {
                     Icon={IconMessage}
                     chipBg="#E7F1FC"
                     chipColor="#1877D6"
-                    description="Sends a text message and automatically logs this as your first contact."
+                    actionBg="#1877D6"
+                    actionColor="#fff"
+                    actionShadow="0 2px 0 #0F52A8"
+                    description="Opens a text to their number and logs it as your first contact."
                     onClick={
                       enquiry.phone
                         ? () => {
@@ -1370,7 +1479,10 @@ function EnquiriesPage() {
                   chipBg="#E6F7EC"
                   chipColor="#248A3D"
                   labelColor="#248A3D"
-                  description="Converts this enquiry into a pupil record so you can schedule their first lesson. This can't be undone from here."
+                  actionBg="#248A3D"
+                  actionColor="#fff"
+                  actionShadow="0 2px 0 #186429"
+                  description="Converts to a pupil record. This can't be undone from here."
                   onClick={() => void acceptEnquiry(enquiry)}
                 />
                 <ActionRow
@@ -1378,7 +1490,10 @@ function EnquiriesPage() {
                   Icon={IconBriefcase}
                   chipBg="#FFF6DC"
                   chipColor="#D68A1B"
-                  description="Posts to the Jobs board for another local instructor to pick up — moves to your On jobs board section, not deleted."
+                  actionBg="#D68A1B"
+                  actionColor="#fff"
+                  actionShadow="0 2px 0 #A56A0F"
+                  description="Posts to the Jobs board. Moves to On jobs board, not deleted."
                   onClick={() => void declineEnquiry(enquiry, true)}
                 />
                 <ActionRow
@@ -1387,11 +1502,15 @@ function EnquiriesPage() {
                   chipBg="#FDEDEC"
                   chipColor="#FF3B30"
                   labelColor="#FF3B30"
-                  description="Closes this enquiry with no further action. It's archived, not deleted — you can still find it under Declined."
+                  actionBg="#fff"
+                  actionColor="#FF3B30"
+                  actionBorder="1.5px solid #FF3B30"
+                  description="Archives with no further action. Findable under Declined."
                   onClick={() => void declineEnquiry(enquiry, false)}
                 />
               </>
             )}
+
 
             {status === "accepted" && (
               <ActionRow
