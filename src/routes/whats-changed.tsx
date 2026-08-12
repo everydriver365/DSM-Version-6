@@ -51,6 +51,7 @@ type ItemKind =
   | "lesson_cancelled"
   | "message"
   | "payment"
+  | "card_payment"
   | "gap"
   | "enquiry"
   | "job"
@@ -150,7 +151,7 @@ function WhatsChangedPage() {
         last = localStorage.getItem(key);
       } catch {}
       setLastUpdated(last);
-      const since = last ? new Date(last) : new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const since = last ? new Date(last) : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
       const sinceIso = (Number.isNaN(since.getTime())
         ? new Date(Date.now() - 24 * 60 * 60 * 1000)
         : since
@@ -162,6 +163,7 @@ function WhatsChangedPage() {
         lessonsCanc,
         messages,
         payments,
+        cardPayments,
         gaps,
         enquiries,
         jobs,
@@ -199,6 +201,15 @@ function WhatsChangedPage() {
           .eq("payment_status", "paid")
           .gte("created_at", sinceIso),
         supabase
+          .from("lesson_history")
+          .select(
+            "id, instructor_id, pupil_id, lesson_cost, payment_method, created_at, pupils(name, first_name)",
+          )
+          .eq("instructor_id", userId)
+          .eq("payment_status", "paid")
+          .is("deleted_at", null)
+          .gte("created_at", sinceIso),
+        supabase
           .from("gap_filler_offers")
           .select("id, pupil_id, slot_date, slot_time, duration_minutes, pupils(name, first_name)")
           .eq("instructor_id", userId)
@@ -206,7 +217,7 @@ function WhatsChangedPage() {
           .gte("created_at", sinceIso),
         supabase
           .from("enquiries")
-          .select("id, name, message, created_at")
+          .select("id, name, notes, course_interest, postcode, created_at")
           .eq("instructor_id", userId)
           .gte("created_at", sinceIso),
         supabase
@@ -289,6 +300,18 @@ function WhatsChangedPage() {
           })),
         },
         {
+          key: "card_payment",
+          label: "Card payments received",
+          icon: <CreditCard size={16} color="#1B7F3B" />,
+          items: rowsOf(cardPayments).map((r) => ({
+            id: String(r.id),
+            kind: "card_payment" as const,
+            title: pupilName(r),
+            subtitle: `${money(r.lesson_cost)} · ${r.payment_method ?? "Card"} · ${fmtDateTime(r.created_at)}`,
+            raw: r,
+          })),
+        },
+        {
           key: "gap",
           label: "Slots accepted",
           icon: <Zap size={16} color="#1B7F3B" />,
@@ -308,7 +331,11 @@ function WhatsChangedPage() {
             id: String(r.id),
             kind: "enquiry" as const,
             title: r.name || "Enquiry",
-            subtitle: truncate(r.message ?? ""),
+            subtitle: truncate(
+              r.course_interest
+                ? `${r.course_interest}${r.postcode ? " · " + r.postcode : ""}`
+                : r.notes ?? "New enquiry",
+            ),
             raw: r,
           })),
         },
@@ -585,6 +612,18 @@ function DetailSheet({
       );
       cta = { label: "View payments →", to: `/pupils/${r.pupil_id}` };
       break;
+    case "card_payment":
+      title = "Card payment received";
+      body = (
+        <>
+          <Field label="Pupil" value={pupilName(r)} />
+          <Field label="Amount paid" value={money(r.lesson_cost)} />
+          <Field label="Method" value={r.payment_method ?? "Card"} />
+          <Field label="Received" value={fmtDateTime(r.created_at)} />
+        </>
+      );
+      cta = { label: "View payments →", to: `/pupils/${r.pupil_id}` };
+      break;
     case "gap":
       title = "Slot accepted";
       body = (
@@ -602,10 +641,14 @@ function DetailSheet({
       body = (
         <>
           <Field label="From" value={r.name || "Enquiry"} />
+          {r.course_interest && <Field label="Interest" value={r.course_interest} />}
+          {r.postcode && <Field label="Postcode" value={r.postcode} />}
           <Field label="Received" value={fmtDateTime(r.created_at)} />
-          <div style={{ paddingTop: 12, fontSize: 14, color: NAVY, lineHeight: 1.5 }}>
-            {r.message}
-          </div>
+          {r.notes && (
+            <div style={{ paddingTop: 12, fontSize: 14, color: NAVY, lineHeight: 1.5 }}>
+              {r.notes}
+            </div>
+          )}
         </>
       );
       cta = { label: "View enquiries →", to: "/enquiries" };
