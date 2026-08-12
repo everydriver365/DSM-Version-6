@@ -139,7 +139,6 @@ import { Route as DsmLiveSessionIdRouteImport } from './routes/dsm-live.$session
 import { Route as DrivingTestPupilIdRouteImport } from './routes/driving-test.$pupilId'
 import { Route as CoursesNewRouteImport } from './routes/courses.new'
 import { Route as CoursesIdRouteImport } from './routes/courses.$id'
-import { Route as BookingsIdRouteImport } from './routes/bookings.$id'
 import { Route as AdminTermsRouteImport } from './routes/admin.terms'
 import { Route as AdminPodcastsRouteImport } from './routes/admin.podcasts'
 import { Route as AdminListingsRouteImport } from './routes/admin.listings'
@@ -823,11 +822,6 @@ const CoursesIdRoute = CoursesIdRouteImport.update({
   path: '/courses/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BookingsIdRoute = BookingsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => BookingsRoute,
-} as any)
 const AdminTermsRoute = AdminTermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -1007,7 +1001,7 @@ export interface FileRoutesByFullPath {
   '/availability': typeof AvailabilityRoute
   '/availability-settings': typeof AvailabilitySettingsRoute
   '/bitesize': typeof BitesizeRoute
-  '/bookings': typeof BookingsRouteWithChildren
+  '/bookings': typeof BookingsRoute
   '/briefing': typeof BriefingRoute
   '/broadcast': typeof BroadcastRoute
   '/bulkmessage': typeof BulkmessageRoute
@@ -1117,7 +1111,6 @@ export interface FileRoutesByFullPath {
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
-  '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/driving-test/$pupilId': typeof DrivingTestPupilIdRoute
@@ -1172,7 +1165,7 @@ export interface FileRoutesByTo {
   '/availability': typeof AvailabilityRoute
   '/availability-settings': typeof AvailabilitySettingsRoute
   '/bitesize': typeof BitesizeRoute
-  '/bookings': typeof BookingsRouteWithChildren
+  '/bookings': typeof BookingsRoute
   '/briefing': typeof BriefingRoute
   '/broadcast': typeof BroadcastRoute
   '/bulkmessage': typeof BulkmessageRoute
@@ -1279,7 +1272,6 @@ export interface FileRoutesByTo {
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
-  '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/driving-test/$pupilId': typeof DrivingTestPupilIdRoute
@@ -1336,7 +1328,7 @@ export interface FileRoutesById {
   '/availability': typeof AvailabilityRoute
   '/availability-settings': typeof AvailabilitySettingsRoute
   '/bitesize': typeof BitesizeRoute
-  '/bookings': typeof BookingsRouteWithChildren
+  '/bookings': typeof BookingsRoute
   '/briefing': typeof BriefingRoute
   '/broadcast': typeof BroadcastRoute
   '/bulkmessage': typeof BulkmessageRoute
@@ -1446,7 +1438,6 @@ export interface FileRoutesById {
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
-  '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/driving-test/$pupilId': typeof DrivingTestPupilIdRoute
@@ -1613,7 +1604,6 @@ export interface FileRouteTypes {
     | '/admin/listings'
     | '/admin/podcasts'
     | '/admin/terms'
-    | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
     | '/driving-test/$pupilId'
@@ -1775,7 +1765,6 @@ export interface FileRouteTypes {
     | '/admin/listings'
     | '/admin/podcasts'
     | '/admin/terms'
-    | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
     | '/driving-test/$pupilId'
@@ -1941,7 +1930,6 @@ export interface FileRouteTypes {
     | '/admin/listings'
     | '/admin/podcasts'
     | '/admin/terms'
-    | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
     | '/driving-test/$pupilId'
@@ -1998,7 +1986,7 @@ export interface RootRouteChildren {
   AvailabilityRoute: typeof AvailabilityRoute
   AvailabilitySettingsRoute: typeof AvailabilitySettingsRoute
   BitesizeRoute: typeof BitesizeRoute
-  BookingsRoute: typeof BookingsRouteWithChildren
+  BookingsRoute: typeof BookingsRoute
   BriefingRoute: typeof BriefingRoute
   BroadcastRoute: typeof BroadcastRoute
   BulkmessageRoute: typeof BulkmessageRoute
@@ -3044,13 +3032,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/bookings/$id': {
-      id: '/bookings/$id'
-      path: '/$id'
-      fullPath: '/bookings/$id'
-      preLoaderRoute: typeof BookingsIdRouteImport
-      parentRoute: typeof BookingsRoute
-    }
     '/admin/terms': {
       id: '/admin/terms'
       path: '/terms'
@@ -3335,18 +3316,6 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
-interface BookingsRouteChildren {
-  BookingsIdRoute: typeof BookingsIdRoute
-}
-
-const BookingsRouteChildren: BookingsRouteChildren = {
-  BookingsIdRoute: BookingsIdRoute,
-}
-
-const BookingsRouteWithChildren = BookingsRoute._addFileChildren(
-  BookingsRouteChildren,
-)
-
 interface DsmLiveRouteChildren {
   DsmLiveSessionIdRoute: typeof DsmLiveSessionIdRoute
   DsmLiveIndexRoute: typeof DsmLiveIndexRoute
@@ -3399,7 +3368,7 @@ const rootRouteChildren: RootRouteChildren = {
   AvailabilityRoute: AvailabilityRoute,
   AvailabilitySettingsRoute: AvailabilitySettingsRoute,
   BitesizeRoute: BitesizeRoute,
-  BookingsRoute: BookingsRouteWithChildren,
+  BookingsRoute: BookingsRoute,
   BriefingRoute: BriefingRoute,
   BroadcastRoute: BroadcastRoute,
   BulkmessageRoute: BulkmessageRoute,
