@@ -151,7 +151,7 @@ function WhatsChangedPage() {
         last = localStorage.getItem(key);
       } catch {}
       setLastUpdated(last);
-      const since = last ? new Date(last) : new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const since = last ? new Date(last) : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
       const sinceIso = (Number.isNaN(since.getTime())
         ? new Date(Date.now() - 24 * 60 * 60 * 1000)
         : since
