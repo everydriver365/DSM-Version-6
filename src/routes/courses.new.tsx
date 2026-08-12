@@ -576,6 +576,110 @@ function NewCoursePage() {
             publishWebsite={publishWebsite}
             setPublishWebsite={setPublishWebsite}
           />
+        {step === 3 && (
+          <>
+            <div style={{ marginTop: 24, marginBottom: 8 }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.6, fontFamily: "Poppins, sans-serif" }}>
+                COURSE IMAGE
+              </span>
+            </div>
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 16,
+                boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                overflow: "hidden",
+                marginBottom: 12,
+              }}
+            >
+              {heroImage ? (
+                <>
+                  <img src={heroImage} alt="Course hero" style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} />
+                  <button
+                    type="button"
+                    onClick={() => heroInputRef.current?.click()}
+                    style={{
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "12px 16px",
+                      background: "none",
+                      border: "none",
+                      borderBottom: "0.5px solid #EEF2F7",
+                      cursor: "pointer",
+                      fontFamily: "Poppins, sans-serif",
+                      fontSize: 14,
+                      fontWeight: 500,
+                      color: "#0B1F3A",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    Change image
+                    {uploadingHero && (
+                      <Loader2 strokeWidth={1.5} size={16} className="animate-spin" style={{ color: "#1877D6" }} />
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setHeroImage(null)}
+                    style={{
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "12px 16px",
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      fontFamily: "Poppins, sans-serif",
+                      fontSize: 14,
+                      fontWeight: 500,
+                      color: "#CC2229",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    Remove image
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => heroInputRef.current?.click()}
+                  style={{
+                    width: "100%",
+                    textAlign: "left",
+                    padding: "12px 16px",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                  }}
+                >
+                  <IconPhoto size={18} color="#6B7686" />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 500, color: "#0B1F3A", fontFamily: "Poppins, sans-serif" }}>Add course image</div>
+                    <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2, fontFamily: "Poppins, sans-serif" }}>
+                      Shows on your mini-site and EveryDriver listings
+                    </div>
+                  </div>
+                  <IconChevronRight size={18} color="#C7D0DC" />
+                </button>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                ref={heroInputRef}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) uploadHeroImage(file);
+                }}
+              />
+            </div>
+          </>
         )}
 
         {/* Step nav */}
