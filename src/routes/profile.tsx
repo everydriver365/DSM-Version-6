@@ -428,7 +428,7 @@ function ProfilePage() {
       const { data: inst, error: instErr } = await supabase
         .from("instructors")
         .select(
-          "name, phone, bio, car_make, car_model, profile_image_url, address, home_postcode, city, lat, lng, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, logo_url, vehicle_make, vehicle_model, vehicle_reg, vehicle_year, dual_controls, insurance_expiry, vehicle_photo_url, transmission, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
+          "name, phone, bio, car_make, car_model, profile_image_url, address, home_postcode, city, lat, lng, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, logo_url, vehicle_make, vehicle_model, vehicle_reg, vehicle_year, dual_controls, insurance_expiry, vehicle_photo_url, car_type, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
 
         )
         .eq("id", user.id)
@@ -472,7 +472,7 @@ function ProfilePage() {
         setDualControls(Boolean(inst.dual_controls));
         setInsuranceExpiry(inst.insurance_expiry ?? "");
         setVehiclePhotoUrl(inst.vehicle_photo_url ?? null);
-        setTransmission(inst.transmission ?? "Manual");
+        setTransmission(inst.car_type ?? "Manual");
 
         if (inst.notification_prefs && typeof inst.notification_prefs === "object") {
           setNotifPrefs({ ...defaultNotifPrefs(), ...(inst.notification_prefs as NotifPrefs) });
@@ -521,7 +521,7 @@ function ProfilePage() {
       vehicle_make: vehicleMake.trim() || null,
       vehicle_model: vehicleModel.trim() || null,
       vehicle_reg: vehicleReg.trim() || null,
-      transmission: transmission || null,
+      car_type: transmission || null,
       vehicle_year: vehicleYear.trim() ? Number(vehicleYear.trim()) : null,
       dual_controls: dualControls,
       insurance_expiry: insuranceExpiry || null,
