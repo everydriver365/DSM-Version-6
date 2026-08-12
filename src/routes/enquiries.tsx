@@ -657,6 +657,81 @@ function EnquiriesPage() {
     );
   }
 
+  function ReplyBanner() {
+    if (unreadReplies.size === 0) return null;
+    const mostRecentId = Object.entries(latestReplyAt).sort((a, b) =>
+      new Date(b[1]).getTime() - new Date(a[1]).getTime()
+    )[0]?.[0];
+    if (!mostRecentId) return null;
+    const enquiry = enquiries.find((e) => e.id === mostRecentId);
+    if (!enquiry) return null;
+    const count = unreadReplies.size;
+    const title = `${count} new ${count === 1 ? "reply" : "replies"} waiting`;
+    const subtitle = `${enquiry.name ?? "Unknown"} · ${timeAgo(latestReplyAt[mostRecentId])}`;
+
+    return (
+      <button
+        type="button"
+        onClick={() => {
+          setSelectedId(enquiry.id);
+          setNoteText("");
+          void loadActivities(enquiry.id);
+        }}
+        className="w-full active:opacity-80"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          background: "linear-gradient(100deg, #0B1F3A, #14509E)",
+          borderRadius: 16,
+          padding: "14px 16px",
+          marginBottom: 16,
+          border: "none",
+          textAlign: "left",
+          boxShadow: "0 3px 0 #081730, 0 10px 22px rgba(11,31,58,0.25)",
+        }}
+      >
+        <div
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: 10,
+            background: "rgba(255,255,255,0.15)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <IconArrowBackUp size={16} stroke={2} color="#fff" />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div
+            style={{
+              fontSize: 14,
+              fontWeight: 800,
+              color: "#fff",
+              ...POPPINS,
+            }}
+          >
+            {title}
+          </div>
+          <div
+            style={{
+              fontSize: 11.5,
+              color: "rgba(255,255,255,0.7)",
+              marginTop: 1,
+              ...POPPINS,
+            }}
+          >
+            {subtitle}
+          </div>
+        </div>
+        <IconChevronRight size={14} stroke={2} color="#fff" style={{ flexShrink: 0 }} />
+      </button>
+    );
+  }
+
 
   /* ---------------- detail sheet ---------------- */
 
