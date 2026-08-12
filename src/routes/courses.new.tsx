@@ -350,6 +350,7 @@ function NewCoursePage() {
       early_bird_expiry: earlyBird && earlyBirdExpiry ? earlyBirdExpiry : null,
       publish_marketplace: publishMarketplace,
       publish_mini_website: publishWebsite,
+      image_url: heroImage,
       status,
     };
 
