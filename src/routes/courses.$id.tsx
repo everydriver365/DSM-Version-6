@@ -220,15 +220,29 @@ function CourseDetailPage() {
     if (!course?.instructor_id) return;
     setUploadingHero(true);
     try {
-      const ext = file.name.split('.').pop() ?? 'jpg';
+      const ext = file.name.split(".").pop() ?? "jpg";
       const path = `${course.instructor_id}/${Date.now()}-hero.${ext}`;
-      const { error } = await supabase.storage.from('course-images').upload(path, file, { upsert: true });
-      if (error) throw error;
-      const { data: { publicUrl } } = supabase.storage.from('course-images').getPublicUrl(path);
+
+      const { error: uploadError } = await supabase.storage
+        .from("course-images")
+        .upload(path, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("course-images")
+        .getPublicUrl(path);
+
       setHeroImage(publicUrl);
-      toast.success('Image uploaded');
+
+      await supabase
+        .from("instructor_courses")
+        .update({ image_url: publicUrl })
+        .eq("id", id);
+
+      toast.success("Image uploaded");
     } catch (e: any) {
-      toast.error(e.message ?? 'Upload failed');
+      toast.error(e.message ?? "Upload failed");
     } finally {
       setUploadingHero(false);
     }
