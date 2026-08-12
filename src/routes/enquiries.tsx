@@ -685,6 +685,7 @@ function EnquiriesPage() {
           background: "linear-gradient(100deg, #0B1F3A, #14509E)",
           borderRadius: 16,
           padding: "14px 16px",
+          marginTop: 20,
           marginBottom: 16,
           border: "none",
           textAlign: "left",
