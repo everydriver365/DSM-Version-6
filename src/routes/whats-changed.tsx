@@ -159,249 +159,118 @@ function WhatsChangedPage() {
       ).toISOString();
       // Do NOT update lastLogin here — update after queries
 
+      async function safeQuery(fn: () => Promise<any>) {
+        try {
+          return await fn();
+        } catch {
+          return { data: [] };
+        }
+      }
+
       const [
         lessonsNew,
         lessonsCanc,
         messages,
         payments,
-        cardPayments,
         gaps,
         enquiries,
         jobs,
         live,
         learn,
         listings,
+        cardPayments,
       ] = await Promise.all([
-        supabase
-          .from("lessons")
-          .select(
-            "id, pupil_id, lesson_date, lesson_time, duration_minutes, pickup_location, status, amount_due, pupils(name, first_name)",
-          )
-          .eq("instructor_id", userId)
-          .neq("status", "cancelled")
-          .gte("created_at", sinceIso),
-        supabase
-          .from("lessons")
-          .select("id, pupil_id, lesson_date, lesson_time, pupils(name, first_name)")
-          .eq("instructor_id", userId)
-          .eq("status", "cancelled")
-          .gte("created_at", sinceIso),
-        supabase
-          .from("chat_messages")
-          .select("id, pupil_id, body, created_at, pupils(name, first_name)")
-          .eq("instructor_id", userId)
-          .eq("sender_type", "pupil")
-          .is("read_at", null)
-          .gte("created_at", sinceIso),
-        supabase
-          .from("lessons")
-          .select(
-            "id, pupil_id, lesson_date, amount_due, paid_amount, payment_method, pupils(name, first_name)",
-          )
-          .eq("instructor_id", userId)
-          .eq("payment_status", "paid")
-          .gte("created_at", sinceIso),
-        supabase
-          .from("lesson_history")
-          .select(
-            "id, instructor_id, pupil_id, lesson_cost, payment_method, created_at, pupils(name, first_name)",
-          )
-          .eq("instructor_id", userId)
-          .eq("payment_status", "paid")
-          .is("deleted_at", null)
-          .gte("created_at", sinceIso),
-        supabase
-          .from("gap_filler_offers")
-          .select("id, pupil_id, slot_date, slot_time, duration_minutes, pupils(name, first_name)")
-          .eq("instructor_id", userId)
-          .eq("status", "accepted")
-          .gte("created_at", sinceIso),
-        supabase
-          .from("enquiries")
-          .select("id, name, notes, course_interest, postcode, created_at")
-          .eq("instructor_id", userId)
-          .gte("created_at", sinceIso),
-        supabase
-          .from("job_offers")
-          .select("id, title, created_at")
-          .eq("status", "open")
-          .gte("created_at", sinceIso),
-        supabase
-          .from("dsm_live_sessions")
-          .select("id, title, session_date, session_time")
-          .is("deleted_at", null)
-          .gte("created_at", sinceIso),
-        supabase
-          .from("learn_videos")
-          .select("id, title, duration, thumbnail_url")
-          .not("url", "is", null)
-          .gte("created_at", sinceIso),
-        supabase
-          .from("marketplace_listings")
-          .select("id, title, price_display, image_urls")
-          .eq("is_active", true)
-          .is("deleted_at", null)
-          .gte("created_at", sinceIso),
-      ]).catch((err) => {
-        console.error("[whats-changed] fetch error", err);
-        return [] as any[];
-      });
-
-      if (cancelled) return;
-
-      const rowsOf = (res: any): any[] => (res?.data ?? []) as any[];
-
-      const built: Section[] = ([
-        {
-          key: "lesson_new",
-          label: "New bookings",
-          icon: <CalendarCheck size={16} color="#1B7F3B" />,
-          items: rowsOf(lessonsNew).map((r) => ({
-            id: String(r.id),
-            kind: "lesson_new" as const,
-            title: pupilName(r),
-            subtitle: `${fmtDate(r.lesson_date)} · ${fmtTime(r.lesson_time)}`,
-            raw: r,
-          })),
-        },
-        {
-          key: "lesson_cancelled",
-          label: "Cancellations",
-          icon: <CalendarX size={16} color="#CC2229" />,
-          items: rowsOf(lessonsCanc).map((r) => ({
-            id: String(r.id),
-            kind: "lesson_cancelled" as const,
-            title: pupilName(r),
-            subtitle: `${fmtDate(r.lesson_date)} · ${fmtTime(r.lesson_time)}`,
-            raw: r,
-          })),
-        },
-        {
-          key: "message",
-          label: "New messages",
-          icon: <MessageSquare size={16} color={BLUE} />,
-          items: rowsOf(messages).map((r) => ({
-            id: String(r.id),
-            kind: "message" as const,
-            title: pupilName(r),
-            subtitle: truncate(r.body ?? ""),
-            raw: r,
-          })),
-        },
-        {
-          key: "payment",
-          label: "Payments received",
-          icon: <CreditCard size={16} color="#1B7F3B" />,
-          items: rowsOf(payments).map((r) => ({
-            id: String(r.id),
-            kind: "payment" as const,
-            title: pupilName(r),
-            subtitle: `${money(r.paid_amount ?? r.amount_due)} · ${fmtDate(r.lesson_date)}`,
-            raw: r,
-          })),
-        },
-        {
-          key: "card_payment",
-          label: "Card payments received",
-          icon: <CreditCard size={16} color="#1B7F3B" />,
-          items: rowsOf(cardPayments).map((r) => ({
-            id: String(r.id),
-            kind: "card_payment" as const,
-            title: pupilName(r),
-            subtitle: `${money(r.lesson_cost)} · ${r.payment_method ?? "Card"} · ${fmtDateTime(r.created_at)}`,
-            raw: r,
-          })),
-        },
-        {
-          key: "gap",
-          label: "Slots accepted",
-          icon: <Zap size={16} color="#1B7F3B" />,
-          items: rowsOf(gaps).map((r) => ({
-            id: String(r.id),
-            kind: "gap" as const,
-            title: pupilName(r),
-            subtitle: `${fmtDate(r.slot_date)} · ${fmtTime(r.slot_time)}`,
-            raw: r,
-          })),
-        },
-        {
-          key: "enquiry",
-          label: "New enquiries",
-          icon: <Mail size={16} color={BLUE} />,
-          items: rowsOf(enquiries).map((r) => ({
-            id: String(r.id),
-            kind: "enquiry" as const,
-            title: r.name || "Enquiry",
-            subtitle: truncate(
-              r.course_interest
-                ? `${r.course_interest}${r.postcode ? " · " + r.postcode : ""}`
-                : r.notes ?? "New enquiry",
-            ),
-            raw: r,
-          })),
-        },
-        {
-          key: "job",
-          label: "New jobs",
-          icon: <Briefcase size={16} color="#B5661E" />,
-          items: rowsOf(jobs).map((r) => ({
-            id: String(r.id),
-            kind: "job" as const,
-            title: r.title || "Job offer",
-            subtitle: fmtDateTime(r.created_at),
-            raw: r,
-          })),
-        },
-        {
-          key: "live",
-          label: "DSM Live",
-          icon: <Video size={16} color={BLUE} />,
-          items: rowsOf(live).map((r) => ({
-            id: String(r.id),
-            kind: "live" as const,
-            title: r.title || "Live session",
-            subtitle: `${fmtDate(r.session_date)} · ${fmtTime(r.session_time)}`,
-            raw: r,
-          })),
-        },
-        {
-          key: "learn",
-          label: "New tutorials",
-          icon: <PlayCircle size={16} color="#7C3AED" />,
-          items: rowsOf(learn).map((r) => ({
-            id: String(r.id),
-            kind: "learn" as const,
-            title: r.title || "Tutorial",
-            subtitle: r.duration ? String(r.duration) : "DSM Learn",
-            raw: r,
-          })),
-        },
-        {
-          key: "marketplace",
-          label: "New listings",
-          icon: <ShoppingBag size={16} color="#B5661E" />,
-          items: rowsOf(listings).map((r) => ({
-            id: String(r.id),
-            kind: "marketplace" as const,
-            title: r.title || "Listing",
-            subtitle: r.price_display ? String(r.price_display) : "Marketplace",
-            raw: r,
-          })),
-        },
-      ] as Section[]).filter((s) => s.items.length > 0);
-
-      setSections(built);
-      const nowIso = new Date().toISOString();
-      setLastUpdated(nowIso);
-      setLoading(false);
-      try {
-        localStorage.setItem(key, nowIso);
-      } catch {}
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+        safeQuery(() =>
+          supabase
+            .from("lessons")
+            .select(
+              "id, pupil_id, lesson_date, lesson_time, duration_minutes, pickup_location, status, amount_due, pupils(name, first_name)",
+            )
+            .eq("instructor_id", userId)
+            .neq("status", "cancelled")
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("lessons")
+            .select("id, pupil_id, lesson_date, lesson_time, pupils(name, first_name)")
+            .eq("instructor_id", userId)
+            .eq("status", "cancelled")
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("chat_messages")
+            .select("id, pupil_id, body, created_at, pupils(name, first_name)")
+            .eq("instructor_id", userId)
+            .eq("sender_type", "pupil")
+            .is("read_at", null)
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("lessons")
+            .select(
+              "id, pupil_id, lesson_date, amount_due, paid_amount, payment_method, pupils(name, first_name)",
+            )
+            .eq("instructor_id", userId)
+            .eq("payment_status", "paid")
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("gap_filler_offers")
+            .select("id, pupil_id, slot_date, slot_time, duration_minutes, pupils(name, first_name)")
+            .eq("instructor_id", userId)
+            .eq("status", "accepted")
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("enquiries")
+            .select("id, name, notes, course_interest, postcode, created_at")
+            .eq("instructor_id", userId)
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("job_offers")
+            .select("id, title, created_at")
+            .eq("status", "open")
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("dsm_live_sessions")
+            .select("id, title, session_date, session_time")
+            .is("deleted_at", null)
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("learn_videos")
+            .select("id, title, duration, thumbnail_url")
+            .not("url", "is", null)
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("marketplace_listings")
+            .select("id, title, price_display, image_urls")
+            .eq("is_active", true)
+            .is("deleted_at", null)
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("lesson_history")
+            .select("id, pupil_id, amount_paid, payment_method, created_at, pupils(name, first_name)")
+            .eq("instructor_id", userId)
+            .eq("payment_status", "paid")
+            .not("payment_method", "eq", "cancellation")
+            .gte("created_at", sinceIso),
+        ),
+      ]);
 
   const go = (to: string) => {
     setSelected(null);
