@@ -465,6 +465,7 @@ function ProfilePage() {
         setTradingName(inst.trading_name ?? "");
         setDbsUploaded(Boolean(inst.dbs_uploaded));
         setDbsUrl(inst.dbs_document_url ?? null);
+        setLogoUrl(inst.logo_url ?? null);
         
         setVehicleReg(inst.vehicle_reg ?? "");
         setVehicleYear(inst.vehicle_year != null ? String(inst.vehicle_year) : "");
