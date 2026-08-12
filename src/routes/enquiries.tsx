@@ -1358,9 +1358,9 @@ function EnquiriesPage() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 16,
+              borderRadius: 18,
               overflow: "hidden",
-              boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
+              boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
               opacity: busy ? 0.6 : 1,
             }}
           >
@@ -1372,9 +1372,12 @@ function EnquiriesPage() {
                   chipBg="#F2F2F7"
                   chipColor="#6B6B6F"
                   isFirst
-                  description="Logs that you've reached out (call, text, or in person) — updates status and records the time, but doesn't send anything automatically."
+                  actionBg="#F2F2F7"
+                  actionColor="#0B1F3A"
+                  description="Logs that you've reached out — doesn't send anything automatically."
                   onClick={() => void markContacted(enquiry)}
                 />
+
                 {showSmsComposer ? (
                   <div style={{ padding: 14, borderBottom: "1px solid #F0F0F3" }}>
                     <div
