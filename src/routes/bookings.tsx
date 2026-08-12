@@ -8,19 +8,11 @@ import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import {
   IconCalendar,
-  IconChevronLeft,
   IconChevronRight,
   IconCheck,
   IconUserPlus,
   IconPhone,
   IconX,
-  IconMail,
-  IconMapPin,
-  IconNotes,
-  IconBook,
-  IconClock,
-  IconCar,
-  IconCurrencyPound,
 } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/bookings")({
