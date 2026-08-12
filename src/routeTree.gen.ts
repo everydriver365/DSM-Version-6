@@ -102,6 +102,7 @@ import { Route as CalendarsyncRouteImport } from './routes/calendarsync'
 import { Route as BulkmessageRouteImport } from './routes/bulkmessage'
 import { Route as BroadcastRouteImport } from './routes/broadcast'
 import { Route as BriefingRouteImport } from './routes/briefing'
+import { Route as BookingsRouteImport } from './routes/bookings'
 import { Route as BitesizeRouteImport } from './routes/bitesize'
 import { Route as AvailabilitySettingsRouteImport } from './routes/availability-settings'
 import { Route as AvailabilityRouteImport } from './routes/availability'
@@ -116,7 +117,6 @@ import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as MessagesIndexRouteImport } from './routes/messages.index'
 import { Route as DsmLiveIndexRouteImport } from './routes/dsm-live.index'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
-import { Route as BookingsIndexRouteImport } from './routes/bookings.index'
 import { Route as TestDayPupilIdRouteImport } from './routes/test-day.$pupilId'
 import { Route as ReflectiveLogPupilIdRouteImport } from './routes/reflective-log.$pupilId'
 import { Route as QuotesNewRouteImport } from './routes/quotes.new'
@@ -139,7 +139,6 @@ import { Route as DsmLiveSessionIdRouteImport } from './routes/dsm-live.$session
 import { Route as DrivingTestPupilIdRouteImport } from './routes/driving-test.$pupilId'
 import { Route as CoursesNewRouteImport } from './routes/courses.new'
 import { Route as CoursesIdRouteImport } from './routes/courses.$id'
-import { Route as BookingsIdRouteImport } from './routes/bookings.$id'
 import { Route as AdminTermsRouteImport } from './routes/admin.terms'
 import { Route as AdminPodcastsRouteImport } from './routes/admin.podcasts'
 import { Route as AdminListingsRouteImport } from './routes/admin.listings'
@@ -639,6 +638,11 @@ const BriefingRoute = BriefingRouteImport.update({
   path: '/briefing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BookingsRoute = BookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BitesizeRoute = BitesizeRouteImport.update({
   id: '/bitesize',
   path: '/bitesize',
@@ -706,11 +710,6 @@ const DsmLiveIndexRoute = DsmLiveIndexRouteImport.update({
 const CoursesIndexRoute = CoursesIndexRouteImport.update({
   id: '/courses/',
   path: '/courses/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BookingsIndexRoute = BookingsIndexRouteImport.update({
-  id: '/bookings/',
-  path: '/bookings/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TestDayPupilIdRoute = TestDayPupilIdRouteImport.update({
@@ -821,11 +820,6 @@ const CoursesNewRoute = CoursesNewRouteImport.update({
 const CoursesIdRoute = CoursesIdRouteImport.update({
   id: '/courses/$id',
   path: '/courses/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BookingsIdRoute = BookingsIdRouteImport.update({
-  id: '/bookings/$id',
-  path: '/bookings/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminTermsRoute = AdminTermsRouteImport.update({
@@ -1007,6 +1001,7 @@ export interface FileRoutesByFullPath {
   '/availability': typeof AvailabilityRoute
   '/availability-settings': typeof AvailabilitySettingsRoute
   '/bitesize': typeof BitesizeRoute
+  '/bookings': typeof BookingsRoute
   '/briefing': typeof BriefingRoute
   '/broadcast': typeof BroadcastRoute
   '/bulkmessage': typeof BulkmessageRoute
@@ -1116,7 +1111,6 @@ export interface FileRoutesByFullPath {
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
-  '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/driving-test/$pupilId': typeof DrivingTestPupilIdRoute
@@ -1139,7 +1133,6 @@ export interface FileRoutesByFullPath {
   '/quotes/new': typeof QuotesNewRoute
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
-  '/bookings/': typeof BookingsIndexRoute
   '/courses/': typeof CoursesIndexRoute
   '/dsm-live/': typeof DsmLiveIndexRoute
   '/messages/': typeof MessagesIndexRoute
@@ -1172,6 +1165,7 @@ export interface FileRoutesByTo {
   '/availability': typeof AvailabilityRoute
   '/availability-settings': typeof AvailabilitySettingsRoute
   '/bitesize': typeof BitesizeRoute
+  '/bookings': typeof BookingsRoute
   '/briefing': typeof BriefingRoute
   '/broadcast': typeof BroadcastRoute
   '/bulkmessage': typeof BulkmessageRoute
@@ -1278,7 +1272,6 @@ export interface FileRoutesByTo {
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
-  '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/driving-test/$pupilId': typeof DrivingTestPupilIdRoute
@@ -1301,7 +1294,6 @@ export interface FileRoutesByTo {
   '/quotes/new': typeof QuotesNewRoute
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
-  '/bookings': typeof BookingsIndexRoute
   '/courses': typeof CoursesIndexRoute
   '/dsm-live': typeof DsmLiveIndexRoute
   '/messages': typeof MessagesIndexRoute
@@ -1336,6 +1328,7 @@ export interface FileRoutesById {
   '/availability': typeof AvailabilityRoute
   '/availability-settings': typeof AvailabilitySettingsRoute
   '/bitesize': typeof BitesizeRoute
+  '/bookings': typeof BookingsRoute
   '/briefing': typeof BriefingRoute
   '/broadcast': typeof BroadcastRoute
   '/bulkmessage': typeof BulkmessageRoute
@@ -1445,7 +1438,6 @@ export interface FileRoutesById {
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
-  '/bookings/$id': typeof BookingsIdRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/driving-test/$pupilId': typeof DrivingTestPupilIdRoute
@@ -1468,7 +1460,6 @@ export interface FileRoutesById {
   '/quotes/new': typeof QuotesNewRoute
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
-  '/bookings/': typeof BookingsIndexRoute
   '/courses/': typeof CoursesIndexRoute
   '/dsm-live/': typeof DsmLiveIndexRoute
   '/messages/': typeof MessagesIndexRoute
@@ -1503,6 +1494,7 @@ export interface FileRouteTypes {
     | '/availability'
     | '/availability-settings'
     | '/bitesize'
+    | '/bookings'
     | '/briefing'
     | '/broadcast'
     | '/bulkmessage'
@@ -1612,7 +1604,6 @@ export interface FileRouteTypes {
     | '/admin/listings'
     | '/admin/podcasts'
     | '/admin/terms'
-    | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
     | '/driving-test/$pupilId'
@@ -1635,7 +1626,6 @@ export interface FileRouteTypes {
     | '/quotes/new'
     | '/reflective-log/$pupilId'
     | '/test-day/$pupilId'
-    | '/bookings/'
     | '/courses/'
     | '/dsm-live/'
     | '/messages/'
@@ -1668,6 +1658,7 @@ export interface FileRouteTypes {
     | '/availability'
     | '/availability-settings'
     | '/bitesize'
+    | '/bookings'
     | '/briefing'
     | '/broadcast'
     | '/bulkmessage'
@@ -1774,7 +1765,6 @@ export interface FileRouteTypes {
     | '/admin/listings'
     | '/admin/podcasts'
     | '/admin/terms'
-    | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
     | '/driving-test/$pupilId'
@@ -1797,7 +1787,6 @@ export interface FileRouteTypes {
     | '/quotes/new'
     | '/reflective-log/$pupilId'
     | '/test-day/$pupilId'
-    | '/bookings'
     | '/courses'
     | '/dsm-live'
     | '/messages'
@@ -1831,6 +1820,7 @@ export interface FileRouteTypes {
     | '/availability'
     | '/availability-settings'
     | '/bitesize'
+    | '/bookings'
     | '/briefing'
     | '/broadcast'
     | '/bulkmessage'
@@ -1940,7 +1930,6 @@ export interface FileRouteTypes {
     | '/admin/listings'
     | '/admin/podcasts'
     | '/admin/terms'
-    | '/bookings/$id'
     | '/courses/$id'
     | '/courses/new'
     | '/driving-test/$pupilId'
@@ -1963,7 +1952,6 @@ export interface FileRouteTypes {
     | '/quotes/new'
     | '/reflective-log/$pupilId'
     | '/test-day/$pupilId'
-    | '/bookings/'
     | '/courses/'
     | '/dsm-live/'
     | '/messages/'
@@ -1998,6 +1986,7 @@ export interface RootRouteChildren {
   AvailabilityRoute: typeof AvailabilityRoute
   AvailabilitySettingsRoute: typeof AvailabilitySettingsRoute
   BitesizeRoute: typeof BitesizeRoute
+  BookingsRoute: typeof BookingsRoute
   BriefingRoute: typeof BriefingRoute
   BroadcastRoute: typeof BroadcastRoute
   BulkmessageRoute: typeof BulkmessageRoute
@@ -2091,7 +2080,6 @@ export interface RootRouteChildren {
   WeeklyReportRoute: typeof WeeklyReportRoute
   WeeklyreportRoute: typeof WeeklyreportRoute
   WhatsChangedRoute: typeof WhatsChangedRoute
-  BookingsIdRoute: typeof BookingsIdRoute
   CoursesIdRoute: typeof CoursesIdRoute
   CoursesNewRoute: typeof CoursesNewRoute
   DrivingTestPupilIdRoute: typeof DrivingTestPupilIdRoute
@@ -2111,7 +2099,6 @@ export interface RootRouteChildren {
   QuoteTokenRoute: typeof QuoteTokenRoute
   ReflectiveLogPupilIdRoute: typeof ReflectiveLogPupilIdRoute
   TestDayPupilIdRoute: typeof TestDayPupilIdRoute
-  BookingsIndexRoute: typeof BookingsIndexRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
   NewsIndexRoute: typeof NewsIndexRoute
   NotesIndexRoute: typeof NotesIndexRoute
@@ -2786,6 +2773,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BriefingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bookings': {
+      id: '/bookings'
+      path: '/bookings'
+      fullPath: '/bookings'
+      preLoaderRoute: typeof BookingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/bitesize': {
       id: '/bitesize'
       path: '/bitesize'
@@ -2882,13 +2876,6 @@ declare module '@tanstack/react-router' {
       path: '/courses'
       fullPath: '/courses/'
       preLoaderRoute: typeof CoursesIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/bookings/': {
-      id: '/bookings/'
-      path: '/bookings'
-      fullPath: '/bookings/'
-      preLoaderRoute: typeof BookingsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/test-day/$pupilId': {
@@ -3043,13 +3030,6 @@ declare module '@tanstack/react-router' {
       path: '/courses/$id'
       fullPath: '/courses/$id'
       preLoaderRoute: typeof CoursesIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/bookings/$id': {
-      id: '/bookings/$id'
-      path: '/bookings/$id'
-      fullPath: '/bookings/$id'
-      preLoaderRoute: typeof BookingsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/terms': {
@@ -3388,6 +3368,7 @@ const rootRouteChildren: RootRouteChildren = {
   AvailabilityRoute: AvailabilityRoute,
   AvailabilitySettingsRoute: AvailabilitySettingsRoute,
   BitesizeRoute: BitesizeRoute,
+  BookingsRoute: BookingsRoute,
   BriefingRoute: BriefingRoute,
   BroadcastRoute: BroadcastRoute,
   BulkmessageRoute: BulkmessageRoute,
@@ -3481,7 +3462,6 @@ const rootRouteChildren: RootRouteChildren = {
   WeeklyReportRoute: WeeklyReportRoute,
   WeeklyreportRoute: WeeklyreportRoute,
   WhatsChangedRoute: WhatsChangedRoute,
-  BookingsIdRoute: BookingsIdRoute,
   CoursesIdRoute: CoursesIdRoute,
   CoursesNewRoute: CoursesNewRoute,
   DrivingTestPupilIdRoute: DrivingTestPupilIdRoute,
@@ -3501,7 +3481,6 @@ const rootRouteChildren: RootRouteChildren = {
   QuoteTokenRoute: QuoteTokenRoute,
   ReflectiveLogPupilIdRoute: ReflectiveLogPupilIdRoute,
   TestDayPupilIdRoute: TestDayPupilIdRoute,
-  BookingsIndexRoute: BookingsIndexRoute,
   CoursesIndexRoute: CoursesIndexRoute,
   NewsIndexRoute: NewsIndexRoute,
   NotesIndexRoute: NotesIndexRoute,

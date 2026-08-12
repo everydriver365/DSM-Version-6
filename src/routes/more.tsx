@@ -8,7 +8,7 @@ import {
   Moon, TrendingUp, Activity, Radio, ShoppingBag, Users, GraduationCap as GraduationCapIcon,
   PlayCircle,
 } from "lucide-react";
-import { IconChevronRight, IconSearch, IconCreditCard } from "@tabler/icons-react";
+import { IconChevronRight, IconSearch, IconCreditCard, IconCalendar } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -58,6 +58,7 @@ const allTools: Tool[] = [
   { icon: MapPin, colour: '#6B7280', label: 'Mileage', sub: 'Log miles', route: '/mileage', group: 'Business' },
   { icon: FileText, colour: '#1A52A0', label: 'Invoices', sub: 'Billing', route: '/invoices', group: 'Business' },
   { icon: MapPin, colour: '#1A52A0', label: 'Coverage areas', sub: 'Service areas', route: '/coverage-areas', group: 'Business' },
+  { icon: IconCalendar, colour: '#7C3AED', label: 'Bookings', sub: 'Mini-site bookings', route: '/bookings', group: 'Business' },
   
 
   // Payments
