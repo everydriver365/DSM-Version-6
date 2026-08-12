@@ -387,6 +387,33 @@ function NewCoursePage() {
     navigate({ to: "/courses" });
   }
 
+  async function uploadHeroImage(file: File) {
+    if (!userId) {
+      const { data: authData } = await supabase.auth.getUser();
+      const uid = authData.user?.id ?? null;
+      if (uid) setUserId(uid);
+      if (!uid) {
+        toast.error("You must be signed in to upload an image");
+        return;
+      }
+    }
+    const uid = userId!;
+    setUploadingHero(true);
+    try {
+      const ext = file.name.split('.').pop() ?? 'jpg';
+      const path = `${uid}/${Date.now()}-hero.${ext}`;
+      const { error } = await supabase.storage.from('course-images').upload(path, file, { upsert: true });
+      if (error) throw error;
+      const { data: { publicUrl } } = supabase.storage.from('course-images').getPublicUrl(path);
+      setHeroImage(publicUrl);
+      toast.success('Image uploaded');
+    } catch (e: any) {
+      toast.error(e.message ?? 'Upload failed');
+    } finally {
+      setUploadingHero(false);
+    }
+  }
+
   function goNext() {
     if (step === 2) {
       if (!pickup) {
