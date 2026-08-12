@@ -955,6 +955,12 @@ function EnquiriesPage() {
     const list = activities[enquiry.id] ?? [];
     const busy = busyId === enquiry.id;
 
+    const openSmsComposer = () => {
+      setSmsText(defaultSmsText(enquiry));
+      setShowSmsComposer(true);
+    };
+
+
     return (
       <div
         className="fixed inset-0 z-[3000] overflow-y-auto"
@@ -1232,10 +1238,7 @@ function EnquiriesPage() {
                     <button
                       type="button"
                       className="active:opacity-70"
-                      onClick={() => {
-                        setSmsText(defaultSmsText(enquiry));
-                        setShowSmsComposer(true);
-                      }}
+                      onClick={openSmsComposer}
                       style={{
                         width: "100%",
                         marginTop: 4,
@@ -1490,14 +1493,7 @@ function EnquiriesPage() {
                     actionColor="#fff"
                     actionShadow="0 2px 0 #0F52A8"
                     description="Opens a text to their number. Use Mark contacted after if you want that logged."
-                    onClick={
-                      enquiry.phone
-                        ? () => {
-                            setSmsText(defaultSmsText(enquiry));
-                            setShowSmsComposer(true);
-                          }
-                        : undefined
-                    }
+                    onClick={enquiry.phone ? openSmsComposer : undefined}
                   />
                 )}
 
