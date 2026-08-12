@@ -641,10 +641,14 @@ function DetailSheet({
       body = (
         <>
           <Field label="From" value={r.name || "Enquiry"} />
+          {r.course_interest && <Field label="Interest" value={r.course_interest} />}
+          {r.postcode && <Field label="Postcode" value={r.postcode} />}
           <Field label="Received" value={fmtDateTime(r.created_at)} />
-          <div style={{ paddingTop: 12, fontSize: 14, color: NAVY, lineHeight: 1.5 }}>
-            {r.message}
-          </div>
+          {r.notes && (
+            <div style={{ paddingTop: 12, fontSize: 14, color: NAVY, lineHeight: 1.5 }}>
+              {r.notes}
+            </div>
+          )}
         </>
       );
       cta = { label: "View enquiries →", to: "/enquiries" };
